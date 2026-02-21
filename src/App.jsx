@@ -102,7 +102,7 @@ const BUSINESSES = [
     name: "Highland Inn",
     category: "Food & Drink",
     description: "A Manitou Beach institution since 1927 — survived Prohibition, survived the pandemic, still standing. Classic bar with deep local roots.",
-    featured: false,
+    featured: true,
     website: "https://www.thewellstavern.net/highland-inn",
     phone: "",
   },
@@ -792,7 +792,7 @@ function BusinessCard({ business, featured = false }) {
         </p>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <span style={{ fontSize: 12, color: C.textMuted }}>{business.phone}</span>
-          <a href={business.website} style={{
+          <a href={business.website} target="_blank" rel="noopener noreferrer" style={{
             fontFamily: "'Libre Franklin', sans-serif",
             fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase",
             color: C.sage, textDecoration: "none",
@@ -934,8 +934,8 @@ function LivingSection() {
     },
     {
       title: "Lake Access Magazine",
-      desc: "Our regional media partner covering lake communities across Michigan. Find more lake towns, more listings, and more lake life.",
-      cta: "Visit Lake Access", href: "#",
+      desc: "Our regional media partner covering lake communities across Michigan. Find more lake towns, listings, and lake life. Use code HOLLY or YETI for 10% off your subscription.",
+      cta: "Visit Lake Access", href: "https://lake-access.com/", external: true,
     },
   ];
 
@@ -972,7 +972,7 @@ function LivingSection() {
                 <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: "0 0 24px 0", flex: 1 }}>
                   {item.desc}
                 </p>
-                <a href={item.href} style={{
+                <a href={item.href} target={item.external ? "_blank" : "_self"} rel={item.external ? "noopener noreferrer" : undefined} style={{
                   fontFamily: "'Libre Franklin', sans-serif",
                   fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase",
                   color: C.sage, textDecoration: "none",
