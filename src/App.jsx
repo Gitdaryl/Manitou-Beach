@@ -1004,14 +1004,29 @@ function LivingSection() {
 function SubmitSection() {
   const [tab, setTab] = useState("business");
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   const [form, setForm] = useState({ name: "", category: "", phone: "", website: "", email: "", description: "", upgrade: false });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Replace with your Tally.so form embed URL or Formspree endpoint
-    // Example Tally: https://tally.so/r/YOUR_FORM_ID
-    console.log("Form submitted:", { tab, ...form });
-    setSubmitted(true);
+    setSubmitting(true);
+    setSubmitError("");
+    const endpoint = tab === "business" ? "/api/submit-business" : "/api/submit-event";
+    try {
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Submission failed");
+      setSubmitted(true);
+    } catch (err) {
+      setSubmitError("Something went wrong. Please try again or email us directly.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const input = (field, placeholder, type = "text") => (
@@ -1167,6 +1182,7 @@ function SubmitSection() {
 
               <button
                 type="submit"
+                disabled={submitting}
                 style={{
                   fontFamily: "'Libre Franklin', sans-serif",
                   fontWeight: 700,
@@ -1176,17 +1192,21 @@ function SubmitSection() {
                   padding: "15px 32px",
                   borderRadius: 6,
                   border: "none",
-                  background: C.sage,
+                  background: submitting ? C.driftwood : C.sage,
                   color: C.cream,
-                  cursor: "pointer",
+                  cursor: submitting ? "not-allowed" : "pointer",
                   width: "100%",
                   transition: "opacity 0.2s",
                 }}
-                onMouseEnter={e => e.target.style.opacity = "0.85"}
+                onMouseEnter={e => { if (!submitting) e.target.style.opacity = "0.85"; }}
                 onMouseLeave={e => e.target.style.opacity = "1"}
               >
-                Submit {tab === "business" ? "Business" : "Event"}
+                {submitting ? "Sending…" : `Submit ${tab === "business" ? "Business" : "Event"}`}
               </button>
+
+              {submitError && (
+                <p style={{ fontSize: 13, color: "#c0392b", textAlign: "center", margin: 0 }}>{submitError}</p>
+              )}
 
               <p style={{ fontSize: 11, color: C.textMuted, textAlign: "center", margin: 0, lineHeight: 1.6 }}>
                 Free listings are reviewed within 48 hours. No spam, no fees unless you upgrade.
