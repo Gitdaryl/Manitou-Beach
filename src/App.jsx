@@ -50,6 +50,7 @@ const BUSINESSES = [
     category: "Real Estate",
     description: "Your lakeside real estate expert. Specializing in lake property throughout Lenawee County, Irish Hills, and the Devils Lake area. 30+ years of local expertise.",
     featured: true,
+    logo: "/images/holly-logo.png",
     website: "https://www.hollygriewahn.com",
     phone: "(517) 403-3413",
   },
@@ -59,6 +60,7 @@ const BUSINESSES = [
     category: "Food & Drink",
     description: "Michigan craft beer, wine, and spirits in a gorgeous outdoor setting with twinkly lights. Trivia Wednesdays, live music, and a menu built for lake days. 735 Manitou Rd.",
     featured: true,
+    logo: null,
     website: "https://bootjacktavern.com",
     phone: "(517) 252-5475",
   },
@@ -68,6 +70,7 @@ const BUSINESSES = [
     category: "Food & Drink",
     description: "Family-owned lakeside restaurant known for their smoked entrees and a big menu full of options. Right on the shores of Devils Lake. 110 Walnut St.",
     featured: true,
+    logo: null,
     website: "https://www.twolakestavern.com",
     phone: "(517) 547-7490",
   },
@@ -104,6 +107,7 @@ const BUSINESSES = [
     category: "Food & Drink",
     description: "A Manitou Beach institution since 1927 — survived Prohibition, survived the pandemic, still standing. Classic bar with deep local roots.",
     featured: true,
+    logo: null,
     website: "https://www.thewellstavern.net/highland-inn",
     phone: "",
   },
@@ -587,8 +591,18 @@ function HappeningSection() {
   const preview = EVENTS.slice(0, 3);
 
   return (
-    <section id="happening" style={{ background: C.dusk, padding: "100px 24px" }}>
-      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+    <section id="happening" style={{
+      position: "relative",
+      padding: "100px 24px",
+      backgroundImage: "url(/images/happening-bg.jpg)",
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundAttachment: "fixed",
+      backgroundColor: C.dusk, /* fallback until image is added */
+    }}>
+      {/* Dark overlay — adjust opacity for photo intensity */}
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg, rgba(18,28,35,0.88) 0%, rgba(30,45,54,0.82) 100%)", zIndex: 0 }} />
+      <div style={{ position: "relative", zIndex: 1, maxWidth: 1100, margin: "0 auto" }}>
         <FadeIn>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 16, marginBottom: 56 }}>
             <div>
@@ -1306,8 +1320,25 @@ function FeaturedBusinessCard({ business }) {
       onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.borderColor = `${color}50`; }}
       onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.07)"; }}
     >
-      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunset, marginBottom: 14 }}>
-        ★ Featured Partner
+      {/* Logo / photo area */}
+      <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 18 }}>
+        <div style={{
+          width: 56, height: 56, borderRadius: 8, flexShrink: 0, overflow: "hidden",
+          background: "rgba(255,255,255,0.05)",
+          border: `1.5px dashed ${business.logo ? "transparent" : "rgba(255,255,255,0.18)"}`,
+          display: "flex", alignItems: "center", justifyContent: "center",
+        }}>
+          {business.logo ? (
+            <img src={business.logo} alt={business.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          ) : (
+            <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 8, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.22)", textAlign: "center", lineHeight: 1.5 }}>
+              Add<br/>Logo
+            </span>
+          )}
+        </div>
+        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunset }}>
+          ★ Featured Partner
+        </div>
       </div>
       <CategoryPill dark>{business.category}</CategoryPill>
       <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.cream, margin: "12px 0 10px 0", lineHeight: 1.25 }}>
@@ -2057,7 +2088,7 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
             ))}
             {/* Gallery external link */}
             <a
-              href="https://photogallery.yetigroove.com"
+              href="https://photogallery.yetigroove.com/folder/muVgmuXuvFwI/"
               target="_blank"
               rel="noopener noreferrer"
               style={{
@@ -2151,7 +2182,7 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
           </button>
         ))}
         <a
-          href="https://photogallery.yetigroove.com"
+          href="https://photogallery.yetigroove.com/folder/muVgmuXuvFwI/"
           target="_blank"
           rel="noopener noreferrer"
           style={{
