@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // ============================================================
 // ✏️  CONFIGURABLE CONTENT — manage hero events via Notion
@@ -168,6 +169,44 @@ const EVENTS = [
     time: "6:00 PM",
     category: "Media",
     description: "Live podcast episode featuring local business owners and community stories. Stay tuned for the date.",
+  },
+];
+
+// ============================================================
+// 🎬  VIDEO / STORY CONTENT
+// ============================================================
+const VIDEOS = [
+  {
+    id: 1,
+    title: "Manitou Beach: The Party Lake",
+    desc: "A look at life on Devils Lake — the boats, the bars, and the community that makes it special.",
+    youtubeId: null, // Replace with real YouTube video ID (e.g. "dQw4w9WgXcQ")
+    date: "Coming Soon",
+    category: "Community",
+  },
+  {
+    id: 2,
+    title: "Holly & The Yeti — Episode 1",
+    desc: "First episode of the community podcast. Local business owners, lake life stories, and market insights.",
+    youtubeId: null,
+    date: "Coming Soon",
+    category: "Media",
+  },
+  {
+    id: 3,
+    title: "Boot Jack Tavern — Business Spotlight",
+    desc: "Cinematic story of one of Manitou Beach's most beloved lakeside venues.",
+    youtubeId: null,
+    date: "Coming Soon",
+    category: "Media",
+  },
+  {
+    id: 4,
+    title: "Sunday Races on Devils Lake",
+    desc: "A season of sailboat racing at the Yacht Club. From first light to the last finish line.",
+    youtubeId: null,
+    date: "Coming Soon",
+    category: "Community",
   },
 ];
 
@@ -491,7 +530,7 @@ function NewsletterBar() {
 }
 
 // ============================================================
-// 📅  WHAT'S HAPPENING
+// 📅  WHAT'S HAPPENING — home page teaser (3 events)
 // ============================================================
 function HappeningSection() {
   const categoryColors = {
@@ -500,112 +539,447 @@ function HappeningSection() {
     Activity: C.sunset,
     Media: C.driftwood,
   };
-
-  const featured = EVENTS[0];
-  const rest = EVENTS.slice(1);
+  const preview = EVENTS.slice(0, 3);
 
   return (
-    <section id="happening" style={{ background: C.warmWhite, padding: "100px 24px" }}>
+    <section id="happening" style={{ background: C.dusk, padding: "100px 24px" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
         <FadeIn>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 16, marginBottom: 40 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 16, marginBottom: 56 }}>
             <div>
-              <SectionLabel>Events & News</SectionLabel>
-              <SectionTitle>What's Happening</SectionTitle>
+              <SectionLabel light>Events & News</SectionLabel>
+              <SectionTitle light>What's Happening</SectionTitle>
             </div>
-            <Btn href="#submit" variant="outline" small>+ Submit an Event</Btn>
+            <Btn href="/happening" variant="outlineLight" small>See All Events →</Btn>
           </div>
         </FadeIn>
 
-        {/* Featured event — editorial hero card */}
-        <FadeIn delay={80}>
+        {/* Timeline preview — 3 events */}
+        <div style={{ position: "relative", marginBottom: 52 }}>
           <div style={{
-            background: `linear-gradient(135deg, ${C.night} 0%, ${C.lakeDark} 100%)`,
-            borderRadius: 16,
-            overflow: "hidden",
-            marginBottom: 28,
-            position: "relative",
-            minHeight: 260,
-            display: "flex",
-            alignItems: "stretch",
-          }}>
-            {/* Category accent bar */}
-            <div style={{ position: "absolute", top: 0, left: 0, bottom: 0, width: 5, background: categoryColors[featured.category] || C.sage }} />
+            position: "absolute", left: 200, top: 0, bottom: 0,
+            width: 1, background: "rgba(255,255,255,0.08)",
+          }} />
+          {preview.map((event, i) => {
+            const color = categoryColors[event.category] || C.sage;
+            return (
+              <FadeIn key={event.id} delay={i * 70}>
+                <div style={{
+                  display: "grid",
+                  gridTemplateColumns: "180px 40px 1fr",
+                  alignItems: "flex-start",
+                  marginBottom: i < preview.length - 1 ? 48 : 0,
+                  gap: 0,
+                }}>
+                  <div style={{ paddingRight: 24, paddingTop: 4, textAlign: "right" }}>
+                    <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color, lineHeight: 1.2 }}>
+                      {event.date}
+                    </div>
+                    {event.time && (
+                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.3)", letterSpacing: 1, marginTop: 3 }}>
+                        {event.time}
+                      </div>
+                    )}
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", paddingTop: 8 }}>
+                    <div style={{ width: 11, height: 11, borderRadius: "50%", background: color, flexShrink: 0, boxShadow: `0 0 0 3px ${color}22` }} />
+                  </div>
+                  <div style={{ paddingLeft: 20 }}>
+                    <div style={{ marginBottom: 8 }}><CategoryPill>{event.category}</CategoryPill></div>
+                    <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(18px, 2.5vw, 24px)", fontWeight: 400, color: C.cream, margin: "0 0 10px 0", lineHeight: 1.2 }}>
+                      {event.name}
+                    </h3>
+                    <p style={{ fontSize: 14, color: "rgba(255,255,255,0.45)", lineHeight: 1.75, margin: 0, maxWidth: 560 }}>
+                      {event.description}
+                    </p>
+                  </div>
+                </div>
+              </FadeIn>
+            );
+          })}
+        </div>
 
-            {/* Content */}
-            <div style={{ flex: 1, padding: "48px 52px 48px 60px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-              <CategoryPill>{featured.category}</CategoryPill>
-              <h2 style={{
-                fontFamily: "'Libre Baskerville', serif",
-                fontSize: "clamp(26px, 4vw, 46px)",
-                fontWeight: 400, color: C.cream,
-                margin: "16px 0 10px", lineHeight: 1.15, maxWidth: 620,
-              }}>
-                {featured.name}
-              </h2>
-              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: categoryColors[featured.category] || C.sunsetLight, marginBottom: 14 }}>
-                {featured.date}{featured.time && featured.time !== "Dusk" ? ` · ${featured.time}` : ""}
+        {/* Full calendar CTA */}
+        <FadeIn delay={240}>
+          <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)", paddingTop: 40, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 20 }}>
+            <div>
+              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: "rgba(255,255,255,0.6)", fontWeight: 400 }}>
+                + {EVENTS.length - 3} more events on the calendar
               </div>
-              <p style={{ fontSize: 15, color: "rgba(255,255,255,0.55)", lineHeight: 1.75, maxWidth: 560, margin: 0 }}>
-                {featured.description}
-              </p>
-            </div>
-
-            {/* Ghost date — decorative */}
-            <div style={{
-              padding: "40px 52px 40px 0",
-              display: "flex", alignItems: "center",
-              userSelect: "none", flexShrink: 0,
-            }}>
-              <div style={{
-                fontFamily: "'Libre Baskerville', serif",
-                fontSize: "clamp(72px, 9vw, 130px)",
-                fontWeight: 700,
-                color: "rgba(255,255,255,0.04)",
-                lineHeight: 1,
-                textAlign: "right",
-                whiteSpace: "nowrap",
-              }}>
-                {featured.date.split(" ")[0]}
+              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 16, color: "rgba(255,255,255,0.3)", marginTop: 4 }}>
+                weekly regulars, seasonal events & more
               </div>
             </div>
+            <Btn href="/happening" variant="sunset">Open Full Calendar →</Btn>
           </div>
         </FadeIn>
+      </div>
+    </section>
+  );
+}
 
-        {/* Remaining events — compact 3-column grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(230px, 1fr))", gap: 18, marginBottom: 52 }}>
-          {rest.map((event, i) => (
-            <FadeIn key={event.id} delay={i * 60 + 160}>
-              <div style={{
-                background: C.cream,
-                border: `1px solid ${C.sand}`,
-                borderRadius: 12,
-                overflow: "hidden",
-                transition: "transform 0.2s, box-shadow 0.2s",
-                height: "100%",
-              }}
-                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 6px 24px rgba(0,0,0,0.07)"; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
-              >
-                <div style={{ height: 4, background: categoryColors[event.category] || C.sage }} />
-                <div style={{ padding: "18px 20px 22px" }}>
-                  <CategoryPill>{event.category}</CategoryPill>
-                  <div style={{ fontFamily: "'Caveat', cursive", fontSize: 19, color: categoryColors[event.category] || C.sunset, margin: "10px 0 4px" }}>
-                    {event.date}
-                  </div>
-                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, fontWeight: 700, color: C.text, margin: "0 0 8px 0", lineHeight: 1.35 }}>
-                    {event.name}
-                  </h3>
-                  <p style={{ fontSize: 12, color: C.textLight, lineHeight: 1.65, margin: 0 }}>
-                    {event.description}
-                  </p>
-                </div>
-              </div>
-            </FadeIn>
-          ))}
+// ============================================================
+// 📅  /happening — PAGE HERO
+// ============================================================
+function HappeningHero() {
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => { setTimeout(() => setLoaded(true), 80); }, []);
+
+  return (
+    <section style={{
+      backgroundImage: "url(/images/happening-hero.jpg)",
+      backgroundSize: "cover",
+      backgroundPosition: "center 40%",
+      backgroundAttachment: "fixed",
+      padding: "180px 24px 140px",
+      position: "relative",
+      overflow: "hidden",
+    }}>
+      {/* Dark overlay — preserves text readability */}
+      <div style={{
+        position: "absolute", inset: 0,
+        background: "linear-gradient(170deg, rgba(10,18,24,0.72) 0%, rgba(10,18,24,0.50) 50%, rgba(10,18,24,0.82) 100%)",
+      }} />
+
+      {/* Decorative oversized year — pure design element */}
+      <div style={{
+        position: "absolute",
+        right: -10,
+        top: "50%",
+        transform: "translateY(-50%)",
+        fontFamily: "'Libre Baskerville', serif",
+        fontSize: "clamp(140px, 22vw, 320px)",
+        fontWeight: 700,
+        color: "rgba(255,255,255,0.06)",
+        lineHeight: 1,
+        userSelect: "none",
+        letterSpacing: -12,
+        pointerEvents: "none",
+      }}>
+        2026
+      </div>
+
+      <div style={{ maxWidth: 960, margin: "0 auto", position: "relative", zIndex: 1 }}>
+        <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? "none" : "translateY(24px)", transition: "all 0.9s ease" }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 28 }}>
+            Events & Community Calendar
+          </div>
+          <h1 style={{
+            fontFamily: "'Libre Baskerville', serif",
+            fontSize: "clamp(56px, 10vw, 120px)",
+            fontWeight: 400,
+            color: C.cream,
+            lineHeight: 0.95,
+            margin: "0 0 20px 0",
+            letterSpacing: -2,
+          }}>
+            What's<br />Happening
+          </h1>
+          <div style={{ fontFamily: "'Caveat', cursive", fontSize: "clamp(20px, 3vw, 30px)", color: C.sunsetLight, marginBottom: 48 }}>
+            in Manitou Beach · Devils Lake, Michigan
+          </div>
+          <Btn href="/#submit" variant="outlineLight">Submit an Event</Btn>
         </div>
       </div>
     </section>
+  );
+}
+
+// ============================================================
+// 📅  /happening — WEEKLY RECURRING EVENTS
+// ============================================================
+function WeeklyEventsSection({ events }) {
+  const categoryColors = { Community: C.lakeBlue, Activity: C.sunset, Media: C.driftwood, Market: C.sage };
+  const dayLabels = {
+    "Every Friday": "FRI",
+    "Every Friday & Saturday": "FRI — SAT",
+    "Every Wednesday": "WED",
+    "Every Sunday (Summer)": "SUN",
+  };
+
+  return (
+    <section style={{ background: C.warmWhite, padding: "100px 24px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <FadeIn>
+          <SectionLabel>The Regulars</SectionLabel>
+          <SectionTitle>Every Week</SectionTitle>
+          <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.8, maxWidth: 480, margin: "0 0 64px 0" }}>
+            Some things happen like clockwork on Devils Lake. You just have to know where to be.
+          </p>
+        </FadeIn>
+
+        <div>
+          {events.map((event, i) => {
+            const color = categoryColors[event.category] || C.sage;
+            const day = dayLabels[event.date] || event.date;
+            return (
+              <FadeIn key={event.id} delay={i * 60}>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "120px 1fr auto",
+                    gap: "0 48px",
+                    alignItems: "start",
+                    padding: "36px 0",
+                    borderBottom: `1px solid ${C.sand}`,
+                    transition: "background 0.2s",
+                    borderRadius: 4,
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = `${color}08`; e.currentTarget.style.paddingLeft = "12px"; e.currentTarget.style.paddingRight = "12px"; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.paddingLeft = "0"; e.currentTarget.style.paddingRight = "0"; }}
+                >
+                  {/* Day abbreviation */}
+                  <div style={{
+                    fontFamily: "'Caveat', cursive",
+                    fontSize: 32,
+                    color,
+                    lineHeight: 1,
+                    paddingTop: 4,
+                    userSelect: "none",
+                  }}>
+                    {day}
+                  </div>
+
+                  {/* Event info */}
+                  <div>
+                    <h3 style={{
+                      fontFamily: "'Libre Baskerville', serif",
+                      fontSize: "clamp(20px, 2.5vw, 30px)",
+                      fontWeight: 400,
+                      color: C.text,
+                      margin: "0 0 10px 0",
+                      lineHeight: 1.2,
+                    }}>
+                      {event.name}
+                    </h3>
+                    <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: 0, maxWidth: 520 }}>
+                      {event.description}
+                    </p>
+                  </div>
+
+                  {/* Category */}
+                  <div style={{ paddingTop: 8 }}>
+                    <CategoryPill>{event.category}</CategoryPill>
+                  </div>
+                </div>
+              </FadeIn>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ============================================================
+// 📅  /happening — SPECIAL / ONE-OFF EVENTS
+// ============================================================
+function CalendarSection({ events }) {
+  const categoryColors = { Community: C.lakeBlue, Activity: C.sunset, Media: C.driftwood, Market: C.sage };
+
+  return (
+    <section style={{ background: C.cream, padding: "100px 24px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <FadeIn>
+          <SectionLabel>Special Events · 2026</SectionLabel>
+          <SectionTitle>On the Calendar</SectionTitle>
+          <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.8, maxWidth: 480, margin: "0 0 64px 0" }}>
+            The big ones. Mark them down.
+          </p>
+        </FadeIn>
+
+        <div>
+          {events.map((event, i) => {
+            const color = categoryColors[event.category] || C.sage;
+            return (
+              <FadeIn key={event.id} delay={i * 80}>
+                <div style={{
+                  display: "grid",
+                  gridTemplateColumns: "260px 1fr",
+                  gap: "0 80px",
+                  alignItems: "start",
+                  padding: "64px 0",
+                  borderBottom: i < events.length - 1 ? `1px solid ${C.sand}` : "none",
+                }}>
+                  {/* Date — large editorial */}
+                  <div>
+                    <div style={{
+                      fontFamily: "'Libre Baskerville', serif",
+                      fontSize: "clamp(30px, 4vw, 52px)",
+                      fontWeight: 400,
+                      color: C.driftwood,
+                      lineHeight: 1.1,
+                      marginBottom: 6,
+                    }}>
+                      {event.date.replace(" 2026", "")}
+                    </div>
+                    <div style={{
+                      fontFamily: "'Libre Franklin', sans-serif",
+                      fontSize: 11, fontWeight: 600, letterSpacing: 3,
+                      textTransform: "uppercase", color: C.textMuted,
+                    }}>
+                      2026
+                    </div>
+                  </div>
+
+                  {/* Event */}
+                  <div>
+                    <CategoryPill>{event.category}</CategoryPill>
+                    <h2 style={{
+                      fontFamily: "'Libre Baskerville', serif",
+                      fontSize: "clamp(24px, 3.5vw, 44px)",
+                      fontWeight: 400,
+                      color: C.text,
+                      margin: "18px 0 14px 0",
+                      lineHeight: 1.1,
+                    }}>
+                      {event.name}
+                    </h2>
+                    <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.8, margin: "0 0 16px 0", maxWidth: 500 }}>
+                      {event.description}
+                    </p>
+                    {event.time && (
+                      <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color }}>
+                        {event.time}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </FadeIn>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ============================================================
+// 🎬  /happening — VIDEO SECTION
+// ============================================================
+function VideoMeta({ video }) {
+  return (
+    <div>
+      <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 10 }}>
+        <CategoryPill>{video.category}</CategoryPill>
+        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.3)", letterSpacing: 1 }}>
+          {video.date}
+        </span>
+      </div>
+      <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.cream, margin: "0 0 8px 0", lineHeight: 1.3 }}>
+        {video.title}
+      </h3>
+      <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", lineHeight: 1.65, margin: 0 }}>
+        {video.desc}
+      </p>
+    </div>
+  );
+}
+
+function VideoSection() {
+  return (
+    <section style={{ background: C.dusk, padding: "100px 24px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <FadeIn>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 16, marginBottom: 56 }}>
+            <div>
+              <SectionLabel light>Videos & Stories</SectionLabel>
+              <SectionTitle light>From the Lake</SectionTitle>
+            </div>
+            <Btn href="https://www.youtube.com/@HollyandtheYetipodcast" variant="outlineLight" small>Watch on YouTube →</Btn>
+          </div>
+        </FadeIn>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(460px, 1fr))", gap: 40 }}>
+          {VIDEOS.map((video, i) => (
+            <FadeIn key={video.id} delay={i * 80}>
+              {video.youtubeId ? (
+                <div>
+                  <div style={{ position: "relative", paddingTop: "56.25%", marginBottom: 20, borderRadius: 8, overflow: "hidden" }}>
+                    <iframe
+                      src={`https://www.youtube.com/embed/${video.youtubeId}`}
+                      style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                  <VideoMeta video={video} />
+                </div>
+              ) : (
+                <a href="https://www.youtube.com/@HollyandtheYetipodcast" target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "block" }}>
+                  {/* Placeholder thumbnail */}
+                  <div
+                    style={{
+                      position: "relative",
+                      paddingTop: "56.25%",
+                      background: `linear-gradient(135deg, ${C.night} 0%, ${C.lakeDark} 100%)`,
+                      borderRadius: 8,
+                      overflow: "hidden",
+                      marginBottom: 20,
+                      transition: "opacity 0.2s",
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.opacity = "0.78"}
+                    onMouseLeave={e => e.currentTarget.style.opacity = "1"}
+                  >
+                    <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <div style={{
+                        width: 64, height: 64, borderRadius: "50%",
+                        background: "rgba(255,255,255,0.12)",
+                        border: "1.5px solid rgba(255,255,255,0.25)",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        fontSize: 22, color: C.cream, paddingLeft: 5,
+                      }}>
+                        ▶
+                      </div>
+                    </div>
+                    <div style={{
+                      position: "absolute", top: 14, right: 14,
+                      background: `${C.sunset}DD`, color: C.cream,
+                      fontFamily: "'Libre Franklin', sans-serif",
+                      fontSize: 9, fontWeight: 700, letterSpacing: 2.5,
+                      textTransform: "uppercase", padding: "5px 12px", borderRadius: 3,
+                    }}>
+                      Coming Soon
+                    </div>
+                  </div>
+                  <VideoMeta video={video} />
+                </a>
+              )}
+            </FadeIn>
+          ))}
+        </div>
+
+        <FadeIn delay={300}>
+          <p style={{ fontSize: 12, color: "rgba(255,255,255,0.2)", fontFamily: "'Libre Franklin', sans-serif", textAlign: "center", marginTop: 48, letterSpacing: 0.5 }}>
+            Add real YouTube video IDs to the VIDEOS array in App.jsx to embed live content
+          </p>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+// ============================================================
+// 📅  /happening — SUBMIT CTA
+// ============================================================
+function HappeningSubmitCTA() {
+  return (
+    <div style={{ background: C.lakeDark, padding: "80px 24px", textAlign: "center" }}>
+      <FadeIn>
+        <SectionLabel light>Get Involved</SectionLabel>
+        <h3 style={{
+          fontFamily: "'Libre Baskerville', serif",
+          fontSize: "clamp(24px, 4vw, 40px)",
+          fontWeight: 400, color: C.cream, margin: "0 0 16px 0",
+        }}>
+          Have an event to share?
+        </h3>
+        <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", margin: "0 0 36px 0", lineHeight: 1.75, maxWidth: 420, marginLeft: "auto", marginRight: "auto" }}>
+          Free community calendar listings. Submit your event and we'll get it listed within 48 hours.
+        </p>
+        <Btn href="/#submit" variant="sunset">Submit Your Event</Btn>
+      </FadeIn>
+    </div>
   );
 }
 
@@ -1442,7 +1816,7 @@ function Footer({ scrollTo }) {
 // ============================================================
 // 🧭  NAVBAR
 // ============================================================
-function Navbar({ activeSection, scrollTo }) {
+function Navbar({ activeSection, scrollTo, isSubPage = false }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
 
@@ -1463,6 +1837,14 @@ function Navbar({ activeSection, scrollTo }) {
 
   const handleNavClick = (id) => {
     setMenuOpen(false);
+    if (id === "happening") {
+      window.location.href = "/happening";
+      return;
+    }
+    if (isSubPage) {
+      window.location.href = "/#" + id;
+      return;
+    }
     scrollTo(id);
   };
 
@@ -1607,9 +1989,34 @@ function Navbar({ activeSection, scrollTo }) {
 }
 
 // ============================================================
-// 🌐  APP ROOT
+// 📅  /happening — FULL PAGE
 // ============================================================
-export default function App() {
+function HappeningPage() {
+  const weeklyEvents = EVENTS.filter(e => e.date.toLowerCase().startsWith("every"));
+  const calendarEvents = EVENTS.filter(e => !e.date.toLowerCase().startsWith("every"));
+  const subScrollTo = (id) => { window.location.href = "/#" + id; };
+
+  return (
+    <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+      />
+      <Navbar activeSection="happening" scrollTo={subScrollTo} isSubPage={true} />
+      <HappeningHero />
+      <WeeklyEventsSection events={weeklyEvents} />
+      <CalendarSection events={calendarEvents} />
+      <VideoSection />
+      <HappeningSubmitCTA />
+      <Footer scrollTo={subScrollTo} />
+    </div>
+  );
+}
+
+// ============================================================
+// 🏠  HOME PAGE
+// ============================================================
+function HomePage() {
   const [activeSection, setActiveSection] = useState("home");
 
   const scrollTo = (id) => {
@@ -1630,12 +2037,10 @@ export default function App() {
 
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
-      {/* Google Fonts */}
       <link
         href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap"
         rel="stylesheet"
       />
-
       <Navbar activeSection={activeSection} scrollTo={scrollTo} />
       <Hero scrollTo={scrollTo} />
       <NewsletterBar />
@@ -1648,5 +2053,19 @@ export default function App() {
       <AboutSection />
       <Footer scrollTo={scrollTo} />
     </div>
+  );
+}
+
+// ============================================================
+// 🌐  APP ROOT
+// ============================================================
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/happening" element={<HappeningPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
