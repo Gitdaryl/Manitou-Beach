@@ -355,7 +355,7 @@ function Btn({ children, onClick, href, variant = "primary", small = false }) {
   );
 }
 
-function CategoryPill({ children }) {
+function CategoryPill({ children, dark = false }) {
   return (
     <span style={{
       display: "inline-block",
@@ -364,9 +364,9 @@ function CategoryPill({ children }) {
       fontWeight: 700,
       letterSpacing: 2,
       textTransform: "uppercase",
-      color: C.sageDark,
-      background: `${C.sage}18`,
-      border: `1px solid ${C.sage}30`,
+      color: dark ? "rgba(255,255,255,0.65)" : C.sageDark,
+      background: dark ? "rgba(122,142,114,0.22)" : `${C.sage}18`,
+      border: `1px solid ${dark ? "rgba(122,142,114,0.4)" : `${C.sage}30`}`,
       padding: "4px 10px",
       borderRadius: 3,
     }}>
@@ -1213,7 +1213,7 @@ function BusinessDirectory() {
               <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 3.5, textTransform: "uppercase", color: C.sunset, marginBottom: 20, fontWeight: 700 }}>
                 ★ Featured Partners
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 20, alignItems: "stretch" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 20, alignItems: "start" }}>
                 {featured.map(b => (
                   <FeaturedBusinessCard key={b.id} business={b} />
                 ))}
@@ -1301,7 +1301,7 @@ function FeaturedBusinessCard({ business }) {
         borderRadius: 12, padding: "28px",
         border: "1px solid rgba(255,255,255,0.07)",
         transition: "transform 0.2s, border-color 0.2s",
-        display: "flex", flexDirection: "column", height: "100%",
+        display: "flex", flexDirection: "column",
       }}
       onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.borderColor = `${color}50`; }}
       onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.07)"; }}
@@ -1309,7 +1309,7 @@ function FeaturedBusinessCard({ business }) {
       <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunset, marginBottom: 14 }}>
         ★ Featured Partner
       </div>
-      <CategoryPill>{business.category}</CategoryPill>
+      <CategoryPill dark>{business.category}</CategoryPill>
       <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.cream, margin: "12px 0 10px 0", lineHeight: 1.25 }}>
         {business.name}
       </h3>
