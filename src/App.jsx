@@ -1,37 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 
 // ============================================================
-// ✏️  CONFIGURABLE CONTENT — Swap these weekly
+// ✏️  CONFIGURABLE CONTENT — manage hero events via Notion
 // ============================================================
-
-/**
- * HERO MODE:
- *   "default"  → standard branding hero
- *   "event"    → featured event takeover
- *   "video"    → video background (set videoUrl below)
- */
-const HERO_MODE = "event";
-
-const FEATURED_EVENT = {
-  active: true,
-  eyebrow: "Coming Up",
-  name: "Devils Lake Boat Parade & Fireworks",
-  date: "July 4th, 2026",
-  description:
-    "Join us for the annual Independence Day celebration on Devils Lake. Decorated boats, live music at the village, and the biggest fireworks show in Lenawee County.",
-  cta: "See All Events",
-  ctaLink: "#happening",
-};
-
-const FEATURED_BUSINESS = {
-  name: "Rusty Anchor Bar & Grill",
-  category: "Food & Drink",
-  tagline: "Cold beer, lake views, and the best fish fry in the Irish Hills.",
-  url: "#businesses",
-  badge: "Featured This Week",
-};
-
-const HERO_VIDEO_URL = ""; // paste a YouTube embed URL or MP4 link here if HERO_MODE = "video"
 
 // ============================================================
 // 🎨  DESIGN TOKENS
@@ -291,152 +262,105 @@ function CategoryPill({ children }) {
 // ============================================================
 function Hero({ scrollTo }) {
   const [loaded, setLoaded] = useState(false);
-  useEffect(() => { setTimeout(() => setLoaded(true), 100); }, []);
+  const [heroEvent, setHeroEvent] = useState(null);
+  const [heroReady, setHeroReady] = useState(false);
 
-  // Shared overlay gradient
-  const overlay = {
-    position: "absolute", inset: 0,
-    background: "linear-gradient(170deg, rgba(26,40,48,0.72) 0%, rgba(45,59,69,0.55) 50%, rgba(26,40,48,0.8) 100%)",
-    zIndex: 1,
-  };
+  useEffect(() => {
+    setTimeout(() => setLoaded(true), 100);
+    // Fetch active hero event from Notion
+    fetch("/api/hero")
+      .then(r => r.json())
+      .then(data => {
+        setHeroEvent(data.event || null);
+        setHeroReady(true);
+      })
+      .catch(() => setHeroReady(true));
+  }, []);
 
-  if (HERO_MODE === "event" && FEATURED_EVENT.active) {
+  const scrollIndicator = (
+    <div style={{
+      position: "absolute", bottom: 36, left: "50%", transform: "translateX(-50%)",
+      zIndex: 2, display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
+    }}>
+      <div style={{ width: 1, height: 48, background: "rgba(255,255,255,0.2)" }} />
+      <div style={{ fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif" }}>
+        Scroll
+      </div>
+    </div>
+  );
+
+  // ── EVENT HERO ──
+  if (heroReady && heroEvent) {
+    const bgStyle = heroEvent.imageUrl
+      ? { backgroundImage: `url(${heroEvent.imageUrl})`, backgroundSize: "cover", backgroundPosition: "center" }
+      : { background: `linear-gradient(135deg, ${C.night} 0%, ${C.lakeDark} 50%, ${C.dusk} 100%)` };
+
     return (
-      <section
-        id="home"
-        style={{
-          minHeight: "100vh",
-          display: "flex",
-          alignItems: "center",
-          position: "relative",
-          background: `linear-gradient(135deg, ${C.night} 0%, ${C.lakeDark} 50%, ${C.dusk} 100%)`,
-          overflow: "hidden",
-        }}
-      >
-        {/* Abstract water shimmer background */}
-        <div style={{
-          position: "absolute", inset: 0, zIndex: 0,
-          backgroundImage: `
-            radial-gradient(ellipse 80% 50% at 20% 60%, ${C.lakeBlue}25 0%, transparent 70%),
-            radial-gradient(ellipse 60% 40% at 80% 30%, ${C.sageDark}20 0%, transparent 60%),
-            radial-gradient(ellipse 100% 60% at 50% 100%, ${C.lakeDark}40 0%, transparent 60%)
-          `,
-        }} />
+      <section id="home" style={{ minHeight: "100vh", display: "flex", alignItems: "center", position: "relative", overflow: "hidden", ...bgStyle }}>
+        {/* Overlay */}
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(170deg, rgba(26,40,48,0.75) 0%, rgba(26,40,48,0.5) 50%, rgba(26,40,48,0.85) 100%)", zIndex: 1 }} />
 
         {/* Event badge */}
         <div style={{ position: "absolute", top: 100, right: 48, zIndex: 2, textAlign: "right" }}>
           <div style={{
-            display: "inline-block",
-            background: `${C.sunset}22`,
-            border: `1px solid ${C.sunset}50`,
-            borderRadius: 4,
-            padding: "6px 16px",
-            fontFamily: "'Libre Franklin', sans-serif",
-            fontSize: 11,
-            fontWeight: 700,
-            letterSpacing: 3,
-            textTransform: "uppercase",
-            color: C.sunsetLight,
+            display: "inline-block", background: `${C.sunset}22`, border: `1px solid ${C.sunset}50`,
+            borderRadius: 4, padding: "6px 16px", fontFamily: "'Libre Franklin', sans-serif",
+            fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunsetLight,
           }}>
-            {FEATURED_EVENT.eyebrow}
+            Coming Up
           </div>
         </div>
 
         <div style={{ position: "relative", zIndex: 2, maxWidth: 960, margin: "0 auto", padding: "120px 48px 80px" }}>
-          <div style={{
-            opacity: loaded ? 1 : 0,
-            transform: loaded ? "translateY(0)" : "translateY(30px)",
-            transition: "all 0.9s ease",
-          }}>
-            <div style={{
-              fontFamily: "'Libre Franklin', sans-serif",
-              fontSize: 11, letterSpacing: 5, textTransform: "uppercase",
-              color: "rgba(255,255,255,0.4)", marginBottom: 20,
-            }}>
+          <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? "translateY(0)" : "translateY(30px)", transition: "all 0.9s ease" }}>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 20 }}>
               Manitou Beach · Devils Lake, Michigan
             </div>
-            <h1 style={{
-              fontFamily: "'Libre Baskerville', serif",
-              fontSize: "clamp(36px, 6vw, 72px)",
-              fontWeight: 400,
-              color: C.cream,
-              lineHeight: 1.1,
-              margin: "0 0 12px 0",
-              maxWidth: 700,
-            }}>
-              {FEATURED_EVENT.name}
+            <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(36px, 6vw, 72px)", fontWeight: 400, color: C.cream, lineHeight: 1.1, margin: "0 0 12px 0", maxWidth: 700 }}>
+              {heroEvent.name}
             </h1>
-            <div style={{
-              fontFamily: "'Caveat', cursive",
-              fontSize: "clamp(18px, 2.5vw, 26px)",
-              color: C.sunsetLight,
-              margin: "0 0 24px 0",
-            }}>
-              {FEATURED_EVENT.date}
+            <div style={{ fontFamily: "'Caveat', cursive", fontSize: "clamp(18px, 2.5vw, 26px)", color: C.sunsetLight, margin: "0 0 24px 0" }}>
+              {new Date(heroEvent.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
             </div>
-            <p style={{
-              fontSize: 17,
-              color: "rgba(255,255,255,0.65)",
-              lineHeight: 1.75,
-              maxWidth: 560,
-              margin: "0 0 40px 0",
-            }}>
-              {FEATURED_EVENT.description}
-            </p>
+            {heroEvent.tagline && (
+              <p style={{ fontSize: 17, color: "rgba(255,255,255,0.65)", lineHeight: 1.75, maxWidth: 560, margin: "0 0 40px 0" }}>
+                {heroEvent.tagline}
+              </p>
+            )}
             <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-              <Btn href={FEATURED_EVENT.ctaLink} variant="sunset">{FEATURED_EVENT.cta}</Btn>
+              <Btn href="#happening" variant="sunset">See All Events</Btn>
               <Btn onClick={() => scrollTo("businesses")} variant="outlineLight">Explore the Community</Btn>
             </div>
           </div>
         </div>
-
-        {/* Scroll indicator */}
-        <div style={{
-          position: "absolute", bottom: 36, left: "50%", transform: "translateX(-50%)",
-          zIndex: 2, display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
-        }}>
-          <div style={{ width: 1, height: 48, background: "rgba(255,255,255,0.2)" }} />
-          <div style={{ fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif" }}>
-            Scroll
-          </div>
-        </div>
+        {scrollIndicator}
       </section>
     );
   }
 
-  // Default hero
+  // ── DEFAULT HERO ──
   return (
-    <section
-      id="home"
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        position: "relative",
-        background: `linear-gradient(160deg, ${C.night} 0%, ${C.lakeDark} 60%, ${C.dusk} 100%)`,
-        overflow: "hidden",
-      }}
-    >
-      <div style={{
-        position: "absolute", inset: 0, zIndex: 0,
-        backgroundImage: `
-          radial-gradient(ellipse 70% 50% at 10% 70%, ${C.lakeBlue}30 0%, transparent 65%),
-          radial-gradient(ellipse 50% 60% at 90% 20%, ${C.sage}15 0%, transparent 60%)
-        `,
-      }} />
-      <div style={{ position: "relative", zIndex: 1, maxWidth: 960, margin: "0 auto", padding: "160px 48px 120px" }}>
+    <section id="home" style={{ minHeight: "100vh", display: "flex", alignItems: "center", position: "relative", overflow: "hidden" }}>
+      {/* Looping video background — drop public/videos/hero-default.mp4 to activate */}
+      <video
+        autoPlay muted loop playsInline
+        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }}
+      >
+        <source src="/videos/hero-default.mp4" type="video/mp4" />
+      </video>
+
+      {/* Fallback color behind video (shows until video loads or if no video) */}
+      <div style={{ position: "absolute", inset: 0, background: `linear-gradient(160deg, ${C.night} 0%, ${C.lakeDark} 60%, ${C.dusk} 100%)`, zIndex: 0 }} />
+
+      {/* Overlay */}
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(170deg, rgba(26,40,48,0.6) 0%, rgba(26,40,48,0.35) 50%, rgba(26,40,48,0.75) 100%)", zIndex: 1 }} />
+
+      <div style={{ position: "relative", zIndex: 2, maxWidth: 960, margin: "0 auto", padding: "160px 48px 120px" }}>
         <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? "none" : "translateY(24px)", transition: "all 0.9s ease" }}>
           <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 24 }}>
             Welcome to
           </div>
-          <h1 style={{
-            fontFamily: "'Libre Baskerville', serif",
-            fontSize: "clamp(48px, 8vw, 96px)",
-            fontWeight: 400,
-            color: C.cream,
-            lineHeight: 1.0,
-            margin: "0 0 16px 0",
-          }}>
+          <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(48px, 8vw, 96px)", fontWeight: 400, color: C.cream, lineHeight: 1.0, margin: "0 0 16px 0" }}>
             Manitou Beach
           </h1>
           <div style={{ fontFamily: "'Caveat', cursive", fontSize: "clamp(20px, 3vw, 32px)", color: C.sunsetLight, marginBottom: 30 }}>
@@ -451,6 +375,7 @@ function Hero({ scrollTo }) {
           </div>
         </div>
       </div>
+      {scrollIndicator}
     </section>
   );
 }
