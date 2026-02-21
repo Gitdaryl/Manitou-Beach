@@ -116,7 +116,52 @@ const BUSINESSES = [
     website: "https://yeti-signature-films.vercel.app",
     phone: "",
   },
+  {
+    id: 9,
+    name: "Irish Hills Plumbing & Heating",
+    category: "Home Services",
+    description: "Residential plumbing, heating, and HVAC for lakefront and year-round homes in the Devils Lake area.",
+    featured: false,
+    website: "",
+    phone: "",
+  },
+  {
+    id: 10,
+    name: "Devils Lake Dock & Deck",
+    category: "Home Services",
+    description: "Custom dock installation, deck building, and lakefront renovation for waterfront properties.",
+    featured: false,
+    website: "",
+    phone: "",
+  },
+  {
+    id: 11,
+    name: "Lenawee Snow & Lawn",
+    category: "Home Services",
+    description: "Snow removal, salting, and seasonal lawn care for lake properties. Residential and commercial contracts.",
+    featured: false,
+    website: "",
+    phone: "",
+  },
+  {
+    id: 12,
+    name: "Irish Hills Landscaping",
+    category: "Home Services",
+    description: "Waterfront landscaping, seawall planting, and yard maintenance for Devils Lake properties.",
+    featured: false,
+    website: "",
+    phone: "",
+  },
 ];
+
+// Category → accent color mapping (used by directory + business rows)
+const CAT_COLORS = {
+  "Real Estate":    C.lakeBlue,
+  "Food & Drink":   C.sunset,
+  "Boating & Water": C.sage,
+  "Film & Video":   C.driftwood,
+  "Home Services":  C.sageDark,
+};
 
 // ============================================================
 // 📅  EVENTS DATA
@@ -1071,43 +1116,88 @@ function ExploreSection() {
 // 🏪  BUSINESS DIRECTORY
 // ============================================================
 function BusinessDirectory() {
-  const [filter, setFilter] = useState("All");
+  const [search, setSearch] = useState("");
+  const [activeCategory, setActiveCategory] = useState("All");
+
   const categories = ["All", ...Array.from(new Set(BUSINESSES.map(b => b.category)))];
-  const filtered = filter === "All" ? BUSINESSES : BUSINESSES.filter(b => b.category === filter);
+
+  const matchesSearch = (b) => {
+    const q = search.toLowerCase();
+    return !search ||
+      b.name.toLowerCase().includes(q) ||
+      b.description.toLowerCase().includes(q) ||
+      b.category.toLowerCase().includes(q);
+  };
+
+  const filtered = BUSINESSES.filter(b => {
+    const matchesCat = activeCategory === "All" || b.category === activeCategory;
+    return matchesCat && matchesSearch(b);
+  });
+
   const featured = filtered.filter(b => b.featured);
   const regular = filtered.filter(b => !b.featured);
+
+  // Group regular listings by category
+  const grouped = {};
+  regular.forEach(b => {
+    if (!grouped[b.category]) grouped[b.category] = [];
+    grouped[b.category].push(b);
+  });
 
   return (
     <section id="businesses" style={{ background: C.warmWhite, padding: "100px 24px" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+
+        {/* Header */}
         <FadeIn>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 24, marginBottom: 40 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 24, marginBottom: 32 }}>
             <div>
               <SectionLabel>The Directory</SectionLabel>
               <SectionTitle>Local Businesses</SectionTitle>
             </div>
             <Btn href="#submit" variant="outline" small>+ List Your Business (Free)</Btn>
           </div>
+        </FadeIn>
 
-          {/* Category filter */}
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 48 }}>
+        {/* Search bar */}
+        <FadeIn delay={60}>
+          <div style={{ position: "relative", marginBottom: 16 }}>
+            <div style={{ position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)", fontSize: 17, color: C.textMuted, pointerEvents: "none", lineHeight: 1 }}>
+              ⌕
+            </div>
+            <input
+              type="text"
+              placeholder="Search businesses, services, categories..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              style={{
+                width: "100%", padding: "14px 20px 14px 46px",
+                borderRadius: 8, border: `1.5px solid ${C.sand}`,
+                background: C.cream, fontFamily: "'Libre Franklin', sans-serif",
+                fontSize: 14, color: C.text, boxSizing: "border-box",
+                outline: "none", transition: "border-color 0.2s",
+              }}
+              onFocus={e => e.target.style.borderColor = C.sage}
+              onBlur={e => e.target.style.borderColor = C.sand}
+            />
+          </div>
+        </FadeIn>
+
+        {/* Category pills */}
+        <FadeIn delay={80}>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 52 }}>
             {categories.map(cat => (
               <button
                 key={cat}
-                onClick={() => setFilter(cat)}
+                onClick={() => setActiveCategory(cat)}
                 style={{
                   fontFamily: "'Libre Franklin', sans-serif",
-                  fontSize: 12,
-                  fontWeight: 600,
-                  letterSpacing: 1,
-                  textTransform: "uppercase",
-                  padding: "7px 16px",
-                  borderRadius: 4,
-                  border: `1.5px solid ${filter === cat ? C.sage : C.sand}`,
-                  background: filter === cat ? C.sage : "transparent",
-                  color: filter === cat ? C.cream : C.textMuted,
-                  cursor: "pointer",
-                  transition: "all 0.2s",
+                  fontSize: 12, fontWeight: 600, letterSpacing: 1,
+                  textTransform: "uppercase", padding: "7px 16px", borderRadius: 4,
+                  border: `1.5px solid ${activeCategory === cat ? (CAT_COLORS[cat] || C.sage) : C.sand}`,
+                  background: activeCategory === cat ? (CAT_COLORS[cat] || C.sage) : "transparent",
+                  color: activeCategory === cat ? C.cream : C.textMuted,
+                  cursor: "pointer", transition: "all 0.2s",
                 }}
               >
                 {cat}
@@ -1116,60 +1206,83 @@ function BusinessDirectory() {
           </div>
         </FadeIn>
 
-        {/* Featured listings */}
+        {/* Featured listings — editorial dark cards */}
         {featured.length > 0 && (
-          <div style={{ marginBottom: 48 }}>
-            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 3, textTransform: "uppercase", color: C.sunset, marginBottom: 20, fontWeight: 700 }}>
-              ★ Featured Listings
+          <FadeIn delay={100}>
+            <div style={{ marginBottom: 60 }}>
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 3.5, textTransform: "uppercase", color: C.sunset, marginBottom: 20, fontWeight: 700 }}>
+                ★ Featured Partners
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 20 }}>
+                {featured.map((b, i) => (
+                  <FadeIn key={b.id} delay={i * 60}>
+                    <FeaturedBusinessCard business={b} />
+                  </FadeIn>
+                ))}
+              </div>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 24 }}>
-              {featured.map((b, i) => (
-                <FadeIn key={b.id} delay={i * 70}>
-                  <BusinessCard business={b} featured />
-                </FadeIn>
-              ))}
+          </FadeIn>
+        )}
+
+        {/* Directory list — grouped by category */}
+        {Object.entries(grouped).map(([category, businesses]) => (
+          <FadeIn key={category} delay={120}>
+            <div style={{ marginBottom: 40 }}>
+              {/* Category group header */}
+              <div style={{ display: "flex", alignItems: "center", gap: 14, margin: "0 0 2px 0" }}>
+                <div style={{
+                  fontFamily: "'Libre Franklin', sans-serif",
+                  fontSize: 10, fontWeight: 700, letterSpacing: 3.5,
+                  textTransform: "uppercase",
+                  color: CAT_COLORS[category] || C.textMuted,
+                  whiteSpace: "nowrap",
+                }}>
+                  {category}
+                </div>
+                <div style={{ flex: 1, height: 1, background: C.sand }} />
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted }}>
+                  {businesses.length}
+                </div>
+              </div>
+              {businesses.map(b => <BusinessRow key={b.id} business={b} />)}
             </div>
+          </FadeIn>
+        ))}
+
+        {/* No results */}
+        {filtered.length === 0 && (
+          <div style={{ textAlign: "center", padding: "64px 24px" }}>
+            <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.text, marginBottom: 8 }}>
+              No results for "{search}"
+            </div>
+            <div style={{ fontSize: 14, color: C.textMuted, marginBottom: 24 }}>Try a different search or browse all categories</div>
+            <button
+              onClick={() => { setSearch(""); setActiveCategory("All"); }}
+              style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 600, padding: "9px 22px", borderRadius: 4, border: `1.5px solid ${C.sand}`, background: "transparent", color: C.textMuted, cursor: "pointer" }}
+            >
+              Clear search
+            </button>
           </div>
         )}
 
-        {/* Regular listings */}
-        {regular.length > 0 && (
-          <div>
-            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 3, textTransform: "uppercase", color: C.textMuted, marginBottom: 20, fontWeight: 600 }}>
-              Community Members
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 20 }}>
-              {regular.map((b, i) => (
-                <FadeIn key={b.id} delay={i * 60}>
-                  <BusinessCard business={b} />
-                </FadeIn>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Featured upsell CTA */}
+        {/* Upgrade CTA */}
         <FadeIn delay={200}>
           <div style={{
-            marginTop: 56,
+            marginTop: 64,
             background: `linear-gradient(135deg, ${C.dusk} 0%, ${C.lakeDark} 100%)`,
-            borderRadius: 12,
-            padding: "40px 40px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            flexWrap: "wrap",
-            gap: 24,
+            borderRadius: 12, padding: "40px",
+            display: "flex", justifyContent: "space-between",
+            alignItems: "center", flexWrap: "wrap", gap: 24,
           }}>
             <div>
-              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 4, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 10 }}>
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 4, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 10 }}>
                 Get Noticed
               </div>
               <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(20px, 3vw, 28px)", color: C.cream, margin: "0 0 8px 0", fontWeight: 400 }}>
                 Upgrade to a Featured Listing
               </h3>
               <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", margin: 0, maxWidth: 400, lineHeight: 1.7 }}>
-                Get a premium slot at the top of the directory, newsletter placement, and a business highlight video from Holly & The Yeti.
+                Top-of-directory placement, newsletter inclusion, and a business spotlight video from Holly & The Yeti.
               </p>
             </div>
             <Btn href="#submit" variant="sunset">Upgrade Your Listing</Btn>
@@ -1180,44 +1293,89 @@ function BusinessDirectory() {
   );
 }
 
-function BusinessCard({ business, featured = false }) {
+// Featured business — editorial dark card
+function FeaturedBusinessCard({ business }) {
+  const color = CAT_COLORS[business.category] || C.sage;
   return (
-    <div style={{
-      background: C.cream,
-      border: `1px solid ${featured ? C.sunset + "40" : C.sand}`,
-      borderRadius: 10,
-      overflow: "hidden",
-      transition: "transform 0.2s, box-shadow 0.2s",
-      position: "relative",
-    }}
-      onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 8px 28px rgba(0,0,0,0.08)"; }}
-      onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
+    <div
+      style={{
+        background: `linear-gradient(145deg, ${C.dusk} 0%, ${C.night} 100%)`,
+        borderRadius: 12, padding: "28px",
+        border: "1px solid rgba(255,255,255,0.07)",
+        transition: "transform 0.2s, border-color 0.2s",
+        display: "flex", flexDirection: "column", height: "100%",
+      }}
+      onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.borderColor = `${color}50`; }}
+      onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.07)"; }}
     >
-      {featured && (
-        <div style={{ height: 4, background: `linear-gradient(90deg, ${C.sunset}, ${C.sunsetLight})` }} />
-      )}
-      <div style={{ padding: "22px 22px 24px" }}>
-        {featured && (
-          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 2.5, textTransform: "uppercase", color: C.sunset, marginBottom: 10 }}>
-            ★ Featured
-          </div>
-        )}
-        <CategoryPill>{business.category}</CategoryPill>
-        <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: featured ? 18 : 16, fontWeight: 700, color: C.text, margin: "10px 0 8px 0" }}>
-          {business.name}
-        </h3>
-        <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.65, margin: "0 0 18px 0" }}>
-          {business.description}
-        </p>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span style={{ fontSize: 12, color: C.textMuted }}>{business.phone}</span>
-          <a href={business.website} target="_blank" rel="noopener noreferrer" style={{
-            fontFamily: "'Libre Franklin', sans-serif",
-            fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase",
-            color: C.sage, textDecoration: "none",
-          }}>Visit →</a>
-        </div>
+      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunset, marginBottom: 14 }}>
+        ★ Featured Partner
       </div>
+      <CategoryPill>{business.category}</CategoryPill>
+      <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.cream, margin: "12px 0 10px 0", lineHeight: 1.25 }}>
+        {business.name}
+      </h3>
+      <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", lineHeight: 1.7, margin: "0 0 20px 0", flex: 1 }}>
+        {business.description}
+      </p>
+      <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 16, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <span style={{ fontSize: 13, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif" }}>
+          {business.phone}
+        </span>
+        {business.website && (
+          <a href={business.website} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color, textDecoration: "none" }}>
+            Visit →
+          </a>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Regular business — compact list row
+function BusinessRow({ business }) {
+  const color = CAT_COLORS[business.category] || C.sage;
+  return (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "10px 1fr auto",
+        gap: "0 20px",
+        alignItems: "center",
+        padding: "15px 10px",
+        borderBottom: `1px solid ${C.sand}`,
+        borderLeft: "3px solid transparent",
+        marginLeft: -13,
+        paddingLeft: 10,
+        transition: "all 0.18s",
+        borderRadius: "0 4px 4px 0",
+      }}
+      onMouseEnter={e => { e.currentTarget.style.borderLeftColor = color; e.currentTarget.style.background = `${color}08`; }}
+      onMouseLeave={e => { e.currentTarget.style.borderLeftColor = "transparent"; e.currentTarget.style.background = "transparent"; }}
+    >
+      {/* Category dot */}
+      <div style={{ width: 8, height: 8, borderRadius: "50%", background: color, flexShrink: 0 }} />
+
+      {/* Name + phone */}
+      <div style={{ display: "flex", alignItems: "baseline", gap: 16, minWidth: 0, flexWrap: "wrap" }}>
+        <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: C.text, fontWeight: 400 }}>
+          {business.name}
+        </span>
+        {business.phone && (
+          <span style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", whiteSpace: "nowrap" }}>
+            {business.phone}
+          </span>
+        )}
+      </div>
+
+      {/* Visit link or dash */}
+      {business.website ? (
+        <a href={business.website} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sage, textDecoration: "none", whiteSpace: "nowrap" }}>
+          Visit →
+        </a>
+      ) : (
+        <span style={{ fontSize: 13, color: C.sand }}>—</span>
+      )}
     </div>
   );
 }
