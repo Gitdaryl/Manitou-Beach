@@ -501,48 +501,102 @@ function HappeningSection() {
     Media: C.driftwood,
   };
 
+  const featured = EVENTS[0];
+  const rest = EVENTS.slice(1);
+
   return (
     <section id="happening" style={{ background: C.warmWhite, padding: "100px 24px" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
         <FadeIn>
-          <SectionLabel>Events & News</SectionLabel>
-          <SectionTitle>What's Happening</SectionTitle>
-          <p style={{ fontSize: 16, color: C.textLight, maxWidth: 480, margin: "0 0 56px 0", lineHeight: 1.75 }}>
-            From boat parades to farmers markets — everything going on at Manitou Beach and Devils Lake.
-          </p>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 16, marginBottom: 40 }}>
+            <div>
+              <SectionLabel>Events & News</SectionLabel>
+              <SectionTitle>What's Happening</SectionTitle>
+            </div>
+            <Btn href="#submit" variant="outline" small>+ Submit an Event</Btn>
+          </div>
         </FadeIn>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 24 }}>
-          {EVENTS.map((event, i) => (
-            <FadeIn key={event.id} delay={i * 80}>
+        {/* Featured event — editorial hero card */}
+        <FadeIn delay={80}>
+          <div style={{
+            background: `linear-gradient(135deg, ${C.night} 0%, ${C.lakeDark} 100%)`,
+            borderRadius: 16,
+            overflow: "hidden",
+            marginBottom: 28,
+            position: "relative",
+            minHeight: 260,
+            display: "flex",
+            alignItems: "stretch",
+          }}>
+            {/* Category accent bar */}
+            <div style={{ position: "absolute", top: 0, left: 0, bottom: 0, width: 5, background: categoryColors[featured.category] || C.sage }} />
+
+            {/* Content */}
+            <div style={{ flex: 1, padding: "48px 52px 48px 60px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+              <CategoryPill>{featured.category}</CategoryPill>
+              <h2 style={{
+                fontFamily: "'Libre Baskerville', serif",
+                fontSize: "clamp(26px, 4vw, 46px)",
+                fontWeight: 400, color: C.cream,
+                margin: "16px 0 10px", lineHeight: 1.15, maxWidth: 620,
+              }}>
+                {featured.name}
+              </h2>
+              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: categoryColors[featured.category] || C.sunsetLight, marginBottom: 14 }}>
+                {featured.date}{featured.time && featured.time !== "Dusk" ? ` · ${featured.time}` : ""}
+              </div>
+              <p style={{ fontSize: 15, color: "rgba(255,255,255,0.55)", lineHeight: 1.75, maxWidth: 560, margin: 0 }}>
+                {featured.description}
+              </p>
+            </div>
+
+            {/* Ghost date — decorative */}
+            <div style={{
+              padding: "40px 52px 40px 0",
+              display: "flex", alignItems: "center",
+              userSelect: "none", flexShrink: 0,
+            }}>
+              <div style={{
+                fontFamily: "'Libre Baskerville', serif",
+                fontSize: "clamp(72px, 9vw, 130px)",
+                fontWeight: 700,
+                color: "rgba(255,255,255,0.04)",
+                lineHeight: 1,
+                textAlign: "right",
+                whiteSpace: "nowrap",
+              }}>
+                {featured.date.split(" ")[0]}
+              </div>
+            </div>
+          </div>
+        </FadeIn>
+
+        {/* Remaining events — compact 3-column grid */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(230px, 1fr))", gap: 18, marginBottom: 52 }}>
+          {rest.map((event, i) => (
+            <FadeIn key={event.id} delay={i * 60 + 160}>
               <div style={{
                 background: C.cream,
                 border: `1px solid ${C.sand}`,
-                borderRadius: 10,
+                borderRadius: 12,
                 overflow: "hidden",
                 transition: "transform 0.2s, box-shadow 0.2s",
+                height: "100%",
               }}
-                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 8px 28px rgba(0,0,0,0.08)"; }}
+                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 6px 24px rgba(0,0,0,0.07)"; }}
                 onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
               >
-                <div style={{
-                  height: 5,
-                  background: categoryColors[event.category] || C.sage,
-                }} />
-                <div style={{ padding: "22px 22px 26px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
-                    <CategoryPill>{event.category}</CategoryPill>
-                    <div style={{ fontFamily: "'Caveat', cursive", fontSize: 14, color: C.sunset, textAlign: "right" }}>
-                      {event.time}
-                    </div>
-                  </div>
-                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 700, color: C.text, margin: "0 0 6px 0", lineHeight: 1.3 }}>
-                    {event.name}
-                  </h3>
-                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.sage, fontWeight: 600, marginBottom: 10 }}>
+                <div style={{ height: 4, background: categoryColors[event.category] || C.sage }} />
+                <div style={{ padding: "18px 20px 22px" }}>
+                  <CategoryPill>{event.category}</CategoryPill>
+                  <div style={{ fontFamily: "'Caveat', cursive", fontSize: 19, color: categoryColors[event.category] || C.sunset, margin: "10px 0 4px" }}>
                     {event.date}
                   </div>
-                  <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.65, margin: 0 }}>
+                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, fontWeight: 700, color: C.text, margin: "0 0 8px 0", lineHeight: 1.35 }}>
+                    {event.name}
+                  </h3>
+                  <p style={{ fontSize: 12, color: C.textLight, lineHeight: 1.65, margin: 0 }}>
                     {event.description}
                   </p>
                 </div>
@@ -550,15 +604,6 @@ function HappeningSection() {
             </FadeIn>
           ))}
         </div>
-
-        <FadeIn delay={200}>
-          <div style={{ textAlign: "center", marginTop: 48 }}>
-            <p style={{ fontSize: 13, color: C.textMuted, marginBottom: 16 }}>
-              Have an event to share? Submit it free.
-            </p>
-            <Btn href="#submit" variant="outline">Submit Your Event</Btn>
-          </div>
-        </FadeIn>
       </div>
     </section>
   );
