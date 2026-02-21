@@ -1417,60 +1417,157 @@ function Navbar({ activeSection, scrollTo }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const solid = scrollY > 60;
+  // Close menu on resize to desktop
+  useEffect(() => {
+    const onResize = () => { if (window.innerWidth > 768) setMenuOpen(false); };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  const solid = scrollY > 60 || menuOpen;
+
+  const handleNavClick = (id) => {
+    setMenuOpen(false);
+    scrollTo(id);
+  };
 
   return (
-    <nav style={{
-      position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000,
-      padding: solid ? "10px 0" : "18px 0",
-      background: solid ? "rgba(250,246,239,0.97)" : "transparent",
-      backdropFilter: solid ? "blur(14px)" : "none",
-      borderBottom: solid ? `1px solid ${C.sand}` : "none",
-      transition: "all 0.35s ease",
-    }}>
-      <div style={{ maxWidth: 1180, margin: "0 auto", padding: "0 28px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        {/* Logo */}
-        <div style={{ cursor: "pointer" }} onClick={() => scrollTo("home")}>
-          <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 700, color: solid ? C.dusk : C.cream, transition: "color 0.35s" }}>
-            Manitou Beach
+    <>
+      <nav style={{
+        position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000,
+        padding: solid ? "10px 0" : "18px 0",
+        background: solid ? "rgba(250,246,239,0.97)" : "transparent",
+        backdropFilter: solid ? "blur(14px)" : "none",
+        borderBottom: solid ? `1px solid ${C.sand}` : "none",
+        transition: "all 0.35s ease",
+      }}>
+        <div style={{ maxWidth: 1180, margin: "0 auto", padding: "0 28px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          {/* Logo */}
+          <div style={{ cursor: "pointer" }} onClick={() => handleNavClick("home")}>
+            <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 700, color: solid ? C.dusk : C.cream, transition: "color 0.35s" }}>
+              Manitou Beach
+            </div>
+            <div style={{ fontFamily: "'Caveat', cursive", fontSize: 12, color: solid ? C.sage : "rgba(255,255,255,0.5)", marginTop: -2, transition: "color 0.35s" }}>
+              on Devils Lake
+            </div>
           </div>
-          <div style={{ fontFamily: "'Caveat', cursive", fontSize: 12, color: solid ? C.sage : "rgba(255,255,255,0.5)", marginTop: -2, transition: "color 0.35s" }}>
-            on Devils Lake
-          </div>
-        </div>
 
-        {/* Desktop nav */}
-        <div style={{ display: "flex", gap: 2, alignItems: "center" }}>
-          {SECTIONS.filter(s => s.id !== "home").map(({ id, label }) => (
-            <button
-              key={id}
-              onClick={() => scrollTo(id)}
-              style={{
-                background: activeSection === id ? `${C.sage}18` : "transparent",
-                border: "none",
-                color: activeSection === id ? C.sageDark : (solid ? C.textLight : "rgba(255,255,255,0.7)"),
-                fontFamily: "'Libre Franklin', sans-serif",
-                fontSize: 12,
-                fontWeight: activeSection === id ? 700 : 500,
-                letterSpacing: 0.5,
-                padding: "7px 13px",
-                borderRadius: 6,
-                cursor: "pointer",
-                transition: "all 0.2s",
-                whiteSpace: "nowrap",
-              }}
-              onMouseEnter={e => { e.currentTarget.style.color = solid ? C.sageDark : C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
-              onMouseLeave={e => { e.currentTarget.style.color = activeSection === id ? C.sageDark : (solid ? C.textLight : "rgba(255,255,255,0.7)"); e.currentTarget.style.background = activeSection === id ? `${C.sage}18` : "transparent"; }}
-            >
-              {label}
-            </button>
-          ))}
-          <div style={{ marginLeft: 8 }}>
-            <Btn onClick={() => scrollTo("submit")} variant="primary" small>List Your Business</Btn>
+          {/* Desktop nav */}
+          <div style={{ display: "flex", gap: 2, alignItems: "center", "@media(max-width:768px)": { display: "none" } }} className="nav-desktop">
+            {SECTIONS.filter(s => s.id !== "home").map(({ id, label }) => (
+              <button
+                key={id}
+                onClick={() => handleNavClick(id)}
+                style={{
+                  background: activeSection === id ? `${C.sage}18` : "transparent",
+                  border: "none",
+                  color: activeSection === id ? C.sageDark : (solid ? C.textLight : "rgba(255,255,255,0.7)"),
+                  fontFamily: "'Libre Franklin', sans-serif",
+                  fontSize: 12,
+                  fontWeight: activeSection === id ? 700 : 500,
+                  letterSpacing: 0.5,
+                  padding: "7px 13px",
+                  borderRadius: 6,
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                  whiteSpace: "nowrap",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.color = solid ? C.sageDark : C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
+                onMouseLeave={e => { e.currentTarget.style.color = activeSection === id ? C.sageDark : (solid ? C.textLight : "rgba(255,255,255,0.7)"); e.currentTarget.style.background = activeSection === id ? `${C.sage}18` : "transparent"; }}
+              >
+                {label}
+              </button>
+            ))}
+            <div style={{ marginLeft: 8 }}>
+              <Btn onClick={() => handleNavClick("submit")} variant="primary" small>List Your Business</Btn>
+            </div>
           </div>
+
+          {/* Hamburger button — mobile only */}
+          <button
+            onClick={() => setMenuOpen(o => !o)}
+            className="nav-hamburger"
+            style={{
+              display: "none",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              padding: 8,
+              flexDirection: "column",
+              gap: 5,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            aria-label="Toggle menu"
+          >
+            {[0, 1, 2].map(i => (
+              <span key={i} style={{
+                display: "block",
+                width: 22,
+                height: 2,
+                background: solid ? C.dusk : C.cream,
+                borderRadius: 2,
+                transition: "all 0.25s ease",
+                transformOrigin: "center",
+                transform: menuOpen
+                  ? i === 0 ? "rotate(45deg) translate(5px, 5px)"
+                  : i === 2 ? "rotate(-45deg) translate(5px, -5px)"
+                  : "scaleX(0)"
+                  : "none",
+                opacity: menuOpen && i === 1 ? 0 : 1,
+              }} />
+            ))}
+          </button>
+        </div>
+      </nav>
+
+      {/* Mobile menu drawer */}
+      <div style={{
+        position: "fixed",
+        top: 0, left: 0, right: 0, bottom: 0,
+        zIndex: 999,
+        background: "rgba(250,246,239,0.98)",
+        backdropFilter: "blur(16px)",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 8,
+        transform: menuOpen ? "translateX(0)" : "translateX(100%)",
+        transition: "transform 0.35s ease",
+      }}>
+        {SECTIONS.filter(s => s.id !== "home").map(({ id, label }) => (
+          <button
+            key={id}
+            onClick={() => handleNavClick(id)}
+            style={{
+              background: "none",
+              border: "none",
+              fontFamily: "'Libre Baskerville', serif",
+              fontSize: 24,
+              fontWeight: 400,
+              color: activeSection === id ? C.sage : C.text,
+              cursor: "pointer",
+              padding: "12px 32px",
+              letterSpacing: 0.5,
+            }}
+          >
+            {label}
+          </button>
+        ))}
+        <div style={{ marginTop: 16 }}>
+          <Btn onClick={() => handleNavClick("submit")} variant="primary">List Your Business</Btn>
         </div>
       </div>
-    </nav>
+
+      {/* Responsive styles */}
+      <style>{`
+        @media (max-width: 768px) {
+          .nav-desktop { display: none !important; }
+          .nav-hamburger { display: flex !important; }
+        }
+      `}</style>
+    </>
   );
 }
 
