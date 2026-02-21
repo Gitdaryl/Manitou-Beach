@@ -569,12 +569,42 @@ function HappeningSection() {
 // ============================================================
 function ExploreSection() {
   const places = [
-    { icon: "⛵", name: "Devils Lake", desc: "600+ acres of water for boating, fishing, and kayaking. The party lake." },
-    { icon: "🏠", name: "Lighthouse Replica", desc: "The village's beloved icon. Photogenic and completely landlocked." },
-    { icon: "🌿", name: "Irish Hills", desc: "Rolling hills, hidden trails, and enough nature to justify the drive." },
-    { icon: "🍺", name: "Lake Town Nightlife", desc: "Year-round bars and restaurants with a dock-side state of mind." },
-    { icon: "🎣", name: "Fishing", desc: "Bass, pike, bluegill — and the occasional tall tale about the one that got away." },
-    { icon: "🏡", name: "Cottage Country", desc: "Weekend rentals, seasonal getaways, and the forever-home dream." },
+    {
+      icon: "⛵", name: "Devils Lake",
+      desc: "600+ acres of water for boating, fishing, and kayaking. The party lake.",
+      action: () => window.open("https://maps.google.com/?q=Devils+Lake+Manitou+Beach+MI", "_blank"),
+      actionLabel: "Open in Maps",
+    },
+    {
+      icon: "🏠", name: "Lighthouse Replica",
+      desc: "The village's beloved icon. Photogenic and completely landlocked.",
+      action: () => window.open("https://maps.google.com/?q=Manitou+Beach+Lighthouse+Replica+Michigan", "_blank"),
+      actionLabel: "Get Directions",
+    },
+    {
+      icon: "🌿", name: "Irish Hills",
+      desc: "Rolling hills, hidden trails, and enough nature to justify the drive.",
+      action: () => window.open("https://www.irishhills.com", "_blank"),
+      actionLabel: "Explore Irish Hills",
+    },
+    {
+      icon: "🍺", name: "Lake Town Nightlife",
+      desc: "Year-round bars and restaurants with a dock-side state of mind.",
+      action: () => document.getElementById("businesses")?.scrollIntoView({ behavior: "smooth" }),
+      actionLabel: "See Local Businesses",
+    },
+    {
+      icon: "🎣", name: "Fishing",
+      desc: "Bass, pike, bluegill — and the occasional tall tale about the one that got away.",
+      action: () => window.open("https://www.michigan.gov/dnr/managing-resources/fisheries", "_blank"),
+      actionLabel: "DNR Fishing Info",
+    },
+    {
+      icon: "🏡", name: "Cottage Country",
+      desc: "Weekend rentals, seasonal getaways, and the forever-home dream.",
+      action: () => document.getElementById("holly")?.scrollIntoView({ behavior: "smooth" }),
+      actionLabel: "Talk to Holly",
+    },
   ];
 
   return (
@@ -584,29 +614,30 @@ function ExploreSection() {
           <FadeIn>
             <div>
               <SectionLabel>The Area</SectionLabel>
-              <SectionTitle>Explore Manitou Beach</SectionTitle>
+              <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(28px, 4.5vw, 46px)", fontWeight: 400, color: C.text, margin: "0 0 18px 0", lineHeight: 1.2 }}>
+                Explore<br />Manitou Beach
+              </h2>
               <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.8, marginBottom: 32 }}>
                 Sitting on the shores of Devils Lake in the Michigan Irish Hills — there's more to explore here than the name implies. (Yes, we're aware there's no beach. We've all made peace with it.)
               </p>
-              <Btn onClick={() => {}} variant="dark">Get Directions</Btn>
+              <Btn onClick={() => window.open("https://maps.google.com/?q=Manitou+Beach+Michigan+49267", "_blank")} variant="dark">Get Directions</Btn>
             </div>
           </FadeIn>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             {places.map((p, i) => (
               <FadeIn key={i} delay={i * 60}>
-                <div style={{
-                  background: C.warmWhite,
-                  border: `1px solid ${C.sand}`,
-                  borderRadius: 10,
-                  padding: "20px 18px",
-                  transition: "all 0.2s",
-                }}
+                <div
+                  onClick={p.action}
+                  style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 10, padding: "20px 18px", transition: "all 0.2s", cursor: "pointer" }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = C.sage; e.currentTarget.style.transform = "translateY(-2px)"; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = C.sand; e.currentTarget.style.transform = "none"; }}
                 >
                   <div style={{ fontSize: 26, marginBottom: 8 }}>{p.icon}</div>
                   <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, fontWeight: 700, color: C.text, marginBottom: 5 }}>{p.name}</div>
-                  <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.6 }}>{p.desc}</div>
+                  <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.6, marginBottom: 10 }}>{p.desc}</div>
+                  <div style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, color: C.sage, textTransform: "uppercase" }}>
+                    {p.actionLabel} →
+                  </div>
                 </div>
               </FadeIn>
             ))}
