@@ -109,7 +109,7 @@ const BUSINESSES = [
   },
   {
     id: 8,
-    name: "Yeti Signature Films",
+    name: "Yeti Groove Media",
     category: "Film & Video",
     description: "Cinematic video production for businesses, events, and legacies. Where your story becomes a film.",
     featured: false,
@@ -1213,11 +1213,9 @@ function BusinessDirectory() {
               <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 3.5, textTransform: "uppercase", color: C.sunset, marginBottom: 20, fontWeight: 700 }}>
                 ★ Featured Partners
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 20 }}>
-                {featured.map((b, i) => (
-                  <FadeIn key={b.id} delay={i * 60}>
-                    <FeaturedBusinessCard business={b} />
-                  </FadeIn>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 20, alignItems: "stretch" }}>
+                {featured.map(b => (
+                  <FeaturedBusinessCard key={b.id} business={b} />
                 ))}
               </div>
             </div>
@@ -1368,10 +1366,14 @@ function BusinessRow({ business }) {
         )}
       </div>
 
-      {/* Visit link or dash */}
+      {/* Visit link, or claim prompt if no contact info */}
       {business.website ? (
         <a href={business.website} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sage, textDecoration: "none", whiteSpace: "nowrap" }}>
           Visit →
+        </a>
+      ) : !business.phone ? (
+        <a href="#submit" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: 1, color: C.driftwood, textDecoration: "none", whiteSpace: "nowrap", opacity: 0.7 }}>
+          Claim listing →
         </a>
       ) : (
         <span style={{ fontSize: 13, color: C.sand }}>—</span>
@@ -1461,7 +1463,7 @@ function HollyYetiSection() {
                 </a>
               ))}
 
-              {/* Yeti Signature Films callout */}
+              {/* Yeti Groove Media callout */}
               <div style={{
                 background: `${C.sunset}15`,
                 border: `1px solid ${C.sunset}35`,
@@ -1472,7 +1474,7 @@ function HollyYetiSection() {
                   Premium Service
                 </div>
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: C.cream, marginBottom: 6 }}>
-                  Yeti Signature Films
+                  Yeti Groove Media
                 </div>
                 <p style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", margin: "0 0 12px 0", lineHeight: 1.65 }}>
                   Cinematic storytelling for corporate and personal legacies. Starting from $25K.
@@ -2053,6 +2055,24 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
                 {label}
               </button>
             ))}
+            {/* Gallery external link */}
+            <a
+              href="https://photogallery.yetigroove.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                fontFamily: "'Libre Franklin', sans-serif",
+                fontSize: 12, fontWeight: 500, letterSpacing: 0.5,
+                padding: "7px 13px", borderRadius: 6,
+                color: solid ? C.textLight : "rgba(255,255,255,0.7)",
+                textDecoration: "none", transition: "all 0.2s",
+                whiteSpace: "nowrap",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.color = solid ? C.sageDark : C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
+              onMouseLeave={e => { e.currentTarget.style.color = solid ? C.textLight : "rgba(255,255,255,0.7)"; e.currentTarget.style.background = "transparent"; }}
+            >
+              Gallery ↗
+            </a>
             <div style={{ marginLeft: 8 }}>
               <Btn onClick={() => handleNavClick("submit")} variant="primary" small>List Your Business</Btn>
             </div>
@@ -2130,6 +2150,18 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
             {label}
           </button>
         ))}
+        <a
+          href="https://photogallery.yetigroove.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            fontFamily: "'Libre Baskerville', serif",
+            fontSize: 20, fontWeight: 400, color: C.textLight,
+            textDecoration: "none", padding: "10px 32px", display: "block",
+          }}
+        >
+          Gallery ↗
+        </a>
         <div style={{ marginTop: 16 }}>
           <Btn onClick={() => handleNavClick("submit")} variant="primary">List Your Business</Btn>
         </div>
