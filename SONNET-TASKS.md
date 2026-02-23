@@ -10,18 +10,61 @@
 
 ---
 
-## Task 1: Debug Event Submission
+## Task 1: Dynamic Hero Events (Notion-powered)
+**Priority: HIGH**
+
+The homepage hero should dynamically swap to promote upcoming key events, pulled from a Notion database.
+
+**How it works:**
+- Notion database: "Manitou Beach Hero Events"
+- Env vars already set: `NOTION_TOKEN_HERO`, `NOTION_DB_HERO`
+- Columns in Notion: `Event Name` (title), `Date` (date), `Tagline` (rich_text), checkbox column (likely "Active" — toggle to make it live), `Hero Image URL` (url), `Hero Video URL` (url)
+
+**Logic:**
+1. Create new API endpoint: `api/hero-event.js`
+   - Fetch from Notion using `NOTION_TOKEN_HERO` / `NOTION_DB_HERO`
+   - Filter: checkbox is checked AND date is within 14 days from now (or in the future)
+   - Return the single active hero event (or null if none active)
+   - Cache for 5 minutes (same pattern as `api/events.js`)
+2. In App.jsx `Hero` component:
+   - On mount, fetch `/api/hero-event`
+   - If an active hero event exists: swap in the event hero (event name as title, tagline as subtitle, hero image/video as background, CTA links to /happening or the event)
+   - If no active event: show the default hero (current behavior)
+   - Smooth crossfade transition between default and event hero
+3. After the event date passes AND checkbox is unchecked, the default hero returns automatically
+
+**User workflow in Notion:**
+1. Create a row: "Taste of the Irish Hills", date June 15, tagline "Farm-to-table dining on the lake", upload hero image
+2. Two weeks before: check the Active box → hero swaps on the live site
+3. After the event: uncheck the box (or it auto-expires based on date)
+
+---
+
+## Task 2: Debug Event Submission
 **Priority: HIGH**
 
 The event submission form (`/api/submit-event.js`) returns "something went wrong" when submitting.
 
-**Likely cause**: Missing Vercel env vars `NOTION_TOKEN_EVENTS` and/or `NOTION_DB_EVENTS`.
-- Check if the Notion database has matching property names: `Event Name` (title), `Category` (rich_text), `Email` (email), `Phone` (phone_number), `Description` (rich_text), `Time` (rich_text), `Location` (rich_text), `Event Date` (date), `Event URL` (url), `Image URL` (url)
-- The "Event URL" property was just added — it may not exist in the Notion database yet. If Notion rejects it, the whole submission fails.
-- Add a fallback: if `Event URL` property doesn't exist in Notion, drop it from the payload and retry
-- Tell the user what env vars need to be set in Vercel dashboard
+**Env vars are confirmed set** in Vercel: `NOTION_TOKEN_EVENTS` and `NOTION_DB_EVENTS`.
 
-**Also**: Does the `upload-image.js` endpoint work? It needs `BLOB_READ_WRITE_TOKEN` env var for @vercel/blob.
+**Most likely cause**: Notion database schema mismatch. The API sends these property names — they must match EXACTLY (case-sensitive) in the Notion events database:
+- `Event Name` — Title type
+- `Category` — Rich text
+- `Email` — Email type
+- `Phone` — Phone number type
+- `Description` — Rich text
+- `Time` — Rich text
+- `Location` — Rich text
+- `Event Date` — Date type
+- `Event URL` — URL type (**newly added — probably missing from Notion**)
+- `Image URL` — URL type (**may also be missing**)
+
+**Fix approach:**
+1. Add better error logging — return Notion's actual error message to help debug
+2. Make `Event URL` and `Image URL` properties optional/resilient — if Notion rejects them, retry without those fields
+3. Tell the user which Notion columns to add if missing
+
+**Also**: Does the `upload-image.js` endpoint work? It needs `BLOB_READ_WRITE_TOKEN` env var for @vercel/blob (confirmed set in Vercel).
 
 ---
 
@@ -141,15 +184,17 @@ When starting, run `ls public/images/` and `ls public/images/mens-club/ 2>/dev/n
 
 ---
 
-## Env Vars Needed in Vercel
-Remind user to check these are set:
-- `NOTION_TOKEN_BUSINESS` — for business submissions
-- `NOTION_DB_BUSINESS` — business database ID
-- `NOTION_TOKEN_EVENTS` — for event submissions
-- `NOTION_DB_EVENTS` — events database ID
-- `STRIPE_SECRET_KEY` — for featured listing checkout
-- `SITE_URL` — custom domain (e.g. `https://manitoubeach.com`) for Stripe redirects
-- `BLOB_READ_WRITE_TOKEN` — for Vercel Blob image uploads
+## Env Vars in Vercel (ALL CONFIRMED SET)
+All of these are already configured in Vercel:
+- `STRIPE_SECRET_KEY` — for featured listing checkout (added 14h ago)
+- `BLOB_READ_WRITE_TOKEN` — for Vercel Blob image uploads (added 2d ago)
+- `NOTION_TOKEN_HERO` — for hero event swap feature (added 3d ago)
+- `NOTION_DB_HERO` — hero events database ID (added 3d ago)
+- `NOTION_TOKEN_BUSINESS` — for business submissions (added 3d ago)
+- `NOTION_TOKEN_EVENTS` — for event submissions (added 3d ago)
+- `NOTION_DB_BUSINESS` — business database ID (added 3d ago)
+- `NOTION_DB_EVENTS` — events database ID (added 3d ago)
+- `SITE_URL` — **NOT YET SET** — needs to be added once custom domain is connected
 
 ---
 
