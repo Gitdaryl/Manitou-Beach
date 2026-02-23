@@ -203,6 +203,7 @@ const BUSINESSES = [
     category: "Food & Drink",
     description: "Family-owned lakeside restaurant known for their smoked entrees and a big menu full of options. Right on the shores of Devils Lake.",
     address: "110 Walnut St, Manitou Beach",
+    village: true,
     featured: true,
     logo: "/images/two_lakes_logo.jpg",
     website: "https://www.twolakestavern.com",
@@ -329,22 +330,70 @@ const BUSINESSES = [
   {
     id: 16,
     name: "Ang & Co",
-    category: "Food & Drink",
-    description: "Manitou Beach venue hosting satellite wine tastings for Chateau Fontaine (Leelanau Peninsula). A new way to explore Northern Michigan wines without leaving the lake.",
+    category: "Shopping & Gifts",
+    description: "Dirty sodas, satellite wine tasting (Chateau Fontaine, Leelanau Peninsula), custom sweatshirt and t-shirt printing, and curated gifts. A little bit of everything on Lakeview Blvd.",
+    address: "141 N. Lakeview Blvd., Manitou Beach",
+    village: true,
     featured: false,
     logo: "/images/ang_co_logo.png",
-    website: "",
-    phone: "",
+    website: "https://www.angandco.net",
+    phone: "(517) 547-6030",
   },
   {
     id: 17,
-    name: "Faust House",
-    category: "Food & Drink",
-    description: "Local venue representing Cherry Creek Cellars as a satellite tasting room. Brooklyn wines poured lakeside in Manitou Beach.",
+    name: "Faust House Scrap n Craft",
+    category: "Shopping & Gifts",
+    description: "Scrapbooking supplies, craft workshops, and satellite wine tasting (Cherry Creek Cellars). A creative hub in the heart of Manitou Beach village.",
+    address: "140 N Lakeview Blvd., Manitou Beach",
+    village: true,
     featured: false,
     logo: "/images/faust_house_logo.png",
-    website: "",
-    phone: "",
+    website: "https://fausthousescrapncraft.com",
+    phone: "(517) 403-1788",
+  },
+  {
+    id: 18,
+    name: "Devils Lake View Living",
+    category: "Shopping & Gifts",
+    description: "High-end fashion, curated home goods, and the iconic lighthouse replica out front. The anchor of Manitou Beach village — and a satellite wine tasting venue launching May 2026.",
+    address: "200 Devils Lake Hwy, Manitou Beach",
+    village: true,
+    featured: false,
+    website: "http://devilslakeviewliving.com",
+    phone: "(517) 252-5287",
+  },
+  {
+    id: 19,
+    name: "Devils Lake Inn",
+    category: "Stays & Lodging",
+    description: "Six stylish, modern apartments available year-round. Walking distance to the village shops, the lake, and everything Manitou Beach has to offer.",
+    address: "103 Walnut Street, Manitou Beach",
+    village: true,
+    featured: false,
+    website: "https://www.devilslakeinn.com",
+    phone: "(517) 252-5017",
+  },
+  {
+    id: 20,
+    name: "Michigan Gypsy",
+    category: "Shopping & Gifts",
+    description: "A gift boutique with personality — unique finds, local goods, and the kind of shop you stumble into and don't want to leave.",
+    address: "136 North Lakeview Blvd., Manitou Beach",
+    village: true,
+    featured: false,
+    website: "https://michigangypsy.com",
+    phone: "(517) 224-1984",
+  },
+  {
+    id: 21,
+    name: "Blackbird Cafe",
+    category: "Food & Drink",
+    description: "Everything handmade — including the coffee syrups. A from-scratch cafe in Manitou Beach village with pastries, specialty drinks, and a loyal following.",
+    address: "135 Devils Lake Hwy, Manitou Beach",
+    village: true,
+    featured: false,
+    website: "https://www.blackbirdcafedevils.com",
+    phone: "(567) 404-9655",
   },
 ];
 
@@ -354,6 +403,8 @@ const CAT_COLORS = {
   "Food & Drink":       C.sunset,
   "Boating & Water":    C.sage,
   "Breweries & Wineries": "#8B5E3C",
+  "Shopping & Gifts":   "#B07D62",
+  "Stays & Lodging":    C.lakeBlue,
   "Film & Video":       C.driftwood,
   "Home Services":      C.sageDark,
 };
@@ -1708,52 +1759,51 @@ function ExploreCard({ place, large = false, delay = 0 }) {
           backgroundImage: hasImage ? `url(${place.image})` : "none",
           backgroundSize: "cover",
           backgroundPosition: "center",
-          border: `1px solid ${large || hasImage ? "rgba(255,255,255,0.1)" : C.sand}`,
+          border: "none",
           borderRadius: 14,
-          padding: large ? "36px 32px" : "22px 20px",
+          padding: large ? "36px 32px" : "20px 18px",
           cursor: "pointer",
           height: "100%",
           display: "flex",
           flexDirection: "column",
           justifyContent: "flex-end",
-          minHeight: large ? 240 : hasImage ? 180 : "auto",
+          minHeight: large ? 260 : 170,
           position: "relative",
           overflow: "hidden",
+          boxShadow: large ? "0 12px 40px rgba(0,0,0,0.2)" : "0 4px 20px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04)",
         }}
       >
-        {/* Dark overlay for text readability on images */}
-        {hasImage && (
-          <div style={{
-            position: "absolute", inset: 0,
-            background: large
-              ? "linear-gradient(to top, rgba(10,18,24,0.85) 0%, rgba(10,18,24,0.3) 50%, rgba(10,18,24,0.1) 100%)"
-              : "linear-gradient(to top, rgba(10,18,24,0.82) 0%, rgba(10,18,24,0.25) 50%, rgba(10,18,24,0.05) 100%)",
-            borderRadius: 14,
-          }} />
-        )}
-        {!hasImage && (
-          <div style={{
-            position: "absolute", inset: 0,
-            background: large ? `linear-gradient(135deg, ${C.dusk} 0%, ${C.lakeDark} 100%)` : C.warmWhite,
-            borderRadius: 14,
-          }} />
-        )}
+        {/* Dark overlay for text readability */}
+        <div style={{
+          position: "absolute", inset: 0,
+          background: hasImage
+            ? (large
+              ? "linear-gradient(to top, rgba(10,18,24,0.88) 0%, rgba(10,18,24,0.35) 55%, rgba(10,18,24,0.08) 100%)"
+              : "linear-gradient(to top, rgba(10,18,24,0.88) 0%, rgba(10,18,24,0.35) 60%, rgba(10,18,24,0.05) 100%)")
+            : (large ? `linear-gradient(135deg, ${C.dusk} 0%, ${C.lakeDark} 100%)` : C.warmWhite),
+          borderRadius: 14,
+        }} />
         <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ fontSize: large ? 36 : 26, marginBottom: large ? 14 : 8 }}>{place.icon}</div>
+          {/* Only show icon on large cards */}
+          {large && <div style={{ fontSize: 36, marginBottom: 14 }}>{place.icon}</div>}
           <div style={{
             fontFamily: "'Libre Baskerville', serif",
-            fontSize: large ? 22 : 14, fontWeight: 700,
+            fontSize: large ? 22 : 15, fontWeight: 700,
             color: (large || hasImage) ? C.cream : C.text,
-            marginBottom: large ? 8 : 5,
+            marginBottom: 5,
           }}>{place.name}</div>
           <div style={{
             fontSize: large ? 14 : 12,
             color: (large || hasImage) ? "rgba(255,255,255,0.6)" : C.textMuted,
-            lineHeight: 1.6, marginBottom: large ? 16 : 10,
+            lineHeight: 1.55, marginBottom: large ? 16 : 10,
+            display: "-webkit-box",
+            WebkitLineClamp: large ? 4 : 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
           }}>{place.desc}</div>
           <div className="link-hover-underline" style={{
-            fontSize: 11, fontFamily: "'Libre Franklin', sans-serif",
-            fontWeight: 700, letterSpacing: 1,
+            fontSize: 10, fontFamily: "'Libre Franklin', sans-serif",
+            fontWeight: 700, letterSpacing: 1.2,
             color: C.sunsetLight, textTransform: "uppercase",
           }}>
             {place.actionLabel} →
@@ -1767,12 +1817,12 @@ function ExploreCard({ place, large = false, delay = 0 }) {
 function ExploreSection() {
   const places = [
     { icon: "⛵", name: "Devils Lake", desc: "600+ acres of water for boating, fishing, and kayaking. The party lake.", image: "/images/explore-devils-lake.jpg", action: () => window.open("https://maps.google.com/?q=Devils+Lake+Manitou+Beach+MI", "_blank"), actionLabel: "Open in Maps" },
-    { icon: "🏠", name: "Lighthouse Replica", desc: "The village's beloved icon. Photogenic and completely landlocked.", image: "/images/explore-lighthouse.jpg", action: () => window.open("https://maps.google.com/?q=Manitou+Beach+Lighthouse+Replica+Michigan", "_blank"), actionLabel: "Get Directions" },
+    { icon: "🏘️", name: "The Village", desc: "Boutique shops, a handmade cafe, wine tasting, and the lighthouse. The walkable heart of Manitou Beach.", image: "/images/explore-lighthouse.jpg", action: () => window.location.href = "/village", actionLabel: "Explore the Village" },
     { icon: "🌿", name: "Irish Hills", desc: "Rolling hills, hidden trails, and enough nature to justify the drive.", image: "/images/explore-Irish-hills.jpg", action: () => window.open("https://www.irishhills.com", "_blank"), actionLabel: "Explore Irish Hills" },
-    { icon: "🍺", name: "Lake Town Nightlife", desc: "Year-round bars and restaurants with a dock-side state of mind.", image: "/images/explore-nightlife.jpg", action: () => document.getElementById("businesses")?.scrollIntoView({ behavior: "smooth" }), actionLabel: "See Local Businesses" },
-    { icon: "🎣", name: "Fishing", desc: "Bass, pike, bluegill — and the occasional tall tale about the one that got away.", image: "/images/explore-fishing.jpg", action: () => window.open("https://www.michigan.gov/dnr/managing-resources/fisheries", "_blank"), actionLabel: "DNR Fishing Info" },
-    { icon: "🍷", name: "Breweries & Wineries", desc: "Chateau Aeronautique, Cherry Creek Cellars, Gypsy Blue — Michigan wine and craft beverages, right in the Irish Hills.", image: "/images/Explore-wineries.jpg", action: () => document.getElementById("businesses")?.scrollIntoView({ behavior: "smooth" }), actionLabel: "See Local Wineries" },
-    { icon: "🌊", name: "Round Lake", desc: "515 acres, 67 feet deep, and the quieter side of lake life. Our neighbors across the road — always have been, always will be.", image: "/images/explore-round-lake.jpg", action: () => window.location.href = "/round-lake", actionLabel: "Explore Round Lake" },
+    { icon: "🍺", name: "Nightlife", desc: "Year-round bars and restaurants with a dock-side state of mind.", image: "/images/explore-nightlife.jpg", action: () => document.getElementById("businesses")?.scrollIntoView({ behavior: "smooth" }), actionLabel: "See Businesses" },
+    { icon: "🎣", name: "Fishing", desc: "Bass, pike, bluegill, and walleye. Two lakes, twelve months of catching.", image: "/images/explore-fishing.jpg", action: () => window.open("https://www.michigan.gov/dnr/managing-resources/fisheries", "_blank"), actionLabel: "Fishing Info" },
+    { icon: "🍷", name: "Wineries", desc: "Michigan wine and craft beverages, right in the Irish Hills.", image: "/images/Explore-wineries.jpg", action: () => document.getElementById("businesses")?.scrollIntoView({ behavior: "smooth" }), actionLabel: "See Wineries" },
+    { icon: "🌊", name: "Round Lake", desc: "515 acres of clear water. The quieter side of lake life.", image: "/images/explore-round-lake.jpg", action: () => window.location.href = "/round-lake", actionLabel: "Explore" },
   ];
 
   return (
@@ -2007,9 +2057,10 @@ function FeaturedBusinessCard({ business }) {
       className="card-tilt featured-card-glow"
       style={{
         background: `linear-gradient(145deg, ${C.dusk} 0%, ${C.night} 100%)`,
-        borderRadius: 14, padding: "22px 24px",
+        borderRadius: 14, padding: "18px 20px",
         border: "1px solid rgba(255,255,255,0.07)",
-        height: "100%",
+        height: "auto",
+        minHeight: 0,
         position: "relative",
         overflow: "hidden",
       }}
@@ -2022,10 +2073,10 @@ function FeaturedBusinessCard({ business }) {
         animation: "shimmer 4s ease-in-out infinite",
       }} />
       {/* Compact horizontal layout: logo + info */}
-      <div style={{ display: "flex", gap: 18, alignItems: "flex-start", position: "relative", zIndex: 1 }}>
-        {/* Logo — larger */}
+      <div style={{ display: "flex", gap: 14, alignItems: "center", position: "relative", zIndex: 1 }}>
+        {/* Logo */}
         <div style={{
-          width: 72, height: 72, borderRadius: 10, flexShrink: 0, overflow: "hidden",
+          width: 56, height: 56, borderRadius: 10, flexShrink: 0, overflow: "hidden",
           background: "rgba(255,255,255,0.06)",
           border: `1.5px dashed ${business.logo ? "transparent" : "rgba(255,255,255,0.18)"}`,
           display: "flex", alignItems: "center", justifyContent: "center",
@@ -2043,7 +2094,7 @@ function FeaturedBusinessCard({ business }) {
           <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.cream, margin: "0 0 6px 0", lineHeight: 1.25 }}>
             {business.name}
           </h3>
-          <p style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", lineHeight: 1.6, margin: "0 0 6px 0" }}>
+          <p style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", lineHeight: 1.6, margin: "0 0 6px 0", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
             {business.description}
           </p>
           {business.address && (
@@ -3515,6 +3566,495 @@ function RoundLakePage() {
 }
 
 // ============================================================
+// 🏘️  MANITOU BEACH VILLAGE PAGE
+// ============================================================
+const VILLAGE_BUSINESSES = BUSINESSES.filter(b => b.village);
+
+function VillageHero() {
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => { setTimeout(() => setLoaded(true), 80); }, []);
+
+  return (
+    <section style={{
+      backgroundImage: "url(/images/explore-lighthouse.jpg)",
+      backgroundSize: "cover",
+      backgroundPosition: "center 40%",
+      backgroundAttachment: "fixed",
+      backgroundColor: C.dusk,
+      padding: "180px 24px 140px",
+      position: "relative",
+      overflow: "hidden",
+    }}>
+      <div style={{
+        position: "absolute", inset: 0,
+        background: "linear-gradient(170deg, rgba(10,18,24,0.7) 0%, rgba(10,18,24,0.4) 50%, rgba(10,18,24,0.85) 100%)",
+      }} />
+
+      <div style={{ maxWidth: 960, margin: "0 auto", position: "relative", zIndex: 1 }}>
+        <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? "none" : "translateY(24px)", transition: "all 0.9s ease" }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 28 }}>
+            Shops · Cafes · Gifts · Wine Tasting
+          </div>
+          <h1 style={{
+            fontFamily: "'Libre Baskerville', serif",
+            fontSize: "clamp(48px, 9vw, 110px)",
+            fontWeight: 400, color: C.cream, lineHeight: 0.95, margin: "0 0 20px 0",
+          }}>
+            The<br />Village
+          </h1>
+          <p style={{
+            fontFamily: "'Libre Franklin', sans-serif", fontSize: "clamp(14px, 1.6vw, 17px)",
+            color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 480, margin: "0 0 28px 0",
+          }}>
+            A walkable strip of boutique shops, a from-scratch cafe, satellite wine tasting rooms, and the iconic lighthouse replica. This is where Manitou Beach comes to life on foot.
+          </p>
+          <Btn href="/" variant="outlineLight" small>← Back to Home</Btn>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function VillageMapSection() {
+  return (
+    <section style={{ background: C.night, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <FadeIn>
+          <SectionLabel light>The Strip</SectionLabel>
+          <SectionTitle light>Walk the Village</SectionTitle>
+          <p style={{ fontSize: 14, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, maxWidth: 520, marginBottom: 48 }}>
+            Everything's within a five-minute walk. Park once, stroll the boulevard, and hit every shop. That's the beauty of a village built to human scale.
+          </p>
+        </FadeIn>
+
+        {/* Village business cards — staggered layout */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 20 }}>
+          {VILLAGE_BUSINESSES.map((biz, i) => {
+            const color = CAT_COLORS[biz.category] || C.sage;
+            return (
+              <FadeIn key={biz.id} delay={i * 80} direction={i % 2 === 0 ? "left" : "right"}>
+                <div
+                  onClick={() => biz.website && window.open(biz.website, "_blank")}
+                  style={{
+                    background: "rgba(255,255,255,0.04)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    borderRadius: 14, padding: "28px 24px",
+                    cursor: biz.website ? "pointer" : "default",
+                    transition: "all 0.25s",
+                    position: "relative",
+                    overflow: "hidden",
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.07)"; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 8px 30px rgba(0,0,0,0.3), 0 0 0 1px ${color}25`; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
+                >
+                  {/* Accent stripe */}
+                  <div style={{ position: "absolute", top: 0, left: 0, width: 3, height: "100%", background: color, borderRadius: "14px 0 0 14px" }} />
+
+                  <div style={{ display: "flex", alignItems: "flex-start", gap: 16 }}>
+                    {biz.logo && (
+                      <img src={biz.logo} alt="" style={{ width: 52, height: 52, borderRadius: 10, objectFit: "cover", background: "rgba(255,255,255,0.08)", flexShrink: 0 }} />
+                    )}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.cream, margin: "0 0 4px 0", lineHeight: 1.3 }}>
+                        {biz.name}
+                      </h3>
+                      <div style={{ fontSize: 11, color: color, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", marginBottom: 8 }}>
+                        {biz.category}
+                      </div>
+                      <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", lineHeight: 1.6, margin: "0 0 10px 0" }}>
+                        {biz.description}
+                      </p>
+                      {biz.address && (
+                        <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", marginBottom: 4 }}>
+                          📍 {biz.address}
+                        </div>
+                      )}
+                      {biz.phone && (
+                        <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)" }}>
+                          📞 {biz.phone}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {biz.website && (
+                    <div className="link-hover-underline" style={{
+                      fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700,
+                      letterSpacing: 1.5, color: C.sunsetLight, textTransform: "uppercase", marginTop: 14,
+                    }}>
+                      Visit Website →
+                    </div>
+                  )}
+                </div>
+              </FadeIn>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function VillageHistorySection() {
+  return (
+    <section style={{ background: C.cream, padding: "100px 24px" }}>
+      <div style={{ maxWidth: 900, margin: "0 auto" }}>
+        <FadeIn>
+          <SectionLabel>Roots</SectionLabel>
+          <SectionTitle>A Village with a Story</SectionTitle>
+        </FadeIn>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginTop: 48 }}>
+          <FadeIn delay={100} direction="left">
+            <div style={{ background: C.warmWhite, borderRadius: 14, padding: "32px 28px", border: `1px solid ${C.sand}` }}>
+              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.sage, marginBottom: 10 }}>The Resort Era</div>
+              <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: 0 }}>
+                By the 1870s, Manitou Beach had hotels, bathhouses, a dance pavilion, and two railroad stations bringing tourists from Detroit and beyond. Steam launches carried passengers between Devils Lake and Round Lake through a dredged channel. The village was the social centre of it all.
+              </p>
+            </div>
+          </FadeIn>
+          <FadeIn delay={200} direction="right">
+            <div style={{ background: C.warmWhite, borderRadius: 14, padding: "32px 28px", border: `1px solid ${C.sand}` }}>
+              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.sunset, marginBottom: 10 }}>The Revival</div>
+              <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: 0 }}>
+                After decades of quiet, the village is finding its rhythm again. Independent shop owners — many of them locals who grew up on the lake — are filling storefronts with boutiques, cafes, and creative businesses. The lighthouse replica stands as a reminder: this place was always meant to draw people in.
+              </p>
+            </div>
+          </FadeIn>
+          <FadeIn delay={300} direction="left">
+            <div style={{ background: C.warmWhite, borderRadius: 14, padding: "32px 28px", border: `1px solid ${C.sand}` }}>
+              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.lakeBlue, marginBottom: 10 }}>The Lighthouse</div>
+              <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: 0 }}>
+                Yes, it's landlocked. No, it never guided ships. But the lighthouse replica at Devils Lake View Living has become the most photographed landmark in Manitou Beach — a beacon for the village and a symbol of a community that builds things worth looking at.
+              </p>
+            </div>
+          </FadeIn>
+          <FadeIn delay={400} direction="right">
+            <div style={{ background: C.warmWhite, borderRadius: 14, padding: "32px 28px", border: `1px solid ${C.sand}` }}>
+              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: "#8B5E3C", marginBottom: 10 }}>Wine Country Meets Lake Country</div>
+              <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: 0 }}>
+                Starting May 2026, village shops become satellite tasting rooms for Michigan wineries. Ang & Co pours Chateau Fontaine from Leelanau Peninsula. Faust House represents Cherry Creek Cellars from Brooklyn. A new chapter for the village — and a reason to visit every weekend.
+              </p>
+            </div>
+          </FadeIn>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function VillageVisitCTA() {
+  return (
+    <section style={{
+      background: `linear-gradient(135deg, ${C.dusk} 0%, ${C.night} 100%)`,
+      padding: "80px 24px",
+      textAlign: "center",
+    }}>
+      <FadeIn direction="scale">
+        <div style={{ maxWidth: 560, margin: "0 auto" }}>
+          <div style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.sunsetLight, marginBottom: 12 }}>Plan Your Visit</div>
+          <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 4vw, 42px)", fontWeight: 400, color: C.cream, margin: "0 0 16px 0", lineHeight: 1.2 }}>
+            Come See It for Yourself
+          </h2>
+          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, margin: "0 0 32px 0" }}>
+            The village is on Devils Lake Highway and Lakeview Boulevard in Manitou Beach. Most shops are open Thursday through Sunday — but check individual hours before making the trip.
+          </p>
+          <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+            <Btn onClick={() => window.open("https://maps.google.com/?q=Devils+Lake+Hwy+Manitou+Beach+MI+49253", "_blank")} variant="sunset">Get Directions</Btn>
+            <Btn href="/#submit" variant="outlineLight">List Your Business</Btn>
+          </div>
+        </div>
+      </FadeIn>
+    </section>
+  );
+}
+
+function VillagePage() {
+  const subScrollTo = (id) => { window.location.href = "/#" + id; };
+
+  return (
+    <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+      />
+      <GlobalStyles />
+      <ScrollProgress />
+      <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
+      <VillageHero />
+      <VillageMapSection />
+      <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
+      <VillageHistorySection />
+      <DiagonalDivider topColor={C.cream} bottomColor={C.dusk} />
+      <VillageVisitCTA />
+      <WaveDivider topColor={C.night} bottomColor={C.cream} />
+      <NewsletterInline />
+      <Footer scrollTo={subScrollTo} />
+    </div>
+  );
+}
+
+// ============================================================
+// ⭐  FEATURED BUSINESS INQUIRY / STRIPE CHECKOUT
+// ============================================================
+const FEATURED_TIERS = [
+  {
+    id: "featured_30",
+    name: "Featured",
+    period: "30 days",
+    price: "$50",
+    features: [
+      "Priority dark card in directory",
+      "Logo and shimmer effect",
+      "Business description + link",
+      "Phone number displayed",
+    ],
+    popular: false,
+  },
+  {
+    id: "featured_90",
+    name: "Featured",
+    period: "90 days",
+    price: "$120",
+    save: "Save $30",
+    features: [
+      "Everything in 30-day plan",
+      "3 months of visibility",
+      "Best for seasonal businesses",
+      "Priority support",
+    ],
+    popular: true,
+  },
+  {
+    id: "featured_video_30",
+    name: "Featured + Video",
+    period: "30 days",
+    price: "$100",
+    features: [
+      "Everything in Featured plan",
+      "Embedded video showcase",
+      "Cinematic business spotlight",
+      "Produced by Yeti Groove Media",
+    ],
+    popular: false,
+  },
+];
+
+function FeaturedPage() {
+  const subScrollTo = (id) => { window.location.href = "/#" + id; };
+  const [form, setForm] = useState({ businessName: "", email: "", phone: "", message: "" });
+  const [selectedTier, setSelectedTier] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState(null);
+
+  // Check for success/cancelled in URL
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("success")) {
+      setStatus({ type: "success", business: params.get("business") || "" });
+    } else if (params.get("cancelled")) {
+      setStatus({ type: "cancelled" });
+    }
+  }, []);
+
+  const handleCheckout = async (tierId) => {
+    if (!form.businessName || !form.email) {
+      setStatus({ type: "error", message: "Please fill in your business name and email first." });
+      return;
+    }
+    setLoading(true);
+    setStatus(null);
+    try {
+      const res = await fetch("/api/create-checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tier: tierId, businessName: form.businessName, email: form.email }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setStatus({ type: "error", message: data.error || "Something went wrong." });
+      }
+    } catch {
+      setStatus({ type: "error", message: "Network error. Please try again." });
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+      <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+      <GlobalStyles />
+      <ScrollProgress />
+      <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
+
+      {/* Hero */}
+      <section style={{ background: `linear-gradient(145deg, ${C.dusk} 0%, ${C.night} 100%)`, padding: "160px 24px 100px", textAlign: "center" }}>
+        <FadeIn>
+          <SectionLabel light>For Local Businesses</SectionLabel>
+          <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(36px, 7vw, 72px)", fontWeight: 400, color: C.cream, lineHeight: 1, margin: "0 0 16px 0" }}>
+            Get Featured
+          </h1>
+          <p style={{ fontSize: "clamp(14px, 1.5vw, 17px)", color: "rgba(255,255,255,0.4)", lineHeight: 1.7, maxWidth: 520, margin: "0 auto" }}>
+            Stand out in the Manitou Beach directory with a premium listing. Your business gets top placement, branded card design, and a direct link to your website.
+          </p>
+        </FadeIn>
+      </section>
+
+      {/* Success / Cancelled banners */}
+      {status?.type === "success" && (
+        <div style={{ background: `${C.sage}20`, borderBottom: `2px solid ${C.sage}`, padding: "20px 24px", textAlign: "center" }}>
+          <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.sage, marginBottom: 4 }}>
+            Payment successful!
+          </div>
+          <p style={{ fontSize: 14, color: C.textLight, margin: 0 }}>
+            Thank you{status.business ? `, ${decodeURIComponent(status.business)}` : ""}! Your featured listing will be live within 24 hours. We'll email you when it's up.
+          </p>
+        </div>
+      )}
+      {status?.type === "cancelled" && (
+        <div style={{ background: `${C.sunset}15`, borderBottom: `2px solid ${C.sunset}40`, padding: "16px 24px", textAlign: "center" }}>
+          <p style={{ fontSize: 14, color: C.textLight, margin: 0 }}>Payment was cancelled. No charge was made. You can try again anytime.</p>
+        </div>
+      )}
+
+      {/* Pricing tiers */}
+      <section style={{ background: C.cream, padding: "80px 24px" }}>
+        <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20 }}>
+            {FEATURED_TIERS.map((tier, i) => (
+              <FadeIn key={tier.id} delay={i * 100} direction="scale">
+                <div
+                  onClick={() => setSelectedTier(tier.id)}
+                  style={{
+                    background: selectedTier === tier.id ? `linear-gradient(145deg, ${C.dusk}, ${C.night})` : C.warmWhite,
+                    border: tier.popular ? `2px solid ${C.sunset}` : `1px solid ${selectedTier === tier.id ? "rgba(255,255,255,0.15)" : C.sand}`,
+                    borderRadius: 16, padding: "32px 28px",
+                    cursor: "pointer", transition: "all 0.25s",
+                    position: "relative", overflow: "hidden",
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "0 12px 40px rgba(0,0,0,0.1)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
+                >
+                  {tier.popular && (
+                    <div style={{
+                      position: "absolute", top: 14, right: -28,
+                      background: C.sunset, color: C.cream,
+                      fontSize: 9, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase",
+                      padding: "4px 36px", transform: "rotate(45deg)",
+                      fontFamily: "'Libre Franklin', sans-serif",
+                    }}>Best Value</div>
+                  )}
+                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: selectedTier === tier.id ? C.sunsetLight : C.sage, marginBottom: 8 }}>
+                    {tier.name}
+                  </div>
+                  <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginBottom: 4 }}>
+                    <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 36, fontWeight: 400, color: selectedTier === tier.id ? C.cream : C.text }}>{tier.price}</span>
+                    <span style={{ fontSize: 13, color: selectedTier === tier.id ? "rgba(255,255,255,0.4)" : C.textMuted }}>/ {tier.period}</span>
+                  </div>
+                  {tier.save && (
+                    <div style={{ fontSize: 12, color: C.sunset, fontWeight: 600, marginBottom: 12 }}>{tier.save}</div>
+                  )}
+                  <ul style={{ listStyle: "none", padding: 0, margin: "16px 0 0" }}>
+                    {tier.features.map((f, j) => (
+                      <li key={j} style={{ fontSize: 13, color: selectedTier === tier.id ? "rgba(255,255,255,0.5)" : C.textLight, lineHeight: 1.5, padding: "4px 0", paddingLeft: 18, position: "relative" }}>
+                        <span style={{ position: "absolute", left: 0, color: C.sage }}>✓</span>
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Application form + checkout */}
+      <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
+        <div style={{ maxWidth: 560, margin: "0 auto" }}>
+          <FadeIn>
+            <SectionLabel>Apply</SectionLabel>
+            <SectionTitle>Your Business Details</SectionTitle>
+            <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, marginBottom: 36 }}>
+              Fill in your info, pick a plan above, and complete checkout. Your listing goes live within 24 hours.
+            </p>
+          </FadeIn>
+
+          {status?.type === "error" && (
+            <div style={{ background: `${C.sunset}15`, border: `1px solid ${C.sunset}40`, borderRadius: 8, padding: "12px 16px", marginBottom: 20, fontSize: 13, color: C.sunset }}>
+              {status.message}
+            </div>
+          )}
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            {[
+              { key: "businessName", label: "Business Name", type: "text", required: true },
+              { key: "email", label: "Email", type: "email", required: true },
+              { key: "phone", label: "Phone (optional)", type: "tel", required: false },
+            ].map(field => (
+              <div key={field.key}>
+                <label style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.textMuted, display: "block", marginBottom: 6 }}>
+                  {field.label} {field.required && <span style={{ color: C.sunset }}>*</span>}
+                </label>
+                <input
+                  type={field.type}
+                  value={form[field.key]}
+                  onChange={e => setForm(prev => ({ ...prev, [field.key]: e.target.value }))}
+                  style={{
+                    width: "100%", padding: "12px 16px", borderRadius: 8,
+                    border: `1px solid ${C.sand}`, background: C.cream,
+                    fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.text,
+                    outline: "none", transition: "border 0.2s", boxSizing: "border-box",
+                  }}
+                  onFocus={e => { e.target.style.borderColor = C.sage; }}
+                  onBlur={e => { e.target.style.borderColor = C.sand; }}
+                />
+              </div>
+            ))}
+            <div>
+              <label style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.textMuted, display: "block", marginBottom: 6 }}>
+                Anything else we should know?
+              </label>
+              <textarea
+                value={form.message}
+                onChange={e => setForm(prev => ({ ...prev, message: e.target.value }))}
+                rows={3}
+                style={{
+                  width: "100%", padding: "12px 16px", borderRadius: 8,
+                  border: `1px solid ${C.sand}`, background: C.cream,
+                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.text,
+                  outline: "none", resize: "vertical", boxSizing: "border-box",
+                }}
+                onFocus={e => { e.target.style.borderColor = C.sage; }}
+                onBlur={e => { e.target.style.borderColor = C.sand; }}
+              />
+            </div>
+
+            <div style={{ marginTop: 12 }}>
+              <Btn
+                onClick={() => selectedTier ? handleCheckout(selectedTier) : setStatus({ type: "error", message: "Please select a plan above." })}
+                variant="sunset"
+                style={{ width: "100%", opacity: loading ? 0.6 : 1, pointerEvents: loading ? "none" : "auto" }}
+              >
+                {loading ? "Redirecting to checkout..." : selectedTier ? `Proceed to Checkout — ${FEATURED_TIERS.find(t => t.id === selectedTier)?.price}` : "Select a Plan Above"}
+              </Btn>
+            </div>
+          </div>
+
+          <p style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.6, marginTop: 24, textAlign: "center" }}>
+            Payments processed securely by Stripe. Your listing goes live within 24 hours of payment. Questions? Email us at hello@manitoubeach.com
+          </p>
+        </div>
+      </section>
+
+      <Footer scrollTo={subScrollTo} />
+    </div>
+  );
+}
+
+// ============================================================
 // 🌐  APP ROOT
 // ============================================================
 export default function App() {
@@ -3524,6 +4064,8 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/happening" element={<HappeningPage />} />
         <Route path="/round-lake" element={<RoundLakePage />} />
+        <Route path="/village" element={<VillagePage />} />
+        <Route path="/featured" element={<FeaturedPage />} />
       </Routes>
     </BrowserRouter>
   );
