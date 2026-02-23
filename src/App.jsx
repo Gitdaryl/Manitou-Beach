@@ -1,5 +1,137 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+// ============================================================
+// 🎬  GLOBAL CSS KEYFRAMES & ANIMATIONS
+// ============================================================
+function GlobalStyles() {
+  return (
+    <style>{`
+      @keyframes marquee {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+      }
+      @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-12px); }
+      }
+      @keyframes float-slow {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-18px) rotate(3deg); }
+      }
+      @keyframes pulse-glow {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(212,132,90,0.3); }
+        50% { box-shadow: 0 0 20px 4px rgba(212,132,90,0.15); }
+      }
+      @keyframes shimmer {
+        0% { background-position: -200% center; }
+        100% { background-position: 200% center; }
+      }
+      @keyframes tracking-in {
+        0% { letter-spacing: 12px; opacity: 0; }
+        100% { letter-spacing: 5px; opacity: 1; }
+      }
+      @keyframes underline-grow {
+        0% { transform: scaleX(0); transform-origin: left; }
+        100% { transform: scaleX(1); transform-origin: left; }
+      }
+      @keyframes scroll-progress {
+        0% { width: 0%; }
+      }
+      .scroll-progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #7A8E72, #D4845A);
+        z-index: 10000;
+        transition: width 0.1s linear;
+      }
+      @keyframes pulse-line {
+        0% { background-position: -200% center; }
+        100% { background-position: 200% center; }
+      }
+      @keyframes dot-breathe {
+        0%, 100% { box-shadow: 0 0 4px currentColor; transform: scale(1); }
+        50% { box-shadow: 0 0 16px currentColor; transform: scale(1.2); }
+      }
+      .timeline-pulse {
+        background: linear-gradient(90deg, rgba(122,142,114,0.1), rgba(212,132,90,0.35), rgba(91,126,149,0.35), rgba(122,142,114,0.1)) !important;
+        background-size: 200% 100% !important;
+        animation: pulse-line 4s ease-in-out infinite !important;
+      }
+      .timeline-dot-breathe {
+        animation: dot-breathe 3s ease-in-out infinite;
+      }
+      .marquee-track {
+        display: flex;
+        animation: marquee 35s linear infinite;
+      }
+      .marquee-track:hover {
+        animation-play-state: paused;
+      }
+      .btn-animated {
+        transition: all 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+      }
+      .btn-animated:hover {
+        transform: translateY(-2px) scale(1.02) !important;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+      }
+      .card-tilt {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .link-hover-underline {
+        position: relative;
+        display: inline-block;
+      }
+      .link-hover-underline::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 100%;
+        height: 1.5px;
+        background: currentColor;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s ease;
+      }
+      .link-hover-underline:hover::after {
+        transform: scaleX(1);
+      }
+      .featured-card-glow:hover {
+        border-color: rgba(212,132,90,0.5) !important;
+        box-shadow: 0 0 30px rgba(212,132,90,0.12), 0 12px 40px rgba(0,0,0,0.3) !important;
+      }
+      .horizontal-scroll {
+        scrollbar-width: thin;
+        scrollbar-color: #7A8E72 transparent;
+      }
+      .horizontal-scroll::-webkit-scrollbar {
+        height: 6px;
+      }
+      .horizontal-scroll::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .horizontal-scroll::-webkit-scrollbar-thumb {
+        background: #7A8E7240;
+        border-radius: 3px;
+      }
+      .horizontal-scroll::-webkit-scrollbar-thumb:hover {
+        background: #7A8E72;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .marquee-track { animation: none !important; }
+        .card-tilt { transition: none !important; }
+        * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+      }
+      @media (max-width: 768px) {
+        .nav-desktop { display: none !important; }
+        .nav-hamburger { display: flex !important; }
+      }
+    `}</style>
+  );
+}
 
 // ============================================================
 // ✏️  CONFIGURABLE CONTENT — manage hero events via Notion
@@ -58,7 +190,8 @@ const BUSINESSES = [
     id: 2,
     name: "Boot Jack Tavern",
     category: "Food & Drink",
-    description: "Michigan craft beer, wine, and spirits in a gorgeous outdoor setting with twinkly lights. Trivia Wednesdays, live music, and a menu built for lake days. 735 Manitou Rd.",
+    description: "Michigan craft beer, wine, and spirits in a gorgeous outdoor setting with twinkly lights. Trivia Wednesdays, live music, and a menu built for lake days.",
+    address: "735 Manitou Rd, Manitou Beach",
     featured: true,
     logo: "/images/bootjack_logo.png",
     website: "https://bootjacktavern.com",
@@ -68,7 +201,8 @@ const BUSINESSES = [
     id: 3,
     name: "Two Lakes Tavern",
     category: "Food & Drink",
-    description: "Family-owned lakeside restaurant known for their smoked entrees and a big menu full of options. Right on the shores of Devils Lake. 110 Walnut St.",
+    description: "Family-owned lakeside restaurant known for their smoked entrees and a big menu full of options. Right on the shores of Devils Lake.",
+    address: "110 Walnut St, Manitou Beach",
     featured: true,
     logo: "/images/two_lakes_logo.jpg",
     website: "https://www.twolakestavern.com",
@@ -80,6 +214,7 @@ const BUSINESSES = [
     category: "Boating & Water",
     description: "Fine dining overlooking Devils Lake, ~100 dock slips, live entertainment Friday and Saturday nights, sailboat races every Sunday, and free sailing lessons all summer.",
     featured: false,
+    logo: "/images/yacht_club_logo.png",
     website: "https://www.devilslakeyachtclub.com",
     phone: "",
   },
@@ -89,6 +224,7 @@ const BUSINESSES = [
     category: "Boating & Water",
     description: "Pontoon boat sales, rentals, dock slip leases, boating repair, and winter storage. Your one-stop shop for getting out on the water.",
     featured: false,
+    logo: "/images/marina_logo.png",
     website: "https://manitoubeachmarina.com",
     phone: "",
   },
@@ -98,6 +234,7 @@ const BUSINESSES = [
     category: "Boating & Water",
     description: "Boat rentals and water sports on Devils Lake. Everything you need to make the most of a day on the water.",
     featured: false,
+    logo: "/images/dl_watersports_logo.png",
     website: "https://dlwatersports.com",
     phone: "",
   },
@@ -117,6 +254,7 @@ const BUSINESSES = [
     category: "Film & Video",
     description: "Cinematic video production for businesses, events, and legacies. Where your story becomes a film.",
     featured: false,
+    logo: "/images/yeti_logo.png",
     website: "https://yeti-signature-films.vercel.app",
     phone: "",
   },
@@ -156,69 +294,103 @@ const BUSINESSES = [
     website: "",
     phone: "",
   },
+  {
+    id: 13,
+    name: "Chateau Aeronautique Winery",
+    category: "Breweries & Wineries",
+    description: "Aviation-themed winery in Jackson with a year-round all-weather Biergarten, live tribute concerts every weekend, and Michigan-crafted wines. The Irish Hills' go-to entertainment venue.",
+    address: "1849 E Parnall Rd, Jackson",
+    featured: false,
+    logo: "/images/chateau_logo.png",
+    website: "https://chateauaeronautique.com",
+    phone: "(517) 795-3620",
+  },
+  {
+    id: 14,
+    name: "Cherry Creek Cellars",
+    category: "Breweries & Wineries",
+    description: "Brooklyn's neighborhood winery — small-batch Michigan wines, a tasting room with character, and a laid-back vibe that feels like visiting a friend's place.",
+    address: "5765 Wamplers Lake Rd, Brooklyn",
+    featured: false,
+    logo: "/images/cherry_creek_logo.png",
+    website: "https://cherrycreekcellars.com",
+    phone: "(517) 592-4848",
+  },
+  {
+    id: 15,
+    name: "Gypsy Blue Vineyards",
+    category: "Breweries & Wineries",
+    description: "Coming soon to the Irish Hills. A new vineyard and tasting room bringing Michigan wine culture to the heart of lake country.",
+    featured: false,
+    logo: "/images/gypsy_blue_logo.png",
+    website: "",
+    phone: "",
+  },
+  {
+    id: 16,
+    name: "Ang & Co",
+    category: "Food & Drink",
+    description: "Manitou Beach venue hosting satellite wine tastings for Chateau Fontaine (Leelanau Peninsula). A new way to explore Northern Michigan wines without leaving the lake.",
+    featured: false,
+    logo: "/images/ang_co_logo.png",
+    website: "",
+    phone: "",
+  },
+  {
+    id: 17,
+    name: "Faust House",
+    category: "Food & Drink",
+    description: "Local venue representing Cherry Creek Cellars as a satellite tasting room. Brooklyn wines poured lakeside in Manitou Beach.",
+    featured: false,
+    logo: "/images/faust_house_logo.png",
+    website: "",
+    phone: "",
+  },
 ];
 
 // Category → accent color mapping (used by directory + business rows)
 const CAT_COLORS = {
-  "Real Estate":    C.lakeBlue,
-  "Food & Drink":   C.sunset,
-  "Boating & Water": C.sage,
-  "Film & Video":   C.driftwood,
-  "Home Services":  C.sageDark,
+  "Real Estate":        C.lakeBlue,
+  "Food & Drink":       C.sunset,
+  "Boating & Water":    C.sage,
+  "Breweries & Wineries": "#8B5E3C",
+  "Film & Video":       C.driftwood,
+  "Home Services":      C.sageDark,
 };
 
 // ============================================================
 // 📅  EVENTS DATA
 // ============================================================
 const EVENTS = [
-  {
-    id: 1,
-    name: "Friday Night Fish Fry",
-    date: "Every Friday",
-    time: "Dinner",
-    category: "Community",
-    description: "A weekly Devils Lake tradition at the Yacht Club. Fresh fish, cold drinks, and the best view on the lake.",
-  },
-  {
-    id: 2,
-    name: "Live Music at the Yacht Club",
-    date: "Every Friday & Saturday",
-    time: "Evening",
-    category: "Activity",
-    description: "Live entertainment on the water all season long at Devils Lake Yacht Club.",
-  },
-  {
-    id: 3,
-    name: "Trivia Night at Boot Jack Tavern",
-    date: "Every Wednesday",
-    time: "Evening",
-    category: "Activity",
-    description: "Test your knowledge with the locals at Boot Jack Tavern. Michigan craft beer on tap.",
-  },
-  {
-    id: 4,
-    name: "Sunday Sailboat Races",
-    date: "Every Sunday (Summer)",
-    time: "Afternoon",
-    category: "Community",
-    description: "Weekly sailboat races on Devils Lake hosted by the Yacht Club — a summer staple since the club's founding.",
-  },
-  {
-    id: 5,
-    name: "Devils Lake Yacht Regatta",
-    date: "Mid-September 2026",
-    time: "All Day",
-    category: "Community",
-    description: "The annual regatta on Devils Lake — a beloved tradition since 1941. Sailboat racing, community gathering, and lake life at its best.",
-  },
-  {
-    id: 6,
-    name: "Holly & The Yeti Live Recording",
-    date: "TBA 2026",
-    time: "6:00 PM",
-    category: "Media",
-    description: "Live podcast episode featuring local business owners and community stories. Stay tuned for the date.",
-  },
+  // ── RECURRING (weekly) ──
+  { id: 1, name: "Friday Night Fish Fry", date: "Every Friday", time: "Dinner", category: "Food & Social", cost: "$$", description: "A weekly Devils Lake tradition at the Yacht Club. Fresh fish, cold drinks, and the best view on the lake.", location: "Devils Lake Yacht Club" },
+  { id: 2, name: "Live Music at the Yacht Club", date: "Every Friday & Saturday", time: "Evening", category: "Live Music", cost: "Free", description: "Live entertainment on the water all season long at Devils Lake Yacht Club.", location: "Devils Lake Yacht Club" },
+  { id: 3, name: "Trivia Night at Boot Jack Tavern", date: "Every Wednesday", time: "Evening", category: "Food & Social", cost: "Free", description: "Test your knowledge with the locals at Boot Jack Tavern. Michigan craft beer on tap.", location: "Boot Jack Tavern, 735 Manitou Rd" },
+  { id: 4, name: "Sunday Sailboat Races", date: "Every Sunday (Summer)", time: "Afternoon", category: "Sports & Outdoors", cost: "Free to watch", description: "Weekly sailboat races on Devils Lake hosted by the Yacht Club — a summer staple since the club's founding.", location: "Devils Lake Yacht Club" },
+  // ── ONE-OFF / SPECIAL EVENTS (sorted by date) ──
+  { id: 101, name: "Grateful Dead Tribute — Cosmic Rose", date: "2026-02-27", time: "7:00 PM", category: "Live Music", cost: "Ticket", description: "An evening of Grateful Dead classics at Chateau Aeronautique Winery with dinner and drinks.", location: "Chateau Aeronautique Winery, Onsted" },
+  { id: 100, name: "Bob Seger Tribute — Kat Mandu", date: "2026-02-28", time: "7:00 PM", category: "Live Music", cost: "Ticket", description: "Live tribute to Bob Seger at Chateau Aeronautique Winery. Dinner and beverages available in the all-weather Biergarten.", location: "Chateau Aeronautique Winery, Onsted" },
+  { id: 102, name: "Bon Jovi Tribute — Wanted", date: "2026-03-07", time: "7:00 PM", category: "Live Music", cost: "Ticket", description: "Bon Jovi tribute night at Chateau Aeronautique. Full dinner and craft beverage menu.", location: "Chateau Aeronautique Winery, Onsted" },
+  { id: 103, name: "Neil Young Tribute — Sugar Mountain", date: "2026-03-13", time: "8:00 PM", category: "Live Music", cost: "Ticket", description: "Sugar Mountain performs Neil Young classics at Chateau Aeronautique Winery.", location: "Chateau Aeronautique Winery, Onsted" },
+  { id: 104, name: "Queen Tribute — Simply Queen", date: "2026-03-14", time: "8:00 PM", category: "Live Music", cost: "Ticket", description: "Simply Queen brings the Freddie Mercury experience to the Irish Hills.", location: "Chateau Aeronautique Winery, Onsted" },
+  { id: 105, name: "Journey Tribute — Infinity & Beyond", date: "2026-03-20", time: "8:00 PM", category: "Live Music", cost: "Ticket", description: "Don't stop believin'. Journey tribute night at Chateau Aeronautique Winery.", location: "Chateau Aeronautique Winery, Onsted" },
+  { id: 106, name: "Tom Petty Tribute — Teddy Petty", date: "2026-03-21", time: "8:00 PM", category: "Live Music", cost: "Ticket", description: "Teddy Petty & The Refugees perform Tom Petty classics at Chateau Aeronautique.", location: "Chateau Aeronautique Winery, Onsted" },
+  { id: 107, name: "Linkin Park Tribute — Land of Linkin", date: "2026-03-27", time: "8:00 PM", category: "Live Music", cost: "Ticket", description: "Linkin Park tribute at Chateau Aeronautique Winery.", location: "Chateau Aeronautique Winery, Onsted" },
+  { id: 120, name: "Lenten Retreat — Catholic Young Adults", date: "2026-03-27", time: "6:30 PM", category: "Community", cost: "Free", description: "Detroit & Lansing Catholic Young Adults Lenten Retreat at Vineyard Lake.", location: "The Carls Family Village, Vineyard Lake" },
+  { id: 108, name: "Def Leppard Tribute — Armageddon", date: "2026-03-28", time: "8:00 PM", category: "Live Music", cost: "Ticket", description: "Def Leppard tribute night at Chateau Aeronautique Winery.", location: "Chateau Aeronautique Winery, Onsted" },
+  { id: 109, name: "Mötley Crüe Tribute — Wrëking Crüe", date: "2026-04-03", time: "8:00 PM", category: "Live Music", cost: "Ticket", description: "Mötley Crüe tribute bringing the wild energy to Chateau Aeronautique.", location: "Chateau Aeronautique Winery, Onsted" },
+  { id: 110, name: "80's Night — HairMania", date: "2026-04-04", time: "8:00 PM", category: "Live Music", cost: "Ticket", description: "Full 1980s tribute night at Chateau Aeronautique Winery. Big hair, bigger riffs.", location: "Chateau Aeronautique Winery, Onsted" },
+  { id: 111, name: "Led Zeppelin Tribute — Kashmir", date: "2026-04-11", time: "8:00 PM", category: "Live Music", cost: "Ticket", description: "Kashmir performs Led Zeppelin at Chateau Aeronautique Winery.", location: "Chateau Aeronautique Winery, Onsted" },
+  { id: 112, name: "Ozzy Tribute — Ozzy Rebourne", date: "2026-04-18", time: "8:00 PM", category: "Live Music", cost: "Ticket", description: "Ozzy Osbourne tribute with Awaken at Chateau Aeronautique Winery.", location: "Chateau Aeronautique Winery, Onsted" },
+  { id: 113, name: "Metallica Tribute — Battery", date: "2026-04-24", time: "8:00 PM", category: "Live Music", cost: "Ticket", description: "Metallica tribute by Battery with Flowers on the Grave at Chateau Aeronautique.", location: "Chateau Aeronautique Winery, Onsted" },
+  { id: 114, name: "Stevie Nicks Tribute — Street Angel", date: "2026-04-25", time: "8:00 PM", category: "Live Music", cost: "Ticket", description: "Street Angel performs Stevie Nicks classics at Chateau Aeronautique Winery.", location: "Chateau Aeronautique Winery, Onsted" },
+  { id: 115, name: "STP / Coldplay / Killers — Stone Cold Killers", date: "2026-05-01", time: "8:00 PM", category: "Live Music", cost: "Ticket", description: "Triple tribute: Stone Temple Pilots, Coldplay, and The Killers at Chateau Aeronautique.", location: "Chateau Aeronautique Winery, Onsted" },
+  { id: 116, name: "Van Halen Tribute — PANAMA", date: "2026-05-02", time: "8:00 PM", category: "Live Music", cost: "Ticket", description: "PANAMA brings Van Halen to the Irish Hills at Chateau Aeronautique Winery.", location: "Chateau Aeronautique Winery, Onsted" },
+  { id: 117, name: "AC/DC Tribute — ThunderStruck", date: "2026-05-15", time: "8:00 PM", category: "Live Music", cost: "Ticket", description: "ThunderStruck with Blaine Luis Band performing AC/DC at Chateau Aeronautique.", location: "Chateau Aeronautique Winery, Onsted" },
+  { id: 130, name: "Satellite Wine Tasting Rooms Launch", date: "2026-05-22", time: "Afternoon", category: "Food & Social", cost: "Varies", description: "Local businesses become satellite tasting rooms for Michigan wineries. Ang & Co pours Chateau Fontaine (Leelanau Peninsula), Faust House represents Cherry Creek Cellars (Brooklyn), and more venues TBA. A new way to explore Michigan wine without leaving the lake.", location: "Multiple venues — Manitou Beach" },
+  { id: 118, name: "Irish Hills Music Festival", date: "2026-07-01", time: "All Day", category: "Live Music", cost: "Free", description: "Free annual music festival supporting Michigan Parkinson's Disease Foundation and area hospices. 501(c)(3) nonprofit — live music, food trucks, community gathering.", location: "Irish Hills Area" },
+  { id: 5, name: "Devils Lake Yacht Regatta", date: "2026-09-15", time: "All Day", category: "Sports & Outdoors", cost: "Free to watch", description: "The annual regatta on Devils Lake — a beloved tradition since 1941. Sailboat racing, community gathering, and lake life at its best.", location: "Devils Lake Yacht Club" },
+  { id: 119, name: "Irish Hills Gravel Race", date: "2026-10-17", time: "Morning", category: "Sports & Outdoors", cost: "$100 entry", description: "Gravel cycling event with 100km, 50km, and mini course options. Part of the 2026 Michigan Gravel Race Series.", location: "Michigan International Speedway, Brooklyn" },
 ];
 
 // ============================================================
@@ -295,7 +467,7 @@ function SectionTitle({ children, light = false, center = false }) {
   );
 }
 
-function FadeIn({ children, delay = 0, style = {} }) {
+function FadeIn({ children, delay = 0, direction = "up", style = {} }) {
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
 
@@ -308,17 +480,88 @@ function FadeIn({ children, delay = 0, style = {} }) {
     return () => observer.disconnect();
   }, []);
 
+  const transforms = {
+    up: "translateY(32px)",
+    down: "translateY(-32px)",
+    left: "translateX(-40px)",
+    right: "translateX(40px)",
+    scale: "scale(0.92)",
+    none: "none",
+  };
+
   return (
     <div
       ref={ref}
       style={{
         opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(24px)",
-        transition: `opacity 0.65s ease ${delay}ms, transform 0.65s ease ${delay}ms`,
+        transform: visible ? "translateY(0) translateX(0) scale(1)" : transforms[direction] || transforms.up,
+        transition: `opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${delay}ms, transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${delay}ms`,
         ...style,
       }}
     >
       {children}
+    </div>
+  );
+}
+
+// Scroll progress bar
+function ScrollProgress() {
+  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+    const onScroll = () => {
+      const h = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(h > 0 ? (window.scrollY / h) * 100 : 0);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  return <div className="scroll-progress-bar" style={{ width: `${progress}%` }} />;
+}
+
+// 3D card tilt hook
+function useCardTilt(maxDeg = 6) {
+  const ref = useRef(null);
+  const onMouseMove = useCallback((e) => {
+    const el = ref.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    el.style.transform = `perspective(800px) rotateY(${x * maxDeg}deg) rotateX(${-y * maxDeg}deg) translateY(-4px)`;
+    el.style.boxShadow = `${x * 12}px ${8 + y * 8}px 30px rgba(0,0,0,0.12)`;
+  }, [maxDeg]);
+  const onMouseLeave = useCallback(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.style.transform = "perspective(800px) rotateY(0deg) rotateX(0deg) translateY(0)";
+    el.style.boxShadow = "";
+  }, []);
+  return { ref, onMouseMove, onMouseLeave };
+}
+
+// SVG wave divider
+function WaveDivider({ topColor, bottomColor, flip = false, height = 80 }) {
+  return (
+    <div style={{ marginTop: -1, marginBottom: -1, lineHeight: 0, overflow: "hidden", transform: flip ? "scaleY(-1)" : "none" }}>
+      <svg viewBox="0 0 1440 120" preserveAspectRatio="none" style={{ display: "block", width: "100%", height }}>
+        <path
+          d="M0,40 C360,120 720,0 1080,80 C1260,120 1380,60 1440,40 L1440,120 L0,120 Z"
+          fill={bottomColor}
+        />
+        <rect width="1440" height="120" fill={topColor} style={{ opacity: 0 }} />
+      </svg>
+    </div>
+  );
+}
+
+// Diagonal slice divider
+function DiagonalDivider({ topColor, bottomColor, height = 80 }) {
+  return (
+    <div style={{ marginTop: -1, marginBottom: -1, lineHeight: 0, overflow: "hidden" }}>
+      <svg viewBox="0 0 1440 120" preserveAspectRatio="none" style={{ display: "block", width: "100%", height }}>
+        <polygon points="0,0 1440,60 1440,120 0,120" fill={bottomColor} />
+        <polygon points="0,0 1440,0 1440,60 0,120" fill={topColor} />
+      </svg>
     </div>
   );
 }
@@ -350,9 +593,8 @@ function Btn({ children, onClick, href, variant = "primary", small = false }) {
     <Tag
       href={href}
       onClick={onClick}
+      className="btn-animated"
       style={{ ...base, ...styles[variant] }}
-      onMouseEnter={e => { e.currentTarget.style.opacity = "0.82"; e.currentTarget.style.transform = "translateY(-1px)"; }}
-      onMouseLeave={e => { e.currentTarget.style.opacity = "1"; e.currentTarget.style.transform = "translateY(0)"; }}
     >
       {children}
     </Tag>
@@ -376,6 +618,48 @@ function CategoryPill({ children, dark = false }) {
     }}>
       {children}
     </span>
+  );
+}
+
+// ============================================================
+// 📢  EVENT TICKER / MARQUEE
+// ============================================================
+function EventTicker() {
+  const items = EVENTS.map(e => `${e.name} · ${e.date}`);
+  const repeated = [...items, ...items, ...items, ...items];
+  return (
+    <a href="/happening" style={{ textDecoration: "none", display: "block" }}>
+      <div style={{
+        background: `linear-gradient(90deg, ${C.night} 0%, ${C.dusk} 50%, ${C.night} 100%)`,
+        padding: "14px 0",
+        overflow: "hidden",
+        position: "relative",
+        borderBottom: `1px solid ${C.sage}20`,
+      }}>
+        {/* Fade edges */}
+        <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 80, background: `linear-gradient(90deg, ${C.night}, transparent)`, zIndex: 2, pointerEvents: "none" }} />
+        <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 80, background: `linear-gradient(270deg, ${C.night}, transparent)`, zIndex: 2, pointerEvents: "none" }} />
+        <div className="marquee-track" style={{ whiteSpace: "nowrap" }}>
+          {repeated.map((item, i) => (
+            <span key={i} style={{
+              fontFamily: "'Libre Franklin', sans-serif",
+              fontSize: 12,
+              fontWeight: 500,
+              letterSpacing: 1,
+              textTransform: "uppercase",
+              color: C.sunsetLight,
+              padding: "0 24px",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 24,
+            }}>
+              {item}
+              <span style={{ width: 4, height: 4, borderRadius: "50%", background: C.sage, display: "inline-block", opacity: 0.5 }} />
+            </span>
+          ))}
+        </div>
+      </div>
+    </a>
   );
 }
 
@@ -460,16 +744,26 @@ function Hero({ scrollTo }) {
     );
   }
 
-  // ── DEFAULT HERO ──
+  // ── DEFAULT HERO (with parallax) ──
+  const [scrollY, setScrollY] = useState(0);
+  useEffect(() => {
+    const onScroll = () => { if (window.scrollY < window.innerHeight * 1.2) setScrollY(window.scrollY); };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <section id="home" style={{ minHeight: "100vh", display: "flex", alignItems: "center", position: "relative", overflow: "hidden" }}>
-      {/* Fallback color behind video (shows until video loads) */}
+      {/* Fallback color behind video */}
       <div style={{ position: "absolute", inset: 0, background: `linear-gradient(160deg, ${C.night} 0%, ${C.lakeDark} 60%, ${C.dusk} 100%)`, zIndex: 0 }} />
 
-      {/* Looping video background */}
+      {/* Looping video background — parallax */}
       <video
         autoPlay muted loop playsInline
-        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 1 }}
+        style={{
+          position: "absolute", inset: 0, width: "100%", height: "120%", objectFit: "cover", zIndex: 1,
+          transform: `translateY(${scrollY * 0.3}px)`, willChange: "transform",
+        }}
       >
         <source src="/videos/hero-default.mp4" type="video/mp4" />
       </video>
@@ -477,9 +771,18 @@ function Hero({ scrollTo }) {
       {/* Overlay */}
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(170deg, rgba(26,40,48,0.6) 0%, rgba(26,40,48,0.35) 50%, rgba(26,40,48,0.75) 100%)", zIndex: 2 }} />
 
-      <div style={{ position: "relative", zIndex: 3, maxWidth: 960, margin: "0 auto", padding: "160px 48px 120px" }}>
-        <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? "none" : "translateY(24px)", transition: "all 0.9s ease" }}>
-          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 24 }}>
+      {/* Floating ambient elements */}
+      <div style={{ position: "absolute", top: "20%", right: "15%", width: 200, height: 200, borderRadius: "50%", background: `${C.sage}08`, zIndex: 2, animation: "float-slow 8s ease-in-out infinite", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", bottom: "25%", left: "10%", width: 120, height: 120, borderRadius: "50%", background: `${C.sunset}06`, zIndex: 2, animation: "float 6s ease-in-out infinite 2s", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", top: "60%", right: "8%", width: 60, height: 60, borderRadius: "50%", border: `1px solid ${C.sage}15`, zIndex: 2, animation: "float-slow 10s ease-in-out infinite 1s", pointerEvents: "none" }} />
+
+      <div style={{ position: "relative", zIndex: 3, maxWidth: 960, margin: "0 auto", padding: "160px 48px 120px", transform: `translateY(${scrollY * 0.08}px)` }}>
+        <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? "none" : "translateY(24px)", transition: "all 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94)" }}>
+          <div style={{
+            fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase",
+            color: "rgba(255,255,255,0.35)", marginBottom: 24,
+            animation: loaded ? "tracking-in 0.8s ease forwards" : "none",
+          }}>
             Welcome to
           </div>
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(48px, 8vw, 96px)", fontWeight: 400, color: C.cream, lineHeight: 1.0, margin: "0 0 16px 0" }}>
@@ -489,7 +792,7 @@ function Hero({ scrollTo }) {
             on Devils Lake, Michigan
           </div>
           <p style={{ fontSize: 18, color: "rgba(255,255,255,0.6)", lineHeight: 1.8, maxWidth: 520, margin: "0 0 48px 0" }}>
-            A lakeside community with a big personality. Businesses, events, and everything happening on the party lake.
+            A lakeside community with a big personality. Devils Lake, Round Lake, and everything happening in the Irish Hills.
           </p>
           <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
             <Btn onClick={() => scrollTo("businesses")} variant="primary">Explore Businesses</Btn>
@@ -579,14 +882,286 @@ function NewsletterBar() {
 }
 
 // ============================================================
+// 📰  INLINE NEWSLETTER CTA (compact banner)
+// ============================================================
+function NewsletterInline() {
+  const [email, setEmail] = useState("");
+  const [done, setDone] = useState(false);
+  const handleSubmit = (e) => { e.preventDefault(); if (!email) return; console.log("Newsletter signup:", email); setDone(true); };
+
+  return (
+    <div style={{
+      background: `linear-gradient(135deg, ${C.sage}15 0%, ${C.lakeBlue}10 100%)`,
+      border: `1px solid ${C.sage}25`,
+      borderRadius: 12,
+      padding: "32px 40px",
+      maxWidth: 1100,
+      margin: "0 auto",
+      marginTop: -20,
+      marginBottom: 40,
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      flexWrap: "wrap",
+      gap: 20,
+      position: "relative",
+      zIndex: 1,
+    }}>
+      <div>
+        <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sage, marginBottom: 2 }}>
+          The Manitou Beach Dispatch
+        </div>
+        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted }}>
+          Weekly events, businesses & community news — straight to your inbox.
+        </div>
+      </div>
+      {done ? (
+        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.sage, fontWeight: 600 }}>
+          You're in!
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <input
+            type="email" placeholder="your@email.com" value={email} onChange={e => setEmail(e.target.value)} required
+            style={{
+              padding: "10px 16px", borderRadius: 6, border: `1.5px solid ${C.sand}`,
+              background: C.cream, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif",
+              color: C.text, outline: "none", minWidth: 200,
+            }}
+          />
+          <Btn variant="primary" small>Subscribe</Btn>
+        </form>
+      )}
+    </div>
+  );
+}
+
+// ============================================================
+// 📅  12-MONTH ROLLING EVENT TIMELINE
+// ============================================================
+function EventTimeline() {
+  const [notionEvents, setNotionEvents] = useState([]);
+  const [activeEvent, setActiveEvent] = useState(null);
+  const [lightboxEvent, setLightboxEvent] = useState(null);
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    fetch("/api/events")
+      .then(r => r.json())
+      .then(data => setNotionEvents(data.events || []))
+      .catch(() => {});
+  }, []);
+
+  // Merge hardcoded EVENTS (that have real dates) + Notion events
+  const allEvents = [
+    ...EVENTS.filter(e => !e.date.toLowerCase().startsWith("every") && e.date !== "TBA 2026").map(e => ({
+      id: `local-${e.id}`, name: e.name, date: e.date.includes("September") ? "2026-09-15" : e.date,
+      category: e.category, description: e.description, time: e.time, location: "", imageUrl: null,
+    })),
+    ...notionEvents,
+  ].sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  // Build 12-month range
+  const now = new Date();
+  const months = [];
+  for (let i = 0; i < 12; i++) {
+    const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
+    months.push({ label: d.toLocaleDateString("en-US", { month: "short" }), year: d.getFullYear(), month: d.getMonth(), date: d });
+  }
+  const startDate = months[0].date;
+  const endDate = new Date(months[11].date.getFullYear(), months[11].date.getMonth() + 1, 0);
+  const totalDays = (endDate - startDate) / (1000 * 60 * 60 * 24);
+
+  const getPosition = (dateStr) => {
+    const d = new Date(dateStr + "T00:00:00");
+    const dayOffset = (d - startDate) / (1000 * 60 * 60 * 24);
+    return Math.max(0, Math.min(100, (dayOffset / totalDays) * 100));
+  };
+
+  const categoryColors = { "Live Music": C.sunset, "Food & Social": "#8B5E3C", "Sports & Outdoors": C.sage, Community: C.lakeBlue };
+
+  // Desktop: horizontal | Mobile: vertical
+  return (
+    <section style={{ background: C.night, padding: "80px 24px", overflow: "hidden" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <FadeIn direction="left">
+          <SectionLabel light>12-Month View</SectionLabel>
+          <SectionTitle light>Event Timeline</SectionTitle>
+          <p style={{ fontSize: 14, color: "rgba(255,255,255,0.4)", marginBottom: 48, maxWidth: 480, lineHeight: 1.7 }}>
+            Plan ahead. Hover to preview, click for full details.
+          </p>
+        </FadeIn>
+
+        {/* === DESKTOP HORIZONTAL TIMELINE === */}
+        <div className="timeline-desktop" style={{ position: "relative" }}>
+          {/* Month labels */}
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 20, paddingRight: 20 }}>
+            {months.map((m, i) => (
+              <FadeIn key={i} delay={i * 30} direction="none">
+                <div style={{ textAlign: "center", minWidth: 0 }}>
+                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: m.month === now.getMonth() && m.year === now.getFullYear() ? C.sunsetLight : "rgba(255,255,255,0.25)" }}>
+                    {m.label}
+                  </div>
+                  {(i === 0 || m.month === 0) && (
+                    <div style={{ fontSize: 9, color: "rgba(255,255,255,0.15)", fontFamily: "'Libre Franklin', sans-serif", marginTop: 2 }}>{m.year}</div>
+                  )}
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+
+          {/* Timeline track */}
+          <div
+            ref={scrollRef}
+            style={{ position: "relative", height: 160, background: "rgba(255,255,255,0.03)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.06)", overflow: "visible" }}
+          >
+            {/* Track line — pulsating energy */}
+            <div className="timeline-pulse" style={{ position: "absolute", top: 30, left: 20, right: 20, height: 3, background: "rgba(255,255,255,0.08)", borderRadius: 2 }}>
+              {/* "Now" marker — breathing */}
+              <div className="timeline-dot-breathe" style={{ position: "absolute", left: 0, top: -5, width: 12, height: 12, borderRadius: "50%", background: C.sunset, color: C.sunset }}>
+                <div style={{ position: "absolute", top: -18, left: "50%", transform: "translateX(-50%)", fontSize: 8, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunsetLight, whiteSpace: "nowrap" }}>NOW</div>
+              </div>
+            </div>
+
+            {/* Month dividers */}
+            {months.slice(1).map((m, i) => {
+              const pos = getPosition(`${m.year}-${String(m.month + 1).padStart(2, "0")}-01`);
+              return (
+                <div key={i} style={{ position: "absolute", left: `calc(20px + ${pos}% * (100% - 40px) / 100)`, top: 20, bottom: 20, width: 1, background: "rgba(255,255,255,0.04)" }} />
+              );
+            })}
+
+            {/* Event dots */}
+            {allEvents.map((event) => {
+              const pos = getPosition(event.date);
+              const color = categoryColors[event.category] || C.sage;
+              const isActive = activeEvent?.id === event.id;
+              return (
+                <div
+                  key={event.id}
+                  style={{ position: "absolute", left: `calc(20px + ${pos}% * (100% - 40px) / 100)`, top: 24, transform: "translateX(-50%)", zIndex: isActive ? 10 : 1, cursor: "pointer" }}
+                  onMouseEnter={() => setActiveEvent(event)}
+                  onMouseLeave={() => setActiveEvent(null)}
+                  onClick={() => setLightboxEvent(event)}
+                >
+                  {/* Dot */}
+                  <div style={{
+                    width: isActive ? 16 : 10, height: isActive ? 16 : 10,
+                    borderRadius: "50%", background: color,
+                    border: `2px solid ${isActive ? C.cream : color}`,
+                    boxShadow: isActive ? `0 0 16px ${color}60` : "none",
+                    transition: "all 0.2s ease",
+                  }} />
+
+                  {/* Hover preview card */}
+                  {isActive && (
+                    <div style={{
+                      position: "absolute", top: 24, left: "50%", transform: "translateX(-50%)",
+                      background: `linear-gradient(135deg, ${C.dusk} 0%, ${C.night} 100%)`,
+                      border: `1px solid ${color}40`, borderRadius: 10,
+                      padding: "14px 18px", minWidth: 220, maxWidth: 280,
+                      boxShadow: `0 12px 40px rgba(0,0,0,0.4)`,
+                      animation: "float 0.3s ease forwards",
+                      whiteSpace: "normal",
+                    }}>
+                      {event.imageUrl && (
+                        <img src={event.imageUrl} alt="" style={{ width: "100%", height: 80, objectFit: "cover", borderRadius: 6, marginBottom: 10 }} />
+                      )}
+                      <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color, marginBottom: 4 }}>
+                        {new Date(event.date + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                      </div>
+                      <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, color: C.cream, marginBottom: 4, lineHeight: 1.3 }}>
+                        {event.name}
+                      </div>
+                      <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", lineHeight: 1.5 }}>
+                        {event.description.slice(0, 100)}{event.description.length > 100 ? "..." : ""}
+                      </div>
+                      {event.time && <div style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", marginTop: 6 }}>{event.time}{event.location ? ` · ${event.location}` : ""}</div>}
+                      <div style={{ fontSize: 9, color, marginTop: 8, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase" }}>Click for details</div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+
+            {/* Empty state */}
+            {allEvents.length === 0 && (
+              <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <div style={{ fontSize: 13, color: "rgba(255,255,255,0.2)", fontFamily: "'Libre Franklin', sans-serif" }}>
+                  Events will appear here as they're submitted
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Legend */}
+          <div style={{ display: "flex", gap: 20, marginTop: 20, flexWrap: "wrap" }}>
+            {Object.entries(categoryColors).map(([cat, color]) => (
+              <div key={cat} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <div style={{ width: 8, height: 8, borderRadius: "50%", background: color }} />
+                <span style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>{cat}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* === MOBILE VERTICAL TIMELINE === */}
+        <div className="timeline-mobile" style={{ display: "none" }}>
+          <div style={{ position: "relative", paddingLeft: 32 }}>
+            {/* Vertical line */}
+            <div style={{ position: "absolute", left: 10, top: 0, bottom: 0, width: 2, background: `linear-gradient(to bottom, ${C.sunset}, ${C.sage}, transparent)`, borderRadius: 1 }} />
+
+            {allEvents.length === 0 && (
+              <div style={{ padding: "40px 0", fontSize: 13, color: "rgba(255,255,255,0.2)", fontFamily: "'Libre Franklin', sans-serif" }}>
+                Events will appear as they're submitted
+              </div>
+            )}
+
+            {allEvents.map((event, i) => {
+              const color = categoryColors[event.category] || C.sage;
+              return (
+                <div key={event.id} onClick={() => setLightboxEvent(event)} style={{ marginBottom: 28, cursor: "pointer", position: "relative" }}>
+                  {/* Dot on the line */}
+                  <div style={{ position: "absolute", left: -27, top: 6, width: 10, height: 10, borderRadius: "50%", background: color, border: `2px solid ${C.night}` }} />
+                  <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color, marginBottom: 2 }}>
+                    {new Date(event.date + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                  </div>
+                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.cream, marginBottom: 4, lineHeight: 1.3 }}>
+                    {event.name}
+                  </div>
+                  <div style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", lineHeight: 1.5 }}>
+                    {event.description.slice(0, 80)}{event.description.length > 80 ? "..." : ""}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* LIGHTBOX — reuse shared component */}
+      <EventLightbox event={lightboxEvent} onClose={() => setLightboxEvent(null)} />
+
+      {/* Mobile/desktop toggle styles */}
+      <style>{`
+        @media (max-width: 768px) {
+          .timeline-desktop { display: none !important; }
+          .timeline-mobile { display: block !important; }
+        }
+      `}</style>
+    </section>
+  );
+}
+
+// ============================================================
 // 📅  WHAT'S HAPPENING — home page teaser (3 events)
 // ============================================================
 function HappeningSection() {
   const categoryColors = {
+    "Live Music": C.sunset,
+    "Food & Social": "#8B5E3C",
+    "Sports & Outdoors": C.sage,
     Community: C.lakeBlue,
-    Market: C.sage,
-    Activity: C.sunset,
-    Media: C.driftwood,
   };
   const preview = EVENTS.slice(0, 3);
 
@@ -747,8 +1322,8 @@ function HappeningHero() {
 // ============================================================
 // 📅  /happening — WEEKLY RECURRING EVENTS
 // ============================================================
-function WeeklyEventsSection({ events }) {
-  const categoryColors = { Community: C.lakeBlue, Activity: C.sunset, Media: C.driftwood, Market: C.sage };
+function WeeklyEventsSection({ events, onEventClick }) {
+  const eventCatColors = { "Live Music": C.sunset, "Food & Social": "#8B5E3C", "Sports & Outdoors": C.sage, Community: C.lakeBlue };
   const dayLabels = {
     "Every Friday": "FRI",
     "Every Friday & Saturday": "FRI — SAT",
@@ -769,11 +1344,12 @@ function WeeklyEventsSection({ events }) {
 
         <div>
           {events.map((event, i) => {
-            const color = categoryColors[event.category] || C.sage;
+            const color = eventCatColors[event.category] || C.sage;
             const day = dayLabels[event.date] || event.date;
             return (
               <FadeIn key={event.id} delay={i * 60}>
                 <div
+                  onClick={() => onEventClick(event)}
                   style={{
                     display: "grid",
                     gridTemplateColumns: "120px 1fr auto",
@@ -781,8 +1357,9 @@ function WeeklyEventsSection({ events }) {
                     alignItems: "start",
                     padding: "36px 0",
                     borderBottom: `1px solid ${C.sand}`,
-                    transition: "background 0.2s",
+                    transition: "all 0.2s",
                     borderRadius: 4,
+                    cursor: "pointer",
                   }}
                   onMouseEnter={e => { e.currentTarget.style.background = `${color}08`; e.currentTarget.style.paddingLeft = "12px"; e.currentTarget.style.paddingRight = "12px"; }}
                   onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.paddingLeft = "0"; e.currentTarget.style.paddingRight = "0"; }}
@@ -806,19 +1383,33 @@ function WeeklyEventsSection({ events }) {
                       fontSize: "clamp(20px, 2.5vw, 30px)",
                       fontWeight: 400,
                       color: C.text,
-                      margin: "0 0 10px 0",
+                      margin: "0 0 6px 0",
                       lineHeight: 1.2,
                     }}>
                       {event.name}
                     </h3>
+                    {event.location && (
+                      <div style={{ fontSize: 13, color: C.textMuted, marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>
+                        {event.location}
+                      </div>
+                    )}
                     <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: 0, maxWidth: 520 }}>
                       {event.description}
                     </p>
                   </div>
 
-                  {/* Category */}
+                  {/* Cost badge */}
                   <div style={{ paddingTop: 8 }}>
-                    <CategoryPill>{event.category}</CategoryPill>
+                    <span style={{
+                      fontFamily: "'Libre Franklin', sans-serif",
+                      fontSize: 11, fontWeight: 600, letterSpacing: 1,
+                      color: event.cost === "Free" || event.cost === "Free to watch" ? C.sage : C.sunset,
+                      background: event.cost === "Free" || event.cost === "Free to watch" ? `${C.sage}15` : `${C.sunset}15`,
+                      padding: "5px 12px", borderRadius: 20,
+                      textTransform: "uppercase",
+                    }}>
+                      {event.cost || "Free"}
+                    </span>
                   </div>
                 </div>
               </FadeIn>
@@ -833,8 +1424,20 @@ function WeeklyEventsSection({ events }) {
 // ============================================================
 // 📅  /happening — SPECIAL / ONE-OFF EVENTS
 // ============================================================
-function CalendarSection({ events }) {
-  const categoryColors = { Community: C.lakeBlue, Activity: C.sunset, Media: C.driftwood, Market: C.sage };
+function formatEventDate(dateStr) {
+  if (!dateStr || dateStr.includes("TBA")) return dateStr || "";
+  try {
+    const d = new Date(dateStr + "T00:00:00");
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    return `${days[d.getDay()]} ${String(d.getDate()).padStart(2, "0")} ${months[d.getMonth()]}`;
+  } catch { return dateStr; }
+}
+
+function CalendarSection({ events, onEventClick, activeFilter, onFilterChange }) {
+  const eventCatColors = { "Live Music": C.sunset, "Food & Social": "#8B5E3C", "Sports & Outdoors": C.sage, Community: C.lakeBlue };
+  const categories = ["All", ...new Set(events.map(e => e.category))];
+  const filtered = activeFilter === "All" ? events : events.filter(e => e.category === activeFilter);
 
   return (
     <section style={{ background: C.cream, padding: "100px 24px" }}>
@@ -842,71 +1445,116 @@ function CalendarSection({ events }) {
         <FadeIn>
           <SectionLabel>Special Events · 2026</SectionLabel>
           <SectionTitle>On the Calendar</SectionTitle>
-          <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.8, maxWidth: 480, margin: "0 0 64px 0" }}>
+          <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.8, maxWidth: 480, margin: "0 0 32px 0" }}>
             The big ones. Mark them down.
           </p>
         </FadeIn>
 
+        {/* Filter tabs */}
+        <FadeIn delay={100}>
+          <div style={{ display: "flex", gap: 8, marginBottom: 48, flexWrap: "wrap" }}>
+            {categories.map(cat => {
+              const isActive = activeFilter === cat;
+              const catColor = eventCatColors[cat] || C.sage;
+              return (
+                <button
+                  key={cat}
+                  onClick={() => onFilterChange(cat)}
+                  className="btn-animated"
+                  style={{
+                    fontFamily: "'Libre Franklin', sans-serif",
+                    fontSize: 12, fontWeight: 600, letterSpacing: 1,
+                    textTransform: "uppercase",
+                    padding: "8px 18px", borderRadius: 24,
+                    border: isActive ? "none" : `1.5px solid ${C.sand}`,
+                    background: isActive ? (cat === "All" ? C.dusk : catColor) : "transparent",
+                    color: isActive ? C.cream : C.textMuted,
+                    cursor: "pointer",
+                    transition: "all 0.2s",
+                  }}
+                >
+                  {cat}
+                </button>
+              );
+            })}
+          </div>
+        </FadeIn>
+
         <div>
-          {events.map((event, i) => {
-            const color = categoryColors[event.category] || C.sage;
+          {filtered.map((event, i) => {
+            const color = eventCatColors[event.category] || C.sage;
+            const dateLabel = formatEventDate(event.date);
             return (
-              <FadeIn key={event.id} delay={i * 80}>
-                <div style={{
-                  display: "grid",
-                  gridTemplateColumns: "260px 1fr",
-                  gap: "0 80px",
-                  alignItems: "start",
-                  padding: "64px 0",
-                  borderBottom: i < events.length - 1 ? `1px solid ${C.sand}` : "none",
-                }}>
-                  {/* Date — large editorial */}
+              <FadeIn key={event.id} delay={i * 50}>
+                <div
+                  onClick={() => onEventClick(event)}
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "110px 1fr auto",
+                    gap: "0 32px",
+                    alignItems: "center",
+                    padding: "24px 0",
+                    borderBottom: i < filtered.length - 1 ? `1px solid ${C.sand}` : "none",
+                    cursor: "pointer",
+                    transition: "all 0.2s",
+                    borderRadius: 4,
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = `${color}08`; e.currentTarget.style.paddingLeft = "12px"; e.currentTarget.style.paddingRight = "12px"; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.paddingLeft = "0"; e.currentTarget.style.paddingRight = "0"; }}
+                >
+                  {/* Date — compact format */}
+                  <div style={{
+                    fontFamily: "'Caveat', cursive",
+                    fontSize: 22,
+                    color,
+                    lineHeight: 1.1,
+                    userSelect: "none",
+                  }}>
+                    {dateLabel}
+                  </div>
+
+                  {/* Event info */}
                   <div>
-                    <div style={{
+                    <h3 style={{
                       fontFamily: "'Libre Baskerville', serif",
-                      fontSize: "clamp(30px, 4vw, 52px)",
+                      fontSize: "clamp(16px, 2vw, 22px)",
                       fontWeight: 400,
-                      color: C.driftwood,
-                      lineHeight: 1.1,
-                      marginBottom: 6,
+                      color: C.text,
+                      margin: "0 0 4px 0",
+                      lineHeight: 1.3,
                     }}>
-                      {event.date.replace(" 2026", "")}
-                    </div>
-                    <div style={{
-                      fontFamily: "'Libre Franklin', sans-serif",
-                      fontSize: 11, fontWeight: 600, letterSpacing: 3,
-                      textTransform: "uppercase", color: C.textMuted,
-                    }}>
-                      2026
+                      {event.name}
+                    </h3>
+                    <div style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
+                      {event.time && <span>{event.time}</span>}
+                      {event.time && event.location && <span style={{ margin: "0 6px", opacity: 0.4 }}>·</span>}
+                      {event.location && <span>{event.location}</span>}
                     </div>
                   </div>
 
-                  {/* Event */}
+                  {/* Cost badge */}
                   <div>
-                    <CategoryPill>{event.category}</CategoryPill>
-                    <h2 style={{
-                      fontFamily: "'Libre Baskerville', serif",
-                      fontSize: "clamp(24px, 3.5vw, 44px)",
-                      fontWeight: 400,
-                      color: C.text,
-                      margin: "18px 0 14px 0",
-                      lineHeight: 1.1,
+                    <span style={{
+                      fontFamily: "'Libre Franklin', sans-serif",
+                      fontSize: 11, fontWeight: 600, letterSpacing: 1,
+                      color: event.cost === "Free" || event.cost === "Free to watch" ? C.sage : C.sunset,
+                      background: event.cost === "Free" || event.cost === "Free to watch" ? `${C.sage}15` : `${C.sunset}15`,
+                      padding: "5px 12px", borderRadius: 20,
+                      textTransform: "uppercase",
+                      whiteSpace: "nowrap",
                     }}>
-                      {event.name}
-                    </h2>
-                    <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.8, margin: "0 0 16px 0", maxWidth: 500 }}>
-                      {event.description}
-                    </p>
-                    {event.time && (
-                      <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color }}>
-                        {event.time}
-                      </div>
-                    )}
+                      {event.cost || "Free"}
+                    </span>
                   </div>
                 </div>
               </FadeIn>
             );
           })}
+          {filtered.length === 0 && (
+            <div style={{ textAlign: "center", padding: "60px 0", color: C.textMuted, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif" }}>
+              No events in this category yet. Check back soon!
+            </div>
+          )}
         </div>
       </div>
     </section>
@@ -1045,82 +1693,118 @@ function HappeningSubmitCTA() {
 // ============================================================
 // 🗺️  EXPLORE
 // ============================================================
+function ExploreCard({ place, large = false, delay = 0 }) {
+  const tilt = useCardTilt(5);
+  const hasImage = !!place.image;
+  return (
+    <FadeIn delay={delay} direction={large ? "scale" : "up"}>
+      <div
+        ref={tilt.ref}
+        onMouseMove={tilt.onMouseMove}
+        onMouseLeave={tilt.onMouseLeave}
+        onClick={place.action}
+        className="card-tilt"
+        style={{
+          backgroundImage: hasImage ? `url(${place.image})` : "none",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          border: `1px solid ${large || hasImage ? "rgba(255,255,255,0.1)" : C.sand}`,
+          borderRadius: 14,
+          padding: large ? "36px 32px" : "22px 20px",
+          cursor: "pointer",
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "flex-end",
+          minHeight: large ? 240 : hasImage ? 180 : "auto",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        {/* Dark overlay for text readability on images */}
+        {hasImage && (
+          <div style={{
+            position: "absolute", inset: 0,
+            background: large
+              ? "linear-gradient(to top, rgba(10,18,24,0.85) 0%, rgba(10,18,24,0.3) 50%, rgba(10,18,24,0.1) 100%)"
+              : "linear-gradient(to top, rgba(10,18,24,0.82) 0%, rgba(10,18,24,0.25) 50%, rgba(10,18,24,0.05) 100%)",
+            borderRadius: 14,
+          }} />
+        )}
+        {!hasImage && (
+          <div style={{
+            position: "absolute", inset: 0,
+            background: large ? `linear-gradient(135deg, ${C.dusk} 0%, ${C.lakeDark} 100%)` : C.warmWhite,
+            borderRadius: 14,
+          }} />
+        )}
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <div style={{ fontSize: large ? 36 : 26, marginBottom: large ? 14 : 8 }}>{place.icon}</div>
+          <div style={{
+            fontFamily: "'Libre Baskerville', serif",
+            fontSize: large ? 22 : 14, fontWeight: 700,
+            color: (large || hasImage) ? C.cream : C.text,
+            marginBottom: large ? 8 : 5,
+          }}>{place.name}</div>
+          <div style={{
+            fontSize: large ? 14 : 12,
+            color: (large || hasImage) ? "rgba(255,255,255,0.6)" : C.textMuted,
+            lineHeight: 1.6, marginBottom: large ? 16 : 10,
+          }}>{place.desc}</div>
+          <div className="link-hover-underline" style={{
+            fontSize: 11, fontFamily: "'Libre Franklin', sans-serif",
+            fontWeight: 700, letterSpacing: 1,
+            color: C.sunsetLight, textTransform: "uppercase",
+          }}>
+            {place.actionLabel} →
+          </div>
+        </div>
+      </div>
+    </FadeIn>
+  );
+}
+
 function ExploreSection() {
   const places = [
-    {
-      icon: "⛵", name: "Devils Lake",
-      desc: "600+ acres of water for boating, fishing, and kayaking. The party lake.",
-      action: () => window.open("https://maps.google.com/?q=Devils+Lake+Manitou+Beach+MI", "_blank"),
-      actionLabel: "Open in Maps",
-    },
-    {
-      icon: "🏠", name: "Lighthouse Replica",
-      desc: "The village's beloved icon. Photogenic and completely landlocked.",
-      action: () => window.open("https://maps.google.com/?q=Manitou+Beach+Lighthouse+Replica+Michigan", "_blank"),
-      actionLabel: "Get Directions",
-    },
-    {
-      icon: "🌿", name: "Irish Hills",
-      desc: "Rolling hills, hidden trails, and enough nature to justify the drive.",
-      action: () => window.open("https://www.irishhills.com", "_blank"),
-      actionLabel: "Explore Irish Hills",
-    },
-    {
-      icon: "🍺", name: "Lake Town Nightlife",
-      desc: "Year-round bars and restaurants with a dock-side state of mind.",
-      action: () => document.getElementById("businesses")?.scrollIntoView({ behavior: "smooth" }),
-      actionLabel: "See Local Businesses",
-    },
-    {
-      icon: "🎣", name: "Fishing",
-      desc: "Bass, pike, bluegill — and the occasional tall tale about the one that got away.",
-      action: () => window.open("https://www.michigan.gov/dnr/managing-resources/fisheries", "_blank"),
-      actionLabel: "DNR Fishing Info",
-    },
-    {
-      icon: "🏡", name: "Cottage Country",
-      desc: "Weekend rentals, seasonal getaways, and the forever-home dream.",
-      action: () => document.getElementById("holly")?.scrollIntoView({ behavior: "smooth" }),
-      actionLabel: "Talk to Holly",
-    },
+    { icon: "⛵", name: "Devils Lake", desc: "600+ acres of water for boating, fishing, and kayaking. The party lake.", image: "/images/explore-devils-lake.jpg", action: () => window.open("https://maps.google.com/?q=Devils+Lake+Manitou+Beach+MI", "_blank"), actionLabel: "Open in Maps" },
+    { icon: "🏠", name: "Lighthouse Replica", desc: "The village's beloved icon. Photogenic and completely landlocked.", image: "/images/explore-lighthouse.jpg", action: () => window.open("https://maps.google.com/?q=Manitou+Beach+Lighthouse+Replica+Michigan", "_blank"), actionLabel: "Get Directions" },
+    { icon: "🌿", name: "Irish Hills", desc: "Rolling hills, hidden trails, and enough nature to justify the drive.", image: "/images/explore-Irish-hills.jpg", action: () => window.open("https://www.irishhills.com", "_blank"), actionLabel: "Explore Irish Hills" },
+    { icon: "🍺", name: "Lake Town Nightlife", desc: "Year-round bars and restaurants with a dock-side state of mind.", image: "/images/explore-nightlife.jpg", action: () => document.getElementById("businesses")?.scrollIntoView({ behavior: "smooth" }), actionLabel: "See Local Businesses" },
+    { icon: "🎣", name: "Fishing", desc: "Bass, pike, bluegill — and the occasional tall tale about the one that got away.", image: "/images/explore-fishing.jpg", action: () => window.open("https://www.michigan.gov/dnr/managing-resources/fisheries", "_blank"), actionLabel: "DNR Fishing Info" },
+    { icon: "🍷", name: "Breweries & Wineries", desc: "Chateau Aeronautique, Cherry Creek Cellars, Gypsy Blue — Michigan wine and craft beverages, right in the Irish Hills.", image: "/images/Explore-wineries.jpg", action: () => document.getElementById("businesses")?.scrollIntoView({ behavior: "smooth" }), actionLabel: "See Local Wineries" },
+    { icon: "🌊", name: "Round Lake", desc: "515 acres, 67 feet deep, and the quieter side of lake life. Our neighbors across the road — always have been, always will be.", image: "/images/explore-round-lake.jpg", action: () => window.location.href = "/round-lake", actionLabel: "Explore Round Lake" },
   ];
 
   return (
     <section id="explore" style={{ background: C.cream, padding: "100px 24px" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "center" }}>
-          <FadeIn>
-            <div>
-              <SectionLabel>The Area</SectionLabel>
-              <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(28px, 4.5vw, 46px)", fontWeight: 400, color: C.text, margin: "0 0 18px 0", lineHeight: 1.2 }}>
-                Explore<br />Manitou Beach
-              </h2>
-              <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.8, marginBottom: 32 }}>
-                Sitting on the shores of Devils Lake in the Michigan Irish Hills — there's more to explore here than the name implies. (Yes, we're aware there's no beach. We've all made peace with it.)
-              </p>
-              <Btn onClick={() => window.open("https://maps.google.com/?q=Manitou+Beach+Michigan+49267", "_blank")} variant="dark">Get Directions</Btn>
-            </div>
-          </FadeIn>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-            {places.map((p, i) => (
-              <FadeIn key={i} delay={i * 60}>
-                <div
-                  onClick={p.action}
-                  style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 10, padding: "20px 18px", transition: "all 0.2s", cursor: "pointer" }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = C.sage; e.currentTarget.style.transform = "translateY(-2px)"; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = C.sand; e.currentTarget.style.transform = "none"; }}
-                >
-                  <div style={{ fontSize: 26, marginBottom: 8 }}>{p.icon}</div>
-                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, fontWeight: 700, color: C.text, marginBottom: 5 }}>{p.name}</div>
-                  <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.6, marginBottom: 10 }}>{p.desc}</div>
-                  <div style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, color: C.sage, textTransform: "uppercase" }}>
-                    {p.actionLabel} →
-                  </div>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
+        <FadeIn direction="left">
+          <SectionLabel>The Area</SectionLabel>
+          <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(28px, 4.5vw, 46px)", fontWeight: 400, color: C.text, margin: "0 0 18px 0", lineHeight: 1.2 }}>
+            Explore Manitou Beach
+          </h2>
+          <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.8, marginBottom: 48, maxWidth: 560 }}>
+            Sitting on the shores of Devils Lake in the Michigan Irish Hills — there's more to explore here than the name implies.
+          </p>
+        </FadeIn>
+
+        {/* Bento layout: 2 large cards on top, 4 smaller below */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
+          {places.slice(0, 2).map((p, i) => (
+            <ExploreCard key={i} place={p} large delay={i * 100} />
+          ))}
         </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 16 }}>
+          {places.slice(2).map((p, i) => (
+            <ExploreCard key={i + 2} place={p} delay={200 + i * 60} />
+          ))}
+        </div>
+
+        <FadeIn delay={400}>
+          <div style={{ textAlign: "center", marginTop: 40 }}>
+            <Btn onClick={() => window.open("https://maps.google.com/?q=Manitou+Beach+Michigan+49267", "_blank")} variant="dark">Get Directions</Btn>
+          </div>
+        </FadeIn>
       </div>
     </section>
   );
@@ -1163,7 +1847,7 @@ function BusinessDirectory() {
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
 
         {/* Header */}
-        <FadeIn>
+        <FadeIn direction="left">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 24, marginBottom: 32 }}>
             <div>
               <SectionLabel>The Directory</SectionLabel>
@@ -1220,16 +1904,22 @@ function BusinessDirectory() {
           </div>
         </FadeIn>
 
-        {/* Featured listings — editorial dark cards */}
+        {/* Featured listings — horizontal scroll showcase */}
         {featured.length > 0 && (
-          <FadeIn delay={100}>
+          <FadeIn delay={100} direction="right">
             <div style={{ marginBottom: 60 }}>
-              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 3.5, textTransform: "uppercase", color: C.sunset, marginBottom: 20, fontWeight: 700 }}>
-                ★ Featured Partners
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 20, alignItems: "start" }}>
+              <div
+                className="horizontal-scroll"
+                style={{
+                  display: "flex", gap: 24, overflowX: "auto",
+                  scrollSnapType: "x mandatory", padding: "8px 4px 20px",
+                  margin: "0 -4px",
+                }}
+              >
                 {featured.map(b => (
-                  <FeaturedBusinessCard key={b.id} business={b} />
+                  <div key={b.id} style={{ minWidth: 340, maxWidth: 380, flex: "0 0 auto", scrollSnapAlign: "start" }}>
+                    <FeaturedBusinessCard business={b} />
+                  </div>
                 ))}
               </div>
             </div>
@@ -1305,26 +1995,38 @@ function BusinessDirectory() {
   );
 }
 
-// Featured business — editorial dark card
+// Featured business — editorial dark card with glow + tilt
 function FeaturedBusinessCard({ business }) {
   const color = CAT_COLORS[business.category] || C.sage;
+  const tilt = useCardTilt(4);
   return (
     <div
+      ref={tilt.ref}
+      onMouseMove={tilt.onMouseMove}
+      onMouseLeave={tilt.onMouseLeave}
+      className="card-tilt featured-card-glow"
       style={{
         background: `linear-gradient(145deg, ${C.dusk} 0%, ${C.night} 100%)`,
-        borderRadius: 12, padding: "28px",
+        borderRadius: 14, padding: "22px 24px",
         border: "1px solid rgba(255,255,255,0.07)",
-        transition: "transform 0.2s, border-color 0.2s",
-        display: "flex", flexDirection: "column",
+        height: "100%",
+        position: "relative",
+        overflow: "hidden",
       }}
-      onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.borderColor = `${color}50`; }}
-      onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.07)"; }}
     >
-      {/* Logo / photo area */}
-      <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 18 }}>
+      {/* Shimmer overlay */}
+      <div style={{
+        position: "absolute", inset: 0, borderRadius: 14, pointerEvents: "none",
+        background: `linear-gradient(110deg, transparent 30%, ${C.sunset}08 50%, transparent 70%)`,
+        backgroundSize: "200% 100%",
+        animation: "shimmer 4s ease-in-out infinite",
+      }} />
+      {/* Compact horizontal layout: logo + info */}
+      <div style={{ display: "flex", gap: 18, alignItems: "flex-start", position: "relative", zIndex: 1 }}>
+        {/* Logo — larger */}
         <div style={{
-          width: 56, height: 56, borderRadius: 8, flexShrink: 0, overflow: "hidden",
-          background: "rgba(255,255,255,0.05)",
+          width: 72, height: 72, borderRadius: 10, flexShrink: 0, overflow: "hidden",
+          background: "rgba(255,255,255,0.06)",
           border: `1.5px dashed ${business.logo ? "transparent" : "rgba(255,255,255,0.18)"}`,
           display: "flex", alignItems: "center", justifyContent: "center",
         }}>
@@ -1336,26 +2038,30 @@ function FeaturedBusinessCard({ business }) {
             </span>
           )}
         </div>
-        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunset }}>
-          ★ Featured Partner
+        {/* Info */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.cream, margin: "0 0 6px 0", lineHeight: 1.25 }}>
+            {business.name}
+          </h3>
+          <p style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", lineHeight: 1.6, margin: "0 0 6px 0" }}>
+            {business.description}
+          </p>
+          {business.address && (
+            <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif", marginBottom: 4, fontStyle: "italic" }}>
+              {business.address}
+            </div>
+          )}
+          {business.phone && (
+            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif", marginBottom: 6 }}>
+              {business.phone}
+            </div>
+          )}
+          {business.website && (
+            <a href={business.website} target="_blank" rel="noopener noreferrer" className="link-hover-underline" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color, textDecoration: "none" }}>
+              Visit →
+            </a>
+          )}
         </div>
-      </div>
-      <CategoryPill dark>{business.category}</CategoryPill>
-      <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.cream, margin: "12px 0 10px 0", lineHeight: 1.25 }}>
-        {business.name}
-      </h3>
-      <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", lineHeight: 1.7, margin: "0 0 20px 0", flex: 1 }}>
-        {business.description}
-      </p>
-      <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 16, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <span style={{ fontSize: 13, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif" }}>
-          {business.phone}
-        </span>
-        {business.website && (
-          <a href={business.website} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color, textDecoration: "none" }}>
-            Visit →
-          </a>
-        )}
       </div>
     </div>
   );
@@ -1424,15 +2130,24 @@ function HollyYetiSection() {
       position: "relative",
       overflow: "hidden",
     }}>
-      {/* Subtle texture */}
+      {/* Subtle texture + decorative waveform */}
       <div style={{
         position: "absolute", inset: 0, zIndex: 0,
         backgroundImage: `radial-gradient(ellipse 80% 60% at 80% 50%, ${C.lakeBlue}15 0%, transparent 70%)`,
       }} />
+      {/* Large decorative quotation mark */}
+      <div style={{
+        position: "absolute", top: 40, left: 40, zIndex: 0,
+        fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(200px, 30vw, 400px)",
+        color: "rgba(255,255,255,0.02)", lineHeight: 0.8, userSelect: "none", pointerEvents: "none",
+      }}>"</div>
+      {/* Floating ambient circles */}
+      <div style={{ position: "absolute", bottom: "10%", right: "5%", width: 150, height: 150, borderRadius: "50%", border: `1px solid ${C.sage}10`, animation: "float 8s ease-in-out infinite", pointerEvents: "none", zIndex: 0 }} />
+      <div style={{ position: "absolute", top: "15%", left: "60%", width: 80, height: 80, borderRadius: "50%", background: `${C.sunset}06`, animation: "float-slow 10s ease-in-out infinite 3s", pointerEvents: "none", zIndex: 0 }} />
 
       <div style={{ maxWidth: 1100, margin: "0 auto", position: "relative", zIndex: 1 }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "center" }}>
-          <FadeIn>
+          <FadeIn direction="left">
             <SectionLabel light>The Voices of the Lake</SectionLabel>
             <h2 style={{
               fontFamily: "'Libre Baskerville', serif",
@@ -1560,38 +2275,63 @@ function LivingSection() {
           </p>
         </FadeIn>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))", gap: 24 }}>
-          {items.map((item, i) => (
-            <FadeIn key={i} delay={i * 80}>
-              <div style={{
-                background: C.warmWhite,
-                border: `1px solid ${C.sand}`,
-                borderRadius: 10,
-                padding: "28px 26px 26px",
-                display: "flex",
-                flexDirection: "column",
-                height: "100%",
-                transition: "all 0.2s",
-              }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = `${C.sage}60`; e.currentTarget.style.transform = "translateY(-2px)"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = C.sand; e.currentTarget.style.transform = "none"; }}
-              >
-                <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.text, margin: "0 0 12px 0", fontWeight: 700 }}>
-                  {item.title}
-                </h3>
-                <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: "0 0 24px 0", flex: 1 }}>
-                  {item.desc}
-                </p>
-                <a href={item.href} target={item.external ? "_blank" : "_self"} rel={item.external ? "noopener noreferrer" : undefined} style={{
-                  fontFamily: "'Libre Franklin', sans-serif",
-                  fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase",
-                  color: C.sage, textDecoration: "none",
-                }}>
-                  {item.cta} →
-                </a>
-              </div>
-            </FadeIn>
-          ))}
+        {/* Magazine layout: hero card + 3 smaller */}
+        <FadeIn direction="scale">
+          <div
+            style={{
+              background: `linear-gradient(135deg, ${C.dusk} 0%, ${C.lakeDark} 100%)`,
+              borderRadius: 16, padding: "48px 44px",
+              marginBottom: 20, position: "relative", overflow: "hidden",
+              border: "1px solid rgba(255,255,255,0.08)",
+            }}
+          >
+            <div style={{ position: "absolute", top: -40, right: -40, width: 200, height: 200, borderRadius: "50%", background: `${C.sage}08`, pointerEvents: "none" }} />
+            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 3.5vw, 36px)", color: C.cream, margin: "0 0 14px 0", fontWeight: 400 }}>
+              {items[0].title}
+            </h3>
+            <p style={{ fontSize: 16, color: "rgba(255,255,255,0.55)", lineHeight: 1.8, margin: "0 0 28px 0", maxWidth: 520 }}>
+              {items[0].desc}
+            </p>
+            <a href={items[0].href} className="link-hover-underline" style={{
+              fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700,
+              letterSpacing: 1.5, textTransform: "uppercase", color: C.sunsetLight, textDecoration: "none",
+            }}>
+              {items[0].cta} →
+            </a>
+          </div>
+        </FadeIn>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+          {items.slice(1).map((item, i) => {
+            const tilt = useCardTilt(4);
+            return (
+              <FadeIn key={i} delay={i * 100} direction={i === 0 ? "left" : i === 2 ? "right" : "up"}>
+                <div
+                  ref={tilt.ref}
+                  onMouseMove={tilt.onMouseMove}
+                  onMouseLeave={tilt.onMouseLeave}
+                  className="card-tilt"
+                  style={{
+                    background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 14,
+                    padding: "28px 26px 26px", display: "flex", flexDirection: "column", height: "100%",
+                  }}
+                >
+                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.text, margin: "0 0 12px 0", fontWeight: 700 }}>
+                    {item.title}
+                  </h3>
+                  <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: "0 0 24px 0", flex: 1 }}>
+                    {item.desc}
+                  </p>
+                  <a href={item.href} target={item.external ? "_blank" : "_self"} rel={item.external ? "noopener noreferrer" : undefined}
+                    className="link-hover-underline"
+                    style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sage, textDecoration: "none" }}
+                  >
+                    {item.cta} →
+                  </a>
+                </div>
+              </FadeIn>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -1601,23 +2341,75 @@ function LivingSection() {
 // ============================================================
 // 📝  SUBMISSION FORM
 // ============================================================
+// Client-side image compression
+async function compressImage(file, maxWidth = 1200, quality = 0.7) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        let w = img.width, h = img.height;
+        if (w > maxWidth) { h = (maxWidth / w) * h; w = maxWidth; }
+        canvas.width = w;
+        canvas.height = h;
+        canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+        const base64 = canvas.toDataURL("image/jpeg", quality).split(",")[1];
+        resolve({ base64, filename: file.name.replace(/\.[^.]+$/, ".jpg") });
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 function SubmitSection() {
   const [tab, setTab] = useState("business");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
-  const [form, setForm] = useState({ name: "", category: "", phone: "", website: "", email: "", description: "", upgrade: false });
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [form, setForm] = useState({ name: "", category: "", phone: "", website: "", email: "", description: "", upgrade: false, date: "", dateEnd: "", time: "", location: "" });
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setImageFile(file);
+    const reader = new FileReader();
+    reader.onload = (ev) => setImagePreview(ev.target.result);
+    reader.readAsDataURL(file);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
     setSubmitError("");
-    const endpoint = tab === "business" ? "/api/submit-business" : "/api/submit-event";
+
     try {
+      let imageUrl = null;
+
+      // Upload image if present (event tab only)
+      if (tab === "event" && imageFile) {
+        const { base64, filename } = await compressImage(imageFile);
+        const uploadRes = await fetch("/api/upload-image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: base64, filename, contentType: "image/jpeg" }),
+        });
+        const uploadData = await uploadRes.json();
+        if (uploadRes.ok) imageUrl = uploadData.url;
+      }
+
+      const endpoint = tab === "business" ? "/api/submit-business" : "/api/submit-event";
+      const payload = tab === "event"
+        ? { ...form, imageUrl }
+        : form;
+
       const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Submission failed");
@@ -1754,29 +2546,55 @@ function SubmitSection() {
                 <>
                   {input("name", "Event Name")}
                   {input("category", "Event Type (e.g. Community, Market, Music)")}
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                    {input("date", "Event Date", "date")}
+                    {input("dateEnd", "End Date (optional)", "date")}
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                    {input("time", "Time (e.g. 6:00 PM)")}
+                    {input("location", "Location / Venue")}
+                  </div>
                   {input("email", "Your Email", "email")}
                   {input("phone", "Phone (optional)", "tel")}
                   <textarea
-                    placeholder="Event description — date, time, location, and what people can expect"
+                    placeholder="Event description — what people can expect"
                     value={form.description}
                     onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-                    rows={5}
+                    rows={4}
                     style={{
-                      width: "100%",
-                      padding: "12px 16px",
-                      borderRadius: 6,
-                      border: `1.5px solid ${C.sand}`,
-                      fontFamily: "'Libre Franklin', sans-serif",
-                      fontSize: 14,
-                      color: C.text,
-                      background: C.cream,
-                      resize: "vertical",
-                      boxSizing: "border-box",
-                      outline: "none",
+                      width: "100%", padding: "12px 16px", borderRadius: 6,
+                      border: `1.5px solid ${C.sand}`, fontFamily: "'Libre Franklin', sans-serif",
+                      fontSize: 14, color: C.text, background: C.cream,
+                      resize: "vertical", boxSizing: "border-box", outline: "none",
                     }}
                     onFocus={e => e.target.style.borderColor = C.sage}
                     onBlur={e => e.target.style.borderColor = C.sand}
                   />
+                  {/* Image upload with preview */}
+                  <div style={{
+                    border: `1.5px dashed ${C.sand}`, borderRadius: 8, padding: "16px",
+                    background: C.cream, textAlign: "center",
+                  }}>
+                    {imagePreview ? (
+                      <div style={{ position: "relative" }}>
+                        <img src={imagePreview} alt="Preview" style={{ maxWidth: "100%", maxHeight: 160, borderRadius: 6, objectFit: "cover" }} />
+                        <button
+                          type="button" onClick={() => { setImageFile(null); setImagePreview(null); }}
+                          style={{ position: "absolute", top: 4, right: 4, background: "rgba(0,0,0,0.6)", color: "#fff", border: "none", borderRadius: "50%", width: 24, height: 24, cursor: "pointer", fontSize: 12, lineHeight: 1 }}
+                        >×</button>
+                      </div>
+                    ) : (
+                      <label style={{ cursor: "pointer", display: "block" }}>
+                        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, marginBottom: 4 }}>
+                          Add an event photo (optional)
+                        </div>
+                        <div style={{ fontSize: 11, color: C.textMuted, opacity: 0.6 }}>
+                          Auto-compressed for fast loading
+                        </div>
+                        <input type="file" accept="image/*" onChange={handleImageChange} style={{ display: "none" }} />
+                      </label>
+                    )}
+                  </div>
                 </>
               )}
 
@@ -1834,7 +2652,7 @@ function AboutSection() {
               Manitou Beach, Michigan sits on Devils Lake in the Irish Hills. Locals call it "the party lake" — and anyone who's spent a summer here knows why. But for all the personality, the community didn't have a central digital home.
             </p>
             <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.85, marginBottom: 20 }}>
-              This platform is that home. A directory for local businesses, a calendar for community events, and a newsletter that keeps the lake life going year-round — built by people who actually live here.
+              This platform is that home. A directory for local businesses, a calendar for community events, and a newsletter that keeps the lake life going year-round — built by people who actually live here. And when we say "here," we mean all of it — Devils Lake, Round Lake, and every address in between.
             </p>
             <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.85, marginBottom: 36 }}>
               (And yes — we're fully aware the name "Manitou Beach" is an ironic masterpiece given that there's no actual beach. We've all made peace with it.)
@@ -2051,12 +2869,15 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
       }}>
         <div style={{ maxWidth: 1180, margin: "0 auto", padding: "0 28px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           {/* Logo */}
-          <div style={{ cursor: "pointer" }} onClick={() => handleNavClick("home")}>
-            <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 700, color: solid ? C.dusk : C.cream, transition: "color 0.35s" }}>
-              Manitou Beach
-            </div>
-            <div style={{ fontFamily: "'Caveat', cursive", fontSize: 12, color: solid ? C.sage : "rgba(255,255,255,0.5)", marginTop: -2, transition: "color 0.35s" }}>
-              on Devils Lake
+          <div style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 10 }} onClick={() => handleNavClick("home")}>
+            <img src="/images/manitou_beach_icon.png" alt="" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", opacity: solid ? 1 : 0.85, transition: "opacity 0.35s" }} />
+            <div>
+              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 700, color: solid ? C.dusk : C.cream, transition: "color 0.35s" }}>
+                Manitou Beach
+              </div>
+              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 12, color: solid ? C.sage : "rgba(255,255,255,0.5)", marginTop: -2, transition: "color 0.35s" }}>
+                on Devils Lake
+              </div>
             </div>
           </div>
 
@@ -2198,13 +3019,7 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
         </div>
       </div>
 
-      {/* Responsive styles */}
-      <style>{`
-        @media (max-width: 768px) {
-          .nav-desktop { display: none !important; }
-          .nav-hamburger { display: flex !important; }
-        }
-      `}</style>
+      {/* Responsive styles handled by GlobalStyles */}
     </>
   );
 }
@@ -2212,10 +3027,100 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
 // ============================================================
 // 📅  /happening — FULL PAGE
 // ============================================================
+function EventLightbox({ event, onClose }) {
+  if (!event) return null;
+  const eventCatColors = { "Live Music": C.sunset, "Food & Social": "#8B5E3C", "Sports & Outdoors": C.sage, Community: C.lakeBlue };
+  const color = eventCatColors[event.category] || C.sage;
+  const isRecurring = event.date?.toLowerCase().startsWith("every");
+  const dateDisplay = isRecurring ? event.date : (() => {
+    try {
+      return new Date(event.date + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+    } catch { return event.date; }
+  })();
+
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: "fixed", inset: 0, zIndex: 9999,
+        background: "rgba(10,18,24,0.85)", backdropFilter: "blur(8px)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        padding: 24,
+      }}
+    >
+      <div
+        onClick={e => e.stopPropagation()}
+        style={{
+          background: `linear-gradient(145deg, ${C.dusk} 0%, ${C.night} 100%)`,
+          border: "1px solid rgba(255,255,255,0.1)",
+          borderRadius: 16, padding: "36px",
+          maxWidth: 520, width: "100%",
+          maxHeight: "85vh", overflowY: "auto",
+          boxShadow: "0 24px 80px rgba(0,0,0,0.5)",
+          position: "relative",
+        }}
+      >
+        <button
+          onClick={onClose}
+          style={{ position: "absolute", top: 16, right: 20, background: "none", border: "none", color: "rgba(255,255,255,0.4)", fontSize: 24, cursor: "pointer" }}
+        >×</button>
+
+        {event.imageUrl && (
+          <img src={event.imageUrl} alt={event.name} style={{ width: "100%", height: 200, objectFit: "cover", borderRadius: 10, marginBottom: 20 }} />
+        )}
+
+        <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 10 }}>
+          <CategoryPill dark>{event.category}</CategoryPill>
+          {event.cost && (
+            <span style={{
+              fontFamily: "'Libre Franklin', sans-serif",
+              fontSize: 11, fontWeight: 600, letterSpacing: 1,
+              color: event.cost === "Free" || event.cost === "Free to watch" ? C.sage : C.sunsetLight,
+              textTransform: "uppercase",
+            }}>
+              {event.cost}
+            </span>
+          )}
+        </div>
+
+        <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 4vw, 32px)", color: C.cream, margin: "14px 0 10px 0", fontWeight: 400, lineHeight: 1.2 }}>
+          {event.name}
+        </h2>
+
+        <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color, marginBottom: 16 }}>
+          {dateDisplay}
+          {event.dateEnd && ` — ${new Date(event.dateEnd + "T00:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric" })}`}
+        </div>
+
+        {(event.time || event.location) && (
+          <div style={{ display: "flex", gap: 16, marginBottom: 16, flexWrap: "wrap" }}>
+            {event.time && (
+              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", fontFamily: "'Libre Franklin', sans-serif" }}>
+                🕐 {event.time}
+              </div>
+            )}
+            {event.location && (
+              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", fontFamily: "'Libre Franklin', sans-serif" }}>
+                📍 {event.location}
+              </div>
+            )}
+          </div>
+        )}
+
+        <p style={{ fontSize: 15, color: "rgba(255,255,255,0.55)", lineHeight: 1.8, margin: 0 }}>
+          {event.description}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 function HappeningPage() {
   const weeklyEvents = EVENTS.filter(e => e.date.toLowerCase().startsWith("every"));
   const calendarEvents = EVENTS.filter(e => !e.date.toLowerCase().startsWith("every"));
   const subScrollTo = (id) => { window.location.href = "/#" + id; };
+  const [lightboxEvent, setLightboxEvent] = useState(null);
+  const [activeFilter, setActiveFilter] = useState("All");
 
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
@@ -2223,13 +3128,17 @@ function HappeningPage() {
         href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap"
         rel="stylesheet"
       />
+      <GlobalStyles />
+      <ScrollProgress />
       <Navbar activeSection="happening" scrollTo={subScrollTo} isSubPage={true} />
       <HappeningHero />
-      <WeeklyEventsSection events={weeklyEvents} />
-      <CalendarSection events={calendarEvents} />
+      <EventTimeline />
+      <WeeklyEventsSection events={weeklyEvents} onEventClick={setLightboxEvent} />
+      <CalendarSection events={calendarEvents} onEventClick={setLightboxEvent} activeFilter={activeFilter} onFilterChange={setActiveFilter} />
       <VideoSection />
       <HappeningSubmitCTA />
       <Footer scrollTo={subScrollTo} />
+      <EventLightbox event={lightboxEvent} onClose={() => setLightboxEvent(null)} />
     </div>
   );
 }
@@ -2262,17 +3171,345 @@ function HomePage() {
         href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap"
         rel="stylesheet"
       />
+      <GlobalStyles />
+      <ScrollProgress />
       <Navbar activeSection={activeSection} scrollTo={scrollTo} />
       <Hero scrollTo={scrollTo} />
+      <EventTicker />
       <NewsletterBar />
+      <WaveDivider topColor={C.dusk} bottomColor={C.dusk} />
       <HappeningSection />
+      <EventTimeline />
+      <WaveDivider topColor={C.dusk} bottomColor={C.cream} />
       <ExploreSection />
+      <NewsletterInline />
       <BusinessDirectory />
+      <DiagonalDivider topColor={C.warmWhite} bottomColor={C.night} />
       <HollyYetiSection />
+      <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
       <LivingSection />
+      <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
       <SubmitSection />
       <AboutSection />
       <Footer scrollTo={scrollTo} />
+    </div>
+  );
+}
+
+// ============================================================
+// 🌊  ROUND LAKE PAGE
+// ============================================================
+const ROUND_LAKE_STATS = [
+  { label: "Surface Area", value: "515 acres" },
+  { label: "Max Depth", value: "67 feet" },
+  { label: "Elevation", value: "~1,043 ft" },
+  { label: "Water Clarity", value: "Very clear" },
+  { label: "Origin", value: "Glacial kettle lake" },
+  { label: "Watershed", value: "Bean Creek" },
+];
+
+const ROUND_LAKE_FISH = [
+  { name: "Largemouth Bass", icon: "🎣", note: "Healthy population — best early morning before boat traffic" },
+  { name: "Smallmouth Bass", icon: "🎣", note: "Rocky structure near shore" },
+  { name: "Bluegill", icon: "🐟", note: "Excellent numbers — averaged 7\" in DNR surveys, 70% legal size" },
+  { name: "Northern Pike", icon: "🐊", note: "Tip Up Festival favorite — ice fishing in February" },
+  { name: "Walleye", icon: "🐟", note: "DNR stocked — trolling at 10–15 ft depths in summer" },
+  { name: "Black Crappie", icon: "🐟", note: "Good catches, especially through the ice" },
+  { name: "Yellow Perch", icon: "🐟", note: "Averaged 9\"+ in surveys — above state average" },
+  { name: "Pumpkinseed Sunfish", icon: "☀️", note: "Abundant near weed beds" },
+];
+
+const ROUND_LAKE_TIMELINE = [
+  { year: "~10,000 BC", event: "Wisconsin Glaciation carves Round Lake — a kettle lake formed where the Erie and Saginaw ice lobes met, part of the Irish Hills interlobate moraine." },
+  { year: "Pre-1830", event: "Potawatomi and Ojibwa tribes camp along the north and east shores of Round Lake during summers for fishing and gathering. Chief Metwa's people establish council grounds at nearby Devils Lake." },
+  { year: "1833", event: "First European settlers arrive — Orson Green and the Beal family secure land in Rollin Township." },
+  { year: "1870s", event: "Resort era begins. Hotels spring up, railroad stations bring tourists, and steam launches offer tours through the channel connecting Round Lake and Devils Lake." },
+  { year: "1888", event: "Manitou Beach officially founded. Land subdivided and sold for cottage construction around both lakes." },
+  { year: "1950s", event: "The Devils and Round Lake Tip Up Festival launches — an ice fishing and winter celebration that continues 73+ years later." },
+  { year: "1961–1992", event: "Michigan DNR stocks Round Lake system with tiger muskellunge, walleye, and redear sunfish to enhance the fishery." },
+  { year: "Today", event: "Round Lake remains the quieter side of lake life — a residential retreat with clear water, excellent fishing, and deep roots in the Manitou Beach community." },
+];
+
+function RoundLakeHero() {
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => { setTimeout(() => setLoaded(true), 80); }, []);
+
+  return (
+    <section style={{
+      backgroundImage: "url(/images/explore-round-lake.jpg)",
+      backgroundSize: "cover",
+      backgroundPosition: "center 40%",
+      backgroundAttachment: "fixed",
+      backgroundColor: C.dusk,
+      padding: "180px 24px 140px",
+      position: "relative",
+      overflow: "hidden",
+    }}>
+      <div style={{
+        position: "absolute", inset: 0,
+        background: "linear-gradient(170deg, rgba(10,18,24,0.72) 0%, rgba(10,18,24,0.45) 50%, rgba(10,18,24,0.82) 100%)",
+      }} />
+
+      {/* Decorative "515" — the lake's acreage */}
+      <div style={{
+        position: "absolute", right: -10, top: "50%", transform: "translateY(-50%)",
+        fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(140px, 22vw, 320px)",
+        fontWeight: 700, color: "rgba(255,255,255,0.04)", lineHeight: 1,
+        userSelect: "none", letterSpacing: -12, pointerEvents: "none",
+      }}>
+        515
+      </div>
+
+      <div style={{ maxWidth: 960, margin: "0 auto", position: "relative", zIndex: 1 }}>
+        <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? "none" : "translateY(24px)", transition: "all 0.9s ease" }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 28 }}>
+            Lenawee County · Irish Hills
+          </div>
+          <h1 style={{
+            fontFamily: "'Libre Baskerville', serif",
+            fontSize: "clamp(56px, 10vw, 120px)",
+            fontWeight: 400, color: C.cream, lineHeight: 0.95, margin: "0 0 20px 0",
+          }}>
+            Round<br />Lake
+          </h1>
+          <p style={{
+            fontFamily: "'Libre Franklin', sans-serif", fontSize: "clamp(14px, 1.6vw, 17px)",
+            color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 480, margin: "0 0 28px 0",
+          }}>
+            515 acres of clear water, 67 feet deep. The quieter side of lake life — connected to Devils Lake by a shallow channel and to the Manitou Beach community by everything else.
+          </p>
+          <Btn href="/" variant="outlineLight" small>← Back to Home</Btn>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function RoundLakeStatsSection() {
+  return (
+    <section style={{ background: C.night, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <FadeIn>
+          <SectionLabel light>The Numbers</SectionLabel>
+          <SectionTitle light>Lake Stats</SectionTitle>
+        </FadeIn>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 16, marginTop: 40 }}>
+          {ROUND_LAKE_STATS.map((stat, i) => (
+            <FadeIn key={i} delay={i * 60} direction="scale">
+              <div style={{
+                background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)",
+                borderRadius: 12, padding: "28px 20px", textAlign: "center",
+              }}>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 3vw, 30px)", color: C.sunsetLight, fontWeight: 400, marginBottom: 8, lineHeight: 1.1 }}>
+                  {stat.value}
+                </div>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.3)", fontWeight: 600 }}>
+                  {stat.label}
+                </div>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+        <FadeIn delay={400}>
+          <p style={{ fontSize: 13, color: "rgba(255,255,255,0.25)", lineHeight: 1.7, marginTop: 32, maxWidth: 600, fontFamily: "'Libre Franklin', sans-serif" }}>
+            Round Lake is a glacial kettle lake carved during the Wisconsin Glaciation when the Erie and Saginaw ice lobes collided to form the Irish Hills interlobate moraine — one of over 50 kettle lakes in the region. Connected to Devils Lake via a shallow channel at Cherry Point.
+          </p>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+function RoundLakeHistorySection() {
+  return (
+    <section style={{ background: C.cream, padding: "100px 24px" }}>
+      <div style={{ maxWidth: 900, margin: "0 auto" }}>
+        <FadeIn>
+          <SectionLabel>Through the Years</SectionLabel>
+          <SectionTitle>A History Shaped by Water</SectionTitle>
+          <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.8, maxWidth: 560, margin: "0 0 60px 0" }}>
+            Long before the cottages and the boat docks, this land belonged to the Potawatomi. The lake's story starts with ice — and continues with the people who never wanted to leave.
+          </p>
+        </FadeIn>
+
+        <div style={{ position: "relative", paddingLeft: 40 }}>
+          {/* Vertical timeline line */}
+          <div style={{ position: "absolute", left: 12, top: 8, bottom: 8, width: 2, background: `linear-gradient(to bottom, ${C.sage}, ${C.sunset}, ${C.lakeBlue}, transparent)`, borderRadius: 1 }} />
+
+          {ROUND_LAKE_TIMELINE.map((item, i) => (
+            <FadeIn key={i} delay={i * 80}>
+              <div style={{ marginBottom: 40, position: "relative" }}>
+                {/* Dot on the timeline */}
+                <div style={{
+                  position: "absolute", left: -34, top: 6,
+                  width: 10, height: 10, borderRadius: "50%",
+                  background: i === ROUND_LAKE_TIMELINE.length - 1 ? C.sunset : C.sage,
+                  border: `2px solid ${C.cream}`,
+                  boxShadow: i === ROUND_LAKE_TIMELINE.length - 1 ? `0 0 12px ${C.sunset}40` : "none",
+                }} />
+                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sage, marginBottom: 4 }}>
+                  {item.year}
+                </div>
+                <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.7, margin: 0, maxWidth: 560 }}>
+                  {item.event}
+                </p>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function RoundLakeFishingSection() {
+  return (
+    <section style={{ background: C.warmWhite, padding: "100px 24px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <FadeIn>
+          <SectionLabel>On the Line</SectionLabel>
+          <SectionTitle>Fishing Round Lake</SectionTitle>
+          <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.8, maxWidth: 560, margin: "0 0 20px 0" }}>
+            Clear water, healthy populations, and fish growth rates that exceed state averages. Round Lake is a serious fishery — whether you're casting from shore or dropping a line through the ice.
+          </p>
+        </FadeIn>
+
+        {/* Watercraft notice */}
+        <FadeIn delay={100}>
+          <div style={{
+            background: `${C.lakeBlue}10`, border: `1px solid ${C.lakeBlue}25`, borderRadius: 12,
+            padding: "16px 24px", marginBottom: 48, display: "flex", gap: 12, alignItems: "flex-start",
+          }}>
+            <span style={{ fontSize: 18, lineHeight: 1 }}>ℹ️</span>
+            <div style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, fontFamily: "'Libre Franklin', sans-serif" }}>
+              <strong style={{ color: C.text }}>Watercraft notice:</strong> Water skiing and towing of persons on water skis, surfboards, or similar devices is prohibited on Round Lake (DNR local watercraft control — Cambridge & Franklin Townships, Lenawee County).
+            </div>
+          </div>
+        </FadeIn>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 16 }}>
+          {ROUND_LAKE_FISH.map((fish, i) => (
+            <FadeIn key={i} delay={i * 50}>
+              <div style={{
+                background: C.cream, borderRadius: 12, padding: "24px",
+                border: `1px solid ${C.sand}`, transition: "all 0.2s",
+              }}
+                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.06)"; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                  <span style={{ fontSize: 20 }}>{fish.icon}</span>
+                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.text, margin: 0 }}>
+                    {fish.name}
+                  </h3>
+                </div>
+                <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: 0 }}>
+                  {fish.note}
+                </p>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+
+        {/* Tip Up Festival callout */}
+        <FadeIn delay={500}>
+          <div style={{
+            marginTop: 56, background: `linear-gradient(135deg, ${C.dusk}, ${C.night})`,
+            borderRadius: 16, padding: "40px 36px", position: "relative", overflow: "hidden",
+          }}>
+            <div style={{ position: "absolute", top: -20, right: -10, fontSize: 120, opacity: 0.06, userSelect: "none", pointerEvents: "none" }}>🎣</div>
+            <div style={{ position: "relative", zIndex: 1 }}>
+              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.sunsetLight, marginBottom: 8 }}>Every February · 73+ Years Running</div>
+              <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 3vw, 32px)", fontWeight: 400, color: C.cream, margin: "0 0 12px 0", lineHeight: 1.2 }}>
+                Devils & Round Lake Tip Up Festival
+              </h3>
+              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, margin: "0 0 20px 0", maxWidth: 500 }}>
+                Ice fishing contests for pike, walleye, bluegill, crappie, and perch. Plus snowmobile racing, ATV races, outhouse races, and community fundraising. One of the longest-running winter festivals in Michigan.
+              </p>
+              <Btn href="/happening" variant="outlineLight" small>See All Events →</Btn>
+            </div>
+          </div>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+function RoundLakeCommunitySection() {
+  return (
+    <section style={{ background: C.dusk, padding: "100px 24px" }}>
+      <div style={{ maxWidth: 900, margin: "0 auto" }}>
+        <FadeIn>
+          <SectionLabel light>The Neighborhood</SectionLabel>
+          <SectionTitle light>The Quieter Side of Lake Life</SectionTitle>
+          <p style={{ fontSize: 16, color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 560, margin: "0 0 48px 0" }}>
+            No bars. No marinas. No tourist attractions. Just homes on the water, families who've been here for generations, and the kind of silence you can't find on the party lake across the road.
+          </p>
+        </FadeIn>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+          {[
+            { title: "Part of Manitou Beach", desc: "Same post office (49253), same schools (Onsted Community), same township (Rollin). Round Lake and Devils Lake share a census-designated place — officially Manitou Beach-Devils Lake." },
+            { title: "Connected by Water", desc: "A shallow channel at Cherry Point links Round Lake to Devils Lake. Too shallow for boats today — but during the resort era, steam launches navigated it carrying tourists between the lakes." },
+            { title: "Geneva", desc: "The unincorporated community of Geneva sits at the south end of Round Lake. A quiet cluster of homes with its own identity within the broader Manitou Beach area." },
+            { title: "Year-Round & Seasonal", desc: "A mix of full-time residents and seasonal cottage owners. The area is transitioning — more year-round families every year, part of Manitou Beach's evolution from summer resort to permanent community." },
+          ].map((item, i) => (
+            <FadeIn key={i} delay={i * 80} direction={i % 2 === 0 ? "left" : "right"}>
+              <div style={{
+                background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)",
+                borderRadius: 14, padding: "32px 28px",
+              }}>
+                <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 19, fontWeight: 400, color: C.cream, margin: "0 0 10px 0", lineHeight: 1.3 }}>
+                  {item.title}
+                </h3>
+                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, margin: 0 }}>
+                  {item.desc}
+                </p>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+
+        {/* Men's Club callout */}
+        <FadeIn delay={400}>
+          <div style={{ textAlign: "center", marginTop: 56 }}>
+            <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunsetLight, marginBottom: 8 }}>Community Organization</div>
+            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(18px, 2.5vw, 26px)", fontWeight: 400, color: C.cream, margin: "0 0 12px 0" }}>
+              Devils & Round Lake Men's Club
+            </h3>
+            <p style={{ fontSize: 14, color: "rgba(255,255,255,0.35)", lineHeight: 1.7, maxWidth: 480, margin: "0 auto" }}>
+              A charitable nonprofit that donates laptops to students, supports Toys for Tots, runs benefit auctions, and sponsors Shop with a Cop. The club that ties both lakes together.
+            </p>
+          </div>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+function RoundLakePage() {
+  const subScrollTo = (id) => { window.location.href = "/#" + id; };
+
+  return (
+    <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+      />
+      <GlobalStyles />
+      <ScrollProgress />
+      <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
+      <RoundLakeHero />
+      <RoundLakeStatsSection />
+      <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
+      <RoundLakeHistorySection />
+      <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
+      <RoundLakeFishingSection />
+      <DiagonalDivider topColor={C.warmWhite} bottomColor={C.dusk} />
+      <RoundLakeCommunitySection />
+      <WaveDivider topColor={C.dusk} bottomColor={C.cream} />
+      <NewsletterInline />
+      <Footer scrollTo={subScrollTo} />
     </div>
   );
 }
@@ -2286,6 +3523,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/happening" element={<HappeningPage />} />
+        <Route path="/round-lake" element={<RoundLakePage />} />
       </Routes>
     </BrowserRouter>
   );
