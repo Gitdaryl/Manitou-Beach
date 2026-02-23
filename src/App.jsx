@@ -2421,7 +2421,7 @@ function SubmitSection() {
   const [submitError, setSubmitError] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-  const [form, setForm] = useState({ name: "", category: "", phone: "", website: "", email: "", description: "", upgrade: false, date: "", dateEnd: "", time: "", location: "" });
+  const [form, setForm] = useState({ name: "", category: "", phone: "", website: "", email: "", description: "", upgrade: false, date: "", time: "", location: "", eventUrl: "" });
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -2454,7 +2454,7 @@ function SubmitSection() {
 
       const endpoint = tab === "business" ? "/api/submit-business" : "/api/submit-event";
       const payload = tab === "event"
-        ? { ...form, imageUrl }
+        ? { name: form.name, category: form.category, date: form.date, time: form.time, location: form.location, email: form.email, phone: form.phone, description: form.description, eventUrl: form.eventUrl, imageUrl }
         : form;
 
       const res = await fetch(endpoint, {
@@ -2553,7 +2553,7 @@ function SubmitSection() {
                   {input("name", "Business Name")}
                   {input("category", "Category (e.g. Food & Drink, Boating, Real Estate)")}
                   {input("phone", "Phone Number", "tel")}
-                  {input("website", "Website URL", "url")}
+                  {input("website", "Website (e.g. yetigroove.com)")}
                   {input("email", "Your Email", "email")}
                   <textarea
                     placeholder="Brief description (2-3 sentences)"
@@ -2599,12 +2599,10 @@ function SubmitSection() {
                   {input("category", "Event Type (e.g. Community, Market, Music)")}
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                     {input("date", "Event Date", "date")}
-                    {input("dateEnd", "End Date (optional)", "date")}
-                  </div>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                     {input("time", "Time (e.g. 6:00 PM)")}
-                    {input("location", "Location / Venue")}
                   </div>
+                  {input("location", "Location / Venue")}
+                  {input("eventUrl", "Event Link (Facebook event, website, etc.)")}
                   {input("email", "Your Email", "email")}
                   {input("phone", "Phone (optional)", "tel")}
                   <textarea

@@ -3,14 +3,24 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { name, category, email, phone, description, date, dateEnd, time, location, imageUrl } = req.body;
+  const { name, category, email, phone, description, date, time, location, eventUrl, imageUrl } = req.body;
 
   if (!name || !email) {
     return res.status(400).json({ error: 'Event name and email are required' });
   }
 
+  // Normalize event URL if provided
+  let normalizedEventUrl = null;
+  if (eventUrl && eventUrl.trim()) {
+    let url = eventUrl.trim();
+    if (!/^https?:\/\//i.test(url)) {
+      url = 'https://' + url;
+    }
+    normalizedEventUrl = url;
+  }
+
   try {
-    const dateProperty = date ? { date: { start: date, end: dateEnd || null } } : undefined;
+    const dateProperty = date ? { date: { start: date } } : undefined;
 
     const properties = {
       'Event Name': { title: [{ text: { content: name } }] },
@@ -23,6 +33,7 @@ export default async function handler(req, res) {
     };
 
     if (dateProperty) properties['Event Date'] = dateProperty;
+    if (normalizedEventUrl) properties['Event URL'] = { url: normalizedEventUrl };
     if (imageUrl) properties['Image URL'] = { url: imageUrl };
 
     const response = await fetch('https://api.notion.com/v1/pages', {
