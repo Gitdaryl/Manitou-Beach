@@ -2879,6 +2879,8 @@ function Footer({ scrollTo }) {
 function Navbar({ activeSection, scrollTo, isSubPage = false }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
+  const [comOpen, setComOpen] = useState(false);
+  const comRef = useRef(null);
 
   useEffect(() => {
     const onScroll = () => setScrollY(window.scrollY);
@@ -2893,14 +2895,20 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
+  // Close community dropdown on outside click
+  useEffect(() => {
+    const close = (e) => { if (comRef.current && !comRef.current.contains(e.target)) setComOpen(false); };
+    document.addEventListener("mousedown", close);
+    return () => document.removeEventListener("mousedown", close);
+  }, []);
+
   const solid = scrollY > 60 || menuOpen;
 
   const handleNavClick = (id) => {
     setMenuOpen(false);
-    if (id === "happening") {
-      window.location.href = "/happening";
-      return;
-    }
+    if (id === "happening") { window.location.href = "/happening"; return; }
+    if (id === "mens-club") { window.location.href = "/mens-club"; return; }
+    if (id === "historical-society") { window.location.href = "/historical-society"; return; }
     if (isSubPage) {
       window.location.href = "/#" + id;
       return;
@@ -2958,24 +2966,52 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
                 {label}
               </button>
             ))}
-            {/* Gallery external link */}
-            <a
-              href="https://photogallery.yetigroove.com/folder/muVgmuXuvFwI/"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                fontFamily: "'Libre Franklin', sans-serif",
-                fontSize: 12, fontWeight: 500, letterSpacing: 0.5,
-                padding: "7px 13px", borderRadius: 6,
-                color: solid ? C.textLight : "rgba(255,255,255,0.7)",
-                textDecoration: "none", transition: "all 0.2s",
-                whiteSpace: "nowrap",
-              }}
-              onMouseEnter={e => { e.currentTarget.style.color = solid ? C.sageDark : C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
-              onMouseLeave={e => { e.currentTarget.style.color = solid ? C.textLight : "rgba(255,255,255,0.7)"; e.currentTarget.style.background = "transparent"; }}
-            >
-              Gallery ↗
-            </a>
+            {/* Community dropdown */}
+            <div ref={comRef} style={{ position: "relative" }}>
+              <button
+                onClick={() => setComOpen(o => !o)}
+                style={{
+                  background: comOpen ? `${C.sage}18` : "transparent",
+                  border: "none", color: solid ? C.textLight : "rgba(255,255,255,0.7)",
+                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 500, letterSpacing: 0.5,
+                  padding: "7px 13px", borderRadius: 6, cursor: "pointer", transition: "all 0.2s", whiteSpace: "nowrap",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.color = solid ? C.sageDark : C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
+                onMouseLeave={e => { if (!comOpen) { e.currentTarget.style.color = solid ? C.textLight : "rgba(255,255,255,0.7)"; e.currentTarget.style.background = "transparent"; } }}
+              >
+                Community ▾
+              </button>
+              {comOpen && (
+                <div style={{
+                  position: "absolute", top: "100%", left: 0, marginTop: 6,
+                  background: "rgba(250,246,239,0.98)", backdropFilter: "blur(14px)",
+                  borderRadius: 10, border: `1px solid ${C.sand}`, boxShadow: "0 12px 36px rgba(0,0,0,0.12)",
+                  padding: "8px 0", minWidth: 200, zIndex: 1001,
+                }}>
+                  {[
+                    { label: "Men's Club", id: "mens-club" },
+                    { label: "Historical Society", id: "historical-society" },
+                    { label: "Gallery ↗", href: "https://photogallery.yetigroove.com/folder/muVgmuXuvFwI/" },
+                  ].map((link, i) => (
+                    link.href ? (
+                      <a key={i} href={link.href} target="_blank" rel="noopener noreferrer" style={{
+                        display: "block", padding: "10px 18px", fontSize: 13, color: C.text,
+                        textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif", transition: "background 0.15s",
+                      }} onMouseEnter={e => e.currentTarget.style.background = `${C.sage}10`} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                        {link.label}
+                      </a>
+                    ) : (
+                      <button key={i} onClick={() => { setComOpen(false); handleNavClick(link.id); }} style={{
+                        display: "block", width: "100%", textAlign: "left", padding: "10px 18px", fontSize: 13, color: C.text,
+                        background: "none", border: "none", cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", transition: "background 0.15s",
+                      }} onMouseEnter={e => e.currentTarget.style.background = `${C.sage}10`} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                        {link.label}
+                      </button>
+                    )
+                  ))}
+                </div>
+              )}
+            </div>
             <div style={{ marginLeft: 8 }}>
               <Btn onClick={() => handleNavClick("submit")} variant="primary" small>List Your Business</Btn>
             </div>
@@ -3051,6 +3087,19 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
             }}
           >
             {label}
+          </button>
+        ))}
+        {/* Community sub-links */}
+        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.textMuted, marginTop: 8, fontFamily: "'Libre Franklin', sans-serif" }}>Community</div>
+        {[
+          { label: "Men's Club", id: "mens-club" },
+          { label: "Historical Society", id: "historical-society" },
+        ].map(link => (
+          <button key={link.id} onClick={() => handleNavClick(link.id)} style={{
+            background: "none", border: "none", fontFamily: "'Libre Baskerville', serif",
+            fontSize: 20, fontWeight: 400, color: C.text, cursor: "pointer", padding: "8px 32px",
+          }}>
+            {link.label}
           </button>
         ))}
         <a
@@ -3795,71 +3844,75 @@ function VillagePage() {
 }
 
 // ============================================================
-// ⭐  FEATURED BUSINESS INQUIRY / STRIPE CHECKOUT
+// ⭐  FEATURED BUSINESS — SALES PAGE + STRIPE CHECKOUT
 // ============================================================
 const FEATURED_TIERS = [
   {
     id: "featured_30",
-    name: "Featured",
+    name: "Starter",
     period: "30 days",
     price: "$50",
+    earlyBird: "$29",
+    priceNum: 2900,
     features: [
-      "Priority dark card in directory",
-      "Logo and shimmer effect",
-      "Business description + link",
-      "Phone number displayed",
+      "Premium dark card with shimmer effect",
+      "Logo + business link displayed",
+      "Top placement in directory",
+      "Phone number visible to visitors",
     ],
-    popular: false,
   },
   {
     id: "featured_90",
-    name: "Featured",
+    name: "Season Pass",
     period: "90 days",
-    price: "$120",
-    save: "Save $30",
+    price: "$150",
+    earlyBird: "$79",
+    priceNum: 7900,
+    save: "Save 47%",
     features: [
-      "Everything in 30-day plan",
-      "3 months of visibility",
-      "Best for seasonal businesses",
-      "Priority support",
+      "Everything in Starter",
+      "Full season of visibility",
+      "Featured in newsletter shoutout",
+      "Priority placement over Starter",
     ],
     popular: true,
   },
   {
     id: "featured_video_30",
-    name: "Featured + Video",
+    name: "Spotlight",
     period: "30 days",
-    price: "$100",
+    price: "$300",
+    earlyBird: "$149",
+    priceNum: 14900,
     features: [
-      "Everything in Featured plan",
-      "Embedded video showcase",
-      "Cinematic business spotlight",
-      "Produced by Yeti Groove Media",
+      "Everything in Season Pass",
+      "Cinematic video produced by Yeti Groove",
+      "Holly & Yeti podcast mention",
+      "Social media feature across channels",
     ],
-    popular: false,
   },
 ];
 
+const SPOTS_TOTAL = 8;
+
 function FeaturedPage() {
   const subScrollTo = (id) => { window.location.href = "/#" + id; };
-  const [form, setForm] = useState({ businessName: "", email: "", phone: "", message: "" });
-  const [selectedTier, setSelectedTier] = useState(null);
+  const [form, setForm] = useState({ businessName: "", email: "", phone: "", website: "" });
+  const [selectedTier, setSelectedTier] = useState("featured_90");
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState(null);
+  const spotsLeft = 5; // TODO: fetch from Notion or a counter
 
-  // Check for success/cancelled in URL
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get("success")) {
-      setStatus({ type: "success", business: params.get("business") || "" });
-    } else if (params.get("cancelled")) {
-      setStatus({ type: "cancelled" });
-    }
+    if (params.get("success")) setStatus({ type: "success", business: params.get("business") || "" });
+    else if (params.get("cancelled")) setStatus({ type: "cancelled" });
   }, []);
 
   const handleCheckout = async (tierId) => {
     if (!form.businessName || !form.email) {
-      setStatus({ type: "error", message: "Please fill in your business name and email first." });
+      setStatus({ type: "error", message: "Business name and email are required." });
+      document.getElementById("featured-form")?.scrollIntoView({ behavior: "smooth" });
       return;
     }
     setLoading(true);
@@ -3871,16 +3924,22 @@ function FeaturedPage() {
         body: JSON.stringify({ tier: tierId, businessName: form.businessName, email: form.email }),
       });
       const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        setStatus({ type: "error", message: data.error || "Something went wrong." });
-      }
+      if (data.url) window.location.href = data.url;
+      else setStatus({ type: "error", message: data.error || "Something went wrong." });
     } catch {
       setStatus({ type: "error", message: "Network error. Please try again." });
     }
     setLoading(false);
   };
+
+  const benefits = [
+    { icon: "⚡", title: "Top Placement", desc: "Featured businesses appear first — above every free listing in the directory." },
+    { icon: "🎨", title: "Premium Card Design", desc: "Dark card with shimmer effect, your logo prominently displayed, and a direct link to your website." },
+    { icon: "📱", title: "Click-to-Call", desc: "Your phone number displayed and clickable on mobile — customers call you directly from the listing." },
+    { icon: "🎬", title: "Spotlight Video", desc: "Upgrade to Spotlight and get a cinematic video produced by Yeti Groove Media, embedded right in your listing." },
+    { icon: "📰", title: "Newsletter Feature", desc: "Season Pass and Spotlight tiers include a shoutout in The Manitou Beach Dispatch — our community newsletter." },
+    { icon: "🎙️", title: "Holly & Yeti Mention", desc: "Spotlight tier businesses get mentioned on the Holly & Yeti podcast — reaching the broader Devils Lake audience." },
+  ];
 
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
@@ -3890,80 +3949,64 @@ function FeaturedPage() {
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
 
       {/* Hero */}
-      <section style={{ background: `linear-gradient(145deg, ${C.dusk} 0%, ${C.night} 100%)`, padding: "160px 24px 100px", textAlign: "center" }}>
+      <section style={{ background: `linear-gradient(145deg, ${C.dusk} 0%, ${C.night} 100%)`, padding: "160px 24px 100px", textAlign: "center", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: -40, right: -40, width: 300, height: 300, borderRadius: "50%", background: `${C.sunset}08`, pointerEvents: "none" }} />
+        <div style={{ position: "absolute", bottom: -60, left: -60, width: 200, height: 200, borderRadius: "50%", background: `${C.sage}06`, pointerEvents: "none" }} />
         <FadeIn>
-          <SectionLabel light>For Local Businesses</SectionLabel>
-          <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(36px, 7vw, 72px)", fontWeight: 400, color: C.cream, lineHeight: 1, margin: "0 0 16px 0" }}>
-            Get Featured
+          <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunsetLight, marginBottom: 12 }}>
+            Early Bird Pricing — Limited Spots
+          </div>
+          <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(36px, 7vw, 72px)", fontWeight: 400, color: C.cream, lineHeight: 1, margin: "0 0 20px 0" }}>
+            Put Your Business<br />in the Spotlight
           </h1>
-          <p style={{ fontSize: "clamp(14px, 1.5vw, 17px)", color: "rgba(255,255,255,0.4)", lineHeight: 1.7, maxWidth: 520, margin: "0 auto" }}>
-            Stand out in the Manitou Beach directory with a premium listing. Your business gets top placement, branded card design, and a direct link to your website.
+          <p style={{ fontSize: "clamp(14px, 1.5vw, 17px)", color: "rgba(255,255,255,0.45)", lineHeight: 1.7, maxWidth: 520, margin: "0 auto 28px" }}>
+            Manitou Beach is growing. The businesses who get in early get seen first — and remembered longest.
           </p>
+          {/* Urgency bar */}
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 12, background: "rgba(255,255,255,0.06)", borderRadius: 30, padding: "10px 24px", border: "1px solid rgba(255,255,255,0.08)" }}>
+            <div style={{ display: "flex", gap: 4 }}>
+              {Array.from({ length: SPOTS_TOTAL }).map((_, i) => (
+                <div key={i} style={{ width: 10, height: 10, borderRadius: "50%", background: i < spotsLeft ? C.sunset : "rgba(255,255,255,0.1)", transition: "all 0.3s" }} />
+              ))}
+            </div>
+            <span style={{ fontSize: 12, color: C.sunsetLight, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>
+              {spotsLeft} of {SPOTS_TOTAL} early bird spots left
+            </span>
+          </div>
         </FadeIn>
       </section>
 
       {/* Success / Cancelled banners */}
       {status?.type === "success" && (
-        <div style={{ background: `${C.sage}20`, borderBottom: `2px solid ${C.sage}`, padding: "20px 24px", textAlign: "center" }}>
-          <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.sage, marginBottom: 4 }}>
-            Payment successful!
-          </div>
+        <div style={{ background: `${C.sage}20`, borderBottom: `2px solid ${C.sage}`, padding: "24px", textAlign: "center" }}>
+          <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.sage, marginBottom: 6 }}>You're in!</div>
           <p style={{ fontSize: 14, color: C.textLight, margin: 0 }}>
-            Thank you{status.business ? `, ${decodeURIComponent(status.business)}` : ""}! Your featured listing will be live within 24 hours. We'll email you when it's up.
+            {status.business ? `${decodeURIComponent(status.business)} — ` : ""}Your featured listing will be live within 24 hours. We'll email you when it's up.
           </p>
         </div>
       )}
       {status?.type === "cancelled" && (
         <div style={{ background: `${C.sunset}15`, borderBottom: `2px solid ${C.sunset}40`, padding: "16px 24px", textAlign: "center" }}>
-          <p style={{ fontSize: 14, color: C.textLight, margin: 0 }}>Payment was cancelled. No charge was made. You can try again anytime.</p>
+          <p style={{ fontSize: 14, color: C.textLight, margin: 0 }}>No worries — no charge was made. Your spot is still available.</p>
         </div>
       )}
 
-      {/* Pricing tiers */}
+      {/* What you get */}
       <section style={{ background: C.cream, padding: "80px 24px" }}>
         <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20 }}>
-            {FEATURED_TIERS.map((tier, i) => (
-              <FadeIn key={tier.id} delay={i * 100} direction="scale">
-                <div
-                  onClick={() => setSelectedTier(tier.id)}
-                  style={{
-                    background: selectedTier === tier.id ? `linear-gradient(145deg, ${C.dusk}, ${C.night})` : C.warmWhite,
-                    border: tier.popular ? `2px solid ${C.sunset}` : `1px solid ${selectedTier === tier.id ? "rgba(255,255,255,0.15)" : C.sand}`,
-                    borderRadius: 16, padding: "32px 28px",
-                    cursor: "pointer", transition: "all 0.25s",
-                    position: "relative", overflow: "hidden",
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "0 12px 40px rgba(0,0,0,0.1)"; }}
-                  onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
-                >
-                  {tier.popular && (
-                    <div style={{
-                      position: "absolute", top: 14, right: -28,
-                      background: C.sunset, color: C.cream,
-                      fontSize: 9, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase",
-                      padding: "4px 36px", transform: "rotate(45deg)",
-                      fontFamily: "'Libre Franklin', sans-serif",
-                    }}>Best Value</div>
-                  )}
-                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: selectedTier === tier.id ? C.sunsetLight : C.sage, marginBottom: 8 }}>
-                    {tier.name}
-                  </div>
-                  <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginBottom: 4 }}>
-                    <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 36, fontWeight: 400, color: selectedTier === tier.id ? C.cream : C.text }}>{tier.price}</span>
-                    <span style={{ fontSize: 13, color: selectedTier === tier.id ? "rgba(255,255,255,0.4)" : C.textMuted }}>/ {tier.period}</span>
-                  </div>
-                  {tier.save && (
-                    <div style={{ fontSize: 12, color: C.sunset, fontWeight: 600, marginBottom: 12 }}>{tier.save}</div>
-                  )}
-                  <ul style={{ listStyle: "none", padding: 0, margin: "16px 0 0" }}>
-                    {tier.features.map((f, j) => (
-                      <li key={j} style={{ fontSize: 13, color: selectedTier === tier.id ? "rgba(255,255,255,0.5)" : C.textLight, lineHeight: 1.5, padding: "4px 0", paddingLeft: 18, position: "relative" }}>
-                        <span style={{ position: "absolute", left: 0, color: C.sage }}>✓</span>
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
+          <FadeIn>
+            <div style={{ textAlign: "center", marginBottom: 56 }}>
+              <SectionLabel>What You Get</SectionLabel>
+              <SectionTitle center>More Than a Listing</SectionTitle>
+            </div>
+          </FadeIn>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 20 }}>
+            {benefits.map((b, i) => (
+              <FadeIn key={i} delay={i * 60}>
+                <div style={{ padding: "24px 20px", background: C.warmWhite, borderRadius: 12, border: `1px solid ${C.sand}` }}>
+                  <div style={{ fontSize: 28, marginBottom: 10 }}>{b.icon}</div>
+                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text, margin: "0 0 6px 0" }}>{b.title}</h3>
+                  <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: 0 }}>{b.desc}</p>
                 </div>
               </FadeIn>
             ))}
@@ -3971,14 +4014,106 @@ function FeaturedPage() {
         </div>
       </section>
 
-      {/* Application form + checkout */}
+      {/* Pricing tiers */}
       <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
-        <div style={{ maxWidth: 560, margin: "0 auto" }}>
+        <div style={{ maxWidth: 1000, margin: "0 auto" }}>
           <FadeIn>
-            <SectionLabel>Apply</SectionLabel>
-            <SectionTitle>Your Business Details</SectionTitle>
-            <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, marginBottom: 36 }}>
-              Fill in your info, pick a plan above, and complete checkout. Your listing goes live within 24 hours.
+            <div style={{ textAlign: "center", marginBottom: 48 }}>
+              <SectionLabel>Early Bird Pricing</SectionLabel>
+              <SectionTitle center>Choose Your Plan</SectionTitle>
+              <p style={{ fontSize: 14, color: C.textLight, maxWidth: 440, margin: "12px auto 0", lineHeight: 1.7 }}>
+                Lock in early bird rates now. Prices go up as spots fill.
+              </p>
+            </div>
+          </FadeIn>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20 }}>
+            {FEATURED_TIERS.map((tier, i) => {
+              const isSelected = selectedTier === tier.id;
+              return (
+                <FadeIn key={tier.id} delay={i * 100} direction="scale">
+                  <div
+                    onClick={() => setSelectedTier(tier.id)}
+                    style={{
+                      background: isSelected ? `linear-gradient(145deg, ${C.dusk}, ${C.night})` : C.cream,
+                      border: tier.popular ? `2px solid ${C.sunset}` : `1px solid ${isSelected ? "rgba(255,255,255,0.15)" : C.sand}`,
+                      borderRadius: 16, padding: "32px 28px",
+                      cursor: "pointer", transition: "all 0.25s",
+                      position: "relative", overflow: "hidden",
+                      transform: isSelected ? "scale(1.02)" : "none",
+                      boxShadow: isSelected ? "0 16px 48px rgba(0,0,0,0.15)" : "none",
+                    }}
+                  >
+                    {tier.popular && (
+                      <div style={{
+                        position: "absolute", top: 16, right: -26,
+                        background: C.sunset, color: C.cream,
+                        fontSize: 8, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase",
+                        padding: "4px 36px", transform: "rotate(45deg)",
+                        fontFamily: "'Libre Franklin', sans-serif",
+                      }}>Most Popular</div>
+                    )}
+                    {isSelected && <div style={{ position: "absolute", top: 14, left: 14, width: 18, height: 18, borderRadius: "50%", background: C.sunset, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, color: C.cream }}>✓</div>}
+
+                    <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: isSelected ? C.sunsetLight : C.sage, marginBottom: 10 }}>
+                      {tier.name}
+                    </div>
+
+                    {/* Prices — show strikethrough + early bird */}
+                    <div style={{ marginBottom: 4 }}>
+                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, color: isSelected ? "rgba(255,255,255,0.25)" : C.textMuted, textDecoration: "line-through", marginRight: 10 }}>
+                        {tier.price}
+                      </span>
+                      <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 38, fontWeight: 400, color: isSelected ? C.cream : C.text }}>
+                        {tier.earlyBird}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: 12, color: isSelected ? "rgba(255,255,255,0.4)" : C.textMuted, marginBottom: tier.save ? 4 : 14 }}>
+                      for {tier.period}
+                    </div>
+                    {tier.save && (
+                      <div style={{ display: "inline-block", fontSize: 11, color: C.cream, fontWeight: 700, background: C.sunset, padding: "3px 10px", borderRadius: 12, marginBottom: 14 }}>{tier.save}</div>
+                    )}
+
+                    <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                      {tier.features.map((f, j) => (
+                        <li key={j} style={{ fontSize: 13, color: isSelected ? "rgba(255,255,255,0.5)" : C.textLight, lineHeight: 1.5, padding: "4px 0", paddingLeft: 20, position: "relative" }}>
+                          <span style={{ position: "absolute", left: 0, color: C.sage }}>✓</span>
+                          {f}
+                        </li>
+                      ))}
+                    </ul>
+
+                    <button
+                      onClick={e => { e.stopPropagation(); handleCheckout(tier.id); }}
+                      className="btn-animated"
+                      style={{
+                        width: "100%", marginTop: 20, padding: "12px 0", borderRadius: 8,
+                        border: "none", cursor: "pointer",
+                        fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase",
+                        background: isSelected ? C.sunset : "transparent",
+                        color: isSelected ? C.cream : C.sage,
+                        border: isSelected ? "none" : `1.5px solid ${C.sand}`,
+                      }}
+                    >
+                      {loading && isSelected ? "Redirecting..." : `Get ${tier.name} — ${tier.earlyBird}`}
+                    </button>
+                  </div>
+                </FadeIn>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Form */}
+      <section id="featured-form" style={{ background: C.cream, padding: "80px 24px" }}>
+        <div style={{ maxWidth: 520, margin: "0 auto" }}>
+          <FadeIn>
+            <SectionLabel>Your Details</SectionLabel>
+            <SectionTitle>Claim Your Spot</SectionTitle>
+            <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, marginBottom: 32 }}>
+              Fill in your info below, then hit the checkout button on your chosen plan above. Your listing goes live within 24 hours.
             </p>
           </FadeIn>
 
@@ -3990,21 +4125,21 @@ function FeaturedPage() {
 
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {[
-              { key: "businessName", label: "Business Name", type: "text", required: true },
-              { key: "email", label: "Email", type: "email", required: true },
-              { key: "phone", label: "Phone (optional)", type: "tel", required: false },
+              { key: "businessName", label: "Business Name", type: "text", placeholder: "e.g. Boot Jack Tavern" },
+              { key: "email", label: "Email", type: "email", placeholder: "you@yourbusiness.com" },
+              { key: "phone", label: "Phone (optional)", type: "tel", placeholder: "(517) 555-0000" },
+              { key: "website", label: "Website (optional)", type: "text", placeholder: "www.yourbusiness.com" },
             ].map(field => (
               <div key={field.key}>
                 <label style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.textMuted, display: "block", marginBottom: 6 }}>
-                  {field.label} {field.required && <span style={{ color: C.sunset }}>*</span>}
+                  {field.label} {(field.key === "businessName" || field.key === "email") && <span style={{ color: C.sunset }}>*</span>}
                 </label>
                 <input
-                  type={field.type}
-                  value={form[field.key]}
+                  type={field.type} value={form[field.key]} placeholder={field.placeholder}
                   onChange={e => setForm(prev => ({ ...prev, [field.key]: e.target.value }))}
                   style={{
                     width: "100%", padding: "12px 16px", borderRadius: 8,
-                    border: `1px solid ${C.sand}`, background: C.cream,
+                    border: `1px solid ${C.sand}`, background: C.warmWhite,
                     fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.text,
                     outline: "none", transition: "border 0.2s", boxSizing: "border-box",
                   }}
@@ -4013,42 +4148,650 @@ function FeaturedPage() {
                 />
               </div>
             ))}
-            <div>
-              <label style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.textMuted, display: "block", marginBottom: 6 }}>
-                Anything else we should know?
-              </label>
-              <textarea
-                value={form.message}
-                onChange={e => setForm(prev => ({ ...prev, message: e.target.value }))}
-                rows={3}
-                style={{
-                  width: "100%", padding: "12px 16px", borderRadius: 8,
-                  border: `1px solid ${C.sand}`, background: C.cream,
-                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.text,
-                  outline: "none", resize: "vertical", boxSizing: "border-box",
-                }}
-                onFocus={e => { e.target.style.borderColor = C.sage; }}
-                onBlur={e => { e.target.style.borderColor = C.sand; }}
-              />
-            </div>
-
-            <div style={{ marginTop: 12 }}>
-              <Btn
-                onClick={() => selectedTier ? handleCheckout(selectedTier) : setStatus({ type: "error", message: "Please select a plan above." })}
-                variant="sunset"
-                style={{ width: "100%", opacity: loading ? 0.6 : 1, pointerEvents: loading ? "none" : "auto" }}
-              >
-                {loading ? "Redirecting to checkout..." : selectedTier ? `Proceed to Checkout — ${FEATURED_TIERS.find(t => t.id === selectedTier)?.price}` : "Select a Plan Above"}
-              </Btn>
-            </div>
           </div>
 
-          <p style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.6, marginTop: 24, textAlign: "center" }}>
-            Payments processed securely by Stripe. Your listing goes live within 24 hours of payment. Questions? Email us at hello@manitoubeach.com
+          <p style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.6, marginTop: 20, textAlign: "center" }}>
+            Secure checkout by Stripe. No recurring charges — one-time payment for your chosen period. Questions? Email hello@manitoubeach.com
           </p>
         </div>
       </section>
 
+      {/* FAQ */}
+      <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
+        <div style={{ maxWidth: 680, margin: "0 auto" }}>
+          <FadeIn>
+            <div style={{ textAlign: "center", marginBottom: 48 }}>
+              <SectionTitle center>Common Questions</SectionTitle>
+            </div>
+          </FadeIn>
+          {[
+            { q: "I already have a free listing. What changes?", a: "Your free listing stays as-is. The featured upgrade gives you a premium dark card at the top of the directory, above all free listings. It's a separate, more visible placement — not a replacement." },
+            { q: "What happens when my featured period ends?", a: "Your listing reverts to the free directory. No recurring charges, no surprises. You can renew anytime." },
+            { q: "Can I change my listing details after I pay?", a: "Absolutely. Email us and we'll update your logo, description, phone number, or link within 24 hours." },
+            { q: "What's the Holly & Yeti podcast mention?", a: "Spotlight tier businesses get a shoutout on the Holly & Yeti community podcast, reaching the broader Devils Lake and Irish Hills audience." },
+            { q: "Why are prices so low right now?", a: "We're building the platform and want founding businesses on board. Early bird rates are locked in for your booking period. As traffic grows and spots fill, prices return to full rate." },
+          ].map((faq, i) => (
+            <FadeIn key={i} delay={i * 60}>
+              <div style={{ padding: "24px 0", borderBottom: `1px solid ${C.sand}` }}>
+                <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text, margin: "0 0 8px 0" }}>{faq.q}</h3>
+                <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: 0 }}>{faq.a}</p>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </section>
+
+      <Footer scrollTo={subScrollTo} />
+    </div>
+  );
+}
+
+// ============================================================
+// 🏛️  MEN'S CLUB PAGE (/mens-club)
+// ============================================================
+const MENS_CLUB_STATS = [
+  { label: "Founded", value: "501(c)(3)", sub: "IRS Ruling 2016" },
+  { label: "EIN", value: "46-4087550", sub: "Tax-exempt nonprofit" },
+  { label: "Tip-Up Festival", value: "70+", sub: "Years running" },
+  { label: "Toys for Tots", value: "$8,000+", sub: "In donations" },
+  { label: "Address", value: "3171", sub: "Round Lake Hwy" },
+  { label: "Annual Events", value: "6+", sub: "Community events" },
+];
+
+const MENS_CLUB_EVENTS = [
+  {
+    title: "Tip-Up Festival",
+    date: "First weekend of February",
+    desc: "The crown jewel — 70+ years of ice fishing, snowmobile racing, outhouse races, hovercraft rides, poker runs, and the benefit auction. Held on frozen Devils Lake, it's the longest-running winter festival in the Irish Hills.",
+    icon: "🎣",
+  },
+  {
+    title: "Firecracker 7K Run/Walk",
+    date: "July 4th — 8:00 AM",
+    desc: "A Fourth of July tradition starting at 3171 Round Lake Hwy. Choose the 7K run/walk or 1-mile family fun run. Proceeds fund the Devils Lake fireworks display.",
+    icon: "🏃",
+  },
+  {
+    title: "Golf Outing",
+    date: "Annual — Summer",
+    desc: "A community golf outing that brings together members, local businesses, and supporters. All proceeds benefit the club's charitable programs.",
+    icon: "⛳",
+  },
+  {
+    title: "Benefit Auction & Raffle",
+    date: "During Tip-Up Festival",
+    desc: "The auction is the club's biggest fundraiser — local businesses and community members donate items. Proceeds support laptops for students, Toys for Tots, Shop with a Cop, and food pantries.",
+    icon: "🎁",
+  },
+  {
+    title: "Fireworks Display",
+    date: "July 4th & Special Events",
+    desc: "Working with the Devils & Round Lake Fireworks Association, the club helps fund and organize the summer fireworks display over Devils Lake.",
+    icon: "🎆",
+  },
+  {
+    title: "Community Service Days",
+    date: "Year-round",
+    desc: "Throughout the year, club members volunteer for lake cleanups, food drives, Christmas gift baskets, and support for families in need through the Community for People in Need program.",
+    icon: "🤝",
+  },
+];
+
+const MENS_CLUB_PROGRAMS = [
+  { icon: "🎓", title: "Laptops for Students", desc: "Donating laptops to college-bound high school graduates from the local community." },
+  { icon: "🎄", title: "Toys for Tots", desc: "Over $8,000 contributed to ensure every child in the area has a gift under the tree." },
+  { icon: "👮", title: "Shop with a Cop", desc: "Partnering with local law enforcement to give kids a positive holiday shopping experience." },
+  { icon: "🍞", title: "Food Pantry Support", desc: "Collecting pantry items for the Kiwanis Club and Community for People in Need." },
+  { icon: "🎁", title: "Christmas Gift Baskets", desc: "Assembling and delivering holiday gift baskets to families facing hardship." },
+  { icon: "🎆", title: "Fireworks Fund", desc: "Funding the annual July 4th fireworks display over Devils Lake for the entire community." },
+];
+
+function MensClubHero() {
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => { setTimeout(() => setLoaded(true), 80); }, []);
+
+  return (
+    <section style={{
+      background: `linear-gradient(145deg, ${C.dusk} 0%, ${C.night} 100%)`,
+      padding: "160px 24px 120px",
+      position: "relative", overflow: "hidden", textAlign: "center",
+    }}>
+      <div style={{ position: "absolute", top: -60, right: -60, width: 350, height: 350, borderRadius: "50%", background: `${C.sunset}06`, pointerEvents: "none" }} />
+      <div style={{ position: "absolute", bottom: -80, left: -80, width: 260, height: 260, borderRadius: "50%", background: `${C.sage}05`, pointerEvents: "none" }} />
+      <div style={{ maxWidth: 800, margin: "0 auto", position: "relative", zIndex: 1, opacity: loaded ? 1 : 0, transform: loaded ? "translateY(0)" : "translateY(20px)", transition: "all 0.8s ease" }}>
+        <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunsetLight, marginBottom: 12 }}>
+          501(c)(3) Nonprofit
+        </div>
+        <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(32px, 6vw, 64px)", fontWeight: 400, color: C.cream, lineHeight: 1.05, margin: "0 0 20px 0" }}>
+          Devils & Round Lake<br />Men's Club
+        </h1>
+        <p style={{ fontSize: "clamp(14px, 1.5vw, 17px)", color: "rgba(255,255,255,0.45)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto 32px" }}>
+          Service, leadership, tradition, fellowship, and fun. Supporting needy families and community events across Manitou Beach since the days our grandfathers fished these lakes.
+        </p>
+        <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+          <a href="https://www.facebook.com/profile.php?id=100064837808733" target="_blank" rel="noopener noreferrer" className="btn-animated" style={{
+            display: "inline-flex", alignItems: "center", gap: 8,
+            padding: "12px 28px", borderRadius: 8,
+            background: C.sunset, color: C.cream,
+            fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+          }}>
+            Follow on Facebook
+          </a>
+          <a href="#mens-club-events" className="btn-animated" style={{
+            display: "inline-flex", alignItems: "center", gap: 8,
+            padding: "12px 28px", borderRadius: 8,
+            background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", color: C.cream,
+            fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+          }}>
+            View Events
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function MensClubStatsSection() {
+  return (
+    <section style={{ background: C.cream, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+        <FadeIn>
+          <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <SectionLabel>At a Glance</SectionLabel>
+            <SectionTitle center>By the Numbers</SectionTitle>
+          </div>
+        </FadeIn>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: 16 }}>
+          {MENS_CLUB_STATS.map((stat, i) => (
+            <FadeIn key={i} delay={i * 60} direction="scale">
+              <div style={{
+                background: C.warmWhite, borderRadius: 12, padding: "22px 16px", textAlign: "center",
+                border: `1px solid ${C.sand}`,
+              }}>
+                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sage, marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>
+                  {stat.label}
+                </div>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, fontWeight: 400, color: C.text }}>
+                  {stat.value}
+                </div>
+                <div style={{ fontSize: 11, color: C.textMuted, marginTop: 2 }}>{stat.sub}</div>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function MensClubMissionSection() {
+  return (
+    <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 900, margin: "0 auto" }}>
+        <FadeIn>
+          <SectionLabel>Our Mission</SectionLabel>
+          <SectionTitle>Serving the Community Since Day One</SectionTitle>
+        </FadeIn>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 32, marginTop: 40 }}>
+          <FadeIn delay={100} direction="left">
+            <div>
+              <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, margin: "0 0 18px 0" }}>
+                The Devils and Round Lake Men's Club is a 501(c)(3) nonprofit dedicated to improving life in the Manitou Beach community. Through annual events like the legendary Tip-Up Festival and the Fourth of July Firecracker 7K, the club raises funds that go directly back to the people who need it most.
+              </p>
+              <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, margin: 0 }}>
+                From buying laptops for college-bound students to donating thousands in toys through Toys for Tots, partnering with law enforcement for Shop with a Cop, and delivering Christmas gift baskets to families in need — the Men's Club is the backbone of Manitou Beach's charitable community.
+              </p>
+            </div>
+          </FadeIn>
+          <FadeIn delay={200} direction="right">
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              {MENS_CLUB_PROGRAMS.map((p, i) => (
+                <div key={i} style={{ display: "flex", gap: 14, alignItems: "flex-start", padding: "14px 16px", background: C.cream, borderRadius: 10, border: `1px solid ${C.sand}` }}>
+                  <span style={{ fontSize: 24, lineHeight: 1, flexShrink: 0 }}>{p.icon}</span>
+                  <div>
+                    <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, fontWeight: 400, color: C.text }}>{p.title}</div>
+                    <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.5, marginTop: 2 }}>{p.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </FadeIn>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function MensClubEventsSection() {
+  return (
+    <section id="mens-club-events" style={{ background: C.dusk, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 900, margin: "0 auto" }}>
+        <FadeIn>
+          <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <SectionLabel style={{ color: C.sunsetLight }}>Annual Calendar</SectionLabel>
+            <SectionTitle center style={{ color: C.cream }}>Events & Fundraisers</SectionTitle>
+          </div>
+        </FadeIn>
+        <div style={{ display: "grid", gap: 16 }}>
+          {MENS_CLUB_EVENTS.map((evt, i) => (
+            <FadeIn key={i} delay={i * 80}>
+              <div style={{
+                display: "flex", gap: 18, alignItems: "flex-start",
+                background: "rgba(255,255,255,0.04)", borderRadius: 14, padding: "24px 22px",
+                border: "1px solid rgba(255,255,255,0.06)",
+              }}>
+                <div style={{ fontSize: 32, lineHeight: 1, flexShrink: 0 }}>{evt.icon}</div>
+                <div style={{ flex: 1 }}>
+                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.cream, margin: "0 0 4px 0" }}>{evt.title}</h3>
+                  <div style={{ fontSize: 12, color: C.sunsetLight, fontWeight: 600, letterSpacing: 0.5, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>{evt.date}</div>
+                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, margin: 0 }}>{evt.desc}</p>
+                </div>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function MensClubGallerySection() {
+  // Gallery photos — add image paths here as they become available
+  const galleryPhotos = [
+    // { src: "/images/mens-club/tip-up-1.jpg", caption: "Tip-Up Festival 2024" },
+    // { src: "/images/mens-club/firecracker-7k.jpg", caption: "Firecracker 7K" },
+    // { src: "/images/mens-club/auction.jpg", caption: "Benefit Auction" },
+  ];
+
+  return galleryPhotos.length > 0 ? (
+    <section style={{ background: C.cream, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+        <FadeIn>
+          <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <SectionLabel>Memories</SectionLabel>
+            <SectionTitle center>Gallery</SectionTitle>
+          </div>
+        </FadeIn>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
+          {galleryPhotos.map((photo, i) => (
+            <FadeIn key={i} delay={i * 60} direction="scale">
+              <div style={{ borderRadius: 12, overflow: "hidden", position: "relative", aspectRatio: "4/3" }}>
+                <img src={photo.src} alt={photo.caption} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                {photo.caption && (
+                  <div style={{
+                    position: "absolute", bottom: 0, left: 0, right: 0,
+                    padding: "10px 14px", background: "linear-gradient(transparent, rgba(10,18,24,0.8))",
+                    fontSize: 12, color: C.cream, fontFamily: "'Libre Franklin', sans-serif",
+                  }}>
+                    {photo.caption}
+                  </div>
+                )}
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  ) : null;
+}
+
+function MensClubGetInvolved() {
+  return (
+    <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 600, margin: "0 auto", textAlign: "center" }}>
+        <FadeIn>
+          <SectionLabel>Get Involved</SectionLabel>
+          <SectionTitle center>Join the Club</SectionTitle>
+          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, marginBottom: 32 }}>
+            Whether you want to volunteer at Tip-Up, help with the fireworks, or just meet good people who care about this community — the Men's Club is always looking for new members.
+          </p>
+          <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+            <a href="https://www.facebook.com/profile.php?id=100064837808733" target="_blank" rel="noopener noreferrer" className="btn-animated" style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              padding: "14px 32px", borderRadius: 8,
+              background: C.sunset, color: C.cream,
+              fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+            }}>
+              Message on Facebook
+            </a>
+            <a href="https://maps.google.com/?q=3171+Round+Lake+Hwy+Manitou+Beach+MI+49253" target="_blank" rel="noopener noreferrer" className="btn-animated" style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              padding: "14px 32px", borderRadius: 8,
+              background: "transparent", border: `1.5px solid ${C.sand}`, color: C.text,
+              fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+            }}>
+              Get Directions
+            </a>
+          </div>
+          <p style={{ fontSize: 12, color: C.textMuted, marginTop: 20 }}>
+            3171 Round Lake Hwy, Manitou Beach, MI 49253
+          </p>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+function MensClubPage() {
+  const subScrollTo = (id) => { window.location.href = "/#" + id; };
+
+  return (
+    <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+      <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+      <GlobalStyles />
+      <ScrollProgress />
+      <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
+      <MensClubHero />
+      <MensClubStatsSection />
+      <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
+      <MensClubMissionSection />
+      <DiagonalDivider topColor={C.warmWhite} bottomColor={C.dusk} />
+      <MensClubEventsSection />
+      <WaveDivider topColor={C.dusk} bottomColor={C.cream} flip />
+      <MensClubGallerySection />
+      <MensClubGetInvolved />
+      <WaveDivider topColor={C.warmWhite} bottomColor={C.cream} />
+      <NewsletterInline />
+      <Footer scrollTo={subScrollTo} />
+    </div>
+  );
+}
+
+// ============================================================
+// 🏛️  HISTORICAL SOCIETY PAGE (/historical-society)
+// ============================================================
+const MBHRS_PROGRAMS = [
+  {
+    icon: "🎨",
+    title: "Boat House Art Gallery",
+    desc: "The largest nonprofit art gallery in Lenawee County, featuring work from over 50 artists. Located at 138 N. Lakeview Blvd — curating fine art from Michigan's Irish Hills community.",
+    address: "138 North Lakeview Boulevard, Manitou Beach, MI 49253",
+    phone: "(517) 224-1984",
+    email: "mbboathouseartgallery@gmail.com",
+  },
+  {
+    icon: "🎭",
+    title: "Devils Lake Festival of the Arts",
+    desc: "An annual summer art festival in the Village — 50 fine artists, 50 crafters, children's activities, live music, and food trucks. Free shuttle buses run all day between parking lots.",
+    date: "Annual — Summer (10 AM – 6 PM)",
+  },
+  {
+    icon: "🚗",
+    title: "Classic Car Shows",
+    desc: "Bringing car show enthusiasts together in the Village for community celebrations of automotive history and local culture.",
+  },
+  {
+    icon: "🌊",
+    title: "Land & Water Conservation",
+    desc: "Active stewardship projects to protect and restore the natural environment around Devils Lake and the surrounding watershed.",
+  },
+  {
+    icon: "🏗️",
+    title: "Village Restoration",
+    desc: "Ongoing renovation projects to restore historic buildings and infrastructure in Manitou Beach Village, preserving the area's architectural heritage.",
+  },
+  {
+    icon: "🎒",
+    title: "Children's Arts Programs",
+    desc: "Arts education and creative programs for young people, fostering the next generation of artists and community members.",
+    link: "https://manitoubeachcreative.org",
+  },
+];
+
+const MBHRS_TIMELINE = [
+  { year: "Origins", title: "A Village Built by Visitors", desc: "Manitou Beach emerged as a resort destination in the late 1800s, attracting visitors from across Michigan and beyond. Grand hotels, pavilions, and a thriving commercial district defined the village." },
+  { year: "Decline", title: "The Quiet Years", desc: "As highways bypassed the village and resort culture shifted, Manitou Beach's commercial center fell into disrepair. Many historic buildings sat empty or deteriorated." },
+  { year: "Revival", title: "MBHRS Is Founded", desc: "The Manitou Beach Historic Renovation Society was established to reverse decades of decline — investing in the future by preserving the past. The mission: restore, renovate, and revitalize the village." },
+  { year: "Gallery", title: "The Boat House Opens", desc: "MBHRS transforms a lakeside building into the Boat House Art Gallery — now the largest nonprofit gallery in Lenawee County, showcasing 50+ Michigan artists." },
+  { year: "Festival", title: "Festival of the Arts", desc: "The Devils Lake Festival of the Arts debuts, filling the Village with 100 artist booths, live music, food, and thousands of visitors. It becomes an annual tradition." },
+  { year: "Today", title: "A Cultural Anchor", desc: "MBHRS continues its mission — the Lock archway greets visitors, the gallery thrives, car shows bring energy, and conservation projects protect the land and water." },
+];
+
+function HistoricalSocietyHero() {
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => { setTimeout(() => setLoaded(true), 80); }, []);
+
+  return (
+    <section style={{
+      background: `linear-gradient(145deg, ${C.night} 0%, ${C.dusk} 100%)`,
+      padding: "160px 24px 120px",
+      position: "relative", overflow: "hidden", textAlign: "center",
+    }}>
+      <div style={{ position: "absolute", top: -40, left: -40, width: 300, height: 300, borderRadius: "50%", background: `${C.sage}06`, pointerEvents: "none" }} />
+      <div style={{ position: "absolute", bottom: -60, right: -60, width: 200, height: 200, borderRadius: "50%", background: `${C.sunset}05`, pointerEvents: "none" }} />
+      <div style={{ maxWidth: 800, margin: "0 auto", position: "relative", zIndex: 1, opacity: loaded ? 1 : 0, transform: loaded ? "translateY(0)" : "translateY(20px)", transition: "all 0.8s ease" }}>
+        <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunsetLight, marginBottom: 12 }}>
+          Investing in the Future by Preserving the Past
+        </div>
+        <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(28px, 5.5vw, 56px)", fontWeight: 400, color: C.cream, lineHeight: 1.1, margin: "0 0 20px 0" }}>
+          Manitou Beach Historic<br />Renovation Society
+        </h1>
+        <p style={{ fontSize: "clamp(14px, 1.5vw, 17px)", color: "rgba(255,255,255,0.45)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto 32px" }}>
+          Restoring the Village, cultivating the arts, conserving the land and water — MBHRS is the steward of Manitou Beach's past, present, and future.
+        </p>
+        <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+          <a href="#mbhrs-programs" className="btn-animated" style={{
+            display: "inline-flex", alignItems: "center", gap: 8,
+            padding: "12px 28px", borderRadius: 8,
+            background: C.sunset, color: C.cream,
+            fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+          }}>
+            Our Programs
+          </a>
+          <a href="https://www.facebook.com/ManitouBeachBoathouseArtGallery/" target="_blank" rel="noopener noreferrer" className="btn-animated" style={{
+            display: "inline-flex", alignItems: "center", gap: 8,
+            padding: "12px 28px", borderRadius: 8,
+            background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", color: C.cream,
+            fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+          }}>
+            Gallery on Facebook
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function MBHRSTimelineSection() {
+  return (
+    <section style={{ background: C.cream, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 750, margin: "0 auto" }}>
+        <FadeIn>
+          <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <SectionLabel>Our Story</SectionLabel>
+            <SectionTitle center>A Timeline of Renewal</SectionTitle>
+          </div>
+        </FadeIn>
+        <div style={{ position: "relative" }}>
+          {/* Timeline line */}
+          <div className="timeline-pulse" style={{ position: "absolute", left: 20, top: 0, bottom: 0, width: 2, background: `${C.sand}`, borderRadius: 2 }} />
+          {MBHRS_TIMELINE.map((item, i) => (
+            <FadeIn key={i} delay={i * 80} direction={i % 2 === 0 ? "left" : "right"}>
+              <div style={{ display: "flex", gap: 24, marginBottom: 36, position: "relative" }}>
+                <div style={{
+                  width: 42, height: 42, borderRadius: "50%",
+                  background: `linear-gradient(135deg, ${C.sage}, ${C.sageDark})`,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 10, fontWeight: 700, color: C.cream, letterSpacing: 0.5,
+                  fontFamily: "'Libre Franklin', sans-serif",
+                  flexShrink: 0, zIndex: 1,
+                }}>
+                  {item.year.length <= 4 ? item.year : "•"}
+                </div>
+                <div style={{ flex: 1, paddingTop: 4 }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sage, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 4 }}>
+                    {item.year}
+                  </div>
+                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.text, margin: "0 0 6px 0" }}>{item.title}</h3>
+                  <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.7, margin: 0 }}>{item.desc}</p>
+                </div>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function MBHRSProgramsSection() {
+  return (
+    <section id="mbhrs-programs" style={{ background: C.warmWhite, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+        <FadeIn>
+          <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <SectionLabel>What We Do</SectionLabel>
+            <SectionTitle center>Programs & Initiatives</SectionTitle>
+          </div>
+        </FadeIn>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(290px, 1fr))", gap: 20 }}>
+          {MBHRS_PROGRAMS.map((prog, i) => (
+            <FadeIn key={i} delay={i * 70} direction="scale">
+              <div style={{
+                background: C.cream, borderRadius: 14, padding: "28px 24px",
+                border: `1px solid ${C.sand}`, height: "100%",
+              }}>
+                <div style={{ fontSize: 32, marginBottom: 14 }}>{prog.icon}</div>
+                <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.text, margin: "0 0 8px 0" }}>{prog.title}</h3>
+                <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.7, margin: "0 0 12px 0" }}>{prog.desc}</p>
+                {prog.date && <div style={{ fontSize: 11, color: C.sage, fontWeight: 600, letterSpacing: 0.5 }}>{prog.date}</div>}
+                {prog.address && (
+                  <div style={{ fontSize: 12, color: C.textMuted, marginTop: 4 }}>
+                    📍 {prog.address}
+                  </div>
+                )}
+                {prog.phone && (
+                  <a href={`tel:${prog.phone}`} style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", display: "block", marginTop: 4 }}>
+                    📱 {prog.phone}
+                  </a>
+                )}
+                {prog.email && (
+                  <a href={`mailto:${prog.email}`} style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", display: "block", marginTop: 4 }}>
+                    ✉️ {prog.email}
+                  </a>
+                )}
+                {prog.link && (
+                  <a href={prog.link} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", display: "inline-block", marginTop: 6, fontWeight: 600 }}>
+                    Visit Website →
+                  </a>
+                )}
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function MBHRSBoatHouseFeature() {
+  return (
+    <section style={{ background: C.dusk, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
+        <FadeIn>
+          <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunsetLight, marginBottom: 12 }}>
+            Featured Venue
+          </div>
+          <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 5vw, 42px)", fontWeight: 400, color: C.cream, margin: "0 0 16px 0" }}>
+            The Boat House Art Gallery
+          </h2>
+          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 600, margin: "0 auto 24px" }}>
+            The largest nonprofit art gallery in Lenawee County. Over 50 Michigan artists showcasing paintings, sculptures, photography, and mixed media. Located in the heart of the Village at 138 N. Lakeview Blvd.
+          </p>
+          <div style={{ display: "flex", gap: 24, justifyContent: "center", flexWrap: "wrap", marginBottom: 28 }}>
+            {[
+              { label: "Artists", value: "50+" },
+              { label: "Status", value: "501(c)(3)" },
+              { label: "County", value: "Lenawee" },
+            ].map((s, i) => (
+              <div key={i} style={{ textAlign: "center" }}>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, color: C.cream }}>{s.value}</div>
+                <div style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", letterSpacing: 1, textTransform: "uppercase", fontFamily: "'Libre Franklin', sans-serif" }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+            <a href="tel:5172241984" className="btn-animated" style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              padding: "12px 28px", borderRadius: 8,
+              background: C.sunset, color: C.cream,
+              fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+            }}>
+              Call (517) 224-1984
+            </a>
+            <a href="mailto:mbboathouseartgallery@gmail.com" className="btn-animated" style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              padding: "12px 28px", borderRadius: 8,
+              background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", color: C.cream,
+              fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+            }}>
+              Email the Gallery
+            </a>
+          </div>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+function MBHRSSupportSection() {
+  return (
+    <section style={{ background: C.cream, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 600, margin: "0 auto", textAlign: "center" }}>
+        <FadeIn>
+          <SectionLabel>Support the Mission</SectionLabel>
+          <SectionTitle center>Help Preserve Manitou Beach</SectionTitle>
+          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, marginBottom: 32 }}>
+            MBHRS is a volunteer-driven nonprofit. Every dollar goes toward restoring the Village, supporting the arts, and conserving our natural resources. Your support makes a direct impact.
+          </p>
+          <div style={{
+            background: C.warmWhite, borderRadius: 14, padding: "32px 28px", border: `1px solid ${C.sand}`,
+            textAlign: "left", marginBottom: 32,
+          }}>
+            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.text, margin: "0 0 14px 0" }}>How to Help</h3>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+              {[
+                "Volunteer at the Festival of the Arts or car shows",
+                "Donate to the gallery or renovation projects",
+                "Submit artwork to the Boat House Art Gallery",
+                "Attend events and spread the word",
+                "Connect local businesses with MBHRS programs",
+              ].map((item, i) => (
+                <li key={i} style={{ fontSize: 14, color: C.textLight, lineHeight: 1.6, padding: "6px 0", paddingLeft: 20, position: "relative" }}>
+                  <span style={{ position: "absolute", left: 0, color: C.sage }}>✓</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <p style={{ fontSize: 12, color: C.textMuted }}>
+            MBHRS — 762 Manitou Road, Manitou Beach, MI 49253
+          </p>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+function HistoricalSocietyPage() {
+  const subScrollTo = (id) => { window.location.href = "/#" + id; };
+
+  return (
+    <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+      <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+      <GlobalStyles />
+      <ScrollProgress />
+      <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
+      <HistoricalSocietyHero />
+      <MBHRSTimelineSection />
+      <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
+      <MBHRSProgramsSection />
+      <DiagonalDivider topColor={C.warmWhite} bottomColor={C.dusk} />
+      <MBHRSBoatHouseFeature />
+      <WaveDivider topColor={C.dusk} bottomColor={C.cream} flip />
+      <MBHRSSupportSection />
+      <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
+      <NewsletterInline />
       <Footer scrollTo={subScrollTo} />
     </div>
   );
@@ -4066,6 +4809,8 @@ export default function App() {
         <Route path="/round-lake" element={<RoundLakePage />} />
         <Route path="/village" element={<VillagePage />} />
         <Route path="/featured" element={<FeaturedPage />} />
+        <Route path="/mens-club" element={<MensClubPage />} />
+        <Route path="/historical-society" element={<HistoricalSocietyPage />} />
       </Routes>
     </BrowserRouter>
   );

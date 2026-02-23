@@ -9,6 +9,16 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Business name and email are required' });
   }
 
+  // Normalize website URL — Notion requires full URL with protocol
+  let normalizedUrl = null;
+  if (website && website.trim()) {
+    let url = website.trim();
+    if (!/^https?:\/\//i.test(url)) {
+      url = 'https://' + url;
+    }
+    normalizedUrl = url;
+  }
+
   try {
     const response = await fetch('https://api.notion.com/v1/pages', {
       method: 'POST',
@@ -23,7 +33,7 @@ export default async function handler(req, res) {
           'Name': { title: [{ text: { content: name } }] },
           'Category': { rich_text: [{ text: { content: category || '' } }] },
           'Phone': { phone_number: phone || null },
-          'Website': { url: website || null },
+          'Website': { url: normalizedUrl },
           'Email': { email: email },
           'Description': { rich_text: [{ text: { content: description || '' } }] },
           'Interested in Featured': { checkbox: upgrade === true || upgrade === 'true' },
