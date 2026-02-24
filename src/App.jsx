@@ -417,7 +417,6 @@ const EVENTS = [
   { id: 1, name: "Friday Night Fish Fry", date: "Every Friday", time: "Dinner", category: "Food & Social", cost: "$$", description: "A weekly Devils Lake tradition at the Yacht Club. Fresh fish, cold drinks, and the best view on the lake.", location: "Devils Lake Yacht Club" },
   { id: 2, name: "Live Music at the Yacht Club", date: "Every Friday & Saturday", time: "Evening", category: "Live Music", cost: "Free", description: "Live entertainment on the water all season long at Devils Lake Yacht Club.", location: "Devils Lake Yacht Club" },
   { id: 3, name: "Trivia Night at Boot Jack Tavern", date: "Every Wednesday", time: "Evening", category: "Food & Social", cost: "Free", description: "Test your knowledge with the locals at Boot Jack Tavern. Michigan craft beer on tap.", location: "Boot Jack Tavern, 735 Manitou Rd" },
-  { id: 4, name: "Sunday Sailboat Races", date: "Every Sunday (Summer)", time: "Afternoon", category: "Sports & Outdoors", cost: "Free to watch", description: "Weekly sailboat races on Devils Lake hosted by the Yacht Club — a summer staple since the club's founding.", location: "Devils Lake Yacht Club" },
   // ── ONE-OFF / SPECIAL EVENTS (sorted by date) ──
   { id: 101, name: "Grateful Dead Tribute — Cosmic Rose", date: "2026-02-27", time: "7:00 PM", category: "Live Music", cost: "Ticket", description: "An evening of Grateful Dead classics at Chateau Aeronautique Winery with dinner and drinks.", location: "Chateau Aeronautique Winery, Onsted" },
   { id: 100, name: "Bob Seger Tribute — Kat Mandu", date: "2026-02-28", time: "7:00 PM", category: "Live Music", cost: "Ticket", description: "Live tribute to Bob Seger at Chateau Aeronautique Winery. Dinner and beverages available in the all-weather Biergarten.", location: "Chateau Aeronautique Winery, Onsted" },
@@ -485,6 +484,69 @@ const VIDEOS = [
 // ============================================================
 // 🧩  SHARED COMPONENTS
 // ============================================================
+
+function ShareBar({ url, title }) {
+  const [copied, setCopied] = useState(false);
+  const shareUrl = url || (typeof window !== "undefined" ? window.location.href : "");
+  const shareTitle = title || "Manitou Beach — Irish Hills, Michigan";
+
+  const handleNativeShare = async () => {
+    if (navigator.share) {
+      try { await navigator.share({ title: shareTitle, url: shareUrl }); } catch (_) {}
+      return;
+    }
+  };
+
+  const copyLink = () => {
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
+  const btnStyle = {
+    display: "inline-flex", alignItems: "center", gap: 5,
+    padding: "6px 14px", borderRadius: 20, border: "1px solid rgba(255,255,255,0.15)",
+    background: "rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.65)",
+    fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600,
+    letterSpacing: 0.5, cursor: "pointer", textDecoration: "none",
+    transition: "all 0.2s",
+  };
+
+  const hoverIn = e => { e.currentTarget.style.background = "rgba(255,255,255,0.14)"; e.currentTarget.style.color = "#fff"; };
+  const hoverOut = e => { e.currentTarget.style.background = "rgba(255,255,255,0.07)"; e.currentTarget.style.color = "rgba(255,255,255,0.65)"; };
+
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginTop: 20 }}>
+      <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.25)" }}>Share</span>
+      {navigator.share ? (
+        <button onClick={handleNativeShare} style={btnStyle} onMouseEnter={hoverIn} onMouseLeave={hoverOut}>
+          ↑ Share This Page
+        </button>
+      ) : (
+        <>
+          <a
+            href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
+            target="_blank" rel="noopener noreferrer"
+            style={btnStyle} onMouseEnter={hoverIn} onMouseLeave={hoverOut}
+          >
+            Facebook
+          </a>
+          <a
+            href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareTitle)}`}
+            target="_blank" rel="noopener noreferrer"
+            style={btnStyle} onMouseEnter={hoverIn} onMouseLeave={hoverOut}
+          >
+            X / Twitter
+          </a>
+          <button onClick={copyLink} style={{ ...btnStyle, border: copied ? `1px solid ${C.sage}` : "1px solid rgba(255,255,255,0.15)", color: copied ? C.sage : "rgba(255,255,255,0.65)" }} onMouseEnter={hoverIn} onMouseLeave={hoverOut}>
+            {copied ? "✓ Copied!" : "Copy Link"}
+          </button>
+        </>
+      )}
+    </div>
+  );
+}
 
 function SectionLabel({ children, light = false }) {
   return (
@@ -849,6 +911,7 @@ function Hero({ scrollTo }) {
             <Btn onClick={() => scrollTo("businesses")} variant="primary">Explore Businesses</Btn>
             <Btn onClick={() => scrollTo("happening")} variant="outlineLight">What's Happening</Btn>
           </div>
+          <ShareBar title="Manitou Beach — Irish Hills, Michigan" />
         </div>
       </div>
       {scrollIndicator}
@@ -1038,9 +1101,17 @@ function EventTimeline() {
         <FadeIn direction="left">
           <SectionLabel light>12-Month View</SectionLabel>
           <SectionTitle light>Event Timeline</SectionTitle>
-          <p style={{ fontSize: 14, color: "rgba(255,255,255,0.4)", marginBottom: 48, maxWidth: 480, lineHeight: 1.7 }}>
+          <p style={{ fontSize: 14, color: "rgba(255,255,255,0.4)", marginBottom: 16, maxWidth: 480, lineHeight: 1.7 }}>
             Plan ahead. Hover to preview, click for full details.
           </p>
+          {notionEvents.length === 0 && (
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 8, padding: "8px 14px", marginBottom: 32 }}>
+              <span style={{ width: 7, height: 7, borderRadius: "50%", background: C.sage, display: "inline-block", flexShrink: 0 }} />
+              <span style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", color: "rgba(255,255,255,0.3)", letterSpacing: 0.5 }}>
+                Notion events channel live — add events directly to your Notion DB to appear here
+              </span>
+            </div>
+          )}
         </FadeIn>
 
         {/* === DESKTOP HORIZONTAL TIMELINE === */}
@@ -1168,7 +1239,7 @@ function EventTimeline() {
               </div>
             )}
 
-            {allEvents.map((event, i) => {
+            {allEvents.map((event) => {
               const color = categoryColors[event.category] || C.sage;
               return (
                 <div key={event.id} onClick={() => setLightboxEvent(event)} style={{ marginBottom: 28, cursor: "pointer", position: "relative" }}>
@@ -1364,6 +1435,7 @@ function HappeningHero() {
             in Manitou Beach · Devils Lake, Michigan
           </div>
           <Btn href="/#submit" variant="outlineLight">Submit an Event</Btn>
+          <ShareBar title="What's Happening in Manitou Beach" />
         </div>
       </div>
     </section>
@@ -1820,8 +1892,8 @@ function ExploreSection() {
     { icon: "🏘️", name: "The Village", desc: "Boutique shops, a handmade cafe, wine tasting, and the lighthouse. The walkable heart of Manitou Beach.", image: "/images/explore-lighthouse.jpg", action: () => window.location.href = "/village", actionLabel: "Explore the Village" },
     { icon: "🌿", name: "Irish Hills", desc: "Rolling hills, hidden trails, and enough nature to justify the drive.", image: "/images/explore-Irish-hills.jpg", action: () => window.open("https://www.irishhills.com", "_blank"), actionLabel: "Explore Irish Hills" },
     { icon: "🍺", name: "Nightlife", desc: "Year-round bars and restaurants with a dock-side state of mind.", image: "/images/explore-nightlife.jpg", action: () => document.getElementById("businesses")?.scrollIntoView({ behavior: "smooth" }), actionLabel: "See Businesses" },
-    { icon: "🎣", name: "Fishing", desc: "Bass, pike, bluegill, and walleye. Two lakes, twelve months of catching.", image: "/images/explore-fishing.jpg", action: () => window.open("https://www.michigan.gov/dnr/managing-resources/fisheries", "_blank"), actionLabel: "Fishing Info" },
-    { icon: "🍷", name: "Wineries", desc: "Michigan wine and craft beverages, right in the Irish Hills.", image: "/images/Explore-wineries.jpg", action: () => document.getElementById("businesses")?.scrollIntoView({ behavior: "smooth" }), actionLabel: "See Wineries" },
+    { icon: "🎣", name: "Fishing", desc: "Bass, pike, bluegill, and walleye. Two lakes, twelve months of catching.", image: "/images/explore-fishing.jpg", action: () => window.location.href = "/fishing", actionLabel: "Fishing Guide" },
+    { icon: "🍷", name: "Wineries", desc: "Michigan wine and craft beverages, right in the Irish Hills.", image: "/images/Explore-wineries.jpg", action: () => window.location.href = "/wineries", actionLabel: "Wine Trail" },
     { icon: "🌊", name: "Round Lake", desc: "515 acres of clear water. The quieter side of lake life.", image: "/images/explore-round-lake.jpg", action: () => window.location.href = "/round-lake", actionLabel: "Explore" },
   ];
 
@@ -2306,7 +2378,7 @@ function LivingSection() {
     {
       title: "Year-Round Life",
       desc: "Manitou Beach isn't just a summer destination. Ice fishing, quiet winters, and a tight-knit community that actually knows each other's names.",
-      cta: "Community Guide", href: "#about",
+      cta: "Explore Devils Lake", href: "/devils-lake",
     },
     {
       title: "Lake Access Magazine",
@@ -2421,6 +2493,7 @@ function SubmitSection() {
   const [submitError, setSubmitError] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
   const [form, setForm] = useState({ name: "", category: "", phone: "", website: "", email: "", description: "", upgrade: false, date: "", time: "", location: "", eventUrl: "" });
 
   const handleImageChange = (e) => {
@@ -2466,7 +2539,9 @@ function SubmitSection() {
       if (!res.ok) throw new Error(data.error || "Submission failed");
       setSubmitted(true);
     } catch (err) {
-      setSubmitError("Something went wrong. Please try again or email us directly.");
+      setSubmitError(err.message && err.message !== "Submission failed"
+        ? err.message
+        : "Something went wrong. Please try again or email us directly.");
     } finally {
       setSubmitting(false);
     }
@@ -2619,11 +2694,28 @@ function SubmitSection() {
                     onFocus={e => e.target.style.borderColor = C.sage}
                     onBlur={e => e.target.style.borderColor = C.sand}
                   />
-                  {/* Image upload with preview */}
-                  <div style={{
-                    border: `1.5px dashed ${C.sand}`, borderRadius: 8, padding: "16px",
-                    background: C.cream, textAlign: "center",
-                  }}>
+                  {/* Image upload with drag & drop */}
+                  <div
+                    onDragEnter={e => { e.preventDefault(); setIsDragging(true); }}
+                    onDragOver={e => { e.preventDefault(); setIsDragging(true); }}
+                    onDragLeave={() => setIsDragging(false)}
+                    onDrop={e => {
+                      e.preventDefault();
+                      setIsDragging(false);
+                      const file = e.dataTransfer.files[0];
+                      if (!file || !file.type.startsWith("image/")) return;
+                      setImageFile(file);
+                      const reader = new FileReader();
+                      reader.onload = (ev) => setImagePreview(ev.target.result);
+                      reader.readAsDataURL(file);
+                    }}
+                    style={{
+                      border: `1.5px dashed ${isDragging ? C.sage : C.sand}`,
+                      borderRadius: 8, padding: "16px",
+                      background: isDragging ? "rgba(122,142,114,0.06)" : C.cream,
+                      textAlign: "center", transition: "all 0.2s",
+                    }}
+                  >
                     {imagePreview ? (
                       <div style={{ position: "relative" }}>
                         <img src={imagePreview} alt="Preview" style={{ maxWidth: "100%", maxHeight: 160, borderRadius: 6, objectFit: "cover" }} />
@@ -2635,10 +2727,10 @@ function SubmitSection() {
                     ) : (
                       <label style={{ cursor: "pointer", display: "block" }}>
                         <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, marginBottom: 4 }}>
-                          Add an event photo (optional)
+                          {isDragging ? "Drop to upload" : "Drag & drop or click to upload"}
                         </div>
                         <div style={{ fontSize: 11, color: C.textMuted, opacity: 0.6 }}>
-                          Auto-compressed for fast loading
+                          JPG, PNG, HEIC — any size
                         </div>
                         <input type="file" accept="image/*" onChange={handleImageChange} style={{ display: "none" }} />
                       </label>
@@ -2987,6 +3079,7 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
                   padding: "8px 0", minWidth: 200, zIndex: 1001,
                 }}>
                   {[
+                    { label: "Devils Lake", id: "devils-lake" },
                     { label: "Men's Club", id: "mens-club" },
                     { label: "Historical Society", id: "historical-society" },
                     { label: "Gallery ↗", href: "https://photogallery.yetigroove.com/folder/muVgmuXuvFwI/" },
@@ -3090,6 +3183,7 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
         {/* Community sub-links */}
         <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.textMuted, marginTop: 8, fontFamily: "'Libre Franklin', sans-serif" }}>Community</div>
         {[
+          { label: "Devils Lake", id: "devils-lake" },
           { label: "Men's Club", id: "mens-club" },
           { label: "Historical Society", id: "historical-society" },
         ].map(link => (
@@ -3377,6 +3471,7 @@ function RoundLakeHero() {
             515 acres of clear water, 67 feet deep. The quieter side of lake life — connected to Devils Lake by a shallow channel and to the Manitou Beach community by everything else.
           </p>
           <Btn href="/" variant="outlineLight" small>← Back to Home</Btn>
+          <ShareBar title="Round Lake — Manitou Beach, Michigan" />
         </div>
       </div>
     </section>
@@ -3656,6 +3751,7 @@ function VillageHero() {
             A walkable strip of boutique shops, a from-scratch cafe, satellite wine tasting rooms, and the iconic lighthouse replica. This is where Manitou Beach comes to life on foot.
           </p>
           <Btn href="/" variant="outlineLight" small>← Back to Home</Btn>
+          <ShareBar title="Manitou Beach Village — Shops, Wine & the Lighthouse" />
         </div>
       </div>
     </section>
@@ -4257,6 +4353,7 @@ function MensClubHero() {
       <div style={{ position: "absolute", top: -60, right: -60, width: 350, height: 350, borderRadius: "50%", background: `${C.sunset}06`, pointerEvents: "none" }} />
       <div style={{ position: "absolute", bottom: -80, left: -80, width: 260, height: 260, borderRadius: "50%", background: `${C.sage}05`, pointerEvents: "none" }} />
       <div style={{ maxWidth: 800, margin: "0 auto", position: "relative", zIndex: 1, opacity: loaded ? 1 : 0, transform: loaded ? "translateY(0)" : "translateY(20px)", transition: "all 0.8s ease" }}>
+        <img src="/images/mens_club_logo.png" alt="Men's Club Logo" style={{ width: 96, height: 96, borderRadius: "50%", objectFit: "cover", marginBottom: 20, border: `3px solid rgba(255,255,255,0.12)` }} />
         <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunsetLight, marginBottom: 12 }}>
           501(c)(3) Nonprofit
         </div>
@@ -4283,6 +4380,7 @@ function MensClubHero() {
           }}>
             View Events
           </a>
+          <ShareBar title="Devils & Round Lake Men's Club — Manitou Beach" />
         </div>
       </div>
     </section>
@@ -4396,9 +4494,19 @@ function MensClubEventsSection() {
 function MensClubGallerySection() {
   // Gallery photos — add image paths here as they become available
   const galleryPhotos = [
-    // { src: "/images/mens-club/tip-up-1.jpg", caption: "Tip-Up Festival 2024" },
-    // { src: "/images/mens-club/firecracker-7k.jpg", caption: "Firecracker 7K" },
-    // { src: "/images/mens-club/auction.jpg", caption: "Benefit Auction" },
+    { src: "/images/mens-club/tip-up-1.jpg", caption: "Tip-Up Festival" },
+    { src: "/images/mens-club/tip-up-2.jpg", caption: "Tip-Up Festival" },
+    { src: "/images/mens-club/tip-up-3.jpg", caption: "Tip-Up Festival" },
+    { src: "/images/mens-club/tip-up-4.jpg", caption: "Tip-Up Festival" },
+    { src: "/images/mens-club/tip-up-5.jpg", caption: "Tip-Up Festival" },
+    { src: "/images/mens-club/tip-up-6.jpg", caption: "Tip-Up Festival" },
+    { src: "/images/mens-club/tip-up-7.jpg", caption: "Tip-Up Festival" },
+    { src: "/images/mens-club/firecracker-7k.jpg", caption: "Firecracker 7K" },
+    { src: "/images/mens-club/firecracker-7k-2.jpg", caption: "Firecracker 7K" },
+    { src: "/images/mens-club/auction.jpg", caption: "Benefit Auction" },
+    { src: "/images/mens-club/fireworks.jpg", caption: "July 4th Fireworks" },
+    { src: "/images/mens-club/shop-with-a-cop.jpg", caption: "Shop with a Cop" },
+    { src: "/images/mens-club/toys-for-tots.jpg", caption: "Toys for Tots" },
   ];
 
   return galleryPhotos.length > 0 ? (
@@ -4558,6 +4666,7 @@ function HistoricalSocietyHero() {
       <div style={{ position: "absolute", top: -40, left: -40, width: 300, height: 300, borderRadius: "50%", background: `${C.sage}06`, pointerEvents: "none" }} />
       <div style={{ position: "absolute", bottom: -60, right: -60, width: 200, height: 200, borderRadius: "50%", background: `${C.sunset}05`, pointerEvents: "none" }} />
       <div style={{ maxWidth: 800, margin: "0 auto", position: "relative", zIndex: 1, opacity: loaded ? 1 : 0, transform: loaded ? "translateY(0)" : "translateY(20px)", transition: "all 0.8s ease" }}>
+        <img src="/images/mbhrs_logo.png" alt="MBHRS Logo" style={{ width: 96, height: 96, borderRadius: "50%", objectFit: "cover", marginBottom: 20, border: `3px solid rgba(255,255,255,0.12)` }} />
         <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunsetLight, marginBottom: 12 }}>
           Investing in the Future by Preserving the Past
         </div>
@@ -4584,6 +4693,7 @@ function HistoricalSocietyHero() {
           }}>
             Gallery on Facebook
           </a>
+          <ShareBar title="Manitou Beach Historic Renovation Society & Boat House Gallery" />
         </div>
       </div>
     </section>
@@ -4796,6 +4906,970 @@ function HistoricalSocietyPage() {
 }
 
 // ============================================================
+// 🎣  FISHING PAGE (/fishing)
+// ============================================================
+const DEVILS_LAKE_FISH = [
+  {
+    name: "Largemouth Bass",
+    latin: "Micropterus salmoides",
+    image: "/images/fish/largemouth-bass.jpg",
+    accentColor: C.sage,
+    desc: "The king of Devils Lake. Ambush predators that hang tight to structure — docks, fallen timber, weed edges. Aggressive fighters that will have you coming back every weekend.",
+    bait: ["Plastic worms (Texas rig)", "Jigs with crawfish trailer", "Topwater frogs over weeds", "Spinnerbaits", "Crankbaits in early spring"],
+    tackle: "Medium-heavy rod, 12–17 lb fluorocarbon or braid",
+    bestTime: "Dawn & dusk — especially the first two hours after sunrise",
+    bestSeason: "Late May through October. Peak: June–July spawn",
+    dnrNote: "Healthy, naturally reproducing population. Catch-and-release helps maintain trophy size fish.",
+  },
+  {
+    name: "Smallmouth Bass",
+    latin: "Micropterus dolomieu",
+    image: "/images/fish/smallmouth-bass.jpg",
+    accentColor: C.sage,
+    desc: "Pound-for-pound one of the hardest-fighting fish in freshwater. Found along rocky shoreline areas and gravelly points. Smaller than largemouth but will test your drag.",
+    bait: ["Tube jigs", "Drop shot with finesse worm", "Small crankbaits", "Live crayfish", "Ned rig"],
+    tackle: "Medium rod, 8–12 lb fluorocarbon",
+    bestTime: "Morning and late afternoon",
+    bestSeason: "Spring (pre-spawn) and Fall. Cooler water brings them shallower.",
+    dnrNote: "Prefers cooler, clearer water — more common near rocky areas on the north shore.",
+  },
+  {
+    name: "Bluegill",
+    latin: "Lepomis macrochirus",
+    image: "/images/fish/bluegill.jpg",
+    accentColor: C.lakeBlue,
+    desc: "The ultimate family fish and the best eating in the lake. Devils Lake has excellent bluegill numbers — beds are visible from shore in 2–4 feet of water during the June spawn. Great for kids and beginners.",
+    bait: ["Small worms on #8 hook", "Crickets", "Small jigs (1/32 oz)", "Wax worms", "Bread balls"],
+    tackle: "Light rod, 4–6 lb monofilament, small bobber",
+    bestTime: "Midday during spawn (June). Early morning rest of season.",
+    bestSeason: "Year-round. Spawn (late May–June) is easiest. Ice fishing produces well in winter.",
+    dnrNote: "Averaged 7\" in DNR surveys — 70% legal size. One of the healthiest panfish populations in the region.",
+  },
+  {
+    name: "Northern Pike",
+    latin: "Esox lucius",
+    image: "/images/fish/northern-pike.jpg",
+    accentColor: C.sunset,
+    desc: "The Tip-Up Festival star. Aggressive ambush predators with a mouth full of teeth — use a wire leader. Through the ice in February they're at their most accessible. Summer pike hit big lures and live bait near weed beds.",
+    bait: ["Large swimbaits", "Live suckers or shiners (ice fishing)", "Tip-ups with sucker minnow", "Big spinnerbaits", "Johnson Silver Minnow over weeds"],
+    tackle: "Medium-heavy to heavy rod, 20–30 lb braid, steel or titanium wire leader",
+    bestTime: "Early morning and overcast days",
+    bestSeason: "Ice fishing (January–February) and early spring post ice-out. Summer weeds produce too.",
+    dnrNote: "Popular target for the annual Tip-Up Festival. A 36\"+ fish is a real trophy on Devils Lake.",
+  },
+  {
+    name: "Black Crappie",
+    latin: "Pomoxis nigromaculatus",
+    image: "/images/fish/black-crappie.jpg",
+    accentColor: C.lakeDark,
+    desc: "Light flaky meat that fries up beautifully. Crappie school up in spring near submerged structure — brush piles, dock pilings, and fallen trees. Patient fishing pays off.",
+    bait: ["Small tube jigs (1/16–1/8 oz)", "Crappie jigs with marabou", "Small minnows under bobber", "Tiny swimbaits", "Wax worms"],
+    tackle: "Ultralight rod, 4–6 lb monofilament, sensitive bobber",
+    bestTime: "Early morning and late afternoon. Dusk in summer.",
+    bestSeason: "Spring spawn (April–May) is prime. Good through ice in winter.",
+    dnrNote: "Best spring action near dock structures in 4–8 feet of water.",
+  },
+  {
+    name: "Yellow Perch",
+    latin: "Perca flavescens",
+    image: "/images/fish/yellow-perch.jpg",
+    accentColor: "#D4A017",
+    desc: "Michigan's favorite panfish. Yellow perch school in large numbers and tend to be where you find one, you find a hundred. Sweet, firm white meat. A Devils Lake winter staple through the ice.",
+    bait: ["Small jigs tipped with wax worm", "Live minnows", "Perch rigs with small hooks", "Gulp minnow tails", "Emerald shiners"],
+    tackle: "Ultralight to light rod, 4–6 lb monofilament",
+    bestTime: "Morning bite is strongest. Schools move — follow the action.",
+    bestSeason: "Year-round. Excellent ice fishing through winter. Fall schools near deep structure.",
+    dnrNote: "Averaged 9\"+ in DNR surveys — above state average. Strong naturally reproducing population.",
+  },
+  {
+    name: "Pumpkinseed Sunfish",
+    latin: "Lepomis gibbosus",
+    image: "/images/fish/pumpkinseed.jpg",
+    accentColor: "#E8A030",
+    desc: "One of the most colorful freshwater fish in Michigan — orange and blue markings that look almost tropical. Abundant near weed beds and shoreline structure. A favorite for kids and great on ultralight tackle.",
+    bait: ["Small worms", "Wax worms", "Tiny jigs", "Crickets", "Small meal worms"],
+    tackle: "Ultralight rod, 4 lb line, small hook and bobber",
+    bestTime: "Midday near shallow weed beds",
+    bestSeason: "Late spring through summer. Spawn in June in shallow weeds.",
+    dnrNote: "Abundant throughout Devils Lake near weed beds. Often caught alongside bluegill.",
+  },
+  {
+    name: "Brown Bullhead",
+    latin: "Ameiurus nebulosus",
+    image: "/images/fish/brown-bullhead.jpg",
+    accentColor: C.warmGray,
+    desc: "Michigan's classic catfish. Whiskers, no scales, and a fighter at the end of the line. Night fishing for bullheads on warm summer evenings is a Manitou Beach tradition — cast and wait.",
+    bait: ["Night crawlers", "Chicken liver", "Stink bait", "Dough balls", "Cut bait"],
+    tackle: "Medium rod, 8–10 lb monofilament, bottom rig with 1–2 oz sinker",
+    bestTime: "After dark — night fishing is most productive May through August",
+    bestSeason: "Late spring through summer. Warm water triggers feeding.",
+    dnrNote: "Bottom feeders. Best near muddy substrates and deep holes. A classic after-dark target.",
+  },
+];
+
+const FISHING_SEASONS = [
+  {
+    season: "Spring",
+    icon: "🌱",
+    desc: "Bass spawn in the shallows from late May through June. Pike are aggressive post ice-out. Best topwater action of the year on Devils Lake.",
+    tip: "Target weed edges at dawn. Bluegill nests are visible in 2–4 ft of water.",
+  },
+  {
+    season: "Summer",
+    icon: "☀️",
+    desc: "Largemouth bass hold on deep structure during midday heat. Early morning and evening topwater is productive on both lakes. Round Lake walleye troll at 10–15 ft.",
+    tip: "7 AM and 7 PM are prime windows. Dock fishing produces bass all day on Devils Lake.",
+  },
+  {
+    season: "Fall",
+    icon: "🍂",
+    desc: "Feeding frenzy before winter. Bass, pike, and walleye all pack on weight. Some of the best fishing of the year. Round Lake perch can be exceptional in October.",
+    tip: "Jerkbaits and spinnerbaits through October. Don't sleep on Devils Lake pier fishing.",
+  },
+  {
+    season: "Ice Fishing",
+    icon: "❄️",
+    desc: "February means Tip-Up Festival — the crown jewel of Manitou Beach winters. Northern pike, walleye, bluegill, crappie, and perch through the ice on both lakes.",
+    tip: "6–8 inches of clear ice typically by mid-January. Check DNR ice conditions before venturing out.",
+  },
+];
+
+function FishingHero() {
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => { setTimeout(() => setLoaded(true), 80); }, []);
+
+  return (
+    <section style={{
+      backgroundImage: "url(/images/explore-fishing.jpg)",
+      backgroundSize: "cover",
+      backgroundPosition: "center 40%",
+      backgroundAttachment: "fixed",
+      backgroundColor: C.dusk,
+      padding: "180px 24px 140px",
+      position: "relative",
+      overflow: "hidden",
+    }}>
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(170deg, rgba(10,18,24,0.75) 0%, rgba(10,18,24,0.45) 50%, rgba(10,18,24,0.88) 100%)" }} />
+      <div style={{ maxWidth: 960, margin: "0 auto", position: "relative", zIndex: 1 }}>
+        <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? "none" : "translateY(24px)", transition: "all 0.9s ease" }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 28 }}>
+            Devils Lake · Round Lake · Michigan DNR
+          </div>
+          <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(48px, 9vw, 110px)", fontWeight: 400, color: C.cream, lineHeight: 0.95, margin: "0 0 20px 0" }}>
+            Fishing<br />Manitou Beach
+          </h1>
+          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: "clamp(14px, 1.6vw, 17px)", color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 520, margin: "0 0 32px 0" }}>
+            Two lakes. Twelve months of catching. Bass, pike, walleye, perch, and bluegill — plus one of Michigan's longest-running ice fishing festivals.
+          </p>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+            <Btn href="https://www.michigan.gov/dnr/managing-resources/fisheries" variant="sunset">Michigan DNR Fishing Info ↗</Btn>
+            <Btn href="/" variant="outlineLight" small>← Back to Home</Btn>
+          </div>
+          <ShareBar title="Fishing Manitou Beach — Devils Lake & Round Lake" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FishingLakesSection() {
+  return (
+    <section style={{ background: C.night, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+        <FadeIn>
+          <SectionLabel light>Two Lakes, Two Fisheries</SectionLabel>
+          <SectionTitle light>Know Your Water</SectionTitle>
+        </FadeIn>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24, marginTop: 48 }}>
+          <FadeIn delay={100} direction="left">
+            <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, padding: "36px 32px", position: "relative", overflow: "hidden" }}>
+              <div style={{ position: "absolute", top: 0, left: 0, width: 4, height: "100%", background: C.sunset, borderRadius: "16px 0 0 16px" }} />
+              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 24, color: C.sunsetLight, marginBottom: 8 }}>Devils Lake</div>
+              <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, fontWeight: 400, color: C.cream, margin: "0 0 16px 0" }}>The Party Lake</h3>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 20 }}>
+                {[
+                  { label: "Size", value: "157 acres" },
+                  { label: "Depth", value: "30 ft max" },
+                  { label: "Type", value: "Warm-water" },
+                  { label: "Launch", value: "Public ramp" },
+                ].map((s, i) => (
+                  <div key={i} style={{ background: "rgba(255,255,255,0.05)", borderRadius: 8, padding: "10px 14px" }}>
+                    <div style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1, textTransform: "uppercase", marginBottom: 4 }}>{s.label}</div>
+                    <div style={{ fontSize: 16, fontWeight: 600, color: C.cream, fontFamily: "'Libre Baskerville', serif" }}>{s.value}</div>
+                  </div>
+                ))}
+              </div>
+              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, margin: 0 }}>
+                A warm-water lake with excellent bass, bluegill, and pike fishing. The boat launch is off Manitou Rd. Dock fishing is accessible year-round.
+              </p>
+            </div>
+          </FadeIn>
+          <FadeIn delay={200} direction="right">
+            <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, padding: "36px 32px", position: "relative", overflow: "hidden" }}>
+              <div style={{ position: "absolute", top: 0, left: 0, width: 4, height: "100%", background: C.lakeBlue, borderRadius: "16px 0 0 16px" }} />
+              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 24, color: "#A8C4D4", marginBottom: 8 }}>Round Lake</div>
+              <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, fontWeight: 400, color: C.cream, margin: "0 0 16px 0" }}>The Serious Fishery</h3>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 20 }}>
+                {[
+                  { label: "Size", value: "515 acres" },
+                  { label: "Depth", value: "67 ft max" },
+                  { label: "Type", value: "Cold-water" },
+                  { label: "Launch", value: "Public ramp" },
+                ].map((s, i) => (
+                  <div key={i} style={{ background: "rgba(255,255,255,0.05)", borderRadius: 8, padding: "10px 14px" }}>
+                    <div style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1, textTransform: "uppercase", marginBottom: 4 }}>{s.label}</div>
+                    <div style={{ fontSize: 16, fontWeight: 600, color: C.cream, fontFamily: "'Libre Baskerville', serif" }}>{s.value}</div>
+                  </div>
+                ))}
+              </div>
+              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, margin: 0 }}>
+                Deep, clear, and cold. DNR-stocked walleye, trophy perch, and excellent crappie. Fish growth rates exceed state averages. The quieter side of lake life.
+              </p>
+            </div>
+          </FadeIn>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FishingSpeciesSection() {
+  const [openFish, setOpenFish] = useState(null);
+
+  return (
+    <section style={{ background: C.cream, padding: "100px 24px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <FadeIn>
+          <SectionLabel>Species Guide</SectionLabel>
+          <SectionTitle>Fish Found in Devils Lake</SectionTitle>
+          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 600, margin: "0 0 12px 0" }}>
+            Eight warm-water species call Devils Lake home. Click any fish for bait recommendations, best tackle, and seasonal timing.
+          </p>
+          <a href="https://www.michigan.gov/dnr/education/michigan-species/fish-species" target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", textDecoration: "none", fontWeight: 600, letterSpacing: 0.5 }}>
+            Michigan DNR Full Species Reference ↗
+          </a>
+        </FadeIn>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 20, marginTop: 56 }}>
+          {DEVILS_LAKE_FISH.map((fish, i) => {
+            const isOpen = openFish === i;
+            return (
+              <FadeIn key={i} delay={i * 50} direction="left">
+                <div
+                  style={{
+                    background: C.warmWhite, borderRadius: 16,
+                    border: `1px solid ${isOpen ? fish.accentColor + "50" : C.sand}`,
+                    overflow: "hidden", transition: "all 0.25s",
+                    boxShadow: isOpen ? `0 8px 32px rgba(0,0,0,0.08)` : "none",
+                  }}
+                >
+                  {/* Card header — always visible */}
+                  <div
+                    onClick={() => setOpenFish(isOpen ? null : i)}
+                    style={{ display: "flex", gap: 0, cursor: "pointer", alignItems: "stretch" }}
+                  >
+                    {/* Fish illustration */}
+                    <div style={{ width: 180, minHeight: 130, flexShrink: 0, overflow: "hidden", background: C.sand, position: "relative" }}>
+                      <img
+                        src={fish.image}
+                        alt={fish.name}
+                        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                        onError={e => { e.target.style.display = "none"; }}
+                      />
+                      <div style={{ position: "absolute", top: 0, left: 0, width: 4, height: "100%", background: fish.accentColor }} />
+                    </div>
+
+                    {/* Name + summary */}
+                    <div style={{ flex: 1, padding: "20px 24px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                      <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.text, margin: "0 0 4px 0" }}>{fish.name}</h3>
+                      <div style={{ fontFamily: "'Caveat', cursive", fontSize: 14, color: C.textMuted, marginBottom: 10 }}>{fish.latin}</div>
+                      <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: 0, maxWidth: 560 }}>{fish.desc}</p>
+                    </div>
+
+                    {/* Best season badge + expand toggle */}
+                    <div style={{ padding: "20px 20px 20px 0", display: "flex", flexDirection: "column", alignItems: "flex-end", justifyContent: "space-between", flexShrink: 0 }}>
+                      <div style={{ background: fish.accentColor + "18", border: `1px solid ${fish.accentColor}30`, borderRadius: 20, padding: "4px 10px", fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: fish.accentColor, whiteSpace: "nowrap" }}>
+                        {fish.bestSeason.split(".")[0]}
+                      </div>
+                      <div style={{ fontSize: 18, color: C.textMuted, marginTop: 12, transform: isOpen ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>▾</div>
+                    </div>
+                  </div>
+
+                  {/* Expanded detail panel */}
+                  {isOpen && (
+                    <div style={{ borderTop: `1px solid ${C.sand}`, padding: "28px 24px 28px", background: C.cream }}>
+                      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 24 }}>
+
+                        {/* Bait & Lures */}
+                        <div>
+                          <div style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunset, marginBottom: 12 }}>Bait & Lures</div>
+                          <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                            {fish.bait.map((b, j) => (
+                              <li key={j} style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, paddingLeft: 14, position: "relative", marginBottom: 4 }}>
+                                <span style={{ position: "absolute", left: 0, color: fish.accentColor }}>›</span>
+                                {b}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        {/* Tackle + Timing */}
+                        <div>
+                          <div style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.lakeBlue, marginBottom: 12 }}>Tackle Setup</div>
+                          <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: "0 0 20px 0" }}>{fish.tackle}</p>
+
+                          <div style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sage, marginBottom: 8 }}>Best Time of Day</div>
+                          <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: "0 0 16px 0" }}>{fish.bestTime}</p>
+
+                          <div style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sage, marginBottom: 8 }}>Season</div>
+                          <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: 0 }}>{fish.bestSeason}</p>
+                        </div>
+
+                        {/* DNR note */}
+                        <div style={{ background: C.warmWhite, borderRadius: 10, padding: "16px 18px", border: `1px solid ${C.sand}` }}>
+                          <div style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.textMuted, marginBottom: 8 }}>Michigan DNR Note</div>
+                          <p style={{ fontSize: 12, color: C.textLight, lineHeight: 1.65, margin: 0, fontStyle: "italic" }}>{fish.dnrNote}</p>
+                          <a href="https://www.michigan.gov/dnr/education/michigan-species/fish-species" target="_blank" rel="noopener noreferrer" style={{ display: "inline-block", marginTop: 10, fontSize: 11, color: C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textDecoration: "none" }}>
+                            DNR Species Page ↗
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </FadeIn>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FishingCharterSection() {
+  // Placeholder charter/supplier cards — replace with real partners
+  const charters = [
+    {
+      name: "Your Charter Here",
+      tagline: "Lake fishing trips · Half day & full day · All gear provided",
+      contact: null,
+      placeholder: true,
+    },
+    {
+      name: "Your Charter Here",
+      tagline: "Guided ice fishing · Tip-Up Festival packages · Year-round",
+      contact: null,
+      placeholder: true,
+    },
+    {
+      name: "Your Tackle Shop Here",
+      tagline: "Live bait · Licenses · Local knowledge since [year]",
+      contact: null,
+      placeholder: true,
+    },
+  ];
+
+  return (
+    <section style={{ background: C.night, padding: "100px 24px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <FadeIn>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 16, marginBottom: 56 }}>
+            <div>
+              <SectionLabel light>Local Pros</SectionLabel>
+              <SectionTitle light>Charters & Suppliers</SectionTitle>
+              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, maxWidth: 520, marginTop: 12 }}>
+                Know the water before you get in the boat. Local fishing charters and tackle suppliers who've been fishing Devils Lake and Round Lake for years.
+              </p>
+            </div>
+            <a href="/#submit" style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              padding: "12px 24px", borderRadius: 8,
+              border: `1px solid ${C.sunset}50`, color: C.sunsetLight,
+              fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700,
+              letterSpacing: 1, textTransform: "uppercase", textDecoration: "none",
+              transition: "all 0.2s",
+            }}
+            onMouseEnter={e => e.currentTarget.style.background = `${C.sunset}15`}
+            onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+            >
+              List Your Charter ↗
+            </a>
+          </div>
+        </FadeIn>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 20 }}>
+          {charters.map((c, i) => (
+            <FadeIn key={i} delay={i * 80}>
+              <div style={{
+                background: c.placeholder ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,0.05)",
+                border: c.placeholder ? `1.5px dashed rgba(255,255,255,0.1)` : "1px solid rgba(255,255,255,0.08)",
+                borderRadius: 14, padding: "32px 28px",
+                display: "flex", flexDirection: "column", gap: 16, minHeight: 180,
+              }}>
+                {c.placeholder ? (
+                  <>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 48, height: 48, borderRadius: 10, border: "1.5px dashed rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.15)", fontSize: 22 }}>+</div>
+                    <div>
+                      <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: "rgba(255,255,255,0.2)", marginBottom: 6 }}>Advertise Here</div>
+                      <p style={{ fontSize: 12, color: "rgba(255,255,255,0.15)", lineHeight: 1.6, margin: "0 0 14px 0" }}>{c.tagline}</p>
+                      <a href="/#submit" style={{ fontSize: 11, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textDecoration: "none", textTransform: "uppercase" }}>
+                        Contact Holly to List →
+                      </a>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.cream, margin: 0 }}>{c.name}</h3>
+                    <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, margin: 0 }}>{c.tagline}</p>
+                    {c.contact && <span style={{ fontSize: 12, color: C.sage }}>{c.contact}</span>}
+                  </>
+                )}
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FishingSeasonsSection() {
+  return (
+    <section style={{ background: C.dusk, padding: "100px 24px" }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+        <FadeIn>
+          <SectionLabel light>Year-Round</SectionLabel>
+          <SectionTitle light>Seasonal Guide</SectionTitle>
+        </FadeIn>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 20, marginTop: 48 }}>
+          {FISHING_SEASONS.map((s, i) => (
+            <FadeIn key={i} delay={i * 80}>
+              <div style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.09)", borderRadius: 14, padding: "32px 28px" }}>
+                <div style={{ fontSize: 32, marginBottom: 12 }}>{s.icon}</div>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.cream, marginBottom: 12 }}>{s.season}</div>
+                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, margin: "0 0 16px 0" }}>{s.desc}</p>
+                <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 14 }}>
+                  <div style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1.5, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 6 }}>Pro Tip</div>
+                  <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", lineHeight: 1.6, margin: 0 }}>{s.tip}</p>
+                </div>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FishingTipUpCallout() {
+  return (
+    <section style={{ background: C.night, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
+        <FadeIn>
+          <div style={{ fontSize: 48, marginBottom: 16 }}>🏆</div>
+          <SectionLabel light>Annual Tradition</SectionLabel>
+          <SectionTitle light>Tip-Up Festival</SectionTitle>
+          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 560, margin: "0 auto 32px" }}>
+            First weekend of February. 73+ years of ice fishing on frozen Devils Lake — plus snowmobile racing, outhouse races, hovercraft rides, a poker run, and the legendary benefit auction. One of the longest-running winter festivals in Michigan.
+          </p>
+          <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+            <Btn href="/mens-club" variant="sunset">Men's Club — Event Organizers</Btn>
+            <Btn href="/happening" variant="outlineLight" small>See All Events →</Btn>
+          </div>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+function FishingPage() {
+  const subScrollTo = (id) => { window.location.href = "/#" + id; };
+  return (
+    <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+      <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+      <GlobalStyles />
+      <ScrollProgress />
+      <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
+      <FishingHero />
+      <WaveDivider topColor={C.dusk} bottomColor={C.night} />
+      <FishingLakesSection />
+      <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
+      <FishingSpeciesSection />
+      <WaveDivider topColor={C.cream} bottomColor={C.night} />
+      <FishingCharterSection />
+      <WaveDivider topColor={C.night} bottomColor={C.dusk} flip />
+      <FishingSeasonsSection />
+      <WaveDivider topColor={C.dusk} bottomColor={C.night} />
+      <FishingTipUpCallout />
+      <WaveDivider topColor={C.night} bottomColor={C.warmWhite} flip />
+      <NewsletterInline />
+      <Footer scrollTo={subScrollTo} />
+    </div>
+  );
+}
+
+// ============================================================
+// 🍷  WINERIES PAGE (/wineries)
+// ============================================================
+const WINERY_VENUES = [
+  {
+    name: "Chateau Aeronautique Winery",
+    type: "Winery & Entertainment Venue",
+    tagline: "Aviation-themed. All-weather Biergarten. Live tribute concerts every weekend.",
+    address: "1849 E Parnall Rd, Jackson",
+    phone: "(517) 795-3620",
+    website: "https://chateauaeronautique.com",
+    logo: "/images/chateau_logo.png",
+    accent: C.sunset,
+    highlight: "Live music every weekend + Michigan-crafted wines",
+    distance: "20 min from Manitou Beach",
+  },
+  {
+    name: "Cherry Creek Cellars",
+    type: "Small-Batch Winery",
+    tagline: "Brooklyn's neighborhood winery — small-batch Michigan wines, laid-back tasting room.",
+    address: "5765 Wamplers Lake Rd, Brooklyn",
+    phone: "(517) 592-4315",
+    website: "https://cherrycreekcellars.com",
+    logo: null,
+    accent: C.sage,
+    highlight: "Also poured at Faust House in the Village",
+    distance: "15 min from Manitou Beach",
+  },
+  {
+    name: "Gypsy Blue Vineyards",
+    type: "Vineyard (Coming Soon)",
+    tagline: "A new vineyard bringing Michigan wine culture to the heart of the Irish Hills.",
+    address: "Irish Hills Area",
+    phone: null,
+    website: "https://michigangypsy.com",
+    logo: null,
+    accent: C.lakeBlue,
+    highlight: "Opening soon — watch this space",
+    distance: "Irish Hills",
+  },
+  {
+    name: "Ang & Co",
+    type: "Satellite Tasting Room · Village",
+    tagline: "Dirty sodas, custom apparel, curated gifts — and Michigan wine from Chateau Fontaine (Leelanau Peninsula).",
+    address: "141 N. Lakeview Blvd., Manitou Beach",
+    phone: "(517) 547-6030",
+    website: "https://www.angandco.net",
+    logo: "/images/ang_co_logo.png",
+    accent: C.sunsetLight,
+    highlight: "Right in the Village — walk from the lake",
+    distance: "In the Village",
+  },
+  {
+    name: "Faust House Scrap n Craft",
+    type: "Satellite Tasting Room · Village",
+    tagline: "Scrapbooking, crafts, and satellite wine tasting for Cherry Creek Cellars right on Lakeview Blvd.",
+    address: "140 N Lakeview Blvd., Manitou Beach",
+    phone: "(517) 403-1788",
+    website: "https://fausthousescrapncraft.com",
+    logo: "/images/faust_house_logo.png",
+    accent: "#8B5E3C",
+    highlight: "Cherry Creek Cellars in the Village",
+    distance: "In the Village",
+  },
+];
+
+function WineriesHero() {
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => { setTimeout(() => setLoaded(true), 80); }, []);
+
+  return (
+    <section style={{
+      backgroundImage: "url(/images/Explore-wineries.jpg)",
+      backgroundSize: "cover",
+      backgroundPosition: "center 40%",
+      backgroundAttachment: "fixed",
+      backgroundColor: C.dusk,
+      padding: "180px 24px 140px",
+      position: "relative",
+      overflow: "hidden",
+    }}>
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(170deg, rgba(10,18,24,0.75) 0%, rgba(10,18,24,0.45) 50%, rgba(10,18,24,0.88) 100%)" }} />
+      <div style={{ maxWidth: 960, margin: "0 auto", position: "relative", zIndex: 1 }}>
+        <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? "none" : "translateY(24px)", transition: "all 0.9s ease" }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 28 }}>
+            Michigan Wine · Irish Hills · Manitou Beach Village
+          </div>
+          <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(48px, 9vw, 110px)", fontWeight: 400, color: C.cream, lineHeight: 0.95, margin: "0 0 20px 0" }}>
+            Wineries &<br />Wine Trails
+          </h1>
+          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: "clamp(14px, 1.6vw, 17px)", color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 520, margin: "0 0 32px 0" }}>
+            Michigan wine country meets lake country. From lakeside tasting rooms in the Village to full winery destinations in the Irish Hills — sip your way through one of the state's most scenic wine trails.
+          </p>
+          <Btn href="/" variant="outlineLight" small>← Back to Home</Btn>
+          <ShareBar title="Irish Hills Wineries & Wine Trail — Manitou Beach" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function WineriesVillageCallout() {
+  return (
+    <section style={{ background: C.night, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
+        <FadeIn>
+          <div style={{ fontSize: 36, marginBottom: 16 }}>🍷</div>
+          <SectionLabel light>Coming May 2026</SectionLabel>
+          <SectionTitle light>Satellite Tasting Rooms in the Village</SectionTitle>
+          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 600, margin: "0 auto 32px" }}>
+            Starting May 2026, Manitou Beach Village shops become satellite tasting rooms for Michigan wineries. Walk the boulevard, pop into Ang & Co for a Leelanau Peninsula pour, and discover Cherry Creek Cellars at Faust House — all within steps of the lake.
+          </p>
+          <Btn href="/village" variant="sunset">Explore the Village</Btn>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+function WineriesVenueSection() {
+  return (
+    <section style={{ background: C.cream, padding: "100px 24px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <FadeIn>
+          <SectionLabel>The Wine Trail</SectionLabel>
+          <SectionTitle>Wineries & Tasting Rooms</SectionTitle>
+          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 560, margin: "0 0 56px 0" }}>
+            Five places to taste Michigan wine — two right in the Village, three worth the short drive into the Irish Hills.
+          </p>
+        </FadeIn>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+          {WINERY_VENUES.map((v, i) => (
+            <FadeIn key={i} delay={i * 80} direction={i % 2 === 0 ? "left" : "right"}>
+              <div
+                onClick={() => v.website && window.open(v.website, "_blank")}
+                style={{
+                  background: C.warmWhite,
+                  border: `1px solid ${C.sand}`,
+                  borderRadius: 16,
+                  padding: "32px 28px",
+                  display: "flex",
+                  gap: 24,
+                  alignItems: "flex-start",
+                  cursor: v.website ? "pointer" : "default",
+                  position: "relative",
+                  overflow: "hidden",
+                  transition: "all 0.25s",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 8px 32px rgba(0,0,0,0.1), 0 0 0 1px ${v.accent}30`; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
+              >
+                <div style={{ position: "absolute", top: 0, left: 0, width: 4, height: "100%", background: v.accent, borderRadius: "16px 0 0 16px" }} />
+                {v.logo && (
+                  <img src={v.logo} alt="" style={{ width: 64, height: 64, borderRadius: 12, objectFit: "cover", flexShrink: 0, background: C.sand }} />
+                )}
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 8, marginBottom: 6 }}>
+                    <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.text, margin: 0 }}>{v.name}</h3>
+                    <span style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.textMuted, background: C.sand, padding: "4px 10px", borderRadius: 20 }}>{v.distance}</span>
+                  </div>
+                  <div style={{ fontSize: 11, color: v.accent, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", marginBottom: 10 }}>{v.type}</div>
+                  <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: "0 0 14px 0" }}>{v.tagline}</p>
+                  <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
+                    {v.address && <span style={{ fontSize: 12, color: C.textMuted }}>📍 {v.address}</span>}
+                    {v.phone && <span style={{ fontSize: 12, color: C.textMuted }}>📞 {v.phone}</span>}
+                  </div>
+                  {v.highlight && (
+                    <div style={{ marginTop: 12, fontSize: 12, color: v.accent, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600 }}>
+                      ✦ {v.highlight}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function WineriesCTASection() {
+  return (
+    <section style={{ background: C.dusk, padding: "100px 24px" }}>
+      <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
+        <FadeIn>
+          <SectionLabel light>Plan Your Visit</SectionLabel>
+          <SectionTitle light>Build Your Wine Trail Day</SectionTitle>
+          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 560, margin: "0 auto 16px" }}>
+            Spend a morning at the lake, a leisurely lunch in the Village, an afternoon tasting at Chateau Aeronautique, and an evening back on the water. That's a Manitou Beach Saturday.
+          </p>
+          <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: C.sunsetLight, marginBottom: 32 }}>
+            Holly can help you find the perfect lakefront home to come back to.
+          </div>
+          <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+            <Btn href="/#holly" variant="sunset">Talk to Holly</Btn>
+            <Btn href="/happening" variant="outlineLight" small>What's On This Weekend →</Btn>
+          </div>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+function WineriesPage() {
+  const subScrollTo = (id) => { window.location.href = "/#" + id; };
+  return (
+    <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+      <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+      <GlobalStyles />
+      <ScrollProgress />
+      <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
+      <WineriesHero />
+      <WaveDivider topColor={C.dusk} bottomColor={C.night} />
+      <WineriesVillageCallout />
+      <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
+      <WineriesVenueSection />
+      <DiagonalDivider topColor={C.cream} bottomColor={C.dusk} />
+      <WineriesCTASection />
+      <WaveDivider topColor={C.dusk} bottomColor={C.warmWhite} flip />
+      <NewsletterInline />
+      <Footer scrollTo={subScrollTo} />
+    </div>
+  );
+}
+
+// ============================================================
+// 🏖️  DEVILS LAKE PAGE (/devils-lake)
+// ============================================================
+const DEVILS_LAKE_STATS = [
+  { label: "Surface Area", value: "157 acres" },
+  { label: "Max Depth", value: "30 ft" },
+  { label: "Lake Type", value: "Warm-water" },
+  { label: "Public Launch", value: "Yes — Manitou Rd" },
+  { label: "Connected To", value: "Round Lake" },
+  { label: "Boat Slips", value: "600+" },
+];
+
+const DEVILS_LAKE_TIMELINE = [
+  { year: "Pre-1830", event: "Potawatomi and Ojibwa people camp along the shores of Devils Lake during summer — the lake's name comes from a mispronunciation of the tribal word for the area." },
+  { year: "1870s", event: "The resort era begins. Grand hotels, a dance pavilion, bathhouses, and two railroad stations transform Devils Lake into one of Michigan's most popular summer destinations." },
+  { year: "1888", event: "Manitou Beach officially platted. Lots sold for cottage construction. A steam launch connects Devils Lake to Round Lake through the dredged channel." },
+  { year: "1920s–40s", event: "The Yacht Club is established, formalizing the sailing and boating culture that had grown organically on the lake for decades." },
+  { year: "1950s", event: "The Tip-Up Festival launches — an ice fishing celebration on frozen Devils Lake that grows into one of Michigan's longest-running winter festivals (73+ years and counting)." },
+  { year: "Today", event: "Devils Lake remains the social heart of Manitou Beach — summer boating, the Firecracker 7K on the Fourth, weekly sailboat races, and a community that lives for the water." },
+];
+
+const DEVILS_LAKE_COMMUNITY = [
+  { icon: "⛵", title: "Devils Lake Yacht Club", desc: "Sailing, regattas, and the Friday Fish Fry. The Yacht Club has been the social hub of Devils Lake since the 1940s." },
+  { icon: "🚤", title: "Public Boat Launch", desc: "Paved public ramp off Manitou Rd with easy access for powerboats, pontoons, kayaks, and canoes." },
+  { icon: "🏘️", title: "Manitou Beach Village", desc: "Walk from the lake to boutique shops, a cafe, satellite wine tasting rooms, and the iconic lighthouse — all within five minutes." },
+  { icon: "🎣", title: "Tip-Up Festival", desc: "Every February on the frozen lake — ice fishing, snowmobile races, outhouse races, and the legendary benefit auction organized by the Men's Club." },
+];
+
+function DevilsLakeHero() {
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => { setTimeout(() => setLoaded(true), 80); }, []);
+
+  return (
+    <section style={{
+      backgroundImage: "url(/images/explore-devils-lake.jpg)",
+      backgroundSize: "cover",
+      backgroundPosition: "center 35%",
+      backgroundAttachment: "fixed",
+      backgroundColor: C.dusk,
+      minHeight: "80vh",
+      display: "flex", alignItems: "center",
+      position: "relative", overflow: "hidden",
+    }}>
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg, rgba(10,18,24,0.72) 0%, rgba(10,18,24,0.42) 50%, rgba(10,18,24,0.88) 100%)" }} />
+      <div style={{ maxWidth: 960, margin: "0 auto", padding: "140px 24px 100px", position: "relative", zIndex: 1, width: "100%" }}>
+        <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? "none" : "translateY(24px)", transition: "all 0.9s ease" }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 28 }}>
+            Manitou Beach · Irish Hills · Michigan
+          </div>
+          <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(48px, 9vw, 110px)", fontWeight: 400, color: C.cream, lineHeight: 0.95, margin: "0 0 12px 0" }}>
+            Devils Lake
+          </h1>
+          <div style={{ fontFamily: "'Caveat', cursive", fontSize: "clamp(20px, 2.5vw, 28px)", color: C.sunsetLight, marginBottom: 20 }}>
+            The Party Lake
+          </div>
+          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: "clamp(14px, 1.6vw, 17px)", color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 520, margin: "0 0 32px 0" }}>
+            157 acres of warm water, 600+ boat slips, and a community that has been coming back every summer since the 1870s. Devils Lake is the beating heart of Manitou Beach.
+          </p>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+            <Btn href="/#holly" variant="sunset">Talk to Holly — Find a Home</Btn>
+            <Btn href="/" variant="outlineLight" small>← Back to Home</Btn>
+          </div>
+          <ShareBar title="Devils Lake — Manitou Beach, Michigan" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function DevilsLakeStatsSection() {
+  return (
+    <section style={{ background: C.night, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+        <FadeIn>
+          <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <SectionLabel light>By the Numbers</SectionLabel>
+            <SectionTitle light>The Lake at a Glance</SectionTitle>
+          </div>
+        </FadeIn>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 16 }}>
+          {DEVILS_LAKE_STATS.map((stat, i) => (
+            <FadeIn key={i} delay={i * 60}>
+              <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 12, padding: "24px 20px", textAlign: "center" }}>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 3vw, 30px)", fontWeight: 400, color: C.cream, marginBottom: 6 }}>{stat.value}</div>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.3)" }}>{stat.label}</div>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function DevilsLakeHistorySection() {
+  return (
+    <section style={{ background: C.cream, padding: "100px 24px" }}>
+      <div style={{ maxWidth: 900, margin: "0 auto" }}>
+        <FadeIn>
+          <SectionLabel>Deep Roots</SectionLabel>
+          <SectionTitle>A Lake With a Story</SectionTitle>
+          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 560, margin: "0 0 56px 0" }}>
+            Devils Lake has been drawing people in for over 150 years. From railroad-era grand hotels to the annual Tip-Up Festival on the ice — the history runs deep.
+          </p>
+        </FadeIn>
+        <div style={{ position: "relative" }}>
+          {/* Vertical line */}
+          <div style={{ position: "absolute", left: 18, top: 0, bottom: 0, width: 2, background: `linear-gradient(to bottom, ${C.sunset}, ${C.lakeBlue})`, borderRadius: 2 }} />
+          <div style={{ display: "flex", flexDirection: "column", gap: 36, paddingLeft: 52 }}>
+            {DEVILS_LAKE_TIMELINE.map((item, i) => (
+              <FadeIn key={i} delay={i * 80} direction="left">
+                <div style={{ position: "relative" }}>
+                  {/* Dot */}
+                  <div style={{ position: "absolute", left: -42, top: 4, width: 12, height: 12, borderRadius: "50%", background: i === DEVILS_LAKE_TIMELINE.length - 1 ? C.sunset : C.lakeBlue, border: `3px solid ${C.cream}`, boxShadow: `0 0 0 2px ${i === DEVILS_LAKE_TIMELINE.length - 1 ? C.sunset : C.lakeBlue}` }} />
+                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunset, marginBottom: 6 }}>{item.year}</div>
+                  <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.75, margin: 0 }}>{item.event}</p>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function DevilsLakeFishingSection() {
+  return (
+    <section style={{ background: C.warmWhite, padding: "100px 24px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <FadeIn>
+          <SectionLabel>On the Line</SectionLabel>
+          <SectionTitle>Fishing Devils Lake</SectionTitle>
+          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 560, margin: "0 0 20px 0" }}>
+            A warm-water fishery with healthy bass, bluegill, pike, and perch. Year-round access — summer dock fishing and the legendary February Tip-Up Festival on the ice.
+          </p>
+        </FadeIn>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 16, marginTop: 48 }}>
+          {DEVILS_LAKE_FISH.map((fish, i) => (
+            <FadeIn key={i} delay={i * 50}>
+              <div style={{ background: C.cream, borderRadius: 12, padding: "24px", border: `1px solid ${C.sand}`, transition: "all 0.2s" }}
+                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.1)"; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                  <span style={{ fontSize: 20 }}>{fish.icon}</span>
+                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text, margin: 0 }}>{fish.name}</h3>
+                </div>
+                <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: 0 }}>{fish.note}</p>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+        <FadeIn delay={200}>
+          <div style={{ marginTop: 48, background: C.dusk, borderRadius: 16, padding: "36px 32px", display: "flex", gap: 24, alignItems: "center", flexWrap: "wrap" }}>
+            <div style={{ flex: 1, minWidth: 240 }}>
+              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunsetLight, marginBottom: 8 }}>Every February</div>
+              <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, fontWeight: 400, color: C.cream, margin: "0 0 10px 0" }}>Tip-Up Festival</h3>
+              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, margin: "0 0 16px 0", maxWidth: 440 }}>
+                Ice fishing for pike, walleye, bluegill, crappie, and perch. Snowmobile racing, outhouse races, hovercraft rides, poker run, and the benefit auction. 73+ years on frozen Devils Lake.
+              </p>
+              <Btn href="/mens-club" variant="outlineLight" small>Men's Club — Event Organizers →</Btn>
+            </div>
+          </div>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+function DevilsLakeCommunitySection() {
+  return (
+    <section style={{ background: C.dusk, padding: "100px 24px" }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+        <FadeIn>
+          <SectionLabel light>Life on the Lake</SectionLabel>
+          <SectionTitle light>The Community</SectionTitle>
+          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 540, margin: "0 0 56px 0" }}>
+            Devils Lake isn't just a place to visit — it's a community. Generations of families have built their summers, and often their lives, around this water.
+          </p>
+        </FadeIn>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 20 }}>
+          {DEVILS_LAKE_COMMUNITY.map((item, i) => (
+            <FadeIn key={i} delay={i * 80}>
+              <div style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.09)", borderRadius: 14, padding: "32px 28px" }}>
+                <div style={{ fontSize: 32, marginBottom: 14 }}>{item.icon}</div>
+                <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.cream, margin: "0 0 10px 0" }}>{item.title}</h3>
+                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, margin: 0 }}>{item.desc}</p>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+
+        {/* Men's Club callout */}
+        <FadeIn delay={400}>
+          <div style={{ textAlign: "center", marginTop: 56 }}>
+            <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunsetLight, marginBottom: 8 }}>Community Organization</div>
+            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(18px, 2.5vw, 26px)", fontWeight: 400, color: C.cream, margin: "0 0 12px 0" }}>
+              Ready to call Devils Lake home?
+            </h3>
+            <p style={{ fontSize: 14, color: "rgba(255,255,255,0.35)", lineHeight: 1.7, maxWidth: 480, margin: "0 auto 24px" }}>
+              Holly Griewahn at Foundation Realty knows this lake like the back of her hand. Lakefront, cottage, or year-round — she's your person.
+            </p>
+            <Btn href="/#holly" variant="sunset">Talk to Holly</Btn>
+          </div>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+function DevilsLakePage() {
+  const subScrollTo = (id) => { window.location.href = "/#" + id; };
+  return (
+    <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+      <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+      <GlobalStyles />
+      <ScrollProgress />
+      <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
+      <DevilsLakeHero />
+      <WaveDivider topColor={C.dusk} bottomColor={C.night} />
+      <DevilsLakeStatsSection />
+      <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
+      <DevilsLakeHistorySection />
+      <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
+      <DevilsLakeFishingSection />
+      <DiagonalDivider topColor={C.warmWhite} bottomColor={C.dusk} />
+      <DevilsLakeCommunitySection />
+      <WaveDivider topColor={C.dusk} bottomColor={C.warmWhite} flip />
+      <NewsletterInline />
+      <Footer scrollTo={subScrollTo} />
+    </div>
+  );
+}
+
+// ============================================================
 // 🌐  APP ROOT
 // ============================================================
 export default function App() {
@@ -4809,6 +5883,9 @@ export default function App() {
         <Route path="/featured" element={<FeaturedPage />} />
         <Route path="/mens-club" element={<MensClubPage />} />
         <Route path="/historical-society" element={<HistoricalSocietyPage />} />
+        <Route path="/fishing" element={<FishingPage />} />
+        <Route path="/wineries" element={<WineriesPage />} />
+        <Route path="/devils-lake" element={<DevilsLakePage />} />
       </Routes>
     </BrowserRouter>
   );
