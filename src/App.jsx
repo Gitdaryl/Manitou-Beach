@@ -2291,138 +2291,129 @@ function HollyYetiSection() {
   return (
     <section id="holly" style={{
       background: `linear-gradient(160deg, ${C.night} 0%, ${C.lakeDark} 100%)`,
-      padding: "100px 24px",
+      padding: "80px 24px",
       position: "relative",
       overflow: "hidden",
     }}>
-      {/* Subtle texture + decorative waveform */}
-      <div style={{
-        position: "absolute", inset: 0, zIndex: 0,
-        backgroundImage: `radial-gradient(ellipse 80% 60% at 80% 50%, ${C.lakeBlue}15 0%, transparent 70%)`,
-      }} />
-      {/* Large decorative quotation mark */}
-      <div style={{
-        position: "absolute", top: 40, left: 40, zIndex: 0,
-        fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(200px, 30vw, 400px)",
-        color: "rgba(255,255,255,0.02)", lineHeight: 0.8, userSelect: "none", pointerEvents: "none",
-      }}>"</div>
-      {/* Floating ambient circles */}
-      <div style={{ position: "absolute", bottom: "10%", right: "5%", width: 150, height: 150, borderRadius: "50%", border: `1px solid ${C.sage}10`, animation: "float 8s ease-in-out infinite", pointerEvents: "none", zIndex: 0 }} />
-      <div style={{ position: "absolute", top: "15%", left: "60%", width: 80, height: 80, borderRadius: "50%", background: `${C.sunset}06`, animation: "float-slow 10s ease-in-out infinite 3s", pointerEvents: "none", zIndex: 0 }} />
+      {/* Ambient background glow */}
+      <div style={{ position: "absolute", inset: 0, zIndex: 0, backgroundImage: `radial-gradient(ellipse 70% 60% at 60% 40%, ${C.lakeBlue}12 0%, transparent 70%)` }} />
 
       <div style={{ maxWidth: 1100, margin: "0 auto", position: "relative", zIndex: 1 }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "center" }}>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gridTemplateRows: "auto auto",
+          gap: 32,
+        }}>
+
+          {/* TOP LEFT — Text */}
           <FadeIn direction="left">
-            <img
-              src="/images/holly_yeti.png"
-              alt="Holly and The Yeti"
-              style={{ width: "100%", maxWidth: 340, display: "block", marginBottom: 28 }}
-            />
-            <SectionLabel light>The Voices of the Lake</SectionLabel>
-            <h2 style={{
-              fontFamily: "'Libre Baskerville', serif",
-              fontSize: "clamp(32px, 5vw, 52px)",
-              fontWeight: 400,
-              color: C.cream,
-              lineHeight: 1.15,
-              margin: "0 0 24px 0",
-            }}>
-              Holly &<br />The Yeti
-            </h2>
-            <p style={{ fontSize: 16, color: "rgba(255,255,255,0.6)", lineHeight: 1.8, marginBottom: 16 }}>
-              A local realtor with straight-shooter expertise and an Australian-accented community character with a flair for comedy walk into a podcast...
-            </p>
-            <p style={{ fontSize: 16, color: "rgba(255,255,255,0.6)", lineHeight: 1.8, marginBottom: 36 }}>
-              Holly Griewahn brings the real estate knowledge and market insight. The Yeti brings the AI-generated videos and the stories that make Manitou Beach feel like the community it actually is.
-            </p>
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-              <Btn href="https://www.youtube.com/@HollyandtheYetipodcast" variant="sunset">Watch on YouTube</Btn>
-              <Btn href="https://www.facebook.com/HollyandtheYeti" variant="outlineLight">Facebook</Btn>
+            <div style={{ padding: "8px 0" }}>
+              <SectionLabel light>The Voices of the Lake</SectionLabel>
+              <h2 style={{
+                fontFamily: "'Libre Baskerville', serif",
+                fontSize: "clamp(32px, 4.5vw, 52px)",
+                fontWeight: 400,
+                color: C.cream,
+                lineHeight: 1.1,
+                margin: "0 0 20px 0",
+              }}>
+                Holly &<br />The Yeti
+              </h2>
+              <p style={{ fontSize: 15, color: "rgba(255,255,255,0.58)", lineHeight: 1.8, marginBottom: 14 }}>
+                A local realtor with straight-shooter expertise and an Australian-accented community character with a flair for comedy walk into a podcast...
+              </p>
+              <p style={{ fontSize: 15, color: "rgba(255,255,255,0.58)", lineHeight: 1.8, marginBottom: 32 }}>
+                Holly Griewahn brings the real estate knowledge and market insight. The Yeti brings the AI-generated videos and the stories that make Manitou Beach feel like the community it actually is.
+              </p>
+              <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                <Btn href="https://www.youtube.com/@HollyandtheYetipodcast" variant="sunset">Watch on YouTube</Btn>
+                <Btn href="https://www.facebook.com/HollyandtheYeti" variant="outlineLight">Facebook</Btn>
+              </div>
             </div>
           </FadeIn>
 
-          <FadeIn delay={120}>
-            <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-              {/* Social cards */}
-              {[
-                { platform: "YouTube", handle: "@HollyandtheYetipodcast", desc: "Full episodes, community highlights, and business spotlight videos.", icon: "▶", href: "https://www.youtube.com/@HollyandtheYetipodcast" },
-                { platform: "Facebook", handle: "HollyandtheYeti", desc: "Community updates, event news, and behind-the-scenes moments.", icon: "f", href: "https://www.facebook.com/HollyandtheYeti" },
-                { platform: "Instagram", handle: "@hollyandtheyeti", desc: "Lake life photos, short clips, and the occasional cryptid sighting.", icon: "◎", href: "https://www.instagram.com/hollyandtheyeti" },
-              ].map(s => (
-                <a key={s.platform} href={s.href} target="_blank" rel="noopener noreferrer" style={{
-                  display: "block",
-                  background: "rgba(255,255,255,0.05)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  borderRadius: 10,
-                  padding: "18px 20px",
-                  textDecoration: "none",
-                  transition: "all 0.22s",
-                }}
-                  onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.09)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)"; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.05)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; }}
-                >
-                  <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
+          {/* TOP RIGHT — Portrait */}
+          <FadeIn delay={80} direction="right">
+            <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "center", height: "100%" }}>
+              <img
+                src="/images/holly_yeti.png"
+                alt="Holly and The Yeti"
+                style={{ width: "100%", maxWidth: 420, display: "block", objectFit: "contain" }}
+              />
+            </div>
+          </FadeIn>
+
+          {/* BOTTOM LEFT — YouTube video */}
+          <FadeIn delay={160} direction="left">
+            <div>
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: 12 }}>
+                Watch
+              </div>
+              <div style={{ position: "relative", paddingTop: "56.25%", borderRadius: 10, overflow: "hidden", boxShadow: "0 16px 60px rgba(0,0,0,0.5)" }}>
+                <iframe
+                  src="https://www.youtube.com/embed/6Kjt2pNsdH0"
+                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 14, color: "rgba(255,255,255,0.3)", marginTop: 10 }}>
+                Devils Lake Tip-Up Wrap Up — Holly &amp; The Yeti
+              </div>
+            </div>
+          </FadeIn>
+
+          {/* BOTTOM RIGHT — Social links */}
+          <FadeIn delay={200} direction="right">
+            <div>
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: 16 }}>
+                Follow Along
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                {[
+                  { platform: "YouTube", handle: "@HollyandtheYetipodcast", desc: "Full episodes, community highlights, and business spotlights.", icon: "▶", href: "https://www.youtube.com/@HollyandtheYetipodcast", color: "#FF4444" },
+                  { platform: "Facebook", handle: "HollyandtheYeti", desc: "Community updates, event news, and behind-the-scenes moments.", icon: "f", href: "https://www.facebook.com/HollyandtheYeti", color: "#4A90D9" },
+                  { platform: "Instagram", handle: "@hollyandtheyeti", desc: "Lake life photos, short clips, and the occasional cryptid sighting.", icon: "◎", href: "https://www.instagram.com/hollyandtheyeti", color: "#C45FA0" },
+                ].map(s => (
+                  <a key={s.platform} href={s.href} target="_blank" rel="noopener noreferrer" style={{
+                    display: "flex", gap: 14, alignItems: "center",
+                    background: "rgba(255,255,255,0.04)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    borderRadius: 10,
+                    padding: "14px 18px",
+                    textDecoration: "none",
+                    transition: "all 0.22s",
+                  }}
+                    onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; e.currentTarget.style.borderColor = `${s.color}50`; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; }}
+                  >
                     <div style={{
-                      width: 38, height: 38, borderRadius: 8,
-                      background: `${C.sage}30`,
+                      width: 36, height: 36, borderRadius: 8, flexShrink: 0,
+                      background: `${s.color}20`,
                       display: "flex", alignItems: "center", justifyContent: "center",
-                      fontSize: 16, color: C.sage,
+                      fontSize: 15, color: s.color,
                     }}>
                       {s.icon}
                     </div>
                     <div>
                       <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, fontSize: 13, color: C.cream }}>{s.platform}</div>
-                      <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)" }}>{s.handle}</div>
+                      <div style={{ fontSize: 11, color: "rgba(255,255,255,0.35)" }}>{s.handle}</div>
                     </div>
-                  </div>
-                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", margin: "12px 0 0 0", lineHeight: 1.6 }}>{s.desc}</p>
-                </a>
-              ))}
-
-              {/* Yeti Groove Media callout */}
-              <div style={{
-                background: `${C.sunset}15`,
-                border: `1px solid ${C.sunset}35`,
-                borderRadius: 10,
-                padding: "18px 20px",
-              }}>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 2.5, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 6 }}>
-                  Premium Service
-                </div>
-                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: C.cream, marginBottom: 6 }}>
-                  Yeti Groove Media
-                </div>
-                <p style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", margin: "0 0 12px 0", lineHeight: 1.65 }}>
-                  Cinematic storytelling for corporate and personal legacies. Starting from $25K.
-                </p>
-                <a href="#" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunsetLight, textDecoration: "none" }}>
-                  Learn More →
-                </a>
+                  </a>
+                ))}
               </div>
             </div>
           </FadeIn>
-        </div>
 
-        {/* Featured video — below the two-column section */}
-        <FadeIn delay={200}>
-          <div style={{ marginTop: 72, borderTop: "1px solid rgba(255,255,255,0.07)", paddingTop: 56 }}>
-            <div style={{ textAlign: "center", marginBottom: 28 }}>
-              <SectionLabel light>Watch</SectionLabel>
-              <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 3vw, 30px)", fontWeight: 400, color: C.cream, margin: "8px 0 0 0" }}>
-                Devils Lake Tip-Up Wrap Up
-              </h3>
-            </div>
-            <div style={{ position: "relative", paddingTop: "56.25%", borderRadius: 12, overflow: "hidden", maxWidth: 860, margin: "0 auto", boxShadow: "0 24px 80px rgba(0,0,0,0.5)" }}>
-              <iframe
-                src="https://www.youtube.com/embed/6Kjt2pNsdH0"
-                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
-          </div>
-        </FadeIn>
+        </div>
       </div>
+
+      <style>{`
+        @media (max-width: 680px) {
+          #holly .holly-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </section>
   );
 }
@@ -3023,6 +3014,19 @@ function Footer({ scrollTo }) {
           </div>
           <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: "rgba(255,255,255,0.15)" }}>
             No beach. Still worth it. 🏕️
+          </div>
+          <div style={{ fontSize: 11, color: "rgba(255,255,255,0.15)", fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>
+            Powered by{" "}
+            <a
+              href="https://yetigroovemedia.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "rgba(255,255,255,0.3)", textDecoration: "none", transition: "color 0.2s" }}
+              onMouseEnter={e => e.target.style.color = C.sunsetLight}
+              onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.3)"}
+            >
+              Yeti Groove Media
+            </a>
           </div>
         </div>
       </div>
