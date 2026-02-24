@@ -1935,7 +1935,7 @@ function ExploreCard({ place, large = false, delay = 0 }) {
 
 function ExploreSection() {
   const places = [
-    { icon: "⛵", name: "Devils Lake", desc: "600+ acres of water for boating, fishing, and kayaking. The party lake.", image: "/images/explore-devils-lake.jpg", action: () => window.open("https://maps.google.com/?q=Devils+Lake+Manitou+Beach+MI", "_blank"), actionLabel: "Open in Maps" },
+    { icon: "⛵", name: "Devils Lake", desc: "600+ acres of water for boating, fishing, and kayaking. The party lake.", image: "/images/explore-devils-lake.jpg", action: () => window.location.href = "/devils-lake", actionLabel: "Explore Devils Lake" },
     { icon: "🏘️", name: "The Village", desc: "Boutique shops, a handmade cafe, wine tasting, and the lighthouse. The walkable heart of Manitou Beach.", image: "/images/explore-lighthouse.jpg", action: () => window.location.href = "/village" },
     { icon: "🌿", name: "Irish Hills", desc: "Rolling hills, hidden trails, and enough nature to justify the drive.", image: "/images/explore-Irish-hills.jpg", action: () => window.open("https://www.irishhills.com", "_blank"), actionLabel: "Explore Irish Hills" },
     { icon: "🍺", name: "Nightlife", desc: "Year-round bars and restaurants with a dock-side state of mind.", image: "/images/explore-nightlife.jpg", action: () => document.getElementById("businesses")?.scrollIntoView({ behavior: "smooth" }), actionLabel: "See Businesses" },
@@ -2339,7 +2339,7 @@ function HollyYetiSection() {
               <img
                 src="/images/holly_yeti.png"
                 alt="Holly and The Yeti"
-                style={{ width: "100%", maxWidth: 420, display: "block", objectFit: "contain" }}
+                style={{ width: "100%", maxWidth: 280, display: "block", objectFit: "contain" }}
               />
             </div>
           </FadeIn>
@@ -3068,6 +3068,7 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
   const handleNavClick = (id) => {
     setMenuOpen(false);
     if (id === "happening") { window.location.href = "/happening"; return; }
+    if (id === "devils-lake") { window.location.href = "/devils-lake"; return; }
     if (id === "mens-club") { window.location.href = "/mens-club"; return; }
     if (id === "historical-society") { window.location.href = "/historical-society"; return; }
     if (isSubPage) {
@@ -3442,7 +3443,6 @@ function HomePage() {
       <NewsletterBar />
       <WaveDivider topColor={C.dusk} bottomColor={C.dusk} />
       <HappeningSection />
-      <EventTimeline />
       <WaveDivider topColor={C.dusk} bottomColor={C.cream} />
       <ExploreSection />
       <NewsletterInline />
@@ -4420,21 +4420,24 @@ function MensClubHero() {
 
   return (
     <section style={{
-      background: `linear-gradient(145deg, ${C.dusk} 0%, ${C.night} 100%)`,
-      padding: "160px 24px 120px",
+      backgroundImage: "url(/images/mens-club-hero.jpg)",
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundAttachment: "fixed",
+      backgroundColor: C.night,
+      padding: "180px 24px 140px",
       position: "relative", overflow: "hidden", textAlign: "center",
     }}>
-      <div style={{ position: "absolute", top: -60, right: -60, width: 350, height: 350, borderRadius: "50%", background: `${C.sunset}06`, pointerEvents: "none" }} />
-      <div style={{ position: "absolute", bottom: -80, left: -80, width: 260, height: 260, borderRadius: "50%", background: `${C.sage}05`, pointerEvents: "none" }} />
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(170deg, rgba(10,18,24,0.72) 0%, rgba(10,18,24,0.45) 50%, rgba(10,18,24,0.85) 100%)" }} />
       <div style={{ maxWidth: 800, margin: "0 auto", position: "relative", zIndex: 1, opacity: loaded ? 1 : 0, transform: loaded ? "translateY(0)" : "translateY(20px)", transition: "all 0.8s ease" }}>
-        <img src="/images/mens_club_logo.png" alt="Men's Club Logo" style={{ width: 96, height: 96, borderRadius: "50%", objectFit: "cover", marginBottom: 20, border: `3px solid rgba(255,255,255,0.12)` }} />
+        <img src="/images/mens_club_logo.png" alt="Men's Club Logo" style={{ width: 96, height: 96, borderRadius: "50%", objectFit: "cover", marginBottom: 20, border: `3px solid rgba(255,255,255,0.18)`, boxShadow: "0 4px 24px rgba(0,0,0,0.4)" }} />
         <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunsetLight, marginBottom: 12 }}>
           501(c)(3) Nonprofit
         </div>
         <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(32px, 6vw, 64px)", fontWeight: 400, color: C.cream, lineHeight: 1.05, margin: "0 0 20px 0" }}>
           Devils & Round Lake<br />Men's Club
         </h1>
-        <p style={{ fontSize: "clamp(14px, 1.5vw, 17px)", color: "rgba(255,255,255,0.45)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto 32px" }}>
+        <p style={{ fontSize: "clamp(14px, 1.5vw, 17px)", color: "rgba(255,255,255,0.5)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto 32px" }}>
           Service, leadership, tradition, fellowship, and fun. Supporting needy families and community events across Manitou Beach since the days our grandfathers fished these lakes.
         </p>
         <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
