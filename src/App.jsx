@@ -414,8 +414,6 @@ const CAT_COLORS = {
 // ============================================================
 const EVENTS = [
   // ── RECURRING (weekly) ──
-  { id: 1, name: "Friday Night Fish Fry", date: "Every Friday", time: "Dinner", category: "Food & Social", cost: "$$", description: "A weekly Devils Lake tradition at the Yacht Club. Fresh fish, cold drinks, and the best view on the lake.", location: "Devils Lake Yacht Club" },
-  { id: 2, name: "Live Music at the Yacht Club", date: "Every Friday & Saturday", time: "Evening", category: "Live Music", cost: "Free", description: "Live entertainment on the water all season long at Devils Lake Yacht Club.", location: "Devils Lake Yacht Club" },
   { id: 3, name: "Trivia Night at Boot Jack Tavern", date: "Every Wednesday", time: "Evening", category: "Food & Social", cost: "Free", description: "Test your knowledge with the locals at Boot Jack Tavern. Michigan craft beer on tap.", location: "Boot Jack Tavern, 735 Manitou Rd" },
   // ── ONE-OFF / SPECIAL EVENTS (sorted by date) ──
   { id: 101, name: "Grateful Dead Tribute — Cosmic Rose", date: "2026-02-27", time: "7:00 PM", category: "Live Music", cost: "Ticket", description: "An evening of Grateful Dead classics at Chateau Aeronautique Winery with dinner and drinks.", location: "Chateau Aeronautique Winery, Onsted" },
@@ -449,34 +447,50 @@ const EVENTS = [
 const VIDEOS = [
   {
     id: 1,
-    title: "Manitou Beach: The Party Lake",
-    desc: "A look at life on Devils Lake — the boats, the bars, and the community that makes it special.",
-    youtubeId: null, // Replace with real YouTube video ID (e.g. "dQw4w9WgXcQ")
-    date: "Coming Soon",
+    title: "Party on Devils Lake",
+    desc: "Life on the water at Manitou Beach — the boats, the people, and everything that makes this lake special.",
+    youtubeId: "3MCb5X4bj9s",
+    date: "2025",
     category: "Community",
   },
   {
     id: 2,
-    title: "Holly & The Yeti — Episode 1",
-    desc: "First episode of the community podcast. Local business owners, lake life stories, and market insights.",
-    youtubeId: null,
-    date: "Coming Soon",
-    category: "Media",
+    title: "Wooden Boats on Devils Lake",
+    desc: "Classic wooden boats and the timeless tradition of craftsmanship on Devils Lake.",
+    youtubeId: "IczTln0Jxd4",
+    date: "2025",
+    category: "Community",
   },
   {
     id: 3,
-    title: "Boot Jack Tavern — Business Spotlight",
-    desc: "Cinematic story of one of Manitou Beach's most beloved lakeside venues.",
-    youtubeId: null,
-    date: "Coming Soon",
-    category: "Media",
+    title: "July 4th on Devils Lake",
+    desc: "Independence Day celebrations on the lake — fireworks, boats, and the full Manitou Beach summer experience.",
+    youtubeId: "3MCb5X4bj9s",
+    date: "July 4, 2025",
+    category: "Community",
   },
   {
     id: 4,
-    title: "Sunday Races on Devils Lake",
-    desc: "A season of sailboat racing at the Yacht Club. From first light to the last finish line.",
-    youtubeId: null,
-    date: "Coming Soon",
+    title: "Devils Lake Tip-Up Festival 2025",
+    desc: "The annual Tip-Up Town ice fishing festival in full swing — one of Michigan's beloved winter traditions.",
+    youtubeId: "uqEtu9GlBHk",
+    date: "Winter 2025",
+    category: "Events",
+  },
+  {
+    id: 5,
+    title: "Devils Lake Tip-Up Festival 2026",
+    desc: "Ice fishing, community, and the spirit of Manitou Beach's signature winter celebration.",
+    youtubeId: "6Gc7hTs88LI",
+    date: "Winter 2026",
+    category: "Events",
+  },
+  {
+    id: 6,
+    title: "Cruisin' Till the Sun Goes Down",
+    desc: "A golden hour cruise on Devils Lake — the perfect way to end a summer day on the water.",
+    youtubeId: "bfPKmB57ltY",
+    date: "Summer 2025",
     category: "Community",
   },
 ];
@@ -1227,6 +1241,42 @@ function EventTimeline() {
           </div>
         </div>
 
+        {/* === UPCOMING EVENTS CARD STRIP === */}
+        {allEvents.length > 0 && (
+          <div style={{ marginTop: 48 }}>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: 20 }}>
+              Upcoming
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 16 }}>
+              {allEvents.slice(0, 8).map((event) => {
+                const color = categoryColors[event.category] || C.sage;
+                const dateLabel = new Date(event.date + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+                return (
+                  <div
+                    key={event.id}
+                    onClick={() => setLightboxEvent(event)}
+                    style={{
+                      background: "rgba(255,255,255,0.04)",
+                      border: `1px solid ${color}25`,
+                      borderRadius: 10,
+                      padding: "18px 20px",
+                      cursor: "pointer",
+                      transition: "all 0.2s ease",
+                      borderLeft: `3px solid ${color}`,
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.07)"; e.currentTarget.style.borderColor = `${color}50`; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.borderColor = `${color}25`; }}
+                  >
+                    <div style={{ fontFamily: "'Caveat', cursive", fontSize: 14, color, marginBottom: 4 }}>{dateLabel}</div>
+                    <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, color: C.cream, lineHeight: 1.35, marginBottom: 6 }}>{event.name}</div>
+                    {event.time && <div style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif" }}>{event.time}{event.location ? ` · ${event.location}` : ""}</div>}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {/* === MOBILE VERTICAL TIMELINE === */}
         <div className="timeline-mobile" style={{ display: "none" }}>
           <div style={{ position: "relative", paddingLeft: 32 }}>
@@ -1779,11 +1829,6 @@ function VideoSection() {
           ))}
         </div>
 
-        <FadeIn delay={300}>
-          <p style={{ fontSize: 12, color: "rgba(255,255,255,0.2)", fontFamily: "'Libre Franklin', sans-serif", textAlign: "center", marginTop: 48, letterSpacing: 0.5 }}>
-            Add real YouTube video IDs to the VIDEOS array in App.jsx to embed live content
-          </p>
-        </FadeIn>
       </div>
     </section>
   );
@@ -1873,13 +1918,15 @@ function ExploreCard({ place, large = false, delay = 0 }) {
             WebkitBoxOrient: "vertical",
             overflow: "hidden",
           }}>{place.desc}</div>
-          <div className="link-hover-underline" style={{
-            fontSize: 10, fontFamily: "'Libre Franklin', sans-serif",
-            fontWeight: 700, letterSpacing: 1.2,
-            color: C.sunsetLight, textTransform: "uppercase",
-          }}>
-            {place.actionLabel} →
-          </div>
+          {place.actionLabel && (
+            <div className="link-hover-underline" style={{
+              fontSize: 10, fontFamily: "'Libre Franklin', sans-serif",
+              fontWeight: 700, letterSpacing: 1.2,
+              color: C.sunsetLight, textTransform: "uppercase",
+            }}>
+              {place.actionLabel} →
+            </div>
+          )}
         </div>
       </div>
     </FadeIn>
@@ -1889,7 +1936,7 @@ function ExploreCard({ place, large = false, delay = 0 }) {
 function ExploreSection() {
   const places = [
     { icon: "⛵", name: "Devils Lake", desc: "600+ acres of water for boating, fishing, and kayaking. The party lake.", image: "/images/explore-devils-lake.jpg", action: () => window.open("https://maps.google.com/?q=Devils+Lake+Manitou+Beach+MI", "_blank"), actionLabel: "Open in Maps" },
-    { icon: "🏘️", name: "The Village", desc: "Boutique shops, a handmade cafe, wine tasting, and the lighthouse. The walkable heart of Manitou Beach.", image: "/images/explore-lighthouse.jpg", action: () => window.location.href = "/village", actionLabel: "Explore the Village" },
+    { icon: "🏘️", name: "The Village", desc: "Boutique shops, a handmade cafe, wine tasting, and the lighthouse. The walkable heart of Manitou Beach.", image: "/images/explore-lighthouse.jpg", action: () => window.location.href = "/village" },
     { icon: "🌿", name: "Irish Hills", desc: "Rolling hills, hidden trails, and enough nature to justify the drive.", image: "/images/explore-Irish-hills.jpg", action: () => window.open("https://www.irishhills.com", "_blank"), actionLabel: "Explore Irish Hills" },
     { icon: "🍺", name: "Nightlife", desc: "Year-round bars and restaurants with a dock-side state of mind.", image: "/images/explore-nightlife.jpg", action: () => document.getElementById("businesses")?.scrollIntoView({ behavior: "smooth" }), actionLabel: "See Businesses" },
     { icon: "🎣", name: "Fishing", desc: "Bass, pike, bluegill, and walleye. Two lakes, twelve months of catching.", image: "/images/explore-fishing.jpg", action: () => window.location.href = "/fishing", actionLabel: "Fishing Guide" },
@@ -1922,11 +1969,6 @@ function ExploreSection() {
           ))}
         </div>
 
-        <FadeIn delay={400}>
-          <div style={{ textAlign: "center", marginTop: 40 }}>
-            <Btn onClick={() => window.open("https://maps.google.com/?q=Manitou+Beach+Michigan+49267", "_blank")} variant="dark">Get Directions</Btn>
-          </div>
-        </FadeIn>
       </div>
     </section>
   );
@@ -2271,6 +2313,11 @@ function HollyYetiSection() {
       <div style={{ maxWidth: 1100, margin: "0 auto", position: "relative", zIndex: 1 }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "center" }}>
           <FadeIn direction="left">
+            <img
+              src="/images/holly_yeti.png"
+              alt="Holly and The Yeti"
+              style={{ width: "100%", maxWidth: 340, display: "block", marginBottom: 28 }}
+            />
             <SectionLabel light>The Voices of the Lake</SectionLabel>
             <h2 style={{
               fontFamily: "'Libre Baskerville', serif",
@@ -2355,6 +2402,26 @@ function HollyYetiSection() {
             </div>
           </FadeIn>
         </div>
+
+        {/* Featured video — below the two-column section */}
+        <FadeIn delay={200}>
+          <div style={{ marginTop: 72, borderTop: "1px solid rgba(255,255,255,0.07)", paddingTop: 56 }}>
+            <div style={{ textAlign: "center", marginBottom: 28 }}>
+              <SectionLabel light>Watch</SectionLabel>
+              <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 3vw, 30px)", fontWeight: 400, color: C.cream, margin: "8px 0 0 0" }}>
+                Devils Lake Tip-Up Wrap Up
+              </h3>
+            </div>
+            <div style={{ position: "relative", paddingTop: "56.25%", borderRadius: 12, overflow: "hidden", maxWidth: 860, margin: "0 auto", boxShadow: "0 24px 80px rgba(0,0,0,0.5)" }}>
+              <iframe
+                src="https://www.youtube.com/embed/6Kjt2pNsdH0"
+                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          </div>
+        </FadeIn>
       </div>
     </section>
   );
@@ -3375,6 +3442,9 @@ function HomePage() {
       <WaveDivider topColor={C.dusk} bottomColor={C.cream} />
       <ExploreSection />
       <NewsletterInline />
+      <div style={{ textAlign: "center", padding: "8px 24px 40px" }}>
+        <Btn onClick={() => window.open("https://maps.google.com/?q=Manitou+Beach+Michigan+49267", "_blank")} variant="dark">Get Directions</Btn>
+      </div>
       <BusinessDirectory />
       <DiagonalDivider topColor={C.warmWhite} bottomColor={C.night} />
       <HollyYetiSection />
@@ -5056,7 +5126,7 @@ function FishingHero() {
             Devils Lake · Round Lake · Michigan DNR
           </div>
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(48px, 9vw, 110px)", fontWeight: 400, color: C.cream, lineHeight: 0.95, margin: "0 0 20px 0" }}>
-            Fishing<br />Manitou Beach
+            Fishing<br />Devils Lake
           </h1>
           <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: "clamp(14px, 1.6vw, 17px)", color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 520, margin: "0 0 32px 0" }}>
             Two lakes. Twelve months of catching. Bass, pike, walleye, perch, and bluegill — plus one of Michigan's longest-running ice fishing festivals.
@@ -5858,6 +5928,25 @@ function DevilsLakePage() {
       <DevilsLakeStatsSection />
       <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
       <DevilsLakeHistorySection />
+      <section style={{
+        backgroundImage: "url(/images/DL-boat.jpg)",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed",
+        minHeight: 420,
+        position: "relative",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}>
+        <div style={{ position: "absolute", inset: 0, background: "rgba(10,18,24,0.45)" }} />
+        <div style={{ position: "relative", zIndex: 1, textAlign: "center", padding: "80px 24px" }}>
+          <p style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 3.5vw, 38px)", fontWeight: 400, fontStyle: "italic", color: C.cream, margin: 0, lineHeight: 1.4, maxWidth: 640 }}>
+            "The party lake."
+          </p>
+          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginTop: 18 }}>Devils Lake · Manitou Beach, Michigan</p>
+        </div>
+      </section>
       <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
       <DevilsLakeFishingSection />
       <DiagonalDivider topColor={C.warmWhite} bottomColor={C.dusk} />
