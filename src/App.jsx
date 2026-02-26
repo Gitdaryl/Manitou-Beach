@@ -375,6 +375,7 @@ const BUSINESSES = [
     address: "200 Devils Lake Hwy, Manitou Beach",
     village: true,
     featured: false,
+    logo: "/images/dl-view-living-logo.png",
     website: "http://devilslakeviewliving.com",
     phone: "(517) 252-5287",
   },
@@ -386,6 +387,7 @@ const BUSINESSES = [
     address: "103 Walnut Street, Manitou Beach",
     village: true,
     featured: false,
+    logo: "/images/dl-inn-logo.png",
     website: "https://www.devilslakeinn.com",
     phone: "(517) 252-5017",
   },
@@ -397,6 +399,7 @@ const BUSINESSES = [
     address: "136 North Lakeview Blvd., Manitou Beach",
     village: true,
     featured: false,
+    logo: "/images/michigan-gypsy-logo.png",
     website: "https://michigangypsy.com",
     phone: "(517) 224-1984",
   },
@@ -408,8 +411,81 @@ const BUSINESSES = [
     address: "135 Devils Lake Hwy, Manitou Beach",
     village: true,
     featured: false,
+    logo: "/images/blackbird-logo.png",
     website: "https://www.blackbirdcafedevils.com",
     phone: "(567) 404-9655",
+  },
+  {
+    id: 22,
+    name: "Trends Salon & Spa",
+    category: "Health & Beauty",
+    description: "Full-service salon and spa in the heart of Manitou Beach village. Hair, color, and spa services.",
+    address: "126 N Lakeview Blvd, Manitou Beach",
+    village: true,
+    featured: false,
+    logo: "/images/trends-logo.png",
+    website: "",
+    phone: "(517) 547-5544",
+  },
+  {
+    id: 23,
+    name: "Phoenix Rising Wellness",
+    category: "Health & Beauty",
+    description: "Wellness treatments and holistic services in the Irish Hills. Restore your balance.",
+    address: "131 Devils Lake Hwy, Manitou Beach",
+    village: true,
+    featured: false,
+    logo: "/images/pheonix-logo.png",
+    website: "",
+    phone: "(517) 759-4018",
+  },
+  {
+    id: 24,
+    name: "Trillium House",
+    category: "Shopping & Gifts",
+    description: "Curated gifts, home goods, and boutique finds in the village.",
+    address: "350 Devils Lake Hwy, Manitou Beach",
+    village: true,
+    featured: false,
+    logo: "/images/trillium-logo.png",
+    website: "",
+    phone: "(419) 290-9974",
+  },
+  {
+    id: 25,
+    name: "Foundation Realty",
+    category: "Real Estate",
+    description: "Serving the Manitou Beach community with lakefront and residential real estate. Holly Griewahn — 30+ years of local expertise.",
+    address: "100 Walnut St, Manitou Beach",
+    village: true,
+    featured: false,
+    logo: "/images/foundation-logo.png",
+    website: "https://www.hollygriewahn.com",
+    phone: "(517) 266-8888",
+  },
+  {
+    id: 26,
+    name: "Diamond in the Ruff",
+    category: "Pet Services",
+    description: "Pet grooming and care in the Manitou Beach area. Find them on Facebook.",
+    address: "251 Devils Lake Hwy, Manitou Beach",
+    village: true,
+    featured: false,
+    logo: "/images/diamond-ruff-logo.png",
+    website: "",
+    phone: "(517) 252-5255",
+  },
+  {
+    id: 27,
+    name: "South Shore Marine",
+    category: "Boating & Water",
+    description: "Marine sales, service, and repair on Devils Lake. Everything to keep your boat running all season.",
+    address: "209 Devils Lake Hwy, Manitou Beach",
+    village: true,
+    featured: false,
+    logo: "/images/ss-marine-logo.png",
+    website: "",
+    phone: "(517) 260-6910",
   },
 ];
 
@@ -3503,14 +3579,14 @@ const ROUND_LAKE_STATS = [
 ];
 
 const ROUND_LAKE_FISH = [
-  { name: "Largemouth Bass", icon: "🎣", note: "Healthy population — best early morning before boat traffic" },
-  { name: "Smallmouth Bass", icon: "🎣", note: "Rocky structure near shore" },
-  { name: "Bluegill", icon: "🐟", note: "Excellent numbers — averaged 7\" in DNR surveys, 70% legal size" },
-  { name: "Northern Pike", icon: "🐊", note: "Tip Up Festival favorite — ice fishing in February" },
-  { name: "Walleye", icon: "🐟", note: "DNR stocked — trolling at 10–15 ft depths in summer" },
-  { name: "Black Crappie", icon: "🐟", note: "Good catches, especially through the ice" },
-  { name: "Yellow Perch", icon: "🐟", note: "Averaged 9\"+ in surveys — above state average" },
-  { name: "Pumpkinseed Sunfish", icon: "☀️", note: "Abundant near weed beds" },
+  { name: "Largemouth Bass", image: "/images/fish/largemouth-bass.jpg", note: "Healthy population — best early morning before boat traffic" },
+  { name: "Smallmouth Bass", image: "/images/fish/smallmouth-bass.jpg", note: "Rocky structure near shore" },
+  { name: "Bluegill", image: "/images/fish/bluegill.jpg", note: "Excellent numbers — averaged 7\" in DNR surveys, 70% legal size" },
+  { name: "Northern Pike", image: "/images/fish/northern-pike.jpg", note: "Tip Up Festival favorite — ice fishing in February" },
+  { name: "Walleye", image: "/images/fish/walleye.jpg", note: "DNR stocked — trolling at 10–15 ft depths in summer" },
+  { name: "Black Crappie", image: "/images/fish/black-crappie.jpg", note: "Good catches, especially through the ice" },
+  { name: "Yellow Perch", image: "/images/fish/yellow-perch.jpg", note: "Averaged 9\"+ in surveys — above state average" },
+  { name: "Pumpkinseed Sunfish", image: "/images/fish/pumpkinseed.jpg", note: "Abundant near weed beds" },
 ];
 
 const ROUND_LAKE_TIMELINE = [
@@ -3682,25 +3758,32 @@ function RoundLakeFishingSection() {
           </div>
         </FadeIn>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 16 }}>
           {ROUND_LAKE_FISH.map((fish, i) => (
             <FadeIn key={i} delay={i * 50}>
               <div style={{
-                background: C.cream, borderRadius: 12, padding: "24px",
-                border: `1px solid ${C.sand}`, transition: "all 0.2s",
+                background: C.cream, borderRadius: 12, border: `1px solid ${C.sand}`,
+                overflow: "hidden", transition: "all 0.2s",
               }}
                 onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.06)"; }}
                 onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
-                  <span style={{ fontSize: 20 }}>{fish.icon}</span>
-                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.text, margin: 0 }}>
+                {/* Fish image or emoji fallback */}
+                <div style={{ height: 120, overflow: "hidden", background: C.sand, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  {fish.image ? (
+                    <img src={fish.image} alt={fish.name} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} onError={e => { e.target.style.display = "none"; }} />
+                  ) : (
+                    <span style={{ fontSize: 40 }}>{fish.icon}</span>
+                  )}
+                </div>
+                <div style={{ padding: "14px 18px" }}>
+                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text, margin: "0 0 6px 0" }}>
                     {fish.name}
                   </h3>
+                  <p style={{ fontSize: 12, color: C.textLight, lineHeight: 1.6, margin: 0 }}>
+                    {fish.note}
+                  </p>
                 </div>
-                <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: 0 }}>
-                  {fish.note}
-                </p>
               </div>
             </FadeIn>
           ))}
@@ -4864,10 +4947,15 @@ function MBHRSProgramsSection() {
           {MBHRS_PROGRAMS.map((prog, i) => (
             <FadeIn key={i} delay={i * 70} direction="scale">
               <div style={{
-                background: C.cream, borderRadius: 14, padding: "28px 24px",
-                border: `1px solid ${C.sand}`, height: "100%",
+                background: C.cream, borderRadius: 14, border: `1px solid ${C.sand}`, height: "100%", overflow: "hidden",
               }}>
-                <div style={{ fontSize: 32, marginBottom: 14 }}>{prog.icon}</div>
+                {/* Image placeholder (800×600) */}
+                <div style={{ paddingTop: "75%", background: C.sand, position: "relative" }}>
+                  <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 2, textTransform: "uppercase", color: C.driftwood }}>Photo Coming</span>
+                  </div>
+                </div>
+                <div style={{ padding: "22px 24px" }}>
                 <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.text, margin: "0 0 8px 0" }}>{prog.title}</h3>
                 <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.7, margin: "0 0 12px 0" }}>{prog.desc}</p>
                 {prog.date && <div style={{ fontSize: 11, color: C.sage, fontWeight: 600, letterSpacing: 0.5 }}>{prog.date}</div>}
@@ -4891,6 +4979,7 @@ function MBHRSProgramsSection() {
                     Visit Website →
                   </a>
                 )}
+                </div>{/* end padding div */}
               </div>
             </FadeIn>
           ))}
@@ -5894,21 +5983,30 @@ function DevilsLakeFishingSection() {
             A warm-water fishery with healthy bass, bluegill, pike, and perch. Year-round access — summer dock fishing and the legendary February Tip-Up Festival on the ice.
           </p>
         </FadeIn>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 16, marginTop: 48 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 16, marginTop: 48 }}>
           {DEVILS_LAKE_FISH.map((fish, i) => (
             <FadeIn key={i} delay={i * 50}>
-              <div style={{ background: C.cream, borderRadius: 12, padding: "24px", border: `1px solid ${C.sand}`, transition: "all 0.2s" }}
+              <div style={{ background: C.cream, borderRadius: 12, border: `1px solid ${C.sand}`, overflow: "hidden", transition: "all 0.2s" }}
                 onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.1)"; }}
                 onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
-                  <span style={{ fontSize: 20 }}>{fish.icon}</span>
-                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text, margin: 0 }}>{fish.name}</h3>
+                {/* Fish image */}
+                <div style={{ height: 130, overflow: "hidden", background: C.sand, position: "relative" }}>
+                  <img src={fish.image} alt={fish.name} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} onError={e => { e.target.style.display = "none"; }} />
+                  <div style={{ position: "absolute", top: 0, left: 0, width: 4, height: "100%", background: fish.accentColor }} />
                 </div>
-                <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: 0 }}>{fish.note}</p>
+                <div style={{ padding: "16px 18px" }}>
+                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text, margin: "0 0 6px 0" }}>{fish.name}</h3>
+                  <p style={{ fontSize: 12, color: C.textLight, lineHeight: 1.6, margin: 0, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{fish.desc}</p>
+                </div>
               </div>
             </FadeIn>
           ))}
         </div>
+        <FadeIn delay={150}>
+          <div style={{ textAlign: "center", marginTop: 40 }}>
+            <Btn href="/fishing" variant="outline">Full Species Guide + Bait Tips →</Btn>
+          </div>
+        </FadeIn>
         <FadeIn delay={200}>
           <div style={{ marginTop: 48, background: C.dusk, borderRadius: 16, padding: "36px 32px", display: "flex", gap: 24, alignItems: "center", flexWrap: "wrap" }}>
             <div style={{ flex: 1, minWidth: 240 }}>
