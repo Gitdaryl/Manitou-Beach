@@ -101,7 +101,7 @@ function GlobalStyles() {
       }
       .featured-card-glow:hover {
         border-color: rgba(212,132,90,0.5) !important;
-        box-shadow: 0 0 30px rgba(212,132,90,0.12), 0 12px 40px rgba(0,0,0,0.3) !important;
+        box-shadow: 0 0 20px rgba(212,132,90,0.10), 0 6px 18px rgba(0,0,0,0.25) !important;
       }
       .horizontal-scroll {
         scrollbar-width: thin;
@@ -131,6 +131,7 @@ function GlobalStyles() {
       }
       @media (max-width: 640px) {
         .mobile-col-1 { grid-template-columns: 1fr !important; }
+        .holly-grid { grid-template-columns: 1fr !important; }
         .weekly-event-row {
           grid-template-columns: 1fr !important;
           gap: 10px !important;
@@ -2306,29 +2307,42 @@ function BusinessRow({ business }) {
 function HollyYetiSection() {
   return (
     <section id="holly" style={{
-      background: `linear-gradient(160deg, ${C.night} 0%, ${C.lakeDark} 100%)`,
-      padding: "80px 24px",
+      backgroundImage: "url(/images/holly-yeti-bg.jpg)",
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundAttachment: "fixed",
+      padding: "100px 24px",
       position: "relative",
       overflow: "hidden",
     }}>
-      {/* Ambient background glow */}
-      <div style={{ position: "absolute", inset: 0, zIndex: 0, backgroundImage: `radial-gradient(ellipse 70% 60% at 60% 40%, ${C.lakeBlue}12 0%, transparent 70%)` }} />
+      {/* Dark overlay */}
+      <div style={{ position: "absolute", inset: 0, background: "rgba(12,20,26,0.75)", zIndex: 0 }} />
 
       <div style={{ maxWidth: 1100, margin: "0 auto", position: "relative", zIndex: 1 }}>
-        <div style={{
+        {/* 2×2 grid on desktop → single column on mobile via holly-grid class */}
+        <div className="holly-grid" style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
           gridTemplateRows: "auto auto",
           gap: 32,
         }}>
 
-          {/* TOP LEFT — Text */}
+          {/* TOP LEFT — Text (frosted glass panel) */}
           <FadeIn direction="left">
-            <div style={{ padding: "8px 0" }}>
+            <div style={{
+              background: "rgba(255,255,255,0.07)",
+              backdropFilter: "blur(14px)",
+              WebkitBackdropFilter: "blur(14px)",
+              border: "1px solid rgba(255,255,255,0.13)",
+              borderRadius: 18,
+              padding: "44px 40px",
+              height: "100%",
+              boxSizing: "border-box",
+            }}>
               <SectionLabel light>The Voices of the Lake</SectionLabel>
               <h2 style={{
                 fontFamily: "'Libre Baskerville', serif",
-                fontSize: "clamp(32px, 4.5vw, 52px)",
+                fontSize: "clamp(30px, 4vw, 48px)",
                 fontWeight: 400,
                 color: C.cream,
                 lineHeight: 1.1,
@@ -2336,15 +2350,16 @@ function HollyYetiSection() {
               }}>
                 Holly &<br />The Yeti
               </h2>
-              <p style={{ fontSize: 15, color: "rgba(255,255,255,0.58)", lineHeight: 1.8, marginBottom: 14 }}>
+              <p style={{ fontSize: 15, color: "rgba(255,255,255,0.62)", lineHeight: 1.85, marginBottom: 14 }}>
                 A local realtor with straight-shooter expertise and an Australian-accented community character with a flair for comedy walk into a podcast...
               </p>
-              <p style={{ fontSize: 15, color: "rgba(255,255,255,0.58)", lineHeight: 1.8, marginBottom: 32 }}>
+              <p style={{ fontSize: 15, color: "rgba(255,255,255,0.62)", lineHeight: 1.85, marginBottom: 32 }}>
                 Holly Griewahn brings the real estate knowledge and market insight. The Yeti brings the AI-generated videos and the stories that make Manitou Beach feel like the community it actually is.
               </p>
-              <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
                 <Btn href="https://www.youtube.com/@HollyandtheYetipodcast" variant="sunset">Watch on YouTube</Btn>
                 <Btn href="https://www.facebook.com/HollyandtheYeti" variant="outlineLight">Facebook</Btn>
+                <Btn href="https://m.me/HollyandtheYeti" variant="outlineLight">Message Holly</Btn>
               </div>
             </div>
           </FadeIn>
@@ -2355,7 +2370,7 @@ function HollyYetiSection() {
               <img
                 src="/images/holly_yeti.png"
                 alt="Holly and The Yeti"
-                style={{ width: "100%", maxWidth: 280, display: "block", objectFit: "contain" }}
+                style={{ width: "100%", maxWidth: 300, display: "block", objectFit: "contain" }}
               />
             </div>
           </FadeIn>
@@ -2366,7 +2381,7 @@ function HollyYetiSection() {
               <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: 12 }}>
                 Watch
               </div>
-              <div style={{ position: "relative", paddingTop: "56.25%", borderRadius: 10, overflow: "hidden", boxShadow: "0 16px 60px rgba(0,0,0,0.5)" }}>
+              <div style={{ position: "relative", paddingTop: "56.25%", borderRadius: 12, overflow: "hidden", boxShadow: "0 16px 60px rgba(0,0,0,0.55)" }}>
                 <iframe
                   src="https://www.youtube.com/embed/6Kjt2pNsdH0"
                   style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }}
@@ -2380,7 +2395,7 @@ function HollyYetiSection() {
             </div>
           </FadeIn>
 
-          {/* BOTTOM RIGHT — Social links */}
+          {/* BOTTOM RIGHT — Social cards (frosted glass) */}
           <FadeIn delay={200} direction="right">
             <div>
               <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: 16 }}>
@@ -2394,19 +2409,21 @@ function HollyYetiSection() {
                 ].map(s => (
                   <a key={s.platform} href={s.href} target="_blank" rel="noopener noreferrer" style={{
                     display: "flex", gap: 14, alignItems: "center",
-                    background: "rgba(255,255,255,0.04)",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    borderRadius: 10,
+                    background: "rgba(255,255,255,0.07)",
+                    backdropFilter: "blur(12px)",
+                    WebkitBackdropFilter: "blur(12px)",
+                    border: "1px solid rgba(255,255,255,0.10)",
+                    borderRadius: 12,
                     padding: "14px 18px",
                     textDecoration: "none",
                     transition: "all 0.22s",
                   }}
-                    onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; e.currentTarget.style.borderColor = `${s.color}50`; }}
-                    onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; }}
+                    onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.13)"; e.currentTarget.style.borderColor = `${s.color}50`; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.07)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.10)"; }}
                   >
                     <div style={{
-                      width: 36, height: 36, borderRadius: 8, flexShrink: 0,
-                      background: `${s.color}20`,
+                      width: 38, height: 38, borderRadius: 9, flexShrink: 0,
+                      background: `${s.color}22`,
                       display: "flex", alignItems: "center", justifyContent: "center",
                       fontSize: 15, color: s.color,
                     }}>
@@ -2414,7 +2431,8 @@ function HollyYetiSection() {
                     </div>
                     <div>
                       <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, fontSize: 13, color: C.cream }}>{s.platform}</div>
-                      <div style={{ fontSize: 11, color: "rgba(255,255,255,0.35)" }}>{s.handle}</div>
+                      <div style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", marginBottom: 3 }}>{s.handle}</div>
+                      <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", lineHeight: 1.5 }}>{s.desc}</div>
                     </div>
                   </a>
                 ))}
@@ -2424,12 +2442,6 @@ function HollyYetiSection() {
 
         </div>
       </div>
-
-      <style>{`
-        @media (max-width: 680px) {
-          #holly .holly-grid { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
     </section>
   );
 }
@@ -3100,7 +3112,7 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
         position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000,
         padding: solid ? "10px 0" : "18px 0",
         background: solid ? "rgba(250,246,239,0.97)" : "transparent",
-        backdropFilter: solid ? "blur(14px)" : "none",
+        backdropFilter: solid ? "blur(18px)" : "none",
         borderBottom: solid ? `1px solid ${C.sand}` : "none",
         transition: "all 0.35s ease",
       }}>
@@ -4890,8 +4902,16 @@ function MBHRSProgramsSection() {
 
 function MBHRSBoatHouseFeature() {
   return (
-    <section style={{ background: C.dusk, padding: "80px 24px" }}>
-      <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
+    <section style={{
+      backgroundImage: "url(/images/boathouse-background.jpg)",
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundAttachment: "fixed",
+      padding: "80px 24px",
+      position: "relative",
+    }}>
+      <div style={{ position: "absolute", inset: 0, background: "rgba(14,24,32,0.78)", zIndex: 0 }} />
+      <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 1 }}>
         <FadeIn>
           <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunsetLight, marginBottom: 12 }}>
             Featured Venue
@@ -5908,8 +5928,16 @@ function DevilsLakeFishingSection() {
 
 function DevilsLakeCommunitySection() {
   return (
-    <section style={{ background: C.dusk, padding: "100px 24px" }}>
-      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+    <section style={{
+      backgroundImage: "url(/images/community-bg.jpg)",
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundAttachment: "fixed",
+      padding: "100px 24px",
+      position: "relative",
+    }}>
+      <div style={{ position: "absolute", inset: 0, background: "rgba(18,28,36,0.80)", zIndex: 0 }} />
+      <div style={{ maxWidth: 1000, margin: "0 auto", position: "relative", zIndex: 1 }}>
         <FadeIn>
           <SectionLabel light>Life on the Lake</SectionLabel>
           <SectionTitle light>The Community</SectionTitle>
@@ -5920,14 +5948,28 @@ function DevilsLakeCommunitySection() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 20 }}>
           {DEVILS_LAKE_COMMUNITY.map((item, i) => (
             <FadeIn key={i} delay={i * 80}>
-              <a href={item.href} target={item.href && item.href.startsWith("http") ? "_blank" : undefined} rel={item.href && item.href.startsWith("http") ? "noopener noreferrer" : undefined} style={{ textDecoration: "none", display: "block" }}>
-                <div className="card-tilt" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.09)", borderRadius: 14, padding: "32px 28px", cursor: "pointer", transition: "background 0.2s ease, border-color 0.2s ease" }}
+              <a href={item.href} target={item.href && item.href.startsWith("http") ? "_blank" : undefined} rel={item.href && item.href.startsWith("http") ? "noopener noreferrer" : undefined} style={{ textDecoration: "none", display: "block", height: "100%" }}>
+                <div className="card-tilt" style={{
+                  background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.09)",
+                  borderRadius: 14, overflow: "hidden", cursor: "pointer",
+                  transition: "background 0.2s ease, border-color 0.2s ease", height: "100%",
+                }}
                   onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.09)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.18)"; }}
                   onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.05)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.09)"; }}
                 >
-                  <div style={{ fontSize: 32, marginBottom: 14 }}>{item.icon}</div>
-                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.cream, margin: "0 0 10px 0" }}>{item.title}</h3>
-                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, margin: 0 }}>{item.desc}</p>
+                  {/* Image placeholder with icon centred, title overlaid at bottom */}
+                  <div style={{ position: "relative", paddingTop: "62.5%", background: "rgba(255,255,255,0.03)", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
+                    <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <span style={{ fontSize: 44, opacity: 0.6 }}>{item.icon}</span>
+                    </div>
+                    <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, background: "linear-gradient(to top, rgba(14,24,32,0.88), transparent)", padding: "28px 20px 14px" }}>
+                      <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.cream, margin: 0, lineHeight: 1.2 }}>{item.title}</h3>
+                    </div>
+                  </div>
+                  {/* Description */}
+                  <div style={{ padding: "16px 22px 22px" }}>
+                    <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, margin: 0 }}>{item.desc}</p>
+                  </div>
                 </div>
               </a>
             </FadeIn>
