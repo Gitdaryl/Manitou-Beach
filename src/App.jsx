@@ -448,7 +448,7 @@ const BUSINESSES = [
     village: true,
     featured: false,
     logo: "/images/trillium-logo.png",
-    website: "",
+    website: "https://www.trilliumhouserental.com/",
     phone: "(419) 290-9974",
   },
   {
