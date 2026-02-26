@@ -3174,6 +3174,7 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
     if (id === "happening") { window.location.href = "/happening"; return; }
     if (id === "devils-lake") { window.location.href = "/devils-lake"; return; }
     if (id === "mens-club") { window.location.href = "/mens-club"; return; }
+    if (id === "ladies-club") { window.location.href = "/ladies-club"; return; }
     if (id === "historical-society") { window.location.href = "/historical-society"; return; }
     if (isSubPage) {
       window.location.href = "/#" + id;
@@ -3257,6 +3258,7 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
                   {[
                     { label: "Devils Lake", id: "devils-lake" },
                     { label: "Men's Club", id: "mens-club" },
+                    { label: "Ladies Club", id: "ladies-club" },
                     { label: "Historical Society", id: "historical-society" },
                     { label: "Gallery ↗", href: "https://photogallery.yetigroove.com/folder/muVgmuXuvFwI/" },
                   ].map((link, i) => (
@@ -3361,6 +3363,7 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
         {[
           { label: "Devils Lake", id: "devils-lake" },
           { label: "Men's Club", id: "mens-club" },
+          { label: "Ladies Club", id: "ladies-club" },
           { label: "Historical Society", id: "historical-society" },
         ].map(link => (
           <button key={link.id} onClick={() => handleNavClick(link.id)} style={{
@@ -4115,7 +4118,9 @@ function VillagePage() {
       <VillageHistorySection />
       <DiagonalDivider topColor={C.cream} bottomColor={C.dusk} />
       <VillageVisitCTA />
-      <WaveDivider topColor={C.night} bottomColor={C.cream} />
+      <WaveDivider topColor={C.dusk} bottomColor={C.cream} />
+      <MBHRSTimelineSection />
+      <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
       <NewsletterInline />
       <Footer scrollTo={subScrollTo} />
     </div>
@@ -5096,7 +5101,6 @@ function HistoricalSocietyPage() {
       <ScrollProgress />
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
       <HistoricalSocietyHero />
-      <MBHRSTimelineSection />
       <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
       <MBHRSProgramsSection />
       <DiagonalDivider topColor={C.warmWhite} bottomColor={C.dusk} />
@@ -6007,18 +6011,35 @@ function DevilsLakeFishingSection() {
             <Btn href="/fishing" variant="outline">Full Species Guide + Bait Tips →</Btn>
           </div>
         </FadeIn>
-        <FadeIn delay={200}>
-          <div style={{ marginTop: 48, background: C.dusk, borderRadius: 16, padding: "36px 32px", display: "flex", gap: 24, alignItems: "center", flexWrap: "wrap" }}>
-            <div style={{ flex: 1, minWidth: 240 }}>
-              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunsetLight, marginBottom: 8 }}>Every February</div>
-              <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, fontWeight: 400, color: C.cream, margin: "0 0 10px 0" }}>Tip-Up Festival</h3>
-              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, margin: "0 0 16px 0", maxWidth: 440 }}>
-                Ice fishing for pike, walleye, bluegill, crappie, and perch. Snowmobile racing, outhouse races, hovercraft rides, poker run, and the benefit auction. 73+ years on frozen Devils Lake.
-              </p>
-              <Btn href="/mens-club" variant="outlineLight" small>Men's Club — Event Organizers →</Btn>
-            </div>
-          </div>
-        </FadeIn>
+        {/* Next Event Banner — update title/date/location/href to change */}
+        {(() => {
+          const nextEvent = {
+            label: "Coming Up",
+            title: "Corks & Kegs",
+            date: "May 2026",
+            location: "Devils Lake Yacht Club",
+            href: "https://www.devilslakeyachtclub.com",
+          };
+          return (
+            <FadeIn delay={200}>
+              <div style={{ marginTop: 48, background: `linear-gradient(135deg, ${C.dusk} 0%, ${C.lakeDark} 100%)`, borderRadius: 16, padding: "32px 36px", display: "flex", gap: 24, alignItems: "center", flexWrap: "wrap", border: "1px solid rgba(255,255,255,0.07)" }}>
+                <div style={{ flex: 1, minWidth: 240 }}>
+                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 10 }}>{nextEvent.label}</div>
+                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(20px, 3vw, 28px)", fontWeight: 400, color: C.cream, margin: "0 0 6px 0" }}>{nextEvent.title}</h3>
+                  <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: "rgba(255,255,255,0.5)", marginBottom: 6 }}>{nextEvent.date} · {nextEvent.location}</div>
+                </div>
+                <a href={nextEvent.href} target="_blank" rel="noopener noreferrer" className="btn-animated" style={{
+                  display: "inline-flex", alignItems: "center", gap: 8,
+                  padding: "12px 28px", borderRadius: 8, flexShrink: 0,
+                  background: C.sunset, color: C.cream,
+                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+                }}>
+                  Event Details →
+                </a>
+              </div>
+            </FadeIn>
+          );
+        })()}
       </div>
     </section>
   );
@@ -6136,6 +6157,239 @@ function DevilsLakePage() {
 }
 
 // ============================================================
+// 🌿  LAND & LAKE LADIES CLUB PAGE (/ladies-club)
+// ============================================================
+const LADIES_CLUB_EVENTS = [
+  {
+    title: "Annual Summer Festival",
+    date: "Annual — Summer",
+    desc: "The Land & Lake Ladies Club Summer Festival is a cherished Manitou Beach tradition — music, food, vendors, community, and lake life. Holly & The Yeti are proud supporters.",
+    icon: "🌸",
+  },
+  {
+    title: "Community Fundraisers",
+    date: "Year-round",
+    desc: "The club organizes fundraising events throughout the year to support local families and causes in the Manitou Beach and Irish Hills community.",
+    icon: "🌿",
+  },
+  {
+    title: "Member Socials",
+    date: "Regular gatherings",
+    desc: "Women of the lakes community come together to connect, share stories, and strengthen the bonds that make Manitou Beach feel like home.",
+    icon: "☕",
+  },
+];
+
+function LadiesClubHero() {
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => { setTimeout(() => setLoaded(true), 80); }, []);
+
+  return (
+    <section style={{
+      backgroundImage: "url(/images/landlakes-hero.jpg)",
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundAttachment: "fixed",
+      backgroundColor: C.night,
+      padding: "180px 24px 140px",
+      position: "relative", overflow: "hidden", textAlign: "center",
+    }}>
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(170deg, rgba(10,18,24,0.75) 0%, rgba(10,18,24,0.48) 50%, rgba(10,18,24,0.88) 100%)" }} />
+      <div style={{ maxWidth: 800, margin: "0 auto", position: "relative", zIndex: 1, opacity: loaded ? 1 : 0, transform: loaded ? "translateY(0)" : "translateY(20px)", transition: "all 0.8s ease" }}>
+        <img src="/images/landlake-club-logo.png" alt="Land & Lake Ladies Club Logo" style={{ width: 96, height: 96, borderRadius: "50%", objectFit: "cover", marginBottom: 20, border: `3px solid rgba(255,255,255,0.18)`, boxShadow: "0 4px 24px rgba(0,0,0,0.4)" }} />
+        <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunsetLight, marginBottom: 12 }}>
+          Community · Events · Lake Life
+        </div>
+        <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(32px, 6vw, 64px)", fontWeight: 400, color: C.cream, lineHeight: 1.05, margin: "0 0 20px 0" }}>
+          Land & Lake<br />Ladies Club
+        </h1>
+        <p style={{ fontSize: "clamp(14px, 1.5vw, 17px)", color: "rgba(255,255,255,0.5)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto 32px" }}>
+          A community of women dedicated to the lakes, the land, and the social fabric of Manitou Beach — hosting events, fundraisers, and the beloved Summer Festival.
+        </p>
+        <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+          <a href="#ladies-events" className="btn-animated" style={{
+            display: "inline-flex", alignItems: "center", gap: 8,
+            padding: "12px 28px", borderRadius: 8,
+            background: C.sunset, color: C.cream,
+            fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+          }}>
+            Events & Activities
+          </a>
+          <ShareBar title="Land & Lake Ladies Club — Manitou Beach" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function LadiesClubMissionSection() {
+  return (
+    <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 900, margin: "0 auto" }}>
+        <FadeIn>
+          <SectionLabel>About the Club</SectionLabel>
+          <SectionTitle>Women of the Lakes</SectionTitle>
+        </FadeIn>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 40, marginTop: 40 }}>
+          <FadeIn delay={100} direction="left">
+            <div>
+              <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, margin: "0 0 18px 0" }}>
+                The Land & Lake Ladies Club has been woven into the fabric of Manitou Beach life for generations. Women from the lakes community gather around shared values — caring for their neighbors, celebrating this place they call home, and giving back in ways large and small.
+              </p>
+              <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, margin: 0 }}>
+                From the Annual Summer Festival to quiet acts of community service, the Ladies Club represents the heart of what makes Manitou Beach more than just a lake town — it's a place people choose, generation after generation.
+              </p>
+              <p style={{ fontSize: 13, color: C.textMuted, lineHeight: 1.7, margin: "24px 0 0 0", fontStyle: "italic" }}>
+                Detailed club history, membership information, and contact details coming soon. Content provided by club members.
+              </p>
+            </div>
+          </FadeIn>
+          <FadeIn delay={200} direction="right">
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              {[
+                { label: "Focus", value: "Community" },
+                { label: "Signature Event", value: "Summer Festival" },
+                { label: "Founded", value: "Manitou Beach" },
+              ].map((s, i) => (
+                <div key={i} style={{ background: C.cream, borderRadius: 12, padding: "22px 24px", border: `1px solid ${C.sand}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sage, fontFamily: "'Libre Franklin', sans-serif" }}>{s.label}</div>
+                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.text }}>{s.value}</div>
+                </div>
+              ))}
+            </div>
+          </FadeIn>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function LadiesClubEventsSection() {
+  return (
+    <section id="ladies-events" style={{ background: C.dusk, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 900, margin: "0 auto" }}>
+        <FadeIn>
+          <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <SectionLabel light>What We Do</SectionLabel>
+            <SectionTitle center light>Events & Activities</SectionTitle>
+          </div>
+        </FadeIn>
+        <div style={{ display: "grid", gap: 16 }}>
+          {LADIES_CLUB_EVENTS.map((evt, i) => (
+            <FadeIn key={i} delay={i * 80}>
+              <div style={{
+                display: "flex", gap: 18, alignItems: "flex-start",
+                background: "rgba(255,255,255,0.04)", borderRadius: 14, padding: "24px 22px",
+                border: "1px solid rgba(255,255,255,0.06)",
+              }}>
+                <div style={{ fontSize: 32, lineHeight: 1, flexShrink: 0 }}>{evt.icon}</div>
+                <div style={{ flex: 1 }}>
+                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.cream, margin: "0 0 4px 0" }}>{evt.title}</h3>
+                  <div style={{ fontSize: 12, color: C.sunsetLight, fontWeight: 600, letterSpacing: 0.5, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>{evt.date}</div>
+                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, margin: 0 }}>{evt.desc}</p>
+                </div>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function LadiesClubGallerySection() {
+  const galleryPhotos = [
+    { src: "/images/ladies-club/summer-festival.png", caption: "Summer Festival" },
+    { src: "/images/ladies-club/summer-fest-yeti.jpg", caption: "Summer Festival" },
+    { src: "/images/ladies-club/summerfest-yeti.jpg", caption: "Summer Festival with Holly & The Yeti" },
+  ];
+
+  return (
+    <section style={{ background: C.cream, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+        <FadeIn>
+          <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <SectionLabel>Memories</SectionLabel>
+            <SectionTitle center>Gallery</SectionTitle>
+          </div>
+        </FadeIn>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 12 }}>
+          {galleryPhotos.map((photo, i) => (
+            <FadeIn key={i} delay={i * 80} direction="scale">
+              <div style={{ borderRadius: 12, overflow: "hidden", position: "relative", aspectRatio: "4/3" }}>
+                <img src={photo.src} alt={photo.caption} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                {photo.caption && (
+                  <div style={{
+                    position: "absolute", bottom: 0, left: 0, right: 0,
+                    padding: "10px 14px", background: "linear-gradient(transparent, rgba(10,18,24,0.8))",
+                    fontSize: 12, color: C.cream, fontFamily: "'Libre Franklin', sans-serif",
+                  }}>
+                    {photo.caption}
+                  </div>
+                )}
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function LadiesClubGetInvolved() {
+  return (
+    <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 600, margin: "0 auto", textAlign: "center" }}>
+        <FadeIn>
+          <SectionLabel>Get Involved</SectionLabel>
+          <SectionTitle center>Connect with the Club</SectionTitle>
+          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, marginBottom: 32 }}>
+            Interested in the Summer Festival, community events, or membership? Reach out — the lakes community is always welcoming new faces.
+          </p>
+          <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+            <a href="https://m.me/HollyandtheYeti" target="_blank" rel="noopener noreferrer" className="btn-animated" style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              padding: "14px 32px", borderRadius: 8,
+              background: C.sunset, color: C.cream,
+              fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+            }}>
+              Message Holly & The Yeti
+            </a>
+            <a href="/devils-lake" className="btn-animated" style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              padding: "14px 32px", borderRadius: 8,
+              background: "transparent", border: `1.5px solid ${C.sand}`, color: C.text,
+              fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+            }}>
+              Back to Devils Lake
+            </a>
+          </div>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+function LadiesClubPage() {
+  const subScrollTo = (id) => { window.location.href = "/#" + id; };
+  return (
+    <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+      <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+      <GlobalStyles />
+      <ScrollProgress />
+      <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
+      <LadiesClubHero />
+      <LadiesClubMissionSection />
+      <LadiesClubEventsSection />
+      <LadiesClubGallerySection />
+      <LadiesClubGetInvolved />
+      <NewsletterInline />
+      <Footer scrollTo={subScrollTo} />
+    </div>
+  );
+}
+
+// ============================================================
 // 🌐  APP ROOT
 // ============================================================
 export default function App() {
@@ -6148,6 +6402,7 @@ export default function App() {
         <Route path="/village" element={<VillagePage />} />
         <Route path="/featured" element={<FeaturedPage />} />
         <Route path="/mens-club" element={<MensClubPage />} />
+        <Route path="/ladies-club" element={<LadiesClubPage />} />
         <Route path="/historical-society" element={<HistoricalSocietyPage />} />
         <Route path="/fishing" element={<FishingPage />} />
         <Route path="/wineries" element={<WineriesPage />} />
