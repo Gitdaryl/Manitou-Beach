@@ -424,7 +424,7 @@ const BUSINESSES = [
     village: true,
     featured: false,
     logo: "/images/trends-logo.png",
-    website: "",
+    website: "https://www.facebook.com/profile.php?id=100063483493738",
     phone: "(517) 547-5544",
   },
   {
@@ -467,12 +467,12 @@ const BUSINESSES = [
     id: 26,
     name: "Diamond in the Ruff",
     category: "Pet Services",
-    description: "Pet grooming and care in the Manitou Beach area. Find them on Facebook.",
+    description: "Pet grooming and care in the Manitou Beach area.",
     address: "251 Devils Lake Hwy, Manitou Beach",
     village: true,
     featured: false,
     logo: "/images/diamond-ruff-logo.png",
-    website: "",
+    website: "https://www.facebook.com/diamondintheruffpetgroomingllc",
     phone: "(517) 252-5255",
   },
   {
@@ -484,7 +484,7 @@ const BUSINESSES = [
     village: true,
     featured: false,
     logo: "/images/ss-marine-logo.png",
-    website: "",
+    website: "https://www.facebook.com/profile.php?id=100092384540558",
     phone: "(517) 260-6910",
   },
 ];
