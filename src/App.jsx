@@ -129,6 +129,21 @@ function GlobalStyles() {
         .nav-desktop { display: none !important; }
         .nav-hamburger { display: flex !important; }
       }
+      @media (max-width: 640px) {
+        .mobile-col-1 { grid-template-columns: 1fr !important; }
+        .weekly-event-row {
+          grid-template-columns: 1fr !important;
+          gap: 10px !important;
+        }
+        .fish-card-header { flex-direction: column !important; }
+        .fish-card-img { width: 100% !important; height: 160px !important; min-height: unset !important; }
+        .fish-card-meta {
+          flex-direction: row !important;
+          align-items: center !important;
+          justify-content: space-between !important;
+          padding: 0 20px 16px !important;
+        }
+      }
     `}</style>
   );
 }
@@ -1523,6 +1538,7 @@ function WeeklyEventsSection({ events, onEventClick }) {
               <FadeIn key={event.id} delay={i * 60}>
                 <div
                   onClick={() => onEventClick(event)}
+                  className="weekly-event-row"
                   style={{
                     display: "grid",
                     gridTemplateColumns: "120px 1fr auto",
@@ -1921,7 +1937,7 @@ function ExploreCard({ place, large = false, delay = 0 }) {
           {place.actionLabel && (
             <div className="link-hover-underline" style={{
               fontSize: 10, fontFamily: "'Libre Franklin', sans-serif",
-              fontWeight: 700, letterSpacing: 1.2,
+              fontWeight: 700, letterSpacing: 1.2, paddingTop: 5,
               color: C.sunsetLight, textTransform: "uppercase",
             }}>
               {place.actionLabel} →
@@ -1958,7 +1974,7 @@ function ExploreSection() {
         </FadeIn>
 
         {/* Bento layout: 2 large cards on top, 4 smaller below */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
+        <div className="mobile-col-1" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
           {places.slice(0, 2).map((p, i) => (
             <ExploreCard key={i} place={p} large delay={i * 100} />
           ))}
@@ -2482,7 +2498,7 @@ function LivingSection() {
           </div>
         </FadeIn>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+        <div className="mobile-col-1" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
           {items.slice(1).map((item, i) => {
             const tilt = useCardTilt(4);
             return (
@@ -2843,7 +2859,7 @@ function AboutSection() {
   return (
     <section id="about" style={{ background: C.cream, padding: "100px 24px" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80 }}>
+        <div className="mobile-col-1" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80 }}>
           <FadeIn>
             <SectionLabel>The Story</SectionLabel>
             <SectionTitle>About This Platform</SectionTitle>
@@ -5246,10 +5262,11 @@ function FishingSpeciesSection() {
                   {/* Card header — always visible */}
                   <div
                     onClick={() => setOpenFish(isOpen ? null : i)}
+                    className="fish-card-header"
                     style={{ display: "flex", gap: 0, cursor: "pointer", alignItems: "stretch" }}
                   >
                     {/* Fish illustration */}
-                    <div style={{ width: 180, minHeight: 130, flexShrink: 0, overflow: "hidden", background: C.sand, position: "relative" }}>
+                    <div className="fish-card-img" style={{ width: 180, minHeight: 130, flexShrink: 0, overflow: "hidden", background: C.sand, position: "relative" }}>
                       <img
                         src={fish.image}
                         alt={fish.name}
@@ -5267,7 +5284,7 @@ function FishingSpeciesSection() {
                     </div>
 
                     {/* Best season badge + expand toggle */}
-                    <div style={{ padding: "20px 20px 20px 0", display: "flex", flexDirection: "column", alignItems: "flex-end", justifyContent: "space-between", flexShrink: 0 }}>
+                    <div className="fish-card-meta" style={{ padding: "20px 20px 20px 0", display: "flex", flexDirection: "column", alignItems: "flex-end", justifyContent: "space-between", flexShrink: 0 }}>
                       <div style={{ background: fish.accentColor + "18", border: `1px solid ${fish.accentColor}30`, borderRadius: 20, padding: "4px 10px", fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: fish.accentColor, whiteSpace: "nowrap" }}>
                         {fish.bestSeason.split(".")[0]}
                       </div>
