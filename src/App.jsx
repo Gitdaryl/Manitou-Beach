@@ -3466,8 +3466,8 @@ function HomePage() {
 // 🌊  ROUND LAKE PAGE
 // ============================================================
 const ROUND_LAKE_STATS = [
-  { label: "Surface Area", value: "515 acres" },
-  { label: "Max Depth", value: "67 feet" },
+  { label: "Surface Area", value: "66 acres" },
+  { label: "Max Depth", value: "65 feet" },
   { label: "Elevation", value: "~1,043 ft" },
   { label: "Water Clarity", value: "Very clear" },
   { label: "Origin", value: "Glacial kettle lake" },
@@ -4736,12 +4736,15 @@ function HistoricalSocietyHero() {
 
   return (
     <section style={{
-      background: `linear-gradient(145deg, ${C.night} 0%, ${C.dusk} 100%)`,
+      backgroundImage: "url(/images/historic-hero.jpg)",
+      backgroundSize: "cover",
+      backgroundPosition: "center 40%",
+      backgroundAttachment: "fixed",
+      backgroundColor: C.night,
       padding: "160px 24px 120px",
       position: "relative", overflow: "hidden", textAlign: "center",
     }}>
-      <div style={{ position: "absolute", top: -40, left: -40, width: 300, height: 300, borderRadius: "50%", background: `${C.sage}06`, pointerEvents: "none" }} />
-      <div style={{ position: "absolute", bottom: -60, right: -60, width: 200, height: 200, borderRadius: "50%", background: `${C.sunset}05`, pointerEvents: "none" }} />
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg, rgba(10,18,24,0.82) 0%, rgba(10,18,24,0.65) 50%, rgba(10,18,24,0.88) 100%)" }} />
       <div style={{ maxWidth: 800, margin: "0 auto", position: "relative", zIndex: 1, opacity: loaded ? 1 : 0, transform: loaded ? "translateY(0)" : "translateY(20px)", transition: "all 0.8s ease" }}>
         <img src="/images/mbhrs_logo.png" alt="MBHRS Logo" style={{ width: 96, height: 96, borderRadius: "50%", objectFit: "cover", marginBottom: 20, border: `3px solid rgba(255,255,255,0.12)` }} />
         <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunsetLight, marginBottom: 12 }}>
@@ -5716,8 +5719,8 @@ function WineriesPage() {
 // 🏖️  DEVILS LAKE PAGE (/devils-lake)
 // ============================================================
 const DEVILS_LAKE_STATS = [
-  { label: "Surface Area", value: "157 acres" },
-  { label: "Max Depth", value: "30 ft" },
+  { label: "Surface Area", value: "1,330 acres" },
+  { label: "Max Depth", value: "60 ft" },
   { label: "Lake Type", value: "Warm-water" },
   { label: "Public Launch", value: "Yes — Manitou Rd" },
   { label: "Connected To", value: "Round Lake" },
@@ -5734,10 +5737,12 @@ const DEVILS_LAKE_TIMELINE = [
 ];
 
 const DEVILS_LAKE_COMMUNITY = [
-  { icon: "⛵", title: "Devils Lake Yacht Club", desc: "Sailing, regattas, and the Friday Fish Fry. The Yacht Club has been the social hub of Devils Lake since the 1940s." },
-  { icon: "🚤", title: "Public Boat Launch", desc: "Paved public ramp off Manitou Rd with easy access for powerboats, pontoons, kayaks, and canoes." },
-  { icon: "🏘️", title: "Manitou Beach Village", desc: "Walk from the lake to boutique shops, a cafe, satellite wine tasting rooms, and the iconic lighthouse — all within five minutes." },
-  { icon: "🎣", title: "Tip-Up Festival", desc: "Every February on the frozen lake — ice fishing, snowmobile races, outhouse races, and the legendary benefit auction organized by the Men's Club." },
+  { icon: "⛵", title: "Devils Lake Yacht Club", desc: "Sailing, regattas, and the Friday Fish Fry. The Yacht Club has been the social hub of Devils Lake since the 1940s.", href: "https://www.devilslakeyachtclub.com" },
+  { icon: "🚤", title: "Public Boat Launch", desc: "Paved public ramp on Devils Lake Rd at the Manitou Beach Marina. Easy access for powerboats, pontoons, kayaks, and canoes.", href: "https://maps.app.goo.gl/3fHSzJaoyJEK4HkS9" },
+  { icon: "🏘️", title: "Manitou Beach Village", desc: "Walk from the lake to boutique shops, a cafe, satellite wine tasting rooms, and the iconic lighthouse — all within five minutes.", href: "/village" },
+  { icon: "🏒", title: "Devils & Round Lake Mens Club", desc: "The civic backbone of the lakes community — organizing the Tip-Up Festival, Firecracker 7K, Shop with a Cop, and year-round events since the 1940s.", href: "/mens-club" },
+  { icon: "🌿", title: "Land & Lake Ladies Club", desc: "A community of women dedicated to the lakes, the land, and the social fabric of Manitou Beach — hosting events, fundraisers, and the beloved Summer Festival.", href: "/ladies-club" },
+  { icon: "🏛️", title: "Historic Renovation Society", desc: "Restoring the Village, cultivating the arts, and conserving the land and water — MBHRS is the steward of Manitou Beach's past, present, and future.", href: "/historical-society" },
 ];
 
 function DevilsLakeHero() {
@@ -5768,7 +5773,7 @@ function DevilsLakeHero() {
             The Party Lake
           </div>
           <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: "clamp(14px, 1.6vw, 17px)", color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 520, margin: "0 0 32px 0" }}>
-            157 acres of warm water, 600+ boat slips, and a community that has been coming back every summer since the 1870s. Devils Lake is the beating heart of Manitou Beach.
+            1,330 acres of warm water, 600+ boat slips, and a community that has been coming back every summer since the 1870s. Devils Lake is the beating heart of Manitou Beach.
           </p>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
             <Btn href="/#holly" variant="sunset">Talk to Holly — Find a Home</Btn>
@@ -5801,6 +5806,9 @@ function DevilsLakeStatsSection() {
             </FadeIn>
           ))}
         </div>
+        <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.2)", marginTop: 24, textAlign: "right" }}>
+          Source: <a href="https://fisherman.org" target="_blank" rel="noopener noreferrer" style={{ color: "rgba(255,255,255,0.3)", textDecoration: "underline" }}>fisherman.org</a>
+        </p>
       </div>
     </section>
   );
@@ -5895,11 +5903,16 @@ function DevilsLakeCommunitySection() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 20 }}>
           {DEVILS_LAKE_COMMUNITY.map((item, i) => (
             <FadeIn key={i} delay={i * 80}>
-              <div style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.09)", borderRadius: 14, padding: "32px 28px" }}>
-                <div style={{ fontSize: 32, marginBottom: 14 }}>{item.icon}</div>
-                <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.cream, margin: "0 0 10px 0" }}>{item.title}</h3>
-                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, margin: 0 }}>{item.desc}</p>
-              </div>
+              <a href={item.href} target={item.href && item.href.startsWith("http") ? "_blank" : undefined} rel={item.href && item.href.startsWith("http") ? "noopener noreferrer" : undefined} style={{ textDecoration: "none", display: "block" }}>
+                <div className="card-tilt" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.09)", borderRadius: 14, padding: "32px 28px", cursor: "pointer", transition: "background 0.2s ease, border-color 0.2s ease" }}
+                  onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.09)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.18)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.05)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.09)"; }}
+                >
+                  <div style={{ fontSize: 32, marginBottom: 14 }}>{item.icon}</div>
+                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.cream, margin: "0 0 10px 0" }}>{item.title}</h3>
+                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, margin: 0 }}>{item.desc}</p>
+                </div>
+              </a>
             </FadeIn>
           ))}
         </div>
