@@ -33,7 +33,7 @@ export default async function handler(req, res) {
           'Name': { title: [{ text: { content: name } }] },
           'Category': { rich_text: [{ text: { content: category || '' } }] },
           'Phone': { phone_number: phone || null },
-          'Website': { url: normalizedUrl },
+          'URL': { url: normalizedUrl },
           'Email': { email: email },
           'Description': { rich_text: [{ text: { content: description || '' } }] },
           'Interested in Featured': { checkbox: upgrade === true || upgrade === 'true' },
