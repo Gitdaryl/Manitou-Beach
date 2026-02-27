@@ -500,6 +500,9 @@ const CAT_COLORS = {
   "Stays & Lodging":    C.lakeBlue,
   "Creative Media":     C.driftwood,
   "Home Services":      C.sageDark,
+  "Health & Beauty":    "#B5737A",
+  "Pet Services":       "#8B7355",
+  "Other":              C.textMuted,
 };
 
 // ============================================================
@@ -2694,6 +2697,9 @@ function SubmitSection() {
                     <option>Stays & Lodging</option>
                     <option>Creative Media</option>
                     <option>Home Services</option>
+                    <option>Health & Beauty</option>
+                    <option>Pet Services</option>
+                    <option>Other</option>
                   </select>
                   {input("phone", "Phone Number", "tel")}
                   {input("address", "Address (optional)")}
