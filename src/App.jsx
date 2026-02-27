@@ -4363,7 +4363,7 @@ const MENS_CLUB_EVENTS = [
     title: "Golf Outing",
     date: "Annual — Summer",
     desc: "A community golf outing that brings together members, local businesses, and supporters. All proceeds benefit the club's charitable programs.",
-    image: null,
+    image: "/images/mens-club/golf.jpg",
   },
   {
     title: "Benefit Auction & Raffle",
