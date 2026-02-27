@@ -2606,6 +2606,9 @@ function SubmitSection() {
       type={type}
       placeholder={placeholder}
       value={form[field]}
+      autoComplete="off"
+      data-lpignore="true"
+      data-form-type="other"
       onChange={e => setForm(f => ({ ...f, [field]: e.target.value }))}
       style={{
         width: "100%",
@@ -2703,6 +2706,9 @@ function SubmitSection() {
                   <select
                     value={form.category}
                     onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
+                    autoComplete="off"
+                    data-lpignore="true"
+                    data-form-type="other"
                     style={{
                       width: "100%", padding: "12px 16px", borderRadius: 6,
                       border: `1.5px solid ${C.sand}`, fontFamily: "'Libre Franklin', sans-serif",
