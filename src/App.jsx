@@ -823,12 +823,12 @@ function Hero({ scrollTo }) {
 
             {/* Event image — wide, contained, below the date */}
             {heroEvent.imageUrl && (
-              <div style={{ margin: "0 0 24px 0", maxWidth: 780, width: "100%" }}>
+              <div style={{ margin: "0 0 24px 0", maxWidth: 546, width: "100%" }}>
                 <img
                   src={heroEvent.imageUrl}
                   alt={heroEvent.name}
                   style={{
-                    width: "100%", maxHeight: 340, objectFit: "cover",
+                    width: "100%", maxHeight: 238, objectFit: "cover",
                     borderRadius: 12, display: "block",
                     boxShadow: "0 12px 40px rgba(0,0,0,0.55)",
                     border: "1px solid rgba(255,255,255,0.1)",
