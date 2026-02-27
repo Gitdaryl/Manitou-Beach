@@ -34,11 +34,11 @@ export default async function handler(req, res) {
           'Category': { select: { name: category || 'Other' } },
           'Phone': { phone_number: phone || null },
           'URL': { url: normalizedUrl },
-          'Email': { email: email },
+          'Email': { email: email || null },
           'Description': { rich_text: [{ text: { content: description || '' } }] },
           'Address': { rich_text: [{ text: { content: address || '' } }] },
           'Interested in Featured': { checkbox: upgrade === true || upgrade === 'true' },
-          'Newsletter': { checkbox: newsletter === true || newsletter === 'true' },
+          ...((newsletter === true || newsletter === 'true') && { 'Newsletter': { checkbox: true } }),
         },
       }),
     });
