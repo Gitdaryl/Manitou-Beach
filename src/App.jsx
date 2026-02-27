@@ -2090,11 +2090,11 @@ function PremiumBanner({ business }) {
       marginBottom: 16, border: `1px solid rgba(255,255,255,0.07)`,
     }}>
       {/* Logo */}
-      <div style={{ width: 72, height: 72, borderRadius: 10, flexShrink: 0, overflow: "hidden", background: "rgba(255,255,255,0.06)", border: "1.5px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ width: 100, height: 100, borderRadius: 12, flexShrink: 0, background: "rgba(255,255,255,0.08)", border: "1.5px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center", padding: 12, boxSizing: "border-box" }}>
         {business.logo ? (
           <img src={business.logo} alt={business.name} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
         ) : (
-          <span style={{ fontSize: 26, color: "rgba(255,255,255,0.2)" }}>{business.name[0]}</span>
+          <span style={{ fontSize: 30, color: "rgba(255,255,255,0.2)" }}>{business.name[0]}</span>
         )}
       </div>
       {/* Info */}
@@ -2172,8 +2172,8 @@ function EnhancedBusinessRow({ business }) {
         </span>
       </div>
 
-      {/* Expanded detail panel */}
-      {expanded && (
+      {/* Expanded detail panel — animated ease-out */}
+      <div style={{ maxHeight: expanded ? "400px" : 0, overflow: "hidden", transition: "max-height 0.35s ease-out" }}>
         <div style={{
           padding: "14px 10px 16px 27px",
           background: `${color}05`,
@@ -2203,7 +2203,7 @@ function EnhancedBusinessRow({ business }) {
             </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }
