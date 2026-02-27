@@ -6307,11 +6307,11 @@ function LadiesClubEventsSection() {
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 0 }} className="mobile-col-1">
 
               {/* Image / logo side */}
-              <div style={{ position: "relative", minHeight: 340, background: "rgba(255,255,255,0.03)", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 32px" }}>
+              <div style={{ background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", padding: "32px", minHeight: 400 }}>
                 <img
-                  src="/images/ladies-club/summerfest-yeti.jpg"
-                  alt="Summer Festival"
-                  style={{ width: "100%", maxHeight: 320, objectFit: "cover", borderRadius: 12, opacity: 0.9 }}
+                  src="/images/ladies-club/summer-festival.png"
+                  alt="Summer Festival 2026"
+                  style={{ width: 400, height: 400, objectFit: "contain", maxWidth: "100%" }}
                   onError={(e) => { e.target.style.display = "none"; }}
                 />
               </div>
@@ -6446,6 +6446,65 @@ function LadiesClubGallerySection() {
   );
 }
 
+function LadiesClubSponsorsSection() {
+  // Add sponsor logo files to public/images/sponsors/
+  // Update this array as sponsors are confirmed — name is used as alt text
+  const sponsors = [
+    { name: "Sponsor", logo: null },
+    { name: "Sponsor", logo: null },
+    { name: "Sponsor", logo: null },
+    { name: "Sponsor", logo: null },
+    { name: "Sponsor", logo: null },
+    { name: "Sponsor", logo: null },
+    { name: "Sponsor", logo: null },
+    { name: "Sponsor", logo: null },
+  ];
+
+  return (
+    <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 960, margin: "0 auto" }}>
+        <FadeIn>
+          <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <SectionLabel>Thank You</SectionLabel>
+            <SectionTitle center>Our Sponsors</SectionTitle>
+            <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, maxWidth: 480, margin: "0 auto" }}>
+              The Summer Festival is made possible by the generous support of our community sponsors.
+            </p>
+          </div>
+        </FadeIn>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 16 }}>
+          {sponsors.map((sponsor, i) => (
+            <FadeIn key={i} delay={i * 40}>
+              <div style={{
+                background: "#fff", border: `1px solid ${C.sand}`, borderRadius: 12,
+                height: 120, display: "flex", alignItems: "center", justifyContent: "center",
+                padding: "16px",
+              }}>
+                {sponsor.logo ? (
+                  <img src={sponsor.logo} alt={sponsor.name} style={{ maxWidth: "100%", maxHeight: 80, objectFit: "contain" }} />
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+                    <div style={{ width: 32, height: 32, borderRadius: "50%", background: C.sand, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.textMuted} strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+                    </div>
+                    <span style={{ fontSize: 10, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5, textTransform: "uppercase" }}>Sponsor</span>
+                  </div>
+                )}
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+        <FadeIn delay={200}>
+          <p style={{ textAlign: "center", fontSize: 13, color: C.textMuted, marginTop: 32, lineHeight: 1.7 }}>
+            Interested in sponsoring? Contact{" "}
+            <a href="mailto:michele.henson0003@gmail.com" style={{ color: C.sage, textDecoration: "none" }}>michele.henson0003@gmail.com</a>
+          </p>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
 function LadiesClubGetInvolved() {
   return (
     <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
@@ -6492,6 +6551,7 @@ function LadiesClubPage() {
       <LadiesClubMissionSection />
       <LadiesClubEventsSection />
       <LadiesClubGallerySection />
+      <LadiesClubSponsorsSection />
       <LadiesClubGetInvolved />
       <NewsletterInline />
       <Footer scrollTo={subScrollTo} />
