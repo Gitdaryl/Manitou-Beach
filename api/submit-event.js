@@ -3,7 +3,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { name, category, email, phone, description, date, time, location, eventUrl, imageUrl } = req.body;
+  const { name, category, email, phone, description, date, time, location, eventUrl, imageUrl, cost, recurring, recurringDay } = req.body;
 
   if (!name || !email) {
     return res.status(400).json({ error: 'Event name and email are required' });
@@ -33,6 +33,9 @@ export default async function handler(req, res) {
     if (date) properties['Event date'] = { date: { start: date } };
     if (includeEventUrl && normalizedEventUrl) properties['Event URL'] = { url: normalizedEventUrl };
     if (includeImageUrl && imageUrl) properties['Image URL'] = { url: imageUrl };
+    if (cost) properties['Cost'] = { rich_text: [{ text: { content: cost } }] };
+    if (recurring && recurring !== 'None') properties['Recurring'] = { select: { name: recurring } };
+    if (recurringDay) properties['Recurring Day'] = { select: { name: recurringDay } };
 
     return properties;
   };

@@ -12,7 +12,6 @@ export default async function handler(req, res) {
           'Notion-Version': '2022-06-28',
         },
         body: JSON.stringify({
-          // Only pull Approved or Published events — Pending = not ready for site
           filter: {
             or: [
               { property: 'Status', status: { equals: 'Approved' } },
@@ -26,16 +25,17 @@ export default async function handler(req, res) {
 
     if (!response.ok) {
       console.error('Notion query failed:', await response.text());
-      return res.status(200).json({ events: [] });
+      return res.status(200).json({ events: [], recurring: [] });
     }
 
     const data = await response.json();
     const now = new Date();
 
-    const events = data.results
+    const allEvents = data.results
       .map(page => {
         const p = page.properties;
         const dateStr = p['Event date']?.date?.start;
+        const recurringVal = p['Recurring']?.select?.name || null;
         return {
           id: page.id,
           name: p['Event Name']?.title?.[0]?.text?.content || '',
@@ -47,17 +47,32 @@ export default async function handler(req, res) {
           location: p['Location']?.rich_text?.[0]?.text?.content || '',
           imageUrl: p['Image URL']?.url || null,
           email: p['Email']?.email || '',
+          eventUrl: p['Event URL']?.url || null,
+          cost: p['Cost']?.rich_text?.[0]?.text?.content || null,
+          recurring: recurringVal,
+          recurringDay: p['Recurring Day']?.select?.name || null,
+          heroFeature: p['Hero Feature']?.checkbox || false,
         };
       })
+      .filter(e => e.name);
+
+    // Weekly/Monthly regulars — always shown regardless of date
+    const recurring = allEvents.filter(e =>
+      e.recurring === 'Weekly' || e.recurring === 'Monthly'
+    );
+
+    // Upcoming one-off + annual events — only if date >= now
+    const events = allEvents
+      .filter(e => e.recurring !== 'Weekly' && e.recurring !== 'Monthly')
       .filter(e => {
         if (!e.date) return false;
         const eventDate = new Date(e.date + 'T23:59:59');
         return eventDate >= now;
       });
 
-    return res.status(200).json({ events });
+    return res.status(200).json({ events, recurring });
   } catch (err) {
     console.error('Events API error:', err.message);
-    return res.status(200).json({ events: [] });
+    return res.status(200).json({ events: [], recurring: [] });
   }
 }

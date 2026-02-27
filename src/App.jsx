@@ -367,36 +367,8 @@ const CAT_COLORS = {
 };
 
 // ============================================================
-// 📅  EVENTS DATA
-// ============================================================
-const EVENTS = [
-  // ── RECURRING (weekly) ──
-  { id: 3, name: "Trivia Night at Boot Jack Tavern", date: "Every Wednesday", time: "Evening", category: "Food & Social", cost: "Free", description: "Test your knowledge with the locals at Boot Jack Tavern. Michigan craft beer on tap.", location: "Boot Jack Tavern, 735 Manitou Rd" },
-  // ── ONE-OFF / SPECIAL EVENTS (sorted by date) ──
-  { id: 101, name: "Grateful Dead Tribute — Cosmic Rose", date: "2026-02-27", time: "7:00 PM", category: "Live Music", cost: "Ticket", description: "An evening of Grateful Dead classics at Chateau Aeronautique Winery with dinner and drinks.", location: "Chateau Aeronautique Winery, Onsted" },
-  { id: 100, name: "Bob Seger Tribute — Kat Mandu", date: "2026-02-28", time: "7:00 PM", category: "Live Music", cost: "Ticket", description: "Live tribute to Bob Seger at Chateau Aeronautique Winery. Dinner and beverages available in the all-weather Biergarten.", location: "Chateau Aeronautique Winery, Onsted" },
-  { id: 102, name: "Bon Jovi Tribute — Wanted", date: "2026-03-07", time: "7:00 PM", category: "Live Music", cost: "Ticket", description: "Bon Jovi tribute night at Chateau Aeronautique. Full dinner and craft beverage menu.", location: "Chateau Aeronautique Winery, Onsted" },
-  { id: 103, name: "Neil Young Tribute — Sugar Mountain", date: "2026-03-13", time: "8:00 PM", category: "Live Music", cost: "Ticket", description: "Sugar Mountain performs Neil Young classics at Chateau Aeronautique Winery.", location: "Chateau Aeronautique Winery, Onsted" },
-  { id: 104, name: "Queen Tribute — Simply Queen", date: "2026-03-14", time: "8:00 PM", category: "Live Music", cost: "Ticket", description: "Simply Queen brings the Freddie Mercury experience to the Irish Hills.", location: "Chateau Aeronautique Winery, Onsted" },
-  { id: 105, name: "Journey Tribute — Infinity & Beyond", date: "2026-03-20", time: "8:00 PM", category: "Live Music", cost: "Ticket", description: "Don't stop believin'. Journey tribute night at Chateau Aeronautique Winery.", location: "Chateau Aeronautique Winery, Onsted" },
-  { id: 106, name: "Tom Petty Tribute — Teddy Petty", date: "2026-03-21", time: "8:00 PM", category: "Live Music", cost: "Ticket", description: "Teddy Petty & The Refugees perform Tom Petty classics at Chateau Aeronautique.", location: "Chateau Aeronautique Winery, Onsted" },
-  { id: 107, name: "Linkin Park Tribute — Land of Linkin", date: "2026-03-27", time: "8:00 PM", category: "Live Music", cost: "Ticket", description: "Linkin Park tribute at Chateau Aeronautique Winery.", location: "Chateau Aeronautique Winery, Onsted" },
-  { id: 120, name: "Lenten Retreat — Catholic Young Adults", date: "2026-03-27", time: "6:30 PM", category: "Community", cost: "Free", description: "Detroit & Lansing Catholic Young Adults Lenten Retreat at Vineyard Lake.", location: "The Carls Family Village, Vineyard Lake" },
-  { id: 108, name: "Def Leppard Tribute — Armageddon", date: "2026-03-28", time: "8:00 PM", category: "Live Music", cost: "Ticket", description: "Def Leppard tribute night at Chateau Aeronautique Winery.", location: "Chateau Aeronautique Winery, Onsted" },
-  { id: 109, name: "Mötley Crüe Tribute — Wrëking Crüe", date: "2026-04-03", time: "8:00 PM", category: "Live Music", cost: "Ticket", description: "Mötley Crüe tribute bringing the wild energy to Chateau Aeronautique.", location: "Chateau Aeronautique Winery, Onsted" },
-  { id: 110, name: "80's Night — HairMania", date: "2026-04-04", time: "8:00 PM", category: "Live Music", cost: "Ticket", description: "Full 1980s tribute night at Chateau Aeronautique Winery. Big hair, bigger riffs.", location: "Chateau Aeronautique Winery, Onsted" },
-  { id: 111, name: "Led Zeppelin Tribute — Kashmir", date: "2026-04-11", time: "8:00 PM", category: "Live Music", cost: "Ticket", description: "Kashmir performs Led Zeppelin at Chateau Aeronautique Winery.", location: "Chateau Aeronautique Winery, Onsted" },
-  { id: 112, name: "Ozzy Tribute — Ozzy Rebourne", date: "2026-04-18", time: "8:00 PM", category: "Live Music", cost: "Ticket", description: "Ozzy Osbourne tribute with Awaken at Chateau Aeronautique Winery.", location: "Chateau Aeronautique Winery, Onsted" },
-  { id: 113, name: "Metallica Tribute — Battery", date: "2026-04-24", time: "8:00 PM", category: "Live Music", cost: "Ticket", description: "Metallica tribute by Battery with Flowers on the Grave at Chateau Aeronautique.", location: "Chateau Aeronautique Winery, Onsted" },
-  { id: 114, name: "Stevie Nicks Tribute — Street Angel", date: "2026-04-25", time: "8:00 PM", category: "Live Music", cost: "Ticket", description: "Street Angel performs Stevie Nicks classics at Chateau Aeronautique Winery.", location: "Chateau Aeronautique Winery, Onsted" },
-  { id: 115, name: "STP / Coldplay / Killers — Stone Cold Killers", date: "2026-05-01", time: "8:00 PM", category: "Live Music", cost: "Ticket", description: "Triple tribute: Stone Temple Pilots, Coldplay, and The Killers at Chateau Aeronautique.", location: "Chateau Aeronautique Winery, Onsted" },
-  { id: 116, name: "Van Halen Tribute — PANAMA", date: "2026-05-02", time: "8:00 PM", category: "Live Music", cost: "Ticket", description: "PANAMA brings Van Halen to the Irish Hills at Chateau Aeronautique Winery.", location: "Chateau Aeronautique Winery, Onsted" },
-  { id: 117, name: "AC/DC Tribute — ThunderStruck", date: "2026-05-15", time: "8:00 PM", category: "Live Music", cost: "Ticket", description: "ThunderStruck with Blaine Luis Band performing AC/DC at Chateau Aeronautique.", location: "Chateau Aeronautique Winery, Onsted" },
-  { id: 130, name: "Satellite Wine Tasting Rooms Launch", date: "2026-05-22", time: "Afternoon", category: "Food & Social", cost: "Varies", description: "Local businesses become satellite tasting rooms for Michigan wineries. Ang & Co pours Chateau Fontaine (Leelanau Peninsula), Faust House represents Cherry Creek Cellars (Brooklyn), and more venues TBA. A new way to explore Michigan wine without leaving the lake.", location: "Multiple venues — Manitou Beach" },
-  { id: 118, name: "Irish Hills Music Festival", date: "2026-07-01", time: "All Day", category: "Live Music", cost: "Free", description: "Free annual music festival supporting Michigan Parkinson's Disease Foundation and area hospices. 501(c)(3) nonprofit — live music, food trucks, community gathering.", location: "Irish Hills Area" },
-  { id: 5, name: "Devils Lake Yacht Regatta", date: "2026-09-15", time: "All Day", category: "Sports & Outdoors", cost: "Free to watch", description: "The annual regatta on Devils Lake — a beloved tradition since 1941. Sailboat racing, community gathering, and lake life at its best.", location: "Devils Lake Yacht Club" },
-  { id: 119, name: "Irish Hills Gravel Race", date: "2026-10-17", time: "Morning", category: "Sports & Outdoors", cost: "$100 entry", description: "Gravel cycling event with 100km, 50km, and mini course options. Part of the 2026 Michigan Gravel Race Series.", location: "Michigan International Speedway, Brooklyn" },
-];
+// Events are 100% Notion-driven — no hardcoded data here.
+// Add events in Notion with Status = "Approved" or "Published" to appear on site.
 
 // ============================================================
 // 🎬  VIDEO / STORY CONTENT
@@ -709,8 +681,26 @@ function CategoryPill({ children, dark = false }) {
 // 📢  EVENT TICKER / MARQUEE
 // ============================================================
 function EventTicker() {
-  const items = EVENTS.map(e => `${e.name} · ${e.date}`);
-  const repeated = [...items, ...items, ...items, ...items];
+  const [tickerItems, setTickerItems] = useState([]);
+  useEffect(() => {
+    fetch("/api/events")
+      .then(r => r.json())
+      .then(data => {
+        const upcoming = (data.events || []).map(e => {
+          const d = new Date(e.date + "T00:00:00");
+          const formatted = d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+          return `${e.name} · ${formatted}`;
+        });
+        const regulars = (data.recurring || []).map(e =>
+          `${e.name} · Every ${e.recurringDay || "Week"}`
+        );
+        setTickerItems([...upcoming, ...regulars]);
+      })
+      .catch(() => {});
+  }, []);
+
+  if (tickerItems.length === 0) return null;
+  const repeated = [...tickerItems, ...tickerItems, ...tickerItems, ...tickerItems];
   return (
     <a href="/happening" style={{ textDecoration: "none", display: "block" }}>
       <div style={{
@@ -720,22 +710,15 @@ function EventTicker() {
         position: "relative",
         borderBottom: `1px solid ${C.sage}20`,
       }}>
-        {/* Fade edges */}
         <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 80, background: `linear-gradient(90deg, ${C.night}, transparent)`, zIndex: 2, pointerEvents: "none" }} />
         <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 80, background: `linear-gradient(270deg, ${C.night}, transparent)`, zIndex: 2, pointerEvents: "none" }} />
         <div className="marquee-track" style={{ whiteSpace: "nowrap" }}>
           {repeated.map((item, i) => (
             <span key={i} style={{
               fontFamily: "'Libre Franklin', sans-serif",
-              fontSize: 12,
-              fontWeight: 500,
-              letterSpacing: 1,
-              textTransform: "uppercase",
-              color: C.sunsetLight,
-              padding: "0 24px",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 24,
+              fontSize: 12, fontWeight: 500, letterSpacing: 1,
+              textTransform: "uppercase", color: C.sunsetLight,
+              padding: "0 24px", display: "inline-flex", alignItems: "center", gap: 24,
             }}>
               {item}
               <span style={{ width: 4, height: 4, borderRadius: "50%", background: C.sage, display: "inline-block", opacity: 0.5 }} />
@@ -751,20 +734,37 @@ function EventTicker() {
 // 🏠  HERO SECTION
 // ============================================================
 function Hero({ scrollTo }) {
+  // All hooks at top — fixes React rules-of-hooks violation from previous pattern
   const [loaded, setLoaded] = useState(false);
-  const [heroEvent, setHeroEvent] = useState(null);
+  const [heroEvents, setHeroEvents] = useState([]);
   const [heroReady, setHeroReady] = useState(false);
+  const [heroIndex, setHeroIndex] = useState(0);
+  const [heroPaused, setHeroPaused] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
     setTimeout(() => setLoaded(true), 100);
-    // Fetch active hero event from Notion
     fetch("/api/hero")
       .then(r => r.json())
       .then(data => {
-        setHeroEvent(data.event || null);
+        setHeroEvents(data.events || []);
         setHeroReady(true);
       })
       .catch(() => setHeroReady(true));
+  }, []);
+
+  // Auto-rotate through hero events every 7 seconds
+  useEffect(() => {
+    if (heroEvents.length <= 1 || heroPaused) return;
+    const t = setInterval(() => setHeroIndex(i => (i + 1) % heroEvents.length), 7000);
+    return () => clearInterval(t);
+  }, [heroEvents.length, heroPaused]);
+
+  // Parallax for default video hero
+  useEffect(() => {
+    const onScroll = () => { if (window.scrollY < window.innerHeight * 1.2) setScrollY(window.scrollY); };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   const scrollIndicator = (
@@ -779,18 +779,23 @@ function Hero({ scrollTo }) {
     </div>
   );
 
-  // ── EVENT HERO ──
+  // ── EVENT HERO (with rotation) ──
+  const heroEvent = heroEvents[heroIndex] || null;
   if (heroReady && heroEvent) {
     const bgStyle = heroEvent.imageUrl
       ? { backgroundImage: `url(${heroEvent.imageUrl})`, backgroundSize: "cover", backgroundPosition: "center" }
       : { background: `linear-gradient(135deg, ${C.night} 0%, ${C.lakeDark} 50%, ${C.dusk} 100%)` };
 
     return (
-      <section id="home" style={{ minHeight: "100vh", display: "flex", alignItems: "center", position: "relative", overflow: "hidden", ...bgStyle }}>
-        {/* Overlay */}
+      <section
+        id="home"
+        style={{ minHeight: "100vh", display: "flex", alignItems: "center", position: "relative", overflow: "hidden", ...bgStyle }}
+        onMouseEnter={() => setHeroPaused(true)}
+        onMouseLeave={() => setHeroPaused(false)}
+      >
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(170deg, rgba(26,40,48,0.75) 0%, rgba(26,40,48,0.5) 50%, rgba(26,40,48,0.85) 100%)", zIndex: 1 }} />
 
-        {/* Event badge */}
+        {/* Coming Up badge */}
         <div style={{ position: "absolute", top: 100, right: 48, zIndex: 2, textAlign: "right" }}>
           <div style={{
             display: "inline-block", background: `${C.sunset}22`, border: `1px solid ${C.sunset}50`,
@@ -801,7 +806,7 @@ function Hero({ scrollTo }) {
           </div>
         </div>
 
-        <div style={{ position: "relative", zIndex: 2, maxWidth: 960, margin: "0 auto", padding: "120px 48px 80px" }}>
+        <div style={{ position: "relative", zIndex: 2, maxWidth: 960, margin: "0 auto", padding: "120px 48px 100px" }}>
           <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? "translateY(0)" : "translateY(30px)", transition: "all 0.9s ease" }}>
             <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 20 }}>
               Manitou Beach · Devils Lake, Michigan
@@ -811,6 +816,7 @@ function Hero({ scrollTo }) {
             </h1>
             <div style={{ fontFamily: "'Caveat', cursive", fontSize: "clamp(18px, 2.5vw, 26px)", color: C.sunsetLight, margin: "0 0 24px 0" }}>
               {new Date(heroEvent.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+              {heroEvent.time && ` · ${heroEvent.time}`}
             </div>
             {heroEvent.tagline && (
               <p style={{ fontSize: 17, color: "rgba(255,255,255,0.65)", lineHeight: 1.75, maxWidth: 560, margin: "0 0 40px 0" }}>
@@ -818,30 +824,43 @@ function Hero({ scrollTo }) {
               </p>
             )}
             <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-              <Btn href="#happening" variant="sunset">See All Events</Btn>
+              <Btn href="/happening" variant="sunset">See All Events</Btn>
               <Btn onClick={() => scrollTo("businesses")} variant="outlineLight">Explore the Community</Btn>
             </div>
           </div>
         </div>
+
+        {/* Rotation dots — only if multiple events */}
+        {heroEvents.length > 1 && (
+          <div style={{
+            position: "absolute", bottom: 48, left: "50%", transform: "translateX(-50%)",
+            zIndex: 3, display: "flex", gap: 10,
+          }}>
+            {heroEvents.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => { setHeroIndex(i); setHeroPaused(true); }}
+                style={{
+                  width: i === heroIndex ? 24 : 8, height: 8,
+                  borderRadius: 4, border: "none",
+                  background: i === heroIndex ? C.sunsetLight : "rgba(255,255,255,0.3)",
+                  cursor: "pointer", padding: 0,
+                  transition: "all 0.35s ease",
+                }}
+              />
+            ))}
+          </div>
+        )}
+
         {scrollIndicator}
       </section>
     );
   }
 
-  // ── DEFAULT HERO (with parallax) ──
-  const [scrollY, setScrollY] = useState(0);
-  useEffect(() => {
-    const onScroll = () => { if (window.scrollY < window.innerHeight * 1.2) setScrollY(window.scrollY); };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
+  // ── DEFAULT HERO (video + parallax) ──
   return (
     <section id="home" style={{ minHeight: "100vh", display: "flex", alignItems: "center", position: "relative", overflow: "hidden" }}>
-      {/* Fallback color behind video */}
       <div style={{ position: "absolute", inset: 0, background: `linear-gradient(160deg, ${C.night} 0%, ${C.lakeDark} 60%, ${C.dusk} 100%)`, zIndex: 0 }} />
-
-      {/* Looping video background — parallax */}
       <video
         autoPlay muted loop playsInline
         style={{
@@ -851,22 +870,13 @@ function Hero({ scrollTo }) {
       >
         <source src="/videos/hero-default.mp4" type="video/mp4" />
       </video>
-
-      {/* Overlay */}
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(170deg, rgba(26,40,48,0.6) 0%, rgba(26,40,48,0.35) 50%, rgba(26,40,48,0.75) 100%)", zIndex: 2 }} />
-
-      {/* Floating ambient elements */}
       <div style={{ position: "absolute", top: "20%", right: "15%", width: 200, height: 200, borderRadius: "50%", background: `${C.sage}08`, zIndex: 2, animation: "float-slow 8s ease-in-out infinite", pointerEvents: "none" }} />
       <div style={{ position: "absolute", bottom: "25%", left: "10%", width: 120, height: 120, borderRadius: "50%", background: `${C.sunset}06`, zIndex: 2, animation: "float 6s ease-in-out infinite 2s", pointerEvents: "none" }} />
       <div style={{ position: "absolute", top: "60%", right: "8%", width: 60, height: 60, borderRadius: "50%", border: `1px solid ${C.sage}15`, zIndex: 2, animation: "float-slow 10s ease-in-out infinite 1s", pointerEvents: "none" }} />
-
       <div style={{ position: "relative", zIndex: 3, maxWidth: 960, margin: "0 auto", padding: "160px 48px 120px", transform: `translateY(${scrollY * 0.08}px)` }}>
         <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? "none" : "translateY(24px)", transition: "all 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94)" }}>
-          <div style={{
-            fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase",
-            color: "rgba(255,255,255,0.35)", marginBottom: 24,
-            animation: loaded ? "tracking-in 0.8s ease forwards" : "none",
-          }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 24, animation: loaded ? "tracking-in 0.8s ease forwards" : "none" }}>
             Welcome to
           </div>
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(48px, 8vw, 96px)", fontWeight: 400, color: C.cream, lineHeight: 1.0, margin: "0 0 16px 0" }}>
@@ -887,6 +897,98 @@ function Hero({ scrollTo }) {
       </div>
       {scrollIndicator}
     </section>
+  );
+}
+
+// ============================================================
+// 📅  FEATURED EVENTS STRIP — next 4 upcoming events, below hero
+// ============================================================
+function FeaturedEventsStrip() {
+  const [events, setEvents] = useState([]);
+  useEffect(() => {
+    fetch("/api/events")
+      .then(r => r.json())
+      .then(data => setEvents((data.events || []).slice(0, 4)))
+      .catch(() => {});
+  }, []);
+
+  if (events.length === 0) return null;
+
+  const eventCatColors = { "Live Music": C.sunset, "Food & Social": "#8B5E3C", "Sports & Outdoors": C.sage, "Community": C.lakeBlue };
+  const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+
+  return (
+    <div style={{
+      background: `linear-gradient(90deg, ${C.night} 0%, ${C.dusk} 50%, ${C.night} 100%)`,
+      padding: "28px 24px",
+      borderBottom: `1px solid rgba(255,255,255,0.05)`,
+    }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3.5, textTransform: "uppercase", color: "rgba(255,255,255,0.3)" }}>
+            Coming Up
+          </div>
+          <a href="/happening" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", color: C.sunsetLight, textDecoration: "none" }}>
+            See All Events →
+          </a>
+        </div>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: `repeat(${events.length}, 1fr)`,
+          gap: 12,
+          overflowX: "auto",
+        }}>
+          {events.map((event, i) => {
+            const d = new Date(event.date + "T00:00:00");
+            const month = MONTHS[d.getMonth()];
+            const day = d.getDate();
+            const color = eventCatColors[event.category] || C.sage;
+            return (
+              <a key={event.id || i} href="/happening" style={{ textDecoration: "none" }}>
+                <div
+                  style={{
+                    background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)",
+                    borderRadius: 10, overflow: "hidden",
+                    transition: "background 0.2s",
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.08)"}
+                  onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.04)"}
+                >
+                  {/* Date block */}
+                  <div style={{
+                    background: `${color}20`, borderBottom: `2px solid ${color}`,
+                    padding: "10px 14px", display: "flex", alignItems: "baseline", gap: 6,
+                  }}>
+                    <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, color, lineHeight: 1 }}>{day}</span>
+                    <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, color: `${color}cc`, textTransform: "uppercase" }}>{month}</span>
+                  </div>
+                  {/* Info */}
+                  <div style={{ padding: "12px 14px" }}>
+                    <div style={{
+                      fontFamily: "'Libre Baskerville', serif", fontSize: 14, color: C.cream,
+                      lineHeight: 1.3, marginBottom: 6,
+                      display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
+                    }}>
+                      {event.name}
+                    </div>
+                    {event.location && (
+                      <div style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        {event.location}
+                      </div>
+                    )}
+                    <div style={{ marginTop: 8 }}>
+                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color, background: `${color}15`, padding: "3px 8px", borderRadius: 3 }}>
+                        {event.recurring === 'Annual' ? '● Annual' : event.category}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -1039,14 +1141,10 @@ function EventTimeline() {
   const now = new Date();
   const cutoff = new Date(now.getFullYear(), now.getMonth() + 3, now.getDate());
 
-  const allEvents = [
-    ...EVENTS
-      .filter(e => !e.date.toLowerCase().startsWith("every") && e.date !== "TBA 2026")
-      .filter(e => { const d = new Date(e.date + "T00:00:00"); return d >= now && d <= cutoff; })
-      .map(e => ({ id: `local-${e.id}`, name: e.name, date: e.date, category: e.category, description: e.description, time: e.time, location: e.location || "" })),
-    ...notionEvents
-      .filter(e => { const d = new Date(e.date + "T00:00:00"); return d >= now && d <= cutoff; }),
-  ].sort((a, b) => new Date(a.date) - new Date(b.date));
+  // 100% Notion-driven — no hardcoded events
+  const allEvents = notionEvents
+    .filter(e => { const d = new Date(e.date + "T00:00:00"); return d >= now && d <= cutoff; })
+    .sort((a, b) => new Date(a.date) - new Date(b.date));
 
   const catColor = (cat) => ({ "Live Music": C.sunset, "Food & Social": "#8B5E3C", "Sports & Outdoors": C.sage, "Community": C.lakeBlue }[cat] || C.sage);
 
@@ -1148,13 +1246,21 @@ function EventTimeline() {
 // 📅  WHAT'S HAPPENING — home page teaser (3 events)
 // ============================================================
 function HappeningSection() {
+  const [notionEvents, setNotionEvents] = useState([]);
+  useEffect(() => {
+    fetch("/api/events")
+      .then(r => r.json())
+      .then(data => setNotionEvents(data.events || []))
+      .catch(() => {});
+  }, []);
+
   const categoryColors = {
     "Live Music": C.sunset,
     "Food & Social": "#8B5E3C",
     "Sports & Outdoors": C.sage,
     Community: C.lakeBlue,
   };
-  const preview = EVENTS.slice(0, 3);
+  const preview = notionEvents.slice(0, 3);
 
   return (
     <section id="happening" style={{
@@ -1185,8 +1291,16 @@ function HappeningSection() {
             position: "absolute", left: 200, top: 0, bottom: 0,
             width: 1, background: "rgba(255,255,255,0.08)",
           }} />
-          {preview.map((event, i) => {
+          {preview.length === 0 ? (
+            <div style={{ padding: "32px 0", fontSize: 14, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif" }}>
+              Adding events soon — check back!
+            </div>
+          ) : preview.map((event, i) => {
             const color = categoryColors[event.category] || C.sage;
+            const dateLabel = (() => {
+              try { return new Date(event.date + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" }); }
+              catch { return event.date; }
+            })();
             return (
               <FadeIn key={event.id} delay={i * 70}>
                 <div style={{
@@ -1198,7 +1312,7 @@ function HappeningSection() {
                 }}>
                   <div style={{ paddingRight: 24, paddingTop: 4, textAlign: "right" }}>
                     <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color, lineHeight: 1.2 }}>
-                      {event.date}
+                      {dateLabel}
                     </div>
                     {event.time && (
                       <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.3)", letterSpacing: 1, marginTop: 3 }}>
@@ -1229,7 +1343,7 @@ function HappeningSection() {
           <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)", paddingTop: 40, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 20 }}>
             <div>
               <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: "rgba(255,255,255,0.6)", fontWeight: 400 }}>
-                + {EVENTS.length - 3} more events on the calendar
+                {notionEvents.length > 3 ? `+ ${notionEvents.length - 3} more events on the calendar` : "See the full calendar"}
               </div>
               <div style={{ fontFamily: "'Caveat', cursive", fontSize: 16, color: "rgba(255,255,255,0.3)", marginTop: 4 }}>
                 weekly regulars, seasonal events & more
@@ -1316,11 +1430,12 @@ function HappeningHero() {
 // ============================================================
 function WeeklyEventsSection({ events, onEventClick }) {
   const eventCatColors = { "Live Music": C.sunset, "Food & Social": "#8B5E3C", "Sports & Outdoors": C.sage, Community: C.lakeBlue };
-  const dayLabels = {
-    "Every Friday": "FRI",
-    "Every Friday & Saturday": "FRI — SAT",
-    "Every Wednesday": "WED",
-    "Every Sunday (Summer)": "SUN",
+
+  // Map full day name to short label — handles Notion "Recurring Day" select values
+  const dayShort = (event) => {
+    const day = event.recurringDay || "";
+    const shorts = { Monday: "MON", Tuesday: "TUE", Wednesday: "WED", Thursday: "THU", Friday: "FRI", Saturday: "SAT", Sunday: "SUN" };
+    return shorts[day] || day.slice(0, 3).toUpperCase() || "WKL";
   };
 
   return (
@@ -1334,10 +1449,15 @@ function WeeklyEventsSection({ events, onEventClick }) {
           </p>
         </FadeIn>
 
+        {events.length === 0 ? (
+          <div style={{ padding: "40px 0", fontSize: 14, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
+            Weekly regulars will appear here once added. Add events to Notion with Recurring = Weekly.
+          </div>
+        ) : (
         <div>
           {events.map((event, i) => {
             const color = eventCatColors[event.category] || C.sage;
-            const day = dayLabels[event.date] || event.date;
+            const day = dayShort(event);
             return (
               <FadeIn key={event.id} delay={i * 60}>
                 <div
@@ -1409,6 +1529,7 @@ function WeeklyEventsSection({ events, onEventClick }) {
             );
           })}
         </div>
+        )}
       </div>
     </section>
   );
@@ -3355,12 +3476,15 @@ function EventLightbox({ event, onClose }) {
   if (!event) return null;
   const eventCatColors = { "Live Music": C.sunset, "Food & Social": "#8B5E3C", "Sports & Outdoors": C.sage, Community: C.lakeBlue };
   const color = eventCatColors[event.category] || C.sage;
-  const isRecurring = event.date?.toLowerCase().startsWith("every");
-  const dateDisplay = isRecurring ? event.date : (() => {
-    try {
-      return new Date(event.date + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
-    } catch { return event.date; }
-  })();
+  const isRecurring = event.recurring === 'Weekly' || event.recurring === 'Monthly';
+  const isAnnual = event.recurring === 'Annual';
+  const dateDisplay = isRecurring
+    ? `Every ${event.recurringDay || "Week"}`
+    : (() => {
+        try {
+          return new Date(event.date + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+        } catch { return event.date; }
+      })();
 
   return (
     <div
@@ -3393,7 +3517,7 @@ function EventLightbox({ event, onClose }) {
           <img src={event.imageUrl} alt={event.name} style={{ width: "100%", height: 200, objectFit: "cover", borderRadius: 10, marginBottom: 20 }} />
         )}
 
-        <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 10 }}>
+        <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 10, flexWrap: "wrap" }}>
           <CategoryPill dark>{event.category}</CategoryPill>
           {event.cost && (
             <span style={{
@@ -3405,6 +3529,11 @@ function EventLightbox({ event, onClose }) {
               {event.cost}
             </span>
           )}
+          {isAnnual && (
+            <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: 1, color: C.lakeBlue, textTransform: "uppercase" }}>
+              ● Annual Event
+            </span>
+          )}
         </div>
 
         <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 4vw, 32px)", color: C.cream, margin: "14px 0 10px 0", fontWeight: 400, lineHeight: 1.2 }}>
@@ -3413,7 +3542,7 @@ function EventLightbox({ event, onClose }) {
 
         <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color, marginBottom: 16 }}>
           {dateDisplay}
-          {event.dateEnd && ` — ${new Date(event.dateEnd + "T00:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric" })}`}
+          {!isRecurring && event.dateEnd && ` — ${new Date(event.dateEnd + "T00:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric" })}`}
         </div>
 
         {(event.time || event.location) && (
@@ -3431,20 +3560,48 @@ function EventLightbox({ event, onClose }) {
           </div>
         )}
 
-        <p style={{ fontSize: 15, color: "rgba(255,255,255,0.55)", lineHeight: 1.8, margin: 0 }}>
+        <p style={{ fontSize: 15, color: "rgba(255,255,255,0.55)", lineHeight: 1.8, margin: "0 0 20px 0" }}>
           {event.description}
         </p>
+
+        {event.eventUrl && (
+          <a
+            href={event.eventUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "inline-block",
+              fontFamily: "'Libre Franklin', sans-serif",
+              fontSize: 12, fontWeight: 700, letterSpacing: 1.5,
+              textTransform: "uppercase", color: C.cream,
+              background: C.sunset, padding: "10px 22px",
+              borderRadius: 6, textDecoration: "none",
+            }}
+          >
+            Get Tickets / More Info →
+          </a>
+        )}
       </div>
     </div>
   );
 }
 
 function HappeningPage() {
-  const weeklyEvents = EVENTS.filter(e => e.date.toLowerCase().startsWith("every"));
-  const calendarEvents = EVENTS.filter(e => !e.date.toLowerCase().startsWith("every"));
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [weeklyEvents, setWeeklyEvents] = useState([]);
   const subScrollTo = (id) => { window.location.href = "/#" + id; };
   const [lightboxEvent, setLightboxEvent] = useState(null);
   const [activeFilter, setActiveFilter] = useState("All");
+
+  useEffect(() => {
+    fetch("/api/events")
+      .then(r => r.json())
+      .then(data => {
+        setUpcomingEvents(data.events || []);
+        setWeeklyEvents(data.recurring || []);
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
@@ -3458,7 +3615,7 @@ function HappeningPage() {
       <HappeningHero />
       <EventTimeline />
       <WeeklyEventsSection events={weeklyEvents} onEventClick={setLightboxEvent} />
-      <CalendarSection events={calendarEvents} onEventClick={setLightboxEvent} activeFilter={activeFilter} onFilterChange={setActiveFilter} />
+      <CalendarSection events={upcomingEvents} onEventClick={setLightboxEvent} activeFilter={activeFilter} onFilterChange={setActiveFilter} />
       <VideoSection />
       <HappeningSubmitCTA />
       <Footer scrollTo={subScrollTo} />
@@ -3499,6 +3656,7 @@ function HomePage() {
       <ScrollProgress />
       <Navbar activeSection={activeSection} scrollTo={scrollTo} />
       <Hero scrollTo={scrollTo} />
+      <FeaturedEventsStrip />
       <EventTicker />
       <NewsletterBar />
       <WaveDivider topColor={C.dusk} bottomColor={C.dusk} />
