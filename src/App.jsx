@@ -1953,8 +1953,12 @@ function BusinessDirectory() {
                     {catAll.length}
                   </div>
                 </div>
-                {/* Featured spotlight cards (Featured + Premium tiers) */}
-                {catFeatured.map(b => <FeaturedBusinessCard key={`card-${b.id}`} business={b} />)}
+                {/* Featured spotlight cards — 3 per row, wraps to new rows as needed */}
+                {catFeatured.length > 0 && (
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 14, marginBottom: 14 }}>
+                    {catFeatured.map(b => <FeaturedBusinessCard key={`card-${b.id}`} business={b} />)}
+                  </div>
+                )}
                 {/* All businesses as rows — Enhanced/Featured/Premium get expanded view */}
                 {catAll.map(b =>
                   (b.tier === 'enhanced' || b.tier === 'featured' || b.tier === 'premium' || b.featured)
@@ -2010,7 +2014,7 @@ function BusinessDirectory() {
   );
 }
 
-// Featured business — dark card with glow + tilt, stacked within category section
+// Featured business — compact dark card, designed for 3-per-row grid layout
 function FeaturedBusinessCard({ business }) {
   const color = CAT_COLORS[business.category] || C.sage;
   const tilt = useCardTilt(3);
@@ -2022,70 +2026,53 @@ function FeaturedBusinessCard({ business }) {
       className="card-tilt featured-card-glow"
       style={{
         background: `linear-gradient(145deg, ${C.dusk} 0%, ${C.night} 100%)`,
-        borderRadius: 12, padding: "20px 24px",
+        borderRadius: 12, padding: "18px 20px",
         border: "1px solid rgba(255,255,255,0.07)",
-        marginBottom: 10,
-        position: "relative",
-        overflow: "hidden",
+        position: "relative", overflow: "hidden",
+        display: "flex", flexDirection: "column", gap: 10,
       }}
     >
       {/* Shimmer overlay */}
       <div style={{
         position: "absolute", inset: 0, borderRadius: 12, pointerEvents: "none",
         background: `linear-gradient(110deg, transparent 30%, ${C.sunset}08 50%, transparent 70%)`,
-        backgroundSize: "200% 100%",
-        animation: "shimmer 4s ease-in-out infinite",
+        backgroundSize: "200% 100%", animation: "shimmer 4s ease-in-out infinite",
       }} />
-      {/* Horizontal layout: logo + info + CTA */}
-      <div style={{ display: "flex", gap: 18, alignItems: "center", position: "relative", zIndex: 1, flexWrap: "wrap" }}>
-        {/* Logo */}
+      {/* Header: logo + name + badge */}
+      <div style={{ display: "flex", gap: 12, alignItems: "center", position: "relative", zIndex: 1 }}>
         <div style={{
-          width: 56, height: 56, borderRadius: 10, flexShrink: 0, overflow: "hidden",
+          width: 44, height: 44, borderRadius: 8, flexShrink: 0, overflow: "hidden",
           background: "rgba(255,255,255,0.06)",
           border: `1.5px dashed ${business.logo ? "transparent" : "rgba(255,255,255,0.18)"}`,
           display: "flex", alignItems: "center", justifyContent: "center",
         }}>
-          {business.logo ? (
-            <img src={business.logo} alt={business.name} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
-          ) : (
-            <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 8, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.22)", textAlign: "center", lineHeight: 1.5 }}>
-              Add<br/>Logo
-            </span>
-          )}
+          {business.logo
+            ? <img src={business.logo} alt={business.name} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+            : <span style={{ fontSize: 7, fontWeight: 700, color: "rgba(255,255,255,0.22)", textTransform: "uppercase", letterSpacing: 1, textAlign: "center", lineHeight: 1.4 }}>Add<br/>Logo</span>
+          }
         </div>
-        {/* Info */}
-        <div style={{ flex: 1, minWidth: 180 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 5, flexWrap: "wrap" }}>
-            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.cream, margin: 0, lineHeight: 1.25 }}>
-              {business.name}
-            </h3>
-            <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color, background: `${color}20`, padding: "2px 7px", borderRadius: 3 }}>
-              Featured
-            </span>
-          </div>
-          {business.description && (
-            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", lineHeight: 1.65, margin: "0 0 6px 0" }}>
-              {business.description}
-            </p>
-          )}
-          <div style={{ display: "flex", gap: 14, flexWrap: "wrap", alignItems: "center" }}>
-            {business.address && (
-              <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif", fontStyle: "italic" }}>
-                {business.address}
-              </span>
-            )}
-            {business.phone && (
-              <a href={`tel:${business.phone}`} style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", fontFamily: "'Libre Franklin', sans-serif", textDecoration: "none" }}>
-                {business.phone}
-              </a>
-            )}
-          </div>
+        <div>
+          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color, background: `${color}20`, padding: "2px 7px", borderRadius: 3, display: "inline-block", marginBottom: 4 }}>
+            Featured
+          </span>
+          <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, fontWeight: 400, color: C.cream, margin: 0, lineHeight: 1.3 }}>
+            {business.name}
+          </h3>
         </div>
-        {/* Visit CTA */}
+      </div>
+      {/* Description */}
+      {business.description && (
+        <p style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", lineHeight: 1.6, margin: 0, flex: 1, position: "relative", zIndex: 1, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+          {business.description}
+        </p>
+      )}
+      {/* Footer: phone + visit */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 6, position: "relative", zIndex: 1 }}>
+        {business.phone && (
+          <a href={`tel:${business.phone}`} style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif" }}>{business.phone}</a>
+        )}
         {business.website && (
-          <a href={business.website} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color, textDecoration: "none", flexShrink: 0 }}>
-            Visit →
-          </a>
+          <a href={business.website} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color, textDecoration: "none" }}>Visit →</a>
         )}
       </div>
     </div>
@@ -2137,51 +2124,86 @@ function PremiumBanner({ business }) {
   );
 }
 
-// Enhanced business row — expanded listing with logo, description, links (Enhanced/Featured/Premium tiers)
+// Enhanced business row — collapses to look identical to Free row, expands on click
 function EnhancedBusinessRow({ business }) {
+  const [expanded, setExpanded] = useState(false);
   const color = CAT_COLORS[business.category] || C.sage;
-  const tier = business.tier;
-  const tierLabel = tier === 'premium' ? 'Premium' : tier === 'featured' ? 'Featured' : 'Enhanced';
+  const tierLabel = business.tier === 'premium' ? 'Premium' : business.tier === 'featured' ? 'Featured' : 'Enhanced';
+
   return (
-    <div
-      style={{
-        display: "flex", gap: 14, alignItems: "flex-start",
-        padding: "14px 10px 14px 13px",
-        borderBottom: `1px solid ${C.sand}`,
-        borderLeft: `3px solid ${color}35`,
-        marginLeft: -13,
-        transition: "all 0.18s",
-        borderRadius: "0 6px 6px 0",
-      }}
-      onMouseEnter={e => { e.currentTarget.style.borderLeftColor = color; e.currentTarget.style.background = `${color}06`; }}
-      onMouseLeave={e => { e.currentTarget.style.borderLeftColor = `${color}35`; e.currentTarget.style.background = "transparent"; }}
-    >
-      {/* Logo */}
-      <div style={{ width: 40, height: 40, borderRadius: 7, overflow: "hidden", flexShrink: 0, background: `${color}12`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-        {business.logo
-          ? <img src={business.logo} alt={business.name} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
-          : <span style={{ fontSize: 16, color: color, fontFamily: "'Libre Baskerville', serif" }}>{business.name[0]}</span>
-        }
-      </div>
-      {/* Content */}
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4, flexWrap: "wrap" }}>
-          <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: C.text }}>{business.name}</span>
-          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color, background: `${color}15`, padding: "2px 7px", borderRadius: 3 }}>{tierLabel}</span>
-          {business.phone && (
-            <a href={`tel:${business.phone}`} style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", textDecoration: "none" }}>{business.phone}</a>
-          )}
-          {business.website && (
-            <a href={business.website} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sage, textDecoration: "none" }}>Visit →</a>
+    <div style={{ borderBottom: `1px solid ${C.sand}` }}>
+      {/* Collapsed header — same grid as BusinessRow */}
+      <div
+        onClick={() => setExpanded(e => !e)}
+        style={{
+          display: "grid",
+          gridTemplateColumns: "10px 1fr auto",
+          gap: "0 20px",
+          alignItems: "center",
+          padding: "15px 10px",
+          borderLeft: "3px solid transparent",
+          marginLeft: -13,
+          paddingLeft: 10,
+          transition: "all 0.18s",
+          borderRadius: expanded ? "0 4px 0 0" : "0 4px 4px 0",
+          cursor: "pointer",
+        }}
+        onMouseEnter={e => { e.currentTarget.style.borderLeftColor = color; e.currentTarget.style.background = `${color}08`; }}
+        onMouseLeave={e => { e.currentTarget.style.borderLeftColor = "transparent"; e.currentTarget.style.background = "transparent"; }}
+      >
+        {/* Category dot */}
+        <div style={{ width: 8, height: 8, borderRadius: "50%", background: color, flexShrink: 0 }} />
+        {/* Name + tier badge + phone + address */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap" }}>
+            <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: C.text, fontWeight: 400 }}>{business.name}</span>
+            <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color, background: `${color}15`, padding: "2px 7px", borderRadius: 3 }}>{tierLabel}</span>
+            {business.phone && (
+              <span style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", whiteSpace: "nowrap" }}>{business.phone}</span>
+            )}
+          </div>
+          {business.address && (
+            <span style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", opacity: 0.7 }}>{business.address}</span>
           )}
         </div>
-        {business.description && (
-          <p style={{ fontSize: 13, color: C.textMuted, lineHeight: 1.65, margin: "0 0 4px 0", fontFamily: "'Libre Franklin', sans-serif" }}>{business.description}</p>
-        )}
-        {business.address && (
-          <div style={{ fontSize: 12, color: C.textMuted, opacity: 0.65 }}>{business.address}</div>
-        )}
+        {/* Expand toggle */}
+        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600, color, whiteSpace: "nowrap" }}>
+          {expanded ? "Less ↑" : "More ↓"}
+        </span>
       </div>
+
+      {/* Expanded detail panel */}
+      {expanded && (
+        <div style={{
+          padding: "14px 10px 16px 27px",
+          background: `${color}05`,
+          borderLeft: `3px solid ${color}30`,
+          marginLeft: -13,
+          paddingLeft: 27,
+          borderRadius: "0 0 4px 0",
+        }}>
+          <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
+            {business.logo && (
+              <div style={{ width: 48, height: 48, borderRadius: 8, overflow: "hidden", flexShrink: 0, background: `${color}12` }}>
+                <img src={business.logo} alt={business.name} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+              </div>
+            )}
+            <div style={{ flex: 1, minWidth: 0 }}>
+              {business.description && (
+                <p style={{ fontSize: 13, color: C.textMuted, lineHeight: 1.65, margin: "0 0 10px 0", fontFamily: "'Libre Franklin', sans-serif" }}>{business.description}</p>
+              )}
+              <div style={{ display: "flex", gap: 16, flexWrap: "wrap", alignItems: "center" }}>
+                {business.website && (
+                  <a href={business.website} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sage, textDecoration: "none" }}>Visit Website →</a>
+                )}
+                {business.email && (
+                  <a href={`mailto:${business.email}`} onClick={e => e.stopPropagation()} style={{ fontSize: 12, color: C.textMuted, textDecoration: "none" }}>{business.email}</a>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
