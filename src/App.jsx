@@ -191,28 +191,9 @@ const SECTIONS = [
 // ============================================================
 // 📋  BUSINESS DIRECTORY DATA
 // ============================================================
-const BUSINESSES = [
-  {
-    id: 1,
-    name: "Holly Griewahn — Foundation Realty",
-    category: "Real Estate",
-    description: "Your lakeside real estate expert. Specializing in lake property throughout Lenawee County, Irish Hills, and the Devils Lake area. 30+ years of local expertise.",
-    featured: true,
-    logo: "/images/holly_logo.jpg",
-    website: "https://www.hollygriewahn.com",
-    phone: "(517) 403-3413",
-  },
-  {
-    id: 2,
-    name: "Boot Jack Tavern",
-    category: "Food & Drink",
-    description: "Michigan craft beer, wine, and spirits in a gorgeous outdoor setting with twinkly lights. Trivia Wednesdays, live music, and a menu built for lake days.",
-    address: "735 Manitou Rd, Manitou Beach",
-    featured: true,
-    logo: "/images/bootjack_logo.png",
-    website: "https://bootjacktavern.com",
-    phone: "(517) 252-5475",
-  },
+// Village page editorial listings — hardcoded for the Walk the Village section only.
+// BusinessDirectory is 100% Notion-driven and does NOT use this array.
+const VILLAGE_BUSINESSES = [
   {
     id: 3,
     name: "Two Lakes Tavern",
@@ -220,128 +201,9 @@ const BUSINESSES = [
     description: "Family-owned lakeside restaurant known for smoked entrees and a full menu of options. Right on the shores of Devils Lake, steps from the water.",
     address: "110 Walnut St, Manitou Beach",
     village: true,
-    featured: true,
     logo: "/images/two_lakes_logo.jpg",
     website: "https://www.twolakestavern.com",
     phone: "(517) 547-7490",
-  },
-  {
-    id: 4,
-    name: "Devils Lake Yacht Club",
-    category: "Boating & Water",
-    description: "Fine dining overlooking Devils Lake, ~100 dock slips, live entertainment Friday and Saturday nights, sailboat races every Sunday, and free sailing lessons all summer.",
-    featured: false,
-    logo: "/images/yacht_club_logo.png",
-    website: "https://www.devilslakeyachtclub.com",
-    phone: "",
-  },
-  {
-    id: 5,
-    name: "Manitou Beach Marina",
-    category: "Boating & Water",
-    description: "Pontoon boat sales, rentals, dock slip leases, boating repair, and winter storage. Your one-stop shop for getting out on the water.",
-    featured: false,
-    logo: "/images/marina_logo.png",
-    website: "https://manitoubeachmarina.com",
-    phone: "",
-  },
-  {
-    id: 6,
-    name: "Devils Lake Water Sports",
-    category: "Boating & Water",
-    description: "Boat rentals and water sports on Devils Lake. Everything you need to make the most of a day on the water.",
-    featured: false,
-    logo: "/images/dl_watersports_logo.png",
-    website: "https://dlwatersports.com",
-    phone: "",
-  },
-  {
-    id: 7,
-    name: "Highland Inn",
-    category: "Food & Drink",
-    description: "A Manitou Beach institution since 1927 — survived Prohibition, survived the pandemic, still standing. Classic bar with deep local roots.",
-    featured: true,
-    logo: "/images/highland_logo.png",
-    website: "https://www.thewellstavern.net/highland-inn",
-    phone: "(517) 547-9726",
-  },
-  {
-    id: 8,
-    name: "Yeti Groove Media",
-    category: "Creative Media",
-    description: "Cinematic video production for businesses, events, and legacies. Where your story becomes a film.",
-    featured: false,
-    logo: "/images/yeti_logo.png",
-    website: "https://yeti-signature-films.vercel.app",
-    phone: "",
-  },
-  {
-    id: 9,
-    name: "Irish Hills Plumbing & Heating",
-    category: "Home Services",
-    description: "Residential plumbing, heating, and HVAC for lakefront and year-round homes in the Devils Lake area.",
-    featured: false,
-    website: "",
-    phone: "",
-  },
-  {
-    id: 10,
-    name: "Devils Lake Dock & Deck",
-    category: "Home Services",
-    description: "Custom dock installation, deck building, and lakefront renovation for waterfront properties.",
-    featured: false,
-    website: "",
-    phone: "",
-  },
-  {
-    id: 11,
-    name: "Lenawee Snow & Lawn",
-    category: "Home Services",
-    description: "Snow removal, salting, and seasonal lawn care for lake properties. Residential and commercial contracts.",
-    featured: false,
-    website: "",
-    phone: "",
-  },
-  {
-    id: 12,
-    name: "Irish Hills Landscaping",
-    category: "Home Services",
-    description: "Waterfront landscaping, seawall planting, and yard maintenance for Devils Lake properties.",
-    featured: false,
-    website: "",
-    phone: "",
-  },
-  {
-    id: 13,
-    name: "Chateau Aeronautique Winery",
-    category: "Breweries & Wineries",
-    description: "Aviation-themed winery in Jackson with a year-round all-weather Biergarten, live tribute concerts every weekend, and Michigan-crafted wines. The Irish Hills' go-to entertainment venue.",
-    address: "1849 E Parnall Rd, Jackson",
-    featured: false,
-    logo: "/images/chateau_logo.png",
-    website: "https://chateauaeronautique.com",
-    phone: "(517) 795-3620",
-  },
-  {
-    id: 14,
-    name: "Cherry Creek Cellars",
-    category: "Breweries & Wineries",
-    description: "Brooklyn's neighborhood winery — small-batch Michigan wines, a tasting room with character, and a laid-back vibe that feels like visiting a friend's place.",
-    address: "5765 Wamplers Lake Rd, Brooklyn",
-    featured: false,
-    logo: "/images/cherry_creek_logo.png",
-    website: "https://cherrycreekcellars.com",
-    phone: "(517) 592-4848",
-  },
-  {
-    id: 15,
-    name: "Gypsy Blue Vineyards",
-    category: "Breweries & Wineries",
-    description: "Coming soon to the Irish Hills. A new vineyard and tasting room bringing Michigan wine culture to the heart of lake country.",
-    featured: false,
-    logo: "/images/gypsy_blue_logo.png",
-    website: "",
-    phone: "",
   },
   {
     id: 16,
@@ -1956,7 +1818,8 @@ function BusinessDirectory() {
   }, []);
 
   // Premium + Featured go into the card carousel; Enhanced + Free go into the row list
-  const allBusinesses = [...BUSINESSES, ...notionFree, ...notionEnhanced, ...notionFeatured, ...notionPremium];
+  // Directory is 100% Notion-driven
+  const allBusinesses = [...notionFree, ...notionEnhanced, ...notionFeatured, ...notionPremium];
   const categories = ["All", ...Array.from(new Set(allBusinesses.map(b => b.category)))];
 
   const matchesSearch = (b) => {
@@ -1972,17 +1835,30 @@ function BusinessDirectory() {
     return matchesCat && matchesSearch(b);
   });
 
-  // Cards: hardcoded featured + Notion Featured + Notion Premium
-  const featured = filtered.filter(b => b.featured || b.tier === 'featured' || b.tier === 'premium');
-  // Rows: everything else (Free + Enhanced — Enhanced will get accordion once built)
-  const regular = filtered.filter(b => !b.featured && b.tier !== 'featured' && b.tier !== 'premium');
+  // Premium: full-width banner rows at top
+  const premiumBusinesses = filtered.filter(b => b.tier === 'premium');
 
-  // Group regular listings by category
+  // Featured cards within their category: Featured + Premium tiers get a dark spotlight card
+  const featuredCardBusinesses = filtered.filter(b => b.featured || b.tier === 'featured' || b.tier === 'premium');
+  const featuredByCategory = {};
+  featuredCardBusinesses.forEach(b => {
+    if (!featuredByCategory[b.category]) featuredByCategory[b.category] = [];
+    featuredByCategory[b.category].push(b);
+  });
+
+  // ALL businesses also appear as rows within their category (additive — paid tiers get both card + row)
+  // Free → compact row | Enhanced/Featured/Premium → expanded EnhancedBusinessRow
   const grouped = {};
-  regular.forEach(b => {
+  filtered.forEach(b => {
     if (!grouped[b.category]) grouped[b.category] = [];
     grouped[b.category].push(b);
   });
+
+  // All categories alphabetically
+  const allCategories = Array.from(new Set([
+    ...Object.keys(featuredByCategory),
+    ...Object.keys(grouped),
+  ])).sort();
 
   return (
     <section id="businesses" style={{ background: C.warmWhite, padding: "100px 24px" }}>
@@ -2046,52 +1922,49 @@ function BusinessDirectory() {
           </div>
         </FadeIn>
 
-        {/* Featured listings — horizontal scroll showcase */}
-        {featured.length > 0 && (
-          <FadeIn delay={100} direction="right">
-            <div style={{ marginBottom: 60 }}>
-              <div
-                className="horizontal-scroll"
-                style={{
-                  display: "flex", gap: 24, overflowX: "auto",
-                  scrollSnapType: "x mandatory", padding: "8px 4px 20px",
-                  margin: "0 -4px",
-                }}
-              >
-                {featured.map(b => (
-                  <div key={b.id} style={{ minWidth: 340, maxWidth: 380, flex: "0 0 auto", scrollSnapAlign: "start" }}>
-                    <FeaturedBusinessCard business={b} />
-                  </div>
-                ))}
+        {/* Premium Partners — full-width banner rows, stacked before categories */}
+        {premiumBusinesses.length > 0 && (
+          <FadeIn delay={100}>
+            <div style={{ marginBottom: 56 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 16 }}>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3.5, textTransform: "uppercase", color: C.sunset, whiteSpace: "nowrap" }}>
+                  Premium Partners
+                </div>
+                <div style={{ flex: 1, height: 1, background: C.sand }} />
               </div>
+              {premiumBusinesses.map(b => <PremiumBanner key={b.id} business={b} />)}
             </div>
           </FadeIn>
         )}
 
-        {/* Directory list — grouped by category */}
-        {Object.entries(grouped).map(([category, businesses]) => (
-          <FadeIn key={category} delay={120}>
-            <div style={{ marginBottom: 40 }}>
-              {/* Category group header */}
-              <div style={{ display: "flex", alignItems: "center", gap: 14, margin: "0 0 2px 0" }}>
-                <div style={{
-                  fontFamily: "'Libre Franklin', sans-serif",
-                  fontSize: 10, fontWeight: 700, letterSpacing: 3.5,
-                  textTransform: "uppercase",
-                  color: CAT_COLORS[category] || C.textMuted,
-                  whiteSpace: "nowrap",
-                }}>
-                  {category}
+        {/* Directory — category sections: featured cards on top, then all businesses as rows */}
+        {allCategories.map((category, i) => {
+          const catFeatured = featuredByCategory[category] || [];
+          const catAll = grouped[category] || [];
+          return (
+            <FadeIn key={category} delay={120 + i * 10}>
+              <div style={{ marginBottom: 40 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 14, margin: "0 0 12px 0" }}>
+                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3.5, textTransform: "uppercase", color: CAT_COLORS[category] || C.textMuted, whiteSpace: "nowrap" }}>
+                    {category}
+                  </div>
+                  <div style={{ flex: 1, height: 1, background: C.sand }} />
+                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted }}>
+                    {catAll.length}
+                  </div>
                 </div>
-                <div style={{ flex: 1, height: 1, background: C.sand }} />
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted }}>
-                  {businesses.length}
-                </div>
+                {/* Featured spotlight cards (Featured + Premium tiers) */}
+                {catFeatured.map(b => <FeaturedBusinessCard key={`card-${b.id}`} business={b} />)}
+                {/* All businesses as rows — Enhanced/Featured/Premium get expanded view */}
+                {catAll.map(b =>
+                  (b.tier === 'enhanced' || b.tier === 'featured' || b.tier === 'premium' || b.featured)
+                    ? <EnhancedBusinessRow key={`row-${b.id}`} business={b} />
+                    : <BusinessRow key={`row-${b.id}`} business={b} />
+                )}
               </div>
-              {businesses.map(b => <BusinessRow key={b.id} business={b} />)}
-            </div>
-          </FadeIn>
-        ))}
+            </FadeIn>
+          );
+        })}
 
         {/* No results */}
         {filtered.length === 0 && (
@@ -2137,10 +2010,10 @@ function BusinessDirectory() {
   );
 }
 
-// Featured business — editorial dark card with glow + tilt
+// Featured business — dark card with glow + tilt, stacked within category section
 function FeaturedBusinessCard({ business }) {
   const color = CAT_COLORS[business.category] || C.sage;
-  const tilt = useCardTilt(4);
+  const tilt = useCardTilt(3);
   return (
     <div
       ref={tilt.ref}
@@ -2149,23 +2022,22 @@ function FeaturedBusinessCard({ business }) {
       className="card-tilt featured-card-glow"
       style={{
         background: `linear-gradient(145deg, ${C.dusk} 0%, ${C.night} 100%)`,
-        borderRadius: 14, padding: "18px 20px",
+        borderRadius: 12, padding: "20px 24px",
         border: "1px solid rgba(255,255,255,0.07)",
-        height: "auto",
-        minHeight: 0,
+        marginBottom: 10,
         position: "relative",
         overflow: "hidden",
       }}
     >
       {/* Shimmer overlay */}
       <div style={{
-        position: "absolute", inset: 0, borderRadius: 14, pointerEvents: "none",
+        position: "absolute", inset: 0, borderRadius: 12, pointerEvents: "none",
         background: `linear-gradient(110deg, transparent 30%, ${C.sunset}08 50%, transparent 70%)`,
         backgroundSize: "200% 100%",
         animation: "shimmer 4s ease-in-out infinite",
       }} />
-      {/* Compact horizontal layout: logo + info */}
-      <div style={{ display: "flex", gap: 14, alignItems: "center", position: "relative", zIndex: 1 }}>
+      {/* Horizontal layout: logo + info + CTA */}
+      <div style={{ display: "flex", gap: 18, alignItems: "center", position: "relative", zIndex: 1, flexWrap: "wrap" }}>
         {/* Logo */}
         <div style={{
           width: 56, height: 56, borderRadius: 10, flexShrink: 0, overflow: "hidden",
@@ -2174,7 +2046,7 @@ function FeaturedBusinessCard({ business }) {
           display: "flex", alignItems: "center", justifyContent: "center",
         }}>
           {business.logo ? (
-            <img src={business.logo} alt={business.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <img src={business.logo} alt={business.name} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
           ) : (
             <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 8, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.22)", textAlign: "center", lineHeight: 1.5 }}>
               Add<br/>Logo
@@ -2182,29 +2054,133 @@ function FeaturedBusinessCard({ business }) {
           )}
         </div>
         {/* Info */}
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.cream, margin: "0 0 6px 0", lineHeight: 1.25 }}>
-            {business.name}
-          </h3>
-          <p style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", lineHeight: 1.6, margin: "0 0 6px 0", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-            {business.description}
-          </p>
-          {business.address && (
-            <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif", marginBottom: 4, fontStyle: "italic" }}>
-              {business.address}
-            </div>
+        <div style={{ flex: 1, minWidth: 180 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 5, flexWrap: "wrap" }}>
+            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.cream, margin: 0, lineHeight: 1.25 }}>
+              {business.name}
+            </h3>
+            <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color, background: `${color}20`, padding: "2px 7px", borderRadius: 3 }}>
+              Featured
+            </span>
+          </div>
+          {business.description && (
+            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", lineHeight: 1.65, margin: "0 0 6px 0" }}>
+              {business.description}
+            </p>
           )}
+          <div style={{ display: "flex", gap: 14, flexWrap: "wrap", alignItems: "center" }}>
+            {business.address && (
+              <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif", fontStyle: "italic" }}>
+                {business.address}
+              </span>
+            )}
+            {business.phone && (
+              <a href={`tel:${business.phone}`} style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", fontFamily: "'Libre Franklin', sans-serif", textDecoration: "none" }}>
+                {business.phone}
+              </a>
+            )}
+          </div>
+        </div>
+        {/* Visit CTA */}
+        {business.website && (
+          <a href={business.website} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color, textDecoration: "none", flexShrink: 0 }}>
+            Visit →
+          </a>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Premium partner — full-width dark banner (stacked at top of directory)
+function PremiumBanner({ business }) {
+  const color = CAT_COLORS[business.category] || C.sage;
+  return (
+    <div style={{
+      background: `linear-gradient(135deg, ${C.dusk} 0%, ${C.lakeDark} 100%)`,
+      borderRadius: 12, padding: "28px 32px",
+      display: "flex", gap: 24, alignItems: "center", flexWrap: "wrap",
+      marginBottom: 16, border: `1px solid rgba(255,255,255,0.07)`,
+    }}>
+      {/* Logo */}
+      <div style={{ width: 72, height: 72, borderRadius: 10, flexShrink: 0, overflow: "hidden", background: "rgba(255,255,255,0.06)", border: "1.5px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        {business.logo ? (
+          <img src={business.logo} alt={business.name} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+        ) : (
+          <span style={{ fontSize: 26, color: "rgba(255,255,255,0.2)" }}>{business.name[0]}</span>
+        )}
+      </div>
+      {/* Info */}
+      <div style={{ flex: 1, minWidth: 200 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8, flexWrap: "wrap" }}>
+          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunset, background: `${C.sunset}20`, padding: "3px 8px", borderRadius: 3 }}>Premium Partner</span>
+          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.35)", textTransform: "uppercase", letterSpacing: 1 }}>{business.category}</span>
+        </div>
+        <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.cream, marginBottom: 8 }}>{business.name}</div>
+        {business.description && (
+          <div style={{ fontSize: 13, color: "rgba(255,255,255,0.6)", lineHeight: 1.65 }}>{business.description}</div>
+        )}
+        {business.address && <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", marginTop: 8, fontStyle: "italic" }}>{business.address}</div>}
+      </div>
+      {/* CTAs */}
+      <div style={{ flexShrink: 0, display: "flex", flexDirection: "column", gap: 10, alignItems: "flex-end" }}>
+        {business.website && (
+          <a href={business.website} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.cream, background: C.sunset, padding: "10px 22px", borderRadius: 6, textDecoration: "none", whiteSpace: "nowrap" }}>
+            Visit Website
+          </a>
+        )}
+        {business.phone && (
+          <a href={`tel:${business.phone}`} style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", textDecoration: "none" }}>{business.phone}</a>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Enhanced business row — expanded listing with logo, description, links (Enhanced/Featured/Premium tiers)
+function EnhancedBusinessRow({ business }) {
+  const color = CAT_COLORS[business.category] || C.sage;
+  const tier = business.tier;
+  const tierLabel = tier === 'premium' ? 'Premium' : tier === 'featured' ? 'Featured' : 'Enhanced';
+  return (
+    <div
+      style={{
+        display: "flex", gap: 14, alignItems: "flex-start",
+        padding: "14px 10px 14px 13px",
+        borderBottom: `1px solid ${C.sand}`,
+        borderLeft: `3px solid ${color}35`,
+        marginLeft: -13,
+        transition: "all 0.18s",
+        borderRadius: "0 6px 6px 0",
+      }}
+      onMouseEnter={e => { e.currentTarget.style.borderLeftColor = color; e.currentTarget.style.background = `${color}06`; }}
+      onMouseLeave={e => { e.currentTarget.style.borderLeftColor = `${color}35`; e.currentTarget.style.background = "transparent"; }}
+    >
+      {/* Logo */}
+      <div style={{ width: 40, height: 40, borderRadius: 7, overflow: "hidden", flexShrink: 0, background: `${color}12`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        {business.logo
+          ? <img src={business.logo} alt={business.name} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+          : <span style={{ fontSize: 16, color: color, fontFamily: "'Libre Baskerville', serif" }}>{business.name[0]}</span>
+        }
+      </div>
+      {/* Content */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4, flexWrap: "wrap" }}>
+          <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: C.text }}>{business.name}</span>
+          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color, background: `${color}15`, padding: "2px 7px", borderRadius: 3 }}>{tierLabel}</span>
           {business.phone && (
-            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif", marginBottom: 6 }}>
-              {business.phone}
-            </div>
+            <a href={`tel:${business.phone}`} style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", textDecoration: "none" }}>{business.phone}</a>
           )}
           {business.website && (
-            <a href={business.website} target="_blank" rel="noopener noreferrer" className="link-hover-underline" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color, textDecoration: "none" }}>
-              Visit →
-            </a>
+            <a href={business.website} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sage, textDecoration: "none" }}>Visit →</a>
           )}
         </div>
+        {business.description && (
+          <p style={{ fontSize: 13, color: C.textMuted, lineHeight: 1.65, margin: "0 0 4px 0", fontFamily: "'Libre Franklin', sans-serif" }}>{business.description}</p>
+        )}
+        {business.address && (
+          <div style={{ fontSize: 12, color: C.textMuted, opacity: 0.65 }}>{business.address}</div>
+        )}
       </div>
     </div>
   );
@@ -3853,8 +3829,6 @@ function RoundLakePage() {
 // ============================================================
 // 🏘️  MANITOU BEACH VILLAGE PAGE
 // ============================================================
-const VILLAGE_BUSINESSES = BUSINESSES.filter(b => b.village);
-
 function VillageHero() {
   const [loaded, setLoaded] = useState(false);
   useEffect(() => { setTimeout(() => setLoaded(true), 80); }, []);
