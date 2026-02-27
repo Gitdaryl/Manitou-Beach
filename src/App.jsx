@@ -2590,7 +2590,7 @@ function SubmitSection() {
         body: JSON.stringify(payload),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Submission failed");
+      if (!res.ok) throw new Error(data.detail || data.error || "Submission failed");
       setSubmitted(true);
     } catch (err) {
       setSubmitError(err.message && err.message !== "Submission failed"
