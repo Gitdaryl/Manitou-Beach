@@ -3,13 +3,10 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { name, category, phone, website, email, description, upgrade, address } = req.body;
+  const { name, category, phone, website, email, description, upgrade, address, newsletter } = req.body;
 
   if (!name) {
     return res.status(400).json({ error: 'Business name is required' });
-  }
-  if (!email) {
-    return res.status(400).json({ error: 'Email address is required' });
   }
 
   // Normalize website URL — Notion requires full URL with protocol
@@ -41,6 +38,7 @@ export default async function handler(req, res) {
           'Description': { rich_text: [{ text: { content: description || '' } }] },
           'Address': { rich_text: [{ text: { content: address || '' } }] },
           'Interested in Featured': { checkbox: upgrade === true || upgrade === 'true' },
+          'Newsletter': { checkbox: newsletter === true || newsletter === 'true' },
         },
       }),
     });

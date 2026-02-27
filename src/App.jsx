@@ -2548,7 +2548,7 @@ function SubmitSection() {
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [form, setForm] = useState({ name: "", category: "", phone: "", address: "", website: "", email: "", description: "", upgrade: false, date: "", time: "", location: "", eventUrl: "" });
+  const [form, setForm] = useState({ name: "", category: "", phone: "", address: "", website: "", email: "", description: "", upgrade: false, newsletter: false, date: "", time: "", location: "", eventUrl: "" });
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -2745,6 +2745,17 @@ function SubmitSection() {
                       <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.6 }}>
                         Featured listings get top-of-directory placement, newsletter inclusion, and a business highlight video. Someone from Holly & The Yeti will be in touch.
                       </div>
+                    </div>
+                  </label>
+                  <label style={{ display: "flex", gap: 12, alignItems: "flex-start", cursor: "pointer", padding: "14px 16px", background: `${C.sage}0D`, border: `1px solid ${C.sage}25`, borderRadius: 8 }}>
+                    <input
+                      type="checkbox"
+                      checked={form.newsletter}
+                      onChange={e => setForm(f => ({ ...f, newsletter: e.target.checked }))}
+                      style={{ marginTop: 2, accentColor: C.sage }}
+                    />
+                    <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.text, lineHeight: 1.5 }}>
+                      Subscribe to the Manitou Beach newsletter — local events, business spotlights & lake life
                     </div>
                   </label>
                 </>
