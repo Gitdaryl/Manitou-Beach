@@ -382,7 +382,7 @@ const BUSINESSES = [
   {
     id: 19,
     name: "Devils Lake Inn",
-    category: "Stays & Lodging",
+    category: "Stays & Rentals",
     description: "Six stylish, modern apartments available year-round. Walking distance to the village shops, the lake, and everything Manitou Beach has to offer.",
     address: "103 Walnut Street, Manitou Beach",
     village: true,
@@ -442,7 +442,7 @@ const BUSINESSES = [
   {
     id: 24,
     name: "Trillium House",
-    category: "Vacation Rental",
+    category: "Stays & Rentals",
     description: "A spacious 5-bedroom retreat that sleeps 9. Central air, two full bathrooms, in-unit washer and dryer, and a generous lot on Devils Lake Hwy.",
     address: "350 Devils Lake Hwy, Manitou Beach",
     village: true,
@@ -496,8 +496,7 @@ const CAT_COLORS = {
   "Boating & Water":    C.sage,
   "Breweries & Wineries": "#8B5E3C",
   "Shopping & Gifts":   "#B07D62",
-  "Vacation Rental":    C.lakeBlue,
-  "Stays & Lodging":    C.lakeBlue,
+  "Stays & Rentals":    C.lakeBlue,
   "Creative Media":     C.driftwood,
   "Home Services":      C.sageDark,
   "Health & Beauty":    "#B5737A",
@@ -2693,8 +2692,7 @@ function SubmitSection() {
                     <option>Boating & Water</option>
                     <option>Breweries & Wineries</option>
                     <option>Shopping & Gifts</option>
-                    <option>Vacation Rental</option>
-                    <option>Stays & Lodging</option>
+                    <option>Stays & Rentals</option>
                     <option>Creative Media</option>
                     <option>Home Services</option>
                     <option>Health & Beauty</option>
