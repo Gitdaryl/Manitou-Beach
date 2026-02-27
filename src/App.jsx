@@ -3573,8 +3573,8 @@ function HomePage() {
 // 🌊  ROUND LAKE PAGE
 // ============================================================
 const ROUND_LAKE_STATS = [
-  { label: "Surface Area", value: "66 acres" },
-  { label: "Max Depth", value: "65 feet" },
+  { label: "Surface Area", value: "925 acres" },
+  { label: "Max Depth", value: "70 feet" },
   { label: "Elevation", value: "~1,043 ft" },
   { label: "Water Clarity", value: "Very clear" },
   { label: "Origin", value: "Glacial kettle lake" },
@@ -3674,7 +3674,7 @@ function RoundLakeStatsSection() {
                 background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)",
                 borderRadius: 12, padding: "28px 20px", textAlign: "center",
               }}>
-                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 3vw, 30px)", color: C.sunsetLight, fontWeight: 400, marginBottom: 8, lineHeight: 1.1 }}>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.sunsetLight, fontWeight: 400, marginBottom: 8, lineHeight: 1.2 }}>
                   {stat.value}
                 </div>
                 <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.3)", fontWeight: 600 }}>
@@ -5851,7 +5851,7 @@ function WineriesPage() {
 // ============================================================
 const DEVILS_LAKE_STATS = [
   { label: "Surface Area", value: "1,330 acres" },
-  { label: "Max Depth", value: "60 ft" },
+  { label: "Max Depth", value: "65 ft" },
   { label: "Lake Type", value: "Warm-water" },
   { label: "Public Launch", value: "Yes — Manitou Rd" },
   { label: "Connected To", value: "Round Lake" },
@@ -5931,7 +5931,7 @@ function DevilsLakeStatsSection() {
           {DEVILS_LAKE_STATS.map((stat, i) => (
             <FadeIn key={i} delay={i * 60}>
               <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 12, padding: "24px 20px", textAlign: "center" }}>
-                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 3vw, 30px)", fontWeight: 400, color: C.cream, marginBottom: 6 }}>{stat.value}</div>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.cream, marginBottom: 6 }}>{stat.value}</div>
                 <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.3)" }}>{stat.label}</div>
               </div>
             </FadeIn>
