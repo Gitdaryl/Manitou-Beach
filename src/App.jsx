@@ -1922,6 +1922,11 @@ function BusinessDirectory() {
           </div>
         </FadeIn>
 
+        {/* DEBUG — remove after diagnosing Enhanced visibility */}
+        <div style={{ fontSize: 11, color: C.textMuted, marginBottom: 24, fontFamily: "'Libre Franklin', sans-serif", opacity: 0.6 }}>
+          Loaded from Notion: {notionFree.length} Free · {notionEnhanced.length} Enhanced · {notionFeatured.length} Featured · {notionPremium.length} Premium
+        </div>
+
         {/* Premium Partners — full-width banner rows, stacked before categories */}
         {premiumBusinesses.length > 0 && (
           <FadeIn delay={100}>
@@ -2173,7 +2178,7 @@ function EnhancedBusinessRow({ business }) {
       </div>
 
       {/* Expanded detail panel — animated ease-out */}
-      <div style={{ maxHeight: expanded ? "400px" : 0, overflow: "hidden", transition: "max-height 0.35s ease-out" }}>
+      <div style={{ maxHeight: expanded ? "400px" : 0, overflow: "hidden", transition: "max-height 0.5s ease-out" }}>
         <div style={{
           padding: "14px 10px 16px 27px",
           background: `${color}05`,
