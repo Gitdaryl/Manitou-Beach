@@ -19,7 +19,7 @@ export default async function handler(req, res) {
             property: 'Hero Active',
             checkbox: { equals: true },
           },
-          sorts: [{ property: 'Event Date', direction: 'ascending' }],
+          sorts: [{ property: 'Event date', direction: 'ascending' }],
         }),
       }
     );
@@ -35,7 +35,7 @@ export default async function handler(req, res) {
 
     // Find first event that is active and within the window (not yet passed)
     const activeEvent = data.results.find(page => {
-      const dateProp = page.properties['Event Date']?.date?.start;
+      const dateProp = page.properties['Event date']?.date?.start;
       if (!dateProp) return false;
       const eventDate = new Date(dateProp);
       return eventDate >= now && eventDate <= cutoff;
@@ -49,7 +49,7 @@ export default async function handler(req, res) {
     return res.status(200).json({
       event: {
         name: p['Event Name']?.title?.[0]?.text?.content || '',
-        date: p['Event Date']?.date?.start || '',
+        date: p['Event date']?.date?.start || '',
         tagline: p['Tagline']?.rich_text?.[0]?.text?.content || '',
         imageUrl: p['Hero Image URL']?.url || null,
         videoUrl: p['Hero Video URL']?.url || null,

@@ -12,7 +12,7 @@ export default async function handler(req, res) {
           'Notion-Version': '2022-06-28',
         },
         body: JSON.stringify({
-          sorts: [{ property: 'Event Date', direction: 'ascending' }],
+          sorts: [{ property: 'Event date', direction: 'ascending' }],
         }),
       }
     );
@@ -28,12 +28,12 @@ export default async function handler(req, res) {
     const events = data.results
       .map(page => {
         const p = page.properties;
-        const dateStr = p['Event Date']?.date?.start;
+        const dateStr = p['Event date']?.date?.start;
         return {
           id: page.id,
           name: p['Event Name']?.title?.[0]?.text?.content || '',
           date: dateStr || '',
-          dateEnd: p['Event Date']?.date?.end || null,
+          dateEnd: p['Event date']?.date?.end || null,
           category: p['Category']?.rich_text?.[0]?.text?.content || 'Community',
           description: p['Description']?.rich_text?.[0]?.text?.content || '',
           time: p['Time']?.rich_text?.[0]?.text?.content || '',

@@ -30,7 +30,7 @@ export default async function handler(req, res) {
       'Location': { rich_text: [{ text: { content: location || '' } }] },
     };
 
-    if (date) properties['Event Date'] = { date: { start: date } };
+    if (date) properties['Event date'] = { date: { start: date } };
     if (includeEventUrl && normalizedEventUrl) properties['Event URL'] = { url: normalizedEventUrl };
     if (includeImageUrl && imageUrl) properties['Image URL'] = { url: imageUrl };
 
@@ -75,7 +75,7 @@ export default async function handler(req, res) {
           return res.status(500).json({
             error: 'Submission failed',
             notionError: retryErr?.message || 'Unknown Notion error',
-            hint: 'Check that your Notion database has these columns: Event Name (title), Category (rich text), Email (email), Phone (phone), Description (rich text), Time (rich text), Location (rich text), Event Date (date)',
+            hint: 'Check that your Notion database has these columns: Event Name (title), Category (rich text), Email (email), Phone (phone), Description (rich text), Time (rich text), Location (rich text), Event date (date)',
           });
         }
       } else {
