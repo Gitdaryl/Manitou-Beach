@@ -31,7 +31,7 @@ export default async function handler(req, res) {
         parent: { database_id: process.env.NOTION_DB_BUSINESS },
         properties: {
           'Name': { title: [{ text: { content: name } }] },
-          'Category': { rich_text: [{ text: { content: category || '' } }] },
+          'Category': { select: { name: category || 'Other' } },
           'Phone': { phone_number: phone || null },
           'URL': { url: normalizedUrl },
           'Email': { email: email },

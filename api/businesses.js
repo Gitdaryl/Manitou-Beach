@@ -39,7 +39,7 @@ export default async function handler(req, res) {
       const business = {
         id: `notion-${page.id}`,
         name: p['Name']?.title?.[0]?.text?.content || '',
-        category: p['Category']?.rich_text?.[0]?.text?.content || 'Other',
+        category: p['Category']?.select?.name || 'Other',
         phone: p['Phone']?.phone_number || '',
         website: p['URL']?.url || '',
         email: p['Email']?.email || '',
