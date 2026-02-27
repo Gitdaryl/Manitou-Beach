@@ -12,6 +12,13 @@ export default async function handler(req, res) {
           'Notion-Version': '2022-06-28',
         },
         body: JSON.stringify({
+          // Only pull Approved or Published events — Pending = not ready for site
+          filter: {
+            or: [
+              { property: 'Status', status: { equals: 'Approved' } },
+              { property: 'Status', status: { equals: 'Published' } },
+            ],
+          },
           sorts: [{ property: 'Event date', direction: 'ascending' }],
         }),
       }
