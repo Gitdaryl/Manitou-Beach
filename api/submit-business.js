@@ -5,8 +5,11 @@ export default async function handler(req, res) {
 
   const { name, category, phone, website, email, description, upgrade, address } = req.body;
 
-  if (!name || !email) {
-    return res.status(400).json({ error: 'Business name and email are required' });
+  if (!name) {
+    return res.status(400).json({ error: 'Business name is required' });
+  }
+  if (!email) {
+    return res.status(400).json({ error: 'Email address is required' });
   }
 
   // Normalize website URL — Notion requires full URL with protocol
