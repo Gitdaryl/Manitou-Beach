@@ -3693,7 +3693,7 @@ function EventLightbox({ event, onClose }) {
         >×</button>
 
         {event.imageUrl && (
-          <img src={event.imageUrl} alt={event.name} style={{ width: "100%", height: 200, objectFit: "cover", borderRadius: 10, marginBottom: 20 }} />
+          <img src={event.imageUrl} alt={event.name} style={{ display: "block", maxWidth: "100%", maxHeight: 220, width: "auto", margin: "0 auto 20px", objectFit: "contain", borderRadius: 10 }} />
         )}
 
         <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 10, flexWrap: "wrap" }}>
