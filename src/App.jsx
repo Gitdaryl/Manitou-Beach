@@ -5107,6 +5107,7 @@ function HistoricalSocietyPage() {
       <MBHRSBoatHouseFeature />
       <WaveDivider topColor={C.dusk} bottomColor={C.cream} flip />
       <MBHRSSupportSection />
+      <RoundLakeHistorySection />
       <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
       <NewsletterInline />
       <Footer scrollTo={subScrollTo} />
@@ -6223,71 +6224,41 @@ function LadiesClubHero() {
 }
 
 function LadiesClubMissionSection() {
+  const initiatives = [
+    { title: "Adopt a Family / Senior", desc: "Monthly grocery and toiletry stipends for nominated families and seniors in need." },
+    { title: "Teacher Fund", desc: "$600 annually to honor and support Addison teachers." },
+    { title: "Angel Tree", desc: "Holiday gifts for up to 50 children, organized with community support." },
+    { title: "Senior Scholarships", desc: "Three scholarships awarded to graduating seniors from the local area each year." },
+    { title: "Veteran's Lunch", desc: "Hosting lunches to honor and celebrate local veterans." },
+    { title: "Firecracker Run", desc: "Water stations and treats for runners — bomb pops and poppers along the route." },
+    { title: "Holiday Gift Baskets", desc: "Pantry items for holiday baskets in partnership with Kiwanis." },
+    { title: "Farmer's Craft & Market", desc: "Insurance support and coordination for local vendors at the Manitou Beach market." },
+  ];
+
   return (
     <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
-      <div style={{ maxWidth: 900, margin: "0 auto" }}>
+      <div style={{ maxWidth: 960, margin: "0 auto" }}>
         <FadeIn>
           <SectionLabel>About the Club</SectionLabel>
           <SectionTitle>Women of the Lakes</SectionTitle>
+          <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.85, maxWidth: 680, margin: "0 0 12px 0" }}>
+            The Land & Lake Ladies Club (LLLC) is a 501(c)(4) nonprofit civic group dedicated to family-friendly projects that strengthen our community. Women from around the lakes gather to care for their neighbors, celebrate this place they call home, and give back in ways large and small.
+          </p>
+          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 680, margin: "0 0 48px 0" }}>
+            From the Annual Summer Festival to quiet acts of service, the Ladies Club is the heart of what makes Manitou Beach more than a lake town.
+          </p>
         </FadeIn>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 40, marginTop: 40 }}>
-          <FadeIn delay={100} direction="left">
-            <div>
-              <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, margin: "0 0 18px 0" }}>
-                The Land & Lake Ladies Club has been woven into the fabric of Manitou Beach life for generations. Women from the lakes community gather around shared values — caring for their neighbors, celebrating this place they call home, and giving back in ways large and small.
-              </p>
-              <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, margin: 0 }}>
-                From the Annual Summer Festival to quiet acts of community service, the Ladies Club represents the heart of what makes Manitou Beach more than just a lake town — it's a place people choose, generation after generation.
-              </p>
-              <p style={{ fontSize: 13, color: C.textMuted, lineHeight: 1.7, margin: "24px 0 0 0", fontStyle: "italic" }}>
-                Detailed club history, membership information, and contact details coming soon. Content provided by club members.
-              </p>
-            </div>
-          </FadeIn>
-          <FadeIn delay={200} direction="right">
-            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-              {[
-                { label: "Focus", value: "Community" },
-                { label: "Signature Event", value: "Summer Festival" },
-                { label: "Founded", value: "Manitou Beach" },
-              ].map((s, i) => (
-                <div key={i} style={{ background: C.cream, borderRadius: 12, padding: "22px 24px", border: `1px solid ${C.sand}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sage, fontFamily: "'Libre Franklin', sans-serif" }}>{s.label}</div>
-                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.text }}>{s.value}</div>
-                </div>
-              ))}
-            </div>
-          </FadeIn>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function LadiesClubEventsSection() {
-  return (
-    <section id="ladies-events" style={{ background: C.dusk, padding: "80px 24px" }}>
-      <div style={{ maxWidth: 900, margin: "0 auto" }}>
-        <FadeIn>
-          <div style={{ textAlign: "center", marginBottom: 48 }}>
-            <SectionLabel light>What We Do</SectionLabel>
-            <SectionTitle center light>Events & Activities</SectionTitle>
+        <FadeIn delay={100}>
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sage, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 20 }}>
+            Key Initiatives
           </div>
         </FadeIn>
-        <div style={{ display: "grid", gap: 16 }}>
-          {LADIES_CLUB_EVENTS.map((evt, i) => (
-            <FadeIn key={i} delay={i * 80}>
-              <div style={{
-                display: "flex", gap: 18, alignItems: "flex-start",
-                background: "rgba(255,255,255,0.04)", borderRadius: 14, padding: "24px 22px",
-                border: "1px solid rgba(255,255,255,0.06)",
-              }}>
-                <div style={{ fontSize: 32, lineHeight: 1, flexShrink: 0 }}>{evt.icon}</div>
-                <div style={{ flex: 1 }}>
-                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.cream, margin: "0 0 4px 0" }}>{evt.title}</h3>
-                  <div style={{ fontSize: 12, color: C.sunsetLight, fontWeight: 600, letterSpacing: 0.5, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>{evt.date}</div>
-                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, margin: 0 }}>{evt.desc}</p>
-                </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 14 }}>
+          {initiatives.map((item, i) => (
+            <FadeIn key={i} delay={i * 40}>
+              <div style={{ background: C.cream, borderRadius: 12, padding: "20px 22px", border: `1px solid ${C.sand}` }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>{item.title}</div>
+                <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.65, margin: 0 }}>{item.desc}</p>
               </div>
             </FadeIn>
           ))}
@@ -6297,12 +6268,155 @@ function LadiesClubEventsSection() {
   );
 }
 
-function LadiesClubGallerySection() {
-  const galleryPhotos = [
-    { src: "/images/ladies-club/summer-festival.png", caption: "Summer Festival" },
-    { src: "/images/ladies-club/summer-fest-yeti.jpg", caption: "Summer Festival" },
-    { src: "/images/ladies-club/summerfest-yeti.jpg", caption: "Summer Festival with Holly & The Yeti" },
+function LadiesClubEventsSection() {
+  const features = [
+    { label: "Live Music", desc: "Continuous entertainment throughout the day" },
+    { label: "Fine Arts", desc: "A dozen or more outdoor artist booths" },
+    { label: "Children's Area", desc: "Bounce items, face painting, Lucky Ducky & more" },
+    { label: "Crafts & Vendors", desc: "Local makers, shops, and handmade goods" },
+    { label: "Food & Drinks", desc: "Shaved ice, acai bowls, craft beer, wine & more" },
+    { label: "Flower Sale", desc: "Fresh blooms from local growers" },
   ];
+
+  return (
+    <section id="ladies-events" style={{
+      background: C.night, padding: "100px 24px", position: "relative", overflow: "hidden",
+    }}>
+      {/* Subtle background texture */}
+      <div style={{ position: "absolute", inset: 0, backgroundImage: "url(/images/community-bg.jpg)", backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed", opacity: 0.12 }} />
+      <div style={{ maxWidth: 1000, margin: "0 auto", position: "relative", zIndex: 1 }}>
+
+        {/* Header */}
+        <FadeIn>
+          <div style={{ textAlign: "center", marginBottom: 56 }}>
+            <SectionLabel light>Signature Event</SectionLabel>
+            <SectionTitle center light>Summer Festival 2026</SectionTitle>
+            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, maxWidth: 520, margin: "0 auto" }}>
+              The Land & Lake Ladies Club presents a lively day of food, music, crafts, art, and community — right in the heart of Manitou Beach Village.
+            </p>
+          </div>
+        </FadeIn>
+
+        {/* Festival card */}
+        <FadeIn delay={100}>
+          <div style={{
+            background: "rgba(255,255,255,0.04)",
+            border: "1px solid rgba(255,255,255,0.09)",
+            borderRadius: 20, overflow: "hidden", marginBottom: 32,
+          }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 0 }} className="mobile-col-1">
+
+              {/* Image / logo side */}
+              <div style={{ position: "relative", minHeight: 340, background: "rgba(255,255,255,0.03)", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 32px" }}>
+                <img
+                  src="/images/ladies-club/summerfest-yeti.jpg"
+                  alt="Summer Festival"
+                  style={{ width: "100%", maxHeight: 320, objectFit: "cover", borderRadius: 12, opacity: 0.9 }}
+                  onError={(e) => { e.target.style.display = "none"; }}
+                />
+              </div>
+
+              {/* Info side */}
+              <div style={{ padding: "44px 40px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                <img src="/images/landlake-club-logo.png" alt="LLLC Logo" style={{ width: 60, height: 60, borderRadius: "50%", objectFit: "cover", marginBottom: 20, border: "2px solid rgba(255,255,255,0.15)" }} />
+
+                {/* Date badge */}
+                <div style={{
+                  display: "inline-flex", alignItems: "center", gap: 8,
+                  background: `${C.sunset}22`, border: `1px solid ${C.sunset}50`,
+                  borderRadius: 6, padding: "6px 14px", marginBottom: 20, width: "fit-content",
+                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700,
+                  letterSpacing: 2.5, textTransform: "uppercase", color: C.sunsetLight,
+                }}>
+                  June 20th, 2026
+                </div>
+
+                <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 3vw, 34px)", fontWeight: 400, color: C.cream, margin: "0 0 8px 0", lineHeight: 1.15 }}>
+                  Devils Lake<br />Summer Festival
+                </h3>
+                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: C.sunsetLight, marginBottom: 24 }}>
+                  Saturday · 9:00 AM – 2:00 PM
+                </div>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 28 }}>
+                  {[
+                    { icon: "📍", text: "Manitou Beach Village" },
+                    { icon: "📧", text: "michele.henson0003@gmail.com" },
+                  ].map((item, i) => (
+                    <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      <span style={{ fontSize: 14 }}>{item.icon}</span>
+                      <span style={{ fontSize: 13, color: "rgba(255,255,255,0.55)", fontFamily: "'Libre Franklin', sans-serif" }}>{item.text}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <a href="mailto:michele.henson0003@gmail.com" style={{
+                  display: "inline-flex", alignItems: "center", gap: 8,
+                  padding: "12px 24px", borderRadius: 8, width: "fit-content",
+                  background: C.sunset, color: C.cream, textDecoration: "none",
+                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5,
+                }}>
+                  Get in Touch →
+                </a>
+              </div>
+            </div>
+          </div>
+        </FadeIn>
+
+        {/* What to expect grid */}
+        <FadeIn delay={150}>
+          <div style={{ marginBottom: 16, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.3)" }}>
+            What to Expect
+          </div>
+        </FadeIn>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 12, marginBottom: 48 }}>
+          {features.map((f, i) => (
+            <FadeIn key={i} delay={160 + i * 40}>
+              <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 12, padding: "18px 20px" }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: C.cream, marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>{f.label}</div>
+                <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", lineHeight: 1.6, margin: 0 }}>{f.desc}</p>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+
+        {/* Sponsorship tiers */}
+        <FadeIn delay={200}>
+          <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 16, padding: "32px 36px" }}>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.3)", marginBottom: 20 }}>
+              Sponsorship Opportunities
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+              {[
+                { level: "Platinum", amount: "$500" },
+                { level: "Gold", amount: "$250" },
+                { level: "Silver", amount: "$100" },
+                { level: "Bronze", amount: "$50" },
+                { level: "Friend", amount: "$25" },
+              ].map((tier, i) => (
+                <div key={i} style={{
+                  background: i === 0 ? `${C.sunset}18` : "rgba(255,255,255,0.04)",
+                  border: i === 0 ? `1px solid ${C.sunset}40` : "1px solid rgba(255,255,255,0.06)",
+                  borderRadius: 8, padding: "10px 18px", display: "flex", alignItems: "center", gap: 8,
+                }}>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: i === 0 ? C.sunsetLight : C.cream, fontFamily: "'Libre Franklin', sans-serif" }}>{tier.level}</span>
+                  <span style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif" }}>{tier.amount}</span>
+                </div>
+              ))}
+            </div>
+            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", margin: "16px 0 0 0", lineHeight: 1.6 }}>
+              Checks payable to: Land and Lake Ladies Club · Sponsorship deadline: March 20th, 2026
+            </p>
+          </div>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+function LadiesClubGallerySection() {
+  // Photos coming soon — placeholders until new images are provided
+  const placeholders = [1, 2, 3];
 
   return (
     <section style={{ background: C.cream, padding: "80px 24px" }}>
@@ -6314,19 +6428,15 @@ function LadiesClubGallerySection() {
           </div>
         </FadeIn>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 12 }}>
-          {galleryPhotos.map((photo, i) => (
+          {placeholders.map((_, i) => (
             <FadeIn key={i} delay={i * 80} direction="scale">
-              <div style={{ borderRadius: 12, overflow: "hidden", position: "relative", aspectRatio: "4/3" }}>
-                <img src={photo.src} alt={photo.caption} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                {photo.caption && (
-                  <div style={{
-                    position: "absolute", bottom: 0, left: 0, right: 0,
-                    padding: "10px 14px", background: "linear-gradient(transparent, rgba(10,18,24,0.8))",
-                    fontSize: 12, color: C.cream, fontFamily: "'Libre Franklin', sans-serif",
-                  }}>
-                    {photo.caption}
+              <div style={{ borderRadius: 12, overflow: "hidden", position: "relative", paddingTop: "75%", background: C.warmWhite, border: `1px solid ${C.sand}` }}>
+                <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8 }}>
+                  <div style={{ width: 40, height: 40, borderRadius: "50%", background: C.sand, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.textMuted} strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
                   </div>
-                )}
+                  <span style={{ fontSize: 11, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>Photo coming soon</span>
+                </div>
               </div>
             </FadeIn>
           ))}
