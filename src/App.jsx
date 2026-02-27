@@ -1936,18 +1936,31 @@ function ExploreSection() {
 function BusinessDirectory() {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
+  const [notionFree, setNotionFree] = useState([]);
+  const [notionFeatured, setNotionFeatured] = useState([]);
 
-  const categories = ["All", ...Array.from(new Set(BUSINESSES.map(b => b.category)))];
+  useEffect(() => {
+    fetch("/api/businesses")
+      .then(r => r.json())
+      .then(data => {
+        setNotionFree(data.free || []);
+        setNotionFeatured(data.featured || []);
+      })
+      .catch(() => {});
+  }, []);
+
+  const allBusinesses = [...BUSINESSES, ...notionFree, ...notionFeatured];
+  const categories = ["All", ...Array.from(new Set(allBusinesses.map(b => b.category)))];
 
   const matchesSearch = (b) => {
     const q = search.toLowerCase();
     return !search ||
       b.name.toLowerCase().includes(q) ||
-      b.description.toLowerCase().includes(q) ||
+      (b.description || "").toLowerCase().includes(q) ||
       b.category.toLowerCase().includes(q);
   };
 
-  const filtered = BUSINESSES.filter(b => {
+  const filtered = allBusinesses.filter(b => {
     const matchesCat = activeCategory === "All" || b.category === activeCategory;
     return matchesCat && matchesSearch(b);
   });
@@ -2212,14 +2225,21 @@ function BusinessRow({ business }) {
       {/* Category dot */}
       <div style={{ width: 8, height: 8, borderRadius: "50%", background: color, flexShrink: 0 }} />
 
-      {/* Name + phone */}
-      <div style={{ display: "flex", alignItems: "baseline", gap: 16, minWidth: 0, flexWrap: "wrap" }}>
-        <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: C.text, fontWeight: 400 }}>
-          {business.name}
-        </span>
-        {business.phone && (
-          <span style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", whiteSpace: "nowrap" }}>
-            {business.phone}
+      {/* Name + phone + address */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
+        <div style={{ display: "flex", alignItems: "baseline", gap: 16, flexWrap: "wrap" }}>
+          <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: C.text, fontWeight: 400 }}>
+            {business.name}
+          </span>
+          {business.phone && (
+            <span style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", whiteSpace: "nowrap" }}>
+              {business.phone}
+            </span>
+          )}
+        </div>
+        {business.address && (
+          <span style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", opacity: 0.7 }}>
+            {business.address}
           </span>
         )}
       </div>
@@ -2519,7 +2539,7 @@ function SubmitSection() {
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [form, setForm] = useState({ name: "", category: "", phone: "", website: "", email: "", description: "", upgrade: false, date: "", time: "", location: "", eventUrl: "" });
+  const [form, setForm] = useState({ name: "", category: "", phone: "", address: "", website: "", email: "", description: "", upgrade: false, date: "", time: "", location: "", eventUrl: "" });
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -2653,6 +2673,7 @@ function SubmitSection() {
                   {input("name", "Business Name")}
                   {input("category", "Category (e.g. Food & Drink, Boating, Real Estate)")}
                   {input("phone", "Phone Number", "tel")}
+                  {input("address", "Address (optional)")}
                   {input("website", "Website (e.g. yetigroove.com)")}
                   {input("email", "Your Email", "email")}
                   <textarea

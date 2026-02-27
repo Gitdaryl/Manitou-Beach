@@ -3,7 +3,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { name, category, phone, website, email, description, upgrade } = req.body;
+  const { name, category, phone, website, email, description, upgrade, address } = req.body;
 
   if (!name || !email) {
     return res.status(400).json({ error: 'Business name and email are required' });
@@ -36,6 +36,7 @@ export default async function handler(req, res) {
           'URL': { url: normalizedUrl },
           'Email': { email: email },
           'Description': { rich_text: [{ text: { content: description || '' } }] },
+          'Address': { rich_text: [{ text: { content: address || '' } }] },
           'Interested in Featured': { checkbox: upgrade === true || upgrade === 'true' },
         },
       }),
