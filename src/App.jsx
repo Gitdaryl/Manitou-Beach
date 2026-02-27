@@ -2671,7 +2671,30 @@ function SubmitSection() {
               {tab === "business" ? (
                 <>
                   {input("name", "Business Name")}
-                  {input("category", "Category (e.g. Food & Drink, Boating, Real Estate)")}
+                  <select
+                    value={form.category}
+                    onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
+                    style={{
+                      width: "100%", padding: "12px 16px", borderRadius: 6,
+                      border: `1.5px solid ${C.sand}`, fontFamily: "'Libre Franklin', sans-serif",
+                      fontSize: 14, color: form.category ? C.text : C.textMuted,
+                      background: C.cream, boxSizing: "border-box", outline: "none",
+                      appearance: "none", cursor: "pointer", transition: "border-color 0.2s",
+                    }}
+                    onFocus={e => e.target.style.borderColor = C.sage}
+                    onBlur={e => e.target.style.borderColor = C.sand}
+                  >
+                    <option value="" disabled>Category</option>
+                    <option>Real Estate</option>
+                    <option>Food & Drink</option>
+                    <option>Boating & Water</option>
+                    <option>Breweries & Wineries</option>
+                    <option>Shopping & Gifts</option>
+                    <option>Vacation Rental</option>
+                    <option>Stays & Lodging</option>
+                    <option>Film & Video</option>
+                    <option>Home Services</option>
+                  </select>
                   {input("phone", "Phone Number", "tel")}
                   {input("address", "Address (optional)")}
                   {input("website", "Website (e.g. yetigroove.com)")}
