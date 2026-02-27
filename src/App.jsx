@@ -1939,19 +1939,24 @@ function BusinessDirectory() {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
   const [notionFree, setNotionFree] = useState([]);
+  const [notionEnhanced, setNotionEnhanced] = useState([]);
   const [notionFeatured, setNotionFeatured] = useState([]);
+  const [notionPremium, setNotionPremium] = useState([]);
 
   useEffect(() => {
     fetch("/api/businesses")
       .then(r => r.json())
       .then(data => {
         setNotionFree(data.free || []);
+        setNotionEnhanced(data.enhanced || []);
         setNotionFeatured(data.featured || []);
+        setNotionPremium(data.premium || []);
       })
       .catch(() => {});
   }, []);
 
-  const allBusinesses = [...BUSINESSES, ...notionFree, ...notionFeatured];
+  // Premium + Featured go into the card carousel; Enhanced + Free go into the row list
+  const allBusinesses = [...BUSINESSES, ...notionFree, ...notionEnhanced, ...notionFeatured, ...notionPremium];
   const categories = ["All", ...Array.from(new Set(allBusinesses.map(b => b.category)))];
 
   const matchesSearch = (b) => {
@@ -1967,8 +1972,10 @@ function BusinessDirectory() {
     return matchesCat && matchesSearch(b);
   });
 
-  const featured = filtered.filter(b => b.featured);
-  const regular = filtered.filter(b => !b.featured);
+  // Cards: hardcoded featured + Notion Featured + Notion Premium
+  const featured = filtered.filter(b => b.featured || b.tier === 'featured' || b.tier === 'premium');
+  // Rows: everything else (Free + Enhanced — Enhanced will get accordion once built)
+  const regular = filtered.filter(b => !b.featured && b.tier !== 'featured' && b.tier !== 'premium');
 
   // Group regular listings by category
   const grouped = {};

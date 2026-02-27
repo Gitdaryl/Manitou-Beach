@@ -15,8 +15,9 @@ export default async function handler(req, res) {
           filter: {
             or: [
               { property: 'Status', status: { equals: 'Listed Free' } },
+              { property: 'Status', status: { equals: 'Listed Enhanced' } },
               { property: 'Status', status: { equals: 'Listed Featured' } },
-              { property: 'Status', status: { equals: 'Paid' } },
+              { property: 'Status', status: { equals: 'Listed Premium' } },
             ],
           },
           sorts: [{ property: 'Name', direction: 'ascending' }],
@@ -26,12 +27,14 @@ export default async function handler(req, res) {
 
     if (!response.ok) {
       console.error('Notion query failed:', await response.text());
-      return res.status(200).json({ free: [], featured: [] });
+      return res.status(200).json({ free: [], enhanced: [], featured: [], premium: [] });
     }
 
     const data = await response.json();
     const free = [];
+    const enhanced = [];
     const featured = [];
+    const premium = [];
 
     data.results.forEach(page => {
       const p = page.properties;
@@ -50,16 +53,20 @@ export default async function handler(req, res) {
 
       if (!business.name) return;
 
-      if (status === 'Listed Featured' || status === 'Paid') {
-        featured.push({ ...business, featured: true });
+      if (status === 'Listed Premium') {
+        premium.push({ ...business, tier: 'premium' });
+      } else if (status === 'Listed Featured') {
+        featured.push({ ...business, tier: 'featured' });
+      } else if (status === 'Listed Enhanced') {
+        enhanced.push({ ...business, tier: 'enhanced' });
       } else {
-        free.push({ ...business, featured: false });
+        free.push({ ...business, tier: 'free' });
       }
     });
 
-    return res.status(200).json({ free, featured });
+    return res.status(200).json({ free, enhanced, featured, premium });
   } catch (err) {
     console.error('Businesses API error:', err.message);
-    return res.status(200).json({ free: [], featured: [] });
+    return res.status(200).json({ free: [], enhanced: [], featured: [], premium: [] });
   }
 }
