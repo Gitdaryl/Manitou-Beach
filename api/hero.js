@@ -55,7 +55,9 @@ export default async function handler(req, res) {
           date: p['Event date']?.date?.start || '',
           tagline: p['Tagline']?.rich_text?.[0]?.text?.content || '',
           heroImageUrl: p['Hero Image URL']?.url || null,  // High-res background image
-          imageUrl: p['Image URL']?.url || null,           // Small event image — shown as card
+          imageUrl: p['Image URL']?.url || null,           // Small event image — shown inline below date
+          eventUrl: p['Event URL']?.url || null,
+          ctaLabel: p['CTA Label']?.select?.name || null,  // e.g. "Get Tickets", "Learn More"
           time: p['Time']?.rich_text?.[0]?.text?.content || '',
           location: p['Location']?.rich_text?.[0]?.text?.content || '',
           cost: p['Cost']?.rich_text?.[0]?.text?.content || null,

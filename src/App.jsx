@@ -797,42 +797,15 @@ function Hero({ scrollTo }) {
       >
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(170deg, rgba(26,40,48,0.75) 0%, rgba(26,40,48,0.5) 50%, rgba(26,40,48,0.85) 100%)", zIndex: 1 }} />
 
-        {/* Top-right: event photo card (if imageUrl) or Coming Up badge */}
+        {/* Coming Up badge — top right */}
         <div style={{ position: "absolute", top: 100, right: 48, zIndex: 2 }}>
-          {heroEvent.imageUrl ? (
-            <div style={{
-              width: 180,
-              background: "rgba(255,255,255,0.07)",
-              border: "1px solid rgba(255,255,255,0.15)",
-              borderRadius: 12,
-              overflow: "hidden",
-              backdropFilter: "blur(4px)",
-              transform: "rotate(1.5deg)",
-              boxShadow: "0 8px 32px rgba(0,0,0,0.45)",
-            }}>
-              <img
-                src={heroEvent.imageUrl}
-                alt={heroEvent.name}
-                style={{ width: "100%", height: 140, objectFit: "cover", display: "block" }}
-              />
-              <div style={{
-                padding: "8px 12px",
-                fontFamily: "'Libre Franklin', sans-serif",
-                fontSize: 10, fontWeight: 700, letterSpacing: 2,
-                textTransform: "uppercase", color: C.sunsetLight,
-              }}>
-                Coming Up
-              </div>
-            </div>
-          ) : (
-            <div style={{
-              display: "inline-block", background: `${C.sunset}22`, border: `1px solid ${C.sunset}50`,
-              borderRadius: 4, padding: "6px 16px", fontFamily: "'Libre Franklin', sans-serif",
-              fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunsetLight,
-            }}>
-              Coming Up
-            </div>
-          )}
+          <div style={{
+            display: "inline-block", background: `${C.sunset}22`, border: `1px solid ${C.sunset}50`,
+            borderRadius: 4, padding: "6px 16px", fontFamily: "'Libre Franklin', sans-serif",
+            fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunsetLight,
+          }}>
+            Coming Up
+          </div>
         </div>
 
         <div style={{ position: "relative", zIndex: 2, maxWidth: 960, margin: "0 auto", padding: "120px 48px 100px" }}>
@@ -843,16 +816,55 @@ function Hero({ scrollTo }) {
             <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(36px, 6vw, 72px)", fontWeight: 400, color: C.cream, lineHeight: 1.1, margin: "0 0 12px 0", maxWidth: 700 }}>
               {heroEvent.name}
             </h1>
-            <div style={{ fontFamily: "'Caveat', cursive", fontSize: "clamp(18px, 2.5vw, 26px)", color: C.sunsetLight, margin: "0 0 24px 0" }}>
+            <div style={{ fontFamily: "'Caveat', cursive", fontSize: "clamp(18px, 2.5vw, 26px)", color: C.sunsetLight, margin: "0 0 20px 0" }}>
               {new Date(heroEvent.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
               {heroEvent.time && ` · ${heroEvent.time}`}
             </div>
+
+            {/* Event image — wide, contained, below the date */}
+            {heroEvent.imageUrl && (
+              <div style={{ margin: "0 0 24px 0", maxWidth: 780, width: "100%" }}>
+                <img
+                  src={heroEvent.imageUrl}
+                  alt={heroEvent.name}
+                  style={{
+                    width: "100%", maxHeight: 340, objectFit: "cover",
+                    borderRadius: 12, display: "block",
+                    boxShadow: "0 12px 40px rgba(0,0,0,0.55)",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                  }}
+                />
+              </div>
+            )}
+
             {heroEvent.tagline && (
-              <p style={{ fontSize: 17, color: "rgba(255,255,255,0.65)", lineHeight: 1.75, maxWidth: 560, margin: "0 0 40px 0" }}>
+              <p style={{ fontSize: 17, color: "rgba(255,255,255,0.65)", lineHeight: 1.75, maxWidth: 560, margin: "0 0 24px 0" }}>
                 {heroEvent.tagline}
               </p>
             )}
-            <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+
+            {/* CTA button — event-specific (Get Tickets / Learn More etc.) */}
+            {heroEvent.eventUrl && (
+              <div style={{ marginBottom: 16 }}>
+                <a
+                  href={heroEvent.eventUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: "inline-block", padding: "13px 32px",
+                    background: "#4A9B6F", color: "#fff", borderRadius: 6,
+                    fontFamily: "'Libre Franklin', sans-serif", fontSize: 14,
+                    fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase",
+                    textDecoration: "none", transition: "all 0.25s ease",
+                  }}
+                >
+                  {heroEvent.ctaLabel || "Get Tickets"}
+                </a>
+              </div>
+            )}
+
+            {/* Site nav buttons — below, visually separated from event CTA */}
+            <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginTop: heroEvent.eventUrl ? 4 : 0 }}>
               <Btn href="/happening" variant="sunset">See All Events</Btn>
               <Btn onClick={() => scrollTo("businesses")} variant="outlineLight">Explore the Community</Btn>
             </div>
