@@ -217,7 +217,7 @@ const BUSINESSES = [
     id: 3,
     name: "Two Lakes Tavern",
     category: "Food & Drink",
-    description: "Family-owned lakeside restaurant known for their smoked entrees and a big menu full of options. Right on the shores of Devils Lake.",
+    description: "Family-owned lakeside restaurant known for smoked entrees and a full menu of options. Right on the shores of Devils Lake, steps from the water.",
     address: "110 Walnut St, Manitou Beach",
     village: true,
     featured: true,
@@ -347,7 +347,7 @@ const BUSINESSES = [
     id: 16,
     name: "Ang & Co",
     category: "Shopping & Gifts",
-    description: "Dirty sodas, satellite wine tasting (Chateau Fontaine, Leelanau Peninsula), custom sweatshirt and t-shirt printing, and curated gifts. A little bit of everything on Lakeview Blvd.",
+    description: "Dirty sodas, satellite wine tasting, custom sweatshirt and t-shirt printing, and curated gifts. A little bit of everything on Lakeview Blvd.",
     address: "141 N. Lakeview Blvd., Manitou Beach",
     village: true,
     featured: false,
@@ -359,7 +359,7 @@ const BUSINESSES = [
     id: 17,
     name: "Faust House Scrap n Craft",
     category: "Shopping & Gifts",
-    description: "Scrapbooking supplies, craft workshops, and satellite wine tasting (Cherry Creek Cellars). A creative hub in the heart of Manitou Beach village.",
+    description: "Scrapbooking supplies, craft workshops, and satellite wine tasting. A creative hub for makers in the heart of Manitou Beach village.",
     address: "140 N Lakeview Blvd., Manitou Beach",
     village: true,
     featured: false,
@@ -371,7 +371,7 @@ const BUSINESSES = [
     id: 18,
     name: "Devils Lake View Living",
     category: "Shopping & Gifts",
-    description: "High-end fashion, curated home goods, and the iconic lighthouse replica out front. The anchor of Manitou Beach village — and a satellite wine tasting venue launching May 2026.",
+    description: "High-end fashion, curated home goods, and the iconic lighthouse replica out front. Manitou Beach's village anchor and a satellite wine tasting venue.",
     address: "200 Devils Lake Hwy, Manitou Beach",
     village: true,
     featured: false,
@@ -395,7 +395,7 @@ const BUSINESSES = [
     id: 20,
     name: "Michigan Gypsy",
     category: "Shopping & Gifts",
-    description: "A gift boutique with personality — unique finds, local goods, and the kind of shop you stumble into and don't want to leave.",
+    description: "A gift boutique with personality — unique finds, local goods, and the kind of shop you stumble into and don't want to leave. Right in the village.",
     address: "136 North Lakeview Blvd., Manitou Beach",
     village: true,
     featured: false,
@@ -419,7 +419,7 @@ const BUSINESSES = [
     id: 22,
     name: "Trends Salon & Spa",
     category: "Health & Beauty",
-    description: "Full-service salon and spa in the heart of Manitou Beach village. Hair, color, and spa services.",
+    description: "Full-service salon and spa in the heart of Manitou Beach village. Hair, color, nails, and spa treatments for locals and lake visitors alike.",
     address: "126 N Lakeview Blvd, Manitou Beach",
     village: true,
     featured: false,
@@ -431,7 +431,7 @@ const BUSINESSES = [
     id: 23,
     name: "Phoenix Rising Wellness",
     category: "Health & Beauty",
-    description: "Wellness treatments and holistic services in the Irish Hills. Restore your balance.",
+    description: "Holistic wellness treatments and restorative services in the Irish Hills. Massage, energy work, and natural healing near the shores of Devils Lake.",
     address: "131 Devils Lake Hwy, Manitou Beach",
     village: true,
     featured: false,
@@ -442,8 +442,8 @@ const BUSINESSES = [
   {
     id: 24,
     name: "Trillium House",
-    category: "Shopping & Gifts",
-    description: "Curated gifts, home goods, and boutique finds in the village.",
+    category: "Vacation Rental",
+    description: "A spacious 5-bedroom retreat that sleeps 9. Central air, two full bathrooms, in-unit washer and dryer, and a generous lot on Devils Lake Hwy.",
     address: "350 Devils Lake Hwy, Manitou Beach",
     village: true,
     featured: false,
@@ -455,7 +455,7 @@ const BUSINESSES = [
     id: 25,
     name: "Foundation Realty",
     category: "Real Estate",
-    description: "Serving the Manitou Beach community with lakefront and residential real estate. Holly Griewahn — 30+ years of local expertise.",
+    description: "Serving the Manitou Beach community with lakefront and residential real estate. Holly Griewahn — 30+ years of local expertise in the Irish Hills.",
     address: "100 Walnut St, Manitou Beach",
     village: true,
     featured: false,
@@ -467,7 +467,7 @@ const BUSINESSES = [
     id: 26,
     name: "Diamond in the Ruff",
     category: "Pet Services",
-    description: "Pet grooming and care in the Manitou Beach area.",
+    description: "Professional pet grooming and care in the Manitou Beach area. Keeping your furry family members looking and feeling their best all season.",
     address: "251 Devils Lake Hwy, Manitou Beach",
     village: true,
     featured: false,
@@ -479,7 +479,7 @@ const BUSINESSES = [
     id: 27,
     name: "South Shore Marine",
     category: "Boating & Water",
-    description: "Marine sales, service, and repair on Devils Lake. Everything to keep your boat running all season.",
+    description: "Marine sales, service, and repair on Devils Lake. Pontoon boats, outboards, and everything to keep your boat running all season long.",
     address: "209 Devils Lake Hwy, Manitou Beach",
     village: true,
     featured: false,
@@ -496,6 +496,7 @@ const CAT_COLORS = {
   "Boating & Water":    C.sage,
   "Breweries & Wineries": "#8B5E3C",
   "Shopping & Gifts":   "#B07D62",
+  "Vacation Rental":    C.lakeBlue,
   "Stays & Lodging":    C.lakeBlue,
   "Film & Video":       C.driftwood,
   "Home Services":      C.sageDark,
@@ -1161,9 +1162,7 @@ function NewsletterInline() {
 // ============================================================
 function EventTimeline() {
   const [notionEvents, setNotionEvents] = useState([]);
-  const [activeEvent, setActiveEvent] = useState(null);
   const [lightboxEvent, setLightboxEvent] = useState(null);
-  const scrollRef = useRef(null);
 
   useEffect(() => {
     fetch("/api/events")
@@ -1172,247 +1171,111 @@ function EventTimeline() {
       .catch(() => {});
   }, []);
 
-  // Merge hardcoded EVENTS (that have real dates) + Notion events
+  // Next 3 months window
+  const now = new Date();
+  const cutoff = new Date(now.getFullYear(), now.getMonth() + 3, now.getDate());
+
   const allEvents = [
-    ...EVENTS.filter(e => !e.date.toLowerCase().startsWith("every") && e.date !== "TBA 2026").map(e => ({
-      id: `local-${e.id}`, name: e.name, date: e.date.includes("September") ? "2026-09-15" : e.date,
-      category: e.category, description: e.description, time: e.time, location: "", imageUrl: null,
-    })),
-    ...notionEvents,
+    ...EVENTS
+      .filter(e => !e.date.toLowerCase().startsWith("every") && e.date !== "TBA 2026")
+      .filter(e => { const d = new Date(e.date + "T00:00:00"); return d >= now && d <= cutoff; })
+      .map(e => ({ id: `local-${e.id}`, name: e.name, date: e.date, category: e.category, description: e.description, time: e.time, location: e.location || "" })),
+    ...notionEvents
+      .filter(e => { const d = new Date(e.date + "T00:00:00"); return d >= now && d <= cutoff; }),
   ].sort((a, b) => new Date(a.date) - new Date(b.date));
 
-  // Build 12-month range
-  const now = new Date();
-  const months = [];
-  for (let i = 0; i < 12; i++) {
-    const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
-    months.push({ label: d.toLocaleDateString("en-US", { month: "short" }), year: d.getFullYear(), month: d.getMonth(), date: d });
-  }
-  const startDate = months[0].date;
-  const endDate = new Date(months[11].date.getFullYear(), months[11].date.getMonth() + 1, 0);
-  const totalDays = (endDate - startDate) / (1000 * 60 * 60 * 24);
+  const catColor = (cat) => ({ "Live Music": C.sunset, "Food & Social": "#8B5E3C", "Sports & Outdoors": C.sage, "Community": C.lakeBlue }[cat] || C.sage);
 
-  const getPosition = (dateStr) => {
-    const d = new Date(dateStr + "T00:00:00");
-    const dayOffset = (d - startDate) / (1000 * 60 * 60 * 24);
-    return Math.max(0, Math.min(100, (dayOffset / totalDays) * 100));
-  };
+  // Group events by month for section headers
+  const grouped = allEvents.reduce((acc, event) => {
+    const d = new Date(event.date + "T00:00:00");
+    const key = d.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(event);
+    return acc;
+  }, {});
 
-  const categoryColors = { "Live Music": C.sunset, "Food & Social": "#8B5E3C", "Sports & Outdoors": C.sage, Community: C.lakeBlue };
-
-  // Desktop: horizontal | Mobile: vertical
   return (
-    <section style={{ background: C.night, padding: "80px 24px", overflow: "hidden" }}>
-      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-        <FadeIn direction="left">
-          <SectionLabel light>12-Month View</SectionLabel>
-          <SectionTitle light>Event Timeline</SectionTitle>
-          <p style={{ fontSize: 14, color: "rgba(255,255,255,0.4)", marginBottom: 16, maxWidth: 480, lineHeight: 1.7 }}>
-            Plan ahead. Hover to preview, click for full details.
+    <section style={{ background: C.night, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 720, margin: "0 auto" }}>
+        <FadeIn>
+          <SectionLabel light>Coming Up</SectionLabel>
+          <SectionTitle light>Next 3 Months</SectionTitle>
+          <p style={{ fontSize: 14, color: "rgba(255,255,255,0.35)", lineHeight: 1.7, maxWidth: 480, marginBottom: 48 }}>
+            What's on around the lakes — updated as events are confirmed.
           </p>
-          {notionEvents.length === 0 && (
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 8, padding: "8px 14px", marginBottom: 32 }}>
-              <span style={{ width: 7, height: 7, borderRadius: "50%", background: C.sage, display: "inline-block", flexShrink: 0 }} />
-              <span style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", color: "rgba(255,255,255,0.3)", letterSpacing: 0.5 }}>
-                Notion events channel live — add events directly to your Notion DB to appear here
-              </span>
-            </div>
-          )}
         </FadeIn>
 
-        {/* === DESKTOP HORIZONTAL TIMELINE === */}
-        <div className="timeline-desktop" style={{ position: "relative" }}>
-          {/* Month labels */}
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 20, paddingRight: 20 }}>
-            {months.map((m, i) => (
-              <FadeIn key={i} delay={i * 30} direction="none">
-                <div style={{ textAlign: "center", minWidth: 0 }}>
-                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: m.month === now.getMonth() && m.year === now.getFullYear() ? C.sunsetLight : "rgba(255,255,255,0.25)" }}>
-                    {m.label}
-                  </div>
-                  {(i === 0 || m.month === 0) && (
-                    <div style={{ fontSize: 9, color: "rgba(255,255,255,0.15)", fontFamily: "'Libre Franklin', sans-serif", marginTop: 2 }}>{m.year}</div>
-                  )}
+        {allEvents.length === 0 ? (
+          <FadeIn delay={100}>
+            <div style={{ padding: "48px 32px", background: "rgba(255,255,255,0.03)", borderRadius: 16, border: "1px solid rgba(255,255,255,0.06)", textAlign: "center" }}>
+              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.25)", fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.7 }}>
+                No events confirmed for the next 3 months yet.<br />Check back soon — the lake never stays quiet for long.
+              </div>
+            </div>
+          </FadeIn>
+        ) : (
+          Object.entries(grouped).map(([monthLabel, events], gi) => (
+            <div key={gi} style={{ marginBottom: 48 }}>
+              <FadeIn delay={gi * 60}>
+                <div style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: 24 }}>
+                  {monthLabel}
                 </div>
               </FadeIn>
-            ))}
-          </div>
+              <div style={{ position: "relative", paddingLeft: 36 }}>
+                {/* Vertical line */}
+                <div style={{ position: "absolute", left: 7, top: 8, bottom: 8, width: 2, background: "rgba(255,255,255,0.07)", borderRadius: 1 }} />
 
-          {/* Timeline track */}
-          <div
-            ref={scrollRef}
-            style={{ position: "relative", height: 160, background: "rgba(255,255,255,0.03)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.06)", overflow: "visible" }}
-          >
-            {/* Track line — pulsating energy */}
-            <div className="timeline-pulse" style={{ position: "absolute", top: 30, left: 20, right: 20, height: 3, background: "rgba(255,255,255,0.08)", borderRadius: 2 }}>
-              {/* "Now" marker — breathing */}
-              <div className="timeline-dot-breathe" style={{ position: "absolute", left: 0, top: -5, width: 12, height: 12, borderRadius: "50%", background: C.sunset, color: C.sunset }}>
-                <div style={{ position: "absolute", top: -18, left: "50%", transform: "translateX(-50%)", fontSize: 8, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunsetLight, whiteSpace: "nowrap" }}>NOW</div>
+                {events.map((event, i) => {
+                  const d = new Date(event.date + "T00:00:00");
+                  const day = d.getDate();
+                  const weekday = d.toLocaleDateString("en-US", { weekday: "short" });
+                  const color = catColor(event.category);
+                  return (
+                    <FadeIn key={event.id || i} delay={gi * 60 + i * 50}>
+                      <div
+                        onClick={() => setLightboxEvent(event)}
+                        style={{ display: "flex", gap: 20, marginBottom: 24, position: "relative", cursor: "pointer" }}
+                      >
+                        {/* Dot */}
+                        <div style={{
+                          position: "absolute", left: -30, top: 5,
+                          width: 10, height: 10, borderRadius: "50%",
+                          background: color, border: `2px solid ${C.night}`,
+                          boxShadow: `0 0 0 2px ${color}40`, flexShrink: 0,
+                        }} />
+
+                        {/* Date block */}
+                        <div style={{ minWidth: 40, textAlign: "center", flexShrink: 0 }}>
+                          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, color: "rgba(255,255,255,0.3)", textTransform: "uppercase", letterSpacing: 1 }}>{weekday}</div>
+                          <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, color: color, lineHeight: 1 }}>{day}</div>
+                        </div>
+
+                        {/* Event info */}
+                        <div style={{
+                          flex: 1, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)",
+                          borderRadius: 10, padding: "14px 18px", transition: "background 0.2s",
+                        }}
+                          onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.06)"}
+                          onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.03)"}
+                        >
+                          <div style={{ fontSize: 10, color, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 4 }}>{event.category}</div>
+                          <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.cream, lineHeight: 1.3, marginBottom: 4 }}>{event.name}</div>
+                          <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif" }}>
+                            {event.time}{event.location ? ` · ${event.location}` : ""}
+                          </div>
+                        </div>
+                      </div>
+                    </FadeIn>
+                  );
+                })}
               </div>
             </div>
-
-            {/* Month dividers */}
-            {months.slice(1).map((m, i) => {
-              const pos = getPosition(`${m.year}-${String(m.month + 1).padStart(2, "0")}-01`);
-              return (
-                <div key={i} style={{ position: "absolute", left: `calc(20px + ${pos}% * (100% - 40px) / 100)`, top: 20, bottom: 20, width: 1, background: "rgba(255,255,255,0.04)" }} />
-              );
-            })}
-
-            {/* Event dots */}
-            {allEvents.map((event) => {
-              const pos = getPosition(event.date);
-              const color = categoryColors[event.category] || C.sage;
-              const isActive = activeEvent?.id === event.id;
-              return (
-                <div
-                  key={event.id}
-                  style={{ position: "absolute", left: `calc(20px + ${pos}% * (100% - 40px) / 100)`, top: 24, transform: "translateX(-50%)", zIndex: isActive ? 10 : 1, cursor: "pointer" }}
-                  onMouseEnter={() => setActiveEvent(event)}
-                  onMouseLeave={() => setActiveEvent(null)}
-                  onClick={() => setLightboxEvent(event)}
-                >
-                  {/* Dot */}
-                  <div style={{
-                    width: isActive ? 16 : 10, height: isActive ? 16 : 10,
-                    borderRadius: "50%", background: color,
-                    border: `2px solid ${isActive ? C.cream : color}`,
-                    boxShadow: isActive ? `0 0 16px ${color}60` : "none",
-                    transition: "all 0.2s ease",
-                  }} />
-
-                  {/* Hover preview card */}
-                  {isActive && (
-                    <div style={{
-                      position: "absolute", top: 24, left: "50%", transform: "translateX(-50%)",
-                      background: `linear-gradient(135deg, ${C.dusk} 0%, ${C.night} 100%)`,
-                      border: `1px solid ${color}40`, borderRadius: 10,
-                      padding: "14px 18px", minWidth: 220, maxWidth: 280,
-                      boxShadow: `0 12px 40px rgba(0,0,0,0.4)`,
-                      animation: "float 0.3s ease forwards",
-                      whiteSpace: "normal",
-                    }}>
-                      {event.imageUrl && (
-                        <img src={event.imageUrl} alt="" style={{ width: "100%", height: 80, objectFit: "cover", borderRadius: 6, marginBottom: 10 }} />
-                      )}
-                      <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color, marginBottom: 4 }}>
-                        {new Date(event.date + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                      </div>
-                      <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, color: C.cream, marginBottom: 4, lineHeight: 1.3 }}>
-                        {event.name}
-                      </div>
-                      <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", lineHeight: 1.5 }}>
-                        {event.description.slice(0, 100)}{event.description.length > 100 ? "..." : ""}
-                      </div>
-                      {event.time && <div style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", marginTop: 6 }}>{event.time}{event.location ? ` · ${event.location}` : ""}</div>}
-                      <div style={{ fontSize: 9, color, marginTop: 8, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase" }}>Click for details</div>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-
-            {/* Empty state */}
-            {allEvents.length === 0 && (
-              <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <div style={{ fontSize: 13, color: "rgba(255,255,255,0.2)", fontFamily: "'Libre Franklin', sans-serif" }}>
-                  Events will appear here as they're submitted
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Legend */}
-          <div style={{ display: "flex", gap: 20, marginTop: 20, flexWrap: "wrap" }}>
-            {Object.entries(categoryColors).map(([cat, color]) => (
-              <div key={cat} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <div style={{ width: 8, height: 8, borderRadius: "50%", background: color }} />
-                <span style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>{cat}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* === UPCOMING EVENTS CARD STRIP === */}
-        {allEvents.length > 0 && (
-          <div style={{ marginTop: 48 }}>
-            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: 20 }}>
-              Upcoming
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 16 }}>
-              {allEvents.slice(0, 8).map((event) => {
-                const color = categoryColors[event.category] || C.sage;
-                const dateLabel = new Date(event.date + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-                return (
-                  <div
-                    key={event.id}
-                    onClick={() => setLightboxEvent(event)}
-                    style={{
-                      background: "rgba(255,255,255,0.04)",
-                      border: `1px solid ${color}25`,
-                      borderRadius: 10,
-                      padding: "18px 20px",
-                      cursor: "pointer",
-                      transition: "all 0.2s ease",
-                      borderLeft: `3px solid ${color}`,
-                    }}
-                    onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.07)"; e.currentTarget.style.borderColor = `${color}50`; }}
-                    onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.borderColor = `${color}25`; }}
-                  >
-                    <div style={{ fontFamily: "'Caveat', cursive", fontSize: 14, color, marginBottom: 4 }}>{dateLabel}</div>
-                    <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, color: C.cream, lineHeight: 1.35, marginBottom: 6 }}>{event.name}</div>
-                    {event.time && <div style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif" }}>{event.time}{event.location ? ` · ${event.location}` : ""}</div>}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+          ))
         )}
-
-        {/* === MOBILE VERTICAL TIMELINE === */}
-        <div className="timeline-mobile" style={{ display: "none" }}>
-          <div style={{ position: "relative", paddingLeft: 32 }}>
-            {/* Vertical line */}
-            <div style={{ position: "absolute", left: 10, top: 0, bottom: 0, width: 2, background: `linear-gradient(to bottom, ${C.sunset}, ${C.sage}, transparent)`, borderRadius: 1 }} />
-
-            {allEvents.length === 0 && (
-              <div style={{ padding: "40px 0", fontSize: 13, color: "rgba(255,255,255,0.2)", fontFamily: "'Libre Franklin', sans-serif" }}>
-                Events will appear as they're submitted
-              </div>
-            )}
-
-            {allEvents.map((event) => {
-              const color = categoryColors[event.category] || C.sage;
-              return (
-                <div key={event.id} onClick={() => setLightboxEvent(event)} style={{ marginBottom: 28, cursor: "pointer", position: "relative" }}>
-                  {/* Dot on the line */}
-                  <div style={{ position: "absolute", left: -27, top: 6, width: 10, height: 10, borderRadius: "50%", background: color, border: `2px solid ${C.night}` }} />
-                  <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color, marginBottom: 2 }}>
-                    {new Date(event.date + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                  </div>
-                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.cream, marginBottom: 4, lineHeight: 1.3 }}>
-                    {event.name}
-                  </div>
-                  <div style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", lineHeight: 1.5 }}>
-                    {event.description.slice(0, 80)}{event.description.length > 80 ? "..." : ""}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
       </div>
 
-      {/* LIGHTBOX — reuse shared component */}
       <EventLightbox event={lightboxEvent} onClose={() => setLightboxEvent(null)} />
-
-      {/* Mobile/desktop toggle styles */}
-      <style>{`
-        @media (max-width: 768px) {
-          .timeline-desktop { display: none !important; }
-          .timeline-mobile { display: block !important; }
-        }
-      `}</style>
     </section>
   );
 }
@@ -3974,6 +3837,7 @@ function VillageMapSection() {
                     transition: "all 0.25s",
                     position: "relative",
                     overflow: "hidden",
+                    display: "flex", flexDirection: "column",
                   }}
                   onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.07)"; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 8px 30px rgba(0,0,0,0.3), 0 0 0 1px ${color}25`; }}
                   onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
@@ -3981,18 +3845,18 @@ function VillageMapSection() {
                   {/* Accent stripe */}
                   <div style={{ position: "absolute", top: 0, left: 0, width: 3, height: "100%", background: color, borderRadius: "14px 0 0 14px" }} />
 
-                  <div style={{ display: "flex", alignItems: "flex-start", gap: 16 }}>
+                  <div style={{ display: "flex", alignItems: "flex-start", gap: 16, flex: 1 }}>
                     {biz.logo && (
                       <img src={biz.logo} alt="" style={{ width: 52, height: 52, borderRadius: 10, objectFit: "cover", background: "rgba(255,255,255,0.08)", flexShrink: 0 }} />
                     )}
-                    <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
                       <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.cream, margin: "0 0 4px 0", lineHeight: 1.3 }}>
                         {biz.name}
                       </h3>
                       <div style={{ fontSize: 11, color: color, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", marginBottom: 8 }}>
                         {biz.category}
                       </div>
-                      <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", lineHeight: 1.6, margin: "0 0 10px 0" }}>
+                      <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, margin: "0 0 10px 0", whiteSpace: "pre-line", flex: 1 }}>
                         {biz.description}
                       </p>
                       {biz.address && (
@@ -4487,37 +4351,37 @@ const MENS_CLUB_EVENTS = [
     title: "Tip-Up Festival",
     date: "First weekend of February",
     desc: "The crown jewel — 70+ years of ice fishing, snowmobile racing, outhouse races, hovercraft rides, poker runs, and the benefit auction. Held on frozen Devils Lake, it's the longest-running winter festival in the Irish Hills.",
-    icon: "🎣",
+    image: "/images/mens-club/tip-up-1.jpg",
   },
   {
     title: "Firecracker 7K Run/Walk",
     date: "July 4th — 8:00 AM",
     desc: "A Fourth of July tradition starting at 3171 Round Lake Hwy. Choose the 7K run/walk or 1-mile family fun run. Proceeds fund the Devils Lake fireworks display.",
-    icon: "🏃",
+    image: "/images/mens-club/firecracker-7k.jpg",
   },
   {
     title: "Golf Outing",
     date: "Annual — Summer",
     desc: "A community golf outing that brings together members, local businesses, and supporters. All proceeds benefit the club's charitable programs.",
-    icon: "⛳",
+    image: null,
   },
   {
     title: "Benefit Auction & Raffle",
     date: "During Tip-Up Festival",
     desc: "The auction is the club's biggest fundraiser — local businesses and community members donate items. Proceeds support laptops for students, Toys for Tots, Shop with a Cop, and food pantries.",
-    icon: "🎁",
+    image: "/images/mens-club/auction.jpg",
   },
   {
     title: "Fireworks Display",
     date: "July 4th & Special Events",
     desc: "Working with the Devils & Round Lake Fireworks Association, the club helps fund and organize the summer fireworks display over Devils Lake.",
-    icon: "🎆",
+    image: "/images/mens-club/fireworks.jpg",
   },
   {
     title: "Community Service Days",
     date: "Year-round",
     desc: "Throughout the year, club members volunteer for lake cleanups, food drives, Christmas gift baskets, and support for families in need through the Community for People in Need program.",
-    icon: "🤝",
+    image: "/images/mens-club/shop-with-a-cop.jpg",
   },
 ];
 
@@ -4590,7 +4454,7 @@ function MensClubStatsSection() {
             <SectionTitle center>By the Numbers</SectionTitle>
           </div>
         </FadeIn>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 16 }}>
           {MENS_CLUB_STATS.map((stat, i) => (
             <FadeIn key={i} delay={i * 60} direction="scale">
               <div style={{
@@ -4600,7 +4464,7 @@ function MensClubStatsSection() {
                 <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sage, marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>
                   {stat.label}
                 </div>
-                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, fontWeight: 400, color: C.text }}>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text, whiteSpace: "nowrap" }}>
                   {stat.value}
                 </div>
                 <div style={{ fontSize: 11, color: C.textMuted, marginTop: 2 }}>{stat.sub}</div>
@@ -4665,15 +4529,23 @@ function MensClubEventsSection() {
           {MENS_CLUB_EVENTS.map((evt, i) => (
             <FadeIn key={i} delay={i * 80}>
               <div style={{
-                display: "flex", gap: 18, alignItems: "flex-start",
-                background: "rgba(255,255,255,0.04)", borderRadius: 14, padding: "24px 22px",
+                display: "flex", gap: 0, alignItems: "stretch",
+                background: "rgba(255,255,255,0.04)", borderRadius: 14, overflow: "hidden",
                 border: "1px solid rgba(255,255,255,0.06)",
               }}>
-                <div style={{ fontSize: 32, lineHeight: 1, flexShrink: 0 }}>{evt.icon}</div>
-                <div style={{ flex: 1 }}>
+                {evt.image ? (
+                  <div style={{ width: 130, flexShrink: 0 }}>
+                    <img src={evt.image} alt={evt.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                  </div>
+                ) : (
+                  <div style={{ width: 130, flexShrink: 0, background: "rgba(255,255,255,0.06)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+                  </div>
+                )}
+                <div style={{ flex: 1, padding: "22px 22px" }}>
                   <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.cream, margin: "0 0 4px 0" }}>{evt.title}</h3>
                   <div style={{ fontSize: 12, color: C.sunsetLight, fontWeight: 600, letterSpacing: 0.5, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>{evt.date}</div>
-                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, margin: 0 }}>{evt.desc}</p>
+                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.78)", lineHeight: 1.7, margin: 0 }}>{evt.desc}</p>
                 </div>
               </div>
             </FadeIn>
@@ -4801,7 +4673,7 @@ function MensClubPage() {
 // ============================================================
 const MBHRS_PROGRAMS = [
   {
-    icon: "🎨",
+    image: "/images/historical/art-gallery.jpg",
     title: "Boat House Art Gallery",
     desc: "The largest nonprofit art gallery in Lenawee County, featuring work from over 50 artists. Located at 138 N. Lakeview Blvd — curating fine art from Michigan's Irish Hills community.",
     address: "138 North Lakeview Boulevard, Manitou Beach, MI 49253",
@@ -4809,28 +4681,28 @@ const MBHRS_PROGRAMS = [
     email: "mbboathouseartgallery@gmail.com",
   },
   {
-    icon: "🎭",
+    image: "/images/historical/art-festival.jpg",
     title: "Devils Lake Festival of the Arts",
     desc: "An annual summer art festival in the Village — 50 fine artists, 50 crafters, children's activities, live music, and food trucks. Free shuttle buses run all day between parking lots.",
     date: "Annual — Summer (10 AM – 6 PM)",
   },
   {
-    icon: "🚗",
+    image: "/images/historical/car-show.jpg",
     title: "Classic Car Shows",
     desc: "Bringing car show enthusiasts together in the Village for community celebrations of automotive history and local culture.",
   },
   {
-    icon: "🌊",
+    image: "/images/historical/conservation.jpg",
     title: "Land & Water Conservation",
     desc: "Active stewardship projects to protect and restore the natural environment around Devils Lake and the surrounding watershed.",
   },
   {
-    icon: "🏗️",
+    image: "/images/historical/restoration.jpg",
     title: "Village Restoration",
     desc: "Ongoing renovation projects to restore historic buildings and infrastructure in Manitou Beach Village, preserving the area's architectural heritage.",
   },
   {
-    icon: "🎒",
+    image: "/images/historical/childresn-art.jpg",
     title: "Children's Arts Programs",
     desc: "Arts education and creative programs for young people, fostering the next generation of artists and community members.",
     link: "https://manitoubeachcreative.org",
@@ -4954,11 +4826,14 @@ function MBHRSProgramsSection() {
               <div style={{
                 background: C.cream, borderRadius: 14, border: `1px solid ${C.sand}`, height: "100%", overflow: "hidden",
               }}>
-                {/* Image placeholder (800×600) */}
-                <div style={{ paddingTop: "75%", background: C.sand, position: "relative" }}>
-                  <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 2, textTransform: "uppercase", color: C.driftwood }}>Photo Coming</span>
-                  </div>
+                <div style={{ paddingTop: "75%", position: "relative", overflow: "hidden" }}>
+                  {prog.image ? (
+                    <img src={prog.image} alt={prog.title} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+                  ) : (
+                    <div style={{ position: "absolute", inset: 0, background: C.sand, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 2, textTransform: "uppercase", color: C.driftwood }}>Photo Coming</span>
+                    </div>
+                  )}
                 </div>
                 <div style={{ padding: "22px 24px" }}>
                 <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.text, margin: "0 0 8px 0" }}>{prog.title}</h3>
@@ -5298,8 +5173,8 @@ function FishingLakesSection() {
               <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, fontWeight: 400, color: C.cream, margin: "0 0 16px 0" }}>The Party Lake</h3>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 20 }}>
                 {[
-                  { label: "Size", value: "157 acres" },
-                  { label: "Depth", value: "30 ft max" },
+                  { label: "Size", value: "1,330 acres" },
+                  { label: "Depth", value: "65 ft max" },
                   { label: "Type", value: "Warm-water" },
                   { label: "Launch", value: "Public ramp" },
                 ].map((s, i) => (
@@ -5321,8 +5196,8 @@ function FishingLakesSection() {
               <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, fontWeight: 400, color: C.cream, margin: "0 0 16px 0" }}>The Serious Fishery</h3>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 20 }}>
                 {[
-                  { label: "Size", value: "515 acres" },
-                  { label: "Depth", value: "67 ft max" },
+                  { label: "Size", value: "925 acres" },
+                  { label: "Depth", value: "70 ft max" },
                   { label: "Type", value: "Cold-water" },
                   { label: "Launch", value: "Public ramp" },
                 ].map((s, i) => (
@@ -5407,7 +5282,7 @@ function FishingSpeciesSection() {
                   </div>
 
                   {/* Expanded detail panel */}
-                  {isOpen && (
+                  <div style={{ maxHeight: isOpen ? "1200px" : "0", overflow: "hidden", transition: "max-height 0.45s ease" }}>
                     <div style={{ borderTop: `1px solid ${C.sand}`, padding: "28px 24px 28px", background: C.cream }}>
                       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 24 }}>
 
@@ -5446,7 +5321,7 @@ function FishingSpeciesSection() {
                         </div>
                       </div>
                     </div>
-                  )}
+                  </div>{/* end animation wrapper */}
                 </div>
               </FadeIn>
             );
@@ -5572,6 +5447,65 @@ function FishingSeasonsSection() {
   );
 }
 
+function FishingEventsSection() {
+  const events = [
+    {
+      name: "Tip-Up Town USA",
+      when: "First full weekend of February",
+      since: "Est. 1950s",
+      accent: C.lakeBlue,
+      desc: "One of Michigan's longest-running winter festivals — 73+ consecutive years on frozen Devils Lake. Ice fishing tip-up contests, snowmobile racing, outhouse races, hovercraft rides, a poker run, and the legendary benefit auction. Draws thousands to Manitou Beach every February.",
+      link: "/mens-club",
+      linkLabel: "Men's Club — Event Organizers",
+    },
+    {
+      name: "Bass Fishing Tournament",
+      when: "Summer — exact date TBA",
+      since: "Annual",
+      accent: C.sage,
+      desc: "An annual bass tournament on Devils Lake drawing competitive anglers from across the region. Largemouth and smallmouth bass. Check with the Devils Lake Yacht Club or Men's Club for the current year's schedule and registration details.",
+      link: "https://www.devilslakeyachtclub.com",
+      linkLabel: "Devils Lake Yacht Club →",
+    },
+  ];
+
+  return (
+    <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 900, margin: "0 auto" }}>
+        <FadeIn>
+          <SectionLabel>On the Calendar</SectionLabel>
+          <SectionTitle>Fishing Events</SectionTitle>
+          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 580, margin: "0 0 48px 0" }}>
+            Devils Lake hosts two signature fishing events each year — one in the heart of winter, one in the heat of summer.
+          </p>
+        </FadeIn>
+        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+          {events.map((evt, i) => (
+            <FadeIn key={i} delay={i * 100} direction="left">
+              <div style={{ background: C.cream, borderRadius: 16, padding: "36px 32px", border: `1px solid ${C.sand}`, position: "relative", overflow: "hidden" }}>
+                <div style={{ position: "absolute", top: 0, left: 0, width: 4, height: "100%", background: evt.accent, borderRadius: "16px 0 0 16px" }} />
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 12 }}>
+                  <div>
+                    <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, fontWeight: 400, color: C.text, margin: "0 0 4px 0" }}>{evt.name}</h3>
+                    <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                      <span style={{ fontSize: 12, color: evt.accent, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 0.5 }}>{evt.when}</span>
+                      <span style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Caveat', cursive" }}>{evt.since}</span>
+                    </div>
+                  </div>
+                </div>
+                <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.75, margin: "0 0 20px 0" }}>{evt.desc}</p>
+                <a href={evt.link} style={{ fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: evt.accent, textDecoration: "none" }}>
+                  {evt.linkLabel}
+                </a>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function FishingTipUpCallout() {
   return (
     <section style={{ background: C.night, padding: "80px 24px" }}>
@@ -5608,7 +5542,9 @@ function FishingPage() {
       <FishingSpeciesSection />
       <WaveDivider topColor={C.cream} bottomColor={C.night} />
       <FishingCharterSection />
-      <WaveDivider topColor={C.night} bottomColor={C.dusk} flip />
+      <WaveDivider topColor={C.night} bottomColor={C.warmWhite} flip />
+      <FishingEventsSection />
+      <WaveDivider topColor={C.warmWhite} bottomColor={C.dusk} />
       <FishingSeasonsSection />
       <WaveDivider topColor={C.dusk} bottomColor={C.night} />
       <FishingTipUpCallout />
@@ -6160,26 +6096,7 @@ function DevilsLakePage() {
 // ============================================================
 // 🌿  LAND & LAKE LADIES CLUB PAGE (/ladies-club)
 // ============================================================
-const LADIES_CLUB_EVENTS = [
-  {
-    title: "Annual Summer Festival",
-    date: "Annual — Summer",
-    desc: "The Land & Lake Ladies Club Summer Festival is a cherished Manitou Beach tradition — music, food, vendors, community, and lake life. Holly & The Yeti are proud supporters.",
-    icon: "🌸",
-  },
-  {
-    title: "Community Fundraisers",
-    date: "Year-round",
-    desc: "The club organizes fundraising events throughout the year to support local families and causes in the Manitou Beach and Irish Hills community.",
-    icon: "🌿",
-  },
-  {
-    title: "Member Socials",
-    date: "Regular gatherings",
-    desc: "Women of the lakes community come together to connect, share stories, and strengthen the bonds that make Manitou Beach feel like home.",
-    icon: "☕",
-  },
-];
+// LADIES_CLUB_EVENTS removed — content now inline in LadiesClubEventsSection
 
 function LadiesClubHero() {
   const [loaded, setLoaded] = useState(false);
@@ -6270,12 +6187,64 @@ function LadiesClubMissionSection() {
 
 function LadiesClubEventsSection() {
   const features = [
-    { label: "Live Music", desc: "Continuous entertainment throughout the day" },
-    { label: "Fine Arts", desc: "A dozen or more outdoor artist booths" },
-    { label: "Children's Area", desc: "Bounce items, face painting, Lucky Ducky & more" },
-    { label: "Crafts & Vendors", desc: "Local makers, shops, and handmade goods" },
-    { label: "Food & Drinks", desc: "Shaved ice, acai bowls, craft beer, wine & more" },
-    { label: "Flower Sale", desc: "Fresh blooms from local growers" },
+    { label: "Live Music", desc: "Continuous entertainment throughout the day with seating provided for relaxation" },
+    { label: "Fine Arts Section", desc: "A dozen or more outdoor artist booths featuring local talent and original work" },
+    { label: "Children's Area", desc: "Bounce items, face painting, Lucky Ducky, balloons, and fun for all ages" },
+    { label: "Crafts & Vendors", desc: "Local makers, artisan goods, handmade creations, and the Farmer's Craft Market" },
+    { label: "Food & Drinks", desc: "Shaved ice, acai bowls, possible craft beer and wine — something for everyone" },
+    { label: "Flower Sale", desc: "Fresh blooms and plants available while supplies last" },
+  ];
+
+  const tiers = [
+    {
+      level: "Platinum", amount: "$500", color: "#C8A84B",
+      benefits: [
+        "Individual sponsor banner for event or projects",
+        "Featured advertisement on social media for event sponsorship",
+        "Larger logo / print on Festival T-shirt",
+        "Recognition on Sponsor Board",
+        "Recognition on Festival Sponsor Banner and Brochures",
+        "Recognition on this web page",
+      ],
+      areas: ["Children's Area", "Vendor & Crafter's Market", "Live Music Entertainment", "Fine Artists Section", "LLLC Community Projects"],
+    },
+    {
+      level: "Gold", amount: "$250", color: "#E8C547",
+      benefits: [
+        "Advertisement on social media for sponsorship",
+        "Larger logo / print on Festival T-shirt",
+        "Recognition on Sponsor Board",
+        "Recognition on Festival Sponsor Banner and Brochures",
+        "Recognition on this web page",
+      ],
+    },
+    {
+      level: "Silver", amount: "$100", color: "#A8B8C8",
+      benefits: [
+        "Advertisement on social media for sponsorship",
+        "Name / logo on Festival T-shirt",
+        "Recognition on Sponsor Board",
+        "Recognition on Festival Sponsor Banner and Brochures",
+        "Recognition on this web page",
+      ],
+    },
+    {
+      level: "Bronze", amount: "$50", color: "#B87333",
+      benefits: [
+        "Advertisement on social media for sponsorship",
+        "Name listed on Festival T-shirt",
+        "Recognition on Sponsor Board and Brochures",
+        "Recognition on this web page",
+      ],
+    },
+    {
+      level: "Friend", amount: "$25", color: C.sage,
+      benefits: [
+        "Advertisement on social media for sponsorship",
+        "Name listed on Festival T-shirt",
+        "Recognition on this web page",
+      ],
+    },
   ];
 
   return (
@@ -6363,48 +6332,148 @@ function LadiesClubEventsSection() {
           </div>
         </FadeIn>
 
-        {/* What to expect grid */}
+        {/* What to Expect — 3 per row, larger text */}
         <FadeIn delay={150}>
-          <div style={{ marginBottom: 16, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.3)" }}>
+          <div style={{ marginBottom: 20, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.3)" }}>
             What to Expect
           </div>
         </FadeIn>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 12, marginBottom: 48 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 40 }} className="mobile-col-1">
           {features.map((f, i) => (
             <FadeIn key={i} delay={160 + i * 40}>
-              <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 12, padding: "18px 20px" }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: C.cream, marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>{f.label}</div>
-                <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", lineHeight: 1.6, margin: 0 }}>{f.desc}</p>
+              <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 14, padding: "24px 22px" }}>
+                <div style={{ fontSize: 16, fontWeight: 600, color: C.cream, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>{f.label}</div>
+                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.4)", lineHeight: 1.65, margin: 0 }}>{f.desc}</p>
               </div>
             </FadeIn>
           ))}
         </div>
 
-        {/* Sponsorship tiers */}
+        {/* Festival Map */}
         <FadeIn delay={200}>
-          <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 16, padding: "32px 36px" }}>
-            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.3)", marginBottom: 20 }}>
+          <img
+            src="/images/ladies-club/summerfest-map.png"
+            alt="Summer Festival 2026 Map — Manitou Beach Village"
+            style={{ width: "100%", borderRadius: 14, marginBottom: 56, display: "block", border: "1px solid rgba(255,255,255,0.08)" }}
+            onError={(e) => { e.target.style.display = "none"; }}
+          />
+        </FadeIn>
+
+        {/* Sponsorship intro */}
+        <FadeIn delay={220}>
+          <div style={{ textAlign: "center", marginBottom: 40 }}>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.3)", marginBottom: 16 }}>
               Sponsorship Opportunities
             </div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
-              {[
-                { level: "Platinum", amount: "$500" },
-                { level: "Gold", amount: "$250" },
-                { level: "Silver", amount: "$100" },
-                { level: "Bronze", amount: "$50" },
-                { level: "Friend", amount: "$25" },
-              ].map((tier, i) => (
-                <div key={i} style={{
-                  background: i === 0 ? `${C.sunset}18` : "rgba(255,255,255,0.04)",
-                  border: i === 0 ? `1px solid ${C.sunset}40` : "1px solid rgba(255,255,255,0.06)",
-                  borderRadius: 8, padding: "10px 18px", display: "flex", alignItems: "center", gap: 8,
-                }}>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: i === 0 ? C.sunsetLight : C.cream, fontFamily: "'Libre Franklin', sans-serif" }}>{tier.level}</span>
-                  <span style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif" }}>{tier.amount}</span>
+            <SectionTitle center light>Become a Sponsor</SectionTitle>
+            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.75, maxWidth: 640, margin: "0 auto" }}>
+              Join us in supporting the Land and Lake Ladies Club (LLLC) Summer Festival 2026! Your sponsorship helps make this community celebration possible while providing your business with valuable recognition.
+            </p>
+          </div>
+        </FadeIn>
+
+        {/* Tier cards */}
+        {/* Platinum — full width featured */}
+        {tiers.slice(0, 1).map(tier => (
+          <FadeIn key={tier.level} delay={240}>
+            <div style={{
+              background: `linear-gradient(135deg, rgba(200,168,75,0.12) 0%, rgba(200,168,75,0.04) 100%)`,
+              border: `1px solid ${tier.color}50`, borderRadius: 18, padding: "36px 36px", marginBottom: 16,
+              position: "relative", overflow: "hidden",
+            }}>
+              <div style={{ position: "absolute", top: 0, left: 0, width: 5, height: "100%", background: tier.color, borderRadius: "18px 0 0 18px" }} />
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32 }} className="mobile-col-1">
+                <div>
+                  <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 20 }}>
+                    <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, color: tier.color }}>{tier.level}</span>
+                    <span style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: "rgba(255,255,255,0.6)" }}>{tier.amount}</span>
+                  </div>
+                  <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                    {tier.benefits.map((b, j) => (
+                      <li key={j} style={{ display: "flex", gap: 10, marginBottom: 8, alignItems: "flex-start" }}>
+                        <span style={{ color: tier.color, fontSize: 14, marginTop: 1, flexShrink: 0 }}>✓</span>
+                        <span style={{ fontSize: 13, color: "rgba(255,255,255,0.55)", lineHeight: 1.5 }}>{b}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              ))}
+                <div>
+                  <div style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: tier.color, marginBottom: 14 }}>
+                    Option to Sponsor a Specific Area
+                  </div>
+                  <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                    {tier.areas.map((a, j) => (
+                      <li key={j} style={{ display: "flex", gap: 10, marginBottom: 8, alignItems: "center" }}>
+                        <span style={{ width: 6, height: 6, borderRadius: "50%", background: tier.color, flexShrink: 0 }} />
+                        <span style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.5 }}>{a}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
             </div>
-            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", margin: "16px 0 0 0", lineHeight: 1.6 }}>
+          </FadeIn>
+        ))}
+
+        {/* Gold + Silver */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }} className="mobile-col-1">
+          {tiers.slice(1, 3).map((tier, i) => (
+            <FadeIn key={tier.level} delay={260 + i * 40}>
+              <div style={{
+                background: "rgba(255,255,255,0.04)", border: `1px solid ${tier.color}35`, borderRadius: 14, padding: "28px 28px",
+                position: "relative", overflow: "hidden",
+              }}>
+                <div style={{ position: "absolute", top: 0, left: 0, width: 4, height: "100%", background: tier.color, borderRadius: "14px 0 0 14px" }} />
+                <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 18 }}>
+                  <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: tier.color }}>{tier.level}</span>
+                  <span style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: "rgba(255,255,255,0.5)" }}>{tier.amount}</span>
+                </div>
+                <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                  {tier.benefits.map((b, j) => (
+                    <li key={j} style={{ display: "flex", gap: 8, marginBottom: 7, alignItems: "flex-start" }}>
+                      <span style={{ color: tier.color, fontSize: 13, marginTop: 1, flexShrink: 0 }}>✓</span>
+                      <span style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", lineHeight: 1.5 }}>{b}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+
+        {/* Bronze + Friend */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 40 }} className="mobile-col-1">
+          {tiers.slice(3).map((tier, i) => (
+            <FadeIn key={tier.level} delay={300 + i * 40}>
+              <div style={{
+                background: "rgba(255,255,255,0.03)", border: `1px solid ${tier.color}30`, borderRadius: 14, padding: "24px 24px",
+                position: "relative", overflow: "hidden",
+              }}>
+                <div style={{ position: "absolute", top: 0, left: 0, width: 4, height: "100%", background: tier.color, borderRadius: "14px 0 0 14px" }} />
+                <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 16 }}>
+                  <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: tier.color }}>{tier.level}</span>
+                  <span style={{ fontFamily: "'Caveat', cursive", fontSize: 16, color: "rgba(255,255,255,0.45)" }}>{tier.amount}</span>
+                </div>
+                <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                  {tier.benefits.map((b, j) => (
+                    <li key={j} style={{ display: "flex", gap: 8, marginBottom: 6, alignItems: "flex-start" }}>
+                      <span style={{ color: tier.color, fontSize: 12, marginTop: 1, flexShrink: 0 }}>✓</span>
+                      <span style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", lineHeight: 1.5 }}>{b}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+
+        {/* Footer */}
+        <FadeIn delay={340}>
+          <div style={{ textAlign: "center", padding: "24px 0 0" }}>
+            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.4)", lineHeight: 1.75, maxWidth: 600, margin: "0 auto 12px" }}>
+              Your support helps LLLC continue funding community projects while creating a fun and memorable festival for all ages.
+            </p>
+            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.25)", margin: 0 }}>
               Checks payable to: Land and Lake Ladies Club · Sponsorship deadline: March 20th, 2026
             </p>
           </div>
@@ -6447,55 +6516,87 @@ function LadiesClubGallerySection() {
 }
 
 function LadiesClubSponsorsSection() {
-  // Add sponsor logo files to public/images/sponsors/
-  // Update this array as sponsors are confirmed — name is used as alt text
-  const sponsors = [
-    { name: "Sponsor", logo: null },
-    { name: "Sponsor", logo: null },
-    { name: "Sponsor", logo: null },
-    { name: "Sponsor", logo: null },
-    { name: "Sponsor", logo: null },
-    { name: "Sponsor", logo: null },
-    { name: "Sponsor", logo: null },
-    { name: "Sponsor", logo: null },
-  ];
+  // Placeholder tiles — swap null for logo path as sponsors are confirmed
+  const SponsorTile = ({ height = 110 }) => (
+    <div style={{
+      background: "#fff", border: `1.5px dashed ${C.sand}`, borderRadius: 12,
+      height, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6,
+    }}>
+      <div style={{ width: 28, height: 28, borderRadius: "50%", background: C.sand, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={C.textMuted} strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      </div>
+      <span style={{ fontSize: 9, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.8, textTransform: "uppercase" }}>Logo</span>
+    </div>
+  );
+
+  const TierHeader = ({ label, color }) => (
+    <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16, marginTop: 40 }}>
+      <div style={{ flex: 1, height: 1, background: C.sand }} />
+      <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 13, color, fontWeight: 400, letterSpacing: 1, textTransform: "uppercase" }}>{label}</span>
+      <div style={{ flex: 1, height: 1, background: C.sand }} />
+    </div>
+  );
 
   return (
     <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
-      <div style={{ maxWidth: 960, margin: "0 auto" }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
         <FadeIn>
-          <div style={{ textAlign: "center", marginBottom: 48 }}>
+          <div style={{ textAlign: "center", marginBottom: 16 }}>
             <SectionLabel>Thank You</SectionLabel>
-            <SectionTitle center>Our Sponsors</SectionTitle>
+            <SectionTitle center>Our 2026 Sponsors</SectionTitle>
             <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, maxWidth: 480, margin: "0 auto" }}>
               The Summer Festival is made possible by the generous support of our community sponsors.
             </p>
           </div>
         </FadeIn>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 16 }}>
-          {sponsors.map((sponsor, i) => (
-            <FadeIn key={i} delay={i * 40}>
-              <div style={{
-                background: "#fff", border: `1px solid ${C.sand}`, borderRadius: 12,
-                height: 120, display: "flex", alignItems: "center", justifyContent: "center",
-                padding: "16px",
-              }}>
-                {sponsor.logo ? (
-                  <img src={sponsor.logo} alt={sponsor.name} style={{ maxWidth: "100%", maxHeight: 80, objectFit: "contain" }} />
-                ) : (
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
-                    <div style={{ width: 32, height: 32, borderRadius: "50%", background: C.sand, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.textMuted} strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-                    </div>
-                    <span style={{ fontSize: 10, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5, textTransform: "uppercase" }}>Sponsor</span>
-                  </div>
-                )}
+
+        {/* Platinum — 3 across */}
+        <FadeIn>
+          <TierHeader label="Platinum Sponsors" color="#b08d57" />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
+            {[0,1,2].map(i => <SponsorTile key={i} height={140} />)}
+          </div>
+        </FadeIn>
+
+        {/* Gold — 4 across */}
+        <FadeIn>
+          <TierHeader label="Gold Sponsors" color="#c9a227" />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14 }}>
+            {[0,1,2,3].map(i => <SponsorTile key={i} height={120} />)}
+          </div>
+        </FadeIn>
+
+        {/* Silver — 5 across */}
+        <FadeIn>
+          <TierHeader label="Silver Sponsors" color="#8a9ba8" />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 12 }}>
+            {[0,1,2,3,4].map(i => <SponsorTile key={i} height={100} />)}
+          </div>
+        </FadeIn>
+
+        {/* Bronze — 6 across */}
+        <FadeIn>
+          <TierHeader label="Bronze Sponsors" color="#a0522d" />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 10 }}>
+            {[0,1,2,3,4,5].map(i => <SponsorTile key={i} height={88} />)}
+          </div>
+        </FadeIn>
+
+        {/* Friends — text list with logo */}
+        <FadeIn>
+          <TierHeader label="Friends of LLLC" color={C.sage} />
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 24px", justifyContent: "center", padding: "4px 0 8px" }}>
+            {["Friend", "Friend", "Friend", "Friend", "Friend", "Friend", "Friend", "Friend"].map((_, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <img src="/images/landlake-club-logo.png" alt="LLLC" style={{ width: 16, height: 16, objectFit: "contain", opacity: 0.7 }} />
+                <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted }}>Friend Name</span>
               </div>
-            </FadeIn>
-          ))}
-        </div>
+            ))}
+          </div>
+        </FadeIn>
+
         <FadeIn delay={200}>
-          <p style={{ textAlign: "center", fontSize: 13, color: C.textMuted, marginTop: 32, lineHeight: 1.7 }}>
+          <p style={{ textAlign: "center", fontSize: 13, color: C.textMuted, marginTop: 40, lineHeight: 1.7 }}>
             Interested in sponsoring? Contact{" "}
             <a href="mailto:michele.henson0003@gmail.com" style={{ color: C.sage, textDecoration: "none" }}>michele.henson0003@gmail.com</a>
           </p>
@@ -6516,13 +6617,13 @@ function LadiesClubGetInvolved() {
             Interested in the Summer Festival, community events, or membership? Reach out — the lakes community is always welcoming new faces.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-            <a href="https://m.me/HollyandtheYeti" target="_blank" rel="noopener noreferrer" className="btn-animated" style={{
+            <a href="mailto:michele.henson0003@gmail.com" className="btn-animated" style={{
               display: "inline-flex", alignItems: "center", gap: 8,
               padding: "14px 32px", borderRadius: 8,
               background: C.sunset, color: C.cream,
               fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
             }}>
-              Message Holly & The Yeti
+              Send us a message
             </a>
             <a href="/devils-lake" className="btn-animated" style={{
               display: "inline-flex", alignItems: "center", gap: 8,
@@ -6550,8 +6651,8 @@ function LadiesClubPage() {
       <LadiesClubHero />
       <LadiesClubMissionSection />
       <LadiesClubEventsSection />
-      <LadiesClubGallerySection />
       <LadiesClubSponsorsSection />
+      <LadiesClubGallerySection />
       <LadiesClubGetInvolved />
       <NewsletterInline />
       <Footer scrollTo={subScrollTo} />
