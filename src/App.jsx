@@ -2661,19 +2661,39 @@ function SubmitSection() {
 
           {submitted ? (
             <div style={{
-              background: `${C.sage}15`,
-              border: `1px solid ${C.sage}40`,
-              borderRadius: 10,
-              padding: "32px",
+              background: `linear-gradient(135deg, ${C.dusk} 0%, ${C.lakeDark} 100%)`,
+              borderRadius: 12,
+              padding: "40px 32px",
               textAlign: "center",
             }}>
-              <div style={{ fontSize: 32, marginBottom: 12 }}>✓</div>
-              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.text, marginBottom: 8 }}>
-                Submission received!
+              <div style={{
+                width: 52, height: 52, borderRadius: "50%",
+                background: `${C.sage}30`, border: `2px solid ${C.sage}`,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                margin: "0 auto 20px",
+                fontSize: 22, color: C.sage,
+              }}>✓</div>
+              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream, marginBottom: 12, fontWeight: 400 }}>
+                {tab === "business" ? "You're in the directory." : "Event submitted."}
               </div>
-              <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: 0 }}>
-                We review all submissions within 48 hours. You'll hear from us soon.
+              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.55)", lineHeight: 1.8, margin: "0 0 28px 0", maxWidth: 400, marginLeft: "auto", marginRight: "auto" }}>
+                {tab === "business"
+                  ? "We review every submission before it goes live — usually within 48 hours. If you're interested in an upgraded listing, we'll reach out with details."
+                  : "We'll review your event and have it on the calendar within 48 hours. Keep an eye on the What's Happening section."}
               </p>
+              <button
+                onClick={() => setSubmitted(false)}
+                style={{
+                  fontFamily: "'Libre Franklin', sans-serif",
+                  fontSize: 12, fontWeight: 600, letterSpacing: 1.5,
+                  textTransform: "uppercase", padding: "10px 24px",
+                  borderRadius: 4, border: `1.5px solid rgba(255,255,255,0.2)`,
+                  background: "transparent", color: "rgba(255,255,255,0.5)",
+                  cursor: "pointer",
+                }}
+              >
+                Submit another
+              </button>
             </div>
           ) : (
             <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
