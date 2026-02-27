@@ -268,7 +268,7 @@ const BUSINESSES = [
   {
     id: 8,
     name: "Yeti Groove Media",
-    category: "Film & Video",
+    category: "Creative Media",
     description: "Cinematic video production for businesses, events, and legacies. Where your story becomes a film.",
     featured: false,
     logo: "/images/yeti_logo.png",
@@ -498,7 +498,7 @@ const CAT_COLORS = {
   "Shopping & Gifts":   "#B07D62",
   "Vacation Rental":    C.lakeBlue,
   "Stays & Lodging":    C.lakeBlue,
-  "Film & Video":       C.driftwood,
+  "Creative Media":     C.driftwood,
   "Home Services":      C.sageDark,
 };
 
@@ -2692,7 +2692,7 @@ function SubmitSection() {
                     <option>Shopping & Gifts</option>
                     <option>Vacation Rental</option>
                     <option>Stays & Lodging</option>
-                    <option>Film & Video</option>
+                    <option>Creative Media</option>
                     <option>Home Services</option>
                   </select>
                   {input("phone", "Phone Number", "tel")}
