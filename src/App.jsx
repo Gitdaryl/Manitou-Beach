@@ -1922,11 +1922,6 @@ function BusinessDirectory() {
           </div>
         </FadeIn>
 
-        {/* DEBUG — remove after diagnosing Enhanced visibility */}
-        <div style={{ fontSize: 11, color: C.textMuted, marginBottom: 24, fontFamily: "'Libre Franklin', sans-serif", opacity: 0.6 }}>
-          Loaded from Notion: {notionFree.length} Free · {notionEnhanced.length} Enhanced · {notionFeatured.length} Featured · {notionPremium.length} Premium
-        </div>
-
         {/* Premium Partners — full-width banner rows, stacked before categories */}
         {premiumBusinesses.length > 0 && (
           <FadeIn delay={100}>
@@ -2095,9 +2090,9 @@ function PremiumBanner({ business }) {
       marginBottom: 16, border: `1px solid rgba(255,255,255,0.07)`,
     }}>
       {/* Logo */}
-      <div style={{ width: 100, height: 100, borderRadius: 12, flexShrink: 0, background: "rgba(255,255,255,0.08)", border: "1.5px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center", padding: 12, boxSizing: "border-box" }}>
+      <div style={{ width: 110, height: 110, borderRadius: 14, flexShrink: 0, overflow: "hidden", background: "rgba(255,255,255,0.08)", border: "1.5px solid rgba(255,255,255,0.1)" }}>
         {business.logo ? (
-          <img src={business.logo} alt={business.name} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+          <img src={business.logo} alt={business.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         ) : (
           <span style={{ fontSize: 30, color: "rgba(255,255,255,0.2)" }}>{business.name[0]}</span>
         )}
