@@ -54,7 +54,8 @@ export default async function handler(req, res) {
           name: p['Event Name']?.title?.[0]?.text?.content || '',
           date: p['Event date']?.date?.start || '',
           tagline: p['Tagline']?.rich_text?.[0]?.text?.content || '',
-          imageUrl: p['Image URL']?.url || null,
+          heroImageUrl: p['Hero Image URL']?.url || null,  // High-res background image
+          imageUrl: p['Image URL']?.url || null,           // Small event image — shown as card
           time: p['Time']?.rich_text?.[0]?.text?.content || '',
           location: p['Location']?.rich_text?.[0]?.text?.content || '',
           cost: p['Cost']?.rich_text?.[0]?.text?.content || null,

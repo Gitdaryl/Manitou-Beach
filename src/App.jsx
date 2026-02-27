@@ -782,8 +782,10 @@ function Hero({ scrollTo }) {
   // ── EVENT HERO (with rotation) ──
   const heroEvent = heroEvents[heroIndex] || null;
   if (heroReady && heroEvent) {
-    const bgStyle = heroEvent.imageUrl
-      ? { backgroundImage: `url(${heroEvent.imageUrl})`, backgroundSize: "cover", backgroundPosition: "center" }
+    // heroImageUrl = high-res image for full-screen bg (add "Hero Image URL" column in Notion)
+    // imageUrl = small event image — shown as a contained card, never stretched
+    const bgStyle = heroEvent.heroImageUrl
+      ? { backgroundImage: `url(${heroEvent.heroImageUrl})`, backgroundSize: "cover", backgroundPosition: "center" }
       : { background: `linear-gradient(135deg, ${C.night} 0%, ${C.lakeDark} 50%, ${C.dusk} 100%)` };
 
     return (
@@ -795,15 +797,42 @@ function Hero({ scrollTo }) {
       >
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(170deg, rgba(26,40,48,0.75) 0%, rgba(26,40,48,0.5) 50%, rgba(26,40,48,0.85) 100%)", zIndex: 1 }} />
 
-        {/* Coming Up badge */}
-        <div style={{ position: "absolute", top: 100, right: 48, zIndex: 2, textAlign: "right" }}>
-          <div style={{
-            display: "inline-block", background: `${C.sunset}22`, border: `1px solid ${C.sunset}50`,
-            borderRadius: 4, padding: "6px 16px", fontFamily: "'Libre Franklin', sans-serif",
-            fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunsetLight,
-          }}>
-            Coming Up
-          </div>
+        {/* Top-right: event photo card (if imageUrl) or Coming Up badge */}
+        <div style={{ position: "absolute", top: 100, right: 48, zIndex: 2 }}>
+          {heroEvent.imageUrl ? (
+            <div style={{
+              width: 180,
+              background: "rgba(255,255,255,0.07)",
+              border: "1px solid rgba(255,255,255,0.15)",
+              borderRadius: 12,
+              overflow: "hidden",
+              backdropFilter: "blur(4px)",
+              transform: "rotate(1.5deg)",
+              boxShadow: "0 8px 32px rgba(0,0,0,0.45)",
+            }}>
+              <img
+                src={heroEvent.imageUrl}
+                alt={heroEvent.name}
+                style={{ width: "100%", height: 140, objectFit: "cover", display: "block" }}
+              />
+              <div style={{
+                padding: "8px 12px",
+                fontFamily: "'Libre Franklin', sans-serif",
+                fontSize: 10, fontWeight: 700, letterSpacing: 2,
+                textTransform: "uppercase", color: C.sunsetLight,
+              }}>
+                Coming Up
+              </div>
+            </div>
+          ) : (
+            <div style={{
+              display: "inline-block", background: `${C.sunset}22`, border: `1px solid ${C.sunset}50`,
+              borderRadius: 4, padding: "6px 16px", fontFamily: "'Libre Franklin', sans-serif",
+              fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunsetLight,
+            }}>
+              Coming Up
+            </div>
+          )}
         </div>
 
         <div style={{ position: "relative", zIndex: 2, maxWidth: 960, margin: "0 auto", padding: "120px 48px 100px" }}>
@@ -1916,6 +1945,152 @@ function ExploreSection() {
 }
 
 // ============================================================
+// 💰  LISTING TIERS / PRICING SECTION
+// ============================================================
+function PricingSection() {
+  const tiers = [
+    {
+      name: "Free",
+      price: "Free",
+      period: "forever",
+      color: C.driftwood,
+      badge: null,
+      features: [
+        "Name in business directory",
+        "Category & phone number",
+        "Community visibility",
+      ],
+      cta: "Get Listed",
+    },
+    {
+      name: "Bronze",
+      price: "$25",
+      period: "/ month",
+      color: "#CD8B3A",
+      badge: null,
+      features: [
+        "Everything in Free",
+        "Clickable website link",
+        "Business description",
+        "Expandable listing card",
+      ],
+      cta: "Get Started",
+    },
+    {
+      name: "Silver",
+      price: "$49",
+      period: "/ month",
+      color: "#A8A9AD",
+      badge: "Popular",
+      features: [
+        "Everything in Bronze",
+        "Spotlight card placement",
+        "Logo or photo display",
+        "Above standard listings",
+      ],
+      cta: "Get Started",
+    },
+    {
+      name: "Gold",
+      price: "$89",
+      period: "/ month",
+      color: C.sunsetLight,
+      badge: "Best Visibility",
+      features: [
+        "Everything in Silver",
+        "Full-width banner ad",
+        "Large logo (110×110)",
+        "Top-of-directory placement",
+        "Email contact button",
+      ],
+      cta: "Get Started",
+    },
+  ];
+
+  return (
+    <div id="listing-tiers" style={{ background: C.night, padding: "80px 24px 72px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+
+        <div style={{ textAlign: "center", marginBottom: 52 }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 4, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 14 }}>
+            List Your Business
+          </div>
+          <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 4vw, 42px)", fontWeight: 400, color: C.cream, margin: "0 0 14px 0" }}>
+            Choose Your Visibility
+          </h2>
+          <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 16, maxWidth: 460, margin: "0 auto" }}>
+            Get discovered by the Manitou Beach community. Start free, upgrade anytime.
+          </p>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16 }}>
+          {tiers.map(tier => (
+            <div key={tier.name} style={{
+              background: tier.badge ? "rgba(255,255,255,0.07)" : "rgba(255,255,255,0.03)",
+              border: `1px solid ${tier.badge ? tier.color + "45" : "rgba(255,255,255,0.09)"}`,
+              borderRadius: 16,
+              padding: "28px 22px 28px",
+              position: "relative",
+              display: "flex",
+              flexDirection: "column",
+            }}>
+              {tier.badge && (
+                <div style={{
+                  position: "absolute", top: -13, left: "50%", transform: "translateX(-50%)",
+                  background: tier.color, color: C.night,
+                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700,
+                  letterSpacing: 2, textTransform: "uppercase",
+                  padding: "4px 14px", borderRadius: 20, whiteSpace: "nowrap",
+                }}>
+                  {tier.badge}
+                </div>
+              )}
+
+              <div style={{ color: tier.color, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", marginBottom: 10 }}>
+                {tier.name}
+              </div>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 22 }}>
+                <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 34, color: C.cream, fontWeight: 700 }}>{tier.price}</span>
+                <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 14 }}>{tier.period}</span>
+              </div>
+
+              <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px 0", flexGrow: 1, display: "flex", flexDirection: "column", gap: 9 }}>
+                {tier.features.map(f => (
+                  <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 9 }}>
+                    <span style={{ color: tier.color, fontSize: 13, marginTop: 2, flexShrink: 0, fontWeight: 700 }}>✓</span>
+                    <span style={{ color: "rgba(255,255,255,0.58)", fontSize: 13, lineHeight: 1.45 }}>{f}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <a
+                href="#submit"
+                style={{
+                  display: "block", textAlign: "center",
+                  padding: "10px 0", borderRadius: 8,
+                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700,
+                  letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none",
+                  background: tier.name === "Gold" ? C.sunset : "transparent",
+                  color: tier.name === "Gold" ? C.cream : tier.color,
+                  border: `1.5px solid ${tier.name === "Gold" ? "transparent" : tier.color + "55"}`,
+                  transition: "all 0.22s ease",
+                }}
+              >
+                {tier.cta}
+              </a>
+            </div>
+          ))}
+        </div>
+
+        <p style={{ textAlign: "center", color: "rgba(255,255,255,0.2)", fontSize: 12, marginTop: 28, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>
+          Monthly pricing · Annual plans available · Contact us to get listed
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
 // 🏪  BUSINESS DIRECTORY
 // ============================================================
 function BusinessDirectory() {
@@ -2372,18 +2547,10 @@ function BusinessRow({ business }) {
         )}
       </div>
 
-      {/* Visit link, or claim prompt if no contact info */}
-      {business.website ? (
-        <a href={business.website} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sage, textDecoration: "none", whiteSpace: "nowrap" }}>
-          Visit →
-        </a>
-      ) : !business.phone ? (
-        <a href="#submit" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: 1, color: C.driftwood, textDecoration: "none", whiteSpace: "nowrap", opacity: 0.7 }}>
-          Claim listing →
-        </a>
-      ) : (
-        <span style={{ fontSize: 13, color: C.sand }}>—</span>
-      )}
+      {/* Free tier — no website link. Upgrade to Bronze+ to unlock. */}
+      <a href="#listing-tiers" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 600, letterSpacing: 1, color: C.driftwood, textDecoration: "none", whiteSpace: "nowrap", opacity: 0.65 }}>
+        Upgrade →
+      </a>
     </div>
   );
 }
@@ -3667,6 +3834,7 @@ function HomePage() {
       <div style={{ textAlign: "center", padding: "8px 24px 40px" }}>
         <Btn onClick={() => window.open("https://maps.google.com/?q=Manitou+Beach+Michigan+49267", "_blank")} variant="dark">Get Directions</Btn>
       </div>
+      <PricingSection />
       <BusinessDirectory />
       <DiagonalDivider topColor={C.warmWhite} bottomColor={C.night} />
       <HollyYetiSection />
