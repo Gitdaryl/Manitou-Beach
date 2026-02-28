@@ -834,21 +834,33 @@ function Hero({ scrollTo }) {
               {heroEvent.time && ` · ${heroEvent.time}`}
             </div>
 
-            {/* Event image — wide, contained, below the date */}
-            {heroEvent.imageUrl && (
-              <div style={{ margin: "0 0 24px 0", maxWidth: 546, width: "100%" }}>
-                <img
-                  src={heroEvent.imageUrl}
-                  alt={heroEvent.name}
-                  style={{
-                    width: "100%", maxHeight: 238, objectFit: "cover",
-                    borderRadius: 12, display: "block",
-                    boxShadow: "0 12px 40px rgba(0,0,0,0.55)",
-                    border: "1px solid rgba(255,255,255,0.1)",
-                  }}
-                />
-              </div>
-            )}
+            {/* Event image/video — wide, contained, below the date */}
+            {heroEvent.imageUrl && (() => {
+              const isVideo = /\.(mp4|webm|mov|m4v)(\?|$)/i.test(heroEvent.imageUrl);
+              const mediaStyle = {
+                width: "100%", height: "100%", objectFit: "contain",
+                borderRadius: 12, display: "block",
+                boxShadow: "0 12px 40px rgba(0,0,0,0.55)",
+                border: "1px solid rgba(255,255,255,0.1)",
+              };
+              return (
+                <div style={{ margin: "0 0 24px 0", maxWidth: 546, width: "100%", height: 238 }}>
+                  {isVideo ? (
+                    <video
+                      src={heroEvent.imageUrl}
+                      autoPlay loop muted playsInline
+                      style={mediaStyle}
+                    />
+                  ) : (
+                    <img
+                      src={heroEvent.imageUrl}
+                      alt={heroEvent.name}
+                      style={mediaStyle}
+                    />
+                  )}
+                </div>
+              );
+            })()}
 
             {heroEvent.tagline && (
               <p style={{ fontSize: 17, color: "rgba(255,255,255,0.65)", lineHeight: 1.75, maxWidth: 560, margin: "0 0 24px 0" }}>
