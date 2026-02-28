@@ -3721,6 +3721,22 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
                 {label}
               </button>
             ))}
+            {/* Dispatch link */}
+            <button
+              onClick={() => { window.location.href = "/dispatch"; }}
+              style={{
+                background: "transparent", border: "none",
+                color: solid ? C.textLight : "rgba(255,255,255,0.7)",
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 500,
+                letterSpacing: 0.5, padding: "7px 13px", borderRadius: 6, cursor: "pointer",
+                transition: "all 0.2s", whiteSpace: "nowrap",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.color = solid ? C.sageDark : C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
+              onMouseLeave={e => { e.currentTarget.style.color = solid ? C.textLight : "rgba(255,255,255,0.7)"; e.currentTarget.style.background = "transparent"; }}
+            >
+              Dispatch
+            </button>
+
             {/* Community dropdown */}
             <div ref={comRef} style={{ position: "relative" }}>
               <button
@@ -3846,6 +3862,14 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
             {label}
           </button>
         ))}
+        {/* Dispatch link — mobile */}
+        <button onClick={() => { setMenuOpen(false); window.location.href = "/dispatch"; }} style={{
+          background: "none", border: "none", fontFamily: "'Libre Baskerville', serif",
+          fontSize: 24, fontWeight: 400, color: C.text, cursor: "pointer", padding: "12px 32px",
+        }}>
+          Dispatch
+        </button>
+
         {/* Community sub-links */}
         <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.textMuted, marginTop: 8, fontFamily: "'Libre Franklin', sans-serif" }}>Community</div>
         {[
