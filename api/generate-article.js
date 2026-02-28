@@ -12,13 +12,47 @@ Your writing style:
 - Humor is dry and situational — no puns for puns' sake
 - You love this place. That comes through in every line.
 
+## Cover Image Library
+Choose the best cover image from this catalog. Two visual styles exist — pick intentionally.
+
+ILLUSTRATED (cartoon, white background — use for fun, casual, community, listicles, light content):
+- yeti celebrates.png → celebrations, community wins, event announcements
+- yeti-Influencer.png → social media trends, local buzz, influencer/viral pieces
+- yeti-box-camera.png → history, nostalgia, vintage community stories
+- yeti-camera-reverse.png → behind-the-scenes, community event coverage
+- yeti-camera.png → journalism, reporting, "the Yeti was there" pieces
+- yeti-clapper-board.png → film, video, entertainment, performances
+- yeti-clapper.png → same as above (use as variant if clapper-board already used)
+- yeti-direct-one-more-time.png → directing, producing, creative leadership
+- yeti-director.png → community leadership, explainers, "here's how it works"
+- yeti-drone.png → aerial perspective, big-picture takes, overview/survey articles
+- yeti-front-profile.png → personal essays, general byline pieces
+- yeti-futurist.png → future of community, development, what's coming
+- yeti-painting.png → arts & culture, creativity, local artists, DIY
+- yeti-selfie.png → personal takes, "I was there", casual community content
+- yeto-aviator.png → travel, adventure, getting out on the water/trails
+
+REALISM (photorealistic, cinematic — use for feature stories, immersive narratives, emotional depth):
+- yeti-deck-camera-realism.png → documentary pieces, lake photography, nature writing
+- yeti-deck-sunset-realism.png → lifestyle features, summer living, golden hour vibes
+- yeti-jetski-realism.png → water sports, summer action, lake recreation features
+- yeti-lighthouse-realism.png → local history, landmark stories, community identity
+
+Style guide:
+- Illustrated = fun, accessible, light tone. Lists, tips, event previews, community roundups.
+- Realism = cinematic, immersive, weight. Feature stories, place narratives, emotional long reads.
+- When the article has a clear activity match, pick that image. When ambiguous, illustrated is safer.
+- If no existing image fits well, suggest a new filename like yeti-[activity].png or yeti-[activity]-realism.png.
+
 Format your response as valid JSON with this exact structure:
 {
   "title": "Article title (punchy, 5-10 words)",
   "slug": "url-friendly-slug-from-title",
   "excerpt": "One compelling sentence (max 160 chars) that makes someone want to read more",
   "editorNote": "1-3 sentences in first person from The Yeti — a personal aside, local angle, or playful observation about the topic. Conversational, not formal. Signs off naturally as The Yeti.",
-  "coverImageSuggestion": "yeti-activity.png — pick the most fitting activity from: yeti-drone.png, yeti-selfie.png, yeti-jetski.png, yeti-lighthouse.png, yeti-camera.png, yeti-painting.png, yeti-fishing.png, yeti-fireworks.png, yeti-boating.png, yeti-beach.png, yeti-campfire.png, yeti-writing.png. If none fit, suggest a new logical filename like yeti-[activity].png",
+  "coverImage": "exact-filename.png from the catalog above, or a new suggested filename",
+  "coverStyle": "illustrated OR realism",
+  "coverNote": "One sentence explaining why this image and style fits this article — helps the editor know what to create if the file doesn't exist yet",
   "blocks": [
     { "type": "paragraph", "text": "..." },
     { "type": "heading_2", "text": "..." },
@@ -127,7 +161,7 @@ Remember: Yeti Groove voice — fun, warm, grounded in lake life. Not a press re
           'AI Generated': { checkbox: true },
           'Blog Safe': { checkbox: false },
           'Editor\'s Note': { rich_text: [{ text: { content: article.editorNote || '' } }] },
-          'Cover Image Suggestion': { rich_text: [{ text: { content: article.coverImageSuggestion || '' } }] },
+          'Cover Image Suggestion': { rich_text: [{ text: { content: [article.coverImage, article.coverStyle, article.coverNote].filter(Boolean).join(' | ') } }] },
         },
         children: notionBlocks,
       }),
@@ -147,7 +181,9 @@ Remember: Yeti Groove voice — fun, warm, grounded in lake life. Not a press re
       slug,
       excerpt: article.excerpt,
       editorNote: article.editorNote,
-      coverImageSuggestion: article.coverImageSuggestion,
+      coverImage: article.coverImage,
+      coverStyle: article.coverStyle,
+      coverNote: article.coverNote,
       notionUrl: `https://notion.so/${notionPage.id.replace(/-/g, '')}`,
       notionId: notionPage.id,
     });

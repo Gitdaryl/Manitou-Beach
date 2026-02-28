@@ -8054,11 +8054,22 @@ function YetiAdminPage() {
             <div style={{ marginTop: 16, fontSize: 12, color: C.textMuted }}>
               slug: <code style={{ background: C.cream, padding: '2px 6px', borderRadius: 4 }}>{result.slug}</code>
             </div>
-            {result.coverImageSuggestion && (
-              <div style={{ marginTop: 12, padding: '10px 14px', background: C.warmWhite, borderRadius: 8, fontSize: 13 }}>
-                <span style={{ fontWeight: 600, color: C.dusk }}>Cover image suggestion: </span>
-                <code style={{ color: C.lakeBlue }}>{result.coverImageSuggestion}</code>
-                <span style={{ color: C.textMuted, marginLeft: 8 }}>→ drop in <code>public/images/yeti/</code></span>
+            {result.coverImage && (
+              <div style={{ marginTop: 12, padding: '14px 16px', background: C.warmWhite, borderRadius: 8, fontSize: 13, borderLeft: `3px solid ${C.lakeBlue}` }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6, flexWrap: 'wrap' }}>
+                  <span style={{ fontWeight: 600, color: C.dusk }}>Cover image:</span>
+                  <code style={{ color: C.lakeBlue, background: '#fff', padding: '2px 8px', borderRadius: 4 }}>{result.coverImage}</code>
+                  {result.coverStyle && (
+                    <span style={{
+                      background: result.coverStyle === 'realism' ? C.dusk : C.sage,
+                      color: '#fff', borderRadius: 20, padding: '2px 10px', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em',
+                    }}>
+                      {result.coverStyle}
+                    </span>
+                  )}
+                </div>
+                {result.coverNote && <p style={{ margin: '0 0 6px', color: C.textLight, fontStyle: 'italic', lineHeight: 1.5 }}>{result.coverNote}</p>}
+                <span style={{ color: C.textMuted }}>→ drop in <code>public/images/yeti/</code></span>
               </div>
             )}
           </div>
