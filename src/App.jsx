@@ -5022,7 +5022,7 @@ function FeaturedPage() {
                       className="btn-animated"
                       style={{
                         width: "100%", marginTop: 20, padding: "12px 0", borderRadius: 8,
-                        border: "none", cursor: "pointer",
+                        cursor: "pointer",
                         fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase",
                         background: isSelected ? C.sunset : "transparent",
                         color: isSelected ? C.cream : C.sage,
@@ -8020,6 +8020,9 @@ function DispatchPage() {
 const DISPATCH_CATEGORIES = ['Lake Life', 'Community', 'Events', 'Real Estate', 'Food & Drink', 'History', 'Recreation'];
 
 function YetiAdminPage() {
+  const [activeTab, setActiveTab] = useState('write'); // write | review
+
+  // Write tab state
   const [topic, setTopic] = useState('');
   const [category, setCategory] = useState('Lake Life');
   const [notes, setNotes] = useState('');
@@ -8030,6 +8033,48 @@ function YetiAdminPage() {
   const [uploadStatus, setUploadStatus] = useState('idle'); // idle | uploading | done | error
   const [uploadedUrl, setUploadedUrl] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
+
+  // Review tab state
+  const [drafts, setDrafts] = useState([]);
+  const [draftsLoading, setDraftsLoading] = useState(false);
+  const [publishingId, setPublishingId] = useState(null); // notionId being published
+  const [publishedIds, setPublishedIds] = useState(new Set());
+
+  const fetchDrafts = async () => {
+    setDraftsLoading(true);
+    try {
+      const res = await fetch('/api/admin-articles');
+      const data = await res.json();
+      setDrafts(data.articles || []);
+    } catch (err) {
+      console.error('Failed to load drafts:', err);
+    } finally {
+      setDraftsLoading(false);
+    }
+  };
+
+  const handlePublish = async (notionId) => {
+    setPublishingId(notionId);
+    try {
+      const res = await fetch('/api/publish-article', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notionId }),
+      });
+      if (!res.ok) throw new Error('Publish failed');
+      setPublishedIds(prev => new Set([...prev, notionId]));
+      // Update local state so card reflects published immediately
+      setDrafts(prev => prev.map(a => a.id === notionId ? { ...a, blogSafe: true, status: 'Published' } : a));
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setPublishingId(null);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'review') fetchDrafts();
+  }, [activeTab]);
 
   const handlePhotoUpload = async (file) => {
     if (!file || !result?.notionId) return;
@@ -8114,12 +8159,116 @@ function YetiAdminPage() {
     <div style={{ minHeight: '100vh', background: C.cream, padding: '60px 20px' }}>
       <div style={{ maxWidth: 640, margin: '0 auto' }}>
         {/* Header */}
-        <div style={{ marginBottom: 40 }}>
+        <div style={{ marginBottom: 32 }}>
           <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', color: C.sage, marginBottom: 8 }}>The Manitou Dispatch</div>
           <h1 style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 32, color: C.dusk, margin: 0 }}>The Yeti Desk</h1>
-          <p style={{ color: C.textLight, marginTop: 8, fontSize: 15 }}>Generate a Dispatch draft in The Yeti voice. Saves to Notion as Draft — you review before it goes live.</p>
         </div>
 
+        {/* Tabs */}
+        <div style={{ display: 'flex', gap: 8, marginBottom: 32 }}>
+          {[{ id: 'write', label: '✍️  Write' }, { id: 'review', label: '📋  Review Queue' }].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              style={{
+                padding: '9px 22px', borderRadius: 8, fontSize: 14, fontWeight: 600,
+                fontFamily: 'Libre Franklin, sans-serif', cursor: 'pointer',
+                border: activeTab === tab.id ? 'none' : `1px solid ${C.sand}`,
+                background: activeTab === tab.id ? C.dusk : '#fff',
+                color: activeTab === tab.id ? '#fff' : C.textLight,
+                transition: 'all 0.15s',
+              }}
+            >{tab.label}</button>
+          ))}
+        </div>
+
+        {/* Review Queue Tab */}
+        {activeTab === 'review' && (
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+              <p style={{ margin: 0, color: C.textLight, fontSize: 14 }}>All articles — click Publish to make live.</p>
+              <button
+                onClick={fetchDrafts}
+                style={{ background: 'transparent', border: `1px solid ${C.sand}`, borderRadius: 8, padding: '7px 16px', fontSize: 13, color: C.textLight, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}
+              >↻ Refresh</button>
+            </div>
+
+            {draftsLoading && (
+              <div style={{ textAlign: 'center', padding: '60px 0', color: C.textMuted, fontSize: 14 }}>Loading articles…</div>
+            )}
+
+            {!draftsLoading && drafts.length === 0 && (
+              <div style={{ textAlign: 'center', padding: '60px 0', color: C.textMuted, fontSize: 14 }}>No articles found.</div>
+            )}
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {drafts.map(article => {
+                const isPublished = article.blogSafe;
+                const isPublishing = publishingId === article.id;
+                return (
+                  <div
+                    key={article.id}
+                    style={{
+                      background: '#fff', borderRadius: 12, padding: '20px 24px',
+                      boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+                      borderLeft: `4px solid ${isPublished ? C.sage : C.sand}`,
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, flexWrap: 'wrap' }}>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 6, flexWrap: 'wrap' }}>
+                          <span style={{
+                            fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em',
+                            padding: '2px 10px', borderRadius: 20,
+                            background: isPublished ? C.sage : C.driftwood,
+                            color: '#fff',
+                          }}>{isPublished ? 'Live' : 'Draft'}</span>
+                          {article.aiGenerated && (
+                            <span style={{ fontSize: 11, color: C.textMuted, background: C.cream, padding: '2px 8px', borderRadius: 20 }}>AI</span>
+                          )}
+                          <span style={{ fontSize: 11, color: C.textMuted }}>{article.category}</span>
+                          {article.publishedDate && (
+                            <span style={{ fontSize: 11, color: C.textMuted }}>{article.publishedDate}</span>
+                          )}
+                        </div>
+                        <h3 style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 17, color: C.dusk, margin: '0 0 6px', lineHeight: 1.3 }}>{article.title}</h3>
+                        {article.excerpt && (
+                          <p style={{ margin: 0, fontSize: 13, color: C.textLight, lineHeight: 1.5, fontStyle: 'italic' }}>{article.excerpt}</p>
+                        )}
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, flexShrink: 0 }}>
+                        {!isPublished ? (
+                          <button
+                            onClick={() => handlePublish(article.id)}
+                            disabled={isPublishing}
+                            style={{
+                              background: isPublishing ? C.driftwood : C.lakeBlue,
+                              color: '#fff', border: 'none', borderRadius: 8,
+                              padding: '8px 18px', fontSize: 13, fontWeight: 700,
+                              cursor: isPublishing ? 'not-allowed' : 'pointer',
+                              fontFamily: 'Libre Franklin, sans-serif', whiteSpace: 'nowrap',
+                            }}
+                          >{isPublishing ? 'Publishing…' : '⚡ Publish'}</button>
+                        ) : (
+                          <span style={{ fontSize: 12, color: C.sage, fontWeight: 600, textAlign: 'center' }}>✓ Live</span>
+                        )}
+                        <a
+                          href={article.notionUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{ fontSize: 12, color: C.lakeBlue, textDecoration: 'none', textAlign: 'center' }}
+                        >Notion →</a>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Write Tab */}
+        {activeTab === 'write' && <>
         {/* Form */}
         <div style={{ background: '#fff', borderRadius: 12, padding: 32, boxShadow: '0 2px 16px rgba(0,0,0,0.07)', marginBottom: 24 }}>
           <div style={{ marginBottom: 20 }}>
@@ -8295,6 +8444,7 @@ function YetiAdminPage() {
             </button>
           </div>
         )}
+        </>}
       </div>
     </div>
   );

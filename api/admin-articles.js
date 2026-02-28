@@ -1,5 +1,7 @@
 export default async function handler(req, res) {
-  res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate');
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
 
   try {
     const response = await fetch(
@@ -12,10 +14,8 @@ export default async function handler(req, res) {
           'Notion-Version': '2022-06-28',
         },
         body: JSON.stringify({
-          filter: {
-            property: 'Blog Safe', checkbox: { equals: true },
-          },
-          sorts: [{ property: 'Published Date', direction: 'descending' }],
+          sorts: [{ timestamp: 'created_time', direction: 'descending' }],
+          page_size: 50,
         }),
       }
     );
@@ -36,18 +36,19 @@ export default async function handler(req, res) {
           slug: p['Slug']?.rich_text?.[0]?.plain_text || page.id,
           excerpt: p['Excerpt']?.rich_text?.[0]?.plain_text || '',
           category: p['Category']?.select?.name || 'Lake Life',
-          author: p['Author']?.rich_text?.[0]?.plain_text || 'The Yeti',
-          coverImage: p['Cover Image URL']?.url || null,
+          status: p['Status']?.select?.name || 'Draft',
+          blogSafe: p['Blog Safe']?.checkbox || false,
           publishedDate: p['Published Date']?.date?.start || null,
-          tags: p['Tags']?.multi_select?.map(t => t.name) || [],
           aiGenerated: p['AI Generated']?.checkbox || false,
+          coverImage: p['Cover Image URL']?.url || null,
+          notionUrl: `https://notion.so/${page.id.replace(/-/g, '')}`,
         };
       })
       .filter(a => a.title);
 
     return res.status(200).json({ articles });
   } catch (err) {
-    console.error('Dispatch articles API error:', err.message);
+    console.error('Admin articles API error:', err.message);
     return res.status(200).json({ articles: [] });
   }
 }
