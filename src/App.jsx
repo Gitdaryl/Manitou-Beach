@@ -7764,6 +7764,34 @@ function DispatchArticlePage() {
 
               <DispatchArticleContent content={article.content} />
 
+              {/* Yeti Desk sign-off */}
+              <div style={{ margin: '56px 0 40px', borderTop: `2px solid ${C.sand}`, paddingTop: 36 }}>
+                <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start' }}>
+                  <img
+                    src="/images/yeti/yeti-camera.png"
+                    alt="The Yeti"
+                    onError={e => { e.target.style.display = 'none'; }}
+                    style={{ width: 72, height: 72, objectFit: 'contain', flexShrink: 0 }}
+                  />
+                  <div>
+                    <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', color: C.sage, marginBottom: 4 }}>
+                      {article.aiGenerated ? 'The Yeti Desk' : 'Editor\'s Note · The Yeti Desk'}
+                    </div>
+                    <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 13, fontWeight: 700, color: C.dusk, marginBottom: article.editorNote ? 10 : 0 }}>
+                      {article.aiGenerated ? `Written by The Yeti` : `By ${article.author}`}
+                    </div>
+                    {article.editorNote && (
+                      <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.65, margin: 0, fontStyle: 'italic' }}>
+                        {article.editorNote}
+                      </p>
+                    )}
+                    <div style={{ marginTop: 10, fontSize: 12, color: C.textMuted }}>
+                      Holly &amp; The Yeti · Devils Lake, Michigan
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div style={{ marginTop: 60, padding: '32px', background: C.night, borderRadius: 14, textAlign: 'center' }}>
                 <p style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.warmWhite, marginBottom: 8 }}>Enjoying The Dispatch?</p>
                 <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 14, marginBottom: 20 }}>Get lake life news, local tips, and a little Yeti wisdom delivered to your inbox.</p>
@@ -7936,8 +7964,8 @@ function YetiAdminPage() {
       <div style={{ maxWidth: 640, margin: '0 auto' }}>
         {/* Header */}
         <div style={{ marginBottom: 40 }}>
-          <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', color: C.sage, marginBottom: 8 }}>Yeti Admin</div>
-          <h1 style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 32, color: C.dusk, margin: 0 }}>AI Article Writer</h1>
+          <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', color: C.sage, marginBottom: 8 }}>The Manitou Dispatch</div>
+          <h1 style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 32, color: C.dusk, margin: 0 }}>The Yeti Desk</h1>
           <p style={{ color: C.textLight, marginTop: 8, fontSize: 15 }}>Generate a Dispatch draft in The Yeti voice. Saves to Notion as Draft — you review before it goes live.</p>
         </div>
 
@@ -8026,6 +8054,13 @@ function YetiAdminPage() {
             <div style={{ marginTop: 16, fontSize: 12, color: C.textMuted }}>
               slug: <code style={{ background: C.cream, padding: '2px 6px', borderRadius: 4 }}>{result.slug}</code>
             </div>
+            {result.coverImageSuggestion && (
+              <div style={{ marginTop: 12, padding: '10px 14px', background: C.warmWhite, borderRadius: 8, fontSize: 13 }}>
+                <span style={{ fontWeight: 600, color: C.dusk }}>Cover image suggestion: </span>
+                <code style={{ color: C.lakeBlue }}>{result.coverImageSuggestion}</code>
+                <span style={{ color: C.textMuted, marginLeft: 8 }}>→ drop in <code>public/images/yeti/</code></span>
+              </div>
+            )}
           </div>
         )}
 

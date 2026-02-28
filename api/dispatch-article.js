@@ -122,6 +122,8 @@ export default async function handler(req, res) {
       coverImage: p['Cover Image URL']?.url || null,
       publishedDate: p['Published Date']?.date?.start || null,
       tags: p['Tags']?.multi_select?.map(t => t.name) || [],
+      aiGenerated: p['AI Generated']?.checkbox || false,
+      editorNote: p["Editor's Note"]?.rich_text?.[0]?.plain_text || null,
       content: parseBlocks(blocksData.results || []),
     };
 

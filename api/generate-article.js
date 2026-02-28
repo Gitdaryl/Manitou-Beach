@@ -17,6 +17,8 @@ Format your response as valid JSON with this exact structure:
   "title": "Article title (punchy, 5-10 words)",
   "slug": "url-friendly-slug-from-title",
   "excerpt": "One compelling sentence (max 160 chars) that makes someone want to read more",
+  "editorNote": "1-3 sentences in first person from The Yeti — a personal aside, local angle, or playful observation about the topic. Conversational, not formal. Signs off naturally as The Yeti.",
+  "coverImageSuggestion": "yeti-activity.png — pick the most fitting activity from: yeti-drone.png, yeti-selfie.png, yeti-jetski.png, yeti-lighthouse.png, yeti-camera.png, yeti-painting.png, yeti-fishing.png, yeti-fireworks.png, yeti-boating.png, yeti-beach.png, yeti-campfire.png, yeti-writing.png. If none fit, suggest a new logical filename like yeti-[activity].png",
   "blocks": [
     { "type": "paragraph", "text": "..." },
     { "type": "heading_2", "text": "..." },
@@ -124,6 +126,8 @@ Remember: Yeti Groove voice — fun, warm, grounded in lake life. Not a press re
           'Status': { select: { name: 'Draft' } },
           'AI Generated': { checkbox: true },
           'Blog Safe': { checkbox: false },
+          'Editor\'s Note': { rich_text: [{ text: { content: article.editorNote || '' } }] },
+          'Cover Image Suggestion': { rich_text: [{ text: { content: article.coverImageSuggestion || '' } }] },
         },
         children: notionBlocks,
       }),
@@ -142,6 +146,8 @@ Remember: Yeti Groove voice — fun, warm, grounded in lake life. Not a press re
       title: article.title,
       slug,
       excerpt: article.excerpt,
+      editorNote: article.editorNote,
+      coverImageSuggestion: article.coverImageSuggestion,
       notionUrl: `https://notion.so/${notionPage.id.replace(/-/g, '')}`,
       notionId: notionPage.id,
     });
