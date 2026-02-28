@@ -7890,6 +7890,164 @@ function DispatchPage() {
 }
 
 // ============================================================
+// 🛠️  YETI ADMIN — AI Article Writer (unlisted, /yeti-admin)
+// ============================================================
+const DISPATCH_CATEGORIES = ['Lake Life', 'Community', 'Events', 'Real Estate', 'Food & Drink', 'History', 'Recreation'];
+
+function YetiAdminPage() {
+  const [topic, setTopic] = React.useState('');
+  const [category, setCategory] = React.useState('Lake Life');
+  const [notes, setNotes] = React.useState('');
+  const [status, setStatus] = React.useState('idle'); // idle | loading | success | error
+  const [result, setResult] = React.useState(null);
+  const [errorMsg, setErrorMsg] = React.useState('');
+
+  const handleGenerate = async () => {
+    if (!topic.trim()) return;
+    setStatus('loading');
+    setResult(null);
+    setErrorMsg('');
+    try {
+      const res = await fetch('/api/generate-article', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ topic: topic.trim(), category, notes: notes.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Unknown error');
+      setResult(data);
+      setStatus('success');
+    } catch (err) {
+      setErrorMsg(err.message);
+      setStatus('error');
+    }
+  };
+
+  const inputStyle = {
+    width: '100%', padding: '10px 14px', borderRadius: 8,
+    border: `1px solid ${C.sand}`, background: '#fff',
+    fontSize: 15, color: C.text, fontFamily: 'Libre Franklin, sans-serif',
+    outline: 'none', boxSizing: 'border-box',
+  };
+  const labelStyle = { display: 'block', marginBottom: 6, fontWeight: 600, color: C.dusk, fontSize: 13, textTransform: 'uppercase', letterSpacing: '0.06em' };
+
+  return (
+    <div style={{ minHeight: '100vh', background: C.cream, padding: '60px 20px' }}>
+      <div style={{ maxWidth: 640, margin: '0 auto' }}>
+        {/* Header */}
+        <div style={{ marginBottom: 40 }}>
+          <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', color: C.sage, marginBottom: 8 }}>Yeti Admin</div>
+          <h1 style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 32, color: C.dusk, margin: 0 }}>AI Article Writer</h1>
+          <p style={{ color: C.textLight, marginTop: 8, fontSize: 15 }}>Generate a Dispatch draft in The Yeti voice. Saves to Notion as Draft — you review before it goes live.</p>
+        </div>
+
+        {/* Form */}
+        <div style={{ background: '#fff', borderRadius: 12, padding: 32, boxShadow: '0 2px 16px rgba(0,0,0,0.07)', marginBottom: 24 }}>
+          <div style={{ marginBottom: 20 }}>
+            <label style={labelStyle}>Topic *</label>
+            <input
+              style={inputStyle}
+              placeholder="e.g. Why Devils Lake is Michigan's best-kept secret"
+              value={topic}
+              onChange={e => setTopic(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleGenerate()}
+            />
+          </div>
+
+          <div style={{ marginBottom: 20 }}>
+            <label style={labelStyle}>Category</label>
+            <select
+              style={{ ...inputStyle, cursor: 'pointer' }}
+              value={category}
+              onChange={e => setCategory(e.target.value)}
+            >
+              {DISPATCH_CATEGORIES.map(c => <option key={c}>{c}</option>)}
+            </select>
+          </div>
+
+          <div style={{ marginBottom: 28 }}>
+            <label style={labelStyle}>Notes / Angle (optional)</label>
+            <textarea
+              style={{ ...inputStyle, minHeight: 80, resize: 'vertical' }}
+              placeholder="Any specific angle, local details, or tone notes..."
+              value={notes}
+              onChange={e => setNotes(e.target.value)}
+            />
+          </div>
+
+          <button
+            onClick={handleGenerate}
+            disabled={status === 'loading' || !topic.trim()}
+            style={{
+              background: status === 'loading' ? C.driftwood : C.lakeBlue,
+              color: '#fff', border: 'none', borderRadius: 8,
+              padding: '12px 28px', fontSize: 15, fontWeight: 600,
+              cursor: status === 'loading' ? 'not-allowed' : 'pointer',
+              fontFamily: 'Libre Franklin, sans-serif',
+              transition: 'background 0.2s',
+              width: '100%',
+            }}
+          >
+            {status === 'loading' ? '✍️  Yeti is writing...' : '⚡ Generate Article'}
+          </button>
+        </div>
+
+        {/* Success */}
+        {status === 'success' && result && (
+          <div style={{ background: '#fff', borderRadius: 12, padding: 28, boxShadow: '0 2px 16px rgba(0,0,0,0.07)', borderLeft: `4px solid ${C.sage}` }}>
+            <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', color: C.sage, marginBottom: 12 }}>Draft saved to Notion</div>
+            <h2 style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 22, color: C.dusk, margin: '0 0 8px' }}>{result.title}</h2>
+            <p style={{ color: C.textLight, fontSize: 14, margin: '0 0 20px', fontStyle: 'italic' }}>{result.excerpt}</p>
+            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+              <a
+                href={result.notionUrl}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  background: C.dusk, color: '#fff', borderRadius: 8,
+                  padding: '10px 20px', fontSize: 14, fontWeight: 600,
+                  textDecoration: 'none', fontFamily: 'Libre Franklin, sans-serif',
+                }}
+              >
+                Review in Notion →
+              </a>
+              <button
+                onClick={() => { setStatus('idle'); setTopic(''); setNotes(''); setResult(null); }}
+                style={{
+                  background: 'transparent', color: C.textLight,
+                  border: `1px solid ${C.sand}`, borderRadius: 8,
+                  padding: '10px 20px', fontSize: 14, cursor: 'pointer',
+                  fontFamily: 'Libre Franklin, sans-serif',
+                }}
+              >
+                Write another
+              </button>
+            </div>
+            <div style={{ marginTop: 16, fontSize: 12, color: C.textMuted }}>
+              slug: <code style={{ background: C.cream, padding: '2px 6px', borderRadius: 4 }}>{result.slug}</code>
+            </div>
+          </div>
+        )}
+
+        {/* Error */}
+        {status === 'error' && (
+          <div style={{ background: '#fff', borderRadius: 12, padding: 24, boxShadow: '0 2px 16px rgba(0,0,0,0.07)', borderLeft: `4px solid ${C.sunset}` }}>
+            <div style={{ color: C.sunset, fontWeight: 600, marginBottom: 8 }}>Something went wrong</div>
+            <div style={{ color: C.textLight, fontSize: 14 }}>{errorMsg}</div>
+            <button
+              onClick={() => setStatus('idle')}
+              style={{ marginTop: 16, background: 'transparent', color: C.lakeBlue, border: 'none', cursor: 'pointer', fontSize: 14, padding: 0 }}
+            >
+              Try again
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
 // 🌐  APP ROOT
 // ============================================================
 export default function App() {
@@ -7910,6 +8068,7 @@ export default function App() {
         <Route path="/promote" element={<PromotePage />} />
         <Route path="/dispatch" element={<DispatchPage />} />
         <Route path="/dispatch/:slug" element={<DispatchArticlePage />} />
+        <Route path="/yeti-admin" element={<YetiAdminPage />} />
       </Routes>
     </BrowserRouter>
   );
