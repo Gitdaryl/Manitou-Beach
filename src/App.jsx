@@ -1976,7 +1976,7 @@ function PricingSection() {
     },
     {
       name: "Bronze",
-      price: "$25",
+      price: "$9",
       period: "/ month",
       color: "#CD8B3A",
       badge: null,
@@ -1990,7 +1990,7 @@ function PricingSection() {
     },
     {
       name: "Silver",
-      price: "$49",
+      price: "$17",
       period: "/ month",
       color: "#A8A9AD",
       badge: "Popular",
@@ -2004,7 +2004,7 @@ function PricingSection() {
     },
     {
       name: "Gold",
-      price: "$89",
+      price: "$34",
       period: "/ month",
       color: C.sunsetLight,
       badge: "Best Visibility",
@@ -2846,7 +2846,7 @@ function SubmitSection() {
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [form, setForm] = useState({ name: "", category: "", phone: "", address: "", website: "", email: "", description: "", upgrade: false, newsletter: false, date: "", time: "", location: "", eventUrl: "" });
+  const [form, setForm] = useState({ name: "", category: "", phone: "", address: "", website: "", email: "", description: "", logoUrl: "", tier: "Free", duration: "1", newsletter: false, date: "", time: "", location: "", eventUrl: "" });
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -3055,22 +3055,62 @@ function SubmitSection() {
                     onFocus={e => e.target.style.borderColor = C.sage}
                     onBlur={e => e.target.style.borderColor = C.sand}
                   />
-                  <label style={{ display: "flex", gap: 12, alignItems: "flex-start", cursor: "pointer", padding: "16px", background: `${C.sunset}0D`, border: `1px solid ${C.sunset}25`, borderRadius: 8 }}>
-                    <input
-                      type="checkbox"
-                      checked={form.upgrade}
-                      onChange={e => setForm(f => ({ ...f, upgrade: e.target.checked }))}
-                      style={{ marginTop: 2, accentColor: C.sunset }}
-                    />
+                  {/* Tier selector */}
+                  <div>
+                    <select
+                      value={form.tier}
+                      onChange={e => setForm(f => ({ ...f, tier: e.target.value, duration: "1" }))}
+                      style={{
+                        width: "100%", padding: "12px 16px", borderRadius: 6,
+                        border: `1.5px solid ${C.sand}`, fontFamily: "'Libre Franklin', sans-serif",
+                        fontSize: 14, color: C.text, background: C.cream,
+                        boxSizing: "border-box", outline: "none", appearance: "none", cursor: "pointer",
+                      }}
+                      onFocus={e => e.target.style.borderColor = C.sage}
+                      onBlur={e => e.target.style.borderColor = C.sand}
+                    >
+                      <option value="Free">Free — $0 · Name, category & phone</option>
+                      <option value="Bronze">Bronze — $9/mo · + Website link & description</option>
+                      <option value="Silver">Silver — $17/mo · + Spotlight card & logo</option>
+                      <option value="Gold">Gold — $34/mo · + Full banner & top placement</option>
+                    </select>
+                  </div>
+
+                  {/* Duration — only for paid tiers */}
+                  {form.tier !== "Free" && (
                     <div>
-                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 3 }}>
-                        I'm interested in a Featured Listing
-                      </div>
-                      <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.6 }}>
-                        Featured listings get top-of-directory placement, newsletter inclusion, and a business highlight video. Someone from Holly & The Yeti will be in touch.
+                      <select
+                        value={form.duration}
+                        onChange={e => setForm(f => ({ ...f, duration: e.target.value }))}
+                        style={{
+                          width: "100%", padding: "12px 16px", borderRadius: 6,
+                          border: `1.5px solid ${C.sand}`, fontFamily: "'Libre Franklin', sans-serif",
+                          fontSize: 14, color: C.text, background: C.cream,
+                          boxSizing: "border-box", outline: "none", appearance: "none", cursor: "pointer",
+                        }}
+                        onFocus={e => e.target.style.borderColor = C.sage}
+                        onBlur={e => e.target.style.borderColor = C.sand}
+                      >
+                        {[1,2,3,4,5,6,7,8,9,10,11,12].map(n => (
+                          <option key={n} value={String(n)}>
+                            {n} {n === 1 ? "month" : "months"}{n >= 6 ? " · Best value" : ""}
+                          </option>
+                        ))}
+                      </select>
+                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, marginTop: 6, paddingLeft: 2 }}>
+                        Total: ${({ Free: 0, Bronze: 9, Silver: 17, Gold: 34 }[form.tier] * parseInt(form.duration)).toLocaleString()} · We'll confirm and invoice before going live
                       </div>
                     </div>
-                  </label>
+                  )}
+
+                  {/* Logo URL — shown for all tiers, used by Silver & Gold */}
+                  <div>
+                    {input("logoUrl", "Logo URL (optional)")}
+                    <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, marginTop: 6, paddingLeft: 2 }}>
+                      Upload to <a href="https://imgbb.com" target="_blank" rel="noopener noreferrer" style={{ color: C.lakeBlue }}>imgbb.com</a> and paste the direct link · Square image · Min 200×200px · Displayed for Silver & Gold tiers
+                    </div>
+                  </div>
+
                   <label style={{ display: "flex", gap: 12, alignItems: "flex-start", cursor: "pointer", padding: "14px 16px", background: `${C.sage}0D`, border: `1px solid ${C.sage}25`, borderRadius: 8 }}>
                     <input
                       type="checkbox"

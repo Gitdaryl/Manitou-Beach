@@ -3,7 +3,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { name, category, phone, website, email, description, address, newsletter } = req.body;
+  const { name, category, phone, website, email, description, address, newsletter, tier, duration, logoUrl } = req.body;
 
   if (!name) {
     return res.status(400).json({ error: 'Business name is required' });
@@ -13,10 +13,15 @@ export default async function handler(req, res) {
   let normalizedUrl = null;
   if (website && website.trim()) {
     let url = website.trim();
-    if (!/^https?:\/\//i.test(url)) {
-      url = 'https://' + url;
-    }
+    if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
     normalizedUrl = url;
+  }
+
+  let normalizedLogoUrl = null;
+  if (logoUrl && logoUrl.trim()) {
+    let url = logoUrl.trim();
+    if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+    normalizedLogoUrl = url;
   }
 
   try {
@@ -37,6 +42,9 @@ export default async function handler(req, res) {
           'Email': { email: email || null },
           'Description': { rich_text: [{ text: { content: description || '' } }] },
           'Address': { rich_text: [{ text: { content: address || '' } }] },
+          ...(normalizedLogoUrl && { 'Logo URL': { url: normalizedLogoUrl } }),
+          ...(tier && { 'Requested Tier': { select: { name: tier } } }),
+          ...(duration && { 'Requested Duration': { number: parseInt(duration, 10) } }),
           ...((newsletter === true || newsletter === 'true') && { 'Newsletter': { checkbox: true } }),
         },
       }),
