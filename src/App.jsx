@@ -2846,6 +2846,9 @@ function SubmitSection() {
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [logoFile, setLogoFile] = useState(null);
+  const [logoPreview, setLogoPreview] = useState(null);
+  const [isLogoDragging, setIsLogoDragging] = useState(false);
   const [form, setForm] = useState({ name: "", category: "", phone: "", address: "", website: "", email: "", description: "", logoUrl: "", tier: "Free", duration: "1", newsletter: false, date: "", time: "", location: "", eventUrl: "" });
 
   const handleImageChange = (e) => {
@@ -2865,7 +2868,7 @@ function SubmitSection() {
     try {
       let imageUrl = null;
 
-      // Upload image if present (event tab only)
+      // Upload event image (event tab)
       if (tab === "event" && imageFile) {
         const { base64, filename } = await compressImage(imageFile);
         const uploadRes = await fetch("/api/upload-image", {
@@ -2877,10 +2880,23 @@ function SubmitSection() {
         if (uploadRes.ok) imageUrl = uploadData.url;
       }
 
+      // Upload business logo (business tab) — compressed square-friendly
+      let logoUploadUrl = null;
+      if (tab === "business" && logoFile) {
+        const { base64, filename } = await compressImage(logoFile, 600, 0.85);
+        const uploadRes = await fetch("/api/upload-image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: base64, filename: `logo-${filename}`, contentType: "image/jpeg" }),
+        });
+        const uploadData = await uploadRes.json();
+        if (uploadRes.ok) logoUploadUrl = uploadData.url;
+      }
+
       const endpoint = tab === "business" ? "/api/submit-business" : "/api/submit-event";
       const payload = tab === "event"
         ? { name: form.name, category: form.category, date: form.date, time: form.time, location: form.location, email: form.email, phone: form.phone, description: form.description, eventUrl: form.eventUrl, imageUrl }
-        : form;
+        : { ...form, logoUrl: logoUploadUrl || null };
 
       const res = await fetch(endpoint, {
         method: "POST",
@@ -3103,11 +3119,63 @@ function SubmitSection() {
                     </div>
                   )}
 
-                  {/* Logo URL — shown for all tiers, used by Silver & Gold */}
+                  {/* Logo upload — drag & drop, compressed, Vercel Blob */}
                   <div>
-                    {input("logoUrl", "Logo URL (optional)")}
-                    <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, marginTop: 6, paddingLeft: 2 }}>
-                      Upload to <a href="https://imgbb.com" target="_blank" rel="noopener noreferrer" style={{ color: C.lakeBlue }}>imgbb.com</a> and paste the direct link · Square image · Min 200×200px · Displayed for Silver & Gold tiers
+                    <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 600, color: C.textLight, marginBottom: 8, letterSpacing: 0.5 }}>
+                      Logo (optional · used for Silver & Gold tiers)
+                    </div>
+                    <div
+                      onDragEnter={e => { e.preventDefault(); setIsLogoDragging(true); }}
+                      onDragOver={e => { e.preventDefault(); setIsLogoDragging(true); }}
+                      onDragLeave={() => setIsLogoDragging(false)}
+                      onDrop={e => {
+                        e.preventDefault();
+                        setIsLogoDragging(false);
+                        const file = e.dataTransfer.files[0];
+                        if (!file || !file.type.startsWith("image/")) return;
+                        setLogoFile(file);
+                        const reader = new FileReader();
+                        reader.onload = (ev) => setLogoPreview(ev.target.result);
+                        reader.readAsDataURL(file);
+                      }}
+                      style={{
+                        border: `1.5px dashed ${isLogoDragging ? C.sage : C.sand}`,
+                        borderRadius: 8, padding: "14px",
+                        background: isLogoDragging ? "rgba(122,142,114,0.06)" : C.cream,
+                        textAlign: "center", transition: "all 0.2s",
+                      }}
+                    >
+                      {logoPreview ? (
+                        <div style={{ position: "relative", display: "inline-block" }}>
+                          <img src={logoPreview} alt="Logo preview" style={{ maxWidth: 120, maxHeight: 120, borderRadius: 8, objectFit: "contain", display: "block" }} />
+                          <button
+                            type="button"
+                            onClick={() => { setLogoFile(null); setLogoPreview(null); }}
+                            style={{ position: "absolute", top: 4, right: 4, background: "rgba(0,0,0,0.6)", color: "#fff", border: "none", borderRadius: "50%", width: 22, height: 22, cursor: "pointer", fontSize: 12, lineHeight: 1 }}
+                          >×</button>
+                        </div>
+                      ) : (
+                        <label style={{ cursor: "pointer", display: "block" }}>
+                          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, marginBottom: 4 }}>
+                            {isLogoDragging ? "Drop to upload" : "Drag & drop logo or click to upload"}
+                          </div>
+                          <div style={{ fontSize: 11, color: C.textMuted, opacity: 0.6 }}>
+                            Square image recommended · JPG or PNG · auto-compressed
+                          </div>
+                          <input
+                            type="file" accept="image/*"
+                            onChange={e => {
+                              const file = e.target.files[0];
+                              if (!file) return;
+                              setLogoFile(file);
+                              const reader = new FileReader();
+                              reader.onload = (ev) => setLogoPreview(ev.target.result);
+                              reader.readAsDataURL(file);
+                            }}
+                            style={{ display: "none" }}
+                          />
+                        </label>
+                      )}
                     </div>
                   </div>
 
@@ -3886,7 +3954,6 @@ function HomePage() {
       <div style={{ textAlign: "center", padding: "8px 24px 40px" }}>
         <Btn onClick={() => window.open("https://maps.google.com/?q=Manitou+Beach+Michigan+49267", "_blank")} variant="dark">Get Directions</Btn>
       </div>
-      <PricingSection />
       <BusinessDirectory />
       <DiagonalDivider topColor={C.warmWhite} bottomColor={C.night} />
       <HollyYetiSection />
@@ -3894,6 +3961,7 @@ function HomePage() {
       <LivingSection />
       <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
       <SubmitSection />
+      <PricingSection />
       <AboutSection />
       <Footer scrollTo={scrollTo} />
     </div>
