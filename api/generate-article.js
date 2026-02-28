@@ -17,7 +17,7 @@ Choose the best cover image from this catalog. Two visual styles exist — pick 
 
 ILLUSTRATED (cartoon, white background — use for fun, casual, community, listicles, light content):
 - yeti-celebrates.png → celebrations, community wins, event announcements
-- yeti-Influencer.png → social media trends, local buzz, influencer/viral pieces
+- yeti-influencer.png → social media trends, local buzz, influencer/viral pieces
 - yeti-box-camera.png → history, nostalgia, vintage community stories
 - yeti-camera-reverse.png → behind-the-scenes, community event coverage
 - yeti-camera.png → journalism, reporting, "the Yeti was there" pieces
@@ -30,7 +30,7 @@ ILLUSTRATED (cartoon, white background — use for fun, casual, community, listi
 - yeti-futurist.png → future of community, development, what's coming
 - yeti-painting.png → arts & culture, creativity, local artists, DIY
 - yeti-selfie.png → personal takes, "I was there", casual community content
-- yeto-aviator.png → travel, adventure, getting out on the water/trails
+- yeti-aviator.png → travel, adventure, getting out on the water/trails
 
 REALISM (photorealistic, cinematic — use for feature stories, immersive narratives, emotional depth):
 - yeti-deck-camera-realism.png → documentary pieces, lake photography, nature writing
