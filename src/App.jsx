@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useParams, useNavigate } from "react-router-dom";
 
 // ============================================================
 // 🎬  GLOBAL CSS KEYFRAMES & ANIMATIONS
@@ -3602,7 +3602,7 @@ function Footer({ scrollTo }) {
           alignItems: "center",
         }}>
           <div style={{ fontSize: 12, color: "rgba(255,255,255,0.2)", fontFamily: "'Libre Franklin', sans-serif" }}>
-            © {new Date().getFullYear()} Manitou Beach Michigan · Holly & The Yeti
+            © {new Date().getFullYear()} Yeti Groove Media LLC
           </div>
           <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: "rgba(255,255,255,0.15)" }}>
             No beach. Still worth it. 🏕️
@@ -7598,6 +7598,274 @@ function PromotePage() {
 }
 
 // ============================================================
+// 📰  THE MANITOU DISPATCH — BLOG / NEWSLETTER ARCHIVE
+// ============================================================
+
+const CATEGORY_COLORS = {
+  'Lake Life':       C.lakeBlue,
+  'Seasonal Tips':   C.sage,
+  'Community News':  C.sunset,
+  'Hollys Corner':   '#C06FA0',
+  'Events':          '#E07B39',
+  'Local History':   '#8B7355',
+  'PSA':             '#C0392B',
+  'Advertorial':     '#7D6EAA',
+};
+
+function DispatchArticleContent({ content }) {
+  if (!content || !content.length) return null;
+
+  return (
+    <div style={{ maxWidth: 720, margin: '0 auto', fontFamily: "'Libre Franklin', sans-serif", color: C.text, lineHeight: 1.8, fontSize: 17 }}>
+      {content.map((block, i) => {
+        if (block.type === 'p') return (
+          <p key={i} style={{ marginBottom: 20 }}>{block.text}</p>
+        );
+        if (block.type === 'h1') return (
+          <h1 key={i} style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, fontWeight: 700, color: C.dusk, marginTop: 40, marginBottom: 16 }}>{block.text}</h1>
+        );
+        if (block.type === 'h2') return (
+          <h2 key={i} style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, fontWeight: 700, color: C.dusk, marginTop: 36, marginBottom: 12 }}>{block.text}</h2>
+        );
+        if (block.type === 'h3') return (
+          <h3 key={i} style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 700, color: C.dusk, marginTop: 28, marginBottom: 10 }}>{block.text}</h3>
+        );
+        if (block.type === 'quote') return (
+          <blockquote key={i} style={{ borderLeft: `4px solid ${C.sage}`, paddingLeft: 20, margin: '24px 0', fontStyle: 'italic', color: '#5a5a5a', fontSize: 18 }}>{block.text}</blockquote>
+        );
+        if (block.type === 'callout') return (
+          <div key={i} style={{ background: C.warmWhite, borderRadius: 10, padding: '16px 20px', margin: '24px 0', display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+            <span style={{ fontSize: 22 }}>{block.icon}</span>
+            <span>{block.text}</span>
+          </div>
+        );
+        if (block.type === 'divider') return (
+          <hr key={i} style={{ border: 'none', borderTop: `1px solid ${C.sage}30`, margin: '32px 0' }} />
+        );
+        if (block.type === 'image') return (
+          <figure key={i} style={{ margin: '28px 0' }}>
+            <img src={block.url} alt={block.caption || ''} style={{ width: '100%', borderRadius: 10, display: 'block' }} />
+            {block.caption && <figcaption style={{ textAlign: 'center', fontSize: 13, color: '#888', marginTop: 8 }}>{block.caption}</figcaption>}
+          </figure>
+        );
+        if (block.type === 'ul') return (
+          <ul key={i} style={{ paddingLeft: 24, marginBottom: 20 }}>
+            {block.items.map((item, j) => <li key={j} style={{ marginBottom: 6 }}>{item}</li>)}
+          </ul>
+        );
+        if (block.type === 'ol') return (
+          <ol key={i} style={{ paddingLeft: 24, marginBottom: 20 }}>
+            {block.items.map((item, j) => <li key={j} style={{ marginBottom: 6 }}>{item}</li>)}
+          </ol>
+        );
+        return null;
+      })}
+    </div>
+  );
+}
+
+function DispatchArticlePage() {
+  const { slug } = useParams();
+  const navigate = useNavigate();
+  const [article, setArticle] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const subScrollTo = (id) => { window.location.href = '/#' + id; };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    fetch(`/api/dispatch-article?slug=${encodeURIComponent(slug)}`)
+      .then(r => r.json())
+      .then(d => { setArticle(d.article || null); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, [slug]);
+
+  const formatDate = (str) => {
+    if (!str) return '';
+    return new Date(str + 'T12:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  };
+
+  return (
+    <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: 'hidden', minHeight: '100vh' }}>
+      <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+      <GlobalStyles />
+      <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
+
+      <div style={{ paddingTop: 80, minHeight: '100vh' }}>
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '80px 20px', color: C.sage }}>Loading…</div>
+        ) : !article ? (
+          <div style={{ textAlign: 'center', padding: '80px 20px' }}>
+            <p style={{ marginBottom: 20, color: '#888' }}>Article not found.</p>
+            <button onClick={() => navigate('/dispatch')} style={{ background: C.sage, color: '#fff', border: 'none', borderRadius: 8, padding: '10px 24px', cursor: 'pointer', fontSize: 15 }}>← Back to Dispatch</button>
+          </div>
+        ) : (
+          <>
+            {article.coverImage && (
+              <div style={{ width: '100%', maxHeight: 420, overflow: 'hidden' }}>
+                <img src={article.coverImage} alt={article.title} style={{ width: '100%', height: 420, objectFit: 'cover', display: 'block' }} />
+              </div>
+            )}
+
+            <div style={{ maxWidth: 760, margin: '0 auto', padding: '40px 24px 80px' }}>
+              <button
+                onClick={() => navigate('/dispatch')}
+                style={{ background: 'transparent', border: `1px solid ${C.sage}`, color: C.sage, borderRadius: 6, padding: '6px 16px', cursor: 'pointer', fontSize: 13, marginBottom: 28, display: 'flex', alignItems: 'center', gap: 6 }}
+              >
+                ← The Dispatch
+              </button>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16, flexWrap: 'wrap' }}>
+                <span style={{ background: CATEGORY_COLORS[article.category] || C.lakeBlue, color: '#fff', borderRadius: 20, padding: '4px 14px', fontSize: 12, fontWeight: 600, letterSpacing: 0.5, textTransform: 'uppercase' }}>
+                  {article.category}
+                </span>
+                {article.tags.map(tag => (
+                  <span key={tag} style={{ background: C.warmWhite, color: C.sage, borderRadius: 20, padding: '3px 12px', fontSize: 11, fontWeight: 500 }}>#{tag}</span>
+                ))}
+              </div>
+
+              <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(24px, 4vw, 38px)', fontWeight: 700, color: C.dusk, lineHeight: 1.25, marginBottom: 16 }}>
+                {article.title}
+              </h1>
+
+              <div style={{ display: 'flex', gap: 16, alignItems: 'center', color: '#888', fontSize: 14, marginBottom: 36, flexWrap: 'wrap' }}>
+                <span>By <strong style={{ color: C.text }}>{article.author}</strong></span>
+                {article.publishedDate && <span>{formatDate(article.publishedDate)}</span>}
+              </div>
+
+              {article.excerpt && (
+                <p style={{ fontSize: 19, fontStyle: 'italic', color: '#5a5a5a', borderLeft: `4px solid ${C.lakeBlue}`, paddingLeft: 20, marginBottom: 36, lineHeight: 1.6 }}>
+                  {article.excerpt}
+                </p>
+              )}
+
+              <DispatchArticleContent content={article.content} />
+
+              <div style={{ marginTop: 60, padding: '32px', background: C.night, borderRadius: 14, textAlign: 'center' }}>
+                <p style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.warmWhite, marginBottom: 8 }}>Enjoying The Dispatch?</p>
+                <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 14, marginBottom: 20 }}>Get lake life news, local tips, and a little Yeti wisdom delivered to your inbox.</p>
+                <button onClick={() => subScrollTo('submit')} style={{ background: C.sunset, color: '#fff', border: 'none', borderRadius: 8, padding: '12px 28px', cursor: 'pointer', fontSize: 15, fontWeight: 600 }}>
+                  Subscribe Free
+                </button>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+
+      <Footer scrollTo={subScrollTo} />
+    </div>
+  );
+}
+
+function DispatchPage() {
+  const navigate = useNavigate();
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const subScrollTo = (id) => { window.location.href = '/#' + id; };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    fetch('/api/dispatch-articles')
+      .then(r => r.json())
+      .then(d => { setArticles(d.articles || []); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const formatDate = (str) => {
+    if (!str) return '';
+    return new Date(str + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  };
+
+  return (
+    <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: 'hidden' }}>
+      <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+      <GlobalStyles />
+      <ScrollProgress />
+      <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
+
+      {/* Hero */}
+      <section style={{
+        backgroundImage: 'url(/images/dispatch-header.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center 40%',
+        minHeight: 380,
+        display: 'flex',
+        alignItems: 'flex-end',
+        position: 'relative',
+      }}>
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(10,18,24,0.3) 0%, rgba(10,18,24,0.75) 100%)' }} />
+        <div style={{ position: 'relative', zIndex: 1, padding: '48px 32px', maxWidth: 800, width: '100%', margin: '0 auto' }}>
+          <div style={{ fontFamily: "'Caveat', cursive", fontSize: 16, color: C.sunset, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Holly & The Yeti present</div>
+          <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(36px, 6vw, 64px)', fontWeight: 700, color: '#fff', margin: '0 0 12px', lineHeight: 1.1 }}>
+            The Manitou Dispatch
+          </h1>
+          <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: 18, margin: 0, fontStyle: 'italic' }}>
+            Lake life, local news, and a little Yeti wisdom
+          </p>
+        </div>
+      </section>
+
+      <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
+
+      {/* Articles Grid */}
+      <section style={{ maxWidth: 1100, margin: '0 auto', padding: '20px 24px 80px' }}>
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '60px 20px', color: C.sage }}>Loading the latest…</div>
+        ) : articles.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '60px 20px' }}>
+            <p style={{ fontFamily: "'Caveat', cursive", fontSize: 26, color: C.sage, marginBottom: 8 }}>First issue coming soon.</p>
+            <p style={{ color: '#888', fontSize: 15 }}>Subscribe below to be the first to get it.</p>
+          </div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 32 }}>
+            {articles.map(article => (
+              <FadeIn key={article.id}>
+                <div
+                  onClick={() => navigate(`/dispatch/${article.slug}`)}
+                  style={{ background: '#fff', borderRadius: 14, overflow: 'hidden', cursor: 'pointer', boxShadow: '0 2px 16px rgba(0,0,0,0.07)', transition: 'transform 0.2s, box-shadow 0.2s' }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.13)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 2px 16px rgba(0,0,0,0.07)'; }}
+                >
+                  {article.coverImage ? (
+                    <img src={article.coverImage} alt={article.title} style={{ width: '100%', height: 200, objectFit: 'cover', display: 'block' }} />
+                  ) : (
+                    <div style={{ width: '100%', height: 200, background: `linear-gradient(135deg, ${C.dusk}, ${C.lakeBlue})`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <span style={{ fontFamily: "'Caveat', cursive", fontSize: 28, color: 'rgba(255,255,255,0.4)' }}>The Dispatch</span>
+                    </div>
+                  )}
+                  <div style={{ padding: '20px 22px 24px' }}>
+                    <span style={{ background: CATEGORY_COLORS[article.category] || C.lakeBlue, color: '#fff', borderRadius: 20, padding: '3px 12px', fontSize: 11, fontWeight: 600, letterSpacing: 0.5, textTransform: 'uppercase' }}>
+                      {article.category}
+                    </span>
+                    <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 700, color: C.dusk, margin: '12px 0 8px', lineHeight: 1.3 }}>
+                      {article.title}
+                    </h3>
+                    {article.excerpt && (
+                      <p style={{ fontSize: 14, color: '#666', lineHeight: 1.5, margin: '0 0 14px' }}>
+                        {article.excerpt.length > 120 ? article.excerpt.slice(0, 120) + '…' : article.excerpt}
+                      </p>
+                    )}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12, color: '#999', marginTop: 'auto' }}>
+                      <span>{article.author}</span>
+                      {article.publishedDate && <span>{formatDate(article.publishedDate)}</span>}
+                    </div>
+                  </div>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <WaveDivider topColor={C.cream} bottomColor={C.night} />
+      <NewsletterInline />
+      <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
+      <Footer scrollTo={subScrollTo} />
+    </div>
+  );
+}
+
+// ============================================================
 // 🌐  APP ROOT
 // ============================================================
 export default function App() {
@@ -7616,6 +7884,8 @@ export default function App() {
         <Route path="/wineries" element={<WineriesPage />} />
         <Route path="/devils-lake" element={<DevilsLakePage />} />
         <Route path="/promote" element={<PromotePage />} />
+        <Route path="/dispatch" element={<DispatchPage />} />
+        <Route path="/dispatch/:slug" element={<DispatchArticlePage />} />
       </Routes>
     </BrowserRouter>
   );
