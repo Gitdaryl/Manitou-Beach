@@ -7895,12 +7895,12 @@ function DispatchPage() {
 const DISPATCH_CATEGORIES = ['Lake Life', 'Community', 'Events', 'Real Estate', 'Food & Drink', 'History', 'Recreation'];
 
 function YetiAdminPage() {
-  const [topic, setTopic] = React.useState('');
-  const [category, setCategory] = React.useState('Lake Life');
-  const [notes, setNotes] = React.useState('');
-  const [status, setStatus] = React.useState('idle'); // idle | loading | success | error
-  const [result, setResult] = React.useState(null);
-  const [errorMsg, setErrorMsg] = React.useState('');
+  const [topic, setTopic] = useState('');
+  const [category, setCategory] = useState('Lake Life');
+  const [notes, setNotes] = useState('');
+  const [status, setStatus] = useState('idle'); // idle | loading | success | error
+  const [result, setResult] = useState(null);
+  const [errorMsg, setErrorMsg] = useState('');
 
   const handleGenerate = async () => {
     if (!topic.trim()) return;
