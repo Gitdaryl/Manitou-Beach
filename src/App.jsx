@@ -8046,6 +8046,8 @@ function YetiAdminPage() {
   const [draftsLoading, setDraftsLoading] = useState(false);
   const [publishingId, setPublishingId] = useState(null); // notionId being published
   const [publishedIds, setPublishedIds] = useState(new Set());
+  const [swapStatus, setSwapStatus] = useState({}); // { [articleId]: 'uploading' | 'done' | 'error' }
+  const [swappedUrls, setSwappedUrls] = useState({});  // { [articleId]: url }
 
   const fetchDrafts = async () => {
     setDraftsLoading(true);
@@ -8057,6 +8059,41 @@ function YetiAdminPage() {
       console.error('Failed to load drafts:', err);
     } finally {
       setDraftsLoading(false);
+    }
+  };
+
+  const handleSwapPhoto = async (articleId, file) => {
+    if (!file || !file.type.startsWith('image/')) return;
+    setSwapStatus(prev => ({ ...prev, [articleId]: 'uploading' }));
+    try {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const base64 = e.target.result.split(',')[1];
+          const uploadRes = await fetch('/api/upload-image', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ filename: file.name, contentType: file.type, data: base64, folder: 'dispatch' }),
+          });
+          const uploadData = await uploadRes.json();
+          if (!uploadRes.ok) throw new Error(uploadData.error || 'Upload failed');
+          const applyRes = await fetch('/api/apply-cover-image', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ notionId: articleId, url: uploadData.url }),
+          });
+          if (!applyRes.ok) throw new Error('Failed to apply to Notion');
+          setSwappedUrls(prev => ({ ...prev, [articleId]: uploadData.url }));
+          setDrafts(prev => prev.map(a => a.id === articleId ? { ...a, coverImage: uploadData.url } : a));
+          setSwapStatus(prev => ({ ...prev, [articleId]: 'done' }));
+        } catch (err) {
+          console.error(err);
+          setSwapStatus(prev => ({ ...prev, [articleId]: 'error' }));
+        }
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      setSwapStatus(prev => ({ ...prev, [articleId]: 'error' }));
     }
   };
 
@@ -8266,6 +8303,32 @@ function YetiAdminPage() {
                           style={{ fontSize: 12, color: C.lakeBlue, textDecoration: 'none', textAlign: 'center' }}
                         >Notion →</a>
                       </div>
+                    </div>
+
+                    {/* Photo strip */}
+                    <div style={{ marginTop: 14, paddingTop: 12, borderTop: `1px solid ${C.sand}`, display: 'flex', alignItems: 'center', gap: 12 }}>
+                      {article.coverImage && (
+                        <img src={article.coverImage} alt="" style={{ width: 72, height: 48, objectFit: 'cover', borderRadius: 6, flexShrink: 0 }} />
+                      )}
+                      <input
+                        id={`swap-input-${article.id}`}
+                        type="file" accept="image/*"
+                        style={{ display: 'none' }}
+                        onChange={e => handleSwapPhoto(article.id, e.target.files[0])}
+                      />
+                      {swapStatus[article.id] === 'uploading' ? (
+                        <span style={{ fontSize: 12, color: C.textMuted }}>Uploading…</span>
+                      ) : swapStatus[article.id] === 'done' ? (
+                        <span style={{ fontSize: 12, color: C.sage, fontWeight: 600 }}>✓ Photo updated</span>
+                      ) : (
+                        <button
+                          onClick={() => document.getElementById(`swap-input-${article.id}`).click()}
+                          style={{ background: 'transparent', border: `1px solid ${C.sand}`, borderRadius: 6, padding: '5px 14px', fontSize: 12, color: C.textLight, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}
+                        >{article.coverImage ? '📷 Swap Photo' : '📷 Add Photo'}</button>
+                      )}
+                      {swapStatus[article.id] === 'error' && (
+                        <span style={{ fontSize: 12, color: C.sunset }}>Upload failed — try again</span>
+                      )}
                     </div>
                   </div>
                 );
