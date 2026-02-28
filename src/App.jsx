@@ -737,6 +737,7 @@ function Hero({ scrollTo }) {
   // All hooks at top — fixes React rules-of-hooks violation from previous pattern
   const [loaded, setLoaded] = useState(false);
   const [heroEvents, setHeroEvents] = useState([]);
+  const [heroTakeover, setHeroTakeover] = useState([]);
   const [heroReady, setHeroReady] = useState(false);
   const [heroIndex, setHeroIndex] = useState(0);
   const [heroPaused, setHeroPaused] = useState(false);
@@ -751,14 +752,20 @@ function Hero({ scrollTo }) {
         setHeroReady(true);
       })
       .catch(() => setHeroReady(true));
+    fetch("/api/promotions")
+      .then(r => r.json())
+      .then(data => setHeroTakeover(data.heroTakeover || []))
+      .catch(() => {});
   }, []);
 
   // Auto-rotate through hero events every 7 seconds
+  // Uses takeover events when active, organic events otherwise
+  const rotationCount = heroTakeover.length > 0 ? heroTakeover.length : heroEvents.length;
   useEffect(() => {
-    if (heroEvents.length <= 1 || heroPaused) return;
-    const t = setInterval(() => setHeroIndex(i => (i + 1) % heroEvents.length), 7000);
+    if (rotationCount <= 1 || heroPaused) return;
+    const t = setInterval(() => setHeroIndex(i => (i + 1) % rotationCount), 7000);
     return () => clearInterval(t);
-  }, [heroEvents.length, heroPaused]);
+  }, [rotationCount, heroPaused]);
 
   // Parallax for default video hero
   useEffect(() => {
@@ -780,7 +787,10 @@ function Hero({ scrollTo }) {
   );
 
   // ── EVENT HERO (with rotation) ──
-  const heroEvent = heroEvents[heroIndex] || null;
+  // If a paid Hero Takeover promo is active, show takeover events exclusively
+  const isSponsored = heroTakeover.length > 0;
+  const displayEvents = isSponsored ? heroTakeover : heroEvents;
+  const heroEvent = displayEvents[heroIndex] || null;
   if (heroReady && heroEvent) {
     // heroImageUrl = high-res image for full-screen bg (add "Hero Image URL" column in Notion)
     // imageUrl = small event image — shown as a contained card, never stretched
@@ -797,14 +807,17 @@ function Hero({ scrollTo }) {
       >
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(170deg, rgba(26,40,48,0.75) 0%, rgba(26,40,48,0.5) 50%, rgba(26,40,48,0.85) 100%)", zIndex: 1 }} />
 
-        {/* Coming Up badge — top right */}
+        {/* Coming Up / Sponsored badge — top right */}
         <div style={{ position: "absolute", top: 100, right: 48, zIndex: 2 }}>
           <div style={{
-            display: "inline-block", background: `${C.sunset}22`, border: `1px solid ${C.sunset}50`,
+            display: "inline-block",
+            background: isSponsored ? `${C.sage}22` : `${C.sunset}22`,
+            border: `1px solid ${isSponsored ? C.sage : C.sunset}50`,
             borderRadius: 4, padding: "6px 16px", fontFamily: "'Libre Franklin', sans-serif",
-            fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunsetLight,
+            fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase",
+            color: isSponsored ? C.sage : C.sunsetLight,
           }}>
-            Coming Up
+            {isSponsored ? "Sponsored" : "Coming Up"}
           </div>
         </div>
 
@@ -872,12 +885,12 @@ function Hero({ scrollTo }) {
         </div>
 
         {/* Rotation dots — only if multiple events */}
-        {heroEvents.length > 1 && (
+        {displayEvents.length > 1 && (
           <div style={{
             position: "absolute", bottom: 48, left: "50%", transform: "translateX(-50%)",
             zIndex: 3, display: "flex", gap: 10,
           }}>
-            {heroEvents.map((_, i) => (
+            {displayEvents.map((_, i) => (
               <button
                 key={i}
                 onClick={() => { setHeroIndex(i); setHeroPaused(true); }}
@@ -944,12 +957,87 @@ function Hero({ scrollTo }) {
 // ============================================================
 // 📅  FEATURED EVENTS STRIP — next 4 upcoming events, below hero
 // ============================================================
+// ============================================================
+// 📢  PROMO BANNER — reusable, fetches active page banners
+// ============================================================
+function PromoBanner({ page }) {
+  const [banner, setBanner] = useState(null);
+
+  useEffect(() => {
+    fetch("/api/promotions")
+      .then(r => r.json())
+      .then(data => {
+        const banners = data.pageBanners?.[page] || [];
+        if (banners.length > 0) setBanner(banners[0]);
+      })
+      .catch(() => {});
+  }, [page]);
+
+  if (!banner) return null;
+
+  return (
+    <div style={{
+      background: `linear-gradient(135deg, ${C.night} 0%, #1e3326 100%)`,
+      borderBottom: `3px solid ${C.sage}50`,
+    }}>
+      <div style={{
+        maxWidth: 1100, margin: "0 auto", padding: "24px 24px",
+        display: "flex", gap: 28, alignItems: "center", flexWrap: "wrap",
+      }}>
+        {banner.imageUrl && (
+          <img
+            src={banner.imageUrl}
+            alt={banner.name}
+            style={{ width: 110, height: 75, objectFit: "cover", borderRadius: 8, flexShrink: 0, boxShadow: "0 4px 16px rgba(0,0,0,0.4)" }}
+          />
+        )}
+        <div style={{ flex: 1, minWidth: 200 }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 6 }}>
+            {banner.sponsorBadge ? "Sponsored" : "Featured Event"}
+          </div>
+          <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(17px, 2.5vw, 22px)", color: C.cream, lineHeight: 1.2, marginBottom: 4 }}>
+            {banner.promoHeadline || banner.name}
+          </div>
+          {(banner.date || banner.location) && (
+            <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: "rgba(255,255,255,0.5)" }}>
+              {banner.date && new Date(banner.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+              {banner.date && banner.location && " · "}
+              {banner.location}
+            </div>
+          )}
+        </div>
+        {banner.eventUrl && (
+          <a
+            href={banner.eventUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "inline-block", padding: "11px 28px",
+              background: "#4A9B6F", color: "#fff", borderRadius: 6,
+              fontFamily: "'Libre Franklin', sans-serif", fontSize: 13,
+              fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase",
+              textDecoration: "none", flexShrink: 0, whiteSpace: "nowrap",
+            }}
+          >
+            {banner.ctaLabel || "Learn More"}
+          </a>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function FeaturedEventsStrip() {
   const [events, setEvents] = useState([]);
+  const [stripPin, setStripPin] = useState(null);
   useEffect(() => {
     fetch("/api/events")
       .then(r => r.json())
       .then(data => setEvents((data.events || []).slice(0, 4)))
+      .catch(() => {});
+    fetch("/api/promotions")
+      .then(r => r.json())
+      .then(data => setStripPin(data.stripPin || null))
       .catch(() => {});
   }, []);
 
@@ -957,6 +1045,11 @@ function FeaturedEventsStrip() {
 
   const eventCatColors = { "Live Music": C.sunset, "Food & Social": "#8B5E3C", "Sports & Outdoors": C.sage, "Community": C.lakeBlue };
   const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+
+  // Inject strip pin promo at position 0 (bump last organic event out)
+  const displayEvents = stripPin
+    ? [{ ...stripPin, isPromoted: true }, ...events.slice(0, 3)]
+    : events;
 
   return (
     <div style={{
@@ -975,33 +1068,41 @@ function FeaturedEventsStrip() {
         </div>
         <div style={{
           display: "grid",
-          gridTemplateColumns: `repeat(${events.length}, 1fr)`,
+          gridTemplateColumns: `repeat(${displayEvents.length}, 1fr)`,
           gap: 12,
           overflowX: "auto",
         }}>
-          {events.map((event, i) => {
-            const d = new Date(event.date + "T00:00:00");
-            const month = MONTHS[d.getMonth()];
-            const day = d.getDate();
-            const color = eventCatColors[event.category] || C.sage;
+          {displayEvents.map((event, i) => {
+            const d = event.date ? new Date(event.date + "T00:00:00") : null;
+            const month = d ? MONTHS[d.getMonth()] : "";
+            const day = d ? d.getDate() : "";
+            const color = event.isPromoted ? C.sunset : (eventCatColors[event.category] || C.sage);
+            const href = event.isPromoted && event.eventUrl ? event.eventUrl : "/happening";
             return (
-              <a key={event.id || i} href="/happening" style={{ textDecoration: "none" }}>
+              <a key={event.id || i} href={href} target={event.isPromoted && event.eventUrl ? "_blank" : undefined} rel={event.isPromoted ? "noopener noreferrer" : undefined} style={{ textDecoration: "none" }}>
                 <div
                   style={{
-                    background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)",
+                    background: event.isPromoted ? `${C.sunset}12` : "rgba(255,255,255,0.04)",
+                    border: event.isPromoted ? `1px solid ${C.sunset}40` : "1px solid rgba(255,255,255,0.07)",
                     borderRadius: 10, overflow: "hidden",
                     transition: "background 0.2s",
                   }}
-                  onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.08)"}
-                  onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.04)"}
+                  onMouseEnter={e => e.currentTarget.style.background = event.isPromoted ? `${C.sunset}20` : "rgba(255,255,255,0.08)"}
+                  onMouseLeave={e => e.currentTarget.style.background = event.isPromoted ? `${C.sunset}12` : "rgba(255,255,255,0.04)"}
                 >
                   {/* Date block */}
                   <div style={{
                     background: `${color}20`, borderBottom: `2px solid ${color}`,
                     padding: "10px 14px", display: "flex", alignItems: "baseline", gap: 6,
                   }}>
-                    <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, color, lineHeight: 1 }}>{day}</span>
-                    <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, color: `${color}cc`, textTransform: "uppercase" }}>{month}</span>
+                    {d ? (
+                      <>
+                        <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, color, lineHeight: 1 }}>{day}</span>
+                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, color: `${color}cc`, textTransform: "uppercase" }}>{month}</span>
+                      </>
+                    ) : (
+                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, color: `${color}cc`, textTransform: "uppercase" }}>Featured</span>
+                    )}
                   </div>
                   {/* Info */}
                   <div style={{ padding: "12px 14px" }}>
@@ -1019,7 +1120,7 @@ function FeaturedEventsStrip() {
                     )}
                     <div style={{ marginTop: 8 }}>
                       <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color, background: `${color}15`, padding: "3px 8px", borderRadius: 3 }}>
-                        {event.recurring === 'Annual' ? '● Annual' : event.category}
+                        {event.isPromoted ? "★ Promoted" : event.recurring === 'Annual' ? '● Annual' : event.category}
                       </span>
                     </div>
                   </div>
@@ -2571,6 +2672,26 @@ function BusinessRow({ business }) {
 // 🎙️  HOLLY & THE YETI
 // ============================================================
 function HollyYetiSection() {
+  const [videoSpotlight, setVideoSpotlight] = useState(null);
+
+  useEffect(() => {
+    fetch("/api/promotions")
+      .then(r => r.json())
+      .then(data => setVideoSpotlight(data.videoSpotlight || null))
+      .catch(() => {});
+  }, []);
+
+  const getYouTubeId = (url) => {
+    if (!url) return null;
+    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/);
+    return match?.[1] || null;
+  };
+
+  const videoId = videoSpotlight ? getYouTubeId(videoSpotlight.videoUrl) : '6Kjt2pNsdH0';
+  const videoLabel = videoSpotlight
+    ? `${videoSpotlight.name} — Sponsored Content`
+    : 'Devils Lake Tip-Up Wrap Up — Holly & The Yeti';
+
   return (
     <section id="holly" style={{
       backgroundImage: "url(/images/holly-yeti-bg.jpg)",
@@ -2641,22 +2762,28 @@ function HollyYetiSection() {
             </div>
           </FadeIn>
 
-          {/* BOTTOM LEFT — YouTube video */}
+          {/* BOTTOM LEFT — YouTube video (supports Sponsored Video Spotlight promo) */}
           <FadeIn delay={160} direction="left">
             <div>
-              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: 12 }}>
-                Watch
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: videoSpotlight ? C.sunsetLight : "rgba(255,255,255,0.25)", marginBottom: 12 }}>
+                {videoSpotlight ? "Sponsored Content" : "Watch"}
               </div>
-              <div style={{ position: "relative", paddingTop: "56.25%", borderRadius: 12, overflow: "hidden", boxShadow: "0 16px 60px rgba(0,0,0,0.55)" }}>
-                <iframe
-                  src="https://www.youtube.com/embed/6Kjt2pNsdH0"
-                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
+              <div style={{ position: "relative", paddingTop: "56.25%", borderRadius: 12, overflow: "hidden", boxShadow: "0 16px 60px rgba(0,0,0,0.55)", border: videoSpotlight ? `2px solid ${C.sunset}40` : "none" }}>
+                {videoId ? (
+                  <iframe
+                    src={`https://www.youtube.com/embed/${videoId}`}
+                    style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                ) : (
+                  <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif", fontSize: 13 }}>
+                    Video coming soon
+                  </div>
+                )}
               </div>
               <div style={{ fontFamily: "'Caveat', cursive", fontSize: 14, color: "rgba(255,255,255,0.3)", marginTop: 10 }}>
-                Devils Lake Tip-Up Wrap Up — Holly &amp; The Yeti
+                {videoLabel}
               </div>
             </div>
           </FadeIn>
@@ -3900,6 +4027,7 @@ function HappeningPage() {
       <ScrollProgress />
       <Navbar activeSection="happening" scrollTo={subScrollTo} isSubPage={true} />
       <HappeningHero />
+      <PromoBanner page="Whats Happening" />
       <EventTimeline />
       <WeeklyEventsSection events={weeklyEvents} onEventClick={setLightboxEvent} />
       <CalendarSection events={upcomingEvents} onEventClick={setLightboxEvent} activeFilter={activeFilter} onFilterChange={setActiveFilter} />
@@ -3948,6 +4076,7 @@ function HomePage() {
       <NewsletterBar />
       <WaveDivider topColor={C.dusk} bottomColor={C.dusk} />
       <HappeningSection />
+      <PromoBanner page="Home" />
       <WaveDivider topColor={C.dusk} bottomColor={C.cream} />
       <ExploreSection />
       <NewsletterInline />
@@ -4283,6 +4412,7 @@ function RoundLakePage() {
       <RoundLakeStatsSection />
       <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
       <RoundLakeHistorySection />
+      <PromoBanner page="Round Lake" />
       <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
       <RoundLakeFishingSection />
       <DiagonalDivider topColor={C.warmWhite} bottomColor={C.dusk} />
@@ -6075,6 +6205,7 @@ function FishingPage() {
       <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
       <FishingSpeciesSection />
       <WaveDivider topColor={C.cream} bottomColor={C.night} />
+      <PromoBanner page="Fishing" />
       <FishingCharterSection />
       <WaveDivider topColor={C.night} bottomColor={C.warmWhite} flip />
       <FishingEventsSection />
@@ -6306,6 +6437,7 @@ function WineriesPage() {
       <WaveDivider topColor={C.dusk} bottomColor={C.night} />
       <WineriesVillageCallout />
       <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
+      <PromoBanner page="Wineries" />
       <WineriesVenueSection />
       <DiagonalDivider topColor={C.cream} bottomColor={C.dusk} />
       <WineriesCTASection />
@@ -6616,6 +6748,7 @@ function DevilsLakePage() {
           <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginTop: 18 }}>Devils Lake · Manitou Beach, Michigan</p>
         </div>
       </section>
+      <PromoBanner page="Devils Lake" />
       <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
       <DevilsLakeFishingSection />
       <DiagonalDivider topColor={C.warmWhite} bottomColor={C.dusk} />
@@ -7195,6 +7328,276 @@ function LadiesClubPage() {
 }
 
 // ============================================================
+// 📣  PROMOTE PAGE (/promote)
+// ============================================================
+const PROMOTE_PACKAGES = [
+  { id: "hero_7d",   label: "Hero Takeover",            detail: "7 Days",         price: "$49",  desc: "Exclusive homepage hero for 7 days — your image, headline, and CTA button." },
+  { id: "hero_30d",  label: "Hero Takeover",            detail: "30 Days",        price: "$149", desc: "Exclusive homepage hero for a full month." },
+  { id: "banner_1p", label: "Page Feature Banner",      detail: "1 Page · 30 Days", price: "$29", desc: "Full-width event banner on one page of your choice for 30 days." },
+  { id: "banner_3p", label: "Page Feature Banner",      detail: "3 Pages · 30 Days", price: "$69", desc: "Full-width event banners on 3 pages of your choice for 30 days." },
+  { id: "strip_pin", label: "Featured Strip Pin",       detail: "30 Days",        price: "$19",  desc: "Pinned position #1 in the Coming Up strip on the homepage." },
+  { id: "newsletter",label: "Newsletter Feature",       detail: "1 Issue",        price: "$39",  desc: "Featured callout at the top of the next Manitou Beach Dispatch issue." },
+  { id: "holly_yeti",label: "Holly & Yeti Spotlight",   detail: "30 Days",        price: "$179", desc: "Video spotlight by Holly & The Yeti, embedded on site for 30 days." },
+  { id: "spotlight", label: "Community Spotlight",      detail: "Bundle · 30 Days", price: "$129", desc: "Hero Takeover 7 days + 2 Page Banners + Newsletter Feature. Save $55." },
+];
+
+const PROMO_PAGES = ["Home", "Whats Happening", "Devils Lake", "Wineries", "Fishing", "Round Lake"];
+
+function PromotePage() {
+  const subScrollTo = (id) => { window.location.href = "/#" + id; };
+  const params = new URLSearchParams(window.location.search);
+  const isSuccess = params.get("success") === "true";
+  const isCancelled = params.get("cancelled") === "true";
+  const successEvent = params.get("event") || "";
+
+  const [form, setForm] = useState({ eventName: "", email: "", tier: "banner_1p", promoPages: [], notes: "" });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const needsPages = ["banner_1p", "banner_3p"].includes(form.tier);
+  const selectedPkg = PROMOTE_PACKAGES.find(p => p.id === form.tier);
+
+  const togglePage = (page) => {
+    setForm(f => ({
+      ...f,
+      promoPages: f.promoPages.includes(page)
+        ? f.promoPages.filter(p => p !== page)
+        : [...f.promoPages, page],
+    }));
+  };
+
+  const handleSubmit = async () => {
+    if (!form.eventName || !form.email || !form.tier) {
+      setError("Please fill in your event name, email, and promotion package.");
+      return;
+    }
+    if (needsPages && form.promoPages.length === 0) {
+      setError("Please select at least one page for your banner.");
+      return;
+    }
+    setLoading(true);
+    setError("");
+    try {
+      const resp = await fetch("/api/create-promo-checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tier: form.tier,
+          eventName: form.eventName,
+          email: form.email,
+          promoPages: form.promoPages.join(", "),
+          notes: form.notes,
+        }),
+      });
+      const data = await resp.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setError(data.error || "Something went wrong. Please try again.");
+        setLoading(false);
+      }
+    } catch {
+      setError("Network error. Please try again.");
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+      <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+      <GlobalStyles />
+      <ScrollProgress />
+      <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
+
+      {/* Hero */}
+      <section style={{
+        background: `linear-gradient(135deg, ${C.night} 0%, ${C.lakeDark} 60%, ${C.dusk} 100%)`,
+        padding: "140px 24px 80px",
+        textAlign: "center",
+      }}>
+        <SectionLabel light>Reach the Community</SectionLabel>
+        <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(32px, 5vw, 60px)", fontWeight: 400, color: C.cream, margin: "0 0 20px 0", lineHeight: 1.15 }}>
+          Promote Your Event
+        </h1>
+        <p style={{ fontSize: 17, color: "rgba(255,255,255,0.55)", lineHeight: 1.8, maxWidth: 580, margin: "0 auto 0" }}>
+          Manitou Beach is where the community gathers. Put your event front and centre — on the hero, in the newsletter, or on the pages your audience already visits.
+        </p>
+      </section>
+
+      {/* Success / Cancelled states */}
+      {isSuccess && (
+        <div style={{ background: "#1e3326", padding: "32px 24px", textAlign: "center" }}>
+          <div style={{ fontSize: 32, marginBottom: 12 }}>🎉</div>
+          <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream, marginBottom: 8 }}>Payment Received!</div>
+          <div style={{ fontSize: 15, color: "rgba(255,255,255,0.6)", maxWidth: 480, margin: "0 auto" }}>
+            Thank you{successEvent ? ` for promoting "${successEvent}"` : ""}. We'll have your promotion live within 24 hours. Check your email for confirmation.
+          </div>
+        </div>
+      )}
+      {isCancelled && (
+        <div style={{ background: "#2a1a1a", padding: "24px 24px", textAlign: "center" }}>
+          <div style={{ fontSize: 15, color: "rgba(255,255,255,0.5)" }}>Checkout was cancelled — your details are still saved below if you'd like to try again.</div>
+        </div>
+      )}
+
+      {/* Package grid */}
+      <section style={{ background: C.warmWhite, padding: "72px 24px 60px" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+          <SectionTitle>Promotion Packages</SectionTitle>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 20, marginTop: 40 }}>
+            {PROMOTE_PACKAGES.map(pkg => (
+              <div
+                key={pkg.id}
+                onClick={() => setForm(f => ({ ...f, tier: pkg.id }))}
+                style={{
+                  background: form.tier === pkg.id ? `linear-gradient(135deg, ${C.night}, ${C.lakeDark})` : C.cream,
+                  border: `2px solid ${form.tier === pkg.id ? C.sage : C.sand}`,
+                  borderRadius: 14, padding: "24px 22px", cursor: "pointer",
+                  transition: "all 0.2s",
+                  boxShadow: form.tier === pkg.id ? "0 8px 24px rgba(0,0,0,0.15)" : "none",
+                }}
+                onMouseEnter={e => { if (form.tier !== pkg.id) e.currentTarget.style.borderColor = C.lakeBlue; }}
+                onMouseLeave={e => { if (form.tier !== pkg.id) e.currentTarget.style.borderColor = C.sand; }}
+              >
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 2.5, textTransform: "uppercase", color: form.tier === pkg.id ? C.sunsetLight : C.textMuted, marginBottom: 8 }}>
+                  {pkg.detail}
+                </div>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: form.tier === pkg.id ? C.cream : C.text, marginBottom: 6 }}>
+                  {pkg.label}
+                </div>
+                <div style={{ fontSize: 28, fontWeight: 700, color: form.tier === pkg.id ? C.cream : C.text, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 10 }}>
+                  {pkg.price}
+                </div>
+                <div style={{ fontSize: 13, color: form.tier === pkg.id ? "rgba(255,255,255,0.55)" : C.textLight, lineHeight: 1.6 }}>
+                  {pkg.desc}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Checkout form */}
+      {!isSuccess && (
+        <section style={{ background: C.cream, padding: "72px 24px 80px" }}>
+          <div style={{ maxWidth: 580, margin: "0 auto" }}>
+            <SectionTitle>Get Started</SectionTitle>
+            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, margin: "0 0 40px 0" }}>
+              Fill in your details and click Purchase — you'll be taken to a secure Stripe checkout. Once payment is confirmed, we'll activate your promotion within 24 hours.
+            </p>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.textMuted, marginBottom: 6 }}>Event / Business Name *</label>
+                <input
+                  value={form.eventName}
+                  onChange={e => setForm(f => ({ ...f, eventName: e.target.value }))}
+                  placeholder="e.g. Cherry Creek Cellars — Grape Stomp"
+                  style={{ width: "100%", padding: "12px 14px", borderRadius: 8, border: `1px solid ${C.sand}`, fontSize: 15, fontFamily: "'Libre Franklin', sans-serif", boxSizing: "border-box", background: C.warmWhite, color: C.text, outline: "none" }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.textMuted, marginBottom: 6 }}>Your Email *</label>
+                <input
+                  type="email"
+                  value={form.email}
+                  onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                  placeholder="you@email.com"
+                  style={{ width: "100%", padding: "12px 14px", borderRadius: 8, border: `1px solid ${C.sand}`, fontSize: 15, fontFamily: "'Libre Franklin', sans-serif", boxSizing: "border-box", background: C.warmWhite, color: C.text, outline: "none" }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.textMuted, marginBottom: 6 }}>Promotion Package *</label>
+                <select
+                  value={form.tier}
+                  onChange={e => setForm(f => ({ ...f, tier: e.target.value, promoPages: [] }))}
+                  style={{ width: "100%", padding: "12px 14px", borderRadius: 8, border: `1px solid ${C.sand}`, fontSize: 15, fontFamily: "'Libre Franklin', sans-serif", boxSizing: "border-box", background: C.warmWhite, color: C.text, outline: "none" }}
+                >
+                  {PROMOTE_PACKAGES.map(pkg => (
+                    <option key={pkg.id} value={pkg.id}>{pkg.label} — {pkg.detail} — {pkg.price}</option>
+                  ))}
+                </select>
+                {selectedPkg && (
+                  <div style={{ fontSize: 13, color: C.textLight, marginTop: 6, lineHeight: 1.5 }}>{selectedPkg.desc}</div>
+                )}
+              </div>
+
+              {needsPages && (
+                <div>
+                  <label style={{ display: "block", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.textMuted, marginBottom: 10 }}>Target Pages (choose {form.tier === "banner_3p" ? "up to 3" : "1"}) *</label>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                    {PROMO_PAGES.map(page => (
+                      <button
+                        key={page}
+                        type="button"
+                        onClick={() => togglePage(page)}
+                        style={{
+                          padding: "8px 16px", borderRadius: 6, fontSize: 13,
+                          fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600,
+                          cursor: "pointer", border: `1px solid ${form.promoPages.includes(page) ? C.sage : C.sand}`,
+                          background: form.promoPages.includes(page) ? C.sage : C.warmWhite,
+                          color: form.promoPages.includes(page) ? "#fff" : C.text,
+                          transition: "all 0.15s",
+                        }}
+                      >
+                        {page}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <label style={{ display: "block", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.textMuted, marginBottom: 6 }}>Notes (optional)</label>
+                <textarea
+                  value={form.notes}
+                  onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
+                  placeholder="Event date, preferred start date, image URL, or anything else we should know..."
+                  rows={3}
+                  style={{ width: "100%", padding: "12px 14px", borderRadius: 8, border: `1px solid ${C.sand}`, fontSize: 15, fontFamily: "'Libre Franklin', sans-serif", boxSizing: "border-box", background: C.warmWhite, color: C.text, outline: "none", resize: "vertical" }}
+                />
+              </div>
+
+              {error && (
+                <div style={{ background: "#fff0f0", border: "1px solid #f0b0b0", borderRadius: 8, padding: "12px 16px", fontSize: 14, color: "#c0392b" }}>
+                  {error}
+                </div>
+              )}
+
+              <button
+                onClick={handleSubmit}
+                disabled={loading}
+                style={{
+                  padding: "15px 0", background: loading ? C.textMuted : "#4A9B6F", color: "#fff",
+                  border: "none", borderRadius: 8, fontSize: 15, fontWeight: 700,
+                  letterSpacing: 1.5, textTransform: "uppercase", cursor: loading ? "not-allowed" : "pointer",
+                  fontFamily: "'Libre Franklin', sans-serif", transition: "background 0.2s",
+                  width: "100%",
+                }}
+              >
+                {loading ? "Redirecting to Checkout…" : `Purchase — ${selectedPkg?.price || ""}`}
+              </button>
+
+              <p style={{ fontSize: 12, color: C.textMuted, textAlign: "center", lineHeight: 1.6, margin: 0 }}>
+                Secure checkout via Stripe. After payment, you'll receive a confirmation and your promotion will go live within 24 hours.
+                <br />Questions? <a href="mailto:holly@foundationrealty.com" style={{ color: C.lakeBlue }}>Email Holly</a>
+              </p>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <WaveDivider topColor={C.cream} bottomColor={C.night} />
+      <HollyYetiSection />
+      <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
+      <Footer scrollTo={subScrollTo} />
+    </div>
+  );
+}
+
+// ============================================================
 // 🌐  APP ROOT
 // ============================================================
 export default function App() {
@@ -7212,6 +7615,7 @@ export default function App() {
         <Route path="/fishing" element={<FishingPage />} />
         <Route path="/wineries" element={<WineriesPage />} />
         <Route path="/devils-lake" element={<DevilsLakePage />} />
+        <Route path="/promote" element={<PromotePage />} />
       </Routes>
     </BrowserRouter>
   );
