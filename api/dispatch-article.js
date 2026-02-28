@@ -76,10 +76,7 @@ export default async function handler(req, res) {
         },
         body: JSON.stringify({
           filter: {
-            or: [
-              { property: 'Slug', rich_text: { equals: slug } },
-              { property: 'Status', select: { equals: 'Published' } },
-            ],
+            property: 'Slug', rich_text: { equals: slug },
           },
           page_size: 1,
         }),
@@ -91,10 +88,7 @@ export default async function handler(req, res) {
     }
 
     const queryData = await queryResponse.json();
-    const page = queryData.results.find(p => {
-      const pageSlug = p.properties['Slug']?.rich_text?.[0]?.plain_text;
-      return pageSlug === slug || p.id === slug;
-    });
+    const page = queryData.results[0] || null;
 
     if (!page) return res.status(404).json({ error: 'Article not found' });
 
