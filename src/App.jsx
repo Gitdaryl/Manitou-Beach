@@ -2033,26 +2033,173 @@ function VideoSection() {
 }
 
 // ============================================================
-// 📅  /happening — SUBMIT CTA
+// 📅  /happening — INLINE SUBMIT FORM
 // ============================================================
+const EVENT_CATEGORIES = ["Live Music", "Food & Social", "Sports & Outdoors", "Community", "Arts & Culture", "Markets & Vendors", "Other"];
+
 function HappeningSubmitCTA() {
+  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [form, setForm] = useState({ name: "", category: "", date: "", time: "", location: "", description: "", eventUrl: "", email: "", phone: "", cost: "" });
+
+  const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+
+  const handleImage = async (file) => {
+    if (!file) return;
+    setImageFile(file);
+    const reader = new FileReader();
+    reader.onload = ev => setImagePreview(ev.target.result);
+    reader.readAsDataURL(file);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!form.name || !form.email) { setSubmitError("Event name and email are required."); return; }
+    setSubmitting(true); setSubmitError("");
+    try {
+      let imageUrl = null;
+      if (imageFile) {
+        const { base64, filename } = await compressImage(imageFile);
+        const up = await fetch("/api/upload-image", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ data: base64, filename, contentType: "image/jpeg" }) });
+        const upData = await up.json();
+        if (up.ok) imageUrl = upData.url;
+      }
+      const res = await fetch("/api/events", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, imageUrl }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Submission failed");
+      setSubmitted(true);
+    } catch (err) {
+      setSubmitError(err.message || "Something went wrong. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const inputStyle = { width: "100%", padding: "11px 14px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.12)", fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", background: "rgba(255,255,255,0.06)", color: C.cream, outline: "none", boxSizing: "border-box" };
+  const labelStyle = { display: "block", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" };
+
+  if (submitted) {
+    return (
+      <section style={{ background: C.night, padding: "80px 24px", textAlign: "center" }}>
+        <FadeIn>
+          <div style={{ maxWidth: 520, margin: "0 auto" }}>
+            <div style={{ fontSize: 48, marginBottom: 16 }}>✓</div>
+            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 3vw, 32px)", fontWeight: 400, color: C.cream, margin: "0 0 12px 0" }}>Event submitted!</h3>
+            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.75, margin: "0 0 36px 0" }}>
+              We'll review and get it listed within 48 hours. Want more eyes on it?
+            </p>
+            <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "28px 32px", marginBottom: 24 }}>
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 10 }}>Promote Your Event</div>
+              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.7, margin: "0 0 20px 0" }}>
+                Hero Feature · Newsletter Spotlight · Featured Banners.<br/>Founding rates available now — limited spots.
+              </p>
+              <Btn href="/promote" variant="sunset">See Promotion Packages →</Btn>
+            </div>
+          </div>
+        </FadeIn>
+      </section>
+    );
+  }
+
   return (
-    <div style={{ background: C.lakeDark, padding: "80px 24px", textAlign: "center" }}>
-      <FadeIn>
-        <SectionLabel light>Get Involved</SectionLabel>
-        <h3 style={{
-          fontFamily: "'Libre Baskerville', serif",
-          fontSize: "clamp(24px, 4vw, 40px)",
-          fontWeight: 400, color: C.cream, margin: "0 0 16px 0",
-        }}>
-          Have an event to share?
-        </h3>
-        <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", margin: "0 0 36px 0", lineHeight: 1.75, maxWidth: 420, marginLeft: "auto", marginRight: "auto" }}>
-          Free community calendar listings. Submit your event and we'll get it listed within 48 hours.
-        </p>
-        <Btn href="/#submit" variant="sunset">Submit Your Event</Btn>
-      </FadeIn>
-    </div>
+    <section id="submit-event" style={{ background: C.night, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 680, margin: "0 auto" }}>
+        <FadeIn>
+          <SectionLabel light>Get Involved</SectionLabel>
+          <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 40px)", fontWeight: 400, color: C.cream, margin: "0 0 8px 0" }}>
+            Have an event to share?
+          </h3>
+          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.4)", margin: "0 0 40px 0", lineHeight: 1.75 }}>
+            Free community calendar listings — reviewed and live within 48 hours.
+          </p>
+        </FadeIn>
+
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            <div style={{ gridColumn: "1 / -1" }}>
+              <label style={labelStyle}>Event Name *</label>
+              <input value={form.name} onChange={e => set("name", e.target.value)} placeholder="e.g. Summer Bonfire at the Point" style={inputStyle} required />
+            </div>
+            <div>
+              <label style={labelStyle}>Category</label>
+              <select value={form.category} onChange={e => set("category", e.target.value)} style={{ ...inputStyle, appearance: "none" }}>
+                <option value="">Select a category</option>
+                {EVENT_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+            <div>
+              <label style={labelStyle}>Date</label>
+              <input type="date" value={form.date} onChange={e => set("date", e.target.value)} style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>Time</label>
+              <input value={form.time} onChange={e => set("time", e.target.value)} placeholder="e.g. 7:00 PM" style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>Location</label>
+              <input value={form.location} onChange={e => set("location", e.target.value)} placeholder="e.g. Devils Lake Pavilion" style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>Cost / Admission</label>
+              <input value={form.cost} onChange={e => set("cost", e.target.value)} placeholder="e.g. Free · $10 at the door" style={inputStyle} />
+            </div>
+            <div style={{ gridColumn: "1 / -1" }}>
+              <label style={labelStyle}>Description</label>
+              <textarea value={form.description} onChange={e => set("description", e.target.value)} placeholder="Tell us about your event..." rows={3} style={{ ...inputStyle, resize: "vertical" }} />
+            </div>
+            <div style={{ gridColumn: "1 / -1" }}>
+              <label style={labelStyle}>Ticket / Event URL</label>
+              <input value={form.eventUrl} onChange={e => set("eventUrl", e.target.value)} placeholder="https://" style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>Your Email *</label>
+              <input type="email" value={form.email} onChange={e => set("email", e.target.value)} placeholder="you@email.com" style={inputStyle} required />
+            </div>
+            <div>
+              <label style={labelStyle}>Phone (optional)</label>
+              <input value={form.phone} onChange={e => set("phone", e.target.value)} placeholder="555-555-5555" style={inputStyle} />
+            </div>
+            {/* Image upload */}
+            <div style={{ gridColumn: "1 / -1" }}>
+              <label style={labelStyle}>Event Image (optional)</label>
+              <div
+                onClick={() => document.getElementById("happening-img-upload").click()}
+                onDragOver={e => e.preventDefault()}
+                onDrop={e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f && f.type.startsWith("image/")) handleImage(f); }}
+                style={{ border: "1.5px dashed rgba(255,255,255,0.15)", borderRadius: 10, padding: "20px", textAlign: "center", cursor: "pointer", transition: "border-color 0.2s" }}
+                onMouseEnter={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)"}
+                onMouseLeave={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.15)"}
+              >
+                {imagePreview ? (
+                  <img src={imagePreview} alt="preview" style={{ maxHeight: 120, borderRadius: 6, objectFit: "cover" }} />
+                ) : (
+                  <span style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif" }}>Click or drag an image here</span>
+                )}
+                <input id="happening-img-upload" type="file" accept="image/*" style={{ display: "none" }} onChange={e => handleImage(e.target.files[0])} />
+              </div>
+            </div>
+          </div>
+
+          {submitError && <div style={{ fontSize: 13, color: "#ff6b6b", fontFamily: "'Libre Franklin', sans-serif" }}>{submitError}</div>}
+
+          <div style={{ display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap" }}>
+            <button type="submit" disabled={submitting} style={{ padding: "13px 32px", background: C.sunset, color: "#fff", border: "none", borderRadius: 6, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: submitting ? "not-allowed" : "pointer", opacity: submitting ? 0.6 : 1, transition: "all 0.2s" }}>
+              {submitting ? "Submitting..." : "Submit Free Listing"}
+            </button>
+            <a href="/promote" style={{ fontSize: 13, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", textDecoration: "none", opacity: 0.8 }}>
+              Want paid promotion? →
+            </a>
+          </div>
+        </form>
+      </div>
+    </section>
   );
 }
 
@@ -3852,6 +3999,23 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
               Dispatch
             </button>
 
+            {/* Promote link — accent styled */}
+            <button
+              onClick={() => { window.location.href = "/promote"; }}
+              style={{
+                background: solid ? `${C.sunset}12` : `${C.sunset}22`,
+                border: `1px solid ${C.sunset}40`,
+                color: solid ? C.sunset : C.sunsetLight,
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700,
+                letterSpacing: 0.5, padding: "7px 14px", borderRadius: 6, cursor: "pointer",
+                transition: "all 0.2s", whiteSpace: "nowrap",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = C.sunset; e.currentTarget.style.color = "#fff"; e.currentTarget.style.borderColor = C.sunset; }}
+              onMouseLeave={e => { e.currentTarget.style.background = solid ? `${C.sunset}12` : `${C.sunset}22`; e.currentTarget.style.color = solid ? C.sunset : C.sunsetLight; e.currentTarget.style.borderColor = `${C.sunset}40`; }}
+            >
+              ★ Promote
+            </button>
+
             {/* Community dropdown */}
             <div ref={comRef} style={{ position: "relative" }}>
               <button
@@ -4170,6 +4334,25 @@ function HappeningPage() {
       <EventTimeline />
       <WeeklyEventsSection events={weeklyEvents} onEventClick={setLightboxEvent} />
       <CalendarSection events={upcomingEvents} onEventClick={setLightboxEvent} activeFilter={activeFilter} onFilterChange={setActiveFilter} />
+
+      {/* Promote upsell strip */}
+      <div style={{ background: C.dusk, padding: "32px 24px" }}>
+        <div style={{ maxWidth: 960, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
+          <div>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2.5, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 6 }}>
+              Want more exposure?
+            </div>
+            <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.cream, fontWeight: 400 }}>
+              Hero Feature · Newsletter Spotlight · Featured Banners
+            </div>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.4)", marginTop: 4 }}>
+              Founding sponsor rates available now — limited spots
+            </div>
+          </div>
+          <Btn href="/promote" variant="sunset">See Packages →</Btn>
+        </div>
+      </div>
+
       <VideoSection />
       <HappeningSubmitCTA />
       <Footer scrollTo={subScrollTo} />
@@ -4780,6 +4963,7 @@ function VillagePage() {
       <ScrollProgress />
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
       <VillageHero />
+      <PromoBanner page="Village" />
       <VillageMapSection />
       <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
       <VillageHistorySection />
@@ -7470,17 +7654,18 @@ function LadiesClubPage() {
 // 📣  PROMOTE PAGE (/promote)
 // ============================================================
 const PROMOTE_PACKAGES = [
-  { id: "hero_7d",   label: "Hero Takeover",            detail: "7 Days",         price: "$49",  desc: "Exclusive homepage hero for 7 days — your image, headline, and CTA button." },
-  { id: "hero_30d",  label: "Hero Takeover",            detail: "30 Days",        price: "$149", desc: "Exclusive homepage hero for a full month." },
-  { id: "banner_1p", label: "Page Feature Banner",      detail: "1 Page · 30 Days", price: "$29", desc: "Full-width event banner on one page of your choice for 30 days." },
-  { id: "banner_3p", label: "Page Feature Banner",      detail: "3 Pages · 30 Days", price: "$69", desc: "Full-width event banners on 3 pages of your choice for 30 days." },
-  { id: "strip_pin", label: "Featured Strip Pin",       detail: "30 Days",        price: "$19",  desc: "Pinned position #1 in the Coming Up strip on the homepage." },
-  { id: "newsletter",label: "Newsletter Feature",       detail: "1 Issue",        price: "$39",  desc: "Featured callout at the top of the next Manitou Beach Dispatch issue." },
-  { id: "holly_yeti",label: "Holly & Yeti Spotlight",   detail: "30 Days",        price: "$179", desc: "Video spotlight by Holly & The Yeti, embedded on site for 30 days." },
-  { id: "spotlight", label: "Community Spotlight",      detail: "Bundle · 30 Days", price: "$129", desc: "Hero Takeover 7 days + 2 Page Banners + Newsletter Feature. Save $55." },
+  { id: "event_spotlight", label: "Event Spotlight",       detail: "Featured Listing",      price: "$25", fullPrice: "$49",  desc: "Bold highlighted event card in the calendar with your image and ticket link." },
+  { id: "hero_7d",         label: "Hero Feature",          detail: "7 Days",                price: "$75", fullPrice: "$149", desc: "Exclusive homepage hero for 7 days — your image, headline, and CTA button." },
+  { id: "hero_30d",        label: "Hero Feature",          detail: "30 Days",               price: "$249",fullPrice: "$499", desc: "Exclusive homepage hero for a full month." },
+  { id: "newsletter",      label: "Newsletter Feature",    detail: "1 Issue",               price: "$39", fullPrice: "$79",  desc: "Featured callout at the top of the next Manitou Beach Dispatch issue." },
+  { id: "banner_1p",       label: "Page Feature Banner",   detail: "1 Page · 30 Days",     price: "$29", fullPrice: "$59",  desc: "Full-width event banner on one page of your choice for 30 days." },
+  { id: "banner_3p",       label: "Page Feature Banner",   detail: "3 Pages · 30 Days",    price: "$69", fullPrice: "$129", desc: "Full-width event banners on 3 pages of your choice for 30 days." },
+  { id: "strip_pin",       label: "Featured Strip Pin",    detail: "30 Days",               price: "$19", fullPrice: "$39",  desc: "Pinned position #1 in the Coming Up strip on the homepage." },
+  { id: "holly_yeti",      label: "Holly & Yeti Spotlight",detail: "30 Days",               price: "$179",fullPrice: "$350", desc: "Video spotlight by Holly & The Yeti, embedded on site for 30 days." },
+  { id: "spotlight",       label: "Full Launch Bundle",    detail: "Best Value",            price: "$149",fullPrice: "$299", desc: "Hero Feature 7 days + Newsletter Feature + Event Spotlight. Save $55.", badge: "Best Value" },
 ];
 
-const PROMO_PAGES = ["Home", "Whats Happening", "Devils Lake", "Wineries", "Fishing", "Round Lake"];
+const PROMO_PAGES = ["Home", "Whats Happening", "Village", "Devils Lake", "Wineries", "Fishing", "Round Lake"];
 
 function PromotePage() {
   const subScrollTo = (id) => { window.location.href = "/#" + id; };
@@ -7582,36 +7767,53 @@ function PromotePage() {
       {/* Package grid */}
       <section style={{ background: C.warmWhite, padding: "72px 24px 60px" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <SectionTitle>Promotion Packages</SectionTitle>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 20, marginTop: 40 }}>
-            {PROMOTE_PACKAGES.map(pkg => (
-              <div
-                key={pkg.id}
-                onClick={() => setForm(f => ({ ...f, tier: pkg.id }))}
-                style={{
-                  background: form.tier === pkg.id ? `linear-gradient(135deg, ${C.night}, ${C.lakeDark})` : C.cream,
-                  border: `2px solid ${form.tier === pkg.id ? C.sage : C.sand}`,
-                  borderRadius: 14, padding: "24px 22px", cursor: "pointer",
-                  transition: "all 0.2s",
-                  boxShadow: form.tier === pkg.id ? "0 8px 24px rgba(0,0,0,0.15)" : "none",
-                }}
-                onMouseEnter={e => { if (form.tier !== pkg.id) e.currentTarget.style.borderColor = C.lakeBlue; }}
-                onMouseLeave={e => { if (form.tier !== pkg.id) e.currentTarget.style.borderColor = C.sand; }}
-              >
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 2.5, textTransform: "uppercase", color: form.tier === pkg.id ? C.sunsetLight : C.textMuted, marginBottom: 8 }}>
-                  {pkg.detail}
+          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginBottom: 8 }}>
+            <SectionTitle style={{ margin: 0 }}>Promotion Packages</SectionTitle>
+            <div style={{ background: `${C.sunset}18`, border: `1px solid ${C.sunset}40`, borderRadius: 20, padding: "6px 16px", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunset, fontFamily: "'Libre Franklin', sans-serif" }}>
+              Founding Sponsor Rates — Limited Time
+            </div>
+          </div>
+          <p style={{ fontSize: 14, color: C.textMuted, marginBottom: 40, fontFamily: "'Libre Franklin', sans-serif" }}>
+            These are our launch prices. Full rates take effect after summer 2026 — founding sponsors lock in today's rate for life.
+          </p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 20 }}>
+            {PROMOTE_PACKAGES.map(pkg => {
+              const isSelected = form.tier === pkg.id;
+              return (
+                <div
+                  key={pkg.id}
+                  onClick={() => setForm(f => ({ ...f, tier: pkg.id }))}
+                  style={{
+                    background: isSelected ? `linear-gradient(135deg, ${C.night}, ${C.lakeDark})` : C.cream,
+                    border: `2px solid ${isSelected ? C.sage : C.sand}`,
+                    borderRadius: 14, padding: "24px 22px", cursor: "pointer",
+                    transition: "all 0.2s", position: "relative",
+                    boxShadow: isSelected ? "0 8px 24px rgba(0,0,0,0.15)" : "none",
+                  }}
+                  onMouseEnter={e => { if (!isSelected) e.currentTarget.style.borderColor = C.lakeBlue; }}
+                  onMouseLeave={e => { if (!isSelected) e.currentTarget.style.borderColor = C.sand; }}
+                >
+                  {pkg.badge && (
+                    <div style={{ position: "absolute", top: -10, right: 16, background: C.sunset, color: "#fff", fontSize: 9, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", padding: "3px 10px", borderRadius: 10, fontFamily: "'Libre Franklin', sans-serif" }}>
+                      {pkg.badge}
+                    </div>
+                  )}
+                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 2.5, textTransform: "uppercase", color: isSelected ? C.sunsetLight : C.textMuted, marginBottom: 8 }}>
+                    {pkg.detail}
+                  </div>
+                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: isSelected ? C.cream : C.text, marginBottom: 6 }}>
+                    {pkg.label}
+                  </div>
+                  <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 10 }}>
+                    <span style={{ fontSize: 28, fontWeight: 700, color: isSelected ? C.cream : C.text, fontFamily: "'Libre Franklin', sans-serif" }}>{pkg.price}</span>
+                    <span style={{ fontSize: 13, color: isSelected ? "rgba(255,255,255,0.35)" : C.textMuted, textDecoration: "line-through", fontFamily: "'Libre Franklin', sans-serif" }}>{pkg.fullPrice}</span>
+                  </div>
+                  <div style={{ fontSize: 13, color: isSelected ? "rgba(255,255,255,0.55)" : C.textLight, lineHeight: 1.6 }}>
+                    {pkg.desc}
+                  </div>
                 </div>
-                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: form.tier === pkg.id ? C.cream : C.text, marginBottom: 6 }}>
-                  {pkg.label}
-                </div>
-                <div style={{ fontSize: 28, fontWeight: 700, color: form.tier === pkg.id ? C.cream : C.text, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 10 }}>
-                  {pkg.price}
-                </div>
-                <div style={{ fontSize: 13, color: form.tier === pkg.id ? "rgba(255,255,255,0.55)" : C.textLight, lineHeight: 1.6 }}>
-                  {pkg.desc}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
