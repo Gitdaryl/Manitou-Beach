@@ -740,6 +740,7 @@ function Hero({ scrollTo }) {
   const [heroTakeover, setHeroTakeover] = useState([]);
   const [heroReady, setHeroReady] = useState(false);
   const [heroIndex, setHeroIndex] = useState(0);
+  const [heroFade, setHeroFade] = useState(true);
   const [heroPaused, setHeroPaused] = useState(false);
   const [scrollY, setScrollY] = useState(0);
 
@@ -758,12 +759,18 @@ function Hero({ scrollTo }) {
       .catch(() => {});
   }, []);
 
-  // Auto-rotate through hero events every 7 seconds
+  // Auto-rotate through hero events every 10 seconds with fade transition
   // Uses takeover events when active, organic events otherwise
   const rotationCount = heroTakeover.length > 0 ? heroTakeover.length : heroEvents.length;
   useEffect(() => {
     if (rotationCount <= 1 || heroPaused) return;
-    const t = setInterval(() => setHeroIndex(i => (i + 1) % rotationCount), 7000);
+    const t = setInterval(() => {
+      setHeroFade(false);
+      setTimeout(() => {
+        setHeroIndex(i => (i + 1) % rotationCount);
+        setHeroFade(true);
+      }, 400);
+    }, 10000);
     return () => clearInterval(t);
   }, [rotationCount, heroPaused]);
 
@@ -822,7 +829,7 @@ function Hero({ scrollTo }) {
         </div>
 
         <div style={{ position: "relative", zIndex: 2, maxWidth: 960, margin: "0 auto", padding: "120px 48px 100px" }}>
-          <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? "translateY(0)" : "translateY(30px)", transition: "all 0.9s ease" }}>
+          <div style={{ opacity: loaded && heroFade ? 1 : 0, transform: loaded && heroFade ? "translateY(0)" : "translateY(12px)", transition: "opacity 0.4s ease, transform 0.4s ease" }}>
             <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 20 }}>
               Manitou Beach · Devils Lake, Michigan
             </div>
@@ -836,11 +843,10 @@ function Hero({ scrollTo }) {
 
             {/* Event image/video — wide, contained, below the date */}
             {heroEvent.imageUrl && (() => {
-              const isVideo = /\.(mp4|webm|mov|m4v)(\?|$)/i.test(heroEvent.imageUrl);
+              const isVideo = /\.(mp4|webm|mov|m4v)/i.test(heroEvent.imageUrl);
               const mediaStyle = {
                 width: "100%", height: "100%", objectFit: "contain",
                 borderRadius: 12, display: "block",
-                boxShadow: "0 12px 40px rgba(0,0,0,0.55)",
                 border: "1px solid rgba(255,255,255,0.1)",
               };
               return (
@@ -905,7 +911,7 @@ function Hero({ scrollTo }) {
             {displayEvents.map((_, i) => (
               <button
                 key={i}
-                onClick={() => { setHeroIndex(i); setHeroPaused(true); }}
+                onClick={() => { setHeroFade(false); setTimeout(() => { setHeroIndex(i); setHeroFade(true); }, 400); setHeroPaused(true); }}
                 style={{
                   width: i === heroIndex ? 24 : 8, height: 8,
                   borderRadius: 4, border: "none",
