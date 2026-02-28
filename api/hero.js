@@ -45,8 +45,12 @@ export default async function handler(req, res) {
       .filter(page => {
         const dateProp = page.properties['Event date']?.date?.start;
         if (!dateProp) return false;
-        const eventDate = new Date(dateProp);
-        return eventDate >= now && eventDate <= cutoff;
+        // Use end date for multi-day events; otherwise treat start as end-of-day
+        // This prevents the hero dropping mid-day due to UTC midnight cutoff
+        const endDateStr = page.properties['Event date']?.date?.end || dateProp;
+        const eventEnd = new Date(endDateStr + 'T23:59:59');
+        const eventStart = new Date(dateProp);
+        return eventEnd >= now && eventStart <= cutoff;
       })
       .map(page => {
         const p = page.properties;
