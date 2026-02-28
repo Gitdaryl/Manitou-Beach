@@ -7822,8 +7822,15 @@ function DispatchArticlePage() {
         ) : (
           <>
             {article.coverImage && (
-              <div style={{ width: '100%', maxHeight: 420, overflow: 'hidden' }}>
+              <div style={{ width: '100%', maxHeight: 420, overflow: 'hidden', position: 'relative' }}>
                 <img src={article.coverImage} alt={article.title} style={{ width: '100%', height: 420, objectFit: 'cover', display: 'block' }} />
+                {article.photoCredit && (
+                  <div style={{ position: 'absolute', bottom: 8, right: 12, fontSize: 10, color: 'rgba(255,255,255,0.75)', letterSpacing: '0.02em' }}>
+                    <a href={article.photoCredit.photographerUrl} target="_blank" rel="noreferrer" style={{ color: 'rgba(255,255,255,0.75)', textDecoration: 'none' }}>
+                      {article.photoCredit.text}
+                    </a>
+                  </div>
+                )}
               </div>
             )}
 
@@ -8354,6 +8361,26 @@ function YetiAdminPage() {
             <div style={{ marginTop: 16, fontSize: 12, color: C.textMuted }}>
               slug: <code style={{ background: C.cream, padding: '2px 6px', borderRadius: 4 }}>{result.slug}</code>
             </div>
+
+            {/* Unsplash auto-photo */}
+            {result.unsplashPhoto && (
+              <div style={{ marginTop: 14, borderRadius: 10, overflow: 'hidden', border: `1px solid ${C.sand}`, position: 'relative' }}>
+                <img
+                  src={result.unsplashPhoto.thumbUrl}
+                  alt="Auto-selected cover"
+                  style={{ width: '100%', height: 160, objectFit: 'cover', display: 'block' }}
+                />
+                <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(transparent, rgba(0,0,0,0.55))', padding: '20px 12px 8px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                  <span style={{ color: 'rgba(255,255,255,0.85)', fontSize: 11 }}>
+                    <a href={result.unsplashPhoto.photographerUrl} target="_blank" rel="noreferrer" style={{ color: 'rgba(255,255,255,0.85)', textDecoration: 'none' }}>
+                      {result.unsplashPhoto.credit}
+                    </a>
+                  </span>
+                  <span style={{ fontSize: 11, color: '#fff', fontWeight: 600, background: C.sage, padding: '2px 8px', borderRadius: 4 }}>✓ Applied to Notion</span>
+                </div>
+              </div>
+            )}
+
             {result.coverImage && (
               <div style={{ marginTop: 12, padding: '14px 16px', background: C.warmWhite, borderRadius: 8, fontSize: 13, borderLeft: `3px solid ${result.coverImageApplied || applyStatus === 'applied' ? C.sage : C.lakeBlue}` }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6, flexWrap: 'wrap' }}>

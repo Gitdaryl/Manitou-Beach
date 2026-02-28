@@ -106,6 +106,13 @@ export default async function handler(req, res) {
     const blocksData = blocksResponse.ok ? await blocksResponse.json() : { results: [] };
     const p = page.properties;
 
+    // Parse Unsplash photo credit from Cover Image Suggestion if present
+    const suggestion = p['Cover Image Suggestion']?.rich_text?.[0]?.plain_text || '';
+    const unsplashMatch = suggestion.match(/unsplash:\s*(.+?)\s*\|\s*(https?:\/\/\S+)\s*\|\s*(https?:\/\/\S+)/);
+    const photoCredit = unsplashMatch
+      ? { text: unsplashMatch[1], photographerUrl: unsplashMatch[2], photoPageUrl: unsplashMatch[3] }
+      : null;
+
     const article = {
       id: page.id,
       title: p['Title']?.title?.[0]?.plain_text || '',
@@ -118,6 +125,7 @@ export default async function handler(req, res) {
       tags: p['Tags']?.multi_select?.map(t => t.name) || [],
       aiGenerated: p['AI Generated']?.checkbox || false,
       editorNote: p["Editor's Note"]?.rich_text?.[0]?.plain_text || null,
+      photoCredit,
       content: parseBlocks(blocksData.results || []),
     };
 
