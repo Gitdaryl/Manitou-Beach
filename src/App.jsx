@@ -1137,17 +1137,107 @@ function FeaturedEventsStrip() {
 // ============================================================
 // 📰  NEWSLETTER SIGNUP
 // ============================================================
+// ============================================================
+// 📬  SUBSCRIBE CONFIRMATION MODAL
+// ============================================================
+function SubscribeModal({ alreadySubscribed, onClose }) {
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.55)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        zIndex: 9999, padding: 24,
+      }}
+    >
+      <div
+        onClick={e => e.stopPropagation()}
+        style={{
+          background: '#fff', borderRadius: 16, padding: '40px 36px',
+          maxWidth: 440, width: '100%', boxShadow: '0 20px 60px rgba(0,0,0,0.25)',
+          textAlign: 'center', fontFamily: "'Libre Franklin', sans-serif",
+        }}
+      >
+        {alreadySubscribed ? (
+          <>
+            <div style={{ fontSize: 40, marginBottom: 16 }}>👋</div>
+            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.dusk, margin: '0 0 12px' }}>
+              Already on the list!
+            </h3>
+            <p style={{ color: C.textLight, fontSize: 15, lineHeight: 1.6, margin: '0 0 28px' }}>
+              You're already subscribed to The Manitou Dispatch. Watch your inbox — the next issue is coming soon.
+            </p>
+          </>
+        ) : (
+          <>
+            <div style={{ fontSize: 40, marginBottom: 16 }}>📬</div>
+            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.dusk, margin: '0 0 12px' }}>
+              You're almost in!
+            </h3>
+            <p style={{ color: C.textLight, fontSize: 15, lineHeight: 1.6, margin: '0 0 20px' }}>
+              Check your inbox for a confirmation email from <strong>The Manitou Dispatch</strong>. Click the link inside to confirm and you're set.
+            </p>
+            <div style={{
+              background: '#FFF8EC', border: '1px solid #F5DFA0', borderRadius: 10,
+              padding: '14px 18px', marginBottom: 28, textAlign: 'left',
+            }}>
+              <div style={{ fontWeight: 600, color: C.dusk, fontSize: 13, marginBottom: 6 }}>
+                Don't see it?
+              </div>
+              <div style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6 }}>
+                Check your <strong>spam or junk folder</strong> and mark us as <strong>"Not Spam"</strong> — that's all it takes to make sure every issue lands in your inbox from here on out.
+              </div>
+            </div>
+          </>
+        )}
+        <button
+          onClick={onClose}
+          style={{
+            background: C.lakeBlue, color: '#fff', border: 'none', borderRadius: 8,
+            padding: '13px 32px', fontSize: 15, fontWeight: 600, cursor: 'pointer',
+            fontFamily: "'Libre Franklin', sans-serif", width: '100%',
+          }}
+        >
+          {alreadySubscribed ? 'Got it' : 'Got it — I\'ll check! →'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function NewsletterBar() {
   const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [alreadySubscribed, setAlreadySubscribed] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email) return;
-    // TODO: Replace this URL with your actual beehiiv embed action URL
-    // Example: https://embeds.beehiiv.com/[your-id]
-    console.log("Newsletter signup:", email);
-    setSubmitted(true);
+    if (!email || submitting) return;
+    setSubmitting(true);
+    setError('');
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed');
+      setAlreadySubscribed(data.alreadySubscribed);
+      setShowModal(true);
+    } catch (err) {
+      setError('Something went wrong — try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -1169,42 +1259,25 @@ function NewsletterBar() {
         <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", margin: "0 0 28px 0", lineHeight: 1.7 }}>
           Weekly events, featured businesses, and community news. No spam — just lake life.
         </p>
-        {submitted ? (
-          <div style={{
-            background: `${C.sage}22`,
-            border: `1px solid ${C.sage}40`,
-            borderRadius: 8,
-            padding: "16px 24px",
-            color: C.sage,
-            fontFamily: "'Libre Franklin', sans-serif",
-            fontSize: 14,
-          }}>
-            ✓ You're in! Check your inbox for a welcome message.
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} style={{ display: "flex", gap: 10, maxWidth: 440, margin: "0 auto", flexWrap: "wrap", justifyContent: "center" }}>
-            <input
-              type="email"
-              placeholder="your@email.com"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              required
-              style={{
-                flex: 1,
-                minWidth: 200,
-                padding: "12px 18px",
-                borderRadius: 4,
-                border: `1px solid rgba(255,255,255,0.15)`,
-                background: "rgba(255,255,255,0.08)",
-                color: C.cream,
-                fontSize: 14,
-                fontFamily: "'Libre Franklin', sans-serif",
-                outline: "none",
-              }}
-            />
-            <Btn variant="sage">Subscribe</Btn>
-          </form>
-        )}
+        <form onSubmit={handleSubmit} style={{ display: "flex", gap: 10, maxWidth: 440, margin: "0 auto", flexWrap: "wrap", justifyContent: "center" }}>
+          <input
+            type="email"
+            placeholder="your@email.com"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            required
+            disabled={submitting}
+            style={{
+              flex: 1, minWidth: 200, padding: "12px 18px", borderRadius: 4,
+              border: `1px solid rgba(255,255,255,0.15)`,
+              background: "rgba(255,255,255,0.08)", color: C.cream,
+              fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", outline: "none",
+            }}
+          />
+          <Btn variant="sage" disabled={submitting}>{submitting ? 'Joining…' : 'Subscribe'}</Btn>
+        </form>
+        {error && <p style={{ color: C.sunset, fontSize: 13, marginTop: 10 }}>{error}</p>}
+        {showModal && <SubscribeModal alreadySubscribed={alreadySubscribed} onClose={() => setShowModal(false)} />}
       </div>
     </div>
   );
@@ -1215,8 +1288,33 @@ function NewsletterBar() {
 // ============================================================
 function NewsletterInline() {
   const [email, setEmail] = useState("");
-  const [done, setDone] = useState(false);
-  const handleSubmit = (e) => { e.preventDefault(); if (!email) return; console.log("Newsletter signup:", email); setDone(true); };
+  const [submitting, setSubmitting] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [alreadySubscribed, setAlreadySubscribed] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!email || submitting) return;
+    setSubmitting(true);
+    setError('');
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed');
+      setAlreadySubscribed(data.alreadySubscribed);
+      setShowModal(true);
+      setEmail('');
+    } catch {
+      setError('Something went wrong — try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <div style={{
@@ -1244,23 +1342,22 @@ function NewsletterInline() {
           Weekly events, businesses & community news — straight to your inbox.
         </div>
       </div>
-      {done ? (
-        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.sage, fontWeight: 600 }}>
-          You're in!
-        </div>
-      ) : (
+      <div>
         <form onSubmit={handleSubmit} style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           <input
-            type="email" placeholder="your@email.com" value={email} onChange={e => setEmail(e.target.value)} required
+            type="email" placeholder="your@email.com" value={email}
+            onChange={e => setEmail(e.target.value)} required disabled={submitting}
             style={{
               padding: "10px 16px", borderRadius: 6, border: `1.5px solid ${C.sand}`,
               background: C.cream, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif",
               color: C.text, outline: "none", minWidth: 200,
             }}
           />
-          <Btn variant="primary" small>Subscribe</Btn>
+          <Btn variant="primary" small disabled={submitting}>{submitting ? 'Joining…' : 'Subscribe'}</Btn>
         </form>
-      )}
+        {error && <p style={{ margin: '6px 0 0', fontSize: 12, color: C.sunset }}>{error}</p>}
+      </div>
+      {showModal && <SubscribeModal alreadySubscribed={alreadySubscribed} onClose={() => setShowModal(false)} />}
     </div>
   );
 }
