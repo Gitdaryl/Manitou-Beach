@@ -7654,15 +7654,33 @@ function LadiesClubPage() {
 // 📣  PROMOTE PAGE (/promote)
 // ============================================================
 const PROMOTE_PACKAGES = [
-  { id: "event_spotlight", label: "Event Spotlight",       detail: "Featured Listing",      price: "$25", fullPrice: "$49",  desc: "Bold highlighted event card in the calendar with your image and ticket link." },
-  { id: "hero_7d",         label: "Hero Feature",          detail: "7 Days",                price: "$75", fullPrice: "$149", desc: "Exclusive homepage hero for 7 days — your image, headline, and CTA button." },
-  { id: "hero_30d",        label: "Hero Feature",          detail: "30 Days",               price: "$249",fullPrice: "$499", desc: "Exclusive homepage hero for a full month." },
-  { id: "newsletter",      label: "Newsletter Feature",    detail: "1 Issue",               price: "$39", fullPrice: "$79",  desc: "Featured callout at the top of the next Manitou Beach Dispatch issue." },
-  { id: "banner_1p",       label: "Page Feature Banner",   detail: "1 Page · 30 Days",     price: "$29", fullPrice: "$59",  desc: "Full-width event banner on one page of your choice for 30 days." },
-  { id: "banner_3p",       label: "Page Feature Banner",   detail: "3 Pages · 30 Days",    price: "$69", fullPrice: "$129", desc: "Full-width event banners on 3 pages of your choice for 30 days." },
-  { id: "strip_pin",       label: "Featured Strip Pin",    detail: "30 Days",               price: "$19", fullPrice: "$39",  desc: "Pinned position #1 in the Coming Up strip on the homepage." },
-  { id: "holly_yeti",      label: "Holly & Yeti Spotlight",detail: "30 Days",               price: "$179",fullPrice: "$350", desc: "Video spotlight by Holly & The Yeti, embedded on site for 30 days." },
-  { id: "spotlight",       label: "Full Launch Bundle",    detail: "Best Value",            price: "$149",fullPrice: "$299", desc: "Hero Feature 7 days + Newsletter Feature + Event Spotlight. Save $55.", badge: "Best Value" },
+  { id: "event_spotlight", label: "Event Spotlight",        detail: "Featured Listing",   price: "$25",  fullPrice: "$49",
+    desc: "Your event in the calendar with a photo and a ticket button.",
+    plain: "Instead of just a line of text like the free listings, yours shows up with a photo and a big 'Get Tickets' button. Stands out." },
+  { id: "hero_7d",         label: "Hero Feature",           detail: "7 Days",             price: "$75",  fullPrice: "$149",
+    desc: "The first thing anyone sees when they visit the site — full screen, your event, for 7 days.",
+    plain: "Picture the front page of a newspaper. That's your event, full size, the moment anyone opens the website. Every visitor sees it first, for a whole week." },
+  { id: "hero_30d",        label: "Hero Feature",           detail: "30 Days",            price: "$249", fullPrice: "$499",
+    desc: "Own the front of the site for a full month.",
+    plain: "Same front-page treatment as the 7-day option — just for a whole month. Great for building buzz leading up to a big event." },
+  { id: "newsletter",      label: "Newsletter Feature",     detail: "1 Issue",            price: "$39",  fullPrice: "$79",
+    desc: "Top spot in the next Manitou Beach Dispatch email — before anyone scrolls.",
+    plain: "A big beautiful announcement at the very top of our weekly email. The whole community sees it in their inbox before they read anything else." },
+  { id: "banner_1p",       label: "Page Feature Banner",    detail: "1 Page · 30 Days",  price: "$29",  fullPrice: "$59",
+    desc: "A wide banner for your event sitting in the middle of whichever page your crowd visits most.",
+    plain: "Like a billboard, but on the website. Pick the page where your people hang out — Fishing, Wineries, Devils Lake — and your banner is right there for 30 days." },
+  { id: "banner_3p",       label: "Page Feature Banner",    detail: "3 Pages · 30 Days", price: "$69",  fullPrice: "$129",
+    desc: "Same billboard treatment, but on three different pages at once.",
+    plain: "Cover more ground — your banner shows up on three pages across the site. Catch people wherever they're browsing." },
+  { id: "strip_pin",       label: "Featured Strip Pin",     detail: "30 Days",            price: "$19",  fullPrice: "$39",
+    desc: "First spot in the 'Coming Up' list on the homepage — right below the big banner.",
+    plain: "There's a scrolling list of upcoming events near the top of the home page. Your event goes first on that list for 30 days. Hard to scroll past." },
+  { id: "holly_yeti",      label: "Holly & Yeti Spotlight", detail: "30 Days",            price: "$179", fullPrice: "$350",
+    desc: "Holly and The Yeti make a short video about your event or business. Lives on the site for 30 days.",
+    plain: "We come out, shoot a short video, and it lives on the website for a month. We share it on social too. It's the kind of thing people actually watch." },
+  { id: "spotlight",       label: "Full Launch Bundle",     detail: "Best Value",         price: "$149", fullPrice: "$299",
+    desc: "Front page of the site for 7 days + top of the newsletter + featured calendar listing. All three at once.",
+    plain: "The whole shebang. Front page of the website, top of the email, featured in the calendar. Maximum coverage — and you save $55 doing it this way.", badge: "Best Value" },
 ];
 
 const PROMO_PAGES = ["Home", "Whats Happening", "Village", "Devils Lake", "Wineries", "Fishing", "Round Lake"];
@@ -7808,9 +7826,14 @@ function PromotePage() {
                     <span style={{ fontSize: 28, fontWeight: 700, color: isSelected ? C.cream : C.text, fontFamily: "'Libre Franklin', sans-serif" }}>{pkg.price}</span>
                     <span style={{ fontSize: 13, color: isSelected ? "rgba(255,255,255,0.35)" : C.textMuted, textDecoration: "line-through", fontFamily: "'Libre Franklin', sans-serif" }}>{pkg.fullPrice}</span>
                   </div>
-                  <div style={{ fontSize: 13, color: isSelected ? "rgba(255,255,255,0.55)" : C.textLight, lineHeight: 1.6 }}>
+                  <div style={{ fontSize: 13, color: isSelected ? "rgba(255,255,255,0.55)" : C.textLight, lineHeight: 1.6, marginBottom: pkg.plain ? 10 : 0 }}>
                     {pkg.desc}
                   </div>
+                  {pkg.plain && (
+                    <div style={{ fontSize: 12, color: isSelected ? "rgba(255,255,255,0.38)" : C.textMuted, lineHeight: 1.65, fontStyle: "italic", borderTop: `1px solid ${isSelected ? "rgba(255,255,255,0.08)" : C.sand}`, paddingTop: 10 }}>
+                      {pkg.plain}
+                    </div>
+                  )}
                 </div>
               );
             })}
