@@ -8053,12 +8053,26 @@ function ClaimPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-  // Pre-fill from beehiiv URL params: /claim/cafe?email=...&name=...
+  // Restore previous claim from localStorage (so code survives tab close)
   useEffect(() => {
+    const saved = localStorage.getItem(`claim_${slug}`);
+    if (saved) {
+      try {
+        const { notionId: nid, claimCode: cc, name: n } = JSON.parse(saved);
+        if (nid && cc) {
+          setNotionId(nid);
+          setClaimCode(cc);
+          if (n) setName(n);
+          setStep('confirm');
+          return;
+        }
+      } catch {}
+    }
+    // Pre-fill from beehiiv URL params: /claim/cafe?email=...&name=...
     const p = new URLSearchParams(window.location.search);
     if (p.get('email')) setEmail(decodeURIComponent(p.get('email')));
     if (p.get('name'))  setName(decodeURIComponent(p.get('name')));
-  }, []);
+  }, [slug]);
 
   const handleClaim = async () => {
     if (!name.trim() || !email.trim()) return;
@@ -8074,6 +8088,7 @@ function ClaimPage() {
       if (!res.ok) throw new Error(data.error || 'Failed');
       setNotionId(data.notionId);
       setClaimCode(data.claimCode);
+      localStorage.setItem(`claim_${slug}`, JSON.stringify({ notionId: data.notionId, claimCode: data.claimCode, name: name.trim() }));
       setStep('confirm');
     } catch (err) {
       setError(err.message);
