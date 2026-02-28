@@ -7929,6 +7929,24 @@ function YetiAdminPage() {
   const [status, setStatus] = useState('idle'); // idle | loading | success | error
   const [result, setResult] = useState(null);
   const [errorMsg, setErrorMsg] = useState('');
+  const [applyStatus, setApplyStatus] = useState('idle'); // idle | applying | applied | error
+
+  const handleApplyImage = async () => {
+    if (!result?.notionId || !result?.coverImage) return;
+    setApplyStatus('applying');
+    try {
+      const res = await fetch('/api/apply-cover-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notionId: result.notionId, filename: result.coverImage }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed');
+      setApplyStatus('applied');
+    } catch (err) {
+      setApplyStatus('error');
+    }
+  };
 
   const handleGenerate = async () => {
     if (!topic.trim()) return;
@@ -8040,7 +8058,7 @@ function YetiAdminPage() {
                 Review in Notion →
               </a>
               <button
-                onClick={() => { setStatus('idle'); setTopic(''); setNotes(''); setResult(null); }}
+                onClick={() => { setStatus('idle'); setTopic(''); setNotes(''); setResult(null); setApplyStatus('idle'); }}
                 style={{
                   background: 'transparent', color: C.textLight,
                   border: `1px solid ${C.sand}`, borderRadius: 8,
@@ -8055,21 +8073,32 @@ function YetiAdminPage() {
               slug: <code style={{ background: C.cream, padding: '2px 6px', borderRadius: 4 }}>{result.slug}</code>
             </div>
             {result.coverImage && (
-              <div style={{ marginTop: 12, padding: '14px 16px', background: C.warmWhite, borderRadius: 8, fontSize: 13, borderLeft: `3px solid ${C.lakeBlue}` }}>
+              <div style={{ marginTop: 12, padding: '14px 16px', background: C.warmWhite, borderRadius: 8, fontSize: 13, borderLeft: `3px solid ${result.coverImageApplied || applyStatus === 'applied' ? C.sage : C.lakeBlue}` }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6, flexWrap: 'wrap' }}>
                   <span style={{ fontWeight: 600, color: C.dusk }}>Cover image:</span>
                   <code style={{ color: C.lakeBlue, background: '#fff', padding: '2px 8px', borderRadius: 4 }}>{result.coverImage}</code>
                   {result.coverStyle && (
-                    <span style={{
-                      background: result.coverStyle === 'realism' ? C.dusk : C.sage,
-                      color: '#fff', borderRadius: 20, padding: '2px 10px', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em',
-                    }}>
+                    <span style={{ background: result.coverStyle === 'realism' ? C.dusk : C.sage, color: '#fff', borderRadius: 20, padding: '2px 10px', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       {result.coverStyle}
                     </span>
                   )}
+                  {(result.coverImageApplied || applyStatus === 'applied') && (
+                    <span style={{ color: C.sage, fontWeight: 600, fontSize: 12 }}>✓ Applied to Notion</span>
+                  )}
                 </div>
-                {result.coverNote && <p style={{ margin: '0 0 6px', color: C.textLight, fontStyle: 'italic', lineHeight: 1.5 }}>{result.coverNote}</p>}
-                <span style={{ color: C.textMuted }}>→ drop in <code>public/images/yeti/</code></span>
+                {result.coverNote && <p style={{ margin: '0 0 10px', color: C.textLight, fontStyle: 'italic', lineHeight: 1.5 }}>{result.coverNote}</p>}
+                {!result.coverImageApplied && applyStatus !== 'applied' && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+                    <span style={{ color: C.textMuted }}>Image not in folder yet — create it, drop it in <code>public/images/yeti/</code> and push, then:</span>
+                    <button
+                      onClick={handleApplyImage}
+                      disabled={applyStatus === 'applying'}
+                      style={{ background: applyStatus === 'applying' ? C.driftwood : C.lakeBlue, color: '#fff', border: 'none', borderRadius: 6, padding: '6px 16px', fontSize: 12, fontWeight: 600, cursor: applyStatus === 'applying' ? 'not-allowed' : 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}
+                    >
+                      {applyStatus === 'applying' ? 'Applying…' : applyStatus === 'error' ? 'Try again' : 'Apply Image'}
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>

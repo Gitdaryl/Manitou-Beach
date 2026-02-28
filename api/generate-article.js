@@ -1,4 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
+import fs from 'fs';
+import path from 'path';
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -141,6 +143,12 @@ Remember: Yeti Groove voice — fun, warm, grounded in lake life. Not a press re
     const slug = article.slug || slugify(article.title);
     const notionBlocks = blocksToNotion(article.blocks || []);
 
+    // Check if the suggested cover image already exists in the public folder
+    const coverFilename = article.coverImage || '';
+    const coverFilePath = path.join(process.cwd(), 'public', 'images', 'yeti', coverFilename);
+    const coverImageExists = coverFilename ? fs.existsSync(coverFilePath) : false;
+    const coverImageUrl = coverImageExists ? `/images/yeti/${coverFilename}` : null;
+
     // Save draft to Notion
     const notionRes = await fetch('https://api.notion.com/v1/pages', {
       method: 'POST',
@@ -162,6 +170,7 @@ Remember: Yeti Groove voice — fun, warm, grounded in lake life. Not a press re
           'Blog Safe': { checkbox: false },
           'Editor\'s Note': { rich_text: [{ text: { content: article.editorNote || '' } }] },
           'Cover Image Suggestion': { rich_text: [{ text: { content: [article.coverImage, article.coverStyle, article.coverNote].filter(Boolean).join(' | ') } }] },
+          ...(coverImageUrl ? { 'Cover Image URL': { url: coverImageUrl } } : {}),
         },
         children: notionBlocks,
       }),
@@ -184,6 +193,7 @@ Remember: Yeti Groove voice — fun, warm, grounded in lake life. Not a press re
       coverImage: article.coverImage,
       coverStyle: article.coverStyle,
       coverNote: article.coverNote,
+      coverImageApplied: coverImageExists,
       notionUrl: `https://notion.so/${notionPage.id.replace(/-/g, '')}`,
       notionId: notionPage.id,
     });
