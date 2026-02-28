@@ -109,7 +109,23 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { topic, category = 'Lake Life', notes = '' } = req.body || {};
+  const body = req.body || {};
+
+  // action=cover — just search Unsplash, no article generation
+  if (body.action === 'cover' || (body.query && !body.topic)) {
+    const query = body.query || body.q;
+    if (!query) return res.status(400).json({ error: 'query required' });
+    try {
+      const photo = await searchUnsplash(query);
+      if (!photo) return res.status(404).json({ error: 'No photos found for this query' });
+      return res.status(200).json(photo);
+    } catch (err) {
+      console.error('fetch-cover-image error:', err.message);
+      return res.status(500).json({ error: err.message });
+    }
+  }
+
+  const { topic, category = 'Lake Life', notes = '' } = body;
 
   if (!topic) {
     return res.status(400).json({ error: 'topic is required' });

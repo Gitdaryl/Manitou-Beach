@@ -3117,7 +3117,7 @@ function SubmitSection() {
         if (uploadRes.ok) logoUploadUrl = uploadData.url;
       }
 
-      const endpoint = tab === "business" ? "/api/submit-business" : "/api/submit-event";
+      const endpoint = tab === "business" ? "/api/businesses" : "/api/events";
       const payload = tab === "event"
         ? { name: form.name, category: form.category, date: form.date, time: form.time, location: form.location, email: form.email, phone: form.phone, description: form.description, eventUrl: form.eventUrl, imageUrl }
         : { ...form, logoUrl: logoUploadUrl || null };
@@ -7794,7 +7794,7 @@ function DispatchArticlePage() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    fetch(`/api/dispatch-article?slug=${encodeURIComponent(slug)}`)
+    fetch(`/api/dispatch-articles?slug=${encodeURIComponent(slug)}`)
       .then(r => r.json())
       .then(d => { setArticle(d.article || null); setLoading(false); })
       .catch(() => setLoading(false));
@@ -8086,7 +8086,7 @@ function ClaimPage() {
     setRating(n);
     // Save rating immediately for 4-5 (they may not tap Google Review button)
     if (n >= 4 && notionId) {
-      fetch('/api/submit-rating', {
+      fetch('/api/submit-claim', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ notionId, rating: n }),
@@ -8096,7 +8096,7 @@ function ClaimPage() {
 
   const handleReviewClick = () => {
     if (notionId) {
-      fetch('/api/submit-rating', {
+      fetch('/api/submit-claim', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ notionId, rating, googleClicked: true }),
@@ -8107,7 +8107,7 @@ function ClaimPage() {
 
   const handleFeedbackSubmit = () => {
     if (notionId) {
-      fetch('/api/submit-rating', {
+      fetch('/api/submit-claim', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ notionId, rating, feedback: feedback.trim() }),
@@ -8342,10 +8342,10 @@ function YetiAdminPage() {
           });
           const uploadData = await uploadRes.json();
           if (!uploadRes.ok) throw new Error(uploadData.error || 'Upload failed');
-          const applyRes = await fetch('/api/apply-cover-image', {
+          const applyRes = await fetch('/api/upload-image', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ notionId: articleId, url: uploadData.url }),
+            body: JSON.stringify({ action: 'apply', notionId: articleId, url: uploadData.url }),
           });
           if (!applyRes.ok) throw new Error('Failed to apply to Notion');
           setSwappedUrls(prev => ({ ...prev, [articleId]: uploadData.url }));
@@ -8365,7 +8365,7 @@ function YetiAdminPage() {
   const handlePublish = async (notionId) => {
     setPublishingId(notionId);
     try {
-      const res = await fetch('/api/publish-article', {
+      const res = await fetch('/api/admin-articles', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ notionId }),
@@ -8402,10 +8402,10 @@ function YetiAdminPage() {
         const uploadData = await uploadRes.json();
         if (!uploadRes.ok) throw new Error(uploadData.error || 'Upload failed');
         // Apply the Blob URL directly to the Notion page
-        const applyRes = await fetch('/api/apply-cover-image', {
+        const applyRes = await fetch('/api/upload-image', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ notionId: result.notionId, url: uploadData.url }),
+          body: JSON.stringify({ action: 'apply', notionId: result.notionId, url: uploadData.url }),
         });
         if (!applyRes.ok) throw new Error('Failed to apply to Notion');
         setUploadedUrl(uploadData.url);
@@ -8422,10 +8422,10 @@ function YetiAdminPage() {
     if (!result?.notionId || !result?.coverImage) return;
     setApplyStatus('applying');
     try {
-      const res = await fetch('/api/apply-cover-image', {
+      const res = await fetch('/api/upload-image', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ notionId: result.notionId, filename: result.coverImage }),
+        body: JSON.stringify({ action: 'apply', notionId: result.notionId, filename: result.coverImage }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed');
