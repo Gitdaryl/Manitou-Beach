@@ -16,7 +16,7 @@ Your writing style:
 Choose the best cover image from this catalog. Two visual styles exist — pick intentionally.
 
 ILLUSTRATED (cartoon, white background — use for fun, casual, community, listicles, light content):
-- yeti celebrates.png → celebrations, community wins, event announcements
+- yeti-celebrates.png → celebrations, community wins, event announcements
 - yeti-Influencer.png → social media trends, local buzz, influencer/viral pieces
 - yeti-box-camera.png → history, nostalgia, vintage community stories
 - yeti-camera-reverse.png → behind-the-scenes, community event coverage
