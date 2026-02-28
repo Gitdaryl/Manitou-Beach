@@ -8030,12 +8030,12 @@ const DISPATCH_CATEGORIES = ['Lake Life', 'Community', 'Events', 'Real Estate', 
 // Add a key per business slug (matches /claim/:slug URL)
 const CLAIM_BUSINESSES = {
   cafe: {
-    name: 'Your Cafe Name',               // TODO: fill in real café name
-    offerText: 'free cookie',             // TODO: update once confirmed
+    name: 'Blackbird Cafe & Baking Company',
+    offerText: 'free cookie',
     descLine: 'A welcome gift from The Manitou Dispatch',
     emoji: '☕',
     accentColor: '#D4845A',
-    googleReviewUrl: '#',                 // TODO: paste café Google Review link
+    reviewUrl: 'https://www.yelp.com/writeareview/biz/BV2J5pWMspuXAU78MeQo_A?return_url=%2Fbiz%2FBV2J5pWMspuXAU78MeQo_A&review_origin=biz-details-war-button',
   },
 };
 
@@ -8094,7 +8094,7 @@ function ClaimPage() {
     }
   };
 
-  const handleGoogleClick = () => {
+  const handleReviewClick = () => {
     if (notionId) {
       fetch('/api/submit-rating', {
         method: 'POST',
@@ -8102,7 +8102,7 @@ function ClaimPage() {
         body: JSON.stringify({ notionId, rating, googleClicked: true }),
       }).catch(() => {});
     }
-    window.open(biz.googleReviewUrl, '_blank');
+    window.open(biz.reviewUrl, '_blank');
   };
 
   const handleFeedbackSubmit = () => {
@@ -8252,17 +8252,17 @@ function ClaimPage() {
               </div>
             )}
 
-            {/* High rating — Google Review */}
+            {/* High rating — Yelp Review */}
             {rating >= 4 && (
               <div style={{ background: '#fff', borderRadius: 12, padding: 24, boxShadow: '0 2px 12px rgba(0,0,0,0.07)' }}>
                 <p style={{ color: C.dusk, fontWeight: 700, marginBottom: 6, fontSize: 17 }}>Love it! 🙌</p>
                 <p style={{ color: C.textLight, fontSize: 14, marginBottom: 18, lineHeight: 1.6 }}>
-                  A Google review means everything to a small local business. Takes 30 seconds.
+                  A Yelp review means everything to a small local business. Takes 30 seconds.
                 </p>
                 <button
-                  onClick={handleGoogleClick}
-                  style={{ width: '100%', padding: '13px', borderRadius: 8, border: 'none', background: '#4285F4', color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
-                >Leave a Google Review →</button>
+                  onClick={handleReviewClick}
+                  style={{ width: '100%', padding: '13px', borderRadius: 8, border: 'none', background: '#D32323', color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
+                >Leave a Yelp Review →</button>
               </div>
             )}
           </div>
