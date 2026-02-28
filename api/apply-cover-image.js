@@ -6,22 +6,25 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { notionId, filename } = req.body || {};
+  const { notionId, filename, url } = req.body || {};
 
-  if (!notionId || !filename) {
-    return res.status(400).json({ error: 'notionId and filename required' });
+  if (!notionId || (!filename && !url)) {
+    return res.status(400).json({ error: 'notionId and either filename or url required' });
   }
 
-  // Verify the file actually exists before patching Notion
-  const filePath = path.join(process.cwd(), 'public', 'images', 'yeti', filename);
-  if (!fs.existsSync(filePath)) {
-    return res.status(404).json({
-      error: 'Image file not found on server',
-      hint: `Drop ${filename} into public/images/yeti/ and push to deploy first`,
-    });
-  }
+  let coverImageUrl = url || null;
 
-  const coverImageUrl = `/images/yeti/${filename}`;
+  // If a local filename was provided (Yeti catalog image), verify it exists
+  if (!coverImageUrl && filename) {
+    const filePath = path.join(process.cwd(), 'public', 'images', 'yeti', filename);
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({
+        error: 'Image file not found on server',
+        hint: `Drop ${filename} into public/images/yeti/ and push to deploy first`,
+      });
+    }
+    coverImageUrl = `/images/yeti/${filename}`;
+  }
 
   try {
     const notionRes = await fetch(`https://api.notion.com/v1/pages/${notionId}`, {

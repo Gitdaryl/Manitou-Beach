@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { filename, contentType, data } = req.body;
+    const { filename, contentType, data, folder = 'events' } = req.body;
 
     if (!data || !filename) {
       return res.status(400).json({ error: 'Missing file data' });
@@ -24,7 +24,8 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'File too large. Max 2MB.' });
     }
 
-    const blob = await put(`events/${Date.now()}-${filename}`, buffer, {
+    const safeName = filename.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9.\-_]/g, '');
+    const blob = await put(`${folder}/${Date.now()}-${safeName}`, buffer, {
       contentType: contentType || 'image/jpeg',
       access: 'public',
     });

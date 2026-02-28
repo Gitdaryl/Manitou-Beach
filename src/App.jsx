@@ -7930,6 +7930,42 @@ function YetiAdminPage() {
   const [result, setResult] = useState(null);
   const [errorMsg, setErrorMsg] = useState('');
   const [applyStatus, setApplyStatus] = useState('idle'); // idle | applying | applied | error
+  const [uploadStatus, setUploadStatus] = useState('idle'); // idle | uploading | done | error
+  const [uploadedUrl, setUploadedUrl] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handlePhotoUpload = async (file) => {
+    if (!file || !result?.notionId) return;
+    if (!file.type.startsWith('image/')) { setUploadStatus('error'); return; }
+    setUploadStatus('uploading');
+    setUploadedUrl(null);
+    try {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const base64 = e.target.result.split(',')[1];
+        const uploadRes = await fetch('/api/upload-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ filename: file.name, contentType: file.type, data: base64, folder: 'dispatch' }),
+        });
+        const uploadData = await uploadRes.json();
+        if (!uploadRes.ok) throw new Error(uploadData.error || 'Upload failed');
+        // Apply the Blob URL directly to the Notion page
+        const applyRes = await fetch('/api/apply-cover-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ notionId: result.notionId, url: uploadData.url }),
+        });
+        if (!applyRes.ok) throw new Error('Failed to apply to Notion');
+        setUploadedUrl(uploadData.url);
+        setUploadStatus('done');
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      console.error(err);
+      setUploadStatus('error');
+    }
+  };
 
   const handleApplyImage = async () => {
     if (!result?.notionId || !result?.coverImage) return;
@@ -8058,7 +8094,7 @@ function YetiAdminPage() {
                 Review in Notion →
               </a>
               <button
-                onClick={() => { setStatus('idle'); setTopic(''); setNotes(''); setResult(null); setApplyStatus('idle'); }}
+                onClick={() => { setStatus('idle'); setTopic(''); setNotes(''); setResult(null); setApplyStatus('idle'); setUploadStatus('idle'); setUploadedUrl(null); }}
                 style={{
                   background: 'transparent', color: C.textLight,
                   border: `1px solid ${C.sand}`, borderRadius: 8,
@@ -8099,6 +8135,51 @@ function YetiAdminPage() {
                     </button>
                   </div>
                 )}
+              </div>
+            )}
+
+            {/* Own photo upload */}
+            {result.notionId && uploadStatus !== 'done' && (
+              <div style={{ marginTop: 12 }}>
+                <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 8, textAlign: 'center' }}>— or use your own photo —</div>
+                <div
+                  onDragOver={e => { e.preventDefault(); setIsDragging(true); }}
+                  onDragLeave={() => setIsDragging(false)}
+                  onDrop={e => { e.preventDefault(); setIsDragging(false); handlePhotoUpload(e.dataTransfer.files[0]); }}
+                  onClick={() => document.getElementById('photo-upload-input').click()}
+                  style={{
+                    border: `2px dashed ${isDragging ? C.lakeBlue : C.sand}`,
+                    borderRadius: 10, padding: '24px 16px', textAlign: 'center',
+                    cursor: 'pointer', background: isDragging ? '#EEF4F8' : '#fff',
+                    transition: 'all 0.15s',
+                  }}
+                >
+                  <input
+                    id="photo-upload-input"
+                    type="file"
+                    accept="image/*"
+                    style={{ display: 'none' }}
+                    onChange={e => handlePhotoUpload(e.target.files[0])}
+                  />
+                  {uploadStatus === 'uploading' ? (
+                    <p style={{ margin: 0, color: C.sage, fontSize: 14 }}>Uploading…</p>
+                  ) : (
+                    <>
+                      <p style={{ margin: '0 0 4px', fontSize: 14, color: C.dusk, fontWeight: 600 }}>Drop a photo here</p>
+                      <p style={{ margin: 0, fontSize: 12, color: C.textMuted }}>or click to browse · max 2MB · JPG, PNG, WebP</p>
+                    </>
+                  )}
+                  {uploadStatus === 'error' && <p style={{ margin: '8px 0 0', color: C.sunset, fontSize: 12 }}>Upload failed — try again</p>}
+                </div>
+              </div>
+            )}
+            {uploadStatus === 'done' && uploadedUrl && (
+              <div style={{ marginTop: 12, padding: '12px 16px', background: C.warmWhite, borderRadius: 8, borderLeft: `3px solid ${C.sage}`, display: 'flex', gap: 12, alignItems: 'center' }}>
+                <img src={uploadedUrl} alt="cover" style={{ width: 56, height: 56, objectFit: 'cover', borderRadius: 6, flexShrink: 0 }} />
+                <div>
+                  <div style={{ fontWeight: 600, color: C.sage, fontSize: 13 }}>✓ Photo uploaded &amp; applied to Notion</div>
+                  <div style={{ fontSize: 11, color: C.textMuted, marginTop: 2 }}>Cover image is set and ready to publish</div>
+                </div>
               </div>
             )}
           </div>
