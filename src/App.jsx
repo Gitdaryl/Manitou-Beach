@@ -9171,19 +9171,17 @@ function VoiceWidget() {
 
       vapi.on('message', async (message) => {
         console.log('[VoiceWidget] msg:', message.type, message);
-        // Transcript
+        // Transcript — auto-extract URLs from assistant messages and show as buttons
         if (message.type === 'transcript' && message.transcriptType === 'final') {
           setTranscript(prev => [...prev.slice(-8), { role: message.role, text: message.transcript }]);
-        }
-        // Client-side tool calls — display_link only (UI side effect)
-        if (message.type === 'tool-calls') {
-          console.log('[VoiceWidget] tool-calls received:', message.toolCallList);
-          for (const toolCall of message.toolCallList) {
-            const { name, function: fn } = toolCall;
-            const args = JSON.parse(fn?.arguments || '{}');
-            if (name === 'display_link') {
-              console.log('[VoiceWidget] display_link fired:', args);
-              setLinks(prev => [...prev, { url: args.url, label: args.label || 'Open Link', sublabel: args.sublabel }]);
+          if (message.role === 'assistant') {
+            const urlMatch = message.transcript.match(/https?:\/\/[^\s,)>"]+/);
+            if (urlMatch) {
+              const url = urlMatch[0].replace(/[.,;!?]+$/, '');
+              setLinks(prev => {
+                if (prev.some(l => l.url === url)) return prev;
+                return [...prev, { url, label: 'Open Link', sublabel: url.replace(/^https?:\/\//, '').split('/')[0] }];
+              });
             }
           }
         }
