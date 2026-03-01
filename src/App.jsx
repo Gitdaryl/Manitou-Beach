@@ -2368,34 +2368,29 @@ function PricingSection() {
       .catch(() => setSubCount(0));
   }, []);
 
-  const MILESTONES = [
-    { maxSubs: 100,      enhanced: 15, featured: 29, premium: 49  },
-    { maxSubs: 250,      enhanced: 19, featured: 39, premium: 69  },
-    { maxSubs: 500,      enhanced: 25, featured: 49, premium: 99  },
-    { maxSubs: Infinity, enhanced: 35, featured: 69, premium: 149 },
-  ];
-  const idx = MILESTONES.findIndex(m => (subCount ?? 0) < m.maxSubs);
-  const current = MILESTONES[idx === -1 ? MILESTONES.length - 1 : idx];
-  const next = MILESTONES[idx + 1] || null;
-  const prevMax = idx > 0 ? MILESTONES[idx - 1].maxSubs : 0;
-  const progressPct = next
-    ? Math.min(100, (((subCount ?? 0) - prevMax) / (current.maxSubs - prevMax)) * 100)
-    : 100;
+  const BASE_PRICES = { enhanced: 9, featured: 23, premium: 43 };
+  const GRACE = 100;
+  const count = subCount ?? 0;
+  const increment = Math.max(0, count - GRACE);
+  const inGrace = count < GRACE;
+  const priceFor = (base) => (base + increment * 0.01).toFixed(2);
+  const centsFor = (base) => Math.round((base + increment * 0.01) * 100);
+  const progressPct = inGrace ? Math.min(100, (count / GRACE) * 100) : Math.min(100, ((count - GRACE) / 900) * 100);
 
   const PAID_TIERS = [
     {
       id: 'enhanced', name: 'Enhanced', color: C.lakeBlue, badge: null,
-      price: current.enhanced, nextPrice: next?.enhanced,
+      price: priceFor(BASE_PRICES.enhanced), priceInCents: centsFor(BASE_PRICES.enhanced),
       features: ['Everything in Free', 'Clickable website link', 'Business description', 'Expandable listing card', 'Category search placement'],
     },
     {
       id: 'featured', name: 'Featured', color: C.sage, badge: 'Most Popular',
-      price: current.featured, nextPrice: next?.featured,
+      price: priceFor(BASE_PRICES.featured), priceInCents: centsFor(BASE_PRICES.featured),
       features: ['Everything in Enhanced', 'Spotlight card placement', 'Logo or photo display', 'Above standard listings', 'Email contact button'],
     },
     {
       id: 'premium', name: 'Premium', color: C.sunsetLight, badge: 'Best Visibility',
-      price: current.premium, nextPrice: next?.premium,
+      price: priceFor(BASE_PRICES.premium), priceInCents: centsFor(BASE_PRICES.premium),
       features: ['Everything in Featured', 'Full-width banner placement', 'Large logo (110×110)', 'Top-of-directory position', 'Cross-page placements'],
     },
   ];
@@ -2407,7 +2402,7 @@ function PricingSection() {
       const res = await fetch('/api/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tier: modal.tierId, businessName: form.businessName, email: form.email, priceInCents: modal.price * 100, mode: 'subscription' }),
+        body: JSON.stringify({ tier: modal.tierId, businessName: form.businessName, email: form.email, priceInCents: modal.priceInCents, mode: 'subscription' }),
       });
       const data = await res.json();
       if (data.url) { window.location.href = data.url; }
@@ -2430,25 +2425,27 @@ function PricingSection() {
               Choose Your Visibility
             </h2>
             <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 16, maxWidth: 520, margin: "0 auto 32px" }}>
-              Get discovered by the Manitou Beach community. Founding member rates lock in forever — prices rise as our audience grows.
+              Get discovered by the Manitou Beach community. Lock in your rate today — it's yours forever, no matter what happens next.
             </p>
 
-            {/* Live milestone bar */}
+            {/* Live subscriber counter */}
             <div style={{ maxWidth: 460, margin: "0 auto", background: "rgba(255,255,255,0.05)", borderRadius: 14, padding: "20px 24px", border: "1px solid rgba(255,255,255,0.1)" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
-                <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.45)", letterSpacing: 0.5 }}>Newsletter subscribers</span>
+                <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.45)", letterSpacing: 0.5 }}>
+                  {inGrace ? 'Founding subscribers' : 'Newsletter subscribers'}
+                </span>
                 <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.cream }}>
-                  {subCount === null ? '—' : subCount.toLocaleString()}
-                  {next && <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.3)", marginLeft: 6 }}>/ {current.maxSubs}</span>}
+                  {subCount === null ? '—' : count.toLocaleString()}
+                  {inGrace && <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.3)", marginLeft: 6 }}>/ {GRACE}</span>}
                 </span>
               </div>
               <div style={{ background: "rgba(255,255,255,0.08)", borderRadius: 999, height: 6, overflow: "hidden" }}>
                 <div style={{ height: "100%", width: `${progressPct}%`, background: `linear-gradient(90deg, ${C.sage}, ${C.sunsetLight})`, borderRadius: 999, transition: "width 1s ease" }} />
               </div>
-              <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: next ? C.sunsetLight : "rgba(255,255,255,0.35)", marginTop: 10, margin: "10px 0 0", letterSpacing: 0.3 }}>
-                {next
-                  ? `⚡ Prices increase at ${current.maxSubs} subscribers — lock in now, grandfathered forever.`
-                  : 'Audience established · Premium pricing in effect.'}
+              <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.sunsetLight, margin: "10px 0 0", letterSpacing: 0.3 }}>
+                {inGrace
+                  ? `⚡ Founding rate holds until ${GRACE} subscribers — then rises a penny per new sub.`
+                  : '⚡ Every new subscriber raises the price — lock in now, grandfathered forever.'}
               </p>
             </div>
           </div>
@@ -2489,13 +2486,10 @@ function PricingSection() {
                   <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 36, color: C.cream, fontWeight: 700 }}>${tier.price}</span>
                   <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 14, fontFamily: "'Libre Franklin', sans-serif" }}>/mo</span>
                 </div>
-                {tier.nextPrice && (
-                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, marginBottom: 18, letterSpacing: 0.3 }}>
-                    <span style={{ textDecoration: "line-through", color: "rgba(255,100,80,0.45)" }}>${tier.nextPrice}/mo</span>
-                    <span style={{ color: C.sunsetLight, marginLeft: 8 }}>after {current.maxSubs} subs</span>
-                  </div>
-                )}
-                <ul style={{ listStyle: "none", padding: 0, margin: tier.nextPrice ? "0 0 24px 0" : "14px 0 24px 0", flexGrow: 1, display: "flex", flexDirection: "column", gap: 9 }}>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: inGrace ? "rgba(255,255,255,0.35)" : C.sunsetLight, marginBottom: 16, letterSpacing: 0.3 }}>
+                  {inGrace ? `Founding rate · locked at sign-up` : `↑ rises with every new subscriber`}
+                </div>
+                <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px 0", flexGrow: 1, display: "flex", flexDirection: "column", gap: 9 }}>
                   {tier.features.map(f => (
                     <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 9 }}>
                       <span style={{ color: tier.color, fontSize: 13, marginTop: 2, flexShrink: 0, fontWeight: 700 }}>✓</span>
@@ -2504,7 +2498,7 @@ function PricingSection() {
                   ))}
                 </ul>
                 <button
-                  onClick={() => { setModal({ tierId: tier.id, tierName: tier.name, price: tier.price, color: tier.color }); setForm({ businessName: '', email: '' }); setCheckoutError(''); }}
+                  onClick={() => { setModal({ tierId: tier.id, tierName: tier.name, price: tier.price, priceInCents: tier.priceInCents, color: tier.color }); setForm({ businessName: '', email: '' }); setCheckoutError(''); }}
                   style={{ display: "block", width: "100%", padding: "11px 0", borderRadius: 8, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: "pointer", border: "none", background: tier.id === "premium" ? C.sunset : "transparent", color: tier.id === "premium" ? C.cream : tier.color, outline: tier.id === "premium" ? "none" : `1.5px solid ${tier.color}55`, transition: "all 0.22s" }}
                 >
                   Get Started
@@ -2545,7 +2539,7 @@ function PricingSection() {
           </div>
 
           <p style={{ textAlign: "center", color: "rgba(255,255,255,0.18)", fontSize: 12, marginTop: 24, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>
-            Monthly subscriptions · Cancel anytime · Founding rates grandfathered forever
+            Monthly subscriptions · Cancel anytime · Your rate grandfathered forever
           </p>
         </div>
       </div>
@@ -2578,7 +2572,7 @@ function PricingSection() {
             <button
               onClick={handleCheckout}
               disabled={loading}
-              style={{ width: "100%", padding: "14px", borderRadius: 10, border: "none", background: modal.id === "premium" ? C.sunset : modal.color, color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: loading ? "wait" : "pointer", opacity: loading ? 0.7 : 1, transition: "opacity 0.2s" }}
+              style={{ width: "100%", padding: "14px", borderRadius: 10, border: "none", background: modal.tierId === "premium" ? C.sunset : modal.color, color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: loading ? "wait" : "pointer", opacity: loading ? 0.7 : 1, transition: "opacity 0.2s" }}
             >
               {loading ? "Redirecting…" : "Continue to Secure Checkout →"}
             </button>
