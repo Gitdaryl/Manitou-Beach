@@ -1,3 +1,5 @@
+import { searchUnsplash } from './_unsplash.js';
+
 function richTextToString(arr) {
   if (!arr || !arr.length) return '';
   return arr.map(t => t.plain_text).join('');
@@ -96,6 +98,17 @@ export default async function handler(req, res) {
         const existingDate = page.properties['Published Date']?.date?.start;
         const properties = { 'Blog Safe': { checkbox: true }, 'Status': { select: { name: 'Published' } } };
         if (!existingDate) properties['Published Date'] = { date: { start: today } };
+        // Auto-fetch Unsplash cover if none set — one-time at publish, non-fatal
+        const existingCover = page.properties['Cover Image URL']?.url;
+        if (!existingCover && process.env.UNSPLASH_ACCESS_KEY) {
+          const title = page.properties['Title']?.title?.[0]?.plain_text || '';
+          if (title) {
+            try {
+              const photo = await searchUnsplash(title);
+              if (photo) properties['Cover Image URL'] = { url: photo.url };
+            } catch (_) {}
+          }
+        }
         const patchRes = await fetch(`https://api.notion.com/v1/pages/${notionId}`, {
           method: 'PATCH', headers: HEADERS, body: JSON.stringify({ properties }),
         });

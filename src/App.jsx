@@ -76,6 +76,10 @@ function GlobalStyles() {
         0% { transform: translateX(-12px); opacity: 0; }
         100% { transform: translateX(0); opacity: 1; }
       }
+      @keyframes shrinkWidth {
+        from { width: 100%; }
+        to { width: 0%; }
+      }
       .timeline-pulse {
         background: linear-gradient(90deg, rgba(122,142,114,0.1), rgba(212,132,90,0.35), rgba(91,126,149,0.35), rgba(122,142,114,0.1)) !important;
         background-size: 200% 100% !important;
@@ -8262,6 +8266,7 @@ function DispatchArticlePage() {
   const [loading, setLoading] = useState(true);
   const [subEmail, setSubEmail] = useState('');
   const [subStatus, setSubStatus] = useState('idle'); // idle | loading | success | exists | error
+  const [moreArticles, setMoreArticles] = useState([]);
   const adSlots = useDispatchAds('dispatch-article');
   const subScrollTo = (id) => { window.location.href = '/#' + id; };
 
@@ -8289,7 +8294,28 @@ function DispatchArticlePage() {
       .then(r => r.json())
       .then(d => { setArticle(d.article || null); setLoading(false); })
       .catch(() => setLoading(false));
+    fetch('/api/dispatch-articles')
+      .then(r => r.json())
+      .then(d => setMoreArticles((d.articles || []).filter(a => a.slug !== slug).slice(0, 3)))
+      .catch(() => {});
   }, [slug]);
+
+  useEffect(() => {
+    if (!article) return;
+    const prevTitle = document.title;
+    document.title = `${article.title} — The Manitou Dispatch`;
+    const setMeta = (attr, name, content) => {
+      let el = document.querySelector(`meta[${attr}="${name}"]`);
+      if (!el) { el = document.createElement('meta'); el.setAttribute(attr, name); document.head.appendChild(el); }
+      el.setAttribute('content', content);
+    };
+    setMeta('property', 'og:title', `${article.title} — The Manitou Dispatch`);
+    setMeta('property', 'og:description', article.excerpt || 'Lake life, local news, and a little Yeti wisdom from Manitou Beach.');
+    setMeta('property', 'og:type', 'article');
+    if (article.coverImage) setMeta('property', 'og:image', article.coverImage);
+    setMeta('name', 'description', article.excerpt || 'Lake life, local news, and a little Yeti wisdom from Manitou Beach.');
+    return () => { document.title = prevTitle; };
+  }, [article]);
 
   const formatDate = (str) => {
     if (!str) return '';
@@ -8406,19 +8432,50 @@ function DispatchArticlePage() {
               {/* Footer-strip ad — between sign-off and subscribe form */}
               <AdSlot ads={adSlots['footer-strip']} variant="footer-strip" />
 
+              {/* More from The Dispatch */}
+              {moreArticles.length > 0 && (
+                <div style={{ margin: '52px 0 40px' }}>
+                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.dusk, marginBottom: 16, paddingBottom: 12, borderBottom: `1px solid ${C.sand}` }}>More from The Dispatch</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                    {moreArticles.map(a => (
+                      <a key={a.id} href={`/dispatch/${a.slug}`} style={{ textDecoration: 'none', display: 'flex', gap: 14, alignItems: 'center', background: '#fff', borderRadius: 10, overflow: 'hidden', boxShadow: '0 1px 8px rgba(0,0,0,0.06)', transition: 'box-shadow 0.2s' }}
+                        onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.1)'; }}
+                        onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 1px 8px rgba(0,0,0,0.06)'; }}
+                      >
+                        {a.coverImage ? (
+                          <img src={a.coverImage} alt={a.title} style={{ width: 84, height: 62, objectFit: 'cover', flexShrink: 0 }} />
+                        ) : (
+                          <div style={{ width: 84, height: 62, background: `url(/images/dispatch-header.jpg) center/cover`, flexShrink: 0, position: 'relative', overflow: 'hidden' }}>
+                            <div style={{ position: 'absolute', inset: 0, background: `${C.dusk}99` }} />
+                          </div>
+                        )}
+                        <div style={{ padding: '10px 14px 10px 0', flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: 10, color: CATEGORY_COLORS[a.category] || C.lakeBlue, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>{a.category}</div>
+                          <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, fontWeight: 700, color: C.dusk, lineHeight: 1.3, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{a.title}</div>
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div style={{ marginTop: 40, padding: '36px 32px', background: C.night, borderRadius: 14, textAlign: 'center' }}>
                 <p style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.warmWhite, marginBottom: 8 }}>Enjoying The Dispatch?</p>
-                <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 14, marginBottom: 24 }}>Get lake life news, local tips, and a little Yeti wisdom delivered to your inbox.</p>
+                <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 14, marginBottom: 20 }}>Get lake life news, local tips, and a little Yeti wisdom delivered to your inbox.</p>
+                <ShareBar title={article.title} />
+                <div style={{ height: 24 }} />
                 {subStatus === 'success' ? (
                   <div>
                     <div style={{ fontSize: 36, marginBottom: 10 }}>📬</div>
                     <p style={{ color: C.warmWhite, fontWeight: 600, marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>Check your inbox!</p>
                     <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 13, fontFamily: "'Libre Franklin', sans-serif" }}>Click the confirmation link to complete sign-up. Check spam if you don't see it.</p>
+                    <a href="/dispatch" style={{ display: 'inline-block', marginTop: 18, fontSize: 14, color: C.lakeBlue, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'none' }}>← Back to The Dispatch</a>
                   </div>
                 ) : subStatus === 'exists' ? (
                   <div>
                     <div style={{ fontSize: 36, marginBottom: 10 }}>👋</div>
                     <p style={{ color: C.warmWhite, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif" }}>You're already on the list — next issue incoming!</p>
+                    <a href="/dispatch" style={{ display: 'inline-block', marginTop: 16, fontSize: 14, color: C.lakeBlue, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'none' }}>← Back to The Dispatch</a>
                   </div>
                 ) : (
                   <form onSubmit={handleInlineSub} style={{ display: 'flex', gap: 10, maxWidth: 420, margin: '0 auto', flexWrap: 'wrap', justifyContent: 'center' }}>
@@ -8510,8 +8567,9 @@ function DispatchPreviewSection() {
                   {article.coverImage ? (
                     <img src={article.coverImage} alt={article.title} style={{ width: '100%', height: 180, objectFit: 'cover', display: 'block' }} />
                   ) : (
-                    <div style={{ width: '100%', height: 180, background: `linear-gradient(135deg, ${C.dusk}, ${C.lakeBlue})`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <span style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: 'rgba(255,255,255,0.35)' }}>The Dispatch</span>
+                    <div style={{ width: '100%', height: 180, background: 'url(/images/dispatch-header.jpg) center/cover', position: 'relative', overflow: 'hidden' }}>
+                      <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(135deg, ${C.dusk}cc, ${C.lakeBlue}99)` }} />
+                      <span style={{ position: 'absolute', bottom: 12, left: 16, fontFamily: "'Caveat', cursive", fontSize: 22, color: 'rgba(255,255,255,0.75)' }}>The Dispatch</span>
                     </div>
                   )}
                   <div style={{ padding: '18px 20px 22px' }}>
@@ -8526,9 +8584,9 @@ function DispatchPreviewSection() {
                         {article.excerpt.length > 90 ? article.excerpt.slice(0, 90) + '…' : article.excerpt}
                       </p>
                     )}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#999' }}>
-                      <span>{article.author}</span>
-                      {article.publishedDate && <span>{formatDate(article.publishedDate)}</span>}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12, color: '#999', borderTop: `1px solid ${C.sand}`, paddingTop: 10, marginTop: 10 }}>
+                      <span>{article.author}{article.publishedDate && ` · ${formatDate(article.publishedDate)}`}</span>
+                      <span style={{ color: C.lakeBlue, fontWeight: 600, fontSize: 12 }}>Read story →</span>
                     </div>
                   </div>
                 </a>
@@ -8623,8 +8681,9 @@ function DispatchPage() {
                   {article.coverImage ? (
                     <img src={article.coverImage} alt={article.title} style={{ width: '100%', height: 200, objectFit: 'cover', display: 'block' }} />
                   ) : (
-                    <div style={{ width: '100%', height: 200, background: `linear-gradient(135deg, ${C.dusk}, ${C.lakeBlue})`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <span style={{ fontFamily: "'Caveat', cursive", fontSize: 28, color: 'rgba(255,255,255,0.4)' }}>The Dispatch</span>
+                    <div style={{ width: '100%', height: 200, background: 'url(/images/dispatch-header.jpg) center/cover', position: 'relative', overflow: 'hidden' }}>
+                      <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(135deg, ${C.dusk}cc, ${C.lakeBlue}99)` }} />
+                      <span style={{ position: 'absolute', bottom: 14, left: 18, fontFamily: "'Caveat', cursive", fontSize: 28, color: 'rgba(255,255,255,0.75)' }}>The Dispatch</span>
                     </div>
                   )}
                   <div style={{ padding: '20px 22px 24px' }}>
@@ -8639,9 +8698,9 @@ function DispatchPage() {
                         {article.excerpt.length > 120 ? article.excerpt.slice(0, 120) + '…' : article.excerpt}
                       </p>
                     )}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12, color: '#999', marginTop: 'auto' }}>
-                      <span>{article.author}</span>
-                      {article.publishedDate && <span>{formatDate(article.publishedDate)}</span>}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12, color: '#999', borderTop: `1px solid ${C.sand}`, paddingTop: 10, marginTop: 4 }}>
+                      <span>{article.author}{article.publishedDate && ` · ${formatDate(article.publishedDate)}`}</span>
+                      <span style={{ color: C.lakeBlue, fontWeight: 600 }}>Read story →</span>
                     </div>
                   </div>
                 </div>
@@ -8993,6 +9052,10 @@ function YetiAdminPage() {
   const [promosLoading, setPromosLoading] = useState(false);
   const [copiedId, setCopiedId] = useState(null);
 
+  // ── Publish abort timer (Gmail undo-send) ──────────────────────
+  const [pendingPublish, setPendingPublish] = useState(null); // { id, countdown, source }
+  const publishIntervalRef = useRef(null);
+
   // Helper: fetch with auth token
   const adminFetch = (url, options = {}) => fetch(url, {
     ...options,
@@ -9102,19 +9165,46 @@ function YetiAdminPage() {
     } catch { setSaveStatus('error'); }
   };
 
-  const handlePublishFromModal = async () => {
-    if (!previewArticle) return;
-    setPublishingId(previewArticle.id);
+  const executePublish = async (notionId, source) => {
+    setPublishingId(notionId);
     try {
       const res = await adminFetch('/api/admin-articles', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ notionId: previewArticle.id }),
+        body: JSON.stringify({ notionId }),
       });
+      if (source === 'card' && res.status === 401) { handleLogout(); return; }
       if (!res.ok) throw new Error('Publish failed');
-      setPreviewArticle(prev => ({ ...prev, blogSafe: true, status: 'Published' }));
-      setDrafts(prev => prev.map(a => a.id === previewArticle.id ? { ...a, blogSafe: true, status: 'Published' } : a));
+      setDrafts(prev => prev.map(a => a.id === notionId ? { ...a, blogSafe: true, status: 'Published' } : a));
+      if (source === 'modal') setPreviewArticle(prev => prev ? { ...prev, blogSafe: true, status: 'Published' } : null);
     } catch (err) { console.error(err); }
     finally { setPublishingId(null); }
+  };
+
+  const startPublishCountdown = (notionId, source) => {
+    if (publishIntervalRef.current) clearInterval(publishIntervalRef.current);
+    let count = 5;
+    setPendingPublish({ id: notionId, countdown: count, source });
+    publishIntervalRef.current = setInterval(() => {
+      count -= 1;
+      if (count <= 0) {
+        clearInterval(publishIntervalRef.current);
+        publishIntervalRef.current = null;
+        setPendingPublish(null);
+        executePublish(notionId, source);
+      } else {
+        setPendingPublish(prev => prev ? { ...prev, countdown: count } : null);
+      }
+    }, 1000);
+  };
+
+  const cancelPublish = () => {
+    if (publishIntervalRef.current) { clearInterval(publishIntervalRef.current); publishIntervalRef.current = null; }
+    setPendingPublish(null);
+  };
+
+  const handlePublishFromModal = () => {
+    if (!previewArticle) return;
+    startPublishCountdown(previewArticle.id, 'modal');
   };
 
   const handleUnpublish = async () => {
@@ -9132,18 +9222,8 @@ function YetiAdminPage() {
     finally { setUnpublishingId(null); }
   };
 
-  const handlePublish = async (notionId) => {
-    setPublishingId(notionId);
-    try {
-      const res = await adminFetch('/api/admin-articles', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ notionId }),
-      });
-      if (res.status === 401) { handleLogout(); return; }
-      if (!res.ok) throw new Error('Publish failed');
-      setDrafts(prev => prev.map(a => a.id === notionId ? { ...a, blogSafe: true, status: 'Published' } : a));
-    } catch (err) { console.error(err); }
-    finally { setPublishingId(null); }
+  const handlePublish = (notionId) => {
+    startPublishCountdown(notionId, 'card');
   };
 
   const handleSwapPhoto = async (articleId, file) => {
@@ -9711,6 +9791,11 @@ function YetiAdminPage() {
           >
             {status === 'loading' ? '✍️  Yeti is writing...' : '⚡ Generate Article'}
           </button>
+          {status === 'loading' && (
+            <p style={{ textAlign: 'center', marginTop: 14, fontSize: 13, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>
+              The Yeti is writing… usually about 20 seconds ☕
+            </p>
+          )}
         </div>
 
         {/* Success */}
@@ -9910,6 +9995,15 @@ function YetiAdminPage() {
         </>}
       </div>
     </div>
+
+    {/* ── Publish abort toast (Gmail undo-send) ── */}
+    {pendingPublish && (
+      <div style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', zIndex: 10000, background: C.night, borderRadius: 12, padding: '14px 20px', display: 'flex', gap: 14, alignItems: 'center', boxShadow: '0 8px 36px rgba(0,0,0,0.45)', border: '1px solid rgba(255,255,255,0.1)', fontFamily: 'Libre Franklin, sans-serif', minWidth: 300, overflow: 'hidden' }}>
+        <span style={{ color: C.warmWhite, fontSize: 14 }}>Publishing in {pendingPublish.countdown}s…</span>
+        <button onClick={cancelPublish} style={{ marginLeft: 'auto', background: C.sunset, color: '#fff', border: 'none', borderRadius: 8, padding: '7px 18px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif', flexShrink: 0 }}>Undo</button>
+        <div style={{ position: 'absolute', bottom: 0, left: 0, height: 3, background: C.lakeBlue, borderRadius: '0 0 0 12px', animation: 'shrinkWidth 5s linear forwards' }} />
+      </div>
+    )}
     </>
   );
 }
