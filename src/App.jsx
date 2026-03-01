@@ -51,12 +51,12 @@ function GlobalStyles() {
         0% { background-position: -200% center; }
         100% { background-position: 200% center; }
       }
-      @keyframes kenBurns {
+      @keyframes kenBurnsBg {
         0%   { transform: scale(1)    translate(0, 0); }
-        100% { transform: scale(1.15) translate(-2.5%, -2%); }
+        100% { transform: scale(1.08) translate(-1%, -0.5%); }
       }
-      .ken-burns {
-        animation: kenBurns 18s ease-in-out infinite alternate;
+      .ken-burns-bg {
+        animation: kenBurnsBg 25s ease-in-out infinite alternate;
         transform-origin: center center;
         will-change: transform;
       }
@@ -811,7 +811,7 @@ function Hero({ scrollTo }) {
     // heroImageUrl = high-res image for full-screen bg (add "Hero Image URL" column in Notion)
     // imageUrl = small event image — shown as a contained card, never stretched
     const bgStyle = heroEvent.heroImageUrl
-      ? { backgroundImage: `url(${heroEvent.heroImageUrl})`, backgroundSize: "cover", backgroundPosition: "center" }
+      ? {}
       : { background: `linear-gradient(135deg, ${C.night} 0%, ${C.lakeDark} 50%, ${C.dusk} 100%)` };
 
     return (
@@ -821,6 +821,16 @@ function Hero({ scrollTo }) {
         onMouseEnter={() => setHeroPaused(true)}
         onMouseLeave={() => setHeroPaused(false)}
       >
+        {heroEvent.heroImageUrl && (
+          <img
+            key={heroEvent.heroImageUrl}
+            src={heroEvent.heroImageUrl}
+            alt=""
+            aria-hidden="true"
+            className="ken-burns-bg"
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }}
+          />
+        )}
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(170deg, rgba(26,40,48,0.75) 0%, rgba(26,40,48,0.5) 50%, rgba(26,40,48,0.85) 100%)", zIndex: 1 }} />
 
         {/* Coming Up / Sponsored badge — top right */}
@@ -871,7 +881,6 @@ function Hero({ scrollTo }) {
                     <img
                       src={heroEvent.imageUrl}
                       alt={heroEvent.name}
-                      className="ken-burns"
                       style={mediaStyle}
                     />
                   )}
