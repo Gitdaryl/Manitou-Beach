@@ -9171,17 +9171,25 @@ function VoiceWidget() {
 
       vapi.on('message', async (message) => {
         console.log('[VoiceWidget] msg:', message.type, message);
-        // Transcript — auto-extract URLs from assistant messages and show as buttons
+        // Transcript — detect link intent from AI and auto-show button from known data
         if (message.type === 'transcript' && message.transcriptType === 'final') {
           setTranscript(prev => [...prev.slice(-8), { role: message.role, text: message.transcript }]);
           if (message.role === 'assistant') {
-            const urlMatch = message.transcript.match(/https?:\/\/[^\s,)>"]+/);
-            if (urlMatch) {
-              const url = urlMatch[0].replace(/[.,;!?]+$/, '');
-              setLinks(prev => {
-                if (prev.some(l => l.url === url)) return prev;
-                return [...prev, { url, label: 'Open Link', sublabel: url.replace(/^https?:\/\//, '').split('/')[0] }];
-              });
+            const text = message.transcript.toLowerCase();
+            const hasLinkIntent = ['popped that up', 'pulled that up', "here's the link", 'added that link', 'link for you', 'button for you', 'check it out at'].some(p => text.includes(p));
+            if (hasLinkIntent) {
+              const { rawEvents, rawBusinesses } = liveDataRef.current;
+              // Find most relevant URL by matching recent transcript words against event/business names
+              const recentText = text;
+              const allItems = [
+                ...rawEvents.map(e => ({ label: e.name, sublabel: e.date, url: e.eventUrl })),
+                ...rawBusinesses.map(b => ({ label: b.name, sublabel: b.category, url: b.website })),
+              ].filter(i => i.url);
+              const match = allItems.find(i => i.label && recentText.includes(i.label.toLowerCase().split(' ').slice(0, 3).join(' ')));
+              const item = match || allItems[0];
+              if (item) {
+                setLinks(prev => prev.some(l => l.url === item.url) ? prev : [...prev, { url: item.url, label: item.label || 'Open Link', sublabel: item.sublabel }]);
+              }
             }
           }
         }
@@ -9241,7 +9249,10 @@ function VoiceWidget() {
           }).join(', ');
       }
 
-      liveDataRef.current = { events, businesses, weather };
+      const rawEvents = eventsRes.status === 'fulfilled' ? (eventsRes.value.events || []) : [];
+      const d2 = bizRes.status === 'fulfilled' ? bizRes.value : {};
+      const rawBusinesses = [...(d2.premium||[]), ...(d2.featured||[]), ...(d2.enhanced||[]), ...(d2.free||[])];
+      liveDataRef.current = { events, businesses, weather, rawEvents, rawBusinesses };
       console.log('[VoiceWidget] Injecting data:', { events: events.slice(0, 80), businesses: businesses.slice(0, 80), weather });
       await vapiRef.current.start(VAPI_ASSISTANT_ID);
     }
