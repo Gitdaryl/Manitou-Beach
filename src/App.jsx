@@ -3970,10 +3970,10 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
       <nav style={{
         position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000,
         padding: solid ? "10px 0" : "18px 0",
-        background: solid ? "rgba(250,246,239,0.55)" : "transparent",
+        background: solid ? "rgba(250,246,239,0.20)" : "transparent",
         backdropFilter: solid ? "blur(28px) saturate(180%)" : "none",
         WebkitBackdropFilter: solid ? "blur(28px) saturate(180%)" : "none",
-        borderBottom: solid ? "1px solid rgba(250,246,239,0.4)" : "none",
+        borderBottom: solid ? "1px solid rgba(255,255,255,0.15)" : "none",
         transition: "all 0.35s ease",
       }}>
         <div style={{ maxWidth: 1180, margin: "0 auto", padding: "0 28px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -3981,10 +3981,10 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
           <div style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 10 }} onClick={() => handleNavClick("home")}>
             <img src="/images/manitou_beach_icon.png" alt="" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", opacity: solid ? 1 : 0.85, transition: "opacity 0.35s" }} />
             <div>
-              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 700, color: solid ? C.dusk : C.cream, transition: "color 0.35s" }}>
+              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 700, color: C.cream, transition: "color 0.35s" }}>
                 Manitou Beach
               </div>
-              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 12, color: solid ? C.sage : "rgba(255,255,255,0.5)", marginTop: -2, transition: "color 0.35s" }}>
+              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 12, color: "rgba(255,255,255,0.5)", marginTop: -2, transition: "color 0.35s" }}>
                 on Devils Lake
               </div>
             </div>
@@ -3999,7 +3999,7 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
                 style={{
                   background: activeSection === id ? `${C.sage}18` : "transparent",
                   border: "none",
-                  color: activeSection === id ? C.sageDark : (solid ? C.textLight : "rgba(255,255,255,0.7)"),
+                  color: activeSection === id ? C.sageDark : "rgba(255,255,255,0.7)",
                   fontFamily: "'Libre Franklin', sans-serif",
                   fontSize: 12,
                   fontWeight: activeSection === id ? 700 : 500,
@@ -4010,8 +4010,8 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
                   transition: "all 0.2s",
                   whiteSpace: "nowrap",
                 }}
-                onMouseEnter={e => { e.currentTarget.style.color = solid ? C.sageDark : C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
-                onMouseLeave={e => { e.currentTarget.style.color = activeSection === id ? C.sageDark : (solid ? C.textLight : "rgba(255,255,255,0.7)"); e.currentTarget.style.background = activeSection === id ? `${C.sage}18` : "transparent"; }}
+                onMouseEnter={e => { e.currentTarget.style.color = C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
+                onMouseLeave={e => { e.currentTarget.style.color = activeSection === id ? C.sageDark : "rgba(255,255,255,0.7)"; e.currentTarget.style.background = activeSection === id ? `${C.sage}18` : "transparent"; }}
               >
                 {label}
               </button>
@@ -4021,13 +4021,13 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
               onClick={() => { window.location.href = "/dispatch"; }}
               style={{
                 background: "transparent", border: "none",
-                color: solid ? C.textLight : "rgba(255,255,255,0.7)",
+                color: "rgba(255,255,255,0.7)",
                 fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 500,
                 letterSpacing: 0.5, padding: "7px 13px", borderRadius: 6, cursor: "pointer",
                 transition: "all 0.2s", whiteSpace: "nowrap",
               }}
-              onMouseEnter={e => { e.currentTarget.style.color = solid ? C.sageDark : C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
-              onMouseLeave={e => { e.currentTarget.style.color = solid ? C.textLight : "rgba(255,255,255,0.7)"; e.currentTarget.style.background = "transparent"; }}
+              onMouseEnter={e => { e.currentTarget.style.color = C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
+              onMouseLeave={e => { e.currentTarget.style.color = "rgba(255,255,255,0.7)"; e.currentTarget.style.background = "transparent"; }}
             >
               Dispatch
             </button>
@@ -4055,12 +4055,12 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
                 onClick={() => setComOpen(o => !o)}
                 style={{
                   background: comOpen ? `${C.sage}18` : "transparent",
-                  border: "none", color: solid ? C.textLight : "rgba(255,255,255,0.7)",
+                  border: "none", color: "rgba(255,255,255,0.7)",
                   fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 500, letterSpacing: 0.5,
                   padding: "7px 13px", borderRadius: 6, cursor: "pointer", transition: "all 0.2s", whiteSpace: "nowrap",
                 }}
-                onMouseEnter={e => { e.currentTarget.style.color = solid ? C.sageDark : C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
-                onMouseLeave={e => { if (!comOpen) { e.currentTarget.style.color = solid ? C.textLight : "rgba(255,255,255,0.7)"; e.currentTarget.style.background = "transparent"; } }}
+                onMouseEnter={e => { e.currentTarget.style.color = C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
+                onMouseLeave={e => { if (!comOpen) { e.currentTarget.style.color = "rgba(255,255,255,0.7)"; e.currentTarget.style.background = "transparent"; } }}
               >
                 Community ▾
               </button>
