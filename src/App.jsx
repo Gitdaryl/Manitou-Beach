@@ -3970,10 +3970,10 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
       <nav style={{
         position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000,
         padding: solid ? "10px 0" : "18px 0",
-        background: solid ? "rgba(250,246,239,0.82)" : "transparent",
-        backdropFilter: solid ? "blur(20px)" : "none",
-        WebkitBackdropFilter: solid ? "blur(20px)" : "none",
-        borderBottom: solid ? `1px solid ${C.sand}` : "none",
+        background: solid ? "rgba(250,246,239,0.55)" : "transparent",
+        backdropFilter: solid ? "blur(28px) saturate(180%)" : "none",
+        WebkitBackdropFilter: solid ? "blur(28px) saturate(180%)" : "none",
+        borderBottom: solid ? "1px solid rgba(250,246,239,0.4)" : "none",
         transition: "all 0.35s ease",
       }}>
         <div style={{ maxWidth: 1180, margin: "0 auto", padding: "0 28px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
