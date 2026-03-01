@@ -9173,7 +9173,7 @@ function VoiceWidget() {
       // Pre-fetch live data to inject into assistant context at call start
       const [eventsRes, bizRes, wxRes] = await Promise.allSettled([
         fetch('/api/events').then(r => r.json()),
-        fetch('/api/businesses').then(r => r.json()),
+        fetch('/api/businesses?all=true').then(r => r.json()),
         fetch('https://api.open-meteo.com/v1/forecast?latitude=41.96&longitude=-84.02&current=temperature_2m,wind_speed_10m,precipitation,weathercode&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weathercode&timezone=America%2FDetroit&forecast_days=3&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch').then(r => r.json()),
       ]);
 

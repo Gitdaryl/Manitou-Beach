@@ -73,14 +73,16 @@ export default async function handler(req, res) {
           'Notion-Version': '2022-06-28',
         },
         body: JSON.stringify({
-          filter: {
-            or: [
-              { property: 'Status', status: { equals: 'Listed Free' } },
-              { property: 'Status', status: { equals: 'Listed Enhanced' } },
-              { property: 'Status', status: { equals: 'Listed Featured' } },
-              { property: 'Status', status: { equals: 'Listed Premium' } },
-            ],
-          },
+          ...(req.query.all !== 'true' && {
+            filter: {
+              or: [
+                { property: 'Status', status: { equals: 'Listed Free' } },
+                { property: 'Status', status: { equals: 'Listed Enhanced' } },
+                { property: 'Status', status: { equals: 'Listed Featured' } },
+                { property: 'Status', status: { equals: 'Listed Premium' } },
+              ],
+            },
+          }),
           sorts: [{ property: 'Name', direction: 'ascending' }],
         }),
       }
