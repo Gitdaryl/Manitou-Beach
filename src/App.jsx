@@ -9186,10 +9186,11 @@ function VoiceWidget() {
         ).join('\n');
       }
 
-      // Format businesses
+      // Format businesses — API returns { free, enhanced, featured, premium }
       let businesses = 'No business listings found.';
       if (bizRes.status === 'fulfilled') {
-        const list = (bizRes.value.businesses || []).slice(0, 15);
+        const d = bizRes.value;
+        const list = [...(d.premium || []), ...(d.featured || []), ...(d.enhanced || []), ...(d.free || [])].slice(0, 15);
         if (list.length) businesses = list.map(b =>
           `${b.name}${b.category ? ' (' + b.category + ')' : ''}${b.phone ? ' · ' + b.phone : ''}${b.address ? ' · ' + b.address : ''}${b.website ? ' | ' + b.website : ''}`
         ).join('\n');
