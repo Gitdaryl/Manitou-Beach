@@ -2466,7 +2466,7 @@ function PricingSection() {
                   ))}
                 </div>
               </div>
-              <a href="#submit" style={{ padding: "9px 22px", borderRadius: 8, border: `1.5px solid ${C.driftwood}55`, color: C.driftwood, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none", whiteSpace: "nowrap" }}>
+              <a href="/#submit" style={{ padding: "9px 22px", borderRadius: 8, border: `1.5px solid ${C.driftwood}55`, color: C.driftwood, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none", whiteSpace: "nowrap" }}>
                 Get Listed Free
               </a>
             </div>
@@ -2531,7 +2531,7 @@ function PricingSection() {
                     <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, color: C.lakeBlue, whiteSpace: "nowrap" }}>{item.price}</div>
                   </div>
                 ))}
-                <a href="#submit" style={{ textAlign: "center", padding: "10px", borderRadius: 8, background: "transparent", border: `1.5px solid ${C.lakeBlue}55`, color: C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none", marginTop: 4, display: "block" }}>
+                <a href="/#submit" style={{ textAlign: "center", padding: "10px", borderRadius: 8, background: "transparent", border: `1.5px solid ${C.lakeBlue}55`, color: C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none", marginTop: 4, display: "block" }}>
                   Inquire
                 </a>
               </div>
@@ -2663,7 +2663,7 @@ function BusinessDirectory() {
               <SectionLabel>The Directory</SectionLabel>
               <SectionTitle>Local Businesses</SectionTitle>
             </div>
-            <Btn href="#submit" variant="outline" small>+ List Your Business (Free)</Btn>
+            <Btn href="/#submit" variant="outline" small>+ List Your Business (Free)</Btn>
           </div>
         </FadeIn>
 
@@ -2798,7 +2798,7 @@ function BusinessDirectory() {
                 Top-of-directory placement, newsletter inclusion, and a business spotlight video from Holly & The Yeti.
               </p>
             </div>
-            <Btn href="#submit" variant="sunset">Upgrade Your Listing</Btn>
+            <Btn href="/#submit" variant="sunset">Upgrade Your Listing</Btn>
           </div>
         </FadeIn>
       </div>
@@ -3933,7 +3933,7 @@ function Footer({ scrollTo }) {
               { label: "Facebook", href: "https://www.facebook.com/HollyandtheYeti" },
               { label: "YouTube", href: "https://www.youtube.com/@HollyandtheYetipodcast" },
               { label: "Instagram", href: "https://www.instagram.com/hollyandtheyeti" },
-              { label: "Newsletter", href: "#submit" },
+              { label: "Newsletter", href: "/#submit" },
             ].map(l => (
               <div key={l.label} style={{ marginBottom: 8 }}>
                 <a
@@ -3955,7 +3955,7 @@ function Footer({ scrollTo }) {
               Free directory listing. Upgrade for featured placement, newsletter mentions, and video content.
             </p>
             <a
-              href="#submit"
+              href="/#submit"
               style={{
                 display: "inline-block",
                 fontFamily: "'Libre Franklin', sans-serif",
@@ -4526,6 +4526,7 @@ function HomePage() {
       <PromoBanner page="Home" />
       <WaveDivider topColor={C.dusk} bottomColor={C.cream} />
       <ExploreSection />
+      <DispatchPreviewSection />
       <NewsletterInline />
       <div style={{ textAlign: "center", padding: "8px 24px 40px" }}>
         <Btn onClick={() => window.open("https://maps.google.com/?q=Manitou+Beach+Michigan+49267", "_blank")} variant="dark">Get Directions</Btn>
@@ -8095,11 +8096,17 @@ function PromotePage() {
 
 const CATEGORY_COLORS = {
   'Lake Life':       C.lakeBlue,
-  'Seasonal Tips':   C.sage,
-  'Community News':  C.sunset,
-  'Hollys Corner':   '#C06FA0',
+  'Community':       '#D4845A',
+  'Community News':  '#D4845A',
   'Events':          '#E07B39',
+  'Real Estate':     '#5B8A6E',
+  'Food & Drink':    '#C06FA0',
+  'History':         '#8B7355',
   'Local History':   '#8B7355',
+  'Recreation':      C.sage,
+  'Seasonal Tips':   C.sage,
+  'Hollys Corner':   '#C06FA0',
+  "Holly's Corner":  '#C06FA0',
   'PSA':             '#C0392B',
   'Advertorial':     '#7D6EAA',
 };
@@ -8161,7 +8168,27 @@ function DispatchArticlePage() {
   const navigate = useNavigate();
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [subEmail, setSubEmail] = useState('');
+  const [subStatus, setSubStatus] = useState('idle'); // idle | loading | success | exists | error
   const subScrollTo = (id) => { window.location.href = '/#' + id; };
+
+  const handleInlineSub = async (e) => {
+    e.preventDefault();
+    if (!subEmail || subStatus === 'loading') return;
+    setSubStatus('loading');
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: subEmail }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed');
+      setSubStatus(data.alreadySubscribed ? 'exists' : 'success');
+    } catch {
+      setSubStatus('error');
+    }
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -8267,12 +8294,46 @@ function DispatchArticlePage() {
                 </div>
               </div>
 
-              <div style={{ marginTop: 60, padding: '32px', background: C.night, borderRadius: 14, textAlign: 'center' }}>
+              <div style={{ marginTop: 60, padding: '36px 32px', background: C.night, borderRadius: 14, textAlign: 'center' }}>
                 <p style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.warmWhite, marginBottom: 8 }}>Enjoying The Dispatch?</p>
-                <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 14, marginBottom: 20 }}>Get lake life news, local tips, and a little Yeti wisdom delivered to your inbox.</p>
-                <button onClick={() => subScrollTo('submit')} style={{ background: C.sunset, color: '#fff', border: 'none', borderRadius: 8, padding: '12px 28px', cursor: 'pointer', fontSize: 15, fontWeight: 600 }}>
-                  Subscribe Free
-                </button>
+                <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 14, marginBottom: 24 }}>Get lake life news, local tips, and a little Yeti wisdom delivered to your inbox.</p>
+                {subStatus === 'success' ? (
+                  <div>
+                    <div style={{ fontSize: 36, marginBottom: 10 }}>📬</div>
+                    <p style={{ color: C.warmWhite, fontWeight: 600, marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>Check your inbox!</p>
+                    <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 13, fontFamily: "'Libre Franklin', sans-serif" }}>Click the confirmation link to complete sign-up. Check spam if you don't see it.</p>
+                  </div>
+                ) : subStatus === 'exists' ? (
+                  <div>
+                    <div style={{ fontSize: 36, marginBottom: 10 }}>👋</div>
+                    <p style={{ color: C.warmWhite, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif" }}>You're already on the list — next issue incoming!</p>
+                  </div>
+                ) : (
+                  <form onSubmit={handleInlineSub} style={{ display: 'flex', gap: 10, maxWidth: 420, margin: '0 auto', flexWrap: 'wrap', justifyContent: 'center' }}>
+                    <input
+                      type="email"
+                      placeholder="your@email.com"
+                      value={subEmail}
+                      onChange={e => setSubEmail(e.target.value)}
+                      required
+                      disabled={subStatus === 'loading'}
+                      style={{
+                        flex: 1, minWidth: 200, padding: '12px 18px', borderRadius: 6,
+                        border: '1px solid rgba(255,255,255,0.15)',
+                        background: 'rgba(255,255,255,0.08)', color: C.warmWhite,
+                        fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", outline: 'none',
+                      }}
+                    />
+                    <button
+                      type="submit"
+                      disabled={subStatus === 'loading'}
+                      style={{ background: C.sunset, color: '#fff', border: 'none', borderRadius: 6, padding: '12px 24px', cursor: subStatus === 'loading' ? 'not-allowed' : 'pointer', fontSize: 14, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif" }}
+                    >
+                      {subStatus === 'loading' ? 'Joining…' : 'Subscribe Free'}
+                    </button>
+                    {subStatus === 'error' && <p style={{ width: '100%', color: '#ff9f9f', fontSize: 13, marginTop: 4 }}>Something went wrong — try again.</p>}
+                  </form>
+                )}
               </div>
             </div>
           </>
@@ -8284,18 +8345,103 @@ function DispatchArticlePage() {
   );
 }
 
+// ============================================================
+// 📰  DISPATCH PREVIEW — Homepage 3-card teaser
+// ============================================================
+function DispatchPreviewSection() {
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/dispatch-articles')
+      .then(r => r.json())
+      .then(d => { setArticles((d.articles || []).slice(0, 3)); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, []);
+
+  if (!loading && articles.length === 0) return null;
+
+  const formatDate = (str) => {
+    if (!str) return '';
+    return new Date(str + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
+
+  return (
+    <section style={{ background: C.cream, padding: '56px 24px 16px' }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 28, flexWrap: 'wrap', gap: 12 }}>
+          <div>
+            <SectionLabel>Latest Stories</SectionLabel>
+            <SectionTitle>The Manitou Dispatch</SectionTitle>
+          </div>
+          <a href="/dispatch" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.lakeBlue, textDecoration: 'none', fontWeight: 600, whiteSpace: 'nowrap' }}>
+            Read all stories →
+          </a>
+        </div>
+
+        {loading ? (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 24 }}>
+            {[1, 2, 3].map(i => (
+              <div key={i} style={{ background: '#fff', borderRadius: 12, height: 280, opacity: 0.35 }} />
+            ))}
+          </div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 24 }}>
+            {articles.map(article => (
+              <FadeIn key={article.id}>
+                <a
+                  href={`/dispatch/${article.slug}`}
+                  style={{ textDecoration: 'none', display: 'block', background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 2px 14px rgba(0,0,0,0.07)', transition: 'transform 0.2s, box-shadow 0.2s' }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 28px rgba(0,0,0,0.12)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 2px 14px rgba(0,0,0,0.07)'; }}
+                >
+                  {article.coverImage ? (
+                    <img src={article.coverImage} alt={article.title} style={{ width: '100%', height: 180, objectFit: 'cover', display: 'block' }} />
+                  ) : (
+                    <div style={{ width: '100%', height: 180, background: `linear-gradient(135deg, ${C.dusk}, ${C.lakeBlue})`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <span style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: 'rgba(255,255,255,0.35)' }}>The Dispatch</span>
+                    </div>
+                  )}
+                  <div style={{ padding: '18px 20px 22px' }}>
+                    <span style={{ background: CATEGORY_COLORS[article.category] || C.lakeBlue, color: '#fff', borderRadius: 20, padding: '2px 10px', fontSize: 10, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase' }}>
+                      {article.category}
+                    </span>
+                    <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 700, color: C.dusk, margin: '10px 0 6px', lineHeight: 1.3 }}>
+                      {article.title}
+                    </h3>
+                    {article.excerpt && (
+                      <p style={{ margin: '0 0 12px', fontSize: 13, color: '#666', lineHeight: 1.5 }}>
+                        {article.excerpt.length > 90 ? article.excerpt.slice(0, 90) + '…' : article.excerpt}
+                      </p>
+                    )}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#999' }}>
+                      <span>{article.author}</span>
+                      {article.publishedDate && <span>{formatDate(article.publishedDate)}</span>}
+                    </div>
+                  </div>
+                </a>
+              </FadeIn>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
 function DispatchPage() {
   const navigate = useNavigate();
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
   const subScrollTo = (id) => { window.location.href = '/#' + id; };
 
   useEffect(() => {
     window.scrollTo(0, 0);
     fetch('/api/dispatch-articles')
-      .then(r => r.json())
+      .then(r => { if (!r.ok) throw new Error('API error'); return r.json(); })
       .then(d => { setArticles(d.articles || []); setLoading(false); })
-      .catch(() => setLoading(false));
+      .catch(() => { setFetchError(true); setLoading(false); });
   }, []);
 
   const formatDate = (str) => {
@@ -8338,6 +8484,11 @@ function DispatchPage() {
       <section style={{ maxWidth: 1100, margin: '0 auto', padding: '20px 24px 80px' }}>
         {loading ? (
           <div style={{ textAlign: 'center', padding: '60px 20px', color: C.sage }}>Loading the latest…</div>
+        ) : fetchError ? (
+          <div style={{ textAlign: 'center', padding: '60px 20px' }}>
+            <p style={{ fontFamily: "'Caveat', cursive", fontSize: 26, color: C.sunset, marginBottom: 8 }}>Something went sideways.</p>
+            <p style={{ color: '#888', fontSize: 15 }}>Couldn't load the articles right now — try refreshing in a moment.</p>
+          </div>
         ) : articles.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '60px 20px' }}>
             <p style={{ fontFamily: "'Caveat', cursive", fontSize: 26, color: C.sage, marginBottom: 8 }}>First issue coming soon.</p>
@@ -8395,7 +8546,7 @@ function DispatchPage() {
 // ============================================================
 // 🛠️  YETI ADMIN — AI Article Writer (unlisted, /yeti-admin)
 // ============================================================
-const DISPATCH_CATEGORIES = ['Lake Life', 'Community', 'Events', 'Real Estate', 'Food & Drink', 'History', 'Recreation'];
+const DISPATCH_CATEGORIES = ['Lake Life', 'Community', 'Events', 'Real Estate', 'Food & Drink', 'History', 'Recreation', 'Seasonal Tips', "Holly's Corner", 'Advertorial'];
 
 // ─── Review Capture — Business Config ────────────────────────────────────────
 // Add a key per business slug (matches /claim/:slug URL)
@@ -8678,9 +8829,17 @@ function ClaimPage() {
 }
 
 function YetiAdminPage() {
-  const [activeTab, setActiveTab] = useState('write'); // write | review
+  // ── Auth ──────────────────────────────────────────────────────
+  const [authed, setAuthed] = useState(() => !!sessionStorage.getItem('yeti_admin_token'));
+  const [authToken, setAuthToken] = useState(() => sessionStorage.getItem('yeti_admin_token') || '');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
+  const [loginLoading, setLoginLoading] = useState(false);
 
-  // Write tab state
+  // ── Tabs ──────────────────────────────────────────────────────
+  const [activeTab, setActiveTab] = useState('write'); // write | review | dashboard
+
+  // ── Write tab ─────────────────────────────────────────────────
   const [topic, setTopic] = useState('');
   const [category, setCategory] = useState('Lake Life');
   const [notes, setNotes] = useState('');
@@ -8692,25 +8851,158 @@ function YetiAdminPage() {
   const [uploadedUrl, setUploadedUrl] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
 
-  // Review tab state
+  // ── Review tab ────────────────────────────────────────────────
   const [drafts, setDrafts] = useState([]);
   const [draftsLoading, setDraftsLoading] = useState(false);
-  const [publishingId, setPublishingId] = useState(null); // notionId being published
-  const [publishedIds, setPublishedIds] = useState(new Set());
-  const [swapStatus, setSwapStatus] = useState({}); // { [articleId]: 'uploading' | 'done' | 'error' }
-  const [swappedUrls, setSwappedUrls] = useState({});  // { [articleId]: url }
+  const [publishingId, setPublishingId] = useState(null);
+  const [swapStatus, setSwapStatus] = useState({});
+
+  // ── Preview modal ──────────────────────────────────────────────
+  const [previewArticle, setPreviewArticle] = useState(null);
+  const [previewLoading, setPreviewLoading] = useState(false);
+  const [previewTab, setPreviewTab] = useState('preview'); // preview | edit
+  const [editFields, setEditFields] = useState({ title: '', excerpt: '', editorNote: '' });
+  const [saveStatus, setSaveStatus] = useState('idle');
+  const [unpublishingId, setUnpublishingId] = useState(null);
+
+  // ── Dashboard ──────────────────────────────────────────────────
+  const [dashLoading, setDashLoading] = useState(false);
+  const [dashData, setDashData] = useState(null);
+
+  // Helper: fetch with auth token
+  const adminFetch = (url, options = {}) => fetch(url, {
+    ...options,
+    headers: { ...(options.headers || {}), 'X-Admin-Token': authToken },
+  });
+
+  // Login handler
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    if (!loginPassword.trim()) return;
+    setLoginLoading(true);
+    setLoginError('');
+    try {
+      const res = await fetch('/api/admin-articles', {
+        headers: { 'X-Admin-Token': loginPassword.trim() },
+      });
+      if (res.status === 401) { setLoginError('Wrong password — try again.'); setLoginLoading(false); return; }
+      sessionStorage.setItem('yeti_admin_token', loginPassword.trim());
+      setAuthToken(loginPassword.trim());
+      setAuthed(true);
+    } catch { setLoginError('Connection error — try again.'); }
+    finally { setLoginLoading(false); }
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('yeti_admin_token');
+    setAuthed(false); setAuthToken(''); setLoginPassword('');
+  };
 
   const fetchDrafts = async () => {
     setDraftsLoading(true);
     try {
-      const res = await fetch('/api/admin-articles');
+      const res = await adminFetch('/api/admin-articles');
+      if (res.status === 401) { handleLogout(); return; }
       const data = await res.json();
       setDrafts(data.articles || []);
-    } catch (err) {
-      console.error('Failed to load drafts:', err);
-    } finally {
-      setDraftsLoading(false);
-    }
+    } catch (err) { console.error('Failed to load drafts:', err); }
+    finally { setDraftsLoading(false); }
+  };
+
+  const fetchDashboard = async () => {
+    setDashLoading(true);
+    try {
+      const [subRes, artRes] = await Promise.all([
+        fetch('/api/subscribe'),
+        adminFetch('/api/admin-articles'),
+      ]);
+      const subData = await subRes.json();
+      const artData = await artRes.json();
+      const articles = artData.articles || [];
+      const published = articles.filter(a => a.blogSafe);
+      const draftsArr = articles.filter(a => !a.blogSafe);
+      const lastPub = [...published].sort((a, b) => (b.publishedDate || '').localeCompare(a.publishedDate || ''))[0];
+      setDashData({ subCount: subData.count || 0, published: published.length, drafts: draftsArr.length, lastPublished: lastPub || null });
+    } catch (err) { console.error('Dashboard fetch error:', err); }
+    finally { setDashLoading(false); }
+  };
+
+  const openPreview = async (article) => {
+    setPreviewArticle({ ...article, content: null });
+    setPreviewTab('preview');
+    setEditFields({ title: article.title, excerpt: article.excerpt || '', editorNote: '' });
+    setSaveStatus('idle');
+    setPreviewLoading(true);
+    try {
+      const res = await adminFetch(`/api/admin-articles?id=${article.id}`);
+      if (res.ok) {
+        const data = await res.json();
+        setPreviewArticle(data.article);
+        setEditFields({ title: data.article.title, excerpt: data.article.excerpt || '', editorNote: data.article.editorNote || '' });
+      }
+    } catch (err) { console.error('Preview fetch error:', err); }
+    finally { setPreviewLoading(false); }
+  };
+
+  const handleSaveEdit = async () => {
+    if (!previewArticle) return;
+    setSaveStatus('saving');
+    try {
+      const res = await adminFetch('/api/admin-articles', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'edit', notionId: previewArticle.id, ...editFields }),
+      });
+      if (!res.ok) throw new Error('Save failed');
+      setPreviewArticle(prev => ({ ...prev, ...editFields }));
+      setDrafts(prev => prev.map(a => a.id === previewArticle.id ? { ...a, title: editFields.title, excerpt: editFields.excerpt } : a));
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 2500);
+    } catch { setSaveStatus('error'); }
+  };
+
+  const handlePublishFromModal = async () => {
+    if (!previewArticle) return;
+    setPublishingId(previewArticle.id);
+    try {
+      const res = await adminFetch('/api/admin-articles', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notionId: previewArticle.id }),
+      });
+      if (!res.ok) throw new Error('Publish failed');
+      setPreviewArticle(prev => ({ ...prev, blogSafe: true, status: 'Published' }));
+      setDrafts(prev => prev.map(a => a.id === previewArticle.id ? { ...a, blogSafe: true, status: 'Published' } : a));
+    } catch (err) { console.error(err); }
+    finally { setPublishingId(null); }
+  };
+
+  const handleUnpublish = async () => {
+    if (!previewArticle) return;
+    setUnpublishingId(previewArticle.id);
+    try {
+      const res = await adminFetch('/api/admin-articles', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'unpublish', notionId: previewArticle.id }),
+      });
+      if (!res.ok) throw new Error('Unpublish failed');
+      setPreviewArticle(prev => ({ ...prev, blogSafe: false, status: 'Draft' }));
+      setDrafts(prev => prev.map(a => a.id === previewArticle.id ? { ...a, blogSafe: false, status: 'Draft' } : a));
+    } catch (err) { console.error(err); }
+    finally { setUnpublishingId(null); }
+  };
+
+  const handlePublish = async (notionId) => {
+    setPublishingId(notionId);
+    try {
+      const res = await adminFetch('/api/admin-articles', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notionId }),
+      });
+      if (res.status === 401) { handleLogout(); return; }
+      if (!res.ok) throw new Error('Publish failed');
+      setDrafts(prev => prev.map(a => a.id === notionId ? { ...a, blogSafe: true, status: 'Published' } : a));
+    } catch (err) { console.error(err); }
+    finally { setPublishingId(null); }
   };
 
   const handleSwapPhoto = async (articleId, file) => {
@@ -8721,55 +9013,30 @@ function YetiAdminPage() {
       reader.onload = async (e) => {
         try {
           const base64 = e.target.result.split(',')[1];
-          const uploadRes = await fetch('/api/upload-image', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+          const uploadRes = await adminFetch('/api/upload-image', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ filename: file.name, contentType: file.type, data: base64, folder: 'dispatch' }),
           });
           const uploadData = await uploadRes.json();
           if (!uploadRes.ok) throw new Error(uploadData.error || 'Upload failed');
-          const applyRes = await fetch('/api/upload-image', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+          const applyRes = await adminFetch('/api/upload-image', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ action: 'apply', notionId: articleId, url: uploadData.url }),
           });
           if (!applyRes.ok) throw new Error('Failed to apply to Notion');
-          setSwappedUrls(prev => ({ ...prev, [articleId]: uploadData.url }));
           setDrafts(prev => prev.map(a => a.id === articleId ? { ...a, coverImage: uploadData.url } : a));
           setSwapStatus(prev => ({ ...prev, [articleId]: 'done' }));
-        } catch (err) {
-          console.error(err);
-          setSwapStatus(prev => ({ ...prev, [articleId]: 'error' }));
-        }
+        } catch (err) { console.error(err); setSwapStatus(prev => ({ ...prev, [articleId]: 'error' })); }
       };
       reader.readAsDataURL(file);
-    } catch (err) {
-      setSwapStatus(prev => ({ ...prev, [articleId]: 'error' }));
-    }
-  };
-
-  const handlePublish = async (notionId) => {
-    setPublishingId(notionId);
-    try {
-      const res = await fetch('/api/admin-articles', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ notionId }),
-      });
-      if (!res.ok) throw new Error('Publish failed');
-      setPublishedIds(prev => new Set([...prev, notionId]));
-      // Update local state so card reflects published immediately
-      setDrafts(prev => prev.map(a => a.id === notionId ? { ...a, blogSafe: true, status: 'Published' } : a));
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setPublishingId(null);
-    }
+    } catch { setSwapStatus(prev => ({ ...prev, [articleId]: 'error' })); }
   };
 
   useEffect(() => {
+    if (!authed) return;
     if (activeTab === 'review') fetchDrafts();
-  }, [activeTab]);
+    if (activeTab === 'dashboard') fetchDashboard();
+  }, [activeTab, authed]);
 
   const handlePhotoUpload = async (file) => {
     if (!file || !result?.notionId) return;
@@ -8780,17 +9047,14 @@ function YetiAdminPage() {
       const reader = new FileReader();
       reader.onload = async (e) => {
         const base64 = e.target.result.split(',')[1];
-        const uploadRes = await fetch('/api/upload-image', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        const uploadRes = await adminFetch('/api/upload-image', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ filename: file.name, contentType: file.type, data: base64, folder: 'dispatch' }),
         });
         const uploadData = await uploadRes.json();
         if (!uploadRes.ok) throw new Error(uploadData.error || 'Upload failed');
-        // Apply the Blob URL directly to the Notion page
-        const applyRes = await fetch('/api/upload-image', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        const applyRes = await adminFetch('/api/upload-image', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'apply', notionId: result.notionId, url: uploadData.url }),
         });
         if (!applyRes.ok) throw new Error('Failed to apply to Notion');
@@ -8798,48 +9062,36 @@ function YetiAdminPage() {
         setUploadStatus('done');
       };
       reader.readAsDataURL(file);
-    } catch (err) {
-      console.error(err);
-      setUploadStatus('error');
-    }
+    } catch (err) { console.error(err); setUploadStatus('error'); }
   };
 
   const handleApplyImage = async () => {
     if (!result?.notionId || !result?.coverImage) return;
     setApplyStatus('applying');
     try {
-      const res = await fetch('/api/upload-image', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await adminFetch('/api/upload-image', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'apply', notionId: result.notionId, filename: result.coverImage }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed');
       setApplyStatus('applied');
-    } catch (err) {
-      setApplyStatus('error');
-    }
+    } catch { setApplyStatus('error'); }
   };
 
   const handleGenerate = async () => {
     if (!topic.trim()) return;
-    setStatus('loading');
-    setResult(null);
-    setErrorMsg('');
+    setStatus('loading'); setResult(null); setErrorMsg('');
     try {
-      const res = await fetch('/api/generate-article', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await adminFetch('/api/generate-article', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ topic: topic.trim(), category, notes: notes.trim() }),
       });
+      if (res.status === 401) { handleLogout(); return; }
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Unknown error');
-      setResult(data);
-      setStatus('success');
-    } catch (err) {
-      setErrorMsg(err.message);
-      setStatus('error');
-    }
+      setResult(data); setStatus('success');
+    } catch (err) { setErrorMsg(err.message); setStatus('error'); }
   };
 
   const inputStyle = {
@@ -8850,23 +9102,172 @@ function YetiAdminPage() {
   };
   const labelStyle = { display: 'block', marginBottom: 6, fontWeight: 600, color: C.dusk, fontSize: 13, textTransform: 'uppercase', letterSpacing: '0.06em' };
 
+  // ── LOGIN SCREEN ──────────────────────────────────────────────
+  if (!authed) {
+    return (
+      <div style={{ minHeight: '100vh', background: C.night, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+        <div style={{ width: '100%', maxWidth: 360, textAlign: 'center' }}>
+          <img src="/images/yeti/yeti-front-profile.png" alt="" onError={e => { e.target.style.display = 'none'; }} style={{ width: 96, height: 96, objectFit: 'contain', marginBottom: 20 }} />
+          <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.12em', color: C.sage, marginBottom: 6, fontFamily: 'Libre Franklin, sans-serif' }}>The Manitou Dispatch</div>
+          <h1 style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 28, color: C.cream, margin: '0 0 32px' }}>The Yeti Desk</h1>
+          <form onSubmit={handleLogin}>
+            <input
+              type="password"
+              placeholder="Password"
+              value={loginPassword}
+              onChange={e => setLoginPassword(e.target.value)}
+              autoFocus
+              style={{
+                width: '100%', padding: '13px 18px', borderRadius: 8, boxSizing: 'border-box', marginBottom: 12,
+                border: loginError ? '1.5px solid #ff6b6b' : '1.5px solid rgba(255,255,255,0.12)',
+                background: 'rgba(255,255,255,0.07)', color: C.cream,
+                fontSize: 16, fontFamily: 'Libre Franklin, sans-serif', outline: 'none',
+              }}
+            />
+            {loginError && <p style={{ color: '#ff9f9f', fontSize: 13, marginBottom: 12, textAlign: 'left' }}>{loginError}</p>}
+            <button
+              type="submit"
+              disabled={loginLoading || !loginPassword.trim()}
+              style={{
+                width: '100%', padding: '13px', borderRadius: 8, border: 'none',
+                background: loginLoading ? C.driftwood : C.lakeBlue,
+                color: '#fff', fontSize: 15, fontWeight: 600,
+                cursor: loginLoading ? 'not-allowed' : 'pointer',
+                fontFamily: 'Libre Franklin, sans-serif',
+              }}
+            >{loginLoading ? 'Checking…' : 'Enter The Desk →'}</button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  // ── ADMIN UI ──────────────────────────────────────────────────
   return (
+    <>
+    {/* Preview / Edit Modal */}
+    {previewArticle && (
+      <div
+        onClick={() => setPreviewArticle(null)}
+        style={{ position: 'fixed', inset: 0, background: 'rgba(10,18,24,0.82)', zIndex: 9999, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '20px 16px', overflowY: 'auto' }}
+      >
+        <div
+          onClick={e => e.stopPropagation()}
+          style={{ background: C.cream, borderRadius: 16, width: '100%', maxWidth: 780, marginTop: 16, marginBottom: 40, overflow: 'hidden', boxShadow: '0 24px 80px rgba(0,0,0,0.45)' }}
+        >
+          {/* Modal header */}
+          <div style={{ background: C.dusk, padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.4)', marginBottom: 2, fontFamily: 'Libre Franklin, sans-serif' }}>{previewArticle.category}</div>
+              <div style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 16, color: C.cream, fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{previewArticle.title}</div>
+            </div>
+            <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexShrink: 0 }}>
+              <span style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', padding: '3px 12px', borderRadius: 20, background: previewArticle.blogSafe ? C.sage : 'rgba(255,255,255,0.15)', color: '#fff' }}>
+                {previewArticle.blogSafe ? 'Live' : 'Draft'}
+              </span>
+              <button onClick={() => setPreviewArticle(null)} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: '#fff', borderRadius: 6, padding: '4px 12px', cursor: 'pointer', fontSize: 20, lineHeight: 1, fontFamily: 'Libre Franklin, sans-serif' }}>×</button>
+            </div>
+          </div>
+
+          {/* Modal tabs */}
+          <div style={{ display: 'flex', borderBottom: `1px solid ${C.sand}`, background: '#fff' }}>
+            {[{ id: 'preview', label: '👁  Preview' }, { id: 'edit', label: '✏️  Edit' }].map(t => (
+              <button key={t.id} onClick={() => setPreviewTab(t.id)} style={{ padding: '12px 24px', fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', background: previewTab === t.id ? C.cream : '#fff', color: previewTab === t.id ? C.dusk : C.textLight, borderBottom: previewTab === t.id ? `2px solid ${C.lakeBlue}` : '2px solid transparent' }}>
+                {t.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Modal body */}
+          <div style={{ padding: '28px 32px', maxHeight: '55vh', overflowY: 'auto' }}>
+            {previewLoading ? (
+              <div style={{ textAlign: 'center', padding: '40px', color: C.sage, fontSize: 14 }}>Loading…</div>
+            ) : previewTab === 'preview' ? (
+              <div>
+                {previewArticle.coverImage && <img src={previewArticle.coverImage} alt="" style={{ width: '100%', height: 200, objectFit: 'cover', borderRadius: 10, marginBottom: 20, display: 'block' }} />}
+                {previewArticle.excerpt && <p style={{ fontSize: 16, fontStyle: 'italic', color: '#5a5a5a', borderLeft: `4px solid ${C.lakeBlue}`, paddingLeft: 16, marginBottom: 24, lineHeight: 1.6 }}>{previewArticle.excerpt}</p>}
+                {previewArticle.content
+                  ? <DispatchArticleContent content={previewArticle.content} />
+                  : <p style={{ color: C.textMuted, fontStyle: 'italic', textAlign: 'center', padding: '20px 0' }}>Fetching article content…</p>
+                }
+                {previewArticle.editorNote && (
+                  <div style={{ marginTop: 28, padding: '16px 20px', background: C.warmWhite, borderRadius: 10, borderLeft: `3px solid ${C.sage}` }}>
+                    <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.08em', color: C.sage, marginBottom: 6, fontFamily: 'Libre Franklin, sans-serif' }}>Editor's Note</div>
+                    <p style={{ margin: 0, fontSize: 14, color: C.textLight, lineHeight: 1.6, fontStyle: 'italic' }}>{previewArticle.editorNote}</p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+                <div>
+                  <label style={labelStyle}>Title</label>
+                  <input style={inputStyle} value={editFields.title} onChange={e => setEditFields(f => ({ ...f, title: e.target.value }))} />
+                </div>
+                <div>
+                  <label style={labelStyle}>Excerpt</label>
+                  <textarea style={{ ...inputStyle, minHeight: 80, resize: 'vertical' }} value={editFields.excerpt} onChange={e => setEditFields(f => ({ ...f, excerpt: e.target.value }))} placeholder="One-sentence teaser (max 160 chars)" />
+                </div>
+                <div>
+                  <label style={labelStyle}>Editor's Note</label>
+                  <textarea style={{ ...inputStyle, minHeight: 90, resize: 'vertical' }} value={editFields.editorNote} onChange={e => setEditFields(f => ({ ...f, editorNote: e.target.value }))} placeholder="Personal aside from The Yeti…" />
+                </div>
+                <button
+                  onClick={handleSaveEdit}
+                  disabled={saveStatus === 'saving'}
+                  style={{ alignSelf: 'flex-start', padding: '11px 24px', background: saveStatus === 'saved' ? C.sage : C.lakeBlue, color: '#fff', border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: saveStatus === 'saving' ? 'not-allowed' : 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}
+                >
+                  {saveStatus === 'saving' ? 'Saving…' : saveStatus === 'saved' ? '✓ Saved' : saveStatus === 'error' ? 'Save failed — retry' : 'Save Changes'}
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Modal footer actions */}
+          <div style={{ padding: '14px 32px', borderTop: `1px solid ${C.sand}`, background: '#fff', display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+            {!previewArticle.blogSafe ? (
+              <button
+                onClick={handlePublishFromModal}
+                disabled={publishingId === previewArticle.id}
+                style={{ background: publishingId === previewArticle.id ? C.driftwood : C.lakeBlue, color: '#fff', border: 'none', borderRadius: 8, padding: '10px 22px', fontSize: 14, fontWeight: 700, cursor: publishingId === previewArticle.id ? 'not-allowed' : 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}
+              >{publishingId === previewArticle.id ? 'Publishing…' : '⚡ Publish Live'}</button>
+            ) : (
+              <>
+                <button
+                  onClick={handleUnpublish}
+                  disabled={unpublishingId === previewArticle.id}
+                  style={{ background: 'transparent', color: C.sunset, border: `1px solid ${C.sunset}`, borderRadius: 8, padding: '9px 20px', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}
+                >{unpublishingId === previewArticle.id ? 'Unpublishing…' : 'Unpublish'}</button>
+                <a href={`/dispatch/${previewArticle.slug}`} target="_blank" rel="noreferrer" style={{ fontSize: 13, color: C.sage, fontWeight: 600, textDecoration: 'none' }}>View Live ↗</a>
+              </>
+            )}
+            <div style={{ marginLeft: 'auto' }}>
+              <a href={`https://notion.so/${previewArticle.id?.replace(/-/g, '')}`} target="_blank" rel="noreferrer" style={{ fontSize: 12, color: C.textMuted, textDecoration: 'none' }}>Notion ↗</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+
     <div style={{ minHeight: '100vh', background: C.cream, padding: '60px 20px' }}>
-      <div style={{ maxWidth: 640, margin: '0 auto' }}>
+      <div style={{ maxWidth: 700, margin: '0 auto' }}>
+
         {/* Header */}
-        <div style={{ marginBottom: 32 }}>
-          <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', color: C.sage, marginBottom: 8 }}>The Manitou Dispatch</div>
-          <h1 style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 32, color: C.dusk, margin: 0 }}>The Yeti Desk</h1>
+        <div style={{ marginBottom: 32, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+          <div>
+            <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', color: C.sage, marginBottom: 8, fontFamily: 'Libre Franklin, sans-serif' }}>The Manitou Dispatch</div>
+            <h1 style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 32, color: C.dusk, margin: 0 }}>The Yeti Desk</h1>
+          </div>
+          <button onClick={handleLogout} style={{ background: 'transparent', border: `1px solid ${C.sand}`, borderRadius: 6, padding: '6px 14px', fontSize: 12, color: C.textMuted, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}>Sign out</button>
         </div>
 
         {/* Tabs */}
-        <div style={{ display: 'flex', gap: 8, marginBottom: 32 }}>
-          {[{ id: 'write', label: '✍️  Write' }, { id: 'review', label: '📋  Review Queue' }].map(tab => (
+        <div style={{ display: 'flex', gap: 8, marginBottom: 32, flexWrap: 'wrap' }}>
+          {[{ id: 'write', label: '✍️  Write' }, { id: 'review', label: '📋  Review Queue' }, { id: 'dashboard', label: '📊  Dashboard' }].map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               style={{
-                padding: '9px 22px', borderRadius: 8, fontSize: 14, fontWeight: 600,
+                padding: '9px 20px', borderRadius: 8, fontSize: 14, fontWeight: 600,
                 fontFamily: 'Libre Franklin, sans-serif', cursor: 'pointer',
                 border: activeTab === tab.id ? 'none' : `1px solid ${C.sand}`,
                 background: activeTab === tab.id ? C.dusk : '#fff',
@@ -8877,109 +9278,111 @@ function YetiAdminPage() {
           ))}
         </div>
 
-        {/* Review Queue Tab */}
+        {/* ── DASHBOARD TAB ── */}
+        {activeTab === 'dashboard' && (
+          <div>
+            {dashLoading ? (
+              <div style={{ textAlign: 'center', padding: '60px 0', color: C.textMuted, fontSize: 14 }}>Loading metrics…</div>
+            ) : dashData ? (
+              <>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(148px, 1fr))', gap: 16, marginBottom: 24 }}>
+                  {[
+                    { label: 'Subscribers', value: dashData.subCount.toLocaleString(), icon: '📬', color: C.lakeBlue },
+                    { label: 'Published', value: dashData.published, icon: '✅', color: C.sage },
+                    { label: 'In Draft', value: dashData.drafts, icon: '✏️', color: C.sunset },
+                    { label: 'Last Published', value: dashData.lastPublished?.publishedDate || '—', icon: '🗓', color: C.dusk, small: true },
+                  ].map(stat => (
+                    <div key={stat.label} style={{ background: '#fff', borderRadius: 12, padding: '20px 18px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', borderTop: `3px solid ${stat.color}` }}>
+                      <div style={{ fontSize: 22, marginBottom: 8 }}>{stat.icon}</div>
+                      <div style={{ fontFamily: 'Libre Baskerville, serif', fontSize: stat.small ? 15 : 26, fontWeight: 700, color: C.dusk, marginBottom: 4 }}>{stat.value}</div>
+                      <div style={{ fontSize: 11, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '0.05em', fontFamily: 'Libre Franklin, sans-serif' }}>{stat.label}</div>
+                    </div>
+                  ))}
+                </div>
+                {dashData.lastPublished && (
+                  <div style={{ background: '#fff', borderRadius: 12, padding: '20px 24px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', marginBottom: 16 }}>
+                    <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.08em', color: C.sage, marginBottom: 8, fontFamily: 'Libre Franklin, sans-serif' }}>Most Recent Article</div>
+                    <div style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 16, color: C.dusk, fontWeight: 700, marginBottom: 4 }}>{dashData.lastPublished.title}</div>
+                    <div style={{ fontSize: 13, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>{dashData.lastPublished.publishedDate} · {dashData.lastPublished.category}</div>
+                    <a href={`/dispatch/${dashData.lastPublished.slug}`} target="_blank" rel="noreferrer" style={{ fontSize: 13, color: C.lakeBlue, textDecoration: 'none', display: 'inline-block', marginTop: 8, fontFamily: 'Libre Franklin, sans-serif' }}>View live →</a>
+                  </div>
+                )}
+                <div style={{ background: C.warmWhite, borderRadius: 12, padding: '20px 24px', border: `1px solid ${C.sand}`, marginBottom: 16 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: C.dusk, marginBottom: 8, fontFamily: 'Libre Franklin, sans-serif' }}>Open & Click Rates</div>
+                  <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: '0 0 12px', fontFamily: 'Libre Franklin, sans-serif' }}>
+                    Per-send analytics (open rates, click rates) are available in beehiiv's paid plans. Your current plan shows subscriber count and growth.
+                  </p>
+                  <a href="https://app.beehiiv.com" target="_blank" rel="noreferrer" style={{ fontSize: 13, color: C.lakeBlue, fontWeight: 600, textDecoration: 'none', fontFamily: 'Libre Franklin, sans-serif' }}>Open beehiiv Dashboard →</a>
+                </div>
+                <button onClick={fetchDashboard} style={{ background: 'transparent', border: `1px solid ${C.sand}`, borderRadius: 8, padding: '8px 18px', fontSize: 13, color: C.textLight, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}>↻ Refresh</button>
+              </>
+            ) : (
+              <div style={{ textAlign: 'center', padding: '40px 0', color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>Could not load metrics.</div>
+            )}
+          </div>
+        )}
+
+        {/* ── REVIEW QUEUE TAB ── */}
         {activeTab === 'review' && (
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-              <p style={{ margin: 0, color: C.textLight, fontSize: 14 }}>All articles — click Publish to make live.</p>
-              <button
-                onClick={fetchDrafts}
-                style={{ background: 'transparent', border: `1px solid ${C.sand}`, borderRadius: 8, padding: '7px 16px', fontSize: 13, color: C.textLight, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}
-              >↻ Refresh</button>
+              <p style={{ margin: 0, color: C.textLight, fontSize: 14, fontFamily: 'Libre Franklin, sans-serif' }}>Click any article to preview, edit, and publish.</p>
+              <button onClick={fetchDrafts} style={{ background: 'transparent', border: `1px solid ${C.sand}`, borderRadius: 8, padding: '7px 16px', fontSize: 13, color: C.textLight, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}>↻ Refresh</button>
             </div>
-
-            {draftsLoading && (
-              <div style={{ textAlign: 'center', padding: '60px 0', color: C.textMuted, fontSize: 14 }}>Loading articles…</div>
-            )}
-
-            {!draftsLoading && drafts.length === 0 && (
-              <div style={{ textAlign: 'center', padding: '60px 0', color: C.textMuted, fontSize: 14 }}>No articles found.</div>
-            )}
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {draftsLoading && <div style={{ textAlign: 'center', padding: '60px 0', color: C.textMuted, fontSize: 14 }}>Loading articles…</div>}
+            {!draftsLoading && drafts.length === 0 && <div style={{ textAlign: 'center', padding: '60px 0', color: C.textMuted, fontSize: 14 }}>No articles found.</div>}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {drafts.map(article => {
                 const isPublished = article.blogSafe;
                 const isPublishing = publishingId === article.id;
                 return (
                   <div
                     key={article.id}
-                    style={{
-                      background: '#fff', borderRadius: 12, padding: '20px 24px',
-                      boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
-                      borderLeft: `4px solid ${isPublished ? C.sage : C.sand}`,
-                    }}
+                    onClick={() => openPreview(article)}
+                    style={{ background: '#fff', borderRadius: 12, padding: '18px 20px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', borderLeft: `4px solid ${isPublished ? C.sage : C.sand}`, cursor: 'pointer', transition: 'box-shadow 0.15s, transform 0.15s' }}
+                    onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.12)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.06)'; e.currentTarget.style.transform = 'translateY(0)'; }}
                   >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 6, flexWrap: 'wrap' }}>
-                          <span style={{
-                            fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em',
-                            padding: '2px 10px', borderRadius: 20,
-                            background: isPublished ? C.sage : C.driftwood,
-                            color: '#fff',
-                          }}>{isPublished ? 'Live' : 'Draft'}</span>
-                          {article.aiGenerated && (
-                            <span style={{ fontSize: 11, color: C.textMuted, background: C.cream, padding: '2px 8px', borderRadius: 20 }}>AI</span>
-                          )}
-                          <span style={{ fontSize: 11, color: C.textMuted }}>{article.category}</span>
-                          {article.publishedDate && (
-                            <span style={{ fontSize: 11, color: C.textMuted }}>{article.publishedDate}</span>
-                          )}
+                          <span style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', padding: '2px 10px', borderRadius: 20, background: isPublished ? C.sage : C.driftwood, color: '#fff' }}>
+                            {isPublished ? 'Live' : 'Draft'}
+                          </span>
+                          {article.aiGenerated && <span style={{ fontSize: 11, color: C.textMuted, background: C.cream, padding: '2px 8px', borderRadius: 20, fontFamily: 'Libre Franklin, sans-serif' }}>AI</span>}
+                          <span style={{ fontSize: 11, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>{article.category}</span>
+                          {article.publishedDate && <span style={{ fontSize: 11, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>{article.publishedDate}</span>}
                         </div>
-                        <h3 style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 17, color: C.dusk, margin: '0 0 6px', lineHeight: 1.3 }}>{article.title}</h3>
-                        {article.excerpt && (
-                          <p style={{ margin: 0, fontSize: 13, color: C.textLight, lineHeight: 1.5, fontStyle: 'italic' }}>{article.excerpt}</p>
-                        )}
+                        <h3 style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 16, color: C.dusk, margin: '0 0 4px', lineHeight: 1.3 }}>{article.title}</h3>
+                        {article.excerpt && <p style={{ margin: 0, fontSize: 12, color: C.textLight, lineHeight: 1.5, fontFamily: 'Libre Franklin, sans-serif' }}>{article.excerpt.length > 100 ? article.excerpt.slice(0, 100) + '…' : article.excerpt}</p>}
                       </div>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, flexShrink: 0 }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flexShrink: 0, alignItems: 'flex-end' }}>
+                        {article.coverImage && <img src={article.coverImage} alt="" style={{ width: 56, height: 40, objectFit: 'cover', borderRadius: 6 }} />}
                         {!isPublished ? (
                           <button
-                            onClick={() => handlePublish(article.id)}
+                            onClick={e => { e.stopPropagation(); handlePublish(article.id); }}
                             disabled={isPublishing}
-                            style={{
-                              background: isPublishing ? C.driftwood : C.lakeBlue,
-                              color: '#fff', border: 'none', borderRadius: 8,
-                              padding: '8px 18px', fontSize: 13, fontWeight: 700,
-                              cursor: isPublishing ? 'not-allowed' : 'pointer',
-                              fontFamily: 'Libre Franklin, sans-serif', whiteSpace: 'nowrap',
-                            }}
-                          >{isPublishing ? 'Publishing…' : '⚡ Publish'}</button>
+                            style={{ background: isPublishing ? C.driftwood : C.lakeBlue, color: '#fff', border: 'none', borderRadius: 6, padding: '6px 14px', fontSize: 12, fontWeight: 700, cursor: isPublishing ? 'not-allowed' : 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}
+                          >{isPublishing ? '…' : '⚡ Publish'}</button>
                         ) : (
-                          <span style={{ fontSize: 12, color: C.sage, fontWeight: 600, textAlign: 'center' }}>✓ Live</span>
+                          <span style={{ fontSize: 11, color: C.sage, fontWeight: 600, fontFamily: 'Libre Franklin, sans-serif' }}>✓ Live</span>
                         )}
-                        <a
-                          href={article.notionUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          style={{ fontSize: 12, color: C.lakeBlue, textDecoration: 'none', textAlign: 'center' }}
-                        >Notion →</a>
                       </div>
                     </div>
-
                     {/* Photo strip */}
-                    <div style={{ marginTop: 14, paddingTop: 12, borderTop: `1px solid ${C.sand}`, display: 'flex', alignItems: 'center', gap: 12 }}>
-                      {article.coverImage && (
-                        <img src={article.coverImage} alt="" style={{ width: 72, height: 48, objectFit: 'cover', borderRadius: 6, flexShrink: 0 }} />
-                      )}
-                      <input
-                        id={`swap-input-${article.id}`}
-                        type="file" accept="image/*"
-                        style={{ display: 'none' }}
-                        onChange={e => handleSwapPhoto(article.id, e.target.files[0])}
-                      />
+                    <div style={{ marginTop: 12, paddingTop: 10, borderTop: `1px solid ${C.sand}`, display: 'flex', alignItems: 'center', gap: 10 }} onClick={e => e.stopPropagation()}>
+                      <input id={`swap-input-${article.id}`} type="file" accept="image/*" style={{ display: 'none' }} onChange={e => handleSwapPhoto(article.id, e.target.files[0])} />
                       {swapStatus[article.id] === 'uploading' ? (
-                        <span style={{ fontSize: 12, color: C.textMuted }}>Uploading…</span>
+                        <span style={{ fontSize: 12, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>Uploading…</span>
                       ) : swapStatus[article.id] === 'done' ? (
-                        <span style={{ fontSize: 12, color: C.sage, fontWeight: 600 }}>✓ Photo updated</span>
+                        <span style={{ fontSize: 12, color: C.sage, fontWeight: 600, fontFamily: 'Libre Franklin, sans-serif' }}>✓ Photo updated</span>
                       ) : (
-                        <button
-                          onClick={() => document.getElementById(`swap-input-${article.id}`).click()}
-                          style={{ background: 'transparent', border: `1px solid ${C.sand}`, borderRadius: 6, padding: '5px 14px', fontSize: 12, color: C.textLight, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}
-                        >{article.coverImage ? '📷 Swap Photo' : '📷 Add Photo'}</button>
+                        <button onClick={e => { e.stopPropagation(); document.getElementById(`swap-input-${article.id}`).click(); }} style={{ background: 'transparent', border: `1px solid ${C.sand}`, borderRadius: 6, padding: '4px 12px', fontSize: 11, color: C.textLight, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}>
+                          {article.coverImage ? '📷 Swap Photo' : '📷 Add Photo'}
+                        </button>
                       )}
-                      {swapStatus[article.id] === 'error' && (
-                        <span style={{ fontSize: 12, color: C.sunset }}>Upload failed — try again</span>
-                      )}
+                      {swapStatus[article.id] === 'error' && <span style={{ fontSize: 12, color: C.sunset, fontFamily: 'Libre Franklin, sans-serif' }}>Upload failed</span>}
+                      <span style={{ marginLeft: 'auto', fontSize: 11, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>tap to preview & edit</span>
                     </div>
                   </div>
                 );
@@ -8988,7 +9391,7 @@ function YetiAdminPage() {
           </div>
         )}
 
-        {/* Write Tab */}
+        {/* ── WRITE TAB ── */}
         {activeTab === 'write' && <>
         {/* Form */}
         <div style={{ background: '#fff', borderRadius: 12, padding: 32, boxShadow: '0 2px 16px rgba(0,0,0,0.07)', marginBottom: 24 }}>
@@ -9060,6 +9463,12 @@ function YetiAdminPage() {
               >
                 Review in Notion →
               </a>
+              <button
+                onClick={() => setActiveTab('review')}
+                style={{ background: C.lakeBlue, color: '#fff', border: 'none', borderRadius: 8, padding: '10px 20px', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}
+              >
+                Go to Review Queue →
+              </button>
               <button
                 onClick={() => { setStatus('idle'); setTopic(''); setNotes(''); setResult(null); setApplyStatus('idle'); setUploadStatus('idle'); setUploadedUrl(null); }}
                 style={{
@@ -9188,6 +9597,7 @@ function YetiAdminPage() {
         </>}
       </div>
     </div>
+    </>
   );
 }
 
