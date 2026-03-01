@@ -8988,6 +8988,11 @@ function YetiAdminPage() {
   const [dashLoading, setDashLoading] = useState(false);
   const [dashData, setDashData] = useState(null);
 
+  // ── Promos ─────────────────────────────────────────────────────
+  const [promos, setPromos] = useState([]);
+  const [promosLoading, setPromosLoading] = useState(false);
+  const [copiedId, setCopiedId] = useState(null);
+
   // Helper: fetch with auth token
   const adminFetch = (url, options = {}) => fetch(url, {
     ...options,
@@ -9044,6 +9049,23 @@ function YetiAdminPage() {
       setDashData({ subCount: subData.count || 0, published: published.length, drafts: draftsArr.length, lastPublished: lastPub || null });
     } catch (err) { console.error('Dashboard fetch error:', err); }
     finally { setDashLoading(false); }
+  };
+
+  const fetchPromos = async () => {
+    setPromosLoading(true);
+    try {
+      const res = await adminFetch('/api/dispatch-ads?admin=true');
+      const data = await res.json();
+      setPromos(data.promos || []);
+    } catch (err) { console.error('Promos fetch error:', err); }
+    finally { setPromosLoading(false); }
+  };
+
+  const copyToClipboard = (text, id) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 2000);
+    });
   };
 
   const openPreview = async (article) => {
@@ -9155,6 +9177,7 @@ function YetiAdminPage() {
     if (!authed) return;
     if (activeTab === 'review') fetchDrafts();
     if (activeTab === 'dashboard') fetchDashboard();
+    if (activeTab === 'promos') fetchPromos();
   }, [activeTab, authed]);
 
   // Preview file locally before uploading — no network call yet
@@ -9399,7 +9422,7 @@ function YetiAdminPage() {
 
         {/* Tabs */}
         <div style={{ display: 'flex', gap: 8, marginBottom: 32, flexWrap: 'wrap' }}>
-          {[{ id: 'write', label: '✍️  Write' }, { id: 'review', label: '📋  Review Queue' }, { id: 'dashboard', label: '📊  Dashboard' }].map(tab => (
+          {[{ id: 'write', label: '✍️  Write' }, { id: 'review', label: '📋  Review Queue' }, { id: 'dashboard', label: '📊  Dashboard' }, { id: 'promos', label: '🎟️  Promos' }].map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
@@ -9536,6 +9559,104 @@ function YetiAdminPage() {
                 );
               })}
             </div>
+          </div>
+        )}
+
+        {/* ── PROMOS TAB ── */}
+        {activeTab === 'promos' && (
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
+              <div>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.dusk, marginBottom: 4 }}>Promotions</div>
+                <div style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>Manage ad slots and generate newsletter promo blocks</div>
+              </div>
+              <div style={{ display: 'flex', gap: 10 }}>
+                <button onClick={fetchPromos} style={{ background: 'transparent', border: `1px solid ${C.sand}`, borderRadius: 8, padding: '8px 16px', fontSize: 13, color: C.textLight, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}>↻ Refresh</button>
+                <a href="https://www.notion.so/3158c729eb59810f8a48d27b6c6a8d31" target="_blank" rel="noreferrer" style={{ background: C.dusk, color: '#fff', borderRadius: 8, padding: '8px 16px', fontSize: 13, fontWeight: 600, textDecoration: 'none', fontFamily: 'Libre Franklin, sans-serif' }}>+ Add in Notion</a>
+              </div>
+            </div>
+
+            {promosLoading ? (
+              <div style={{ textAlign: 'center', padding: '40px 0', color: C.sage, fontFamily: 'Libre Franklin, sans-serif' }}>Loading promos…</div>
+            ) : promos.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '48px 24px', background: '#fff', borderRadius: 12, boxShadow: '0 2px 16px rgba(0,0,0,0.06)' }}>
+                <div style={{ fontSize: 32, marginBottom: 12 }}>🎟️</div>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.dusk, marginBottom: 8 }}>No promotions yet</div>
+                <div style={{ fontSize: 13, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>Add your first promotion in Notion — it'll appear here with copy-ready newsletter blocks.</div>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                {promos.map(promo => {
+                  const claimUrl = promo.claimSlug ? `https://manitoubeach.com/claim/${promo.claimSlug}` : null;
+                  const expiryStr = promo.expiry ? new Date(promo.expiry + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : null;
+
+                  // Newsletter block text — copy-paste ready for beehiiv
+                  const newsletterBlock = [
+                    `🎟️ READER EXCLUSIVE — ${promo.name}`,
+                    promo.offerText || '',
+                    promo.couponCode ? `Use code: ${promo.couponCode}` : '',
+                    claimUrl ? `Claim here → ${claimUrl}` : promo.linkUrl ? `Learn more → ${promo.linkUrl}` : '',
+                    expiryStr ? `Offer expires ${expiryStr}` : '',
+                  ].filter(Boolean).join('\n');
+
+                  return (
+                    <div key={promo.id} style={{ background: '#fff', borderRadius: 12, padding: 24, boxShadow: '0 2px 16px rgba(0,0,0,0.06)', borderLeft: `4px solid ${promo.active ? C.sage : C.sand}` }}>
+                      {/* Header row */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 14, flexWrap: 'wrap' }}>
+                        <div>
+                          <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, color: C.dusk, marginBottom: 6 }}>{promo.name}</div>
+                          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                            <span style={{ background: promo.active ? `${C.sage}20` : `${C.sand}40`, color: promo.active ? C.sage : '#999', borderRadius: 20, padding: '2px 10px', fontSize: 11, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', fontFamily: 'Libre Franklin, sans-serif' }}>
+                              {promo.active ? '● Active' : '○ Inactive'}
+                            </span>
+                            <span style={{ background: `${C.lakeBlue}15`, color: C.lakeBlue, borderRadius: 20, padding: '2px 10px', fontSize: 11, fontWeight: 600, fontFamily: 'Libre Franklin, sans-serif' }}>{promo.slot}</span>
+                            <span style={{ background: `${C.dusk}10`, color: C.dusk, borderRadius: 20, padding: '2px 10px', fontSize: 11, fontFamily: 'Libre Franklin, sans-serif' }}>{promo.tier}</span>
+                          </div>
+                        </div>
+                        <a href={promo.notionUrl} target="_blank" rel="noreferrer" style={{ fontSize: 12, color: C.textMuted, textDecoration: 'none', fontFamily: 'Libre Franklin, sans-serif', whiteSpace: 'nowrap', border: `1px solid ${C.sand}`, borderRadius: 6, padding: '4px 10px' }}>Edit in Notion →</a>
+                      </div>
+
+                      {/* Offer details */}
+                      {promo.offerText && (
+                        <div style={{ fontSize: 14, color: C.text, marginBottom: 8, fontFamily: 'Libre Franklin, sans-serif' }}>{promo.offerText}</div>
+                      )}
+                      <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 16, fontSize: 13, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>
+                        {promo.couponCode && <span>Code: <strong style={{ color: C.sunset }}>{promo.couponCode}</strong></span>}
+                        {expiryStr && <span>Expires: {expiryStr}</span>}
+                      </div>
+
+                      {/* Claim URL */}
+                      {claimUrl && (
+                        <div style={{ background: C.warmWhite, borderRadius: 8, padding: '10px 14px', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                          <span style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: 1, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif', flexShrink: 0 }}>Claim URL</span>
+                          <span style={{ fontSize: 13, color: C.lakeBlue, fontFamily: 'monospace', flex: 1, wordBreak: 'break-all' }}>{claimUrl}</span>
+                          <button
+                            onClick={() => copyToClipboard(claimUrl, `url-${promo.id}`)}
+                            style={{ background: copiedId === `url-${promo.id}` ? C.sage : C.lakeBlue, color: '#fff', border: 'none', borderRadius: 6, padding: '5px 12px', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif', flexShrink: 0 }}
+                          >
+                            {copiedId === `url-${promo.id}` ? '✓ Copied' : 'Copy URL'}
+                          </button>
+                        </div>
+                      )}
+
+                      {/* Newsletter block */}
+                      <div style={{ background: `${C.night}08`, borderRadius: 8, padding: '12px 14px', border: `1px dashed ${C.sand}` }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                          <span style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: 1, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>Newsletter block — paste into beehiiv</span>
+                          <button
+                            onClick={() => copyToClipboard(newsletterBlock, `nl-${promo.id}`)}
+                            style={{ background: copiedId === `nl-${promo.id}` ? C.sage : C.sunset, color: '#fff', border: 'none', borderRadius: 6, padding: '5px 14px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}
+                          >
+                            {copiedId === `nl-${promo.id}` ? '✓ Copied!' : 'Copy Block'}
+                          </button>
+                        </div>
+                        <pre style={{ margin: 0, fontSize: 12, color: C.text, fontFamily: 'monospace', whiteSpace: 'pre-wrap', lineHeight: 1.7 }}>{newsletterBlock}</pre>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         )}
 
