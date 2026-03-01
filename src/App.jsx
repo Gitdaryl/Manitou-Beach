@@ -53,7 +53,7 @@ function GlobalStyles() {
       }
       @keyframes kenBurnsBg {
         0%   { transform: scale(1)    translate(0, 0); }
-        100% { transform: scale(1.12) translate(-1.5%, -0.8%); }
+        100% { transform: scale(1.18) translate(-1.5%, -0.8%); }
       }
       .ken-burns-bg {
         animation: kenBurnsBg 25s ease-in-out infinite alternate;
