@@ -53,11 +53,12 @@ function GlobalStyles() {
       }
       @keyframes kenBurns {
         0%   { transform: scale(1)    translate(0, 0); }
-        100% { transform: scale(1.07) translate(-1.5%, -1%); }
+        100% { transform: scale(1.15) translate(-2.5%, -2%); }
       }
       .ken-burns {
-        animation: kenBurns 22s ease-in-out infinite alternate;
+        animation: kenBurns 18s ease-in-out infinite alternate;
         transform-origin: center center;
+        will-change: transform;
       }
       @keyframes dot-breathe {
         0%, 100% { box-shadow: 0 0 4px currentColor; transform: scale(1); }
