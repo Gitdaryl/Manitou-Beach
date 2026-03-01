@@ -2091,7 +2091,7 @@ function HappeningSubmitCTA() {
   const [submitError, setSubmitError] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-  const [form, setForm] = useState({ name: "", category: "", date: "", time: "", location: "", description: "", eventUrl: "", email: "", phone: "", cost: "" });
+  const [form, setForm] = useState({ name: "", category: "", date: "", time: "", location: "", description: "", eventUrl: "", email: "", phone: "", cost: "", _hp: "" });
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
@@ -2234,6 +2234,9 @@ function HappeningSubmitCTA() {
               </div>
             </div>
           </div>
+
+          {/* Honeypot — hidden from humans, bots fill it automatically */}
+          <input aria-hidden="true" tabIndex={-1} autoComplete="off" value={form._hp} onChange={e => set("_hp", e.target.value)} style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0, pointerEvents: "none" }} />
 
           {submitError && <div style={{ fontSize: 13, color: "#ff6b6b", fontFamily: "'Libre Franklin', sans-serif" }}>{submitError}</div>}
 
@@ -2547,8 +2550,8 @@ function PricingSection() {
                     <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, color: C.lakeBlue, whiteSpace: "nowrap" }}>{item.price}</div>
                   </div>
                 ))}
-                <a href="/#submit" style={{ textAlign: "center", padding: "10px", borderRadius: 8, background: "transparent", border: `1.5px solid ${C.lakeBlue}55`, color: C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none", marginTop: 4, display: "block" }}>
-                  Inquire
+                <a href="mailto:hello@manitoubeach.com?subject=Newsletter%20Add-On%20Inquiry&body=Hi%2C%20I%27m%20interested%20in%20a%20newsletter%20add-on%20for%20my%20business.%20Please%20let%20me%20know%20next%20steps." style={{ textAlign: "center", padding: "10px", borderRadius: 8, background: "transparent", border: `1.5px solid ${C.lakeBlue}55`, color: C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none", marginTop: 4, display: "block" }}>
+                  Inquire →
                 </a>
               </div>
             </div>
@@ -2814,7 +2817,7 @@ function BusinessDirectory() {
                 Top-of-directory placement, newsletter inclusion, and a business spotlight video from Holly & The Yeti.
               </p>
             </div>
-            <Btn href="/#submit" variant="sunset">Upgrade Your Listing</Btn>
+            <Btn href="/featured" variant="sunset">Upgrade Your Listing</Btn>
           </div>
         </FadeIn>
       </div>
@@ -3059,7 +3062,7 @@ function BusinessRow({ business }) {
         )}
       </div>
 
-      {/* Free tier — no website link. Upgrade to Bronze+ to unlock. */}
+      {/* Free tier — no website link. Upgrade to Enhanced+ to unlock. */}
       <a href="#listing-tiers" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 600, letterSpacing: 1, color: C.driftwood, textDecoration: "none", whiteSpace: "nowrap", opacity: 0.65 }}>
         Upgrade →
       </a>
@@ -3375,7 +3378,7 @@ function SubmitSection() {
   const [logoFile, setLogoFile] = useState(null);
   const [logoPreview, setLogoPreview] = useState(null);
   const [isLogoDragging, setIsLogoDragging] = useState(false);
-  const [form, setForm] = useState({ name: "", category: "", phone: "", address: "", website: "", email: "", description: "", logoUrl: "", tier: "Free", duration: "1", newsletter: false, date: "", time: "", location: "", eventUrl: "" });
+  const [form, setForm] = useState({ name: "", category: "", phone: "", address: "", website: "", email: "", description: "", logoUrl: "", tier: "Free", duration: "1", newsletter: false, date: "", time: "", location: "", eventUrl: "", _hp: "" });
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -3421,7 +3424,7 @@ function SubmitSection() {
 
       const endpoint = tab === "business" ? "/api/businesses" : "/api/events";
       const payload = tab === "event"
-        ? { name: form.name, category: form.category, date: form.date, time: form.time, location: form.location, email: form.email, phone: form.phone, description: form.description, eventUrl: form.eventUrl, imageUrl }
+        ? { name: form.name, category: form.category, date: form.date, time: form.time, location: form.location, email: form.email, phone: form.phone, description: form.description, eventUrl: form.eventUrl, imageUrl, _hp: form._hp }
         : { ...form, logoUrl: logoUploadUrl || null };
 
       const res = await fetch(endpoint, {
@@ -3612,9 +3615,9 @@ function SubmitSection() {
                       onBlur={e => e.target.style.borderColor = C.sand}
                     >
                       <option value="Free">Free — $0 · Name, category & phone</option>
-                      <option value="Bronze">Bronze — $9/mo · + Website link & description</option>
-                      <option value="Silver">Silver — $17/mo · + Spotlight card & logo</option>
-                      <option value="Gold">Gold — $34/mo · + Full banner & top placement</option>
+                      <option value="Enhanced">Enhanced — $9/mo · + Website link & description</option>
+                      <option value="Featured">Featured — $23/mo · + Spotlight card & logo</option>
+                      <option value="Premium">Premium — $43/mo · + Full banner & top placement</option>
                     </select>
                   </div>
 
@@ -3640,7 +3643,7 @@ function SubmitSection() {
                         ))}
                       </select>
                       <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, marginTop: 6, paddingLeft: 2 }}>
-                        Total: ${({ Free: 0, Bronze: 9, Silver: 17, Gold: 34 }[form.tier] * parseInt(form.duration)).toLocaleString()} · We'll confirm and invoice before going live
+                        Total: ${({ Free: 0, Enhanced: 9, Featured: 23, Premium: 43 }[form.tier] * parseInt(form.duration)).toLocaleString()} · We'll confirm and invoice before going live
                       </div>
                     </div>
                   )}
@@ -3648,7 +3651,7 @@ function SubmitSection() {
                   {/* Logo upload — drag & drop, compressed, Vercel Blob */}
                   <div>
                     <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 600, color: C.textLight, marginBottom: 8, letterSpacing: 0.5 }}>
-                      Logo (optional · used for Silver & Gold tiers)
+                      Logo (optional · displayed on Featured & Premium tiers)
                     </div>
                     <div
                       onDragEnter={e => { e.preventDefault(); setIsLogoDragging(true); }}
@@ -3812,6 +3815,9 @@ function SubmitSection() {
                 {submitting ? "Sending…" : `Submit ${tab === "business" ? "Business" : "Event"}`}
               </button>
 
+              {/* Honeypot — hidden from humans, bots fill it automatically */}
+              <input aria-hidden="true" tabIndex={-1} autoComplete="off" value={form._hp} onChange={e => setForm(f => ({ ...f, _hp: e.target.value }))} style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0, pointerEvents: "none" }} />
+
               {submitError && (
                 <p style={{ fontSize: 13, color: "#c0392b", textAlign: "center", margin: 0 }}>{submitError}</p>
               )}
@@ -3887,7 +3893,7 @@ function AboutSection() {
                 <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: "0 0 16px 0" }}>
                   Covering lake communities across Michigan. Manitou Beach is one part of a much bigger lake life story.
                 </p>
-                <a href="#" style={{ fontSize: 12, fontWeight: 700, color: C.lakeBlue, textDecoration: "none", letterSpacing: 1, textTransform: "uppercase", fontFamily: "'Libre Franklin', sans-serif" }}>
+                <a href="https://lake-access.com/" target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, fontWeight: 700, color: C.lakeBlue, textDecoration: "none", letterSpacing: 1, textTransform: "uppercase", fontFamily: "'Libre Franklin', sans-serif" }}>
                   Visit Lake Access →
                 </a>
               </div>
@@ -3970,24 +3976,44 @@ function Footer({ scrollTo }) {
             <p style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", lineHeight: 1.75, margin: "0 0 16px 0" }}>
               Free directory listing. Upgrade for featured placement, newsletter mentions, and video content.
             </p>
-            <a
-              href="/#submit"
-              style={{
-                display: "inline-block",
-                fontFamily: "'Libre Franklin', sans-serif",
-                fontSize: 11, fontWeight: 700, letterSpacing: 2,
-                textTransform: "uppercase",
-                padding: "9px 20px",
-                borderRadius: 4,
-                background: `${C.sage}25`,
-                border: `1px solid ${C.sage}40`,
-                color: C.sage,
-                textDecoration: "none",
-                transition: "all 0.2s",
-              }}
-            >
-              Get Listed
-            </a>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <a
+                href="/#submit"
+                style={{
+                  display: "inline-block",
+                  fontFamily: "'Libre Franklin', sans-serif",
+                  fontSize: 11, fontWeight: 700, letterSpacing: 2,
+                  textTransform: "uppercase",
+                  padding: "9px 20px",
+                  borderRadius: 4,
+                  background: `${C.sage}25`,
+                  border: `1px solid ${C.sage}40`,
+                  color: C.sage,
+                  textDecoration: "none",
+                  transition: "all 0.2s",
+                }}
+              >
+                Get Listed
+              </a>
+              <a
+                href="/featured"
+                style={{
+                  display: "inline-block",
+                  fontFamily: "'Libre Franklin', sans-serif",
+                  fontSize: 11, fontWeight: 700, letterSpacing: 2,
+                  textTransform: "uppercase",
+                  padding: "9px 20px",
+                  borderRadius: 4,
+                  background: `${C.sunset}20`,
+                  border: `1px solid ${C.sunset}40`,
+                  color: C.sunsetLight,
+                  textDecoration: "none",
+                  transition: "all 0.2s",
+                }}
+              >
+                Get Featured →
+              </a>
+            </div>
           </div>
         </div>
 
@@ -4063,6 +4089,9 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
     if (id === "mens-club") { window.location.href = "/mens-club"; return; }
     if (id === "ladies-club") { window.location.href = "/ladies-club"; return; }
     if (id === "historical-society") { window.location.href = "/historical-society"; return; }
+    if (id === "round-lake") { window.location.href = "/round-lake"; return; }
+    if (id === "village") { window.location.href = "/village"; return; }
+    if (id === "wineries") { window.location.href = "/wineries"; return; }
     if (isSubPage) {
       window.location.href = "/#" + id;
       return;
@@ -4184,10 +4213,10 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
                     { label: "Men's Club", id: "mens-club" },
                     { label: "Ladies Club", id: "ladies-club" },
                     { label: "Historical Society", id: "historical-society" },
-                    { label: "Gallery ↗", href: "https://photogallery.yetigroove.com/folder/muVgmuXuvFwI/" },
+                    { label: "Gallery ↗", href: "https://photogallery.yetigroove.com/folder/muVgmuXuvFwI/", external: true },
                   ].map((link, i) => (
                     link.href ? (
-                      <a key={i} href={link.href} target="_blank" rel="noopener noreferrer" style={{
+                      <a key={i} href={link.href} {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={{
                         display: "block", padding: "10px 18px", fontSize: 13, color: C.text,
                         textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif", transition: "background 0.15s",
                       }} onMouseEnter={e => e.currentTarget.style.background = `${C.sage}10`} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
@@ -4294,6 +4323,9 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
         <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.textMuted, marginTop: 8, fontFamily: "'Libre Franklin', sans-serif" }}>Community</div>
         {[
           { label: "Devils Lake", id: "devils-lake" },
+          { label: "Round Lake", id: "round-lake" },
+          { label: "The Village", id: "village" },
+          { label: "Wineries & Breweries", id: "wineries" },
           { label: "Men's Club", id: "mens-club" },
           { label: "Ladies Club", id: "ladies-club" },
           { label: "Historical Society", id: "historical-society" },
@@ -5171,14 +5203,22 @@ const FEATURED_TIERS = [
 ];
 
 const SPOTS_TOTAL = 8;
+const SPOTS_LEFT = 5; // Update manually when spots fill — future: pull from Notion
 
 function FeaturedPage() {
   const subScrollTo = (id) => { window.location.href = "/#" + id; };
+  const spotsLeft = SPOTS_LEFT;
+  const isFull = spotsLeft === 0;
+
+  // Checkout state (spots available)
   const [form, setForm] = useState({ businessName: "", email: "", phone: "", website: "" });
   const [selectedTier, setSelectedTier] = useState("featured_90");
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState(null);
-  const spotsLeft = 5; // TODO: fetch from Notion or a counter
+
+  // Waitlist state (spots full)
+  const [wl, setWl] = useState({ name: "", email: "", businessName: "", tier: "featured_90", _hp: "" });
+  const [wlStatus, setWlStatus] = useState("idle"); // idle | loading | success | error
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -5209,6 +5249,24 @@ function FeaturedPage() {
     setLoading(false);
   };
 
+  const handleWaitlist = async (e) => {
+    e.preventDefault();
+    if (!wl.name || !wl.email || !wl.businessName) return;
+    setWlStatus("loading");
+    try {
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(wl),
+      });
+      const data = await res.json();
+      if (data.success) setWlStatus("success");
+      else setWlStatus("error");
+    } catch {
+      setWlStatus("error");
+    }
+  };
+
   const benefits = [
     { icon: "⚡", title: "Top Placement", desc: "Featured businesses appear first — above every free listing in the directory." },
     { icon: "🎨", title: "Premium Card Design", desc: "Dark card with shimmer effect, your logo prominently displayed, and a direct link to your website." },
@@ -5231,13 +5289,15 @@ function FeaturedPage() {
         <div style={{ position: "absolute", bottom: -60, left: -60, width: 200, height: 200, borderRadius: "50%", background: `${C.sage}06`, pointerEvents: "none" }} />
         <FadeIn>
           <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunsetLight, marginBottom: 12 }}>
-            Early Bird Pricing — Limited Spots
+            {isFull ? "Early Bird Spots — Waitlist Open" : "Early Bird Pricing — Limited Spots"}
           </div>
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(36px, 7vw, 72px)", fontWeight: 400, color: C.cream, lineHeight: 1, margin: "0 0 20px 0" }}>
-            Put Your Business<br />in the Spotlight
+            {isFull ? <>Early Bird Spots<br />Are Full</> : <>Put Your Business<br />in the Spotlight</>}
           </h1>
           <p style={{ fontSize: "clamp(14px, 1.5vw, 17px)", color: "rgba(255,255,255,0.45)", lineHeight: 1.7, maxWidth: 520, margin: "0 auto 28px" }}>
-            Manitou Beach is growing. The businesses who get in early get seen first — and remembered longest.
+            {isFull
+              ? "All founding spots are taken — but join the waitlist and we'll hold your early-bird rate when the next one opens."
+              : "Manitou Beach is growing. The businesses who get in early get seen first — and remembered longest."}
           </p>
           {/* Urgency bar */}
           <div style={{ display: "inline-flex", alignItems: "center", gap: 12, background: "rgba(255,255,255,0.06)", borderRadius: 30, padding: "10px 24px", border: "1px solid rgba(255,255,255,0.08)" }}>
@@ -5246,8 +5306,8 @@ function FeaturedPage() {
                 <div key={i} style={{ width: 10, height: 10, borderRadius: "50%", background: i < spotsLeft ? C.sunset : "rgba(255,255,255,0.1)", transition: "all 0.3s" }} />
               ))}
             </div>
-            <span style={{ fontSize: 12, color: C.sunsetLight, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>
-              {spotsLeft} of {SPOTS_TOTAL} early bird spots left
+            <span style={{ fontSize: 12, color: isFull ? "rgba(255,255,255,0.4)" : C.sunsetLight, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>
+              {isFull ? "All spots filled — waitlist open" : `${spotsLeft} of ${SPOTS_TOTAL} early bird spots left`}
             </span>
           </div>
         </FadeIn>
@@ -5291,147 +5351,248 @@ function FeaturedPage() {
         </div>
       </section>
 
-      {/* Pricing tiers */}
-      <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
-        <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-          <FadeIn>
-            <div style={{ textAlign: "center", marginBottom: 48 }}>
-              <SectionLabel>Early Bird Pricing</SectionLabel>
-              <SectionTitle center>Choose Your Plan</SectionTitle>
-              <p style={{ fontSize: 14, color: C.textLight, maxWidth: 440, margin: "12px auto 0", lineHeight: 1.7 }}>
-                Lock in early bird rates now. Prices go up as spots fill.
-              </p>
-            </div>
-          </FadeIn>
+      {/* Pricing tiers — only when spots available */}
+      {!isFull && (
+        <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
+          <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+            <FadeIn>
+              <div style={{ textAlign: "center", marginBottom: 48 }}>
+                <SectionLabel>Early Bird Pricing</SectionLabel>
+                <SectionTitle center>Choose Your Plan</SectionTitle>
+                <p style={{ fontSize: 14, color: C.textLight, maxWidth: 440, margin: "12px auto 0", lineHeight: 1.7 }}>
+                  Lock in early bird rates now. Prices go up as spots fill.
+                </p>
+              </div>
+            </FadeIn>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20 }}>
-            {FEATURED_TIERS.map((tier, i) => {
-              const isSelected = selectedTier === tier.id;
-              return (
-                <FadeIn key={tier.id} delay={i * 100} direction="scale">
-                  <div
-                    onClick={() => setSelectedTier(tier.id)}
-                    style={{
-                      background: isSelected ? `linear-gradient(145deg, ${C.dusk}, ${C.night})` : C.cream,
-                      border: tier.popular ? `2px solid ${C.sunset}` : `1px solid ${isSelected ? "rgba(255,255,255,0.15)" : C.sand}`,
-                      borderRadius: 16, padding: "32px 28px",
-                      cursor: "pointer", transition: "all 0.25s",
-                      position: "relative", overflow: "hidden",
-                      transform: isSelected ? "scale(1.02)" : "none",
-                      boxShadow: isSelected ? "0 16px 48px rgba(0,0,0,0.15)" : "none",
-                    }}
-                  >
-                    {tier.popular && (
-                      <div style={{
-                        position: "absolute", top: 16, right: -26,
-                        background: C.sunset, color: C.cream,
-                        fontSize: 8, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase",
-                        padding: "4px 36px", transform: "rotate(45deg)",
-                        fontFamily: "'Libre Franklin', sans-serif",
-                      }}>Most Popular</div>
-                    )}
-                    {isSelected && <div style={{ position: "absolute", top: 14, left: 14, width: 18, height: 18, borderRadius: "50%", background: C.sunset, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, color: C.cream }}>✓</div>}
-
-                    <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: isSelected ? C.sunsetLight : C.sage, marginBottom: 10 }}>
-                      {tier.name}
-                    </div>
-
-                    {/* Prices — show strikethrough + early bird */}
-                    <div style={{ marginBottom: 4 }}>
-                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, color: isSelected ? "rgba(255,255,255,0.25)" : C.textMuted, textDecoration: "line-through", marginRight: 10 }}>
-                        {tier.price}
-                      </span>
-                      <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 38, fontWeight: 400, color: isSelected ? C.cream : C.text }}>
-                        {tier.earlyBird}
-                      </span>
-                    </div>
-                    <div style={{ fontSize: 12, color: isSelected ? "rgba(255,255,255,0.4)" : C.textMuted, marginBottom: tier.save ? 4 : 14 }}>
-                      for {tier.period}
-                    </div>
-                    {tier.save && (
-                      <div style={{ display: "inline-block", fontSize: 11, color: C.cream, fontWeight: 700, background: C.sunset, padding: "3px 10px", borderRadius: 12, marginBottom: 14 }}>{tier.save}</div>
-                    )}
-
-                    <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                      {tier.features.map((f, j) => (
-                        <li key={j} style={{ fontSize: 13, color: isSelected ? "rgba(255,255,255,0.5)" : C.textLight, lineHeight: 1.5, padding: "4px 0", paddingLeft: 20, position: "relative" }}>
-                          <span style={{ position: "absolute", left: 0, color: C.sage }}>✓</span>
-                          {f}
-                        </li>
-                      ))}
-                    </ul>
-
-                    <button
-                      onClick={e => { e.stopPropagation(); handleCheckout(tier.id); }}
-                      className="btn-animated"
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20 }}>
+              {FEATURED_TIERS.map((tier, i) => {
+                const isSelected = selectedTier === tier.id;
+                return (
+                  <FadeIn key={tier.id} delay={i * 100} direction="scale">
+                    <div
+                      onClick={() => setSelectedTier(tier.id)}
                       style={{
-                        width: "100%", marginTop: 20, padding: "12px 0", borderRadius: 8,
-                        cursor: "pointer",
-                        fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase",
-                        background: isSelected ? C.sunset : "transparent",
-                        color: isSelected ? C.cream : C.sage,
-                        border: isSelected ? "none" : `1.5px solid ${C.sand}`,
+                        background: isSelected ? `linear-gradient(145deg, ${C.dusk}, ${C.night})` : C.cream,
+                        border: tier.popular ? `2px solid ${C.sunset}` : `1px solid ${isSelected ? "rgba(255,255,255,0.15)" : C.sand}`,
+                        borderRadius: 16, padding: "32px 28px",
+                        cursor: "pointer", transition: "all 0.25s",
+                        position: "relative", overflow: "hidden",
+                        transform: isSelected ? "scale(1.02)" : "none",
+                        boxShadow: isSelected ? "0 16px 48px rgba(0,0,0,0.15)" : "none",
                       }}
                     >
-                      {loading && isSelected ? "Redirecting..." : `Get ${tier.name} — ${tier.earlyBird}`}
-                    </button>
-                  </div>
-                </FadeIn>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+                      {tier.popular && (
+                        <div style={{
+                          position: "absolute", top: 16, right: -26,
+                          background: C.sunset, color: C.cream,
+                          fontSize: 8, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase",
+                          padding: "4px 36px", transform: "rotate(45deg)",
+                          fontFamily: "'Libre Franklin', sans-serif",
+                        }}>Most Popular</div>
+                      )}
+                      {isSelected && <div style={{ position: "absolute", top: 14, left: 14, width: 18, height: 18, borderRadius: "50%", background: C.sunset, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, color: C.cream }}>✓</div>}
 
-      {/* Form */}
-      <section id="featured-form" style={{ background: C.cream, padding: "80px 24px" }}>
-        <div style={{ maxWidth: 520, margin: "0 auto" }}>
-          <FadeIn>
-            <SectionLabel>Your Details</SectionLabel>
-            <SectionTitle>Claim Your Spot</SectionTitle>
-            <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, marginBottom: 32 }}>
-              Fill in your info below, then hit the checkout button on your chosen plan above. Your listing goes live within 24 hours.
-            </p>
-          </FadeIn>
+                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: isSelected ? C.sunsetLight : C.sage, marginBottom: 10 }}>
+                        {tier.name}
+                      </div>
 
-          {status?.type === "error" && (
-            <div style={{ background: `${C.sunset}15`, border: `1px solid ${C.sunset}40`, borderRadius: 8, padding: "12px 16px", marginBottom: 20, fontSize: 13, color: C.sunset }}>
-              {status.message}
+                      <div style={{ marginBottom: 4 }}>
+                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, color: isSelected ? "rgba(255,255,255,0.25)" : C.textMuted, textDecoration: "line-through", marginRight: 10 }}>
+                          {tier.price}
+                        </span>
+                        <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 38, fontWeight: 400, color: isSelected ? C.cream : C.text }}>
+                          {tier.earlyBird}
+                        </span>
+                      </div>
+                      <div style={{ fontSize: 12, color: isSelected ? "rgba(255,255,255,0.4)" : C.textMuted, marginBottom: tier.save ? 4 : 14 }}>
+                        for {tier.period}
+                      </div>
+                      {tier.save && (
+                        <div style={{ display: "inline-block", fontSize: 11, color: C.cream, fontWeight: 700, background: C.sunset, padding: "3px 10px", borderRadius: 12, marginBottom: 14 }}>{tier.save}</div>
+                      )}
+
+                      <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                        {tier.features.map((f, j) => (
+                          <li key={j} style={{ fontSize: 13, color: isSelected ? "rgba(255,255,255,0.5)" : C.textLight, lineHeight: 1.5, padding: "4px 0", paddingLeft: 20, position: "relative" }}>
+                            <span style={{ position: "absolute", left: 0, color: C.sage }}>✓</span>
+                            {f}
+                          </li>
+                        ))}
+                      </ul>
+
+                      <button
+                        onClick={e => { e.stopPropagation(); handleCheckout(tier.id); }}
+                        className="btn-animated"
+                        style={{
+                          width: "100%", marginTop: 20, padding: "12px 0", borderRadius: 8,
+                          cursor: "pointer",
+                          fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase",
+                          background: isSelected ? C.sunset : "transparent",
+                          color: isSelected ? C.cream : C.sage,
+                          border: isSelected ? "none" : `1.5px solid ${C.sand}`,
+                        }}
+                      >
+                        {loading && isSelected ? "Redirecting..." : `Get ${tier.name} — ${tier.earlyBird}`}
+                      </button>
+                    </div>
+                  </FadeIn>
+                );
+              })}
             </div>
-          )}
-
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            {[
-              { key: "businessName", label: "Business Name", type: "text", placeholder: "e.g. Boot Jack Tavern" },
-              { key: "email", label: "Email", type: "email", placeholder: "you@yourbusiness.com" },
-              { key: "phone", label: "Phone (optional)", type: "tel", placeholder: "(517) 555-0000" },
-              { key: "website", label: "Website (optional)", type: "text", placeholder: "www.yourbusiness.com" },
-            ].map(field => (
-              <div key={field.key}>
-                <label style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.textMuted, display: "block", marginBottom: 6 }}>
-                  {field.label} {(field.key === "businessName" || field.key === "email") && <span style={{ color: C.sunset }}>*</span>}
-                </label>
-                <input
-                  type={field.type} value={form[field.key]} placeholder={field.placeholder}
-                  onChange={e => setForm(prev => ({ ...prev, [field.key]: e.target.value }))}
-                  style={{
-                    width: "100%", padding: "12px 16px", borderRadius: 8,
-                    border: `1px solid ${C.sand}`, background: C.warmWhite,
-                    fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.text,
-                    outline: "none", transition: "border 0.2s", boxSizing: "border-box",
-                  }}
-                  onFocus={e => { e.target.style.borderColor = C.sage; }}
-                  onBlur={e => { e.target.style.borderColor = C.sand; }}
-                />
-              </div>
-            ))}
           </div>
+        </section>
+      )}
 
-          <p style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.6, marginTop: 20, textAlign: "center" }}>
-            Secure checkout by Stripe. No recurring charges — one-time payment for your chosen period. Questions? Email hello@manitoubeach.com
-          </p>
-        </div>
-      </section>
+      {/* Form — checkout details (spots available) or waitlist (spots full) */}
+      {!isFull ? (
+        <section id="featured-form" style={{ background: C.cream, padding: "80px 24px" }}>
+          <div style={{ maxWidth: 520, margin: "0 auto" }}>
+            <FadeIn>
+              <SectionLabel>Your Details</SectionLabel>
+              <SectionTitle>Claim Your Spot</SectionTitle>
+              <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, marginBottom: 32 }}>
+                Fill in your info below, then hit the checkout button on your chosen plan above. Your listing goes live within 24 hours.
+              </p>
+            </FadeIn>
+
+            {status?.type === "error" && (
+              <div style={{ background: `${C.sunset}15`, border: `1px solid ${C.sunset}40`, borderRadius: 8, padding: "12px 16px", marginBottom: 20, fontSize: 13, color: C.sunset }}>
+                {status.message}
+              </div>
+            )}
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              {[
+                { key: "businessName", label: "Business Name", type: "text", placeholder: "e.g. Boot Jack Tavern" },
+                { key: "email", label: "Email", type: "email", placeholder: "you@yourbusiness.com" },
+                { key: "phone", label: "Phone (optional)", type: "tel", placeholder: "(517) 555-0000" },
+                { key: "website", label: "Website (optional)", type: "text", placeholder: "www.yourbusiness.com" },
+              ].map(field => (
+                <div key={field.key}>
+                  <label style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.textMuted, display: "block", marginBottom: 6 }}>
+                    {field.label} {(field.key === "businessName" || field.key === "email") && <span style={{ color: C.sunset }}>*</span>}
+                  </label>
+                  <input
+                    type={field.type} value={form[field.key]} placeholder={field.placeholder}
+                    onChange={e => setForm(prev => ({ ...prev, [field.key]: e.target.value }))}
+                    style={{
+                      width: "100%", padding: "12px 16px", borderRadius: 8,
+                      border: `1px solid ${C.sand}`, background: C.warmWhite,
+                      fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.text,
+                      outline: "none", transition: "border 0.2s", boxSizing: "border-box",
+                    }}
+                    onFocus={e => { e.target.style.borderColor = C.sage; }}
+                    onBlur={e => { e.target.style.borderColor = C.sand; }}
+                  />
+                </div>
+              ))}
+            </div>
+
+            <p style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.6, marginTop: 20, textAlign: "center" }}>
+              Secure checkout by Stripe. No recurring charges — one-time payment for your chosen period. Questions? Email hello@manitoubeach.com
+            </p>
+          </div>
+        </section>
+      ) : (
+        /* Waitlist form — shown when all spots are taken */
+        <section style={{ background: C.cream, padding: "80px 24px" }}>
+          <div style={{ maxWidth: 520, margin: "0 auto" }}>
+            <FadeIn>
+              <SectionLabel>Waitlist</SectionLabel>
+              <SectionTitle>Hold Your Rate</SectionTitle>
+              <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, marginBottom: 32 }}>
+                Join the waitlist and we'll contact you the moment a spot opens — holding your early-bird price when it does. No obligation until you're ready.
+              </p>
+            </FadeIn>
+
+            {wlStatus === "success" ? (
+              <FadeIn>
+                <div style={{ background: `${C.sage}15`, border: `1px solid ${C.sage}40`, borderRadius: 12, padding: "32px 28px", textAlign: "center" }}>
+                  <div style={{ fontSize: 32, marginBottom: 12 }}>🎉</div>
+                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.sage, marginBottom: 8 }}>You're on the list!</div>
+                  <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: 0 }}>
+                    We'll reach out as soon as a spot opens and hold your early-bird rate. Keep an eye on your inbox.
+                  </p>
+                </div>
+              </FadeIn>
+            ) : (
+              <form onSubmit={handleWaitlist} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                {[
+                  { key: "name", label: "Your Name", type: "text", placeholder: "Jane Smith" },
+                  { key: "email", label: "Email", type: "email", placeholder: "you@yourbusiness.com" },
+                  { key: "businessName", label: "Business Name", type: "text", placeholder: "e.g. Boot Jack Tavern" },
+                ].map(field => (
+                  <div key={field.key}>
+                    <label style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.textMuted, display: "block", marginBottom: 6 }}>
+                      {field.label} <span style={{ color: C.sunset }}>*</span>
+                    </label>
+                    <input
+                      type={field.type} value={wl[field.key]} placeholder={field.placeholder} required
+                      onChange={e => setWl(prev => ({ ...prev, [field.key]: e.target.value }))}
+                      style={{
+                        width: "100%", padding: "12px 16px", borderRadius: 8,
+                        border: `1px solid ${C.sand}`, background: C.warmWhite,
+                        fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.text,
+                        outline: "none", transition: "border 0.2s", boxSizing: "border-box",
+                      }}
+                      onFocus={e => { e.target.style.borderColor = C.sage; }}
+                      onBlur={e => { e.target.style.borderColor = C.sand; }}
+                    />
+                  </div>
+                ))}
+                <div>
+                  <label style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.textMuted, display: "block", marginBottom: 6 }}>
+                    Preferred Tier
+                  </label>
+                  <select
+                    value={wl.tier}
+                    onChange={e => setWl(prev => ({ ...prev, tier: e.target.value }))}
+                    style={{
+                      width: "100%", padding: "12px 16px", borderRadius: 8,
+                      border: `1px solid ${C.sand}`, background: C.warmWhite,
+                      fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.text,
+                      outline: "none", boxSizing: "border-box",
+                    }}
+                  >
+                    {FEATURED_TIERS.map(t => (
+                      <option key={t.id} value={t.id}>{t.name} — {t.earlyBird} for {t.period}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Honeypot — hidden from humans, bots fill it automatically */}
+                <input aria-hidden="true" tabIndex={-1} autoComplete="off" value={wl._hp} onChange={e => setWl(prev => ({ ...prev, _hp: e.target.value }))} style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0, pointerEvents: "none" }} />
+
+                {wlStatus === "error" && (
+                  <div style={{ background: `${C.sunset}15`, border: `1px solid ${C.sunset}40`, borderRadius: 8, padding: "12px 16px", fontSize: 13, color: C.sunset }}>
+                    Something went wrong. Please try again or email hello@manitoubeach.com
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={wlStatus === "loading"}
+                  className="btn-animated"
+                  style={{
+                    width: "100%", marginTop: 8, padding: "14px 0", borderRadius: 8,
+                    background: wlStatus === "loading" ? C.textMuted : C.sunset,
+                    color: C.cream, border: "none", cursor: wlStatus === "loading" ? "default" : "pointer",
+                    fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700,
+                    letterSpacing: 1, textTransform: "uppercase", transition: "background 0.2s",
+                  }}
+                >
+                  {wlStatus === "loading" ? "Joining..." : "Join the Waitlist — Hold My Rate"}
+                </button>
+
+                <p style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.6, textAlign: "center", margin: 0 }}>
+                  No obligation. We'll contact you when a spot opens and confirm before any charge.
+                </p>
+              </form>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* FAQ */}
       <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
@@ -9247,6 +9408,7 @@ function YetiAdminPage() {
           if (!applyRes.ok) throw new Error('Failed to apply to Notion');
           setDrafts(prev => prev.map(a => a.id === articleId ? { ...a, coverImage: uploadData.url } : a));
           setSwapStatus(prev => ({ ...prev, [articleId]: 'done' }));
+          setTimeout(() => setSwapStatus(prev => ({ ...prev, [articleId]: 'idle' })), 3500);
         } catch (err) { console.error(err); setSwapStatus(prev => ({ ...prev, [articleId]: 'error' })); }
       };
       reader.readAsDataURL(file);
@@ -9388,7 +9550,7 @@ function YetiAdminPage() {
     {/* Preview / Edit Modal */}
     {previewArticle && (
       <div
-        onClick={() => setPreviewArticle(null)}
+        onClick={() => { cancelPublish(); setPreviewArticle(null); }}
         style={{ position: 'fixed', inset: 0, background: 'rgba(10,18,24,0.82)', zIndex: 9999, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '20px 16px', overflowY: 'auto' }}
       >
         <div
@@ -9405,7 +9567,7 @@ function YetiAdminPage() {
               <span style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', padding: '3px 12px', borderRadius: 20, background: previewArticle.blogSafe ? C.sage : 'rgba(255,255,255,0.15)', color: '#fff' }}>
                 {previewArticle.blogSafe ? 'Live' : 'Draft'}
               </span>
-              <button onClick={() => setPreviewArticle(null)} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: '#fff', borderRadius: 6, padding: '4px 12px', cursor: 'pointer', fontSize: 20, lineHeight: 1, fontFamily: 'Libre Franklin, sans-serif' }}>×</button>
+              <button onClick={() => { cancelPublish(); setPreviewArticle(null); }} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: '#fff', borderRadius: 6, padding: '4px 12px', cursor: 'pointer', fontSize: 20, lineHeight: 1, fontFamily: 'Libre Franklin, sans-serif' }}>×</button>
             </div>
           </div>
 
@@ -9453,8 +9615,8 @@ function YetiAdminPage() {
                 </div>
                 <button
                   onClick={handleSaveEdit}
-                  disabled={saveStatus === 'saving'}
-                  style={{ alignSelf: 'flex-start', padding: '11px 24px', background: saveStatus === 'saved' ? C.sage : C.lakeBlue, color: '#fff', border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: saveStatus === 'saving' ? 'not-allowed' : 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}
+                  disabled={saveStatus === 'saving' || !editFields.title?.trim()}
+                  style={{ alignSelf: 'flex-start', padding: '11px 24px', background: saveStatus === 'saved' ? C.sage : C.lakeBlue, color: '#fff', border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: (saveStatus === 'saving' || !editFields.title?.trim()) ? 'not-allowed' : 'pointer', fontFamily: 'Libre Franklin, sans-serif', opacity: !editFields.title?.trim() ? 0.5 : 1 }}
                 >
                   {saveStatus === 'saving' ? 'Saving…' : saveStatus === 'saved' ? '✓ Saved' : saveStatus === 'error' ? 'Save failed — retry' : 'Save Changes'}
                 </button>
@@ -9677,7 +9839,7 @@ function YetiAdminPage() {
                     promo.couponCode ? `Use code: ${promo.couponCode}` : '',
                     claimUrl ? `Claim here → ${claimUrl}` : promo.linkUrl ? `Learn more → ${promo.linkUrl}` : '',
                     expiryStr ? `Offer expires ${expiryStr}` : '',
-                  ].filter(Boolean).join('\n');
+                  ].filter(s => s && s.trim()).join('\n');
 
                   return (
                     <div key={promo.id} style={{ background: '#fff', borderRadius: 12, padding: 24, boxShadow: '0 2px 16px rgba(0,0,0,0.06)', borderLeft: `4px solid ${promo.active ? C.sage : C.sand}` }}>

@@ -1,7 +1,10 @@
 export default async function handler(req, res) {
   // POST — submit a new business listing
   if (req.method === 'POST') {
-    const { name, category, phone, website, email, description, address, newsletter, tier, duration, logoUrl } = req.body;
+    const { name, category, phone, website, email, description, address, newsletter, tier, duration, logoUrl, _hp } = req.body;
+
+    // Honeypot — bots fill hidden fields, humans don't
+    if (_hp) return res.status(200).json({ success: true });
 
     if (!name) {
       return res.status(400).json({ error: 'Business name is required' });

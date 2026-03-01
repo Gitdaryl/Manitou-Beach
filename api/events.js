@@ -1,7 +1,10 @@
 export default async function handler(req, res) {
   // POST — submit a new event
   if (req.method === 'POST') {
-    const { name, category, email, phone, description, date, time, location, eventUrl, imageUrl, cost, recurring, recurringDay } = req.body;
+    const { name, category, email, phone, description, date, time, location, eventUrl, imageUrl, cost, recurring, recurringDay, _hp } = req.body;
+
+    // Honeypot — bots fill hidden fields, humans don't
+    if (_hp) return res.status(200).json({ success: true });
 
     if (!name || !email) {
       return res.status(400).json({ error: 'Event name and email are required' });
