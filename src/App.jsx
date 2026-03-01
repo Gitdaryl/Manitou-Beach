@@ -9170,7 +9170,6 @@ function VoiceWidget() {
       vapi.on('error', (err) => { console.error('Vapi error:', err); setStatus('idle'); });
 
       vapi.on('message', async (message) => {
-        console.log('[VoiceWidget] msg:', message.type, message);
         // Transcript — detect link intent from AI and auto-show button from known data
         if (message.type === 'transcript' && message.transcriptType === 'final') {
           setTranscript(prev => [...prev.slice(-8), { role: message.role, text: message.transcript }]);
@@ -9253,7 +9252,6 @@ function VoiceWidget() {
       const d2 = bizRes.status === 'fulfilled' ? bizRes.value : {};
       const rawBusinesses = [...(d2.premium||[]), ...(d2.featured||[]), ...(d2.enhanced||[]), ...(d2.free||[])];
       liveDataRef.current = { events, businesses, weather, rawEvents, rawBusinesses };
-      console.log('[VoiceWidget] Injecting data:', { events: events.slice(0, 80), businesses: businesses.slice(0, 80), weather });
       await vapiRef.current.start(VAPI_ASSISTANT_ID);
     }
     catch (err) { console.error('Vapi start error:', err); setStatus('idle'); }
