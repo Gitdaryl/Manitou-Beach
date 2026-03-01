@@ -9148,10 +9148,12 @@ function VoiceWidget() {
         }
         // Client-side tool calls — display_link only (UI side effect)
         if (message.type === 'tool-calls') {
+          console.log('[VoiceWidget] tool-calls received:', message.toolCallList);
           for (const toolCall of message.toolCallList) {
             const { name, function: fn } = toolCall;
             const args = JSON.parse(fn?.arguments || '{}');
             if (name === 'display_link') {
+              console.log('[VoiceWidget] display_link fired:', args);
               setLinks(prev => [...prev, { url: args.url, label: args.label || 'Open Link', sublabel: args.sublabel }]);
             }
           }
