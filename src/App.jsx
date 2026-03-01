@@ -9142,6 +9142,7 @@ function VoiceWidget() {
       vapi.on('error', (err) => { console.error('Vapi error:', err); setStatus('idle'); });
 
       vapi.on('message', async (message) => {
+        console.log('[VoiceWidget] msg:', message.type, message);
         // Transcript
         if (message.type === 'transcript' && message.transcriptType === 'final') {
           setTranscript(prev => [...prev.slice(-8), { role: message.role, text: message.transcript }]);
