@@ -769,8 +769,8 @@ function Hero({ scrollTo }) {
       setTimeout(() => {
         setHeroIndex(i => (i + 1) % rotationCount);
         setHeroFade(true);
-      }, 400);
-    }, 10000);
+      }, 800);
+    }, 30000);
     return () => clearInterval(t);
   }, [rotationCount, heroPaused]);
 
@@ -829,7 +829,7 @@ function Hero({ scrollTo }) {
         </div>
 
         <div style={{ position: "relative", zIndex: 2, maxWidth: 960, margin: "0 auto", padding: "120px 48px 100px" }}>
-          <div style={{ opacity: loaded && heroFade ? 1 : 0, transform: loaded && heroFade ? "translateY(0)" : "translateY(12px)", transition: "opacity 0.4s ease, transform 0.4s ease" }}>
+          <div style={{ opacity: loaded && heroFade ? 1 : 0, transform: loaded && heroFade ? "translateY(0)" : "translateY(12px)", transition: "opacity 0.8s ease, transform 0.8s ease" }}>
             <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 20 }}>
               Manitou Beach · Devils Lake, Michigan
             </div>
@@ -845,16 +845,17 @@ function Hero({ scrollTo }) {
             {heroEvent.imageUrl && (() => {
               const isVideo = /\.(mp4|webm|mov|m4v)/i.test(heroEvent.imageUrl);
               const mediaStyle = {
-                width: "100%", height: "100%", objectFit: "contain",
-                borderRadius: 12, display: "block",
-                border: "1px solid rgba(255,255,255,0.1)",
+                width: "100%", height: "auto", maxHeight: 320,
+                objectFit: "contain", borderRadius: 12, display: "block",
               };
               return (
-                <div style={{ margin: "0 0 24px 0", maxWidth: 546, width: "100%", height: 238 }}>
+                <div style={{ margin: "0 0 24px 0", maxWidth: 546, width: "100%" }}>
                   {isVideo ? (
                     <video
+                      key={heroEvent.imageUrl}
+                      ref={el => el && (el.muted = true)}
                       src={heroEvent.imageUrl}
-                      autoPlay loop muted playsInline
+                      autoPlay loop playsInline
                       style={mediaStyle}
                     />
                   ) : (
@@ -3938,8 +3939,9 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
       <nav style={{
         position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000,
         padding: solid ? "10px 0" : "18px 0",
-        background: solid ? "rgba(250,246,239,0.97)" : "transparent",
-        backdropFilter: solid ? "blur(18px)" : "none",
+        background: solid ? "rgba(250,246,239,0.82)" : "transparent",
+        backdropFilter: solid ? "blur(20px)" : "none",
+        WebkitBackdropFilter: solid ? "blur(20px)" : "none",
         borderBottom: solid ? `1px solid ${C.sand}` : "none",
         transition: "all 0.35s ease",
       }}>
@@ -4040,6 +4042,9 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
                 }}>
                   {[
                     { label: "Devils Lake", id: "devils-lake" },
+                    { label: "Round Lake", href: "/round-lake" },
+                    { label: "The Village", href: "/village" },
+                    { label: "Wineries & Breweries", href: "/wineries" },
                     { label: "Men's Club", id: "mens-club" },
                     { label: "Ladies Club", id: "ladies-club" },
                     { label: "Historical Society", id: "historical-society" },
