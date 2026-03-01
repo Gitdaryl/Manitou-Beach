@@ -9103,6 +9103,213 @@ function YetiAdminPage() {
 }
 
 // ============================================================
+// 🎤  VOICE WIDGET — Vapi + ElevenLabs
+// ============================================================
+const VAPI_PUBLIC_KEY = import.meta.env.VITE_VAPI_PUBLIC_KEY;
+const VAPI_ASSISTANT_ID = import.meta.env.VITE_VAPI_ASSISTANT_ID;
+
+function VoiceWidget() {
+  const [status, setStatus] = useState('idle'); // idle | connecting | active | ending
+  const [panelOpen, setPanelOpen] = useState(false);
+  const [transcript, setTranscript] = useState([]);
+  const [links, setLinks] = useState([]);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const vapiRef = useRef(null);
+
+  useEffect(() => {
+    if (!VAPI_PUBLIC_KEY || VAPI_PUBLIC_KEY === 'your-vapi-public-key-here') return;
+    import('@vapi-ai/web').then(({ default: Vapi }) => {
+      const vapi = new Vapi(VAPI_PUBLIC_KEY);
+
+      vapi.on('call-start', () => setStatus('active'));
+      vapi.on('call-end', () => { setStatus('idle'); setIsSpeaking(false); });
+      vapi.on('speech-start', () => setIsSpeaking(true));
+      vapi.on('speech-end', () => setIsSpeaking(false));
+      vapi.on('error', (err) => { console.error('Vapi error:', err); setStatus('idle'); });
+
+      vapi.on('message', async (message) => {
+        // Transcript
+        if (message.type === 'transcript' && message.transcriptType === 'final') {
+          setTranscript(prev => [...prev.slice(-8), { role: message.role, text: message.transcript }]);
+        }
+        // Client-side tool calls
+        if (message.type === 'tool-calls') {
+          for (const toolCall of message.toolCallList) {
+            const { id, name, function: fn } = toolCall;
+            const args = JSON.parse(fn?.arguments || '{}');
+            let result = '';
+
+            if (name === 'get_events') {
+              try {
+                const data = await fetch('/api/events').then(r => r.json());
+                const events = (data.events || []).slice(0, 8);
+                result = events.length
+                  ? events.map(e => `${e.name} — ${new Date(e.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}${e.location ? ', ' + e.location : ''}${e.cost ? ' (' + e.cost + ')' : ''}${e.eventUrl ? ' | tickets: ' + e.eventUrl : ''}`).join('\n')
+                  : 'No upcoming events found.';
+              } catch { result = 'Could not fetch events right now.'; }
+            }
+
+            else if (name === 'get_businesses') {
+              try {
+                const data = await fetch('/api/businesses').then(r => r.json());
+                let list = data.businesses || [];
+                if (args.category) list = list.filter(b => b.category?.toLowerCase().includes(args.category.toLowerCase()));
+                result = list.slice(0, 8).map(b =>
+                  `${b.name}${b.category ? ' (' + b.category + ')' : ''}${b.phone ? ' · ' + b.phone : ''}${b.address ? ' · ' + b.address : ''}${b.website ? ' | ' + b.website : ''}`
+                ).join('\n') || 'No businesses found.';
+              } catch { result = 'Could not fetch businesses right now.'; }
+            }
+
+            else if (name === 'display_link') {
+              setLinks(prev => [...prev, { url: args.url, label: args.label || 'Open Link', sublabel: args.sublabel }]);
+              result = 'Link displayed to user in chat panel.';
+            }
+
+            vapi.send({ type: 'add-message', message: { role: 'tool', tool_call_id: id, content: result } });
+          }
+        }
+      });
+
+      vapiRef.current = vapi;
+    });
+    return () => { vapiRef.current?.stop(); };
+  }, []);
+
+  const startCall = async () => {
+    if (!vapiRef.current || !VAPI_ASSISTANT_ID || VAPI_ASSISTANT_ID === 'your-vapi-assistant-id-here') return;
+    setStatus('connecting');
+    setPanelOpen(true);
+    setTranscript([]);
+    setLinks([]);
+    try { await vapiRef.current.start(VAPI_ASSISTANT_ID); }
+    catch (err) { console.error('Vapi start error:', err); setStatus('idle'); }
+  };
+
+  const endCall = () => { vapiRef.current?.stop(); setStatus('ending'); };
+  const isActive = status === 'active' || status === 'connecting';
+
+  if (!VAPI_PUBLIC_KEY || VAPI_PUBLIC_KEY === 'your-vapi-public-key-here') return null;
+
+  return (
+    <>
+      {/* Panel */}
+      {panelOpen && (
+        <div style={{
+          position: 'fixed', bottom: 92, right: 24, zIndex: 9997,
+          width: 320, maxHeight: 440,
+          background: 'rgba(26,40,48,0.96)',
+          backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          borderRadius: 16, overflow: 'hidden',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
+          display: 'flex', flexDirection: 'column',
+        }}>
+          {/* Header */}
+          <div style={{ padding: '14px 18px', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ width: 8, height: 8, borderRadius: '50%', background: isActive ? C.sage : 'rgba(255,255,255,0.25)', animation: isActive ? 'dot-breathe 1.5s ease-in-out infinite' : 'none' }} />
+              <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)' }}>
+                {status === 'connecting' ? 'Connecting…' : status === 'active' ? 'Listening' : 'Call ended'}
+              </span>
+            </div>
+            <button onClick={() => setPanelOpen(false)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer', fontSize: 20, lineHeight: 1, padding: '2px 4px' }}>×</button>
+          </div>
+
+          {/* Transcript + links */}
+          <div style={{ flex: 1, overflowY: 'auto', padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {transcript.length === 0 && status === 'connecting' && (
+              <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)', fontFamily: "'Libre Franklin', sans-serif", textAlign: 'center', margin: '24px 0' }}>Connecting to your guide…</p>
+            )}
+            {transcript.length === 0 && status === 'active' && (
+              <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)', fontFamily: "'Libre Franklin', sans-serif", textAlign: 'center', margin: '24px 0' }}>Ask me anything about Manitou Beach…</p>
+            )}
+            {transcript.map((t, i) => (
+              <div key={i} style={{
+                alignSelf: t.role === 'user' ? 'flex-end' : 'flex-start',
+                maxWidth: '88%',
+                background: t.role === 'user' ? `${C.sage}22` : 'rgba(255,255,255,0.07)',
+                border: `1px solid ${t.role === 'user' ? C.sage + '35' : 'rgba(255,255,255,0.08)'}`,
+                borderRadius: t.role === 'user' ? '14px 14px 4px 14px' : '14px 14px 14px 4px',
+                padding: '8px 12px',
+              }}>
+                <p style={{ margin: 0, fontSize: 13, color: 'rgba(255,255,255,0.85)', fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.55 }}>{t.text}</p>
+              </div>
+            ))}
+            {isSpeaking && (
+              <div style={{ alignSelf: 'flex-start', display: 'flex', gap: 4, padding: '10px 14px', background: 'rgba(255,255,255,0.07)', borderRadius: '14px 14px 14px 4px' }}>
+                {[0, 1, 2].map(i => (
+                  <div key={i} style={{ width: 6, height: 6, borderRadius: '50%', background: C.sage, animation: `float 0.6s ease-in-out ${i * 0.15}s infinite alternate` }} />
+                ))}
+              </div>
+            )}
+            {links.map((link, i) => (
+              <a key={i} href={link.url} target="_blank" rel="noopener noreferrer" style={{
+                display: 'block', textDecoration: 'none',
+                background: `${C.sunset}15`, border: `1px solid ${C.sunset}40`,
+                borderRadius: 10, padding: '10px 14px', transition: 'background 0.2s',
+              }}
+                onMouseEnter={e => e.currentTarget.style.background = `${C.sunset}28`}
+                onMouseLeave={e => e.currentTarget.style.background = `${C.sunset}15`}
+              >
+                <div style={{ fontSize: 13, fontWeight: 600, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif" }}>{link.label}</div>
+                {link.sublabel && <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 2, fontFamily: "'Libre Franklin', sans-serif" }}>{link.sublabel}</div>}
+                <div style={{ fontSize: 11, color: C.sunset, marginTop: 4, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600 }}>Open →</div>
+              </a>
+            ))}
+          </div>
+
+          {/* End call */}
+          {isActive && (
+            <div style={{ padding: '12px 18px', borderTop: '1px solid rgba(255,255,255,0.08)', display: 'flex', justifyContent: 'center' }}>
+              <button onClick={endCall} style={{
+                background: 'rgba(220,60,60,0.12)', border: '1px solid rgba(220,60,60,0.3)',
+                color: '#ff7070', borderRadius: 8, padding: '7px 22px',
+                fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase',
+                fontFamily: "'Libre Franklin', sans-serif", cursor: 'pointer',
+              }}>
+                End Call
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Floating mic button */}
+      <button
+        onClick={isActive ? endCall : startCall}
+        title={isActive ? 'End call' : 'Ask your Manitou Beach guide'}
+        style={{
+          position: 'fixed', bottom: 24, right: 24, zIndex: 9998,
+          width: 56, height: 56, borderRadius: '50%',
+          background: isActive ? C.sunset : C.dusk,
+          border: `2px solid ${isActive ? C.sunset + '80' : 'rgba(255,255,255,0.15)'}`,
+          boxShadow: isActive
+            ? `0 0 0 8px ${C.sunset}18, 0 8px 28px rgba(0,0,0,0.35)`
+            : '0 4px 20px rgba(0,0,0,0.35)',
+          cursor: 'pointer',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          transition: 'all 0.3s ease',
+          animation: isActive ? 'pulse-glow 2s ease-in-out infinite' : 'none',
+        }}
+      >
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          {isActive ? (
+            <rect x="6" y="6" width="12" height="12" rx="2" fill="white" stroke="none" />
+          ) : (
+            <>
+              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+              <line x1="12" y1="19" x2="12" y2="23" />
+              <line x1="8" y1="23" x2="16" y2="23" />
+            </>
+          )}
+        </svg>
+      </button>
+    </>
+  );
+}
+
+// ============================================================
 // 🌐  APP ROOT
 // ============================================================
 export default function App() {
@@ -9126,6 +9333,7 @@ export default function App() {
         <Route path="/yeti-admin" element={<YetiAdminPage />} />
         <Route path="/claim/:slug" element={<ClaimPage />} />
       </Routes>
+      <VoiceWidget />
     </BrowserRouter>
   );
 }
