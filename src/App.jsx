@@ -2355,145 +2355,240 @@ function ExploreSection() {
 // 💰  LISTING TIERS / PRICING SECTION
 // ============================================================
 function PricingSection() {
-  const tiers = [
+  const [subCount, setSubCount] = useState(null);
+  const [modal, setModal] = useState(null);
+  const [form, setForm] = useState({ businessName: '', email: '' });
+  const [loading, setLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState('');
+
+  useEffect(() => {
+    fetch('/api/subscribe')
+      .then(r => r.json())
+      .then(d => setSubCount(d.count ?? 0))
+      .catch(() => setSubCount(0));
+  }, []);
+
+  const MILESTONES = [
+    { maxSubs: 100,      enhanced: 15, featured: 29, premium: 49  },
+    { maxSubs: 250,      enhanced: 19, featured: 39, premium: 69  },
+    { maxSubs: 500,      enhanced: 25, featured: 49, premium: 99  },
+    { maxSubs: Infinity, enhanced: 35, featured: 69, premium: 149 },
+  ];
+  const idx = MILESTONES.findIndex(m => (subCount ?? 0) < m.maxSubs);
+  const current = MILESTONES[idx === -1 ? MILESTONES.length - 1 : idx];
+  const next = MILESTONES[idx + 1] || null;
+  const prevMax = idx > 0 ? MILESTONES[idx - 1].maxSubs : 0;
+  const progressPct = next
+    ? Math.min(100, (((subCount ?? 0) - prevMax) / (current.maxSubs - prevMax)) * 100)
+    : 100;
+
+  const PAID_TIERS = [
     {
-      name: "Free",
-      price: "Free",
-      period: "forever",
-      color: C.driftwood,
-      badge: null,
-      features: [
-        "Name in business directory",
-        "Category & phone number",
-        "Community visibility",
-      ],
-      cta: "Get Listed",
+      id: 'enhanced', name: 'Enhanced', color: C.lakeBlue, badge: null,
+      price: current.enhanced, nextPrice: next?.enhanced,
+      features: ['Everything in Free', 'Clickable website link', 'Business description', 'Expandable listing card', 'Category search placement'],
     },
     {
-      name: "Bronze",
-      price: "$9",
-      period: "/ month",
-      color: "#CD8B3A",
-      badge: null,
-      features: [
-        "Everything in Free",
-        "Clickable website link",
-        "Business description",
-        "Expandable listing card",
-      ],
-      cta: "Get Started",
+      id: 'featured', name: 'Featured', color: C.sage, badge: 'Most Popular',
+      price: current.featured, nextPrice: next?.featured,
+      features: ['Everything in Enhanced', 'Spotlight card placement', 'Logo or photo display', 'Above standard listings', 'Email contact button'],
     },
     {
-      name: "Silver",
-      price: "$17",
-      period: "/ month",
-      color: "#A8A9AD",
-      badge: "Popular",
-      features: [
-        "Everything in Bronze",
-        "Spotlight card placement",
-        "Logo or photo display",
-        "Above standard listings",
-      ],
-      cta: "Get Started",
-    },
-    {
-      name: "Gold",
-      price: "$34",
-      period: "/ month",
-      color: C.sunsetLight,
-      badge: "Best Visibility",
-      features: [
-        "Everything in Silver",
-        "Full-width banner ad",
-        "Large logo (110×110)",
-        "Top-of-directory placement",
-        "Email contact button",
-      ],
-      cta: "Get Started",
+      id: 'premium', name: 'Premium', color: C.sunsetLight, badge: 'Best Visibility',
+      price: current.premium, nextPrice: next?.premium,
+      features: ['Everything in Featured', 'Full-width banner placement', 'Large logo (110×110)', 'Top-of-directory position', 'Cross-page placements'],
     },
   ];
 
+  const handleCheckout = async () => {
+    if (!form.businessName.trim() || !form.email.trim()) { setCheckoutError('Business name and email are required.'); return; }
+    setLoading(true); setCheckoutError('');
+    try {
+      const res = await fetch('/api/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tier: modal.tierId, businessName: form.businessName, email: form.email, priceInCents: modal.price * 100, mode: 'subscription' }),
+      });
+      const data = await res.json();
+      if (data.url) { window.location.href = data.url; }
+      else { setCheckoutError(data.error || 'Something went wrong. Please try again.'); }
+    } catch { setCheckoutError('Something went wrong. Please try again.'); }
+    finally { setLoading(false); }
+  };
+
   return (
-    <div id="listing-tiers" style={{ background: C.night, padding: "80px 24px 72px" }}>
-      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+    <>
+      <div id="listing-tiers" style={{ background: C.night, padding: "80px 24px 72px" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
 
-        <div style={{ textAlign: "center", marginBottom: 52 }}>
-          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 4, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 14 }}>
-            List Your Business
+          {/* Header */}
+          <div style={{ textAlign: "center", marginBottom: 52 }}>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 4, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 14 }}>
+              List Your Business
+            </div>
+            <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 4vw, 42px)", fontWeight: 400, color: C.cream, margin: "0 0 14px 0" }}>
+              Choose Your Visibility
+            </h2>
+            <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 16, maxWidth: 520, margin: "0 auto 32px" }}>
+              Get discovered by the Manitou Beach community. Founding member rates lock in forever — prices rise as our audience grows.
+            </p>
+
+            {/* Live milestone bar */}
+            <div style={{ maxWidth: 460, margin: "0 auto", background: "rgba(255,255,255,0.05)", borderRadius: 14, padding: "20px 24px", border: "1px solid rgba(255,255,255,0.1)" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
+                <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.45)", letterSpacing: 0.5 }}>Newsletter subscribers</span>
+                <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.cream }}>
+                  {subCount === null ? '—' : subCount.toLocaleString()}
+                  {next && <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.3)", marginLeft: 6 }}>/ {current.maxSubs}</span>}
+                </span>
+              </div>
+              <div style={{ background: "rgba(255,255,255,0.08)", borderRadius: 999, height: 6, overflow: "hidden" }}>
+                <div style={{ height: "100%", width: `${progressPct}%`, background: `linear-gradient(90deg, ${C.sage}, ${C.sunsetLight})`, borderRadius: 999, transition: "width 1s ease" }} />
+              </div>
+              <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: next ? C.sunsetLight : "rgba(255,255,255,0.35)", marginTop: 10, margin: "10px 0 0", letterSpacing: 0.3 }}>
+                {next
+                  ? `⚡ Prices increase at ${current.maxSubs} subscribers — lock in now, grandfathered forever.`
+                  : 'Audience established · Premium pricing in effect.'}
+              </p>
+            </div>
           </div>
-          <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 4vw, 42px)", fontWeight: 400, color: C.cream, margin: "0 0 14px 0" }}>
-            Choose Your Visibility
-          </h2>
-          <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 16, maxWidth: 460, margin: "0 auto" }}>
-            Get discovered by the Manitou Beach community. Start free, upgrade anytime.
-          </p>
-        </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16 }}>
-          {tiers.map(tier => (
-            <div key={tier.name} style={{
-              background: tier.badge ? "rgba(255,255,255,0.07)" : "rgba(255,255,255,0.03)",
-              border: `1px solid ${tier.badge ? tier.color + "45" : "rgba(255,255,255,0.09)"}`,
-              borderRadius: 16,
-              padding: "28px 22px 28px",
-              position: "relative",
-              display: "flex",
-              flexDirection: "column",
-            }}>
-              {tier.badge && (
-                <div style={{
-                  position: "absolute", top: -13, left: "50%", transform: "translateX(-50%)",
-                  background: tier.color, color: C.night,
-                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700,
-                  letterSpacing: 2, textTransform: "uppercase",
-                  padding: "4px 14px", borderRadius: 20, whiteSpace: "nowrap",
-                }}>
-                  {tier.badge}
+          {/* Free tier — compact row */}
+          <div style={{ marginBottom: 16 }}>
+            <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "18px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
+              <div style={{ display: "flex", gap: 28, alignItems: "center", flexWrap: "wrap" }}>
+                <div>
+                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.driftwood, marginBottom: 3 }}>Free</div>
+                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream }}>$0 <span style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif" }}>forever</span></div>
                 </div>
-              )}
-
-              <div style={{ color: tier.color, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", marginBottom: 10 }}>
-                {tier.name}
+                <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
+                  {["Name in directory", "Category & phone", "Community visibility"].map(f => (
+                    <span key={f} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "rgba(255,255,255,0.4)" }}>
+                      <span style={{ color: C.driftwood, fontWeight: 700 }}>✓</span>{f}
+                    </span>
+                  ))}
+                </div>
               </div>
-              <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 22 }}>
-                <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 34, color: C.cream, fontWeight: 700 }}>{tier.price}</span>
-                <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 14 }}>{tier.period}</span>
-              </div>
-
-              <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px 0", flexGrow: 1, display: "flex", flexDirection: "column", gap: 9 }}>
-                {tier.features.map(f => (
-                  <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 9 }}>
-                    <span style={{ color: tier.color, fontSize: 13, marginTop: 2, flexShrink: 0, fontWeight: 700 }}>✓</span>
-                    <span style={{ color: "rgba(255,255,255,0.58)", fontSize: 13, lineHeight: 1.45 }}>{f}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <a
-                href="#submit"
-                style={{
-                  display: "block", textAlign: "center",
-                  padding: "10px 0", borderRadius: 8,
-                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700,
-                  letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none",
-                  background: tier.name === "Gold" ? C.sunset : "transparent",
-                  color: tier.name === "Gold" ? C.cream : tier.color,
-                  border: `1.5px solid ${tier.name === "Gold" ? "transparent" : tier.color + "55"}`,
-                  transition: "all 0.22s ease",
-                }}
-              >
-                {tier.cta}
+              <a href="#submit" style={{ padding: "9px 22px", borderRadius: 8, border: `1.5px solid ${C.driftwood}55`, color: C.driftwood, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none", whiteSpace: "nowrap" }}>
+                Get Listed Free
               </a>
             </div>
-          ))}
-        </div>
+          </div>
 
-        <p style={{ textAlign: "center", color: "rgba(255,255,255,0.2)", fontSize: 12, marginTop: 28, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>
-          Monthly pricing · Annual plans available · Contact us to get listed
-        </p>
+          {/* Paid tiers */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 16 }}>
+            {PAID_TIERS.map(tier => (
+              <div key={tier.id} style={{ background: tier.badge ? "rgba(255,255,255,0.07)" : "rgba(255,255,255,0.04)", border: `1px solid ${tier.badge ? tier.color + "45" : "rgba(255,255,255,0.09)"}`, borderRadius: 16, padding: "28px 22px", position: "relative", display: "flex", flexDirection: "column" }}>
+                {tier.badge && (
+                  <div style={{ position: "absolute", top: -13, left: "50%", transform: "translateX(-50%)", background: tier.color, color: C.night, fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", padding: "4px 14px", borderRadius: 20, whiteSpace: "nowrap" }}>
+                    {tier.badge}
+                  </div>
+                )}
+                <div style={{ color: tier.color, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", marginBottom: 10 }}>{tier.name}</div>
+                <div style={{ marginBottom: 4 }}>
+                  <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 36, color: C.cream, fontWeight: 700 }}>${tier.price}</span>
+                  <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 14, fontFamily: "'Libre Franklin', sans-serif" }}>/mo</span>
+                </div>
+                {tier.nextPrice && (
+                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, marginBottom: 18, letterSpacing: 0.3 }}>
+                    <span style={{ textDecoration: "line-through", color: "rgba(255,100,80,0.45)" }}>${tier.nextPrice}/mo</span>
+                    <span style={{ color: C.sunsetLight, marginLeft: 8 }}>after {current.maxSubs} subs</span>
+                  </div>
+                )}
+                <ul style={{ listStyle: "none", padding: 0, margin: tier.nextPrice ? "0 0 24px 0" : "14px 0 24px 0", flexGrow: 1, display: "flex", flexDirection: "column", gap: 9 }}>
+                  {tier.features.map(f => (
+                    <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 9 }}>
+                      <span style={{ color: tier.color, fontSize: 13, marginTop: 2, flexShrink: 0, fontWeight: 700 }}>✓</span>
+                      <span style={{ color: "rgba(255,255,255,0.58)", fontSize: 13, lineHeight: 1.45 }}>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  onClick={() => { setModal({ tierId: tier.id, tierName: tier.name, price: tier.price, color: tier.color }); setForm({ businessName: '', email: '' }); setCheckoutError(''); }}
+                  style={{ display: "block", width: "100%", padding: "11px 0", borderRadius: 8, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: "pointer", border: "none", background: tier.id === "premium" ? C.sunset : "transparent", color: tier.id === "premium" ? C.cream : tier.color, outline: tier.id === "premium" ? "none" : `1.5px solid ${tier.color}55`, transition: "all 0.22s" }}
+                >
+                  Get Started
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {/* Newsletter add-on */}
+          <div style={{ marginTop: 32, background: "rgba(91,126,149,0.1)", border: "1px solid rgba(91,126,149,0.22)", borderRadius: 14, padding: "28px 28px 24px" }}>
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 24 }}>
+              <div style={{ maxWidth: 480 }}>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: C.lakeBlue, marginBottom: 8 }}>Newsletter Add-On</div>
+                <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.cream, margin: "0 0 10px 0" }}>Reach the inbox, not just the directory</h3>
+                <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 14, lineHeight: 1.75, margin: 0 }}>
+                  The Manitou Dispatch lands directly in the inboxes of people already invested in this community. Event organizers know they can't get 2,000 engaged local eyes in a single drop — your business can.
+                </p>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10, minWidth: 210 }}>
+                {[
+                  { label: "Mention", desc: "1-line + link in Dispatch", price: "$29/issue" },
+                  { label: "Feature", desc: "Paragraph + photo + CTA", price: "$75/issue" },
+                  { label: "Monthly Sponsor", desc: "Every issue that month", price: "$199/mo" },
+                ].map(item => (
+                  <div key={item.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, background: "rgba(255,255,255,0.04)", borderRadius: 8, padding: "10px 14px" }}>
+                    <div>
+                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 600, color: C.cream }}>{item.label}</div>
+                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.35)" }}>{item.desc}</div>
+                    </div>
+                    <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, color: C.lakeBlue, whiteSpace: "nowrap" }}>{item.price}</div>
+                  </div>
+                ))}
+                <a href="#submit" style={{ textAlign: "center", padding: "10px", borderRadius: 8, background: "transparent", border: `1.5px solid ${C.lakeBlue}55`, color: C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none", marginTop: 4, display: "block" }}>
+                  Inquire
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <p style={{ textAlign: "center", color: "rgba(255,255,255,0.18)", fontSize: 12, marginTop: 24, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>
+            Monthly subscriptions · Cancel anytime · Founding rates grandfathered forever
+          </p>
+        </div>
       </div>
-    </div>
+
+      {/* Checkout modal */}
+      {modal && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: 24, background: "rgba(10,18,24,0.88)", backdropFilter: "blur(8px)" }} onClick={() => setModal(null)}>
+          <div style={{ background: C.dusk, borderRadius: 20, padding: "36px 32px", maxWidth: 420, width: "100%", boxShadow: "0 24px 80px rgba(0,0,0,0.5)", border: `1px solid ${modal.color}30` }} onClick={e => e.stopPropagation()}>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: modal.color, marginBottom: 6 }}>{modal.tierName} Listing</div>
+            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, fontWeight: 400, color: C.cream, margin: "0 0 4px 0" }}>
+              ${modal.price}<span style={{ fontSize: 14, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif" }}>/mo</span>
+            </h3>
+            <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 13, margin: "0 0 28px 0" }}>Grandfathered at this rate — cancel anytime.</p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 20 }}>
+              <input
+                placeholder="Business name"
+                value={form.businessName}
+                onChange={e => setForm(f => ({ ...f, businessName: e.target.value }))}
+                style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}
+              />
+              <input
+                placeholder="Email address"
+                type="email"
+                value={form.email}
+                onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}
+              />
+            </div>
+            {checkoutError && <p style={{ color: "#ff6b5b", fontSize: 13, marginBottom: 14 }}>{checkoutError}</p>}
+            <button
+              onClick={handleCheckout}
+              disabled={loading}
+              style={{ width: "100%", padding: "14px", borderRadius: 10, border: "none", background: modal.id === "premium" ? C.sunset : modal.color, color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: loading ? "wait" : "pointer", opacity: loading ? 0.7 : 1, transition: "opacity 0.2s" }}
+            >
+              {loading ? "Redirecting…" : "Continue to Secure Checkout →"}
+            </button>
+            <p style={{ textAlign: "center", fontSize: 11, color: "rgba(255,255,255,0.22)", marginTop: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
+              Powered by Stripe · Your card details are never stored here
+            </p>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -3970,10 +4065,10 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
       <nav style={{
         position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000,
         padding: solid ? "10px 0" : "18px 0",
-        background: solid ? "rgba(250,246,239,0.20)" : "transparent",
-        backdropFilter: solid ? "blur(28px) saturate(180%)" : "none",
-        WebkitBackdropFilter: solid ? "blur(28px) saturate(180%)" : "none",
-        borderBottom: solid ? "1px solid rgba(255,255,255,0.15)" : "none",
+        background: solid ? "rgba(250,246,239,0.55)" : "transparent",
+        backdropFilter: solid ? "blur(20px) saturate(160%)" : "none",
+        WebkitBackdropFilter: solid ? "blur(20px) saturate(160%)" : "none",
+        borderBottom: solid ? `1px solid rgba(122,142,114,0.2)` : "none",
         transition: "all 0.35s ease",
       }}>
         <div style={{ maxWidth: 1180, margin: "0 auto", padding: "0 28px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -3981,10 +4076,10 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
           <div style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 10 }} onClick={() => handleNavClick("home")}>
             <img src="/images/manitou_beach_icon.png" alt="" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", opacity: solid ? 1 : 0.85, transition: "opacity 0.35s" }} />
             <div>
-              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 700, color: C.cream, transition: "color 0.35s" }}>
+              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 700, color: solid ? C.dusk : C.cream, transition: "color 0.35s" }}>
                 Manitou Beach
               </div>
-              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 12, color: "rgba(255,255,255,0.5)", marginTop: -2, transition: "color 0.35s" }}>
+              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 12, color: solid ? C.textMuted : "rgba(255,255,255,0.5)", marginTop: -2, transition: "color 0.35s" }}>
                 on Devils Lake
               </div>
             </div>
@@ -3999,7 +4094,7 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
                 style={{
                   background: activeSection === id ? `${C.sage}18` : "transparent",
                   border: "none",
-                  color: activeSection === id ? C.sageDark : "rgba(255,255,255,0.7)",
+                  color: activeSection === id ? C.sageDark : solid ? C.text : "rgba(255,255,255,0.7)",
                   fontFamily: "'Libre Franklin', sans-serif",
                   fontSize: 12,
                   fontWeight: activeSection === id ? 700 : 500,
@@ -4010,8 +4105,8 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
                   transition: "all 0.2s",
                   whiteSpace: "nowrap",
                 }}
-                onMouseEnter={e => { e.currentTarget.style.color = C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
-                onMouseLeave={e => { e.currentTarget.style.color = activeSection === id ? C.sageDark : "rgba(255,255,255,0.7)"; e.currentTarget.style.background = activeSection === id ? `${C.sage}18` : "transparent"; }}
+                onMouseEnter={e => { e.currentTarget.style.color = solid ? C.dusk : C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
+                onMouseLeave={e => { e.currentTarget.style.color = activeSection === id ? C.sageDark : solid ? C.text : "rgba(255,255,255,0.7)"; e.currentTarget.style.background = activeSection === id ? `${C.sage}18` : "transparent"; }}
               >
                 {label}
               </button>
@@ -4021,13 +4116,13 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
               onClick={() => { window.location.href = "/dispatch"; }}
               style={{
                 background: "transparent", border: "none",
-                color: "rgba(255,255,255,0.7)",
+                color: solid ? C.text : "rgba(255,255,255,0.7)",
                 fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 500,
                 letterSpacing: 0.5, padding: "7px 13px", borderRadius: 6, cursor: "pointer",
                 transition: "all 0.2s", whiteSpace: "nowrap",
               }}
-              onMouseEnter={e => { e.currentTarget.style.color = C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
-              onMouseLeave={e => { e.currentTarget.style.color = "rgba(255,255,255,0.7)"; e.currentTarget.style.background = "transparent"; }}
+              onMouseEnter={e => { e.currentTarget.style.color = solid ? C.dusk : C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
+              onMouseLeave={e => { e.currentTarget.style.color = solid ? C.text : "rgba(255,255,255,0.7)"; e.currentTarget.style.background = "transparent"; }}
             >
               Dispatch
             </button>
@@ -4459,9 +4554,9 @@ function HomePage() {
 // 🌊  ROUND LAKE PAGE
 // ============================================================
 const ROUND_LAKE_STATS = [
-  { label: "Surface Area", value: "925 acres" },
-  { label: "Max Depth", value: "70 feet" },
-  { label: "Elevation", value: "~1,043 ft" },
+  { label: "Surface Area", value: "515 acres" },
+  { label: "Max Depth", value: "67 feet" },
+  { label: "Elevation", value: "~918 ft" },
   { label: "Water Clarity", value: "Very clear" },
   { label: "Origin", value: "Glacial kettle lake" },
   { label: "Watershed", value: "Bean Creek" },
@@ -4560,10 +4655,10 @@ function RoundLakeStatsSection() {
                 background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)",
                 borderRadius: 12, padding: "28px 20px", textAlign: "center",
               }}>
-                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.sunsetLight, fontWeight: 400, marginBottom: 8, lineHeight: 1.2 }}>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, color: C.sunsetLight, fontWeight: 400, marginBottom: 8, lineHeight: 1.2 }}>
                   {stat.value}
                 </div>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.3)", fontWeight: 600 }}>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.65)", fontWeight: 600 }}>
                   {stat.label}
                 </div>
               </div>
@@ -4571,7 +4666,7 @@ function RoundLakeStatsSection() {
           ))}
         </div>
         <FadeIn delay={400}>
-          <p style={{ fontSize: 13, color: "rgba(255,255,255,0.25)", lineHeight: 1.7, marginTop: 32, maxWidth: 600, fontFamily: "'Libre Franklin', sans-serif" }}>
+          <p style={{ fontSize: 16, color: "rgba(255,255,255,0.75)", lineHeight: 1.8, marginTop: 32, maxWidth: 600, fontFamily: "'Libre Franklin', sans-serif" }}>
             Round Lake is a glacial kettle lake carved during the Wisconsin Glaciation when the Erie and Saginaw ice lobes collided to form the Irish Hills interlobate moraine — one of over 50 kettle lakes in the region. Connected to Devils Lake via a shallow channel at Cherry Point.
           </p>
         </FadeIn>
@@ -6219,8 +6314,8 @@ function FishingLakesSection() {
               <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, fontWeight: 400, color: C.cream, margin: "0 0 16px 0" }}>The Serious Fishery</h3>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 20 }}>
                 {[
-                  { label: "Size", value: "925 acres" },
-                  { label: "Depth", value: "70 ft max" },
+                  { label: "Size", value: "515 acres" },
+                  { label: "Depth", value: "67 ft max" },
                   { label: "Type", value: "Cold-water" },
                   { label: "Launch", value: "Public ramp" },
                 ].map((s, i) => (
@@ -6814,7 +6909,7 @@ const DEVILS_LAKE_STATS = [
   { label: "Surface Area", value: "1,330 acres" },
   { label: "Max Depth", value: "65 ft" },
   { label: "Lake Type", value: "Warm-water" },
-  { label: "Public Launch", value: "Yes — Manitou Rd" },
+  { label: "Public Launch", value: "Manitou Rd" },
   { label: "Connected To", value: "Round Lake" },
   { label: "Boat Slips", value: "600+" },
 ];

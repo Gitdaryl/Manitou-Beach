@@ -1,4 +1,19 @@
 export default async function handler(req, res) {
+  // GET — return live subscriber count for milestone display
+  if (req.method === 'GET') {
+    try {
+      const response = await fetch(
+        `https://api.beehiiv.com/v2/publications/${process.env.BEEHIIV_PUBLICATION_ID}/subscriptions?status=active&limit=1`,
+        { headers: { 'Authorization': `Bearer ${process.env.BEEHIIV_API_KEY}` } }
+      );
+      if (!response.ok) return res.status(200).json({ count: 0 });
+      const data = await response.json();
+      return res.status(200).json({ count: data.total_results || 0 });
+    } catch {
+      return res.status(200).json({ count: 0 });
+    }
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
