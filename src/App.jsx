@@ -51,6 +51,14 @@ function GlobalStyles() {
         0% { background-position: -200% center; }
         100% { background-position: 200% center; }
       }
+      @keyframes kenBurns {
+        0%   { transform: scale(1)    translate(0, 0); }
+        100% { transform: scale(1.07) translate(-1.5%, -1%); }
+      }
+      .ken-burns {
+        animation: kenBurns 22s ease-in-out infinite alternate;
+        transform-origin: center center;
+      }
       @keyframes dot-breathe {
         0%, 100% { box-shadow: 0 0 4px currentColor; transform: scale(1); }
         50% { box-shadow: 0 0 16px currentColor; transform: scale(1.2); }
@@ -846,10 +854,10 @@ function Hero({ scrollTo }) {
               const isVideo = /\.(mp4|webm|mov|m4v)/i.test(heroEvent.imageUrl);
               const mediaStyle = {
                 width: "100%", height: "auto", maxHeight: 320,
-                objectFit: "contain", borderRadius: 12, display: "block",
+                objectFit: "contain", display: "block",
               };
               return (
-                <div style={{ margin: "0 0 24px 0", maxWidth: 546, width: "100%" }}>
+                <div style={{ margin: "0 0 24px 0", maxWidth: 546, width: "100%", borderRadius: 12, overflow: "hidden" }}>
                   {isVideo ? (
                     <video
                       key={heroEvent.imageUrl}
@@ -862,6 +870,7 @@ function Hero({ scrollTo }) {
                     <img
                       src={heroEvent.imageUrl}
                       alt={heroEvent.name}
+                      className="ken-burns"
                       style={mediaStyle}
                     />
                   )}
