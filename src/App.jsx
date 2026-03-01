@@ -9115,13 +9115,27 @@ function VoiceWidget() {
   const [links, setLinks] = useState([]);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const vapiRef = useRef(null);
+  const liveDataRef = useRef({ events: '', businesses: '', weather: '' });
 
   useEffect(() => {
     if (!VAPI_PUBLIC_KEY || VAPI_PUBLIC_KEY === 'your-vapi-public-key-here') return;
     import('@vapi-ai/web').then(({ default: Vapi }) => {
       const vapi = new Vapi(VAPI_PUBLIC_KEY);
 
-      vapi.on('call-start', () => setStatus('active'));
+      vapi.on('call-start', () => {
+        setStatus('active');
+        // Inject live data as system context immediately after call connects
+        const { events, businesses, weather } = liveDataRef.current;
+        setTimeout(() => {
+          vapi.send({
+            type: 'add-message',
+            message: {
+              role: 'system',
+              content: `LIVE DATA — use only this to answer questions, never make anything up:\n\nUPCOMING EVENTS:\n${events}\n\nLOCAL BUSINESSES:\n${businesses}\n\nWEATHER:\n${weather}\n\nIf something isn't in this data, say "I don't have that info right now."`,
+            },
+          });
+        }, 300);
+      });
       vapi.on('call-end', () => { setStatus('idle'); setIsSpeaking(false); });
       vapi.on('speech-start', () => setIsSpeaking(true));
       vapi.on('speech-end', () => setIsSpeaking(false));
@@ -9132,40 +9146,14 @@ function VoiceWidget() {
         if (message.type === 'transcript' && message.transcriptType === 'final') {
           setTranscript(prev => [...prev.slice(-8), { role: message.role, text: message.transcript }]);
         }
-        // Client-side tool calls
+        // Client-side tool calls — display_link only (UI side effect)
         if (message.type === 'tool-calls') {
           for (const toolCall of message.toolCallList) {
-            const { id, name, function: fn } = toolCall;
+            const { name, function: fn } = toolCall;
             const args = JSON.parse(fn?.arguments || '{}');
-            let result = '';
-
-            if (name === 'get_events') {
-              try {
-                const data = await fetch('/api/events').then(r => r.json());
-                const events = (data.events || []).slice(0, 8);
-                result = events.length
-                  ? events.map(e => `${e.name} — ${new Date(e.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}${e.location ? ', ' + e.location : ''}${e.cost ? ' (' + e.cost + ')' : ''}${e.eventUrl ? ' | tickets: ' + e.eventUrl : ''}`).join('\n')
-                  : 'No upcoming events found.';
-              } catch { result = 'Could not fetch events right now.'; }
-            }
-
-            else if (name === 'get_businesses') {
-              try {
-                const data = await fetch('/api/businesses').then(r => r.json());
-                let list = data.businesses || [];
-                if (args.category) list = list.filter(b => b.category?.toLowerCase().includes(args.category.toLowerCase()));
-                result = list.slice(0, 8).map(b =>
-                  `${b.name}${b.category ? ' (' + b.category + ')' : ''}${b.phone ? ' · ' + b.phone : ''}${b.address ? ' · ' + b.address : ''}${b.website ? ' | ' + b.website : ''}`
-                ).join('\n') || 'No businesses found.';
-              } catch { result = 'Could not fetch businesses right now.'; }
-            }
-
-            else if (name === 'display_link') {
+            if (name === 'display_link') {
               setLinks(prev => [...prev, { url: args.url, label: args.label || 'Open Link', sublabel: args.sublabel }]);
-              result = 'Link displayed to user in chat panel.';
             }
-
-            vapi.send({ type: 'add-message', message: { role: 'tool', tool_call_id: id, content: result } });
           }
         }
       });
@@ -9181,7 +9169,52 @@ function VoiceWidget() {
     setPanelOpen(true);
     setTranscript([]);
     setLinks([]);
-    try { await vapiRef.current.start(VAPI_ASSISTANT_ID); }
+    try {
+      // Pre-fetch live data to inject into assistant context at call start
+      const [eventsRes, bizRes, wxRes] = await Promise.allSettled([
+        fetch('/api/events').then(r => r.json()),
+        fetch('/api/businesses').then(r => r.json()),
+        fetch('https://api.open-meteo.com/v1/forecast?latitude=41.96&longitude=-84.02&current=temperature_2m,wind_speed_10m,precipitation,weathercode&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weathercode&timezone=America%2FDetroit&forecast_days=3&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch').then(r => r.json()),
+      ]);
+
+      // Format events
+      let events = 'No upcoming events found.';
+      if (eventsRes.status === 'fulfilled') {
+        const list = (eventsRes.value.events || []).slice(0, 10);
+        if (list.length) events = list.map(e =>
+          `${e.name} — ${new Date(e.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}${e.location ? ', ' + e.location : ''}${e.cost ? ' (' + e.cost + ')' : ''}${e.eventUrl ? ' | ' + e.eventUrl : ''}`
+        ).join('\n');
+      }
+
+      // Format businesses
+      let businesses = 'No business listings found.';
+      if (bizRes.status === 'fulfilled') {
+        const list = (bizRes.value.businesses || []).slice(0, 15);
+        if (list.length) businesses = list.map(b =>
+          `${b.name}${b.category ? ' (' + b.category + ')' : ''}${b.phone ? ' · ' + b.phone : ''}${b.address ? ' · ' + b.address : ''}${b.website ? ' | ' + b.website : ''}`
+        ).join('\n');
+      }
+
+      // Format weather
+      let weather = 'Weather data unavailable.';
+      if (wxRes.status === 'fulfilled') {
+        const wx = wxRes.value;
+        const WD = {0:'Clear',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Foggy',61:'Rain',63:'Rain',65:'Heavy rain',71:'Light snow',73:'Snow',75:'Heavy snow',80:'Showers',95:'Thunderstorm'};
+        const desc = c => WD[c] || 'Mixed';
+        const cur = wx.current;
+        const d = wx.daily;
+        const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+        weather = `Now: ${Math.round(cur.temperature_2m)}°F, ${desc(cur.weathercode)}, wind ${Math.round(cur.wind_speed_10m)} mph. ` +
+          [0,1,2].map(i => {
+            const day = i === 0 ? 'Today' : dayNames[new Date(d.time[i] + 'T12:00:00').getDay()];
+            return `${day}: ${Math.round(d.temperature_2m_max[i])}°/${Math.round(d.temperature_2m_min[i])}° ${desc(d.weathercode[i])}${d.precipitation_sum[i] > 0 ? ' ' + d.precipitation_sum[i].toFixed(2) + '"' : ''}`;
+          }).join(', ');
+      }
+
+      liveDataRef.current = { events, businesses, weather };
+      console.log('[VoiceWidget] Injecting data:', { events: events.slice(0, 80), businesses: businesses.slice(0, 80), weather });
+      await vapiRef.current.start(VAPI_ASSISTANT_ID);
+    }
     catch (err) { console.error('Vapi start error:', err); setStatus('idle'); }
   };
 
