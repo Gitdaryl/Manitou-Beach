@@ -821,16 +821,28 @@ function Hero({ scrollTo }) {
         onMouseEnter={() => setHeroPaused(true)}
         onMouseLeave={() => setHeroPaused(false)}
       >
-        {heroEvent.heroImageUrl && (
-          <img
-            key={heroEvent.heroImageUrl}
-            src={heroEvent.heroImageUrl}
-            alt=""
-            aria-hidden="true"
-            className="ken-burns-bg"
-            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }}
-          />
-        )}
+        {heroEvent.heroImageUrl && (() => {
+          const isBgVideo = /\.(mp4|webm|mov|m4v)/i.test(heroEvent.heroImageUrl);
+          return isBgVideo ? (
+            <video
+              key={heroEvent.heroImageUrl}
+              ref={el => el && (el.muted = true)}
+              autoPlay loop playsInline
+              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }}
+            >
+              <source src={heroEvent.heroImageUrl} type="video/mp4" />
+            </video>
+          ) : (
+            <img
+              key={heroEvent.heroImageUrl}
+              src={heroEvent.heroImageUrl}
+              alt=""
+              aria-hidden="true"
+              className="ken-burns-bg"
+              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }}
+            />
+          );
+        })()}
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(170deg, rgba(26,40,48,0.75) 0%, rgba(26,40,48,0.5) 50%, rgba(26,40,48,0.85) 100%)", zIndex: 1 }} />
 
         {/* Coming Up / Sponsored badge — top right */}
