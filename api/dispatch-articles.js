@@ -24,12 +24,15 @@ function parseBlocks(blocks) {
       const newListType = type === 'bulleted_list_item' ? 'ul' : 'ol';
       if (listType && listType !== newListType) flushList();
       listType = newListType;
-      listBuffer.push(richTextToString(block[type]?.rich_text));
+      const itemText = richTextToString(block[type]?.rich_text);
+      if (itemText.trim().startsWith('[[NL:')) continue; // newsletter-only
+      listBuffer.push(itemText);
       continue;
     }
     flushList();
     if (type === 'paragraph') {
       const text = richTextToString(block.paragraph?.rich_text);
+      if (text && text.trim().startsWith('[[NL:')) continue; // newsletter-only — strip from blog
       if (text) content.push({ type: 'p', text });
     } else if (type === 'heading_1') {
       content.push({ type: 'h1', text: richTextToString(block.heading_1?.rich_text) });

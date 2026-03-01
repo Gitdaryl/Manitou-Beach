@@ -64,6 +64,18 @@ function GlobalStyles() {
         0%, 100% { box-shadow: 0 0 4px currentColor; transform: scale(1); }
         50% { box-shadow: 0 0 16px currentColor; transform: scale(1.2); }
       }
+      @keyframes adPulse {
+        0%, 100% { transform: scale(1); box-shadow: 0 2px 16px rgba(0,0,0,0.08); }
+        50% { transform: scale(1.012); box-shadow: 0 8px 28px rgba(0,0,0,0.14); }
+      }
+      @keyframes adFade {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.82; }
+      }
+      @keyframes adSlide {
+        0% { transform: translateX(-12px); opacity: 0; }
+        100% { transform: translateX(0); opacity: 1; }
+      }
       .timeline-pulse {
         background: linear-gradient(90deg, rgba(122,142,114,0.1), rgba(212,132,90,0.35), rgba(91,126,149,0.35), rgba(122,142,114,0.1)) !important;
         background-size: 200% 100% !important;
@@ -8111,6 +8123,86 @@ const CATEGORY_COLORS = {
   'Advertorial':     '#7D6EAA',
 };
 
+// ============================================================
+// 📢  AD SLOTS — Dispatch blog advertising
+// ============================================================
+
+function useDispatchAds(page) {
+  const [slots, setSlots] = useState({});
+  useEffect(() => {
+    fetch(`/api/dispatch-ads?page=${page}`)
+      .then(r => r.json())
+      .then(d => setSlots(d.slots || {}))
+      .catch(() => {});
+  }, [page]);
+  return slots;
+}
+
+// Pick a random ad from the slot array (for rotation)
+function pickAd(slotAds) {
+  if (!slotAds || !slotAds.length) return null;
+  return slotAds[Math.floor(Math.random() * slotAds.length)];
+}
+
+function AdSlot({ ads, variant = 'leaderboard' }) {
+  const ad = pickAd(ads);
+  if (!ad) return null;
+
+  const animStyle =
+    ad.animation === 'pulse' ? { animation: 'adPulse 3s ease-in-out infinite' } :
+    ad.animation === 'slide' ? { animation: 'adSlide 0.6s ease-out forwards' } :
+    ad.animation === 'fade'  ? { animation: 'adFade 4s ease-in-out infinite' } :
+    {};
+
+  const heights = { leaderboard: 90, 'mid-article': 220, 'footer-strip': 110, 'listing-banner': 90 };
+  const h = heights[variant] || 90;
+
+  const outerPad = variant === 'mid-article'
+    ? { maxWidth: 720, margin: '32px auto 0', padding: '0 24px' }
+    : { maxWidth: 1100, margin: '0 auto', padding: '20px 24px 0' };
+
+  return (
+    <div style={outerPad}>
+      <div style={{ fontSize: 9, letterSpacing: 2, textTransform: 'uppercase', color: '#bbb', marginBottom: 5, fontFamily: "'Libre Franklin', sans-serif", textAlign: 'right' }}>
+        Sponsored
+      </div>
+      <a
+        href={ad.linkUrl || '#'}
+        target="_blank"
+        rel="noopener noreferrer sponsored"
+        style={{ display: 'block', textDecoration: 'none', borderRadius: 10, overflow: 'hidden', ...animStyle }}
+        aria-label={ad.altText || ad.name}
+      >
+        {ad.imageUrl ? (
+          <>
+            <img
+              src={ad.imageUrl}
+              alt={ad.altText || ad.name}
+              style={{ width: '100%', height: h, objectFit: 'cover', display: 'block' }}
+            />
+            {ad.offerText && (
+              <div style={{ background: C.night, padding: '10px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
+                <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: 13, fontFamily: "'Libre Franklin', sans-serif" }}>{ad.offerText}</span>
+                {ad.couponCode && (
+                  <span style={{ background: C.sunset, color: '#fff', borderRadius: 5, padding: '3px 10px', fontSize: 11, fontWeight: 700, letterSpacing: 1, whiteSpace: 'nowrap', flexShrink: 0 }}>
+                    CODE: {ad.couponCode}
+                  </span>
+                )}
+              </div>
+            )}
+          </>
+        ) : (
+          <div style={{ background: `linear-gradient(135deg, ${C.dusk}, ${C.lakeBlue})`, height: h, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 8, padding: 24 }}>
+            <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: variant === 'mid-article' ? 20 : 16, color: '#fff', fontWeight: 700, textAlign: 'center' }}>{ad.name}</div>
+            {ad.offerText && <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)', textAlign: 'center' }}>{ad.offerText}</div>}
+            {ad.couponCode && <div style={{ background: C.sunset, color: '#fff', borderRadius: 5, padding: '4px 12px', fontSize: 11, fontWeight: 700, letterSpacing: 1 }}>CODE: {ad.couponCode}</div>}
+          </div>
+        )}
+      </a>
+    </div>
+  );
+}
+
 function DispatchArticleContent({ content }) {
   if (!content || !content.length) return null;
 
@@ -8170,6 +8262,7 @@ function DispatchArticlePage() {
   const [loading, setLoading] = useState(true);
   const [subEmail, setSubEmail] = useState('');
   const [subStatus, setSubStatus] = useState('idle'); // idle | loading | success | exists | error
+  const adSlots = useDispatchAds('dispatch-article');
   const subScrollTo = (id) => { window.location.href = '/#' + id; };
 
   const handleInlineSub = async (e) => {
@@ -8232,6 +8325,9 @@ function DispatchArticlePage() {
               </div>
             )}
 
+            {/* Leaderboard ad — below hero, above article */}
+            <AdSlot ads={adSlots['leaderboard']} variant="leaderboard" />
+
             <div style={{ maxWidth: 760, margin: '0 auto', padding: '40px 24px 80px' }}>
               <button
                 onClick={() => navigate('/dispatch')}
@@ -8264,7 +8360,20 @@ function DispatchArticlePage() {
                 </p>
               )}
 
-              <DispatchArticleContent content={article.content} />
+              {/* Article content — split at block 4 for mid-article ad injection */}
+              {(() => {
+                const content = article.content || [];
+                const splitAt = Math.min(4, Math.floor(content.length / 2));
+                const top = content.slice(0, splitAt);
+                const bottom = content.slice(splitAt);
+                return (
+                  <>
+                    <DispatchArticleContent content={top} />
+                    <AdSlot ads={adSlots['mid-article']} variant="mid-article" />
+                    <DispatchArticleContent content={bottom} />
+                  </>
+                );
+              })()}
 
               {/* Yeti Desk sign-off */}
               <div style={{ margin: '56px 0 40px', borderTop: `2px solid ${C.sand}`, paddingTop: 36 }}>
@@ -8294,7 +8403,10 @@ function DispatchArticlePage() {
                 </div>
               </div>
 
-              <div style={{ marginTop: 60, padding: '36px 32px', background: C.night, borderRadius: 14, textAlign: 'center' }}>
+              {/* Footer-strip ad — between sign-off and subscribe form */}
+              <AdSlot ads={adSlots['footer-strip']} variant="footer-strip" />
+
+              <div style={{ marginTop: 40, padding: '36px 32px', background: C.night, borderRadius: 14, textAlign: 'center' }}>
                 <p style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.warmWhite, marginBottom: 8 }}>Enjoying The Dispatch?</p>
                 <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 14, marginBottom: 24 }}>Get lake life news, local tips, and a little Yeti wisdom delivered to your inbox.</p>
                 {subStatus === 'success' ? (
@@ -8434,6 +8546,7 @@ function DispatchPage() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(false);
+  const adSlots = useDispatchAds('dispatch-listing');
   const subScrollTo = (id) => { window.location.href = '/#' + id; };
 
   useEffect(() => {
@@ -8479,6 +8592,9 @@ function DispatchPage() {
       </section>
 
       <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
+
+      {/* Listing banner ad — below hero wave, above article grid */}
+      <AdSlot ads={adSlots['listing-banner']} variant="listing-banner" />
 
       {/* Articles Grid */}
       <section style={{ maxWidth: 1100, margin: '0 auto', padding: '20px 24px 80px' }}>
