@@ -8966,6 +8966,9 @@ function YetiAdminPage() {
   const [uploadStatus, setUploadStatus] = useState('idle'); // idle | uploading | done | error
   const [uploadedUrl, setUploadedUrl] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [pendingFile, setPendingFile] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(null);
+  const [photoDims, setPhotoDims] = useState(null); // { w, h }
 
   // ── Review tab ────────────────────────────────────────────────
   const [drafts, setDrafts] = useState([]);
@@ -9154,6 +9157,23 @@ function YetiAdminPage() {
     if (activeTab === 'dashboard') fetchDashboard();
   }, [activeTab, authed]);
 
+  // Preview file locally before uploading — no network call yet
+  const handleFileSelect = (file) => {
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const src = e.target.result;
+      setPhotoPreview(src);
+      setPendingFile(file);
+      const img = new Image();
+      img.onload = () => setPhotoDims({ w: img.naturalWidth, h: img.naturalHeight });
+      img.src = src;
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const clearPhotoPreview = () => { setPendingFile(null); setPhotoPreview(null); setPhotoDims(null); };
+
   const handlePhotoUpload = async (file) => {
     if (!file || !result?.notionId) return;
     if (!file.type.startsWith('image/')) { setUploadStatus('error'); return; }
@@ -9176,6 +9196,7 @@ function YetiAdminPage() {
         if (!applyRes.ok) throw new Error('Failed to apply to Notion');
         setUploadedUrl(uploadData.url);
         setUploadStatus('done');
+        clearPhotoPreview();
       };
       reader.readAsDataURL(file);
     } catch (err) { console.error(err); setUploadStatus('error'); }
@@ -9486,19 +9507,30 @@ function YetiAdminPage() {
                       </div>
                     </div>
                     {/* Photo strip */}
-                    <div style={{ marginTop: 12, paddingTop: 10, borderTop: `1px solid ${C.sand}`, display: 'flex', alignItems: 'center', gap: 10 }} onClick={e => e.stopPropagation()}>
+                    <div style={{ marginTop: 12, paddingTop: 10, borderTop: `1px solid ${C.sand}` }} onClick={e => e.stopPropagation()}>
                       <input id={`swap-input-${article.id}`} type="file" accept="image/*" style={{ display: 'none' }} onChange={e => handleSwapPhoto(article.id, e.target.files[0])} />
-                      {swapStatus[article.id] === 'uploading' ? (
-                        <span style={{ fontSize: 12, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>Uploading…</span>
-                      ) : swapStatus[article.id] === 'done' ? (
-                        <span style={{ fontSize: 12, color: C.sage, fontWeight: 600, fontFamily: 'Libre Franklin, sans-serif' }}>✓ Photo updated</span>
+                      {swapStatus[article.id] === 'done' && article.coverImage ? (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                          <img src={article.coverImage} alt="cover" style={{ width: 80, height: 45, objectFit: 'cover', borderRadius: 5, flexShrink: 0, border: `2px solid ${C.sage}40` }} />
+                          <div>
+                            <div style={{ fontSize: 12, color: C.sage, fontWeight: 600, fontFamily: 'Libre Franklin, sans-serif' }}>✓ Photo updated</div>
+                            <button onClick={e => { e.stopPropagation(); document.getElementById(`swap-input-${article.id}`).click(); }} style={{ background: 'transparent', border: 'none', padding: 0, fontSize: 11, color: C.textMuted, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif', textDecoration: 'underline' }}>swap again</button>
+                          </div>
+                          <span style={{ marginLeft: 'auto', fontSize: 11, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>tap card to preview & edit</span>
+                        </div>
                       ) : (
-                        <button onClick={e => { e.stopPropagation(); document.getElementById(`swap-input-${article.id}`).click(); }} style={{ background: 'transparent', border: `1px solid ${C.sand}`, borderRadius: 6, padding: '4px 12px', fontSize: 11, color: C.textLight, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}>
-                          {article.coverImage ? '📷 Swap Photo' : '📷 Add Photo'}
-                        </button>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                          {swapStatus[article.id] === 'uploading' ? (
+                            <span style={{ fontSize: 12, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>Uploading…</span>
+                          ) : (
+                            <button onClick={e => { e.stopPropagation(); document.getElementById(`swap-input-${article.id}`).click(); }} style={{ background: 'transparent', border: `1px solid ${C.sand}`, borderRadius: 6, padding: '4px 12px', fontSize: 11, color: C.textLight, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}>
+                              {article.coverImage ? '📷 Swap Photo' : '📷 Add Photo'}
+                            </button>
+                          )}
+                          {swapStatus[article.id] === 'error' && <span style={{ fontSize: 12, color: C.sunset, fontFamily: 'Libre Franklin, sans-serif' }}>Upload failed</span>}
+                          <span style={{ marginLeft: 'auto', fontSize: 11, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>tap to preview & edit</span>
+                        </div>
                       )}
-                      {swapStatus[article.id] === 'error' && <span style={{ fontSize: 12, color: C.sunset, fontFamily: 'Libre Franklin, sans-serif' }}>Upload failed</span>}
-                      <span style={{ marginLeft: 'auto', fontSize: 11, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>tap to preview & edit</span>
                     </div>
                   </div>
                 );
@@ -9650,47 +9682,91 @@ function YetiAdminPage() {
               </div>
             )}
 
-            {/* Own photo upload */}
+            {/* Own photo upload — preview-first flow */}
             {result.notionId && uploadStatus !== 'done' && (
               <div style={{ marginTop: 12 }}>
                 <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 8, textAlign: 'center' }}>— or use your own photo —</div>
-                <div
-                  onDragOver={e => { e.preventDefault(); setIsDragging(true); }}
-                  onDragLeave={() => setIsDragging(false)}
-                  onDrop={e => { e.preventDefault(); setIsDragging(false); handlePhotoUpload(e.dataTransfer.files[0]); }}
-                  onClick={() => document.getElementById('photo-upload-input').click()}
-                  style={{
-                    border: `2px dashed ${isDragging ? C.lakeBlue : C.sand}`,
-                    borderRadius: 10, padding: '24px 16px', textAlign: 'center',
-                    cursor: 'pointer', background: isDragging ? '#EEF4F8' : '#fff',
-                    transition: 'all 0.15s',
-                  }}
-                >
-                  <input
-                    id="photo-upload-input"
-                    type="file"
-                    accept="image/*"
-                    style={{ display: 'none' }}
-                    onChange={e => handlePhotoUpload(e.target.files[0])}
-                  />
-                  {uploadStatus === 'uploading' ? (
-                    <p style={{ margin: 0, color: C.sage, fontSize: 14 }}>Uploading…</p>
-                  ) : (
-                    <>
-                      <p style={{ margin: '0 0 4px', fontSize: 14, color: C.dusk, fontWeight: 600 }}>Drop a photo here</p>
-                      <p style={{ margin: 0, fontSize: 12, color: C.textMuted }}>or click to browse · max 2MB · JPG, PNG, WebP</p>
-                    </>
-                  )}
-                  {uploadStatus === 'error' && <p style={{ margin: '8px 0 0', color: C.sunset, fontSize: 12 }}>Upload failed — try again</p>}
-                </div>
+
+                {photoPreview ? (
+                  /* ── Step 2: Preview + confirm ── */
+                  <div>
+                    {/* 16:9 crop preview */}
+                    <div style={{ position: 'relative', width: '100%', paddingTop: '56.25%', borderRadius: 10, overflow: 'hidden', background: '#000', marginBottom: 10 }}>
+                      <img src={photoPreview} alt="preview" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <div style={{ position: 'absolute', top: 8, left: 8, background: 'rgba(0,0,0,0.55)', color: '#fff', fontSize: 10, letterSpacing: 1.5, textTransform: 'uppercase', padding: '3px 8px', borderRadius: 4, fontFamily: "'Libre Franklin', sans-serif" }}>
+                        Cover preview
+                      </div>
+                    </div>
+
+                    {/* Dimensions + warning */}
+                    {photoDims && (() => {
+                      const { w, h } = photoDims;
+                      const isPortrait = h > w;
+                      const isTooSmall = w < 800;
+                      const isIdeal = w >= 1200 && (w / h) >= 1.55;
+                      return (
+                        <div style={{ marginBottom: 10, fontSize: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
+                          <span style={{ color: C.textMuted }}>{w} × {h}px</span>
+                          {isIdeal && <span style={{ color: C.sage, marginLeft: 8 }}>✓ Great size</span>}
+                          {isPortrait && <span style={{ color: C.sunset, marginLeft: 8 }}>⚠️ Portrait — will be cropped to landscape. Rotate in Photos first for best results.</span>}
+                          {!isPortrait && isTooSmall && <span style={{ color: C.driftwood, marginLeft: 8 }}>⚠️ Small — may look blurry at full width. Try 1200×630px or larger.</span>}
+                        </div>
+                      );
+                    })()}
+
+                    {/* Action buttons */}
+                    <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                      <button
+                        onClick={() => handlePhotoUpload(pendingFile)}
+                        disabled={uploadStatus === 'uploading'}
+                        style={{ flex: 1, background: C.lakeBlue, color: '#fff', border: 'none', borderRadius: 8, padding: '10px 0', fontSize: 13, fontWeight: 700, cursor: uploadStatus === 'uploading' ? 'not-allowed' : 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}
+                      >
+                        {uploadStatus === 'uploading' ? 'Uploading…' : 'Use This Photo'}
+                      </button>
+                      <button
+                        onClick={clearPhotoPreview}
+                        style={{ background: 'transparent', border: `1px solid ${C.sand}`, color: C.textMuted, borderRadius: 8, padding: '10px 16px', fontSize: 13, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}
+                      >
+                        Choose Different
+                      </button>
+                    </div>
+                    {uploadStatus === 'error' && <p style={{ margin: '8px 0 0', color: C.sunset, fontSize: 12 }}>Upload failed — try again</p>}
+                  </div>
+                ) : (
+                  /* ── Step 1: Drop zone ── */
+                  <div
+                    onDragOver={e => { e.preventDefault(); setIsDragging(true); }}
+                    onDragLeave={() => setIsDragging(false)}
+                    onDrop={e => { e.preventDefault(); setIsDragging(false); handleFileSelect(e.dataTransfer.files[0]); }}
+                    onClick={() => document.getElementById('photo-upload-input').click()}
+                    style={{
+                      border: `2px dashed ${isDragging ? C.lakeBlue : C.sand}`,
+                      borderRadius: 10, padding: '28px 16px', textAlign: 'center',
+                      cursor: 'pointer', background: isDragging ? '#EEF4F8' : '#fff',
+                      transition: 'all 0.15s',
+                    }}
+                  >
+                    <input id="photo-upload-input" type="file" accept="image/*" style={{ display: 'none' }} onChange={e => handleFileSelect(e.target.files[0])} />
+                    <p style={{ margin: '0 0 6px', fontSize: 14, color: C.dusk, fontWeight: 600 }}>
+                      {isDragging ? 'Drop it!' : 'Drop a photo here'}
+                    </p>
+                    <p style={{ margin: '0 0 4px', fontSize: 12, color: C.textMuted }}>or click to browse</p>
+                    <p style={{ margin: 0, fontSize: 11, color: C.textMuted, opacity: 0.7 }}>Best at 1200×630px · landscape (16:9) · JPG, PNG, WebP</p>
+                  </div>
+                )}
               </div>
             )}
             {uploadStatus === 'done' && uploadedUrl && (
-              <div style={{ marginTop: 12, padding: '12px 16px', background: C.warmWhite, borderRadius: 8, borderLeft: `3px solid ${C.sage}`, display: 'flex', gap: 12, alignItems: 'center' }}>
-                <img src={uploadedUrl} alt="cover" style={{ width: 56, height: 56, objectFit: 'cover', borderRadius: 6, flexShrink: 0 }} />
-                <div>
-                  <div style={{ fontWeight: 600, color: C.sage, fontSize: 13 }}>✓ Photo uploaded &amp; applied to Notion</div>
-                  <div style={{ fontSize: 11, color: C.textMuted, marginTop: 2 }}>Cover image is set and ready to publish</div>
+              <div style={{ marginTop: 12, borderRadius: 10, overflow: 'hidden', border: `2px solid ${C.sage}40` }}>
+                <div style={{ position: 'relative', width: '100%', paddingTop: '56.25%', background: '#000' }}>
+                  <img src={uploadedUrl} alt="cover" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+                </div>
+                <div style={{ padding: '10px 14px', background: C.warmWhite, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ color: C.sage, fontSize: 14 }}>✓</span>
+                  <div>
+                    <div style={{ fontWeight: 600, color: C.sage, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif" }}>Photo uploaded &amp; applied to Notion</div>
+                    <div style={{ fontSize: 11, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>Cover image is set and ready to publish</div>
+                  </div>
                 </div>
               </div>
             )}
