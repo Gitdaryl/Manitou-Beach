@@ -153,6 +153,10 @@ function GlobalStyles() {
       @media (max-width: 768px) {
         .nav-desktop { display: none !important; }
         .nav-hamburger { display: flex !important; }
+        .mobile-col-1 { grid-template-columns: 1fr !important; }
+        .living-here-grid { grid-template-columns: 1fr !important; }
+        .village-roots-grid { grid-template-columns: 1fr !important; }
+        .mens-club-stats { grid-template-columns: repeat(3, 1fr) !important; }
       }
       @media (max-width: 640px) {
         .mobile-col-1 { grid-template-columns: 1fr !important; }
@@ -169,6 +173,14 @@ function GlobalStyles() {
           justify-content: space-between !important;
           padding: 0 20px 16px !important;
         }
+        .calendar-event-row {
+          grid-template-columns: auto 1fr !important;
+          gap: 0 16px !important;
+        }
+        .calendar-cost-badge { display: none !important; }
+        .living-here-grid { grid-template-columns: 1fr !important; }
+        .mens-club-stats { grid-template-columns: repeat(2, 1fr) !important; }
+        .village-roots-grid { grid-template-columns: 1fr !important; }
       }
     `}</style>
   );
@@ -323,7 +335,7 @@ const VILLAGE_BUSINESSES = [
     village: true,
     featured: false,
     logo: "/images/pheonix-logo.png",
-    website: "",
+    website: "https://www.phoenixrising-acupuncture.com/",
     phone: "(517) 759-4018",
   },
   {
@@ -347,7 +359,7 @@ const VILLAGE_BUSINESSES = [
     village: true,
     featured: false,
     logo: "/images/foundation-logo.png",
-    website: "https://www.hollygriewahn.com",
+    website: "https://www.foundationlenawee.com/",
     phone: "(517) 266-8888",
   },
   {
@@ -361,6 +373,18 @@ const VILLAGE_BUSINESSES = [
     logo: "/images/diamond-ruff-logo.png",
     website: "https://www.facebook.com/diamondintheruffpetgroomingllc",
     phone: "(517) 252-5255",
+  },
+  {
+    id: 28,
+    name: "Boathouse Art Gallery",
+    category: "Arts & Culture",
+    description: "The largest nonprofit art gallery in Lenawee County — 50+ Michigan artists under one roof at the historic boathouse on the lake. Annual home of the Devils Lake Festival of the Arts.",
+    address: "138 N. Lakeview Blvd., Manitou Beach",
+    village: true,
+    featured: false,
+    logo: null,
+    website: "https://www.facebook.com/ManitouBeachBoathouseArtGallery/",
+    phone: "(517) 224-1984",
   },
   {
     id: 27,
@@ -388,6 +412,7 @@ const CAT_COLORS = {
   "Home Services":      C.sageDark,
   "Health & Beauty":    "#B5737A",
   "Pet Services":       "#8B7355",
+  "Arts & Culture":     "#7B68B0",
   "Other":              C.textMuted,
 };
 
@@ -647,7 +672,7 @@ function DiagonalDivider({ topColor, bottomColor, height = 80 }) {
   );
 }
 
-function Btn({ children, onClick, href, variant = "primary", small = false }) {
+function Btn({ children, onClick, href, variant = "primary", small = false, target, rel }) {
   const base = {
     display: "inline-block",
     fontFamily: "'Libre Franklin', sans-serif",
@@ -674,6 +699,8 @@ function Btn({ children, onClick, href, variant = "primary", small = false }) {
     <Tag
       href={href}
       onClick={onClick}
+      target={target}
+      rel={rel}
       className="btn-animated"
       style={{ ...base, ...styles[variant] }}
     >
@@ -1096,6 +1123,7 @@ function PromoBanner({ page }) {
 function FeaturedEventsStrip() {
   const [events, setEvents] = useState([]);
   const [stripPin, setStripPin] = useState(null);
+  const [lightboxEvent, setLightboxEvent] = useState(null);
   useEffect(() => {
     fetch("/api/events")
       .then(r => r.json())
@@ -1143,9 +1171,12 @@ function FeaturedEventsStrip() {
             const month = d ? MONTHS[d.getMonth()] : "";
             const day = d ? d.getDate() : "";
             const color = event.isPromoted ? C.sunset : (eventCatColors[event.category] || C.sage);
-            const href = event.isPromoted && event.eventUrl ? event.eventUrl : "/happening";
+            const handleClick = () => {
+              if (event.isPromoted && event.eventUrl) { window.open(event.eventUrl, "_blank", "noopener noreferrer"); }
+              else { setLightboxEvent(event); }
+            };
             return (
-              <a key={event.id || i} href={href} target={event.isPromoted && event.eventUrl ? "_blank" : undefined} rel={event.isPromoted ? "noopener noreferrer" : undefined} style={{ textDecoration: "none" }}>
+              <div key={event.id || i} onClick={handleClick} style={{ cursor: "pointer" }}>
                 <div
                   style={{
                     background: event.isPromoted ? `${C.sunset}12` : "rgba(255,255,255,0.04)",
@@ -1191,11 +1222,12 @@ function FeaturedEventsStrip() {
                     </div>
                   </div>
                 </div>
-              </a>
+              </div>
             );
           })}
         </div>
       </div>
+      <EventLightbox event={lightboxEvent} onClose={() => setLightboxEvent(null)} />
     </div>
   );
 }
@@ -1552,6 +1584,7 @@ function EventTimeline() {
 // ============================================================
 function HappeningSection() {
   const [notionEvents, setNotionEvents] = useState([]);
+  const [lightboxEvent, setLightboxEvent] = useState(null);
   useEffect(() => {
     fetch("/api/events")
       .then(r => r.json())
@@ -1608,13 +1641,16 @@ function HappeningSection() {
             })();
             return (
               <FadeIn key={event.id} delay={i * 70}>
-                <div style={{
-                  display: "grid",
-                  gridTemplateColumns: "180px 40px 1fr",
-                  alignItems: "flex-start",
-                  marginBottom: i < preview.length - 1 ? 48 : 0,
-                  gap: 0,
-                }}>
+                <div
+                  onClick={() => setLightboxEvent(event)}
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "180px 40px 1fr",
+                    alignItems: "flex-start",
+                    marginBottom: i < preview.length - 1 ? 48 : 0,
+                    gap: 0,
+                    cursor: "pointer",
+                  }}>
                   <div style={{ paddingRight: 24, paddingTop: 4, textAlign: "right" }}>
                     <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color, lineHeight: 1.2 }}>
                       {dateLabel}
@@ -1658,6 +1694,7 @@ function HappeningSection() {
           </div>
         </FadeIn>
       </div>
+      <EventLightbox event={lightboxEvent} onClose={() => setLightboxEvent(null)} />
     </section>
   );
 }
@@ -1907,6 +1944,7 @@ function CalendarSection({ events, onEventClick, activeFilter, onFilterChange })
               <FadeIn key={event.id} delay={i * 50}>
                 <div
                   onClick={() => onEventClick(event)}
+                  className="calendar-event-row"
                   style={{
                     display: "grid",
                     gridTemplateColumns: "110px 1fr auto",
@@ -1952,7 +1990,7 @@ function CalendarSection({ events, onEventClick, activeFilter, onFilterChange })
                   </div>
 
                   {/* Cost badge */}
-                  <div>
+                  <div className="calendar-cost-badge">
                     <span style={{
                       fontFamily: "'Libre Franklin', sans-serif",
                       fontSize: 11, fontWeight: 600, letterSpacing: 1,
@@ -3146,9 +3184,9 @@ function HollyYetiSection() {
                 Holly Griewahn brings the real estate knowledge and market insight. The Yeti brings the AI-generated videos and the stories that make Manitou Beach feel like the community it actually is.
               </p>
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                <Btn href="https://www.youtube.com/@HollyandtheYetipodcast" variant="sunset">Watch on YouTube</Btn>
-                <Btn href="https://www.facebook.com/HollyandtheYeti" variant="outlineLight">Facebook</Btn>
-                <Btn href="https://m.me/HollyandtheYeti" variant="outlineLight">Message Holly</Btn>
+                <Btn href="https://www.youtube.com/@HollyandtheYetipodcast" variant="sunset" target="_blank" rel="noopener noreferrer">Watch on YouTube</Btn>
+                <Btn href="https://www.facebook.com/HollyandtheYeti" variant="outlineLight" target="_blank" rel="noopener noreferrer">Facebook</Btn>
+                <Btn href="https://m.me/HollyandtheYeti" variant="outlineLight" target="_blank" rel="noopener noreferrer">Message Holly</Btn>
               </div>
             </div>
           </FadeIn>
@@ -3305,7 +3343,7 @@ function LivingSection() {
           </div>
         </FadeIn>
 
-        <div className="mobile-col-1" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+        <div className="mobile-col-1 living-here-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
           {items.slice(1).map((item, i) => {
             const tilt = useCardTilt(4);
             return (
@@ -3368,26 +3406,13 @@ async function compressImage(file, maxWidth = 1200, quality = 0.7) {
 }
 
 function SubmitSection() {
-  const [tab, setTab] = useState("business");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
-  const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
-  const [isDragging, setIsDragging] = useState(false);
   const [logoFile, setLogoFile] = useState(null);
   const [logoPreview, setLogoPreview] = useState(null);
   const [isLogoDragging, setIsLogoDragging] = useState(false);
-  const [form, setForm] = useState({ name: "", category: "", phone: "", address: "", website: "", email: "", description: "", logoUrl: "", tier: "Free", duration: "1", newsletter: false, date: "", time: "", location: "", eventUrl: "", _hp: "" });
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    setImageFile(file);
-    const reader = new FileReader();
-    reader.onload = (ev) => setImagePreview(ev.target.result);
-    reader.readAsDataURL(file);
-  };
+  const [form, setForm] = useState({ name: "", category: "", phone: "", address: "", website: "", email: "", description: "", logoUrl: "", tier: "Free", duration: "1", newsletter: false, _hp: "" });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -3395,23 +3420,8 @@ function SubmitSection() {
     setSubmitError("");
 
     try {
-      let imageUrl = null;
-
-      // Upload event image (event tab)
-      if (tab === "event" && imageFile) {
-        const { base64, filename } = await compressImage(imageFile);
-        const uploadRes = await fetch("/api/upload-image", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: base64, filename, contentType: "image/jpeg" }),
-        });
-        const uploadData = await uploadRes.json();
-        if (uploadRes.ok) imageUrl = uploadData.url;
-      }
-
-      // Upload business logo (business tab) — compressed square-friendly
       let logoUploadUrl = null;
-      if (tab === "business" && logoFile) {
+      if (logoFile) {
         const { base64, filename } = await compressImage(logoFile, 600, 0.85);
         const uploadRes = await fetch("/api/upload-image", {
           method: "POST",
@@ -3422,15 +3432,10 @@ function SubmitSection() {
         if (uploadRes.ok) logoUploadUrl = uploadData.url;
       }
 
-      const endpoint = tab === "business" ? "/api/businesses" : "/api/events";
-      const payload = tab === "event"
-        ? { name: form.name, category: form.category, date: form.date, time: form.time, location: form.location, email: form.email, phone: form.phone, description: form.description, eventUrl: form.eventUrl, imageUrl, _hp: form._hp }
-        : { ...form, logoUrl: logoUploadUrl || null };
-
-      const res = await fetch(endpoint, {
+      const res = await fetch("/api/businesses", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ ...form, logoUrl: logoUploadUrl || null }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || data.error || "Submission failed");
@@ -3481,30 +3486,6 @@ function SubmitSection() {
             Free listings for all Manitou Beach and Devils Lake area businesses. Featured placement available for businesses wanting top-of-directory visibility.
           </p>
 
-          {/* Tab switcher */}
-          <div style={{ display: "flex", background: C.sand, borderRadius: 8, padding: 4, marginBottom: 36, width: "fit-content" }}>
-            {[{ key: "business", label: "Business" }, { key: "event", label: "Event" }].map(t => (
-              <button
-                key={t.key}
-                onClick={() => setTab(t.key)}
-                style={{
-                  fontFamily: "'Libre Franklin', sans-serif",
-                  fontSize: 13, fontWeight: 600,
-                  padding: "9px 24px",
-                  borderRadius: 6,
-                  border: "none",
-                  background: tab === t.key ? C.cream : "transparent",
-                  color: tab === t.key ? C.text : C.textMuted,
-                  cursor: "pointer",
-                  boxShadow: tab === t.key ? "0 1px 4px rgba(0,0,0,0.08)" : "none",
-                  transition: "all 0.2s",
-                }}
-              >
-                {t.label}
-              </button>
-            ))}
-          </div>
-
           {submitted ? (
             <div style={{
               background: `linear-gradient(135deg, ${C.dusk} 0%, ${C.lakeDark} 100%)`,
@@ -3520,12 +3501,10 @@ function SubmitSection() {
                 fontSize: 22, color: C.sage,
               }}>✓</div>
               <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream, marginBottom: 12, fontWeight: 400 }}>
-                {tab === "business" ? "You're in the directory." : "Event submitted."}
+                You're in the directory.
               </div>
               <p style={{ fontSize: 14, color: "rgba(255,255,255,0.55)", lineHeight: 1.8, margin: "0 0 28px 0", maxWidth: 400, marginLeft: "auto", marginRight: "auto" }}>
-                {tab === "business"
-                  ? "We review every submission before it goes live — usually within 48 hours. If you're interested in an upgraded listing, we'll reach out with details."
-                  : "We'll review your event and have it on the calendar within 48 hours. Keep an eye on the What's Happening section."}
+                We review every submission before it goes live — usually within 48 hours. If you're interested in an upgraded listing, we'll reach out with details.
               </p>
               <button
                 onClick={() => setSubmitted(false)}
@@ -3543,8 +3522,8 @@ function SubmitSection() {
             </div>
           ) : (
             <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-              {tab === "business" ? (
-                <>
+              <>
+
                   {input("name", "Business Name")}
                   <select
                     value={form.category}
@@ -3719,77 +3698,7 @@ function SubmitSection() {
                       Subscribe to the Manitou Beach newsletter — local events, business spotlights & lake life
                     </div>
                   </label>
-                </>
-              ) : (
-                <>
-                  {input("name", "Event Name")}
-                  {input("category", "Event Type (e.g. Community, Market, Music)")}
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                    {input("date", "Event Date", "date")}
-                    {input("time", "Time (e.g. 6:00 PM)")}
-                  </div>
-                  {input("location", "Location / Venue")}
-                  {input("eventUrl", "Event Link (Facebook event, website, etc.)")}
-                  {input("email", "Your Email", "email")}
-                  {input("phone", "Phone (optional)", "tel")}
-                  <textarea
-                    placeholder="Event description — what people can expect"
-                    value={form.description}
-                    onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-                    rows={4}
-                    style={{
-                      width: "100%", padding: "12px 16px", borderRadius: 6,
-                      border: `1.5px solid ${C.sand}`, fontFamily: "'Libre Franklin', sans-serif",
-                      fontSize: 14, color: C.text, background: C.cream,
-                      resize: "vertical", boxSizing: "border-box", outline: "none",
-                    }}
-                    onFocus={e => e.target.style.borderColor = C.sage}
-                    onBlur={e => e.target.style.borderColor = C.sand}
-                  />
-                  {/* Image upload with drag & drop */}
-                  <div
-                    onDragEnter={e => { e.preventDefault(); setIsDragging(true); }}
-                    onDragOver={e => { e.preventDefault(); setIsDragging(true); }}
-                    onDragLeave={() => setIsDragging(false)}
-                    onDrop={e => {
-                      e.preventDefault();
-                      setIsDragging(false);
-                      const file = e.dataTransfer.files[0];
-                      if (!file || !file.type.startsWith("image/")) return;
-                      setImageFile(file);
-                      const reader = new FileReader();
-                      reader.onload = (ev) => setImagePreview(ev.target.result);
-                      reader.readAsDataURL(file);
-                    }}
-                    style={{
-                      border: `1.5px dashed ${isDragging ? C.sage : C.sand}`,
-                      borderRadius: 8, padding: "16px",
-                      background: isDragging ? "rgba(122,142,114,0.06)" : C.cream,
-                      textAlign: "center", transition: "all 0.2s",
-                    }}
-                  >
-                    {imagePreview ? (
-                      <div style={{ position: "relative" }}>
-                        <img src={imagePreview} alt="Preview" style={{ maxWidth: "100%", maxHeight: 160, borderRadius: 6, objectFit: "cover" }} />
-                        <button
-                          type="button" onClick={() => { setImageFile(null); setImagePreview(null); }}
-                          style={{ position: "absolute", top: 4, right: 4, background: "rgba(0,0,0,0.6)", color: "#fff", border: "none", borderRadius: "50%", width: 24, height: 24, cursor: "pointer", fontSize: 12, lineHeight: 1 }}
-                        >×</button>
-                      </div>
-                    ) : (
-                      <label style={{ cursor: "pointer", display: "block" }}>
-                        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, marginBottom: 4 }}>
-                          {isDragging ? "Drop to upload" : "Drag & drop or click to upload"}
-                        </div>
-                        <div style={{ fontSize: 11, color: C.textMuted, opacity: 0.6 }}>
-                          JPG, PNG, HEIC — any size
-                        </div>
-                        <input type="file" accept="image/*" onChange={handleImageChange} style={{ display: "none" }} />
-                      </label>
-                    )}
-                  </div>
-                </>
-              )}
+              </>
 
               <button
                 type="submit"
@@ -3812,7 +3721,7 @@ function SubmitSection() {
                 onMouseEnter={e => { if (!submitting) e.target.style.opacity = "0.85"; }}
                 onMouseLeave={e => e.target.style.opacity = "1"}
               >
-                {submitting ? "Sending…" : `Submit ${tab === "business" ? "Business" : "Event"}`}
+                {submitting ? "Sending…" : "Submit Business"}
               </button>
 
               {/* Honeypot — hidden from humans, bots fill it automatically */}
@@ -3824,6 +3733,9 @@ function SubmitSection() {
 
               <p style={{ fontSize: 11, color: C.textMuted, textAlign: "center", margin: 0, lineHeight: 1.6 }}>
                 Free listings are reviewed within 48 hours. No spam, no fees unless you upgrade.
+              </p>
+              <p style={{ fontSize: 12, color: C.textMuted, textAlign: "center", margin: 0 }}>
+                Have an event? <a href="/promote" style={{ color: C.sage, textDecoration: "none", fontWeight: 600 }}>List it on the promote page →</a>
               </p>
             </form>
           )}
@@ -3908,8 +3820,59 @@ function AboutSection() {
 // ============================================================
 // 🔻  FOOTER
 // ============================================================
-function Footer({ scrollTo }) {
+function FooterNewsletterModal({ onClose }) {
+  const [email, setEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [done, setDone] = useState(false);
+  const [error, setError] = useState("");
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [onClose]);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!email || submitting) return;
+    setSubmitting(true); setError("");
+    try {
+      const res = await fetch("/api/subscribe", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed");
+      setDone(true);
+    } catch { setError("Something went wrong — try again."); }
+    finally { setSubmitting(false); }
+  };
   return (
+    <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+      <div onClick={e => e.stopPropagation()} style={{ background: C.dusk, borderRadius: 16, padding: "40px 36px", maxWidth: 440, width: "100%", border: "1px solid rgba(255,255,255,0.08)", position: "relative" }}>
+        <button onClick={onClose} style={{ position: "absolute", top: 16, right: 16, background: "none", border: "none", color: "rgba(255,255,255,0.4)", fontSize: 20, cursor: "pointer", lineHeight: 1 }}>×</button>
+        <div style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.sage, marginBottom: 6 }}>The Manitou Beach Dispatch</div>
+        <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.7, margin: "0 0 24px 0" }}>Weekly events, local businesses, and community news — straight to your inbox. Free.</p>
+        {done ? (
+          <div style={{ textAlign: "center", padding: "16px 0" }}>
+            <div style={{ fontSize: 28, marginBottom: 10 }}>✓</div>
+            <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.cream, marginBottom: 6 }}>You're in!</div>
+            <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", margin: 0 }}>Check your inbox for a confirmation email.</p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <input type="email" placeholder="your@email.com" value={email} onChange={e => setEmail(e.target.value)} required style={{ flex: 1, minWidth: 180, padding: "11px 16px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.07)", color: C.cream, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", outline: "none" }} />
+            <button type="submit" disabled={submitting} style={{ padding: "11px 22px", background: C.sage, color: C.cream, border: "none", borderRadius: 6, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: submitting ? "wait" : "pointer" }}>
+              {submitting ? "..." : "Subscribe"}
+            </button>
+            {error && <div style={{ width: "100%", fontSize: 12, color: C.sunset, marginTop: 4 }}>{error}</div>}
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Footer({ scrollTo }) {
+  const [showNewsletter, setShowNewsletter] = useState(false);
+  return (
+    <>
+    {showNewsletter && <FooterNewsletterModal onClose={() => setShowNewsletter(false)} />}
     <footer style={{ background: C.night, padding: "64px 24px 36px" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 40, marginBottom: 48 }}>
@@ -3955,11 +3918,12 @@ function Footer({ scrollTo }) {
               { label: "Facebook", href: "https://www.facebook.com/HollyandtheYeti" },
               { label: "YouTube", href: "https://www.youtube.com/@HollyandtheYetipodcast" },
               { label: "Instagram", href: "https://www.instagram.com/hollyandtheyeti" },
-              { label: "Newsletter", href: "/#submit" },
             ].map(l => (
               <div key={l.label} style={{ marginBottom: 8 }}>
                 <a
                   href={l.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   style={{ color: "rgba(255,255,255,0.4)", fontSize: 13, textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif", transition: "color 0.2s" }}
                   onMouseEnter={e => e.target.style.color = C.sunsetLight}
                   onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.4)"}
@@ -3968,6 +3932,16 @@ function Footer({ scrollTo }) {
                 </a>
               </div>
             ))}
+            <div style={{ marginBottom: 8 }}>
+              <button
+                onClick={() => setShowNewsletter(true)}
+                style={{ background: "none", border: "none", padding: 0, color: "rgba(255,255,255,0.4)", fontSize: 13, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", transition: "color 0.2s" }}
+                onMouseEnter={e => e.target.style.color = C.sunsetLight}
+                onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.4)"}
+              >
+                Newsletter
+              </button>
+            </div>
           </div>
           <div>
             <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 2.5, textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: 16 }}>
@@ -3977,24 +3951,6 @@ function Footer({ scrollTo }) {
               Free directory listing. Upgrade for featured placement, newsletter mentions, and video content.
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              <a
-                href="/#submit"
-                style={{
-                  display: "inline-block",
-                  fontFamily: "'Libre Franklin', sans-serif",
-                  fontSize: 11, fontWeight: 700, letterSpacing: 2,
-                  textTransform: "uppercase",
-                  padding: "9px 20px",
-                  borderRadius: 4,
-                  background: `${C.sage}25`,
-                  border: `1px solid ${C.sage}40`,
-                  color: C.sage,
-                  textDecoration: "none",
-                  transition: "all 0.2s",
-                }}
-              >
-                Get Listed
-              </a>
               <a
                 href="/featured"
                 style={{
@@ -4048,6 +4004,7 @@ function Footer({ scrollTo }) {
         </div>
       </div>
     </footer>
+    </>
   );
 }
 
@@ -4234,8 +4191,9 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
                 </div>
               )}
             </div>
-            <div style={{ marginLeft: 8 }}>
-              <Btn onClick={() => handleNavClick("submit")} variant="primary" small>List Your Business</Btn>
+            <div style={{ marginLeft: 8, display: "flex", gap: 8 }}>
+              <Btn href="/featured" variant="outline" small>List Your Business</Btn>
+              <Btn href="/promote" variant="sunset" small>Promote</Btn>
             </div>
           </div>
 
@@ -4349,8 +4307,9 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
         >
           Gallery ↗
         </a>
-        <div style={{ marginTop: 16 }}>
-          <Btn onClick={() => handleNavClick("submit")} variant="primary">List Your Business</Btn>
+        <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 10, alignItems: "center" }}>
+          <Btn href="/featured" variant="primary">List Your Business</Btn>
+          <Btn href="/promote" variant="sunset">Promote Your Event</Btn>
         </div>
       </div>
 
@@ -4601,8 +4560,6 @@ const ROUND_LAKE_STATS = [
   { label: "Max Depth", value: "67 feet" },
   { label: "Elevation", value: "~918 ft" },
   { label: "Water Clarity", value: "Very clear" },
-  { label: "Origin", value: "Glacial kettle lake" },
-  { label: "Watershed", value: "Bean Creek" },
 ];
 
 const ROUND_LAKE_FISH = [
@@ -4772,19 +4729,6 @@ function RoundLakeFishingSection() {
           </p>
         </FadeIn>
 
-        {/* Watercraft notice */}
-        <FadeIn delay={100}>
-          <div style={{
-            background: `${C.lakeBlue}10`, border: `1px solid ${C.lakeBlue}25`, borderRadius: 12,
-            padding: "16px 24px", marginBottom: 48, display: "flex", gap: 12, alignItems: "flex-start",
-          }}>
-            <span style={{ fontSize: 18, lineHeight: 1 }}>ℹ️</span>
-            <div style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, fontFamily: "'Libre Franklin', sans-serif" }}>
-              <strong style={{ color: C.text }}>Watercraft notice:</strong> Water skiing and towing of persons on water skis, surfboards, or similar devices is prohibited on Round Lake (DNR local watercraft control — Cambridge & Franklin Townships, Lenawee County).
-            </div>
-          </div>
-        </FadeIn>
-
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 16 }}>
           {ROUND_LAKE_FISH.map((fish, i) => (
             <FadeIn key={i} delay={i * 50}>
@@ -4852,11 +4796,10 @@ function RoundLakeCommunitySection() {
           </p>
         </FadeIn>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 20 }}>
           {[
             { title: "Part of Manitou Beach", desc: "Same post office (49253), same schools (Onsted Community), same township (Rollin). Round Lake and Devils Lake share a census-designated place — officially Manitou Beach-Devils Lake." },
             { title: "Connected by Water", desc: "A shallow channel at Cherry Point links Round Lake to Devils Lake. Too shallow for boats today — but during the resort era, steam launches navigated it carrying tourists between the lakes." },
-            { title: "Geneva", desc: "The unincorporated community of Geneva sits at the south end of Round Lake. A quiet cluster of homes with its own identity within the broader Manitou Beach area." },
             { title: "Year-Round & Seasonal", desc: "A mix of full-time residents and seasonal cottage owners. The area is transitioning — more year-round families every year, part of Manitou Beach's evolution from summer resort to permanent community." },
           ].map((item, i) => (
             <FadeIn key={i} delay={i * 80} direction={i % 2 === 0 ? "left" : "right"}>
@@ -4892,6 +4835,50 @@ function RoundLakeCommunitySection() {
   );
 }
 
+function LakesPreservationBanner() {
+  return (
+    <section style={{ background: C.cream, padding: "0 24px 60px" }}>
+      <div style={{ maxWidth: 900, margin: "0 auto" }}>
+        <FadeIn>
+          <a
+            href="https://lakespreservationleague.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ textDecoration: "none", display: "block" }}
+          >
+            <div style={{
+              background: `linear-gradient(135deg, ${C.lakeBlue}10, ${C.sage}10)`,
+              border: `1px solid ${C.lakeBlue}30`,
+              borderRadius: 14,
+              padding: "28px 32px",
+              display: "flex",
+              gap: 20,
+              alignItems: "center",
+              flexWrap: "wrap",
+              transition: "all 0.2s",
+            }}
+              onMouseEnter={e => { e.currentTarget.style.background = `linear-gradient(135deg, ${C.lakeBlue}18, ${C.sage}14)`; e.currentTarget.style.borderColor = `${C.lakeBlue}50`; }}
+              onMouseLeave={e => { e.currentTarget.style.background = `linear-gradient(135deg, ${C.lakeBlue}10, ${C.sage}10)`; e.currentTarget.style.borderColor = `${C.lakeBlue}30`; }}
+            >
+              <div style={{ fontSize: 32, lineHeight: 1 }}>🌿</div>
+              <div style={{ flex: 1, minWidth: 200 }}>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 2.5, textTransform: "uppercase", color: C.lakeBlue, marginBottom: 6 }}>Community PSA</div>
+                <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.text, margin: "0 0 6px 0" }}>Lakes Preservation League</h3>
+                <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.65, margin: 0, maxWidth: 540 }}>
+                  A nonprofit dedicated to protecting and preserving the natural health of area lakes through water quality monitoring, invasive species management, and community education. These lakes are worth protecting.
+                </p>
+              </div>
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.lakeBlue, whiteSpace: "nowrap" }}>
+                Learn More →
+              </div>
+            </div>
+          </a>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
 function RoundLakePage() {
   const subScrollTo = (id) => { window.location.href = "/#" + id; };
 
@@ -4911,6 +4898,7 @@ function RoundLakePage() {
       <PromoBanner page="Round Lake" />
       <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
       <RoundLakeFishingSection />
+      <LakesPreservationBanner />
       <DiagonalDivider topColor={C.warmWhite} bottomColor={C.dusk} />
       <RoundLakeCommunitySection />
       <WaveDivider topColor={C.dusk} bottomColor={C.cream} />
@@ -5059,7 +5047,7 @@ function VillageHistorySection() {
           <SectionTitle>A Village with a Story</SectionTitle>
         </FadeIn>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginTop: 48 }}>
+        <div className="village-roots-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginTop: 48 }}>
           <FadeIn delay={100} direction="left">
             <div style={{ background: C.warmWhite, borderRadius: 14, padding: "32px 28px", border: `1px solid ${C.sand}` }}>
               <div style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.sage, marginBottom: 10 }}>The Resort Era</div>
@@ -5116,7 +5104,7 @@ function VillageVisitCTA() {
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
             <Btn onClick={() => window.open("https://maps.google.com/?q=Devils+Lake+Hwy+Manitou+Beach+MI+49253", "_blank")} variant="sunset">Get Directions</Btn>
-            <Btn href="/#submit" variant="outlineLight">List Your Business</Btn>
+            <Btn href="/featured" variant="outlineLight">List Your Business</Btn>
           </div>
         </div>
       </FadeIn>
@@ -5156,50 +5144,9 @@ function VillagePage() {
 // ⭐  FEATURED BUSINESS — SALES PAGE + STRIPE CHECKOUT
 // ============================================================
 const FEATURED_TIERS = [
-  {
-    id: "featured_30",
-    name: "Starter",
-    period: "30 days",
-    price: "$50",
-    earlyBird: "$29",
-    priceNum: 2900,
-    features: [
-      "Premium dark card with shimmer effect",
-      "Logo + business link displayed",
-      "Top placement in directory",
-      "Phone number visible to visitors",
-    ],
-  },
-  {
-    id: "featured_90",
-    name: "Season Pass",
-    period: "90 days",
-    price: "$150",
-    earlyBird: "$79",
-    priceNum: 7900,
-    save: "Save 47%",
-    features: [
-      "Everything in Starter",
-      "Full season of visibility",
-      "Featured in newsletter shoutout",
-      "Priority placement over Starter",
-    ],
-    popular: true,
-  },
-  {
-    id: "featured_video_30",
-    name: "Spotlight",
-    period: "30 days",
-    price: "$300",
-    earlyBird: "$149",
-    priceNum: 14900,
-    features: [
-      "Everything in Season Pass",
-      "Cinematic video produced by Yeti Groove",
-      "Holly & Yeti podcast mention",
-      "Social media feature across channels",
-    ],
-  },
+  { id: "enhanced", name: "Enhanced" },
+  { id: "featured", name: "Featured" },
+  { id: "premium", name: "Premium" },
 ];
 
 const SPOTS_TOTAL = 8;
@@ -5210,10 +5157,11 @@ function FeaturedPage() {
   const spotsLeft = SPOTS_LEFT;
   const isFull = spotsLeft === 0;
 
-  // Checkout state (spots available)
-  const [form, setForm] = useState({ businessName: "", email: "", phone: "", website: "" });
-  const [selectedTier, setSelectedTier] = useState("featured_90");
+  const [subCount, setSubCount] = useState(null);
+  const [modal, setModal] = useState(null);
+  const [form, setForm] = useState({ businessName: '', email: '' });
   const [loading, setLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState('');
   const [status, setStatus] = useState(null);
 
   // Waitlist state (spots full)
@@ -5226,27 +5174,53 @@ function FeaturedPage() {
     else if (params.get("cancelled")) setStatus({ type: "cancelled" });
   }, []);
 
-  const handleCheckout = async (tierId) => {
-    if (!form.businessName || !form.email) {
-      setStatus({ type: "error", message: "Business name and email are required." });
-      document.getElementById("featured-form")?.scrollIntoView({ behavior: "smooth" });
-      return;
-    }
-    setLoading(true);
-    setStatus(null);
+  useEffect(() => {
+    fetch('/api/subscribe')
+      .then(r => r.json())
+      .then(d => setSubCount(d.count ?? 0))
+      .catch(() => setSubCount(0));
+  }, []);
+
+  const GRACE = 100;
+  const count = subCount ?? 0;
+  const increment = Math.max(0, count - GRACE);
+  const inGrace = count < GRACE;
+  const priceFor = (base) => (base + increment * 0.01).toFixed(2);
+  const centsFor = (base) => Math.round((base + increment * 0.01) * 100);
+  const progressPct = inGrace ? Math.min(100, (count / GRACE) * 100) : Math.min(100, ((count - GRACE) / 900) * 100);
+
+  const PAID_TIERS = [
+    {
+      id: 'enhanced', name: 'Enhanced', color: C.lakeBlue, badge: null,
+      price: priceFor(9), priceInCents: centsFor(9),
+      features: ['Everything in Free', 'Clickable website link', 'Business description', 'Expandable listing card', 'Category search placement'],
+    },
+    {
+      id: 'featured', name: 'Featured', color: C.sage, badge: 'Most Popular',
+      price: priceFor(23), priceInCents: centsFor(23),
+      features: ['Everything in Enhanced', 'Spotlight card placement', 'Logo or photo display', 'Above standard listings', 'Email contact button'],
+    },
+    {
+      id: 'premium', name: 'Premium', color: C.sunsetLight, badge: 'Best Visibility',
+      price: priceFor(43), priceInCents: centsFor(43),
+      features: ['Everything in Featured', 'Full-width banner placement', 'Large logo (110×110)', 'Top-of-directory position', 'Cross-page placements'],
+    },
+  ];
+
+  const handleCheckout = async () => {
+    if (!form.businessName.trim() || !form.email.trim()) { setCheckoutError('Business name and email are required.'); return; }
+    setLoading(true); setCheckoutError('');
     try {
-      const res = await fetch("/api/create-checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tier: tierId, businessName: form.businessName, email: form.email }),
+      const res = await fetch('/api/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tier: modal.tierId, businessName: form.businessName, email: form.email, priceInCents: modal.priceInCents, mode: 'subscription' }),
       });
       const data = await res.json();
-      if (data.url) window.location.href = data.url;
-      else setStatus({ type: "error", message: data.error || "Something went wrong." });
-    } catch {
-      setStatus({ type: "error", message: "Network error. Please try again." });
-    }
-    setLoading(false);
+      if (data.url) { window.location.href = data.url; }
+      else { setCheckoutError(data.error || 'Something went wrong. Please try again.'); }
+    } catch { setCheckoutError('Something went wrong. Please try again.'); }
+    finally { setLoading(false); }
   };
 
   const handleWaitlist = async (e) => {
@@ -5271,9 +5245,9 @@ function FeaturedPage() {
     { icon: "⚡", title: "Top Placement", desc: "Featured businesses appear first — above every free listing in the directory." },
     { icon: "🎨", title: "Premium Card Design", desc: "Dark card with shimmer effect, your logo prominently displayed, and a direct link to your website." },
     { icon: "📱", title: "Click-to-Call", desc: "Your phone number displayed and clickable on mobile — customers call you directly from the listing." },
-    { icon: "🎬", title: "Spotlight Video", desc: "Upgrade to Spotlight and get a cinematic video produced by Yeti Groove Media, embedded right in your listing." },
-    { icon: "📰", title: "Newsletter Feature", desc: "Season Pass and Spotlight tiers include a shoutout in The Manitou Beach Dispatch — our community newsletter." },
-    { icon: "🎙️", title: "Holly & Yeti Mention", desc: "Spotlight tier businesses get mentioned on the Holly & Yeti podcast — reaching the broader Devils Lake audience." },
+    { icon: "🎬", title: "Spotlight Video", desc: "Upgrade to Premium and get a cinematic video produced by Yeti Groove Media, embedded right in your listing." },
+    { icon: "📰", title: "Newsletter Feature", desc: "Featured and Premium tiers include a shoutout in The Manitou Beach Dispatch — our community newsletter." },
+    { icon: "🎙️", title: "Holly & Yeti Mention", desc: "Premium tier businesses get mentioned on the Holly & Yeti podcast — reaching the broader Devils Lake audience." },
   ];
 
   return (
@@ -5351,158 +5325,117 @@ function FeaturedPage() {
         </div>
       </section>
 
-      {/* Pricing tiers — only when spots available */}
+      {/* Choose Your Visibility — subscriber-based pricing */}
       {!isFull && (
-        <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
-          <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+        <section style={{ background: C.night, padding: "80px 24px" }}>
+          <div style={{ maxWidth: 1100, margin: "0 auto" }}>
             <FadeIn>
-              <div style={{ textAlign: "center", marginBottom: 48 }}>
-                <SectionLabel>Early Bird Pricing</SectionLabel>
-                <SectionTitle center>Choose Your Plan</SectionTitle>
-                <p style={{ fontSize: 14, color: C.textLight, maxWidth: 440, margin: "12px auto 0", lineHeight: 1.7 }}>
-                  Lock in early bird rates now. Prices go up as spots fill.
+              <div style={{ textAlign: "center", marginBottom: 52 }}>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 4, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 14 }}>
+                  List Your Business
+                </div>
+                <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 4vw, 42px)", fontWeight: 400, color: C.cream, margin: "0 0 14px 0" }}>
+                  Choose Your Visibility
+                </h2>
+                <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 16, maxWidth: 520, margin: "0 auto 32px" }}>
+                  Get discovered by the Manitou Beach community. Lock in your rate today — it's yours forever, no matter what happens next.
                 </p>
+                {/* Live subscriber counter */}
+                <div style={{ maxWidth: 460, margin: "0 auto", background: "rgba(255,255,255,0.05)", borderRadius: 14, padding: "20px 24px", border: "1px solid rgba(255,255,255,0.1)" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
+                    <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.45)", letterSpacing: 0.5 }}>
+                      {inGrace ? 'Founding subscribers' : 'Newsletter subscribers'}
+                    </span>
+                    <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.cream }}>
+                      {subCount === null ? '—' : count.toLocaleString()}
+                      {inGrace && <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.3)", marginLeft: 6 }}>/ {GRACE}</span>}
+                    </span>
+                  </div>
+                  <div style={{ background: "rgba(255,255,255,0.08)", borderRadius: 999, height: 6, overflow: "hidden" }}>
+                    <div style={{ height: "100%", width: `${progressPct}%`, background: `linear-gradient(90deg, ${C.sage}, ${C.sunsetLight})`, borderRadius: 999, transition: "width 1s ease" }} />
+                  </div>
+                  <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.sunsetLight, margin: "10px 0 0", letterSpacing: 0.3 }}>
+                    {inGrace
+                      ? `⚡ Founding rate holds until ${GRACE} subscribers — then rises a penny per new sub.`
+                      : '⚡ Every new subscriber raises the price — lock in now, grandfathered forever.'}
+                  </p>
+                </div>
               </div>
             </FadeIn>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20 }}>
-              {FEATURED_TIERS.map((tier, i) => {
-                const isSelected = selectedTier === tier.id;
-                return (
-                  <FadeIn key={tier.id} delay={i * 100} direction="scale">
-                    <div
-                      onClick={() => setSelectedTier(tier.id)}
-                      style={{
-                        background: isSelected ? `linear-gradient(145deg, ${C.dusk}, ${C.night})` : C.cream,
-                        border: tier.popular ? `2px solid ${C.sunset}` : `1px solid ${isSelected ? "rgba(255,255,255,0.15)" : C.sand}`,
-                        borderRadius: 16, padding: "32px 28px",
-                        cursor: "pointer", transition: "all 0.25s",
-                        position: "relative", overflow: "hidden",
-                        transform: isSelected ? "scale(1.02)" : "none",
-                        boxShadow: isSelected ? "0 16px 48px rgba(0,0,0,0.15)" : "none",
-                      }}
-                    >
-                      {tier.popular && (
-                        <div style={{
-                          position: "absolute", top: 16, right: -26,
-                          background: C.sunset, color: C.cream,
-                          fontSize: 8, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase",
-                          padding: "4px 36px", transform: "rotate(45deg)",
-                          fontFamily: "'Libre Franklin', sans-serif",
-                        }}>Most Popular</div>
-                      )}
-                      {isSelected && <div style={{ position: "absolute", top: 14, left: 14, width: 18, height: 18, borderRadius: "50%", background: C.sunset, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, color: C.cream }}>✓</div>}
-
-                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: isSelected ? C.sunsetLight : C.sage, marginBottom: 10 }}>
-                        {tier.name}
-                      </div>
-
-                      <div style={{ marginBottom: 4 }}>
-                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, color: isSelected ? "rgba(255,255,255,0.25)" : C.textMuted, textDecoration: "line-through", marginRight: 10 }}>
-                          {tier.price}
-                        </span>
-                        <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 38, fontWeight: 400, color: isSelected ? C.cream : C.text }}>
-                          {tier.earlyBird}
-                        </span>
-                      </div>
-                      <div style={{ fontSize: 12, color: isSelected ? "rgba(255,255,255,0.4)" : C.textMuted, marginBottom: tier.save ? 4 : 14 }}>
-                        for {tier.period}
-                      </div>
-                      {tier.save && (
-                        <div style={{ display: "inline-block", fontSize: 11, color: C.cream, fontWeight: 700, background: C.sunset, padding: "3px 10px", borderRadius: 12, marginBottom: 14 }}>{tier.save}</div>
-                      )}
-
-                      <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                        {tier.features.map((f, j) => (
-                          <li key={j} style={{ fontSize: 13, color: isSelected ? "rgba(255,255,255,0.5)" : C.textLight, lineHeight: 1.5, padding: "4px 0", paddingLeft: 20, position: "relative" }}>
-                            <span style={{ position: "absolute", left: 0, color: C.sage }}>✓</span>
-                            {f}
-                          </li>
-                        ))}
-                      </ul>
-
-                      <button
-                        onClick={e => { e.stopPropagation(); handleCheckout(tier.id); }}
-                        className="btn-animated"
-                        style={{
-                          width: "100%", marginTop: 20, padding: "12px 0", borderRadius: 8,
-                          cursor: "pointer",
-                          fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase",
-                          background: isSelected ? C.sunset : "transparent",
-                          color: isSelected ? C.cream : C.sage,
-                          border: isSelected ? "none" : `1.5px solid ${C.sand}`,
-                        }}
-                      >
-                        {loading && isSelected ? "Redirecting..." : `Get ${tier.name} — ${tier.earlyBird}`}
-                      </button>
-                    </div>
-                  </FadeIn>
-                );
-              })}
+            {/* Free tier */}
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "18px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
+                <div style={{ display: "flex", gap: 28, alignItems: "center", flexWrap: "wrap" }}>
+                  <div>
+                    <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.driftwood, marginBottom: 3 }}>Free</div>
+                    <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream }}>$0 <span style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif" }}>forever</span></div>
+                  </div>
+                  <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
+                    {["Name in directory", "Category & phone", "Community visibility"].map(f => (
+                      <span key={f} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "rgba(255,255,255,0.4)" }}>
+                        <span style={{ color: C.driftwood, fontWeight: 700 }}>✓</span>{f}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <a href="/#submit" style={{ padding: "9px 22px", borderRadius: 8, border: `1.5px solid ${C.driftwood}55`, color: C.driftwood, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none", whiteSpace: "nowrap" }}>
+                  Get Listed Free
+                </a>
+              </div>
             </div>
-          </div>
-        </section>
-      )}
 
-      {/* Form — checkout details (spots available) or waitlist (spots full) */}
-      {!isFull ? (
-        <section id="featured-form" style={{ background: C.cream, padding: "80px 24px" }}>
-          <div style={{ maxWidth: 520, margin: "0 auto" }}>
-            <FadeIn>
-              <SectionLabel>Your Details</SectionLabel>
-              <SectionTitle>Claim Your Spot</SectionTitle>
-              <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, marginBottom: 32 }}>
-                Fill in your info below, then hit the checkout button on your chosen plan above. Your listing goes live within 24 hours.
-              </p>
-            </FadeIn>
-
-            {status?.type === "error" && (
-              <div style={{ background: `${C.sunset}15`, border: `1px solid ${C.sunset}40`, borderRadius: 8, padding: "12px 16px", marginBottom: 20, fontSize: 13, color: C.sunset }}>
-                {status.message}
-              </div>
-            )}
-
-            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              {[
-                { key: "businessName", label: "Business Name", type: "text", placeholder: "e.g. Boot Jack Tavern" },
-                { key: "email", label: "Email", type: "email", placeholder: "you@yourbusiness.com" },
-                { key: "phone", label: "Phone (optional)", type: "tel", placeholder: "(517) 555-0000" },
-                { key: "website", label: "Website (optional)", type: "text", placeholder: "www.yourbusiness.com" },
-              ].map(field => (
-                <div key={field.key}>
-                  <label style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.textMuted, display: "block", marginBottom: 6 }}>
-                    {field.label} {(field.key === "businessName" || field.key === "email") && <span style={{ color: C.sunset }}>*</span>}
-                  </label>
-                  <input
-                    type={field.type} value={form[field.key]} placeholder={field.placeholder}
-                    onChange={e => setForm(prev => ({ ...prev, [field.key]: e.target.value }))}
-                    style={{
-                      width: "100%", padding: "12px 16px", borderRadius: 8,
-                      border: `1px solid ${C.sand}`, background: C.warmWhite,
-                      fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.text,
-                      outline: "none", transition: "border 0.2s", boxSizing: "border-box",
-                    }}
-                    onFocus={e => { e.target.style.borderColor = C.sage; }}
-                    onBlur={e => { e.target.style.borderColor = C.sand; }}
-                  />
+            {/* Paid tiers */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 16 }}>
+              {PAID_TIERS.map(tier => (
+                <div key={tier.id} style={{ background: tier.badge ? "rgba(255,255,255,0.07)" : "rgba(255,255,255,0.04)", border: `1px solid ${tier.badge ? tier.color + "45" : "rgba(255,255,255,0.09)"}`, borderRadius: 16, padding: "28px 22px", position: "relative", display: "flex", flexDirection: "column" }}>
+                  {tier.badge && (
+                    <div style={{ position: "absolute", top: -13, left: "50%", transform: "translateX(-50%)", background: tier.color, color: C.night, fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", padding: "4px 14px", borderRadius: 20, whiteSpace: "nowrap" }}>
+                      {tier.badge}
+                    </div>
+                  )}
+                  <div style={{ color: tier.color, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", marginBottom: 10 }}>{tier.name}</div>
+                  <div style={{ marginBottom: 4 }}>
+                    <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 36, color: C.cream, fontWeight: 700 }}>${tier.price}</span>
+                    <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 14, fontFamily: "'Libre Franklin', sans-serif" }}>/mo</span>
+                  </div>
+                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: inGrace ? "rgba(255,255,255,0.35)" : C.sunsetLight, marginBottom: 16, letterSpacing: 0.3 }}>
+                    {inGrace ? 'Founding rate · locked at sign-up' : '↑ rises with every new subscriber'}
+                  </div>
+                  <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px 0", flexGrow: 1, display: "flex", flexDirection: "column", gap: 9 }}>
+                    {tier.features.map(f => (
+                      <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 9 }}>
+                        <span style={{ color: tier.color, fontSize: 13, marginTop: 2, flexShrink: 0, fontWeight: 700 }}>✓</span>
+                        <span style={{ color: "rgba(255,255,255,0.58)", fontSize: 13, lineHeight: 1.45 }}>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <button
+                    onClick={() => { setModal({ tierId: tier.id, tierName: tier.name, price: tier.price, priceInCents: tier.priceInCents, color: tier.color }); setForm({ businessName: '', email: '' }); setCheckoutError(''); }}
+                    style={{ display: "block", width: "100%", padding: "11px 0", borderRadius: 8, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: "pointer", border: "none", background: tier.id === "premium" ? C.sunset : "transparent", color: tier.id === "premium" ? C.cream : tier.color, outline: tier.id === "premium" ? "none" : `1.5px solid ${tier.color}55`, transition: "all 0.22s" }}
+                  >
+                    Get Started
+                  </button>
                 </div>
               ))}
             </div>
 
-            <p style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.6, marginTop: 20, textAlign: "center" }}>
-              Secure checkout by Stripe. No recurring charges — one-time payment for your chosen period. Questions? Email hello@manitoubeach.com
+            <p style={{ textAlign: "center", color: "rgba(255,255,255,0.18)", fontSize: 12, marginTop: 24, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>
+              Monthly subscriptions · Cancel anytime · Your rate grandfathered forever
             </p>
           </div>
         </section>
-      ) : (
-        /* Waitlist form — shown when all spots are taken */
+      )}
+
+      {/* Waitlist form — shown when all spots are taken */}
+      {isFull && (
         <section style={{ background: C.cream, padding: "80px 24px" }}>
           <div style={{ maxWidth: 520, margin: "0 auto" }}>
             <FadeIn>
               <SectionLabel>Waitlist</SectionLabel>
               <SectionTitle>Hold Your Rate</SectionTitle>
               <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, marginBottom: 32 }}>
-                Join the waitlist and we'll contact you the moment a spot opens — holding your early-bird price when it does. No obligation until you're ready.
+                Join the waitlist and we'll contact you the moment a spot opens. No obligation until you're ready.
               </p>
             </FadeIn>
 
@@ -5512,7 +5445,7 @@ function FeaturedPage() {
                   <div style={{ fontSize: 32, marginBottom: 12 }}>🎉</div>
                   <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.sage, marginBottom: 8 }}>You're on the list!</div>
                   <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: 0 }}>
-                    We'll reach out as soon as a spot opens and hold your early-bird rate. Keep an eye on your inbox.
+                    We'll reach out as soon as a spot opens and hold your rate. Keep an eye on your inbox.
                   </p>
                 </div>
               </FadeIn>
@@ -5556,12 +5489,12 @@ function FeaturedPage() {
                     }}
                   >
                     {FEATURED_TIERS.map(t => (
-                      <option key={t.id} value={t.id}>{t.name} — {t.earlyBird} for {t.period}</option>
+                      <option key={t.id} value={t.id}>{t.name}</option>
                     ))}
                   </select>
                 </div>
 
-                {/* Honeypot — hidden from humans, bots fill it automatically */}
+                {/* Honeypot */}
                 <input aria-hidden="true" tabIndex={-1} autoComplete="off" value={wl._hp} onChange={e => setWl(prev => ({ ...prev, _hp: e.target.value }))} style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0, pointerEvents: "none" }} />
 
                 {wlStatus === "error" && (
@@ -5582,7 +5515,7 @@ function FeaturedPage() {
                     letterSpacing: 1, textTransform: "uppercase", transition: "background 0.2s",
                   }}
                 >
-                  {wlStatus === "loading" ? "Joining..." : "Join the Waitlist — Hold My Rate"}
+                  {wlStatus === "loading" ? "Joining..." : "Join the Waitlist"}
                 </button>
 
                 <p style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.6, textAlign: "center", margin: 0 }}>
@@ -5604,10 +5537,10 @@ function FeaturedPage() {
           </FadeIn>
           {[
             { q: "I already have a free listing. What changes?", a: "Your free listing stays as-is. The featured upgrade gives you a premium dark card at the top of the directory, above all free listings. It's a separate, more visible placement — not a replacement." },
-            { q: "What happens when my featured period ends?", a: "Your listing reverts to the free directory. No recurring charges, no surprises. You can renew anytime." },
+            { q: "What happens if I cancel my listing?", a: "Your listing reverts to the free directory. No lock-in, cancel anytime. Your grandfathered rate is only valid if you stay active." },
             { q: "Can I change my listing details after I pay?", a: "Absolutely. Email us and we'll update your logo, description, phone number, or link within 24 hours." },
-            { q: "What's the Holly & Yeti podcast mention?", a: "Spotlight tier businesses get a shoutout on the Holly & Yeti community podcast, reaching the broader Devils Lake and Irish Hills audience." },
-            { q: "Why are prices so low right now?", a: "We're building the platform and want founding businesses on board. Early bird rates are locked in for your booking period. As traffic grows and spots fill, prices return to full rate." },
+            { q: "What's the Holly & Yeti podcast mention?", a: "Premium tier businesses get a shoutout on the Holly & Yeti community podcast, reaching the broader Devils Lake and Irish Hills audience." },
+            { q: "Why are prices so low right now?", a: "We're in launch mode and want founding businesses on board. The price you sign up at is yours forever — it only rises for new sign-ups after you. Lock in early." },
           ].map((faq, i) => (
             <FadeIn key={i} delay={i * 60}>
               <div style={{ padding: "24px 0", borderBottom: `1px solid ${C.sand}` }}>
@@ -5618,6 +5551,45 @@ function FeaturedPage() {
           ))}
         </div>
       </section>
+
+      {/* Checkout modal */}
+      {modal && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: 24, background: "rgba(10,18,24,0.88)", backdropFilter: "blur(8px)" }} onClick={() => setModal(null)}>
+          <div style={{ background: C.dusk, borderRadius: 20, padding: "36px 32px", maxWidth: 420, width: "100%", boxShadow: "0 24px 80px rgba(0,0,0,0.5)", border: `1px solid ${modal.color}30` }} onClick={e => e.stopPropagation()}>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: modal.color, marginBottom: 6 }}>{modal.tierName} Listing</div>
+            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, fontWeight: 400, color: C.cream, margin: "0 0 4px 0" }}>
+              ${modal.price}<span style={{ fontSize: 14, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif" }}>/mo</span>
+            </h3>
+            <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 13, margin: "0 0 28px 0" }}>Grandfathered at this rate — cancel anytime.</p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 20 }}>
+              <input
+                placeholder="Business name"
+                value={form.businessName}
+                onChange={e => setForm(f => ({ ...f, businessName: e.target.value }))}
+                style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}
+              />
+              <input
+                placeholder="Email address"
+                type="email"
+                value={form.email}
+                onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}
+              />
+            </div>
+            {checkoutError && <p style={{ color: "#ff6b5b", fontSize: 13, marginBottom: 14 }}>{checkoutError}</p>}
+            <button
+              onClick={handleCheckout}
+              disabled={loading}
+              style={{ width: "100%", padding: "14px", borderRadius: 10, border: "none", background: modal.tierId === "premium" ? C.sunset : modal.color, color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: loading ? "wait" : "pointer", opacity: loading ? 0.7 : 1, transition: "opacity 0.2s" }}
+            >
+              {loading ? "Redirecting…" : "Continue to Secure Checkout →"}
+            </button>
+            <p style={{ textAlign: "center", fontSize: 11, color: "rgba(255,255,255,0.22)", marginTop: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
+              Powered by Stripe · Your card details are never stored here
+            </p>
+          </div>
+        </div>
+      )}
 
       <Footer scrollTo={subScrollTo} />
     </div>
@@ -5744,7 +5716,7 @@ function MensClubStatsSection() {
             <SectionTitle center>By the Numbers</SectionTitle>
           </div>
         </FadeIn>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 16 }}>
+        <div className="mens-club-stats" style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 16 }}>
           {MENS_CLUB_STATS.map((stat, i) => (
             <FadeIn key={i} delay={i * 60} direction="scale">
               <div style={{
@@ -7018,6 +6990,17 @@ function WineriesVenueSection() {
                       ✦ {v.highlight}
                     </div>
                   )}
+                  {v.website && (
+                    <a
+                      href={v.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={e => e.stopPropagation()}
+                      style={{ display: "inline-block", marginTop: 14, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: v.accent, textDecoration: "none" }}
+                    >
+                      Visit Website →
+                    </a>
+                  )}
                 </div>
               </div>
             </FadeIn>
@@ -7083,11 +7066,10 @@ const DEVILS_LAKE_STATS = [
   { label: "Lake Type", value: "Warm-water" },
   { label: "Public Launch", value: "Manitou Rd" },
   { label: "Connected To", value: "Round Lake" },
-  { label: "Boat Slips", value: "600+" },
 ];
 
 const DEVILS_LAKE_TIMELINE = [
-  { year: "Pre-1830", event: "Potawatomi and Ojibwa people camp along the shores of Devils Lake during summer — the lake's name comes from a mispronunciation of the tribal word for the area." },
+  { year: "Pre-1830", event: "Potawatomi people have long gathered along these shores. The lake's name traces to a tragic legend — the daughter of Chief Orrinika and her lover vanished in a mysterious fog, leading the lake to be known as the home of an evil spirit. Early settlers and traders interpreted these stories through their own lens, and \"Devils Lake\" was born. A rock formation on the east shore, known as the \"Devil's Chair,\" added to the mystique. The name endures — though the place itself is anything but cursed." },
   { year: "1870s", event: "The resort era begins. Grand hotels, a dance pavilion, bathhouses, and two railroad stations transform Devils Lake into one of Michigan's most popular summer destinations." },
   { year: "1888", event: "Manitou Beach officially platted. Lots sold for cottage construction. A steam launch connects Devils Lake to Round Lake through the dredged channel." },
   { year: "1920s–40s", event: "The Yacht Club is established, formalizing the sailing and boating culture that had grown organically on the lake for decades." },
@@ -7166,7 +7148,7 @@ function DevilsLakeStatsSection() {
           ))}
         </div>
         <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.2)", marginTop: 24, textAlign: "right" }}>
-          Source: <a href="https://fisherman.org" target="_blank" rel="noopener noreferrer" style={{ color: "rgba(255,255,255,0.3)", textDecoration: "underline" }}>fisherman.org</a>
+          Source: fisherman.org
         </p>
       </div>
     </section>
@@ -7180,8 +7162,11 @@ function DevilsLakeHistorySection() {
         <FadeIn>
           <SectionLabel>Deep Roots</SectionLabel>
           <SectionTitle>A Lake With a Story</SectionTitle>
-          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 560, margin: "0 0 56px 0" }}>
+          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 560, margin: "0 0 16px 0" }}>
             Devils Lake has been drawing people in for over 150 years. From railroad-era grand hotels to the annual Tip-Up Festival on the ice — the history runs deep.
+          </p>
+          <p style={{ fontSize: 13, color: C.textMuted, lineHeight: 1.7, maxWidth: 560, margin: "0 0 48px 0", fontStyle: "italic" }}>
+            Some say Manitow. Some say Manitaw. Some say Manitoo. However you say it — you know the place.
           </p>
         </FadeIn>
         <div style={{ position: "relative" }}>
@@ -7229,7 +7214,7 @@ function DevilsLakeFishingSection() {
                 </div>
                 <div style={{ padding: "16px 18px" }}>
                   <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text, margin: "0 0 6px 0" }}>{fish.name}</h3>
-                  <p style={{ fontSize: 12, color: C.textLight, lineHeight: 1.6, margin: 0, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{fish.desc}</p>
+                  <p style={{ fontSize: 12, color: C.textLight, lineHeight: 1.6, margin: 0 }}>{fish.desc}</p>
                 </div>
               </div>
             </FadeIn>
@@ -7377,6 +7362,7 @@ function DevilsLakePage() {
       <PromoBanner page="Devils Lake" />
       <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
       <DevilsLakeFishingSection />
+      <LakesPreservationBanner />
       <DiagonalDivider topColor={C.warmWhite} bottomColor={C.dusk} />
       <DevilsLakeCommunitySection />
       <WaveDivider topColor={C.dusk} bottomColor={C.warmWhite} flip />
@@ -8084,6 +8070,9 @@ function PromotePage() {
           <div style={{ fontSize: 15, color: "rgba(255,255,255,0.5)" }}>Checkout was cancelled — your details are still saved below if you'd like to try again.</div>
         </div>
       )}
+
+      {/* List Free — event submission */}
+      <HappeningSubmitCTA />
 
       {/* Package grid */}
       <section style={{ background: C.warmWhite, padding: "72px 24px 60px" }}>
