@@ -1,3 +1,10 @@
+// Ensure URLs entered in Notion without a protocol prefix still work as links
+function normalizeUrl(url) {
+  if (!url || !url.trim()) return url;
+  const u = url.trim();
+  return /^https?:\/\//i.test(u) ? u : 'https://' + u;
+}
+
 export default async function handler(req, res) {
   // POST — submit a new business listing
   if (req.method === 'POST') {
@@ -107,11 +114,11 @@ export default async function handler(req, res) {
         name: p['Name']?.title?.[0]?.text?.content || '',
         category: p['Category']?.select?.name || 'Other',
         phone: p['Phone']?.phone_number || '',
-        website: p['URL']?.url || '',
+        website: normalizeUrl(p['URL']?.url || ''),
         email: p['Email']?.email || '',
         description: p['Description']?.rich_text?.[0]?.text?.content || '',
         address: p['Address']?.rich_text?.[0]?.text?.content || '',
-        logo: p['Logo URL']?.url || null,
+        logo: normalizeUrl(p['Logo URL']?.url || null),
       };
       if (!business.name) return;
       if (status === 'Listed Premium') premium.push({ ...business, tier: 'premium' });

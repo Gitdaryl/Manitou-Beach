@@ -1466,6 +1466,20 @@ function NewsletterInline() {
         </form>
         {error && <p style={{ margin: '6px 0 0', fontSize: 12, color: C.sunset }}>{error}</p>}
       </div>
+      {DISPATCH_CARD_SPONSORS.length > 0 && (
+        <div style={{ flexBasis: '100%', borderTop: '1px solid rgba(122,142,114,0.15)', paddingTop: 12, display: 'flex', alignItems: 'center', gap: 10 }}>
+          {DISPATCH_CARD_SPONSORS[0].logo ? (
+            <img src={DISPATCH_CARD_SPONSORS[0].logo} alt={DISPATCH_CARD_SPONSORS[0].name} style={{ width: 28, height: 28, borderRadius: 4, objectFit: 'contain', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', padding: 2, flexShrink: 0 }} />
+          ) : (
+            <div style={{ width: 28, height: 28, borderRadius: 4, border: '1.5px dashed #c4b09a', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 12 }}>📷</div>
+          )}
+          <div style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
+            <span style={{ textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, fontSize: 9 }}>Sponsored by </span>
+            <span style={{ fontWeight: 600, color: C.text }}>{DISPATCH_CARD_SPONSORS[0].name}</span>
+            {DISPATCH_CARD_SPONSORS[0].offerText && <span> · {DISPATCH_CARD_SPONSORS[0].offerText}</span>}
+          </div>
+        </div>
+      )}
       {showModal && <SubscribeModal alreadySubscribed={alreadySubscribed} onClose={() => setShowModal(false)} />}
     </div>
   );
@@ -4200,8 +4214,8 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
               )}
             </div>
             <div style={{ marginLeft: 8, display: "flex", gap: 8 }}>
-              <Btn href="/featured" variant="primary" small>List Your Business</Btn>
-              <Btn href="/promote" variant="sunset" small style={{ textAlign: "left" }}>List Your Event</Btn>
+              <Btn href="/featured" variant="primary" small style={{ minWidth: 152, textAlign: "center" }}>List Your Business</Btn>
+              <Btn href="/promote" variant="sunset" small style={{ minWidth: 152, textAlign: "center" }}>List Your Event</Btn>
             </div>
           </div>
 
@@ -4316,8 +4330,8 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
           Gallery ↗
         </a>
         <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 10, alignItems: "center" }}>
-          <Btn href="/featured" variant="primary">List Your Business</Btn>
-          <Btn href="/promote" variant="sunset" style={{ textAlign: "left" }}>List Your Event</Btn>
+          <Btn href="/featured" variant="primary" style={{ width: 200, textAlign: "center" }}>List Your Business</Btn>
+          <Btn href="/promote" variant="sunset" style={{ width: 200, textAlign: "center" }}>List Your Event</Btn>
         </div>
       </div>
 

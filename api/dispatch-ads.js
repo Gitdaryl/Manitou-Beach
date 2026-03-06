@@ -1,3 +1,10 @@
+// Ensure URLs entered in Notion without a protocol prefix still work as links
+function normalizeUrl(url) {
+  if (!url || !url.trim()) return url;
+  const u = url.trim();
+  return /^https?:\/\//i.test(u) ? u : 'https://' + u;
+}
+
 // Dispatch Ad Slots — serves active ads from NOTION_DB_DISPATCH_PROMOTIONS
 // Public: GET ?page=dispatch-listing|dispatch-article|home  → active ads grouped by slot
 // Admin:  GET ?admin=true (X-Admin-Token required)          → all promos (active + inactive)
@@ -14,8 +21,8 @@ function mapPromo(p) {
     id: p.id,
     name: richText(props['Business Name']?.title),
     slot: props['Placement']?.select?.name || 'leaderboard',
-    imageUrl: props['Image URL']?.url || null,
-    linkUrl: props['Link URL']?.url || null,
+    imageUrl: normalizeUrl(props['Image URL']?.url || null),
+    linkUrl: normalizeUrl(props['Link URL']?.url || null),
     altText: richText(props['Alt Text']?.rich_text) || richText(props['Business Name']?.title),
     offerText: richText(props['Offer Text']?.rich_text) || null,
     couponCode: richText(props['Coupon Code']?.rich_text) || null,

@@ -1,3 +1,10 @@
+// Ensure URLs entered in Notion without a protocol prefix still work as links
+function normalizeUrl(url) {
+  if (!url || !url.trim()) return url;
+  const u = url.trim();
+  return /^https?:\/\//i.test(u) ? u : 'https://' + u;
+}
+
 export default async function handler(req, res) {
   // POST — submit a new event
   if (req.method === 'POST') {
@@ -116,9 +123,9 @@ export default async function handler(req, res) {
           description: p['Description']?.rich_text?.[0]?.text?.content || '',
           time: p['Time']?.rich_text?.[0]?.text?.content || '',
           location: p['Location']?.rich_text?.[0]?.text?.content || '',
-          imageUrl: p['Image URL']?.url || null,
+          imageUrl: normalizeUrl(p['Image URL']?.url || null),
           email: p['Email']?.email || '',
-          eventUrl: p['Event URL']?.url || null,
+          eventUrl: normalizeUrl(p['Event URL']?.url || null),
           cost: p['Cost']?.rich_text?.[0]?.text?.content || null,
           recurring: recurringVal,
           recurringDay: p['Recurring Day']?.select?.name || null,
