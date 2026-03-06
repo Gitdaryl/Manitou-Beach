@@ -10643,7 +10643,7 @@ function VoiceWidget() {
 // 🗺️  DISCOVER PAGE — MAP-FIRST COMMUNITY GUIDE
 // ============================================================
 
-const DISCOVER_MAP_CENTER = { lat: 41.9642, lng: -84.0186 };
+const DISCOVER_MAP_CENTER = { lat: 42.0047, lng: -84.2888 };
 
 const DISCOVER_CATS = [
   { id: 'all',        label: 'All',                icon: '🗺️', color: '#7A8E72' },
@@ -10659,34 +10659,34 @@ const DISCOVER_CATS = [
 ];
 
 const DISCOVER_POIS = [
-  // Healthcare
-  { id: 'herrick', name: 'ProMedica Herrick Hospital', cat: 'healthcare', sub: 'Full Hospital · ER', address: '500 E Pottawatamie St, Tecumseh, MI', phone: '(517) 424-3000', note: '~15 min from Manitou Beach', lat: 42.0011, lng: -83.9343, website: 'https://www.promedica.org/herrick-hospital' },
+  // Healthcare — Tecumseh ~84.94°W, Adrian ~84.04°W
+  { id: 'herrick', name: 'ProMedica Herrick Hospital', cat: 'healthcare', sub: 'Full Hospital · ER', address: '500 E Pottawatamie St, Tecumseh, MI', phone: '(517) 424-3000', note: '~15 min from Manitou Beach', lat: 42.0005, lng: -83.9340, website: 'https://www.promedica.org/herrick-hospital' },
   { id: 'allegiance', name: 'Henry Ford Allegiance Health', cat: 'healthcare', sub: 'Full Hospital · Level II Trauma', address: '205 N East Ave, Jackson, MI', phone: '(517) 788-4800', note: '~30 min · Major medical center', lat: 42.2490, lng: -84.3945, website: 'https://www.henryford.com/locations/allegiance' },
-  { id: 'urgent-tec', name: 'Urgent Care – Tecumseh', cat: 'healthcare', sub: 'Urgent Care', address: '821 W Chicago Blvd, Tecumseh, MI', phone: '(517) 423-3200', note: '~15 min · Walk-in, no appointment needed', lat: 42.0033, lng: -83.9578 },
-  { id: 'cvs-tec', name: 'CVS Pharmacy – Tecumseh', cat: 'healthcare', sub: 'Pharmacy · MinuteClinic', address: 'W Chicago Blvd, Tecumseh, MI', note: '~15 min', lat: 42.0038, lng: -83.9545 },
+  { id: 'urgent-tec', name: 'Urgent Care – Tecumseh', cat: 'healthcare', sub: 'Urgent Care', address: '821 W Chicago Blvd, Tecumseh, MI', phone: '(517) 423-3200', note: '~15 min · Walk-in, no appointment needed', lat: 42.0040, lng: -83.9580 },
+  { id: 'cvs-tec', name: 'CVS Pharmacy – Tecumseh', cat: 'healthcare', sub: 'Pharmacy · MinuteClinic', address: 'W Chicago Blvd, Tecumseh, MI', note: '~15 min', lat: 42.0035, lng: -83.9548 },
   { id: 'walgreens-adr', name: 'Walgreens – Adrian', cat: 'healthcare', sub: 'Pharmacy', address: 'N Main St, Adrian, MI', note: '~20 min · Open late', lat: 41.9197, lng: -84.0382 },
   // Grocery
   { id: 'walmart-adr', name: 'Walmart Supercenter', cat: 'grocery', sub: 'Grocery · Pharmacy · Bait & Tackle', address: '1357 N Main St, Adrian, MI', note: '~20 min', lat: 41.9209, lng: -84.0378 },
-  { id: 'meijer-tec', name: 'Meijer', cat: 'grocery', sub: 'Grocery · Gas Station', address: 'W Chicago Blvd, Tecumseh, MI', note: '~15 min', lat: 42.0030, lng: -83.9562 },
-  // Boat & Water
-  { id: 'launch-main', name: 'Public Boat Launch – Devils Lake', cat: 'water', sub: 'Free Public Ramp', address: 'Manitou Beach Rd, Manitou Beach, MI', note: 'Free · Paved ramp · Trailer parking', lat: 41.9638, lng: -84.0188 },
-  { id: 'dnr-ramp', name: 'DNR Access Site – Round Lake', cat: 'water', sub: 'State DNR Ramp', address: 'Lake Shore Dr, Manitou Beach, MI', note: 'Kayaks · Canoes · Small boats', lat: 41.9558, lng: -84.0378 },
-  { id: 'marina', name: 'Manitou Beach Marina', cat: 'water', sub: 'Marina · 600+ Slips', address: 'Devils Lake, Manitou Beach, MI', note: 'Seasonal dockage available', lat: 41.9648, lng: -84.0230 },
+  { id: 'meijer-tec', name: 'Meijer', cat: 'grocery', sub: 'Grocery · Gas Station', address: 'W Chicago Blvd, Tecumseh, MI', note: '~15 min', lat: 42.0030, lng: -83.9565 },
+  // Boat & Water — Devils Lake center ~42.0047, -84.2888
+  { id: 'launch-main', name: 'Public Boat Launch – Devils Lake', cat: 'water', sub: 'Free Public Ramp', address: 'Manitou Beach Rd, Manitou Beach, MI', note: 'Free · Paved ramp · Trailer parking', lat: 41.9750, lng: -84.2920 },
+  { id: 'dnr-ramp', name: 'DNR Access Site – Round Lake', cat: 'water', sub: 'State DNR Ramp', address: 'Lake Shore Dr, Manitou Beach, MI', note: 'Kayaks · Canoes · Small boats', lat: 41.9680, lng: -84.3050 },
+  { id: 'marina', name: 'Manitou Beach Marina', cat: 'water', sub: 'Marina · 600+ Slips', address: 'Devils Lake, Manitou Beach, MI', note: 'Seasonal dockage available', lat: 42.0100, lng: -84.2870 },
   // Schools
-  { id: 'onsted-hs', name: 'Onsted High School', cat: 'schools', sub: 'Public HS · Grades 9–12', address: '8036 Macon Rd, Onsted, MI', phone: '(517) 467-2170', note: '~10 min · Closest district to Manitou Beach', lat: 42.0051, lng: -84.1876 },
-  { id: 'onsted-elem', name: 'Onsted Elementary School', cat: 'schools', sub: 'Public K–5 · Onsted Community Schools', address: 'Onsted, MI', phone: '(517) 467-2170', note: '~10 min · Same campus area as HS', lat: 42.0063, lng: -84.1889 },
-  { id: 'tec-hs', name: 'Tecumseh High School', cat: 'schools', sub: 'Public HS · Grades 9–12', address: '400 N Maumee St, Tecumseh, MI', phone: '(517) 423-3366', note: '~15 min · Tecumseh Public Schools', lat: 42.0097, lng: -83.9458 },
-  { id: 'adrian-hs', name: 'Adrian High School', cat: 'schools', sub: 'Public HS · Grades 9–12', address: '785 Riverside Ave, Adrian, MI', phone: '(517) 263-2115', note: '~20 min · Adrian Public Schools', lat: 41.9057, lng: -84.0301 },
+  { id: 'onsted-hs', name: 'Onsted High School', cat: 'schools', sub: 'Public HS · Grades 9–12', address: '8036 Macon Rd, Onsted, MI', phone: '(517) 467-2170', note: '~10 min · Closest district to Manitou Beach', lat: 42.0030, lng: -84.1870 },
+  { id: 'onsted-elem', name: 'Onsted Elementary School', cat: 'schools', sub: 'Public K–5 · Onsted Community Schools', address: 'Onsted, MI', phone: '(517) 467-2170', note: '~10 min · Same campus area as HS', lat: 42.0043, lng: -84.1882 },
+  { id: 'tec-hs', name: 'Tecumseh High School', cat: 'schools', sub: 'Public HS · Grades 9–12', address: '400 N Maumee St, Tecumseh, MI', phone: '(517) 423-3366', note: '~15 min · Tecumseh Public Schools', lat: 42.0100, lng: -83.9450 },
+  { id: 'adrian-hs', name: 'Adrian High School', cat: 'schools', sub: 'Public HS · Grades 9–12', address: '785 Riverside Ave, Adrian, MI', phone: '(517) 263-2115', note: '~20 min · Adrian Public Schools', lat: 41.9060, lng: -84.0280 },
   { id: 'lenawee-christian', name: 'Lenawee Christian School', cat: 'schools', sub: 'Private K–12', address: 'Adrian, MI', phone: '(517) 265-5020', note: '~20 min · Faith-based PreK–12', lat: 41.8902, lng: -84.0557 },
   // Wineries
-  { id: 'chateau-aero', name: 'Chateau Aeronautique Winery', cat: 'wineries', sub: 'Winery & Event Venue', address: '1849 E Parnall Rd, Jackson, MI', phone: '(517) 795-3620', note: '~30 min · Live music weekends · All-weather biergarten', lat: 42.2370, lng: -84.3810, website: 'https://chateauaeronautique.com' },
-  { id: 'cherry-creek', name: 'Cherry Creek Cellars', cat: 'wineries', sub: 'Small-Batch Winery', address: '5765 Wamplers Lake Rd, Brooklyn, MI', phone: '(517) 592-4315', note: '~20 min · Laid-back tasting room', lat: 42.1082, lng: -84.2264, website: 'https://cherrycreekcellars.com' },
-  { id: 'ang-co-wine', name: 'Ang & Co', cat: 'wineries', sub: 'Satellite Tasting Room', address: '141 N Lakeview Blvd, Manitou Beach, MI', phone: '(517) 547-6030', note: 'In the Village · Michigan wine + gifts', lat: 41.9640, lng: -84.0180, website: 'https://www.angandco.net' },
-  // Community
-  { id: 'yacht-club-loc', name: 'Devils Lake Yacht Club', cat: 'community', sub: 'Sailing & Social Club', address: 'Devils Lake, Manitou Beach, MI', note: 'Since the 1940s · Regattas · Friday Fish Fry', lat: 41.9652, lng: -84.0205, website: 'https://www.devilslakeyachtclub.com' },
-  { id: 'mens-club-loc', name: "Devils & Round Lake Men's Club", cat: 'community', sub: 'Civic Organization', address: 'Manitou Beach, MI', note: 'Tip-Up Festival · Firecracker 7K · Shop with a Cop', lat: 41.9645, lng: -84.0175, href: '/mens-club' },
-  { id: 'mbhrs-loc', name: 'Manitou Beach Historic Renovation Society', cat: 'community', sub: 'Historical & Arts Org', address: 'Manitou Beach Village', note: 'Village restoration · Arts · Community stewardship', lat: 41.9638, lng: -84.0178, href: '/historical-society' },
-  { id: 'village-loc', name: 'Manitou Beach Village', cat: 'community', sub: 'Village District', address: 'N Lakeview Blvd, Manitou Beach, MI', note: 'Shops · Cafe · Wine tasting · The Lighthouse', lat: 41.9641, lng: -84.0182, href: '/village' },
+  { id: 'chateau-aero', name: 'Chateau Aeronautique Winery', cat: 'wineries', sub: 'Winery & Event Venue', address: '1849 E Parnall Rd, Jackson, MI', phone: '(517) 795-3620', note: '~30 min · Live music weekends · All-weather biergarten', lat: 42.2380, lng: -84.3750, website: 'https://chateauaeronautique.com' },
+  { id: 'cherry-creek', name: 'Cherry Creek Cellars', cat: 'wineries', sub: 'Small-Batch Winery', address: '5765 Wamplers Lake Rd, Brooklyn, MI', phone: '(517) 592-4315', note: '~20 min · Laid-back tasting room', lat: 42.1000, lng: -84.2300, website: 'https://cherrycreekcellars.com' },
+  { id: 'ang-co-wine', name: 'Ang & Co', cat: 'wineries', sub: 'Satellite Tasting Room', address: '141 N Lakeview Blvd, Manitou Beach, MI', phone: '(517) 547-6030', note: 'In the Village · Michigan wine + gifts', lat: 41.9720, lng: -84.3040, website: 'https://www.angandco.net' },
+  // Community — Manitou Beach Village at south end of lake ~41.9697, -84.3083
+  { id: 'yacht-club-loc', name: 'Devils Lake Yacht Club', cat: 'community', sub: 'Sailing & Social Club', address: 'Devils Lake, Manitou Beach, MI', note: 'Since the 1940s · Regattas · Friday Fish Fry', lat: 42.0080, lng: -84.2900, website: 'https://www.devilslakeyachtclub.com' },
+  { id: 'mens-club-loc', name: "Devils & Round Lake Men's Club", cat: 'community', sub: 'Civic Organization', address: 'Manitou Beach, MI', note: 'Tip-Up Festival · Firecracker 7K · Shop with a Cop', lat: 42.0050, lng: -84.2880, href: '/mens-club' },
+  { id: 'mbhrs-loc', name: 'Manitou Beach Historic Renovation Society', cat: 'community', sub: 'Historical & Arts Org', address: 'Manitou Beach Village', note: 'Village restoration · Arts · Community stewardship', lat: 41.9730, lng: -84.3040, href: '/historical-society' },
+  { id: 'village-loc', name: 'Manitou Beach Village', cat: 'community', sub: 'Village District', address: 'N Lakeview Blvd, Manitou Beach, MI', note: 'Shops · Cafe · Wine tasting · The Lighthouse', lat: 41.9720, lng: -84.3055, href: '/village' },
 ];
 
 const DISCOVER_MAP_STYLES = [
@@ -10833,16 +10833,16 @@ function DiscoverPage() {
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
 
       {/* ── Compact Title Bar ── */}
-      <div style={{ backgroundImage: 'url(/images/DL-boat.jpg)', backgroundSize: 'cover', backgroundPosition: 'center 40%', position: 'relative', minHeight: 240, display: 'flex', alignItems: 'center' }}>
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(10,18,24,0.9) 0%, rgba(10,18,24,0.55) 100%)' }} />
-        <div style={{ position: 'relative', zIndex: 1, padding: '80px 48px 32px', maxWidth: 960, margin: '0 auto', width: '100%' }}>
+      <div style={{ backgroundImage: 'url(/images/DL-boat.jpg)', backgroundSize: 'cover', backgroundPosition: 'center 40%', position: 'relative', minHeight: 'clamp(280px, 40vh, 380px)', display: 'flex', alignItems: 'flex-end' }}>
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(10,18,24,0.55) 0%, rgba(10,18,24,0.88) 100%)' }} />
+        <div className="discover-hero-inner" style={{ position: 'relative', zIndex: 1, maxWidth: 960, margin: '0 auto', width: '100%' }}>
           <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 5, textTransform: 'uppercase', color: 'rgba(255,255,255,0.32)', marginBottom: 10 }}>
             Manitou Beach · Devils Lake · Michigan
           </div>
-          <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(28px, 5vw, 52px)', fontWeight: 400, color: C.cream, margin: '0 0 6px 0', lineHeight: 1.1 }}>
+          <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(28px, 5vw, 52px)', fontWeight: 400, color: C.cream, margin: '0 0 8px 0', lineHeight: 1.1 }}>
             Discover Manitou Beach
           </h1>
-          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.55)', margin: 0 }}>
+          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: 'rgba(255,255,255,0.6)', margin: 0 }}>
             Food, healthcare, schools, water access, wineries, community — all in one place.
           </p>
         </div>
@@ -10850,7 +10850,7 @@ function DiscoverPage() {
 
       {/* ── Sticky Category Chips ── */}
       <div style={{ position: 'sticky', top: 64, zIndex: 100, background: 'rgba(250,246,239,0.97)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${C.sand}`, boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '12px 20px', display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
+        <div className="discover-chips-bar" style={{ maxWidth: 1100, margin: '0 auto', padding: '12px 20px', display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
           {DISCOVER_CATS.map(cat => {
             const active = activeCategory === cat.id;
             return (
@@ -11042,7 +11042,15 @@ function DiscoverPage() {
         </div>
       </section>
       <div style={{ height: 60 }} />
-      <style>{`@keyframes discspin { to { transform: rotate(360deg); } }`}</style>
+      <style>{`
+        @keyframes discspin { to { transform: rotate(360deg); } }
+        .discover-hero-inner { padding: 80px 48px 36px; }
+        @media (max-width: 640px) {
+          .discover-hero-inner { padding: 80px 20px 28px; }
+          .discover-chips-bar { padding: 10px 16px !important; gap: 6px !important; }
+          .discover-chips-bar button { padding: 6px 12px !important; font-size: 12px !important; }
+        }
+      `}</style>
       <Footer scrollTo={subScrollTo} />
     </div>
   );
