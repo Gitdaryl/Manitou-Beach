@@ -10660,24 +10660,24 @@ const DISCOVER_CATS = [
 
 const DISCOVER_POIS = [
   // Healthcare
-  { id: 'herrick', name: 'ProMedica Herrick Hospital', cat: 'healthcare', sub: 'Full Hospital · ER', address: '500 E Pottawatamie St, Tecumseh, MI', phone: '(517) 424-3000', note: '~15 min from Manitou Beach', lat: 42.0046, lng: -83.9448, website: 'https://www.promedica.org/herrick-hospital' },
-  { id: 'allegiance', name: 'Henry Ford Allegiance Health', cat: 'healthcare', sub: 'Full Hospital · Level II Trauma', address: '205 N East Ave, Jackson, MI', phone: '(517) 788-4800', note: '~30 min · Major medical center', lat: 42.2459, lng: -84.3997, website: 'https://www.henryford.com/locations/allegiance' },
-  { id: 'urgent-tec', name: 'Urgent Care – Tecumseh', cat: 'healthcare', sub: 'Urgent Care', address: 'Tecumseh, MI', phone: '(517) 423-3200', note: '~15 min · Walk-in, no appointment needed', lat: 42.0035, lng: -83.9452 },
-  { id: 'cvs-tec', name: 'CVS Pharmacy – Tecumseh', cat: 'healthcare', sub: 'Pharmacy · MinuteClinic', address: 'W Chicago Blvd, Tecumseh, MI', note: '~15 min', lat: 42.0012, lng: -83.9460 },
-  { id: 'walgreens-adr', name: 'Walgreens – Adrian', cat: 'healthcare', sub: 'Pharmacy', address: 'N Main St, Adrian, MI', note: '~20 min · Open late', lat: 41.9042, lng: -84.0373 },
+  { id: 'herrick', name: 'ProMedica Herrick Hospital', cat: 'healthcare', sub: 'Full Hospital · ER', address: '500 E Pottawatamie St, Tecumseh, MI', phone: '(517) 424-3000', note: '~15 min from Manitou Beach', lat: 42.0011, lng: -83.9343, website: 'https://www.promedica.org/herrick-hospital' },
+  { id: 'allegiance', name: 'Henry Ford Allegiance Health', cat: 'healthcare', sub: 'Full Hospital · Level II Trauma', address: '205 N East Ave, Jackson, MI', phone: '(517) 788-4800', note: '~30 min · Major medical center', lat: 42.2490, lng: -84.3945, website: 'https://www.henryford.com/locations/allegiance' },
+  { id: 'urgent-tec', name: 'Urgent Care – Tecumseh', cat: 'healthcare', sub: 'Urgent Care', address: '821 W Chicago Blvd, Tecumseh, MI', phone: '(517) 423-3200', note: '~15 min · Walk-in, no appointment needed', lat: 42.0033, lng: -83.9578 },
+  { id: 'cvs-tec', name: 'CVS Pharmacy – Tecumseh', cat: 'healthcare', sub: 'Pharmacy · MinuteClinic', address: 'W Chicago Blvd, Tecumseh, MI', note: '~15 min', lat: 42.0038, lng: -83.9545 },
+  { id: 'walgreens-adr', name: 'Walgreens – Adrian', cat: 'healthcare', sub: 'Pharmacy', address: 'N Main St, Adrian, MI', note: '~20 min · Open late', lat: 41.9197, lng: -84.0382 },
   // Grocery
-  { id: 'walmart-adr', name: 'Walmart Supercenter', cat: 'grocery', sub: 'Grocery · Pharmacy · Bait & Tackle', address: '1357 N Main St, Adrian, MI', note: '~20 min', lat: 41.9236, lng: -84.0421 },
-  { id: 'meijer-tec', name: 'Meijer', cat: 'grocery', sub: 'Grocery · Gas Station', address: 'W Chicago Blvd, Tecumseh, MI', note: '~15 min', lat: 42.0040, lng: -83.9510 },
+  { id: 'walmart-adr', name: 'Walmart Supercenter', cat: 'grocery', sub: 'Grocery · Pharmacy · Bait & Tackle', address: '1357 N Main St, Adrian, MI', note: '~20 min', lat: 41.9209, lng: -84.0378 },
+  { id: 'meijer-tec', name: 'Meijer', cat: 'grocery', sub: 'Grocery · Gas Station', address: 'W Chicago Blvd, Tecumseh, MI', note: '~15 min', lat: 42.0030, lng: -83.9562 },
   // Boat & Water
   { id: 'launch-main', name: 'Public Boat Launch – Devils Lake', cat: 'water', sub: 'Free Public Ramp', address: 'Manitou Beach Rd, Manitou Beach, MI', note: 'Free · Paved ramp · Trailer parking', lat: 41.9638, lng: -84.0188 },
-  { id: 'dnr-ramp', name: 'DNR Access Site', cat: 'water', sub: 'State DNR Ramp', address: 'Lake Shore Dr, Manitou Beach, MI', note: 'Kayaks · Canoes · Small boats', lat: 41.9600, lng: -84.0152 },
-  { id: 'marina', name: 'Manitou Beach Marina', cat: 'water', sub: 'Marina · 600+ Slips', address: 'Devils Lake, Manitou Beach, MI', note: 'Seasonal dockage available', lat: 41.9648, lng: -84.0195 },
+  { id: 'dnr-ramp', name: 'DNR Access Site – Round Lake', cat: 'water', sub: 'State DNR Ramp', address: 'Lake Shore Dr, Manitou Beach, MI', note: 'Kayaks · Canoes · Small boats', lat: 41.9558, lng: -84.0378 },
+  { id: 'marina', name: 'Manitou Beach Marina', cat: 'water', sub: 'Marina · 600+ Slips', address: 'Devils Lake, Manitou Beach, MI', note: 'Seasonal dockage available', lat: 41.9648, lng: -84.0230 },
   // Schools
-  { id: 'tec-hs', name: 'Tecumseh High School', cat: 'schools', sub: 'Public HS · Grades 9–12', address: '400 N Maumee St, Tecumseh, MI', phone: '(517) 423-3366', note: '~15 min · Tecumseh Public Schools', lat: 42.0048, lng: -83.9457 },
-  { id: 'tec-ms', name: 'Tecumseh Middle School', cat: 'schools', sub: 'Public MS · Grades 6–8', address: 'Tecumseh, MI', phone: '(517) 423-3366', note: '~15 min', lat: 42.0030, lng: -83.9450 },
-  { id: 'blissfield-hs', name: 'Blissfield High School', cat: 'schools', sub: 'Public HS · Grades 9–12', address: '860 N Lane St, Blissfield, MI', phone: '(517) 486-2205', note: '~25 min · Blissfield Community Schools', lat: 41.8330, lng: -83.8660 },
-  { id: 'adrian-hs', name: 'Adrian High School', cat: 'schools', sub: 'Public HS · Grades 9–12', address: '785 Riverside Ave, Adrian, MI', phone: '(517) 263-2115', note: '~20 min · Adrian Public Schools', lat: 41.9057, lng: -84.0366 },
-  { id: 'lenawee-christian', name: 'Lenawee Christian School', cat: 'schools', sub: 'Private K–12', address: 'Adrian, MI', phone: '(517) 265-5020', note: '~20 min · Faith-based PreK–12', lat: 41.9050, lng: -84.0430 },
+  { id: 'onsted-hs', name: 'Onsted High School', cat: 'schools', sub: 'Public HS · Grades 9–12', address: '8036 Macon Rd, Onsted, MI', phone: '(517) 467-2170', note: '~10 min · Closest district to Manitou Beach', lat: 42.0051, lng: -84.1876 },
+  { id: 'onsted-elem', name: 'Onsted Elementary School', cat: 'schools', sub: 'Public K–5 · Onsted Community Schools', address: 'Onsted, MI', phone: '(517) 467-2170', note: '~10 min · Same campus area as HS', lat: 42.0063, lng: -84.1889 },
+  { id: 'tec-hs', name: 'Tecumseh High School', cat: 'schools', sub: 'Public HS · Grades 9–12', address: '400 N Maumee St, Tecumseh, MI', phone: '(517) 423-3366', note: '~15 min · Tecumseh Public Schools', lat: 42.0097, lng: -83.9458 },
+  { id: 'adrian-hs', name: 'Adrian High School', cat: 'schools', sub: 'Public HS · Grades 9–12', address: '785 Riverside Ave, Adrian, MI', phone: '(517) 263-2115', note: '~20 min · Adrian Public Schools', lat: 41.9057, lng: -84.0301 },
+  { id: 'lenawee-christian', name: 'Lenawee Christian School', cat: 'schools', sub: 'Private K–12', address: 'Adrian, MI', phone: '(517) 265-5020', note: '~20 min · Faith-based PreK–12', lat: 41.8902, lng: -84.0557 },
   // Wineries
   { id: 'chateau-aero', name: 'Chateau Aeronautique Winery', cat: 'wineries', sub: 'Winery & Event Venue', address: '1849 E Parnall Rd, Jackson, MI', phone: '(517) 795-3620', note: '~30 min · Live music weekends · All-weather biergarten', lat: 42.2370, lng: -84.3810, website: 'https://chateauaeronautique.com' },
   { id: 'cherry-creek', name: 'Cherry Creek Cellars', cat: 'wineries', sub: 'Small-Batch Winery', address: '5765 Wamplers Lake Rd, Brooklyn, MI', phone: '(517) 592-4315', note: '~20 min · Laid-back tasting room', lat: 42.1082, lng: -84.2264, website: 'https://cherrycreekcellars.com' },
