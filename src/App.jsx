@@ -9291,6 +9291,25 @@ function YetiAdminPage() {
   const [dashLoading, setDashLoading] = useState(false);
   const [dashData, setDashData] = useState(null);
 
+  // ── Batch geocoding ────────────────────────────────────────────
+  const [geoStatus, setGeoStatus] = useState('idle'); // idle | running | done | error
+  const [geoResult, setGeoResult] = useState(null);
+
+  const runBatchGeocode = async () => {
+    setGeoStatus('running');
+    setGeoResult(null);
+    try {
+      const r = await adminFetch('/api/geocode-batch', { method: 'POST' });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.error || 'Unknown error');
+      setGeoResult(d);
+      setGeoStatus('done');
+    } catch (err) {
+      setGeoResult({ error: err.message });
+      setGeoStatus('error');
+    }
+  };
+
   // ── Promos ─────────────────────────────────────────────────────
   const [promos, setPromos] = useState([]);
   const [promosLoading, setPromosLoading] = useState(false);
@@ -9804,6 +9823,40 @@ function YetiAdminPage() {
             ) : (
               <div style={{ textAlign: 'center', padding: '40px 0', color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>Could not load metrics.</div>
             )}
+
+            {/* ── Batch Geocoding Tool ── */}
+            <div style={{ background: '#fff', borderRadius: 12, padding: '20px 24px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', marginTop: 20 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: C.dusk, marginBottom: 4, fontFamily: 'Libre Franklin, sans-serif' }}>📍 Geocode Businesses</div>
+              <p style={{ fontSize: 13, color: C.textLight, margin: '0 0 14px', lineHeight: 1.5, fontFamily: 'Libre Franklin, sans-serif' }}>
+                Scans all Notion business entries with an address but no lat/lng, and auto-fills their coordinates. Safe to re-run — already-geocoded entries are skipped.
+              </p>
+              <button
+                onClick={runBatchGeocode}
+                disabled={geoStatus === 'running'}
+                style={{ background: geoStatus === 'running' ? C.sand : C.dusk, color: '#fff', border: 'none', borderRadius: 8, padding: '9px 20px', fontSize: 13, fontWeight: 600, cursor: geoStatus === 'running' ? 'not-allowed' : 'pointer', fontFamily: 'Libre Franklin, sans-serif', transition: 'background 0.15s' }}
+              >
+                {geoStatus === 'running' ? '⏳ Geocoding… (1 req/sec)' : '▶ Run Geocoder'}
+              </button>
+              {geoResult && geoStatus === 'done' && (
+                <div style={{ marginTop: 14 }}>
+                  <div style={{ fontSize: 13, color: C.sage, fontWeight: 700, marginBottom: 8, fontFamily: 'Libre Franklin, sans-serif' }}>
+                    ✅ Done — {geoResult.updated} updated · {geoResult.skipped} skipped · {geoResult.failed} failed
+                  </div>
+                  {geoResult.details?.length > 0 && (
+                    <div style={{ maxHeight: 200, overflowY: 'auto', background: C.cream, borderRadius: 8, padding: '10px 14px' }}>
+                      {geoResult.details.map((d, i) => (
+                        <div key={i} style={{ fontSize: 12, color: C.textLight, fontFamily: 'Libre Franklin, sans-serif', padding: '3px 0', borderBottom: `1px solid ${C.sand}` }}>
+                          <strong>{d.name}</strong> — {d.result}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+              {geoStatus === 'error' && (
+                <div style={{ marginTop: 10, fontSize: 13, color: '#c05a5a', fontFamily: 'Libre Franklin, sans-serif' }}>Error: {geoResult?.error}</div>
+              )}
+            </div>
           </div>
         )}
 
