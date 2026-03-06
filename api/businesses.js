@@ -5,6 +5,29 @@ function normalizeUrl(url) {
   return /^https?:\/\//i.test(u) ? u : 'https://' + u;
 }
 
+// Geocode an address via Nominatim (free, no key) and write lat/lng back to the Notion page
+async function geocodeAndStore(pageId, address) {
+  const q = encodeURIComponent(address + ', Michigan, USA');
+  const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1`, {
+    headers: { 'User-Agent': 'ManitouBeach/1.0 (site@manitoubeach.com)' },
+  });
+  if (!geoRes.ok) return;
+  const results = await geoRes.json();
+  if (!results.length) return;
+  const lat = parseFloat(results[0].lat);
+  const lng = parseFloat(results[0].lon);
+  if (isNaN(lat) || isNaN(lng)) return;
+  await fetch(`https://api.notion.com/v1/pages/${pageId}`, {
+    method: 'PATCH',
+    headers: {
+      'Authorization': `Bearer ${process.env.NOTION_TOKEN_BUSINESS}`,
+      'Content-Type': 'application/json',
+      'Notion-Version': '2022-06-28',
+    },
+    body: JSON.stringify({ properties: { 'Lat': { number: lat }, 'Lng': { number: lng } } }),
+  });
+}
+
 export default async function handler(req, res) {
   // POST — submit a new business listing
   if (req.method === 'POST') {
@@ -63,6 +86,12 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: 'Failed to save submission', detail: err?.message || JSON.stringify(err) });
       }
 
+      // Auto-geocode address and write lat/lng back to Notion (fire-and-forget, never blocks submission)
+      if (address && address.trim()) {
+        const newPage = await response.json();
+        geocodeAndStore(newPage.id, address).catch(() => {});
+      }
+
       return res.status(200).json({ success: true });
     } catch (err) {
       console.error('Server error:', err.message);
@@ -119,6 +148,9 @@ export default async function handler(req, res) {
         description: p['Description']?.rich_text?.[0]?.text?.content || '',
         address: p['Address']?.rich_text?.[0]?.text?.content || '',
         logo: normalizeUrl(p['Logo URL']?.url || null),
+        lat: p['Lat']?.number ?? null,
+        lng: p['Lng']?.number ?? null,
+        emergency: p['Emergency']?.checkbox ?? false,
       };
       if (!business.name) return;
       if (status === 'Listed Premium') premium.push({ ...business, tier: 'premium' });

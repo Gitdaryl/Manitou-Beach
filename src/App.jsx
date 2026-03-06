@@ -10648,13 +10648,14 @@ const DISCOVER_MAP_CENTER = { lat: 42.0047, lng: -84.2888 };
 const DISCOVER_CATS = [
   { id: 'all',        label: 'All',                icon: '🗺️', color: '#7A8E72' },
   { id: 'food',       label: 'Food & Drink',        icon: '🍽️', color: '#D4845A', notionKey: 'Food & Drink' },
+  { id: 'stays',      label: 'Stays & Rentals',      icon: '🏠', color: '#2D3B45', notionKey: 'Stays & Rentals' },
+  { id: 'wineries',   label: 'Wineries',             icon: '🍷', color: '#7B4F2E', notionKey: 'Breweries & Wineries' },
+  { id: 'water',      label: 'Boat & Water',         icon: '⛵', color: '#3A6B85', notionKey: 'Boating & Water' },
+  { id: 'shopping',   label: 'Shopping',             icon: '🛍️', color: '#B07D62', notionKey: 'Shopping & Gifts' },
+  { id: 'services',   label: 'Home Services',        icon: '🔧', color: '#5B6E5A', notionKey: 'Home Services' },
   { id: 'healthcare', label: 'Healthcare',           icon: '🏥', color: '#c05a5a' },
   { id: 'grocery',    label: 'Grocery & Pharmacy',  icon: '🛒', color: '#5B7E95' },
-  { id: 'wineries',   label: 'Wineries',             icon: '🍷', color: '#7B4F2E' },
-  { id: 'water',      label: 'Boat & Water',         icon: '⛵', color: '#3A6B85' },
   { id: 'schools',    label: 'Schools',              icon: '🎓', color: '#6B7EC8' },
-  { id: 'stays',      label: 'Stays & Rentals',      icon: '🏠', color: '#2D3B45', notionKey: 'Stays & Rentals' },
-  { id: 'shopping',   label: 'Shopping',             icon: '🛍️', color: '#B07D62', notionKey: 'Shopping & Gifts' },
   { id: 'community',  label: 'Community',            icon: '🏛️', color: '#7A8E72' },
 ];
 
@@ -10802,19 +10803,57 @@ function DiscoverPage() {
       });
       markersRef.current.push(marker);
     });
-    if (pois.length > 1) {
+
+    // Paid businesses with geocoded lat/lng get map pins (sunset color to distinguish from POIs)
+    const activeCatObj = DISCOVER_CATS.find(c => c.id === activeCategory) || DISCOVER_CATS[0];
+    const bizPins = businesses.filter(b =>
+      b.tier !== 'free' && b.lat && b.lng &&
+      (activeCategory === 'all' || b.category === activeCatObj.notionKey)
+    );
+    bizPins.forEach((biz, idx) => {
+      const marker = new google.maps.Marker({
+        position: { lat: biz.lat, lng: biz.lng },
+        map,
+        title: biz.name,
+        icon: { url: createDiscoverPin('#D4845A'), scaledSize: new google.maps.Size(24, 31), anchor: new google.maps.Point(12, 31) },
+        animation: google.maps.Animation.DROP,
+        zIndex: 1000 + idx,
+      });
+      const iwContent = `<div style="padding:6px 8px 10px;max-width:240px;font-family:system-ui,sans-serif;line-height:1.45">
+        <div style="font-size:13px;font-weight:700;color:#2D3B45;margin-bottom:3px">${biz.name}</div>
+        <div style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#D4845A;font-weight:700;margin-bottom:6px">${biz.category}</div>
+        ${biz.address ? `<div style="font-size:11px;color:#666;margin-bottom:4px">${biz.address}</div>` : ''}
+        ${biz.phone ? `<a href="tel:${biz.phone.replace(/\D/g,'')}" style="display:block;font-size:12px;font-weight:600;color:#7A8E72;margin-bottom:8px;text-decoration:none">${biz.phone}</a>` : ''}
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          ${biz.website ? `<a href="${biz.website}" target="_blank" style="font-size:12px;font-weight:700;color:#D4845A;text-decoration:none">Website →</a>` : ''}
+        </div>
+        <div style="margin-top:8px;font-size:10px;color:#aaa">Listed on Manitou Beach</div>
+      </div>`;
+      marker.addListener('click', () => {
+        infoWindowRef.current.setContent(iwContent);
+        infoWindowRef.current.open(map, marker);
+      });
+      markersRef.current.push(marker);
+    });
+
+    const allPinned = [...pois, ...bizPins];
+    if (allPinned.length > 1) {
       const bounds = new google.maps.LatLngBounds();
-      pois.forEach(p => bounds.extend({ lat: p.lat, lng: p.lng }));
+      allPinned.forEach(p => bounds.extend({ lat: p.lat, lng: p.lng }));
       map.fitBounds(bounds, { top: 60, right: 40, bottom: 40, left: 40 });
-    } else if (pois.length === 1) {
-      map.panTo({ lat: pois[0].lat, lng: pois[0].lng });
+    } else if (allPinned.length === 1) {
+      map.panTo({ lat: allPinned[0].lat, lng: allPinned[0].lng });
       map.setZoom(14);
     }
-  }, [activeCategory, mapReady]);
+  }, [activeCategory, mapReady, businesses]);
 
   const activeCat = DISCOVER_CATS.find(c => c.id === activeCategory) || DISCOVER_CATS[0];
   const filteredPois = activeCategory === 'all' ? DISCOVER_POIS : DISCOVER_POIS.filter(p => p.cat === activeCategory);
-  const filteredBizzes = activeCat.notionKey ? businesses.filter(b => b.category === activeCat.notionKey) : [];
+  const filteredBizzes = activeCat.notionKey
+    ? businesses
+        .filter(b => b.category === activeCat.notionKey)
+        .sort((a, b) => (b.emergency ? 1 : 0) - (a.emergency ? 1 : 0)) // emergency first
+    : [];
   const showBizCTA = !!activeCat.notionKey && filteredBizzes.length === 0;
 
   const DRIVE_TIMES = [
@@ -10850,7 +10889,8 @@ function DiscoverPage() {
 
       {/* ── Sticky Category Chips ── */}
       <div style={{ position: 'sticky', top: 64, zIndex: 100, background: 'rgba(250,246,239,0.97)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${C.sand}`, boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
-        <div className="discover-chips-bar" style={{ maxWidth: 1100, margin: '0 auto', padding: '12px 20px', display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
+        <div style={{ position: 'relative' }}>
+          <div className="discover-chips-bar" style={{ maxWidth: 1100, margin: '0 auto', padding: '12px 20px', display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
           {DISCOVER_CATS.map(cat => {
             const active = activeCategory === cat.id;
             return (
@@ -10867,6 +10907,9 @@ function DiscoverPage() {
               </button>
             );
           })}
+          </div>
+          {/* Right-fade scroll hint */}
+          <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: 48, background: 'linear-gradient(to right, transparent, rgba(250,246,239,0.97))', pointerEvents: 'none' }} />
         </div>
       </div>
 
@@ -10954,10 +10997,13 @@ function DiscoverPage() {
                     : <div style={{ width: 46, height: 46, borderRadius: 8, background: `${activeCat.color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, flexShrink: 0 }}>{activeCat.icon}</div>
                   }
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, color: C.dusk, marginBottom: 3 }}>{biz.name}</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 3, flexWrap: 'wrap' }}>
+                      <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, color: C.dusk }}>{biz.name}</div>
+                      {biz.emergency && <span style={{ fontSize: 10, fontWeight: 700, fontFamily: "'Libre Franklin', sans-serif", background: '#c05a5a', color: '#fff', borderRadius: 4, padding: '2px 6px', letterSpacing: 1, textTransform: 'uppercase', flexShrink: 0 }}>24hr / Emergency</span>}
+                    </div>
                     {biz.tagline && <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted, lineHeight: 1.4, marginBottom: 8 }}>{biz.tagline}</div>}
                     <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                      {biz.phone && <a href={`tel:${biz.phone}`} style={{ fontSize: 12, fontWeight: 600, color: C.sage, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>{biz.phone}</a>}
+                      {biz.phone && <a href={`tel:${biz.phone}`} style={{ fontSize: biz.emergency ? 14 : 12, fontWeight: 700, color: biz.emergency ? '#c05a5a' : C.sage, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>{biz.phone}</a>}
                       {biz.website && <a href={biz.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, fontWeight: 600, color: C.lakeBlue, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>Visit →</a>}
                     </div>
                   </div>
