@@ -64,12 +64,12 @@ Format your response as valid JSON with this exact structure:
 }
 
 Block types available: paragraph, heading_2, heading_3, quote, callout, divider
-- Use heading_2 for major sections (2-4 per article)
-- Use heading_3 sparingly for sub-points
-- Use quote for memorable lines or local wisdom worth pulling out
-- Use callout for tips, local intel, or "Yeti's take" asides
+- Use heading_2 for 1-2 sections max — keep the structure lean
+- Use heading_3 sparingly for sub-points only if genuinely needed
+- Use quote for a single memorable line or piece of local wisdom
+- Use callout for one "Yeti's take" aside max — don't stack them
 - Use divider to break major section shifts
-- Write 600-900 words total across all paragraph blocks
+- Write 250-350 words total across all paragraph blocks — this is a newsletter digest piece, not a long-form blog post. Sharp, warm, punchy. Every sentence earns its place.
 - No heading_1 (title is handled separately)`;
 
 function slugify(text) {

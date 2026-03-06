@@ -8701,6 +8701,39 @@ function DispatchArticlePage() {
   );
 }
 
+// ── Dispatch Card Sponsors ──────────────────────────────────────────────────────
+// Add/remove sponsors here. Rotates across cards by index.
+// logo: path in /public (e.g. '/images/blackbird-logo.png'), or null → shows 📷 placeholder
+// Set array to [] to hide all sponsor strips.
+const DISPATCH_CARD_SPONSORS = [
+  {
+    name: 'Blackbird Cafe & Baking Co.',
+    logo: '/images/blackbird-logo.png',
+    offerText: 'Free cookie for new subscribers',
+  },
+];
+
+function SponsorStrip({ index = 0 }) {
+  if (!DISPATCH_CARD_SPONSORS.length) return null;
+  const sponsor = DISPATCH_CARD_SPONSORS[index % DISPATCH_CARD_SPONSORS.length];
+  return (
+    <div style={{ borderTop: '1px solid #ede8df', padding: '10px 20px 13px', display: 'flex', alignItems: 'center', gap: 10, background: '#fdf9f4' }}>
+      {sponsor.logo ? (
+        <img src={sponsor.logo} alt={sponsor.name} style={{ width: 40, height: 40, borderRadius: 6, objectFit: 'contain', border: '1px solid #e8dfd0', background: '#fff', padding: 3, flexShrink: 0 }} />
+      ) : (
+        <div style={{ width: 40, height: 40, borderRadius: 6, border: '1.5px dashed #c4b09a', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#faf5ef', flexShrink: 0 }}>
+          <span style={{ fontSize: 18 }}>📷</span>
+        </div>
+      )}
+      <div style={{ minWidth: 0, overflow: 'hidden' }}>
+        <div style={{ fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#b8a898', fontWeight: 700, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 1 }}>Sponsored by</div>
+        <div style={{ fontSize: 12, color: C.dusk, fontWeight: 700, fontFamily: "'Libre Franklin', sans-serif", whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{sponsor.name}</div>
+        {sponsor.offerText && <div style={{ fontSize: 11, color: C.textLight, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.35, marginTop: 1 }}>{sponsor.offerText}</div>}
+      </div>
+    </div>
+  );
+}
+
 // ============================================================
 // 📰  DISPATCH PREVIEW — Homepage 3-card teaser
 // ============================================================
@@ -8743,7 +8776,7 @@ function DispatchPreviewSection() {
           </div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 24 }}>
-            {articles.map(article => (
+            {articles.map((article, idx) => (
               <FadeIn key={article.id}>
                 <a
                   href={`/dispatch/${article.slug}`}
@@ -8776,6 +8809,7 @@ function DispatchPreviewSection() {
                       <span style={{ color: C.lakeBlue, fontWeight: 600, fontSize: 12 }}>Read story →</span>
                     </div>
                   </div>
+                  <SponsorStrip index={idx} />
                 </a>
               </FadeIn>
             ))}
@@ -8857,7 +8891,7 @@ function DispatchPage() {
           </div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 32 }}>
-            {articles.map(article => (
+            {articles.map((article, idx) => (
               <FadeIn key={article.id}>
                 <div
                   onClick={() => navigate(`/dispatch/${article.slug}`)}
@@ -8890,6 +8924,7 @@ function DispatchPage() {
                       <span style={{ color: C.lakeBlue, fontWeight: 600 }}>Read story →</span>
                     </div>
                   </div>
+                  <SponsorStrip index={idx} />
                 </div>
               </FadeIn>
             ))}
@@ -9690,7 +9725,7 @@ function YetiAdminPage() {
 
         {/* Tabs */}
         <div style={{ display: 'flex', gap: 8, marginBottom: 32, flexWrap: 'wrap' }}>
-          {[{ id: 'write', label: '✍️  Write' }, { id: 'review', label: '📋  Review Queue' }, { id: 'dashboard', label: '📊  Dashboard' }, { id: 'promos', label: '🎟️  Promos' }].map(tab => (
+          {[{ id: 'write', label: '✍️  Write' }, { id: 'review', label: '📋  Review Queue' }, { id: 'dashboard', label: '📊  Dashboard' }, { id: 'advertisers', label: '🤝  Advertisers' }, { id: 'promos', label: '🎟️  Promos' }].map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
@@ -9827,6 +9862,113 @@ function YetiAdminPage() {
                 );
               })}
             </div>
+          </div>
+        )}
+
+        {/* ── ADVERTISERS TAB ── */}
+        {activeTab === 'advertisers' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+
+            {/* Card Sponsors */}
+            <div style={{ background: '#fff', borderRadius: 12, padding: 28, boxShadow: '0 2px 16px rgba(0,0,0,0.06)' }}>
+              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 19, color: C.dusk, marginBottom: 4 }}>Card Sponsors</div>
+              <div style={{ fontSize: 13, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif', marginBottom: 20 }}>Showing on every Dispatch card — homepage + /dispatch listing</div>
+
+              {DISPATCH_CARD_SPONSORS.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '32px 20px', background: C.warmWhite, borderRadius: 10 }}>
+                  <div style={{ fontSize: 28, marginBottom: 10 }}>📭</div>
+                  <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 14, color: C.textMuted }}>No card sponsors active. Add one to DISPATCH_CARD_SPONSORS in App.jsx</div>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                  {DISPATCH_CARD_SPONSORS.map((sponsor, i) => (
+                    <div key={i} style={{ border: `1px solid ${C.sand}`, borderRadius: 10, overflow: 'hidden' }}>
+                      <div style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+                        {sponsor.logo ? (
+                          <img src={sponsor.logo} alt={sponsor.name} style={{ width: 52, height: 52, borderRadius: 8, objectFit: 'contain', border: `1px solid ${C.sand}`, background: '#fff', padding: 4, flexShrink: 0 }} />
+                        ) : (
+                          <div style={{ width: 52, height: 52, borderRadius: 8, border: '1.5px dashed #c4b09a', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#faf5ef', flexShrink: 0 }}>
+                            <span style={{ fontSize: 22 }}>📷</span>
+                          </div>
+                        )}
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontWeight: 700, fontSize: 15, color: C.dusk, marginBottom: 3 }}>{sponsor.name}</div>
+                          {sponsor.offerText && <div style={{ fontSize: 13, color: C.textLight, fontFamily: 'Libre Franklin, sans-serif', marginBottom: 4 }}>{sponsor.offerText}</div>}
+                          <div style={{ fontSize: 11, color: sponsor.logo ? C.sage : C.sunset, fontFamily: 'monospace', fontWeight: 600 }}>
+                            {sponsor.logo ? `logo: ${sponsor.logo}` : 'logo: null — drop a PNG into /public/images/ and set the path'}
+                          </div>
+                        </div>
+                        <span style={{ background: `${C.sage}20`, color: C.sage, borderRadius: 20, padding: '3px 12px', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', fontFamily: 'Libre Franklin, sans-serif', letterSpacing: 0.5, flexShrink: 0 }}>Slot {i + 1}</span>
+                      </div>
+                      <div style={{ borderTop: `1px solid ${C.sand}`, background: C.warmWhite }}>
+                        <div style={{ padding: '8px 16px 2px', fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.08em', color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>Live preview</div>
+                        <SponsorStrip index={i} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div style={{ marginTop: 20, padding: '14px 16px', background: `${C.lakeBlue}08`, borderRadius: 8, border: `1px dashed ${C.lakeBlue}40` }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: C.lakeBlue, fontFamily: 'Libre Franklin, sans-serif', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>To add or update sponsors</div>
+                <div style={{ fontSize: 12, color: C.textLight, fontFamily: 'monospace', lineHeight: 1.8 }}>
+                  Search App.jsx for <strong style={{ color: C.dusk }}>DISPATCH_CARD_SPONSORS</strong><br />
+                  Add: {'{ name: "Business Name", logo: "/images/file.png", offerText: "Your offer" }'}<br />
+                  Set logo: null to show a 📷 placeholder until the file lands
+                </div>
+              </div>
+            </div>
+
+            {/* Newsletter Ad SOP */}
+            <div style={{ background: '#fff', borderRadius: 12, padding: 28, boxShadow: '0 2px 16px rgba(0,0,0,0.06)' }}>
+              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 19, color: C.dusk, marginBottom: 4 }}>Newsletter Ad Rules</div>
+              <div style={{ fontSize: 13, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif', marginBottom: 20 }}>SOP — follow every issue, no exceptions</div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))', gap: 12 }}>
+                {[
+                  { icon: '2️⃣', label: 'Max ads per issue', value: '2 total — never more' },
+                  { icon: '⭐', label: 'Primary sponsor slot', value: 'Mid-newsletter, after main article' },
+                  { icon: '🏠', label: 'House ad slot', value: 'Footer — promote /featured or events' },
+                  { icon: '📅', label: 'Best send time', value: 'Tue or Thu · 8–9am EST' },
+                  { icon: '📝', label: 'Contract minimum', value: '30 days (1 issue cycle)' },
+                  { icon: '💎', label: 'Sweet spot contract', value: '3 months — better results' },
+                  { icon: '🔄', label: 'Renewal window', value: 'Contact 1 week before expiry' },
+                  { icon: '🎯', label: 'Conflict resolution', value: '2 advertisers want offer slot → one gets next issue' },
+                ].map(item => (
+                  <div key={item.label} style={{ padding: '14px 16px', background: C.warmWhite, borderRadius: 8 }}>
+                    <div style={{ fontSize: 20, marginBottom: 6 }}>{item.icon}</div>
+                    <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.07em', color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif', marginBottom: 3, fontWeight: 700 }}>{item.label}</div>
+                    <div style={{ fontSize: 13, color: C.dusk, fontFamily: 'Libre Franklin, sans-serif', fontWeight: 600, lineHeight: 1.4 }}>{item.value}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Newsletter Layout Template */}
+            <div style={{ background: '#fff', borderRadius: 12, padding: 28, boxShadow: '0 2px 16px rgba(0,0,0,0.06)' }}>
+              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 19, color: C.dusk, marginBottom: 4 }}>Newsletter Layout Template</div>
+              <div style={{ fontSize: 13, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif', marginBottom: 20 }}>Replicate this structure in beehiiv every issue</div>
+              <div style={{ border: `1px solid ${C.sand}`, borderRadius: 10, overflow: 'hidden' }}>
+                {[
+                  { section: '🌊 THIS WEEKEND ON THE LAKE', desc: '2–3 bullet events Fri–Sun. Pull from your Notion events DB or notes.', accent: C.lakeBlue },
+                  { section: '📰 FROM THE DESK', desc: 'The Yeti\'s main piece — 250–350 words. AI-generated + edited by you. One story, told well.', accent: C.sage },
+                  { section: '🏘️ COMMUNITY CORNER', desc: '1–2 items: local biz spotlight, historical fact, neighbor news. You write 2–3 sentences.', accent: C.sunset },
+                  { section: '━━ SPONSORED BY [Business] ━━', desc: 'Logo + offer text + claim link. ONE sponsor max. Clear, honest, not pushy.', accent: '#b8860b', isAd: true },
+                  { section: '📅 UPCOMING EVENTS', desc: '3–5 events. Date · Time · Location. Pull from events DB. No editorializing needed.', accent: C.lakeBlue },
+                  { section: '📸 AROUND THE LAKE', desc: '1 reader-submitted photo + caption. Or: "Send us your best lake shot →"', accent: C.sage },
+                  { section: '💼 SUPPORT THE DISPATCH', desc: 'Soft pitch: "[X] subscribers and growing" + link to /featured for business listings.', accent: C.dusk, isAd: true },
+                ].map((row, i, arr) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'stretch', borderBottom: i < arr.length - 1 ? `1px solid ${C.sand}` : 'none', background: row.isAd ? '#fffbf0' : '#fff' }}>
+                    <div style={{ width: 4, background: row.accent, flexShrink: 0 }} />
+                    <div style={{ padding: '13px 18px', flex: 1 }}>
+                      <div style={{ fontFamily: 'monospace', fontSize: 12, fontWeight: 700, color: row.isAd ? '#b8860b' : C.dusk, marginBottom: 3 }}>{row.section}</div>
+                      <div style={{ fontSize: 12, color: C.textLight, fontFamily: 'Libre Franklin, sans-serif', lineHeight: 1.5 }}>{row.desc}</div>
+                    </div>
+                    {row.isAd && <div style={{ padding: '13px 14px 13px 0', display: 'flex', alignItems: 'center' }}><span style={{ fontSize: 10, fontWeight: 700, color: '#b8860b', textTransform: 'uppercase', letterSpacing: '0.06em', fontFamily: 'Libre Franklin, sans-serif', border: '1px solid #b8860b40', borderRadius: 4, padding: '2px 6px' }}>AD</span></div>}
+                  </div>
+                ))}
+              </div>
+            </div>
+
           </div>
         )}
 
