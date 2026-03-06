@@ -4185,6 +4185,7 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
                   padding: "8px 0", minWidth: 200, zIndex: 1001,
                 }}>
                   {[
+                    { label: "Discover Manitou Beach", href: "/discover" },
                     { label: "Devils Lake", id: "devils-lake" },
                     { label: "Round Lake", href: "/round-lake" },
                     { label: "The Village", href: "/village" },
@@ -4302,6 +4303,7 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
         {/* Community sub-links */}
         <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.textMuted, marginTop: 8, fontFamily: "'Libre Franklin', sans-serif" }}>Community</div>
         {[
+          { label: "Discover Manitou Beach", href: "/discover" },
           { label: "Devils Lake", id: "devils-lake" },
           { label: "Round Lake", id: "round-lake" },
           { label: "The Village", id: "village" },
@@ -4310,6 +4312,15 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
           { label: "Ladies Club", id: "ladies-club" },
           { label: "Historical Society", id: "historical-society" },
         ].map(link => (
+          link.href ? (
+            <a key={link.href} href={link.href} onClick={() => setMenuOpen(false)} style={{
+              fontFamily: "'Libre Baskerville', serif",
+              fontSize: 20, fontWeight: 400, color: C.text,
+              textDecoration: "none", padding: "8px 32px", display: "block",
+            }}>
+              {link.label}
+            </a>
+          ) :
           <button key={link.id} onClick={() => handleNavClick(link.id)} style={{
             background: "none", border: "none", fontFamily: "'Libre Baskerville', serif",
             fontSize: 20, fontWeight: 400, color: C.text, cursor: "pointer", padding: "8px 32px",
@@ -10629,6 +10640,308 @@ function VoiceWidget() {
 }
 
 // ============================================================
+// 🗺️  DISCOVER PAGE
+// ============================================================
+function DiscoverPage() {
+  const [businesses, setBusinesses] = useState([]);
+  const [activeTab, setActiveTab] = useState(0);
+
+  useEffect(() => {
+    fetch("/api/businesses")
+      .then(r => r.json())
+      .then(data => {
+        const all = [...(data.free || []), ...(data.enhanced || []), ...(data.featured || []), ...(data.premium || [])];
+        setBusinesses(all);
+      })
+      .catch(() => {});
+  }, []);
+
+  const eatDrink = businesses.filter(b => b.category === "Food & Drink");
+  const stays = businesses.filter(b => b.category === "Stays & Rentals");
+
+  const TABS = [
+    { label: "Visiting for the Weekend", anchor: "discover-eat" },
+    { label: "Planning to Stay", anchor: "discover-stay" },
+    { label: "Thinking of Moving", anchor: "discover-community" },
+  ];
+
+  const THINGS_TO_DO = [
+    { icon: "🎣", label: "Fishing", sub: "Pike, bass, perch — world-class lake fishing", href: "/fishing" },
+    { icon: "🍷", label: "Wineries", sub: "5 local venues within 20 minutes", href: "/wineries" },
+    { icon: "🛍️", label: "The Village", sub: "Shops, cafe, wine tasting, the lighthouse", href: "/village" },
+    { icon: "📅", label: "Events", sub: "What's happening this week", href: "/happening" },
+    { icon: "⛵", label: "Boating", sub: "600+ slips, public launches, open water", href: "/devils-lake" },
+    { icon: "🏛️", label: "Local History", sub: "The story of this place", href: "/historical-society" },
+  ];
+
+  const DRIVE_TIMES = [
+    { city: "Tecumseh", time: "15 min", note: "Hospital · Grocery · Hardware" },
+    { city: "Adrian", time: "20 min", note: "Walmart · Meijer · Shopping" },
+    { city: "Jackson", time: "30 min", note: "Airport · Chateau Aeronautique" },
+    { city: "Ann Arbor", time: "55 min", note: "U of M Medical Center" },
+    { city: "Toledo", time: "50 min", note: "Ohio border city" },
+    { city: "Detroit (DTW)", time: "~70 min", note: "Major airport access" },
+  ];
+
+  const GOOD_TO_KNOW = {
+    emergency: [
+      { label: "ProMedica Herrick Hospital", detail: "Tecumseh · 15 min", phone: "(517) 424-3000" },
+      { label: "Lenawee County Sheriff", detail: "Non-emergency", phone: "(517) 264-5349" },
+      { label: "Fire / Emergency", detail: "Always dial 911", phone: "911" },
+    ],
+    water: [
+      { label: "Public Boat Launch", detail: "Manitou Beach Rd — free, trailer-friendly" },
+      { label: "DNR Ramp", detail: "Lake Shore Dr — state access point" },
+      { label: "Fishing License", detail: "Michigan DNR online or Walmart Adrian" },
+      { label: "Bait & Tackle", detail: "Available in Adrian (~20 min)" },
+    ],
+    everyday: [
+      { label: "Gas & Convenience", detail: "Near Manitou Beach Rd intersection" },
+      { label: "Grocery", detail: "Walmart Adrian (~20 min) · Meijer Tecumseh (~15 min)" },
+      { label: "Urgent Care", detail: "Tecumseh (~15 min)" },
+      { label: "Pharmacy", detail: "Tecumseh & Adrian (~15–20 min)" },
+    ],
+  };
+
+  const scrollToAnchor = (anchor) => {
+    const el = document.getElementById(anchor);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const BizCard = ({ biz }) => (
+    <div style={{ background: "#fff", border: `1px solid ${C.sand}`, borderRadius: 12, padding: "18px 20px", display: "flex", flexDirection: "column", gap: 6 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 4 }}>
+        {biz.logo ? (
+          <img src={biz.logo} alt={biz.name} style={{ width: 44, height: 44, borderRadius: 8, objectFit: "contain", border: `1px solid ${C.sand}`, background: "#faf5ef", padding: 4, flexShrink: 0 }} />
+        ) : (
+          <div style={{ width: 44, height: 44, borderRadius: 8, background: `${C.sage}15`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 20 }}>
+            {biz.category === "Food & Drink" ? "🍽️" : biz.category === "Stays & Rentals" ? "🏠" : "🏪"}
+          </div>
+        )}
+        <div style={{ minWidth: 0 }}>
+          <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, fontWeight: 400, color: C.dusk, lineHeight: 1.2 }}>{biz.name}</div>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, textTransform: "uppercase", letterSpacing: "0.08em", marginTop: 2 }}>{biz.category}</div>
+        </div>
+      </div>
+      {biz.tagline && <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.text, lineHeight: 1.5, margin: 0 }}>{biz.tagline}</p>}
+      <div style={{ display: "flex", gap: 12, alignItems: "center", marginTop: 4, flexWrap: "wrap" }}>
+        {biz.phone && <a href={`tel:${biz.phone}`} style={{ fontSize: 12, color: C.sage, textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif" }}>{biz.phone}</a>}
+        {biz.website && <a href={biz.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600 }}>Visit →</a>}
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{ background: C.cream, minHeight: "100vh" }}>
+      {/* Hero */}
+      <section style={{
+        backgroundImage: "url(/images/DL-boat.jpg)",
+        backgroundSize: "cover",
+        backgroundPosition: "center 40%",
+        backgroundAttachment: "fixed",
+        backgroundColor: C.dusk,
+        minHeight: "70vh",
+        display: "flex", alignItems: "center",
+        position: "relative", overflow: "hidden",
+      }}>
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg, rgba(10,18,24,0.78) 0%, rgba(10,18,24,0.48) 50%, rgba(10,18,24,0.88) 100%)" }} />
+        <div style={{ maxWidth: 960, margin: "0 auto", padding: "160px 24px 100px", position: "relative", zIndex: 1, width: "100%" }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 24 }}>
+            Manitou Beach · Devils Lake · Michigan
+          </div>
+          <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(40px, 7vw, 88px)", fontWeight: 400, color: C.cream, lineHeight: 1.0, margin: "0 0 24px 0" }}>
+            You'll wonder how<br />you missed it.
+          </h1>
+          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: "clamp(15px, 2vw, 19px)", color: "rgba(255,255,255,0.72)", maxWidth: 580, lineHeight: 1.6, margin: 0 }}>
+            Manitou Beach has a village, two lakes, wineries, world-class fishing, and neighbors who wave. Here's everything.
+          </p>
+        </div>
+      </section>
+
+      {/* Intent Tabs */}
+      <section style={{ background: C.dusk, borderBottom: `3px solid ${C.sage}40` }}>
+        <div style={{ maxWidth: 960, margin: "0 auto", padding: "0 24px", display: "flex", gap: 0, overflowX: "auto" }}>
+          {TABS.map((tab, i) => (
+            <button
+              key={i}
+              onClick={() => { setActiveTab(i); scrollToAnchor(tab.anchor); }}
+              style={{
+                background: "none", border: "none", borderBottom: activeTab === i ? `3px solid ${C.sage}` : "3px solid transparent",
+                color: activeTab === i ? C.cream : "rgba(255,255,255,0.5)",
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: activeTab === i ? 700 : 400,
+                padding: "18px 24px", cursor: "pointer", whiteSpace: "nowrap", transition: "all 0.2s",
+                marginBottom: -3,
+              }}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* Eat & Drink */}
+      <section id="discover-eat" style={{ maxWidth: 960, margin: "0 auto", padding: "72px 24px 0" }}>
+        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 4, textTransform: "uppercase", color: C.sage, marginBottom: 10 }}>Eat & Drink</div>
+        <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 400, color: C.dusk, margin: "0 0 8px 0" }}>Where locals actually eat.</h2>
+        <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.textMuted, margin: "0 0 36px 0" }}>No chains. Just the places people here actually go.</p>
+        {eatDrink.length > 0 ? (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 20 }}>
+            {eatDrink.map((biz, i) => <BizCard key={biz.id || i} biz={biz} />)}
+          </div>
+        ) : (
+          <div style={{ padding: "32px 0", color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14 }}>
+            Businesses loading — check back soon.
+          </div>
+        )}
+      </section>
+
+      {/* Stay the Night */}
+      <section id="discover-stay" style={{ maxWidth: 960, margin: "0 auto", padding: "72px 24px 0" }}>
+        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 4, textTransform: "uppercase", color: C.lakeBlue, marginBottom: 10 }}>Stay the Night</div>
+        <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 400, color: C.dusk, margin: "0 0 8px 0" }}>Your home base on the lake.</h2>
+        <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.textMuted, margin: "0 0 36px 0" }}>Wake up to the water. Stay long enough to earn local status.</p>
+        {stays.length > 0 ? (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 20 }}>
+            {stays.map((biz, i) => <BizCard key={biz.id || i} biz={biz} />)}
+          </div>
+        ) : (
+          <div style={{ padding: "32px 0", color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14 }}>
+            Listings coming soon — contact us to add yours.
+          </div>
+        )}
+      </section>
+
+      {/* Things to Do */}
+      <section style={{ maxWidth: 960, margin: "0 auto", padding: "72px 24px 0" }}>
+        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 4, textTransform: "uppercase", color: C.sunset, marginBottom: 10 }}>Things to Do</div>
+        <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 400, color: C.dusk, margin: "0 0 36px 0" }}>A full weekend. Easy.</h2>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 16 }}>
+          {THINGS_TO_DO.map((item, i) => (
+            <a key={i} href={item.href} style={{ textDecoration: "none" }}>
+              <div style={{
+                background: "#fff", border: `1px solid ${C.sand}`, borderRadius: 12, padding: "22px 20px",
+                transition: "box-shadow 0.2s, transform 0.2s", cursor: "pointer",
+              }}
+                onMouseEnter={e => { e.currentTarget.style.boxShadow = "0 6px 24px rgba(0,0,0,0.09)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
+                onMouseLeave={e => { e.currentTarget.style.boxShadow = "none"; e.currentTarget.style.transform = "none"; }}
+              >
+                <div style={{ fontSize: 32, marginBottom: 10 }}>{item.icon}</div>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.dusk, marginBottom: 6 }}>{item.label}</div>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, lineHeight: 1.4 }}>{item.sub}</div>
+                <div style={{ marginTop: 14, fontSize: 13, color: C.sage, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600 }}>Explore →</div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      {/* Community Life */}
+      <section id="discover-community" style={{ maxWidth: 960, margin: "0 auto", padding: "72px 24px 0" }}>
+        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 4, textTransform: "uppercase", color: C.sage, marginBottom: 10 }}>Community Life</div>
+        <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 400, color: C.dusk, margin: "0 0 8px 0" }}>People who've been here for generations.</h2>
+        <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.textMuted, margin: "0 0 36px 0" }}>This isn't a resort. It's a real community with real roots — and room for one more.</p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 16 }}>
+          {DEVILS_LAKE_COMMUNITY.map((org, i) => (
+            <a key={i} href={org.href} target={org.href.startsWith("http") ? "_blank" : "_self"} rel="noopener noreferrer" style={{ textDecoration: "none" }}>
+              <div style={{
+                background: "#fff", border: `1px solid ${C.sand}`, borderRadius: 12, padding: "20px 20px",
+                height: "100%", boxSizing: "border-box", transition: "box-shadow 0.2s",
+              }}
+                onMouseEnter={e => e.currentTarget.style.boxShadow = "0 4px 18px rgba(0,0,0,0.08)"}
+                onMouseLeave={e => e.currentTarget.style.boxShadow = "none"}
+              >
+                <div style={{ fontSize: 28, marginBottom: 10 }}>{org.icon}</div>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, fontWeight: 400, color: C.dusk, marginBottom: 6 }}>{org.title}</div>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, lineHeight: 1.5 }}>{org.desc}</div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      {/* Area Context — drive times */}
+      <section style={{ background: C.dusk, marginTop: 80 }}>
+        <div style={{ maxWidth: 960, margin: "0 auto", padding: "72px 24px" }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 4, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 10 }}>Location</div>
+          <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 400, color: C.cream, margin: "0 0 10px 0" }}>Closer than you think.</h2>
+          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: "rgba(255,255,255,0.55)", margin: "0 0 48px 0", maxWidth: 520 }}>
+            You're not in the middle of nowhere. You're in the middle of everything that matters — just far enough from the noise.
+          </p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", border: `1px solid rgba(255,255,255,0.08)`, borderRadius: 12, overflow: "hidden" }}>
+            {DRIVE_TIMES.map((row, i) => (
+              <div key={i} style={{ background: "rgba(255,255,255,0.04)", padding: "22px 24px", borderRight: "1px solid rgba(255,255,255,0.06)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, fontWeight: 400, color: C.cream, lineHeight: 1 }}>{row.time}</div>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 600, color: C.sage, marginTop: 6 }}>{row.city}</div>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.4)", marginTop: 4 }}>{row.note}</div>
+              </div>
+            ))}
+          </div>
+          <p style={{ fontFamily: "'Caveat', cursive", fontSize: 17, color: "rgba(255,255,255,0.4)", marginTop: 24, fontStyle: "italic" }}>
+            Year-round community. Quiet winters. Summers on the water.
+          </p>
+        </div>
+      </section>
+
+      {/* Good to Know */}
+      <section style={{ maxWidth: 960, margin: "0 auto", padding: "72px 24px 0" }}>
+        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 4, textTransform: "uppercase", color: C.sage, marginBottom: 10 }}>Good to Know</div>
+        <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 400, color: C.dusk, margin: "0 0 8px 0" }}>Everything you need to feel at home.</h2>
+        <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.textMuted, margin: "0 0 40px 0" }}>Practical info so you're never scrambling.</p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 24 }}>
+
+          <div style={{ background: "#fff", border: `1px solid ${C.sand}`, borderRadius: 12, padding: "24px 22px" }}>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "#c05a5a", marginBottom: 16 }}>Emergency & Health</div>
+            {GOOD_TO_KNOW.emergency.map((item, i) => (
+              <div key={i} style={{ marginBottom: 14, paddingBottom: 14, borderBottom: i < GOOD_TO_KNOW.emergency.length - 1 ? `1px solid ${C.sand}` : "none" }}>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, color: C.dusk }}>{item.label}</div>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted, marginTop: 2 }}>{item.detail}</div>
+                <a href={`tel:${item.phone}`} style={{ display: "inline-block", marginTop: 4, fontSize: 13, fontWeight: 700, color: "#c05a5a", textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif" }}>{item.phone}</a>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ background: "#fff", border: `1px solid ${C.sand}`, borderRadius: 12, padding: "24px 22px" }}>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.lakeBlue, marginBottom: 16 }}>On the Water</div>
+            {GOOD_TO_KNOW.water.map((item, i) => (
+              <div key={i} style={{ marginBottom: 14, paddingBottom: 14, borderBottom: i < GOOD_TO_KNOW.water.length - 1 ? `1px solid ${C.sand}` : "none" }}>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, color: C.dusk }}>{item.label}</div>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted, marginTop: 2, lineHeight: 1.4 }}>{item.detail}</div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ background: "#fff", border: `1px solid ${C.sand}`, borderRadius: 12, padding: "24px 22px" }}>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sage, marginBottom: 16 }}>Everyday Needs</div>
+            {GOOD_TO_KNOW.everyday.map((item, i) => (
+              <div key={i} style={{ marginBottom: 14, paddingBottom: 14, borderBottom: i < GOOD_TO_KNOW.everyday.length - 1 ? `1px solid ${C.sand}` : "none" }}>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, color: C.dusk }}>{item.label}</div>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted, marginTop: 2, lineHeight: 1.4 }}>{item.detail}</div>
+              </div>
+            ))}
+          </div>
+
+        </div>
+      </section>
+
+      {/* CTA Footer */}
+      <section style={{ maxWidth: 960, margin: "72px auto 0", padding: "64px 24px", borderTop: `1px solid ${C.sand}`, textAlign: "center" }}>
+        <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 3.5vw, 32px)", fontWeight: 400, color: C.dusk, marginBottom: 12 }}>
+          This is your community too.
+        </div>
+        <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.textMuted, maxWidth: 460, margin: "0 auto 36px" }}>
+          Get your business in front of the people who live here, visit here, and move here.
+        </p>
+        <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
+          <Btn href="/featured" variant="primary">List Your Business</Btn>
+          <Btn href="/promote" variant="sunset">List an Event</Btn>
+        </div>
+      </section>
+      <div style={{ height: 80 }} />
+    </div>
+  );
+}
+
+// ============================================================
 // 🌐  APP ROOT
 // ============================================================
 export default function App() {
@@ -10651,6 +10964,7 @@ export default function App() {
         <Route path="/dispatch/:slug" element={<DispatchArticlePage />} />
         <Route path="/yeti-admin" element={<YetiAdminPage />} />
         <Route path="/claim/:slug" element={<ClaimPage />} />
+        <Route path="/discover" element={<DiscoverPage />} />
       </Routes>
       <VoiceWidget />
     </BrowserRouter>
