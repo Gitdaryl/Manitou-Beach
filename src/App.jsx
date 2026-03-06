@@ -5261,11 +5261,11 @@ function FeaturedPage() {
   };
 
   const benefits = [
-    { icon: "⚡", title: "Top Placement", desc: "Featured businesses appear first — above every free listing in the directory." },
-    { icon: "🎨", title: "Premium Card Design", desc: "Dark card with shimmer effect, your logo prominently displayed, and a direct link to your website." },
-    { icon: "📱", title: "Click-to-Call", desc: "Your phone number displayed and clickable on mobile — customers call you directly from the listing." },
-    { icon: "📰", title: "Newsletter Feature", desc: "Featured and Premium tiers include a shoutout in The Manitou Beach Dispatch — our community newsletter." },
-    { icon: "🎙️", title: "Holly & Yeti Mention", desc: "Premium tier businesses get mentioned on the Holly & Yeti podcast — reaching the broader Devils Lake audience." },
+    { icon: "⚡", title: "Be First", desc: "When someone searches for a business like yours, you're what they find. Not buried three pages down — first." },
+    { icon: "🎨", title: "Look Like You Belong", desc: "A branded card with your logo tells people you're the real deal — an established part of this community, worth visiting." },
+    { icon: "📱", title: "One Tap Away", desc: "Customers decide in seconds. Your number, clickable on mobile, means no friction between them and your door." },
+    { icon: "📰", title: "In the Weekly Conversation", desc: "The Dispatch lands in local inboxes every week. Your business gets mentioned in the same breath as community news." },
+    { icon: "🎙️", title: "A Warm Introduction", desc: "Premium tier gets you a shoutout on the Holly & Yeti podcast — that's not just traffic, it's a neighbor telling hundreds of people you're worth knowing." },
   ];
 
   return (
@@ -5284,12 +5284,12 @@ function FeaturedPage() {
             Free Listings · Featured Upgrades Available
           </div>
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(36px, 7vw, 72px)", fontWeight: 400, color: C.cream, lineHeight: 1, margin: "0 0 20px 0" }}>
-            {isFull ? <>Join the Waitlist</> : <>Get Your Business<br />In Front of the Community</>}
+            {isFull ? <>Join the Waitlist</> : <>Your neighbors are already<br />looking for you.</>}
           </h1>
           <p style={{ fontSize: "clamp(14px, 1.5vw, 17px)", color: "rgba(255,255,255,0.45)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto 0" }}>
             {isFull
               ? "All founding spots are taken — but join the waitlist and we'll hold your early-bird rate when the next one opens."
-              : "List your business on Manitou Beach for free. Or choose a paid tier for top placement, logo display, and priority visibility — priced to grow with the community."}
+              : "This is where Manitou Beach looks first. Make sure you're here when they do."}
           </p>
         </FadeIn>
       </section>
@@ -5314,8 +5314,8 @@ function FeaturedPage() {
         <div style={{ maxWidth: 1000, margin: "0 auto" }}>
           <FadeIn>
             <div style={{ textAlign: "center", marginBottom: 56 }}>
-              <SectionLabel>What You Get</SectionLabel>
-              <SectionTitle center>More Than a Listing</SectionTitle>
+              <SectionLabel>What Changes</SectionLabel>
+              <SectionTitle center>This is what being found feels like</SectionTitle>
             </div>
           </FadeIn>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 20 }}>
@@ -5345,7 +5345,7 @@ function FeaturedPage() {
                   Choose Your Visibility
                 </h2>
                 <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 16, maxWidth: 520, margin: "0 auto 32px" }}>
-                  Get discovered by the Manitou Beach community. Lock in your rate today — it's yours forever, no matter what happens next.
+                  Your rate is set the day you join — and it's yours forever. As the community grows, your value goes up. Your cost doesn't.
                 </p>
                 {/* Live subscriber counter */}
                 <div style={{ maxWidth: 460, margin: "0 auto", background: "rgba(255,255,255,0.05)", borderRadius: 14, padding: "20px 24px", border: "1px solid rgba(255,255,255,0.1)" }}>
@@ -8063,14 +8063,11 @@ function PromotePage() {
         textAlign: "center",
       }}>
         <SectionLabel light>Reach the Community</SectionLabel>
-        <h2 style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: "clamp(13px, 1.5vw, 16px)", fontWeight: 500, color: "rgba(255,255,255,0.5)", margin: "0 0 10px 0", letterSpacing: 0.5, lineHeight: 1.5 }}>
-          List your event for free and get more people to attend by
-        </h2>
         <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(36px, 6vw, 68px)", fontWeight: 400, color: C.cream, margin: "0 0 20px 0", lineHeight: 1.1 }}>
-          Promoting Your Event
+          Your event deserves a full room.
         </h1>
         <p style={{ fontSize: 16, color: "rgba(255,255,255,0.5)", lineHeight: 1.8, maxWidth: 560, margin: "0 auto 0" }}>
-          Free calendar listing gets you in front of the community. Paid promotion puts you in the hero, the newsletter, and on the pages your audience already visits. More visibility, more attendance.
+          Manitou Beach people want things to do. Give them something to show up for — and the place to find it.
         </p>
       </section>
 
@@ -8133,7 +8130,7 @@ function PromotePage() {
                 <span style={{ fontSize: 13, color: form.tier === "free" ? "rgba(255,255,255,0.35)" : C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>always free</span>
               </div>
               <div style={{ fontSize: 13, color: form.tier === "free" ? "rgba(255,255,255,0.55)" : C.textLight, lineHeight: 1.6 }}>
-                Your event listed in the community calendar — reviewed and live within 48 hours. No credit card required.
+                Your event on the community calendar where locals actually check what's happening this weekend. Live within 48 hours, no card required.
               </div>
             </div>
 
