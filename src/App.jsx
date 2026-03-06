@@ -10826,13 +10826,16 @@ function DiscoverPage() {
     { city: 'Detroit (DTW)', time: '~70 min', note: 'Major airport access' },
   ];
 
+  const subScrollTo = (id) => { window.location.href = '/#' + id; };
+
   return (
     <div style={{ background: C.cream, minHeight: '100vh' }}>
+      <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
 
       {/* ── Compact Title Bar ── */}
       <div style={{ backgroundImage: 'url(/images/DL-boat.jpg)', backgroundSize: 'cover', backgroundPosition: 'center 40%', position: 'relative', minHeight: 158, display: 'flex', alignItems: 'center' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(10,18,24,0.9) 0%, rgba(10,18,24,0.55) 100%)' }} />
-        <div style={{ position: 'relative', zIndex: 1, padding: '0 32px', maxWidth: 960, margin: '0 auto', width: '100%' }}>
+        <div style={{ position: 'relative', zIndex: 1, padding: '70px 32px 0', maxWidth: 960, margin: '0 auto', width: '100%' }}>
           <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 5, textTransform: 'uppercase', color: 'rgba(255,255,255,0.32)', marginBottom: 10 }}>
             Manitou Beach · Devils Lake · Michigan
           </div>
@@ -11040,6 +11043,7 @@ function DiscoverPage() {
       </section>
       <div style={{ height: 60 }} />
       <style>{`@keyframes discspin { to { transform: rotate(360deg); } }`}</style>
+      <Footer scrollTo={subScrollTo} />
     </div>
   );
 }
