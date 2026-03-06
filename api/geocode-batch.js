@@ -1,5 +1,5 @@
 // Batch geocode all businesses in Notion that have an address but no lat/lng
-// Protected: requires X-Admin-Token header matching ADMIN_TOKEN env var
+// Protected: requires X-Admin-Token header matching ADMIN_SECRET env var
 
 async function geocodeAddress(address) {
   const q = encodeURIComponent(address + ', Michigan, USA');
@@ -19,7 +19,7 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const token = req.headers['x-admin-token'];
-  if (!token || token !== process.env.ADMIN_TOKEN) {
+  if (!token || token !== process.env.ADMIN_SECRET) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
