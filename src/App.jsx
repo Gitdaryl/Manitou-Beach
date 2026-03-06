@@ -398,6 +398,17 @@ const VILLAGE_BUSINESSES = [
     website: "https://www.facebook.com/profile.php?id=100092384540558",
     phone: "(517) 260-6910",
   },
+  {
+    id: 29,
+    name: "Lakes Preservation League",
+    category: "Community",
+    description: "Mission to Preserve and Protect the Lakes for Current and Future Generations. Advocacy, stewardship, and community engagement for the Irish Hills lakes.",
+    village: true,
+    featured: false,
+    logo: null,
+    website: "https://lakespreservationleague.org/",
+    phone: "(989) 205-5079",
+  },
 ];
 
 // Category → accent color mapping (used by directory + business rows)
@@ -672,7 +683,7 @@ function DiagonalDivider({ topColor, bottomColor, height = 80 }) {
   );
 }
 
-function Btn({ children, onClick, href, variant = "primary", small = false, target, rel }) {
+function Btn({ children, onClick, href, variant = "primary", small = false, target, rel, style: styleProp }) {
   const base = {
     display: "inline-block",
     fontFamily: "'Libre Franklin', sans-serif",
@@ -702,7 +713,7 @@ function Btn({ children, onClick, href, variant = "primary", small = false, targ
       target={target}
       rel={rel}
       className="btn-animated"
-      style={{ ...base, ...styles[variant] }}
+      style={{ ...base, ...styles[variant], ...(styleProp || {}) }}
     >
       {children}
     </Tag>
@@ -2123,7 +2134,7 @@ function VideoSection() {
 // ============================================================
 const EVENT_CATEGORIES = ["Live Music", "Food & Social", "Sports & Outdoors", "Community", "Arts & Culture", "Markets & Vendors", "Other"];
 
-function HappeningSubmitCTA() {
+function HappeningSubmitCTA({ simple = false }) {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -2170,6 +2181,23 @@ function HappeningSubmitCTA() {
 
   const inputStyle = { width: "100%", padding: "11px 14px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.12)", fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", background: "rgba(255,255,255,0.06)", color: C.cream, outline: "none", boxSizing: "border-box" };
   const labelStyle = { display: "block", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" };
+
+  if (simple) {
+    return (
+      <section style={{ background: C.night, padding: "72px 24px", textAlign: "center" }}>
+        <FadeIn>
+          <SectionLabel light>Get Involved</SectionLabel>
+          <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 38px)", fontWeight: 400, color: C.cream, margin: "0 0 12px 0" }}>
+            Have an event to share?
+          </h3>
+          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.4)", margin: "0 0 32px 0", lineHeight: 1.75 }}>
+            Free community calendar listings — reviewed and live within 48 hours.
+          </p>
+          <Btn href="/promote" variant="sunset">Submit Free Listing</Btn>
+        </FadeIn>
+      </section>
+    );
+  }
 
   if (submitted) {
     return (
@@ -2282,9 +2310,6 @@ function HappeningSubmitCTA() {
             <button type="submit" disabled={submitting} style={{ padding: "13px 32px", background: C.sunset, color: "#fff", border: "none", borderRadius: 6, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: submitting ? "not-allowed" : "pointer", opacity: submitting ? 0.6 : 1, transition: "all 0.2s" }}>
               {submitting ? "Submitting..." : "Submit Free Listing"}
             </button>
-            <a href="/promote" style={{ fontSize: 13, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", textDecoration: "none", opacity: 0.8 }}>
-              Want paid promotion? →
-            </a>
           </div>
         </form>
       </div>
@@ -4123,35 +4148,18 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
               Dispatch
             </button>
 
-            {/* Promote link — accent styled */}
-            <button
-              onClick={() => { window.location.href = "/promote"; }}
-              style={{
-                background: solid ? `${C.sunset}12` : `${C.sunset}22`,
-                border: `1px solid ${C.sunset}40`,
-                color: solid ? C.sunset : C.sunsetLight,
-                fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700,
-                letterSpacing: 0.5, padding: "7px 14px", borderRadius: 6, cursor: "pointer",
-                transition: "all 0.2s", whiteSpace: "nowrap",
-              }}
-              onMouseEnter={e => { e.currentTarget.style.background = C.sunset; e.currentTarget.style.color = "#fff"; e.currentTarget.style.borderColor = C.sunset; }}
-              onMouseLeave={e => { e.currentTarget.style.background = solid ? `${C.sunset}12` : `${C.sunset}22`; e.currentTarget.style.color = solid ? C.sunset : C.sunsetLight; e.currentTarget.style.borderColor = `${C.sunset}40`; }}
-            >
-              ★ Promote
-            </button>
-
             {/* Community dropdown */}
             <div ref={comRef} style={{ position: "relative" }}>
               <button
                 onClick={() => setComOpen(o => !o)}
                 style={{
                   background: comOpen ? `${C.sage}18` : "transparent",
-                  border: "none", color: "rgba(255,255,255,0.7)",
+                  border: "none", color: solid ? C.text : "rgba(255,255,255,0.7)",
                   fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 500, letterSpacing: 0.5,
                   padding: "7px 13px", borderRadius: 6, cursor: "pointer", transition: "all 0.2s", whiteSpace: "nowrap",
                 }}
-                onMouseEnter={e => { e.currentTarget.style.color = C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
-                onMouseLeave={e => { if (!comOpen) { e.currentTarget.style.color = "rgba(255,255,255,0.7)"; e.currentTarget.style.background = "transparent"; } }}
+                onMouseEnter={e => { e.currentTarget.style.color = solid ? C.dusk : C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
+                onMouseLeave={e => { if (!comOpen) { e.currentTarget.style.color = solid ? C.text : "rgba(255,255,255,0.7)"; e.currentTarget.style.background = "transparent"; } }}
               >
                 Community ▾
               </button>
@@ -4192,8 +4200,8 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
               )}
             </div>
             <div style={{ marginLeft: 8, display: "flex", gap: 8 }}>
-              <Btn href="/featured" variant="outline" small>List Your Business</Btn>
-              <Btn href="/promote" variant="sunset" small>Promote</Btn>
+              <Btn href="/featured" variant="primary" small>List Your Business</Btn>
+              <Btn href="/promote" variant="sunset" small style={{ textAlign: "left" }}>List Your Event</Btn>
             </div>
           </div>
 
@@ -4309,7 +4317,7 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
         </a>
         <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 10, alignItems: "center" }}>
           <Btn href="/featured" variant="primary">List Your Business</Btn>
-          <Btn href="/promote" variant="sunset">Promote Your Event</Btn>
+          <Btn href="/promote" variant="sunset" style={{ textAlign: "left" }}>List Your Event</Btn>
         </div>
       </div>
 
@@ -4486,7 +4494,7 @@ function HappeningPage() {
       </div>
 
       <VideoSection />
-      <HappeningSubmitCTA />
+      <HappeningSubmitCTA simple />
       <Footer scrollTo={subScrollTo} />
       <EventLightbox event={lightboxEvent} onClose={() => setLightboxEvent(null)} />
     </div>
@@ -4543,9 +4551,6 @@ function HomePage() {
       <HollyYetiSection />
       <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
       <LivingSection />
-      <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
-      <SubmitSection />
-      <PricingSection />
       <AboutSection />
       <Footer scrollTo={scrollTo} />
     </div>
@@ -5245,7 +5250,6 @@ function FeaturedPage() {
     { icon: "⚡", title: "Top Placement", desc: "Featured businesses appear first — above every free listing in the directory." },
     { icon: "🎨", title: "Premium Card Design", desc: "Dark card with shimmer effect, your logo prominently displayed, and a direct link to your website." },
     { icon: "📱", title: "Click-to-Call", desc: "Your phone number displayed and clickable on mobile — customers call you directly from the listing." },
-    { icon: "🎬", title: "Spotlight Video", desc: "Upgrade to Premium and get a cinematic video produced by Yeti Groove Media, embedded right in your listing." },
     { icon: "📰", title: "Newsletter Feature", desc: "Featured and Premium tiers include a shoutout in The Manitou Beach Dispatch — our community newsletter." },
     { icon: "🎙️", title: "Holly & Yeti Mention", desc: "Premium tier businesses get mentioned on the Holly & Yeti podcast — reaching the broader Devils Lake audience." },
   ];
@@ -5263,27 +5267,16 @@ function FeaturedPage() {
         <div style={{ position: "absolute", bottom: -60, left: -60, width: 200, height: 200, borderRadius: "50%", background: `${C.sage}06`, pointerEvents: "none" }} />
         <FadeIn>
           <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunsetLight, marginBottom: 12 }}>
-            {isFull ? "Early Bird Spots — Waitlist Open" : "Early Bird Pricing — Limited Spots"}
+            Free Listings · Featured Upgrades Available
           </div>
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(36px, 7vw, 72px)", fontWeight: 400, color: C.cream, lineHeight: 1, margin: "0 0 20px 0" }}>
-            {isFull ? <>Early Bird Spots<br />Are Full</> : <>Put Your Business<br />in the Spotlight</>}
+            {isFull ? <>Join the Waitlist</> : <>Get Your Business<br />In Front of the Community</>}
           </h1>
-          <p style={{ fontSize: "clamp(14px, 1.5vw, 17px)", color: "rgba(255,255,255,0.45)", lineHeight: 1.7, maxWidth: 520, margin: "0 auto 28px" }}>
+          <p style={{ fontSize: "clamp(14px, 1.5vw, 17px)", color: "rgba(255,255,255,0.45)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto 0" }}>
             {isFull
               ? "All founding spots are taken — but join the waitlist and we'll hold your early-bird rate when the next one opens."
-              : "Manitou Beach is growing. The businesses who get in early get seen first — and remembered longest."}
+              : "List your business on Manitou Beach for free. Or choose a paid tier for top placement, logo display, and priority visibility — priced to grow with the community."}
           </p>
-          {/* Urgency bar */}
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 12, background: "rgba(255,255,255,0.06)", borderRadius: 30, padding: "10px 24px", border: "1px solid rgba(255,255,255,0.08)" }}>
-            <div style={{ display: "flex", gap: 4 }}>
-              {Array.from({ length: SPOTS_TOTAL }).map((_, i) => (
-                <div key={i} style={{ width: 10, height: 10, borderRadius: "50%", background: i < spotsLeft ? C.sunset : "rgba(255,255,255,0.1)", transition: "all 0.3s" }} />
-              ))}
-            </div>
-            <span style={{ fontSize: 12, color: isFull ? "rgba(255,255,255,0.4)" : C.sunsetLight, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>
-              {isFull ? "All spots filled — waitlist open" : `${spotsLeft} of ${SPOTS_TOTAL} early bird spots left`}
-            </span>
-          </div>
         </FadeIn>
       </section>
 
@@ -5363,30 +5356,32 @@ function FeaturedPage() {
               </div>
             </FadeIn>
 
-            {/* Free tier */}
-            <div style={{ marginBottom: 16 }}>
-              <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "18px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
-                <div style={{ display: "flex", gap: 28, alignItems: "center", flexWrap: "wrap" }}>
-                  <div>
-                    <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.driftwood, marginBottom: 3 }}>Free</div>
-                    <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream }}>$0 <span style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif" }}>forever</span></div>
-                  </div>
-                  <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
-                    {["Name in directory", "Category & phone", "Community visibility"].map(f => (
-                      <span key={f} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "rgba(255,255,255,0.4)" }}>
-                        <span style={{ color: C.driftwood, fontWeight: 700 }}>✓</span>{f}
-                      </span>
-                    ))}
-                  </div>
+            {/* All tiers: Free + Paid in one unified grid */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16 }}>
+              {/* Free tier card */}
+              <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, padding: "28px 22px", display: "flex", flexDirection: "column" }}>
+                <div style={{ color: C.driftwood, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", marginBottom: 10 }}>Free</div>
+                <div style={{ marginBottom: 4 }}>
+                  <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 36, color: C.cream, fontWeight: 700 }}>$0</span>
+                  <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 14, fontFamily: "'Libre Franklin', sans-serif" }}> forever</span>
                 </div>
-                <a href="/#submit" style={{ padding: "9px 22px", borderRadius: 8, border: `1.5px solid ${C.driftwood}55`, color: C.driftwood, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none", whiteSpace: "nowrap" }}>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.3)", marginBottom: 16, letterSpacing: 0.3 }}>
+                  Always free · no credit card
+                </div>
+                <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px 0", flexGrow: 1, display: "flex", flexDirection: "column", gap: 9 }}>
+                  {["Name in directory", "Category & phone", "Community visibility"].map(f => (
+                    <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 9 }}>
+                      <span style={{ color: C.driftwood, fontSize: 13, marginTop: 2, flexShrink: 0, fontWeight: 700 }}>✓</span>
+                      <span style={{ color: "rgba(255,255,255,0.45)", fontSize: 13, lineHeight: 1.45 }}>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                <a href="#submit" style={{ display: "block", width: "100%", padding: "11px 0", borderRadius: 8, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none", textAlign: "center", border: `1.5px solid ${C.driftwood}55`, color: C.driftwood }}>
                   Get Listed Free
                 </a>
               </div>
-            </div>
 
-            {/* Paid tiers */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 16 }}>
+              {/* Paid tiers */}
               {PAID_TIERS.map(tier => (
                 <div key={tier.id} style={{ background: tier.badge ? "rgba(255,255,255,0.07)" : "rgba(255,255,255,0.04)", border: `1px solid ${tier.badge ? tier.color + "45" : "rgba(255,255,255,0.09)"}`, borderRadius: 16, padding: "28px 22px", position: "relative", display: "flex", flexDirection: "column" }}>
                   {tier.badge && (
@@ -5426,6 +5421,9 @@ function FeaturedPage() {
           </div>
         </section>
       )}
+
+      {/* Free business listing form */}
+      {!isFull && <SubmitSection />}
 
       {/* Waitlist form — shown when all spots are taken */}
       {isFull && (
@@ -7981,7 +7979,7 @@ function PromotePage() {
   const isCancelled = params.get("cancelled") === "true";
   const successEvent = params.get("event") || "";
 
-  const [form, setForm] = useState({ eventName: "", email: "", tier: "banner_1p", promoPages: [], notes: "" });
+  const [form, setForm] = useState({ eventName: "", email: "", tier: "free", promoPages: [], notes: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -8000,6 +7998,10 @@ function PromotePage() {
   const handleSubmit = async () => {
     if (!form.eventName || !form.email || !form.tier) {
       setError("Please fill in your event name, email, and promotion package.");
+      return;
+    }
+    if (form.tier === "free") {
+      document.getElementById("submit-event")?.scrollIntoView({ behavior: "smooth" });
       return;
     }
     if (needsPages && form.promoPages.length === 0) {
@@ -8047,11 +8049,14 @@ function PromotePage() {
         textAlign: "center",
       }}>
         <SectionLabel light>Reach the Community</SectionLabel>
-        <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(32px, 5vw, 60px)", fontWeight: 400, color: C.cream, margin: "0 0 20px 0", lineHeight: 1.15 }}>
-          Promote Your Event
+        <h2 style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: "clamp(13px, 1.5vw, 16px)", fontWeight: 500, color: "rgba(255,255,255,0.5)", margin: "0 0 10px 0", letterSpacing: 0.5, lineHeight: 1.5 }}>
+          List your event for free and get more people to attend by
+        </h2>
+        <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(36px, 6vw, 68px)", fontWeight: 400, color: C.cream, margin: "0 0 20px 0", lineHeight: 1.1 }}>
+          Promoting Your Event
         </h1>
-        <p style={{ fontSize: 17, color: "rgba(255,255,255,0.55)", lineHeight: 1.8, maxWidth: 580, margin: "0 auto 0" }}>
-          Manitou Beach is where the community gathers. Put your event front and centre — on the hero, in the newsletter, or on the pages your audience already visits.
+        <p style={{ fontSize: 16, color: "rgba(255,255,255,0.5)", lineHeight: 1.8, maxWidth: 560, margin: "0 auto 0" }}>
+          Free calendar listing gets you in front of the community. Paid promotion puts you in the hero, the newsletter, and on the pages your audience already visits. More visibility, more attendance.
         </p>
       </section>
 
@@ -8090,6 +8095,34 @@ function PromotePage() {
             </span>
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 20 }}>
+            {/* Free listing card */}
+            <div
+              onClick={() => setForm(f => ({ ...f, tier: "free" }))}
+              style={{
+                background: form.tier === "free" ? `linear-gradient(135deg, ${C.night}, ${C.lakeDark})` : C.cream,
+                border: `2px solid ${form.tier === "free" ? C.sage : C.sand}`,
+                borderRadius: 14, padding: "24px 22px", cursor: "pointer",
+                transition: "all 0.2s",
+                boxShadow: form.tier === "free" ? "0 8px 24px rgba(0,0,0,0.15)" : "none",
+              }}
+              onMouseEnter={e => { if (form.tier !== "free") e.currentTarget.style.borderColor = C.lakeBlue; }}
+              onMouseLeave={e => { if (form.tier !== "free") e.currentTarget.style.borderColor = C.sand; }}
+            >
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 2.5, textTransform: "uppercase", color: form.tier === "free" ? C.sunsetLight : C.textMuted, marginBottom: 8 }}>
+                Community Calendar
+              </div>
+              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: form.tier === "free" ? C.cream : C.text, marginBottom: 6 }}>
+                Free Listing
+              </div>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 10 }}>
+                <span style={{ fontSize: 28, fontWeight: 700, color: form.tier === "free" ? C.cream : C.text, fontFamily: "'Libre Franklin', sans-serif" }}>$0</span>
+                <span style={{ fontSize: 13, color: form.tier === "free" ? "rgba(255,255,255,0.35)" : C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>always free</span>
+              </div>
+              <div style={{ fontSize: 13, color: form.tier === "free" ? "rgba(255,255,255,0.55)" : C.textLight, lineHeight: 1.6 }}>
+                Your event listed in the community calendar — reviewed and live within 48 hours. No credit card required.
+              </div>
+            </div>
+
             {PROMOTE_PACKAGES.map(pkg => {
               const isSelected = form.tier === pkg.id;
               return (
@@ -8174,10 +8207,14 @@ function PromotePage() {
                   onChange={e => setForm(f => ({ ...f, tier: e.target.value, promoPages: [] }))}
                   style={{ width: "100%", padding: "12px 14px", borderRadius: 8, border: `1px solid ${C.sand}`, fontSize: 15, fontFamily: "'Libre Franklin', sans-serif", boxSizing: "border-box", background: C.warmWhite, color: C.text, outline: "none" }}
                 >
+                  <option value="free">Free Listing — Community Calendar — $0</option>
                   {PROMOTE_PACKAGES.map(pkg => (
                     <option key={pkg.id} value={pkg.id}>{pkg.label} — {pkg.detail} — {pkg.price}</option>
                   ))}
                 </select>
+                {form.tier === "free" && (
+                  <div style={{ fontSize: 13, color: C.textLight, marginTop: 6, lineHeight: 1.5 }}>Your event will be listed in the community calendar — reviewed and live within 48 hours. No payment needed.</div>
+                )}
                 {selectedPkg && (
                   <div style={{ fontSize: 13, color: C.textLight, marginTop: 6, lineHeight: 1.5 }}>{selectedPkg.desc}</div>
                 )}
@@ -8236,7 +8273,7 @@ function PromotePage() {
                   width: "100%",
                 }}
               >
-                {loading ? "Redirecting to Checkout…" : `Purchase — ${selectedPkg?.price || ""}`}
+                {loading ? "Redirecting to Checkout…" : form.tier === "free" ? "Submit Free Listing →" : `Purchase — ${selectedPkg?.price || ""}`}
               </button>
 
               <p style={{ fontSize: 12, color: C.textMuted, textAlign: "center", lineHeight: 1.6, margin: 0 }}>
@@ -8595,7 +8632,7 @@ function DispatchArticlePage() {
                         {a.coverImage ? (
                           <img src={a.coverImage} alt={a.title} style={{ width: 84, height: 62, objectFit: 'cover', flexShrink: 0 }} />
                         ) : (
-                          <div style={{ width: 84, height: 62, background: `url(/images/dispatch-header.jpg) center/cover`, flexShrink: 0, position: 'relative', overflow: 'hidden' }}>
+                          <div style={{ width: 84, height: 62, background: `url(/images/dispatch-header-web.jpg) center/cover`, flexShrink: 0, position: 'relative', overflow: 'hidden' }}>
                             <div style={{ position: 'absolute', inset: 0, background: `${C.dusk}99` }} />
                           </div>
                         )}
@@ -8717,7 +8754,7 @@ function DispatchPreviewSection() {
                   {article.coverImage ? (
                     <img src={article.coverImage} alt={article.title} style={{ width: '100%', height: 180, objectFit: 'cover', display: 'block' }} />
                   ) : (
-                    <div style={{ width: '100%', height: 180, background: 'url(/images/dispatch-header.jpg) center/cover', position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ width: '100%', height: 180, background: 'url(/images/dispatch-header-web.jpg) center/cover', position: 'relative', overflow: 'hidden' }}>
                       <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(135deg, ${C.dusk}cc, ${C.lakeBlue}99)` }} />
                       <span style={{ position: 'absolute', bottom: 12, left: 16, fontFamily: "'Caveat', cursive", fontSize: 22, color: 'rgba(255,255,255,0.75)' }}>The Dispatch</span>
                     </div>
@@ -8779,7 +8816,7 @@ function DispatchPage() {
 
       {/* Hero */}
       <section style={{
-        backgroundImage: 'url(/images/dispatch-header.jpg)',
+        backgroundImage: 'url(/images/dispatch-header-web.jpg)',
         backgroundSize: 'cover',
         backgroundPosition: 'center 40%',
         minHeight: 380,
@@ -8831,7 +8868,7 @@ function DispatchPage() {
                   {article.coverImage ? (
                     <img src={article.coverImage} alt={article.title} style={{ width: '100%', height: 200, objectFit: 'cover', display: 'block' }} />
                   ) : (
-                    <div style={{ width: '100%', height: 200, background: 'url(/images/dispatch-header.jpg) center/cover', position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ width: '100%', height: 200, background: 'url(/images/dispatch-header-web.jpg) center/cover', position: 'relative', overflow: 'hidden' }}>
                       <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(135deg, ${C.dusk}cc, ${C.lakeBlue}99)` }} />
                       <span style={{ position: 'absolute', bottom: 14, left: 18, fontFamily: "'Caveat', cursive", fontSize: 28, color: 'rgba(255,255,255,0.75)' }}>The Dispatch</span>
                     </div>
