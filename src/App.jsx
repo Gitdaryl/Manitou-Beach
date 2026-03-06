@@ -10640,303 +10640,391 @@ function VoiceWidget() {
 }
 
 // ============================================================
-// 🗺️  DISCOVER PAGE
+// 🗺️  DISCOVER PAGE — MAP-FIRST COMMUNITY GUIDE
 // ============================================================
+
+const DISCOVER_MAP_CENTER = { lat: 41.9642, lng: -84.0186 };
+
+const DISCOVER_CATS = [
+  { id: 'all',        label: 'All',                icon: '🗺️', color: '#7A8E72' },
+  { id: 'food',       label: 'Food & Drink',        icon: '🍽️', color: '#D4845A', notionKey: 'Food & Drink' },
+  { id: 'healthcare', label: 'Healthcare',           icon: '🏥', color: '#c05a5a' },
+  { id: 'grocery',    label: 'Grocery & Pharmacy',  icon: '🛒', color: '#5B7E95' },
+  { id: 'wineries',   label: 'Wineries',             icon: '🍷', color: '#7B4F2E' },
+  { id: 'water',      label: 'Boat & Water',         icon: '⛵', color: '#3A6B85' },
+  { id: 'schools',    label: 'Schools',              icon: '🎓', color: '#6B7EC8' },
+  { id: 'stays',      label: 'Stays & Rentals',      icon: '🏠', color: '#2D3B45', notionKey: 'Stays & Rentals' },
+  { id: 'shopping',   label: 'Shopping',             icon: '🛍️', color: '#B07D62', notionKey: 'Shopping & Gifts' },
+  { id: 'community',  label: 'Community',            icon: '🏛️', color: '#7A8E72' },
+];
+
+const DISCOVER_POIS = [
+  // Healthcare
+  { id: 'herrick', name: 'ProMedica Herrick Hospital', cat: 'healthcare', sub: 'Full Hospital · ER', address: '500 E Pottawatamie St, Tecumseh, MI', phone: '(517) 424-3000', note: '~15 min from Manitou Beach', lat: 42.0046, lng: -83.9448, website: 'https://www.promedica.org/herrick-hospital' },
+  { id: 'allegiance', name: 'Henry Ford Allegiance Health', cat: 'healthcare', sub: 'Full Hospital · Level II Trauma', address: '205 N East Ave, Jackson, MI', phone: '(517) 788-4800', note: '~30 min · Major medical center', lat: 42.2459, lng: -84.3997, website: 'https://www.henryford.com/locations/allegiance' },
+  { id: 'urgent-tec', name: 'Urgent Care – Tecumseh', cat: 'healthcare', sub: 'Urgent Care', address: 'Tecumseh, MI', phone: '(517) 423-3200', note: '~15 min · Walk-in, no appointment needed', lat: 42.0035, lng: -83.9452 },
+  { id: 'cvs-tec', name: 'CVS Pharmacy – Tecumseh', cat: 'healthcare', sub: 'Pharmacy · MinuteClinic', address: 'W Chicago Blvd, Tecumseh, MI', note: '~15 min', lat: 42.0012, lng: -83.9460 },
+  { id: 'walgreens-adr', name: 'Walgreens – Adrian', cat: 'healthcare', sub: 'Pharmacy', address: 'N Main St, Adrian, MI', note: '~20 min · Open late', lat: 41.9042, lng: -84.0373 },
+  // Grocery
+  { id: 'walmart-adr', name: 'Walmart Supercenter', cat: 'grocery', sub: 'Grocery · Pharmacy · Bait & Tackle', address: '1357 N Main St, Adrian, MI', note: '~20 min', lat: 41.9236, lng: -84.0421 },
+  { id: 'meijer-tec', name: 'Meijer', cat: 'grocery', sub: 'Grocery · Gas Station', address: 'W Chicago Blvd, Tecumseh, MI', note: '~15 min', lat: 42.0040, lng: -83.9510 },
+  // Boat & Water
+  { id: 'launch-main', name: 'Public Boat Launch – Devils Lake', cat: 'water', sub: 'Free Public Ramp', address: 'Manitou Beach Rd, Manitou Beach, MI', note: 'Free · Paved ramp · Trailer parking', lat: 41.9638, lng: -84.0188 },
+  { id: 'dnr-ramp', name: 'DNR Access Site', cat: 'water', sub: 'State DNR Ramp', address: 'Lake Shore Dr, Manitou Beach, MI', note: 'Kayaks · Canoes · Small boats', lat: 41.9600, lng: -84.0152 },
+  { id: 'marina', name: 'Manitou Beach Marina', cat: 'water', sub: 'Marina · 600+ Slips', address: 'Devils Lake, Manitou Beach, MI', note: 'Seasonal dockage available', lat: 41.9648, lng: -84.0195 },
+  // Schools
+  { id: 'tec-hs', name: 'Tecumseh High School', cat: 'schools', sub: 'Public HS · Grades 9–12', address: '400 N Maumee St, Tecumseh, MI', phone: '(517) 423-3366', note: '~15 min · Tecumseh Public Schools', lat: 42.0048, lng: -83.9457 },
+  { id: 'tec-ms', name: 'Tecumseh Middle School', cat: 'schools', sub: 'Public MS · Grades 6–8', address: 'Tecumseh, MI', phone: '(517) 423-3366', note: '~15 min', lat: 42.0030, lng: -83.9450 },
+  { id: 'blissfield-hs', name: 'Blissfield High School', cat: 'schools', sub: 'Public HS · Grades 9–12', address: '860 N Lane St, Blissfield, MI', phone: '(517) 486-2205', note: '~25 min · Blissfield Community Schools', lat: 41.8330, lng: -83.8660 },
+  { id: 'adrian-hs', name: 'Adrian High School', cat: 'schools', sub: 'Public HS · Grades 9–12', address: '785 Riverside Ave, Adrian, MI', phone: '(517) 263-2115', note: '~20 min · Adrian Public Schools', lat: 41.9057, lng: -84.0366 },
+  { id: 'lenawee-christian', name: 'Lenawee Christian School', cat: 'schools', sub: 'Private K–12', address: 'Adrian, MI', phone: '(517) 265-5020', note: '~20 min · Faith-based PreK–12', lat: 41.9050, lng: -84.0430 },
+  // Wineries
+  { id: 'chateau-aero', name: 'Chateau Aeronautique Winery', cat: 'wineries', sub: 'Winery & Event Venue', address: '1849 E Parnall Rd, Jackson, MI', phone: '(517) 795-3620', note: '~30 min · Live music weekends · All-weather biergarten', lat: 42.2370, lng: -84.3810, website: 'https://chateauaeronautique.com' },
+  { id: 'cherry-creek', name: 'Cherry Creek Cellars', cat: 'wineries', sub: 'Small-Batch Winery', address: '5765 Wamplers Lake Rd, Brooklyn, MI', phone: '(517) 592-4315', note: '~20 min · Laid-back tasting room', lat: 42.1082, lng: -84.2264, website: 'https://cherrycreekcellars.com' },
+  { id: 'ang-co-wine', name: 'Ang & Co', cat: 'wineries', sub: 'Satellite Tasting Room', address: '141 N Lakeview Blvd, Manitou Beach, MI', phone: '(517) 547-6030', note: 'In the Village · Michigan wine + gifts', lat: 41.9640, lng: -84.0180, website: 'https://www.angandco.net' },
+  // Community
+  { id: 'yacht-club-loc', name: 'Devils Lake Yacht Club', cat: 'community', sub: 'Sailing & Social Club', address: 'Devils Lake, Manitou Beach, MI', note: 'Since the 1940s · Regattas · Friday Fish Fry', lat: 41.9652, lng: -84.0205, website: 'https://www.devilslakeyachtclub.com' },
+  { id: 'mens-club-loc', name: "Devils & Round Lake Men's Club", cat: 'community', sub: 'Civic Organization', address: 'Manitou Beach, MI', note: 'Tip-Up Festival · Firecracker 7K · Shop with a Cop', lat: 41.9645, lng: -84.0175, href: '/mens-club' },
+  { id: 'mbhrs-loc', name: 'Manitou Beach Historic Renovation Society', cat: 'community', sub: 'Historical & Arts Org', address: 'Manitou Beach Village', note: 'Village restoration · Arts · Community stewardship', lat: 41.9638, lng: -84.0178, href: '/historical-society' },
+  { id: 'village-loc', name: 'Manitou Beach Village', cat: 'community', sub: 'Village District', address: 'N Lakeview Blvd, Manitou Beach, MI', note: 'Shops · Cafe · Wine tasting · The Lighthouse', lat: 41.9641, lng: -84.0182, href: '/village' },
+];
+
+const DISCOVER_MAP_STYLES = [
+  { elementType: 'geometry', stylers: [{ color: '#f2ede3' }] },
+  { elementType: 'labels.text.fill', stylers: [{ color: '#3B3228' }] },
+  { elementType: 'labels.text.stroke', stylers: [{ color: '#faf6ef' }] },
+  { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#9dc3d4' }] },
+  { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#5B7E95' }] },
+  { featureType: 'landscape.natural', elementType: 'geometry', stylers: [{ color: '#e8e0d0' }] },
+  { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#ddd5c0' }] },
+  { featureType: 'road.arterial', elementType: 'geometry', stylers: [{ color: '#cdc0a8' }] },
+  { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#b8a88a' }] },
+  { featureType: 'poi.park', elementType: 'geometry', stylers: [{ color: '#c5d5a8' }] },
+  { featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] },
+  { featureType: 'administrative.locality', elementType: 'labels.text.fill', stylers: [{ color: '#7A8E72' }] },
+];
+
+function createDiscoverPin(color) {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="36" viewBox="0 0 28 36"><path d="M14 0C6.27 0 0 6.27 0 14c0 9.33 14 22 14 22s14-12.67 14-22C28 6.27 21.73 0 14 0z" fill="${color}" stroke="rgba(0,0,0,0.12)" stroke-width="1"/><circle cx="14" cy="14" r="5.5" fill="white" opacity="0.95"/></svg>`;
+  return 'data:image/svg+xml,' + encodeURIComponent(svg);
+}
+
+function buildDiscoverInfoWindow(poi) {
+  const cat = DISCOVER_CATS.find(c => c.id === poi.cat);
+  const color = cat?.color || '#7A8E72';
+  const dir = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent((poi.address || poi.name) + (poi.address ? '' : ', MI'))}`;
+  return `<div style="padding:6px 8px 10px;max-width:250px;font-family:system-ui,sans-serif;line-height:1.45">
+    <div style="font-size:13px;font-weight:700;color:#2D3B45;margin-bottom:3px">${poi.name}</div>
+    <div style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:${color};font-weight:700;margin-bottom:6px">${poi.sub}</div>
+    ${poi.address ? `<div style="font-size:11px;color:#666;margin-bottom:4px">${poi.address}</div>` : ''}
+    ${poi.phone ? `<a href="tel:${poi.phone.replace(/\D/g, '')}" style="display:block;font-size:12px;font-weight:600;color:#7A8E72;margin-bottom:4px;text-decoration:none">${poi.phone}</a>` : ''}
+    ${poi.note ? `<div style="font-size:11px;color:#999;margin-bottom:8px;font-style:italic">${poi.note}</div>` : ''}
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <a href="${dir}" target="_blank" style="font-size:12px;font-weight:700;color:#5B7E95;text-decoration:none">Get Directions →</a>
+      ${poi.website ? `<a href="${poi.website}" target="_blank" style="font-size:12px;font-weight:700;color:#D4845A;text-decoration:none">Website →</a>` : ''}
+      ${poi.href ? `<a href="${poi.href}" style="font-size:12px;font-weight:700;color:#D4845A;text-decoration:none">Learn More →</a>` : ''}
+    </div>
+  </div>`;
+}
+
 function DiscoverPage() {
+  const [activeCategory, setActiveCategory] = useState('all');
   const [businesses, setBusinesses] = useState([]);
-  const [activeTab, setActiveTab] = useState(0);
+  const [mapReady, setMapReady] = useState(false);
+  const mapDivRef = useRef(null);
+  const mapObjRef = useRef(null);
+  const googleRef = useRef(null);
+  const markersRef = useRef([]);
+  const infoWindowRef = useRef(null);
 
   useEffect(() => {
-    fetch("/api/businesses")
+    fetch('/api/businesses')
       .then(r => r.json())
-      .then(data => {
-        const all = [...(data.free || []), ...(data.enhanced || []), ...(data.featured || []), ...(data.premium || [])];
-        setBusinesses(all);
-      })
+      .then(d => setBusinesses([...(d.free || []), ...(d.enhanced || []), ...(d.featured || []), ...(d.premium || [])]))
       .catch(() => {});
   }, []);
 
-  const eatDrink = businesses.filter(b => b.category === "Food & Drink");
-  const stays = businesses.filter(b => b.category === "Stays & Rentals");
+  // Load Google Maps
+  useEffect(() => {
+    const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+    if (!apiKey || !mapDivRef.current) return;
+    let active = true;
+    import('@googlemaps/js-api-loader').then(({ Loader }) => {
+      new Loader({ apiKey, version: 'weekly' }).load().then(google => {
+        if (!active || !mapDivRef.current) return;
+        googleRef.current = google;
+        mapObjRef.current = new google.maps.Map(mapDivRef.current, {
+          center: DISCOVER_MAP_CENTER,
+          zoom: 11,
+          mapTypeControl: false,
+          streetViewControl: false,
+          fullscreenControl: true,
+          zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_BOTTOM },
+          styles: DISCOVER_MAP_STYLES,
+        });
+        infoWindowRef.current = new google.maps.InfoWindow();
+        setMapReady(true);
+      });
+    });
+    return () => { active = false; };
+  }, []);
 
-  const TABS = [
-    { label: "Visiting for the Weekend", anchor: "discover-eat" },
-    { label: "Planning to Stay", anchor: "discover-stay" },
-    { label: "Thinking of Moving", anchor: "discover-community" },
-  ];
+  // Update markers when category or map readiness changes
+  useEffect(() => {
+    const google = googleRef.current;
+    const map = mapObjRef.current;
+    if (!google || !map) return;
+    markersRef.current.forEach(m => m.setMap(null));
+    markersRef.current = [];
+    const pois = activeCategory === 'all' ? DISCOVER_POIS : DISCOVER_POIS.filter(p => p.cat === activeCategory);
+    pois.forEach((poi, idx) => {
+      const color = DISCOVER_CATS.find(c => c.id === poi.cat)?.color || '#7A8E72';
+      const marker = new google.maps.Marker({
+        position: { lat: poi.lat, lng: poi.lng },
+        map,
+        title: poi.name,
+        icon: { url: createDiscoverPin(color), scaledSize: new google.maps.Size(28, 36), anchor: new google.maps.Point(14, 36) },
+        animation: google.maps.Animation.DROP,
+        zIndex: idx,
+      });
+      marker.addListener('click', () => {
+        infoWindowRef.current.setContent(buildDiscoverInfoWindow(poi));
+        infoWindowRef.current.open(map, marker);
+      });
+      markersRef.current.push(marker);
+    });
+    if (pois.length > 1) {
+      const bounds = new google.maps.LatLngBounds();
+      pois.forEach(p => bounds.extend({ lat: p.lat, lng: p.lng }));
+      map.fitBounds(bounds, { top: 60, right: 40, bottom: 40, left: 40 });
+    } else if (pois.length === 1) {
+      map.panTo({ lat: pois[0].lat, lng: pois[0].lng });
+      map.setZoom(14);
+    }
+  }, [activeCategory, mapReady]);
 
-  const THINGS_TO_DO = [
-    { icon: "🎣", label: "Fishing", sub: "Pike, bass, perch — world-class lake fishing", href: "/fishing" },
-    { icon: "🍷", label: "Wineries", sub: "5 local venues within 20 minutes", href: "/wineries" },
-    { icon: "🛍️", label: "The Village", sub: "Shops, cafe, wine tasting, the lighthouse", href: "/village" },
-    { icon: "📅", label: "Events", sub: "What's happening this week", href: "/happening" },
-    { icon: "⛵", label: "Boating", sub: "600+ slips, public launches, open water", href: "/devils-lake" },
-    { icon: "🏛️", label: "Local History", sub: "The story of this place", href: "/historical-society" },
-  ];
+  const activeCat = DISCOVER_CATS.find(c => c.id === activeCategory) || DISCOVER_CATS[0];
+  const filteredPois = activeCategory === 'all' ? DISCOVER_POIS : DISCOVER_POIS.filter(p => p.cat === activeCategory);
+  const filteredBizzes = activeCat.notionKey ? businesses.filter(b => b.category === activeCat.notionKey) : [];
+  const showBizCTA = !!activeCat.notionKey && filteredBizzes.length === 0;
 
   const DRIVE_TIMES = [
-    { city: "Tecumseh", time: "15 min", note: "Hospital · Grocery · Hardware" },
-    { city: "Adrian", time: "20 min", note: "Walmart · Meijer · Shopping" },
-    { city: "Jackson", time: "30 min", note: "Airport · Chateau Aeronautique" },
-    { city: "Ann Arbor", time: "55 min", note: "U of M Medical Center" },
-    { city: "Toledo", time: "50 min", note: "Ohio border city" },
-    { city: "Detroit (DTW)", time: "~70 min", note: "Major airport access" },
+    { city: 'Tecumseh', time: '15 min', note: 'Hospital · Grocery · Hardware' },
+    { city: 'Adrian', time: '20 min', note: 'Walmart · Meijer · Shopping' },
+    { city: 'Jackson', time: '30 min', note: 'Airport · Chateau Aeronautique' },
+    { city: 'Ann Arbor', time: '55 min', note: 'U of M Medical Center' },
+    { city: 'Toledo', time: '50 min', note: 'Ohio border city' },
+    { city: 'Detroit (DTW)', time: '~70 min', note: 'Major airport access' },
   ];
 
-  const GOOD_TO_KNOW = {
-    emergency: [
-      { label: "ProMedica Herrick Hospital", detail: "Tecumseh · 15 min", phone: "(517) 424-3000" },
-      { label: "Lenawee County Sheriff", detail: "Non-emergency", phone: "(517) 264-5349" },
-      { label: "Fire / Emergency", detail: "Always dial 911", phone: "911" },
-    ],
-    water: [
-      { label: "Public Boat Launch", detail: "Manitou Beach Rd — free, trailer-friendly" },
-      { label: "DNR Ramp", detail: "Lake Shore Dr — state access point" },
-      { label: "Fishing License", detail: "Michigan DNR online or Walmart Adrian" },
-      { label: "Bait & Tackle", detail: "Available in Adrian (~20 min)" },
-    ],
-    everyday: [
-      { label: "Gas & Convenience", detail: "Near Manitou Beach Rd intersection" },
-      { label: "Grocery", detail: "Walmart Adrian (~20 min) · Meijer Tecumseh (~15 min)" },
-      { label: "Urgent Care", detail: "Tecumseh (~15 min)" },
-      { label: "Pharmacy", detail: "Tecumseh & Adrian (~15–20 min)" },
-    ],
-  };
-
-  const scrollToAnchor = (anchor) => {
-    const el = document.getElementById(anchor);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-
-  const BizCard = ({ biz }) => (
-    <div style={{ background: "#fff", border: `1px solid ${C.sand}`, borderRadius: 12, padding: "18px 20px", display: "flex", flexDirection: "column", gap: 6 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 4 }}>
-        {biz.logo ? (
-          <img src={biz.logo} alt={biz.name} style={{ width: 44, height: 44, borderRadius: 8, objectFit: "contain", border: `1px solid ${C.sand}`, background: "#faf5ef", padding: 4, flexShrink: 0 }} />
-        ) : (
-          <div style={{ width: 44, height: 44, borderRadius: 8, background: `${C.sage}15`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 20 }}>
-            {biz.category === "Food & Drink" ? "🍽️" : biz.category === "Stays & Rentals" ? "🏠" : "🏪"}
-          </div>
-        )}
-        <div style={{ minWidth: 0 }}>
-          <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, fontWeight: 400, color: C.dusk, lineHeight: 1.2 }}>{biz.name}</div>
-          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, textTransform: "uppercase", letterSpacing: "0.08em", marginTop: 2 }}>{biz.category}</div>
-        </div>
-      </div>
-      {biz.tagline && <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.text, lineHeight: 1.5, margin: 0 }}>{biz.tagline}</p>}
-      <div style={{ display: "flex", gap: 12, alignItems: "center", marginTop: 4, flexWrap: "wrap" }}>
-        {biz.phone && <a href={`tel:${biz.phone}`} style={{ fontSize: 12, color: C.sage, textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif" }}>{biz.phone}</a>}
-        {biz.website && <a href={biz.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600 }}>Visit →</a>}
-      </div>
-    </div>
-  );
-
   return (
-    <div style={{ background: C.cream, minHeight: "100vh" }}>
-      {/* Hero */}
-      <section style={{
-        backgroundImage: "url(/images/DL-boat.jpg)",
-        backgroundSize: "cover",
-        backgroundPosition: "center 40%",
-        backgroundAttachment: "fixed",
-        backgroundColor: C.dusk,
-        minHeight: "70vh",
-        display: "flex", alignItems: "center",
-        position: "relative", overflow: "hidden",
-      }}>
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg, rgba(10,18,24,0.78) 0%, rgba(10,18,24,0.48) 50%, rgba(10,18,24,0.88) 100%)" }} />
-        <div style={{ maxWidth: 960, margin: "0 auto", padding: "160px 24px 100px", position: "relative", zIndex: 1, width: "100%" }}>
-          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 24 }}>
+    <div style={{ background: C.cream, minHeight: '100vh' }}>
+
+      {/* ── Compact Title Bar ── */}
+      <div style={{ backgroundImage: 'url(/images/DL-boat.jpg)', backgroundSize: 'cover', backgroundPosition: 'center 40%', position: 'relative', minHeight: 158, display: 'flex', alignItems: 'center' }}>
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(10,18,24,0.9) 0%, rgba(10,18,24,0.55) 100%)' }} />
+        <div style={{ position: 'relative', zIndex: 1, padding: '0 32px', maxWidth: 960, margin: '0 auto', width: '100%' }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 5, textTransform: 'uppercase', color: 'rgba(255,255,255,0.32)', marginBottom: 10 }}>
             Manitou Beach · Devils Lake · Michigan
           </div>
-          <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(40px, 7vw, 88px)", fontWeight: 400, color: C.cream, lineHeight: 1.0, margin: "0 0 24px 0" }}>
-            You'll wonder how<br />you missed it.
+          <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(28px, 5vw, 52px)', fontWeight: 400, color: C.cream, margin: '0 0 6px 0', lineHeight: 1.1 }}>
+            Discover Manitou Beach
           </h1>
-          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: "clamp(15px, 2vw, 19px)", color: "rgba(255,255,255,0.72)", maxWidth: 580, lineHeight: 1.6, margin: 0 }}>
-            Manitou Beach has a village, two lakes, wineries, world-class fishing, and neighbors who wave. Here's everything.
+          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.55)', margin: 0 }}>
+            Food, healthcare, schools, water access, wineries, community — all in one place.
           </p>
         </div>
-      </section>
+      </div>
 
-      {/* Intent Tabs */}
-      <section style={{ background: C.dusk, borderBottom: `3px solid ${C.sage}40` }}>
-        <div style={{ maxWidth: 960, margin: "0 auto", padding: "0 24px", display: "flex", gap: 0, overflowX: "auto" }}>
-          {TABS.map((tab, i) => (
-            <button
-              key={i}
-              onClick={() => { setActiveTab(i); scrollToAnchor(tab.anchor); }}
-              style={{
-                background: "none", border: "none", borderBottom: activeTab === i ? `3px solid ${C.sage}` : "3px solid transparent",
-                color: activeTab === i ? C.cream : "rgba(255,255,255,0.5)",
-                fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: activeTab === i ? 700 : 400,
-                padding: "18px 24px", cursor: "pointer", whiteSpace: "nowrap", transition: "all 0.2s",
-                marginBottom: -3,
-              }}
+      {/* ── Sticky Category Chips ── */}
+      <div style={{ position: 'sticky', top: 64, zIndex: 100, background: 'rgba(250,246,239,0.97)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${C.sand}`, boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '12px 20px', display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
+          {DISCOVER_CATS.map(cat => {
+            const active = activeCategory === cat.id;
+            return (
+              <button key={cat.id} onClick={() => setActiveCategory(cat.id)} style={{
+                flexShrink: 0, background: active ? cat.color : '#fff', color: active ? '#fff' : C.text,
+                border: `1.5px solid ${active ? cat.color : C.sand}`, borderRadius: 24, padding: '7px 16px',
+                fontSize: 13, fontWeight: active ? 700 : 500, fontFamily: "'Libre Franklin', sans-serif",
+                cursor: 'pointer', transition: 'all 0.18s', whiteSpace: 'nowrap',
+                display: 'flex', alignItems: 'center', gap: 6,
+                boxShadow: active ? `0 2px 8px ${cat.color}40` : 'none',
+              }}>
+                <span style={{ fontSize: 15 }}>{cat.icon}</span>
+                {cat.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ── Google Map ── */}
+      <div style={{ position: 'relative', width: '100%', height: 'clamp(300px, 52vh, 540px)', background: '#e8e0d0' }}>
+        <div ref={mapDivRef} style={{ width: '100%', height: '100%' }} />
+        {!mapReady && (
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f2ede3', flexDirection: 'column', gap: 12 }}>
+            <div style={{ width: 36, height: 36, borderRadius: '50%', border: `3px solid ${C.sage}`, borderTopColor: 'transparent', animation: 'discspin 0.8s linear infinite' }} />
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted }}>Loading map…</div>
+          </div>
+        )}
+        {activeCategory !== 'all' && (
+          <div style={{ position: 'absolute', top: 12, left: 12, background: 'rgba(250,246,239,0.96)', backdropFilter: 'blur(8px)', borderRadius: 8, padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 2px 12px rgba(0,0,0,0.12)' }}>
+            <div style={{ width: 10, height: 10, borderRadius: '50%', background: activeCat.color, flexShrink: 0 }} />
+            <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, color: C.dusk }}>{activeCat.label}</span>
+            <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted }}>· {filteredPois.length} location{filteredPois.length !== 1 ? 's' : ''}</span>
+          </div>
+        )}
+      </div>
+
+      {/* ── List Panel ── */}
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '40px 20px' }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, marginBottom: 28, flexWrap: 'wrap' }}>
+          <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(20px, 3vw, 28px)', fontWeight: 400, color: C.dusk, margin: 0 }}>
+            {activeCategory === 'all' ? 'Everything nearby' : activeCat.label}
+          </h2>
+          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted }}>
+            {filteredPois.length + filteredBizzes.length} place{filteredPois.length + filteredBizzes.length !== 1 ? 's' : ''}
+          </span>
+          {activeCategory === 'healthcare' && (
+            <div style={{ background: '#c05a5a10', border: '1px solid #c05a5a28', borderRadius: 8, padding: '6px 14px', fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: '#c05a5a', lineHeight: 1.45, maxWidth: 500 }}>
+              <strong>Tip:</strong> Always call your insurance first — network coverage varies by plan. Use the number on your card or your insurer's provider finder.
+            </div>
+          )}
+        </div>
+
+        {filteredPois.length > 0 && (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 14, marginBottom: filteredBizzes.length > 0 || showBizCTA ? 40 : 0 }}>
+            {filteredPois.map(poi => {
+              const catInfo = DISCOVER_CATS.find(c => c.id === poi.cat);
+              const color = catInfo?.color || '#7A8E72';
+              const dir = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent((poi.address || poi.name) + (poi.address ? '' : ', MI'))}`;
+              return (
+                <div key={poi.id} style={{ background: '#fff', border: `1px solid ${C.sand}`, borderRadius: 12, overflow: 'hidden', display: 'flex', transition: 'box-shadow 0.2s' }}
+                  onMouseEnter={e => e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.09)'}
+                  onMouseLeave={e => e.currentTarget.style.boxShadow = 'none'}
+                >
+                  <div style={{ width: 4, background: color, flexShrink: 0 }} />
+                  <div style={{ padding: '15px 18px', flex: 1 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4, gap: 8 }}>
+                      <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, fontWeight: 400, color: C.dusk, lineHeight: 1.3 }}>{poi.name}</div>
+                      <span style={{ fontSize: 16, flexShrink: 0 }}>{catInfo?.icon}</span>
+                    </div>
+                    <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, marginBottom: 5 }}>{poi.sub}</div>
+                    {poi.address && <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.text, marginBottom: 3 }}>{poi.address}</div>}
+                    {poi.note && <div style={{ fontFamily: "'Caveat', cursive", fontSize: 14, color: C.textMuted, marginBottom: 8, fontStyle: 'italic' }}>{poi.note}</div>}
+                    <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginTop: 8 }}>
+                      {poi.phone && <a href={`tel:${poi.phone.replace(/\D/g, '')}`} style={{ fontSize: 12, fontWeight: 600, color: C.sage, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>{poi.phone}</a>}
+                      <a href={dir} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, fontWeight: 600, color: C.lakeBlue, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>Get Directions →</a>
+                      {poi.website && <a href={poi.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, fontWeight: 600, color: C.sunset, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>Website →</a>}
+                      {poi.href && <a href={poi.href} style={{ fontSize: 12, fontWeight: 600, color: C.sunset, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>Learn More →</a>}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {filteredBizzes.length > 0 && (
+          <>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: C.textMuted, marginBottom: 16 }}>Local Businesses</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 14 }}>
+              {filteredBizzes.map((biz, i) => (
+                <div key={biz.id || i} style={{ background: '#fff', border: `1px solid ${C.sand}`, borderRadius: 12, padding: '18px 20px', display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+                  {biz.logo
+                    ? <img src={biz.logo} alt={biz.name} style={{ width: 46, height: 46, borderRadius: 8, objectFit: 'contain', border: `1px solid ${C.sand}`, background: '#faf5ef', padding: 4, flexShrink: 0 }} />
+                    : <div style={{ width: 46, height: 46, borderRadius: 8, background: `${activeCat.color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, flexShrink: 0 }}>{activeCat.icon}</div>
+                  }
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, color: C.dusk, marginBottom: 3 }}>{biz.name}</div>
+                    {biz.tagline && <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted, lineHeight: 1.4, marginBottom: 8 }}>{biz.tagline}</div>}
+                    <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                      {biz.phone && <a href={`tel:${biz.phone}`} style={{ fontSize: 12, fontWeight: 600, color: C.sage, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>{biz.phone}</a>}
+                      {biz.website && <a href={biz.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, fontWeight: 600, color: C.lakeBlue, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>Visit →</a>}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        {showBizCTA && (
+          <div style={{ background: `${activeCat.color}08`, border: `1.5px dashed ${activeCat.color}45`, borderRadius: 16, padding: '40px 32px', textAlign: 'center', marginTop: filteredPois.length > 0 ? 32 : 0 }}>
+            <div style={{ fontSize: 40, marginBottom: 12 }}>{activeCat.icon}</div>
+            <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.dusk, marginBottom: 8 }}>
+              No {activeCat.label} businesses listed yet.
+            </div>
+            <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.textMuted, maxWidth: 380, margin: '0 auto 24px' }}>
+              Own a {activeCat.label.toLowerCase()} business near Manitou Beach? This is where locals and visitors look.
+            </p>
+            <Btn href="/featured" variant="primary" small>Get Listed — from $9/mo</Btn>
+          </div>
+        )}
+      </div>
+
+      {/* ── Explore More ── */}
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 20px 52px' }}>
+        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: C.textMuted, marginBottom: 14 }}>Explore More</div>
+        <div style={{ display: 'flex', gap: 10, overflowX: 'auto', scrollbarWidth: 'none', paddingBottom: 4 }}>
+          {[
+            { icon: '🎣', label: 'Fishing Guide', href: '/fishing' },
+            { icon: '🍷', label: 'Wineries', href: '/wineries' },
+            { icon: '🛍️', label: 'The Village', href: '/village' },
+            { icon: '📅', label: 'Events', href: '/happening' },
+            { icon: '⛵', label: 'Devils Lake', href: '/devils-lake' },
+            { icon: '💧', label: 'Round Lake', href: '/round-lake' },
+            { icon: '🏛️', label: 'Local History', href: '/historical-society' },
+          ].map((tile, i) => (
+            <a key={i} href={tile.href} style={{ flexShrink: 0, textDecoration: 'none', background: '#fff', border: `1px solid ${C.sand}`, borderRadius: 10, padding: '11px 20px', display: 'flex', alignItems: 'center', gap: 8, transition: 'box-shadow 0.18s, transform 0.18s' }}
+              onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 4px 14px rgba(0,0,0,0.09)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+              onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'none'; }}
             >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-      </section>
-
-      {/* Eat & Drink */}
-      <section id="discover-eat" style={{ maxWidth: 960, margin: "0 auto", padding: "72px 24px 0" }}>
-        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 4, textTransform: "uppercase", color: C.sage, marginBottom: 10 }}>Eat & Drink</div>
-        <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 400, color: C.dusk, margin: "0 0 8px 0" }}>Where locals actually eat.</h2>
-        <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.textMuted, margin: "0 0 36px 0" }}>No chains. Just the places people here actually go.</p>
-        {eatDrink.length > 0 ? (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 20 }}>
-            {eatDrink.map((biz, i) => <BizCard key={biz.id || i} biz={biz} />)}
-          </div>
-        ) : (
-          <div style={{ padding: "32px 0", color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14 }}>
-            Businesses loading — check back soon.
-          </div>
-        )}
-      </section>
-
-      {/* Stay the Night */}
-      <section id="discover-stay" style={{ maxWidth: 960, margin: "0 auto", padding: "72px 24px 0" }}>
-        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 4, textTransform: "uppercase", color: C.lakeBlue, marginBottom: 10 }}>Stay the Night</div>
-        <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 400, color: C.dusk, margin: "0 0 8px 0" }}>Your home base on the lake.</h2>
-        <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.textMuted, margin: "0 0 36px 0" }}>Wake up to the water. Stay long enough to earn local status.</p>
-        {stays.length > 0 ? (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 20 }}>
-            {stays.map((biz, i) => <BizCard key={biz.id || i} biz={biz} />)}
-          </div>
-        ) : (
-          <div style={{ padding: "32px 0", color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14 }}>
-            Listings coming soon — contact us to add yours.
-          </div>
-        )}
-      </section>
-
-      {/* Things to Do */}
-      <section style={{ maxWidth: 960, margin: "0 auto", padding: "72px 24px 0" }}>
-        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 4, textTransform: "uppercase", color: C.sunset, marginBottom: 10 }}>Things to Do</div>
-        <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 400, color: C.dusk, margin: "0 0 36px 0" }}>A full weekend. Easy.</h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 16 }}>
-          {THINGS_TO_DO.map((item, i) => (
-            <a key={i} href={item.href} style={{ textDecoration: "none" }}>
-              <div style={{
-                background: "#fff", border: `1px solid ${C.sand}`, borderRadius: 12, padding: "22px 20px",
-                transition: "box-shadow 0.2s, transform 0.2s", cursor: "pointer",
-              }}
-                onMouseEnter={e => { e.currentTarget.style.boxShadow = "0 6px 24px rgba(0,0,0,0.09)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
-                onMouseLeave={e => { e.currentTarget.style.boxShadow = "none"; e.currentTarget.style.transform = "none"; }}
-              >
-                <div style={{ fontSize: 32, marginBottom: 10 }}>{item.icon}</div>
-                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.dusk, marginBottom: 6 }}>{item.label}</div>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, lineHeight: 1.4 }}>{item.sub}</div>
-                <div style={{ marginTop: 14, fontSize: 13, color: C.sage, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600 }}>Explore →</div>
-              </div>
+              <span style={{ fontSize: 18 }}>{tile.icon}</span>
+              <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, color: C.dusk, whiteSpace: 'nowrap' }}>{tile.label}</span>
             </a>
           ))}
         </div>
-      </section>
+      </div>
 
-      {/* Community Life */}
-      <section id="discover-community" style={{ maxWidth: 960, margin: "0 auto", padding: "72px 24px 0" }}>
-        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 4, textTransform: "uppercase", color: C.sage, marginBottom: 10 }}>Community Life</div>
-        <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 400, color: C.dusk, margin: "0 0 8px 0" }}>People who've been here for generations.</h2>
-        <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.textMuted, margin: "0 0 36px 0" }}>This isn't a resort. It's a real community with real roots — and room for one more.</p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 16 }}>
-          {DEVILS_LAKE_COMMUNITY.map((org, i) => (
-            <a key={i} href={org.href} target={org.href.startsWith("http") ? "_blank" : "_self"} rel="noopener noreferrer" style={{ textDecoration: "none" }}>
-              <div style={{
-                background: "#fff", border: `1px solid ${C.sand}`, borderRadius: 12, padding: "20px 20px",
-                height: "100%", boxSizing: "border-box", transition: "box-shadow 0.2s",
-              }}
-                onMouseEnter={e => e.currentTarget.style.boxShadow = "0 4px 18px rgba(0,0,0,0.08)"}
-                onMouseLeave={e => e.currentTarget.style.boxShadow = "none"}
-              >
-                <div style={{ fontSize: 28, marginBottom: 10 }}>{org.icon}</div>
-                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, fontWeight: 400, color: C.dusk, marginBottom: 6 }}>{org.title}</div>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, lineHeight: 1.5 }}>{org.desc}</div>
-              </div>
-            </a>
-          ))}
-        </div>
-      </section>
-
-      {/* Area Context — drive times */}
-      <section style={{ background: C.dusk, marginTop: 80 }}>
-        <div style={{ maxWidth: 960, margin: "0 auto", padding: "72px 24px" }}>
-          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 4, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 10 }}>Location</div>
-          <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 400, color: C.cream, margin: "0 0 10px 0" }}>Closer than you think.</h2>
-          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: "rgba(255,255,255,0.55)", margin: "0 0 48px 0", maxWidth: 520 }}>
+      {/* ── Drive Times ── */}
+      <section style={{ background: C.dusk }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '64px 20px' }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 4, textTransform: 'uppercase', color: 'rgba(255,255,255,0.28)', marginBottom: 10 }}>Location</div>
+          <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 400, color: C.cream, margin: '0 0 10px 0' }}>Closer than you think.</h2>
+          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: 'rgba(255,255,255,0.48)', margin: '0 0 40px 0', maxWidth: 480 }}>
             You're not in the middle of nowhere. You're in the middle of everything that matters — just far enough from the noise.
           </p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", border: `1px solid rgba(255,255,255,0.08)`, borderRadius: 12, overflow: "hidden" }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 12, overflow: 'hidden' }}>
             {DRIVE_TIMES.map((row, i) => (
-              <div key={i} style={{ background: "rgba(255,255,255,0.04)", padding: "22px 24px", borderRight: "1px solid rgba(255,255,255,0.06)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, fontWeight: 400, color: C.cream, lineHeight: 1 }}>{row.time}</div>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 600, color: C.sage, marginTop: 6 }}>{row.city}</div>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.4)", marginTop: 4 }}>{row.note}</div>
+              <div key={i} style={{ background: 'rgba(255,255,255,0.04)', padding: '20px 22px', borderRight: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, fontWeight: 400, color: C.cream, lineHeight: 1 }}>{row.time}</div>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, color: C.sage, marginTop: 6 }}>{row.city}</div>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: 'rgba(255,255,255,0.32)', marginTop: 4 }}>{row.note}</div>
               </div>
             ))}
           </div>
-          <p style={{ fontFamily: "'Caveat', cursive", fontSize: 17, color: "rgba(255,255,255,0.4)", marginTop: 24, fontStyle: "italic" }}>
+          <p style={{ fontFamily: "'Caveat', cursive", fontSize: 16, color: 'rgba(255,255,255,0.32)', marginTop: 20, fontStyle: 'italic' }}>
             Year-round community. Quiet winters. Summers on the water.
           </p>
         </div>
       </section>
 
-      {/* Good to Know */}
-      <section style={{ maxWidth: 960, margin: "0 auto", padding: "72px 24px 0" }}>
-        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 4, textTransform: "uppercase", color: C.sage, marginBottom: 10 }}>Good to Know</div>
-        <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 4vw, 38px)", fontWeight: 400, color: C.dusk, margin: "0 0 8px 0" }}>Everything you need to feel at home.</h2>
-        <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.textMuted, margin: "0 0 40px 0" }}>Practical info so you're never scrambling.</p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 24 }}>
-
-          <div style={{ background: "#fff", border: `1px solid ${C.sand}`, borderRadius: 12, padding: "24px 22px" }}>
-            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "#c05a5a", marginBottom: 16 }}>Emergency & Health</div>
-            {GOOD_TO_KNOW.emergency.map((item, i) => (
-              <div key={i} style={{ marginBottom: 14, paddingBottom: 14, borderBottom: i < GOOD_TO_KNOW.emergency.length - 1 ? `1px solid ${C.sand}` : "none" }}>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, color: C.dusk }}>{item.label}</div>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted, marginTop: 2 }}>{item.detail}</div>
-                <a href={`tel:${item.phone}`} style={{ display: "inline-block", marginTop: 4, fontSize: 13, fontWeight: 700, color: "#c05a5a", textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif" }}>{item.phone}</a>
-              </div>
-            ))}
-          </div>
-
-          <div style={{ background: "#fff", border: `1px solid ${C.sand}`, borderRadius: 12, padding: "24px 22px" }}>
-            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.lakeBlue, marginBottom: 16 }}>On the Water</div>
-            {GOOD_TO_KNOW.water.map((item, i) => (
-              <div key={i} style={{ marginBottom: 14, paddingBottom: 14, borderBottom: i < GOOD_TO_KNOW.water.length - 1 ? `1px solid ${C.sand}` : "none" }}>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, color: C.dusk }}>{item.label}</div>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted, marginTop: 2, lineHeight: 1.4 }}>{item.detail}</div>
-              </div>
-            ))}
-          </div>
-
-          <div style={{ background: "#fff", border: `1px solid ${C.sand}`, borderRadius: 12, padding: "24px 22px" }}>
-            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sage, marginBottom: 16 }}>Everyday Needs</div>
-            {GOOD_TO_KNOW.everyday.map((item, i) => (
-              <div key={i} style={{ marginBottom: 14, paddingBottom: 14, borderBottom: i < GOOD_TO_KNOW.everyday.length - 1 ? `1px solid ${C.sand}` : "none" }}>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, color: C.dusk }}>{item.label}</div>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted, marginTop: 2, lineHeight: 1.4 }}>{item.detail}</div>
-              </div>
-            ))}
-          </div>
-
-        </div>
-      </section>
-
-      {/* CTA Footer */}
-      <section style={{ maxWidth: 960, margin: "72px auto 0", padding: "64px 24px", borderTop: `1px solid ${C.sand}`, textAlign: "center" }}>
-        <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 3.5vw, 32px)", fontWeight: 400, color: C.dusk, marginBottom: 12 }}>
+      {/* ── CTA ── */}
+      <section style={{ maxWidth: 960, margin: '0 auto', padding: '64px 20px', textAlign: 'center' }}>
+        <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(20px, 3vw, 30px)', fontWeight: 400, color: C.dusk, marginBottom: 10 }}>
           This is your community too.
         </div>
-        <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.textMuted, maxWidth: 460, margin: "0 auto 36px" }}>
+        <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.textMuted, maxWidth: 420, margin: '0 auto 28px' }}>
           Get your business in front of the people who live here, visit here, and move here.
         </p>
-        <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
+        <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
           <Btn href="/featured" variant="primary">List Your Business</Btn>
           <Btn href="/promote" variant="sunset">List an Event</Btn>
         </div>
       </section>
-      <div style={{ height: 80 }} />
+      <div style={{ height: 60 }} />
+      <style>{`@keyframes discspin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }
