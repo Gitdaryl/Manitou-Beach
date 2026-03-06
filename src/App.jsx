@@ -4021,8 +4021,16 @@ function Footer({ scrollTo }) {
           gap: 12,
           alignItems: "center",
         }}>
-          <div style={{ fontSize: 12, color: "rgba(255,255,255,0.2)", fontFamily: "'Libre Franklin', sans-serif" }}>
-            © {new Date().getFullYear()} Yeti Groove Media LLC
+          <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
+            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.2)", fontFamily: "'Libre Franklin', sans-serif" }}>
+              © {new Date().getFullYear()} Yeti Groove Media LLC
+            </div>
+            <a href="/privacy" style={{ fontSize: 12, color: "rgba(255,255,255,0.2)", fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'none' }}
+              onMouseEnter={e => e.target.style.color = 'rgba(255,255,255,0.5)'}
+              onMouseLeave={e => e.target.style.color = 'rgba(255,255,255,0.2)'}>Privacy</a>
+            <a href="/terms" style={{ fontSize: 12, color: "rgba(255,255,255,0.2)", fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'none' }}
+              onMouseEnter={e => e.target.style.color = 'rgba(255,255,255,0.5)'}
+              onMouseLeave={e => e.target.style.color = 'rgba(255,255,255,0.2)'}>Terms</a>
           </div>
           <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: "rgba(255,255,255,0.15)" }}>
             No beach. Still worth it. 🏕️
@@ -11156,6 +11164,140 @@ function DiscoverPage() {
 }
 
 // ============================================================
+// 📄  PRIVACY POLICY
+// ============================================================
+function PrivacyPage() {
+  const subScrollTo = (id) => { window.location.href = '/#' + id; };
+  const S = { // shared prose styles
+    h2: { fontFamily: "'Libre Baskerville', serif", fontSize: 22, fontWeight: 400, color: C.dusk, margin: '40px 0 12px' },
+    p: { fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.text, lineHeight: 1.8, margin: '0 0 14px' },
+    li: { fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.text, lineHeight: 1.8, marginBottom: 6 },
+  };
+  return (
+    <div style={{ background: C.cream, minHeight: '100vh' }}>
+      <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
+      <div style={{ maxWidth: 760, margin: '0 auto', padding: '120px 28px 80px' }}>
+        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 4, textTransform: 'uppercase', color: C.sage, marginBottom: 12 }}>Legal</div>
+        <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(30px, 5vw, 46px)', fontWeight: 400, color: C.dusk, margin: '0 0 8px' }}>Privacy Policy</h1>
+        <p style={{ ...S.p, color: C.textMuted, fontSize: 13, marginBottom: 40 }}>Effective date: March 2026 &nbsp;·&nbsp; Yeti Groove Media LLC</p>
+
+        <p style={S.p}>This Privacy Policy explains how Yeti Groove Media LLC ("we", "us", "our") collects, uses, and protects information submitted through the Manitou Beach community platform at manitoubeach.com ("the Site"). We keep it plain — no legalese.</p>
+
+        <h2 style={S.h2}>What we collect</h2>
+        <p style={S.p}><strong>Newsletter sign-ups:</strong> Your email address. Delivered through beehiiv. You can unsubscribe at any time using the link in any email.</p>
+        <p style={S.p}><strong>Business listing submissions:</strong> Business name, category, phone number, website, email address, physical address, and an optional logo. This information is submitted voluntarily and is used to populate the public business directory.</p>
+        <p style={S.p}><strong>Event submissions:</strong> Event name, description, date, and contact email. Used to list your event on the site.</p>
+        <p style={S.p}><strong>Offer claims (QR/loyalty):</strong> Name and email, collected when you redeem a business offer. This information is shared with the participating business for redemption verification only.</p>
+        <p style={S.p}><strong>Payment information:</strong> Processed entirely by Stripe. We never receive or store your card number, CVV, or bank details. Stripe's privacy policy governs payment data.</p>
+
+        <h2 style={S.h2}>How we use it</h2>
+        <ul style={{ paddingLeft: 20, margin: '0 0 14px' }}>
+          {[
+            'To display your business or event in the public directory',
+            'To send the Manitou Beach newsletter (email only, opt-in)',
+            'To process paid listing subscriptions via Stripe',
+            'To verify offer redemptions at participating businesses',
+            'To improve the site and understand what content is useful',
+          ].map((item, i) => <li key={i} style={S.li}>{item}</li>)}
+        </ul>
+        <p style={S.p}>We do not sell, rent, or trade your personal information to any third party for marketing purposes.</p>
+
+        <h2 style={S.h2}>Third-party services</h2>
+        <p style={S.p}>The Site uses the following third-party services, each with their own privacy practices:</p>
+        <ul style={{ paddingLeft: 20, margin: '0 0 14px' }}>
+          {[
+            'Notion — business and event data storage',
+            'beehiiv — newsletter delivery and subscriber management',
+            'Stripe — payment processing for paid listings',
+            'Google Maps — interactive map on the Discover page (may set cookies)',
+            'Vercel — hosting and serverless functions',
+            'OpenStreetMap / Nominatim — address geocoding (no personal data sent)',
+          ].map((item, i) => <li key={i} style={S.li}>{item}</li>)}
+        </ul>
+
+        <h2 style={S.h2}>Cookies &amp; browser storage</h2>
+        <p style={S.p}>We do not use advertising or analytics cookies. Google Maps may store data in your browser to function correctly. We do not track you across other websites.</p>
+
+        <h2 style={S.h2}>Data retention</h2>
+        <p style={S.p}>Business listings remain in our Notion database until you request removal. Newsletter subscriptions are retained until you unsubscribe. You may request deletion of any personal information at any time by emailing us.</p>
+
+        <h2 style={S.h2}>Your rights</h2>
+        <p style={S.p}>You may request access to, correction of, or deletion of any personal data we hold about you. Email <a href="mailto:admin@yetigroove.com" style={{ color: C.sage }}>admin@yetigroove.com</a> and we will respond promptly.</p>
+
+        <h2 style={S.h2}>Contact</h2>
+        <p style={S.p}>Yeti Groove Media LLC<br /><a href="mailto:admin@yetigroove.com" style={{ color: C.sage }}>admin@yetigroove.com</a></p>
+        <p style={{ ...S.p, fontSize: 13, color: C.textMuted }}>This policy may be updated from time to time. Continued use of the Site after changes constitutes acceptance of the revised policy.</p>
+      </div>
+      <Footer scrollTo={subScrollTo} />
+    </div>
+  );
+}
+
+// ============================================================
+// 📄  TERMS OF SERVICE
+// ============================================================
+function TermsPage() {
+  const subScrollTo = (id) => { window.location.href = '/#' + id; };
+  const S = {
+    h2: { fontFamily: "'Libre Baskerville', serif", fontSize: 22, fontWeight: 400, color: C.dusk, margin: '40px 0 12px' },
+    p: { fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.text, lineHeight: 1.8, margin: '0 0 14px' },
+    li: { fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.text, lineHeight: 1.8, marginBottom: 6 },
+  };
+  return (
+    <div style={{ background: C.cream, minHeight: '100vh' }}>
+      <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
+      <div style={{ maxWidth: 760, margin: '0 auto', padding: '120px 28px 80px' }}>
+        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 4, textTransform: 'uppercase', color: C.sage, marginBottom: 12 }}>Legal</div>
+        <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(30px, 5vw, 46px)', fontWeight: 400, color: C.dusk, margin: '0 0 8px' }}>Terms of Service</h1>
+        <p style={{ ...S.p, color: C.textMuted, fontSize: 13, marginBottom: 40 }}>Effective date: March 2026 &nbsp;·&nbsp; Yeti Groove Media LLC</p>
+
+        <p style={S.p}>By using the Manitou Beach community platform at manitoubeach.com ("the Site"), you agree to these Terms. If you don't agree, please don't use the Site.</p>
+
+        <h2 style={S.h2}>Who we are</h2>
+        <p style={S.p}>The Site is operated by Yeti Groove Media LLC, a Michigan limited liability company. Contact: <a href="mailto:admin@yetigroove.com" style={{ color: C.sage }}>admin@yetigroove.com</a>.</p>
+
+        <h2 style={S.h2}>Business listings</h2>
+        <p style={S.p}>By submitting a business listing, you confirm that:</p>
+        <ul style={{ paddingLeft: 20, margin: '0 0 14px' }}>
+          {[
+            'You are authorized to represent the business',
+            'All submitted information is accurate and not misleading',
+            'The business is lawfully operating',
+            'You will notify us of material changes to your listing information',
+          ].map((item, i) => <li key={i} style={S.li}>{item}</li>)}
+        </ul>
+        <p style={S.p}>We reserve the right to approve, edit, or remove any listing at our sole discretion. Free listings are not guaranteed placement or visibility.</p>
+
+        <h2 style={S.h2}>Paid subscriptions</h2>
+        <p style={S.p}>Paid listing tiers (Enhanced, Featured, Premium) are billed monthly via Stripe. By subscribing, you authorize recurring charges. You may cancel at any time; your listing will remain active through the end of the current billing period. No refunds for partial months.</p>
+        <p style={S.p}>Pricing may change with 30 days' notice. Founding members who are currently subscribed will not be subject to price increases while their subscription remains active.</p>
+
+        <h2 style={S.h2}>Acceptable use</h2>
+        <p style={S.p}>You agree not to submit content that is false, defamatory, harassing, illegal, or infringes the rights of others. We may remove content and terminate access for violations without notice.</p>
+
+        <h2 style={S.h2}>Intellectual property</h2>
+        <p style={S.p}>Editorial content, design, and original photography on this Site are owned by Yeti Groove Media LLC. By submitting a logo or photo, you grant us a non-exclusive license to display it on the Site in connection with your listing.</p>
+        <p style={S.p}>To report a copyright claim, contact <a href="mailto:admin@yetigroove.com" style={{ color: C.sage }}>admin@yetigroove.com</a> with "DMCA" in the subject line.</p>
+
+        <h2 style={S.h2}>Disclaimer &amp; limitation of liability</h2>
+        <p style={S.p}>The Site is provided "as is." We make no warranties about the accuracy, completeness, or reliability of directory listings. Business information is submitted by third parties — always verify directly with a business before visiting or transacting.</p>
+        <p style={S.p}>To the fullest extent permitted by law, Yeti Groove Media LLC is not liable for any indirect, incidental, or consequential damages arising from your use of the Site.</p>
+
+        <h2 style={S.h2}>Governing law</h2>
+        <p style={S.p}>These Terms are governed by the laws of the State of Michigan. Any disputes shall be resolved in the courts of Lenawee County, Michigan.</p>
+
+        <h2 style={S.h2}>Changes to these Terms</h2>
+        <p style={S.p}>We may update these Terms at any time. We'll post the updated date at the top of this page. Continued use of the Site constitutes acceptance.</p>
+
+        <h2 style={S.h2}>Contact</h2>
+        <p style={S.p}><a href="mailto:admin@yetigroove.com" style={{ color: C.sage }}>admin@yetigroove.com</a></p>
+      </div>
+      <Footer scrollTo={subScrollTo} />
+    </div>
+  );
+}
+
+// ============================================================
 // 🌐  APP ROOT
 // ============================================================
 export default function App() {
@@ -11179,6 +11321,8 @@ export default function App() {
         <Route path="/yeti-admin" element={<YetiAdminPage />} />
         <Route path="/claim/:slug" element={<ClaimPage />} />
         <Route path="/discover" element={<DiscoverPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/terms" element={<TermsPage />} />
       </Routes>
       <VoiceWidget />
     </BrowserRouter>
