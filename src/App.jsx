@@ -10731,6 +10731,7 @@ function DiscoverPage() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [businesses, setBusinesses] = useState([]);
   const [mapReady, setMapReady] = useState(false);
+  const [mapError, setMapError] = useState(null);
   const mapDivRef = useRef(null);
   const mapObjRef = useRef(null);
   const googleRef = useRef(null);
@@ -10747,7 +10748,11 @@ function DiscoverPage() {
   // Load Google Maps
   useEffect(() => {
     const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-    if (!apiKey || !mapDivRef.current) return;
+    if (!apiKey) {
+      setMapError('VITE_GOOGLE_MAPS_API_KEY is not set. Add it to Vercel environment variables and redeploy.');
+      return;
+    }
+    if (!mapDivRef.current) return;
     let active = true;
     import('@googlemaps/js-api-loader').then(({ Loader }) => {
       new Loader({ apiKey, version: 'weekly' }).load().then(google => {
@@ -10764,7 +10769,11 @@ function DiscoverPage() {
         });
         infoWindowRef.current = new google.maps.InfoWindow();
         setMapReady(true);
+      }).catch(err => {
+        if (active) setMapError('Map failed to load: ' + err.message);
       });
+    }).catch(err => {
+      if (active) setMapError('Loader error: ' + err.message);
     });
     return () => { active = false; };
   }, []);
@@ -10861,10 +10870,16 @@ function DiscoverPage() {
       {/* ── Google Map ── */}
       <div style={{ position: 'relative', width: '100%', height: 'clamp(300px, 52vh, 540px)', background: '#e8e0d0' }}>
         <div ref={mapDivRef} style={{ width: '100%', height: '100%' }} />
-        {!mapReady && (
+        {!mapReady && !mapError && (
           <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f2ede3', flexDirection: 'column', gap: 12 }}>
             <div style={{ width: 36, height: 36, borderRadius: '50%', border: `3px solid ${C.sage}`, borderTopColor: 'transparent', animation: 'discspin 0.8s linear infinite' }} />
             <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted }}>Loading map…</div>
+          </div>
+        )}
+        {mapError && (
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f2ede3', flexDirection: 'column', gap: 10, padding: 24, textAlign: 'center' }}>
+            <div style={{ fontSize: 28 }}>🗺️</div>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: '#c05a5a', fontWeight: 600, maxWidth: 440 }}>{mapError}</div>
           </div>
         )}
         {activeCategory !== 'all' && (
