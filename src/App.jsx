@@ -7136,34 +7136,133 @@ function FishingPage() {
 // 🍷  WINERIES PAGE (/wineries)
 // ============================================================
 const WINERY_VENUES = [
+  // ── Village Tasting Rooms (opening May 22, 2026) ──────────────────────
   {
+    section: "village",
+    name: "Faust House Scrap n Craft",
+    type: "Craft Store · Satellite Tasting Room",
+    tagline: "A beloved craft store getting a delicious upgrade. Stop in, browse the shelves, and stay for a pour of Michigan's finest small-batch wine.",
+    address: "140 N Lakeview Blvd., Manitou Beach",
+    phone: "(517) 403-1788",
+    website: "https://fausthousescrapncraft.com",
+    logo: "/images/faust_house_logo.png",
+    accent: "#8B5E3C",
+    distance: "In the Village",
+    openingDate: "May 22, 2026",
+    hostedBrands: [
+      {
+        name: "Cherry Creek Cellars",
+        description: "Small-batch wines made just down the road in Brooklyn. Approachable reds and whites from a winery that feels like a well-kept local secret — because it is.",
+      },
+    ],
+  },
+  {
+    section: "village",
+    name: "Ang & Co",
+    type: "Lifestyle Shop · Satellite Tasting Room",
+    tagline: "Dirty sodas, custom apparel, curated gifts — and now a rotating pour from two of Northern Michigan's finest wine producers.",
+    address: "141 N. Lakeview Blvd., Manitou Beach",
+    phone: "(517) 547-6030",
+    website: "https://www.angandco.net",
+    logo: "/images/ang_co_logo.png",
+    accent: C.sunsetLight,
+    distance: "In the Village",
+    openingDate: "May 22, 2026",
+    hostedBrands: [
+      {
+        name: "French Road Cellars",
+        description: "Northern Michigan craftsmanship in every bottle. Stop in to taste what the Leelanau Peninsula's rolling vineyards produce when the growing season is kind.",
+      },
+      {
+        name: "Chateau Fontaine",
+        description: "One of Michigan's most decorated estate wineries. Their Pinot Gris alone is worth the trip — and Ang & Co is the only place to taste it without driving to Traverse City.",
+      },
+    ],
+  },
+  {
+    section: "village",
+    name: "Manitou Beach Boathouse Art Gallery",
+    type: "Art Gallery · Satellite Tasting Room",
+    tagline: "Michigan art meets Michigan wine in one of the Village's most distinctive spaces. Browse the gallery, sip something memorable.",
+    address: "Manitou Beach Village",
+    phone: null,
+    website: null,
+    logo: null,
+    accent: C.lakeBlue,
+    distance: "In the Village",
+    openingDate: "May 22, 2026",
+    hostedBrands: [
+      {
+        name: "Amoritas Vineyard",
+        description: "Details dropping as we get closer to May — check back soon for the story behind this pour.",
+      },
+    ],
+  },
+  {
+    section: "village",
+    name: "Devils Lakeview Living",
+    type: "Home & Lifestyle · Satellite Tasting Room",
+    tagline: "Home decor and lifestyle goods — with a pour from Brenman Family Winery that turns browsing into an occasion.",
+    address: "Manitou Beach Village",
+    phone: null,
+    website: null,
+    logo: null,
+    accent: C.sage,
+    distance: "In the Village",
+    openingDate: "May 22, 2026",
+    hostedBrands: [
+      {
+        name: "Brenman Family Winery",
+        description: "A family winery with a story worth telling. Details dropping closer to May — this one's worth the wait.",
+      },
+    ],
+  },
+
+  // ── The Trail (day trips) ─────────────────────────────────────────────
+  {
+    section: "trail",
+    name: "Meckleys Fruit & Flavor Farm",
+    type: "Fruit Farm · Trail Stop",
+    tagline: "Start your day here. Fresh-picked fruit, homemade jams, and flavors that reset the palate before your first pour. The perfect opening move on the wine trail.",
+    address: "11025 S Jackson Rd, Cement City",
+    phone: null,
+    website: null,
+    logo: null,
+    accent: "#B35A1A",
+    highlight: "The ideal first stop — palate fresh, appetite building",
+    distance: "~20 min from Manitou Beach",
+  },
+  {
+    section: "trail",
+    name: "Cherry Creek Cellars",
+    type: "Small-Batch Winery",
+    tagline: "Brooklyn's neighborhood winery — small-batch Michigan wines in a laid-back tasting room that feels exactly like it should.",
+    address: "5765 Wamplers Lake Rd, Brooklyn",
+    phone: "(517) 592-4315",
+    website: "https://cherrycreekcellars.com",
+    logo: null,
+    accent: C.sage,
+    highlight: "Also poured at Faust House in the Village starting May 22",
+    distance: "~15 min from Manitou Beach",
+  },
+  {
+    section: "trail",
     name: "Chateau Aeronautique Winery",
     type: "Winery & Entertainment Venue",
-    tagline: "Aviation-themed. All-weather Biergarten. Live tribute concerts every weekend.",
+    tagline: "Aviation-themed. All-weather Biergarten. Live tribute concerts every weekend. Michigan wine with more personality than most.",
     address: "1849 E Parnall Rd, Jackson",
     phone: "(517) 795-3620",
     website: "https://chateauaeronautique.com",
     logo: "/images/chateau_logo.png",
     accent: C.sunset,
     highlight: "Live music every weekend + Michigan-crafted wines",
-    distance: "20 min from Manitou Beach",
+    distance: "~20 min from Manitou Beach",
   },
   {
-    name: "Cherry Creek Cellars",
-    type: "Small-Batch Winery",
-    tagline: "Brooklyn's neighborhood winery — small-batch Michigan wines, laid-back tasting room.",
-    address: "5765 Wamplers Lake Rd, Brooklyn",
-    phone: "(517) 592-4315",
-    website: "https://cherrycreekcellars.com",
-    logo: null,
-    accent: C.sage,
-    highlight: "Also poured at Faust House in the Village",
-    distance: "15 min from Manitou Beach",
-  },
-  {
+    section: "trail",
     name: "Gypsy Blue Vineyards",
-    type: "Vineyard (Coming Soon)",
-    tagline: "A new vineyard bringing Michigan wine culture to the heart of the Irish Hills.",
+    type: "Vineyard · Coming Soon",
+    tagline: "A new vineyard bringing Michigan wine culture to the heart of the Irish Hills. Keep an eye on this one.",
     address: "Irish Hills Area",
     phone: null,
     website: "https://michigangypsy.com",
@@ -7172,29 +7271,33 @@ const WINERY_VENUES = [
     highlight: "Opening soon — watch this space",
     distance: "Irish Hills",
   },
+
+  // ── Worth the Drive ───────────────────────────────────────────────────
   {
-    name: "Ang & Co",
-    type: "Satellite Tasting Room · Village",
-    tagline: "Dirty sodas, custom apparel, curated gifts — and Michigan wine from Chateau Fontaine (Leelanau Peninsula).",
-    address: "141 N. Lakeview Blvd., Manitou Beach",
-    phone: "(517) 547-6030",
-    website: "https://www.angandco.net",
-    logo: "/images/ang_co_logo.png",
-    accent: C.sunsetLight,
-    highlight: "Right in the Village — walk from the lake",
-    distance: "In the Village",
+    section: "extended",
+    name: "Grand River Brewery",
+    type: "Brewery · Event Partner",
+    tagline: "Jackson's craft brewery and a longtime event partner with Cherry Creek Cellars. Worth the drive if you're making a full day of it.",
+    address: "117 W Louis Glick Hwy, Jackson",
+    phone: null,
+    website: null,
+    logo: null,
+    accent: "#6B4E2A",
+    highlight: "Partners with Cherry Creek Cellars for annual events",
+    distance: "~35 min from Manitou Beach",
   },
   {
-    name: "Faust House Scrap n Craft",
-    type: "Satellite Tasting Room · Village",
-    tagline: "Scrapbooking, crafts, and satellite wine tasting for Cherry Creek Cellars right on Lakeview Blvd.",
-    address: "140 N Lakeview Blvd., Manitou Beach",
-    phone: "(517) 403-1788",
-    website: "https://fausthousescrapncraft.com",
-    logo: "/images/faust_house_logo.png",
-    accent: "#8B5E3C",
-    highlight: "Cherry Creek Cellars in the Village",
-    distance: "In the Village",
+    section: "extended",
+    name: "Black Fire Winery",
+    type: "Winery",
+    tagline: "A regional winery worth knowing about if you're building out a longer Michigan wine day beyond the Irish Hills.",
+    address: "1261 E Munger Rd, Tecumseh",
+    phone: null,
+    website: null,
+    logo: null,
+    accent: "#4A2040",
+    highlight: "Regional gem — best paired with a longer itinerary",
+    distance: "~45 min from Manitou Beach",
   },
 ];
 
@@ -7238,11 +7341,13 @@ function WineriesVillageCallout() {
     <section style={{ background: C.night, padding: "80px 24px" }}>
       <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
         <FadeIn>
-          <div style={{ fontSize: 36, marginBottom: 16 }}>🍷</div>
-          <SectionLabel light>Coming May 2026</SectionLabel>
-          <SectionTitle light>Satellite Tasting Rooms in the Village</SectionTitle>
-          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 600, margin: "0 auto 32px" }}>
-            Starting May 2026, Manitou Beach Village shops become satellite tasting rooms for Michigan wineries. Walk the boulevard, pop into Ang & Co for a Leelanau Peninsula pour, and discover Cherry Creek Cellars at Faust House — all within steps of the lake.
+          <SectionLabel light>Opening May 22, 2026</SectionLabel>
+          <SectionTitle light>The Village Comes Alive</SectionTitle>
+          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 620, margin: "0 auto 20px" }}>
+            This May, four Manitou Beach Village shops open their doors as satellite tasting rooms for Michigan wineries. Walk the boulevard. Pop into a gallery. Pick up something for the cottage. Stay for a glass.
+          </p>
+          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.35)", lineHeight: 1.8, maxWidth: 560, margin: "0 auto 32px", fontStyle: "italic" }}>
+            Cherry Creek Cellars · French Road Cellars · Chateau Fontaine · Amoritas Vineyard · Brenman Family Winery — all in the Village, all within steps of the lake.
           </p>
           <Btn href="/village" variant="sunset">Explore the Village</Btn>
         </FadeIn>
@@ -7251,75 +7356,129 @@ function WineriesVillageCallout() {
   );
 }
 
+function WineryCard({ v, i }) {
+  return (
+    <FadeIn delay={i * 80} direction={i % 2 === 0 ? "left" : "right"}>
+      <div
+        onClick={() => v.website && window.open(v.website, "_blank")}
+        style={{
+          background: C.warmWhite,
+          border: `1px solid ${C.sand}`,
+          borderRadius: 16,
+          padding: "32px 28px",
+          display: "flex",
+          gap: 24,
+          alignItems: "flex-start",
+          cursor: v.website ? "pointer" : "default",
+          position: "relative",
+          overflow: "hidden",
+          transition: "all 0.25s",
+        }}
+        onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 8px 32px rgba(0,0,0,0.1), 0 0 0 1px ${v.accent}30`; }}
+        onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
+      >
+        <div style={{ position: "absolute", top: 0, left: 0, width: 4, height: "100%", background: v.accent, borderRadius: "16px 0 0 16px" }} />
+        {v.logo && (
+          <img src={v.logo} alt="" style={{ width: 64, height: 64, borderRadius: 12, objectFit: "cover", flexShrink: 0, background: C.sand }} />
+        )}
+        <div style={{ flex: 1 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 8, marginBottom: 6 }}>
+            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.text, margin: 0 }}>{v.name}</h3>
+            <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+              {v.openingDate && (
+                <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.cream, background: C.sunset, padding: "4px 10px", borderRadius: 20 }}>Opens {v.openingDate}</span>
+              )}
+              <span style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.textMuted, background: C.sand, padding: "4px 10px", borderRadius: 20 }}>{v.distance}</span>
+            </div>
+          </div>
+          <div style={{ fontSize: 11, color: v.accent, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", marginBottom: 10 }}>{v.type}</div>
+          <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: "0 0 14px 0" }}>{v.tagline}</p>
+
+          {v.hostedBrands && v.hostedBrands.length > 0 && (
+            <div style={{ margin: "16px 0", borderTop: `1px solid ${C.sand}`, paddingTop: 16 }}>
+              <div style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.textMuted, marginBottom: 12 }}>Tasting This Season</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {v.hostedBrands.map((brand, bi) => (
+                  <div key={bi} style={{ background: C.cream, borderRadius: 10, padding: "12px 14px", borderLeft: `3px solid ${v.accent}` }}>
+                    <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, fontWeight: 400, color: C.text, marginBottom: 4 }}>{brand.name}</div>
+                    <div style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6 }}>{brand.description}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
+            {v.address && v.address !== "Manitou Beach Village" && <span style={{ fontSize: 12, color: C.textMuted }}>📍 {v.address}</span>}
+            {v.phone && <span style={{ fontSize: 12, color: C.textMuted }}>📞 {v.phone}</span>}
+          </div>
+          {v.highlight && (
+            <div style={{ marginTop: 12, fontSize: 12, color: v.accent, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600 }}>
+              ✦ {v.highlight}
+            </div>
+          )}
+          {v.website && (
+            <a
+              href={v.website}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={e => e.stopPropagation()}
+              style={{ display: "inline-block", marginTop: 14, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: v.accent, textDecoration: "none" }}
+            >
+              Visit Website →
+            </a>
+          )}
+        </div>
+      </div>
+    </FadeIn>
+  );
+}
+
 function WineriesVenueSection() {
+  const villageVenues = WINERY_VENUES.filter(v => v.section === "village");
+  const trailVenues = WINERY_VENUES.filter(v => v.section === "trail");
+  const extendedVenues = WINERY_VENUES.filter(v => v.section === "extended");
+
   return (
     <section style={{ background: C.cream, padding: "100px 24px" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+
+        {/* Village Tasting Rooms */}
         <FadeIn>
-          <SectionLabel>The Wine Trail</SectionLabel>
-          <SectionTitle>Wineries & Tasting Rooms</SectionTitle>
-          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 560, margin: "0 0 56px 0" }}>
-            Five places to taste Michigan wine — two right in the Village, three worth the short drive into the Irish Hills.
+          <SectionLabel>In the Village</SectionLabel>
+          <SectionTitle>Village Tasting Rooms</SectionTitle>
+          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 580, margin: "0 0 48px 0" }}>
+            Starting May 22, four Village shops open their doors as satellite tasting rooms. Walk the boulevard — each stop is a new pour, a new story, all within steps of the lake.
           </p>
         </FadeIn>
-
-        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-          {WINERY_VENUES.map((v, i) => (
-            <FadeIn key={i} delay={i * 80} direction={i % 2 === 0 ? "left" : "right"}>
-              <div
-                onClick={() => v.website && window.open(v.website, "_blank")}
-                style={{
-                  background: C.warmWhite,
-                  border: `1px solid ${C.sand}`,
-                  borderRadius: 16,
-                  padding: "32px 28px",
-                  display: "flex",
-                  gap: 24,
-                  alignItems: "flex-start",
-                  cursor: v.website ? "pointer" : "default",
-                  position: "relative",
-                  overflow: "hidden",
-                  transition: "all 0.25s",
-                }}
-                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 8px 32px rgba(0,0,0,0.1), 0 0 0 1px ${v.accent}30`; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
-              >
-                <div style={{ position: "absolute", top: 0, left: 0, width: 4, height: "100%", background: v.accent, borderRadius: "16px 0 0 16px" }} />
-                {v.logo && (
-                  <img src={v.logo} alt="" style={{ width: 64, height: 64, borderRadius: 12, objectFit: "cover", flexShrink: 0, background: C.sand }} />
-                )}
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 8, marginBottom: 6 }}>
-                    <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.text, margin: 0 }}>{v.name}</h3>
-                    <span style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.textMuted, background: C.sand, padding: "4px 10px", borderRadius: 20 }}>{v.distance}</span>
-                  </div>
-                  <div style={{ fontSize: 11, color: v.accent, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", marginBottom: 10 }}>{v.type}</div>
-                  <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: "0 0 14px 0" }}>{v.tagline}</p>
-                  <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
-                    {v.address && <span style={{ fontSize: 12, color: C.textMuted }}>📍 {v.address}</span>}
-                    {v.phone && <span style={{ fontSize: 12, color: C.textMuted }}>📞 {v.phone}</span>}
-                  </div>
-                  {v.highlight && (
-                    <div style={{ marginTop: 12, fontSize: 12, color: v.accent, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600 }}>
-                      ✦ {v.highlight}
-                    </div>
-                  )}
-                  {v.website && (
-                    <a
-                      href={v.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={e => e.stopPropagation()}
-                      style={{ display: "inline-block", marginTop: 14, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: v.accent, textDecoration: "none" }}
-                    >
-                      Visit Website →
-                    </a>
-                  )}
-                </div>
-              </div>
-            </FadeIn>
-          ))}
+        <div style={{ display: "flex", flexDirection: "column", gap: 24, marginBottom: 80 }}>
+          {villageVenues.map((v, i) => <WineryCard key={i} v={v} i={i} />)}
         </div>
+
+        {/* The Trail */}
+        <FadeIn>
+          <SectionLabel>Day Trips</SectionLabel>
+          <SectionTitle>The Wine Trail</SectionTitle>
+          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 580, margin: "0 0 48px 0" }}>
+            Pack the cooler, pick a starting point, and make a day of it. Meckleys to reset the palate, Cherry Creek for the laid-back pour, Chateau Aeronautique to close it out right.
+          </p>
+        </FadeIn>
+        <div style={{ display: "flex", flexDirection: "column", gap: 24, marginBottom: 80 }}>
+          {trailVenues.map((v, i) => <WineryCard key={i} v={v} i={i} />)}
+        </div>
+
+        {/* Worth the Drive */}
+        <FadeIn>
+          <SectionLabel>Extending Your Trail</SectionLabel>
+          <SectionTitle>Worth the Drive</SectionTitle>
+          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 580, margin: "0 0 48px 0" }}>
+            Not part of the core trail, but worth knowing about if you're building a longer day or want to explore the broader region.
+          </p>
+        </FadeIn>
+        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+          {extendedVenues.map((v, i) => <WineryCard key={i} v={v} i={i} />)}
+        </div>
+
       </div>
     </section>
   );
