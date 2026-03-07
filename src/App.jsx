@@ -9407,6 +9407,20 @@ function YetiAdminPage() {
   const [promosLoading, setPromosLoading] = useState(false);
   const [copiedId, setCopiedId] = useState(null);
 
+  // ── Community POIs ─────────────────────────────────────────────
+  const [adminPois, setAdminPois] = useState(null);
+  const [adminPoisLoading, setAdminPoisLoading] = useState(false);
+
+  const fetchAdminPois = async () => {
+    setAdminPoisLoading(true);
+    try {
+      const res = await fetch('/api/community-pois');
+      const d = await res.json();
+      setAdminPois(d.pois || []);
+    } catch { setAdminPois([]); }
+    finally { setAdminPoisLoading(false); }
+  };
+
   // ── Publish abort timer (Gmail undo-send) ──────────────────────
   const [pendingPublish, setPendingPublish] = useState(null); // { id, countdown, source }
   const publishIntervalRef = useRef(null);
@@ -9614,6 +9628,7 @@ function YetiAdminPage() {
     if (activeTab === 'review') fetchDrafts();
     if (activeTab === 'dashboard') { fetchDashboard(); fetchAdSlots(); }
     if (activeTab === 'promos') fetchPromos();
+    if (activeTab === 'pois') fetchAdminPois();
   }, [activeTab, authed]);
 
   // Preview file locally before uploading — no network call yet
@@ -9858,7 +9873,7 @@ function YetiAdminPage() {
 
         {/* Tabs */}
         <div style={{ display: 'flex', gap: 8, marginBottom: 32, flexWrap: 'wrap' }}>
-          {[{ id: 'write', label: '✍️  Write' }, { id: 'review', label: '📋  Review Queue' }, { id: 'dashboard', label: '📊  Dashboard' }, { id: 'advertisers', label: '🤝  Advertisers' }, { id: 'promos', label: '🎟️  Promos' }].map(tab => (
+          {[{ id: 'write', label: '✍️  Write' }, { id: 'review', label: '📋  Review Queue' }, { id: 'dashboard', label: '📊  Dashboard' }, { id: 'advertisers', label: '🤝  Advertisers' }, { id: 'promos', label: '🎟️  Promos' }, { id: 'pois', label: '📍  Community POIs' }].map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
@@ -10283,6 +10298,100 @@ function YetiAdminPage() {
                   );
                 })}
               </div>
+            )}
+          </div>
+        )}
+
+        {/* ── COMMUNITY POIs TAB ── */}
+        {activeTab === 'pois' && (
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
+              <div>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.dusk, marginBottom: 4 }}>Community POIs</div>
+                <div style={{ fontSize: 13, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>
+                  Notion-managed visitor info pins on /discover — hospitals, schools, launches, wineries, etc.
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: 10 }}>
+                <a href="https://www.notion.so/31c8c729eb5981baac48f12f50366ef1" target="_blank" rel="noreferrer"
+                  style={{ fontSize: 13, fontWeight: 600, color: C.lakeBlue, fontFamily: 'Libre Franklin, sans-serif', textDecoration: 'none', padding: '8px 16px', border: `1px solid ${C.lakeBlue}`, borderRadius: 8 }}>
+                  Open in Notion →
+                </a>
+                <button onClick={fetchAdminPois} style={{ fontSize: 13, color: C.textLight, fontFamily: 'Libre Franklin, sans-serif', background: 'transparent', border: `1px solid ${C.sand}`, borderRadius: 8, padding: '8px 16px', cursor: 'pointer' }}>↻ Refresh</button>
+              </div>
+            </div>
+
+            {adminPoisLoading ? (
+              <div style={{ textAlign: 'center', padding: '60px 0', color: C.textMuted, fontSize: 14, fontFamily: 'Libre Franklin, sans-serif' }}>Loading POIs…</div>
+            ) : adminPois === null ? (
+              <div style={{ textAlign: 'center', padding: '40px 0', color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>Click Refresh to load POIs.</div>
+            ) : (
+              <>
+                {/* Summary by category */}
+                {(() => {
+                  const catCounts = {};
+                  adminPois.forEach(p => { catCounts[p.cat] = (catCounts[p.cat] || 0) + 1; });
+                  const cats = Object.entries(catCounts).sort((a, b) => b[1] - a[1]);
+                  return (
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: 12, marginBottom: 28 }}>
+                      <div style={{ background: '#fff', borderRadius: 12, padding: '18px 16px', boxShadow: '0 2px 10px rgba(0,0,0,0.06)', borderTop: `3px solid ${C.sage}`, gridColumn: '1' }}>
+                        <div style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 26, fontWeight: 700, color: C.dusk, marginBottom: 4 }}>{adminPois.length}</div>
+                        <div style={{ fontSize: 11, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '0.05em', fontFamily: 'Libre Franklin, sans-serif' }}>Total Active</div>
+                      </div>
+                      {cats.map(([cat, count]) => {
+                        const catObj = [
+                          { id: 'food', label: 'Food', color: '#5B8A5B' }, { id: 'events', label: 'Events', color: '#D4845A' },
+                          { id: 'stays', label: 'Stays', color: '#C25C5C' }, { id: 'wineries', label: 'Wineries', color: '#8B5E8B' },
+                          { id: 'water', label: 'Water', color: '#5B7E95' }, { id: 'shopping', label: 'Shopping', color: '#B8A030' },
+                          { id: 'services', label: 'Services', color: '#7A8E72' }, { id: 'healthcare', label: 'Healthcare', color: '#C2607A' },
+                          { id: 'grocery', label: 'Grocery', color: '#8B6E4A' }, { id: 'schools', label: 'Schools', color: '#6B6B6B' },
+                          { id: 'community', label: 'Community', color: '#7A8E72' },
+                        ].find(c => c.id === cat) || { label: cat, color: C.textMuted };
+                        return (
+                          <div key={cat} style={{ background: '#fff', borderRadius: 12, padding: '18px 16px', boxShadow: '0 2px 10px rgba(0,0,0,0.06)', borderTop: `3px solid ${catObj.color}` }}>
+                            <div style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 22, fontWeight: 700, color: C.dusk, marginBottom: 4 }}>{count}</div>
+                            <div style={{ fontSize: 11, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '0.05em', fontFamily: 'Libre Franklin, sans-serif' }}>{catObj.label}</div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                })()}
+
+                {/* POI list */}
+                <div style={{ background: '#fff', borderRadius: 12, boxShadow: '0 2px 12px rgba(0,0,0,0.06)', overflow: 'hidden' }}>
+                  <div style={{ borderBottom: `1px solid ${C.sand}`, padding: '12px 20px', display: 'grid', gridTemplateColumns: '1fr 90px 120px', gap: 12, background: C.warmWhite }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '0.06em', fontFamily: 'Libre Franklin, sans-serif' }}>Name</div>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '0.06em', fontFamily: 'Libre Franklin, sans-serif' }}>Category</div>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '0.06em', fontFamily: 'Libre Franklin, sans-serif' }}>Coords</div>
+                  </div>
+                  {adminPois.length === 0 ? (
+                    <div style={{ padding: '32px 20px', textAlign: 'center', color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif', fontSize: 14 }}>
+                      No Active POIs found. Check the Notion DB — set Status to Active to show pins.
+                    </div>
+                  ) : (
+                    adminPois.map((poi, i) => (
+                      <div key={poi.id} style={{ padding: '12px 20px', display: 'grid', gridTemplateColumns: '1fr 90px 120px', gap: 12, alignItems: 'center', borderBottom: i < adminPois.length - 1 ? `1px solid ${C.sand}` : 'none', background: i % 2 === 0 ? '#fff' : '#fdfaf6' }}>
+                        <div>
+                          <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 14, fontWeight: 600, color: C.dusk }}>{poi.name}</div>
+                          {poi.sub && <div style={{ fontSize: 12, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif', marginTop: 1 }}>{poi.sub}</div>}
+                        </div>
+                        <div style={{ fontSize: 12, color: C.textLight, fontFamily: 'Libre Franklin, sans-serif' }}>{poi.cat}</div>
+                        <div style={{ fontSize: 11, color: C.textMuted, fontFamily: 'monospace' }}>{poi.lat?.toFixed(4)}, {poi.lng?.toFixed(4)}</div>
+                      </div>
+                    ))
+                  )}
+                </div>
+
+                <div style={{ marginTop: 16, padding: '12px 16px', background: `${C.lakeBlue}08`, borderRadius: 8, border: `1px dashed ${C.lakeBlue}40` }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: C.lakeBlue, fontFamily: 'Libre Franklin, sans-serif', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>How to add / edit POIs</div>
+                  <div style={{ fontSize: 12, color: C.textLight, fontFamily: 'Libre Franklin, sans-serif', lineHeight: 1.7 }}>
+                    Open Notion → <strong>Manitou Beach - Community POIs</strong> DB → add or edit rows.<br />
+                    Set <strong>Status → Active</strong> to show on map · <strong>Hidden</strong> to remove without deleting.<br />
+                    Changes appear live on /discover within seconds (no-store cache).
+                  </div>
+                </div>
+              </>
             )}
           </div>
         )}
@@ -10853,6 +10962,8 @@ const DISCOVER_CATS = [
   { id: 'grocery',    label: 'Grocery & Pharmacy',  icon: '🛒', color: '#5B7E95' },
   { id: 'schools',    label: 'Schools',              icon: '🎓', color: '#6B7EC8' },
   { id: 'community',  label: 'Community',            icon: '🏛️', color: '#7A8E72' },
+  { id: 'gas',        label: 'Gas Stations',         icon: '⛽', color: '#B8860B' },
+  // ↑ To add a new category: add a line here + set the same id as the Notion Category value
 ];
 
 const DISCOVER_POIS = [
@@ -10928,6 +11039,7 @@ function buildDiscoverInfoWindow(poi) {
 function DiscoverPage() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [businesses, setBusinesses] = useState([]);
+  const [communityPois, setCommunityPois] = useState(null); // null = loading, [] = loaded (empty or not)
   const [mapReady, setMapReady] = useState(false);
   const [mapError, setMapError] = useState(null);
   const mapDivRef = useRef(null);
@@ -10941,6 +11053,11 @@ function DiscoverPage() {
       .then(r => r.json())
       .then(d => setBusinesses([...(d.free || []), ...(d.enhanced || []), ...(d.featured || []), ...(d.premium || [])]))
       .catch(() => {});
+    // Community POIs from Notion — merged with hardcoded fallbacks
+    fetch('/api/community-pois')
+      .then(r => r.json())
+      .then(d => setCommunityPois(d.pois || []))
+      .catch(() => setCommunityPois([])); // fall back to hardcoded on error
   }, []);
 
   // Load Google Maps
@@ -10976,7 +11093,19 @@ function DiscoverPage() {
     return () => { active = false; };
   }, []);
 
-  // Update markers when category or map readiness changes
+  // Merge Notion community POIs with hardcoded fallbacks (dedup by name)
+  // communityPois === null means still loading — show hardcoded pins immediately
+  const mergedPois = communityPois === null
+    ? DISCOVER_POIS
+    : communityPois.length > 0
+      ? (() => {
+          const notionNames = new Set(communityPois.map(p => p.name.toLowerCase()));
+          const extras = DISCOVER_POIS.filter(p => !notionNames.has(p.name.toLowerCase()));
+          return [...communityPois, ...extras];
+        })()
+      : DISCOVER_POIS; // API returned nothing — full hardcoded fallback
+
+  // Update markers when category, map readiness, or POI data changes
   useEffect(() => {
     const google = googleRef.current;
     const map = mapObjRef.current;
@@ -10994,7 +11123,7 @@ function DiscoverPage() {
     const bizOverrideNames = new Set(bizPins.map(b => b.name?.toLowerCase()));
 
     // POIs: show all, but skip any whose name is covered by a Notion business (Notion coords are authoritative)
-    const pois = activeCategory === 'all' ? DISCOVER_POIS : DISCOVER_POIS.filter(p => (p.cats || [p.cat]).includes(activeCategory));
+    const pois = activeCategory === 'all' ? mergedPois : mergedPois.filter(p => (p.cats || [p.cat]).includes(activeCategory));
     pois.forEach((poi, idx) => {
       if (bizOverrideNames.has(poi.name.toLowerCase())) return; // Notion business pin shows instead
       const color = DISCOVER_CATS.find(c => c.id === poi.cat)?.color || '#7A8E72';
@@ -11047,10 +11176,10 @@ function DiscoverPage() {
       map.panTo({ lat: allPinned[0].lat, lng: allPinned[0].lng });
       map.setZoom(14);
     }
-  }, [activeCategory, mapReady, businesses]);
+  }, [activeCategory, mapReady, businesses, communityPois]);
 
   const activeCat = DISCOVER_CATS.find(c => c.id === activeCategory) || DISCOVER_CATS[0];
-  const filteredPois = activeCategory === 'all' ? DISCOVER_POIS : DISCOVER_POIS.filter(p => (p.cats || [p.cat]).includes(activeCategory));
+  const filteredPois = activeCategory === 'all' ? mergedPois : mergedPois.filter(p => (p.cats || [p.cat]).includes(activeCategory));
   const filteredBizzes = activeCat.notionKey
     ? businesses
         .filter(b => b.categories?.includes(activeCat.notionKey))
@@ -11091,14 +11220,13 @@ function DiscoverPage() {
 
       {/* ── Sticky Category Chips ── */}
       <div style={{ position: 'sticky', top: 64, zIndex: 100, background: 'rgba(250,246,239,0.97)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${C.sand}`, boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
-        <div style={{ position: 'relative' }}>
-          <div className="discover-chips-bar" style={{ maxWidth: 1100, margin: '0 auto', padding: '12px 20px', display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
+        <div className="discover-chips-bar" style={{ maxWidth: 1100, margin: '0 auto', padding: '10px 20px', display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           {DISCOVER_CATS.map(cat => {
             const active = activeCategory === cat.id;
             return (
               <button key={cat.id} onClick={() => setActiveCategory(cat.id)} style={{
                 flexShrink: 0, background: active ? cat.color : '#fff', color: active ? '#fff' : C.text,
-                border: `1.5px solid ${active ? cat.color : C.sand}`, borderRadius: 24, padding: '7px 16px',
+                border: `1.5px solid ${active ? cat.color : C.sand}`, borderRadius: 24, padding: '6px 14px',
                 fontSize: 13, fontWeight: active ? 700 : 500, fontFamily: "'Libre Franklin', sans-serif",
                 cursor: 'pointer', transition: 'all 0.18s', whiteSpace: 'nowrap',
                 display: 'flex', alignItems: 'center', gap: 6,
@@ -11109,9 +11237,6 @@ function DiscoverPage() {
               </button>
             );
           })}
-          </div>
-          {/* Right-fade scroll hint */}
-          <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: 48, background: 'linear-gradient(to right, transparent, rgba(250,246,239,0.97))', pointerEvents: 'none' }} />
         </div>
       </div>
 
