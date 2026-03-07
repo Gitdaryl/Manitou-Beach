@@ -51,7 +51,7 @@ export default async function handler(req, res) {
 
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-  const { tier, businessName, email, priceInCents, mode: checkoutMode } = req.body;
+  const { tier, businessName, email, priceInCents, mode: checkoutMode, duration } = req.body;
 
   if (!tier || !businessName || !email) {
     return res.status(400).json({ error: 'Missing required fields' });
@@ -84,7 +84,7 @@ export default async function handler(req, res) {
           },
           quantity: 1,
         }],
-        metadata: { businessName, tier, type: 'listing' },
+        metadata: { businessName, tier, type: 'listing', ...(duration && { duration: String(duration) + ' months' }) },
         success_url: `${baseUrl}/?listed=true&business=${encodeURIComponent(businessName)}`,
         cancel_url: `${baseUrl}/#listing-tiers`,
       });

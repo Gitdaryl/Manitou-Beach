@@ -5197,8 +5197,9 @@ function FeaturedPage() {
   const isFull = spotsLeft === 0;
 
   const [subCount, setSubCount] = useState(null);
+  const [slotCounts, setSlotCounts] = useState(null);
   const [modal, setModal] = useState(null);
-  const [form, setForm] = useState({ businessName: '', email: '' });
+  const [form, setForm] = useState({ businessName: '', email: '', duration: 3 });
   const [loading, setLoading] = useState(false);
   const [checkoutError, setCheckoutError] = useState('');
   const [status, setStatus] = useState(null);
@@ -5218,6 +5219,10 @@ function FeaturedPage() {
       .then(r => r.json())
       .then(d => setSubCount(d.count ?? 0))
       .catch(() => setSubCount(0));
+    fetch('/api/businesses?slots=true')
+      .then(r => r.json())
+      .then(d => setSlotCounts(d))
+      .catch(() => {});
   }, []);
 
   const GRACE = 100;
@@ -5253,7 +5258,7 @@ function FeaturedPage() {
       const res = await fetch('/api/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tier: modal.tierId, businessName: form.businessName, email: form.email, priceInCents: modal.priceInCents, mode: 'subscription' }),
+        body: JSON.stringify({ tier: modal.tierId, businessName: form.businessName, email: form.email, priceInCents: modal.priceInCents, mode: 'subscription', duration: form.duration }),
       });
       const data = await res.json();
       if (data.url) { window.location.href = data.url; }
@@ -5313,6 +5318,43 @@ function FeaturedPage() {
           </p>
         </FadeIn>
       </section>
+
+      {/* Category Slot Availability Band */}
+      {slotCounts && Object.keys(slotCounts.categoryCounts || {}).length > 0 && !isFull && (
+        <div style={{ background: C.night, borderBottom: `1px solid rgba(255,255,255,0.06)`, padding: "14px 24px" }}>
+          <div style={{ maxWidth: 1000, margin: "0 auto", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+            <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.3)", flexShrink: 0 }}>
+              Live Availability
+            </span>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              {Object.entries(slotCounts.categoryCounts).map(([cat, count]) => {
+                const max = slotCounts.maxSlots || 3;
+                const left = Math.max(0, max - count);
+                const full = left === 0;
+                const almostFull = left === 1;
+                const dotColor = full ? C.sunset : almostFull ? C.driftwood : C.sage;
+                return (
+                  <span key={cat} style={{
+                    display: "inline-flex", alignItems: "center", gap: 5,
+                    padding: "4px 10px", borderRadius: 20,
+                    background: full ? `${C.sunset}12` : almostFull ? `${C.driftwood}12` : `${C.sage}10`,
+                    border: `1px solid ${dotColor}28`,
+                  }}>
+                    <span style={{ width: 6, height: 6, borderRadius: "50%", background: dotColor, display: "inline-block", flexShrink: 0 }} />
+                    <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.6)" }}>{cat}</span>
+                    <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, color: full ? C.sunset : "rgba(255,255,255,0.3)" }}>
+                      {full ? "Full" : `${left} left`}
+                    </span>
+                  </span>
+                );
+              })}
+            </div>
+            <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, color: "rgba(255,255,255,0.2)", marginLeft: "auto" }}>
+              Max 3 paid spots per category
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Success / Cancelled banners */}
       {status?.type === "success" && (
@@ -5440,7 +5482,7 @@ function FeaturedPage() {
                     ))}
                   </ul>
                   <button
-                    onClick={() => { setModal({ tierId: tier.id, tierName: tier.name, price: tier.price, priceInCents: tier.priceInCents, color: tier.color }); setForm({ businessName: '', email: '' }); setCheckoutError(''); }}
+                    onClick={() => { setModal({ tierId: tier.id, tierName: tier.name, price: tier.price, priceInCents: tier.priceInCents, color: tier.color }); setForm({ businessName: '', email: '', duration: 3 }); setCheckoutError(''); }}
                     style={{ display: "block", width: "100%", padding: "11px 0", borderRadius: 8, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: "pointer", border: "none", background: tier.id === "premium" ? C.sunset : "transparent", color: tier.id === "premium" ? C.cream : tier.color, outline: tier.id === "premium" ? "none" : `1.5px solid ${tier.color}55`, transition: "all 0.22s" }}
                   >
                     Get Started
@@ -5607,6 +5649,33 @@ function FeaturedPage() {
                 onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
                 style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}
               />
+            </div>
+            {/* Contract duration */}
+            <div style={{ marginBottom: 6 }}>
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 2.5, textTransform: "uppercase", color: "rgba(255,255,255,0.3)", marginBottom: 10 }}>
+                Commitment Length
+              </div>
+              <div style={{ display: "flex", gap: 8 }}>
+                {[3, 6, 12].map(mo => (
+                  <button
+                    key={mo}
+                    type="button"
+                    onClick={() => setForm(f => ({ ...f, duration: mo }))}
+                    style={{
+                      flex: 1, padding: "10px 0", borderRadius: 8, border: `1px solid ${form.duration === mo ? modal.color : "rgba(255,255,255,0.12)"}`,
+                      background: form.duration === mo ? `${modal.color}22` : "rgba(255,255,255,0.04)",
+                      color: form.duration === mo ? modal.color : "rgba(255,255,255,0.4)",
+                      fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: form.duration === mo ? 700 : 400,
+                      cursor: "pointer", transition: "all 0.18s",
+                    }}
+                  >
+                    {mo} mo
+                  </button>
+                ))}
+              </div>
+              <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, color: "rgba(255,255,255,0.2)", margin: "8px 0 0", letterSpacing: 0.3 }}>
+                Billed monthly · cancel anytime · your commitment is noted
+              </p>
             </div>
             {checkoutError && <p style={{ color: "#ff6b5b", fontSize: 13, marginBottom: 14 }}>{checkoutError}</p>}
             <button
@@ -9300,6 +9369,10 @@ function YetiAdminPage() {
   const [dashLoading, setDashLoading] = useState(false);
   const [dashData, setDashData] = useState(null);
 
+  // ── Ad Slot Monitor ────────────────────────────────────────────
+  const [adSlots, setAdSlots] = useState(null);
+  const [adSlotsLoading, setAdSlotsLoading] = useState(false);
+
   // ── Batch geocoding ────────────────────────────────────────────
   const [geoStatus, setGeoStatus] = useState('idle'); // idle | running | done | error
   const [geoResult, setGeoResult] = useState(null);
@@ -9317,6 +9390,16 @@ function YetiAdminPage() {
       setGeoResult({ error: err.message });
       setGeoStatus('error');
     }
+  };
+
+  const fetchAdSlots = async () => {
+    setAdSlotsLoading(true);
+    try {
+      const res = await fetch('/api/businesses?slots=true');
+      const d = await res.json();
+      setAdSlots(d);
+    } catch { setAdSlots(null); }
+    finally { setAdSlotsLoading(false); }
   };
 
   // ── Promos ─────────────────────────────────────────────────────
@@ -9529,7 +9612,7 @@ function YetiAdminPage() {
   useEffect(() => {
     if (!authed) return;
     if (activeTab === 'review') fetchDrafts();
-    if (activeTab === 'dashboard') fetchDashboard();
+    if (activeTab === 'dashboard') { fetchDashboard(); fetchAdSlots(); }
     if (activeTab === 'promos') fetchPromos();
   }, [activeTab, authed]);
 
@@ -9865,6 +9948,56 @@ function YetiAdminPage() {
               {geoStatus === 'error' && (
                 <div style={{ marginTop: 10, fontSize: 13, color: '#c05a5a', fontFamily: 'Libre Franklin, sans-serif' }}>Error: {geoResult?.error}</div>
               )}
+            </div>
+
+            {/* ── Ad Slot Monitor ── */}
+            <div style={{ background: '#fff', borderRadius: 12, padding: '20px 24px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', marginTop: 20 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: C.dusk, fontFamily: 'Libre Franklin, sans-serif' }}>
+                  Ad Slot Monitor
+                </div>
+                <button onClick={fetchAdSlots} style={{ background: 'transparent', border: `1px solid ${C.sand}`, borderRadius: 8, padding: '5px 12px', fontSize: 12, color: C.textLight, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}>↻</button>
+              </div>
+              <p style={{ fontSize: 12, color: C.textLight, margin: '0 0 16px', lineHeight: 1.5, fontFamily: 'Libre Franklin, sans-serif' }}>
+                Max 3 paid spots per category (Enhanced + Featured + Premium combined). Red = full, waitlist only.
+              </p>
+              {adSlotsLoading ? (
+                <div style={{ fontSize: 13, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>Loading…</div>
+              ) : adSlots && Object.keys(adSlots.categoryCounts || {}).length > 0 ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {Object.entries(adSlots.categoryCounts)
+                    .sort((a, b) => b[1] - a[1])
+                    .map(([cat, count]) => {
+                      const max = adSlots.maxSlots || 3;
+                      const pct = count / max;
+                      const barColor = pct >= 1 ? '#c05a5a' : pct >= 0.67 ? C.driftwood : C.sage;
+                      const label = pct >= 1 ? 'FULL' : `${count}/${max}`;
+                      return (
+                        <div key={cat} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                          <div style={{ width: 130, fontSize: 12, color: C.dusk, fontFamily: 'Libre Franklin, sans-serif', fontWeight: 500, flexShrink: 0 }}>{cat}</div>
+                          <div style={{ flex: 1, background: C.sand, borderRadius: 999, height: 8, overflow: 'hidden' }}>
+                            <div style={{ height: '100%', width: `${Math.min(100, pct * 100)}%`, background: barColor, borderRadius: 999, transition: 'width 0.4s ease' }} />
+                          </div>
+                          <div style={{ width: 48, fontSize: 11, color: pct >= 1 ? '#c05a5a' : C.textMuted, fontFamily: 'Libre Franklin, sans-serif', textAlign: 'right', fontWeight: pct >= 1 ? 700 : 400 }}>
+                            {label}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  <div style={{ marginTop: 8, paddingTop: 12, borderTop: `1px solid ${C.sand}`, display: 'flex', gap: 20 }}>
+                    <span style={{ fontSize: 11, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>
+                      Total paid slots used: <strong style={{ color: C.dusk }}>{Object.values(adSlots.categoryCounts).reduce((a, b) => a + b, 0)}</strong>
+                    </span>
+                    <span style={{ fontSize: 11, color: '#c05a5a', fontFamily: 'Libre Franklin, sans-serif' }}>
+                      {Object.values(adSlots.categoryCounts).filter(c => c >= (adSlots.maxSlots || 3)).length} categories full
+                    </span>
+                  </div>
+                </div>
+              ) : !adSlotsLoading ? (
+                <div style={{ fontSize: 13, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>
+                  No paid listings yet — all categories open.
+                </div>
+              ) : null}
             </div>
           </div>
         )}

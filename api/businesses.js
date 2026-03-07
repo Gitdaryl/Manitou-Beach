@@ -99,6 +99,42 @@ export default async function handler(req, res) {
     }
   }
 
+  // GET — slot availability counts (lightweight, no business details exposed)
+  if (req.query.slots === 'true') {
+    try {
+      const response = await fetch(
+        `https://api.notion.com/v1/databases/${process.env.NOTION_DB_BUSINESS}/query`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.NOTION_TOKEN_BUSINESS}`,
+            'Content-Type': 'application/json',
+            'Notion-Version': '2022-06-28',
+          },
+          body: JSON.stringify({
+            filter: {
+              or: [
+                { property: 'Status', status: { equals: 'Listed Enhanced' } },
+                { property: 'Status', status: { equals: 'Listed Featured' } },
+                { property: 'Status', status: { equals: 'Listed Premium' } },
+              ],
+            },
+          }),
+        }
+      );
+      if (!response.ok) return res.status(200).json({ categoryCounts: {}, maxSlots: 3 });
+      const data = await response.json();
+      const categoryCounts = {};
+      data.results.forEach(page => {
+        const cat = page.properties['Category']?.select?.name || 'Other';
+        categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+      });
+      return res.status(200).json({ categoryCounts, maxSlots: 3 });
+    } catch {
+      return res.status(200).json({ categoryCounts: {}, maxSlots: 3 });
+    }
+  }
+
   // GET — fetch listed businesses
   res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate');
   try {
