@@ -9,10 +9,12 @@ async function geocodeAddress(address) {
   if (!res.ok) return null;
   const results = await res.json();
   if (!results.length) return null;
+  // Reject natural water features — Nominatim sometimes matches road addresses to the lake itself
+  if (results[0].class === 'natural' || results[0].type === 'water') return null;
   const lat = parseFloat(results[0].lat);
   const lng = parseFloat(results[0].lon);
   if (isNaN(lat) || isNaN(lng)) return null;
-  return { lat, lng };
+  return { lat, lng, displayName: results[0].display_name, osmClass: results[0].class, osmType: results[0].type };
 }
 
 export default async function handler(req, res) {
@@ -77,7 +79,7 @@ export default async function handler(req, res) {
 
       if (patchRes.ok) {
         updated++;
-        details.push({ name, result: `geocoded → ${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}` });
+        details.push({ name, result: `geocoded → ${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)} (${coords.osmClass}/${coords.osmType})` });
       } else {
         failed++;
         details.push({ name, result: 'failed — Notion patch error' });

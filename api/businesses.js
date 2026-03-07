@@ -14,6 +14,8 @@ async function geocodeAndStore(pageId, address) {
   if (!geoRes.ok) return;
   const results = await geoRes.json();
   if (!results.length) return;
+  // Reject natural water features — Nominatim sometimes matches "Devils Lake Hwy" to the lake itself
+  if (results[0].class === 'natural' || results[0].type === 'water') return;
   const lat = parseFloat(results[0].lat);
   const lng = parseFloat(results[0].lon);
   if (isNaN(lat) || isNaN(lng)) return;
@@ -136,7 +138,8 @@ export default async function handler(req, res) {
   }
 
   // GET — fetch listed businesses
-  res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate');
+  // no-store: coordinates update frequently (geocoding) — stale CDN data caused random pin behavior
+  res.setHeader('Cache-Control', 'no-store');
   try {
     const response = await fetch(
       `https://api.notion.com/v1/databases/${process.env.NOTION_DB_BUSINESS}/query`,
