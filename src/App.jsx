@@ -7200,12 +7200,12 @@ const WINERY_VENUES = [
   },
   {
     section: "village",
-    name: "Devils Lakeview Living",
+    name: "Devils Lake View Living",
     type: "Home & Lifestyle · Satellite Tasting Room",
-    tagline: "Home decor and lifestyle goods — with a pour from Brenman Family Winery that turns browsing into an occasion.",
-    address: "Manitou Beach Village",
-    phone: null,
-    website: null,
+    tagline: "High-end fashion, curated home goods, and the iconic lighthouse replica out front — with a pour from Brenman Family Winery that turns browsing into an occasion.",
+    address: "200 Devils Lake Hwy, Manitou Beach",
+    phone: "(517) 252-5287",
+    website: "https://devilslakeviewliving.com",
     logo: "/images/dl-view-living-logo.png",
     accent: C.sage,
     distance: "In the Village",
@@ -7221,7 +7221,7 @@ const WINERY_VENUES = [
   // ── The Trail (day trips) ─────────────────────────────────────────────
   {
     section: "trail",
-    name: "Meckleys Fruit & Flavor Farm",
+    name: "Meckleys Flavor Fruit Farm",
     type: "Fruit Farm · Trail Stop",
     tagline: "Start your day here. Fresh-picked fruit, homemade jams, and flavors that reset the palate before your first pour. The perfect opening move on the wine trail.",
     address: "11025 S Jackson Rd, Cement City",
