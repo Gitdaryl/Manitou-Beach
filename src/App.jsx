@@ -7925,7 +7925,7 @@ function WineriesVenueSection() {
           <SectionLabel>Extending Your Trail</SectionLabel>
           <SectionTitle>Worth the Drive</SectionTitle>
           <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 580, margin: "0 0 48px 0" }}>
-            Not part of the core trail, but worth knowing about if you're building a longer day or want to explore the broader region.
+            Full winery destinations beyond the Village loop — the kind of stops that become the reason you came. Add one to anchor a longer day, or build a trip around them.
           </p>
         </FadeIn>
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
