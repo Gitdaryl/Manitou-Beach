@@ -213,6 +213,24 @@ const C = {
 };
 
 // ============================================================
+// 💛  PAGE SPONSORS — update to activate; null = show placeholder
+// ============================================================
+const PAGE_SPONSORS = {
+  home:                 null,
+  happening:            null,
+  'round-lake':         null,
+  village:              null,
+  fishing:              null,
+  wineries:             null,
+  'devils-lake':        null,
+  dispatch:             null,
+  discover:             null,
+  'historical-society': null,
+  // To activate a sponsor, replace null with an object:
+  // pageName: { name: "Business Name", logo: "/path/to/logo.png", tagline: "Your tagline here", url: "https://example.com" }
+};
+
+// ============================================================
 // 🧭  NAV SECTIONS
 // ============================================================
 const SECTIONS = [
@@ -668,6 +686,49 @@ function WaveDivider({ topColor, bottomColor, flip = false, height = 80 }) {
         <rect width="1440" height="120" fill={topColor} style={{ opacity: 0 }} />
       </svg>
     </div>
+  );
+}
+
+// ============================================================
+// 💛  PAGE SPONSOR BANNER — appears above Footer on eligible pages
+// ============================================================
+function PageSponsorBanner({ pageName }) {
+  const sponsor = PAGE_SPONSORS[pageName] || null;
+  return (
+    <section style={{ background: "#2D3B45", padding: "52px 24px", textAlign: "center" }}>
+      <div style={{ maxWidth: 560, margin: "0 auto" }}>
+        <FadeIn>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.32)", marginBottom: 22 }}>
+            Brought to you by
+          </div>
+          {sponsor ? (
+            <a href={sponsor.url} target="_blank" rel="noopener noreferrer" style={{ display: "inline-block", textDecoration: "none" }}>
+              <img src={sponsor.logo} alt={sponsor.name} style={{ maxWidth: 240, maxHeight: 80, objectFit: "contain", filter: "brightness(0) invert(1)", opacity: 0.9 }} />
+              {sponsor.tagline && (
+                <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.5)", marginTop: 12, lineHeight: 1.6 }}>{sponsor.tagline}</p>
+              )}
+            </a>
+          ) : (
+            <>
+              <img src="/images/yeti/yeti-groove-full-logo.png" alt="Holly & The Yeti" style={{ maxWidth: 260, opacity: 0.82 }} />
+              <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.38)", margin: "18px 0 24px", lineHeight: 1.65 }}>
+                Your brand here all year — exclusive page sponsor
+              </p>
+              <a href="/featured#page-sponsorship" className="btn-animated" style={{
+                display: "inline-flex", alignItems: "center", gap: 8,
+                padding: "11px 26px", borderRadius: 8,
+                border: "1.5px solid rgba(255,255,255,0.18)",
+                color: "rgba(255,255,255,0.6)",
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 600,
+                letterSpacing: 1, textTransform: "uppercase", textDecoration: "none",
+              }}>
+                Sponsor this page — $97/mo
+              </a>
+            </>
+          )}
+        </FadeIn>
+      </div>
+    </section>
   );
 }
 
@@ -4529,6 +4590,8 @@ function HappeningPage() {
 
       <VideoSection />
       <HappeningSubmitCTA simple />
+      <WaveDivider topColor={C.night} bottomColor={C.dusk} />
+      <PageSponsorBanner pageName="happening" />
       <Footer scrollTo={subScrollTo} />
       <EventLightbox event={lightboxEvent} onClose={() => setLightboxEvent(null)} />
     </div>
@@ -4586,6 +4649,8 @@ function HomePage() {
       <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
       <LivingSection />
       <AboutSection />
+      <WaveDivider topColor={C.cream} bottomColor={C.dusk} />
+      <PageSponsorBanner pageName="home" />
       <Footer scrollTo={scrollTo} />
     </div>
   );
@@ -4942,6 +5007,8 @@ function RoundLakePage() {
       <RoundLakeCommunitySection />
       <WaveDivider topColor={C.dusk} bottomColor={C.cream} />
       <NewsletterInline />
+      <WaveDivider topColor={C.cream} bottomColor={C.dusk} />
+      <PageSponsorBanner pageName="round-lake" />
       <Footer scrollTo={subScrollTo} />
     </div>
   );
@@ -5174,6 +5241,8 @@ function VillagePage() {
       <MBHRSTimelineSection />
       <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
       <NewsletterInline />
+      <WaveDivider topColor={C.warmWhite} bottomColor={C.dusk} />
+      <PageSponsorBanner pageName="village" />
       <Footer scrollTo={subScrollTo} />
     </div>
   );
@@ -5207,6 +5276,32 @@ function FeaturedPage() {
   // Waitlist state (spots full)
   const [wl, setWl] = useState({ name: "", email: "", businessName: "", tier: "featured_90", _hp: "" });
   const [wlStatus, setWlStatus] = useState("idle"); // idle | loading | success | error
+
+  // Page sponsorship interest form
+  const SPONSORABLE_PAGES = [
+    { id: 'home', label: 'Home' },
+    { id: 'happening', label: "What's Happening" },
+    { id: 'round-lake', label: 'Round Lake' },
+    { id: 'village', label: 'Village' },
+    { id: 'fishing', label: 'Fishing' },
+    { id: 'wineries', label: 'Wineries' },
+    { id: 'devils-lake', label: 'Devils Lake' },
+    { id: 'dispatch', label: 'Dispatch' },
+    { id: 'discover', label: 'Discover Map' },
+    { id: 'historical-society', label: 'Historical Society' },
+  ];
+  const [sponsorForm, setSponsorForm] = useState({ name: '', email: '', business: '', phone: '', page: 'home', term: 'monthly', message: '', _hp: '' });
+  const [sponsorStatus, setSponsorStatus] = useState('idle');
+  const setSF = (k, v) => setSponsorForm(f => ({ ...f, [k]: v }));
+  const handleSponsorInquiry = (e) => {
+    e.preventDefault();
+    if (sponsorForm._hp) return;
+    const { name, email, business, phone, page, term, message } = sponsorForm;
+    const subject = encodeURIComponent(`Page Sponsorship Inquiry — ${SPONSORABLE_PAGES.find(p => p.id === page)?.label || page}`);
+    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\nBusiness: ${business}\nPhone: ${phone}\nPage: ${SPONSORABLE_PAGES.find(p => p.id === page)?.label || page}\nTerm: ${term === 'monthly' ? '$97/month' : '$970/year'}\nMessage: ${message}`);
+    window.open(`mailto:hello@manitoubeach.com?subject=${subject}&body=${body}`, '_blank');
+    setSponsorStatus('success');
+  };
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -5600,6 +5695,111 @@ function FeaturedPage() {
           </div>
         </section>
       )}
+
+      {/* Page Sponsorship */}
+      <section id="page-sponsorship" style={{ background: C.dusk, padding: "80px 24px" }}>
+        <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+          <FadeIn>
+            <div style={{ textAlign: "center", marginBottom: 48 }}>
+              <SectionLabel light>Page Sponsorship</SectionLabel>
+              <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 4vw, 40px)", fontWeight: 400, color: C.cream, margin: "0 0 12px 0" }}>Own a Page All Year</h2>
+              <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: "rgba(255,255,255,0.5)", lineHeight: 1.75, maxWidth: 520, margin: "0 auto 12px" }}>
+                One exclusive sponsor per page. Your logo, your tagline, your brand — seen by everyone who visits that page, all year long.
+              </p>
+              <div style={{ display: "flex", justifyContent: "center", gap: 24, flexWrap: "wrap", marginTop: 10 }}>
+                <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, fontWeight: 700, color: C.sunsetLight }}>$97 / month</span>
+                <span style={{ color: "rgba(255,255,255,0.2)", fontSize: 16 }}>·</span>
+                <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, fontWeight: 700, color: C.sage }}>$970 / year <span style={{ fontWeight: 400, fontSize: 12, color: "rgba(255,255,255,0.35)" }}>(2 months free)</span></span>
+              </div>
+            </div>
+          </FadeIn>
+
+          {/* Page availability grid */}
+          <FadeIn>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 12, marginBottom: 56 }}>
+              {SPONSORABLE_PAGES.map(pg => {
+                const taken = !!PAGE_SPONSORS[pg.id];
+                return (
+                  <div key={pg.id} style={{
+                    background: taken ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.06)",
+                    border: `1px solid ${taken ? "rgba(255,255,255,0.08)" : C.sage + "50"}`,
+                    borderRadius: 10, padding: "16px 18px",
+                    display: "flex", justifyContent: "space-between", alignItems: "center",
+                  }}>
+                    <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: taken ? "rgba(255,255,255,0.35)" : C.cream }}>{pg.label}</span>
+                    <span style={{
+                      fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700,
+                      letterSpacing: 1.2, textTransform: "uppercase", padding: "3px 8px", borderRadius: 4,
+                      background: taken ? `${C.sunset}25` : `${C.sage}25`,
+                      color: taken ? C.sunsetLight : C.sage,
+                    }}>{taken ? "Sold" : "Open"}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </FadeIn>
+
+          {/* Interest form */}
+          <FadeIn>
+            <div style={{ maxWidth: 560, margin: "0 auto" }}>
+              {sponsorStatus === 'success' ? (
+                <div style={{ textAlign: "center", padding: "40px 0" }}>
+                  <div style={{ fontSize: 40, marginBottom: 16 }}>✓</div>
+                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, fontWeight: 400, color: C.cream, margin: "0 0 10px" }}>Inquiry sent!</h3>
+                  <p style={{ fontSize: 14, color: "rgba(255,255,255,0.45)", lineHeight: 1.7 }}>We'll be in touch within 24 hours to confirm availability and get your brand set up.</p>
+                </div>
+              ) : (
+                <form onSubmit={handleSponsorInquiry} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 4, textAlign: "center" }}>
+                    Claim a page
+                  </div>
+                  {[
+                    { key: 'name', placeholder: 'Your name', type: 'text', required: true },
+                    { key: 'email', placeholder: 'Email address', type: 'email', required: true },
+                    { key: 'business', placeholder: 'Business name', type: 'text', required: true },
+                    { key: 'phone', placeholder: 'Phone (optional)', type: 'tel', required: false },
+                  ].map(({ key, placeholder, type, required }) => (
+                    <input key={key} type={type} placeholder={placeholder} required={required}
+                      value={sponsorForm[key]} onChange={e => setSF(key, e.target.value)}
+                      style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}
+                    />
+                  ))}
+                  <select value={sponsorForm.page} onChange={e => setSF('page', e.target.value)}
+                    style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "#2D3B45", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}>
+                    {SPONSORABLE_PAGES.filter(p => !PAGE_SPONSORS[p.id]).map(p => (
+                      <option key={p.id} value={p.id}>{p.label}</option>
+                    ))}
+                  </select>
+                  <div style={{ display: "flex", gap: 8 }}>
+                    {[{ val: 'monthly', label: '$97/month' }, { val: 'annual', label: '$970/year (save $194)' }].map(({ val, label }) => (
+                      <button key={val} type="button" onClick={() => setSF('term', val)} style={{
+                        flex: 1, padding: "11px 0", borderRadius: 8,
+                        border: `1px solid ${sponsorForm.term === val ? C.sage : "rgba(255,255,255,0.12)"}`,
+                        background: sponsorForm.term === val ? `${C.sage}22` : "rgba(255,255,255,0.04)",
+                        color: sponsorForm.term === val ? C.sage : "rgba(255,255,255,0.4)",
+                        fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: sponsorForm.term === val ? 700 : 400,
+                        cursor: "pointer", transition: "all 0.18s",
+                      }}>{label}</button>
+                    ))}
+                  </div>
+                  <textarea placeholder="Anything you'd like us to know?" value={sponsorForm.message} onChange={e => setSF('message', e.target.value)} rows={3}
+                    style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none", resize: "vertical" }} />
+                  {/* Honeypot */}
+                  <input aria-hidden="true" tabIndex={-1} autoComplete="off" value={sponsorForm._hp} onChange={e => setSF('_hp', e.target.value)} style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0, pointerEvents: "none" }} />
+                  <button type="submit" className="btn-animated" style={{
+                    padding: "14px 0", borderRadius: 8, border: "none",
+                    background: C.sage, color: C.cream,
+                    fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", cursor: "pointer",
+                  }}>Send Sponsorship Inquiry</button>
+                  <p style={{ fontSize: 12, color: "rgba(255,255,255,0.28)", lineHeight: 1.6, textAlign: "center", margin: 0 }}>
+                    We'll confirm availability and set up your sponsor banner within 24 hours. No charge until you approve.
+                  </p>
+                </form>
+              )}
+            </div>
+          </FadeIn>
+        </div>
+      </section>
 
       {/* FAQ */}
       <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
@@ -6023,6 +6223,8 @@ function MensClubPage() {
       <MensClubEventsSection />
       <WaveDivider topColor={C.dusk} bottomColor={C.cream} flip />
       <MensClubGallerySection />
+      <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
+      <MensClubSponsorsSection />
       <MensClubGetInvolved />
       <WaveDivider topColor={C.warmWhite} bottomColor={C.cream} />
       <NewsletterInline />
@@ -6348,6 +6550,8 @@ function HistoricalSocietyPage() {
       <RoundLakeHistorySection />
       <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
       <NewsletterInline />
+      <WaveDivider topColor={C.warmWhite} bottomColor={C.dusk} />
+      <PageSponsorBanner pageName="historical-society" />
       <Footer scrollTo={subScrollTo} />
     </div>
   );
@@ -6914,6 +7118,8 @@ function FishingPage() {
       <FishingTipUpCallout />
       <WaveDivider topColor={C.night} bottomColor={C.warmWhite} flip />
       <NewsletterInline />
+      <WaveDivider topColor={C.warmWhite} bottomColor={C.dusk} />
+      <PageSponsorBanner pageName="fishing" />
       <Footer scrollTo={subScrollTo} />
     </div>
   );
@@ -7153,6 +7359,8 @@ function WineriesPage() {
       <WineriesCTASection />
       <WaveDivider topColor={C.dusk} bottomColor={C.warmWhite} flip />
       <NewsletterInline />
+      <WaveDivider topColor={C.warmWhite} bottomColor={C.dusk} />
+      <PageSponsorBanner pageName="wineries" />
       <Footer scrollTo={subScrollTo} />
     </div>
   );
@@ -7468,6 +7676,8 @@ function DevilsLakePage() {
       <DevilsLakeCommunitySection />
       <WaveDivider topColor={C.dusk} bottomColor={C.warmWhite} flip />
       <NewsletterInline />
+      <WaveDivider topColor={C.warmWhite} bottomColor={C.dusk} />
+      <PageSponsorBanner pageName="devils-lake" />
       <Footer scrollTo={subScrollTo} />
     </div>
   );
@@ -7979,6 +8189,97 @@ function LadiesClubSponsorsSection() {
           <p style={{ textAlign: "center", fontSize: 13, color: C.textMuted, marginTop: 40, lineHeight: 1.7 }}>
             Interested in sponsoring? Contact{" "}
             <a href="mailto:michele.henson0003@gmail.com" style={{ color: C.sage, textDecoration: "none" }}>michele.henson0003@gmail.com</a>
+          </p>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+function MensClubSponsorsSection() {
+  const SponsorTile = ({ height = 110 }) => (
+    <div style={{
+      background: "#fff", border: `1.5px dashed ${C.sand}`, borderRadius: 12,
+      height, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6,
+    }}>
+      <div style={{ width: 28, height: 28, borderRadius: "50%", background: C.sand, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={C.textMuted} strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      </div>
+      <span style={{ fontSize: 9, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.8, textTransform: "uppercase" }}>Logo</span>
+    </div>
+  );
+
+  const TierHeader = ({ label, color }) => (
+    <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16, marginTop: 40 }}>
+      <div style={{ flex: 1, height: 1, background: C.sand }} />
+      <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 13, color, fontWeight: 400, letterSpacing: 1, textTransform: "uppercase" }}>{label}</span>
+      <div style={{ flex: 1, height: 1, background: C.sand }} />
+    </div>
+  );
+
+  return (
+    <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+        <FadeIn>
+          <div style={{ textAlign: "center", marginBottom: 16 }}>
+            <SectionLabel>Thank You</SectionLabel>
+            <SectionTitle center>Our 2026 Sponsors</SectionTitle>
+            <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, maxWidth: 480, margin: "0 auto" }}>
+              The Tip-Up Festival and our year-round programs are made possible by the generous support of our community sponsors.
+            </p>
+          </div>
+        </FadeIn>
+
+        {/* Platinum — 3 across */}
+        <FadeIn>
+          <TierHeader label="Platinum Sponsors" color="#b08d57" />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
+            {[0,1,2].map(i => <SponsorTile key={i} height={140} />)}
+          </div>
+        </FadeIn>
+
+        {/* Gold — 4 across */}
+        <FadeIn>
+          <TierHeader label="Gold Sponsors" color="#c9a227" />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14 }}>
+            {[0,1,2,3].map(i => <SponsorTile key={i} height={120} />)}
+          </div>
+        </FadeIn>
+
+        {/* Silver — 5 across */}
+        <FadeIn>
+          <TierHeader label="Silver Sponsors" color="#8a9ba8" />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 12 }}>
+            {[0,1,2,3,4].map(i => <SponsorTile key={i} height={100} />)}
+          </div>
+        </FadeIn>
+
+        {/* Bronze — 6 across */}
+        <FadeIn>
+          <TierHeader label="Bronze Sponsors" color="#a0522d" />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 10 }}>
+            {[0,1,2,3,4,5].map(i => <SponsorTile key={i} height={88} />)}
+          </div>
+        </FadeIn>
+
+        {/* Friends — text list */}
+        <FadeIn>
+          <TierHeader label="Friends of the Club" color={C.sage} />
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 24px", justifyContent: "center", padding: "4px 0 8px" }}>
+            {["Friend", "Friend", "Friend", "Friend", "Friend", "Friend", "Friend", "Friend"].map((_, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <img src="/images/mens_club_logo.png" alt="DRLMC" style={{ width: 16, height: 16, objectFit: "contain", opacity: 0.7 }} />
+                <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted }}>Friend Name</span>
+              </div>
+            ))}
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={200}>
+          <p style={{ textAlign: "center", fontSize: 13, color: C.textMuted, marginTop: 40, lineHeight: 1.7 }}>
+            Interested in sponsoring the Men's Club?{" "}
+            <a href="mailto:hello@manitoubeach.com" style={{ color: C.sage, textDecoration: "none" }}>Get in touch</a>{" "}
+            and we'll connect you with the club.
           </p>
         </FadeIn>
       </div>
@@ -9034,7 +9335,8 @@ function DispatchPage() {
 
       <WaveDivider topColor={C.cream} bottomColor={C.night} />
       <NewsletterInline />
-      <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
+      <WaveDivider topColor={C.night} bottomColor={C.dusk} />
+      <PageSponsorBanner pageName="dispatch" />
       <Footer scrollTo={subScrollTo} />
     </div>
   );
@@ -11414,7 +11716,8 @@ function DiscoverPage() {
           <Btn href="/promote" variant="sunset">List an Event</Btn>
         </div>
       </section>
-      <div style={{ height: 60 }} />
+      <WaveDivider topColor={C.cream} bottomColor={C.dusk} />
+      <PageSponsorBanner pageName="discover" />
       <style>{`
         @keyframes discspin { to { transform: rotate(360deg); } }
         .discover-hero-inner { padding: 80px 48px 36px; }
