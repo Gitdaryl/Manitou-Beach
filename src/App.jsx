@@ -157,6 +157,7 @@ function GlobalStyles() {
         .living-here-grid { grid-template-columns: 1fr !important; }
         .village-roots-grid { grid-template-columns: 1fr !important; }
         .mens-club-stats { grid-template-columns: repeat(3, 1fr) !important; }
+        .wineries-itinerary-grid { grid-template-columns: 1fr !important; }
       }
       @media (max-width: 640px) {
         .mobile-col-1 { grid-template-columns: 1fr !important; }
@@ -7149,6 +7150,8 @@ const WINERY_VENUES = [
     accent: "#8B5E3C",
     distance: "In the Village",
     openingDate: "May 22, 2026",
+    hours: "Hours announced May 2026",
+    lat: 41.9717, lng: -84.3091,
     hostedBrands: [
       {
         name: "Cherry Creek Cellars",
@@ -7168,6 +7171,8 @@ const WINERY_VENUES = [
     accent: C.sunsetLight,
     distance: "In the Village",
     openingDate: "May 22, 2026",
+    hours: "Hours announced soon",
+    lat: 41.9712, lng: -84.3093,
     hostedBrands: [
       {
         name: "French Road Cellars",
@@ -7191,6 +7196,8 @@ const WINERY_VENUES = [
     accent: C.lakeBlue,
     distance: "In the Village",
     openingDate: "May 22, 2026",
+    hours: "Hours announced soon",
+    lat: 41.971727, lng: -84.309131,
     hostedBrands: [
       {
         name: "Amoritas Vineyard",
@@ -7210,6 +7217,8 @@ const WINERY_VENUES = [
     accent: C.sage,
     distance: "In the Village",
     openingDate: "May 22, 2026",
+    hours: "Hours announced soon",
+    lat: 41.9708, lng: -84.3099,
     hostedBrands: [
       {
         name: "Brenman Family Winery",
@@ -7229,8 +7238,10 @@ const WINERY_VENUES = [
     website: null,
     logo: "/images/meckleys-logo.png",
     accent: "#B35A1A",
+    hours: "Wed–Sat 9am–6pm (seasonal — call ahead)",
     highlight: "The ideal first stop — palate fresh, appetite building",
     distance: "~20 min from Manitou Beach",
+    lat: 42.0589177, lng: -84.4059253,
   },
   {
     section: "trail",
@@ -7242,8 +7253,10 @@ const WINERY_VENUES = [
     website: "https://cherrycreekwine.com",
     logo: "/images/cherry_creek_logo.png",
     accent: C.sage,
+    hours: "Mon–Sat 11am–6pm · Sun Noon–6pm",
     highlight: "Also poured at Faust House in the Village starting May 22",
     distance: "~15 min from Manitou Beach",
+    lat: 42.0505, lng: -84.3012,
   },
   {
     section: "trail",
@@ -7255,8 +7268,10 @@ const WINERY_VENUES = [
     website: "https://chateauaeronautiquewinery.com",
     logo: "/images/chateau_logo.png",
     accent: C.sunset,
+    hours: "Wed–Thu 3–9pm · Fri–Sat Noon–9pm · Sun Noon–6pm",
     highlight: "Live music every weekend + Michigan-crafted wines",
     distance: "~20 min from Manitou Beach",
+    lat: 42.0582, lng: -84.1274,
   },
   {
     section: "trail",
@@ -7268,8 +7283,16 @@ const WINERY_VENUES = [
     website: "https://gypsybluevineyards.com",
     logo: "/images/gypsy_blue_logo.png",
     accent: C.lakeBlue,
+    hours: "Check website for current hours",
     highlight: "Wines + ciders + flower farm — a full afternoon stop",
     distance: "~20 min from Manitou Beach",
+    lat: 41.9170, lng: -84.3115,
+    photos: [
+      "/images/wineries/gypsy_blue_01.jpg",
+      "/images/wineries/gypsy_blue_02.jpg",
+      "/images/wineries/gypsy_blue_03.jpg",
+      "/images/wineries/gypsy_blue_04.jpg",
+    ],
   },
 
   // ── Worth the Drive ───────────────────────────────────────────────────
@@ -7349,11 +7372,54 @@ function WineriesVillageCallout() {
           <p style={{ fontSize: 15, color: "rgba(255,255,255,0.35)", lineHeight: 1.8, maxWidth: 560, margin: "0 auto 32px", fontStyle: "italic" }}>
             Cherry Creek Cellars · French Road Cellars · Chateau Fontaine · Amoritas Vineyard · Brenman Family Winery — all in the Village, all within steps of the lake.
           </p>
-          <Btn href="/village" variant="sunset">Explore the Village</Btn>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
+            <Btn href="/village" variant="sunset">Explore the Village</Btn>
+            <div style={{ display: "flex", gap: 16, flexWrap: "wrap", justifyContent: "center" }}>
+              <a
+                href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Manitou+Beach+Wine+Trail+Opens&dates=20260522%2F20260523&details=Four+Village+shops+open+as+satellite+tasting+rooms+for+Michigan+wineries.+Walk+the+boulevard%2C+pop+into+a+gallery%2C+stay+for+a+glass.&location=N+Lakeview+Blvd%2C+Manitou+Beach%2C+MI"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.15)", paddingBottom: 2, transition: "color 0.2s" }}
+                onMouseEnter={e => e.target.style.color = "rgba(255,255,255,0.75)"}
+                onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.4)"}
+              >
+                + Google Calendar
+              </a>
+              <a
+                href={"data:text/calendar;charset=utf8," + encodeURIComponent("BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTART;VALUE=DATE:20260522\nDTEND;VALUE=DATE:20260523\nSUMMARY:Manitou Beach Wine Trail Opens\nDESCRIPTION:Four Village shops open as satellite tasting rooms for Michigan wineries.\nLOCATION:N Lakeview Blvd\\, Manitou Beach\\, MI\nURL:https://manitoubeach.app/wineries\nEND:VEVENT\nEND:VCALENDAR")}
+                download="manitou-beach-wine-trail.ics"
+                style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.15)", paddingBottom: 2, transition: "color 0.2s" }}
+                onMouseEnter={e => e.target.style.color = "rgba(255,255,255,0.75)"}
+                onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.4)"}
+              >
+                + Apple / iCal
+              </a>
+            </div>
+          </div>
         </FadeIn>
       </div>
     </section>
   );
+}
+
+function getWineSessionId() {
+  try {
+    const KEY = "mb-wine-session";
+    let id = localStorage.getItem(KEY);
+    if (!id) { id = Math.random().toString(36).slice(2, 10); localStorage.setItem(KEY, id); }
+    return id;
+  } catch { return "anon"; }
+}
+
+function useWineryRatings() {
+  const [ratings, setRatings] = useState({});
+  useEffect(() => {
+    fetch('/api/winery-ratings')
+      .then(r => r.json())
+      .then(d => { if (d.ratings) setRatings(d.ratings); })
+      .catch(() => {});
+  }, []);
+  return { ratings };
 }
 
 function useWinePassport() {
@@ -7379,6 +7445,17 @@ function WinePassportWidget({ stamped, villageVenues, trailVenues }) {
   const villageComplete = villageCount === villageVenues.length;
   const trailComplete = trailCount === trailVenues.length;
   const allComplete = villageComplete && trailComplete;
+  const [shared, setShared] = useState(false);
+
+  const handleShare = async () => {
+    const text = "I completed the Manitou Beach Wine Trail — all 8 stops across the Irish Hills. 🍷";
+    const url = "https://manitoubeach.app/wineries";
+    if (navigator.share) {
+      try { await navigator.share({ title: "Manitou Beach Wine Trail", text, url }); } catch {}
+    } else {
+      try { await navigator.clipboard.writeText(`${text} ${url}`); setShared(true); setTimeout(() => setShared(false), 3000); } catch {}
+    }
+  };
 
   const DotRow = ({ total, filled, accent }) => (
     <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
@@ -7408,9 +7485,18 @@ function WinePassportWidget({ stamped, villageVenues, trailVenues }) {
             <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: allComplete ? C.cream : C.text, marginBottom: 4 }}>
               {allComplete ? "Trail Complete — Well Done." : "Your Wine Trail Passport"}
             </div>
-            <div style={{ fontSize: 13, color: allComplete ? "rgba(255,255,255,0.5)" : C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 16 }}>
-              {allComplete ? "You've visited every stop on the Manitou Beach Wine Trail." : "Tap 'Stamp My Visit' after each stop to track your trail."}
+            <div style={{ fontSize: 13, color: allComplete ? "rgba(255,255,255,0.5)" : C.textLight, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.65, marginBottom: 4 }}>
+              {allComplete
+                ? "You've visited every stop on the Manitou Beach Wine Trail. Show this screen at any participating venue — they'll know what it means."
+                : "Eight stops across the Irish Hills. Two loops — the Village walkabout, and the full day-trip trail. Stamp each one as you go."}
             </div>
+            {!allComplete && (
+              <div style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 16 }}>
+                Each stamp requires a quick tasting note — takes 30 seconds and earns you the visit.{" "}
+                <span style={{ fontStyle: "italic" }}>Complete all eight and you've done something worth talking about.</span>
+              </div>
+            )}
+            {allComplete && <div style={{ marginBottom: 16 }} />}
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                 <div style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: allComplete ? "rgba(255,255,255,0.45)" : C.textMuted, width: 64 }}>Village</div>
@@ -7425,6 +7511,26 @@ function WinePassportWidget({ stamped, villageVenues, trailVenues }) {
                 {trailComplete && <div style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, color: C.sage, background: "rgba(122,142,114,0.12)", padding: "2px 8px", borderRadius: 20 }}>Complete</div>}
               </div>
             </div>
+            {allComplete && (
+              <div style={{ marginTop: 20 }}>
+                <button
+                  onClick={handleShare}
+                  style={{
+                    fontFamily: "'Libre Franklin', sans-serif",
+                    fontSize: 11, fontWeight: 700, letterSpacing: 1.5,
+                    textTransform: "uppercase",
+                    padding: "9px 20px", borderRadius: 20,
+                    background: shared ? C.sage : "transparent",
+                    color: shared ? C.cream : C.sunset,
+                    border: `1.5px solid ${shared ? C.sage : C.sunset}`,
+                    cursor: "pointer",
+                    transition: "all 0.25s ease",
+                  }}
+                >
+                  {shared ? "✓ Link Copied" : "Share Your Trail Badge"}
+                </button>
+              </div>
+            )}
           </div>
           {allComplete && (
             <div style={{ textAlign: "center" }}>
@@ -7444,7 +7550,103 @@ function WinePassportWidget({ stamped, villageVenues, trailVenues }) {
   );
 }
 
-function WineryCard({ v, i, isStamped, onStamp }) {
+function WineReviewModal({ venue, accent, onSuccess, onClose }) {
+  const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [wineTried, setWineTried] = useState('');
+  const [note, setNote] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async () => {
+    if (!rating) { setError('Please select a star rating.'); return; }
+    if (!wineTried.trim()) { setError('Please tell us what you tried.'); return; }
+    setSubmitting(true);
+    setError('');
+    try {
+      const res = await fetch('/api/winery-ratings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ venue, rating, wineTried: wineTried.trim(), note: note.trim(), sessionId: getWineSessionId() }),
+      });
+      if (!res.ok) throw new Error('Failed');
+      onSuccess();
+    } catch {
+      setError('Something went wrong — your stamp was saved locally.');
+      onSuccess();
+    }
+  };
+
+  return (
+    <div
+      onClick={e => e.stopPropagation()}
+      style={{ position: 'fixed', inset: 0, background: 'rgba(10,18,24,0.7)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}
+    >
+      <div style={{ background: C.warmWhite, borderRadius: 20, width: '100%', maxWidth: 480, boxShadow: '0 24px 80px rgba(0,0,0,0.3)', overflow: 'hidden' }}>
+        <div style={{ height: 5, background: accent }} />
+        <div style={{ padding: '28px 32px 32px' }}>
+          <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 19, fontWeight: 400, color: C.text, marginBottom: 4 }}>Log Your Visit</div>
+          <div style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 24 }}>{venue}</div>
+
+          <div style={{ marginBottom: 20 }}>
+            <div style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 10 }}>Your Rating</div>
+            <div style={{ display: 'flex', gap: 4 }}>
+              {[1,2,3,4,5].map(s => (
+                <button
+                  key={s}
+                  onClick={() => setRating(s)}
+                  onMouseEnter={() => setHoverRating(s)}
+                  onMouseLeave={() => setHoverRating(0)}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 30, padding: '2px 3px', color: s <= (hoverRating || rating) ? C.sunset : C.sand, transition: 'color 0.12s' }}
+                >★</button>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ marginBottom: 16 }}>
+            <label style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, display: 'block', marginBottom: 8 }}>What did you try? *</label>
+            <input
+              type="text"
+              value={wineTried}
+              onChange={e => setWineTried(e.target.value)}
+              placeholder="The dry rosé, Cabernet Franc, 2023 Riesling..."
+              style={{ width: '100%', padding: '10px 14px', borderRadius: 10, border: `1.5px solid ${C.sand}`, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.text, background: C.cream, outline: 'none', boxSizing: 'border-box' }}
+            />
+          </div>
+
+          <div style={{ marginBottom: 24 }}>
+            <label style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, display: 'block', marginBottom: 8 }}>
+              Anything else? <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional)</span>
+            </label>
+            <textarea
+              value={note}
+              onChange={e => setNote(e.target.value)}
+              placeholder="Loved the patio, ask for the reserve, perfect for a rainy afternoon..."
+              rows={2}
+              style={{ width: '100%', padding: '10px 14px', borderRadius: 10, border: `1.5px solid ${C.sand}`, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.text, background: C.cream, outline: 'none', resize: 'none', boxSizing: 'border-box' }}
+            />
+          </div>
+
+          {error && <div style={{ fontSize: 12, color: '#c0392b', marginBottom: 12, fontFamily: "'Libre Franklin', sans-serif" }}>{error}</div>}
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            <button
+              onClick={handleSubmit}
+              disabled={submitting}
+              style={{ flex: 1, padding: '12px 20px', borderRadius: 24, background: C.sage, color: C.cream, border: 'none', fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', cursor: submitting ? 'default' : 'pointer', opacity: submitting ? 0.7 : 1, transition: 'opacity 0.2s' }}
+            >
+              {submitting ? 'Saving...' : 'Submit & Earn Your Stamp'}
+            </button>
+            <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function WineryCard({ v, i, isStamped, onStamp, venueRating }) {
+  const [showModal, setShowModal] = useState(false);
   return (
     <FadeIn delay={i * 80} direction={i % 2 === 0 ? "left" : "right"}>
       <div
@@ -7467,11 +7669,18 @@ function WineryCard({ v, i, isStamped, onStamp }) {
       >
         <div style={{ position: "absolute", top: 0, left: 0, width: 4, height: "100%", background: v.accent, borderRadius: "16px 0 0 16px" }} />
         {v.logo && (
-          <img src={v.logo} alt="" style={{ width: 192, height: 192, borderRadius: 16, objectFit: "cover", flexShrink: 0, background: C.sand }} />
+          <img src={v.logo} alt="" style={{ width: 144, height: 144, borderRadius: 16, objectFit: "cover", flexShrink: 0, background: C.sand }} />
         )}
         <div style={{ flex: 1 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 8, marginBottom: 6 }}>
-            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.text, margin: 0 }}>{v.name}</h3>
+            <div>
+              <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.text, margin: "0 0 4px 0" }}>{v.name}</h3>
+              {venueRating && venueRating.count > 0 && (
+                <div style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
+                  <span style={{ color: C.sunset }}>★</span> {venueRating.avg} &nbsp;·&nbsp; {venueRating.count} {venueRating.count === 1 ? 'review' : 'reviews'}
+                </div>
+              )}
+            </div>
             <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
               {v.openingDate && (
                 <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.cream, background: C.sunset, padding: "4px 10px", borderRadius: 20 }}>Opens {v.openingDate}</span>
@@ -7496,9 +7705,23 @@ function WineryCard({ v, i, isStamped, onStamp }) {
             </div>
           )}
 
+          {v.photos && v.photos.length > 0 && (
+            <div style={{ margin: "16px 0 4px 0", overflowX: "auto", display: "flex", gap: 8, paddingBottom: 4 }}>
+              {v.photos.map((src, pi) => (
+                <img
+                  key={pi}
+                  src={src}
+                  alt=""
+                  style={{ height: 110, width: 160, objectFit: "cover", borderRadius: 10, flexShrink: 0, border: `1px solid ${C.sand}` }}
+                />
+              ))}
+            </div>
+          )}
+
           <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
             {v.address && v.address !== "Manitou Beach Village" && <span style={{ fontSize: 12, color: C.textMuted }}>📍 {v.address}</span>}
             {v.phone && <span style={{ fontSize: 12, color: C.textMuted }}>📞 {v.phone}</span>}
+            {v.hours && <span style={{ fontSize: 12, color: C.textMuted }}>🕐 {v.hours}</span>}
           </div>
           {v.highlight && (
             <div style={{ marginTop: 12, fontSize: 12, color: v.accent, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600 }}>
@@ -7518,27 +7741,145 @@ function WineryCard({ v, i, isStamped, onStamp }) {
               </a>
             )}
             {onStamp && (
-              <button
-                onClick={e => { e.stopPropagation(); onStamp(v.name); }}
-                style={{
-                  fontFamily: "'Libre Franklin', sans-serif",
-                  fontSize: 11, fontWeight: 700, letterSpacing: 1.5,
-                  textTransform: "uppercase",
-                  padding: "8px 16px", borderRadius: 20,
-                  cursor: "pointer",
-                  background: isStamped ? C.sage : "transparent",
-                  color: isStamped ? C.cream : C.sage,
-                  border: `1.5px solid ${C.sage}`,
-                  transition: "all 0.25s ease",
-                }}
-              >
-                {isStamped ? "✓ Visited" : "+ Stamp My Visit"}
-              </button>
+              <div style={{ marginLeft: "auto" }}>
+                <button
+                  onClick={e => { e.stopPropagation(); if (!isStamped) setShowModal(true); }}
+                  style={{
+                    fontFamily: "'Libre Franklin', sans-serif",
+                    fontSize: 11, fontWeight: 700, letterSpacing: 1.5,
+                    textTransform: "uppercase",
+                    padding: "8px 16px", borderRadius: 20,
+                    cursor: isStamped ? "default" : "pointer",
+                    background: isStamped ? C.sage : "transparent",
+                    color: isStamped ? C.cream : C.sage,
+                    border: `1.5px solid ${C.sage}`,
+                    transition: "all 0.25s ease",
+                  }}
+                >
+                  {isStamped ? "✓ Visited" : "+ Stamp My Visit"}
+                </button>
+              </div>
             )}
           </div>
         </div>
       </div>
+      {showModal && (
+        <WineReviewModal
+          venue={v.name}
+          accent={v.accent}
+          onSuccess={() => { onStamp(v.name); setShowModal(false); }}
+          onClose={() => setShowModal(false)}
+        />
+      )}
     </FadeIn>
+  );
+}
+
+function WineriesMapSection() {
+  const [mapReady, setMapReady] = useState(false);
+  const [mapError, setMapError] = useState(null);
+  const mapDivRef = useRef(null);
+  const mapObjRef = useRef(null);
+  const googleRef = useRef(null);
+  const markersRef = useRef([]);
+  const infoWindowRef = useRef(null);
+
+  const mapVenues = WINERY_VENUES.filter(v => v.lat && v.lng && v.section !== 'extended');
+
+  useEffect(() => {
+    const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+    if (!apiKey) { setMapError('Map API key not configured.'); return; }
+    if (!mapDivRef.current) return;
+    let active = true;
+    import('@googlemaps/js-api-loader').then(({ Loader }) => {
+      new Loader({ apiKey, version: 'weekly' }).load().then(google => {
+        if (!active || !mapDivRef.current) return;
+        googleRef.current = google;
+        mapObjRef.current = new google.maps.Map(mapDivRef.current, {
+          center: { lat: 42.01, lng: -84.28 },
+          zoom: 10,
+          mapTypeControl: false,
+          streetViewControl: false,
+          fullscreenControl: true,
+          zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_BOTTOM },
+          styles: DISCOVER_MAP_STYLES,
+        });
+        infoWindowRef.current = new google.maps.InfoWindow();
+        setMapReady(true);
+      }).catch(() => { if (active) setMapError('Map failed to load. Check your API key.'); });
+    }).catch(() => { if (active) setMapError('Map loader error.'); });
+    return () => { active = false; };
+  }, []);
+
+  useEffect(() => {
+    const google = googleRef.current;
+    const map = mapObjRef.current;
+    if (!google || !map || !mapReady) return;
+    markersRef.current.forEach(m => m.setMap(null));
+    markersRef.current = [];
+
+    mapVenues.forEach((v, idx) => {
+      const color = v.section === 'village' ? C.sunset : C.lakeBlue;
+      const marker = new google.maps.Marker({
+        position: { lat: v.lat, lng: v.lng },
+        map,
+        title: v.name,
+        icon: { url: createDiscoverPin(color), scaledSize: new google.maps.Size(28, 36), anchor: new google.maps.Point(14, 36) },
+        animation: google.maps.Animation.DROP,
+        zIndex: idx,
+      });
+      const dir = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(v.address)}`;
+      const iw = `<div style="padding:6px 8px 10px;max-width:240px;font-family:system-ui,sans-serif;line-height:1.45">
+        <div style="font-size:13px;font-weight:700;color:#2D3B45;margin-bottom:2px">${v.name}</div>
+        <div style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:${color};font-weight:700;margin-bottom:6px">${v.type}</div>
+        ${v.address ? `<div style="font-size:11px;color:#666;margin-bottom:4px">${v.address}</div>` : ''}
+        ${v.hours ? `<div style="font-size:11px;color:#999;margin-bottom:6px;font-style:italic">${v.hours}</div>` : ''}
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <a href="${dir}" target="_blank" style="font-size:12px;font-weight:700;color:#5B7E95;text-decoration:none">Directions →</a>
+          ${v.website ? `<a href="${v.website}" target="_blank" style="font-size:12px;font-weight:700;color:#D4845A;text-decoration:none">Website →</a>` : ''}
+        </div>
+      </div>`;
+      marker.addListener('click', () => {
+        infoWindowRef.current.setContent(iw);
+        infoWindowRef.current.open(map, marker);
+      });
+      markersRef.current.push(marker);
+    });
+
+    if (mapVenues.length > 1) {
+      const bounds = new google.maps.LatLngBounds();
+      mapVenues.forEach(v => bounds.extend({ lat: v.lat, lng: v.lng }));
+      map.fitBounds(bounds, { top: 60, right: 60, bottom: 60, left: 60 });
+    }
+  }, [mapReady]);
+
+  return (
+    <section style={{ background: C.warmWhite, padding: '80px 24px' }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+        <FadeIn>
+          <SectionLabel>Plan Your Visit</SectionLabel>
+          <SectionTitle>The Trail Map</SectionTitle>
+          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 560, margin: '0 0 24px 0' }}>
+            Village tasting rooms in the heart of Manitou Beach. Trail wineries within 20 minutes. Tap any pin for hours, directions, and the website.
+          </p>
+          <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', marginBottom: 28 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, color: C.textLight }}>
+              <span style={{ width: 11, height: 11, borderRadius: '50%', background: C.sunset, display: 'inline-block' }} />
+              Village Tasting Rooms
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, color: C.textLight }}>
+              <span style={{ width: 11, height: 11, borderRadius: '50%', background: C.lakeBlue, display: 'inline-block' }} />
+              Wine Trail Stops
+            </div>
+          </div>
+        </FadeIn>
+        {mapError ? (
+          <div style={{ background: C.sand, borderRadius: 12, padding: 24, fontSize: 13, color: C.textMuted, textAlign: 'center' }}>{mapError}</div>
+        ) : (
+          <div ref={mapDivRef} style={{ width: '100%', height: 460, borderRadius: 16, overflow: 'hidden', border: `1px solid ${C.sand}`, background: C.sand }} />
+        )}
+      </div>
+    </section>
   );
 }
 
@@ -7547,6 +7888,7 @@ function WineriesVenueSection() {
   const trailVenues = WINERY_VENUES.filter(v => v.section === "trail");
   const extendedVenues = WINERY_VENUES.filter(v => v.section === "extended");
   const { stamped, toggleStamp, isStamped } = useWinePassport();
+  const { ratings } = useWineryRatings();
 
   return (
     <section style={{ background: C.cream, padding: "100px 24px" }}>
@@ -7563,7 +7905,7 @@ function WineriesVenueSection() {
           </p>
         </FadeIn>
         <div style={{ display: "flex", flexDirection: "column", gap: 24, marginBottom: 80 }}>
-          {villageVenues.map((v, i) => <WineryCard key={i} v={v} i={i} isStamped={isStamped(v.name)} onStamp={toggleStamp} />)}
+          {villageVenues.map((v, i) => <WineryCard key={i} v={v} i={i} isStamped={isStamped(v.name)} onStamp={toggleStamp} venueRating={ratings[v.name]} />)}
         </div>
 
         {/* The Trail */}
@@ -7575,7 +7917,7 @@ function WineriesVenueSection() {
           </p>
         </FadeIn>
         <div style={{ display: "flex", flexDirection: "column", gap: 24, marginBottom: 80 }}>
-          {trailVenues.map((v, i) => <WineryCard key={i} v={v} i={i} isStamped={isStamped(v.name)} onStamp={toggleStamp} />)}
+          {trailVenues.map((v, i) => <WineryCard key={i} v={v} i={i} isStamped={isStamped(v.name)} onStamp={toggleStamp} venueRating={ratings[v.name]} />)}
         </div>
 
         {/* Worth the Drive */}
@@ -7590,6 +7932,99 @@ function WineriesVenueSection() {
           {extendedVenues.map((v, i) => <WineryCard key={i} v={v} i={i} />)}
         </div>
 
+      </div>
+    </section>
+  );
+}
+
+const WINERY_ITINERARIES = [
+  {
+    title: "The Village Half-Day",
+    duration: "2–3 Hours",
+    badge: "Starting May 22",
+    accent: C.sunset,
+    intro: "Four tasting rooms, one boulevard, zero driving. Walk the Village loop — start anywhere, end at the lake.",
+    stops: [
+      { time: "11am", stop: "Faust House Scrap n Craft", note: "Cherry Creek pour — browse the shelves, stay for a glass" },
+      { time: "11:30am", stop: "Ang & Co", note: "French Road Cellars + Chateau Fontaine — most variety in one stop" },
+      { time: "Noon", stop: "Boathouse Art Gallery", note: "Amoritas Vineyard — gallery browse and a pour" },
+      { time: "12:30pm", stop: "Devils Lake View Living", note: "Brenman Family Winery — fashion, home goods, lighthouse out front" },
+      { time: "1pm", stop: "Lunch at the lake", note: "You've earned it" },
+    ],
+  },
+  {
+    title: "The Full Trail Loop",
+    duration: "Full Day",
+    badge: "Best on a Saturday",
+    accent: C.lakeBlue,
+    intro: "One loop, four stops, a fruit farm to start. Leave by 10, back lakeside before dark with excellent stories.",
+    stops: [
+      { time: "10am", stop: "Meckleys Flavor Fruit Farm", note: "Fresh-picked fruit — reset the palate before the first pour" },
+      { time: "11:30am", stop: "Cherry Creek Cellars", note: "Small-batch Michigan wines in Brooklyn's laid-back tasting room" },
+      { time: "1pm", stop: "Chateau Aeronautique", note: "Lunch + live music — all-weather biergarten, aviation-themed" },
+      { time: "3:30pm", stop: "Gypsy Blue Vineyards", note: "Wines, ciders, flower farm — the most scenic stop on the loop" },
+      { time: "6pm", stop: "Back to the lake", note: "Dinner in the Village or on the dock" },
+    ],
+  },
+  {
+    title: "The Extended Weekend",
+    duration: "2 Days",
+    badge: "The Full Experience",
+    accent: C.sage,
+    intro: "Village Saturday morning. Full trail Saturday afternoon. Sunday at the lake. The version you tell people about on Monday.",
+    stops: [
+      { time: "Sat AM", stop: "Village Tasting Rooms", note: "Walk all four stops — two hours, zero driving" },
+      { time: "Sat PM", stop: "Cherry Creek + Chateau Aeronautique", note: "Two trail stops, lunch at Chateau, live music" },
+      { time: "Sat Eve", stop: "Dinner lakeside", note: "Village dining or back to the cottage" },
+      { time: "Sun AM", stop: "Gypsy Blue Vineyards", note: "The drive earns it — flower farm, ciders, the works" },
+      { time: "Sun PM", stop: "Devils Lake", note: "Pontoon, paddleboard, or just a dock chair" },
+    ],
+  },
+];
+
+function WineriesItinerarySection() {
+  return (
+    <section style={{ background: C.night, padding: "100px 24px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <FadeIn>
+          <SectionLabel light>How to Do It</SectionLabel>
+          <SectionTitle>Three Ways to Run the Trail</SectionTitle>
+          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 520, margin: "0 0 52px 0" }}>
+            Pick your pace. Two hours or two days — the trail works either way.
+          </p>
+        </FadeIn>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }} className="wineries-itinerary-grid">
+          {WINERY_ITINERARIES.map((it, i) => (
+            <FadeIn key={i} delay={i * 100}>
+              <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, overflow: "hidden", height: "100%" }}>
+                <div style={{ height: 4, background: it.accent }} />
+                <div style={{ padding: "28px 24px 32px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16, flexWrap: "wrap", gap: 8 }}>
+                    <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: it.accent }}>{it.badge}</span>
+                    <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.3)", background: "rgba(255,255,255,0.06)", padding: "3px 10px", borderRadius: 20 }}>{it.duration}</span>
+                  </div>
+                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 21, fontWeight: 400, color: C.cream, margin: "0 0 12px 0" }}>{it.title}</h3>
+                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.75, margin: "0 0 24px 0" }}>{it.intro}</p>
+                  <div style={{ display: "flex", flexDirection: "column" }}>
+                    {it.stops.map((s, si) => (
+                      <div key={si} style={{ display: "flex", gap: 14, paddingBottom: 16, position: "relative" }}>
+                        {si < it.stops.length - 1 && (
+                          <div style={{ position: "absolute", left: 42, top: 18, bottom: 0, width: 1, background: "rgba(255,255,255,0.07)" }} />
+                        )}
+                        <div style={{ flexShrink: 0, width: 36, paddingTop: 3, fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 0.3, color: it.accent, textAlign: "right", lineHeight: 1.3 }}>{s.time}</div>
+                        <div style={{ width: 8, height: 8, borderRadius: "50%", background: it.accent, flexShrink: 0, marginTop: 5, opacity: 0.75 }} />
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontSize: 13, fontFamily: "'Libre Baskerville', serif", color: C.cream, marginBottom: 3, lineHeight: 1.4 }}>{s.stop}</div>
+                          <div style={{ fontSize: 11, color: "rgba(255,255,255,0.32)", lineHeight: 1.5 }}>{s.note}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -7631,7 +8066,12 @@ function WineriesPage() {
       <WineriesVillageCallout />
       <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
       <PromoBanner page="Wineries" />
+      <WineriesMapSection />
+      <WaveDivider topColor={C.warmWhite} bottomColor={C.cream} />
       <WineriesVenueSection />
+      <WaveDivider topColor={C.cream} bottomColor={C.night} />
+      <WineriesItinerarySection />
+      <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
       <DiagonalDivider topColor={C.cream} bottomColor={C.dusk} />
       <WineriesCTASection />
       <WaveDivider topColor={C.dusk} bottomColor={C.warmWhite} flip />
