@@ -142,6 +142,9 @@ export default async function handler(req, res) {
         id: `notion-${page.id}`,
         name: p['Name']?.title?.[0]?.text?.content || '',
         category: p['Category']?.select?.name || 'Other',
+        categories: p['Categories']?.multi_select?.length
+          ? p['Categories'].multi_select.map(s => s.name)
+          : [p['Category']?.select?.name || 'Other'],
         phone: p['Phone']?.phone_number || '',
         website: normalizeUrl(p['URL']?.url || ''),
         email: p['Email']?.email || '',

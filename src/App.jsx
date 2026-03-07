@@ -3581,15 +3581,16 @@ function SubmitSection() {
                     onBlur={e => e.target.style.borderColor = C.sand}
                   >
                     <option value="" disabled>Category</option>
-                    <option>Real Estate</option>
                     <option>Food & Drink</option>
+                    <option>Events & Venues</option>
+                    <option>Stays & Rentals</option>
                     <option>Boating & Water</option>
                     <option>Breweries & Wineries</option>
                     <option>Shopping & Gifts</option>
-                    <option>Stays & Rentals</option>
-                    <option>Creative Media</option>
                     <option>Home Services</option>
                     <option>Health & Beauty</option>
+                    <option>Real Estate</option>
+                    <option>Creative Media</option>
                     <option>Pet Services</option>
                     <option>Other</option>
                   </select>
@@ -10712,6 +10713,7 @@ const DISCOVER_CATS = [
   { id: 'stays',      label: 'Stays & Rentals',      icon: '🏠', color: '#2D3B45', notionKey: 'Stays & Rentals' },
   { id: 'wineries',   label: 'Wineries',             icon: '🍷', color: '#7B4F2E', notionKey: 'Breweries & Wineries' },
   { id: 'water',      label: 'Boat & Water',         icon: '⛵', color: '#3A6B85', notionKey: 'Boating & Water' },
+  { id: 'events',     label: 'Events & Venues',      icon: '🥂', color: '#8B6BA8', notionKey: 'Events & Venues' },
   { id: 'shopping',   label: 'Shopping',             icon: '🛍️', color: '#B07D62', notionKey: 'Shopping & Gifts' },
   { id: 'services',   label: 'Home Services',        icon: '🔧', color: '#5B6E5A', notionKey: 'Home Services' },
   { id: 'healthcare', label: 'Healthcare',           icon: '🏥', color: '#c05a5a' },
@@ -10728,15 +10730,16 @@ const DISCOVER_POIS = [
   { id: 'cvs-tec', name: 'CVS Pharmacy – Tecumseh', cat: 'healthcare', sub: 'Pharmacy · MinuteClinic', address: 'W Chicago Blvd, Tecumseh, MI', note: '~15 min', lat: 42.0035, lng: -83.9548 },
   { id: 'walgreens-adr', name: 'Walgreens – Adrian', cat: 'healthcare', sub: 'Pharmacy', address: 'N Main St, Adrian, MI', note: '~20 min · Open late', lat: 41.9197, lng: -84.0382 },
   // Grocery
-  { id: 'walmart-adr', name: 'Walmart Supercenter', cat: 'grocery', sub: 'Grocery · Pharmacy · Bait & Tackle', address: '1357 N Main St, Adrian, MI', note: '~20 min', lat: 41.9209, lng: -84.0378 },
+  { id: 'walmart-adr', name: 'Walmart Supercenter', cat: 'grocery', sub: 'Grocery · Pharmacy · Bait & Tackle', address: '1601 E US Hwy 223, Adrian, MI', note: '~20 min', lat: 41.9001, lng: -84.0174 },
   { id: 'meijer-tec', name: 'Meijer', cat: 'grocery', sub: 'Grocery · Gas Station', address: 'W Chicago Blvd, Tecumseh, MI', note: '~15 min', lat: 42.0030, lng: -83.9565 },
-  // Boat & Water — Devils Lake center ~42.0047, -84.2888
-  { id: 'launch-main', name: 'Public Boat Launch – Devils Lake', cat: 'water', sub: 'Free Public Ramp', address: 'Manitou Beach Rd, Manitou Beach, MI', note: 'Free · Paved ramp · Trailer parking', lat: 41.9750, lng: -84.2920 },
-  { id: 'dnr-ramp', name: 'DNR Access Site – Round Lake', cat: 'water', sub: 'State DNR Ramp', address: 'Lake Shore Dr, Manitou Beach, MI', note: 'Kayaks · Canoes · Small boats', lat: 41.9680, lng: -84.3050 },
-  { id: 'marina', name: 'Manitou Beach Marina', cat: 'water', sub: 'Marina · 600+ Slips', address: 'Devils Lake, Manitou Beach, MI', note: 'Seasonal dockage available', lat: 42.0100, lng: -84.2870 },
+  // Boat & Water — southwest end of Devils Lake, just off Devils Lake Hwy
+  { id: 'launch-main', name: 'Public Boat Launch – Devils Lake', cat: 'water', sub: 'Free Public Ramp', address: 'Devils Lake Hwy, Manitou Beach, MI', note: 'Free · Paved ramp · 60-car trailer parking', lat: 41.9795, lng: -84.3088 },
+  { id: 'dnr-ramp', name: 'DNR Access Site – Round Lake', cat: 'water', sub: 'State DNR Ramp', address: 'Round Lake, Manitou Beach, MI', note: 'Kayaks · Canoes · Small boats', lat: 41.9580, lng: -84.3200 },
+  { id: 'marina', name: 'Manitou Beach Marina', cat: 'water', sub: 'Marina · 600+ Slips', address: '9517 Devils Lake Hwy, Manitou Beach, MI', note: 'Seasonal dockage available', lat: 41.9812, lng: -84.3091 },
   // Schools
   { id: 'onsted-hs', name: 'Onsted High School', cat: 'schools', sub: 'Public HS · Grades 9–12', address: '8036 Macon Rd, Onsted, MI', phone: '(517) 467-2170', note: '~10 min · Closest district to Manitou Beach', lat: 42.0030, lng: -84.1870 },
   { id: 'onsted-elem', name: 'Onsted Elementary School', cat: 'schools', sub: 'Public K–5 · Onsted Community Schools', address: 'Onsted, MI', phone: '(517) 467-2170', note: '~10 min · Same campus area as HS', lat: 42.0043, lng: -84.1882 },
+  { id: 'addison-hs', name: 'Addison Community Schools', cat: 'schools', sub: 'Public K–12 · Addison Community Schools', address: '219 N Comstock St, Addison, MI', phone: '(517) 547-6500', note: '~15 min · Northwest Lenawee County', lat: 41.9887, lng: -84.3448 },
   { id: 'tec-hs', name: 'Tecumseh High School', cat: 'schools', sub: 'Public HS · Grades 9–12', address: '400 N Maumee St, Tecumseh, MI', phone: '(517) 423-3366', note: '~15 min · Tecumseh Public Schools', lat: 42.0100, lng: -83.9450 },
   { id: 'adrian-hs', name: 'Adrian High School', cat: 'schools', sub: 'Public HS · Grades 9–12', address: '785 Riverside Ave, Adrian, MI', phone: '(517) 263-2115', note: '~20 min · Adrian Public Schools', lat: 41.9060, lng: -84.0280 },
   { id: 'lenawee-christian', name: 'Lenawee Christian School', cat: 'schools', sub: 'Private K–12', address: 'Adrian, MI', phone: '(517) 265-5020', note: '~20 min · Faith-based PreK–12', lat: 41.8902, lng: -84.0557 },
@@ -10745,8 +10748,8 @@ const DISCOVER_POIS = [
   { id: 'cherry-creek', name: 'Cherry Creek Cellars', cat: 'wineries', sub: 'Small-Batch Winery', address: '5765 Wamplers Lake Rd, Brooklyn, MI', phone: '(517) 592-4315', note: '~20 min · Laid-back tasting room', lat: 42.1000, lng: -84.2300, website: 'https://cherrycreekcellars.com' },
   { id: 'ang-co-wine', name: 'Ang & Co', cat: 'wineries', sub: 'Satellite Tasting Room', address: '141 N Lakeview Blvd, Manitou Beach, MI', phone: '(517) 547-6030', note: 'In the Village · Michigan wine + gifts', lat: 41.9720, lng: -84.3040, website: 'https://www.angandco.net' },
   // Community — Manitou Beach Village at south end of lake ~41.9697, -84.3083
-  { id: 'yacht-club-loc', name: 'Devils Lake Yacht Club', cat: 'community', sub: 'Sailing & Social Club', address: 'Devils Lake, Manitou Beach, MI', note: 'Since the 1940s · Regattas · Friday Fish Fry', lat: 42.0080, lng: -84.2900, website: 'https://www.devilslakeyachtclub.com' },
-  { id: 'mens-club-loc', name: "Devils & Round Lake Men's Club", cat: 'community', sub: 'Civic Organization', address: 'Manitou Beach, MI', note: 'Tip-Up Festival · Firecracker 7K · Shop with a Cop', lat: 42.0050, lng: -84.2880, href: '/mens-club' },
+  { id: 'yacht-club-loc', name: 'Devils Lake Yacht Club', cat: 'community', cats: ['community', 'water', 'food'], sub: 'Sailing & Social Club', address: '2097 Marsh Dr, Manitou Beach, MI', note: 'Since the 1940s · Regattas · Friday Fish Fry', lat: 41.9678, lng: -84.2880, website: 'https://www.devilslakeyachtclub.com' },
+  { id: 'mens-club-loc', name: "Devils & Round Lake Men's Club", cat: 'community', sub: 'Civic Organization', address: 'Manitou Beach, MI', note: 'Tip-Up Festival · Firecracker 7K · Shop with a Cop', lat: 41.9720, lng: -84.2990, href: '/mens-club' },
   { id: 'mbhrs-loc', name: 'Manitou Beach Historic Renovation Society', cat: 'community', sub: 'Historical & Arts Org', address: 'Manitou Beach Village', note: 'Village restoration · Arts · Community stewardship', lat: 41.9730, lng: -84.3040, href: '/historical-society' },
   { id: 'village-loc', name: 'Manitou Beach Village', cat: 'community', sub: 'Village District', address: 'N Lakeview Blvd, Manitou Beach, MI', note: 'Shops · Cafe · Wine tasting · The Lighthouse', lat: 41.9720, lng: -84.3055, href: '/village' },
 ];
@@ -10847,7 +10850,7 @@ function DiscoverPage() {
     if (!google || !map) return;
     markersRef.current.forEach(m => m.setMap(null));
     markersRef.current = [];
-    const pois = activeCategory === 'all' ? DISCOVER_POIS : DISCOVER_POIS.filter(p => p.cat === activeCategory);
+    const pois = activeCategory === 'all' ? DISCOVER_POIS : DISCOVER_POIS.filter(p => (p.cats || [p.cat]).includes(activeCategory));
     pois.forEach((poi, idx) => {
       const color = DISCOVER_CATS.find(c => c.id === poi.cat)?.color || '#7A8E72';
       const marker = new google.maps.Marker({
@@ -10867,9 +10870,11 @@ function DiscoverPage() {
 
     // Paid businesses with geocoded lat/lng get map pins (sunset color to distinguish from POIs)
     const activeCatObj = DISCOVER_CATS.find(c => c.id === activeCategory) || DISCOVER_CATS[0];
+    const poiNames = new Set(DISCOVER_POIS.map(p => p.name.toLowerCase()));
     const bizPins = businesses.filter(b =>
       b.tier !== 'free' && b.lat && b.lng &&
-      (activeCategory === 'all' || b.category === activeCatObj.notionKey)
+      !poiNames.has(b.name?.toLowerCase()) &&
+      (activeCategory === 'all' || b.categories?.includes(activeCatObj.notionKey))
     );
     bizPins.forEach((biz, idx) => {
       const marker = new google.maps.Marker({
@@ -10909,10 +10914,10 @@ function DiscoverPage() {
   }, [activeCategory, mapReady, businesses]);
 
   const activeCat = DISCOVER_CATS.find(c => c.id === activeCategory) || DISCOVER_CATS[0];
-  const filteredPois = activeCategory === 'all' ? DISCOVER_POIS : DISCOVER_POIS.filter(p => p.cat === activeCategory);
+  const filteredPois = activeCategory === 'all' ? DISCOVER_POIS : DISCOVER_POIS.filter(p => (p.cats || [p.cat]).includes(activeCategory));
   const filteredBizzes = activeCat.notionKey
     ? businesses
-        .filter(b => b.category === activeCat.notionKey)
+        .filter(b => b.categories?.includes(activeCat.notionKey))
         .sort((a, b) => (b.emergency ? 1 : 0) - (a.emergency ? 1 : 0)) // emergency first
     : [];
   const showBizCTA = !!activeCat.notionKey && filteredBizzes.length === 0;
