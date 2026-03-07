@@ -56,7 +56,7 @@ export default async function handler(req, res) {
         return {
           id: `poi-${page.id}`,
           name,
-          cat: p['Category']?.select?.name || 'community',
+          cat: (p['Category']?.select?.name || 'community').toLowerCase(),
           sub: p['Sub']?.rich_text?.[0]?.text?.content || '',
           address: p['Address']?.rich_text?.[0]?.text?.content || '',
           lat,
