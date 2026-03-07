@@ -695,34 +695,41 @@ function WaveDivider({ topColor, bottomColor, flip = false, height = 80 }) {
 function PageSponsorBanner({ pageName }) {
   const sponsor = PAGE_SPONSORS[pageName] || null;
   return (
-    <section style={{ background: "#2D3B45", padding: "52px 24px", textAlign: "center" }}>
-      <div style={{ maxWidth: 560, margin: "0 auto" }}>
+    <section style={{ background: C.night, padding: "88px 24px", textAlign: "center", position: "relative", overflow: "hidden" }}>
+      {/* Radial glow for depth */}
+      <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 70% 90% at 50% 50%, rgba(91,126,149,0.14) 0%, transparent 70%)", pointerEvents: "none" }} />
+      <div style={{ maxWidth: 960, margin: "0 auto", position: "relative" }}>
         <FadeIn>
-          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.32)", marginBottom: 22 }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 4, textTransform: "uppercase", color: "rgba(255,255,255,0.28)", marginBottom: 32 }}>
             Brought to you by
           </div>
           {sponsor ? (
             <a href={sponsor.url} target="_blank" rel="noopener noreferrer" style={{ display: "inline-block", textDecoration: "none" }}>
-              <img src={sponsor.logo} alt={sponsor.name} style={{ maxWidth: 240, maxHeight: 80, objectFit: "contain", filter: "brightness(0) invert(1)", opacity: 0.9 }} />
+              <img src={sponsor.logo} alt={sponsor.name} style={{ maxWidth: 460, width: "100%", maxHeight: 140, objectFit: "contain", filter: "brightness(0) invert(1)", opacity: 0.92 }} />
               {sponsor.tagline && (
-                <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.5)", marginTop: 12, lineHeight: 1.6 }}>{sponsor.tagline}</p>
+                <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, color: "rgba(255,255,255,0.5)", marginTop: 20, lineHeight: 1.6 }}>{sponsor.tagline}</p>
               )}
             </a>
           ) : (
             <>
-              <img src="/images/yeti/yeti-groove-full-logo.png" alt="Holly & The Yeti" style={{ maxWidth: 260, opacity: 0.82 }} />
-              <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.38)", margin: "18px 0 24px", lineHeight: 1.65 }}>
-                Your brand here all year — exclusive page sponsor
-              </p>
+              <img src="/images/yeti/yeti-groove-full-logo.png" alt="Holly & The Yeti" style={{ maxWidth: 520, width: "90%", opacity: 0.9, display: "block", margin: "0 auto" }} />
+              <div style={{ marginTop: 36, marginBottom: 12 }}>
+                <p style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(18px, 3vw, 28px)", color: C.cream, fontWeight: 400, margin: "0 0 10px", lineHeight: 1.3 }}>
+                  Your business deserves a billboard like this.
+                </p>
+                <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: "rgba(255,255,255,0.36)", margin: "0 0 32px", letterSpacing: 0.5 }}>
+                  Exclusive · One brand per page · Seen all year long
+                </p>
+              </div>
               <a href="/featured#page-sponsorship" className="btn-animated" style={{
-                display: "inline-flex", alignItems: "center", gap: 8,
-                padding: "11px 26px", borderRadius: 8,
-                border: "1.5px solid rgba(255,255,255,0.18)",
-                color: "rgba(255,255,255,0.6)",
-                fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 600,
-                letterSpacing: 1, textTransform: "uppercase", textDecoration: "none",
+                display: "inline-flex", alignItems: "center", gap: 10,
+                padding: "18px 48px", borderRadius: 8,
+                background: C.sunset, color: C.cream,
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700,
+                letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none",
+                boxShadow: "0 8px 36px rgba(212,132,90,0.40)",
               }}>
-                Sponsor this page — $97/mo
+                Own This Space — $97/mo
               </a>
             </>
           )}
@@ -7324,7 +7331,7 @@ function WineriesCTASection() {
       <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
         <FadeIn>
           <SectionLabel light>Plan Your Visit</SectionLabel>
-          <SectionTitle light>Build Your Wine Trail Day</SectionTitle>
+          <SectionTitle light center>Build Your Wine Trail Day</SectionTitle>
           <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 560, margin: "0 auto 16px" }}>
             Spend a morning at the lake, a leisurely lunch in the Village, an afternoon tasting at Chateau Aeronautique, and an evening back on the water. That's a Manitou Beach Saturday.
           </p>
