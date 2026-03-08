@@ -38,6 +38,12 @@ const PROMO_TIERS = {
     days: 30,
     description: 'Pinned position 1 in the Coming Up strip below the homepage hero.',
   },
+  newsletter_mention: {
+    name: 'Newsletter Mention — 1 Issue',
+    price: 2900, // $29 founding (full: $49)
+    days: null,
+    description: 'Brand mention with link in the next Manitou Beach Dispatch issue.',
+  },
   newsletter: {
     name: 'Newsletter Feature — 1 Issue',
     price: 3900, // $39 founding (full: $79)
@@ -69,7 +75,7 @@ export default async function handler(req, res) {
 
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-  const { tier, eventName, email, promoPages, notes } = req.body;
+  const { tier, eventName, email, promoPages, notes, returnPath = 'promote' } = req.body;
 
   if (!tier || !eventName || !email) {
     return res.status(400).json({ error: 'Event name, email, and promotion package are required.' });
@@ -109,8 +115,8 @@ export default async function handler(req, res) {
         promoPages: promoPages || '',
         notes: notes || '',
       },
-      success_url: `${baseUrl}/promote?success=true&event=${encodeURIComponent(eventName)}`,
-      cancel_url: `${baseUrl}/promote?cancelled=true`,
+      success_url: `${baseUrl}/${returnPath}?success=true&event=${encodeURIComponent(eventName)}`,
+      cancel_url: `${baseUrl}/${returnPath}?cancelled=true`,
     });
 
     return res.status(200).json({ url: session.url });
