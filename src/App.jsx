@@ -236,8 +236,8 @@ const PAGE_SPONSORS = {
 // USA250 — set true to make the page publicly visible + add to Community nav
 const USA250_PUBLIC = false;
 
-// Slot caps per tier per category — enforced in checkout modal
-const SLOT_CAPS = { premium: 1, featured: 3, enhanced: 6 };
+// Slot caps per tier per category — Enhanced is unlimited (no cap)
+const SLOT_CAPS = { premium: 1, featured: 3 };
 const LISTING_CATEGORIES = [
   "Real Estate", "Food & Drink", "Boating & Water", "Breweries & Wineries",
   "Shopping & Gifts", "Stays & Rentals", "Creative Media", "Home Services",
@@ -2623,8 +2623,8 @@ function PricingSection() {
               </div>
               <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.sunsetLight, margin: "10px 0 0", letterSpacing: 0.3 }}>
                 {inGrace
-                  ? `⚡ Founding rate holds until ${GRACE} subscribers — then rises a penny per new sub.`
-                  : '⚡ Every new subscriber raises the price — lock in now, grandfathered forever.'}
+                  ? `⚡ Founding rate locks in today and stays fixed while your subscription is active. After ${GRACE} readers, new listings pay more — you won't.`
+                  : '⚡ New listings pay more as the audience grows. Your rate stays fixed while your subscription is active — cancel and rejoin and the current rate applies.'}
               </p>
             </div>
           </div>
@@ -2718,7 +2718,7 @@ function PricingSection() {
           </div>
 
           <p style={{ textAlign: "center", color: "rgba(255,255,255,0.18)", fontSize: 12, marginTop: 24, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>
-            Monthly subscriptions · Cancel anytime · Your rate grandfathered forever
+            Monthly subscriptions · Cancel anytime · Rate held while subscribed
           </p>
         </div>
       </div>
@@ -2731,7 +2731,7 @@ function PricingSection() {
             <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, fontWeight: 400, color: C.cream, margin: "0 0 4px 0" }}>
               ${modal.price}<span style={{ fontSize: 14, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif" }}>/mo</span>
             </h3>
-            <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 13, margin: "0 0 28px 0" }}>Grandfathered at this rate — cancel anytime.</p>
+            <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 13, margin: "0 0 28px 0" }}>Rate held while subscribed — cancel anytime, pause anytime.</p>
             <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 20 }}>
               <input
                 placeholder="Business name"
@@ -5323,7 +5323,8 @@ function FeaturedPage() {
 
   const slotsLeft = (tierId, cat) => {
     if (!slotCounts || !cat) return null;
-    const cap = SLOT_CAPS[tierId] ?? 6;
+    const cap = SLOT_CAPS[tierId]; // undefined = no cap (Enhanced)
+    if (cap === undefined) return null;
     const used = slotCounts.tierCounts?.[tierId]?.[cat] || 0;
     return Math.max(0, cap - used);
   };
@@ -5565,22 +5566,25 @@ function FeaturedPage() {
                 </p>
                 {/* Live subscriber counter */}
                 <div style={{ maxWidth: 460, margin: "0 auto", background: "rgba(255,255,255,0.05)", borderRadius: 14, padding: "20px 24px", border: "1px solid rgba(255,255,255,0.1)" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
-                    <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.45)", letterSpacing: 0.5 }}>
-                      {inGrace ? 'Founding subscribers' : 'Newsletter subscribers'}
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4 }}>
+                    <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 1.5, textTransform: "uppercase", color: "rgba(255,255,255,0.35)" }}>
+                      Weekly Dispatch readers
                     </span>
-                    <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.cream }}>
+                    <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream }}>
                       {subCount === null ? '—' : count.toLocaleString()}
-                      {inGrace && <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.3)", marginLeft: 6 }}>/ {GRACE}</span>}
+                      {inGrace && <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.28)", marginLeft: 6 }}>/ {GRACE}</span>}
                     </span>
                   </div>
+                  <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.45)", margin: "0 0 12px 0", lineHeight: 1.5, textAlign: "left" }}>
+                    Local residents who chose to follow Manitou Beach — and will see your listing every week.
+                  </p>
                   <div style={{ background: "rgba(255,255,255,0.08)", borderRadius: 999, height: 6, overflow: "hidden" }}>
                     <div style={{ height: "100%", width: `${progressPct}%`, background: `linear-gradient(90deg, ${C.sage}, ${C.sunsetLight})`, borderRadius: 999, transition: "width 1s ease" }} />
                   </div>
-                  <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.sunsetLight, margin: "10px 0 0", letterSpacing: 0.3 }}>
+                  <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.sunsetLight, margin: "10px 0 0", letterSpacing: 0.3, lineHeight: 1.55 }}>
                     {inGrace
-                      ? `⚡ Founding rate holds until ${GRACE} subscribers — then rises a penny per new sub.`
-                      : '⚡ Every new subscriber raises the price — lock in now, grandfathered forever.'}
+                      ? `⚡ Founding rate locks in today and stays fixed for as long as you stay subscribed. After ${GRACE} readers, new listings pay more — you won't.`
+                      : '⚡ New listings pay more as the audience grows. Your rate stays fixed for as long as your subscription is active — cancel and rejoin and the current rate applies.'}
                   </p>
                 </div>
               </div>
@@ -5598,11 +5602,17 @@ function FeaturedPage() {
                 <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.3)", marginBottom: 16, letterSpacing: 0.3 }}>
                   Always free · no credit card
                 </div>
-                <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px 0", flexGrow: 1, display: "flex", flexDirection: "column", gap: 9 }}>
+                <ul style={{ listStyle: "none", padding: 0, margin: "0 0 16px 0", flexGrow: 1, display: "flex", flexDirection: "column", gap: 9 }}>
                   {["Name in directory", "Category & phone", "Community visibility"].map(f => (
                     <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 9 }}>
                       <span style={{ color: C.driftwood, fontSize: 13, marginTop: 2, flexShrink: 0, fontWeight: 700 }}>✓</span>
                       <span style={{ color: "rgba(255,255,255,0.45)", fontSize: 13, lineHeight: 1.45 }}>{f}</span>
+                    </li>
+                  ))}
+                  {["No website link", "No map pin", "No description or logo"].map(f => (
+                    <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 9 }}>
+                      <span style={{ color: "rgba(255,255,255,0.18)", fontSize: 13, marginTop: 2, flexShrink: 0 }}>—</span>
+                      <span style={{ color: "rgba(255,255,255,0.22)", fontSize: 13, lineHeight: 1.45 }}>{f}</span>
                     </li>
                   ))}
                 </ul>
@@ -5625,7 +5635,7 @@ function FeaturedPage() {
                     <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 14, fontFamily: "'Libre Franklin', sans-serif" }}>/mo</span>
                   </div>
                   <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: inGrace ? "rgba(255,255,255,0.35)" : C.sunsetLight, marginBottom: 16, letterSpacing: 0.3 }}>
-                    {inGrace ? 'Founding rate · locked at sign-up' : '↑ rises with every new subscriber'}
+                    {inGrace ? 'Founding rate · held while subscribed' : '↑ rises with every new subscriber'}
                   </div>
                   <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px 0", flexGrow: 1, display: "flex", flexDirection: "column", gap: 9 }}>
                     {tier.features.map(f => (
@@ -5642,7 +5652,8 @@ function FeaturedPage() {
                     Get Started
                   </button>
                   {slotCounts && (() => {
-                    const cap = SLOT_CAPS[tier.id] ?? 6;
+                    const cap = SLOT_CAPS[tier.id];
+                    if (cap === undefined) return null; // Enhanced = no cap
                     const fullCats = LISTING_CATEGORIES.filter(cat => (slotCounts.tierCounts?.[tier.id]?.[cat] || 0) >= cap).length;
                     if (fullCats === 0) return null;
                     const openCats = LISTING_CATEGORIES.length - fullCats;
@@ -5657,7 +5668,7 @@ function FeaturedPage() {
             </div>
 
             <p style={{ textAlign: "center", color: "rgba(255,255,255,0.18)", fontSize: 12, marginTop: 24, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>
-              Monthly subscriptions · Cancel anytime · Your rate grandfathered forever
+              Monthly subscriptions · Cancel anytime · Rate held while subscribed
             </p>
           </div>
         </section>
@@ -5881,10 +5892,11 @@ function FeaturedPage() {
           </FadeIn>
           {[
             { q: "I already have a free listing. What changes?", a: "Your free listing stays as-is. The featured upgrade gives you a premium dark card at the top of the directory, above all free listings. It's a separate, more visible placement — not a replacement." },
-            { q: "What happens if I cancel my listing?", a: "Your listing reverts to the free directory. No lock-in, cancel anytime. Your grandfathered rate is only valid if you stay active." },
+            { q: "What happens if I cancel my listing?", a: "Your listing reverts to the free directory. No lock-in, cancel anytime. If you cancel and later rejoin, you pay whatever the current rate is at that time — your original rate is not held after cancellation." },
+            { q: "What if I pause my subscription?", a: "Pausing is fine — your rate is held while your subscription is paused. Only a full cancellation resets your rate. If your business is seasonal, you can pause in the off-months and your founding rate is still there when you resume." },
             { q: "Can I change my listing details after I pay?", a: "Absolutely. Email us and we'll update your logo, description, phone number, or link within 24 hours." },
             { q: "What's the Holly & Yeti podcast mention?", a: "Premium tier businesses get a shoutout on the Holly & Yeti community podcast, reaching the broader Devils Lake and Irish Hills audience." },
-            { q: "Why are prices so low right now?", a: "We're in launch mode and want founding businesses on board. The price you sign up at is yours forever — it only rises for new sign-ups after you. Lock in early." },
+            { q: "Why are prices so low right now?", a: "We're in launch mode and want founding businesses on board. The rate you sign up at is held for as long as your subscription stays active — it only rises for new sign-ups after you. Lock in early." },
           ].map((faq, i) => (
             <FadeIn key={i} delay={i * 60}>
               <div style={{ padding: "24px 0", borderBottom: `1px solid ${C.sand}` }}>
@@ -5904,7 +5916,7 @@ function FeaturedPage() {
             <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, fontWeight: 400, color: C.cream, margin: "0 0 4px 0" }}>
               ${modal.price}<span style={{ fontSize: 14, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif" }}>/mo</span>
             </h3>
-            <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 13, margin: "0 0 28px 0" }}>Grandfathered at this rate — cancel anytime.</p>
+            <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 13, margin: "0 0 28px 0" }}>Rate held while subscribed — cancel anytime, pause anytime.</p>
             <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 20 }}>
               <input
                 placeholder="Business name"

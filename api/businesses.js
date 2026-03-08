@@ -103,7 +103,7 @@ export default async function handler(req, res) {
 
   // GET — slot availability counts (lightweight, no business details exposed)
   if (req.query.slots === 'true') {
-    const CAPS = { premium: 1, featured: 3, enhanced: 6 };
+    const CAPS = { premium: 1, featured: 3 }; // Enhanced = unlimited
     try {
       const response = await fetch(
         `https://api.notion.com/v1/databases/${process.env.NOTION_DB_BUSINESS}/query`,
