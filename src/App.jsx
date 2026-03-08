@@ -235,6 +235,14 @@ const PAGE_SPONSORS = {
 // 🧭  NAV SECTIONS
 // USA250 — set true to make the page publicly visible + add to Community nav
 const USA250_PUBLIC = false;
+
+// Slot caps per tier per category — enforced in checkout modal
+const SLOT_CAPS = { premium: 1, featured: 3, enhanced: 6 };
+const LISTING_CATEGORIES = [
+  "Real Estate", "Food & Drink", "Boating & Water", "Breweries & Wineries",
+  "Shopping & Gifts", "Stays & Rentals", "Creative Media", "Home Services",
+  "Health & Beauty", "Pet Services", "Arts & Culture", "Other",
+];
 // Drop your drone fireworks video in public/images/ and set the path here:
 const USA250_VIDEO_URL = ""; // e.g. "/images/fireworks-2025.mp4"
 
@@ -4243,7 +4251,7 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
               onMouseEnter={e => { e.currentTarget.style.color = solid ? C.dusk : C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
               onMouseLeave={e => { e.currentTarget.style.color = solid ? C.text : "rgba(255,255,255,0.7)"; e.currentTarget.style.background = "transparent"; }}
             >
-              Newsletter
+              Blog
             </button>
 
             {/* Local Guide link */}
@@ -4394,12 +4402,12 @@ function Navbar({ activeSection, scrollTo, isSubPage = false }) {
             {label}
           </button>
         ))}
-        {/* Newsletter link — mobile */}
+        {/* Blog link — mobile */}
         <button onClick={() => { setMenuOpen(false); window.location.href = "/dispatch"; }} style={{
           background: "none", border: "none", fontFamily: "'Libre Baskerville', serif",
           fontSize: 24, fontWeight: 400, color: C.text, cursor: "pointer", padding: "12px 32px",
         }}>
-          Newsletter
+          Blog
         </button>
         {/* Local Guide link — mobile */}
         <button onClick={() => { setMenuOpen(false); window.location.href = "/discover"; }} style={{
@@ -5308,10 +5316,17 @@ function FeaturedPage() {
   const [subCount, setSubCount] = useState(null);
   const [slotCounts, setSlotCounts] = useState(null);
   const [modal, setModal] = useState(null);
-  const [form, setForm] = useState({ businessName: '', email: '', duration: 3 });
+  const [form, setForm] = useState({ businessName: '', email: '', duration: 3, category: '' });
   const [loading, setLoading] = useState(false);
   const [checkoutError, setCheckoutError] = useState('');
   const [status, setStatus] = useState(null);
+
+  const slotsLeft = (tierId, cat) => {
+    if (!slotCounts || !cat) return null;
+    const cap = SLOT_CAPS[tierId] ?? 6;
+    const used = slotCounts.tierCounts?.[tierId]?.[cat] || 0;
+    return Math.max(0, cap - used);
+  };
 
   // Waitlist state (spots full)
   const [wl, setWl] = useState({ name: "", email: "", businessName: "", tier: "featured_90", _hp: "" });
@@ -5393,7 +5408,7 @@ function FeaturedPage() {
       const res = await fetch('/api/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tier: modal.tierId, businessName: form.businessName, email: form.email, priceInCents: modal.priceInCents, mode: 'subscription', duration: form.duration }),
+        body: JSON.stringify({ tier: modal.tierId, businessName: form.businessName, email: form.email, priceInCents: modal.priceInCents, mode: 'subscription', duration: form.duration, category: form.category }),
       });
       const data = await res.json();
       if (data.url) { window.location.href = data.url; }
@@ -5454,42 +5469,46 @@ function FeaturedPage() {
         </FadeIn>
       </section>
 
-      {/* Category Slot Availability Band */}
-      {slotCounts && Object.keys(slotCounts.categoryCounts || {}).length > 0 && !isFull && (
-        <div style={{ background: C.night, borderBottom: `1px solid rgba(255,255,255,0.06)`, padding: "14px 24px" }}>
-          <div style={{ maxWidth: 1000, margin: "0 auto", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
-            <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.3)", flexShrink: 0 }}>
-              Live Availability
-            </span>
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              {Object.entries(slotCounts.categoryCounts).map(([cat, count]) => {
-                const max = slotCounts.maxSlots || 3;
-                const left = Math.max(0, max - count);
-                const full = left === 0;
-                const almostFull = left === 1;
-                const dotColor = full ? C.sunset : almostFull ? C.driftwood : C.sage;
-                return (
-                  <span key={cat} style={{
-                    display: "inline-flex", alignItems: "center", gap: 5,
-                    padding: "4px 10px", borderRadius: 20,
-                    background: full ? `${C.sunset}12` : almostFull ? `${C.driftwood}12` : `${C.sage}10`,
-                    border: `1px solid ${dotColor}28`,
-                  }}>
-                    <span style={{ width: 6, height: 6, borderRadius: "50%", background: dotColor, display: "inline-block", flexShrink: 0 }} />
-                    <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.6)" }}>{cat}</span>
-                    <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, color: full ? C.sunset : "rgba(255,255,255,0.3)" }}>
-                      {full ? "Full" : `${left} left`}
+      {/* Category Slot Availability Band — shows Featured tier (most popular) */}
+      {slotCounts && slotCounts.tierCounts && !isFull && (() => {
+        const activeCats = LISTING_CATEGORIES.filter(cat => (slotCounts.tierCounts.featured?.[cat] || 0) > 0);
+        if (activeCats.length === 0) return null;
+        return (
+          <div style={{ background: C.night, borderBottom: `1px solid rgba(255,255,255,0.06)`, padding: "14px 24px" }}>
+            <div style={{ maxWidth: 1000, margin: "0 auto", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+              <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.3)", flexShrink: 0 }}>
+                Featured Spots
+              </span>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                {activeCats.map(cat => {
+                  const used = slotCounts.tierCounts.featured?.[cat] || 0;
+                  const left = Math.max(0, SLOT_CAPS.featured - used);
+                  const full = left === 0;
+                  const almostFull = left === 1;
+                  const dotColor = full ? C.sunset : almostFull ? C.driftwood : C.sage;
+                  return (
+                    <span key={cat} style={{
+                      display: "inline-flex", alignItems: "center", gap: 5,
+                      padding: "4px 10px", borderRadius: 20,
+                      background: full ? `${C.sunset}12` : almostFull ? `${C.driftwood}12` : `${C.sage}10`,
+                      border: `1px solid ${dotColor}28`,
+                    }}>
+                      <span style={{ width: 6, height: 6, borderRadius: "50%", background: dotColor, display: "inline-block", flexShrink: 0 }} />
+                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.6)" }}>{cat}</span>
+                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, color: full ? C.sunset : "rgba(255,255,255,0.3)" }}>
+                        {full ? "Full" : `${left} of ${SLOT_CAPS.featured} left`}
+                      </span>
                     </span>
-                  </span>
-                );
-              })}
+                  );
+                })}
+              </div>
+              <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, color: "rgba(255,255,255,0.2)", marginLeft: "auto" }}>
+                Premium: 1/cat · Featured: 3/cat · Enhanced: 6/cat
+              </span>
             </div>
-            <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, color: "rgba(255,255,255,0.2)", marginLeft: "auto" }}>
-              Max 3 paid spots per category
-            </span>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* Success / Cancelled banners */}
       {status?.type === "success" && (
@@ -5617,11 +5636,22 @@ function FeaturedPage() {
                     ))}
                   </ul>
                   <button
-                    onClick={() => { setModal({ tierId: tier.id, tierName: tier.name, price: tier.price, priceInCents: tier.priceInCents, color: tier.color }); setForm({ businessName: '', email: '', duration: 3 }); setCheckoutError(''); }}
+                    onClick={() => { setModal({ tierId: tier.id, tierName: tier.name, price: tier.price, priceInCents: tier.priceInCents, color: tier.color }); setForm({ businessName: '', email: '', duration: 3, category: '' }); setCheckoutError(''); }}
                     style={{ display: "block", width: "100%", padding: "11px 0", borderRadius: 8, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: "pointer", border: "none", background: tier.id === "premium" ? C.sunset : "transparent", color: tier.id === "premium" ? C.cream : tier.color, outline: tier.id === "premium" ? "none" : `1.5px solid ${tier.color}55`, transition: "all 0.22s" }}
                   >
                     Get Started
                   </button>
+                  {slotCounts && (() => {
+                    const cap = SLOT_CAPS[tier.id] ?? 6;
+                    const fullCats = LISTING_CATEGORIES.filter(cat => (slotCounts.tierCounts?.[tier.id]?.[cat] || 0) >= cap).length;
+                    if (fullCats === 0) return null;
+                    const openCats = LISTING_CATEGORIES.length - fullCats;
+                    return (
+                      <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, color: openCats === 0 ? C.sunset : C.driftwood, margin: "8px 0 0", textAlign: "center", letterSpacing: 0.3 }}>
+                        {openCats === 0 ? `All ${tier.name} spots filled` : `${openCats} of ${LISTING_CATEGORIES.length} categories open`}
+                      </p>
+                    );
+                  })()}
                 </div>
               ))}
             </div>
@@ -5889,6 +5919,33 @@ function FeaturedPage() {
                 onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
                 style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}
               />
+              <div>
+                <select
+                  value={form.category}
+                  onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
+                  style={{ width: "100%", padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(30,40,50,0.9)", color: form.category ? C.cream : "rgba(255,255,255,0.38)", fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none", appearance: "none" }}
+                >
+                  <option value="">Select your category</option>
+                  {LISTING_CATEGORIES.map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+                {form.category && (() => {
+                  const left = slotsLeft(modal.tierId, form.category);
+                  if (left === null) return null;
+                  const cap = SLOT_CAPS[modal.tierId];
+                  if (left === 0) return (
+                    <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.sunset, margin: "7px 0 0", letterSpacing: 0.3 }}>
+                      All {modal.tierName} spots for {form.category} are taken — choose a different category or tier.
+                    </p>
+                  );
+                  return (
+                    <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: left === 1 ? C.driftwood : "rgba(255,255,255,0.32)", margin: "7px 0 0", letterSpacing: 0.3 }}>
+                      {left} of {cap} {modal.tierName} spot{cap === 1 ? '' : 's'} remaining in {form.category}
+                    </p>
+                  );
+                })()}
+              </div>
             </div>
             {/* Contract duration */}
             <div style={{ marginBottom: 6 }}>
@@ -5918,13 +5975,18 @@ function FeaturedPage() {
               </p>
             </div>
             {checkoutError && <p style={{ color: "#ff6b5b", fontSize: 13, marginBottom: 14 }}>{checkoutError}</p>}
-            <button
-              onClick={handleCheckout}
-              disabled={loading}
-              style={{ width: "100%", padding: "14px", borderRadius: 10, border: "none", background: modal.tierId === "premium" ? C.sunset : modal.color, color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: loading ? "wait" : "pointer", opacity: loading ? 0.7 : 1, transition: "opacity 0.2s" }}
-            >
-              {loading ? "Redirecting…" : "Continue to Secure Checkout →"}
-            </button>
+            {(() => {
+              const catFull = form.category && slotsLeft(modal.tierId, form.category) === 0;
+              return (
+                <button
+                  onClick={handleCheckout}
+                  disabled={loading || catFull}
+                  style={{ width: "100%", padding: "14px", borderRadius: 10, border: "none", background: catFull ? "rgba(255,255,255,0.08)" : modal.tierId === "premium" ? C.sunset : modal.color, color: catFull ? "rgba(255,255,255,0.3)" : C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: loading ? "wait" : catFull ? "not-allowed" : "pointer", opacity: loading ? 0.7 : 1, transition: "all 0.2s" }}
+                >
+                  {catFull ? "Category Full — Choose Another" : loading ? "Redirecting…" : "Continue to Secure Checkout →"}
+                </button>
+              );
+            })()}
             <p style={{ textAlign: "center", fontSize: 11, color: "rgba(255,255,255,0.22)", marginTop: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
               Powered by Stripe · Your card details are never stored here
             </p>

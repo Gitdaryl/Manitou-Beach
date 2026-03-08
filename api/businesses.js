@@ -103,6 +103,7 @@ export default async function handler(req, res) {
 
   // GET — slot availability counts (lightweight, no business details exposed)
   if (req.query.slots === 'true') {
+    const CAPS = { premium: 1, featured: 3, enhanced: 6 };
     try {
       const response = await fetch(
         `https://api.notion.com/v1/databases/${process.env.NOTION_DB_BUSINESS}/query`,
@@ -124,16 +125,19 @@ export default async function handler(req, res) {
           }),
         }
       );
-      if (!response.ok) return res.status(200).json({ categoryCounts: {}, maxSlots: 3 });
+      if (!response.ok) return res.status(200).json({ tierCounts: { premium: {}, featured: {}, enhanced: {} }, caps: CAPS });
       const data = await response.json();
-      const categoryCounts = {};
+      const tierCounts = { premium: {}, featured: {}, enhanced: {} };
       data.results.forEach(page => {
         const cat = page.properties['Category']?.select?.name || 'Other';
-        categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+        const status = page.properties['Status']?.status?.name || '';
+        if (status === 'Listed Premium') tierCounts.premium[cat] = (tierCounts.premium[cat] || 0) + 1;
+        else if (status === 'Listed Featured') tierCounts.featured[cat] = (tierCounts.featured[cat] || 0) + 1;
+        else if (status === 'Listed Enhanced') tierCounts.enhanced[cat] = (tierCounts.enhanced[cat] || 0) + 1;
       });
-      return res.status(200).json({ categoryCounts, maxSlots: 3 });
+      return res.status(200).json({ tierCounts, caps: CAPS });
     } catch {
-      return res.status(200).json({ categoryCounts: {}, maxSlots: 3 });
+      return res.status(200).json({ tierCounts: { premium: {}, featured: {}, enhanced: {} }, caps: CAPS });
     }
   }
 
