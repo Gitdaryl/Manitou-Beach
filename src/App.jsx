@@ -4647,6 +4647,42 @@ function HappeningPage() {
 }
 
 // ============================================================
+// 🚚  LIVE FOOD TRUCK STRIP (home page — shows only when a truck has checked in within 12h)
+function LiveFoodTruckStrip() {
+  const [liveTrucks, setLiveTrucks] = useState([]);
+  useEffect(() => {
+    fetch('/api/food-trucks')
+      .then(r => r.json())
+      .then(data => {
+        const now = Date.now();
+        const live = (data.trucks || []).filter(t =>
+          t.lastCheckin && (now - new Date(t.lastCheckin).getTime()) < 12 * 60 * 60 * 1000
+        );
+        setLiveTrucks(live);
+      })
+      .catch(() => {});
+  }, []);
+
+  if (liveTrucks.length === 0) return null;
+
+  return (
+    <div style={{ background: C.sunset, padding: "9px 24px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+          <div style={{ width: 8, height: 8, borderRadius: "50%", background: "rgba(255,255,255,0.9)", animation: "dot-breathe 2s ease-in-out infinite", color: "#fff" }} />
+          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: "rgba(255,255,255,0.85)" }}>Live nearby</span>
+        </div>
+        <span style={{ color: "#fff", fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 500 }}>
+          {liveTrucks.map(t => t.name).join(' · ')}
+        </span>
+        <a href="/food-trucks" style={{ marginLeft: "auto", color: "#fff", fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 0.5, textDecoration: "none", opacity: 0.85, whiteSpace: "nowrap", flexShrink: 0 }}>
+          Find them →
+        </a>
+      </div>
+    </div>
+  );
+}
+
 // 🏠  HOME PAGE
 // ============================================================
 function HomePage() {
@@ -4679,6 +4715,7 @@ function HomePage() {
       <Navbar activeSection={activeSection} scrollTo={scrollTo} />
       <Hero scrollTo={scrollTo} />
       <FeaturedEventsStrip />
+      <LiveFoodTruckStrip />
       <EventTicker />
       <NewsletterBar />
       <WaveDivider topColor={C.dusk} bottomColor={C.dusk} />
@@ -5556,13 +5593,15 @@ function FeaturedPage() {
             <FadeIn>
               <div style={{ textAlign: "center", marginBottom: 52 }}>
                 <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 4, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 14 }}>
-                  List Your Business
+                  {inGrace ? 'Founding Flex Rate · Limited Time' : 'List Your Business'}
                 </div>
                 <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 4vw, 42px)", fontWeight: 400, color: C.cream, margin: "0 0 14px 0" }}>
-                  Choose Your Visibility
+                  {inGrace ? 'Start at $9. Lock in every tier.' : 'Choose Your Visibility'}
                 </h2>
-                <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 16, maxWidth: 520, margin: "0 auto 32px" }}>
-                  Your rate is set the day you join — and it's yours forever. As the community grows, your value goes up. Your cost doesn't.
+                <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 16, maxWidth: 560, margin: "0 auto 32px", lineHeight: 1.65 }}>
+                  {inGrace
+                    ? '$9 today locks in your Featured and Premium rate too. Flex up whenever your season calls for it — you\'ll pay what was live when you joined, not whatever it costs new businesses then.'
+                    : 'Your rate is set the day you join. As the community grows, your audience goes up. Your cost doesn\'t.'}
                 </p>
                 {/* Live subscriber counter */}
                 <div style={{ maxWidth: 460, margin: "0 auto", background: "rgba(255,255,255,0.05)", borderRadius: 14, padding: "20px 24px", border: "1px solid rgba(255,255,255,0.1)" }}>
@@ -5635,7 +5674,7 @@ function FeaturedPage() {
                     <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 14, fontFamily: "'Libre Franklin', sans-serif" }}>/mo</span>
                   </div>
                   <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: inGrace ? "rgba(255,255,255,0.35)" : C.sunsetLight, marginBottom: 16, letterSpacing: 0.3 }}>
-                    {inGrace ? 'Founding rate · held while subscribed' : '↑ rises with every new subscriber'}
+                    {inGrace ? 'Founding rate · flex up at this price too' : '↑ rises with every new subscriber'}
                   </div>
                   <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px 0", flexGrow: 1, display: "flex", flexDirection: "column", gap: 9 }}>
                     {tier.features.map(f => (
@@ -13354,6 +13393,16 @@ function DiscoverPage() {
               </button>
             );
           })}
+          <a href="/food-trucks" style={{
+            flexShrink: 0, background: '#fff', color: C.text,
+            border: `1.5px solid ${C.sand}`, borderRadius: 24, padding: '6px 14px',
+            fontSize: 13, fontWeight: 500, fontFamily: "'Libre Franklin', sans-serif",
+            cursor: 'pointer', transition: 'all 0.18s', whiteSpace: 'nowrap',
+            display: 'flex', alignItems: 'center', gap: 6, textDecoration: 'none',
+          }}>
+            <span style={{ fontSize: 15 }}>🚚</span>
+            Food Trucks
+          </a>
         </div>
       </div>
 
@@ -13696,6 +13745,20 @@ function FoodTrucksPage() {
   const [checkinNote, setCheckinNote] = useState("");
   const [checkinStatus, setCheckinStatus] = useState(""); // "", "loading", "success", "error"
   const [checkinMsg, setCheckinMsg] = useState("");
+  const [sharedId, setSharedId] = useState(null);
+
+  const shareTruck = (truck) => {
+    const loc = truck.locationNote ? ` — ${truck.locationNote}` : '';
+    const text = `${truck.name} is here today${loc}. Meet you there! 🚚`;
+    const url = 'https://manitoubeach.com/food-trucks';
+    if (navigator.share) {
+      navigator.share({ title: truck.name, text, url }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(`${text} ${url}`).catch(() => {});
+      setSharedId(truck.id);
+      setTimeout(() => setSharedId(null), 2200);
+    }
+  };
 
   useEffect(() => {
     fetch("/api/food-trucks")
@@ -13899,7 +13962,7 @@ function FoodTrucksPage() {
                         </div>
                       )}
                       {truck.description && <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: "0 0 12px" }}>{truck.description}</p>}
-                      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
                         {truck.phone && (
                           <a href={`tel:${truck.phone}`} style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 4 }}>
                             📱 Call
@@ -13915,6 +13978,12 @@ function FoodTrucksPage() {
                             Website →
                           </a>
                         )}
+                        <button
+                          onClick={() => shareTruck(truck)}
+                          style={{ fontSize: 12, color: sharedId === truck.id ? C.sage : C.sunset, background: "none", border: "none", padding: 0, fontWeight: 700, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", display: "inline-flex", alignItems: "center", gap: 4, transition: "color 0.2s" }}
+                        >
+                          {sharedId === truck.id ? '✓ Copied' : '↗ Tell a friend'}
+                        </button>
                       </div>
                     </div>
                   </div>
