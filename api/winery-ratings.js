@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'POST') {
-    const { venue, rating, service, atmosphere, value, wineTried, note, sessionId } = req.body || {};
+    const { venue, rating, service, atmosphere, value, wineTried, note, quote, sessionId } = req.body || {};
 
     if (!venue || !rating || !wineTried) {
       return res.status(400).json({ error: 'venue, rating, and wineTried are required' });
@@ -27,8 +27,10 @@ export default async function handler(req, res) {
       'Rating':    { number:    Number(rating) },
       'WineTried': { rich_text: [{ text: { content: String(wineTried).slice(0, 2000) } }] },
       'Note':      { rich_text: [{ text: { content: String(note || '').slice(0, 2000) } }] },
+      'Quote':     { rich_text: [{ text: { content: String(quote || '').slice(0, 2000) } }] },
       'SessionID': { rich_text: [{ text: { content: String(sessionId || '') } }] },
       'Date':      { date:      { start: today } },
+      'Status':    { select:    { name: 'Pending' } },
     };
     if (service   && service   >= 1 && service   <= 5) props['Service']    = { number: Number(service) };
     if (atmosphere && atmosphere >= 1 && atmosphere <= 5) props['Atmosphere'] = { number: Number(atmosphere) };
@@ -60,6 +62,7 @@ export default async function handler(req, res) {
       do {
         const body = {
           page_size: 100,
+          filter: { property: 'Status', select: { equals: 'Published' } },
           ...(cursor ? { start_cursor: cursor } : {}),
         };
 
