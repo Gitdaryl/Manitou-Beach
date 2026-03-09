@@ -14378,6 +14378,215 @@ function BuildPage() {
 }
 
 // ============================================================
+// 🍷  /wine-partner — WINE TRAIL PARTNER PAGE (private link)
+// ============================================================
+const WINE_PARTNER_HOW = [
+  { step: "01", title: "A customer visits your tasting room", copy: "They enjoy a pour, browse your space, connect with what you offer. That experience is already happening — we just give them a way to capture it." },
+  { step: "02", title: "They scan the QR card, rate their visit", copy: "Wine quality, service, atmosphere, value. A minute on their phone. No app to download, no account to create. Scan, rate, done." },
+  { step: "03", title: "Your scorecard builds — publicly", copy: "Every rating adds to your live community scorecard on Manitou Beach. Visitors researching the trail see your scores before they visit. Your fans become your best marketing." },
+];
+const WINE_PARTNER_GETS = [
+  { icon: "📊", title: "Public Scorecard", copy: "Live community ratings across four dimensions — Wine Quality, Service, Atmosphere, Value. Visible to anyone exploring the trail on Manitou Beach." },
+  { icon: "📄", title: "QR Kit", copy: "Printed cards for your tasting room counter or table. Daryl delivers them. You place one out. That's the full setup." },
+  { icon: "🏆", title: "Season-End Award", copy: "At the end of 2026, top-rated venues in each category receive a plaque — something to hang on your wall, post online, and be proud of." },
+  { icon: "👥", title: "Community Visibility", copy: "Your listing on Manitou Beach, seen by the region's most engaged local audience — visitors, locals, and seasonal residents all in one place." },
+];
+const WINE_PARTNER_AWARDS = [
+  { name: "Best Wine Quality", icon: "🍷" },
+  { name: "Best Service", icon: "⭐" },
+  { name: "Best Atmosphere", icon: "✨" },
+  { name: "Best Value", icon: "💎" },
+  { name: "People's Choice", icon: "🏅" },
+  { name: "Best Hidden Gem", icon: "🗺️" },
+];
+const WINE_PARTNER_FRICTIONLESS = [
+  { label: "No app required", sub: "Customers rate in a browser. Done." },
+  { label: "No account to manage", sub: "Your profile is already live." },
+  { label: "No work to maintain", sub: "We run the system. You run the tasting room." },
+  { label: "No hidden cost later", sub: "If that ever changes, you'll hear it from us first." },
+];
+
+function WinePartnerPage() {
+  const subScrollTo = (id) => { window.location.href = "/#" + id; };
+  return (
+    <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+      <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+      <GlobalStyles />
+      <ScrollProgress />
+
+      {/* Partner context strip */}
+      <div style={{ background: C.night, borderBottom: "1px solid rgba(255,255,255,0.07)", padding: "9px 24px", display: "flex", alignItems: "center", justifyContent: "center", gap: 28, flexWrap: "wrap" }}>
+        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1, textTransform: "uppercase" }}>Partner Preview</span>
+        <a href="/wineries" style={{ fontSize: 12, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textDecoration: "none" }}>See the Wine Trail →</a>
+        <a href="/" style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", fontFamily: "'Libre Franklin', sans-serif", textDecoration: "none" }}>Visit Homepage →</a>
+      </div>
+
+      <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
+
+      {/* ── HERO ── */}
+      <section style={{ background: `linear-gradient(160deg, ${C.night} 0%, ${C.dusk} 55%, ${C.night} 100%)`, padding: "160px 24px 110px", textAlign: "center", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 60% 40%, rgba(139,30,30,0.18) 0%, transparent 65%)", pointerEvents: "none" }} />
+        <FadeIn>
+          <SectionLabel light>Manitou Beach Wine Trail · 2026</SectionLabel>
+          <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(30px, 5vw, 58px)", fontWeight: 400, color: C.cream, margin: "20px 0 24px", lineHeight: 1.15 }}>
+            Your tasting room.<br />Rated. Recognized.<br /><em>Celebrated.</em>
+          </h1>
+          <p style={{ fontSize: 16, color: "rgba(255,255,255,0.5)", maxWidth: 520, margin: "0 auto 40px", lineHeight: 1.85 }}>
+            Manitou Beach visitors are already discovering your tasting room. Now they have a way to tell the community what they found — and at the end of the season, the best venues get recognized for it.
+          </p>
+          <Btn href="mailto:admin@yetigroove.com?subject=QR Kit Request" variant="sunset" style={{ whiteSpace: "nowrap" }}>
+            Request Your QR Kit →
+          </Btn>
+          <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: "rgba(255,255,255,0.28)", marginTop: 14 }}>
+            Free. No setup. We deliver.
+          </div>
+        </FadeIn>
+      </section>
+
+      <WaveDivider topColor={C.night} bottomColor={C.cream} />
+
+      {/* ── HOW IT WORKS ── */}
+      <section style={{ background: C.cream, padding: "80px 24px" }}>
+        <div style={{ maxWidth: 960, margin: "0 auto" }}>
+          <FadeIn>
+            <SectionLabel style={{ textAlign: "center", display: "block" }}>How It Works</SectionLabel>
+            <SectionTitle center>Three steps. Zero work on your end.</SectionTitle>
+          </FadeIn>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 24, marginTop: 52 }}>
+            {WINE_PARTNER_HOW.map((s, i) => (
+              <FadeIn key={s.step} delay={i * 80}>
+                <div style={{ background: C.warmWhite, borderRadius: 16, padding: "32px 28px", border: `1px solid ${C.sand}`, position: "relative", overflow: "hidden", height: "100%", boxSizing: "border-box" }}>
+                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 56, fontWeight: 700, color: "rgba(212,132,90,0.1)", position: "absolute", top: 12, right: 18, lineHeight: 1, userSelect: "none" }}>{s.step}</div>
+                  <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: C.sunset, marginBottom: 12, fontWeight: 600 }}>Step {s.step}</div>
+                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.text, marginBottom: 12, lineHeight: 1.4 }}>{s.title}</div>
+                  <div style={{ fontSize: 13, color: C.textLight, lineHeight: 1.8 }}>{s.copy}</div>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
+
+      {/* ── WHAT YOU GET ── */}
+      <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
+        <div style={{ maxWidth: 960, margin: "0 auto" }}>
+          <FadeIn>
+            <SectionLabel style={{ textAlign: "center", display: "block" }}>What You Get</SectionLabel>
+            <SectionTitle center>Everything that comes with being on the trail.</SectionTitle>
+          </FadeIn>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 20, marginTop: 48 }}>
+            {WINE_PARTNER_GETS.map((item, i) => (
+              <FadeIn key={item.title} delay={i * 70}>
+                <div style={{ background: C.cream, borderRadius: 14, padding: "28px 24px", border: `1px solid ${C.sand}`, borderTop: `3px solid ${C.sunset}`, height: "100%", boxSizing: "border-box" }}>
+                  <div style={{ fontSize: 28, marginBottom: 14 }}>{item.icon}</div>
+                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.text, marginBottom: 10 }}>{item.title}</div>
+                  <div style={{ fontSize: 13, color: C.textLight, lineHeight: 1.78 }}>{item.copy}</div>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <WaveDivider topColor={C.warmWhite} bottomColor={C.dusk} />
+
+      {/* ── THE AWARDS ── */}
+      <section style={{ background: C.dusk, padding: "80px 24px", textAlign: "center" }}>
+        <div style={{ maxWidth: 800, margin: "0 auto" }}>
+          <FadeIn>
+            <SectionLabel light>Season-End Recognition</SectionLabel>
+            <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 40px)", fontWeight: 400, color: C.cream, margin: "16px 0 20px", lineHeight: 1.2 }}>
+              The 2026 Manitou Beach<br /><em style={{ color: C.sunsetLight }}>Wine Trail Awards</em>
+            </h2>
+            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.48)", lineHeight: 1.85, maxWidth: 520, margin: "0 auto 44px" }}>
+              At the end of the season, the community has voted. The top-rated venues in each category receive a framed plaque — designed, printed, and delivered by us. Hang it. Post it. It's yours.
+            </p>
+          </FadeIn>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center", marginBottom: 48 }}>
+            {WINE_PARTNER_AWARDS.map((award, i) => (
+              <FadeIn key={award.name} delay={i * 60}>
+                <div style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 50, padding: "10px 20px", display: "flex", alignItems: "center", gap: 8 }}>
+                  <span style={{ fontSize: 16 }}>{award.icon}</span>
+                  <span style={{ fontSize: 13, color: "rgba(255,255,255,0.72)", fontWeight: 500 }}>{award.name}</span>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+          <FadeIn delay={400}>
+            <div style={{ background: "rgba(212,132,90,0.1)", border: "1px solid rgba(212,132,90,0.22)", borderRadius: 14, padding: "24px 32px", maxWidth: 500, margin: "0 auto" }}>
+              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunsetLight, marginBottom: 10 }}>A note from Daryl</div>
+              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.85, margin: 0 }}>
+                "These awards matter because the community chose them — not an algorithm, not a paid ranking. I want venues to be able to hang something on their wall that means something. That's the whole point."
+              </p>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
+      <WaveDivider topColor={C.dusk} bottomColor={C.cream} flip />
+
+      {/* ── ZERO FRICTION ── */}
+      <section style={{ background: C.cream, padding: "80px 24px", textAlign: "center" }}>
+        <div style={{ maxWidth: 680, margin: "0 auto" }}>
+          <FadeIn>
+            <SectionLabel style={{ textAlign: "center", display: "block" }}>For the Record</SectionLabel>
+            <SectionTitle center>What this costs you.</SectionTitle>
+            <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(56px, 10vw, 96px)", fontWeight: 700, color: C.sunset, margin: "8px 0 12px", lineHeight: 1 }}>$0</div>
+            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 460, margin: "0 auto 44px" }}>
+              No subscription. No platform fee. No dashboard to log into. You're already on the trail — we just want to help you get recognized for what you're building.
+            </p>
+          </FadeIn>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 14, textAlign: "left", maxWidth: 700, margin: "0 auto" }}>
+            {WINE_PARTNER_FRICTIONLESS.map((item, i) => (
+              <FadeIn key={item.label} delay={i * 60}>
+                <div style={{ background: C.warmWhite, borderRadius: 12, padding: "20px 20px", border: `1px solid ${C.sand}` }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: C.sageDark, marginBottom: 4 }}>✓ {item.label}</div>
+                  <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.65 }}>{item.sub}</div>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <WaveDivider topColor={C.cream} bottomColor={C.night} />
+
+      {/* ── CTA ── */}
+      <section style={{ background: C.night, padding: "80px 24px 110px", textAlign: "center" }}>
+        <div style={{ maxWidth: 560, margin: "0 auto" }}>
+          <FadeIn>
+            <SectionLabel light>Get Involved</SectionLabel>
+            <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 40px)", fontWeight: 400, color: C.cream, margin: "16px 0 20px", lineHeight: 1.25 }}>
+              Ready for your QR kit?<br />Or just have thoughts?
+            </h2>
+            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.42)", lineHeight: 1.85, marginBottom: 44 }}>
+              We're building this with venues, not at them. If you want a QR kit for your counter — or if you have ideas that would make this work better — Daryl wants to hear it.
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 20 }}>
+              <Btn href="mailto:admin@yetigroove.com?subject=QR Kit Request" variant="sunset" style={{ whiteSpace: "nowrap" }}>
+                Request Your QR Kit →
+              </Btn>
+              <a
+                href="mailto:admin@yetigroove.com?subject=Wine Trail Feedback"
+                style={{ fontSize: 13, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif", textDecoration: "none", letterSpacing: 0.5, transition: "color 0.2s" }}
+                onMouseEnter={e => e.currentTarget.style.color = "rgba(255,255,255,0.65)"}
+                onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.35)"}
+              >
+                Have a suggestion? →
+              </a>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
+      <Footer scrollTo={subScrollTo} />
+    </div>
+  );
+}
+
+// ============================================================
 // 🌐  APP ROOT
 // ============================================================
 export default function App() {
@@ -14404,6 +14613,7 @@ export default function App() {
         <Route path="/discover" element={<DiscoverPage />} />
         <Route path="/food-trucks" element={<FoodTrucksPage />} />
         <Route path="/build" element={<BuildPage />} />
+        <Route path="/wine-partner" element={<WinePartnerPage />} />
         <Route path="/usa250" element={<USA250Page />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/terms" element={<TermsPage />} />
