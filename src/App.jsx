@@ -14378,6 +14378,385 @@ function BuildPage() {
 }
 
 // ============================================================
+// 🔒  /founding — FOUNDING MEMBER PAGE (private link, friend outreach)
+// ============================================================
+const FOUNDING_TIERS = [
+  { name: "Enhanced", price: 9,  perks: ["Business listing on Manitou Beach", "Map pin on /discover", "Category placement", "Contact info + description", "Link to your website"] },
+  { name: "Featured", price: 23, highlight: true, perks: ["Everything in Enhanced", "Priority placement in category", "Logo displayed on listing", "Newsletter mention eligibility", "Highlighted card styling"] },
+  { name: "Premium",  price: 43, perks: ["Everything in Featured", "Top of category, always", "Monthly newsletter feature eligible", "First call for sponsorship spots", "Founding badge on listing"] },
+];
+const FOUNDING_MATH = [
+  { subs: "Today",    newPrice: null,  yourPrice: 9,  label: "Founding rate" },
+  { subs: "200 subs", newPrice: 10,   yourPrice: 9,  label: "You still pay $9" },
+  { subs: "500 subs", newPrice: 13,   yourPrice: 9,  label: "You still pay $9" },
+  { subs: "1,000 subs", newPrice: 18, yourPrice: 9,  label: "You still pay $9" },
+];
+
+function FoundingPage() {
+  const subScrollTo = (id) => { window.location.href = "/#" + id; };
+  return (
+    <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+      <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+      <GlobalStyles />
+      <ScrollProgress />
+
+      {/* Private context strip */}
+      <div style={{ background: C.night, borderBottom: "1px solid rgba(255,255,255,0.07)", padding: "9px 24px", display: "flex", alignItems: "center", justifyContent: "center", gap: 28, flexWrap: "wrap" }}>
+        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif" }}>This page isn't public — you're seeing it because someone sent it to you.</span>
+        <a href="/featured" style={{ fontSize: 12, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>See the Public Listing Page →</a>
+        <a href="/" style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", fontFamily: "'Libre Franklin', sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Visit Homepage →</a>
+      </div>
+
+      <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
+
+      {/* ── HERO ── */}
+      <section style={{ background: `linear-gradient(160deg, ${C.night} 0%, ${C.dusk} 60%, ${C.night} 100%)`, padding: "160px 24px 110px", textAlign: "center", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 40%, rgba(91,126,149,0.18) 0%, transparent 65%)", pointerEvents: "none" }} />
+        <FadeIn>
+          <div style={{ display: "inline-block", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 50, padding: "6px 16px", marginBottom: 24 }}>
+            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1.5, textTransform: "uppercase" }}>Founding Member Access</span>
+          </div>
+          <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(30px, 5vw, 58px)", fontWeight: 400, color: C.cream, margin: "0 0 24px", lineHeight: 1.15 }}>
+            Get in before the<br />price goes up.
+          </h1>
+          <p style={{ fontSize: 16, color: "rgba(255,255,255,0.5)", maxWidth: 520, margin: "0 auto 16px", lineHeight: 1.85 }}>
+            Manitou Beach charges a penny per subscriber over 100. We're not there yet. Lock in today's rate and it's yours forever — even as new members pay more.
+          </p>
+          <p style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: "rgba(255,255,255,0.3)", marginBottom: 40 }}>
+            Think of it like buying in before the stock price moves.
+          </p>
+          <Btn href="mailto:admin@yetigroove.com?subject=Founding Member Listing" variant="sunset" style={{ whiteSpace: "nowrap" }}>
+            Tell Daryl I'm In →
+          </Btn>
+        </FadeIn>
+      </section>
+
+      <WaveDivider topColor={C.night} bottomColor={C.cream} />
+
+      {/* ── THE MATH ── */}
+      <section style={{ background: C.cream, padding: "80px 24px" }}>
+        <div style={{ maxWidth: 760, margin: "0 auto" }}>
+          <FadeIn>
+            <SectionLabel style={{ textAlign: "center", display: "block" }}>The Formula</SectionLabel>
+            <SectionTitle center>Here's exactly how it works.</SectionTitle>
+            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 560, margin: "0 auto 48px", textAlign: "center" }}>
+              The base price is $9/mo for an Enhanced listing. After 100 newsletter subscribers, the price rises by one cent per new subscriber — automatically, for everyone who signs up after. But your rate? Locked in the day you join. Forever.
+            </p>
+          </FadeIn>
+          <FadeIn delay={100}>
+            <div style={{ background: C.warmWhite, borderRadius: 16, border: `1px solid ${C.sand}`, overflow: "hidden" }}>
+              {/* Header */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", background: C.dusk, padding: "14px 28px" }}>
+                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.5)" }}>When</div>
+                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.5)", textAlign: "center" }}>New members pay</div>
+                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sunsetLight, textAlign: "right" }}>You pay</div>
+              </div>
+              {FOUNDING_MATH.map((row, i) => (
+                <div key={row.subs} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", padding: "18px 28px", borderBottom: i < FOUNDING_MATH.length - 1 ? `1px solid ${C.sand}` : "none", alignItems: "center" }}>
+                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.text, fontWeight: i === 0 ? 700 : 400 }}>{row.subs}</div>
+                  <div style={{ textAlign: "center", fontSize: 14, color: row.newPrice ? C.textLight : C.sage, fontWeight: 600 }}>
+                    {row.newPrice ? `$${row.newPrice}/mo` : <span style={{ fontFamily: "'Caveat', cursive", fontSize: 16, color: C.sage }}>founding rate</span>}
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 700, color: C.sunset }}>${row.yourPrice}/mo</span>
+                    {i > 0 && <div style={{ fontSize: 11, color: C.sage, fontWeight: 600 }}>✓ locked</div>}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <p style={{ fontSize: 12, color: C.textMuted, textAlign: "center", marginTop: 14, lineHeight: 1.7 }}>
+              Example shown for Enhanced tier. Featured and Premium follow the same formula from their base rates.
+            </p>
+          </FadeIn>
+        </div>
+      </section>
+
+      <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
+
+      {/* ── TIERS ── */}
+      <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
+        <div style={{ maxWidth: 960, margin: "0 auto" }}>
+          <FadeIn>
+            <SectionLabel style={{ textAlign: "center", display: "block" }}>Today's Founding Rates</SectionLabel>
+            <SectionTitle center>Pick your tier. Lock it in.</SectionTitle>
+            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 480, margin: "0 auto 48px", textAlign: "center" }}>
+              These are the rates available right now, before subscriber 101. Once you're in, this is your price for as long as you keep your listing.
+            </p>
+          </FadeIn>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 20 }}>
+            {FOUNDING_TIERS.map((tier, i) => (
+              <FadeIn key={tier.name} delay={i * 80}>
+                <div style={{
+                  background: tier.highlight ? C.dusk : C.cream,
+                  borderRadius: 18,
+                  padding: "36px 28px",
+                  border: tier.highlight ? "none" : `1px solid ${C.sand}`,
+                  boxShadow: tier.highlight ? "0 12px 40px rgba(0,0,0,0.2)" : "none",
+                  transform: tier.highlight ? "scale(1.03)" : "none",
+                  position: "relative",
+                  overflow: "hidden",
+                  height: "100%",
+                  boxSizing: "border-box",
+                }}>
+                  {tier.highlight && (
+                    <div style={{ position: "absolute", top: 16, right: 16, background: C.sunset, color: C.cream, fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", borderRadius: 50, padding: "4px 10px" }}>Most Popular</div>
+                  )}
+                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: tier.highlight ? C.sunsetLight : C.textMuted, marginBottom: 12 }}>{tier.name}</div>
+                  <div style={{ marginBottom: 4 }}>
+                    <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 48, fontWeight: 700, color: tier.highlight ? C.cream : C.text }}>${tier.price}</span>
+                    <span style={{ fontSize: 14, color: tier.highlight ? "rgba(255,255,255,0.45)" : C.textMuted, marginLeft: 4 }}>/mo</span>
+                  </div>
+                  <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: tier.highlight ? C.sunsetLight : C.sage, marginBottom: 24 }}>founding rate — locked forever</div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    {tier.perks.map(p => (
+                      <div key={p} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
+                        <span style={{ color: tier.highlight ? C.sunsetLight : C.sage, fontSize: 13, flexShrink: 0, marginTop: 1 }}>✓</span>
+                        <span style={{ fontSize: 13, color: tier.highlight ? "rgba(255,255,255,0.65)" : C.textLight, lineHeight: 1.5 }}>{p}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ marginTop: 28 }}>
+                    <a
+                      href={`mailto:admin@yetigroove.com?subject=Founding Member — ${tier.name} Listing`}
+                      style={{ display: "block", textAlign: "center", padding: "12px 20px", borderRadius: 24, background: tier.highlight ? C.sunset : "transparent", color: tier.highlight ? C.cream : C.sage, border: `1.5px solid ${tier.highlight ? C.sunset : C.sage}`, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none", transition: "all 0.2s" }}
+                    >
+                      Lock In {tier.name} →
+                    </a>
+                  </div>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <WaveDivider topColor={C.warmWhite} bottomColor={C.night} />
+
+      {/* ── CTA ── */}
+      <section style={{ background: C.night, padding: "80px 24px 110px", textAlign: "center" }}>
+        <div style={{ maxWidth: 520, margin: "0 auto" }}>
+          <FadeIn>
+            <SectionLabel light>Don't Wait</SectionLabel>
+            <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 38px)", fontWeight: 400, color: C.cream, margin: "16px 0 20px", lineHeight: 1.25 }}>
+              The window closes<br />when subscriber 101 arrives.
+            </h2>
+            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.42)", lineHeight: 1.85, marginBottom: 16 }}>
+              After that, new members pay the market rate. You pay what you locked in. That gap only grows.
+            </p>
+            <p style={{ fontFamily: "'Caveat', cursive", fontSize: 19, color: "rgba(255,255,255,0.28)", marginBottom: 44 }}>
+              Just tell Daryl which tier you want. He handles the rest.
+            </p>
+            <Btn href="mailto:admin@yetigroove.com?subject=Founding Member Listing" variant="sunset" style={{ whiteSpace: "nowrap" }}>
+              Tell Daryl I'm In →
+            </Btn>
+          </FadeIn>
+        </div>
+      </section>
+
+      <Footer scrollTo={subScrollTo} />
+    </div>
+  );
+}
+
+// ============================================================
+// 🚚  /food-truck-partner — FOOD TRUCK PARTNER PAGE (private link)
+// ============================================================
+const TRUCK_HOW = [
+  { step: "01", title: "Tell Daryl you want to be listed", copy: "One email. He adds you to the map — your truck name, what you serve, and a private check-in link that's yours forever." },
+  { step: "02", title: "Use your check-in URL when you're nearby", copy: "Heading to Manitou Beach? Hit your link. Your pin goes live on the map with a 'Live Now' badge. Takes three seconds." },
+  { step: "03", title: "Locals find you in real time", copy: "People checking the locator see you're here, right now. Not a static listing — a live signal that drives foot traffic." },
+];
+const TRUCK_AUDIENCE = [
+  { icon: "🏖️", label: "Lake crowd", copy: "Manitou Beach draws thousands of summer visitors — boaters, swimmers, families. They're hungry and they're looking." },
+  { icon: "🍷", label: "Wine trail visitors", copy: "The Irish Hills wine trail runs through here. Day-trippers who've been tasting since noon are your best customers." },
+  { icon: "🏡", label: "Lake homeowners", copy: "300+ waterfront properties and seasonal rentals nearby. People who've been here all week and want something different for lunch." },
+  { icon: "📅", label: "Event weekends", copy: "Tournaments, festivals, car shows, open-air concerts. High-traffic weekends where a well-placed truck cleans up." },
+];
+const TRUCK_GETS = [
+  { icon: "📍", title: "Live map pin", copy: "Your truck appears on the Manitou Beach Food Truck Locator the moment you check in. 'Live Now' badge, your name, what you serve." },
+  { icon: "🔗", title: "Personal check-in URL", copy: "A private link that's yours. Open it from your phone when you're rolling into town. No login, no app, no fuss." },
+  { icon: "📋", title: "Directory listing", copy: "Year-round presence in the All Trucks directory — your name, cuisine, and contact info visible even when you're not checked in." },
+  { icon: "☀️", title: "Summer season visibility", copy: "Manitou Beach peaks June through September. Your truck is in front of the right people at the right time." },
+];
+const TRUCK_FREE_ITEMS = [
+  { label: "No commission", sub: "We don't take a cut. Not now, not later." },
+  { label: "No subscription", sub: "Free to list, free to check in, free forever." },
+  { label: "No exclusivity", sub: "Work every market you want. We're one more audience." },
+  { label: "No setup work", sub: "Daryl handles the listing. You just show up." },
+];
+
+function FoodTruckPartnerPage() {
+  const subScrollTo = (id) => { window.location.href = "/#" + id; };
+  return (
+    <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+      <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+      <GlobalStyles />
+      <ScrollProgress />
+
+      {/* Partner context strip */}
+      <div style={{ background: C.night, borderBottom: "1px solid rgba(255,255,255,0.07)", padding: "9px 24px", display: "flex", alignItems: "center", justifyContent: "center", gap: 28, flexWrap: "wrap" }}>
+        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif" }}>This page isn't public — you're seeing it because someone sent it to you.</span>
+        <a href="/food-trucks" style={{ fontSize: 12, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>See the Locator →</a>
+        <a href="/" style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", fontFamily: "'Libre Franklin', sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Visit Homepage →</a>
+      </div>
+
+      <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
+
+      {/* ── HERO ── */}
+      <section style={{ background: `linear-gradient(160deg, ${C.dusk} 0%, ${C.night} 50%, ${C.dusk} 100%)`, padding: "160px 24px 110px", textAlign: "center", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse at 55% 45%, rgba(212,132,90,0.2) 0%, transparent 60%)`, pointerEvents: "none" }} />
+        <FadeIn>
+          <SectionLabel light>Manitou Beach · Food Truck Locator</SectionLabel>
+          <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(30px, 5vw, 58px)", fontWeight: 400, color: C.cream, margin: "20px 0 24px", lineHeight: 1.15 }}>
+            Your truck. Live on the map.<br /><em>Every time you're nearby.</em>
+          </h1>
+          <p style={{ fontSize: 16, color: "rgba(255,255,255,0.5)", maxWidth: 520, margin: "0 auto 40px", lineHeight: 1.85 }}>
+            The Manitou Beach Food Truck Locator shows locals and visitors which trucks are out right now. Get listed free — one check-in and you're live.
+          </p>
+          <Btn href="mailto:admin@yetigroove.com?subject=Food Truck Listing" variant="sunset" style={{ whiteSpace: "nowrap" }}>
+            Get Your Truck on the Map →
+          </Btn>
+          <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: "rgba(255,255,255,0.28)", marginTop: 14 }}>Free. Always.</div>
+        </FadeIn>
+      </section>
+
+      <WaveDivider topColor={C.dusk} bottomColor={C.cream} />
+
+      {/* ── HOW IT WORKS ── */}
+      <section style={{ background: C.cream, padding: "80px 24px" }}>
+        <div style={{ maxWidth: 960, margin: "0 auto" }}>
+          <FadeIn>
+            <SectionLabel style={{ textAlign: "center", display: "block" }}>How It Works</SectionLabel>
+            <SectionTitle center>On the map in under a minute.</SectionTitle>
+          </FadeIn>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 24, marginTop: 52 }}>
+            {TRUCK_HOW.map((s, i) => (
+              <FadeIn key={s.step} delay={i * 80}>
+                <div style={{ background: C.warmWhite, borderRadius: 16, padding: "32px 28px", border: `1px solid ${C.sand}`, position: "relative", overflow: "hidden", height: "100%", boxSizing: "border-box" }}>
+                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 56, fontWeight: 700, color: "rgba(212,132,90,0.1)", position: "absolute", top: 12, right: 18, lineHeight: 1, userSelect: "none" }}>{s.step}</div>
+                  <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: C.sunset, marginBottom: 12, fontWeight: 600 }}>Step {s.step}</div>
+                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.text, marginBottom: 12, lineHeight: 1.4 }}>{s.title}</div>
+                  <div style={{ fontSize: 13, color: C.textLight, lineHeight: 1.8 }}>{s.copy}</div>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
+
+      {/* ── THE AUDIENCE ── */}
+      <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
+        <div style={{ maxWidth: 960, margin: "0 auto" }}>
+          <FadeIn>
+            <SectionLabel style={{ textAlign: "center", display: "block" }}>Who's Out There</SectionLabel>
+            <SectionTitle center>The Manitou Beach crowd is your crowd.</SectionTitle>
+            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 540, margin: "0 auto 48px", textAlign: "center" }}>
+              These are people with a full day, money to spend, and no plan for lunch.
+            </p>
+          </FadeIn>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 20 }}>
+            {TRUCK_AUDIENCE.map((item, i) => (
+              <FadeIn key={item.label} delay={i * 70}>
+                <div style={{ background: C.cream, borderRadius: 14, padding: "28px 24px", border: `1px solid ${C.sand}`, borderTop: `3px solid ${C.sunset}`, height: "100%", boxSizing: "border-box" }}>
+                  <div style={{ fontSize: 28, marginBottom: 14 }}>{item.icon}</div>
+                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.text, marginBottom: 10 }}>{item.label}</div>
+                  <div style={{ fontSize: 13, color: C.textLight, lineHeight: 1.78 }}>{item.copy}</div>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <WaveDivider topColor={C.warmWhite} bottomColor={C.dusk} />
+
+      {/* ── WHAT YOU GET ── */}
+      <section style={{ background: C.dusk, padding: "80px 24px" }}>
+        <div style={{ maxWidth: 960, margin: "0 auto" }}>
+          <FadeIn>
+            <SectionLabel light>What's Included</SectionLabel>
+            <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 40px)", fontWeight: 400, color: C.cream, margin: "16px 0 48px", lineHeight: 1.2, textAlign: "center" }}>
+              Everything you get<br /><em style={{ color: C.sunsetLight }}>when you're on the map.</em>
+            </h2>
+          </FadeIn>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 20 }}>
+            {TRUCK_GETS.map((item, i) => (
+              <FadeIn key={item.title} delay={i * 70}>
+                <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: 14, padding: "28px 24px", border: "1px solid rgba(255,255,255,0.1)", height: "100%", boxSizing: "border-box" }}>
+                  <div style={{ fontSize: 28, marginBottom: 14 }}>{item.icon}</div>
+                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.cream, marginBottom: 10 }}>{item.title}</div>
+                  <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", lineHeight: 1.78 }}>{item.copy}</div>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <WaveDivider topColor={C.dusk} bottomColor={C.cream} flip />
+
+      {/* ── ZERO COST ── */}
+      <section style={{ background: C.cream, padding: "80px 24px", textAlign: "center" }}>
+        <div style={{ maxWidth: 640, margin: "0 auto" }}>
+          <FadeIn>
+            <SectionLabel style={{ textAlign: "center", display: "block" }}>The Cost</SectionLabel>
+            <SectionTitle center>What you pay to be on the map.</SectionTitle>
+            <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(56px, 10vw, 96px)", fontWeight: 700, color: C.sunset, margin: "8px 0 12px", lineHeight: 1 }}>$0</div>
+            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 440, margin: "0 auto 44px" }}>
+              No commission, no platform fee, no monthly bill. Manitou Beach gets more food options for the community. You get in front of people who are already there and hungry.
+            </p>
+          </FadeIn>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 14, textAlign: "left", maxWidth: 660, margin: "0 auto" }}>
+            {TRUCK_FREE_ITEMS.map((item, i) => (
+              <FadeIn key={item.label} delay={i * 60}>
+                <div style={{ background: C.warmWhite, borderRadius: 12, padding: "20px 20px", border: `1px solid ${C.sand}` }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: C.sageDark, marginBottom: 4 }}>✓ {item.label}</div>
+                  <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.65 }}>{item.sub}</div>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <WaveDivider topColor={C.cream} bottomColor={C.night} />
+
+      {/* ── CTA ── */}
+      <section style={{ background: C.night, padding: "80px 24px 110px", textAlign: "center" }}>
+        <div style={{ maxWidth: 560, margin: "0 auto" }}>
+          <FadeIn>
+            <SectionLabel light>Get On the Map</SectionLabel>
+            <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 40px)", fontWeight: 400, color: C.cream, margin: "16px 0 20px", lineHeight: 1.25 }}>
+              Ready to get listed?
+            </h2>
+            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.42)", lineHeight: 1.85, marginBottom: 44 }}>
+              Send Daryl your truck name, what you serve, and a phone number. He'll get you set up with a check-in link the same day. That's the whole process.
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 20 }}>
+              <Btn href="mailto:admin@yetigroove.com?subject=Food Truck Listing" variant="sunset" style={{ whiteSpace: "nowrap" }}>
+                Get Your Truck on the Map →
+              </Btn>
+              <a
+                href="/food-trucks"
+                style={{ fontSize: 13, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif", textDecoration: "none", letterSpacing: 0.5, transition: "color 0.2s" }}
+                onMouseEnter={e => e.currentTarget.style.color = "rgba(255,255,255,0.65)"}
+                onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.35)"}
+              >
+                See the locator first →
+              </a>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
+      <Footer scrollTo={subScrollTo} />
+    </div>
+  );
+}
+
+// ============================================================
 // 🍷  /wine-partner — WINE TRAIL PARTNER PAGE (private link)
 // ============================================================
 const WINE_PARTNER_HOW = [
@@ -14416,9 +14795,9 @@ function WinePartnerPage() {
 
       {/* Partner context strip */}
       <div style={{ background: C.night, borderBottom: "1px solid rgba(255,255,255,0.07)", padding: "9px 24px", display: "flex", alignItems: "center", justifyContent: "center", gap: 28, flexWrap: "wrap" }}>
-        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1, textTransform: "uppercase" }}>Partner Preview</span>
-        <a href="/wineries" style={{ fontSize: 12, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textDecoration: "none" }}>See the Wine Trail →</a>
-        <a href="/" style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", fontFamily: "'Libre Franklin', sans-serif", textDecoration: "none" }}>Visit Homepage →</a>
+        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif" }}>This page isn't public — you're seeing it because someone sent it to you.</span>
+        <a href="/wineries" style={{ fontSize: 12, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>See the Wine Trail →</a>
+        <a href="/" style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", fontFamily: "'Libre Franklin', sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Visit Homepage →</a>
       </div>
 
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
@@ -14614,6 +14993,8 @@ export default function App() {
         <Route path="/food-trucks" element={<FoodTrucksPage />} />
         <Route path="/build" element={<BuildPage />} />
         <Route path="/wine-partner" element={<WinePartnerPage />} />
+        <Route path="/food-truck-partner" element={<FoodTruckPartnerPage />} />
+        <Route path="/founding" element={<FoundingPage />} />
         <Route path="/usa250" element={<USA250Page />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/terms" element={<TermsPage />} />
