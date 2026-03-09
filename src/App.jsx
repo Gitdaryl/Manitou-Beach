@@ -14666,13 +14666,18 @@ function FoundingPage() {
       {/* ── THE MATH ── */}
       <section style={{ background: C.cream, padding: "80px 24px" }}>
         <div style={{ maxWidth: 760, margin: "0 auto" }}>
-          <FadeIn>
-            <SectionLabel style={{ textAlign: "center", display: "block" }}>The Formula</SectionLabel>
-            <SectionTitle center>Here's exactly how it works.</SectionTitle>
-            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 560, margin: "0 auto 48px", textAlign: "center" }}>
-              The base price is $9/mo for an Enhanced listing. After 100 newsletter subscribers, the price rises by one cent per new subscriber — automatically, for everyone who signs up after. But your rate? Locked in the day you join. Forever.
-            </p>
-          </FadeIn>
+          <div style={{ display: "flex", gap: 48, alignItems: "center", marginBottom: 40, flexWrap: "wrap-reverse" }}>
+            <FadeIn delay={120} style={{ flex: "0 0 auto", textAlign: "center" }}>
+              <img src="/images/founding-rate-illustration.png" alt="" aria-hidden="true" style={{ width: "min(220px, 55vw)", opacity: 0.92 }} />
+            </FadeIn>
+            <FadeIn style={{ flex: "1 1 260px" }}>
+              <SectionLabel>The Formula</SectionLabel>
+              <SectionTitle>Here's exactly how it works.</SectionTitle>
+              <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, margin: 0 }}>
+                The base price is $9/mo for an Enhanced listing. After 100 newsletter subscribers, the price rises by one cent per new subscriber — automatically, for everyone who signs up after. But your rate? Locked in the day you join. Forever.
+              </p>
+            </FadeIn>
+          </div>
           <FadeIn delay={100}>
             <div style={{ background: C.warmWhite, borderRadius: 16, border: `1px solid ${C.sand}`, overflow: "hidden" }}>
               {/* Header */}
@@ -14889,8 +14894,11 @@ function FoodTruckPartnerPage() {
           <FadeIn>
             <SectionLabel style={{ textAlign: "center", display: "block" }}>How It Works</SectionLabel>
             <SectionTitle center>On the map in under a minute.</SectionTitle>
+            <div style={{ textAlign: "center", margin: "24px 0 12px" }}>
+              <img src="/images/foodtruck-2-illustration.png" alt="" aria-hidden="true" style={{ width: "min(320px, 80vw)", opacity: 0.92 }} />
+            </div>
           </FadeIn>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 24, marginTop: 52 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 24, marginTop: 32 }}>
             {TRUCK_HOW.map((s, i) => (
               <FadeIn key={s.step} delay={i * 80}>
                 <div style={{ background: C.warmWhite, borderRadius: 16, padding: "32px 28px", border: `1px solid ${C.sand}`, position: "relative", overflow: "hidden", height: "100%", boxSizing: "border-box" }}>
@@ -14910,13 +14918,18 @@ function FoodTruckPartnerPage() {
       {/* ── THE AUDIENCE ── */}
       <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
-          <FadeIn>
-            <SectionLabel style={{ textAlign: "center", display: "block" }}>Who's Out There</SectionLabel>
-            <SectionTitle center>The Manitou Beach crowd is your crowd.</SectionTitle>
-            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 540, margin: "0 auto 48px", textAlign: "center" }}>
-              These are people with a full day, money to spend, and no plan for lunch.
-            </p>
-          </FadeIn>
+          <div style={{ display: "flex", gap: 48, alignItems: "center", marginBottom: 48, flexWrap: "wrap" }}>
+            <FadeIn style={{ flex: "1 1 280px" }}>
+              <SectionLabel>Who's Out There</SectionLabel>
+              <SectionTitle>The Manitou Beach crowd is your crowd.</SectionTitle>
+              <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 420, margin: 0 }}>
+                These are people with a full day, money to spend, and no plan for lunch.
+              </p>
+            </FadeIn>
+            <FadeIn delay={120} style={{ flex: "0 0 auto", textAlign: "center" }}>
+              <img src="/images/community-illustration.png" alt="" aria-hidden="true" style={{ width: "min(280px, 70vw)", opacity: 0.93 }} />
+            </FadeIn>
+          </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 20 }}>
             {TRUCK_AUDIENCE.map((item, i) => (
               <FadeIn key={item.label} delay={i * 70}>
@@ -14959,16 +14972,21 @@ function FoodTruckPartnerPage() {
       <WaveDivider topColor={C.dusk} bottomColor={C.cream} flip />
 
       {/* ── ZERO COST ── */}
-      <section style={{ background: C.cream, padding: "80px 24px", textAlign: "center" }}>
-        <div style={{ maxWidth: 640, margin: "0 auto" }}>
-          <FadeIn>
-            <SectionLabel style={{ textAlign: "center", display: "block" }}>The Cost</SectionLabel>
-            <SectionTitle center>What you pay to be on the map.</SectionTitle>
-            <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(56px, 10vw, 96px)", fontWeight: 700, color: C.sunset, margin: "8px 0 12px", lineHeight: 1 }}>$0</div>
-            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 440, margin: "0 auto 44px" }}>
-              No commission, no platform fee, no monthly bill. Manitou Beach gets more food options for the community. You get in front of people who are already there and hungry.
-            </p>
-          </FadeIn>
+      <section style={{ background: C.cream, padding: "80px 24px" }}>
+        <div style={{ maxWidth: 960, margin: "0 auto" }}>
+          <div style={{ display: "flex", gap: 48, alignItems: "center", marginBottom: 44, flexWrap: "wrap-reverse" }}>
+            <FadeIn delay={120} style={{ flex: "0 0 auto", textAlign: "center" }}>
+              <img src="/images/foodtruck-1-illustration.png" alt="" aria-hidden="true" style={{ width: "min(300px, 75vw)", opacity: 0.93 }} />
+            </FadeIn>
+            <FadeIn style={{ flex: "1 1 280px" }}>
+              <SectionLabel>The Cost</SectionLabel>
+              <SectionTitle>What you pay to be on the map.</SectionTitle>
+              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(56px, 10vw, 96px)", fontWeight: 700, color: C.sunset, margin: "8px 0 12px", lineHeight: 1 }}>$0</div>
+              <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 420, margin: 0 }}>
+                No commission, no platform fee, no monthly bill. Manitou Beach gets more food options for the community. You get in front of people who are already there and hungry.
+              </p>
+            </FadeIn>
+          </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 14, textAlign: "left", maxWidth: 660, margin: "0 auto" }}>
             {TRUCK_FREE_ITEMS.map((item, i) => (
               <FadeIn key={item.label} delay={i * 60}>
@@ -15312,11 +15330,16 @@ function WinePartnerPage() {
       {/* ── HOW IT WORKS ── */}
       <section style={{ background: C.cream, padding: "80px 24px" }}>
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
-          <FadeIn>
-            <SectionLabel style={{ textAlign: "center", display: "block" }}>How It Works</SectionLabel>
-            <SectionTitle center>Three steps. Zero work on your end.</SectionTitle>
-          </FadeIn>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 24, marginTop: 52 }}>
+          <div style={{ display: "flex", gap: 48, alignItems: "center", marginBottom: 48, flexWrap: "wrap" }}>
+            <FadeIn style={{ flex: "1 1 280px" }}>
+              <SectionLabel>How It Works</SectionLabel>
+              <SectionTitle>Three steps. Zero work on your end.</SectionTitle>
+            </FadeIn>
+            <FadeIn delay={120} style={{ flex: "0 0 auto", textAlign: "center" }}>
+              <img src="/images/passport-review-illustration.png" alt="" aria-hidden="true" style={{ width: "min(260px, 65vw)", opacity: 0.92 }} />
+            </FadeIn>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 24 }}>
             {WINE_PARTNER_HOW.map((s, i) => (
               <FadeIn key={s.step} delay={i * 80}>
                 <div style={{ background: C.warmWhite, borderRadius: 16, padding: "32px 28px", border: `1px solid ${C.sand}`, position: "relative", overflow: "hidden", height: "100%", boxSizing: "border-box" }}>
@@ -15364,6 +15387,9 @@ function WinePartnerPage() {
             <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 40px)", fontWeight: 400, color: C.cream, margin: "16px 0 20px", lineHeight: 1.2 }}>
               The 2026 Manitou Beach<br /><em style={{ color: C.sunsetLight }}>Wine Trail Awards</em>
             </h2>
+            <div style={{ margin: "0 0 24px" }}>
+              <img src="/images/award-illustration.png" alt="" aria-hidden="true" style={{ width: "min(220px, 55vw)", mixBlendMode: "screen", opacity: 0.85 }} />
+            </div>
             <p style={{ fontSize: 15, color: "rgba(255,255,255,0.48)", lineHeight: 1.85, maxWidth: 520, margin: "0 auto 44px" }}>
               At the end of the season, the community has voted. The top-rated venues in each category receive a framed plaque — designed, printed, and delivered by us. Hang it. Post it. It's yours.
             </p>
