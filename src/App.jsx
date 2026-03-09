@@ -14414,19 +14414,19 @@ function FoundingPage() {
         <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 40%, rgba(91,126,149,0.18) 0%, transparent 65%)", pointerEvents: "none" }} />
         <FadeIn>
           <div style={{ display: "inline-block", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 50, padding: "6px 16px", marginBottom: 24 }}>
-            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1.5, textTransform: "uppercase" }}>Founding Member Access</span>
+            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1.5, textTransform: "uppercase" }}>Early Rate Access</span>
           </div>
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(30px, 5vw, 58px)", fontWeight: 400, color: C.cream, margin: "0 0 24px", lineHeight: 1.15 }}>
-            Get in before the<br />price goes up.
+            List your business now,<br />at the rate that holds.
           </h1>
           <p style={{ fontSize: 16, color: "rgba(255,255,255,0.5)", maxWidth: 520, margin: "0 auto 16px", lineHeight: 1.85 }}>
-            Manitou Beach charges a penny per subscriber over 100. We're not there yet. Lock in today's rate and it's yours forever — even as new members pay more.
+            Manitou Beach pricing is tied to the newsletter audience. The rate you start at today is your rate permanently — even as the audience grows and new listings cost more.
           </p>
           <p style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: "rgba(255,255,255,0.3)", marginBottom: 40 }}>
-            Think of it like buying in before the stock price moves.
+            Like locking in a rate before the market moves.
           </p>
-          <Btn href="mailto:admin@yetigroove.com?subject=Founding Member Listing" variant="sunset" style={{ whiteSpace: "nowrap" }}>
-            Tell Daryl I'm In →
+          <Btn href="mailto:admin@yetigroove.com?subject=Business Listing — Early Rate" variant="sunset" style={{ whiteSpace: "nowrap" }}>
+            Start My Listing →
           </Btn>
         </FadeIn>
       </section>
@@ -14473,14 +14473,45 @@ function FoundingPage() {
 
       <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
 
+      {/* ── WHAT'S A SUBSCRIBER ── */}
+      <section style={{ background: C.warmWhite, padding: "64px 24px" }}>
+        <div style={{ maxWidth: 760, margin: "0 auto" }}>
+          <FadeIn>
+            <SectionLabel style={{ textAlign: "center", display: "block" }}>What's a Subscriber?</SectionLabel>
+            <SectionTitle center>The newsletter, explained.</SectionTitle>
+            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 580, margin: "0 auto 40px", textAlign: "center" }}>
+              Manitou Beach runs a community newsletter through beehiiv — sent regularly to real people who live near, visit, or own property around Devils Lake and Manitou Beach. Not a random email list. People who opted in because they actually care about what's happening here.
+            </p>
+          </FadeIn>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16 }}>
+            {[
+              { icon: "📰", label: "What it covers", copy: "Upcoming events, seasonal guides, food truck locations, wine trail news, new business spotlights, and community updates." },
+              { icon: "👥", label: "Who reads it", copy: "Lake homeowners, seasonal visitors, local residents, boaters, and anyone who follows the Irish Hills community." },
+              { icon: "📍", label: "Why it matters", copy: "As the list grows, your listing reaches more of those readers. The pricing formula reflects that growing value — which is why the rate rises." },
+              { icon: "🔒", label: "Your rate is fixed", copy: "Whatever rate you start at today is yours indefinitely. You don't reprice with the market. New subscribers don't affect your bill." },
+            ].map((item, i) => (
+              <FadeIn key={item.label} delay={i * 60}>
+                <div style={{ background: C.cream, borderRadius: 12, padding: "22px 20px", border: `1px solid ${C.sand}` }}>
+                  <div style={{ fontSize: 24, marginBottom: 10 }}>{item.icon}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 6 }}>{item.label}</div>
+                  <div style={{ fontSize: 12, color: C.textLight, lineHeight: 1.7 }}>{item.copy}</div>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <WaveDivider topColor={C.warmWhite} bottomColor={C.cream} flip />
+
       {/* ── TIERS ── */}
-      <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
+      <section style={{ background: C.cream, padding: "80px 24px" }}>
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
           <FadeIn>
-            <SectionLabel style={{ textAlign: "center", display: "block" }}>Today's Founding Rates</SectionLabel>
-            <SectionTitle center>Pick your tier. Lock it in.</SectionTitle>
+            <SectionLabel style={{ textAlign: "center", display: "block" }}>Current Rates</SectionLabel>
+            <SectionTitle center>Pick your listing level.</SectionTitle>
             <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 480, margin: "0 auto 48px", textAlign: "center" }}>
-              These are the rates available right now, before subscriber 101. Once you're in, this is your price for as long as you keep your listing.
+              The rate you start at today is your rate for as long as your listing runs — regardless of where the newsletter audience goes after.
             </p>
           </FadeIn>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 20 }}>
@@ -14506,7 +14537,7 @@ function FoundingPage() {
                     <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 48, fontWeight: 700, color: tier.highlight ? C.cream : C.text }}>${tier.price}</span>
                     <span style={{ fontSize: 14, color: tier.highlight ? "rgba(255,255,255,0.45)" : C.textMuted, marginLeft: 4 }}>/mo</span>
                   </div>
-                  <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: tier.highlight ? C.sunsetLight : C.sage, marginBottom: 24 }}>founding rate — locked forever</div>
+                  <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: tier.highlight ? C.sunsetLight : C.sage, marginBottom: 24 }}>today's rate — yours permanently</div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                     {tier.perks.map(p => (
                       <div key={p} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
@@ -14520,7 +14551,7 @@ function FoundingPage() {
                       href={`mailto:admin@yetigroove.com?subject=Founding Member — ${tier.name} Listing`}
                       style={{ display: "block", textAlign: "center", padding: "12px 20px", borderRadius: 24, background: tier.highlight ? C.sunset : "transparent", color: tier.highlight ? C.cream : C.sage, border: `1.5px solid ${tier.highlight ? C.sunset : C.sage}`, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none", transition: "all 0.2s" }}
                     >
-                      Lock In {tier.name} →
+                      List as {tier.name} →
                     </a>
                   </div>
                 </div>
@@ -14530,24 +14561,24 @@ function FoundingPage() {
         </div>
       </section>
 
-      <WaveDivider topColor={C.warmWhite} bottomColor={C.night} />
+      <WaveDivider topColor={C.cream} bottomColor={C.night} />
 
       {/* ── CTA ── */}
       <section style={{ background: C.night, padding: "80px 24px 110px", textAlign: "center" }}>
         <div style={{ maxWidth: 520, margin: "0 auto" }}>
           <FadeIn>
-            <SectionLabel light>Don't Wait</SectionLabel>
+            <SectionLabel light>Before the Rate Rises</SectionLabel>
             <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 38px)", fontWeight: 400, color: C.cream, margin: "16px 0 20px", lineHeight: 1.25 }}>
-              The window closes<br />when subscriber 101 arrives.
+              Today's rate holds.<br />Tomorrow's might not.
             </h2>
             <p style={{ fontSize: 15, color: "rgba(255,255,255,0.42)", lineHeight: 1.85, marginBottom: 16 }}>
-              After that, new members pay the market rate. You pay what you locked in. That gap only grows.
+              Once the newsletter crosses 100 subscribers, new listings are priced against a larger audience. Listings that started earlier pay what they started at. The gap widens automatically.
             </p>
             <p style={{ fontFamily: "'Caveat', cursive", fontSize: 19, color: "rgba(255,255,255,0.28)", marginBottom: 44 }}>
-              Just tell Daryl which tier you want. He handles the rest.
+              Email Daryl with the tier you want. He'll get your listing set up.
             </p>
-            <Btn href="mailto:admin@yetigroove.com?subject=Founding Member Listing" variant="sunset" style={{ whiteSpace: "nowrap" }}>
-              Tell Daryl I'm In →
+            <Btn href="mailto:admin@yetigroove.com?subject=Business Listing — Early Rate" variant="sunset" style={{ whiteSpace: "nowrap" }}>
+              Start My Listing →
             </Btn>
           </FadeIn>
         </div>
