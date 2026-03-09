@@ -7751,16 +7751,41 @@ function WinePassportWidget({ stamped, villageVenues, trailVenues }) {
   );
 }
 
+function StarRow({ label, required, value, onChange }) {
+  const [hover, setHover] = useState(0);
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
+      <div style={{ width: 110, fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase', color: C.textMuted, flexShrink: 0 }}>
+        {label}{required && <span style={{ color: C.sunset }}> *</span>}
+      </div>
+      <div style={{ display: 'flex', gap: 2 }}>
+        {[1,2,3,4,5].map(s => (
+          <button
+            key={s}
+            onClick={() => onChange(s === value ? 0 : s)}
+            onMouseEnter={() => setHover(s)}
+            onMouseLeave={() => setHover(0)}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 24, padding: '1px 2px', color: s <= (hover || value) ? C.sunset : C.sand, transition: 'color 0.1s' }}
+          >★</button>
+        ))}
+      </div>
+      {!required && value === 0 && <span style={{ fontSize: 11, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>optional</span>}
+    </div>
+  );
+}
+
 function WineReviewModal({ venue, accent, onSuccess, onClose }) {
   const [rating, setRating] = useState(0);
-  const [hoverRating, setHoverRating] = useState(0);
+  const [service, setService] = useState(0);
+  const [atmosphere, setAtmosphere] = useState(0);
+  const [value, setValue] = useState(0);
   const [wineTried, setWineTried] = useState('');
   const [note, setNote] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
   const handleSubmit = async () => {
-    if (!rating) { setError('Please select a star rating.'); return; }
+    if (!rating) { setError('Please rate the wine quality.'); return; }
     if (!wineTried.trim()) { setError('Please tell us what you tried.'); return; }
     setSubmitting(true);
     setError('');
@@ -7768,7 +7793,15 @@ function WineReviewModal({ venue, accent, onSuccess, onClose }) {
       const res = await fetch('/api/winery-ratings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ venue, rating, wineTried: wineTried.trim(), note: note.trim(), sessionId: getWineSessionId() }),
+        body: JSON.stringify({
+          venue, rating,
+          service:    service    || undefined,
+          atmosphere: atmosphere || undefined,
+          value:      value      || undefined,
+          wineTried: wineTried.trim(),
+          note: note.trim(),
+          sessionId: getWineSessionId(),
+        }),
       });
       if (!res.ok) throw new Error('Failed');
       onSuccess();
@@ -7783,25 +7816,17 @@ function WineReviewModal({ venue, accent, onSuccess, onClose }) {
       onClick={e => e.stopPropagation()}
       style={{ position: 'fixed', inset: 0, background: 'rgba(10,18,24,0.7)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}
     >
-      <div style={{ background: C.warmWhite, borderRadius: 20, width: '100%', maxWidth: 480, boxShadow: '0 24px 80px rgba(0,0,0,0.3)', overflow: 'hidden' }}>
+      <div style={{ background: C.warmWhite, borderRadius: 20, width: '100%', maxWidth: 480, boxShadow: '0 24px 80px rgba(0,0,0,0.3)', overflow: 'hidden', maxHeight: '90vh', overflowY: 'auto' }}>
         <div style={{ height: 5, background: accent }} />
         <div style={{ padding: '28px 32px 32px' }}>
           <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 19, fontWeight: 400, color: C.text, marginBottom: 4 }}>Log Your Visit</div>
           <div style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 24 }}>{venue}</div>
 
-          <div style={{ marginBottom: 20 }}>
-            <div style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 10 }}>Your Rating</div>
-            <div style={{ display: 'flex', gap: 4 }}>
-              {[1,2,3,4,5].map(s => (
-                <button
-                  key={s}
-                  onClick={() => setRating(s)}
-                  onMouseEnter={() => setHoverRating(s)}
-                  onMouseLeave={() => setHoverRating(0)}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 30, padding: '2px 3px', color: s <= (hoverRating || rating) ? C.sunset : C.sand, transition: 'color 0.12s' }}
-                >★</button>
-              ))}
-            </div>
+          <div style={{ marginBottom: 20, padding: '16px 16px 6px', background: C.cream, borderRadius: 12, border: `1px solid ${C.sand}` }}>
+            <StarRow label="Wine Quality" required value={rating}     onChange={setRating} />
+            <StarRow label="Service"      required={false} value={service}     onChange={setService} />
+            <StarRow label="Atmosphere"   required={false} value={atmosphere}  onChange={setAtmosphere} />
+            <StarRow label="Value"        required={false} value={value}       onChange={setValue} />
           </div>
 
           <div style={{ marginBottom: 16 }}>
@@ -7846,11 +7871,22 @@ function WineReviewModal({ venue, accent, onSuccess, onClose }) {
   );
 }
 
-function WineryCard({ v, i, isStamped, onStamp, venueRating }) {
+const venueSlug = name => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+
+function WineryCard({ v, i, isStamped, onStamp, venueRating, autoOpen }) {
   const [showModal, setShowModal] = useState(false);
+  const cardRef = useRef(null);
+  useEffect(() => {
+    if (autoOpen && onStamp && !isStamped) {
+      const t1 = setTimeout(() => cardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
+      const t2 = setTimeout(() => setShowModal(true), 900);
+      return () => { clearTimeout(t1); clearTimeout(t2); };
+    }
+  }, [autoOpen]);
   return (
     <FadeIn delay={i * 80} direction={i % 2 === 0 ? "left" : "right"}>
       <div
+        ref={cardRef}
         onClick={() => v.website && window.open(v.website, "_blank")}
         style={{
           background: C.warmWhite,
@@ -8090,6 +8126,7 @@ function WineriesVenueSection() {
   const extendedVenues = WINERY_VENUES.filter(v => v.section === "extended");
   const { stamped, toggleStamp, isStamped } = useWinePassport();
   const { ratings } = useWineryRatings();
+  const stampSlug = new URLSearchParams(window.location.search).get('stamp') || '';
 
   return (
     <section style={{ background: C.cream, padding: "100px 24px" }}>
@@ -8106,7 +8143,7 @@ function WineriesVenueSection() {
           </p>
         </FadeIn>
         <div style={{ display: "flex", flexDirection: "column", gap: 24, marginBottom: 80 }}>
-          {villageVenues.map((v, i) => <WineryCard key={i} v={v} i={i} isStamped={isStamped(v.name)} onStamp={toggleStamp} venueRating={ratings[v.name]} />)}
+          {villageVenues.map((v, i) => <WineryCard key={i} v={v} i={i} isStamped={isStamped(v.name)} onStamp={toggleStamp} venueRating={ratings[v.name]} autoOpen={stampSlug === venueSlug(v.name)} />)}
         </div>
 
         {/* The Trail */}
@@ -8118,7 +8155,7 @@ function WineriesVenueSection() {
           </p>
         </FadeIn>
         <div style={{ display: "flex", flexDirection: "column", gap: 24, marginBottom: 80 }}>
-          {trailVenues.map((v, i) => <WineryCard key={i} v={v} i={i} isStamped={isStamped(v.name)} onStamp={toggleStamp} venueRating={ratings[v.name]} />)}
+          {trailVenues.map((v, i) => <WineryCard key={i} v={v} i={i} isStamped={isStamped(v.name)} onStamp={toggleStamp} venueRating={ratings[v.name]} autoOpen={stampSlug === venueSlug(v.name)} />)}
         </div>
 
         {/* Worth the Drive */}

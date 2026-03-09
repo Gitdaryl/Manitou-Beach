@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'POST') {
-    const { venue, rating, wineTried, note, sessionId } = req.body || {};
+    const { venue, rating, service, atmosphere, value, wineTried, note, sessionId } = req.body || {};
 
     if (!venue || !rating || !wineTried) {
       return res.status(400).json({ error: 'venue, rating, and wineTried are required' });
@@ -21,6 +21,19 @@ export default async function handler(req, res) {
 
     const today = new Date().toISOString().split('T')[0];
 
+    const props = {
+      'Name':      { title:     [{ text: { content: `${venue} — ${today}` } }] },
+      'Venue':     { select:    { name: venue } },
+      'Rating':    { number:    Number(rating) },
+      'WineTried': { rich_text: [{ text: { content: String(wineTried).slice(0, 2000) } }] },
+      'Note':      { rich_text: [{ text: { content: String(note || '').slice(0, 2000) } }] },
+      'SessionID': { rich_text: [{ text: { content: String(sessionId || '') } }] },
+      'Date':      { date:      { start: today } },
+    };
+    if (service   && service   >= 1 && service   <= 5) props['Service']    = { number: Number(service) };
+    if (atmosphere && atmosphere >= 1 && atmosphere <= 5) props['Atmosphere'] = { number: Number(atmosphere) };
+    if (value     && value     >= 1 && value     <= 5) props['Value']      = { number: Number(value) };
+
     const response = await fetch('https://api.notion.com/v1/pages', {
       method: 'POST',
       headers: {
@@ -28,18 +41,7 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
         'Notion-Version': '2022-06-28',
       },
-      body: JSON.stringify({
-        parent: { database_id: DB_ID },
-        properties: {
-          'Name':      { title:     [{ text: { content: `${venue} — ${today}` } }] },
-          'Venue':     { select:    { name: venue } },
-          'Rating':    { number:    Number(rating) },
-          'WineTried': { rich_text: [{ text: { content: String(wineTried).slice(0, 2000) } }] },
-          'Note':      { rich_text: [{ text: { content: String(note || '').slice(0, 2000) } }] },
-          'SessionID': { rich_text: [{ text: { content: String(sessionId || '') } }] },
-          'Date':      { date:      { start: today } },
-        },
-      }),
+      body: JSON.stringify({ parent: { database_id: DB_ID }, properties: props }),
     });
 
     if (!response.ok) {
@@ -85,21 +87,34 @@ export default async function handler(req, res) {
       return res.status(200).json({ ratings: {} });
     }
 
-    // Aggregate by venue: { avg, count }
+    // Aggregate by venue: { avg, count, service_avg, atmosphere_avg, value_avg }
     const agg = {};
     for (const page of allResults) {
       const p = page.properties;
       const venue = p['Venue']?.select?.name;
       const rating = p['Rating']?.number;
       if (!venue || !rating) continue;
-      if (!agg[venue]) agg[venue] = { total: 0, count: 0 };
+      if (!agg[venue]) agg[venue] = { total: 0, count: 0, svcTotal: 0, svcCount: 0, atmTotal: 0, atmCount: 0, valTotal: 0, valCount: 0 };
       agg[venue].total += rating;
       agg[venue].count += 1;
+      const svc = p['Service']?.number;
+      const atm = p['Atmosphere']?.number;
+      const val = p['Value']?.number;
+      if (svc) { agg[venue].svcTotal += svc; agg[venue].svcCount += 1; }
+      if (atm) { agg[venue].atmTotal += atm; agg[venue].atmCount += 1; }
+      if (val) { agg[venue].valTotal += val; agg[venue].valCount += 1; }
     }
 
     const ratings = {};
-    for (const [venue, { total, count }] of Object.entries(agg)) {
-      ratings[venue] = { avg: Math.round((total / count) * 10) / 10, count };
+    const rnd = (t, c) => c > 0 ? Math.round((t / c) * 10) / 10 : null;
+    for (const [venue, d] of Object.entries(agg)) {
+      ratings[venue] = {
+        avg:            rnd(d.total, d.count),
+        count:          d.count,
+        service_avg:    rnd(d.svcTotal, d.svcCount),
+        atmosphere_avg: rnd(d.atmTotal, d.atmCount),
+        value_avg:      rnd(d.valTotal, d.valCount),
+      };
     }
 
     return res.status(200).json({ ratings });
