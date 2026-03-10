@@ -55,9 +55,11 @@ async function handleGet(req, res) {
         const p = page.properties;
         const name = p['Name']?.title?.[0]?.text?.content || '';
         if (!name) return null;
+        const tierRaw = p['Tier']?.select?.name || 'Basic';
         return {
           id: page.id,
           name,
+          tier: tierRaw.toLowerCase() === 'featured' ? 'featured' : 'basic',
           slug: p['Slug']?.rich_text?.[0]?.text?.content || '',
           description: p['Description']?.rich_text?.[0]?.text?.content || '',
           phone: p['Phone']?.phone_number || '',
@@ -68,9 +70,15 @@ async function handleGet(req, res) {
           lng: p['Lng']?.number ?? null,
           locationNote: p['Location Note']?.rich_text?.[0]?.text?.content || '',
           lastCheckin: p['Last Checkin']?.date?.start || null,
+          scheduleNote: p['Schedule Note']?.rich_text?.[0]?.text?.content || '',
         };
       })
-      .filter(Boolean);
+      .filter(Boolean)
+      .sort((a, b) => {
+        // Featured trucks first, then basic; alpha within each group
+        if (a.tier === b.tier) return a.name.localeCompare(b.name);
+        return a.tier === 'featured' ? -1 : 1;
+      });
 
     return res.status(200).json({ trucks });
   } catch (err) {

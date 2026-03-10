@@ -37,6 +37,10 @@ const LISTING_TIERS = {
     name: 'Premium Listing — Manitou Beach Directory',
     description: 'Full-width banner, large logo, top-of-directory placement, email contact button.',
   },
+  food_truck_founding: {
+    name: 'Founding Food Truck — Manitou Beach Food Truck Locator',
+    description: 'Live map pin, personal check-in URL, newsletter shoutout, Featured badge, priority placement.',
+  },
 };
 
 export default async function handler(req, res) {
@@ -85,8 +89,12 @@ export default async function handler(req, res) {
           quantity: 1,
         }],
         metadata: { businessName, tier, type: 'listing', ...(duration && { duration: String(duration) + ' months' }) },
-        success_url: `${baseUrl}/?listed=true&business=${encodeURIComponent(businessName)}`,
-        cancel_url: `${baseUrl}/#listing-tiers`,
+        success_url: tier === 'food_truck_founding'
+          ? `${baseUrl}/food-trucks?listed=true&truck=${encodeURIComponent(businessName)}`
+          : `${baseUrl}/?listed=true&business=${encodeURIComponent(businessName)}`,
+        cancel_url: tier === 'food_truck_founding'
+          ? `${baseUrl}/food-truck-partner#food-truck-signup`
+          : `${baseUrl}/#listing-tiers`,
       });
       return res.status(200).json({ url: session.url });
     } catch (err) {
