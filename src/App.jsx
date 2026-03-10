@@ -14612,8 +14612,8 @@ function BuildPage() {
 // 🔒  /founding — FOUNDING MEMBER PAGE (private link, friend outreach)
 // ============================================================
 const FOUNDING_TIERS = [
-  { name: "Enhanced", price: 9,  perks: ["Business listing on Manitou Beach", "Map pin on /discover", "Category placement", "Contact info + description", "Link to your website"] },
-  { name: "Featured", price: 23, highlight: true, perks: ["Everything in Enhanced", "Priority placement in category", "Logo displayed on listing", "Newsletter mention eligibility", "Highlighted card styling"] },
+  { name: "Enhanced", price: 9,  perks: ["Business listing on Manitou Beach", "Map pin on /discover", "Category placement", "Contact info + description", "Link to your website", "Upgrade to Featured or Premium at founding rates — any time"] },
+  { name: "Featured", price: 23, highlight: true, perks: ["Everything in Enhanced", "Priority placement in category", "Logo displayed on listing", "Newsletter mention eligibility", "Highlighted card styling", "Upgrade to Premium at founding rates — any time"] },
   { name: "Premium",  price: 43, perks: ["Everything in Featured", "Top of category, always", "Monthly newsletter feature eligible", "First call for sponsorship spots", "Founding badge on listing"] },
 ];
 function FoundingListingDemo() {
@@ -14902,7 +14902,64 @@ function FoundingPage() {
         </div>
       </section>
 
-      <WaveDivider topColor={C.cream} bottomColor={C.night} />
+      <WaveDivider topColor={C.cream} bottomColor={C.dusk} />
+
+      {/* ── FOUNDERS BONUS ── */}
+      <section style={{ background: C.dusk, padding: "80px 24px" }}>
+        <div style={{ maxWidth: 960, margin: "0 auto" }}>
+          <div style={{ display: "flex", gap: 56, alignItems: "center", flexWrap: "wrap" }}>
+            <FadeIn delay={120} style={{ flex: "0 0 auto", textAlign: "center" }}>
+              <img src="/images/community-illustration.png" alt="" aria-hidden="true" style={{ width: "min(260px, 65vw)", opacity: 0.92 }} />
+            </FadeIn>
+            <FadeIn style={{ flex: "1 1 300px" }}>
+              <SectionLabel light>Founders Bonus</SectionLabel>
+              <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 3.5vw, 36px)", fontWeight: 400, color: C.cream, margin: "16px 0 20px", lineHeight: 1.25 }}>
+                Your founding rate follows you<br /><em style={{ color: C.sunsetLight }}>all the way up.</em>
+              </h2>
+              <p style={{ fontSize: 15, color: "rgba(255,255,255,0.55)", lineHeight: 1.85, marginBottom: 28 }}>
+                Start at Enhanced today. If you ever want a Featured or Premium listing — for a busy summer season, Tip-Up Festival, a grand opening — you upgrade at your original founding rate, not whatever the market rate is at that time. That protection follows you through every tier, permanently.
+              </p>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {[
+                  { icon: "🔒", text: "Upgrade to any higher tier at your founding rate — whenever you want, for as long as you're listed" },
+                  { icon: "📅", text: "Useful for seasonal peaks: Tip-Up Festival, July 4th, Memorial Day, summer opening weekend" },
+                  { icon: "⚡", text: "Founding rate access closes once early spots fill — first in, first protected. No exceptions after." },
+                ].map((item, i) => (
+                  <FadeIn key={i} delay={i * 80 + 200}>
+                    <div style={{ display: "flex", gap: 14, alignItems: "flex-start", background: "rgba(255,255,255,0.05)", borderRadius: 10, padding: "14px 16px", border: "1px solid rgba(255,255,255,0.08)" }}>
+                      <span style={{ fontSize: 18, flexShrink: 0 }}>{item.icon}</span>
+                      <span style={{ fontSize: 13, color: "rgba(255,255,255,0.6)", lineHeight: 1.75, fontFamily: "'Libre Franklin', sans-serif" }}>{item.text}</span>
+                    </div>
+                  </FadeIn>
+                ))}
+              </div>
+              <div style={{ marginTop: 24 }}>
+                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: "rgba(255,255,255,0.28)" }}>No catch. Just the benefit of moving early.</div>
+              </div>
+            </FadeIn>
+          </div>
+        </div>
+      </section>
+
+      <WaveDivider topColor={C.dusk} bottomColor={C.warmWhite} flip />
+
+      {/* ── NEWSLETTER INVITE ── */}
+      <section style={{ background: C.warmWhite, padding: "64px 24px", textAlign: "center" }}>
+        <div style={{ maxWidth: 600, margin: "0 auto" }}>
+          <FadeIn>
+            <SectionLabel style={{ textAlign: "center", display: "block" }}>While You're Here</SectionLabel>
+            <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 3.5vw, 34px)", fontWeight: 400, color: C.dusk, margin: "16px 0 16px", lineHeight: 1.25 }}>
+              Join The Manitou Dispatch.
+            </h2>
+            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 480, margin: "0 auto 32px" }}>
+              The community newsletter for Devils Lake and Manitou Beach. Events, local news, food truck locations, wine trail updates, and what's happening on the water — delivered to people who actually live here or love it here.
+            </p>
+          </FadeIn>
+          <NewsletterInline />
+        </div>
+      </section>
+
+      <WaveDivider topColor={C.warmWhite} bottomColor={C.night} />
 
       {/* ── CTA ── */}
       <section style={{ background: C.night, padding: "80px 24px 110px", textAlign: "center" }}>
