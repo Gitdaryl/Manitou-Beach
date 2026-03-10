@@ -14787,7 +14787,7 @@ function FoundingPage() {
         <div style={{ maxWidth: 760, margin: "0 auto" }}>
           <div style={{ display: "flex", gap: 48, alignItems: "center", marginBottom: 40, flexWrap: "wrap-reverse" }}>
             <FadeIn delay={120} style={{ flex: "0 0 auto", textAlign: "center" }}>
-              <img src="/images/founding-rate-illustration.png" alt="" aria-hidden="true" style={{ width: "min(340px, 70vw)", opacity: 0.92 }} />
+              <img src="/images/founding-rate-illustration.png" alt="" aria-hidden="true" style={{ width: "min(420px, 80vw)", opacity: 0.92 }} />
             </FadeIn>
             <FadeIn style={{ flex: "1 1 260px" }}>
               <SectionLabel>The Formula</SectionLabel>
@@ -15145,7 +15145,7 @@ function FoodTruckPartnerPage() {
               </p>
             </FadeIn>
             <FadeIn delay={120} style={{ flex: "0 0 auto", textAlign: "center" }}>
-              <img src="/images/community-illustration.png" alt="" aria-hidden="true" style={{ width: "min(280px, 70vw)", opacity: 0.93 }} />
+              <img src="/images/community-illustration.png" alt="" aria-hidden="true" style={{ width: "min(360px, 78vw)", opacity: 0.93 }} />
             </FadeIn>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 20 }}>
@@ -15856,7 +15856,7 @@ function WinePartnerPage() {
               The 2026 Manitou Beach<br /><em style={{ color: C.sunsetLight }}>Wine Trail Awards</em>
             </h2>
             <div style={{ margin: "0 0 24px" }}>
-              <img src="/images/award-illustration.png" alt="" aria-hidden="true" style={{ width: "min(480px, 90vw)", opacity: 0.93 }} />
+              <img src="/images/award-illustration.png" alt="" aria-hidden="true" style={{ width: "min(620px, 92vw)", opacity: 0.93 }} />
             </div>
             <p style={{ fontSize: 15, color: "rgba(255,255,255,0.48)", lineHeight: 1.85, maxWidth: 520, margin: "0 auto 44px" }}>
               At the end of the season, the community has voted. The top-rated venues in each category receive a framed plaque — designed, printed, and delivered by us. Hang it. Post it. It's yours.
