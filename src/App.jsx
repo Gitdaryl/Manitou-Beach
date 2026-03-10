@@ -15206,7 +15206,7 @@ const WINE_PARTNER_HOW = [
 ];
 const WINE_PARTNER_GETS = [
   { icon: "📊", title: "Public Scorecard", copy: "Live community ratings across four dimensions — Wine Quality, Service, Atmosphere, Value. Visible to anyone exploring the trail on Manitou Beach." },
-  { icon: "📄", title: "QR Kit", copy: "Printed cards for your tasting room counter or table. Daryl delivers them. You place one out. That's the full setup." },
+  { icon: "📄", title: "Print Kit", copy: "100 printed stamp cards (6×4) for your counter plus a display insert. $49 one-time covers design, print, and delivery. Refills are $29 per 100 cards when you run out." },
   { icon: "🏆", title: "Season-End Award", copy: "At the end of 2026, top-rated venues in each category receive a plaque — something to hang on your wall, post online, and be proud of." },
   { icon: "👥", title: "Community Visibility", copy: "Your listing on Manitou Beach, seen by the region's most engaged local audience — visitors, locals, and seasonal residents all in one place." },
 ];
@@ -15449,8 +15449,212 @@ const WINE_PARTNER_FRICTIONLESS = [
   { label: "No hidden cost later", sub: "If that ever changes, you'll hear it from us first." },
 ];
 
+// plan id → Stripe behaviour: annual_bundle = one-time $279, monthly = subscription $29/mo, refill = one-time $29, digital = free
+const WINE_PARTNER_PLANS = [
+  {
+    id: 'annual_bundle',
+    label: 'Annual Partner + Kit',
+    price: 279, unit: 'per year', badge: 'Best Value',
+    saving: 'Save $118 vs monthly',
+    desc: 'Full year of trail participation + 100 stamp cards, counter display, QR setup, delivered. Everything you need, one payment.',
+    mode: 'one-time',
+  },
+  {
+    id: 'monthly',
+    label: 'Monthly Partner',
+    price: 29, unit: 'per month', badge: null,
+    saving: null,
+    desc: 'Full trail participation month-to-month. Starter kit available as a separate add-on ($49). Cancel anytime.',
+    mode: 'subscription',
+  },
+  {
+    id: 'refill',
+    label: 'Card Refill',
+    price: 29, unit: 'per 100 cards', badge: null,
+    saving: 'Existing partners only',
+    desc: 'Same card design as your original kit. No counter display needed. Order anytime you run low.',
+    mode: 'one-time',
+  },
+  {
+    id: 'digital',
+    label: 'Digital Only',
+    price: 0, unit: 'always free', badge: null,
+    saving: null,
+    desc: 'Scorecard, community ratings, map pin, awards eligibility — no printed materials.',
+    mode: 'free',
+  },
+];
+
+function WinePartnerSignupSection() {
+  const [plan, setPlan] = useState('annual_bundle');
+  const [venueName, setVenueName] = useState('');
+  const [contactName, setContactName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [note, setNote] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [done, setDone] = useState(false);
+  const [error, setError] = useState('');
+
+  const selected = WINE_PARTNER_PLANS.find(p => p.id === plan);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!venueName.trim() || !contactName.trim() || !email.trim()) {
+      setError('Venue name, your name, and email are required.');
+      return;
+    }
+    setSubmitting(true);
+    setError('');
+    try {
+      const res = await fetch('/api/wine-partner-signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ venueName: venueName.trim(), contactName: contactName.trim(), email: email.trim(), phone: phone.trim(), plan, note: note.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed');
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setDone(true);
+      }
+    } catch (err) {
+      setError(err.message || 'Something went wrong. Please email admin@yetigroove.com directly.');
+      setSubmitting(false);
+    }
+  };
+
+  const fieldStyle = {
+    width: '100%', padding: '11px 14px', borderRadius: 10,
+    border: `1.5px solid ${C.sand}`, fontFamily: "'Libre Franklin', sans-serif",
+    fontSize: 15, color: C.text, background: '#fff', outline: 'none', boxSizing: 'border-box',
+  };
+  const labelStyle = {
+    fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700,
+    letterSpacing: 1, textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', display: 'block', marginBottom: 8,
+  };
+
+  if (done) {
+    return (
+      <FadeIn>
+        <div style={{ textAlign: 'center', padding: '52px 32px' }}>
+          <div style={{ fontSize: 48, marginBottom: 16 }}>🍷</div>
+          <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, color: C.cream, marginBottom: 12 }}>You're on the trail.</div>
+          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 15, lineHeight: 1.7, maxWidth: 380, margin: '0 auto 28px' }}>
+            Daryl will be in touch within a day or two to confirm your enrollment and coordinate delivery.
+          </p>
+          <Btn href="/wineries" variant="outline" style={{ whiteSpace: 'nowrap' }}>See the Wine Trail →</Btn>
+        </div>
+      </FadeIn>
+    );
+  }
+
+  return (
+    <FadeIn>
+      <form onSubmit={handleSubmit} noValidate>
+        {/* Plan selection */}
+        <div style={{ marginBottom: 32 }}>
+          <label style={labelStyle}>Choose your plan</label>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {WINE_PARTNER_PLANS.map((p) => (
+              <div
+                key={p.id}
+                onClick={() => setPlan(p.id)}
+                style={{
+                  border: `2px solid ${plan === p.id ? C.sunset : 'rgba(255,255,255,0.12)'}`,
+                  borderRadius: 14, padding: '16px 18px', cursor: 'pointer',
+                  background: plan === p.id ? 'rgba(212,132,90,0.1)' : 'rgba(255,255,255,0.04)',
+                  transition: 'all 0.2s', position: 'relative',
+                }}
+              >
+                {p.badge && (
+                  <div style={{ position: 'absolute', top: -10, right: 14, background: C.sunset, color: C.cream, fontSize: 9, fontWeight: 700, letterSpacing: 1.2, textTransform: 'uppercase', padding: '3px 10px', borderRadius: 20 }}>
+                    {p.badge}
+                  </div>
+                )}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <div style={{ width: 18, height: 18, borderRadius: '50%', border: `2px solid ${plan === p.id ? C.sunset : 'rgba(255,255,255,0.2)'}`, background: plan === p.id ? C.sunset : 'transparent', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
+                    {plan === p.id && <div style={{ width: 6, height: 6, borderRadius: '50%', background: C.cream }} />}
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, flexWrap: 'wrap' }}>
+                      <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: C.cream }}>{p.label}</span>
+                      <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 19, fontWeight: 700, color: p.price === 0 ? C.sage : C.sunset }}>
+                        {p.price === 0 ? 'Free' : `$${p.price}`}
+                      </span>
+                      <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>{p.unit}</span>
+                      {p.saving && <span style={{ fontSize: 10, color: C.sage, fontWeight: 700, letterSpacing: 0.5 }}>{p.saving}</span>}
+                    </div>
+                    <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', marginTop: 3, lineHeight: 1.6 }}>{p.desc}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Contact fields */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 14 }}>
+          <div>
+            <label style={labelStyle}>Venue Name *</label>
+            <input type="text" value={venueName} onChange={e => setVenueName(e.target.value)} placeholder="Faust House, Ang & Co, ..." style={fieldStyle} />
+          </div>
+          <div>
+            <label style={labelStyle}>Your Name *</label>
+            <input type="text" value={contactName} onChange={e => setContactName(e.target.value)} placeholder="First + last" style={fieldStyle} />
+          </div>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 14 }}>
+          <div>
+            <label style={labelStyle}>Email *</label>
+            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="best way to reach you" style={fieldStyle} />
+          </div>
+          <div>
+            <label style={labelStyle}>Phone <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional)</span></label>
+            <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="(555) 555-5555" style={fieldStyle} />
+          </div>
+        </div>
+        <div style={{ marginBottom: 28 }}>
+          <label style={labelStyle}>Anything else? <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional)</span></label>
+          <textarea value={note} onChange={e => setNote(e.target.value)} placeholder={plan === 'annual_bundle' || plan === 'refill' ? "Delivery address, questions, anything helpful..." : "Questions, ideas..."} rows={2} style={{ ...fieldStyle, resize: 'none' }} />
+        </div>
+
+        {error && <div style={{ fontSize: 13, color: '#e07070', marginBottom: 16, fontFamily: "'Libre Franklin', sans-serif" }}>{error}</div>}
+
+        <button
+          type="submit"
+          disabled={submitting}
+          style={{
+            width: '100%', padding: '14px 24px', borderRadius: 28,
+            background: plan === 'digital' ? C.sage : C.sunset,
+            color: C.cream, border: 'none',
+            fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700,
+            letterSpacing: 1.5, textTransform: 'uppercase',
+            cursor: submitting ? 'default' : 'pointer', opacity: submitting ? 0.7 : 1, transition: 'opacity 0.2s',
+          }}
+        >
+          {submitting ? 'One moment...' : plan === 'digital' ? 'Enroll Free →' : plan === 'annual_bundle' ? 'Join the Trail — $279 →' : plan === 'monthly' ? 'Start Monthly — $29/mo →' : 'Order Refill — $29 →'}
+        </button>
+
+        {selected && selected.mode === 'subscription' && (
+          <p style={{ marginTop: 14, fontSize: 12, color: 'rgba(255,255,255,0.25)', textAlign: 'center', lineHeight: 1.6, fontFamily: "'Libre Franklin', sans-serif" }}>
+            Recurring monthly charge via Stripe. Cancel anytime — no penalty.
+          </p>
+        )}
+        {selected && selected.mode === 'one-time' && plan !== 'digital' && (
+          <p style={{ marginTop: 14, fontSize: 12, color: 'rgba(255,255,255,0.25)', textAlign: 'center', lineHeight: 1.6, fontFamily: "'Libre Franklin', sans-serif" }}>
+            Secure Stripe checkout. One-time charge — no subscription attached.
+          </p>
+        )}
+      </form>
+    </FadeIn>
+  );
+}
+
 function WinePartnerPage() {
   const subScrollTo = (id) => { window.location.href = "/#" + id; };
+  const joined = new URLSearchParams(window.location.search).get('joined') === '1';
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
       <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -15477,11 +15681,11 @@ function WinePartnerPage() {
           <p style={{ fontSize: 16, color: "rgba(255,255,255,0.5)", maxWidth: 520, margin: "0 auto 40px", lineHeight: 1.85 }}>
             Manitou Beach visitors are already discovering your tasting room. Now they have a way to tell the community what they found — and at the end of the season, the best venues get recognized for it.
           </p>
-          <Btn href="mailto:admin@yetigroove.com?subject=QR Kit Request" variant="sunset" style={{ whiteSpace: "nowrap" }}>
-            Request Your QR Kit →
+          <Btn href="#signup" variant="sunset" style={{ whiteSpace: "nowrap" }}>
+            Join the Trail →
           </Btn>
           <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: "rgba(255,255,255,0.28)", marginTop: 14 }}>
-            Free. No setup. We deliver.
+            From $29/mo · Annual bundle $279 · Digital free
           </div>
         </FadeIn>
       </section>
@@ -15578,56 +15782,119 @@ function WinePartnerPage() {
 
       <WaveDivider topColor={C.dusk} bottomColor={C.cream} flip />
 
-      {/* ── ZERO FRICTION ── */}
-      <section style={{ background: C.cream, padding: "80px 24px", textAlign: "center" }}>
-        <div style={{ maxWidth: 680, margin: "0 auto" }}>
+      {/* ── PRICING ── */}
+      <section style={{ background: C.cream, padding: "80px 24px" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <FadeIn>
-            <SectionLabel style={{ textAlign: "center", display: "block" }}>For the Record</SectionLabel>
-            <SectionTitle center>What this costs you.</SectionTitle>
-            <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(56px, 10vw, 96px)", fontWeight: 700, color: C.sunset, margin: "8px 0 12px", lineHeight: 1 }}>$0</div>
-            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 460, margin: "0 auto 44px" }}>
-              No subscription. No platform fee. No dashboard to log into. You're already on the trail — we just want to help you get recognized for what you're building.
+            <SectionLabel style={{ textAlign: "center", display: "block" }}>Pricing</SectionLabel>
+            <SectionTitle center>Simple, transparent rates.</SectionTitle>
+            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 500, margin: "12px auto 52px", textAlign: "center" }}>
+              Village shops on a basic listing pay $9/month for a directory card. You get a full branded showcase, a gamified loyalty program, physical materials, and award recognition. The price reflects that.
             </p>
           </FadeIn>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 14, textAlign: "left", maxWidth: 700, margin: "0 auto" }}>
-            {WINE_PARTNER_FRICTIONLESS.map((item, i) => (
-              <FadeIn key={item.label} delay={i * 60}>
-                <div style={{ background: C.warmWhite, borderRadius: 12, padding: "20px 20px", border: `1px solid ${C.sand}` }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: C.sageDark, marginBottom: 4 }}>✓ {item.label}</div>
-                  <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.65 }}>{item.sub}</div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 20 }}>
+            {/* Annual Bundle — hero */}
+            <FadeIn>
+              <div style={{ background: C.dusk, borderRadius: 16, padding: "32px 28px", border: `2px solid ${C.sunset}`, height: "100%", boxSizing: "border-box", position: "relative" }}>
+                <div style={{ position: "absolute", top: -11, right: 18, background: C.sunset, color: C.cream, fontSize: 9, fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", padding: "3px 11px", borderRadius: 20 }}>Best Value</div>
+                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 14, color: C.sunsetLight, fontWeight: 700, marginBottom: 10, letterSpacing: 0.5 }}>Annual Partner + Kit</div>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 36, fontWeight: 700, color: C.cream, lineHeight: 1, marginBottom: 2 }}>$279</div>
+                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginBottom: 6 }}>per year — save $118 vs monthly</div>
+                <div style={{ fontSize: 11, color: C.sage, fontWeight: 700, marginBottom: 22, letterSpacing: 0.5 }}>Kit included — nothing else to pay</div>
+                <ul style={{ fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 2.1, paddingLeft: 18, margin: 0 }}>
+                  <li>Full trail listing + scorecard</li>
+                  <li>Passport gamification + map</li>
+                  <li>Awards eligibility</li>
+                  <li>100 stamp cards (6×4)</li>
+                  <li>Counter display + QR setup</li>
+                  <li>Delivered to your door</li>
+                </ul>
+                <div style={{ marginTop: 24 }}>
+                  <Btn href="#signup" variant="sunset" small style={{ whiteSpace: "nowrap" }}>Start Here →</Btn>
                 </div>
-              </FadeIn>
-            ))}
+              </div>
+            </FadeIn>
+            {/* Monthly */}
+            <FadeIn delay={80}>
+              <div style={{ background: C.warmWhite, borderRadius: 16, padding: "32px 28px", border: `1px solid ${C.sand}`, borderTop: `3px solid ${C.lakeBlue}`, height: "100%", boxSizing: "border-box" }}>
+                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 14, color: C.lakeBlue, fontWeight: 700, marginBottom: 10, letterSpacing: 0.5 }}>Monthly Partner</div>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 36, fontWeight: 700, color: C.lakeBlue, lineHeight: 1, marginBottom: 2 }}>$29</div>
+                <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 22 }}>per month · cancel anytime</div>
+                <ul style={{ fontSize: 13, color: C.textLight, lineHeight: 2.1, paddingLeft: 18, margin: 0 }}>
+                  <li>Full trail listing + scorecard</li>
+                  <li>Passport gamification + map</li>
+                  <li>Awards eligibility</li>
+                  <li>Starter kit add-on: $49</li>
+                  <li>Refill packs: $29/100 cards</li>
+                </ul>
+              </div>
+            </FadeIn>
+            {/* Refill */}
+            <FadeIn delay={160}>
+              <div style={{ background: C.warmWhite, borderRadius: 16, padding: "32px 28px", border: `1px solid ${C.sand}`, borderTop: `3px solid ${C.driftwood}`, height: "100%", boxSizing: "border-box" }}>
+                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 14, color: C.driftwood, fontWeight: 700, marginBottom: 10, letterSpacing: 0.5 }}>Card Refill</div>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 36, fontWeight: 700, color: C.driftwood, lineHeight: 1, marginBottom: 2 }}>$29</div>
+                <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 22 }}>per 100 cards · existing partners</div>
+                <ul style={{ fontSize: 13, color: C.textLight, lineHeight: 2.1, paddingLeft: 18, margin: 0 }}>
+                  <li>Same design as your original</li>
+                  <li>No counter display needed</li>
+                  <li>Order anytime you run low</li>
+                </ul>
+              </div>
+            </FadeIn>
+            {/* Digital */}
+            <FadeIn delay={240}>
+              <div style={{ background: C.warmWhite, borderRadius: 16, padding: "32px 28px", border: `1px solid ${C.sand}`, borderTop: `3px solid ${C.sage}`, height: "100%", boxSizing: "border-box" }}>
+                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 14, color: C.sage, fontWeight: 700, marginBottom: 10, letterSpacing: 0.5 }}>Digital Only</div>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 36, fontWeight: 700, color: C.sage, lineHeight: 1, marginBottom: 2 }}>$0</div>
+                <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 22 }}>always free</div>
+                <ul style={{ fontSize: 13, color: C.textLight, lineHeight: 2.1, paddingLeft: 18, margin: 0 }}>
+                  <li>Community scorecard</li>
+                  <li>Ratings + reviews</li>
+                  <li>Map pin</li>
+                  <li>Awards eligibility</li>
+                  <li>No printed materials</li>
+                </ul>
+              </div>
+            </FadeIn>
           </div>
         </div>
       </section>
 
       <WaveDivider topColor={C.cream} bottomColor={C.night} />
 
-      {/* ── CTA ── */}
-      <section style={{ background: C.night, padding: "80px 24px 110px", textAlign: "center" }}>
-        <div style={{ maxWidth: 560, margin: "0 auto" }}>
+      {/* ── SIGN UP ── */}
+      <section id="signup" style={{ background: C.night, padding: "80px 24px 110px" }}>
+        <div style={{ maxWidth: 640, margin: "0 auto" }}>
           <FadeIn>
-            <SectionLabel light>Get Involved</SectionLabel>
-            <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 40px)", fontWeight: 400, color: C.cream, margin: "16px 0 20px", lineHeight: 1.25 }}>
-              Ready for your QR kit?<br />Or just have thoughts?
+            <SectionLabel light style={{ textAlign: "center", display: "block" }}>Get On the Trail</SectionLabel>
+            <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 40px)", fontWeight: 400, color: C.cream, margin: "16px 0 12px", lineHeight: 1.25, textAlign: "center" }}>
+              Enroll your venue.<br />Choose what you need.
             </h2>
-            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.42)", lineHeight: 1.85, marginBottom: 44 }}>
-              We're building this with venues, not at them. If you want a QR kit for your counter — or if you have ideas that would make this work better — Daryl wants to hear it.
+            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.42)", lineHeight: 1.85, marginBottom: 44, textAlign: "center" }}>
+              Digital enrollment is free. Add a print kit if you want physical cards at your counter. We'll be in touch either way.
             </p>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 20 }}>
-              <Btn href="mailto:admin@yetigroove.com?subject=QR Kit Request" variant="sunset" style={{ whiteSpace: "nowrap" }}>
-                Request Your QR Kit →
-              </Btn>
-              <a
-                href="mailto:admin@yetigroove.com?subject=Wine Trail Feedback"
-                style={{ fontSize: 13, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif", textDecoration: "none", letterSpacing: 0.5, transition: "color 0.2s" }}
-                onMouseEnter={e => e.currentTarget.style.color = "rgba(255,255,255,0.65)"}
-                onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.35)"}
-              >
-                Have a suggestion? →
-              </a>
+          </FadeIn>
+          {joined ? (
+            <FadeIn>
+              <div style={{ textAlign: "center", padding: "60px 32px", background: "rgba(255,255,255,0.04)", borderRadius: 20, border: "1px solid rgba(255,255,255,0.1)" }}>
+                <div style={{ fontSize: 48, marginBottom: 16 }}>🍷</div>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, color: C.cream, marginBottom: 12 }}>You're on the trail.</div>
+                <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 15, lineHeight: 1.7, maxWidth: 380, margin: "0 auto 28px" }}>
+                  Daryl will be in touch within a day or two to confirm your enrollment and coordinate delivery.
+                </p>
+                <Btn href="/wineries" variant="outline" style={{ whiteSpace: "nowrap" }}>See the Wine Trail →</Btn>
+              </div>
+            </FadeIn>
+          ) : (
+            <div style={{ background: "rgba(255,255,255,0.04)", borderRadius: 20, border: "1px solid rgba(255,255,255,0.1)", padding: "36px 32px" }}>
+              <WinePartnerSignupSection />
             </div>
+          )}
+          <FadeIn delay={300}>
+            <p style={{ marginTop: 32, fontSize: 12, color: "rgba(255,255,255,0.2)", textAlign: "center", lineHeight: 1.8, fontFamily: "'Libre Franklin', sans-serif" }}>
+              Questions? <a href="mailto:admin@yetigroove.com?subject=Wine Trail" style={{ color: "rgba(255,255,255,0.35)", textDecoration: "none" }}>Email Daryl directly →</a>
+            </p>
           </FadeIn>
         </div>
       </section>
