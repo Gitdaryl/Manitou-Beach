@@ -1,26 +1,5 @@
 import Stripe from 'stripe';
 
-const PLANS = {
-  annual_bundle: {
-    label: 'Wine Trail Partner — Annual + Starter Kit',
-    amount: 27900,
-    mode: 'payment',
-    desc: 'Full year of trail participation, 100 stamp cards (6×4), counter display insert, QR code setup, delivered.',
-  },
-  monthly: {
-    label: 'Wine Trail Partner — Monthly',
-    amount: 2900,
-    mode: 'subscription',
-    desc: 'Full trail participation — scorecard, passport, map pin, awards eligibility. Cancel anytime.',
-  },
-  refill: {
-    label: 'Wine Trail Card Refill — 100 Cards',
-    amount: 2900,
-    mode: 'payment',
-    desc: 'Refill pack of 100 stamp cards (same design). No counter display needed.',
-  },
-};
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
@@ -29,11 +8,11 @@ export default async function handler(req, res) {
   if (!venueName || !contactName || !email || !email.includes('@')) {
     return res.status(400).json({ error: 'Venue name, your name, and a valid email are required.' });
   }
-  if (!['annual_bundle', 'monthly', 'refill', 'digital'].includes(plan)) {
+  if (!['annual_bundle', 'digital'].includes(plan)) {
     return res.status(400).json({ error: 'Invalid plan selection.' });
   }
 
-  // Always record in Notion regardless of plan
+  // Record every signup in Notion regardless of plan
   try {
     const notesText = [`Wine Partner Signup — Plan: ${plan}`, note || ''].filter(Boolean).join('\n');
     await fetch('https://api.notion.com/v1/pages', {
@@ -58,7 +37,7 @@ export default async function handler(req, res) {
     });
   } catch (err) {
     console.error('wine-partner-signup Notion error:', err.message);
-    // Don't block the payment flow on a Notion failure
+    // Don't block payment flow on Notion failure
   }
 
   // Digital-only — nothing to charge
@@ -66,12 +45,11 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: true });
   }
 
-  // All paid plans → Stripe
+  // Annual bundle → Stripe one-time payment
   if (!process.env.STRIPE_SECRET_KEY) {
-    return res.status(500).json({ error: 'Payment system not configured. Please email admin@yetigroove.com to arrange your partnership.' });
+    return res.status(500).json({ error: 'Payment system not configured. Please email admin@yetigroove.com.' });
   }
 
-  const planConfig = PLANS[plan];
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
   try {
@@ -79,30 +57,21 @@ export default async function handler(req, res) {
       || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null)
       || 'http://localhost:3000';
 
-    const lineItem = planConfig.mode === 'subscription'
-      ? {
-          price_data: {
-            currency: 'usd',
-            product_data: { name: planConfig.label, description: `${planConfig.desc} — ${venueName}` },
-            unit_amount: planConfig.amount,
-            recurring: { interval: 'month' },
-          },
-          quantity: 1,
-        }
-      : {
-          price_data: {
-            currency: 'usd',
-            product_data: { name: planConfig.label, description: `${planConfig.desc} — ${venueName}` },
-            unit_amount: planConfig.amount,
-          },
-          quantity: 1,
-        };
-
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
-      mode: planConfig.mode === 'subscription' ? 'subscription' : 'payment',
+      mode: 'payment',
       customer_email: email,
-      line_items: [lineItem],
+      line_items: [{
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: 'Manitou Beach Wine Trail Partner — 2026 Season',
+            description: `May 22 – October 31, 2026. Includes scorecard, passport gamification, trail map pin, stamp cards, counter display, QR setup, and season-end award. — ${venueName}`,
+          },
+          unit_amount: 27900,
+        },
+        quantity: 1,
+      }],
       metadata: { venueName, contactName, plan, phone: phone || '', note: note || '' },
       success_url: `${baseUrl}/wine-partner?joined=1`,
       cancel_url:  `${baseUrl}/wine-partner#signup`,

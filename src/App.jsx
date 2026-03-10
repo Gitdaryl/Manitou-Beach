@@ -15449,38 +15449,20 @@ const WINE_PARTNER_FRICTIONLESS = [
   { label: "No hidden cost later", sub: "If that ever changes, you'll hear it from us first." },
 ];
 
-// plan id → Stripe behaviour: annual_bundle = one-time $279, monthly = subscription $29/mo, refill = one-time $29, digital = free
+// plan id → Stripe behaviour: annual_bundle = one-time $279, digital = free
 const WINE_PARTNER_PLANS = [
   {
     id: 'annual_bundle',
-    label: 'Annual Partner + Kit',
-    price: 279, unit: 'per year', badge: 'Best Value',
-    saving: 'Save $118 vs monthly',
-    desc: 'Full year of trail participation + 100 stamp cards, counter display, QR setup, delivered. Everything you need, one payment.',
-    mode: 'one-time',
-  },
-  {
-    id: 'monthly',
-    label: 'Monthly Partner',
-    price: 29, unit: 'per month', badge: null,
-    saving: null,
-    desc: 'Full trail participation month-to-month. Starter kit available as a separate add-on ($49). Cancel anytime.',
-    mode: 'subscription',
-  },
-  {
-    id: 'refill',
-    label: 'Card Refill',
-    price: 29, unit: 'per 100 cards', badge: null,
-    saving: 'Existing partners only',
-    desc: 'Same card design as your original kit. No counter display needed. Order anytime you run low.',
+    label: '2026 Trail Partner',
+    price: 279, unit: 'per season', badge: null,
+    desc: 'Everything included. One payment covers the full 2026 season — May 22 through October 31.',
     mode: 'one-time',
   },
   {
     id: 'digital',
     label: 'Digital Only',
     price: 0, unit: 'always free', badge: null,
-    saving: null,
-    desc: 'Scorecard, community ratings, map pin, awards eligibility — no printed materials.',
+    desc: 'Community scorecard, ratings, map pin, and awards eligibility — no printed materials.',
     mode: 'free',
   },
 ];
@@ -15617,7 +15599,7 @@ function WinePartnerSignupSection() {
         </div>
         <div style={{ marginBottom: 28 }}>
           <label style={labelStyle}>Anything else? <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional)</span></label>
-          <textarea value={note} onChange={e => setNote(e.target.value)} placeholder={plan === 'annual_bundle' || plan === 'refill' ? "Delivery address, questions, anything helpful..." : "Questions, ideas..."} rows={2} style={{ ...fieldStyle, resize: 'none' }} />
+          <textarea value={note} onChange={e => setNote(e.target.value)} placeholder={plan === 'annual_bundle' ? "Delivery address, questions, anything helpful..." : "Questions, ideas..."} rows={2} style={{ ...fieldStyle, resize: 'none' }} />
         </div>
 
         {error && <div style={{ fontSize: 13, color: '#e07070', marginBottom: 16, fontFamily: "'Libre Franklin', sans-serif" }}>{error}</div>}
@@ -15634,17 +15616,12 @@ function WinePartnerSignupSection() {
             cursor: submitting ? 'default' : 'pointer', opacity: submitting ? 0.7 : 1, transition: 'opacity 0.2s',
           }}
         >
-          {submitting ? 'One moment...' : plan === 'digital' ? 'Enroll Free →' : plan === 'annual_bundle' ? 'Join the Trail — $279 →' : plan === 'monthly' ? 'Start Monthly — $29/mo →' : 'Order Refill — $29 →'}
+          {submitting ? 'One moment...' : plan === 'digital' ? 'Enroll Free →' : 'Join the 2026 Trail — $279 →'}
         </button>
 
-        {selected && selected.mode === 'subscription' && (
+        {plan === 'annual_bundle' && (
           <p style={{ marginTop: 14, fontSize: 12, color: 'rgba(255,255,255,0.25)', textAlign: 'center', lineHeight: 1.6, fontFamily: "'Libre Franklin', sans-serif" }}>
-            Recurring monthly charge via Stripe. Cancel anytime — no penalty.
-          </p>
-        )}
-        {selected && selected.mode === 'one-time' && plan !== 'digital' && (
-          <p style={{ marginTop: 14, fontSize: 12, color: 'rgba(255,255,255,0.25)', textAlign: 'center', lineHeight: 1.6, fontFamily: "'Libre Franklin', sans-serif" }}>
-            Secure Stripe checkout. One-time charge — no subscription attached.
+            Secure Stripe checkout. One-time charge for the 2026 season — no subscription.
           </p>
         )}
       </form>
@@ -15685,7 +15662,7 @@ function WinePartnerPage() {
             Join the Trail →
           </Btn>
           <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: "rgba(255,255,255,0.28)", marginTop: 14 }}>
-            From $29/mo · Annual bundle $279 · Digital free
+            2026 season: May 22 – Oct 31 · $279/season · Digital free
           </div>
         </FadeIn>
       </section>
@@ -15784,77 +15761,66 @@ function WinePartnerPage() {
 
       {/* ── PRICING ── */}
       <section style={{ background: C.cream, padding: "80px 24px" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+        <div style={{ maxWidth: 760, margin: "0 auto" }}>
           <FadeIn>
-            <SectionLabel style={{ textAlign: "center", display: "block" }}>Pricing</SectionLabel>
-            <SectionTitle center>Simple, transparent rates.</SectionTitle>
-            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 500, margin: "12px auto 52px", textAlign: "center" }}>
-              Village shops on a basic listing pay $9/month for a directory card. You get a full branded showcase, a gamified loyalty program, physical materials, and award recognition. The price reflects that.
+            <SectionLabel style={{ textAlign: "center", display: "block" }}>2026 Season Pricing</SectionLabel>
+            <SectionTitle center>One rate. Everything included.</SectionTitle>
+            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 480, margin: "12px auto 52px", textAlign: "center" }}>
+              The 2026 season runs May 22 through October 31. Next year the season starts earlier as more venues come on board.
             </p>
           </FadeIn>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 20 }}>
-            {/* Annual Bundle — hero */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24 }}>
+            {/* Annual — hero */}
             <FadeIn>
-              <div style={{ background: C.dusk, borderRadius: 16, padding: "32px 28px", border: `2px solid ${C.sunset}`, height: "100%", boxSizing: "border-box", position: "relative" }}>
-                <div style={{ position: "absolute", top: -11, right: 18, background: C.sunset, color: C.cream, fontSize: 9, fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", padding: "3px 11px", borderRadius: 20 }}>Best Value</div>
-                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 14, color: C.sunsetLight, fontWeight: 700, marginBottom: 10, letterSpacing: 0.5 }}>Annual Partner + Kit</div>
-                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 36, fontWeight: 700, color: C.cream, lineHeight: 1, marginBottom: 2 }}>$279</div>
-                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginBottom: 6 }}>per year — save $118 vs monthly</div>
-                <div style={{ fontSize: 11, color: C.sage, fontWeight: 700, marginBottom: 22, letterSpacing: 0.5 }}>Kit included — nothing else to pay</div>
-                <ul style={{ fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 2.1, paddingLeft: 18, margin: 0 }}>
-                  <li>Full trail listing + scorecard</li>
-                  <li>Passport gamification + map</li>
-                  <li>Awards eligibility</li>
-                  <li>100 stamp cards (6×4)</li>
-                  <li>Counter display + QR setup</li>
-                  <li>Delivered to your door</li>
-                </ul>
-                <div style={{ marginTop: 24 }}>
-                  <Btn href="#signup" variant="sunset" small style={{ whiteSpace: "nowrap" }}>Start Here →</Btn>
+              <div style={{ background: C.dusk, borderRadius: 20, padding: "40px 36px", border: `2px solid rgba(212,132,90,0.4)`, height: "100%", boxSizing: "border-box", position: "relative" }}>
+                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: C.sunsetLight, fontWeight: 700, marginBottom: 12, letterSpacing: 0.5 }}>2026 Trail Partner</div>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 48, fontWeight: 700, color: C.cream, lineHeight: 1, marginBottom: 4 }}>$279</div>
+                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginBottom: 28, letterSpacing: 0.5 }}>May 22 – October 31, 2026</div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 32 }}>
+                  {[
+                    { icon: "📍", text: "Your venue on the interactive trail map" },
+                    { icon: "📊", text: "Live community scorecard — Wine Quality, Service, Atmosphere, Value" },
+                    { icon: "🎟️", text: "Passport stamp gamification that keeps guests coming back" },
+                    { icon: "⭐", text: "Verified public reviews curated before publishing" },
+                    { icon: "📄", text: "100 printed stamp cards (6×4) + counter display insert" },
+                    { icon: "📬", text: "QR code setup and delivery to your door" },
+                    { icon: "🏆", text: "Season-end award plaque — designed, printed, and delivered" },
+                    { icon: "🔄", text: "Full listing on Manitou Beach year-round" },
+                  ].map((item, i) => (
+                    <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+                      <span style={{ fontSize: 14, flexShrink: 0, marginTop: 1 }}>{item.icon}</span>
+                      <span style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", lineHeight: 1.55 }}>{item.text}</span>
+                    </div>
+                  ))}
                 </div>
-              </div>
-            </FadeIn>
-            {/* Monthly */}
-            <FadeIn delay={80}>
-              <div style={{ background: C.warmWhite, borderRadius: 16, padding: "32px 28px", border: `1px solid ${C.sand}`, borderTop: `3px solid ${C.lakeBlue}`, height: "100%", boxSizing: "border-box" }}>
-                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 14, color: C.lakeBlue, fontWeight: 700, marginBottom: 10, letterSpacing: 0.5 }}>Monthly Partner</div>
-                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 36, fontWeight: 700, color: C.lakeBlue, lineHeight: 1, marginBottom: 2 }}>$29</div>
-                <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 22 }}>per month · cancel anytime</div>
-                <ul style={{ fontSize: 13, color: C.textLight, lineHeight: 2.1, paddingLeft: 18, margin: 0 }}>
-                  <li>Full trail listing + scorecard</li>
-                  <li>Passport gamification + map</li>
-                  <li>Awards eligibility</li>
-                  <li>Starter kit add-on: $49</li>
-                  <li>Refill packs: $29/100 cards</li>
-                </ul>
-              </div>
-            </FadeIn>
-            {/* Refill */}
-            <FadeIn delay={160}>
-              <div style={{ background: C.warmWhite, borderRadius: 16, padding: "32px 28px", border: `1px solid ${C.sand}`, borderTop: `3px solid ${C.driftwood}`, height: "100%", boxSizing: "border-box" }}>
-                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 14, color: C.driftwood, fontWeight: 700, marginBottom: 10, letterSpacing: 0.5 }}>Card Refill</div>
-                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 36, fontWeight: 700, color: C.driftwood, lineHeight: 1, marginBottom: 2 }}>$29</div>
-                <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 22 }}>per 100 cards · existing partners</div>
-                <ul style={{ fontSize: 13, color: C.textLight, lineHeight: 2.1, paddingLeft: 18, margin: 0 }}>
-                  <li>Same design as your original</li>
-                  <li>No counter display needed</li>
-                  <li>Order anytime you run low</li>
-                </ul>
+                <Btn href="#signup" variant="sunset" style={{ whiteSpace: "nowrap", width: "100%", textAlign: "center" }}>Join the 2026 Trail →</Btn>
               </div>
             </FadeIn>
             {/* Digital */}
-            <FadeIn delay={240}>
-              <div style={{ background: C.warmWhite, borderRadius: 16, padding: "32px 28px", border: `1px solid ${C.sand}`, borderTop: `3px solid ${C.sage}`, height: "100%", boxSizing: "border-box" }}>
-                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 14, color: C.sage, fontWeight: 700, marginBottom: 10, letterSpacing: 0.5 }}>Digital Only</div>
-                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 36, fontWeight: 700, color: C.sage, lineHeight: 1, marginBottom: 2 }}>$0</div>
-                <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 22 }}>always free</div>
-                <ul style={{ fontSize: 13, color: C.textLight, lineHeight: 2.1, paddingLeft: 18, margin: 0 }}>
-                  <li>Community scorecard</li>
-                  <li>Ratings + reviews</li>
-                  <li>Map pin</li>
-                  <li>Awards eligibility</li>
-                  <li>No printed materials</li>
-                </ul>
+            <FadeIn delay={100}>
+              <div style={{ background: C.warmWhite, borderRadius: 20, padding: "40px 36px", border: `1px solid ${C.sand}`, height: "100%", boxSizing: "border-box" }}>
+                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: C.sage, fontWeight: 700, marginBottom: 12, letterSpacing: 0.5 }}>Digital Only</div>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 48, fontWeight: 700, color: C.sage, lineHeight: 1, marginBottom: 4 }}>$0</div>
+                <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 28, letterSpacing: 0.5 }}>always free</div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 32 }}>
+                  {[
+                    { icon: "📍", text: "Your venue on the interactive trail map" },
+                    { icon: "📊", text: "Live community scorecard" },
+                    { icon: "🎟️", text: "Passport stamp gamification" },
+                    { icon: "⭐", text: "Verified public reviews" },
+                    { icon: "🏆", text: "Season-end awards eligibility" },
+                    { icon: "🔄", text: "Full listing on Manitou Beach year-round" },
+                  ].map((item, i) => (
+                    <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+                      <span style={{ fontSize: 14, flexShrink: 0, marginTop: 1 }}>{item.icon}</span>
+                      <span style={{ fontSize: 13, color: C.textLight, lineHeight: 1.55 }}>{item.text}</span>
+                    </div>
+                  ))}
+                </div>
+                <p style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.7, margin: "0 0 24px" }}>
+                  No printed materials. Great if you want to see what the community builds before committing to a kit.
+                </p>
+                <Btn href="#signup" variant="outline" style={{ whiteSpace: "nowrap", width: "100%", textAlign: "center" }}>Enroll Free →</Btn>
               </div>
             </FadeIn>
           </div>
