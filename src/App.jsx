@@ -8501,6 +8501,23 @@ function WineScoreboardSection() {
           </div>
         </FadeIn>
 
+        {/* How it works — slim explainer */}
+        <FadeIn delay={100}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 48 }} className="scoreboard-explainer-grid">
+            {[
+              { n: '1', label: 'Stamp a stop', body: 'Visit any tasting room on the trail and stamp it in your passport.' },
+              { n: '2', label: 'Rate what you tried', body: 'Name the wine and leave a star rating. Takes 30 seconds.' },
+              { n: '3', label: 'Move the board', body: 'Every review is a vote. Top wines rise. Awards follow at season end.' },
+            ].map(step => (
+              <div key={step.n} style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 12, padding: '20px 20px 18px', border: '1px solid rgba(255,255,255,0.07)' }}>
+                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 32, color: C.sunset, lineHeight: 1, marginBottom: 8 }}>{step.n}</div>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,0.7)', marginBottom: 6 }}>{step.label}</div>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.38)', lineHeight: 1.65 }}>{step.body}</div>
+              </div>
+            ))}
+          </div>
+        </FadeIn>
+
         {/* Scrolling ticker */}
         {tickerItems.length > 0 && (
           <div style={{ overflow: 'hidden', marginBottom: 52, background: 'rgba(255,255,255,0.04)', borderRadius: 8, padding: '10px 0', border: '1px solid rgba(255,255,255,0.06)' }}>
@@ -16352,6 +16369,27 @@ function WinePartnerPage() {
               100% people's choice — voted on by every visitor who stamps your stop on the trail.
             </p>
           </FadeIn>
+
+          {/* How nominations work */}
+          <FadeIn delay={150}>
+            <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 14, padding: '24px 28px', maxWidth: 520, margin: '0 auto 44px', textAlign: 'left' }}>
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.2, textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 16 }}>How it works</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                {[
+                  { icon: '🗺️', text: 'A visitor stamps your tasting room in their Manitou Beach passport.' },
+                  { icon: '⭐', text: 'They name the wine they tried and leave a star rating — one of their own words, not a prompt.' },
+                  { icon: '📊', text: 'Votes accumulate on the Season Standings leaderboard, visible to every visitor on the site.' },
+                  { icon: '🏆', text: 'At season end, the top-voted wines in each category earn an award. You get a certificate, a badge, and a story.' },
+                ].map((row, i) => (
+                  <div key={i} style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+                    <span style={{ fontSize: 18, flexShrink: 0, marginTop: 1 }}>{row.icon}</span>
+                    <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: 'rgba(255,255,255,0.52)', lineHeight: 1.7 }}>{row.text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </FadeIn>
+
           <div style={{ display: "flex", flexDirection: "column", gap: 0, maxWidth: 420, margin: "0 auto 48px", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
             {WINE_PARTNER_AWARDS.map((award, i) => (
               <FadeIn key={award} delay={i * 50}>
