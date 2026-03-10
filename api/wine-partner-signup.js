@@ -3,18 +3,15 @@ import Stripe from 'stripe';
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { venueName, contactName, email, phone, plan, note } = req.body || {};
+  const { venueName, contactName, email, phone, note } = req.body || {};
 
   if (!venueName || !contactName || !email || !email.includes('@')) {
     return res.status(400).json({ error: 'Venue name, your name, and a valid email are required.' });
   }
-  if (!['annual_bundle', 'digital'].includes(plan)) {
-    return res.status(400).json({ error: 'Invalid plan selection.' });
-  }
 
-  // Record every signup in Notion regardless of plan
+  // Record in Notion
   try {
-    const notesText = [`Wine Partner Signup — Plan: ${plan}`, note || ''].filter(Boolean).join('\n');
+    const notesText = ['Wine Trail Partner Signup — 2026 Season', note || ''].filter(Boolean).join('\n');
     await fetch('https://api.notion.com/v1/pages', {
       method: 'POST',
       headers: {
@@ -37,15 +34,8 @@ export default async function handler(req, res) {
     });
   } catch (err) {
     console.error('wine-partner-signup Notion error:', err.message);
-    // Don't block payment flow on Notion failure
   }
 
-  // Digital-only — nothing to charge
-  if (plan === 'digital') {
-    return res.status(200).json({ ok: true });
-  }
-
-  // Annual bundle → Stripe one-time payment
   if (!process.env.STRIPE_SECRET_KEY) {
     return res.status(500).json({ error: 'Payment system not configured. Please email admin@yetigroove.com.' });
   }
@@ -66,13 +56,13 @@ export default async function handler(req, res) {
           currency: 'usd',
           product_data: {
             name: 'Manitou Beach Wine Trail Partner — 2026 Season',
-            description: `May 22 – October 31, 2026. Includes scorecard, passport gamification, trail map pin, stamp cards, counter display, QR setup, and season-end award. — ${venueName}`,
+            description: `May 22 – October 31, 2026. Includes trail map pin, community scorecard, passport gamification, verified reviews, 100 stamp cards, counter display, QR setup, and season-end award plaque. — ${venueName}`,
           },
           unit_amount: 27900,
         },
         quantity: 1,
       }],
-      metadata: { venueName, contactName, plan, phone: phone || '', note: note || '' },
+      metadata: { venueName, contactName, phone: phone || '', note: note || '' },
       success_url: `${baseUrl}/wine-partner?joined=1`,
       cancel_url:  `${baseUrl}/wine-partner#signup`,
     });

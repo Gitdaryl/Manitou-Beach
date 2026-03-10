@@ -15449,26 +15449,7 @@ const WINE_PARTNER_FRICTIONLESS = [
   { label: "No hidden cost later", sub: "If that ever changes, you'll hear it from us first." },
 ];
 
-// plan id → Stripe behaviour: annual_bundle = one-time $279, digital = free
-const WINE_PARTNER_PLANS = [
-  {
-    id: 'annual_bundle',
-    label: '2026 Trail Partner',
-    price: 279, unit: 'per season', badge: null,
-    desc: 'Everything included. One payment covers the full 2026 season — May 22 through October 31.',
-    mode: 'one-time',
-  },
-  {
-    id: 'digital',
-    label: 'Digital Only',
-    price: 0, unit: 'always free', badge: null,
-    desc: 'Community scorecard, ratings, map pin, and awards eligibility — no printed materials.',
-    mode: 'free',
-  },
-];
-
 function WinePartnerSignupSection() {
-  const [plan, setPlan] = useState('annual_bundle');
   const [venueName, setVenueName] = useState('');
   const [contactName, setContactName] = useState('');
   const [email, setEmail] = useState('');
@@ -15477,8 +15458,6 @@ function WinePartnerSignupSection() {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState('');
-
-  const selected = WINE_PARTNER_PLANS.find(p => p.id === plan);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15492,15 +15471,11 @@ function WinePartnerSignupSection() {
       const res = await fetch('/api/wine-partner-signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ venueName: venueName.trim(), contactName: contactName.trim(), email: email.trim(), phone: phone.trim(), plan, note: note.trim() }),
+        body: JSON.stringify({ venueName: venueName.trim(), contactName: contactName.trim(), email: email.trim(), phone: phone.trim(), note: note.trim() }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed');
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        setDone(true);
-      }
+      window.location.href = data.url;
     } catch (err) {
       setError(err.message || 'Something went wrong. Please email admin@yetigroove.com directly.');
       setSubmitting(false);
@@ -15517,66 +15492,9 @@ function WinePartnerSignupSection() {
     letterSpacing: 1, textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', display: 'block', marginBottom: 8,
   };
 
-  if (done) {
-    return (
-      <FadeIn>
-        <div style={{ textAlign: 'center', padding: '52px 32px' }}>
-          <div style={{ fontSize: 48, marginBottom: 16 }}>🍷</div>
-          <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, color: C.cream, marginBottom: 12 }}>You're on the trail.</div>
-          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 15, lineHeight: 1.7, maxWidth: 380, margin: '0 auto 28px' }}>
-            Daryl will be in touch within a day or two to confirm your enrollment and coordinate delivery.
-          </p>
-          <Btn href="/wineries" variant="outline" style={{ whiteSpace: 'nowrap' }}>See the Wine Trail →</Btn>
-        </div>
-      </FadeIn>
-    );
-  }
-
   return (
     <FadeIn>
       <form onSubmit={handleSubmit} noValidate>
-        {/* Plan selection */}
-        <div style={{ marginBottom: 32 }}>
-          <label style={labelStyle}>Choose your plan</label>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {WINE_PARTNER_PLANS.map((p) => (
-              <div
-                key={p.id}
-                onClick={() => setPlan(p.id)}
-                style={{
-                  border: `2px solid ${plan === p.id ? C.sunset : 'rgba(255,255,255,0.12)'}`,
-                  borderRadius: 14, padding: '16px 18px', cursor: 'pointer',
-                  background: plan === p.id ? 'rgba(212,132,90,0.1)' : 'rgba(255,255,255,0.04)',
-                  transition: 'all 0.2s', position: 'relative',
-                }}
-              >
-                {p.badge && (
-                  <div style={{ position: 'absolute', top: -10, right: 14, background: C.sunset, color: C.cream, fontSize: 9, fontWeight: 700, letterSpacing: 1.2, textTransform: 'uppercase', padding: '3px 10px', borderRadius: 20 }}>
-                    {p.badge}
-                  </div>
-                )}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <div style={{ width: 18, height: 18, borderRadius: '50%', border: `2px solid ${plan === p.id ? C.sunset : 'rgba(255,255,255,0.2)'}`, background: plan === p.id ? C.sunset : 'transparent', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
-                    {plan === p.id && <div style={{ width: 6, height: 6, borderRadius: '50%', background: C.cream }} />}
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, flexWrap: 'wrap' }}>
-                      <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: C.cream }}>{p.label}</span>
-                      <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 19, fontWeight: 700, color: p.price === 0 ? C.sage : C.sunset }}>
-                        {p.price === 0 ? 'Free' : `$${p.price}`}
-                      </span>
-                      <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>{p.unit}</span>
-                      {p.saving && <span style={{ fontSize: 10, color: C.sage, fontWeight: 700, letterSpacing: 0.5 }}>{p.saving}</span>}
-                    </div>
-                    <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', marginTop: 3, lineHeight: 1.6 }}>{p.desc}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Contact fields */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 14 }}>
           <div>
             <label style={labelStyle}>Venue Name *</label>
@@ -15599,7 +15517,7 @@ function WinePartnerSignupSection() {
         </div>
         <div style={{ marginBottom: 28 }}>
           <label style={labelStyle}>Anything else? <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional)</span></label>
-          <textarea value={note} onChange={e => setNote(e.target.value)} placeholder={plan === 'annual_bundle' ? "Delivery address, questions, anything helpful..." : "Questions, ideas..."} rows={2} style={{ ...fieldStyle, resize: 'none' }} />
+          <textarea value={note} onChange={e => setNote(e.target.value)} placeholder="Delivery address, questions, anything helpful..." rows={2} style={{ ...fieldStyle, resize: 'none' }} />
         </div>
 
         {error && <div style={{ fontSize: 13, color: '#e07070', marginBottom: 16, fontFamily: "'Libre Franklin', sans-serif" }}>{error}</div>}
@@ -15609,21 +15527,17 @@ function WinePartnerSignupSection() {
           disabled={submitting}
           style={{
             width: '100%', padding: '14px 24px', borderRadius: 28,
-            background: plan === 'digital' ? C.sage : C.sunset,
-            color: C.cream, border: 'none',
+            background: C.sunset, color: C.cream, border: 'none',
             fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700,
             letterSpacing: 1.5, textTransform: 'uppercase',
             cursor: submitting ? 'default' : 'pointer', opacity: submitting ? 0.7 : 1, transition: 'opacity 0.2s',
           }}
         >
-          {submitting ? 'One moment...' : plan === 'digital' ? 'Enroll Free →' : 'Join the 2026 Trail — $279 →'}
+          {submitting ? 'One moment...' : 'Join the 2026 Trail — $279 →'}
         </button>
-
-        {plan === 'annual_bundle' && (
-          <p style={{ marginTop: 14, fontSize: 12, color: 'rgba(255,255,255,0.25)', textAlign: 'center', lineHeight: 1.6, fontFamily: "'Libre Franklin', sans-serif" }}>
-            Secure Stripe checkout. One-time charge for the 2026 season — no subscription.
-          </p>
-        )}
+        <p style={{ marginTop: 14, fontSize: 12, color: 'rgba(255,255,255,0.25)', textAlign: 'center', lineHeight: 1.6, fontFamily: "'Libre Franklin', sans-serif" }}>
+          Secure Stripe checkout. One-time charge for the full 2026 season — no subscription.
+        </p>
       </form>
     </FadeIn>
   );
@@ -15662,7 +15576,7 @@ function WinePartnerPage() {
             Join the Trail →
           </Btn>
           <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: "rgba(255,255,255,0.28)", marginTop: 14 }}>
-            2026 season: May 22 – Oct 31 · $279/season · Digital free
+            $279 for the 2026 season · May 22 – October 31
           </div>
         </FadeIn>
       </section>
@@ -15761,69 +15675,42 @@ function WinePartnerPage() {
 
       {/* ── PRICING ── */}
       <section style={{ background: C.cream, padding: "80px 24px" }}>
-        <div style={{ maxWidth: 760, margin: "0 auto" }}>
+        <div style={{ maxWidth: 560, margin: "0 auto" }}>
           <FadeIn>
-            <SectionLabel style={{ textAlign: "center", display: "block" }}>2026 Season Pricing</SectionLabel>
+            <SectionLabel style={{ textAlign: "center", display: "block" }}>2026 Season</SectionLabel>
             <SectionTitle center>One rate. Everything included.</SectionTitle>
-            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 480, margin: "12px auto 52px", textAlign: "center" }}>
-              The 2026 season runs May 22 through October 31. Next year the season starts earlier as more venues come on board.
-            </p>
           </FadeIn>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24 }}>
-            {/* Annual — hero */}
-            <FadeIn>
-              <div style={{ background: C.dusk, borderRadius: 20, padding: "40px 36px", border: `2px solid rgba(212,132,90,0.4)`, height: "100%", boxSizing: "border-box", position: "relative" }}>
-                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: C.sunsetLight, fontWeight: 700, marginBottom: 12, letterSpacing: 0.5 }}>2026 Trail Partner</div>
-                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 48, fontWeight: 700, color: C.cream, lineHeight: 1, marginBottom: 4 }}>$279</div>
-                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginBottom: 28, letterSpacing: 0.5 }}>May 22 – October 31, 2026</div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 32 }}>
-                  {[
-                    { icon: "📍", text: "Your venue on the interactive trail map" },
-                    { icon: "📊", text: "Live community scorecard — Wine Quality, Service, Atmosphere, Value" },
-                    { icon: "🎟️", text: "Passport stamp gamification that keeps guests coming back" },
-                    { icon: "⭐", text: "Verified public reviews curated before publishing" },
-                    { icon: "📄", text: "100 printed stamp cards (6×4) + counter display insert" },
-                    { icon: "📬", text: "QR code setup and delivery to your door" },
-                    { icon: "🏆", text: "Season-end award plaque — designed, printed, and delivered" },
-                    { icon: "🔄", text: "Full listing on Manitou Beach year-round" },
-                  ].map((item, i) => (
-                    <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-                      <span style={{ fontSize: 14, flexShrink: 0, marginTop: 1 }}>{item.icon}</span>
-                      <span style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", lineHeight: 1.55 }}>{item.text}</span>
-                    </div>
-                  ))}
-                </div>
+          <FadeIn delay={80}>
+            <div style={{ background: C.dusk, borderRadius: 20, padding: "44px 40px", border: `2px solid rgba(212,132,90,0.35)`, marginTop: 40 }}>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 6, flexWrap: "wrap" }}>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 52, fontWeight: 700, color: C.cream, lineHeight: 1 }}>$279</div>
+                <div style={{ fontSize: 14, color: "rgba(255,255,255,0.4)", lineHeight: 1.4 }}>for the season<br />May 22 – Oct 31, 2026</div>
+              </div>
+              <div style={{ fontSize: 12, color: C.sage, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", marginBottom: 32 }}>
+                Season starts earlier every year as the trail grows
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 10 }}>
+                {[
+                  { icon: "📍", text: "Your venue on the interactive trail map" },
+                  { icon: "📊", text: "Live community scorecard — Wine Quality, Service, Atmosphere, Value" },
+                  { icon: "🎟️", text: "Passport gamification — guests collect stamps, come back to finish the trail" },
+                  { icon: "⭐", text: "Verified public reviews, curated before publishing" },
+                  { icon: "📄", text: "100 printed stamp cards (6×4) + counter display insert" },
+                  { icon: "📬", text: "QR code setup, cards delivered to your door" },
+                  { icon: "🏆", text: "Season-end award plaque — designed, printed, and delivered" },
+                  { icon: "🌐", text: "Full venue listing on Manitou Beach year-round" },
+                ].map((item, i) => (
+                  <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: "10px 0", borderBottom: i < 7 ? "1px solid rgba(255,255,255,0.06)" : "none" }}>
+                    <span style={{ fontSize: 15, flexShrink: 0, marginTop: 1 }}>{item.icon}</span>
+                    <span style={{ fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 1.55 }}>{item.text}</span>
+                  </div>
+                ))}
+              </div>
+              <div style={{ marginTop: 36 }}>
                 <Btn href="#signup" variant="sunset" style={{ whiteSpace: "nowrap", width: "100%", textAlign: "center" }}>Join the 2026 Trail →</Btn>
               </div>
-            </FadeIn>
-            {/* Digital */}
-            <FadeIn delay={100}>
-              <div style={{ background: C.warmWhite, borderRadius: 20, padding: "40px 36px", border: `1px solid ${C.sand}`, height: "100%", boxSizing: "border-box" }}>
-                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: C.sage, fontWeight: 700, marginBottom: 12, letterSpacing: 0.5 }}>Digital Only</div>
-                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 48, fontWeight: 700, color: C.sage, lineHeight: 1, marginBottom: 4 }}>$0</div>
-                <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 28, letterSpacing: 0.5 }}>always free</div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 32 }}>
-                  {[
-                    { icon: "📍", text: "Your venue on the interactive trail map" },
-                    { icon: "📊", text: "Live community scorecard" },
-                    { icon: "🎟️", text: "Passport stamp gamification" },
-                    { icon: "⭐", text: "Verified public reviews" },
-                    { icon: "🏆", text: "Season-end awards eligibility" },
-                    { icon: "🔄", text: "Full listing on Manitou Beach year-round" },
-                  ].map((item, i) => (
-                    <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-                      <span style={{ fontSize: 14, flexShrink: 0, marginTop: 1 }}>{item.icon}</span>
-                      <span style={{ fontSize: 13, color: C.textLight, lineHeight: 1.55 }}>{item.text}</span>
-                    </div>
-                  ))}
-                </div>
-                <p style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.7, margin: "0 0 24px" }}>
-                  No printed materials. Great if you want to see what the community builds before committing to a kit.
-                </p>
-                <Btn href="#signup" variant="outline" style={{ whiteSpace: "nowrap", width: "100%", textAlign: "center" }}>Enroll Free →</Btn>
-              </div>
-            </FadeIn>
-          </div>
+            </div>
+          </FadeIn>
         </div>
       </section>
 
@@ -15835,10 +15722,10 @@ function WinePartnerPage() {
           <FadeIn>
             <SectionLabel light style={{ textAlign: "center", display: "block" }}>Get On the Trail</SectionLabel>
             <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 40px)", fontWeight: 400, color: C.cream, margin: "16px 0 12px", lineHeight: 1.25, textAlign: "center" }}>
-              Enroll your venue.<br />Choose what you need.
+              Ready to be on the trail?
             </h2>
             <p style={{ fontSize: 15, color: "rgba(255,255,255,0.42)", lineHeight: 1.85, marginBottom: 44, textAlign: "center" }}>
-              Digital enrollment is free. Add a print kit if you want physical cards at your counter. We'll be in touch either way.
+              Fill in your details and you'll be taken to a secure checkout. Cards will be delivered before the season opens May 22.
             </p>
           </FadeIn>
           {joined ? (
