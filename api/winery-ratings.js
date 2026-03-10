@@ -1,9 +1,10 @@
-// Winery Ratings — POST to submit a tasting review, GET to fetch aggregates by venue
+// Winery Ratings — POST to submit a tasting review, GET to fetch aggregates by venue + wine rankings
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
 
   const TOKEN = process.env.NOTION_TOKEN_BUSINESS;
   const DB_ID = process.env.NOTION_DB_WINERY_RATINGS;
+  const WINES_DB_ID = process.env.NOTION_DB_WINES;
 
   if (!TOKEN || !DB_ID) {
     return res.status(200).json({ ratings: {} });
@@ -120,7 +121,64 @@ export default async function handler(req, res) {
       };
     }
 
-    return res.status(200).json({ ratings });
+    // ── Wine-level aggregation ──────────────────────────────────────────────
+    let wineRankings = [];
+    if (WINES_DB_ID && allResults.length > 0) {
+      try {
+        // Fetch the wine registry
+        const winesRes = await fetch(
+          `https://api.notion.com/v1/databases/${WINES_DB_ID}/query`,
+          {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${TOKEN}`,
+              'Content-Type': 'application/json',
+              'Notion-Version': '2022-06-28',
+            },
+            body: JSON.stringify({
+              page_size: 100,
+              filter: { property: 'Active', checkbox: { equals: true } },
+            }),
+          }
+        );
+
+        if (winesRes.ok) {
+          const winesData = await winesRes.json();
+          const registry = winesData.results.map(p => ({
+            id:       p.id,
+            name:     p.properties['Name']?.title?.[0]?.text?.content || '',
+            venue:    p.properties['Venue']?.select?.name || '',
+            category: p.properties['Category']?.select?.name || '',
+            fullName: p.properties['Full Name']?.rich_text?.[0]?.text?.content || '',
+          })).filter(w => w.name);
+
+          // Count mentions — case-insensitive substring match in WineTried
+          const wineCounts = {};
+          for (const page of allResults) {
+            const wineTried = page.properties['WineTried']?.rich_text?.[0]?.text?.content || '';
+            if (!wineTried) continue;
+            const parts = wineTried.split('·').map(s => s.trim().toLowerCase());
+            for (const wine of registry) {
+              const nameLC = wine.name.toLowerCase();
+              if (parts.some(p => p.includes(nameLC) || nameLC.includes(p))) {
+                if (!wineCounts[wine.id]) wineCounts[wine.id] = 0;
+                wineCounts[wine.id]++;
+              }
+            }
+          }
+
+          wineRankings = registry
+            .map(w => ({ ...w, count: wineCounts[w.id] || 0 }))
+            .filter(w => w.count > 0)
+            .sort((a, b) => b.count - a.count);
+        }
+      } catch (err) {
+        console.error('Wine rankings aggregation error:', err.message);
+        // non-fatal — return empty rankings
+      }
+    }
+
+    return res.status(200).json({ ratings, wineRankings });
   }
 
   return res.status(405).json({ error: 'Method not allowed' });

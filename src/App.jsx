@@ -183,6 +183,29 @@ function GlobalStyles() {
         .living-here-grid { grid-template-columns: 1fr !important; }
         .mens-club-stats { grid-template-columns: repeat(2, 1fr) !important; }
         .village-roots-grid { grid-template-columns: 1fr !important; }
+        .scoreboard-venue-name { width: 100px !important; font-size: 11px !important; }
+        .scoreboard-explainer-grid { grid-template-columns: 1fr !important; gap: 20px !important; }
+      }
+      @keyframes bar-breathe {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.82; box-shadow: 0 0 14px rgba(212,132,90,0.4); }
+      }
+      @keyframes bar-shimmer {
+        0% { background-position: 0% center; }
+        100% { background-position: 300% center; }
+      }
+      @keyframes ticker-scroll {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+      }
+      .scoreboard-ticker {
+        display: inline-flex;
+        animation: ticker-scroll 38s linear infinite;
+        white-space: nowrap;
+      }
+      .scoreboard-ticker:hover { animation-play-state: paused; }
+      .scoreboard-leader-bar {
+        animation: bar-breathe 3s ease-in-out infinite, bar-shimmer 5s linear infinite;
       }
     `}</style>
   );
@@ -237,7 +260,7 @@ const PAGE_SPONSORS = {
 // USA250 — set true to make the page publicly visible + add to Community nav
 const USA250_PUBLIC = false;
 
-// Slot caps per tier per category — Enhanced is unlimited (no cap)
+// Slot caps per tier per category — Enhanced has no cap
 const SLOT_CAPS = { premium: 1, featured: 3 };
 const LISTING_CATEGORIES = [
   "Real Estate", "Food & Drink", "Boating & Water", "Breweries & Wineries",
@@ -5361,7 +5384,7 @@ function FeaturedPage() {
 
   const slotsLeft = (tierId, cat) => {
     if (!slotCounts || !cat) return null;
-    const cap = SLOT_CAPS[tierId]; // undefined = no cap (Enhanced)
+    const cap = SLOT_CAPS[tierId];
     if (cap === undefined) return null;
     const used = slotCounts.tierCounts?.[tierId]?.[cat] || 0;
     return Math.max(0, cap - used);
@@ -5693,7 +5716,7 @@ function FeaturedPage() {
                   </button>
                   {slotCounts && (() => {
                     const cap = SLOT_CAPS[tier.id];
-                    if (cap === undefined) return null; // Enhanced = no cap
+                    if (cap === undefined) return null;
                     const fullCats = LISTING_CATEGORIES.filter(cat => (slotCounts.tierCounts?.[tier.id]?.[cat] || 0) >= cap).length;
                     if (fullCats === 0) return null;
                     const openCats = LISTING_CATEGORIES.length - fullCats;
@@ -7615,13 +7638,17 @@ function getWineSessionId() {
 
 function useWineryRatings() {
   const [ratings, setRatings] = useState({});
+  const [wineRankings, setWineRankings] = useState([]);
   useEffect(() => {
     fetch('/api/winery-ratings')
       .then(r => r.json())
-      .then(d => { if (d.ratings) setRatings(d.ratings); })
+      .then(d => {
+        if (d.ratings) setRatings(d.ratings);
+        if (d.wineRankings) setWineRankings(d.wineRankings);
+      })
       .catch(() => {});
   }, []);
-  return { ratings };
+  return { ratings, wineRankings };
 }
 
 function useWinePassport() {
@@ -8362,6 +8389,273 @@ function WineriesCTASection() {
   );
 }
 
+function WineScoreboardSection() {
+  const { ratings, wineRankings } = useWineryRatings();
+  const [grow, setGrow] = useState(false);
+  const [displayCount, setDisplayCount] = useState(0);
+  const [activeWineCat, setActiveWineCat] = useState('all');
+
+  const eligibleVenues = WINERY_VENUES.filter(v => v.section !== 'extended');
+  const venueData = eligibleVenues
+    .map(v => ({ ...v, r: ratings[v.name] || null }))
+    .filter(v => v.r && v.r.count > 0);
+
+  const totalReviews = venueData.reduce((s, v) => s + (v.r?.count || 0), 0);
+
+  useEffect(() => { setDisplayCount(totalReviews); }, [totalReviews]);
+
+  // Decorative tick — illusion of live movement, no API call
+  useEffect(() => {
+    if (totalReviews === 0) return;
+    const interval = setInterval(() => {
+      if (Math.random() < 0.12) setDisplayCount(n => n + 1);
+    }, 9000);
+    return () => clearInterval(interval);
+  }, [totalReviews]);
+
+  useEffect(() => {
+    const t = setTimeout(() => setGrow(true), 400);
+    return () => clearTimeout(t);
+  }, []);
+
+  if (venueData.length === 0 && wineRankings.length === 0) return null;
+
+  const MEDAL = ['#C9A84C', '#A8A8A8', '#C07B40'];
+
+  const WINE_CATS = [
+    { id: 'all',               label: 'All Wines',          color: C.sunset },
+    { id: 'Red',               label: 'Red',                color: '#B84040' },
+    { id: 'White',             label: 'White',              color: '#C9A84C' },
+    { id: 'Sweet',             label: 'Sweet',              color: '#D4845A' },
+    { id: 'Rosé',              label: 'Rosé',               color: '#C97B9A' },
+    { id: 'Fruit & Specialty', label: 'Fruit & Specialty',  color: C.sage },
+  ];
+
+  const catColor = (cat) => WINE_CATS.find(c => c.id === cat)?.color || C.sunset;
+
+  const filteredWines = activeWineCat === 'all'
+    ? wineRankings
+    : wineRankings.filter(w => w.category === activeWineCat);
+  const topWines = filteredWines.slice(0, activeWineCat === 'all' ? 8 : 3);
+  const maxWineCount = topWines[0]?.count || 1;
+
+  const tickerItems = wineRankings.length > 0
+    ? wineRankings.slice(0, 12).map(w => `${w.fullName || w.name}  ·  ${w.venue}  ·  ${w.count} ${w.count === 1 ? 'vote' : 'votes'}`)
+    : venueData.flatMap(v => {
+        const items = [];
+        const s = (n) => '★'.repeat(Math.round(n)) + '☆'.repeat(5 - Math.round(n));
+        if (v.r.avg)            items.push(`${v.name}  ·  Wine Quality  ·  ${s(v.r.avg)}`);
+        if (v.r.service_avg)    items.push(`${v.name}  ·  Hospitality  ·  ${s(v.r.service_avg)}`);
+        if (v.r.atmosphere_avg) items.push(`${v.name}  ·  Atmosphere  ·  ${s(v.r.atmosphere_avg)}`);
+        return items;
+      });
+
+  return (
+    <section style={{ background: C.dusk, padding: '80px 24px' }}>
+      <div style={{ maxWidth: 1000, margin: '0 auto' }}>
+
+        {/* Header + live total */}
+        <FadeIn>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 16, marginBottom: 48 }}>
+            <div>
+              <SectionLabel light>People's Choice</SectionLabel>
+              <SectionTitle light>Season Standings</SectionTitle>
+            </div>
+            {totalReviews > 0 && (
+              <div style={{ textAlign: 'right' }}>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 48, fontWeight: 700, color: '#C9A84C', lineHeight: 1 }}>
+                  {displayCount.toLocaleString()}
+                </div>
+                <div style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 1.5, textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)', marginTop: 4 }}>
+                  reviews this season
+                </div>
+              </div>
+            )}
+          </div>
+        </FadeIn>
+
+        {/* Scrolling ticker */}
+        {tickerItems.length > 0 && (
+          <div style={{ overflow: 'hidden', marginBottom: 52, background: 'rgba(255,255,255,0.04)', borderRadius: 8, padding: '10px 0', border: '1px solid rgba(255,255,255,0.06)' }}>
+            <div className="scoreboard-ticker">
+              {[...tickerItems, ...tickerItems].map((item, i) => (
+                <span key={i} style={{
+                  display: 'inline-block',
+                  padding: '0 28px',
+                  fontSize: 12,
+                  fontFamily: "'Libre Franklin', sans-serif",
+                  color: 'rgba(255,255,255,0.45)',
+                  letterSpacing: 0.4,
+                  whiteSpace: 'nowrap',
+                }}>
+                  {item}
+                  <span style={{ marginLeft: 28, color: 'rgba(255,255,255,0.12)' }}>·</span>
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Wine leaderboard — category tabs + ranked list */}
+        <FadeIn>
+          <div style={{ marginBottom: 64 }}>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 24 }}>
+              {WINE_CATS.map(cat => (
+                <button key={cat.id} onClick={() => setActiveWineCat(cat.id)} style={{
+                  border: 'none', cursor: 'pointer', padding: '8px 16px', borderRadius: 20,
+                  fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 0.3,
+                  background: activeWineCat === cat.id ? cat.color : 'rgba(255,255,255,0.07)',
+                  color: activeWineCat === cat.id ? '#fff' : 'rgba(255,255,255,0.4)',
+                  transition: 'background 200ms, color 200ms',
+                }}>
+                  {cat.label}
+                </button>
+              ))}
+            </div>
+
+            {wineRankings.length === 0 ? (
+              <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: 14, padding: '36px 24px', border: '1px solid rgba(255,255,255,0.07)', textAlign: 'center' }}>
+                <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.3)', fontFamily: "'Libre Baskerville', serif", marginBottom: 8 }}>
+                  Wine Rankings — Coming This Season
+                </div>
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.18)', fontFamily: "'Libre Franklin', sans-serif" }}>
+                  Rate wines as you visit the trail — the leaderboard builds from your reviews.
+                </div>
+              </div>
+            ) : topWines.length === 0 ? (
+              <div style={{ color: 'rgba(255,255,255,0.2)', fontSize: 13, textAlign: 'center', padding: '32px 0' }}>
+                No wines in this category yet.
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {topWines.map((wine, i) => {
+                  const pct = Math.max(8, (wine.count / maxWineCount) * 82 + 18);
+                  const color = catColor(wine.category);
+                  return (
+                    <div key={wine.id || wine.name} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <div style={{
+                        width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
+                        background: i < 3 ? MEDAL[i] : 'rgba(255,255,255,0.07)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: 11, fontWeight: 700, fontFamily: "'Libre Franklin', sans-serif",
+                        color: i < 3 ? C.night : 'rgba(255,255,255,0.3)',
+                      }}>
+                        {i + 1}
+                      </div>
+                      <div style={{ width: 200, flexShrink: 0, lineHeight: 1.3 }}>
+                        <div className="scoreboard-venue-name" style={{
+                          fontSize: 13, fontFamily: "'Libre Baskerville', serif",
+                          color: i === 0 ? C.cream : 'rgba(255,255,255,0.6)',
+                        }}>
+                          {wine.name}
+                        </div>
+                        <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', fontFamily: "'Libre Franklin', sans-serif" }}>
+                          {wine.venue}
+                        </div>
+                      </div>
+                      <div style={{
+                        flexShrink: 0, fontSize: 10, fontFamily: "'Libre Franklin', sans-serif",
+                        fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase',
+                        background: color + '22', color: color, borderRadius: 4, padding: '3px 8px',
+                      }}>
+                        {wine.category}
+                      </div>
+                      <div style={{ flex: 1, height: 34, background: 'rgba(255,255,255,0.05)', borderRadius: 6, overflow: 'hidden', position: 'relative' }}>
+                        <div
+                          className={i === 0 ? 'scoreboard-bar scoreboard-leader-bar' : 'scoreboard-bar'}
+                          style={{
+                            width: grow ? `${pct}%` : '0%',
+                            height: '100%',
+                            background: i === 0
+                              ? `linear-gradient(90deg, ${color} 0%, ${color}99 100%)`
+                              : color + '55',
+                            borderRadius: 6,
+                            transition: `width ${600 + i * 100}ms ease-out`,
+                          }}
+                        />
+                        {i === 0 && grow && (
+                          <div style={{
+                            position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)',
+                            fontSize: 9, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700,
+                            letterSpacing: 1.5, textTransform: 'uppercase', color: C.cream, pointerEvents: 'none',
+                          }}>
+                            Leading
+                          </div>
+                        )}
+                      </div>
+                      <div style={{
+                        width: 32, textAlign: 'right', flexShrink: 0,
+                        fontSize: 13, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif",
+                        color: i === 0 ? '#C9A84C' : 'rgba(255,255,255,0.25)',
+                      }}>
+                        {wine.count}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            <div style={{ marginTop: 10, fontSize: 11, color: 'rgba(255,255,255,0.18)', fontFamily: "'Libre Franklin', sans-serif" }}>
+              Updated as reviews are published · wines are nominated by visitors.
+            </div>
+          </div>
+        </FadeIn>
+
+        {/* Tasting Room Scores — service + atmosphere by venue */}
+        {venueData.some(v => v.r?.service_avg || v.r?.atmosphere_avg) && (
+          <FadeIn>
+            <div style={{ marginBottom: 40 }}>
+              <div style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)', marginBottom: 18 }}>
+                Tasting Room Scores
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {venueData
+                  .filter(v => v.r?.service_avg || v.r?.atmosphere_avg)
+                  .sort((a, b) => ((b.r?.service_avg || 0) + (b.r?.atmosphere_avg || 0)) - ((a.r?.service_avg || 0) + (a.r?.atmosphere_avg || 0)))
+                  .map(v => {
+                    const s = (n) => '★'.repeat(Math.round(n)) + '☆'.repeat(5 - Math.round(n));
+                    return (
+                      <div key={v.name} style={{
+                        display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap',
+                        background: 'rgba(255,255,255,0.03)', borderRadius: 10, padding: '12px 16px',
+                        border: '1px solid rgba(255,255,255,0.06)',
+                      }}>
+                        <div style={{ flex: 1, fontFamily: "'Libre Baskerville', serif", fontSize: 13, color: 'rgba(255,255,255,0.55)', minWidth: 130 }}>
+                          {v.name}
+                        </div>
+                        {v.r?.service_avg > 0 && (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                            <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 0.8, textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)' }}>Hospitality</span>
+                            <span style={{ color: C.sunset, fontSize: 12 }}>{s(v.r.service_avg)}</span>
+                            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', fontFamily: "'Libre Franklin', sans-serif" }}>{v.r.service_avg.toFixed(1)}</span>
+                          </div>
+                        )}
+                        {v.r?.atmosphere_avg > 0 && (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                            <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 0.8, textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)' }}>Atmosphere</span>
+                            <span style={{ color: C.sunset, fontSize: 12 }}>{s(v.r.atmosphere_avg)}</span>
+                            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', fontFamily: "'Libre Franklin', sans-serif" }}>{v.r.atmosphere_avg.toFixed(1)}</span>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })
+                }
+              </div>
+            </div>
+          </FadeIn>
+        )}
+
+        <div style={{ marginTop: 28, textAlign: 'center' }}>
+          <Btn href="/rate" variant="outlineLight" small>Leave Your Rating →</Btn>
+        </div>
+
+      </div>
+    </section>
+  );
+}
+
 function WineriesPage() {
   const subScrollTo = (id) => { window.location.href = "/#" + id; };
   return (
@@ -8380,7 +8674,9 @@ function WineriesPage() {
       <WineriesVenueSection />
       <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
       <WineriesScorecardSection />
-      <WaveDivider topColor={C.warmWhite} bottomColor={C.night} />
+      <WaveDivider topColor={C.warmWhite} bottomColor={C.dusk} />
+      <WineScoreboardSection />
+      <WaveDivider topColor={C.dusk} bottomColor={C.night} />
       <WineriesItinerarySection />
       <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
       <DiagonalDivider topColor={C.cream} bottomColor={C.dusk} />
@@ -11668,6 +11964,14 @@ function YetiAdminPage() {
   const [adminPois, setAdminPois] = useState(null);
   const [adminPoisLoading, setAdminPoisLoading] = useState(false);
 
+  // ── Wines Registry ─────────────────────────────────────────────
+  const [adminWines, setAdminWines] = useState(null);
+  const [adminWinesLoading, setAdminWinesLoading] = useState(false);
+  const [wineForm, setWineForm] = useState({ name: '', venue: '', category: '', fullName: '' });
+  const [wineFormSaving, setWineFormSaving] = useState(false);
+  const [wineFormError, setWineFormError] = useState('');
+  const [wineToggles, setWineToggles] = useState({});
+
   // ── Winery Ratings curation ────────────────────────────────────
   const [adminRatings, setAdminRatings] = useState(null);
   const [adminRatingsLoading, setAdminRatingsLoading] = useState(false);
@@ -11682,6 +11986,53 @@ function YetiAdminPage() {
       setAdminPois(d.pois || []);
     } catch { setAdminPois([]); }
     finally { setAdminPoisLoading(false); }
+  };
+
+  const fetchAdminWines = async () => {
+    setAdminWinesLoading(true);
+    try {
+      const res = await adminFetch('/api/winery-wines');
+      const d = await res.json();
+      setAdminWines(d.wines || []);
+    } catch { setAdminWines([]); }
+    finally { setAdminWinesLoading(false); }
+  };
+
+  const addWine = async (e) => {
+    e.preventDefault();
+    if (!wineForm.name.trim() || !wineForm.venue || !wineForm.category) {
+      setWineFormError('Name, venue, and category are required.');
+      return;
+    }
+    setWineFormSaving(true);
+    setWineFormError('');
+    try {
+      const res = await adminFetch('/api/winery-wines', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...wineForm, name: wineForm.name.trim(), fullName: wineForm.fullName.trim() || undefined }),
+      });
+      const d = await res.json();
+      if (!res.ok) throw new Error(d.error || 'Failed');
+      setWineForm({ name: '', venue: '', category: '', fullName: '' });
+      fetchAdminWines();
+    } catch (err) {
+      setWineFormError(err.message);
+    } finally { setWineFormSaving(false); }
+  };
+
+  const toggleWineActive = async (wine) => {
+    const next = !wine.active;
+    setWineToggles(prev => ({ ...prev, [wine.id]: true }));
+    try {
+      await adminFetch('/api/winery-wines', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: wine.id, active: next }),
+      });
+      setAdminWines(prev => prev.map(w => w.id === wine.id ? { ...w, active: next } : w));
+    } catch { /* silent */ }
+    finally { setWineToggles(prev => { const n = { ...prev }; delete n[wine.id]; return n; }); }
   };
 
   const fetchAdminRatings = async () => {
@@ -11916,6 +12267,7 @@ function YetiAdminPage() {
     if (activeTab === 'promos') fetchPromos();
     if (activeTab === 'pois') fetchAdminPois();
     if (activeTab === 'ratings') fetchAdminRatings();
+    if (activeTab === 'wines') fetchAdminWines();
   }, [activeTab, authed]);
 
   // Preview file locally before uploading — no network call yet
@@ -12160,7 +12512,7 @@ function YetiAdminPage() {
 
         {/* Tabs */}
         <div style={{ display: 'flex', gap: 8, marginBottom: 32, flexWrap: 'wrap' }}>
-          {[{ id: 'write', label: '✍️  Write' }, { id: 'review', label: '📋  Review Queue' }, { id: 'dashboard', label: '📊  Dashboard' }, { id: 'advertisers', label: '🤝  Advertisers' }, { id: 'promos', label: '🎟️  Promos' }, { id: 'pois', label: '📍  Community POIs' }, { id: 'ratings', label: '🍷  Winery Ratings' }].map(tab => (
+          {[{ id: 'write', label: '✍️  Write' }, { id: 'review', label: '📋  Review Queue' }, { id: 'dashboard', label: '📊  Dashboard' }, { id: 'advertisers', label: '🤝  Advertisers' }, { id: 'promos', label: '🎟️  Promos' }, { id: 'pois', label: '📍  Community POIs' }, { id: 'ratings', label: '🍷  Winery Ratings' }, { id: 'wines', label: '🍾  Wines Registry' }].map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
@@ -12834,6 +13186,113 @@ function YetiAdminPage() {
                 </div>
               );
             })()}
+          </div>
+        )}
+
+        {/* ── WINES REGISTRY TAB ── */}
+        {activeTab === 'wines' && (
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
+              <div>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.dusk, marginBottom: 4 }}>Wines Registry</div>
+                <div style={{ fontSize: 13, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>
+                  Add wines and toggle visibility. Active wines appear in autocomplete on /rate and count toward the scoreboard.
+                </div>
+              </div>
+              <button onClick={fetchAdminWines} style={{ fontSize: 12, color: C.textLight, fontFamily: 'Libre Franklin, sans-serif', background: 'transparent', border: `1px solid ${C.sand}`, borderRadius: 8, padding: '7px 14px', cursor: 'pointer' }}>↻ Refresh</button>
+            </div>
+
+            {/* Add wine form */}
+            <div style={{ background: C.warmWhite, borderRadius: 12, padding: '20px 24px', border: `1px solid ${C.sand}`, marginBottom: 28 }}>
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, color: C.dusk, marginBottom: 16 }}>Add a Wine</div>
+              <form onSubmit={addWine} noValidate>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12, marginBottom: 12 }}>
+                  <div>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: C.textMuted, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6, fontFamily: 'Libre Franklin, sans-serif' }}>Wine Name *</div>
+                    <input
+                      type="text" value={wineForm.name} onChange={e => setWineForm(f => ({ ...f, name: e.target.value }))}
+                      placeholder="e.g. 2023 Cab Franc"
+                      style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: `1.5px solid ${C.sand}`, fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, color: C.text, boxSizing: 'border-box' }}
+                    />
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: C.textMuted, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6, fontFamily: 'Libre Franklin, sans-serif' }}>Venue *</div>
+                    <select value={wineForm.venue} onChange={e => setWineForm(f => ({ ...f, venue: e.target.value }))}
+                      style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: `1.5px solid ${C.sand}`, fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, color: C.text, boxSizing: 'border-box', background: '#fff' }}>
+                      <option value="">— Select —</option>
+                      {['Cherry Creek Cellars','Chateau Aeronautique','Gypsy Blue Vineyards','Meckleys Flavor Fruit Farm','Faust House Scrap n Craft','Ang & Co','Boathouse Art Gallery','Devils Lake View Living'].map(v => (
+                        <option key={v} value={v}>{v}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: C.textMuted, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6, fontFamily: 'Libre Franklin, sans-serif' }}>Category *</div>
+                    <select value={wineForm.category} onChange={e => setWineForm(f => ({ ...f, category: e.target.value }))}
+                      style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: `1.5px solid ${C.sand}`, fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, color: C.text, boxSizing: 'border-box', background: '#fff' }}>
+                      <option value="">— Select —</option>
+                      {['Red','White','Sweet','Rosé','Fruit & Specialty'].map(c => (
+                        <option key={c} value={c}>{c}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: C.textMuted, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6, fontFamily: 'Libre Franklin, sans-serif' }}>Display Name <span style={{ fontWeight: 400, textTransform: 'none' }}>(optional)</span></div>
+                    <input
+                      type="text" value={wineForm.fullName} onChange={e => setWineForm(f => ({ ...f, fullName: e.target.value }))}
+                      placeholder={wineForm.venue && wineForm.name ? `${wineForm.venue} · ${wineForm.name}` : 'auto-generated'}
+                      style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: `1.5px solid ${C.sand}`, fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, color: C.text, boxSizing: 'border-box' }}
+                    />
+                  </div>
+                </div>
+                {wineFormError && <div style={{ fontSize: 12, color: '#c0392b', marginBottom: 10, fontFamily: 'Libre Franklin, sans-serif' }}>{wineFormError}</div>}
+                <button type="submit" disabled={wineFormSaving} style={{ padding: '9px 20px', borderRadius: 8, fontSize: 13, fontWeight: 700, fontFamily: 'Libre Franklin, sans-serif', background: C.sage, color: '#fff', border: 'none', cursor: wineFormSaving ? 'default' : 'pointer', opacity: wineFormSaving ? 0.7 : 1 }}>
+                  {wineFormSaving ? 'Saving…' : '+ Add Wine'}
+                </button>
+              </form>
+            </div>
+
+            {/* Wine list */}
+            {adminWinesLoading ? (
+              <div style={{ textAlign: 'center', padding: '40px 0', color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif', fontSize: 14 }}>Loading…</div>
+            ) : adminWines === null ? (
+              <div style={{ textAlign: 'center', padding: '40px 0', color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>Click Refresh to load wines.</div>
+            ) : adminWines.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '40px 0', color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif', fontSize: 14 }}>No wines yet — add the first one above.</div>
+            ) : (
+              <div>
+                {/* Group by venue */}
+                {[...new Set(adminWines.map(w => w.venue))].sort().map(venue => (
+                  <div key={venue} style={{ marginBottom: 20 }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: C.textMuted, textTransform: 'uppercase', letterSpacing: 1, fontFamily: 'Libre Franklin, sans-serif', marginBottom: 8, paddingBottom: 6, borderBottom: `1px solid ${C.sand}` }}>{venue}</div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                      {adminWines.filter(w => w.venue === venue).map(wine => (
+                        <div key={wine.id} style={{ display: 'flex', alignItems: 'center', gap: 12, background: '#fff', borderRadius: 8, padding: '10px 16px', boxShadow: '0 1px 4px rgba(0,0,0,0.05)', opacity: wine.active ? 1 : 0.5 }}>
+                          <div style={{ flex: 1 }}>
+                            <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, color: C.dusk }}>{wine.name}</span>
+                            <span style={{ marginLeft: 10, fontSize: 11, fontFamily: 'Libre Franklin, sans-serif', fontWeight: 700, padding: '2px 8px', borderRadius: 12,
+                              background: wine.category === 'Red' ? '#f9e0e0' : wine.category === 'White' ? '#fdf6dc' : wine.category === 'Sweet' ? '#fce8f4' : wine.category === 'Rosé' ? '#fce8e8' : '#e8f5e9',
+                              color: wine.category === 'Red' ? '#922' : wine.category === 'White' ? '#876' : wine.category === 'Sweet' ? '#925' : wine.category === 'Rosé' ? '#944' : '#2a6',
+                            }}>{wine.category}</span>
+                          </div>
+                          <button
+                            onClick={() => toggleWineActive(wine)}
+                            disabled={!!wineToggles[wine.id]}
+                            style={{ fontSize: 12, fontWeight: 600, fontFamily: 'Libre Franklin, sans-serif', padding: '5px 14px', borderRadius: 20, border: 'none', cursor: wineToggles[wine.id] ? 'default' : 'pointer',
+                              background: wine.active ? C.sage : C.sand, color: wine.active ? '#fff' : C.textLight, opacity: wineToggles[wine.id] ? 0.6 : 1,
+                            }}
+                          >
+                            {wineToggles[wine.id] ? '…' : wine.active ? 'Active' : 'Hidden'}
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+                <div style={{ marginTop: 16, fontSize: 12, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>
+                  {adminWines.filter(w => w.active).length} active · {adminWines.filter(w => !w.active).length} hidden · {adminWines.length} total
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -15423,12 +15882,13 @@ const WINE_PARTNER_GETS = [
   { icon: "👥", title: "Community Visibility", copy: "Your listing on Manitou Beach, seen by the region's most engaged local audience — visitors, locals, and seasonal residents all in one place." },
 ];
 const WINE_PARTNER_AWARDS = [
-  { name: "Best Wine Quality", icon: "🍷" },
-  { name: "Best Service", icon: "⭐" },
-  { name: "Best Atmosphere", icon: "✨" },
-  { name: "Best Value", icon: "💎" },
-  { name: "People's Choice", icon: "🏅" },
-  { name: "Best Hidden Gem", icon: "🗺️" },
+  "Best Red Wine",
+  "Best White Wine",
+  "Best Sweet Wine",
+  "Best Fruit or Specialty Wine",
+  "Best Tasting Room Experience",
+  "Outstanding Customer Hospitality",
+  "Best Atmosphere",
 ];
 // ── /rate — Universal Wine Trail Rating Page ──────────────────────────
 const RATE_VENUES = WINERY_VENUES.filter(v => v.section !== 'extended').map(v => v.name);
@@ -15858,16 +16318,19 @@ function WinePartnerPage() {
             <div style={{ margin: "0 0 24px" }}>
               <img src="/images/award-illustration.png" alt="" aria-hidden="true" style={{ width: "min(620px, 92vw)", opacity: 0.93 }} />
             </div>
-            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.48)", lineHeight: 1.85, maxWidth: 520, margin: "0 auto 44px" }}>
-              At the end of the season, the community has voted. The top-rated venues in each category receive a framed plaque — designed, printed, and delivered by us. Hang it. Post it. It's yours.
+            <p style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.sunsetLight, margin: "0 0 6px" }}>
+              7 awards up for grabs
+            </p>
+            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.48)", lineHeight: 1.85, maxWidth: 520, margin: "0 auto 36px" }}>
+              100% people's choice — voted on by every visitor who stamps your stop on the trail.
             </p>
           </FadeIn>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center", marginBottom: 48 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 0, maxWidth: 420, margin: "0 auto 48px", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
             {WINE_PARTNER_AWARDS.map((award, i) => (
-              <FadeIn key={award.name} delay={i * 60}>
-                <div style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 50, padding: "10px 20px", display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ fontSize: 16 }}>{award.icon}</span>
-                  <span style={{ fontSize: 13, color: "rgba(255,255,255,0.72)", fontWeight: 500 }}>{award.name}</span>
+              <FadeIn key={award} delay={i * 50}>
+                <div style={{ padding: "14px 0", borderBottom: "1px solid rgba(255,255,255,0.08)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: "rgba(255,255,255,0.72)", fontWeight: 400 }}>{award}</span>
+                  <span style={{ fontFamily: "'Caveat', cursive", fontSize: 14, color: "rgba(255,255,255,0.25)" }}>people's choice</span>
                 </div>
               </FadeIn>
             ))}
