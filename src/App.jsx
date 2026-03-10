@@ -14756,8 +14756,8 @@ function FoundingPage() {
           <p style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: "rgba(255,255,255,0.3)", marginBottom: 40 }}>
             Like locking in a rate before the market moves.
           </p>
-          <Btn href="mailto:admin@yetigroove.com?subject=Business Listing — Early Rate" variant="sunset" style={{ whiteSpace: "nowrap" }}>
-            Start My Listing →
+          <Btn href="/featured" variant="sunset" style={{ whiteSpace: "nowrap" }}>
+            See Listing Options →
           </Btn>
         </FadeIn>
       </section>
@@ -14889,7 +14889,7 @@ function FoundingPage() {
                   </div>
                   <div style={{ marginTop: 28 }}>
                     <a
-                      href={`mailto:admin@yetigroove.com?subject=Founding Member — ${tier.name} Listing`}
+                      href="/featured"
                       style={{ display: "block", textAlign: "center", padding: "12px 20px", borderRadius: 24, background: tier.highlight ? C.sunset : "transparent", color: tier.highlight ? C.cream : C.sage, border: `1.5px solid ${tier.highlight ? C.sunset : C.sage}`, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none", transition: "all 0.2s" }}
                     >
                       List as {tier.name} →
@@ -14971,9 +14971,9 @@ function FoundingPage() {
               Once the newsletter crosses 100 subscribers, new listings are priced against a larger audience. Listings that started earlier pay what they started at. The gap widens automatically.
             </p>
             <p style={{ fontFamily: "'Caveat', cursive", fontSize: 19, color: "rgba(255,255,255,0.28)", marginBottom: 44 }}>
-              Email Daryl with the tier you want. He'll get your listing set up.
+              Choose your tier and get listed in minutes.
             </p>
-            <Btn href="mailto:admin@yetigroove.com?subject=Business Listing — Early Rate" variant="sunset" style={{ whiteSpace: "nowrap" }}>
+            <Btn href="/featured" variant="sunset" style={{ whiteSpace: "nowrap" }}>
               Start My Listing →
             </Btn>
           </FadeIn>
@@ -15549,7 +15549,7 @@ function WinePartnerPage() {
               The 2026 Manitou Beach<br /><em style={{ color: C.sunsetLight }}>Wine Trail Awards</em>
             </h2>
             <div style={{ margin: "0 0 24px" }}>
-              <img src="/images/award-illustration.png" alt="" aria-hidden="true" style={{ width: "min(220px, 55vw)", opacity: 0.93 }} />
+              <img src="/images/award-illustration.png" alt="" aria-hidden="true" style={{ width: "min(480px, 90vw)", opacity: 0.93 }} />
             </div>
             <p style={{ fontSize: 15, color: "rgba(255,255,255,0.48)", lineHeight: 1.85, maxWidth: 520, margin: "0 auto 44px" }}>
               At the end of the season, the community has voted. The top-rated venues in each category receive a framed plaque — designed, printed, and delivered by us. Hang it. Post it. It's yours.
