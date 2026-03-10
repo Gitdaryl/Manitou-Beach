@@ -15208,7 +15208,7 @@ function FoodTruckPartnerPage() {
           {/* Illustration */}
           <FadeIn delay={80}>
             <div style={{ textAlign: "center", marginBottom: 44 }}>
-              <img src="/images/foodtruck-1-illustration.png" alt="" aria-hidden="true" style={{ width: "min(260px, 65vw)", opacity: 0.92 }} />
+              <img src="/images/foodtruck-1-illustration.png" alt="" aria-hidden="true" style={{ width: "min(420px, 88vw)", opacity: 0.92 }} />
             </div>
           </FadeIn>
 
