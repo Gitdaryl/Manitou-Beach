@@ -14902,21 +14902,19 @@ function FoundingPage() {
         </div>
       </section>
 
-      <WaveDivider topColor={C.cream} bottomColor={C.dusk} />
-
       {/* ── FOUNDERS BONUS ── */}
-      <section style={{ background: C.dusk, padding: "80px 24px" }}>
+      <section style={{ background: C.cream, padding: "80px 24px" }}>
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
           <div style={{ display: "flex", gap: 56, alignItems: "center", flexWrap: "wrap" }}>
             <FadeIn delay={120} style={{ flex: "0 0 auto", textAlign: "center" }}>
-              <img src="/images/community-illustration.png" alt="" aria-hidden="true" style={{ width: "min(260px, 65vw)", opacity: 0.92 }} />
+              <img src="/images/community-illustration.png" alt="" aria-hidden="true" style={{ width: "min(520px, 80vw)", opacity: 0.92 }} />
             </FadeIn>
             <FadeIn style={{ flex: "1 1 300px" }}>
-              <SectionLabel light>Founders Bonus</SectionLabel>
-              <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 3.5vw, 36px)", fontWeight: 400, color: C.cream, margin: "16px 0 20px", lineHeight: 1.25 }}>
-                Your founding rate follows you<br /><em style={{ color: C.sunsetLight }}>all the way up.</em>
+              <SectionLabel>Founders Bonus</SectionLabel>
+              <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 3.5vw, 36px)", fontWeight: 400, color: C.dusk, margin: "16px 0 20px", lineHeight: 1.25 }}>
+                Your founding rate follows you<br /><em style={{ color: C.sunset }}>all the way up.</em>
               </h2>
-              <p style={{ fontSize: 15, color: "rgba(255,255,255,0.55)", lineHeight: 1.85, marginBottom: 28 }}>
+              <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, marginBottom: 28 }}>
                 Start at Enhanced today. If you ever want a Featured or Premium listing — for a busy summer season, Tip-Up Festival, a grand opening — you upgrade at your original founding rate, not whatever the market rate is at that time. That protection follows you through every tier, permanently.
               </p>
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -14926,22 +14924,22 @@ function FoundingPage() {
                   { icon: "⚡", text: "Founding rate access closes once early spots fill — first in, first protected. No exceptions after." },
                 ].map((item, i) => (
                   <FadeIn key={i} delay={i * 80 + 200}>
-                    <div style={{ display: "flex", gap: 14, alignItems: "flex-start", background: "rgba(255,255,255,0.05)", borderRadius: 10, padding: "14px 16px", border: "1px solid rgba(255,255,255,0.08)" }}>
+                    <div style={{ display: "flex", gap: 14, alignItems: "flex-start", background: C.warmWhite, borderRadius: 10, padding: "14px 16px", border: `1px solid ${C.sand}` }}>
                       <span style={{ fontSize: 18, flexShrink: 0 }}>{item.icon}</span>
-                      <span style={{ fontSize: 13, color: "rgba(255,255,255,0.6)", lineHeight: 1.75, fontFamily: "'Libre Franklin', sans-serif" }}>{item.text}</span>
+                      <span style={{ fontSize: 13, color: C.textLight, lineHeight: 1.75, fontFamily: "'Libre Franklin', sans-serif" }}>{item.text}</span>
                     </div>
                   </FadeIn>
                 ))}
               </div>
               <div style={{ marginTop: 24 }}>
-                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: "rgba(255,255,255,0.28)" }}>No catch. Just the benefit of moving early.</div>
+                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: C.textMuted }}>No catch. Just the benefit of moving early.</div>
               </div>
             </FadeIn>
           </div>
         </div>
       </section>
 
-      <WaveDivider topColor={C.dusk} bottomColor={C.warmWhite} flip />
+      <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
 
       {/* ── NEWSLETTER INVITE ── */}
       <section style={{ background: C.warmWhite, padding: "64px 24px", textAlign: "center" }}>
