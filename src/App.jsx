@@ -15330,15 +15330,15 @@ function WinePartnerPage() {
       {/* ── HOW IT WORKS ── */}
       <section style={{ background: C.cream, padding: "80px 24px" }}>
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
-          <div style={{ display: "flex", gap: 48, alignItems: "center", marginBottom: 48, flexWrap: "wrap" }}>
-            <FadeIn style={{ flex: "1 1 280px" }}>
-              <SectionLabel>How It Works</SectionLabel>
-              <SectionTitle>Three steps. Zero work on your end.</SectionTitle>
-            </FadeIn>
-            <FadeIn delay={120} style={{ flex: "0 0 auto", textAlign: "center" }}>
-              <img src="/images/passport-review-illustration.png" alt="" aria-hidden="true" style={{ width: "min(260px, 65vw)", opacity: 0.92 }} />
-            </FadeIn>
-          </div>
+          <FadeIn>
+            <SectionLabel style={{ textAlign: "center", display: "block" }}>How It Works</SectionLabel>
+            <SectionTitle center>Three steps. Zero work on your end.</SectionTitle>
+          </FadeIn>
+          <FadeIn delay={100}>
+            <div style={{ textAlign: "center", margin: "32px 0 44px" }}>
+              <img src="/images/passport-review-illustration.png" alt="" aria-hidden="true" style={{ width: "min(760px, 90vw)", opacity: 0.93 }} />
+            </div>
+          </FadeIn>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 24 }}>
             {WINE_PARTNER_HOW.map((s, i) => (
               <FadeIn key={s.step} delay={i * 80}>
