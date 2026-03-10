@@ -158,6 +158,7 @@ function GlobalStyles() {
         .village-roots-grid { grid-template-columns: 1fr !important; }
         .mens-club-stats { grid-template-columns: repeat(3, 1fr) !important; }
         .wineries-itinerary-grid { grid-template-columns: 1fr !important; }
+        .listing-demo-grid { grid-template-columns: 1fr !important; }
       }
       @media (max-width: 640px) {
         .mobile-col-1 { grid-template-columns: 1fr !important; }
@@ -14663,12 +14664,118 @@ function FoundingPage() {
 
       <WaveDivider topColor={C.night} bottomColor={C.cream} />
 
+      {/* ── LISTING DEMO ── */}
+      {(() => {
+        const [demoExpanded, setDemoExpanded] = React.useState(false);
+        React.useEffect(() => {
+          const t = setInterval(() => setDemoExpanded(e => !e), 3500);
+          return () => clearInterval(t);
+        }, []);
+        const accentColor = C.sage;
+        return (
+          <section style={{ background: C.cream, padding: "72px 24px" }}>
+            <div style={{ maxWidth: 960, margin: "0 auto" }}>
+              <FadeIn>
+                <SectionLabel style={{ textAlign: "center", display: "block" }}>What You're Getting</SectionLabel>
+                <SectionTitle center>Free listing vs. Enhanced — live.</SectionTitle>
+                <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 540, margin: "0 auto 52px", textAlign: "center" }}>
+                  This is the actual directory. Watch what happens when you upgrade.
+                </p>
+              </FadeIn>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }} className="listing-demo-grid">
+
+                {/* ── FREE COLUMN ── */}
+                <FadeIn delay={60}>
+                  <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, fontWeight: 700, color: C.textMuted, textTransform: "uppercase", letterSpacing: 2, marginBottom: 12 }}>Free</div>
+                  <div style={{ background: "#fff", borderRadius: "0 4px 4px 0", borderLeft: "3px solid transparent", boxShadow: "0 1px 4px rgba(0,0,0,0.06)", overflow: "hidden" }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "10px 1fr auto", gap: "0 10px", alignItems: "start", padding: "14px 16px" }}>
+                      <div style={{ width: 8, height: 8, borderRadius: "50%", background: C.textMuted, marginTop: 5, flexShrink: 0 }} />
+                      <div>
+                        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, fontSize: 14, color: C.text }}>Lakeside Hardware</div>
+                        <div style={{ fontSize: 12, color: C.textMuted, marginTop: 2 }}>(517) 555-0182</div>
+                        <div style={{ fontSize: 11, color: C.textMuted, marginTop: 1 }}>4 Lakeview Blvd, Manitou Beach</div>
+                      </div>
+                      <div style={{ fontSize: 11, color: C.lakeBlue, fontWeight: 700, fontFamily: "'Libre Franklin', sans-serif", whiteSpace: "nowrap", paddingTop: 2 }}>Upgrade →</div>
+                    </div>
+                  </div>
+                  {/* Free callout */}
+                  <div style={{ marginTop: 16, padding: "14px 18px", background: `${C.sunset}10`, border: `1px dashed ${C.sunset}50`, borderRadius: 10 }}>
+                    <div style={{ fontFamily: "'Caveat', cursive", fontSize: 19, color: C.sunset, fontWeight: 700, marginBottom: 6 }}>That's the whole listing.</div>
+                    <div style={{ fontSize: 12, color: C.textLight, lineHeight: 1.7, fontFamily: "'Libre Franklin', sans-serif" }}>
+                      Name, phone number, address.<br />No description. No website. No way to stand out.
+                    </div>
+                  </div>
+                </FadeIn>
+
+                {/* ── ENHANCED COLUMN ── */}
+                <FadeIn delay={120}>
+                  <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, fontWeight: 700, color: accentColor, textTransform: "uppercase", letterSpacing: 2, marginBottom: 12 }}>Enhanced</div>
+                  <div
+                    style={{ background: "#fff", borderRadius: "0 4px 4px 0", borderLeft: `3px solid ${accentColor}`, boxShadow: "0 1px 4px rgba(0,0,0,0.08)", overflow: "hidden", cursor: "pointer" }}
+                    onClick={() => setDemoExpanded(e => !e)}
+                  >
+                    <div style={{ display: "grid", gridTemplateColumns: "10px 1fr auto", gap: "0 10px", alignItems: "start", padding: "14px 16px" }}>
+                      <div style={{ width: 8, height: 8, borderRadius: "50%", background: accentColor, marginTop: 5, flexShrink: 0 }} />
+                      <div>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, fontSize: 14, color: C.text }}>Lakeside Hardware</span>
+                          <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", background: `${accentColor}18`, color: accentColor, borderRadius: 4, padding: "2px 6px", fontFamily: "'Libre Franklin', sans-serif" }}>Enhanced</span>
+                        </div>
+                        <div style={{ fontSize: 12, color: C.textMuted, marginTop: 2 }}>(517) 555-0182</div>
+                        <div style={{ fontSize: 11, color: C.textMuted, marginTop: 1 }}>4 Lakeview Blvd, Manitou Beach</div>
+                      </div>
+                      <div style={{ fontSize: 11, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", paddingTop: 2, whiteSpace: "nowrap" }}>
+                        {demoExpanded ? "Less ↑" : "More ↓"}
+                      </div>
+                    </div>
+                    {/* Expanded panel */}
+                    <div style={{ maxHeight: demoExpanded ? "300px" : 0, overflow: "hidden", transition: "max-height 0.5s ease-out" }}>
+                      <div style={{ padding: "12px 16px 16px 16px", background: `${accentColor}05`, borderTop: `1px solid ${accentColor}20`, display: "flex", gap: 14, alignItems: "flex-start" }}>
+                        <div style={{ width: 48, height: 48, borderRadius: 8, background: `${accentColor}15`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 20 }}>🏠</div>
+                        <div>
+                          <div style={{ fontSize: 13, color: C.textLight, lineHeight: 1.75, marginBottom: 10, fontFamily: "'Libre Franklin', sans-serif" }}>
+                            Everything you need for the lake house — lumber, hardware, seasonal supplies. Family owned since 1987.
+                          </div>
+                          <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+                            <span style={{ fontSize: 11, fontWeight: 700, color: accentColor, letterSpacing: 0.5, fontFamily: "'Libre Franklin', sans-serif", textTransform: "uppercase" }}>Visit Website →</span>
+                            <span style={{ fontSize: 11, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>info@lakesidehardware.com</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Enhanced callout */}
+                  <div style={{ marginTop: 16, padding: "14px 18px", background: `${accentColor}0D`, border: `1px dashed ${accentColor}50`, borderRadius: 10 }}>
+                    <div style={{ fontFamily: "'Caveat', cursive", fontSize: 19, color: accentColor, fontWeight: 700, marginBottom: 6 }}>Everything above, plus:</div>
+                    <div style={{ fontSize: 12, color: C.textLight, lineHeight: 1.8, fontFamily: "'Libre Franklin', sans-serif" }}>
+                      ✓ Full description &nbsp;·&nbsp; ✓ Website link<br />
+                      ✓ Email contact &nbsp;·&nbsp; ✓ Logo / brand mark<br />
+                      ✓ Enhanced tier badge &nbsp;·&nbsp; ✓ Expandable panel
+                    </div>
+                  </div>
+                </FadeIn>
+
+              </div>
+
+              <FadeIn delay={200}>
+                <div style={{ textAlign: "center", marginTop: 36 }}>
+                  <div style={{ fontFamily: "'Caveat', cursive", fontSize: 17, color: C.textMuted }}>← Click the Enhanced row to toggle it yourself</div>
+                </div>
+              </FadeIn>
+            </div>
+          </section>
+        );
+      })()}
+
+      <WaveDivider topColor={C.cream} bottomColor={C.cream} />
+
       {/* ── THE MATH ── */}
       <section style={{ background: C.cream, padding: "80px 24px" }}>
         <div style={{ maxWidth: 760, margin: "0 auto" }}>
           <div style={{ display: "flex", gap: 48, alignItems: "center", marginBottom: 40, flexWrap: "wrap-reverse" }}>
             <FadeIn delay={120} style={{ flex: "0 0 auto", textAlign: "center" }}>
-              <img src="/images/founding-rate-illustration.png" alt="" aria-hidden="true" style={{ width: "min(220px, 55vw)", opacity: 0.92 }} />
+              <img src="/images/founding-rate-illustration.png" alt="" aria-hidden="true" style={{ width: "min(340px, 70vw)", opacity: 0.92 }} />
             </FadeIn>
             <FadeIn style={{ flex: "1 1 260px" }}>
               <SectionLabel>The Formula</SectionLabel>
@@ -15388,7 +15495,7 @@ function WinePartnerPage() {
               The 2026 Manitou Beach<br /><em style={{ color: C.sunsetLight }}>Wine Trail Awards</em>
             </h2>
             <div style={{ margin: "0 0 24px" }}>
-              <img src="/images/award-illustration.png" alt="" aria-hidden="true" style={{ width: "min(220px, 55vw)", mixBlendMode: "screen", opacity: 0.85 }} />
+              <img src="/images/award-illustration.png" alt="" aria-hidden="true" style={{ width: "min(220px, 55vw)", opacity: 0.93 }} />
             </div>
             <p style={{ fontSize: 15, color: "rgba(255,255,255,0.48)", lineHeight: 1.85, maxWidth: 520, margin: "0 auto 44px" }}>
               At the end of the season, the community has voted. The top-rated venues in each category receive a framed plaque — designed, printed, and delivered by us. Hang it. Post it. It's yours.
