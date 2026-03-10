@@ -7811,6 +7811,14 @@ function WineReviewModal({ venue, accent, onSuccess, onClose }) {
   const [note, setNote] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [wineList, setWineList] = useState([]);
+
+  useEffect(() => {
+    fetch('/api/winery-wines')
+      .then(r => r.json())
+      .then(d => setWineList(d.wines || []))
+      .catch(() => {});
+  }, []);
 
   const handleSubmit = async () => {
     if (!rating) { setError('Please rate the wine quality.'); return; }
@@ -7861,11 +7869,30 @@ function WineReviewModal({ venue, accent, onSuccess, onClose }) {
             <label style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, display: 'block', marginBottom: 8 }}>What did you try? *</label>
             <input
               type="text"
+              list="wine-suggestions"
               value={wineTried}
               onChange={e => setWineTried(e.target.value)}
               placeholder="The dry rosé, Cabernet Franc, 2023 Riesling..."
               style={{ width: '100%', padding: '10px 14px', borderRadius: 10, border: `1.5px solid ${C.sand}`, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.text, background: C.cream, outline: 'none', boxSizing: 'border-box' }}
             />
+            <datalist id="wine-suggestions">
+              {wineList.map(w => (
+                <option key={w.id} value={w.fullName || w.name}>{w.name} — {w.venue}</option>
+              ))}
+            </datalist>
+            {(() => {
+              const match = wineList.find(w =>
+                (w.fullName || w.name).toLowerCase() === wineTried.trim().toLowerCase()
+              );
+              if (!match || !match.category) return null;
+              const catColors = { Red: '#8B3A3A', White: '#7A8E72', Sweet: '#C9A84C', 'Rosé': '#D4845A', 'Fruit & Specialty': '#5B7E95' };
+              const bg = catColors[match.category] || C.sage;
+              return (
+                <span style={{ display: 'inline-block', marginTop: 6, padding: '2px 10px', borderRadius: 20, background: bg, color: '#fff', fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 0.5 }}>
+                  {match.category}
+                </span>
+              );
+            })()}
           </div>
 
           <div style={{ marginBottom: 24 }}>
