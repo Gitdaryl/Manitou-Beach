@@ -15667,7 +15667,7 @@ function WinePartnerPage() {
                 <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunsetLight }}>A note from The Yeti</div>
               </div>
               <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.85, margin: 0 }}>
-                "I've been roaming these lakes long enough to know a good pour when I smell one — which, for the record, is from about 40 yards away. These awards exist because someone has to keep the tasting rooms honest. Might as well be the guy in the fur suit."
+                "These awards aren't handed down by some panel of snobs in a back room. They're earned by the people actually sitting at your counter — real patrons, honest opinions, publicly on record. That's what makes them worth hanging on your wall. I'll also be at the ceremony, which should tell you everything."
               </p>
             </div>
           </FadeIn>
