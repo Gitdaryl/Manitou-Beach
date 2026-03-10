@@ -15662,9 +15662,12 @@ function WinePartnerPage() {
           </div>
           <FadeIn delay={400}>
             <div style={{ background: "rgba(212,132,90,0.1)", border: "1px solid rgba(212,132,90,0.22)", borderRadius: 14, padding: "24px 32px", maxWidth: 500, margin: "0 auto" }}>
-              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunsetLight, marginBottom: 10 }}>A note from Daryl</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 14 }}>
+                <img src="/images/yeti/yeti-camera.png" alt="The Yeti" style={{ width: 64, height: 64, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "2px solid rgba(212,132,90,0.3)" }} />
+                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunsetLight }}>A note from The Yeti</div>
+              </div>
               <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.85, margin: 0 }}>
-                "These awards matter because the community chose them — not an algorithm, not a paid ranking. I want venues to be able to hang something on their wall that means something. That's the whole point."
+                "I've been roaming these lakes long enough to know a good pour when I smell one — which, for the record, is from about 40 yards away. These awards exist because someone has to keep the tasting rooms honest. Might as well be the guy in the fur suit."
               </p>
             </div>
           </FadeIn>
