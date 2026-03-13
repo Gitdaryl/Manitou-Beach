@@ -3,7 +3,7 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     try {
       const response = await fetch(
-        `https://api.beehiiv.com/v2/publications/${process.env.BEEHIIV_PUBLICATION_ID}/subscriptions?status=active&limit=1`,
+        `https://api.beehiiv.com/v2/publications/${process.env.BEEHIIV_PUBLICATION_ID}/subscriptions?limit=1`,
         { headers: { 'Authorization': `Bearer ${process.env.BEEHIIV_API_KEY}` } }
       );
       if (!response.ok) return res.status(200).json({ count: 0 });

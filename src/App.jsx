@@ -2,6 +2,79 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { BrowserRouter, Routes, Route, useParams, useNavigate } from "react-router-dom";
 
 // ============================================================
+// 📑  TABLE OF CONTENTS
+// ============================================================
+// To easily navigate this 16,000+ line file, use your editors search feature
+// (Cmd+F / Ctrl+F) and paste the exact section title below.
+//
+// line 0004: 🎬  GLOBAL CSS KEYFRAMES & ANIMATIONS
+// line 0214: ✏️  CONFIGURABLE CONTENT — manage hero events via Notion
+// line 0218: 🎨  DESIGN TOKENS
+// line 0240: 💛  PAGE SPONSORS — update to activate; null = show placeholder
+// line 0258: 🧭  NAV SECTIONS
+// line 0283: 📋  BUSINESS DIRECTORY DATA
+// line 0285: Village page editorial listings — hardcoded for the Walk the Village section only.
+// line 0485: Events are 100% Notion-driven — no hardcoded data here.
+// line 0489: 🎬  VIDEO / STORY CONTENT
+// line 0543: 🧩  SHARED COMPONENTS
+// line 0731: 💛  PAGE SPONSOR BANNER — appears above Footer on eligible pages
+// line 0850: 📢  EVENT TICKER / MARQUEE
+// line 0903: 🏠  HERO SECTION
+// line 1168: 📅  FEATURED EVENTS STRIP — next 4 upcoming events, below hero
+// line 1171: 📢  PROMO BANNER — reusable, fetches active page banners
+// line 1353: 📰  NEWSLETTER SIGNUP
+// line 1356: 📬  SUBSCRIBE CONFIRMATION MODAL (MAGIC MOMENT)
+// line 1524: 📰  INLINE NEWSLETTER CTA (compact banner)
+// line 1617: 📅  12-MONTH ROLLING EVENT TIMELINE
+// line 1736: 📅  WHAT'S HAPPENING — home page teaser (3 events)
+// line 1856: 📅  /happening — PAGE HERO
+// line 1924: 📅  /happening — WEEKLY RECURRING EVENTS
+// line 2034: 📅  /happening — SPECIAL / ONE-OFF EVENTS
+// line 2175: 🎬  /happening — VIDEO SECTION
+// line 2275: 📅  /happening — INLINE SUBMIT FORM
+// line 2463: 🗺️  EXPLORE
+// line 2579: 💰  LISTING TIERS / PRICING SECTION
+// line 2814: 🏪  BUSINESS DIRECTORY
+// line 3279: 🎙️  HOLLY & THE YETI
+// line 3450: 🏡  LIVING HERE
+// line 3551: 📝  SUBMISSION FORM
+// line 3553: Client-side image compression
+// line 3917: ℹ️  ABOUT
+// line 3989: 🔻  FOOTER
+// line 4188: 🧭  NAVBAR
+// line 4518: 📅  /happening — FULL PAGE
+// line 4695: 🚚  LIVE FOOD TRUCK STRIP (home page — shows only when a truck has checked in within 12h)
+// line 4790: 🌊  ROUND LAKE PAGE
+// line 5148: 🏘️  MANITOU BEACH VILLAGE PAGE
+// line 5382: ⭐  FEATURED BUSINESS — SALES PAGE + STRIPE CHECKOUT
+// line 6148: 🏛️  MEN'S CLUB PAGE (/mens-club)
+// line 6484: 🏛️  HISTORICAL SOCIETY PAGE (/historical-society)
+// line 6815: 🎣  FISHING PAGE (/fishing)
+// line 7383: 🍷  WINERIES PAGE (/wineries)
+// line 8759: 🏖️  DEVILS LAKE PAGE (/devils-lake)
+// line 9076: 🌿  LAND & LAKE LADIES CLUB PAGE (/ladies-club)
+// line 9078: LADIES_CLUB_EVENTS removed — content now inline in LadiesClubEventsSection
+// line 9734: 📣  PROMOTE PAGE (/promote)
+// line 10585: 📰  THE MANITOU DISPATCH — BLOG / NEWSLETTER ARCHIVE
+// line 10606: 📢  AD SLOTS — Dispatch blog advertising
+// line 11026: 📰  DISPATCH PREVIEW — Homepage 3-card teaser
+// line 11233: 🛠️  YETI ADMIN — AI Article Writer (unlisted, /yeti-admin)
+// line 11518: 🇺🇸  USA 250th ANNIVERSARY PAGE (/usa250)
+// line 13633: 🎤  VOICE WIDGET — Vapi + ElevenLabs
+// line 13912: 🗺️  DISCOVER PAGE — MAP-FIRST COMMUNITY GUIDE
+// line 14409: 📄  PRIVACY POLICY
+// line 14479: 📄  TERMS OF SERVICE
+// line 14543: 🚚  /food-trucks — FOOD TRUCK LOCATOR
+// line 14889: 🏗️  /build — WEBSITE RENTAL LEAD CAPTURE
+// line 15149: 🔒  /founding — FOUNDING MEMBER PAGE (private link, friend outreach)
+// line 15526: 🚚  /food-truck-partner — FOOD TRUCK PARTNER PAGE (private link)
+// line 15936: 🍷  /wine-partner — WINE TRAIL PARTNER PAGE (private link)
+// line 16526: 📱  BLACKBIRD PROMO - USER CLAIM VIEW
+// line 16667: ☕️  BLACKBIRD PROMO - BARISTA REDEEM VIEW
+// line 16756: 🌐  APP ROOT
+// ============================================================
+
+// ============================================================
 // 🎬  GLOBAL CSS KEYFRAMES & ANIMATIONS
 // ============================================================
 function GlobalStyles() {
@@ -1354,7 +1427,7 @@ function FeaturedEventsStrip() {
 // 📰  NEWSLETTER SIGNUP
 // ============================================================
 // ============================================================
-// 📬  SUBSCRIBE CONFIRMATION MODAL
+// 📬  SUBSCRIBE CONFIRMATION MODAL (MAGIC MOMENT)
 // ============================================================
 function SubscribeModal({ alreadySubscribed, onClose }) {
   useEffect(() => {
@@ -1367,7 +1440,7 @@ function SubscribeModal({ alreadySubscribed, onClose }) {
     <div
       onClick={onClose}
       style={{
-        position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.55)',
+        position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         zIndex: 9999, padding: 24,
       }}
@@ -1375,52 +1448,74 @@ function SubscribeModal({ alreadySubscribed, onClose }) {
       <div
         onClick={e => e.stopPropagation()}
         style={{
-          background: '#fff', borderRadius: 16, padding: '40px 36px',
-          maxWidth: 440, width: '100%', boxShadow: '0 20px 60px rgba(0,0,0,0.25)',
+          background: '#fff', borderRadius: 16, padding: '48px 40px',
+          maxWidth: 480, width: '100%', boxShadow: '0 24px 80px rgba(0,0,0,0.3)',
           textAlign: 'center', fontFamily: "'Libre Franklin', sans-serif",
+          position: 'relative', overflow: 'hidden'
         }}
       >
+        <div style={{ position: 'absolute', top: -50, right: -50, width: 150, height: 150, background: `${C.sunset}10`, borderRadius: '50%', pointerEvents: 'none' }}/>
+        <div style={{ position: 'absolute', bottom: -30, left: -30, width: 100, height: 100, background: `${C.sage}10`, borderRadius: '50%', pointerEvents: 'none' }}/>
+
         {alreadySubscribed ? (
           <>
-            <div style={{ fontSize: 40, marginBottom: 16 }}>👋</div>
-            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.dusk, margin: '0 0 12px' }}>
+            <div style={{ fontSize: 44, marginBottom: 16 }}>👋</div>
+            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, color: C.dusk, margin: '0 0 12px' }}>
               Already on the list!
             </h3>
-            <p style={{ color: C.textLight, fontSize: 15, lineHeight: 1.6, margin: '0 0 28px' }}>
+            <p style={{ color: C.textLight, fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>
               You're already subscribed to The Manitou Dispatch. Watch your inbox — the next issue is coming soon.
             </p>
           </>
         ) : (
           <>
-            <div style={{ fontSize: 40, marginBottom: 16 }}>📬</div>
-            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.dusk, margin: '0 0 12px' }}>
-              You're almost in!
+            <div style={{ fontSize: 48, marginBottom: 12 }}>🍪</div>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunset, marginBottom: 10 }}>
+              Secret Lake Code
+            </div>
+            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, color: C.dusk, margin: '0 0 20px' }}>
+              You're almost in...
             </h3>
-            <p style={{ color: C.textLight, fontSize: 15, lineHeight: 1.6, margin: '0 0 20px' }}>
-              Check your inbox for a confirmation email from <strong>The Manitou Dispatch</strong>. Click the link inside to confirm and you're set.
-            </p>
+            
             <div style={{
-              background: '#FFF8EC', border: '1px solid #F5DFA0', borderRadius: 10,
-              padding: '14px 18px', marginBottom: 28, textAlign: 'left',
+              background: `linear-gradient(135deg, ${C.sage}10 0%, ${C.lakeBlue}10 100%)`, 
+              border: `1px solid ${C.sage}30`, borderRadius: 12, padding: '24px 20px', marginBottom: 28,
+              position: 'relative'
             }}>
-              <div style={{ fontWeight: 600, color: C.dusk, fontSize: 13, marginBottom: 6 }}>
-                Don't see it?
-              </div>
-              <div style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6 }}>
-                Check your <strong>spam or junk folder</strong> and mark us as <strong>"Not Spam"</strong> — that's all it takes to make sure every issue lands in your inbox from here on out.
+              <p style={{ color: C.text, fontSize: 15, lineHeight: 1.6, margin: '0 0 16px', fontWeight: 600 }}>
+                Step 1: Click confirm in your email.
+              </p>
+              <p style={{ color: C.textLight, fontSize: 14, lineHeight: 1.6, margin: '0 0 16px' }}>
+                Step 2: Show this secret code at <strong>Blackbird Cafe</strong> this weekend for a welcome cookie on us.
+              </p>
+              <div style={{
+                fontFamily: "'Courier New', monospace", fontSize: 22, fontWeight: 700, 
+                letterSpacing: 4, color: C.sunset, background: '#fff', padding: '12px 24px', 
+                borderRadius: 8, display: 'inline-block', border: `1.5px dashed ${C.sunset}60`,
+                boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
+              }}>
+                LAKEBOUND
               </div>
             </div>
+
+            <p style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.6, marginBottom: 24 }}>
+              Check your <strong>spam/junk</strong> folder if you don't see the confirmation email within a few minutes.
+            </p>
           </>
         )}
         <button
           onClick={onClose}
           style={{
-            background: C.lakeBlue, color: '#fff', border: 'none', borderRadius: 8,
-            padding: '13px 32px', fontSize: 15, fontWeight: 600, cursor: 'pointer',
+            background: C.sage, color: '#fff', border: 'none', borderRadius: 8,
+            padding: '14px 32px', fontSize: 15, fontWeight: 700, cursor: 'pointer',
             fontFamily: "'Libre Franklin', sans-serif", width: '100%',
+            letterSpacing: 1, textTransform: 'uppercase', transition: 'all 0.2s ease',
+            position: 'relative', zIndex: 1
           }}
+          onMouseEnter={e => e.target.style.transform = 'translateY(-1px)'}
+          onMouseLeave={e => e.target.style.transform = 'none'}
         >
-          {alreadySubscribed ? 'Got it' : 'Got it — I\'ll check! →'}
+          {alreadySubscribed ? 'Got it' : 'I saved the code →'}
         </button>
       </div>
     </div>
@@ -16500,6 +16595,237 @@ function WinePartnerPage() {
   );
 }
 
+
+// ============================================================
+// 📱  BLACKBIRD PROMO - USER CLAIM VIEW
+// ============================================================
+function ClaimPromoView() {
+  const { useState, useEffect } = React;
+  const [email, setEmail] = useState("");
+  const [code, setCode] = useState("");
+  const [status, setStatus] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [redeemedView, setRedeemedView] = useState(false);
+
+  useEffect(() => {
+    // If they came from the email button, grab their email from the URL
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("email")) {
+      setEmail(params.get("email"));
+    }
+  }, []);
+
+  const handleClaim = async (e) => {
+    e.preventDefault();
+    if (!email) return;
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch("/api/promo-claim", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email })
+      });
+      if (!res.ok) throw new Error("Failed to claim promo");
+      const data = await res.json();
+      setCode(data.code);
+      setStatus(data.status);
+      
+      if (data.status === "Redeemed") {
+        setRedeemedView(true);
+      }
+    } catch (err) {
+      setError("There was a problem grabbing your code. Try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // User clicked "Mark as Redeemed" themselves, or saw the barista do it.
+  const handleRevealReview = () => {
+    setRedeemedView(true);
+  };
+
+  if (redeemedView) {
+    return (
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: C.cream, padding: 24, textAlign: "center" }}>
+        <div style={{ maxWidth: 440, width: "100%", padding: "48px 32px", background: "#fff", borderRadius: 16, boxShadow: "0 20px 40px rgba(0,0,0,0.06)" }}>
+          <div style={{ fontSize: 56, marginBottom: 16 }}>🍪</div>
+          <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, color: C.text, margin: "0 0 12px 0" }}>Hope it was delicious!</h2>
+          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.6, marginBottom: 32 }}>
+            Small businesses run on reputation. If you enjoyed the cookie and your time at Blackbird, taking 60 seconds to drop a Yelp review means the absolute world to Shay and Gordo.
+          </p>
+          <Btn href="https://www.yelp.com/biz/blackbird-cafe-and-baking-company-manitou-beach" variant="sage">Leave a Yelp Review</Btn>
+          <div style={{ marginTop: 24 }}>
+             <a href="/" style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>Return Home</a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (code) {
+    // Show QR Code directly via a lightweight external img service (to skip huge library)
+    const redeemUrl = `${window.location.origin}/redeem-promo?code=${code}`;
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(redeemUrl)}`;
+    
+    return (
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: C.night, padding: 24 }}>
+        <div style={{ maxWidth: 400, width: "100%", background: "#fff", borderRadius: 16, padding: "40px 32px", textAlign: "center", boxShadow: "0 24px 60px rgba(0,0,0,0.4)" }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.textMuted, marginBottom: 8 }}>
+            Blackbird Cafe
+          </div>
+          <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, color: C.text, margin: "0 0 16px 0" }}>
+            Your Free Cookie
+          </h2>
+          <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.6, margin: "0 0 32px 0" }}>
+            Show this screen to your barista. They will scan the QR code to approve it.
+          </p>
+          
+          <div style={{ 
+            background: "#fff", padding: 20, border: `2px solid ${C.sand}`, borderRadius: 12, 
+            display: "inline-block", marginBottom: 24, pointerEvents: "none"
+          }}>
+             <img src={qrUrl} alt="QR Code" width={180} height={180} />
+          </div>
+
+          <div style={{ fontFamily: "'Courier New', monospace", fontSize: 24, fontWeight: 700, letterSpacing: 4, color: C.text, marginBottom: 32 }}>
+            {code}
+          </div>
+
+          <button onClick={handleRevealReview} style={{
+            background: "transparent", color: C.lakeBlue, border: "none", fontSize: 14, 
+            fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif", cursor: "pointer",
+            textDecoration: "underline"
+          }}>
+            I got my cookie! (Reveal next step)
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: C.cream, padding: 24 }}>
+      <div style={{ maxWidth: 440, width: "100%", background: "#fff", borderRadius: 16, padding: "48px 36px", textAlign: "center", boxShadow: "0 20px 40px rgba(0,0,0,0.06)" }}>
+        <div style={{ fontSize: 40, marginBottom: 16 }}>🍪</div>
+        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunset, marginBottom: 10 }}>
+          Secret Lake Code
+        </div>
+        <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, color: C.text, margin: "0 0 16px 0" }}>
+          Claim Your Welcome Cookie
+        </h2>
+        <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.6, margin: "0 0 32px 0" }}>
+          Confirm your email address below to generate your unique Blackbird Cafe QR code. Show it to your barista to redeem!
+        </p>
+        
+        <form onSubmit={handleClaim} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <input 
+            type="email" 
+            placeholder="your@email.com" 
+            value={email} 
+            onChange={e => setEmail(e.target.value)}
+            required
+            style={{ padding: "14px 16px", borderRadius: 6, border: `1px solid ${C.sand}`, fontSize: 15, fontFamily: "'Libre Franklin', sans-serif" }}
+          />
+          <Btn variant="sage" disabled={loading}>{loading ? "Generating..." : "Get My QR Code"}</Btn>
+        </form>
+        {error && <p style={{ color: C.sunset, fontSize: 13, marginTop: 12 }}>{error}</p>}
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// ☕️  BLACKBIRD PROMO - BARISTA REDEEM VIEW
+// ============================================================
+function RedeemPromoView() {
+  const { useState, useEffect } = React;
+  const [codeData, setCodeData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [redeeming, setRedeeming] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+    
+    if (!code) {
+      setLoading(false);
+      return;
+    }
+
+    fetch(`/api/promo-redeem?code=${code}`)
+      .then(r => r.json())
+      .then(data => {
+        setCodeData(data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const handleApprove = async () => {
+    setRedeeming(true);
+    try {
+      const res = await fetch("/api/promo-redeem", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: codeData.id, code: codeData.code })
+      });
+      if (!res.ok) throw new Error("Failed");
+      setSuccess(true);
+    } catch (err) {
+      alert("Error redeeming code. Check internet connection.");
+    } finally {
+      setRedeeming(false);
+    }
+  };
+
+  if (loading) return <div style={{ padding: 40, textAlign: "center", fontFamily: "sans-serif" }}>Loading...</div>;
+  if (!codeData || codeData.error) return <div style={{ padding: 40, textAlign: "center", color: "red", fontFamily: "sans-serif" }}>❌ Invalid Code Not Found</div>;
+
+  if (success || codeData.status === "Redeemed") {
+    return (
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f0fdf4", padding: 24 }}>
+         <div style={{ width: "100%", textAlign: "center" }}>
+            <div style={{ fontSize: 64, marginBottom: 16 }}>✅</div>
+            <h1 style={{ fontFamily: "sans-serif", color: "#166534", fontSize: 24, margin: "0 0 8px 0" }}>REDEEMED</h1>
+            <p style={{ color: "#15803d", fontFamily: "sans-serif" }}>Code {codeData.code} is marked as used.</p>
+         </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: C.night, padding: 24 }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }}>
+        <div style={{ fontSize: 13, textTransform: "uppercase", letterSpacing: 2, color: "rgba(255,255,255,0.5)", marginBottom: 16, fontFamily: "sans-serif" }}>
+          Blackbird Barista Portal
+        </div>
+        <div style={{ fontSize: 48, fontWeight: 800, color: "#4ade80", fontFamily: "monospace", letterSpacing: 4, marginBottom: 16 }}>
+          {codeData.code}
+        </div>
+        <div style={{ fontSize: 20, fontWeight: 600, color: "#fff", fontFamily: "sans-serif" }}>
+          VALID COOKIE CODE
+        </div>
+      </div>
+      
+      <button 
+        onClick={handleApprove} 
+        disabled={redeeming}
+        style={{
+          background: "#4ade80", color: "#14532d", border: "none", borderRadius: 12,
+          padding: "24px", fontSize: 24, fontWeight: 800, letterSpacing: 2, textTransform: "uppercase",
+          width: "100%", cursor: "pointer"
+        }}
+      >
+        {redeeming ? "Approving..." : "Approve & Redeem"}
+      </button>
+    </div>
+  );
+}
+
 // ============================================================
 // 🌐  APP ROOT
 // ============================================================
@@ -16507,6 +16833,9 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+
+        <Route path="/claim-promo" element={<ClaimPromoView />} />
+        <Route path="/redeem-promo" element={<RedeemPromoView />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/happening" element={<HappeningPage />} />
         <Route path="/round-lake" element={<RoundLakePage />} />

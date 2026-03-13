@@ -58,16 +58,26 @@ export default async function handler(req, res) {
       if (!response.ok) {
         const err = await response.json();
         console.error('Notion error (first attempt):', JSON.stringify(err));
+        
+        // If Notion rejects because a property doesn't exist or is the wrong type (like Event URL)
         const isUrlFieldError = err?.message?.toLowerCase().includes('event url') ||
           err?.message?.toLowerCase().includes('image url') || err?.code === 'validation_error';
+          
         if (isUrlFieldError) {
+          console.log('Attempting fallback without URL fields to bypass Notion schema mismatch...');
           response = await postToNotion(buildProperties({ includeEventUrl: false, includeImageUrl: false }));
           if (!response.ok) {
             const retryErr = await response.json();
-            return res.status(500).json({ error: 'Submission failed', notionError: retryErr?.message || 'Unknown Notion error' });
+            return res.status(500).json({ 
+              error: 'Submission failed', 
+              notionError: retryErr?.message || 'Unknown Notion error. Check that your Notion Database column types precisely match the code.'
+            });
           }
         } else {
-          return res.status(500).json({ error: 'Submission failed', notionError: err?.message || 'Unknown Notion error' });
+          return res.status(500).json({ 
+            error: 'Submission failed', 
+            notionError: err?.message || 'Check your Notion Database columns.'
+          });
         }
       }
       return res.status(200).json({ success: true });
