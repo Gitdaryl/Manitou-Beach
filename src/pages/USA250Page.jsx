@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { FadeIn, SectionLabel, WaveDivider, Footer, Btn } from "../App";
+import { Footer } from "../App";
+import { FadeIn, SectionLabel, WaveDivider, Btn } from "../components/Shared";
 import { C, USA250_PUBLIC } from "../data/config";
 
 // ============================================================
