@@ -1,23 +1,8 @@
 import React from "react";
 
-export const C = {
-  cream:       "#FAF6EF",
-  warmWhite:   "#F5F0E8",
-  sand:        "#E8DFD0",
-  driftwood:   "#C4B498",
-  sage:        "#7A8E72",
-  sageDark:    "#5C6F55",
-  lakeBlue:    "#5B7E95",
-  lakeDark:    "#3D5A6E",
-  dusk:        "#2D3B45",
-  night:       "#1A2830",
-  sunset:      "#D4845A",
-  sunsetLight: "#E8A87C",
-  warmGray:    "#8A7E6E",
-  text:        "#3B3228",
-  textLight:   "#6B6052",
-  textMuted:   "#9A8E7E",
-};
+import { C } from "../data/config";
+
+export { C };
 
 export function Btn({ children, onClick, href, variant = "primary", small = false, target, rel, style: styleProp }) {
   const base = {
