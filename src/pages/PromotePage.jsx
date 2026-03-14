@@ -1,11 +1,78 @@
 import React, { useState } from 'react';
 import { Btn, ScrollProgress, SectionLabel, SectionTitle, WaveDivider } from '../components/Shared';
 import { C } from '../data/config';
-import { Footer, Navbar } from '../App';
+import { Footer, Navbar, GlobalStyles, NewsletterInline, HollyYetiSection } from '../App';
+import { HappeningSubmitCTA } from './HappeningPage';
 
-function PlacementDiagram({ type, dark = false }
+const PROMO_PAGES = ["Home", "Whats Happening", "Village", "Devils Lake", "Wineries", "Fishing", "Round Lake"];
 
-function AdvertisePage() {
+const ADVERTISE_PACKAGES = [
+  { id: "newsletter_mention", label: "Newsletter Mention",   detail: "1 Issue",            price: "$29",  fullPrice: "$49",  diagramType: "newsletter_sm",
+    desc: "Your brand, product, or event mentioned with a link in the next Dispatch email.",
+    plain: "One or two sentences about you, with a link, in front of everyone who reads the weekly email. Simple and effective." },
+  { id: "newsletter",         label: "Newsletter Feature",   detail: "1 Issue",            price: "$39",  fullPrice: "$79",  diagramType: "newsletter",
+    desc: "A full dedicated section at the top of the next Manitou Beach Dispatch — before anyone scrolls.",
+    plain: "Your business or event gets its own section at the very top of the email. Image, copy, link. The whole community sees it before anything else." },
+  { id: "banner_1p",          label: "Page Banner",          detail: "1 Page · 30 Days",  price: "$29",  fullPrice: "$59",  diagramType: "banner",
+    desc: "A full-width banner for your brand on whichever page your customers visit most.",
+    plain: "Like renting a billboard, but on the website. Pick the page — Fishing, Wineries, Devils Lake — and your banner sits right there for 30 days." },
+  { id: "banner_3p",          label: "Page Banner",          detail: "3 Pages · 30 Days", price: "$69",  fullPrice: "$129", diagramType: "banner3",
+    desc: "Same banner treatment across three pages at once — maximum coverage for 30 days.",
+    plain: "Three pages, one price. Catch people wherever they're browsing — whether they're checking fishing conditions, planning a winery visit, or reading about the lake." },
+  { id: "holly_yeti",         label: "Holly & Yeti Feature", detail: "Video · 30 Days",   price: "$179", fullPrice: "$350", diagramType: "video",
+    desc: "Holly and The Yeti create a short video about your business. Lives on the site for 30 days and shared on social.",
+    plain: "We come out, tell your story on camera, and put it on the website for a month. Real people, real place — the kind of thing the community actually watches." },
+];
+
+const PROMOTE_PACKAGES = [
+  { id: "event_spotlight", label: "Event Spotlight",        detail: "Featured Listing",   price: "$25",  fullPrice: "$49",  diagramType: "calendar",
+    desc: "Your event in the calendar with a photo and a ticket button.",
+    plain: "Instead of just a line of text like the free listings, yours shows up with a photo and a big 'Get Tickets' button. Stands out." },
+  { id: "hero_7d",         label: "Hero Feature",           detail: "7 Days",             price: "$75",  fullPrice: "$149", diagramType: "hero",
+    desc: "The first thing anyone sees when they visit the site — full screen, your event, for 7 days.",
+    plain: "Picture the front page of a newspaper. That's your event, full size, the moment anyone opens the website. Every visitor sees it first, for a whole week." },
+  { id: "hero_30d",        label: "Hero Feature",           detail: "30 Days",            price: "$249", fullPrice: "$499", diagramType: "hero",
+    desc: "Own the front of the site for a full month.",
+    plain: "Same front-page treatment as the 7-day option — just for a whole month. Great for building buzz leading up to a big event." },
+  { id: "newsletter",      label: "Newsletter Feature",     detail: "1 Issue",            price: "$39",  fullPrice: "$79",  diagramType: "newsletter",
+    desc: "Top spot in the next Manitou Beach Dispatch email — before anyone scrolls.",
+    plain: "A big beautiful announcement at the very top of our weekly email. The whole community sees it in their inbox before they read anything else." },
+  { id: "banner_1p",       label: "Page Feature Banner",    detail: "1 Page · 30 Days",  price: "$29",  fullPrice: "$59",  diagramType: "banner",
+    desc: "A wide banner for your event sitting in the middle of whichever page your crowd visits most.",
+    plain: "Like a billboard, but on the website. Pick the page where your people hang out — Fishing, Wineries, Devils Lake — and your banner is right there for 30 days." },
+  { id: "banner_3p",       label: "Page Feature Banner",    detail: "3 Pages · 30 Days", price: "$69",  fullPrice: "$129", diagramType: "banner3",
+    desc: "Same billboard treatment, but on three different pages at once.",
+    plain: "Cover more ground — your banner shows up on three pages across the site. Catch people wherever they're browsing." },
+  { id: "strip_pin",       label: "Featured Strip Pin",     detail: "30 Days",            price: "$19",  fullPrice: "$39",  diagramType: "strip",
+    desc: "First spot in the 'Coming Up' list on the homepage — right below the big banner.",
+    plain: "There's a scrolling list of upcoming events near the top of the home page. Your event goes first on that list for 30 days. Hard to scroll past." },
+  { id: "holly_yeti",      label: "Holly & Yeti Spotlight", detail: "30 Days",            price: "$179", fullPrice: "$350", diagramType: "video",
+    desc: "Holly and The Yeti make a short video about your event or business. Lives on the site for 30 days.",
+    plain: "We come out, shoot a short video, and it lives on the website for a month. We share it on social too. It's the kind of thing people actually watch." },
+  { id: "spotlight",       label: "Full Launch Bundle",     detail: "Best Value",         price: "$149", fullPrice: "$299", diagramType: "bundle",
+    desc: "Front page of the site for 7 days + top of the newsletter + featured calendar listing. All three at once.",
+    plain: "The whole shebang. Front page of the website, top of the email, featured in the calendar. Maximum coverage — and you save $55 doing it this way.", badge: "Best Value" },
+];
+
+function PlacementDiagram({ type, dark = false }) {
+  const hl = "rgba(212,132,90,0.85)";
+  const bg = dark ? "rgba(255,255,255,0.05)" : "rgba(45,59,69,0.04)";
+  const line = dark ? "rgba(255,255,255,0.10)" : "rgba(45,59,69,0.12)";
+  const muted = dark ? "rgba(255,255,255,0.09)" : "rgba(45,59,69,0.09)";
+  const base = { borderRadius: 6, overflow: "hidden", marginBottom: 14, border: `1px solid ${line}`, background: bg, padding: "8px 10px", position: "relative" };
+  if (type === "free") return (<div style={base}><div style={{ height: 8, borderRadius: 3, background: muted, marginBottom: 5, width: "55%" }} />{[1,2,3].map(i => (<div key={i} style={{ height: 8, borderRadius: 3, background: muted, marginBottom: 3, opacity: i === 1 ? 1 : 0.6 }} />))}<div style={{ fontSize: 7, color: dark ? "rgba(255,255,255,0.35)" : "rgba(45,59,69,0.4)", fontFamily: "'Libre Franklin',sans-serif", marginTop: 3, letterSpacing: 0.5 }}>Text-only listing in the calendar</div></div>);
+  if (type === "hero") return (<div style={base}><div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 5 }}><div style={{ width: 6, height: 6, borderRadius: "50%", background: muted }} /><div style={{ flex: 1, height: 4, borderRadius: 2, background: muted }} /><div style={{ width: 20, height: 4, borderRadius: 2, background: muted }} /><div style={{ width: 16, height: 4, borderRadius: 2, background: muted }} /></div><div style={{ height: 38, borderRadius: 4, background: hl, display: "flex", alignItems: "center", justifyContent: "center" }}><span style={{ fontSize: 8, fontFamily: "'Libre Franklin',sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.9)" }}>Your Event — Full Screen</span></div><div style={{ display: "flex", gap: 4, marginTop: 5 }}>{[1,2,3].map(i => <div key={i} style={{ flex: 1, height: 10, borderRadius: 3, background: muted }} />)}</div></div>);
+  if (type === "calendar") return (<div style={base}><div style={{ height: 8, borderRadius: 3, background: muted, marginBottom: 5, width: "60%" }} /><div style={{ borderRadius: 4, border: `1.5px solid ${hl}`, background: `${hl}20`, padding: "4px 6px", marginBottom: 3, display: "flex", alignItems: "center", gap: 5 }}><div style={{ width: 20, height: 14, borderRadius: 2, background: hl, flexShrink: 0 }} /><div style={{ flex: 1 }}><div style={{ height: 4, borderRadius: 2, background: "rgba(255,255,255,0.5)", marginBottom: 2 }} /><div style={{ height: 3, borderRadius: 2, background: muted, width: "70%" }} /></div><div style={{ fontSize: 7, fontFamily: "'Libre Franklin',sans-serif", fontWeight: 700, color: hl, whiteSpace: "nowrap", letterSpacing: 0.5 }}>GET TICKETS</div></div>{[1,2].map(i => <div key={i} style={{ height: 10, borderRadius: 3, background: muted, marginBottom: 3 }} />)}</div>);
+  if (type === "newsletter_sm") return (<div style={base}><div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 5 }}><div style={{ fontSize: 12 }}>✉️</div><div style={{ flex: 1, height: 4, borderRadius: 2, background: muted }} /></div>{[1,2].map(i => <div key={i} style={{ height: 4, borderRadius: 2, background: muted, marginBottom: 3, width: "100%" }} />)}<div style={{ display: "flex", alignItems: "center", gap: 6, padding: "3px 5px", borderRadius: 3, background: `${hl}30`, border: `1px solid ${hl}60`, marginBottom: 3 }}><div style={{ width: 6, height: 6, borderRadius: "50%", background: hl, flexShrink: 0 }} /><div style={{ flex: 1, height: 3, borderRadius: 2, background: hl, opacity: 0.7 }} /><div style={{ fontSize: 6, color: dark ? "rgba(255,255,255,0.5)" : "rgba(45,59,69,0.5)", fontFamily: "'Libre Franklin',sans-serif", whiteSpace: "nowrap" }}>↗</div></div>{[1,2].map(i => <div key={i} style={{ height: 4, borderRadius: 2, background: muted, marginBottom: 3, width: i === 2 ? "65%" : "100%" }} />)}<div style={{ fontSize: 7, color: dark ? "rgba(255,255,255,0.35)" : "rgba(45,59,69,0.4)", fontFamily: "'Libre Franklin',sans-serif", letterSpacing: 0.5 }}>Brand mention with link in email body</div></div>);
+  if (type === "newsletter") return (<div style={base}><div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 5 }}><div style={{ fontSize: 12 }}>✉️</div><div style={{ flex: 1, height: 4, borderRadius: 2, background: muted }} /></div><div style={{ borderRadius: 3, background: hl, padding: "4px 6px", marginBottom: 4, textAlign: "center" }}><span style={{ fontSize: 7, fontFamily: "'Libre Franklin',sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "#fff" }}>Your Brand — Top of Email</span></div>{[1,2,3].map(i => <div key={i} style={{ height: 4, borderRadius: 2, background: muted, marginBottom: 3, width: i === 3 ? "55%" : "100%" }} />)}</div>);
+  if (type === "banner" || type === "banner3") return (<div style={base}><div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 4 }}><div style={{ width: 6, height: 6, borderRadius: "50%", background: muted }} /><div style={{ flex: 1, height: 3, borderRadius: 2, background: muted }} /></div>{[1,2].map(i => <div key={i} style={{ height: 5, borderRadius: 2, background: muted, marginBottom: 3 }} />)}<div style={{ height: 14, borderRadius: 3, background: hl, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 3, position: "relative" }}><span style={{ fontSize: 7, fontFamily: "'Libre Franklin',sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "#fff" }}>{type === "banner3" ? "Your Banner — 3 Pages" : "Your Banner Placement"}</span></div>{[1,2].map(i => <div key={i} style={{ height: 5, borderRadius: 2, background: muted, marginBottom: 3 }} />)}{type === "banner3" && (<div style={{ display: "flex", gap: 3 }}>{["Page 1","Page 2","Page 3"].map(p => (<div key={p} style={{ flex: 1, height: 8, borderRadius: 2, background: `${hl}40`, display: "flex", alignItems: "center", justifyContent: "center" }}><span style={{ fontSize: 6, color: "rgba(255,255,255,0.6)", fontFamily: "'Libre Franklin',sans-serif" }}>{p}</span></div>))}</div>)}</div>);
+  if (type === "strip") return (<div style={base}><div style={{ height: 24, borderRadius: 4, background: muted, marginBottom: 5, display: "flex", alignItems: "center", justifyContent: "center" }}><span style={{ fontSize: 7, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin',sans-serif" }}>Hero Area</span></div><div style={{ display: "flex", gap: 4, overflow: "hidden" }}><div style={{ flexShrink: 0, width: 44, height: 28, borderRadius: 4, background: hl, border: `1.5px solid rgba(255,255,255,0.3)`, display: "flex", alignItems: "center", justifyContent: "center" }}><span style={{ fontSize: 6, fontFamily: "'Libre Franklin',sans-serif", fontWeight: 700, color: "#fff", textAlign: "center", lineHeight: 1.2 }}>YOUR<br/>EVENT</span></div>{[1,2,3].map(i => <div key={i} style={{ flexShrink: 0, width: 44, height: 28, borderRadius: 4, background: muted }} />)}</div><div style={{ fontSize: 7, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin',sans-serif", marginTop: 3, letterSpacing: 0.5 }}>First in the Coming Up strip</div></div>);
+  if (type === "video") return (<div style={base}><div style={{ height: 44, borderRadius: 4, background: `linear-gradient(135deg,rgba(10,18,24,0.9),rgba(45,59,69,0.9))`, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, border: `1px solid ${hl}60` }}><div style={{ width: 20, height: 20, borderRadius: "50%", background: hl, display: "flex", alignItems: "center", justifyContent: "center" }}><span style={{ fontSize: 8, marginLeft: 2 }}>▶</span></div><div><div style={{ fontSize: 7, fontFamily: "'Libre Franklin',sans-serif", fontWeight: 700, color: "#fff", letterSpacing: 0.5 }}>Holly & The Yeti</div><div style={{ fontSize: 6, color: "rgba(255,255,255,0.5)", fontFamily: "'Libre Franklin',sans-serif" }}>feature your event</div></div></div></div>);
+  if (type === "bundle") return (<div style={base}><div style={{ height: 14, borderRadius: 3, background: hl, display: "flex", alignItems: "center", paddingLeft: 6, marginBottom: 3 }}><span style={{ fontSize: 6, fontFamily: "'Libre Franklin',sans-serif", fontWeight: 700, color: "#fff", letterSpacing: 0.5, textTransform: "uppercase" }}>Front Page</span></div><div style={{ display: "flex", gap: 3, marginBottom: 3 }}><div style={{ flex: 1, height: 8, borderRadius: 2, background: `${hl}80`, display: "flex", alignItems: "center", justifyContent: "center" }}><span style={{ fontSize: 6, color: "#fff", fontFamily: "'Libre Franklin',sans-serif" }}>✉️ Newsletter</span></div><div style={{ flex: 1, height: 8, borderRadius: 2, background: `${hl}60`, display: "flex", alignItems: "center", justifyContent: "center" }}><span style={{ fontSize: 6, color: "#fff", fontFamily: "'Libre Franklin',sans-serif" }}>📅 Calendar</span></div></div><div style={{ fontSize: 7, color: "rgba(255,255,255,0.4)", fontFamily: "'Libre Franklin',sans-serif", textAlign: "center", letterSpacing: 0.5 }}>All three placements at once</div></div>);
+  return null;
+}
+
+export function AdvertisePage() {
   const subScrollTo = (id) => { window.location.href = "/#" + id; };
   const params = new URLSearchParams(window.location.search);
   const isSuccess = params.get("success") === "true";

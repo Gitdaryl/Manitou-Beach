@@ -425,7 +425,7 @@ function VideoSection() {
 // ============================================================
 const EVENT_CATEGORIES = ["Live Music", "Food & Social", "Sports & Outdoors", "Community", "Arts & Culture", "Markets & Vendors", "Other"];
 
-function HappeningSubmitCTA({ simple = false }) {
+export function HappeningSubmitCTA({ simple = false }) {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");

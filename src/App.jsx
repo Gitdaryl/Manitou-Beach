@@ -7,11 +7,11 @@ import FoundingPage from './pages/FoundingPage';
 import FoodTruckPartnerPage from './pages/FoodTruckPartnerPage';
 import WinePartnerPage from './pages/WinePartnerPage';
 import FoodTrucksPage from './pages/FoodTrucksPage';
-import DiscoverPage from './pages/DiscoverPage';
+import DiscoverPage, { VoiceWidget } from './pages/DiscoverPage';
 import ClaimPage from './pages/ClaimPage';
 import YetiAdminPage from './pages/YetiAdminPage';
-import DispatchPage from './pages/DispatchPage';
-import PromotePage from './pages/PromotePage';
+import DispatchPage, { DispatchArticlePage } from './pages/DispatchPage';
+import PromotePage, { AdvertisePage } from './pages/PromotePage';
 import FeaturedPage from './pages/FeaturedPage';
 import HappeningPage, { formatEventDate } from './pages/HappeningPage';
 import ClaimPromoView from "./pages/ClaimPromoView";
@@ -103,7 +103,7 @@ import { BrowserRouter, Routes, Route, useParams, useNavigate } from "react-rout
 // ============================================================
 // 🎬  GLOBAL CSS KEYFRAMES & ANIMATIONS
 // ============================================================
-function GlobalStyles() {
+export function GlobalStyles() {
   return (
     <style>{`
       @keyframes marquee {
@@ -999,7 +999,7 @@ function NewsletterBar() {
 // ============================================================
 // 📰  INLINE NEWSLETTER CTA (compact banner)
 // ============================================================
-function NewsletterInline() {
+export function NewsletterInline() {
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -2147,7 +2147,7 @@ function BusinessRow({ business }) {
 // ============================================================
 // 🎙️  HOLLY & THE YETI
 // ============================================================
-function HollyYetiSection() {
+export function HollyYetiSection() {
   const [videoSpotlight, setVideoSpotlight] = useState(null);
 
   useEffect(() => {
@@ -3664,7 +3664,7 @@ const ADVERTISE_PACKAGES = [
 // 📰  THE MANITOU DISPATCH — BLOG / NEWSLETTER ARCHIVE
 // ============================================================
 
-const CATEGORY_COLORS = {
+export const CATEGORY_COLORS = {
   'Lake Life':       C.lakeBlue,
   'Community':       '#D4845A',
   'Community News':  '#D4845A',
@@ -3685,7 +3685,7 @@ const CATEGORY_COLORS = {
 // 📢  AD SLOTS — Dispatch blog advertising
 // ============================================================
 
-function useDispatchAds(page) {
+export function useDispatchAds(page) {
   const [slots, setSlots] = useState({});
   useEffect(() => {
     fetch(`/api/dispatch-ads?page=${page}`)
@@ -3697,7 +3697,7 @@ function useDispatchAds(page) {
 }
 
 // Pick a random ad from the slot array (for rotation)
-function pickAd(slotAds) {
+export function pickAd(slotAds) {
   if (!slotAds || !slotAds.length) return null;
   return slotAds[Math.floor(Math.random() * slotAds.length)];
 }
@@ -3707,7 +3707,7 @@ function pickAd(slotAds) {
 // Add/remove sponsors here. Rotates across cards by index.
 // logo: path in /public (e.g. '/images/blackbird-logo.png'), or null → shows 📷 placeholder
 // Set array to [] to hide all sponsor strips.
-const DISPATCH_CARD_SPONSORS = [
+export const DISPATCH_CARD_SPONSORS = [
   {
     name: 'Blackbird Cafe & Baking Co.',
     logo: '/images/blackbird-logo.png',
@@ -3722,7 +3722,7 @@ const DISPATCH_CARD_SPONSORS = [
 // ============================================================
 // 🛠️  YETI ADMIN — AI Article Writer (unlisted, /yeti-admin)
 // ============================================================
-const DISPATCH_CATEGORIES = ['Lake Life', 'Community', 'Events', 'Real Estate', 'Food & Drink', 'History', 'Recreation', 'Seasonal Tips', "Holly's Corner", 'Advertorial'];
+export const DISPATCH_CATEGORIES = ['Lake Life', 'Community', 'Events', 'Real Estate', 'Food & Drink', 'History', 'Recreation', 'Seasonal Tips', "Holly's Corner", 'Advertorial'];
 
 // ─── Review Capture — Business Config ────────────────────────────────────────
 // Add a key per business slug (matches /claim/:slug URL)
@@ -3743,10 +3743,10 @@ const CLAIM_BUSINESSES = {
 // ============================================================
 // 🎤  VOICE WIDGET — Vapi + ElevenLabs
 // ============================================================
-const VAPI_PUBLIC_KEY = import.meta.env.VITE_VAPI_PUBLIC_KEY;
-const VAPI_ASSISTANT_ID = import.meta.env.VITE_VAPI_ASSISTANT_ID;
+export const VAPI_PUBLIC_KEY = import.meta.env.VITE_VAPI_PUBLIC_KEY;
+export const VAPI_ASSISTANT_ID = import.meta.env.VITE_VAPI_ASSISTANT_ID;
 
-const SITE_KNOWLEDGE = `
+export const SITE_KNOWLEDGE = `
 ABOUT MANITOU BEACH & DEVILS LAKE:
 Manitou Beach, Michigan sits on Devils Lake in the Irish Hills — locals call it "the party lake." Devils Lake is 1,330 acres with 600+ boat slips. The community has been coming back every summer since the 1870s. This platform is the community's digital home: business directory, events calendar, and newsletter.
 
@@ -3779,9 +3779,9 @@ DEVILS LAKE YACHT CLUB: Fine dining overlooking Devils Lake, sailing races, and 
 // 🗺️  DISCOVER PAGE — MAP-FIRST COMMUNITY GUIDE
 // ============================================================
 
-const DISCOVER_MAP_CENTER = { lat: 42.0047, lng: -84.2888 };
+export const DISCOVER_MAP_CENTER = { lat: 42.0047, lng: -84.2888 };
 
-const DISCOVER_CATS = [
+export const DISCOVER_CATS = [
   { id: 'all',        label: 'All',                icon: '🗺️', color: '#7A8E72' },
   { id: 'food',       label: 'Food & Drink',        icon: '🍽️', color: '#D4845A', notionKey: 'Food & Drink' },
   { id: 'stays',      label: 'Stays & Rentals',      icon: '🏠', color: '#2D3B45', notionKey: 'Stays & Rentals' },
@@ -3798,7 +3798,7 @@ const DISCOVER_CATS = [
   // ↑ To add a new category: add a line here + set the same id as the Notion Category value
 ];
 
-const DISCOVER_POIS = [
+export const DISCOVER_POIS = [
   // Healthcare — Tecumseh ~84.94°W, Adrian ~84.04°W
   { id: 'herrick', name: 'ProMedica Herrick Hospital', cat: 'healthcare', sub: 'Full Hospital · ER', address: '500 E Pottawatamie St, Tecumseh, MI', phone: '(517) 424-3000', note: '~15 min from Manitou Beach', lat: 42.0005, lng: -83.9340, website: 'https://www.promedica.org/herrick-hospital' },
   { id: 'allegiance', name: 'Henry Ford Allegiance Health', cat: 'healthcare', sub: 'Full Hospital · Level II Trauma', address: '205 N East Ave, Jackson, MI', phone: '(517) 788-4800', note: '~30 min · Major medical center', lat: 42.2490, lng: -84.3945, website: 'https://www.henryford.com/locations/allegiance' },
@@ -3830,7 +3830,7 @@ const DISCOVER_POIS = [
   { id: 'village-loc', name: 'Manitou Beach Village', cat: 'community', sub: 'Village District', address: 'N Lakeview Blvd, Manitou Beach, MI', note: 'Shops · Cafe · Wine tasting · The Lighthouse', lat: 41.9720, lng: -84.3055, href: '/village' },
 ];
 
-const DISCOVER_MAP_STYLES = [
+export const DISCOVER_MAP_STYLES = [
   { elementType: 'geometry', stylers: [{ color: '#f2ede3' }] },
   { elementType: 'labels.text.fill', stylers: [{ color: '#3B3228' }] },
   { elementType: 'labels.text.stroke', stylers: [{ color: '#faf6ef' }] },
@@ -3845,12 +3845,12 @@ const DISCOVER_MAP_STYLES = [
   { featureType: 'administrative.locality', elementType: 'labels.text.fill', stylers: [{ color: '#7A8E72' }] },
 ];
 
-function createDiscoverPin(color) {
+export function createDiscoverPin(color) {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="36" viewBox="0 0 28 36"><path d="M14 0C6.27 0 0 6.27 0 14c0 9.33 14 22 14 22s14-12.67 14-22C28 6.27 21.73 0 14 0z" fill="${color}" stroke="rgba(0,0,0,0.12)" stroke-width="1"/><circle cx="14" cy="14" r="5.5" fill="white" opacity="0.95"/></svg>`;
   return 'data:image/svg+xml,' + encodeURIComponent(svg);
 }
 
-function buildDiscoverInfoWindow(poi) {
+export function buildDiscoverInfoWindow(poi) {
   const cat = DISCOVER_CATS.find(c => c.id === poi.cat);
   const color = cat?.color || '#7A8E72';
   const dir = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent((poi.address || poi.name) + (poi.address ? '' : ', MI'))}`;

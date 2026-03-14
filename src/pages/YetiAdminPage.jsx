@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { C } from '../data/config';
-import { Footer } from '../App';
+import { Footer, GlobalStyles, DISPATCH_CARD_SPONSORS, DISPATCH_CATEGORIES } from '../App';
 
 export default function YetiAdminPage() {
   // ── Auth ──────────────────────────────────────────────────────
