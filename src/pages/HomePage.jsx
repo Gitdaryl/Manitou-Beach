@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { C, SECTIONS } from '../data/config';
+import { C, SECTIONS, CAT_COLORS } from '../data/config';
 import { ShareBar, CategoryPill, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivider, PageSponsorBanner, DiagonalDivider, Btn, useCardTilt } from '../components/Shared';
 import { GlobalStyles, PromoBanner, NewsletterInline, HollyYetiSection, EventLightbox, Footer, Navbar } from '../App';
 import { DispatchPreviewSection } from './DispatchPage';
