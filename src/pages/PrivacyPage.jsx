@@ -1,6 +1,6 @@
 import React, {  } from 'react';
 import { C } from '../data/config';
-import { Footer, Navbar } from '../App';
+import { Footer, Navbar } from '../components/Layout';
 
 // ============================================================
 export default function PrivacyPage() {

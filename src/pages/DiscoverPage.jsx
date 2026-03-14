@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Btn, PageSponsorBanner, WaveDivider } from '../components/Shared';
 import { C } from '../data/config';
-import { Footer, Navbar, GlobalStyles, VAPI_PUBLIC_KEY, VAPI_ASSISTANT_ID, SITE_KNOWLEDGE, DISCOVER_MAP_CENTER, DISCOVER_CATS, DISCOVER_POIS, DISCOVER_MAP_STYLES, createDiscoverPin, buildDiscoverInfoWindow } from '../App';
+import { Footer, Navbar, GlobalStyles } from '../components/Layout';
+import { VAPI_PUBLIC_KEY, VAPI_ASSISTANT_ID, SITE_KNOWLEDGE, DISCOVER_MAP_CENTER, DISCOVER_CATS, DISCOVER_POIS, DISCOVER_MAP_STYLES, createDiscoverPin, buildDiscoverInfoWindow } from '../App';
 
 export function VoiceWidget() {
   const [status, setStatus] = useState('idle'); // idle | connecting | active | ending

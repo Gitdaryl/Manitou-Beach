@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Footer } from "../App";
+import { Footer } from "../components/Layout";
 import { FadeIn, SectionLabel, WaveDivider, Btn } from "../components/Shared";
 import { C, USA250_PUBLIC } from "../data/config";
 

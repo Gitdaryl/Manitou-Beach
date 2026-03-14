@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Btn, ScrollProgress, SectionLabel, SectionTitle, WaveDivider } from '../components/Shared';
 import { C } from '../data/config';
-import { Footer, Navbar, GlobalStyles, NewsletterInline, HollyYetiSection } from '../App';
+import { Footer, Navbar, GlobalStyles, NewsletterInline, HollyYetiSection } from '../components/Layout';
 import { HappeningSubmitCTA } from './HappeningPage';
 
 const PROMO_PAGES = ["Home", "Whats Happening", "Village", "Devils Lake", "Wineries", "Fishing", "Round Lake"];
