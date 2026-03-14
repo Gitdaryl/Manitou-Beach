@@ -1528,6 +1528,29 @@ function BusinessRow({ business }) {
     </div>
   );
 }
+function LivingCard({ item, i }) {
+  const tilt = useCardTilt(4);
+  return (
+    <FadeIn delay={i * 100} direction={i === 0 ? "left" : i === 2 ? "right" : "up"}>
+      <div
+        ref={tilt.ref}
+        onMouseMove={tilt.onMouseMove}
+        onMouseLeave={tilt.onMouseLeave}
+        className="card-tilt"
+        style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 14, padding: "28px 26px 26px", display: "flex", flexDirection: "column", height: "100%" }}
+      >
+        <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.text, margin: "0 0 12px 0", fontWeight: 700 }}>{item.title}</h3>
+        <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: "0 0 24px 0", flex: 1 }}>{item.desc}</p>
+        <a href={item.href} target={item.external ? "_blank" : "_self"} rel={item.external ? "noopener noreferrer" : undefined}
+          className="link-hover-underline"
+          style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sage, textDecoration: "none" }}
+        >
+          {item.cta} →
+        </a>
+      </div>
+    </FadeIn>
+  );
+}
 function LivingSection() {
   const items = [
     {
@@ -1590,36 +1613,9 @@ function LivingSection() {
         </FadeIn>
 
         <div className="mobile-col-1 living-here-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
-          {items.slice(1).map((item, i) => {
-            const tilt = useCardTilt(4);
-            return (
-              <FadeIn key={i} delay={i * 100} direction={i === 0 ? "left" : i === 2 ? "right" : "up"}>
-                <div
-                  ref={tilt.ref}
-                  onMouseMove={tilt.onMouseMove}
-                  onMouseLeave={tilt.onMouseLeave}
-                  className="card-tilt"
-                  style={{
-                    background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 14,
-                    padding: "28px 26px 26px", display: "flex", flexDirection: "column", height: "100%",
-                  }}
-                >
-                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.text, margin: "0 0 12px 0", fontWeight: 700 }}>
-                    {item.title}
-                  </h3>
-                  <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: "0 0 24px 0", flex: 1 }}>
-                    {item.desc}
-                  </p>
-                  <a href={item.href} target={item.external ? "_blank" : "_self"} rel={item.external ? "noopener noreferrer" : undefined}
-                    className="link-hover-underline"
-                    style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sage, textDecoration: "none" }}
-                  >
-                    {item.cta} →
-                  </a>
-                </div>
-              </FadeIn>
-            );
-          })}
+          {items.slice(1).map((item, i) => (
+            <LivingCard key={i} item={item} i={i} />
+          ))}
         </div>
       </div>
     </section>
