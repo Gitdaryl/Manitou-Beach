@@ -290,15 +290,38 @@ export function PromoBanner({ page }) {
 // ============================================================
 // 📰  INLINE NEWSLETTER CTA (compact banner)
 function SubscribeModal({ alreadySubscribed, onClose }) {
+  const [showContent, setShowContent] = useState(false);
+  const [confetti, setConfetti] = useState([]);
+
   useEffect(() => {
     const onKey = (e) => { if (e.key === 'Escape') onClose(); };
     document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
-  }, [onClose]);
+    // Entrance animation — slight delay for modal to render, then content slides in
+    const t = setTimeout(() => setShowContent(true), 80);
+    // Confetti burst for new subscribers
+    if (!alreadySubscribed) {
+      const particles = Array.from({ length: 24 }, (_, i) => ({
+        id: i,
+        x: 50 + (Math.random() - 0.5) * 60,
+        y: 30 + Math.random() * 20,
+        color: [C.sage, C.sunset, C.lakeBlue, C.sunsetLight, '#E8DFD0'][i % 5],
+        delay: Math.random() * 0.4,
+        dx: (Math.random() - 0.5) * 120,
+        dy: -(40 + Math.random() * 60),
+        rot: Math.random() * 360,
+        size: 4 + Math.random() * 5,
+      }));
+      setConfetti(particles);
+    }
+    return () => { document.removeEventListener('keydown', onKey); clearTimeout(t); };
+  }, [onClose, alreadySubscribed]);
 
   return (
     <div
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={alreadySubscribed ? "Already subscribed" : "Welcome to The Manitou Dispatch"}
       style={{
         position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -311,9 +334,31 @@ function SubscribeModal({ alreadySubscribed, onClose }) {
           background: '#fff', borderRadius: 16, padding: '48px 40px',
           maxWidth: 480, width: '100%', boxShadow: '0 24px 80px rgba(0,0,0,0.3)',
           textAlign: 'center', fontFamily: "'Libre Franklin', sans-serif",
-          position: 'relative', overflow: 'hidden'
+          position: 'relative', overflow: 'hidden',
+          opacity: showContent ? 1 : 0,
+          transform: showContent ? 'translateY(0) scale(1)' : 'translateY(16px) scale(0.97)',
+          transition: 'opacity 0.35s ease, transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
         }}
       >
+        {/* Confetti particles */}
+        {confetti.map(p => (
+          <div key={p.id} style={{
+            position: 'absolute', left: `${p.x}%`, top: `${p.y}%`,
+            width: p.size, height: p.size, borderRadius: p.size > 6 ? 2 : '50%',
+            background: p.color, pointerEvents: 'none', zIndex: 10,
+            animation: `confetti-burst 1.2s ${p.delay}s ease-out forwards`,
+            '--dx': `${p.dx}px`, '--dy': `${p.dy}px`, '--rot': `${p.rot}deg`,
+            opacity: 0,
+          }} />
+        ))}
+        <style>{`
+          @keyframes confetti-burst {
+            0% { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
+            70% { opacity: 1; }
+            100% { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(0.3); }
+          }
+        `}</style>
+
         <div style={{ position: 'absolute', top: -50, right: -50, width: 150, height: 150, background: `${C.sunset}10`, borderRadius: '50%', pointerEvents: 'none' }}/>
         <div style={{ position: 'absolute', bottom: -30, left: -30, width: 100, height: 100, background: `${C.sage}10`, borderRadius: '50%', pointerEvents: 'none' }}/>
 
@@ -321,24 +366,24 @@ function SubscribeModal({ alreadySubscribed, onClose }) {
           <>
             <div style={{ fontSize: 44, marginBottom: 16 }}>👋</div>
             <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, color: C.dusk, margin: '0 0 12px' }}>
-              Already on the list!
+              You're already one of us!
             </h3>
             <p style={{ color: C.textLight, fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>
-              You're already subscribed to The Manitou Dispatch. Watch your inbox — the next issue is coming soon.
+              You're part of the Manitou Beach community. Watch your inbox — the next Dispatch is coming soon.
             </p>
           </>
         ) : (
           <>
             <div style={{ fontSize: 48, marginBottom: 12 }}>🍪</div>
             <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunset, marginBottom: 10 }}>
-              Secret Lake Code
+              Welcome to the Community
             </div>
             <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, color: C.dusk, margin: '0 0 20px' }}>
-              You're almost in...
+              You're in. Here's your welcome gift.
             </h3>
-            
+
             <div style={{
-              background: `linear-gradient(135deg, ${C.sage}10 0%, ${C.lakeBlue}10 100%)`, 
+              background: `linear-gradient(135deg, ${C.sage}10 0%, ${C.lakeBlue}10 100%)`,
               border: `1px solid ${C.sage}30`, borderRadius: 12, padding: '24px 20px', marginBottom: 28,
               position: 'relative'
             }}>
@@ -349,10 +394,11 @@ function SubscribeModal({ alreadySubscribed, onClose }) {
                 Step 2: Show this secret code at <strong>Blackbird Cafe</strong> this weekend for a welcome cookie on us.
               </p>
               <div style={{
-                fontFamily: "'Courier New', monospace", fontSize: 22, fontWeight: 700, 
-                letterSpacing: 4, color: C.sunset, background: '#fff', padding: '12px 24px', 
+                fontFamily: "'Courier New', monospace", fontSize: 22, fontWeight: 700,
+                letterSpacing: 4, color: C.sunset, background: '#fff', padding: '12px 24px',
                 borderRadius: 8, display: 'inline-block', border: `1.5px dashed ${C.sunset}60`,
-                boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
+                boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+                animation: 'pulse-glow 2s ease-in-out infinite',
               }}>
                 LAKEBOUND
               </div>
@@ -389,6 +435,11 @@ export function NewsletterInline() {
   const [showModal, setShowModal] = useState(false);
   const [alreadySubscribed, setAlreadySubscribed] = useState(false);
   const [error, setError] = useState('');
+  const [subCount, setSubCount] = useState(null);
+
+  useEffect(() => {
+    fetch('/api/subscribe').then(r => r.json()).then(d => setSubCount(d.count ?? 0)).catch(() => {});
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -436,7 +487,7 @@ export function NewsletterInline() {
           The Manitou Beach Dispatch
         </div>
         <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted }}>
-          Weekly events, businesses & community news — straight to your inbox.
+          Join {subCount ? `${subCount.toLocaleString()}+ lake neighbors` : 'your lake neighbors'} getting weekly events, businesses & community news.
         </div>
       </div>
       <div>
@@ -795,7 +846,7 @@ export function SubmitSection() {
   const [logoFile, setLogoFile] = useState(null);
   const [logoPreview, setLogoPreview] = useState(null);
   const [isLogoDragging, setIsLogoDragging] = useState(false);
-  const [form, setForm] = useState({ name: "", category: "", phone: "", address: "", website: "", email: "", description: "", logoUrl: "", tier: "Free", duration: "1", newsletter: false, _hp: "" });
+  const [form, setForm] = useState({ name: "", category: "", phone: "", address: "", website: "", email: "", description: "", logoUrl: "", tier: "Free", duration: "1", newsletter: true, _hp: "" });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -863,10 +914,10 @@ export function SubmitSection() {
     <section id="submit" style={{ background: C.warmWhite, padding: "100px 24px" }}>
       <div style={{ maxWidth: 640, margin: "0 auto" }}>
         <FadeIn>
-          <SectionLabel>Get Listed</SectionLabel>
-          <SectionTitle>Submit Your Listing</SectionTitle>
+          <SectionLabel>Join the Directory</SectionLabel>
+          <SectionTitle>Your Neighbors Are Looking for You</SectionTitle>
           <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.75, marginBottom: 36 }}>
-            Free listings for all Manitou Beach and Devils Lake area businesses. Featured placement available for businesses wanting top-of-directory visibility.
+            Every local business belongs here. List for free in 60 seconds — upgrade anytime for more visibility.
           </p>
 
           {submitted ? (
@@ -875,22 +926,53 @@ export function SubmitSection() {
               borderRadius: 12,
               padding: "40px 32px",
               textAlign: "center",
+              position: "relative",
+              overflow: "hidden",
             }}>
+              {/* Confetti burst on successful submit */}
+              {Array.from({ length: 18 }, (_, i) => {
+                const colors = [C.sage, C.sunset, C.lakeBlue, C.sunsetLight, '#E8DFD0'];
+                const dx = (Math.random() - 0.5) * 140;
+                const dy = -(30 + Math.random() * 70);
+                const rot = Math.random() * 360;
+                return (
+                  <div key={i} style={{
+                    position: "absolute",
+                    left: `${45 + Math.random() * 10}%`,
+                    top: "40%",
+                    width: 4 + Math.random() * 5,
+                    height: 4 + Math.random() * 5,
+                    borderRadius: Math.random() > 0.5 ? "50%" : "1px",
+                    background: colors[i % colors.length],
+                    opacity: 0,
+                    pointerEvents: "none",
+                    animation: `confetti-burst 0.9s ${Math.random() * 0.3}s ease-out forwards`,
+                    '--dx': `${dx}px`,
+                    '--dy': `${dy}px`,
+                    '--rot': `${rot}deg`,
+                  }} />
+                );
+              })}
               <div style={{
-                width: 52, height: 52, borderRadius: "50%",
-                background: `${C.sage}30`, border: `2px solid ${C.sage}`,
+                width: 56, height: 56, borderRadius: "50%",
+                background: `${C.sage}25`, border: `2px solid ${C.sage}`,
                 display: "flex", alignItems: "center", justifyContent: "center",
                 margin: "0 auto 20px",
-                fontSize: 22, color: C.sage,
+                fontSize: 24, color: C.sage,
+                animation: "pulse-glow 2s ease-in-out infinite",
               }}>✓</div>
-              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream, marginBottom: 12, fontWeight: 400 }}>
-                You're in the directory.
+              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, color: C.cream, marginBottom: 8, fontWeight: 400 }}>
+                Welcome to the directory.
               </div>
-              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.55)", lineHeight: 1.8, margin: "0 0 28px 0", maxWidth: 400, marginLeft: "auto", marginRight: "auto" }}>
-                We review every submission before it goes live — usually within 48 hours. If you're interested in an upgraded listing, we'll reach out with details.
+              <p style={{ fontSize: 15, color: C.sunsetLight, margin: "0 0 8px 0", fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600 }}>
+                You're part of the Manitou Beach community now.
+              </p>
+              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.8, margin: "0 0 28px 0", maxWidth: 400, marginLeft: "auto", marginRight: "auto" }}>
+                We review every submission before it goes live — usually within 48 hours. Want more visibility? You can upgrade anytime from the directory.
               </p>
               <button
                 onClick={() => setSubmitted(false)}
+                className="btn-animated"
                 style={{
                   fontFamily: "'Libre Franklin', sans-serif",
                   fontSize: 12, fontWeight: 600, letterSpacing: 1.5,
@@ -1079,7 +1161,7 @@ export function SubmitSection() {
                       style={{ marginTop: 2, accentColor: C.sage }}
                     />
                     <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.text, lineHeight: 1.5 }}>
-                      Subscribe to the Manitou Beach newsletter — local events, business spotlights & lake life
+                      Keep me in the loop — weekly events, business spotlights & lake life delivered free
                     </div>
                   </label>
               </>
@@ -1116,7 +1198,7 @@ export function SubmitSection() {
               )}
 
               <p style={{ fontSize: 11, color: C.textMuted, textAlign: "center", margin: 0, lineHeight: 1.6 }}>
-                Free listings are reviewed within 48 hours. No spam, no fees unless you upgrade.
+                Free forever. Reviewed within 48 hours. No fees unless you choose to upgrade.
               </p>
               <p style={{ fontSize: 12, color: C.textMuted, textAlign: "center", margin: 0 }}>
                 Have an event? <a href="/promote" style={{ color: C.sage, textDecoration: "none", fontWeight: 600 }}>List it on the promote page →</a>

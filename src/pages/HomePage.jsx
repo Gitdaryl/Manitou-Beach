@@ -101,7 +101,7 @@ function Hero({ scrollTo }) {
         setHeroIndex(i => (i + 1) % rotationCount);
         setHeroFade(true);
       }, 800);
-    }, 30000);
+    }, 10000);
     return () => clearInterval(t);
   }, [rotationCount, heroPaused]);
 
@@ -442,6 +442,11 @@ function NewsletterBar() {
   const [showModal, setShowModal] = useState(false);
   const [alreadySubscribed, setAlreadySubscribed] = useState(false);
   const [error, setError] = useState('');
+  const [subCount, setSubCount] = useState(null);
+
+  useEffect(() => {
+    fetch('/api/subscribe').then(r => r.json()).then(d => setSubCount(d.count ?? 0)).catch(() => {});
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -471,7 +476,7 @@ function NewsletterBar() {
       padding: "48px 24px",
     }}>
       <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center" }}>
-        <SectionLabel light>Stay in the Loop</SectionLabel>
+        <SectionLabel light>You Belong Here</SectionLabel>
         <h3 style={{
           fontFamily: "'Libre Baskerville', serif",
           fontSize: "clamp(22px, 3.5vw, 32px)",
@@ -481,8 +486,11 @@ function NewsletterBar() {
         }}>
           The Manitou Beach Dispatch
         </h3>
-        <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", margin: "0 0 28px 0", lineHeight: 1.7 }}>
-          Weekly events, featured businesses, and community news. No spam — just lake life.
+        <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", margin: "0 0 12px 0", lineHeight: 1.7 }}>
+          {subCount ? `${subCount.toLocaleString()}+ lake neighbors already subscribe.` : 'Your lake neighbors are already here.'} Weekly events, featured businesses, and everything happening on the water.
+        </p>
+        <p style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", margin: "0 0 28px 0", fontFamily: "'Libre Franklin', sans-serif" }}>
+          Free forever. Unsubscribe anytime. Just lake life.
         </p>
         <form onSubmit={handleSubmit} style={{ display: "flex", gap: 10, maxWidth: 440, margin: "0 auto", flexWrap: "wrap", justifyContent: "center" }}>
           <input
@@ -930,43 +938,86 @@ function PricingSection() {
       </div>
 
       {/* Checkout modal */}
-      {modal && (
-        <div style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: 24, background: "rgba(10,18,24,0.88)", backdropFilter: "blur(8px)" }} onClick={() => setModal(null)}>
-          <div style={{ background: C.dusk, borderRadius: 20, padding: "36px 32px", maxWidth: 420, width: "100%", boxShadow: "0 24px 80px rgba(0,0,0,0.5)", border: `1px solid ${modal.color}30` }} onClick={e => e.stopPropagation()}>
+      {modal && (() => {
+        const tierFeatures = PAID_TIERS.find(t => t.id === modal.tierId)?.features || [];
+        return (
+        <div role="dialog" aria-modal="true" aria-label={`${modal.tierName} listing checkout`} style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: 24, background: "rgba(10,18,24,0.88)", backdropFilter: "blur(8px)" }} onClick={() => setModal(null)}>
+          <div style={{ background: C.dusk, borderRadius: 20, padding: "36px 32px", maxWidth: 440, width: "100%", boxShadow: "0 24px 80px rgba(0,0,0,0.5)", border: `1px solid ${modal.color}30` }} onClick={e => e.stopPropagation()}>
             <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: modal.color, marginBottom: 6 }}>{modal.tierName} Listing</div>
             <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, fontWeight: 400, color: C.cream, margin: "0 0 4px 0" }}>
               ${modal.price}<span style={{ fontSize: 14, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif" }}>/mo</span>
             </h3>
-            <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 13, margin: "0 0 28px 0" }}>Rate held while subscribed — cancel anytime, pause anytime.</p>
+            <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 13, margin: "0 0 20px 0" }}>Monthly subscription · Cancel or pause anytime</p>
+
+            {/* What's included — tier feature summary */}
+            <div style={{ background: "rgba(255,255,255,0.04)", borderRadius: 10, padding: "14px 16px", marginBottom: 20, border: "1px solid rgba(255,255,255,0.06)" }}>
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 10 }}>What you get</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                {tierFeatures.filter(f => !f.startsWith('Everything')).map(f => (
+                  <span key={f} style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 12, color: "rgba(255,255,255,0.55)", fontFamily: "'Libre Franklin', sans-serif" }}>
+                    <span style={{ color: modal.color, fontWeight: 700, fontSize: 11 }}>+</span>{f}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Contract terms — clear and upfront */}
+            <div style={{ background: `${modal.color}0A`, borderRadius: 10, padding: "14px 16px", marginBottom: 22, border: `1px solid ${modal.color}15` }}>
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 10 }}>How it works</div>
+              {[
+                { icon: "↻", text: "Billed monthly — no long-term contract" },
+                { icon: "⚡", text: `Your $${modal.price}/mo rate is locked while subscribed` },
+                { icon: "✕", text: "Cancel anytime — listing reverts to Free tier" },
+                { icon: "↩", text: "Re-subscribe later at whatever the current rate is" },
+              ].map(item => (
+                <div key={item.text} style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 7, fontSize: 12, color: "rgba(255,255,255,0.5)", fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.45 }}>
+                  <span style={{ color: modal.color, flexShrink: 0, width: 16, textAlign: "center" }}>{item.icon}</span>
+                  {item.text}
+                </div>
+              ))}
+            </div>
+
             <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 20 }}>
-              <input
-                placeholder="Business name"
-                value={form.businessName}
-                onChange={e => setForm(f => ({ ...f, businessName: e.target.value }))}
-                style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}
-              />
-              <input
-                placeholder="Email address"
-                type="email"
-                value={form.email}
-                onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}
-              />
+              <div>
+                <label style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.35)", marginBottom: 5, display: "block" }}>Business name</label>
+                <input
+                  placeholder="e.g. Lake House Grill"
+                  value={form.businessName}
+                  onChange={e => setForm(f => ({ ...f, businessName: e.target.value }))}
+                  style={{ width: "100%", padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none", boxSizing: "border-box", transition: "border-color 0.2s" }}
+                  onFocus={e => e.target.style.borderColor = `${modal.color}60`}
+                  onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.12)"}
+                />
+              </div>
+              <div>
+                <label style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.35)", marginBottom: 5, display: "block" }}>Email address</label>
+                <input
+                  placeholder="you@business.com"
+                  type="email"
+                  value={form.email}
+                  onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                  style={{ width: "100%", padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none", boxSizing: "border-box", transition: "border-color 0.2s" }}
+                  onFocus={e => e.target.style.borderColor = `${modal.color}60`}
+                  onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.12)"}
+                />
+              </div>
             </div>
             {checkoutError && <p style={{ color: "#ff6b5b", fontSize: 13, marginBottom: 14 }}>{checkoutError}</p>}
             <button
               onClick={handleCheckout}
               disabled={loading}
+              className="btn-animated"
               style={{ width: "100%", padding: "14px", borderRadius: 10, border: "none", background: modal.tierId === "premium" ? C.sunset : modal.color, color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: loading ? "wait" : "pointer", opacity: loading ? 0.7 : 1, transition: "opacity 0.2s" }}
             >
-              {loading ? "Redirecting…" : "Continue to Secure Checkout →"}
+              {loading ? "Redirecting to Stripe…" : `Start ${modal.tierName} · $${modal.price}/mo →`}
             </button>
             <p style={{ textAlign: "center", fontSize: 11, color: "rgba(255,255,255,0.22)", marginTop: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
-              Powered by Stripe · Your card details are never stored here
+              Secure checkout by Stripe · No card details stored on our servers
             </p>
           </div>
         </div>
-      )}
+        );
+      })()}
     </>
   );
 }
