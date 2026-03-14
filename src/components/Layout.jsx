@@ -1,0 +1,1868 @@
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { C, PAGE_SPONSORS, SECTIONS, LISTING_CATEGORIES, VIDEOS } from '../data/config';
+import { ShareBar, SectionLabel, SectionTitle, FadeIn, WaveDivider, Btn, CategoryPill, PageSponsorBanner } from './Shared';
+
+export function GlobalStyles() {
+  return (
+    <style>{`
+      @keyframes marquee {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+      }
+      @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-12px); }
+      }
+      @keyframes float-slow {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-18px) rotate(3deg); }
+      }
+      @keyframes pulse-glow {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(212,132,90,0.3); }
+        50% { box-shadow: 0 0 20px 4px rgba(212,132,90,0.15); }
+      }
+      @keyframes shimmer {
+        0% { background-position: -200% center; }
+        100% { background-position: 200% center; }
+      }
+      @keyframes tracking-in {
+        0% { letter-spacing: 12px; opacity: 0; }
+        100% { letter-spacing: 5px; opacity: 1; }
+      }
+      @keyframes underline-grow {
+        0% { transform: scaleX(0); transform-origin: left; }
+        100% { transform: scaleX(1); transform-origin: left; }
+      }
+      @keyframes scroll-progress {
+        0% { width: 0%; }
+      }
+      .scroll-progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #7A8E72, #D4845A);
+        z-index: 10000;
+        transition: width 0.1s linear;
+      }
+      @keyframes pulse-line {
+        0% { background-position: -200% center; }
+        100% { background-position: 200% center; }
+      }
+      @keyframes kenBurnsBg {
+        0%   { transform: scale(1)    translate(0, 0); }
+        100% { transform: scale(1.18) translate(-1.5%, -0.8%); }
+      }
+      .ken-burns-bg {
+        animation: kenBurnsBg 25s ease-in-out infinite alternate;
+        transform-origin: center center;
+        will-change: transform;
+      }
+      @keyframes dot-breathe {
+        0%, 100% { box-shadow: 0 0 4px currentColor; transform: scale(1); }
+        50% { box-shadow: 0 0 16px currentColor; transform: scale(1.2); }
+      }
+      @keyframes adPulse {
+        0%, 100% { transform: scale(1); box-shadow: 0 2px 16px rgba(0,0,0,0.08); }
+        50% { transform: scale(1.012); box-shadow: 0 8px 28px rgba(0,0,0,0.14); }
+      }
+      @keyframes adFade {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.82; }
+      }
+      @keyframes adSlide {
+        0% { transform: translateX(-12px); opacity: 0; }
+        100% { transform: translateX(0); opacity: 1; }
+      }
+      @keyframes shrinkWidth {
+        from { width: 100%; }
+        to { width: 0%; }
+      }
+      .timeline-pulse {
+        background: linear-gradient(90deg, rgba(122,142,114,0.1), rgba(212,132,90,0.35), rgba(91,126,149,0.35), rgba(122,142,114,0.1)) !important;
+        background-size: 200% 100% !important;
+        animation: pulse-line 4s ease-in-out infinite !important;
+      }
+      .timeline-dot-breathe {
+        animation: dot-breathe 3s ease-in-out infinite;
+      }
+      .marquee-track {
+        display: flex;
+        animation: marquee 35s linear infinite;
+      }
+      .marquee-track:hover {
+        animation-play-state: paused;
+      }
+      .btn-animated {
+        transition: all 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+      }
+      .btn-animated:hover {
+        transform: translateY(-2px) scale(1.02) !important;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+      }
+      .card-tilt {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .link-hover-underline {
+        position: relative;
+        display: inline-block;
+      }
+      .link-hover-underline::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 100%;
+        height: 1.5px;
+        background: currentColor;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s ease;
+      }
+      .link-hover-underline:hover::after {
+        transform: scaleX(1);
+      }
+      .featured-card-glow:hover {
+        border-color: rgba(212,132,90,0.5) !important;
+        box-shadow: 0 0 20px rgba(212,132,90,0.10), 0 6px 18px rgba(0,0,0,0.25) !important;
+      }
+      .horizontal-scroll {
+        scrollbar-width: thin;
+        scrollbar-color: #7A8E72 transparent;
+      }
+      .horizontal-scroll::-webkit-scrollbar {
+        height: 6px;
+      }
+      .horizontal-scroll::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .horizontal-scroll::-webkit-scrollbar-thumb {
+        background: #7A8E7240;
+        border-radius: 3px;
+      }
+      .horizontal-scroll::-webkit-scrollbar-thumb:hover {
+        background: #7A8E72;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .marquee-track { animation: none !important; }
+        .card-tilt { transition: none !important; }
+        * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+      }
+      @media (max-width: 960px) {
+        .nav-desktop { display: none !important; }
+        .nav-hamburger { display: flex !important; }
+        .mobile-col-1 { grid-template-columns: 1fr !important; }
+        .living-here-grid { grid-template-columns: 1fr !important; }
+        .village-roots-grid { grid-template-columns: 1fr !important; }
+        .mens-club-stats { grid-template-columns: repeat(3, 1fr) !important; }
+        .wineries-itinerary-grid { grid-template-columns: 1fr !important; }
+        .listing-demo-grid { grid-template-columns: 1fr !important; }
+      }
+      @media (max-width: 640px) {
+        .mobile-col-1 { grid-template-columns: 1fr !important; }
+        .holly-grid { grid-template-columns: 1fr !important; }
+        .weekly-event-row {
+          grid-template-columns: 1fr !important;
+          gap: 10px !important;
+        }
+        .fish-card-header { flex-direction: column !important; }
+        .fish-card-img { width: 100% !important; height: 160px !important; min-height: unset !important; }
+        .fish-card-meta {
+          flex-direction: row !important;
+          align-items: center !important;
+          justify-content: space-between !important;
+          padding: 0 20px 16px !important;
+        }
+        .calendar-event-row {
+          grid-template-columns: auto 1fr !important;
+          gap: 0 16px !important;
+        }
+        .calendar-cost-badge { display: none !important; }
+        .living-here-grid { grid-template-columns: 1fr !important; }
+        .mens-club-stats { grid-template-columns: repeat(2, 1fr) !important; }
+        .village-roots-grid { grid-template-columns: 1fr !important; }
+        .scoreboard-venue-name { width: 100px !important; font-size: 11px !important; }
+        .scoreboard-explainer-grid { grid-template-columns: 1fr !important; gap: 20px !important; }
+      }
+      @keyframes bar-breathe {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.82; box-shadow: 0 0 14px rgba(212,132,90,0.4); }
+      }
+      @keyframes bar-shimmer {
+        0% { background-position: 0% center; }
+        100% { background-position: 300% center; }
+      }
+      @keyframes ticker-scroll {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+      }
+      .scoreboard-ticker {
+        display: inline-flex;
+        animation: ticker-scroll 38s linear infinite;
+        white-space: nowrap;
+      }
+      .scoreboard-ticker:hover { animation-play-state: paused; }
+      .scoreboard-leader-bar {
+        animation: bar-breathe 3s ease-in-out infinite, bar-shimmer 5s linear infinite;
+      }
+    `}</style>
+  );
+}
+
+// ============================================================
+// ✏️  CONFIGURABLE CONTENT — manage hero events via Notion
+// ============================================================
+
+
+
+
+// ============================================================
+// 📢  PROMO BANNER — reusable, fetches active page banners
+// ============================================================
+export function PromoBanner({ page }) {
+  const [banner, setBanner] = useState(null);
+
+  useEffect(() => {
+    fetch("/api/promotions")
+      .then(r => r.json())
+      .then(data => {
+        const banners = data.pageBanners?.[page] || [];
+        if (banners.length > 0) setBanner(banners[0]);
+      })
+      .catch(() => {});
+  }, [page]);
+
+  if (!banner) return null;
+
+  return (
+    <div style={{
+      background: `linear-gradient(135deg, ${C.night} 0%, #1e3326 100%)`,
+      borderBottom: `3px solid ${C.sage}50`,
+    }}>
+      <div style={{
+        maxWidth: 1100, margin: "0 auto", padding: "24px 24px",
+        display: "flex", gap: 28, alignItems: "center", flexWrap: "wrap",
+      }}>
+        {banner.imageUrl && (
+          <img
+            src={banner.imageUrl}
+            alt={banner.name}
+            style={{ width: 110, height: 75, objectFit: "cover", borderRadius: 8, flexShrink: 0, boxShadow: "0 4px 16px rgba(0,0,0,0.4)" }}
+          />
+        )}
+        <div style={{ flex: 1, minWidth: 200 }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 6 }}>
+            {banner.sponsorBadge ? "Sponsored" : "Featured Event"}
+          </div>
+          <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(17px, 2.5vw, 22px)", color: C.cream, lineHeight: 1.2, marginBottom: 4 }}>
+            {banner.promoHeadline || banner.name}
+          </div>
+          {(banner.date || banner.location) && (
+            <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: "rgba(255,255,255,0.5)" }}>
+              {banner.date && new Date(banner.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+              {banner.date && banner.location && " · "}
+              {banner.location}
+            </div>
+          )}
+        </div>
+        {banner.eventUrl && (
+          <a
+            href={banner.eventUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "inline-block", padding: "11px 28px",
+              background: "#4A9B6F", color: "#fff", borderRadius: 6,
+              fontFamily: "'Libre Franklin', sans-serif", fontSize: 13,
+              fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase",
+              textDecoration: "none", flexShrink: 0, whiteSpace: "nowrap",
+            }}
+          >
+            {banner.ctaLabel || "Learn More"}
+          </a>
+        )}
+      </div>
+    </div>
+  );
+}
+
+
+// ============================================================
+// 📰  INLINE NEWSLETTER CTA (compact banner)
+function SubscribeModal({ alreadySubscribed, onClose }) {
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        zIndex: 9999, padding: 24,
+      }}
+    >
+      <div
+        onClick={e => e.stopPropagation()}
+        style={{
+          background: '#fff', borderRadius: 16, padding: '48px 40px',
+          maxWidth: 480, width: '100%', boxShadow: '0 24px 80px rgba(0,0,0,0.3)',
+          textAlign: 'center', fontFamily: "'Libre Franklin', sans-serif",
+          position: 'relative', overflow: 'hidden'
+        }}
+      >
+        <div style={{ position: 'absolute', top: -50, right: -50, width: 150, height: 150, background: `${C.sunset}10`, borderRadius: '50%', pointerEvents: 'none' }}/>
+        <div style={{ position: 'absolute', bottom: -30, left: -30, width: 100, height: 100, background: `${C.sage}10`, borderRadius: '50%', pointerEvents: 'none' }}/>
+
+        {alreadySubscribed ? (
+          <>
+            <div style={{ fontSize: 44, marginBottom: 16 }}>👋</div>
+            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, color: C.dusk, margin: '0 0 12px' }}>
+              Already on the list!
+            </h3>
+            <p style={{ color: C.textLight, fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>
+              You're already subscribed to The Manitou Dispatch. Watch your inbox — the next issue is coming soon.
+            </p>
+          </>
+        ) : (
+          <>
+            <div style={{ fontSize: 48, marginBottom: 12 }}>🍪</div>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunset, marginBottom: 10 }}>
+              Secret Lake Code
+            </div>
+            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, color: C.dusk, margin: '0 0 20px' }}>
+              You're almost in...
+            </h3>
+            
+            <div style={{
+              background: `linear-gradient(135deg, ${C.sage}10 0%, ${C.lakeBlue}10 100%)`, 
+              border: `1px solid ${C.sage}30`, borderRadius: 12, padding: '24px 20px', marginBottom: 28,
+              position: 'relative'
+            }}>
+              <p style={{ color: C.text, fontSize: 15, lineHeight: 1.6, margin: '0 0 16px', fontWeight: 600 }}>
+                Step 1: Click confirm in your email.
+              </p>
+              <p style={{ color: C.textLight, fontSize: 14, lineHeight: 1.6, margin: '0 0 16px' }}>
+                Step 2: Show this secret code at <strong>Blackbird Cafe</strong> this weekend for a welcome cookie on us.
+              </p>
+              <div style={{
+                fontFamily: "'Courier New', monospace", fontSize: 22, fontWeight: 700, 
+                letterSpacing: 4, color: C.sunset, background: '#fff', padding: '12px 24px', 
+                borderRadius: 8, display: 'inline-block', border: `1.5px dashed ${C.sunset}60`,
+                boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
+              }}>
+                LAKEBOUND
+              </div>
+            </div>
+
+            <p style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.6, marginBottom: 24 }}>
+              Check your <strong>spam/junk</strong> folder if you don't see the confirmation email within a few minutes.
+            </p>
+          </>
+        )}
+        <button
+          onClick={onClose}
+          style={{
+            background: C.sage, color: '#fff', border: 'none', borderRadius: 8,
+            padding: '14px 32px', fontSize: 15, fontWeight: 700, cursor: 'pointer',
+            fontFamily: "'Libre Franklin', sans-serif", width: '100%',
+            letterSpacing: 1, textTransform: 'uppercase', transition: 'all 0.2s ease',
+            position: 'relative', zIndex: 1
+          }}
+          onMouseEnter={e => e.target.style.transform = 'translateY(-1px)'}
+          onMouseLeave={e => e.target.style.transform = 'none'}
+        >
+          {alreadySubscribed ? 'Got it' : 'I saved the code →'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+export function NewsletterInline() {
+  const [email, setEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [alreadySubscribed, setAlreadySubscribed] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!email || submitting) return;
+    setSubmitting(true);
+    setError('');
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed');
+      setAlreadySubscribed(data.alreadySubscribed);
+      setShowModal(true);
+      setEmail('');
+    } catch {
+      setError('Something went wrong — try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div style={{
+      background: `linear-gradient(135deg, ${C.sage}15 0%, ${C.lakeBlue}10 100%)`,
+      border: `1px solid ${C.sage}25`,
+      borderRadius: 12,
+      padding: "32px 40px",
+      maxWidth: 1100,
+      margin: "0 auto",
+      marginTop: -20,
+      marginBottom: 40,
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      flexWrap: "wrap",
+      gap: 20,
+      position: "relative",
+      zIndex: 1,
+    }}>
+      <div>
+        <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sage, marginBottom: 2 }}>
+          The Manitou Beach Dispatch
+        </div>
+        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted }}>
+          Weekly events, businesses & community news — straight to your inbox.
+        </div>
+      </div>
+      <div>
+        <form onSubmit={handleSubmit} style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <input
+            type="email" placeholder="your@email.com" value={email}
+            onChange={e => setEmail(e.target.value)} required disabled={submitting}
+            style={{
+              padding: "10px 16px", borderRadius: 6, border: `1.5px solid ${C.sand}`,
+              background: C.cream, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif",
+              color: C.text, outline: "none", minWidth: 200,
+            }}
+          />
+          <Btn variant="primary" small disabled={submitting}>{submitting ? 'Joining…' : 'Subscribe'}</Btn>
+        </form>
+        {error && <p style={{ margin: '6px 0 0', fontSize: 12, color: C.sunset }}>{error}</p>}
+      </div>
+      {DISPATCH_CARD_SPONSORS.length > 0 && (
+        <div style={{ flexBasis: '100%', borderTop: '1px solid rgba(122,142,114,0.15)', paddingTop: 12, display: 'flex', alignItems: 'center', gap: 10 }}>
+          {DISPATCH_CARD_SPONSORS[0].logo ? (
+            <img src={DISPATCH_CARD_SPONSORS[0].logo} alt={DISPATCH_CARD_SPONSORS[0].name} style={{ width: 28, height: 28, borderRadius: 4, objectFit: 'contain', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', padding: 2, flexShrink: 0 }} />
+          ) : (
+            <div style={{ width: 28, height: 28, borderRadius: 4, border: '1.5px dashed #c4b09a', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 12 }}>📷</div>
+          )}
+          <div style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
+            <span style={{ textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, fontSize: 9 }}>Sponsored by </span>
+            <span style={{ fontWeight: 600, color: C.text }}>{DISPATCH_CARD_SPONSORS[0].name}</span>
+            {DISPATCH_CARD_SPONSORS[0].offerText && <span> · {DISPATCH_CARD_SPONSORS[0].offerText}</span>}
+          </div>
+        </div>
+      )}
+      {showModal && <SubscribeModal alreadySubscribed={alreadySubscribed} onClose={() => setShowModal(false)} />}
+    </div>
+  );
+}
+
+// ============================================================
+// 📅  12-MONTH ROLLING EVENT TIMELINE
+// ============================================================
+export function EventTimeline() {
+  const [notionEvents, setNotionEvents] = useState([]);
+  const [lightboxEvent, setLightboxEvent] = useState(null);
+
+  useEffect(() => {
+    fetch("/api/events")
+      .then(r => r.json())
+      .then(data => setNotionEvents(data.events || []))
+      .catch(() => {});
+  }, []);
+
+  // Next 3 months window
+  const now = new Date();
+  const cutoff = new Date(now.getFullYear(), now.getMonth() + 3, now.getDate());
+
+  // 100% Notion-driven — no hardcoded events
+  const allEvents = notionEvents
+    .filter(e => { const d = new Date(e.date + "T00:00:00"); return d >= now && d <= cutoff; })
+    .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  const catColor = (cat) => ({ "Live Music": C.sunset, "Food & Social": "#8B5E3C", "Sports & Outdoors": C.sage, "Community": C.lakeBlue }[cat] || C.sage);
+
+  // Group events by month for section headers
+  const grouped = allEvents.reduce((acc, event) => {
+    const d = new Date(event.date + "T00:00:00");
+    const key = d.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(event);
+    return acc;
+  }, {});
+
+  return (
+    <section style={{ background: C.night, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 720, margin: "0 auto" }}>
+        <FadeIn>
+          <SectionLabel light>Coming Up</SectionLabel>
+          <SectionTitle light>Next 3 Months</SectionTitle>
+          <p style={{ fontSize: 14, color: "rgba(255,255,255,0.35)", lineHeight: 1.7, maxWidth: 480, marginBottom: 48 }}>
+            What's on around the lakes — updated as events are confirmed.
+          </p>
+        </FadeIn>
+
+        {allEvents.length === 0 ? (
+          <FadeIn delay={100}>
+            <div style={{ padding: "48px 32px", background: "rgba(255,255,255,0.03)", borderRadius: 16, border: "1px solid rgba(255,255,255,0.06)", textAlign: "center" }}>
+              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.25)", fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.7 }}>
+                No events confirmed for the next 3 months yet.<br />Check back soon — the lake never stays quiet for long.
+              </div>
+            </div>
+          </FadeIn>
+        ) : (
+          Object.entries(grouped).map(([monthLabel, events], gi) => (
+            <div key={gi} style={{ marginBottom: 48 }}>
+              <FadeIn delay={gi * 60}>
+                <div style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: 24 }}>
+                  {monthLabel}
+                </div>
+              </FadeIn>
+              <div style={{ position: "relative", paddingLeft: 36 }}>
+                {/* Vertical line */}
+                <div style={{ position: "absolute", left: 7, top: 8, bottom: 8, width: 2, background: "rgba(255,255,255,0.07)", borderRadius: 1 }} />
+
+                {events.map((event, i) => {
+                  const d = new Date(event.date + "T00:00:00");
+                  const day = d.getDate();
+                  const weekday = d.toLocaleDateString("en-US", { weekday: "short" });
+                  const color = catColor(event.category);
+                  return (
+                    <FadeIn key={event.id || i} delay={gi * 60 + i * 50}>
+                      <div
+                        onClick={() => setLightboxEvent(event)}
+                        style={{ display: "flex", gap: 20, marginBottom: 24, position: "relative", cursor: "pointer" }}
+                      >
+                        {/* Dot */}
+                        <div style={{
+                          position: "absolute", left: -30, top: 5,
+                          width: 10, height: 10, borderRadius: "50%",
+                          background: color, border: `2px solid ${C.night}`,
+                          boxShadow: `0 0 0 2px ${color}40`, flexShrink: 0,
+                        }} />
+
+                        {/* Date block */}
+                        <div style={{ minWidth: 40, textAlign: "center", flexShrink: 0 }}>
+                          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, color: "rgba(255,255,255,0.3)", textTransform: "uppercase", letterSpacing: 1 }}>{weekday}</div>
+                          <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, color: color, lineHeight: 1 }}>{day}</div>
+                        </div>
+
+                        {/* Event info */}
+                        <div style={{
+                          flex: 1, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)",
+                          borderRadius: 10, padding: "14px 18px", transition: "background 0.2s",
+                        }}
+                          onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.06)"}
+                          onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.03)"}
+                        >
+                          <div style={{ fontSize: 10, color, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 4 }}>{event.category}</div>
+                          <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.cream, lineHeight: 1.3, marginBottom: 4 }}>{event.name}</div>
+                          <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif" }}>
+                            {event.time}{event.location ? ` · ${event.location}` : ""}
+                          </div>
+                        </div>
+                      </div>
+                    </FadeIn>
+                  );
+                })}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      <EventLightbox event={lightboxEvent} onClose={() => setLightboxEvent(null)} />
+    </section>
+  );
+}
+
+// ============================================================
+// 🎙️  HOLLY & THE YETI
+// ============================================================
+export function HollyYetiSection() {
+  const [videoSpotlight, setVideoSpotlight] = useState(null);
+
+  useEffect(() => {
+    fetch("/api/promotions")
+      .then(r => r.json())
+      .then(data => setVideoSpotlight(data.videoSpotlight || null))
+      .catch(() => {});
+  }, []);
+
+  const getYouTubeId = (url) => {
+    if (!url) return null;
+    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/);
+    return match?.[1] || null;
+  };
+
+  const videoId = videoSpotlight ? getYouTubeId(videoSpotlight.videoUrl) : '6Kjt2pNsdH0';
+  const videoLabel = videoSpotlight
+    ? `${videoSpotlight.name} — Sponsored Content`
+    : 'Devils Lake Tip-Up Wrap Up — Holly & The Yeti';
+
+  return (
+    <section id="holly" style={{
+      backgroundImage: "url(/images/holly-yeti-bg.jpg)",
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundAttachment: "fixed",
+      padding: "100px 24px",
+      position: "relative",
+      overflow: "hidden",
+    }}>
+      {/* Dark overlay */}
+      <div style={{ position: "absolute", inset: 0, background: "rgba(12,20,26,0.75)", zIndex: 0 }} />
+
+      <div style={{ maxWidth: 1100, margin: "0 auto", position: "relative", zIndex: 1 }}>
+        {/* 2×2 grid on desktop → single column on mobile via holly-grid class */}
+        <div className="holly-grid" style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gridTemplateRows: "auto auto",
+          gap: 32,
+        }}>
+
+          {/* TOP LEFT — Text (frosted glass panel) */}
+          <FadeIn direction="left">
+            <div style={{
+              background: "rgba(255,255,255,0.07)",
+              backdropFilter: "blur(14px)",
+              WebkitBackdropFilter: "blur(14px)",
+              border: "1px solid rgba(255,255,255,0.13)",
+              borderRadius: 18,
+              padding: "44px 40px",
+              height: "100%",
+              boxSizing: "border-box",
+            }}>
+              <SectionLabel light>The Voices of the Lake</SectionLabel>
+              <h2 style={{
+                fontFamily: "'Libre Baskerville', serif",
+                fontSize: "clamp(30px, 4vw, 48px)",
+                fontWeight: 400,
+                color: C.cream,
+                lineHeight: 1.1,
+                margin: "0 0 20px 0",
+              }}>
+                Holly &<br />The Yeti
+              </h2>
+              <p style={{ fontSize: 15, color: "rgba(255,255,255,0.62)", lineHeight: 1.85, marginBottom: 14 }}>
+                A local realtor with straight-shooter expertise and an Australian-accented community character with a flair for comedy walk into a podcast...
+              </p>
+              <p style={{ fontSize: 15, color: "rgba(255,255,255,0.62)", lineHeight: 1.85, marginBottom: 32 }}>
+                Holly Griewahn brings the real estate knowledge and market insight. The Yeti brings the AI-generated videos and the stories that make Manitou Beach feel like the community it actually is.
+              </p>
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <Btn href="https://www.youtube.com/@HollyandtheYetipodcast" variant="sunset" target="_blank" rel="noopener noreferrer">Watch on YouTube</Btn>
+                <Btn href="https://www.facebook.com/HollyandtheYeti" variant="outlineLight" target="_blank" rel="noopener noreferrer">Facebook</Btn>
+                <Btn href="https://m.me/HollyandtheYeti" variant="outlineLight" target="_blank" rel="noopener noreferrer">Message Holly</Btn>
+              </div>
+            </div>
+          </FadeIn>
+
+          {/* TOP RIGHT — Portrait */}
+          <FadeIn delay={80} direction="right">
+            <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "center", height: "100%" }}>
+              <img
+                src="/images/holly_yeti.png"
+                alt="Holly and The Yeti"
+                style={{ width: "100%", maxWidth: 300, display: "block", objectFit: "contain" }}
+              />
+            </div>
+          </FadeIn>
+
+          {/* BOTTOM LEFT — YouTube video (supports Sponsored Video Spotlight promo) */}
+          <FadeIn delay={160} direction="left">
+            <div>
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: videoSpotlight ? C.sunsetLight : "rgba(255,255,255,0.25)", marginBottom: 12 }}>
+                {videoSpotlight ? "Sponsored Content" : "Watch"}
+              </div>
+              <div style={{ position: "relative", paddingTop: "56.25%", borderRadius: 12, overflow: "hidden", boxShadow: "0 16px 60px rgba(0,0,0,0.55)", border: videoSpotlight ? `2px solid ${C.sunset}40` : "none" }}>
+                {videoId ? (
+                  <iframe
+                    src={`https://www.youtube.com/embed/${videoId}`}
+                    style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                ) : (
+                  <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif", fontSize: 13 }}>
+                    Video coming soon
+                  </div>
+                )}
+              </div>
+              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 14, color: "rgba(255,255,255,0.3)", marginTop: 10 }}>
+                {videoLabel}
+              </div>
+            </div>
+          </FadeIn>
+
+          {/* BOTTOM RIGHT — Social cards (frosted glass) */}
+          <FadeIn delay={200} direction="right">
+            <div>
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: 16 }}>
+                Follow Along
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                {[
+                  { platform: "YouTube", handle: "@HollyandtheYetipodcast", desc: "Full episodes, community highlights, and business spotlights.", icon: "▶", href: "https://www.youtube.com/@HollyandtheYetipodcast", color: "#FF4444" },
+                  { platform: "Facebook", handle: "HollyandtheYeti", desc: "Community updates, event news, and behind-the-scenes moments.", icon: "f", href: "https://www.facebook.com/HollyandtheYeti", color: "#4A90D9" },
+                  { platform: "Instagram", handle: "@hollyandtheyeti", desc: "Lake life photos, short clips, and the occasional cryptid sighting.", icon: "◎", href: "https://www.instagram.com/hollyandtheyeti", color: "#C45FA0" },
+                ].map(s => (
+                  <a key={s.platform} href={s.href} target="_blank" rel="noopener noreferrer" style={{
+                    display: "flex", gap: 14, alignItems: "center",
+                    background: "rgba(255,255,255,0.07)",
+                    backdropFilter: "blur(12px)",
+                    WebkitBackdropFilter: "blur(12px)",
+                    border: "1px solid rgba(255,255,255,0.10)",
+                    borderRadius: 12,
+                    padding: "14px 18px",
+                    textDecoration: "none",
+                    transition: "all 0.22s",
+                  }}
+                    onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.13)"; e.currentTarget.style.borderColor = `${s.color}50`; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.07)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.10)"; }}
+                  >
+                    <div style={{
+                      width: 38, height: 38, borderRadius: 9, flexShrink: 0,
+                      background: `${s.color}22`,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: 15, color: s.color,
+                    }}>
+                      {s.icon}
+                    </div>
+                    <div>
+                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, fontSize: 13, color: C.cream }}>{s.platform}</div>
+                      <div style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", marginBottom: 3 }}>{s.handle}</div>
+                      <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", lineHeight: 1.5 }}>{s.desc}</div>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </FadeIn>
+
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ============================================================
+// 📝  SUBMISSION FORM
+// ============================================================
+// Client-side image compression
+export async function compressImage(file, maxWidth = 1200, quality = 0.7) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        let w = img.width, h = img.height;
+        if (w > maxWidth) { h = (maxWidth / w) * h; w = maxWidth; }
+        canvas.width = w;
+        canvas.height = h;
+        canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+        const base64 = canvas.toDataURL("image/jpeg", quality).split(",")[1];
+        resolve({ base64, filename: file.name.replace(/\.[^.]+$/, ".jpg") });
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+export function SubmitSection() {
+  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const [logoFile, setLogoFile] = useState(null);
+  const [logoPreview, setLogoPreview] = useState(null);
+  const [isLogoDragging, setIsLogoDragging] = useState(false);
+  const [form, setForm] = useState({ name: "", category: "", phone: "", address: "", website: "", email: "", description: "", logoUrl: "", tier: "Free", duration: "1", newsletter: false, _hp: "" });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setSubmitError("");
+
+    try {
+      let logoUploadUrl = null;
+      if (logoFile) {
+        const { base64, filename } = await compressImage(logoFile, 600, 0.85);
+        const uploadRes = await fetch("/api/upload-image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: base64, filename: `logo-${filename}`, contentType: "image/jpeg" }),
+        });
+        const uploadData = await uploadRes.json();
+        if (uploadRes.ok) logoUploadUrl = uploadData.url;
+      }
+
+      const res = await fetch("/api/businesses", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, logoUrl: logoUploadUrl || null }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || data.error || "Submission failed");
+      setSubmitted(true);
+    } catch (err) {
+      setSubmitError(err.message && err.message !== "Submission failed"
+        ? err.message
+        : "Something went wrong. Please try again or email us directly.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const input = (field, placeholder, type = "text") => (
+    <input
+      type={type}
+      placeholder={placeholder}
+      value={form[field]}
+      autoComplete="off"
+      data-lpignore="true"
+      data-form-type="other"
+      onChange={e => setForm(f => ({ ...f, [field]: e.target.value }))}
+      style={{
+        width: "100%",
+        padding: "12px 16px",
+        borderRadius: 6,
+        border: `1.5px solid ${C.sand}`,
+        fontFamily: "'Libre Franklin', sans-serif",
+        fontSize: 14,
+        color: C.text,
+        background: C.cream,
+        boxSizing: "border-box",
+        outline: "none",
+        transition: "border-color 0.2s",
+      }}
+      onFocus={e => e.target.style.borderColor = C.sage}
+      onBlur={e => e.target.style.borderColor = C.sand}
+    />
+  );
+
+  return (
+    <section id="submit" style={{ background: C.warmWhite, padding: "100px 24px" }}>
+      <div style={{ maxWidth: 640, margin: "0 auto" }}>
+        <FadeIn>
+          <SectionLabel>Get Listed</SectionLabel>
+          <SectionTitle>Submit Your Listing</SectionTitle>
+          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.75, marginBottom: 36 }}>
+            Free listings for all Manitou Beach and Devils Lake area businesses. Featured placement available for businesses wanting top-of-directory visibility.
+          </p>
+
+          {submitted ? (
+            <div style={{
+              background: `linear-gradient(135deg, ${C.dusk} 0%, ${C.lakeDark} 100%)`,
+              borderRadius: 12,
+              padding: "40px 32px",
+              textAlign: "center",
+            }}>
+              <div style={{
+                width: 52, height: 52, borderRadius: "50%",
+                background: `${C.sage}30`, border: `2px solid ${C.sage}`,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                margin: "0 auto 20px",
+                fontSize: 22, color: C.sage,
+              }}>✓</div>
+              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream, marginBottom: 12, fontWeight: 400 }}>
+                You're in the directory.
+              </div>
+              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.55)", lineHeight: 1.8, margin: "0 0 28px 0", maxWidth: 400, marginLeft: "auto", marginRight: "auto" }}>
+                We review every submission before it goes live — usually within 48 hours. If you're interested in an upgraded listing, we'll reach out with details.
+              </p>
+              <button
+                onClick={() => setSubmitted(false)}
+                style={{
+                  fontFamily: "'Libre Franklin', sans-serif",
+                  fontSize: 12, fontWeight: 600, letterSpacing: 1.5,
+                  textTransform: "uppercase", padding: "10px 24px",
+                  borderRadius: 4, border: `1.5px solid rgba(255,255,255,0.2)`,
+                  background: "transparent", color: "rgba(255,255,255,0.5)",
+                  cursor: "pointer",
+                }}
+              >
+                Submit another
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <>
+
+                  {input("name", "Business Name")}
+                  <select
+                    value={form.category}
+                    onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
+                    autoComplete="off"
+                    data-lpignore="true"
+                    data-form-type="other"
+                    style={{
+                      width: "100%", padding: "12px 16px", borderRadius: 6,
+                      border: `1.5px solid ${C.sand}`, fontFamily: "'Libre Franklin', sans-serif",
+                      fontSize: 14, color: form.category ? C.text : C.textMuted,
+                      background: C.cream, boxSizing: "border-box", outline: "none",
+                      appearance: "none", cursor: "pointer", transition: "border-color 0.2s",
+                    }}
+                    onFocus={e => e.target.style.borderColor = C.sage}
+                    onBlur={e => e.target.style.borderColor = C.sand}
+                  >
+                    <option value="" disabled>Category</option>
+                    <option>Food & Drink</option>
+                    <option>Events & Venues</option>
+                    <option>Stays & Rentals</option>
+                    <option>Boating & Water</option>
+                    <option>Breweries & Wineries</option>
+                    <option>Shopping & Gifts</option>
+                    <option>Home Services</option>
+                    <option>Health & Beauty</option>
+                    <option>Real Estate</option>
+                    <option>Creative Media</option>
+                    <option>Pet Services</option>
+                    <option>Other</option>
+                  </select>
+                  {input("phone", "Phone Number", "tel")}
+                  {input("address", "Address (optional)")}
+                  {input("website", "Website (e.g. yetigroove.com)")}
+                  {input("email", "Your Email", "email")}
+                  <textarea
+                    placeholder="Brief description (2-3 sentences)"
+                    value={form.description}
+                    onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
+                    rows={4}
+                    style={{
+                      width: "100%",
+                      padding: "12px 16px",
+                      borderRadius: 6,
+                      border: `1.5px solid ${C.sand}`,
+                      fontFamily: "'Libre Franklin', sans-serif",
+                      fontSize: 14,
+                      color: C.text,
+                      background: C.cream,
+                      resize: "vertical",
+                      boxSizing: "border-box",
+                      outline: "none",
+                    }}
+                    onFocus={e => e.target.style.borderColor = C.sage}
+                    onBlur={e => e.target.style.borderColor = C.sand}
+                  />
+                  {/* Tier selector */}
+                  <div>
+                    <select
+                      value={form.tier}
+                      onChange={e => setForm(f => ({ ...f, tier: e.target.value, duration: "1" }))}
+                      style={{
+                        width: "100%", padding: "12px 16px", borderRadius: 6,
+                        border: `1.5px solid ${C.sand}`, fontFamily: "'Libre Franklin', sans-serif",
+                        fontSize: 14, color: C.text, background: C.cream,
+                        boxSizing: "border-box", outline: "none", appearance: "none", cursor: "pointer",
+                      }}
+                      onFocus={e => e.target.style.borderColor = C.sage}
+                      onBlur={e => e.target.style.borderColor = C.sand}
+                    >
+                      <option value="Free">Free — $0 · Name, category & phone</option>
+                      <option value="Enhanced">Enhanced — $9/mo · + Website link & description</option>
+                      <option value="Featured">Featured — $23/mo · + Spotlight card & logo</option>
+                      <option value="Premium">Premium — $43/mo · + Full banner & top placement</option>
+                    </select>
+                  </div>
+
+                  {/* Duration — only for paid tiers */}
+                  {form.tier !== "Free" && (
+                    <div>
+                      <select
+                        value={form.duration}
+                        onChange={e => setForm(f => ({ ...f, duration: e.target.value }))}
+                        style={{
+                          width: "100%", padding: "12px 16px", borderRadius: 6,
+                          border: `1.5px solid ${C.sand}`, fontFamily: "'Libre Franklin', sans-serif",
+                          fontSize: 14, color: C.text, background: C.cream,
+                          boxSizing: "border-box", outline: "none", appearance: "none", cursor: "pointer",
+                        }}
+                        onFocus={e => e.target.style.borderColor = C.sage}
+                        onBlur={e => e.target.style.borderColor = C.sand}
+                      >
+                        {[1,2,3,4,5,6,7,8,9,10,11,12].map(n => (
+                          <option key={n} value={String(n)}>
+                            {n} {n === 1 ? "month" : "months"}{n >= 6 ? " · Best value" : ""}
+                          </option>
+                        ))}
+                      </select>
+                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, marginTop: 6, paddingLeft: 2 }}>
+                        Total: ${({ Free: 0, Enhanced: 9, Featured: 23, Premium: 43 }[form.tier] * parseInt(form.duration)).toLocaleString()} · We'll confirm and invoice before going live
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Logo upload — drag & drop, compressed, Vercel Blob */}
+                  <div>
+                    <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 600, color: C.textLight, marginBottom: 8, letterSpacing: 0.5 }}>
+                      Logo (optional · displayed on Featured & Premium tiers)
+                    </div>
+                    <div
+                      onDragEnter={e => { e.preventDefault(); setIsLogoDragging(true); }}
+                      onDragOver={e => { e.preventDefault(); setIsLogoDragging(true); }}
+                      onDragLeave={() => setIsLogoDragging(false)}
+                      onDrop={e => {
+                        e.preventDefault();
+                        setIsLogoDragging(false);
+                        const file = e.dataTransfer.files[0];
+                        if (!file || !file.type.startsWith("image/")) return;
+                        setLogoFile(file);
+                        const reader = new FileReader();
+                        reader.onload = (ev) => setLogoPreview(ev.target.result);
+                        reader.readAsDataURL(file);
+                      }}
+                      style={{
+                        border: `1.5px dashed ${isLogoDragging ? C.sage : C.sand}`,
+                        borderRadius: 8, padding: "14px",
+                        background: isLogoDragging ? "rgba(122,142,114,0.06)" : C.cream,
+                        textAlign: "center", transition: "all 0.2s",
+                      }}
+                    >
+                      {logoPreview ? (
+                        <div style={{ position: "relative", display: "inline-block" }}>
+                          <img src={logoPreview} alt="Logo preview" style={{ maxWidth: 120, maxHeight: 120, borderRadius: 8, objectFit: "contain", display: "block" }} />
+                          <button
+                            type="button"
+                            onClick={() => { setLogoFile(null); setLogoPreview(null); }}
+                            style={{ position: "absolute", top: 4, right: 4, background: "rgba(0,0,0,0.6)", color: "#fff", border: "none", borderRadius: "50%", width: 22, height: 22, cursor: "pointer", fontSize: 12, lineHeight: 1 }}
+                          >×</button>
+                        </div>
+                      ) : (
+                        <label style={{ cursor: "pointer", display: "block" }}>
+                          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, marginBottom: 4 }}>
+                            {isLogoDragging ? "Drop to upload" : "Drag & drop logo or click to upload"}
+                          </div>
+                          <div style={{ fontSize: 11, color: C.textMuted, opacity: 0.6 }}>
+                            Square image recommended · JPG or PNG · auto-compressed
+                          </div>
+                          <input
+                            type="file" accept="image/*"
+                            onChange={e => {
+                              const file = e.target.files[0];
+                              if (!file) return;
+                              setLogoFile(file);
+                              const reader = new FileReader();
+                              reader.onload = (ev) => setLogoPreview(ev.target.result);
+                              reader.readAsDataURL(file);
+                            }}
+                            style={{ display: "none" }}
+                          />
+                        </label>
+                      )}
+                    </div>
+                  </div>
+
+                  <label style={{ display: "flex", gap: 12, alignItems: "flex-start", cursor: "pointer", padding: "14px 16px", background: `${C.sage}0D`, border: `1px solid ${C.sage}25`, borderRadius: 8 }}>
+                    <input
+                      type="checkbox"
+                      checked={form.newsletter}
+                      onChange={e => setForm(f => ({ ...f, newsletter: e.target.checked }))}
+                      style={{ marginTop: 2, accentColor: C.sage }}
+                    />
+                    <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.text, lineHeight: 1.5 }}>
+                      Subscribe to the Manitou Beach newsletter — local events, business spotlights & lake life
+                    </div>
+                  </label>
+              </>
+
+              <button
+                type="submit"
+                disabled={submitting}
+                style={{
+                  fontFamily: "'Libre Franklin', sans-serif",
+                  fontWeight: 700,
+                  fontSize: 13,
+                  letterSpacing: 2,
+                  textTransform: "uppercase",
+                  padding: "15px 32px",
+                  borderRadius: 6,
+                  border: "none",
+                  background: submitting ? C.driftwood : C.sage,
+                  color: C.cream,
+                  cursor: submitting ? "not-allowed" : "pointer",
+                  width: "100%",
+                  transition: "opacity 0.2s",
+                }}
+                onMouseEnter={e => { if (!submitting) e.target.style.opacity = "0.85"; }}
+                onMouseLeave={e => e.target.style.opacity = "1"}
+              >
+                {submitting ? "Sending…" : "Submit Business"}
+              </button>
+
+              {/* Honeypot — hidden from humans, bots fill it automatically */}
+              <input aria-hidden="true" tabIndex={-1} autoComplete="off" value={form._hp} onChange={e => setForm(f => ({ ...f, _hp: e.target.value }))} style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0, pointerEvents: "none" }} />
+
+              {submitError && (
+                <p style={{ fontSize: 13, color: "#c0392b", textAlign: "center", margin: 0 }}>{submitError}</p>
+              )}
+
+              <p style={{ fontSize: 11, color: C.textMuted, textAlign: "center", margin: 0, lineHeight: 1.6 }}>
+                Free listings are reviewed within 48 hours. No spam, no fees unless you upgrade.
+              </p>
+              <p style={{ fontSize: 12, color: C.textMuted, textAlign: "center", margin: 0 }}>
+                Have an event? <a href="/promote" style={{ color: C.sage, textDecoration: "none", fontWeight: 600 }}>List it on the promote page →</a>
+              </p>
+            </form>
+          )}
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+// ============================================================
+// 🔻  FOOTER
+// ============================================================
+export function FooterNewsletterModal({ onClose }) {
+  const [email, setEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [done, setDone] = useState(false);
+  const [error, setError] = useState("");
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [onClose]);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!email || submitting) return;
+    setSubmitting(true); setError("");
+    try {
+      const res = await fetch("/api/subscribe", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed");
+      setDone(true);
+    } catch { setError("Something went wrong — try again."); }
+    finally { setSubmitting(false); }
+  };
+  return (
+    <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+      <div onClick={e => e.stopPropagation()} style={{ background: C.dusk, borderRadius: 16, padding: "40px 36px", maxWidth: 440, width: "100%", border: "1px solid rgba(255,255,255,0.08)", position: "relative" }}>
+        <button onClick={onClose} style={{ position: "absolute", top: 16, right: 16, background: "none", border: "none", color: "rgba(255,255,255,0.4)", fontSize: 20, cursor: "pointer", lineHeight: 1 }}>×</button>
+        <div style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.sage, marginBottom: 6 }}>The Manitou Beach Dispatch</div>
+        <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.7, margin: "0 0 24px 0" }}>Weekly events, local businesses, and community news — straight to your inbox. Free.</p>
+        {done ? (
+          <div style={{ textAlign: "center", padding: "16px 0" }}>
+            <div style={{ fontSize: 28, marginBottom: 10 }}>✓</div>
+            <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.cream, marginBottom: 6 }}>You're in!</div>
+            <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", margin: 0 }}>Check your inbox for a confirmation email.</p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <input type="email" placeholder="your@email.com" value={email} onChange={e => setEmail(e.target.value)} required style={{ flex: 1, minWidth: 180, padding: "11px 16px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.07)", color: C.cream, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", outline: "none" }} />
+            <button type="submit" disabled={submitting} style={{ padding: "11px 22px", background: C.sage, color: C.cream, border: "none", borderRadius: 6, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: submitting ? "wait" : "pointer" }}>
+              {submitting ? "..." : "Subscribe"}
+            </button>
+            {error && <div style={{ width: "100%", fontSize: 12, color: C.sunset, marginTop: 4 }}>{error}</div>}
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export function Footer({ scrollTo }) {
+  const [showNewsletter, setShowNewsletter] = useState(false);
+  return (
+    <>
+    {showNewsletter && <FooterNewsletterModal onClose={() => setShowNewsletter(false)} />}
+    <footer style={{ background: C.night, padding: "64px 24px 36px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 40, marginBottom: 48 }}>
+          <div>
+            <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.cream, marginBottom: 4 }}>
+              Manitou Beach
+            </div>
+            <div style={{ fontFamily: "'Caveat', cursive", fontSize: 14, color: "rgba(255,255,255,0.3)", marginBottom: 16 }}>
+              on Devils Lake, Michigan
+            </div>
+            <p style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", lineHeight: 1.7, margin: 0 }}>
+              Community platform for Manitou Beach and the Devils Lake area.
+            </p>
+          </div>
+          <div>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 2.5, textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: 16 }}>
+              Navigate
+            </div>
+            {SECTIONS.map(({ id, label }) => (
+              <div key={id} style={{ marginBottom: 8 }}>
+                <button
+                  onClick={() => scrollTo(id)}
+                  style={{
+                    background: "none", border: "none",
+                    color: "rgba(255,255,255,0.4)",
+                    fontSize: 13, cursor: "pointer", padding: 0,
+                    fontFamily: "'Libre Franklin', sans-serif",
+                    transition: "color 0.2s",
+                  }}
+                  onMouseEnter={e => e.target.style.color = C.sunsetLight}
+                  onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.4)"}
+                >
+                  {label}
+                </button>
+              </div>
+            ))}
+          </div>
+          <div>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 2.5, textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: 16 }}>
+              Connect
+            </div>
+            {[
+              { label: "Facebook", href: "https://www.facebook.com/HollyandtheYeti" },
+              { label: "YouTube", href: "https://www.youtube.com/@HollyandtheYetipodcast" },
+              { label: "Instagram", href: "https://www.instagram.com/hollyandtheyeti" },
+            ].map(l => (
+              <div key={l.label} style={{ marginBottom: 8 }}>
+                <a
+                  href={l.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: "rgba(255,255,255,0.4)", fontSize: 13, textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif", transition: "color 0.2s" }}
+                  onMouseEnter={e => e.target.style.color = C.sunsetLight}
+                  onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.4)"}
+                >
+                  {l.label}
+                </a>
+              </div>
+            ))}
+            <div style={{ marginBottom: 8 }}>
+              <button
+                onClick={() => setShowNewsletter(true)}
+                style={{ background: "none", border: "none", padding: 0, color: "rgba(255,255,255,0.4)", fontSize: 13, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", transition: "color 0.2s" }}
+                onMouseEnter={e => e.target.style.color = C.sunsetLight}
+                onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.4)"}
+              >
+                Newsletter
+              </button>
+            </div>
+          </div>
+          <div>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 2.5, textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: 16 }}>
+              For Businesses
+            </div>
+            <p style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", lineHeight: 1.75, margin: "0 0 16px 0" }}>
+              Free directory listing. Upgrade for featured placement, newsletter mentions, and video content.
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <a
+                href="/featured"
+                style={{
+                  display: "inline-block",
+                  fontFamily: "'Libre Franklin', sans-serif",
+                  fontSize: 11, fontWeight: 700, letterSpacing: 2,
+                  textTransform: "uppercase",
+                  padding: "9px 20px",
+                  borderRadius: 4,
+                  background: `${C.sunset}20`,
+                  border: `1px solid ${C.sunset}40`,
+                  color: C.sunsetLight,
+                  textDecoration: "none",
+                  transition: "all 0.2s",
+                }}
+              >
+                Get Featured →
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div style={{
+          borderTop: "1px solid rgba(255,255,255,0.06)",
+          paddingTop: 20,
+          display: "flex",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: 12,
+          alignItems: "center",
+        }}>
+          <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
+            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.2)", fontFamily: "'Libre Franklin', sans-serif" }}>
+              © {new Date().getFullYear()} Yeti Groove Media LLC
+            </div>
+            <a href="/privacy" style={{ fontSize: 12, color: "rgba(255,255,255,0.2)", fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'none' }}
+              onMouseEnter={e => e.target.style.color = 'rgba(255,255,255,0.5)'}
+              onMouseLeave={e => e.target.style.color = 'rgba(255,255,255,0.2)'}>Privacy</a>
+            <a href="/terms" style={{ fontSize: 12, color: "rgba(255,255,255,0.2)", fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'none' }}
+              onMouseEnter={e => e.target.style.color = 'rgba(255,255,255,0.5)'}
+              onMouseLeave={e => e.target.style.color = 'rgba(255,255,255,0.2)'}>Terms</a>
+          </div>
+          <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: "rgba(255,255,255,0.15)" }}>
+            No beach. Still worth it. 🏕️
+          </div>
+          <div style={{ fontSize: 11, color: "rgba(255,255,255,0.15)", fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>
+            Powered by{" "}
+            <a
+              href="https://yetigroovemedia.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "rgba(255,255,255,0.3)", textDecoration: "none", transition: "color 0.2s" }}
+              onMouseEnter={e => e.target.style.color = C.sunsetLight}
+              onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.3)"}
+            >
+              Yeti Groove Media
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+    </>
+  );
+}
+
+// ============================================================
+// 🧭  NAVBAR
+// ============================================================
+export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
+  const [comOpen, setComOpen] = useState(false);
+  const comRef = useRef(null);
+
+  useEffect(() => {
+    const onScroll = () => setScrollY(window.scrollY);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Close menu on resize to desktop
+  useEffect(() => {
+    const onResize = () => { if (window.innerWidth > 960) setMenuOpen(false); };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  // Close community dropdown on outside click
+  useEffect(() => {
+    const close = (e) => { if (comRef.current && !comRef.current.contains(e.target)) setComOpen(false); };
+    document.addEventListener("mousedown", close);
+    return () => document.removeEventListener("mousedown", close);
+  }, []);
+
+  const solid = scrollY > 60 || menuOpen;
+
+  const handleNavClick = (id) => {
+    setMenuOpen(false);
+    if (id === "happening") { window.location.href = "/happening"; return; }
+    if (id === "devils-lake") { window.location.href = "/devils-lake"; return; }
+    if (id === "mens-club") { window.location.href = "/mens-club"; return; }
+    if (id === "ladies-club") { window.location.href = "/ladies-club"; return; }
+    if (id === "historical-society") { window.location.href = "/historical-society"; return; }
+    if (id === "round-lake") { window.location.href = "/round-lake"; return; }
+    if (id === "village") { window.location.href = "/village"; return; }
+    if (id === "wineries") { window.location.href = "/wineries"; return; }
+    if (isSubPage) {
+      window.location.href = "/#" + id;
+      return;
+    }
+    scrollTo(id);
+  };
+
+  return (
+    <>
+      <nav style={{
+        position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000,
+        padding: solid ? "10px 0" : "18px 0",
+        background: solid ? "rgba(250,246,239,0.55)" : "transparent",
+        backdropFilter: solid ? "blur(20px) saturate(160%)" : "none",
+        WebkitBackdropFilter: solid ? "blur(20px) saturate(160%)" : "none",
+        borderBottom: solid ? `1px solid rgba(122,142,114,0.2)` : "none",
+        transition: "all 0.35s ease",
+      }}>
+        <div style={{ maxWidth: 1180, margin: "0 auto", padding: "0 28px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          {/* Logo */}
+          <div style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 10 }} onClick={() => handleNavClick("home")}>
+            <img src="/images/manitou_beach_icon.png" alt="" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", opacity: solid ? 1 : 0.85, transition: "opacity 0.35s" }} />
+            <div>
+              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 700, color: solid ? C.dusk : C.cream, transition: "color 0.35s" }}>
+                Manitou Beach
+              </div>
+              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 12, color: solid ? C.textMuted : "rgba(255,255,255,0.5)", marginTop: -2, transition: "color 0.35s" }}>
+                on Devils Lake
+              </div>
+            </div>
+          </div>
+
+          {/* Desktop nav */}
+          <div style={{ display: "flex", gap: 2, alignItems: "center", "@media(max-width:768px)": { display: "none" } }} className="nav-desktop">
+            {SECTIONS.filter(s => s.id !== "home").map(({ id, label }) => (
+              <button
+                key={id}
+                onClick={() => handleNavClick(id)}
+                style={{
+                  background: activeSection === id ? `${C.sage}18` : "transparent",
+                  border: "none",
+                  color: activeSection === id ? C.sageDark : solid ? C.text : "rgba(255,255,255,0.7)",
+                  fontFamily: "'Libre Franklin', sans-serif",
+                  fontSize: 12,
+                  fontWeight: activeSection === id ? 700 : 500,
+                  letterSpacing: 0.5,
+                  padding: "7px 13px",
+                  borderRadius: 6,
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                  whiteSpace: "nowrap",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.color = solid ? C.dusk : C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
+                onMouseLeave={e => { e.currentTarget.style.color = activeSection === id ? C.sageDark : solid ? C.text : "rgba(255,255,255,0.7)"; e.currentTarget.style.background = activeSection === id ? `${C.sage}18` : "transparent"; }}
+              >
+                {label}
+              </button>
+            ))}
+            {/* Dispatch link */}
+            <button
+              onClick={() => { window.location.href = "/dispatch"; }}
+              style={{
+                background: "transparent", border: "none",
+                color: solid ? C.text : "rgba(255,255,255,0.7)",
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 500,
+                letterSpacing: 0.5, padding: "7px 13px", borderRadius: 6, cursor: "pointer",
+                transition: "all 0.2s", whiteSpace: "nowrap",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.color = solid ? C.dusk : C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
+              onMouseLeave={e => { e.currentTarget.style.color = solid ? C.text : "rgba(255,255,255,0.7)"; e.currentTarget.style.background = "transparent"; }}
+            >
+              Blog
+            </button>
+
+            {/* Local Guide link */}
+            <button
+              onClick={() => { window.location.href = "/discover"; }}
+              style={{
+                background: "transparent", border: "none",
+                color: solid ? C.text : "rgba(255,255,255,0.7)",
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 500,
+                letterSpacing: 0.5, padding: "7px 13px", borderRadius: 6, cursor: "pointer",
+                transition: "all 0.2s", whiteSpace: "nowrap",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.color = solid ? C.dusk : C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
+              onMouseLeave={e => { e.currentTarget.style.color = solid ? C.text : "rgba(255,255,255,0.7)"; e.currentTarget.style.background = "transparent"; }}
+            >
+              Local Guide
+            </button>
+
+            {/* Community dropdown */}
+            <div ref={comRef} style={{ position: "relative" }}>
+              <button
+                onClick={() => setComOpen(o => !o)}
+                style={{
+                  background: comOpen ? `${C.sage}18` : "transparent",
+                  border: "none", color: solid ? C.text : "rgba(255,255,255,0.7)",
+                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 500, letterSpacing: 0.5,
+                  padding: "7px 13px", borderRadius: 6, cursor: "pointer", transition: "all 0.2s", whiteSpace: "nowrap",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.color = solid ? C.dusk : C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
+                onMouseLeave={e => { if (!comOpen) { e.currentTarget.style.color = solid ? C.text : "rgba(255,255,255,0.7)"; e.currentTarget.style.background = "transparent"; } }}
+              >
+                Community ▾
+              </button>
+              {comOpen && (
+                <div style={{
+                  position: "absolute", top: "100%", left: 0, marginTop: 6,
+                  background: "rgba(250,246,239,0.98)", backdropFilter: "blur(14px)",
+                  borderRadius: 10, border: `1px solid ${C.sand}`, boxShadow: "0 12px 36px rgba(0,0,0,0.12)",
+                  padding: "8px 0", minWidth: 200, zIndex: 1001,
+                }}>
+                  {[
+                    { label: "Holly & The Yeti", href: "/#holly" },
+                    { label: "Food Truck Locator", href: "/food-trucks" },
+                    { label: "Devils Lake", id: "devils-lake" },
+                    { label: "Round Lake", href: "/round-lake" },
+                    { label: "The Village", href: "/village" },
+                    { label: "Wineries & Breweries", href: "/wineries" },
+                    { label: "Men's Club", id: "mens-club" },
+                    { label: "Ladies Club", id: "ladies-club" },
+                    { label: "Historical Society", id: "historical-society" },
+                    { label: "Gallery ↗", href: "https://photogallery.yetigroove.com/folder/muVgmuXuvFwI/", external: true },
+                    ...(USA250_PUBLIC ? [{ label: "🇺🇸 USA 250th Fireworks", href: "/usa250" }] : []),
+                  ].map((link, i) => (
+                    link.href ? (
+                      <a key={i} href={link.href} {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={{
+                        display: "block", padding: "10px 18px", fontSize: 13, color: C.text,
+                        textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif", transition: "background 0.15s",
+                      }} onMouseEnter={e => e.currentTarget.style.background = `${C.sage}10`} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                        {link.label}
+                      </a>
+                    ) : (
+                      <button key={i} onClick={() => { setComOpen(false); handleNavClick(link.id); }} style={{
+                        display: "block", width: "100%", textAlign: "left", padding: "10px 18px", fontSize: 13, color: C.text,
+                        background: "none", border: "none", cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", transition: "background 0.15s",
+                      }} onMouseEnter={e => e.currentTarget.style.background = `${C.sage}10`} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                        {link.label}
+                      </button>
+                    )
+                  ))}
+                </div>
+              )}
+            </div>
+            <div style={{ marginLeft: 8, display: "flex", gap: 8 }}>
+              <Btn href="/featured" variant="primary" small style={{ minWidth: 152, textAlign: "center", whiteSpace: "nowrap" }}>List Your Business</Btn>
+              <Btn href="/promote" variant="sunset" small style={{ minWidth: 152, textAlign: "center", whiteSpace: "nowrap" }}>List Your Event</Btn>
+            </div>
+          </div>
+
+          {/* Hamburger button — mobile only */}
+          <button
+            onClick={() => setMenuOpen(o => !o)}
+            className="nav-hamburger"
+            style={{
+              display: "none",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              padding: 8,
+              flexDirection: "column",
+              gap: 5,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            aria-label="Toggle menu"
+          >
+            {[0, 1, 2].map(i => (
+              <span key={i} style={{
+                display: "block",
+                width: 22,
+                height: 2,
+                background: solid ? C.dusk : C.cream,
+                borderRadius: 2,
+                transition: "all 0.25s ease",
+                transformOrigin: "center",
+                transform: menuOpen
+                  ? i === 0 ? "rotate(45deg) translate(5px, 5px)"
+                  : i === 2 ? "rotate(-45deg) translate(5px, -5px)"
+                  : "scaleX(0)"
+                  : "none",
+                opacity: menuOpen && i === 1 ? 0 : 1,
+              }} />
+            ))}
+          </button>
+        </div>
+      </nav>
+
+      {/* Mobile menu drawer */}
+      <div style={{
+        position: "fixed",
+        top: 0, left: 0, right: 0, bottom: 0,
+        zIndex: 999,
+        background: "rgba(250,246,239,0.98)",
+        backdropFilter: "blur(16px)",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 8,
+        transform: menuOpen ? "translateX(0)" : "translateX(100%)",
+        transition: "transform 0.35s ease",
+      }}>
+        {SECTIONS.filter(s => s.id !== "home").map(({ id, label }) => (
+          <button
+            key={id}
+            onClick={() => handleNavClick(id)}
+            style={{
+              background: "none",
+              border: "none",
+              fontFamily: "'Libre Baskerville', serif",
+              fontSize: 24,
+              fontWeight: 400,
+              color: activeSection === id ? C.sage : C.text,
+              cursor: "pointer",
+              padding: "12px 32px",
+              letterSpacing: 0.5,
+            }}
+          >
+            {label}
+          </button>
+        ))}
+        {/* Blog link — mobile */}
+        <button onClick={() => { setMenuOpen(false); window.location.href = "/dispatch"; }} style={{
+          background: "none", border: "none", fontFamily: "'Libre Baskerville', serif",
+          fontSize: 24, fontWeight: 400, color: C.text, cursor: "pointer", padding: "12px 32px",
+        }}>
+          Blog
+        </button>
+        {/* Local Guide link — mobile */}
+        <button onClick={() => { setMenuOpen(false); window.location.href = "/discover"; }} style={{
+          background: "none", border: "none", fontFamily: "'Libre Baskerville', serif",
+          fontSize: 24, fontWeight: 400, color: C.text, cursor: "pointer", padding: "12px 32px",
+        }}>
+          Local Guide
+        </button>
+
+        {/* Community sub-links */}
+        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.textMuted, marginTop: 8, fontFamily: "'Libre Franklin', sans-serif" }}>Community</div>
+        {[
+          { label: "Holly & The Yeti", href: "/#holly" },
+          { label: "Food Truck Locator", href: "/food-trucks" },
+          { label: "Devils Lake", id: "devils-lake" },
+          { label: "Round Lake", id: "round-lake" },
+          { label: "The Village", id: "village" },
+          { label: "Wineries & Breweries", id: "wineries" },
+          { label: "Men's Club", id: "mens-club" },
+          { label: "Ladies Club", id: "ladies-club" },
+          { label: "Historical Society", id: "historical-society" },
+        ].map(link => (
+          link.href ? (
+            <a key={link.href} href={link.href} onClick={() => setMenuOpen(false)} style={{
+              fontFamily: "'Libre Baskerville', serif",
+              fontSize: 20, fontWeight: 400, color: C.text,
+              textDecoration: "none", padding: "8px 32px", display: "block",
+            }}>
+              {link.label}
+            </a>
+          ) :
+          <button key={link.id} onClick={() => handleNavClick(link.id)} style={{
+            background: "none", border: "none", fontFamily: "'Libre Baskerville', serif",
+            fontSize: 20, fontWeight: 400, color: C.text, cursor: "pointer", padding: "8px 32px",
+          }}>
+            {link.label}
+          </button>
+        ))}
+        <a
+          href="https://photogallery.yetigroove.com/folder/muVgmuXuvFwI/"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            fontFamily: "'Libre Baskerville', serif",
+            fontSize: 20, fontWeight: 400, color: C.textLight,
+            textDecoration: "none", padding: "10px 32px", display: "block",
+          }}
+        >
+          Gallery ↗
+        </a>
+        <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 10, alignItems: "center" }}>
+          <Btn href="/featured" variant="primary" style={{ width: 200, textAlign: "center", whiteSpace: "nowrap" }}>List Your Business</Btn>
+          <Btn href="/promote" variant="sunset" style={{ width: 200, textAlign: "center", whiteSpace: "nowrap" }}>List Your Event</Btn>
+        </div>
+      </div>
+
+      {/* Responsive styles handled by GlobalStyles */}
+    </>
+  );
+}
+
+// ============================================================
+// 📅  /happening — FULL PAGE
+// ============================================================
+export function EventLightbox({ event, onClose }) {
+  if (!event) return null;
+  const eventCatColors = { "Live Music": C.sunset, "Food & Social": "#8B5E3C", "Sports & Outdoors": C.sage, Community: C.lakeBlue };
+  const color = eventCatColors[event.category] || C.sage;
+  const isRecurring = event.recurring === 'Weekly' || event.recurring === 'Monthly';
+  const isAnnual = event.recurring === 'Annual';
+  const dateDisplay = isRecurring
+    ? `Every ${event.recurringDay || "Week"}`
+    : (() => {
+        try {
+          return new Date(event.date + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+        } catch { return event.date; }
+      })();
+
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: "fixed", inset: 0, zIndex: 9999,
+        background: "rgba(10,18,24,0.85)", backdropFilter: "blur(8px)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        padding: 24,
+      }}
+    >
+      <div
+        onClick={e => e.stopPropagation()}
+        style={{
+          background: `linear-gradient(145deg, ${C.dusk} 0%, ${C.night} 100%)`,
+          border: "1px solid rgba(255,255,255,0.1)",
+          borderRadius: 16, padding: "36px",
+          maxWidth: 520, width: "100%",
+          maxHeight: "85vh", overflowY: "auto",
+          boxShadow: "0 24px 80px rgba(0,0,0,0.5)",
+          position: "relative",
+        }}
+      >
+        <button
+          onClick={onClose}
+          style={{ position: "absolute", top: 16, right: 20, background: "none", border: "none", color: "rgba(255,255,255,0.4)", fontSize: 24, cursor: "pointer" }}
+        >×</button>
+
+        {event.imageUrl && (
+          <img src={event.imageUrl} alt={event.name} style={{ display: "block", maxWidth: "100%", maxHeight: 220, width: "auto", margin: "0 auto 20px", objectFit: "contain", borderRadius: 10 }} />
+        )}
+
+        <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 10, flexWrap: "wrap" }}>
+          <CategoryPill dark>{event.category}</CategoryPill>
+          {event.cost && (
+            <span style={{
+              fontFamily: "'Libre Franklin', sans-serif",
+              fontSize: 11, fontWeight: 600, letterSpacing: 1,
+              color: event.cost === "Free" || event.cost === "Free to watch" ? C.sage : C.sunsetLight,
+              textTransform: "uppercase",
+            }}>
+              {event.cost}
+            </span>
+          )}
+          {isAnnual && (
+            <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: 1, color: C.lakeBlue, textTransform: "uppercase" }}>
+              ● Annual Event
+            </span>
+          )}
+        </div>
+
+        <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 4vw, 32px)", color: C.cream, margin: "14px 0 10px 0", fontWeight: 400, lineHeight: 1.2 }}>
+          {event.name}
+        </h2>
+
+        <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color, marginBottom: 16 }}>
+          {dateDisplay}
+          {!isRecurring && event.dateEnd && ` — ${new Date(event.dateEnd + "T00:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric" })}`}
+        </div>
+
+        {(event.time || event.location) && (
+          <div style={{ display: "flex", gap: 16, marginBottom: 16, flexWrap: "wrap" }}>
+            {event.time && (
+              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", fontFamily: "'Libre Franklin', sans-serif" }}>
+                🕐 {event.time}
+              </div>
+            )}
+            {event.location && (
+              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", fontFamily: "'Libre Franklin', sans-serif" }}>
+                📍 {event.location}
+              </div>
+            )}
+          </div>
+        )}
+
+        <p style={{ fontSize: 15, color: "rgba(255,255,255,0.55)", lineHeight: 1.8, margin: "0 0 20px 0" }}>
+          {event.description}
+        </p>
+
+        {event.eventUrl && (
+          <a
+            href={event.eventUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "inline-block",
+              fontFamily: "'Libre Franklin', sans-serif",
+              fontSize: 12, fontWeight: 700, letterSpacing: 1.5,
+              textTransform: "uppercase", color: C.cream,
+              background: C.sunset, padding: "10px 22px",
+              borderRadius: 6, textDecoration: "none",
+            }}
+          >
+            Get Tickets / More Info →
+          </a>
+        )}
+      </div>
+    </div>
+  );
+}
+
+
+
+
+// ============================================================
+// ⭐  FEATURED BUSINESS — SALES PAGE + STRIPE CHECKOUT
+
+
+
+// ============================================================
+// 📣  PROMOTE PAGE (/promote)
+// ============================================================
+const PROMOTE_PACKAGES = [
+  { id: "event_spotlight", label: "Event Spotlight",        detail: "Featured Listing",   price: "$25",  fullPrice: "$49",  diagramType: "calendar",
+    desc: "Your event in the calendar with a photo and a ticket button.",
+    plain: "Instead of just a line of text like the free listings, yours shows up with a photo and a big 'Get Tickets' button. Stands out." },
+  { id: "hero_7d",         label: "Hero Feature",           detail: "7 Days",             price: "$75",  fullPrice: "$149", diagramType: "hero",
+    desc: "The first thing anyone sees when they visit the site — full screen, your event, for 7 days.",
+    plain: "Picture the front page of a newspaper. That's your event, full size, the moment anyone opens the website. Every visitor sees it first, for a whole week." },
+  { id: "hero_30d",        label: "Hero Feature",           detail: "30 Days",            price: "$249", fullPrice: "$499", diagramType: "hero",
+    desc: "Own the front of the site for a full month.",
+    plain: "Same front-page treatment as the 7-day option — just for a whole month. Great for building buzz leading up to a big event." },
+  { id: "newsletter",      label: "Newsletter Feature",     detail: "1 Issue",            price: "$39",  fullPrice: "$79",  diagramType: "newsletter",
+    desc: "Top spot in the next Manitou Beach Dispatch email — before anyone scrolls.",
+    plain: "A big beautiful announcement at the very top of our weekly email. The whole community sees it in their inbox before they read anything else." },
+  { id: "banner_1p",       label: "Page Feature Banner",    detail: "1 Page · 30 Days",  price: "$29",  fullPrice: "$59",  diagramType: "banner",
+    desc: "A wide banner for your event sitting in the middle of whichever page your crowd visits most.",
+    plain: "Like a billboard, but on the website. Pick the page where your people hang out — Fishing, Wineries, Devils Lake — and your banner is right there for 30 days." },
+  { id: "banner_3p",       label: "Page Feature Banner",    detail: "3 Pages · 30 Days", price: "$69",  fullPrice: "$129", diagramType: "banner3",
+    desc: "Same billboard treatment, but on three different pages at once.",
+    plain: "Cover more ground — your banner shows up on three pages across the site. Catch people wherever they're browsing." },
+  { id: "strip_pin",       label: "Featured Strip Pin",     detail: "30 Days",            price: "$19",  fullPrice: "$39",  diagramType: "strip",
+    desc: "First spot in the 'Coming Up' list on the homepage — right below the big banner.",
+    plain: "There's a scrolling list of upcoming events near the top of the home page. Your event goes first on that list for 30 days. Hard to scroll past." },
+  { id: "holly_yeti",      label: "Holly & Yeti Spotlight", detail: "30 Days",            price: "$179", fullPrice: "$350", diagramType: "video",
+    desc: "Holly and The Yeti make a short video about your event or business. Lives on the site for 30 days.",
+    plain: "We come out, shoot a short video, and it lives on the website for a month. We share it on social too. It's the kind of thing people actually watch." },
+  { id: "spotlight",       label: "Full Launch Bundle",     detail: "Best Value",         price: "$149", fullPrice: "$299", diagramType: "bundle",
+    desc: "Front page of the site for 7 days + top of the newsletter + featured calendar listing. All three at once.",
+    plain: "The whole shebang. Front page of the website, top of the email, featured in the calendar. Maximum coverage — and you save $55 doing it this way.", badge: "Best Value" },
+];
+
+
+const PROMO_PAGES = ["Home", "Whats Happening", "Village", "Devils Lake", "Wineries", "Fishing", "Round Lake"];
+
+// ─── /advertise ──────────────────────────────────────────────────────────────
+
+const ADVERTISE_PACKAGES = [
+  { id: "newsletter_mention", label: "Newsletter Mention",   detail: "1 Issue",            price: "$29",  fullPrice: "$49",  diagramType: "newsletter_sm",
+    desc: "Your brand, product, or event mentioned with a link in the next Dispatch email.",
+    plain: "One or two sentences about you, with a link, in front of everyone who reads the weekly email. Simple and effective." },
+  { id: "newsletter",         label: "Newsletter Feature",   detail: "1 Issue",            price: "$39",  fullPrice: "$79",  diagramType: "newsletter",
+    desc: "A full dedicated section at the top of the next Manitou Beach Dispatch — before anyone scrolls.",
+    plain: "Your business or event gets its own section at the very top of the email. Image, copy, link. The whole community sees it before anything else." },
+  { id: "banner_1p",          label: "Page Banner",          detail: "1 Page · 30 Days",  price: "$29",  fullPrice: "$59",  diagramType: "banner",
+    desc: "A full-width banner for your brand on whichever page your customers visit most.",
+    plain: "Like renting a billboard, but on the website. Pick the page — Fishing, Wineries, Devils Lake — and your banner sits right there for 30 days." },
+  { id: "banner_3p",          label: "Page Banner",          detail: "3 Pages · 30 Days", price: "$69",  fullPrice: "$129", diagramType: "banner3",
+    desc: "Same banner treatment across three pages at once — maximum coverage for 30 days.",
+    plain: "Three pages, one price. Catch people wherever they're browsing — whether they're checking fishing conditions, planning a winery visit, or reading about the lake." },
+  { id: "holly_yeti",         label: "Holly & Yeti Feature", detail: "Video · 30 Days",   price: "$179", fullPrice: "$350", diagramType: "video",
+    desc: "Holly and The Yeti create a short video about your business. Lives on the site for 30 days and shared on social.",
+    plain: "We come out, tell your story on camera, and put it on the website for a month. Real people, real place — the kind of thing the community actually watches." },
+];
+
+
+
+// ============================================================
+// 📰  THE MANITOU DISPATCH — BLOG / NEWSLETTER ARCHIVE
+// ============================================================
+
+export const CATEGORY_COLORS = {
+  'Lake Life':       C.lakeBlue,
+  'Community':       '#D4845A',
+  'Community News':  '#D4845A',
+  'Events':          '#E07B39',
+  'Real Estate':     '#5B8A6E',
+  'Food & Drink':    '#C06FA0',
+  'History':         '#8B7355',
+  'Local History':   '#8B7355',
+  'Recreation':      C.sage,
+  'Seasonal Tips':   C.sage,
+  'Hollys Corner':   '#C06FA0',
+  "Holly's Corner":  '#C06FA0',
+  'PSA':             '#C0392B',
+  'Advertorial':     '#7D6EAA',
+};
+
+// ============================================================
+// 📢  AD SLOTS — Dispatch blog advertising
+// ============================================================
+

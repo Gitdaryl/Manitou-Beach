@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { C, SECTIONS, CAT_COLORS } from '../data/config';
 import { ShareBar, CategoryPill, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivider, PageSponsorBanner, DiagonalDivider, Btn, useCardTilt } from '../components/Shared';
-import { GlobalStyles, PromoBanner, NewsletterInline, HollyYetiSection, EventLightbox, Footer, Navbar } from '../App';
+import { GlobalStyles, PromoBanner, NewsletterInline, HollyYetiSection, EventLightbox, Footer, Navbar } from '../components/Layout';
 import { DispatchPreviewSection } from './DispatchPage';
 
 // ============================================================
@@ -436,99 +436,6 @@ function FeaturedEventsStrip() {
     </div>
   );
 }
-function SubscribeModal({ alreadySubscribed, onClose }) {
-  useEffect(() => {
-    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
-  }, [onClose]);
-
-  return (
-    <div
-      onClick={onClose}
-      style={{
-        position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        zIndex: 9999, padding: 24,
-      }}
-    >
-      <div
-        onClick={e => e.stopPropagation()}
-        style={{
-          background: '#fff', borderRadius: 16, padding: '48px 40px',
-          maxWidth: 480, width: '100%', boxShadow: '0 24px 80px rgba(0,0,0,0.3)',
-          textAlign: 'center', fontFamily: "'Libre Franklin', sans-serif",
-          position: 'relative', overflow: 'hidden'
-        }}
-      >
-        <div style={{ position: 'absolute', top: -50, right: -50, width: 150, height: 150, background: `${C.sunset}10`, borderRadius: '50%', pointerEvents: 'none' }}/>
-        <div style={{ position: 'absolute', bottom: -30, left: -30, width: 100, height: 100, background: `${C.sage}10`, borderRadius: '50%', pointerEvents: 'none' }}/>
-
-        {alreadySubscribed ? (
-          <>
-            <div style={{ fontSize: 44, marginBottom: 16 }}>👋</div>
-            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, color: C.dusk, margin: '0 0 12px' }}>
-              Already on the list!
-            </h3>
-            <p style={{ color: C.textLight, fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>
-              You're already subscribed to The Manitou Dispatch. Watch your inbox — the next issue is coming soon.
-            </p>
-          </>
-        ) : (
-          <>
-            <div style={{ fontSize: 48, marginBottom: 12 }}>🍪</div>
-            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunset, marginBottom: 10 }}>
-              Secret Lake Code
-            </div>
-            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, color: C.dusk, margin: '0 0 20px' }}>
-              You're almost in...
-            </h3>
-            
-            <div style={{
-              background: `linear-gradient(135deg, ${C.sage}10 0%, ${C.lakeBlue}10 100%)`, 
-              border: `1px solid ${C.sage}30`, borderRadius: 12, padding: '24px 20px', marginBottom: 28,
-              position: 'relative'
-            }}>
-              <p style={{ color: C.text, fontSize: 15, lineHeight: 1.6, margin: '0 0 16px', fontWeight: 600 }}>
-                Step 1: Click confirm in your email.
-              </p>
-              <p style={{ color: C.textLight, fontSize: 14, lineHeight: 1.6, margin: '0 0 16px' }}>
-                Step 2: Show this secret code at <strong>Blackbird Cafe</strong> this weekend for a welcome cookie on us.
-              </p>
-              <div style={{
-                fontFamily: "'Courier New', monospace", fontSize: 22, fontWeight: 700, 
-                letterSpacing: 4, color: C.sunset, background: '#fff', padding: '12px 24px', 
-                borderRadius: 8, display: 'inline-block', border: `1.5px dashed ${C.sunset}60`,
-                boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
-              }}>
-                LAKEBOUND
-              </div>
-            </div>
-
-            <p style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.6, marginBottom: 24 }}>
-              Check your <strong>spam/junk</strong> folder if you don't see the confirmation email within a few minutes.
-            </p>
-          </>
-        )}
-        <button
-          onClick={onClose}
-          style={{
-            background: C.sage, color: '#fff', border: 'none', borderRadius: 8,
-            padding: '14px 32px', fontSize: 15, fontWeight: 700, cursor: 'pointer',
-            fontFamily: "'Libre Franklin', sans-serif", width: '100%',
-            letterSpacing: 1, textTransform: 'uppercase', transition: 'all 0.2s ease',
-            position: 'relative', zIndex: 1
-          }}
-          onMouseEnter={e => e.target.style.transform = 'translateY(-1px)'}
-          onMouseLeave={e => e.target.style.transform = 'none'}
-        >
-          {alreadySubscribed ? 'Got it' : 'I saved the code →'}
-        </button>
-      </div>
-    </div>
-  );
-}
-
 function NewsletterBar() {
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
