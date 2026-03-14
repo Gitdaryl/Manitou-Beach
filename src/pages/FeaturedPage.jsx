@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Btn, FadeIn, ScrollProgress, SectionLabel, SectionTitle } from '../components/Shared';
 import { C, LISTING_CATEGORIES, PAGE_SPONSORS, SLOT_CAPS } from '../data/config';
-import { Footer, Navbar } from '../App';
+import { Footer, Navbar, SubmitSection } from '../App';
 
 // ============================================================
 const FEATURED_TIERS = [
