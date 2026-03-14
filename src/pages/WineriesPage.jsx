@@ -6,7 +6,7 @@ import { C } from '../data/config';
 // ============================================================
 // 🍷  WINERIES PAGE (/wineries)
 // ============================================================
-const WINERY_VENUES = [
+export const WINERY_VENUES = [
   // ── Village Tasting Rooms (opening May 22, 2026) ──────────────────────
   {
     section: "village",

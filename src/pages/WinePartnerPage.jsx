@@ -3,6 +3,33 @@ import { Btn, FadeIn, ScrollProgress, SectionLabel, SectionTitle, WaveDivider } 
 import { C } from '../data/config';
 import { Footer, Navbar } from '../App';
 
+const WINE_PARTNER_HOW = [
+  { step: "01", title: "A customer visits your tasting room", copy: "They enjoy a pour, browse your space, connect with what you offer. That experience is already happening — we just give them a way to capture it." },
+  { step: "02", title: "They scan the QR card, rate their visit", copy: "Wine quality, service, atmosphere, value. A minute on their phone. No app to download, no account to create. Scan, rate, done." },
+  { step: "03", title: "Your scorecard builds — publicly", copy: "Every rating adds to your live community scorecard on Manitou Beach. Visitors researching the trail see your scores before they visit. Your fans become your best marketing." },
+];
+const WINE_PARTNER_GETS = [
+  { icon: "📊", title: "Public Scorecard", copy: "Live community ratings across four dimensions — Wine Quality, Service, Atmosphere, Value. Visible to anyone exploring the trail on Manitou Beach." },
+  { icon: "📄", title: "Print Kit", copy: "100 printed stamp cards (6×4) for your counter plus a display insert. $49 one-time covers design, print, and delivery. Refills are $29 per 100 cards when you run out." },
+  { icon: "🏆", title: "Season-End Award", copy: "At the end of 2026, top-rated venues in each category receive a plaque — something to hang on your wall, post online, and be proud of." },
+  { icon: "👥", title: "Community Visibility", copy: "Your listing on Manitou Beach, seen by the region's most engaged local audience — visitors, locals, and seasonal residents all in one place." },
+];
+const WINE_PARTNER_AWARDS = [
+  "Best Red Wine",
+  "Best White Wine",
+  "Best Sweet Wine",
+  "Best Fruit or Specialty Wine",
+  "Best Tasting Room Experience",
+  "Outstanding Customer Hospitality",
+  "Best Atmosphere",
+];
+const WINE_PARTNER_FRICTIONLESS = [
+  { label: "No app required", sub: "Customers rate in a browser. Done." },
+  { label: "No account to manage", sub: "Your profile is already live." },
+  { label: "No work to maintain", sub: "We run the system. You run the tasting room." },
+  { label: "No hidden cost later", sub: "If that ever changes, you'll hear it from us first." },
+];
+
 function WinePartnerSignupSection() {
   const [venueName, setVenueName] = useState('');
   const [contactName, setContactName] = useState('');

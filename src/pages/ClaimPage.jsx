@@ -1,5 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { C } from '../data/config';
+
+const CLAIM_BUSINESSES = {
+  cafe: {
+    name: 'Blackbird Cafe & Baking Company',
+    offerText: 'free cookie',
+    descLine: 'A welcome gift from The Manitou Dispatch',
+    emoji: '☕',
+    accentColor: '#D4845A',
+    reviewUrl: 'https://www.yelp.com/writeareview/biz/BV2J5pWMspuXAU78MeQo_A?return_url=%2Fbiz%2FBV2J5pWMspuXAU78MeQo_A&review_origin=biz-details-war-button',
+  },
+};
 
 export default function ClaimPage() {
   const { slug } = useParams();

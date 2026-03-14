@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect } from "react";
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
 import BuildPage from './pages/BuildPage';
@@ -13,7 +13,7 @@ import YetiAdminPage from './pages/YetiAdminPage';
 import DispatchPage, { DispatchArticlePage } from './pages/DispatchPage';
 import PromotePage, { AdvertisePage } from './pages/PromotePage';
 import FeaturedPage from './pages/FeaturedPage';
-import HappeningPage, { formatEventDate } from './pages/HappeningPage';
+import HappeningPage from './pages/HappeningPage';
 import ClaimPromoView from "./pages/ClaimPromoView";
 import RedeemPromoView from "./pages/RedeemPromoView";
 import WineriesPage from './pages/WineriesPage';
@@ -26,7 +26,7 @@ import RoundLakePage from './pages/RoundLakePage';
 import VillagePage from './pages/VillagePage';
 import USA250Page from "./pages/USA250Page";
 import HomePage from './pages/HomePage';
-import { BrowserRouter, Routes, Route, useParams, useNavigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // ============================================================
 // 📑  TABLE OF CONTENTS
@@ -152,18 +152,7 @@ export const DISPATCH_CARD_SPONSORS = [
 // ============================================================
 export const DISPATCH_CATEGORIES = ['Lake Life', 'Community', 'Events', 'Real Estate', 'Food & Drink', 'History', 'Recreation', 'Seasonal Tips', "Holly's Corner", 'Advertorial'];
 
-// ─── Review Capture — Business Config ────────────────────────────────────────
-// Add a key per business slug (matches /claim/:slug URL)
-const CLAIM_BUSINESSES = {
-  cafe: {
-    name: 'Blackbird Cafe & Baking Company',
-    offerText: 'free cookie',
-    descLine: 'A welcome gift from The Manitou Dispatch',
-    emoji: '☕',
-    accentColor: '#D4845A',
-    reviewUrl: 'https://www.yelp.com/writeareview/biz/BV2J5pWMspuXAU78MeQo_A?return_url=%2Fbiz%2FBV2J5pWMspuXAU78MeQo_A&review_origin=biz-details-war-button',
-  },
-};
+// CLAIM_BUSINESSES moved to ClaimPage.jsx
 
 
 
@@ -302,105 +291,6 @@ export function buildDiscoverInfoWindow(poi) {
 
 // ============================================================
 // 📄  TERMS OF SERVICE
-
-// ============================================================
-// 🚚  /food-trucks — FOOD TRUCK LOCATOR
-
-// ============================================================
-// 🏗️  /build — WEBSITE RENTAL LEAD CAPTURE
-
-// ============================================================
-// 🔒  /founding — FOUNDING MEMBER PAGE (private link, friend outreach)
-// ============================================================
-const FOUNDING_TIERS = [
-  { name: "Enhanced", price: 9,  perks: ["Business listing on Manitou Beach", "Map pin on /discover", "Category placement", "Contact info + description", "Link to your website", "Upgrade to Featured or Premium at founding rates — any time"] },
-  { name: "Featured", price: 23, highlight: true, perks: ["Everything in Enhanced", "Priority placement in category", "Logo displayed on listing", "Newsletter mention eligibility", "Highlighted card styling", "Upgrade to Premium at founding rates — any time"] },
-  { name: "Premium",  price: 43, perks: ["Everything in Featured", "Top of category, always", "Monthly newsletter feature eligible", "First call for sponsorship spots", "Founding badge on listing"] },
-];
-
-const FOUNDING_MATH = [
-  { subs: "Today",    newPrice: null,  yourPrice: 9,  label: "Founding rate" },
-  { subs: "200 subs", newPrice: 10,   yourPrice: 9,  label: "You still pay $9" },
-  { subs: "500 subs", newPrice: 13,   yourPrice: 9,  label: "You still pay $9" },
-  { subs: "1,000 subs", newPrice: 18, yourPrice: 9,  label: "You still pay $9" },
-];
-
-
-// ============================================================
-// 🚚  /food-truck-partner — FOOD TRUCK PARTNER PAGE (private link)
-// ============================================================
-const TRUCK_HOW = [
-  { step: "01", title: "Sign up for your Founding listing", copy: "Truck name, cuisine, email — that's it. Your founding rate is locked the moment you pay. Daryl sets you up with a check-in link the same day." },
-  { step: "02", title: "Use your check-in URL when you're nearby", copy: "Heading to Manitou Beach? Hit your link. Your pin goes live on the map with a 'Live Now' badge. Takes three seconds." },
-  { step: "03", title: "Locals find you in real time", copy: "People checking the locator see you're here, right now. Not a static listing — a live signal that drives foot traffic." },
-];
-const TRUCK_AUDIENCE = [
-  { icon: "🏖️", label: "Lake crowd", copy: "Manitou Beach draws thousands of summer visitors — boaters, swimmers, families. They're hungry and they're looking." },
-  { icon: "🍷", label: "Wine trail visitors", copy: "The Irish Hills wine trail runs through here. Day-trippers who've been tasting since noon are your best customers." },
-  { icon: "🏡", label: "Lake homeowners", copy: "300+ waterfront properties and seasonal rentals nearby. People who've been here all week and want something different for lunch." },
-  { icon: "📅", label: "Event weekends", copy: "Tournaments, festivals, car shows, open-air concerts. High-traffic weekends where a well-placed truck cleans up." },
-];
-const TRUCK_GETS = [
-  { icon: "📍", title: "Live map pin", copy: "Your truck appears on the Manitou Beach Food Truck Locator the moment you check in. 'Live Now' badge, your name, what you serve." },
-  { icon: "🔗", title: "Personal check-in URL", copy: "A private link that's yours. Open it from your phone when you're rolling into town. No login, no app, no fuss." },
-  { icon: "📋", title: "Directory listing", copy: "Year-round presence in the All Trucks directory — your name, cuisine, and contact info visible even when you're not checked in." },
-  { icon: "☀️", title: "Summer season visibility", copy: "Manitou Beach peaks June through September. Your truck is in front of the right people at the right time." },
-];
-const TRUCK_FOUNDING_ITEMS = [
-  { icon: "📍", label: "Live map pin", sub: "Your truck appears on the map the moment you check in." },
-  { icon: "🔗", label: "Personal check-in URL", sub: "Your private link. Open from your phone. No app, no login." },
-  { icon: "🔗", label: "Website / menu / Instagram link", sub: "One tap to your menu on every live card." },
-  { icon: "⭐", label: "Featured Truck badge", sub: "You stand out in the map and directory." },
-  { icon: "📰", label: "Newsletter shoutout when live", sub: "On send days, we mention you're open. One email, hundreds of readers." },
-  { icon: "🥇", label: "Priority in All Trucks directory", sub: "Listed first. Above Basic trucks." },
-  { icon: "📅", label: "Seasonal schedule note (optional)", sub: "Tell regulars where to find you every week." },
-];
-const TRUCK_BASIC_ITEMS = [
-  { icon: "📋", label: "Directory listing", sub: "Your truck name and cuisine in the All Trucks list. Nothing else." },
-];
-const TRUCK_FOUNDING_MATH = [
-  { subs: "Today",      newPrice: null, yourPrice: 9, label: "Founding rate" },
-  { subs: "200 subs",   newPrice: 10,   yourPrice: 9, label: "You still pay $9" },
-  { subs: "500 subs",   newPrice: 13,   yourPrice: 9, label: "You still pay $9" },
-  { subs: "1,000 subs", newPrice: 18,   yourPrice: 9, label: "You still pay $9" },
-];
-
-
-// ============================================================
-// 🍷  /wine-partner — WINE TRAIL PARTNER PAGE (private link)
-// ============================================================
-const WINE_PARTNER_HOW = [
-  { step: "01", title: "A customer visits your tasting room", copy: "They enjoy a pour, browse your space, connect with what you offer. That experience is already happening — we just give them a way to capture it." },
-  { step: "02", title: "They scan the QR card, rate their visit", copy: "Wine quality, service, atmosphere, value. A minute on their phone. No app to download, no account to create. Scan, rate, done." },
-  { step: "03", title: "Your scorecard builds — publicly", copy: "Every rating adds to your live community scorecard on Manitou Beach. Visitors researching the trail see your scores before they visit. Your fans become your best marketing." },
-];
-const WINE_PARTNER_GETS = [
-  { icon: "📊", title: "Public Scorecard", copy: "Live community ratings across four dimensions — Wine Quality, Service, Atmosphere, Value. Visible to anyone exploring the trail on Manitou Beach." },
-  { icon: "📄", title: "Print Kit", copy: "100 printed stamp cards (6×4) for your counter plus a display insert. $49 one-time covers design, print, and delivery. Refills are $29 per 100 cards when you run out." },
-  { icon: "🏆", title: "Season-End Award", copy: "At the end of 2026, top-rated venues in each category receive a plaque — something to hang on your wall, post online, and be proud of." },
-  { icon: "👥", title: "Community Visibility", copy: "Your listing on Manitou Beach, seen by the region's most engaged local audience — visitors, locals, and seasonal residents all in one place." },
-];
-const WINE_PARTNER_AWARDS = [
-  "Best Red Wine",
-  "Best White Wine",
-  "Best Sweet Wine",
-  "Best Fruit or Specialty Wine",
-  "Best Tasting Room Experience",
-  "Outstanding Customer Hospitality",
-  "Best Atmosphere",
-];
-// ── /rate — Universal Wine Trail Rating Page ──────────────────────────
-const RATE_VENUES = WINERY_VENUES.filter(v => v.section !== 'extended').map(v => v.name);
-
-
-const WINE_PARTNER_FRICTIONLESS = [
-  { label: "No app required", sub: "Customers rate in a browser. Done." },
-  { label: "No account to manage", sub: "Your profile is already live." },
-  { label: "No work to maintain", sub: "We run the system. You run the tasting room." },
-  { label: "No hidden cost later", sub: "If that ever changes, you'll hear it from us first." },
-];
-
-
 
 
 

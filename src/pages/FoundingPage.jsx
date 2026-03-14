@@ -3,6 +3,19 @@ import { Btn, FadeIn, ScrollProgress, SectionLabel, SectionTitle, WaveDivider } 
 import { C } from '../data/config';
 import { Footer, Navbar } from '../App';
 
+const FOUNDING_TIERS = [
+  { name: "Enhanced", price: 9,  perks: ["Business listing on Manitou Beach", "Map pin on /discover", "Category placement", "Contact info + description", "Link to your website", "Upgrade to Featured or Premium at founding rates — any time"] },
+  { name: "Featured", price: 23, highlight: true, perks: ["Everything in Enhanced", "Priority placement in category", "Logo displayed on listing", "Newsletter mention eligibility", "Highlighted card styling", "Upgrade to Premium at founding rates — any time"] },
+  { name: "Premium",  price: 43, perks: ["Everything in Featured", "Top of category, always", "Monthly newsletter feature eligible", "First call for sponsorship spots", "Founding badge on listing"] },
+];
+
+const FOUNDING_MATH = [
+  { subs: "Today",    newPrice: null,  yourPrice: 9,  label: "Founding rate" },
+  { subs: "200 subs", newPrice: 10,   yourPrice: 9,  label: "You still pay $9" },
+  { subs: "500 subs", newPrice: 13,   yourPrice: 9,  label: "You still pay $9" },
+  { subs: "1,000 subs", newPrice: 18, yourPrice: 9,  label: "You still pay $9" },
+];
+
 function FoundingListingDemo() {
   const [expanded, setExpanded] = useState(false);
   const accentColor = C.sage;

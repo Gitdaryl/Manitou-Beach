@@ -3,6 +3,42 @@ import { Btn, FadeIn, ScrollProgress, SectionLabel, SectionTitle, WaveDivider } 
 import { C } from '../data/config';
 import { Footer, Navbar } from '../App';
 
+const TRUCK_HOW = [
+  { step: "01", title: "Sign up for your Founding listing", copy: "Truck name, cuisine, email — that's it. Your founding rate is locked the moment you pay. Daryl sets you up with a check-in link the same day." },
+  { step: "02", title: "Use your check-in URL when you're nearby", copy: "Heading to Manitou Beach? Hit your link. Your pin goes live on the map with a 'Live Now' badge. Takes three seconds." },
+  { step: "03", title: "Locals find you in real time", copy: "People checking the locator see you're here, right now. Not a static listing — a live signal that drives foot traffic." },
+];
+const TRUCK_AUDIENCE = [
+  { icon: "🏖️", label: "Lake crowd", copy: "Manitou Beach draws thousands of summer visitors — boaters, swimmers, families. They're hungry and they're looking." },
+  { icon: "🍷", label: "Wine trail visitors", copy: "The Irish Hills wine trail runs through here. Day-trippers who've been tasting since noon are your best customers." },
+  { icon: "🏡", label: "Lake homeowners", copy: "300+ waterfront properties and seasonal rentals nearby. People who've been here all week and want something different for lunch." },
+  { icon: "📅", label: "Event weekends", copy: "Tournaments, festivals, car shows, open-air concerts. High-traffic weekends where a well-placed truck cleans up." },
+];
+const TRUCK_GETS = [
+  { icon: "📍", title: "Live map pin", copy: "Your truck appears on the Manitou Beach Food Truck Locator the moment you check in. 'Live Now' badge, your name, what you serve." },
+  { icon: "🔗", title: "Personal check-in URL", copy: "A private link that's yours. Open it from your phone when you're rolling into town. No login, no app, no fuss." },
+  { icon: "📋", title: "Directory listing", copy: "Year-round presence in the All Trucks directory — your name, cuisine, and contact info visible even when you're not checked in." },
+  { icon: "☀️", title: "Summer season visibility", copy: "Manitou Beach peaks June through September. Your truck is in front of the right people at the right time." },
+];
+const TRUCK_FOUNDING_ITEMS = [
+  { icon: "📍", label: "Live map pin", sub: "Your truck appears on the map the moment you check in." },
+  { icon: "🔗", label: "Personal check-in URL", sub: "Your private link. Open from your phone. No app, no login." },
+  { icon: "🔗", label: "Website / menu / Instagram link", sub: "One tap to your menu on every live card." },
+  { icon: "⭐", label: "Featured Truck badge", sub: "You stand out in the map and directory." },
+  { icon: "📰", label: "Newsletter shoutout when live", sub: "On send days, we mention you're open. One email, hundreds of readers." },
+  { icon: "🥇", label: "Priority in All Trucks directory", sub: "Listed first. Above Basic trucks." },
+  { icon: "📅", label: "Seasonal schedule note (optional)", sub: "Tell regulars where to find you every week." },
+];
+const TRUCK_BASIC_ITEMS = [
+  { icon: "📋", label: "Directory listing", sub: "Your truck name and cuisine in the All Trucks list. Nothing else." },
+];
+const TRUCK_FOUNDING_MATH = [
+  { subs: "Today",      newPrice: null, yourPrice: 9, label: "Founding rate" },
+  { subs: "200 subs",   newPrice: 10,   yourPrice: 9, label: "You still pay $9" },
+  { subs: "500 subs",   newPrice: 13,   yourPrice: 9, label: "You still pay $9" },
+  { subs: "1,000 subs", newPrice: 18,   yourPrice: 9, label: "You still pay $9" },
+];
+
 export default function FoodTruckPartnerPage() {
   const subScrollTo = (id) => { window.location.href = "/#" + id; };
   const [subCount, setSubCount] = useState(null);

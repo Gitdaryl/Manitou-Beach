@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { Btn, FadeIn, SectionLabel } from '../components/Shared';
 import { C } from '../data/config';
 import { Footer, Navbar } from '../App';
+import { WINERY_VENUES } from './WineriesPage';
+
+const RATE_VENUES = WINERY_VENUES.filter(v => v.section !== 'extended').map(v => v.name);
 
 export default function RatePage() {
   const subScrollTo = (id) => { window.location.href = "/#" + id; };
