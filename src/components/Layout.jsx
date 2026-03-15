@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { C, PAGE_SPONSORS, SECTIONS, LISTING_CATEGORIES, VIDEOS } from '../data/config';
+import { C, PAGE_SPONSORS, SECTIONS, LISTING_CATEGORIES, VIDEOS, DISPATCH_CARD_SPONSORS } from '../data/config';
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, WaveDivider, Btn, CategoryPill, PageSponsorBanner } from './Shared';
 
 export function GlobalStyles() {

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FadeIn, PageSponsorBanner, ScrollProgress, SectionLabel, SectionTitle, ShareBar, WaveDivider } from '../components/Shared';
-import { C } from '../data/config';
+import { C, DISPATCH_CARD_SPONSORS, DISPATCH_CATEGORIES } from '../data/config';
 import { Footer, Navbar, GlobalStyles, NewsletterInline, CATEGORY_COLORS } from '../components/Layout';
-import { useDispatchAds, pickAd, DISPATCH_CARD_SPONSORS, DISPATCH_CATEGORIES } from '../App';
+import { useDispatchAds, pickAd } from '../App';
 
 
 export function DispatchArticlePage() {

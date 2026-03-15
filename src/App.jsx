@@ -131,17 +131,8 @@ export function pickAd(slotAds) {
 }
 
 
-// ── Dispatch Card Sponsors ──────────────────────────────────────────────────────
-// Add/remove sponsors here. Rotates across cards by index.
-// logo: path in /public (e.g. '/images/blackbird-logo.png'), or null → shows 📷 placeholder
-// Set array to [] to hide all sponsor strips.
-export const DISPATCH_CARD_SPONSORS = [
-  {
-    name: 'Blackbird Cafe & Baking Co.',
-    logo: '/images/blackbird-logo.png',
-    offerText: 'Free cookie for new subscribers',
-  },
-];
+// DISPATCH_CARD_SPONSORS moved to data/config.js
+export { DISPATCH_CARD_SPONSORS } from './data/config';
 
 // ============================================================
 // 📰  DISPATCH PREVIEW — Homepage 3-card teaser
@@ -150,7 +141,8 @@ export const DISPATCH_CARD_SPONSORS = [
 // ============================================================
 // 🛠️  YETI ADMIN — AI Article Writer (unlisted, /yeti-admin)
 // ============================================================
-export const DISPATCH_CATEGORIES = ['Lake Life', 'Community', 'Events', 'Real Estate', 'Food & Drink', 'History', 'Recreation', 'Seasonal Tips', "Holly's Corner", 'Advertorial'];
+// DISPATCH_CATEGORIES moved to data/config.js
+export { DISPATCH_CATEGORIES } from './data/config';
 
 // CLAIM_BUSINESSES moved to ClaimPage.jsx
 
