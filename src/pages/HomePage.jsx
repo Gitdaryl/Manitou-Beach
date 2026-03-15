@@ -1375,126 +1375,258 @@ function BusinessRow({ business }) {
     </div>
   );
 }
-function LivingCard({ item, i }) {
-  const tilt = useCardTilt(4);
-  return (
-    <FadeIn delay={i * 100} direction={i === 0 ? "left" : i === 2 ? "right" : "up"}>
-      <div
-        ref={tilt.ref}
-        onMouseMove={tilt.onMouseMove}
-        onMouseLeave={tilt.onMouseLeave}
-        className="card-tilt"
-        style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 14, padding: "28px 26px 26px", display: "flex", flexDirection: "column", height: "100%" }}
-      >
-        <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.text, margin: "0 0 12px 0", fontWeight: 700 }}>{item.title}</h3>
-        <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: "0 0 24px 0", flex: 1 }}>{item.desc}</p>
-        <a href={item.href} target={item.external ? "_blank" : "_self"} rel={item.external ? "noopener noreferrer" : undefined}
-          className="link-hover-underline"
-          style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sage, textDecoration: "none" }}
-        >
-          {item.cta} →
-        </a>
-      </div>
-    </FadeIn>
-  );
-}
 function LivingSection() {
-  const items = [
-    {
-      title: "Buy or Sell",
-      desc: "Holly Griewahn at Foundation Realty knows this lake like the back of her hand. Whether you're buying lakefront or selling your cottage, she's your person.",
-      cta: "Talk to Holly", href: "#businesses",
-    },
-    {
-      title: "Short-Term Rentals",
-      desc: "Weekend getaway? The area has seasonal cottage rentals, lakefront homes, and the kind of view that makes you want to stop renting and start buying.",
-      cta: "Browse Stays", href: "#businesses",
-    },
-    {
-      title: "Year-Round Life",
-      desc: "Manitou Beach isn't just a summer destination. Ice fishing, quiet winters, and a tight-knit community that actually knows each other's names.",
-      cta: "Explore Devils Lake", href: "/devils-lake",
-    },
-    {
-      title: "Lake Access Magazine",
-      desc: "Our regional media partner covering lake communities across Michigan. Find more lake towns, listings, and lake life. Use code HOLLY or YETI for 10% off your subscription.",
-      cta: "Visit Lake Access", href: "https://lake-access.com/", external: true,
-    },
-  ];
-
   return (
     <section id="living" style={{ background: C.cream, padding: "100px 24px" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
         <FadeIn>
           <SectionLabel>Relocate & Stay</SectionLabel>
-          <SectionTitle>Living Here</SectionTitle>
-          <p style={{ fontSize: 16, color: C.textLight, maxWidth: 500, margin: "0 0 56px 0", lineHeight: 1.75 }}>
-            Whether you're visiting for a weekend or ready to make the lake your permanent address — here's what you need to know.
+          <SectionTitle>Your Lake Life Starts Here</SectionTitle>
+          <p style={{ fontSize: 16, color: C.textLight, maxWidth: 560, margin: "0 0 56px 0", lineHeight: 1.75 }}>
+            Whether you're planning a weekend escape or imagining a new forever address — Manitou Beach has a way of making visitors into neighbors.
           </p>
         </FadeIn>
 
-        {/* Magazine layout: hero card + 3 smaller */}
+        {/* Block A — "Picture Yourself Here" hero */}
         <FadeIn direction="scale">
-          <div
-            style={{
-              background: `linear-gradient(135deg, ${C.dusk} 0%, ${C.lakeDark} 100%)`,
-              borderRadius: 16, padding: "48px 44px",
-              marginBottom: 20, position: "relative", overflow: "hidden",
-              border: "1px solid rgba(255,255,255,0.08)",
-            }}
-          >
-            <div style={{ position: "absolute", top: -40, right: -40, width: 200, height: 200, borderRadius: "50%", background: `${C.sage}08`, pointerEvents: "none" }} />
-            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 3.5vw, 36px)", color: C.cream, margin: "0 0 14px 0", fontWeight: 400 }}>
-              {items[0].title}
+          <div style={{
+            background: `linear-gradient(135deg, ${C.dusk} 0%, ${C.lakeDark} 100%)`,
+            borderRadius: 16, padding: "56px 48px", marginBottom: 28,
+            position: "relative", overflow: "hidden",
+            border: "1px solid rgba(255,255,255,0.08)",
+          }}>
+            <div style={{ position: "absolute", top: -60, right: -60, width: 240, height: 240, borderRadius: "50%", background: `${C.sage}08`, pointerEvents: "none" }} />
+            <div style={{ position: "absolute", bottom: -40, left: -40, width: 160, height: 160, borderRadius: "50%", background: `${C.lakeBlue}06`, pointerEvents: "none" }} />
+            <div style={{ fontFamily: "'Caveat', cursive", fontSize: 16, color: C.sunsetLight, marginBottom: 10, letterSpacing: 0.5 }}>
+              Devils Lake is calling
+            </div>
+            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 4vw, 42px)", color: C.cream, margin: "0 0 28px 0", fontWeight: 400, lineHeight: 1.15 }}>
+              Picture Yourself Here
             </h3>
-            <p style={{ fontSize: 16, color: "rgba(255,255,255,0.55)", lineHeight: 1.8, margin: "0 0 28px 0", maxWidth: 520 }}>
-              {items[0].desc}
-            </p>
-            <a href={items[0].href} className="link-hover-underline" style={{
-              fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700,
-              letterSpacing: 1.5, textTransform: "uppercase", color: C.sunsetLight, textDecoration: "none",
-            }}>
-              {items[0].cta} →
-            </a>
+            <div className="mobile-col-1" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, maxWidth: 600 }}>
+              <a href="/#holly" style={{
+                display: "block", textDecoration: "none",
+                background: "rgba(255,255,255,0.07)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
+                border: "1px solid rgba(255,255,255,0.12)", borderRadius: 12, padding: "20px 22px",
+                transition: "all 0.22s",
+              }}
+                onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.12)"; e.currentTarget.style.borderColor = `${C.sunsetLight}40`; }}
+                onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.07)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)"; }}
+              >
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.cream, marginBottom: 6 }}>Buying or Selling?</div>
+                <div style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.5, marginBottom: 10 }}>Holly Griewahn at Foundation Realty knows this lake like the back of her hand.</div>
+                <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunsetLight }}>Talk to Holly →</span>
+              </a>
+              <a href="#businesses" style={{
+                display: "block", textDecoration: "none",
+                background: "rgba(255,255,255,0.07)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
+                border: "1px solid rgba(255,255,255,0.12)", borderRadius: 12, padding: "20px 22px",
+                transition: "all 0.22s",
+              }}
+                onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.12)"; e.currentTarget.style.borderColor = `${C.lakeBlue}40`; }}
+                onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.07)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)"; }}
+              >
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.cream, marginBottom: 6 }}>Just Visiting?</div>
+                <div style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.5, marginBottom: 10 }}>Lakefront cottages, village apartments, and the kind of view that makes you forget what day it is.</div>
+                <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.lakeBlue }}>Browse Stays →</span>
+              </a>
+            </div>
           </div>
         </FadeIn>
 
-        <div className="mobile-col-1 living-here-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
-          {items.slice(1).map((item, i) => (
-            <LivingCard key={i} item={item} i={i} />
-          ))}
+        {/* Block B — Short-Term Rentals */}
+        <div className="mobile-col-1" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 28, marginBottom: 28, alignItems: "center" }}>
+          <FadeIn direction="left">
+            <div style={{ padding: "8px 0" }}>
+              <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(20px, 2.5vw, 28px)", color: C.text, margin: "0 0 16px 0", fontWeight: 400 }}>
+                Short-Term Rentals
+              </h3>
+              <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, margin: "0 0 20px 0" }}>
+                Lakefront cottages, village apartments, and the kind of view that makes you forget what day it is. Whether you're here for a weekend or a whole season — we'll help you find your spot.
+              </p>
+              <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+                <Btn href="#businesses" variant="outline" small>Browse Stays →</Btn>
+                <span style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: C.sunset }}>
+                  Full Rentals Directory — Coming Soon
+                </span>
+              </div>
+            </div>
+          </FadeIn>
+          <FadeIn delay={120} direction="right">
+            <div style={{
+              background: `linear-gradient(145deg, ${C.lakeBlue}12, ${C.sage}10)`,
+              border: `1px solid ${C.sand}`,
+              borderRadius: 16, padding: "36px 32px",
+              textAlign: "center",
+            }}>
+              <div style={{ fontSize: 48, marginBottom: 16, filter: "grayscale(0.2)" }}>🏡</div>
+              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.lakeDark, marginBottom: 8 }}>
+                "We came for the weekend..."
+              </div>
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, lineHeight: 1.6 }}>
+                Inns · Cottages · Campgrounds · Airbnb
+              </div>
+            </div>
+          </FadeIn>
         </div>
+
+        {/* Block C — Year-Round Life (mirrored) */}
+        <div className="mobile-col-1" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 28, marginBottom: 28, alignItems: "center" }}>
+          <FadeIn direction="left">
+            <div style={{
+              background: `linear-gradient(145deg, ${C.sage}10, ${C.dusk}08)`,
+              border: `1px solid ${C.sand}`,
+              borderRadius: 16, padding: "36px 32px",
+              textAlign: "center",
+            }}>
+              <div style={{ fontSize: 48, marginBottom: 16, filter: "grayscale(0.2)" }}>❄️</div>
+              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sageDark, marginBottom: 8 }}>
+                "Not just a summer thing."
+              </div>
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, lineHeight: 1.6 }}>
+                Ice fishing · Quiet winters · Year-round community
+              </div>
+            </div>
+          </FadeIn>
+          <FadeIn delay={120} direction="right">
+            <div style={{ padding: "8px 0" }}>
+              <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(20px, 2.5vw, 28px)", color: C.text, margin: "0 0 16px 0", fontWeight: 400 }}>
+                Year-Round Life
+              </h3>
+              <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, margin: "0 0 20px 0" }}>
+                Manitou Beach isn't a summer fling. Ice fishing on frozen Devils Lake. Quiet mornings with coffee and fog on the water. Neighbors who wave whether it's July or January. This is year-round life.
+              </p>
+              <Btn href="/devils-lake" variant="outline" small>Explore Devils Lake →</Btn>
+            </div>
+          </FadeIn>
+        </div>
+
+        {/* Block D — Lake Access Magazine (co-branded dark strip) */}
+        <FadeIn>
+          <div style={{
+            background: `linear-gradient(135deg, ${C.dusk} 0%, ${C.lakeDark} 50%, ${C.dusk} 100%)`,
+            borderRadius: 16, padding: "48px 40px", textAlign: "center",
+            position: "relative", overflow: "hidden",
+            border: "1px solid rgba(255,255,255,0.08)",
+          }}>
+            <div style={{ position: "absolute", top: -30, left: "50%", transform: "translateX(-50%)", width: 300, height: 300, borderRadius: "50%", background: `${C.lakeBlue}06`, pointerEvents: "none" }} />
+            <SectionLabel light>Media Partner</SectionLabel>
+            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 3vw, 34px)", color: C.cream, margin: "12px 0 16px 0", fontWeight: 400 }}>
+              Lake Access Magazine
+            </h3>
+            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.5)", lineHeight: 1.75, maxWidth: 520, margin: "0 auto 24px" }}>
+              Covering lake communities across Michigan. Manitou Beach is proud to be part of the story.
+            </p>
+            <div style={{
+              display: "inline-block", background: `${C.sunset}15`, border: `1px solid ${C.sunset}35`,
+              borderRadius: 50, padding: "8px 24px", marginBottom: 24,
+            }}>
+              <span style={{ fontFamily: "'Caveat', cursive", fontSize: 16, color: C.sunsetLight }}>
+                Use code HOLLY or YETI for 10% off your subscription
+              </span>
+            </div>
+            <div style={{ marginBottom: 16 }}>
+              <Btn href="https://lake-access.com/" variant="sunset" target="_blank" rel="noopener noreferrer">Visit Lake Access Magazine</Btn>
+            </div>
+            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif", margin: 0 }}>
+              Watch for upcoming Yeti-produced video features for Lake Access advertising clients
+            </p>
+          </div>
+        </FadeIn>
       </div>
     </section>
   );
 }
 function AboutSection() {
+  const [showContact, setShowContact] = useState(false);
+  const [contactForm, setContactForm] = useState({ name: '', email: '', category: 'Question', message: '', _hp: '' });
+  const [contactStatus, setContactStatus] = useState('idle'); // idle | sending | success | error
+
+  useEffect(() => {
+    if (!showContact) return;
+    const handleEsc = (e) => { if (e.key === 'Escape') setShowContact(false); };
+    document.addEventListener('keydown', handleEsc);
+    return () => document.removeEventListener('keydown', handleEsc);
+  }, [showContact]);
+
+  const handleContactSubmit = async (e) => {
+    e.preventDefault();
+    if (contactStatus === 'sending') return;
+    setContactStatus('sending');
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(contactForm),
+      });
+      if (!res.ok) throw new Error('Failed');
+      setContactStatus('success');
+    } catch {
+      setContactStatus('error');
+    }
+  };
+
+  const inputStyle = {
+    width: "100%", boxSizing: "border-box", padding: "12px 14px",
+    fontFamily: "'Libre Franklin', sans-serif", fontSize: 14,
+    background: "rgba(255,255,255,0.06)", border: `1px solid rgba(255,255,255,0.15)`,
+    borderRadius: 8, color: C.cream, outline: "none",
+    transition: "border-color 0.2s",
+  };
+
   return (
-    <section id="about" style={{ background: C.cream, padding: "100px 24px" }}>
-      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+    <section id="about" style={{ background: C.warmWhite, padding: "100px 24px", position: "relative" }}>
+      <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse at 30% 20%, ${C.sage}06, transparent)`, pointerEvents: "none" }} />
+      <div style={{ maxWidth: 1100, margin: "0 auto", position: "relative" }}>
         <div className="mobile-col-1" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80 }}>
           <FadeIn>
             <SectionLabel>The Story</SectionLabel>
             <SectionTitle>About This Platform</SectionTitle>
             <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.85, marginBottom: 20 }}>
-              Manitou Beach, Michigan sits on Devils Lake in the Irish Hills. Locals call it "the party lake" — and anyone who's spent a summer here knows why. But for all the personality, the community didn't have a central digital home.
+              Devils Lake sits in the heart of Michigan's Irish Hills — 1,330 acres of water, 600+ boat slips, and a community that's been coming back every summer since the 1870s. Locals call it "the party lake," and anyone who's spent a Saturday at the Yacht Club knows why.
             </p>
             <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.85, marginBottom: 20 }}>
-              This platform is that home. A directory for local businesses, a calendar for community events, and a newsletter that keeps the lake life going year-round — built by people who actually live here. And when we say "here," we mean all of it — Devils Lake, Round Lake, and every address in between.
+              This platform is that home. A directory of local businesses, a calendar for what's actually happening this week, and The Manitou Dispatch — a newsletter keeping the lake connected year-round. Built by people who live here, for everyone who loves this place.
             </p>
-            <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.85, marginBottom: 36 }}>
+
+            {/* Handwritten quote */}
+            <div style={{ padding: "4px 0 4px 20px", borderLeft: `3px solid ${C.sunset}30`, margin: "8px 0 24px 0" }}>
+              <span style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.sunset, fontStyle: "italic" }}>
+                "The kind of place where your neighbor brings you fish they just caught."
+              </span>
+            </div>
+
+            <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.85, marginBottom: 32 }}>
               (And yes — we're fully aware the name "Manitou Beach" is an ironic masterpiece given that there's no actual beach. We've all made peace with it.)
             </p>
-            <Btn onClick={() => {}} variant="dark">Get in Touch</Btn>
+
+            {/* Community stats */}
+            <div style={{ display: "flex", gap: 0, marginBottom: 36 }}>
+              {[
+                { num: "1,330", label: "acres of lake" },
+                { num: "150+", label: "years of community" },
+                { num: "600+", label: "boat slips" },
+              ].map((s, i) => (
+                <div key={i} style={{
+                  flex: 1, textAlign: "center",
+                  borderLeft: i > 0 ? `1px solid ${C.sand}` : "none",
+                  padding: "0 12px",
+                }}>
+                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, color: C.sage, fontWeight: 700, lineHeight: 1.1 }}>{s.num}</div>
+                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, letterSpacing: 2, textTransform: "uppercase", marginTop: 4 }}>{s.label}</div>
+                </div>
+              ))}
+            </div>
+
+            <Btn onClick={() => setShowContact(true)} variant="dark">Get in Touch</Btn>
           </FadeIn>
 
           <FadeIn delay={100}>
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
               <div style={{
-                background: C.warmWhite,
-                border: `1px solid ${C.sand}`,
-                borderRadius: 10,
-                padding: "28px",
+                background: C.cream, borderTop: `3px solid ${C.sage}`,
+                border: `1px solid ${C.sand}`, borderTopWidth: 3, borderTopColor: C.sage,
+                borderRadius: 10, padding: "28px",
               }}>
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, color: C.text, marginBottom: 10, fontWeight: 700 }}>
                   Holly Griewahn
@@ -1511,10 +1643,9 @@ function AboutSection() {
               </div>
 
               <div style={{
-                background: C.warmWhite,
-                border: `1px solid ${C.sand}`,
-                borderRadius: 10,
-                padding: "28px",
+                background: C.cream, borderTop: `3px solid ${C.lakeBlue}`,
+                border: `1px solid ${C.sand}`, borderTopWidth: 3, borderTopColor: C.lakeBlue,
+                borderRadius: 10, padding: "28px",
               }}>
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, color: C.text, marginBottom: 10, fontWeight: 700 }}>
                   Lake Access Magazine
@@ -1529,10 +1660,129 @@ function AboutSection() {
                   Visit Lake Access →
                 </a>
               </div>
+
+              {/* Dispatch card */}
+              <div style={{
+                background: C.cream, borderTop: `3px solid ${C.sunset}`,
+                border: `1px solid ${C.sand}`, borderTopWidth: 3, borderTopColor: C.sunset,
+                borderRadius: 10, padding: "28px",
+              }}>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, color: C.text, marginBottom: 10, fontWeight: 700 }}>
+                  The Manitou Dispatch
+                </div>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 2, textTransform: "uppercase", color: C.sunset, marginBottom: 12, fontWeight: 600 }}>
+                  Community Newsletter
+                </div>
+                <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: "0 0 16px 0" }}>
+                  Lake news, events, and stories delivered to your inbox. The dispatch that keeps this community connected.
+                </p>
+                <a href="/dispatch" style={{ fontSize: 12, fontWeight: 700, color: C.sunset, textDecoration: "none", letterSpacing: 1, textTransform: "uppercase", fontFamily: "'Libre Franklin', sans-serif" }}>
+                  Read the Dispatch →
+                </a>
+              </div>
             </div>
           </FadeIn>
         </div>
       </div>
+
+      {/* Contact Modal */}
+      {showContact && (
+        <div
+          onClick={(e) => { if (e.target === e.currentTarget) setShowContact(false); }}
+          style={{
+            position: "fixed", inset: 0, zIndex: 9999,
+            background: "rgba(0,0,0,0.7)", backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)",
+            display: "flex", alignItems: "center", justifyContent: "center", padding: 20,
+          }}
+        >
+          <div style={{
+            background: C.dusk, borderRadius: 16, padding: "40px 36px",
+            maxWidth: 480, width: "100%", position: "relative",
+            boxShadow: "0 24px 80px rgba(0,0,0,0.5)",
+            border: "1px solid rgba(255,255,255,0.08)",
+          }}>
+            <button onClick={() => setShowContact(false)} style={{
+              position: "absolute", top: 16, right: 16, background: "none", border: "none",
+              color: "rgba(255,255,255,0.4)", fontSize: 20, cursor: "pointer", padding: 4,
+            }} aria-label="Close">×</button>
+
+            {contactStatus === 'success' ? (
+              <div style={{ textAlign: "center", padding: "20px 0" }}>
+                <div style={{ fontSize: 48, marginBottom: 16 }}>✓</div>
+                <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream, marginBottom: 12 }}>
+                  Message Sent
+                </h3>
+                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.7 }}>
+                  Thanks for reaching out — we'll get back to you soon.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleContactSubmit}>
+                <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream, margin: "0 0 8px 0" }}>
+                  Get in Touch
+                </h3>
+                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", margin: "0 0 28px 0", lineHeight: 1.5 }}>
+                  Question, feedback, partnership, or just want to say hey.
+                </p>
+
+                {/* Honeypot */}
+                <div style={{ position: "absolute", left: -9999, opacity: 0 }}>
+                  <input name="_hp" tabIndex={-1} autoComplete="off" value={contactForm._hp} onChange={e => setContactForm(f => ({ ...f, _hp: e.target.value }))} />
+                </div>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                  <div>
+                    <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.4)", letterSpacing: 1, textTransform: "uppercase", marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>Name *</label>
+                    <input required value={contactForm.name} onChange={e => setContactForm(f => ({ ...f, name: e.target.value }))}
+                      style={inputStyle}
+                      onFocus={e => e.target.style.borderColor = C.sage}
+                      onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.15)"}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.4)", letterSpacing: 1, textTransform: "uppercase", marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>Email *</label>
+                    <input required type="email" value={contactForm.email} onChange={e => setContactForm(f => ({ ...f, email: e.target.value }))}
+                      style={inputStyle}
+                      onFocus={e => e.target.style.borderColor = C.sage}
+                      onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.15)"}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.4)", letterSpacing: 1, textTransform: "uppercase", marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>Category</label>
+                    <select value={contactForm.category} onChange={e => setContactForm(f => ({ ...f, category: e.target.value }))}
+                      style={{ ...inputStyle, appearance: "none", cursor: "pointer" }}
+                    >
+                      <option value="Question">Question</option>
+                      <option value="Feedback">Feedback</option>
+                      <option value="Bug Report">Bug Report</option>
+                      <option value="Partnership">Partnership Inquiry</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.4)", letterSpacing: 1, textTransform: "uppercase", marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>Message *</label>
+                    <textarea required rows={4} value={contactForm.message} onChange={e => setContactForm(f => ({ ...f, message: e.target.value }))}
+                      style={{ ...inputStyle, resize: "vertical" }}
+                      onFocus={e => e.target.style.borderColor = C.sage}
+                      onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.15)"}
+                    />
+                  </div>
+                </div>
+
+                {contactStatus === 'error' && (
+                  <p style={{ fontSize: 13, color: "#E87461", marginTop: 12 }}>Something went wrong — please try again.</p>
+                )}
+
+                <div style={{ marginTop: 24 }}>
+                  <Btn type="submit" variant="sunset" style={{ width: "100%" }}>
+                    {contactStatus === 'sending' ? 'Sending...' : 'Send Message'}
+                  </Btn>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
     </section>
   );
 }

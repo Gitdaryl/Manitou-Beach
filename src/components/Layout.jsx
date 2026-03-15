@@ -728,12 +728,15 @@ export function HollyYetiSection() {
 
           {/* TOP RIGHT — Portrait */}
           <FadeIn delay={80} direction="right">
-            <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "center", height: "100%" }}>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", height: "100%" }}>
               <img
                 src="/images/holly_yeti.png"
                 alt="Holly and The Yeti"
                 style={{ width: "100%", maxWidth: 300, display: "block", objectFit: "contain" }}
               />
+              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: "rgba(255,255,255,0.3)", marginTop: 10, textAlign: "center" }}>
+                Real estate meets cryptid comedy
+              </div>
             </div>
           </FadeIn>
 
@@ -808,6 +811,14 @@ export function HollyYetiSection() {
             </div>
           </FadeIn>
 
+        </div>
+
+        {/* Scroll continuation hint */}
+        <div style={{ textAlign: "center", marginTop: 40, opacity: 0.3 }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: C.cream, marginBottom: 6 }}>
+            More below
+          </div>
+          <div style={{ fontSize: 16, color: C.cream, animation: "float 2s ease-in-out infinite" }}>↓</div>
         </div>
       </div>
     </section>
