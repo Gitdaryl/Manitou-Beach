@@ -41,33 +41,103 @@ const TRUCK_FOUNDING_MATH = [
 
 export default function FoodTruckPartnerPage() {
   const subScrollTo = (id) => { window.location.href = "/#" + id; };
+  const scrollToSignup = () => document.getElementById('food-truck-signup')?.scrollIntoView({ behavior: 'smooth' });
+
   const [subCount, setSubCount] = useState(null);
-  const [form, setForm] = useState({ truckName: '', cuisine: '', email: '' });
+  const [form, setForm] = useState({ truckName: '', cuisine: '', email: '', phone: '', website: '' });
+  const [selectedTier, setSelectedTier] = useState('paid'); // 'free' | 'paid'
+  const [imageUrl, setImageUrl] = useState('');
+  const [imagePreview, setImagePreview] = useState('');
+  const [imageUploading, setImageUploading] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [checkoutError, setCheckoutError] = useState('');
+  const [submitError, setSubmitError] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+
   const GRACE = 100;
   const count = subCount ?? 0;
   const increment = Math.max(0, count - GRACE);
   const inGrace = count < GRACE;
   const priceFor = (base) => (base + increment * 0.01).toFixed(2);
   const centsFor = (base) => Math.round((base + increment * 0.01) * 100);
+
   useEffect(() => {
     fetch('/api/subscribe').then(r => r.json()).then(d => setSubCount(d.count ?? 0)).catch(() => setSubCount(0));
   }, []);
-  const handleTruckCheckout = async () => {
-    if (!form.truckName.trim() || !form.email.trim()) { setCheckoutError('Truck name and email are required.'); return; }
-    setLoading(true); setCheckoutError('');
+
+  const handleImageSelect = async (file) => {
+    if (!file || !file.type.startsWith('image/')) return;
+    setImagePreview(URL.createObjectURL(file));
+    setImageUploading(true);
+    setImageUrl('');
     try {
+      const base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = e => resolve(e.target.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      const res = await fetch('/api/upload-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename: file.name, contentType: file.type, data: base64, folder: 'food-trucks' }),
+      });
+      const data = await res.json();
+      if (data.url) setImageUrl(data.url);
+    } catch { /* image is optional — silent fail */ }
+    finally { setImageUploading(false); }
+  };
+
+  const handleSubmit = async () => {
+    if (!form.truckName.trim() || !form.email.trim()) {
+      setSubmitError('Truck name and email are required.');
+      return;
+    }
+    setLoading(true);
+    setSubmitError('');
+    try {
+      // Always record in Notion first
+      await fetch('/api/submit-food-truck', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          truckName: form.truckName,
+          cuisine: form.cuisine,
+          email: form.email,
+          phone: form.phone,
+          website: form.website,
+          imageUrl,
+          tier: selectedTier,
+        }),
+      });
+
+      if (selectedTier === 'free') {
+        setSubmitted(true);
+        return;
+      }
+
+      // Paid tier → Stripe checkout
       const res = await fetch('/api/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tier: 'food_truck_founding', businessName: form.truckName, email: form.email, priceInCents: centsFor(9), mode: 'subscription' }),
+        body: JSON.stringify({
+          tier: 'food_truck_founding',
+          businessName: form.truckName,
+          email: form.email,
+          priceInCents: centsFor(9),
+          mode: 'subscription',
+        }),
       });
       const data = await res.json();
-      if (data.url) { window.location.href = data.url; }
-      else { setCheckoutError(data.error || 'Something went wrong. Please try again.'); }
-    } catch { setCheckoutError('Something went wrong. Please try again.'); }
-    finally { setLoading(false); }
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setSubmitError(data.error || 'Something went wrong. Please try again.');
+      }
+    } catch {
+      setSubmitError('Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
@@ -96,11 +166,11 @@ export default function FoodTruckPartnerPage() {
             Your name in the directory is free. Lock in a Founding rate for ${priceFor(9)}/mo and get a live map pin, check-in link, and newsletter reach.
           </p>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
-            <Btn onClick={() => document.getElementById('food-truck-signup')?.scrollIntoView({ behavior: 'smooth' })} variant="sunset" style={{ whiteSpace: "nowrap" }}>
+            <Btn onClick={scrollToSignup} variant="sunset" style={{ whiteSpace: "nowrap" }}>
               Claim Your Founding Rate — ${priceFor(9)}/mo →
             </Btn>
-            <Btn href="mailto:admin@yetigroove.com?subject=Food Truck Listing — Basic" variant="outlineLight" style={{ whiteSpace: "nowrap" }}>
-              Just list me free →
+            <Btn onClick={scrollToSignup} variant="outlineLight" style={{ whiteSpace: "nowrap" }}>
+              Get the free listing →
             </Btn>
           </div>
         </FadeIn>
@@ -249,12 +319,12 @@ export default function FoodTruckPartnerPage() {
                   ))}
                 </div>
                 <div style={{ marginTop: 28 }}>
-                  <a
-                    href="mailto:admin@yetigroove.com?subject=Food Truck Listing — Basic"
-                    style={{ display: "block", textAlign: "center", padding: "12px 20px", borderRadius: 24, background: "transparent", color: C.sage, border: `1.5px solid ${C.sage}`, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none" }}
+                  <button
+                    onClick={scrollToSignup}
+                    style={{ display: "block", width: "100%", textAlign: "center", padding: "12px 20px", borderRadius: 24, background: "transparent", color: C.sage, border: `1.5px solid ${C.sage}`, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: "pointer" }}
                   >
                     Get the Free Listing →
-                  </a>
+                  </button>
                 </div>
               </div>
             </FadeIn>
@@ -327,61 +397,197 @@ export default function FoodTruckPartnerPage() {
 
       {/* ── SIGNUP ── */}
       <section id="food-truck-signup" style={{ background: C.night, padding: "80px 24px 110px" }}>
-        <div style={{ maxWidth: 560, margin: "0 auto" }}>
+        <div style={{ maxWidth: 560, margin: "0 auto", position: "relative" }}>
           <FadeIn>
             <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 60%, rgba(212,132,90,0.12) 0%, transparent 65%)", pointerEvents: "none" }} />
-            <SectionLabel light>Claim Your Rate</SectionLabel>
+            <SectionLabel light>Get Listed</SectionLabel>
             <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 40px)", fontWeight: 400, color: C.cream, margin: "16px 0 12px", lineHeight: 1.25, textAlign: "center" }}>
-              Lock in ${priceFor(9)}/mo<br /><em style={{ color: C.sunsetLight }}>before the price moves.</em>
+              Your truck. Your listing.<br /><em style={{ color: C.sunsetLight }}>Pick your plan.</em>
             </h2>
-            <p style={{ fontSize: 14, color: "rgba(255,255,255,0.42)", lineHeight: 1.85, marginBottom: 36, textAlign: "center" }}>
-              Your founding rate stays fixed as long as your listing is active. Cancel anytime — your rate resets if you come back.
+            <p style={{ fontSize: 14, color: "rgba(255,255,255,0.42)", lineHeight: 1.85, marginBottom: 32, textAlign: "center" }}>
+              Free gets you in the directory. Founding rate gets you live on the map.
             </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              <div>
-                <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 6 }}>Truck Name</label>
-                <input
-                  type="text"
-                  value={form.truckName}
-                  onChange={e => setForm(f => ({ ...f, truckName: e.target.value }))}
-                  placeholder="e.g. Lakeside BBQ Co."
-                  style={{ width: "100%", boxSizing: "border-box", padding: "13px 16px", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}
-                />
+
+            {submitted ? (
+              /* ── FREE TIER SUCCESS ── */
+              <div style={{ textAlign: "center", padding: "48px 24px", background: "rgba(255,255,255,0.04)", borderRadius: 16, border: "1px solid rgba(255,255,255,0.1)" }}>
+                <div style={{ fontSize: 48, marginBottom: 16 }}>🍔</div>
+                <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream, fontWeight: 400, margin: "0 0 12px" }}>You're in the directory!</h3>
+                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.8, margin: "0 0 28px" }}>
+                  Daryl will review and activate your listing within 24 hours. You'll hear from him at <strong style={{ color: C.sunsetLight }}>{form.email}</strong>.
+                </p>
+                <a href="/food-trucks" style={{ fontSize: 13, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textDecoration: "none" }}>
+                  See the locator →
+                </a>
               </div>
-              <div>
-                <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 6 }}>Cuisine / What You Serve</label>
-                <input
-                  type="text"
-                  value={form.cuisine}
-                  onChange={e => setForm(f => ({ ...f, cuisine: e.target.value }))}
-                  placeholder="e.g. BBQ, Tacos, Wood-fired Pizza"
-                  style={{ width: "100%", boxSizing: "border-box", padding: "13px 16px", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}
-                />
-              </div>
-              <div>
-                <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 6 }}>Email Address</label>
-                <input
-                  type="email"
-                  value={form.email}
-                  onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                  placeholder="you@example.com"
-                  style={{ width: "100%", boxSizing: "border-box", padding: "13px 16px", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}
-                />
-              </div>
-              {checkoutError && (
-                <div style={{ fontSize: 13, color: "#e07070", fontWeight: 500 }}>{checkoutError}</div>
-              )}
-              <button
-                onClick={handleTruckCheckout}
-                disabled={loading}
-                style={{ marginTop: 8, padding: "15px 24px", background: loading ? C.sand : C.sunset, color: C.cream, border: "none", borderRadius: 8, fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: loading ? "default" : "pointer", fontFamily: "'Libre Franklin', sans-serif", transition: "background 0.2s" }}
-              >
-                {loading ? "Redirecting to checkout…" : `Claim Your Founding Rate — $${priceFor(9)}/mo →`}
-              </button>
-              <p style={{ fontSize: 11, color: "rgba(255,255,255,0.25)", textAlign: "center", lineHeight: 1.7, margin: "4px 0 0" }}>
-                Secure checkout via Stripe. Daryl sets up your check-in link and map pin after payment — usually the same day.
-              </p>
-            </div>
+            ) : (
+              <>
+                {/* ── TIER SELECTOR ── */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 28 }}>
+                  <button
+                    onClick={() => setSelectedTier('free')}
+                    style={{
+                      padding: "14px 12px", borderRadius: 10, border: selectedTier === 'free' ? `2px solid ${C.sage}` : "2px solid rgba(255,255,255,0.12)",
+                      background: selectedTier === 'free' ? "rgba(122,142,114,0.15)" : "rgba(255,255,255,0.04)",
+                      color: selectedTier === 'free' ? C.cream : "rgba(255,255,255,0.45)",
+                      fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, cursor: "pointer", textAlign: "center", transition: "all 0.18s",
+                    }}
+                  >
+                    <div style={{ fontSize: 15, marginBottom: 3 }}>Free Listing</div>
+                    <div style={{ fontSize: 11, fontWeight: 400, opacity: 0.7 }}>Directory only · $0/mo</div>
+                  </button>
+                  <button
+                    onClick={() => setSelectedTier('paid')}
+                    style={{
+                      padding: "14px 12px", borderRadius: 10, border: selectedTier === 'paid' ? `2px solid ${C.sunset}` : "2px solid rgba(255,255,255,0.12)",
+                      background: selectedTier === 'paid' ? "rgba(212,132,90,0.15)" : "rgba(255,255,255,0.04)",
+                      color: selectedTier === 'paid' ? C.cream : "rgba(255,255,255,0.45)",
+                      fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, cursor: "pointer", textAlign: "center", transition: "all 0.18s",
+                    }}
+                  >
+                    <div style={{ fontSize: 15, marginBottom: 3 }}>Founding Rate</div>
+                    <div style={{ fontSize: 11, fontWeight: 400, opacity: 0.7 }}>Live map + full perks · ${priceFor(9)}/mo</div>
+                  </button>
+                </div>
+
+                {/* ── FORM FIELDS ── */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  <div>
+                    <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 6 }}>Truck Name *</label>
+                    <input
+                      type="text"
+                      value={form.truckName}
+                      onChange={e => setForm(f => ({ ...f, truckName: e.target.value }))}
+                      placeholder="e.g. Lakeside BBQ Co."
+                      style={{ width: "100%", boxSizing: "border-box", padding: "13px 16px", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 6 }}>Cuisine / What You Serve</label>
+                    <input
+                      type="text"
+                      value={form.cuisine}
+                      onChange={e => setForm(f => ({ ...f, cuisine: e.target.value }))}
+                      placeholder="e.g. BBQ, Tacos, Wood-fired Pizza"
+                      style={{ width: "100%", boxSizing: "border-box", padding: "13px 16px", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}
+                    />
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 6 }}>Email *</label>
+                      <input
+                        type="email"
+                        value={form.email}
+                        onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                        placeholder="you@example.com"
+                        style={{ width: "100%", boxSizing: "border-box", padding: "13px 16px", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 6 }}>Phone</label>
+                      <input
+                        type="tel"
+                        value={form.phone}
+                        onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
+                        placeholder="(555) 000-0000"
+                        style={{ width: "100%", boxSizing: "border-box", padding: "13px 16px", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 6 }}>Website or Instagram</label>
+                    <input
+                      type="text"
+                      value={form.website}
+                      onChange={e => setForm(f => ({ ...f, website: e.target.value }))}
+                      placeholder="instagram.com/yourtruckname"
+                      style={{ width: "100%", boxSizing: "border-box", padding: "13px 16px", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}
+                    />
+                  </div>
+
+                  {/* ── IMAGE DROPPER ── */}
+                  <div>
+                    <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 6 }}>
+                      Truck Photo or Logo <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>— optional</span>
+                    </label>
+                    <div
+                      onClick={() => !imageUploading && document.getElementById('truck-image-input')?.click()}
+                      onDragOver={e => { e.preventDefault(); e.currentTarget.style.borderColor = C.sunset; }}
+                      onDragLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)"; }}
+                      onDrop={e => {
+                        e.preventDefault();
+                        e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)";
+                        const file = e.dataTransfer.files?.[0];
+                        if (file) handleImageSelect(file);
+                      }}
+                      style={{
+                        border: `2px dashed ${imageUrl ? C.sage : "rgba(255,255,255,0.15)"}`,
+                        borderRadius: 10, padding: "20px 16px", textAlign: "center",
+                        cursor: imageUploading ? "default" : "pointer",
+                        background: "rgba(255,255,255,0.03)", transition: "border-color 0.2s",
+                        position: "relative", minHeight: 90,
+                        display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 8,
+                      }}
+                    >
+                      {imagePreview ? (
+                        <>
+                          <img src={imagePreview} alt="" style={{ width: 64, height: 64, objectFit: "cover", borderRadius: 8, border: "1px solid rgba(255,255,255,0.15)" }} />
+                          <span style={{ fontSize: 12, color: imageUrl ? C.sage : "rgba(255,255,255,0.4)" }}>
+                            {imageUploading ? "Uploading…" : imageUrl ? "✓ Photo uploaded" : "Upload failed — tap to retry"}
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <span style={{ fontSize: 24 }}>🖼</span>
+                          <span style={{ fontSize: 13, color: "rgba(255,255,255,0.35)" }}>
+                            {imageUploading ? "Uploading…" : "Drop a photo here, or tap to upload"}
+                          </span>
+                          <span style={{ fontSize: 11, color: "rgba(255,255,255,0.2)" }}>JPG, PNG — max 2MB</span>
+                        </>
+                      )}
+                    </div>
+                    <input
+                      id="truck-image-input"
+                      type="file"
+                      accept="image/*"
+                      style={{ display: "none" }}
+                      onChange={e => { const f = e.target.files?.[0]; if (f) handleImageSelect(f); }}
+                    />
+                  </div>
+
+                  {submitError && (
+                    <div style={{ fontSize: 13, color: "#e07070", fontWeight: 500 }}>{submitError}</div>
+                  )}
+
+                  <button
+                    onClick={handleSubmit}
+                    disabled={loading || imageUploading}
+                    style={{
+                      marginTop: 6, padding: "15px 24px",
+                      background: loading ? C.sand : selectedTier === 'paid' ? C.sunset : C.sage,
+                      color: C.cream, border: "none", borderRadius: 8, fontSize: 13, fontWeight: 700,
+                      letterSpacing: 1.5, textTransform: "uppercase",
+                      cursor: (loading || imageUploading) ? "default" : "pointer",
+                      fontFamily: "'Libre Franklin', sans-serif", transition: "background 0.2s",
+                    }}
+                  >
+                    {loading
+                      ? (selectedTier === 'paid' ? "Redirecting to checkout…" : "Submitting…")
+                      : selectedTier === 'paid'
+                        ? `Claim Founding Rate — $${priceFor(9)}/mo →`
+                        : "Get My Free Listing →"
+                    }
+                  </button>
+                  <p style={{ fontSize: 11, color: "rgba(255,255,255,0.25)", textAlign: "center", lineHeight: 1.7, margin: "2px 0 0" }}>
+                    {selectedTier === 'paid'
+                      ? "Secure checkout via Stripe. Daryl sets up your map pin and check-in link after payment — usually the same day."
+                      : "Free listings are reviewed and activated by Daryl, usually within 24 hours."
+                    }
+                  </p>
+                </div>
+              </>
+            )}
+
             <div style={{ textAlign: "center", marginTop: 32 }}>
               <a
                 href="/food-trucks"
@@ -390,15 +596,6 @@ export default function FoodTruckPartnerPage() {
                 onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.35)"}
               >
                 See the locator first →
-              </a>
-              <span style={{ fontSize: 13, color: "rgba(255,255,255,0.15)", margin: "0 12px" }}>·</span>
-              <a
-                href="mailto:admin@yetigroove.com?subject=Food Truck Listing — Basic"
-                style={{ fontSize: 13, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif", textDecoration: "none", letterSpacing: 0.5, transition: "color 0.2s" }}
-                onMouseEnter={e => e.currentTarget.style.color = "rgba(255,255,255,0.65)"}
-                onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.35)"}
-              >
-                Just list me free →
               </a>
             </div>
           </FadeIn>
