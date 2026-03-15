@@ -50,6 +50,9 @@ export default async function handler(req, res) {
   if (website?.trim()) {
     properties['Website'] = { url: website.trim().startsWith('http') ? website.trim() : `https://${website.trim()}` };
   }
+  if (imageUrl?.trim()) {
+    properties['Photo URL'] = { url: imageUrl.trim() };
+  }
 
   try {
     const notionRes = await fetch('https://api.notion.com/v1/pages', {

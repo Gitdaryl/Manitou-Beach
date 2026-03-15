@@ -71,6 +71,9 @@ async function handleGet(req, res) {
           locationNote: p['Location Note']?.rich_text?.[0]?.text?.content || '',
           lastCheckin: p['Last Checkin']?.date?.start || null,
           scheduleNote: p['Schedule Note']?.rich_text?.[0]?.text?.content || '',
+          todaysSpecial: p['Todays Special']?.rich_text?.[0]?.text?.content || '',
+          departureTime: p['Departure Time']?.rich_text?.[0]?.text?.content || '',
+          comingDate: p['Coming Date']?.date?.start || null,
         };
       })
       .filter(Boolean)
@@ -89,7 +92,7 @@ async function handleGet(req, res) {
 
 async function handlePost(req, res) {
   try {
-    const { slug, token, lat, lng, note } = req.body || {};
+    const { slug, token, lat, lng, note, todaysSpecial, departureTime } = req.body || {};
 
     if (!slug || !token) {
       return res.status(400).json({ error: 'slug and token are required' });
@@ -140,6 +143,8 @@ async function handlePost(req, res) {
     const updateProps = {
       'Last Checkin': { date: { start: new Date().toISOString() } },
       'Location Note': { rich_text: [{ type: 'text', text: { content: note || '' } }] },
+      'Todays Special': { rich_text: [{ type: 'text', text: { content: (todaysSpecial || '').slice(0, 200) } }] },
+      'Departure Time': { rich_text: [{ type: 'text', text: { content: (departureTime || '').slice(0, 50) } }] },
     };
 
     if (typeof lat === 'number' && typeof lng === 'number') {

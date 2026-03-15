@@ -7,6 +7,7 @@ import FoundingPage from './pages/FoundingPage';
 import FoodTruckPartnerPage from './pages/FoodTruckPartnerPage';
 import WinePartnerPage from './pages/WinePartnerPage';
 import FoodTrucksPage from './pages/FoodTrucksPage';
+import FoodTruckQRPage from './pages/FoodTruckQRPage';
 import DiscoverPage, { VoiceWidget } from './pages/DiscoverPage';
 import ClaimPage from './pages/ClaimPage';
 import YetiAdminPage from './pages/YetiAdminPage';
@@ -317,6 +318,7 @@ export default function App() {
         <Route path="/claim/:slug" element={<ClaimPage />} />
         <Route path="/discover" element={<DiscoverPage />} />
         <Route path="/food-trucks" element={<FoodTrucksPage />} />
+        <Route path="/food-trucks/qr/:slug" element={<FoodTruckQRPage />} />
         <Route path="/build" element={<BuildPage />} />
         <Route path="/rate" element={<RatePage />} />
         <Route path="/wine-partner" element={<WinePartnerPage />} />

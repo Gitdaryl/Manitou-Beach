@@ -1,7 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Btn, FadeIn, ScrollProgress, SectionLabel, SectionTitle, WaveDivider } from '../components/Shared';
 import { C } from '../data/config';
 import { Footer, GlobalStyles, Navbar, NewsletterInline } from '../components/Layout';
+
+// Session ID for rate-limiting loves (one love per item per session)
+function getTruckSessionId() {
+  const key = 'mb-truck-session';
+  let sid = localStorage.getItem(key);
+  if (!sid) {
+    sid = Math.random().toString(36).slice(2) + Date.now().toString(36);
+    localStorage.setItem(key, sid);
+  }
+  return sid;
+}
 
 // ============================================================
 export default function FoodTrucksPage() {
@@ -11,13 +22,26 @@ export default function FoodTrucksPage() {
   const truckToken = params.get("token") || "";
   const isCheckinMode = !!(truckSlug && truckToken);
 
+  // Truck data
   const [trucks, setTrucks] = useState(null);
+  const [loves, setLoves] = useState({});
+  const [lovedItems, setLovedItems] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('mb-truck-loves') || '{}'); } catch { return {}; }
+  });
+
+  // Check-in state
   const [checkinTruck, setCheckinTruck] = useState(null);
   const [checkinNote, setCheckinNote] = useState("");
-  const [checkinStatus, setCheckinStatus] = useState(""); // "", "loading", "success", "error"
+  const [checkinSpecial, setCheckinSpecial] = useState("");
+  const [checkinDeparture, setCheckinDeparture] = useState("");
+  const [checkinStatus, setCheckinStatus] = useState("");
   const [checkinMsg, setCheckinMsg] = useState("");
-  const [sharedId, setSharedId] = useState(null);
 
+  // Share + love input state
+  const [sharedId, setSharedId] = useState(null);
+  const [loveInput, setLoveInput] = useState({ slug: '', text: '' }); // one open at a time
+
+  // Share truck
   const shareTruck = (truck) => {
     const loc = truck.locationNote ? ` — ${truck.locationNote}` : '';
     const text = `${truck.name} is here today${loc}. Meet you there! 🚚`;
@@ -31,6 +55,44 @@ export default function FoodTrucksPage() {
     }
   };
 
+  // Handle love tap
+  const handleLove = async (slug, item) => {
+    const key = `${slug}:${item}`;
+    if (lovedItems[key]) return; // already loved client-side
+    const sessionId = getTruckSessionId();
+
+    // Optimistic update
+    const newLovedItems = { ...lovedItems, [key]: true };
+    setLovedItems(newLovedItems);
+    localStorage.setItem('mb-truck-loves', JSON.stringify(newLovedItems));
+    setLoves(prev => {
+      const truckLoves = prev[slug] || { items: {}, total: 0 };
+      return {
+        ...prev,
+        [slug]: {
+          items: { ...truckLoves.items, [item]: (truckLoves.items[item] || 0) + 1 },
+          total: truckLoves.total + 1,
+        },
+      };
+    });
+
+    try {
+      await fetch('/api/food-truck-loves', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slug, item, sessionId }),
+      });
+    } catch { /* optimistic update stands */ }
+  };
+
+  const handleLoveCustom = async (slug) => {
+    const item = loveInput.text.trim().toLowerCase();
+    if (!item) return;
+    setLoveInput({ slug: '', text: '' });
+    await handleLove(slug, item);
+  };
+
+  // Fetch trucks + loves in parallel
   useEffect(() => {
     fetch("/api/food-trucks")
       .then(r => r.json())
@@ -42,15 +104,28 @@ export default function FoodTrucksPage() {
         }
       })
       .catch(() => setTrucks([]));
+
+    fetch("/api/food-truck-loves")
+      .then(r => r.json())
+      .then(d => setLoves(d.loves || {}))
+      .catch(() => {});
   }, []);
 
+  // Check-in handler
   const handleCheckin = () => {
     setCheckinStatus("loading");
     const doPost = (lat, lng) => {
       fetch("/api/food-trucks", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug: truckSlug, token: truckToken, lat, lng, note: checkinNote }),
+        body: JSON.stringify({
+          slug: truckSlug,
+          token: truckToken,
+          lat, lng,
+          note: checkinNote,
+          todaysSpecial: checkinSpecial,
+          departureTime: checkinDeparture,
+        }),
       })
         .then(r => r.json())
         .then(d => {
@@ -76,6 +151,7 @@ export default function FoodTrucksPage() {
     }
   };
 
+  // Time helpers
   const now = Date.now();
   const isLive = (truck) => {
     if (!truck.lastCheckin) return false;
@@ -88,9 +164,95 @@ export default function FoodTrucksPage() {
     const h = Math.floor(diff / 60);
     return `${h}h ago`;
   };
+  const formatComingDate = (iso) => {
+    const d = new Date(iso);
+    const diffDays = Math.ceil((d - now) / 86400000);
+    if (diffDays === 0) return "Today";
+    if (diffDays === 1) return "Tomorrow";
+    if (diffDays <= 6) return d.toLocaleDateString('en-US', { weekday: 'long' });
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
 
   const liveTrucks = (trucks || []).filter(isLive);
+  const comingTrucks = (trucks || []).filter(t =>
+    t.comingDate && new Date(t.comingDate) > new Date() && !isLive(t)
+  );
   const allTrucks = trucks || [];
+
+  // Love pills renderer (shared between live + directory cards)
+  const LovePills = ({ slug }) => {
+    const truckLoves = loves[slug];
+    const items = truckLoves?.items || {};
+    const sortedItems = Object.entries(items).sort((a, b) => b[1] - a[1]).slice(0, 5);
+    const showInput = loveInput.slug === slug;
+
+    return (
+      <div style={{ marginBottom: 10 }}>
+        {sortedItems.length > 0 && (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 6 }}>
+            {sortedItems.map(([item, count]) => {
+              const key = `${slug}:${item}`;
+              const loved = !!lovedItems[key];
+              return (
+                <button
+                  key={item}
+                  onClick={() => handleLove(slug, item)}
+                  title={loved ? "Already loved!" : `Love ${item}`}
+                  style={{
+                    display: "inline-flex", alignItems: "center", gap: 4,
+                    padding: "4px 10px", borderRadius: 14,
+                    background: loved ? `${C.sunset}20` : `${C.sunset}10`,
+                    border: `1px solid ${loved ? C.sunset + '60' : C.sunset + '30'}`,
+                    fontSize: 12, color: loved ? C.sunset : C.textLight,
+                    fontWeight: loved ? 600 : 400,
+                    cursor: loved ? "default" : "pointer",
+                    fontFamily: "'Libre Franklin', sans-serif",
+                    transition: "all 0.18s",
+                    textTransform: "capitalize",
+                  }}
+                >
+                  {loved ? '❤️' : '🤍'} {item} <span style={{ opacity: 0.65 }}>({count})</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+        {showInput ? (
+          <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+            <input
+              autoFocus
+              type="text"
+              value={loveInput.text}
+              onChange={e => setLoveInput({ slug, text: e.target.value })}
+              onKeyDown={e => { if (e.key === 'Enter') handleLoveCustom(slug); if (e.key === 'Escape') setLoveInput({ slug: '', text: '' }); }}
+              placeholder="What did you love?"
+              maxLength={50}
+              style={{ flex: 1, padding: "5px 10px", borderRadius: 8, border: `1px solid ${C.sand}`, fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", color: C.text, outline: "none", background: C.warmWhite }}
+            />
+            <button
+              onClick={() => handleLoveCustom(slug)}
+              style={{ padding: "5px 12px", borderRadius: 8, background: C.sunset, color: C.cream, border: "none", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif" }}
+            >
+              ❤️
+            </button>
+            <button
+              onClick={() => setLoveInput({ slug: '', text: '' })}
+              style={{ padding: "5px 8px", borderRadius: 8, background: "transparent", color: C.textMuted, border: `1px solid ${C.sand}`, fontSize: 12, cursor: "pointer" }}
+            >
+              ✕
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => setLoveInput({ slug, text: '' })}
+            style={{ fontSize: 11, color: C.textMuted, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", textDecoration: "underline" }}
+          >
+            + Love something else
+          </button>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
@@ -129,7 +291,7 @@ export default function FoodTrucksPage() {
 
       <WaveDivider topColor={C.night} bottomColor={C.warmWhite} />
 
-      {/* Check-in Panel — shown only when ?truck=&token= params are present */}
+      {/* Check-in Panel */}
       {isCheckinMode && (
         <section style={{ background: C.warmWhite, padding: "0 24px 48px" }}>
           <div style={{ maxWidth: 520, margin: "0 auto" }}>
@@ -141,7 +303,7 @@ export default function FoodTrucksPage() {
                   <div style={{ fontSize: 48, marginBottom: 12 }}>✅</div>
                   <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, fontWeight: 400, color: C.text, margin: "0 0 12px" }}>Checked In!</h2>
                   <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.6 }}>{checkinMsg}</p>
-                  <button onClick={() => { setCheckinStatus(""); setCheckinMsg(""); }} style={{ marginTop: 20, padding: "10px 22px", background: C.sage, color: C.cream, border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+                  <button onClick={() => { setCheckinStatus(""); setCheckinMsg(""); setCheckinSpecial(""); setCheckinDeparture(""); }} style={{ marginTop: 20, padding: "10px 22px", background: C.sage, color: C.cream, border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
                     Check In Again
                   </button>
                 </div>
@@ -160,6 +322,7 @@ export default function FoodTrucksPage() {
                       {checkinTruck?.cuisine && <div style={{ fontSize: 12, color: C.textMuted, marginTop: 2 }}>{checkinTruck.cuisine}</div>}
                     </div>
                   </div>
+
                   <label style={{ display: "block", fontSize: 12, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", color: C.textMuted, marginBottom: 8 }}>
                     Where are you today?
                   </label>
@@ -168,18 +331,41 @@ export default function FoodTrucksPage() {
                     value={checkinNote}
                     onChange={e => setCheckinNote(e.target.value)}
                     placeholder="e.g. Near the boat launch, Village parking lot…"
-                    style={{ width: "100%", boxSizing: "border-box", padding: "12px 14px", border: `1px solid ${C.sand}`, borderRadius: 8, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", color: C.text, background: C.warmWhite, outline: "none" }}
+                    style={{ width: "100%", boxSizing: "border-box", padding: "12px 14px", border: `1px solid ${C.sand}`, borderRadius: 8, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", color: C.text, background: C.warmWhite, outline: "none", marginBottom: 16 }}
                   />
-                  <p style={{ fontSize: 12, color: C.textMuted, marginTop: 8, lineHeight: 1.5 }}>
+
+                  <label style={{ display: "block", fontSize: 12, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", color: C.textMuted, marginBottom: 8 }}>
+                    Today's Special <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>(optional)</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={checkinSpecial}
+                    onChange={e => setCheckinSpecial(e.target.value)}
+                    placeholder="e.g. Half-price pulled pork, new brisket sandwich…"
+                    style={{ width: "100%", boxSizing: "border-box", padding: "12px 14px", border: `1px solid ${C.sand}`, borderRadius: 8, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", color: C.text, background: C.warmWhite, outline: "none", marginBottom: 16 }}
+                  />
+
+                  <label style={{ display: "block", fontSize: 12, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", color: C.textMuted, marginBottom: 8 }}>
+                    Leaving around… <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>(optional)</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={checkinDeparture}
+                    onChange={e => setCheckinDeparture(e.target.value)}
+                    placeholder="e.g. 3pm, sunset, until sold out"
+                    style={{ width: "100%", boxSizing: "border-box", padding: "12px 14px", border: `1px solid ${C.sand}`, borderRadius: 8, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", color: C.text, background: C.warmWhite, outline: "none", marginBottom: 8 }}
+                  />
+
+                  <p style={{ fontSize: 12, color: C.textMuted, marginTop: 0, marginBottom: 16, lineHeight: 1.5 }}>
                     We'll also try to grab your GPS location automatically for map accuracy (optional).
                   </p>
                   {checkinStatus === "error" && (
-                    <div style={{ marginTop: 8, fontSize: 13, color: "#c05a5a", fontWeight: 500 }}>{checkinMsg}</div>
+                    <div style={{ marginBottom: 8, fontSize: 13, color: "#c05a5a", fontWeight: 500 }}>{checkinMsg}</div>
                   )}
                   <button
                     onClick={handleCheckin}
                     disabled={checkinStatus === "loading"}
-                    style={{ marginTop: 20, width: "100%", padding: "14px", background: checkinStatus === "loading" ? C.sand : C.sage, color: C.cream, border: "none", borderRadius: 10, fontSize: 15, fontWeight: 700, cursor: checkinStatus === "loading" ? "default" : "pointer", transition: "background 0.2s", fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}
+                    style={{ marginTop: 4, width: "100%", padding: "14px", background: checkinStatus === "loading" ? C.sand : C.sage, color: C.cream, border: "none", borderRadius: 10, fontSize: 15, fontWeight: 700, cursor: checkinStatus === "loading" ? "default" : "pointer", transition: "background 0.2s", fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}
                   >
                     {checkinStatus === "loading" ? "Checking in…" : "I'm Here Today! 🚚"}
                   </button>
@@ -228,12 +414,25 @@ export default function FoodTrucksPage() {
                       </div>
                       {truck.cuisine && <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 8 }}>{truck.cuisine}</div>}
                       {truck.locationNote && (
-                        <div style={{ fontSize: 13, color: C.text, fontWeight: 500, marginBottom: 10 }}>
+                        <div style={{ fontSize: 13, color: C.text, fontWeight: 500, marginBottom: 8 }}>
                           📍 {truck.locationNote}
                         </div>
                       )}
-                      {truck.description && <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: "0 0 12px" }}>{truck.description}</p>}
-                      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+                      {/* Today's Special + Departure */}
+                      {truck.todaysSpecial && (
+                        <div style={{ fontSize: 13, background: `${C.sunset}12`, border: `1px solid ${C.sunset}30`, borderRadius: 8, padding: "7px 12px", marginBottom: 8, color: C.sunset, fontWeight: 500 }}>
+                          ⭐ {truck.todaysSpecial}
+                        </div>
+                      )}
+                      {truck.departureTime && (
+                        <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 8 }}>
+                          ⏱ Open until {truck.departureTime}
+                        </div>
+                      )}
+                      {truck.description && <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: "0 0 10px" }}>{truck.description}</p>}
+                      {/* Love Pills */}
+                      {truck.slug && <LovePills slug={truck.slug} />}
+                      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", marginTop: 8 }}>
                         {truck.phone && (
                           <a href={`tel:${truck.phone}`} style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 4 }}>
                             📱 Call
@@ -267,9 +466,39 @@ export default function FoodTrucksPage() {
 
       <WaveDivider topColor={C.warmWhite} bottomColor={C.cream} />
 
+      {/* Coming Soon section */}
+      {comingTrucks.length > 0 && (
+        <section style={{ background: C.cream, padding: "48px 24px 24px" }}>
+          <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+            <FadeIn>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
+                <span style={{ fontSize: 20 }}>📅</span>
+                <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(18px, 2.5vw, 24px)", fontWeight: 400, color: C.text, margin: 0 }}>
+                  Coming Soon
+                </h2>
+              </div>
+            </FadeIn>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 12 }}>
+              {comingTrucks.map((truck, i) => (
+                <FadeIn key={truck.id} delay={i * 40}>
+                  <div style={{ background: C.warmWhite, borderRadius: 12, border: `1px solid ${C.sand}`, padding: "16px 18px", display: "flex", gap: 12, alignItems: "center" }}>
+                    <div style={{ width: 38, height: 38, borderRadius: 8, background: `${C.lakeBlue}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0 }}>🚚</div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, color: C.text }}>{truck.name}</div>
+                      {truck.cuisine && <div style={{ fontSize: 11, color: C.textMuted, marginTop: 2 }}>{truck.cuisine}</div>}
+                      <div style={{ fontSize: 12, color: C.lakeBlue, fontWeight: 600, marginTop: 4 }}>{formatComingDate(truck.comingDate)}</div>
+                    </div>
+                  </div>
+                </FadeIn>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* All Trucks directory */}
       {allTrucks.length > 0 && (
-        <section style={{ background: C.cream, padding: "64px 24px" }}>
+        <section style={{ background: C.cream, padding: comingTrucks.length > 0 ? "24px 24px 64px" : "64px 24px" }}>
           <div style={{ maxWidth: 1000, margin: "0 auto" }}>
             <FadeIn>
               <div style={{ marginBottom: 32 }}>
@@ -282,35 +511,39 @@ export default function FoodTrucksPage() {
                 const live = isLive(truck);
                 return (
                   <FadeIn key={truck.id} delay={i * 40}>
-                    <div style={{ background: C.warmWhite, borderRadius: 12, border: `1px solid ${C.sand}`, padding: "18px 20px", display: "flex", gap: 14, alignItems: "flex-start" }}>
-                      <div style={{ width: 44, height: 44, borderRadius: 10, background: live ? `${C.sage}20` : `${C.sand}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>
-                        🚚
-                      </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-                          <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, color: C.text }}>{truck.name}</span>
-                          {live && <span style={{ fontSize: 10, fontWeight: 700, color: C.sage, background: `${C.sage}15`, padding: "2px 7px", borderRadius: 10, letterSpacing: 0.5, textTransform: "uppercase" }}>Open</span>}
+                    <div style={{ background: C.warmWhite, borderRadius: 12, border: `1px solid ${C.sand}`, padding: "18px 20px" }}>
+                      <div style={{ display: "flex", gap: 14, alignItems: "flex-start", marginBottom: 10 }}>
+                        <div style={{ width: 44, height: 44, borderRadius: 10, background: live ? `${C.sage}20` : `${C.sand}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>
+                          🚚
                         </div>
-                        {truck.cuisine && <div style={{ fontSize: 12, color: C.textMuted, marginTop: 3 }}>{truck.cuisine}</div>}
-                        {truck.phone && (
-                          <a href={`tel:${truck.phone}`} style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", display: "block", marginTop: 6 }}>
-                            {truck.phone}
-                          </a>
-                        )}
-                        {truck.tier === 'featured' && truck.website && (
-                          <a href={truck.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.sunset, textDecoration: "none", display: "block", marginTop: 4, fontWeight: 600 }}>
-                            Menu / Info →
-                          </a>
-                        )}
-                        {truck.scheduleNote && (
-                          <div style={{ fontSize: 11, color: C.textMuted, marginTop: 4, lineHeight: 1.5 }}>📅 {truck.scheduleNote}</div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+                            <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, color: C.text }}>{truck.name}</span>
+                            {live && <span style={{ fontSize: 10, fontWeight: 700, color: C.sage, background: `${C.sage}15`, padding: "2px 7px", borderRadius: 10, letterSpacing: 0.5, textTransform: "uppercase" }}>Open</span>}
+                          </div>
+                          {truck.cuisine && <div style={{ fontSize: 12, color: C.textMuted, marginTop: 3 }}>{truck.cuisine}</div>}
+                          {truck.phone && (
+                            <a href={`tel:${truck.phone}`} style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", display: "block", marginTop: 6 }}>
+                              {truck.phone}
+                            </a>
+                          )}
+                          {truck.tier === 'featured' && truck.website && (
+                            <a href={truck.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.sunset, textDecoration: "none", display: "block", marginTop: 4, fontWeight: 600 }}>
+                              Menu / Info →
+                            </a>
+                          )}
+                          {truck.scheduleNote && (
+                            <div style={{ fontSize: 11, color: C.textMuted, marginTop: 4, lineHeight: 1.5 }}>📅 {truck.scheduleNote}</div>
+                          )}
+                        </div>
+                        {truck.tier === 'featured' && (
+                          <div style={{ flexShrink: 0, fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sunset, background: `${C.sunset}15`, border: `1px solid ${C.sunset}30`, borderRadius: 6, padding: "3px 7px", alignSelf: "flex-start" }}>
+                            Featured
+                          </div>
                         )}
                       </div>
-                      {truck.tier === 'featured' && (
-                        <div style={{ flexShrink: 0, fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sunset, background: `${C.sunset}15`, border: `1px solid ${C.sunset}30`, borderRadius: 6, padding: "3px 7px", alignSelf: "flex-start" }}>
-                          Featured
-                        </div>
-                      )}
+                      {/* Love pills in directory too */}
+                      {truck.slug && <LovePills slug={truck.slug} />}
                     </div>
                   </FadeIn>
                 );
