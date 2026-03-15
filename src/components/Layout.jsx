@@ -1608,7 +1608,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
             </div>
             <div style={{ marginLeft: 8, display: "flex", gap: 8 }}>
               <Btn href="/business" variant="primary" small style={{ minWidth: 152, textAlign: "center", whiteSpace: "nowrap" }}>List Your Business</Btn>
-              <Btn href="/promote" variant="sunset" small style={{ minWidth: 152, textAlign: "center", whiteSpace: "nowrap" }}>List Your Event</Btn>
+              <Btn href="/event" variant="sunset" small style={{ minWidth: 152, textAlign: "center", whiteSpace: "nowrap" }}>List Your Event</Btn>
             </div>
           </div>
 
@@ -1704,29 +1704,21 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
         {[
           { label: "Holly & The Yeti", href: "/#holly" },
           { label: "Food Truck Locator", href: "/food-trucks" },
-          { label: "Devils Lake", id: "devils-lake" },
-          { label: "Round Lake", id: "round-lake" },
-          { label: "The Village", id: "village" },
-          { label: "Wineries & Breweries", id: "wineries" },
-          { label: "Men's Club", id: "mens-club" },
-          { label: "Ladies Club", id: "ladies-club" },
-          { label: "Historical Society", id: "historical-society" },
+          { label: "Devils Lake", href: "/devils-lake" },
+          { label: "Round Lake", href: "/round-lake" },
+          { label: "The Village", href: "/village" },
+          { label: "Wineries & Breweries", href: "/wineries" },
+          { label: "Men's Club", href: "/mens-club" },
+          { label: "Ladies Club", href: "/ladies-club" },
+          { label: "Historical Society", href: "/historical-society" },
         ].map(link => (
-          link.href ? (
-            <a key={link.href} href={link.href} onClick={() => setMenuOpen(false)} style={{
-              fontFamily: "'Libre Baskerville', serif",
-              fontSize: 20, fontWeight: 400, color: C.text,
-              textDecoration: "none", padding: "8px 32px", display: "block",
-            }}>
-              {link.label}
-            </a>
-          ) :
-          <button key={link.id} onClick={() => handleNavClick(link.id)} style={{
-            background: "none", border: "none", fontFamily: "'Libre Baskerville', serif",
-            fontSize: 20, fontWeight: 400, color: C.text, cursor: "pointer", padding: "8px 32px",
+          <a key={link.href} href={link.href} onClick={() => setMenuOpen(false)} style={{
+            fontFamily: "'Libre Baskerville', serif",
+            fontSize: 20, fontWeight: 400, color: C.text,
+            textDecoration: "none", padding: "8px 32px", display: "block",
           }}>
             {link.label}
-          </button>
+          </a>
         ))}
         <a
           href="https://photogallery.yetigroove.com/folder/muVgmuXuvFwI/"
@@ -1742,7 +1734,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
         </a>
         <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 10, alignItems: "center" }}>
           <Btn href="/business" variant="primary" style={{ width: 200, textAlign: "center", whiteSpace: "nowrap" }}>List Your Business</Btn>
-          <Btn href="/promote" variant="sunset" style={{ width: 200, textAlign: "center", whiteSpace: "nowrap" }}>List Your Event</Btn>
+          <Btn href="/event" variant="sunset" style={{ width: 200, textAlign: "center", whiteSpace: "nowrap" }}>List Your Event</Btn>
         </div>
       </div>
 

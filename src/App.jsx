@@ -311,6 +311,7 @@ export default function App() {
         <Route path="/wineries" element={<WineriesPage />} />
         <Route path="/devils-lake" element={<DevilsLakePage />} />
         <Route path="/promote" element={<PromotePage />} />
+        <Route path="/event" element={<PromotePage />} />
         <Route path="/advertise" element={<AdvertisePage />} />
         <Route path="/dispatch" element={<DispatchPage />} />
         <Route path="/dispatch/:slug" element={<DispatchArticlePage />} />
