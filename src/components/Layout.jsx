@@ -5,6 +5,10 @@ import { ShareBar, SectionLabel, SectionTitle, FadeIn, WaveDivider, Btn, Categor
 export function GlobalStyles() {
   return (
     <style>{`
+      @keyframes slideUp {
+        0% { transform: translateY(100%); opacity: 0; }
+        100% { transform: translateY(0); opacity: 1; }
+      }
       @keyframes marquee {
         0% { transform: translateX(0); }
         100% { transform: translateX(-50%); }

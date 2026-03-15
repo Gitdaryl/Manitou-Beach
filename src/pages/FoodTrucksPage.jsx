@@ -43,6 +43,14 @@ export default function FoodTrucksPage() {
   const [pinStatus, setPinStatus] = useState(''); // '' | 'loading' | 'pinned' | 'denied'
   const [shareCopied, setShareCopied] = useState(false);
 
+  // Public map
+  const mapsKey = typeof import.meta !== 'undefined' ? import.meta.env?.VITE_GOOGLE_MAPS_API_KEY : '';
+  const [mapReady, setMapReady] = useState(false);
+  const [selectedTruck, setSelectedTruck] = useState(null);
+  const mapDivRef = useRef(null);
+  const mapInstanceRef = useRef(null);
+  const markersRef = useRef([]);
+
   // Location history — per-truck, stored in localStorage
   const locsKey = `mb-truck-locs-${truckSlug}`;
   const [savedLocations, setSavedLocations] = useState(() => {
@@ -134,6 +142,77 @@ export default function FoodTrucksPage() {
       .catch(() => {});
   }, []);
 
+  // Load Google Maps JS API for public map (not in vendor mode)
+  useEffect(() => {
+    if (!mapsKey || isCheckinMode) return;
+    if (window.google?.maps) { setMapReady(true); return; }
+    if (document.querySelector('[data-gmaps]')) return;
+    window.__gmapsReady = () => setMapReady(true);
+    const s = document.createElement('script');
+    s.dataset.gmaps = '1';
+    s.src = `https://maps.googleapis.com/maps/api/js?key=${mapsKey}&callback=__gmapsReady`;
+    s.async = true;
+    document.head.appendChild(s);
+  }, []);
+
+  // Init map + markers whenever live trucks with coords change
+  useEffect(() => {
+    if (!mapReady || !mapDivRef.current) return;
+    const pts = (trucks || []).filter(t => isLive(t) && typeof t.lat === 'number' && typeof t.lng === 'number');
+    if (!pts.length) return;
+
+    const G = window.google.maps;
+    const makeIcon = (name, selected) => {
+      const w = Math.min(name.length * 7 + 28, 160);
+      const h = 26;
+      const bg = selected ? '#7A8E72' : '#FAF6EF';
+      const fg = selected ? '#FAF6EF' : '#3B3228';
+      const border = '#7A8E72';
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h + 8}">
+        <rect x="0" y="0" width="${w}" height="${h}" rx="13" fill="${bg}" stroke="${border}" stroke-width="1.5"/>
+        <text x="${w / 2}" y="17" font-family="sans-serif" font-size="11" font-weight="600" fill="${fg}" text-anchor="middle">${name}</text>
+        <polygon points="${w / 2 - 5},${h} ${w / 2 + 5},${h} ${w / 2},${h + 7}" fill="${bg}" stroke="${border}" stroke-width="1.5"/>
+      </svg>`;
+      return { url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg), scaledSize: new G.Size(w, h + 8), anchor: new G.Point(w / 2, h + 8) };
+    };
+
+    if (!mapInstanceRef.current) {
+      mapInstanceRef.current = new G.Map(mapDivRef.current, {
+        zoom: 14,
+        center: { lat: pts[0].lat, lng: pts[0].lng },
+        mapTypeControl: false, fullscreenControl: false, streetViewControl: false,
+        styles: [
+          { elementType: 'geometry', stylers: [{ color: '#f5f0e8' }] },
+          { elementType: 'labels.text.fill', stylers: [{ color: '#6b5d52' }] },
+          { elementType: 'labels.text.stroke', stylers: [{ color: '#f5f0e8' }] },
+          { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#b8d4e8' }] },
+          { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#e8dfd0' }] },
+          { featureType: 'road', elementType: 'geometry.stroke', stylers: [{ color: '#d4c8b8' }] },
+          { featureType: 'poi', stylers: [{ visibility: 'off' }] },
+          { featureType: 'transit', stylers: [{ visibility: 'off' }] },
+        ],
+      });
+      mapInstanceRef.current.addListener('click', () => setSelectedTruck(null));
+    }
+
+    markersRef.current.forEach(m => m.setMap(null));
+    markersRef.current = [];
+
+    const bounds = new G.LatLngBounds();
+    pts.forEach(truck => {
+      bounds.extend({ lat: truck.lat, lng: truck.lng });
+      const m = new G.Marker({ position: { lat: truck.lat, lng: truck.lng }, map: mapInstanceRef.current, icon: makeIcon(truck.name, false), title: truck.name });
+      m.addListener('click', () => {
+        setSelectedTruck(prev => prev?.id === truck.id ? null : truck);
+        markersRef.current.forEach(mk => mk.setIcon(makeIcon(mk.getTitle(), mk.getTitle() === truck.name)));
+      });
+      markersRef.current.push(m);
+    });
+
+    if (pts.length === 1) { mapInstanceRef.current.setCenter({ lat: pts[0].lat, lng: pts[0].lng }); mapInstanceRef.current.setZoom(15); }
+    else { mapInstanceRef.current.fitBounds(bounds, { top: 40, right: 40, bottom: 40, left: 40 }); }
+  }, [mapReady, trucks]);
+
   // Drop pin handler — vendor taps this to capture GPS before submitting
   const handleDropPin = () => {
     if (!navigator.geolocation) { setPinStatus('denied'); return; }
@@ -210,6 +289,7 @@ export default function FoodTrucksPage() {
   };
 
   const liveTrucks = (trucks || []).filter(isLive);
+  const liveTrucksWithCoords = liveTrucks.filter(t => typeof t.lat === 'number' && typeof t.lng === 'number');
   const comingTrucks = (trucks || []).filter(t =>
     t.comingDate && new Date(t.comingDate) > new Date() && !isLive(t)
   );
@@ -295,7 +375,6 @@ export default function FoodTrucksPage() {
   // No Navbar, no public sections, no Footer. Just their tool.
   if (isCheckinMode) {
     const truckName = checkinTruck?.name || truckSlug;
-    const mapsKey = typeof import.meta !== 'undefined' ? import.meta.env?.VITE_GOOGLE_MAPS_API_KEY : '';
 
     const handleVendorShare = () => {
       const text = `🚚 ${truckName} is open at Manitou Beach! See all the food trucks out today →`;
@@ -652,6 +731,63 @@ export default function FoodTrucksPage() {
       </section>
 
       <WaveDivider topColor={C.night} bottomColor={C.warmWhite} />
+
+      {/* Live Map — only when trucks have coordinates */}
+      {mapsKey && liveTrucksWithCoords.length > 0 && (
+        <section style={{ background: C.warmWhite, padding: "0 24px 0" }}>
+          <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+            <div style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', border: `1px solid ${C.sand}`, boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}>
+              {/* Map canvas */}
+              <div ref={mapDivRef} style={{ width: '100%', height: 340 }} />
+
+              {/* Selected truck card — slides up from bottom of map */}
+              {selectedTruck && (
+                <div
+                  style={{
+                    position: 'absolute', bottom: 0, left: 0, right: 0,
+                    background: C.cream, borderTop: `2px solid ${C.sage}33`,
+                    borderRadius: '0 0 16px 16px',
+                    padding: '16px 20px 20px',
+                    boxShadow: '0 -4px 20px rgba(0,0,0,0.10)',
+                    animation: 'slideUp 0.2s ease',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                        <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text, margin: 0 }}>{selectedTruck.name}</h3>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
+                          <div style={{ width: 6, height: 6, borderRadius: '50%', background: C.sage }} />
+                          <span style={{ fontSize: 11, color: C.sage, fontWeight: 600 }}>open now</span>
+                        </div>
+                      </div>
+                      {selectedTruck.cuisine && <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 6 }}>{selectedTruck.cuisine}</div>}
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                        {selectedTruck.locationNote && (
+                          <span style={{ fontSize: 12, color: C.text, fontWeight: 500 }}>📍 {selectedTruck.locationNote}</span>
+                        )}
+                        {selectedTruck.todaysSpecial && (
+                          <span style={{ fontSize: 12, color: C.sunset, fontWeight: 500 }}>⭐ {selectedTruck.todaysSpecial}</span>
+                        )}
+                        {selectedTruck.departureTime && (
+                          <span style={{ fontSize: 12, color: C.textMuted }}>⏱ Until {selectedTruck.departureTime}</span>
+                        )}
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => { setSelectedTruck(null); markersRef.current.forEach(m => { const pts2 = liveTrucksWithCoords; m.setIcon((() => { const w2 = Math.min(m.getTitle().length * 7 + 28, 160); const h2 = 26; const svg2 = `<svg xmlns="http://www.w3.org/2000/svg" width="${w2}" height="${h2 + 8}"><rect x="0" y="0" width="${w2}" height="${h2}" rx="13" fill="#FAF6EF" stroke="#7A8E72" stroke-width="1.5"/><text x="${w2/2}" y="17" font-family="sans-serif" font-size="11" font-weight="600" fill="#3B3228" text-anchor="middle">${m.getTitle()}</text><polygon points="${w2/2-5},${h2} ${w2/2+5},${h2} ${w2/2},${h2+7}" fill="#FAF6EF" stroke="#7A8E72" stroke-width="1.5"/></svg>`; return { url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg2), scaledSize: new window.google.maps.Size(w2, h2 + 8), anchor: new window.google.maps.Point(w2 / 2, h2 + 8) }; })()); }); }}
+                      style={{ flexShrink: 0, width: 28, height: 28, borderRadius: '50%', background: C.sand, border: 'none', cursor: 'pointer', fontSize: 14, color: C.textMuted, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'sans-serif' }}
+                    >×</button>
+                  </div>
+                </div>
+              )}
+            </div>
+            <p style={{ fontSize: 11, color: C.textMuted, textAlign: 'center', margin: '8px 0 0', letterSpacing: '0.05em' }}>
+              Tap a truck label to see details · {liveTrucksWithCoords.length} location{liveTrucksWithCoords.length !== 1 ? 's' : ''} pinned today
+            </p>
+          </div>
+        </section>
+      )}
 
       {/* Live Now section */}
       <section style={{ background: C.warmWhite, padding: "72px 24px" }}>
