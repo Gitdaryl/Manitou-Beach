@@ -626,7 +626,7 @@ function ExploreSection() {
             <ExploreCard key={i} place={p} large delay={i * 100} />
           ))}
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 16 }}>
+        <div className="mobile-col-1" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 16 }}>
           {places.slice(2).map((p, i) => (
             <ExploreCard key={i + 2} place={p} delay={200 + i * 60} />
           ))}
@@ -1578,7 +1578,7 @@ function AboutSection() {
     <section id="about" style={{ background: C.warmWhite, padding: "100px 24px", position: "relative" }}>
       <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse at 30% 20%, ${C.sage}06, transparent)`, pointerEvents: "none" }} />
       <div style={{ maxWidth: 1100, margin: "0 auto", position: "relative" }}>
-        <div className="mobile-col-1" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80 }}>
+        <div className="mobile-col-1" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(32px, 6vw, 80px)" }}>
           <FadeIn>
             <SectionLabel>The Story</SectionLabel>
             <SectionTitle>About This Platform</SectionTitle>
@@ -1601,19 +1601,19 @@ function AboutSection() {
             </p>
 
             {/* Community stats */}
-            <div style={{ display: "flex", gap: 0, marginBottom: 36 }}>
+            <div style={{ display: "flex", gap: 0, marginBottom: 36, flexWrap: "wrap" }}>
               {[
                 { num: "1,330", label: "acres of lake" },
                 { num: "150+", label: "years of community" },
                 { num: "600+", label: "boat slips" },
               ].map((s, i) => (
                 <div key={i} style={{
-                  flex: 1, textAlign: "center",
+                  flex: "1 1 80px", textAlign: "center",
                   borderLeft: i > 0 ? `1px solid ${C.sand}` : "none",
-                  padding: "0 12px",
+                  padding: "8px 12px",
                 }}>
-                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, color: C.sage, fontWeight: 700, lineHeight: 1.1 }}>{s.num}</div>
-                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, letterSpacing: 2, textTransform: "uppercase", marginTop: 4 }}>{s.label}</div>
+                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 4vw, 28px)", color: C.sage, fontWeight: 700, lineHeight: 1.1 }}>{s.num}</div>
+                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, color: C.textMuted, letterSpacing: 1.5, textTransform: "uppercase", marginTop: 4 }}>{s.label}</div>
                 </div>
               ))}
             </div>
