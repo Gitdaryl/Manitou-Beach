@@ -6,6 +6,105 @@ import { Footer, Navbar, GlobalStyles, NewsletterInline, CATEGORY_COLORS } from 
 import { useDispatchAds, pickAd } from '../App';
 
 
+// ============================================================
+// Ad slot renderer — picks a random ad from the slot array
+// ============================================================
+export function AdSlot({ ads, variant }) {
+  const ad = pickAd(ads);
+  if (!ad) return null;
+
+  const isLeaderboard = variant === 'leaderboard' || variant === 'listing-banner';
+  const wrapStyle = {
+    margin: isLeaderboard ? '16px auto' : '24px 0',
+    maxWidth: isLeaderboard ? 960 : '100%',
+    padding: isLeaderboard ? '0 24px' : 0,
+  };
+  const innerStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 16,
+    background: 'rgba(0,0,0,0.03)',
+    border: `1px solid rgba(0,0,0,0.07)`,
+    borderRadius: 10,
+    overflow: 'hidden',
+    textDecoration: 'none',
+    color: C.text,
+    padding: isLeaderboard ? '10px 20px' : '12px 16px',
+  };
+
+  return (
+    <div style={wrapStyle}>
+      <a href={ad.linkUrl || '#'} target="_blank" rel="noopener noreferrer sponsored" style={{ display: 'block', textDecoration: 'none' }}>
+        <div style={innerStyle}>
+          {ad.imageUrl && (
+            <img src={ad.imageUrl} alt={ad.altText || ad.name} style={{ height: isLeaderboard ? 52 : 44, width: 'auto', objectFit: 'contain', flexShrink: 0 }} />
+          )}
+          <div>
+            {ad.name && <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, fontSize: 14, color: C.dusk }}>{ad.name}</div>}
+            {ad.offerText && <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, marginTop: 2 }}>{ad.offerText}</div>}
+          </div>
+          <div style={{ marginLeft: 'auto', fontSize: 10, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", flexShrink: 0 }}>Sponsored</div>
+        </div>
+      </a>
+    </div>
+  );
+}
+
+// ============================================================
+// Article content renderer — renders parsed Notion blocks
+// ============================================================
+export function DispatchArticleContent({ content }) {
+  if (!content || !content.length) return null;
+  return (
+    <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, lineHeight: 1.75, color: C.text }}>
+      {content.map((block, i) => {
+        if (block.type === 'p') {
+          return <p key={i} style={{ margin: '0 0 20px' }}>{block.text}</p>;
+        }
+        if (block.type === 'h1') {
+          return <h1 key={i} style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, fontWeight: 700, color: C.dusk, margin: '36px 0 16px', lineHeight: 1.25 }}>{block.text}</h1>;
+        }
+        if (block.type === 'h2') {
+          return <h2 key={i} style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, fontWeight: 700, color: C.dusk, margin: '32px 0 14px', lineHeight: 1.25 }}>{block.text}</h2>;
+        }
+        if (block.type === 'h3') {
+          return <h3 key={i} style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 700, color: C.dusk, margin: '28px 0 12px', lineHeight: 1.3 }}>{block.text}</h3>;
+        }
+        if (block.type === 'quote') {
+          return <blockquote key={i} style={{ margin: '28px 0', borderLeft: `4px solid ${C.lakeBlue}`, paddingLeft: 20, fontStyle: 'italic', color: '#5a5a5a', fontSize: 19, lineHeight: 1.6 }}>{block.text}</blockquote>;
+        }
+        if (block.type === 'callout') {
+          return (
+            <div key={i} style={{ margin: '24px 0', background: `rgba(${C.lakeBlue}, 0.06)`, border: `1px solid rgba(0,0,0,0.08)`, borderRadius: 10, padding: '16px 20px', display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+              <span style={{ fontSize: 22, flexShrink: 0 }}>{block.icon || '💡'}</span>
+              <p style={{ margin: 0, fontSize: 16, lineHeight: 1.65, color: C.text }}>{block.text}</p>
+            </div>
+          );
+        }
+        if (block.type === 'divider') {
+          return <hr key={i} style={{ border: 'none', borderTop: `1px solid ${C.sand}`, margin: '32px 0' }} />;
+        }
+        if (block.type === 'image') {
+          return (
+            <figure key={i} style={{ margin: '28px 0', padding: 0 }}>
+              <img src={block.url} alt={block.caption || ''} style={{ width: '100%', borderRadius: 10, display: 'block' }} />
+              {block.caption && <figcaption style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, textAlign: 'center', marginTop: 8, fontStyle: 'italic' }}>{block.caption}</figcaption>}
+            </figure>
+          );
+        }
+        if (block.type === 'ul') {
+          return <ul key={i} style={{ margin: '0 0 20px', paddingLeft: 28 }}>{block.items.map((item, j) => <li key={j} style={{ marginBottom: 6 }}>{item}</li>)}</ul>;
+        }
+        if (block.type === 'ol') {
+          return <ol key={i} style={{ margin: '0 0 20px', paddingLeft: 28 }}>{block.items.map((item, j) => <li key={j} style={{ marginBottom: 6 }}>{item}</li>)}</ol>;
+        }
+        return null;
+      })}
+    </div>
+  );
+}
+
 export function DispatchArticlePage() {
   const { slug } = useParams();
   const navigate = useNavigate();

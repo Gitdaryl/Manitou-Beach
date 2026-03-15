@@ -1750,13 +1750,13 @@ function AboutSection() {
                   <div>
                     <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.4)", letterSpacing: 1, textTransform: "uppercase", marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>Category</label>
                     <select value={contactForm.category} onChange={e => setContactForm(f => ({ ...f, category: e.target.value }))}
-                      style={{ ...inputStyle, appearance: "none", cursor: "pointer" }}
+                      style={{ ...inputStyle, appearance: "none", cursor: "pointer", background: C.dusk, color: C.cream }}
                     >
-                      <option value="Question">Question</option>
-                      <option value="Feedback">Feedback</option>
-                      <option value="Bug Report">Bug Report</option>
-                      <option value="Partnership">Partnership Inquiry</option>
-                      <option value="Other">Other</option>
+                      <option value="Question" style={{ background: C.dusk, color: C.cream }}>Question</option>
+                      <option value="Feedback" style={{ background: C.dusk, color: C.cream }}>Feedback</option>
+                      <option value="Bug Report" style={{ background: C.dusk, color: C.cream }}>Bug Report</option>
+                      <option value="Partnership" style={{ background: C.dusk, color: C.cream }}>Partnership Inquiry</option>
+                      <option value="Other" style={{ background: C.dusk, color: C.cream }}>Other</option>
                     </select>
                   </div>
                   <div>
