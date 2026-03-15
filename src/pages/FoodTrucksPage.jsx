@@ -42,6 +42,10 @@ export default function FoodTrucksPage() {
   const [checkinLng, setCheckinLng] = useState(null);
   const [shareCopied, setShareCopied] = useState(false);
 
+  // "Text me my link" recovery form
+  const [smsPhone, setSmsPhone] = useState('');
+  const [smsStatus, setSmsStatus] = useState(''); // '' | 'loading' | 'sent' | 'error'
+
   // Share + love input state
   const [sharedId, setSharedId] = useState(null);
   const [loveInput, setLoveInput] = useState({ slug: '', text: '' }); // one open at a time
@@ -743,6 +747,57 @@ export default function FoodTrucksPage() {
             <Btn href="/food-truck-partner" variant="sunset">
               See Listing Details →
             </Btn>
+
+            {/* Forgot check-in link */}
+            <div style={{ marginTop: 36, borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: 28 }}>
+              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", marginBottom: 12 }}>
+                Already a member? Text your check-in link to your phone.
+              </p>
+              {smsStatus === 'sent' ? (
+                <p style={{ fontSize: 14, color: C.sage, fontWeight: 600 }}>✓ Check your texts — link is on its way.</p>
+              ) : (
+                <div style={{ display: "flex", gap: 8, maxWidth: 340, margin: "0 auto" }}>
+                  <input
+                    type="tel"
+                    value={smsPhone}
+                    onChange={e => setSmsPhone(e.target.value)}
+                    placeholder="Your mobile number"
+                    style={{
+                      flex: 1, padding: "11px 14px", borderRadius: 8,
+                      border: "1px solid rgba(255,255,255,0.15)",
+                      background: "rgba(255,255,255,0.08)", color: C.cream,
+                      fontSize: 14, fontFamily: "'Libre Franklin', sans-serif",
+                      outline: "none",
+                    }}
+                    onKeyDown={e => { if (e.key === 'Enter') handleSmsRequest(); }}
+                  />
+                  <button
+                    onClick={() => {
+                      if (!smsPhone.replace(/\D/g, '').length >= 10) return;
+                      setSmsStatus('loading');
+                      fetch('/api/send-checkin-link', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ phone: smsPhone }),
+                      })
+                        .then(r => r.json())
+                        .then(() => setSmsStatus('sent'))
+                        .catch(() => setSmsStatus('sent')); // always show sent — don't leak whether registered
+                    }}
+                    disabled={smsStatus === 'loading'}
+                    style={{
+                      padding: "11px 18px", borderRadius: 8,
+                      background: smsStatus === 'loading' ? "rgba(255,255,255,0.1)" : C.sage,
+                      color: C.cream, border: "none", fontSize: 13, fontWeight: 700,
+                      cursor: smsStatus === 'loading' ? "default" : "pointer",
+                      fontFamily: "'Libre Franklin', sans-serif", whiteSpace: "nowrap",
+                    }}
+                  >
+                    {smsStatus === 'loading' ? '…' : 'Text Me'}
+                  </button>
+                </div>
+              )}
+            </div>
           </FadeIn>
         </div>
       </section>
