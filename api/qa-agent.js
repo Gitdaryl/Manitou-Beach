@@ -134,13 +134,24 @@ Respond with valid JSON only, no other text:
   }
 
   const data = await response.json();
-  const text = data.content?.[0]?.text?.trim() || '';
+  let text = data.content?.[0]?.text?.trim() || '';
+
+  // Strip markdown code fences if Claude wrapped the JSON
+  text = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
 
   try {
     const parsed = JSON.parse(text);
     const decision = ['APPROVE', 'REJECT', 'FLAG'].includes(parsed.decision) ? parsed.decision : 'FLAG';
     return { decision, reason: (parsed.reason || 'No reason provided').slice(0, 200) };
   } catch {
+    // Try extracting JSON from anywhere in the response
+    const match = text.match(/\{[^{}]*"decision"\s*:\s*"(APPROVE|REJECT|FLAG)"[^{}]*\}/);
+    if (match) {
+      try {
+        const parsed = JSON.parse(match[0]);
+        return { decision: parsed.decision, reason: (parsed.reason || 'No reason provided').slice(0, 200) };
+      } catch { /* fall through */ }
+    }
     console.error('Failed to parse Claude response:', text);
     return { decision: 'FLAG', reason: 'Could not parse AI evaluation — manual review needed' };
   }
