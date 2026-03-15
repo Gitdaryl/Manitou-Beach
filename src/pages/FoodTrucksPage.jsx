@@ -182,12 +182,6 @@ export default function FoodTrucksPage() {
         center: { lat: pts[0].lat, lng: pts[0].lng },
         mapTypeControl: false, fullscreenControl: false, streetViewControl: false,
         styles: [
-          { elementType: 'geometry', stylers: [{ color: '#f5f0e8' }] },
-          { elementType: 'labels.text.fill', stylers: [{ color: '#6b5d52' }] },
-          { elementType: 'labels.text.stroke', stylers: [{ color: '#f5f0e8' }] },
-          { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#b8d4e8' }] },
-          { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#e8dfd0' }] },
-          { featureType: 'road', elementType: 'geometry.stroke', stylers: [{ color: '#d4c8b8' }] },
           { featureType: 'poi', stylers: [{ visibility: 'off' }] },
           { featureType: 'transit', stylers: [{ visibility: 'off' }] },
         ],
@@ -730,13 +724,14 @@ export default function FoodTrucksPage() {
         </div>
       </section>
 
-      <WaveDivider topColor={C.night} bottomColor={C.warmWhite} />
+      <WaveDivider topColor={C.night} bottomColor={mapsKey && liveTrucksWithCoords.length > 0 ? C.dusk : C.warmWhite} />
 
       {/* Live Map — only when trucks have coordinates */}
       {mapsKey && liveTrucksWithCoords.length > 0 && (
-        <section style={{ background: C.warmWhite, padding: "0 24px 0" }}>
+        <section style={{ background: C.dusk, padding: "16px 24px 48px" }}>
           <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-            <div style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', border: `1px solid ${C.sand}`, boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}>
+            <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)', marginBottom: 16, textAlign: 'center' }}>Live Locations</p>
+            <div style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', border: `1px solid rgba(255,255,255,0.08)`, boxShadow: '0 8px 40px rgba(0,0,0,0.35)' }}>
               {/* Map canvas */}
               <div ref={mapDivRef} style={{ width: '100%', height: 340 }} />
 
@@ -782,12 +777,17 @@ export default function FoodTrucksPage() {
                 </div>
               )}
             </div>
-            <p style={{ fontSize: 11, color: C.textMuted, textAlign: 'center', margin: '8px 0 0', letterSpacing: '0.05em' }}>
+            <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', textAlign: 'center', margin: '10px 0 0', letterSpacing: '0.05em' }}>
               Tap a truck label to see details · {liveTrucksWithCoords.length} location{liveTrucksWithCoords.length !== 1 ? 's' : ''} pinned today
             </p>
           </div>
         </section>
       )}
+
+      {mapsKey && liveTrucksWithCoords.length > 0
+        ? <WaveDivider topColor={C.dusk} bottomColor={C.warmWhite} />
+        : null
+      }
 
       {/* Live Now section */}
       <section style={{ background: C.warmWhite, padding: "72px 24px" }}>
