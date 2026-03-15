@@ -37,6 +37,11 @@ export default function FoodTrucksPage() {
   const [checkinStatus, setCheckinStatus] = useState("");
   const [checkinMsg, setCheckinMsg] = useState("");
 
+  // Vendor mode: captured location for map preview
+  const [checkinLat, setCheckinLat] = useState(null);
+  const [checkinLng, setCheckinLng] = useState(null);
+  const [shareCopied, setShareCopied] = useState(false);
+
   // Share + love input state
   const [sharedId, setSharedId] = useState(null);
   const [loveInput, setLoveInput] = useState({ slug: '', text: '' }); // one open at a time
@@ -115,6 +120,7 @@ export default function FoodTrucksPage() {
   const handleCheckin = () => {
     setCheckinStatus("loading");
     const doPost = (lat, lng) => {
+      if (typeof lat === 'number') { setCheckinLat(lat); setCheckinLng(lng); }
       fetch("/api/food-trucks", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -254,6 +260,260 @@ export default function FoodTrucksPage() {
     );
   };
 
+  // ─── VENDOR CHECK-IN MODE ───────────────────────────────────
+  // When a vendor opens their check-in URL, they see ONLY this.
+  // No Navbar, no public sections, no Footer. Just their tool.
+  if (isCheckinMode) {
+    const truckName = checkinTruck?.name || truckSlug;
+    const mapsKey = typeof import.meta !== 'undefined' ? import.meta.env?.VITE_GOOGLE_MAPS_API_KEY : '';
+
+    const handleVendorShare = () => {
+      const text = `🚚 ${truckName} is open at Manitou Beach! See all the food trucks out today →`;
+      const url = 'https://manitoubeach.com/food-trucks';
+      if (navigator.share) {
+        navigator.share({ title: truckName, text, url }).catch(() => {});
+      } else {
+        navigator.clipboard.writeText(`${text} ${url}`).catch(() => {});
+        setShareCopied(true);
+        setTimeout(() => setShareCopied(false), 2200);
+      }
+    };
+
+    const handleCopyLink = () => {
+      const loc = checkinNote ? ` at ${checkinNote}` : '';
+      const special = checkinSpecial ? ` Today's special: ${checkinSpecial}.` : '';
+      const text = `🚚 ${truckName} is serving${loc}!${special} Find us → https://manitoubeach.com/food-trucks`;
+      navigator.clipboard.writeText(text).catch(() => {});
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2200);
+    };
+
+    const inputStyle = { width: "100%", boxSizing: "border-box", padding: "12px 14px", border: `1px solid ${C.sand}`, borderRadius: 8, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", color: C.text, background: C.warmWhite, outline: "none", marginBottom: 16 };
+    const labelStyle = { display: "block", fontSize: 12, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", color: C.textMuted, marginBottom: 8 };
+
+    return (
+      <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+        <div style={{ flex: 1, maxWidth: 480, width: "100%", margin: "0 auto", padding: "48px 24px 32px" }}>
+
+          {/* Vendor Header — always visible */}
+          <div style={{ textAlign: "center", marginBottom: 32 }}>
+            <p style={{ margin: "0 0 12px", fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: C.sage, fontWeight: 600 }}>
+              Manitou Beach · Food Truck Check-in
+            </p>
+            {checkinTruck?.photoUrl ? (
+              <img src={checkinTruck.photoUrl} alt={truckName} style={{ width: 72, height: 72, borderRadius: 14, objectFit: "cover", border: `2px solid ${C.sand}`, margin: "0 auto 12px", display: "block" }} />
+            ) : (
+              <div style={{ width: 72, height: 72, borderRadius: 14, background: `${C.sage}20`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 32, margin: "0 auto 12px" }}>🚚</div>
+            )}
+            <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, fontWeight: 400, color: C.text, margin: "0 0 4px" }}>
+              {truckName}
+            </h1>
+            {checkinTruck?.cuisine && <p style={{ fontSize: 13, color: C.textMuted, margin: 0 }}>{checkinTruck.cuisine}</p>}
+          </div>
+
+          {/* Loading state */}
+          {trucks === null ? (
+            <div style={{ textAlign: "center", padding: "48px 0", color: C.textMuted, fontSize: 14 }}>Loading…</div>
+
+          /* ─── SUCCESS STATE ─── */
+          ) : checkinStatus === "success" ? (
+            <div>
+              {/* You're Live header */}
+              <div style={{ textAlign: "center", marginBottom: 28 }}>
+                <div style={{
+                  display: "inline-flex", alignItems: "center", justifyContent: "center",
+                  width: 64, height: 64, borderRadius: "50%",
+                  background: `${C.sage}15`, border: `2px solid ${C.sage}33`,
+                  marginBottom: 16, fontSize: 32,
+                }}>
+                  📍
+                </div>
+                <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, fontWeight: 400, color: C.sage, margin: "0 0 8px" }}>
+                  You're Live!
+                </h2>
+                <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.6, maxWidth: 340, margin: "0 auto" }}>
+                  Customers can find you on the Manitou Beach Food Truck Locator right now.
+                </p>
+              </div>
+
+              {/* Customer Preview Card */}
+              <p style={{ fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: C.textMuted, fontWeight: 600, marginBottom: 10 }}>
+                Your customers see this:
+              </p>
+              <div style={{
+                background: C.cream, borderRadius: 14,
+                border: `2px solid ${C.sage}33`,
+                overflow: "hidden", marginBottom: 20,
+              }}>
+                {checkinTruck?.photoUrl && (
+                  <img src={checkinTruck.photoUrl} alt={truckName} style={{ width: "100%", height: 160, objectFit: "cover" }} />
+                )}
+                <div style={{ padding: "20px 22px" }}>
+                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginBottom: 6 }}>
+                    <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.text, margin: 0 }}>{truckName}</h3>
+                    <div style={{ display: "flex", alignItems: "center", gap: 5, flexShrink: 0 }}>
+                      <div style={{ width: 7, height: 7, borderRadius: "50%", background: C.sage }} />
+                      <span style={{ fontSize: 11, color: C.sage, fontWeight: 600 }}>just now</span>
+                    </div>
+                  </div>
+                  {checkinTruck?.cuisine && <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 8 }}>{checkinTruck.cuisine}</div>}
+                  {checkinNote && (
+                    <div style={{ fontSize: 13, color: C.text, fontWeight: 500, marginBottom: 8 }}>
+                      📍 {checkinNote}
+                    </div>
+                  )}
+                  {checkinSpecial && (
+                    <div style={{ fontSize: 13, background: `${C.sunset}12`, border: `1px solid ${C.sunset}30`, borderRadius: 8, padding: "7px 12px", marginBottom: 8, color: C.sunset, fontWeight: 500 }}>
+                      ⭐ {checkinSpecial}
+                    </div>
+                  )}
+                  {checkinDeparture && (
+                    <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 8 }}>
+                      ⏱ Open until {checkinDeparture}
+                    </div>
+                  )}
+                  {checkinTruck?.description && <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: 0 }}>{checkinTruck.description}</p>}
+                </div>
+              </div>
+
+              {/* Map Preview */}
+              {checkinLat && checkinLng && mapsKey && (
+                <div style={{ marginBottom: 20, borderRadius: 12, overflow: "hidden", border: `1px solid ${C.sand}` }}>
+                  <img
+                    src={`https://maps.googleapis.com/maps/api/staticmap?center=${checkinLat},${checkinLng}&zoom=15&size=480x200&scale=2&markers=color:green|${checkinLat},${checkinLng}&key=${mapsKey}`}
+                    alt="Your location on the map"
+                    style={{ width: "100%", height: 180, objectFit: "cover", display: "block" }}
+                  />
+                </div>
+              )}
+
+              {/* Share Section */}
+              <div style={{ borderTop: `1px solid ${C.sand}`, paddingTop: 24, marginTop: 8 }}>
+                <p style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.sunset, margin: "0 0 4px", textAlign: "center" }}>
+                  Bring the crowd
+                </p>
+                <p style={{ fontSize: 13, color: C.textLight, textAlign: "center", margin: "0 0 20px", lineHeight: 1.5 }}>
+                  Share your location and let people know you're open.
+                </p>
+
+                <button
+                  onClick={handleVendorShare}
+                  style={{
+                    width: "100%", padding: "14px", background: C.sage, color: C.cream,
+                    border: "none", borderRadius: 10, fontSize: 15, fontWeight: 700,
+                    cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif",
+                    letterSpacing: 0.5, marginBottom: 10, transition: "background 0.2s",
+                  }}
+                >
+                  {shareCopied ? '✓ Copied!' : 'Share the Food Truck Map 📣'}
+                </button>
+
+                <button
+                  onClick={handleCopyLink}
+                  style={{
+                    width: "100%", padding: "12px", background: "transparent",
+                    color: C.textLight, border: `1px solid ${C.sand}`, borderRadius: 10,
+                    fontSize: 13, fontWeight: 500, cursor: "pointer",
+                    fontFamily: "'Libre Franklin', sans-serif", transition: "all 0.2s",
+                  }}
+                >
+                  Copy My Check-in Link
+                </button>
+
+                <div style={{ display: "flex", justifyContent: "center", gap: 24, marginTop: 24 }}>
+                  <button
+                    onClick={() => { setCheckinStatus(""); setCheckinMsg(""); setCheckinSpecial(""); setCheckinDeparture(""); setCheckinNote(""); setCheckinLat(null); setCheckinLng(null); }}
+                    style={{ fontSize: 13, color: C.textMuted, background: "none", border: "none", cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", textDecoration: "underline" }}
+                  >
+                    Check in again
+                  </button>
+                  <a
+                    href="/food-trucks"
+                    style={{ fontSize: 13, color: C.lakeBlue, textDecoration: "none", fontWeight: 600 }}
+                  >
+                    View the public page →
+                  </a>
+                </div>
+              </div>
+            </div>
+
+          /* ─── CHECK-IN FORM ─── */
+          ) : (
+            <div style={{ background: "#fff", borderRadius: 16, border: `1px solid ${C.sand}`, padding: "28px 24px", boxShadow: "0 4px 20px rgba(0,0,0,0.04)" }}>
+              <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.text, margin: "0 0 4px", textAlign: "center" }}>
+                Let your customers know you're here
+              </h2>
+              <p style={{ fontSize: 13, color: C.textMuted, textAlign: "center", margin: "0 0 24px" }}>
+                Fill in the details and go live on the locator.
+              </p>
+
+              <label style={labelStyle}>
+                Where are you today?
+              </label>
+              <input
+                type="text"
+                value={checkinNote}
+                onChange={e => setCheckinNote(e.target.value)}
+                placeholder="e.g. Near the boat launch, Village parking lot…"
+                style={inputStyle}
+              />
+
+              <label style={labelStyle}>
+                Today's Special <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>(optional)</span>
+              </label>
+              <input
+                type="text"
+                value={checkinSpecial}
+                onChange={e => setCheckinSpecial(e.target.value)}
+                placeholder="e.g. Half-price pulled pork, new brisket sandwich…"
+                style={inputStyle}
+              />
+
+              <label style={labelStyle}>
+                Leaving around… <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>(optional)</span>
+              </label>
+              <input
+                type="text"
+                value={checkinDeparture}
+                onChange={e => setCheckinDeparture(e.target.value)}
+                placeholder="e.g. 3pm, sunset, until sold out"
+                style={{ ...inputStyle, marginBottom: 8 }}
+              />
+
+              {checkinStatus === "error" && (
+                <div style={{ marginBottom: 12, fontSize: 13, color: "#c05a5a", fontWeight: 500 }}>{checkinMsg}</div>
+              )}
+              <button
+                onClick={handleCheckin}
+                disabled={checkinStatus === "loading"}
+                style={{
+                  marginTop: 8, width: "100%", padding: "14px",
+                  background: checkinStatus === "loading" ? C.sand : C.sage,
+                  color: C.cream, border: "none", borderRadius: 10,
+                  fontSize: 15, fontWeight: 700,
+                  cursor: checkinStatus === "loading" ? "default" : "pointer",
+                  transition: "background 0.2s",
+                  fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5,
+                }}
+              >
+                {checkinStatus === "loading" ? "Checking in…" : "Check In — Go Live 📍"}
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Vendor Footer */}
+        <div style={{ textAlign: "center", padding: "24px", borderTop: `1px solid ${C.sand}` }}>
+          <a href="/food-trucks" style={{ fontSize: 12, color: C.textMuted, textDecoration: "none" }}>
+            Powered by Manitou Beach · Devils Lake, Michigan
+          </a>
+        </div>
+      </div>
+    );
+  }
+  // ─── END VENDOR MODE ──────────────────────────────────────
+
+  // ─── PUBLIC PAGE ──────────────────────────────────────────
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
       <GlobalStyles />
@@ -291,93 +551,8 @@ export default function FoodTrucksPage() {
 
       <WaveDivider topColor={C.night} bottomColor={C.warmWhite} />
 
-      {/* Check-in Panel */}
-      {isCheckinMode && (
-        <section style={{ background: C.warmWhite, padding: "0 24px 48px" }}>
-          <div style={{ maxWidth: 520, margin: "0 auto" }}>
-            <div style={{ background: C.cream, borderRadius: 16, border: `2px solid ${C.sage}44`, padding: "32px 28px", boxShadow: "0 8px 32px rgba(0,0,0,0.06)" }}>
-              {trucks === null ? (
-                <div style={{ textAlign: "center", padding: "24px 0", color: C.textMuted, fontSize: 14 }}>Loading…</div>
-              ) : checkinStatus === "success" ? (
-                <div style={{ textAlign: "center" }}>
-                  <div style={{ fontSize: 48, marginBottom: 12 }}>✅</div>
-                  <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, fontWeight: 400, color: C.text, margin: "0 0 12px" }}>Checked In!</h2>
-                  <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.6 }}>{checkinMsg}</p>
-                  <button onClick={() => { setCheckinStatus(""); setCheckinMsg(""); setCheckinSpecial(""); setCheckinDeparture(""); }} style={{ marginTop: 20, padding: "10px 22px", background: C.sage, color: C.cream, border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
-                    Check In Again
-                  </button>
-                </div>
-              ) : (
-                <>
-                  <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 24 }}>
-                    {checkinTruck?.photoUrl ? (
-                      <img src={checkinTruck.photoUrl} alt={checkinTruck?.name} style={{ width: 56, height: 56, borderRadius: 10, objectFit: "cover", border: `1px solid ${C.sand}` }} />
-                    ) : (
-                      <div style={{ width: 56, height: 56, borderRadius: 10, background: `${C.sage}20`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26 }}>🚚</div>
-                    )}
-                    <div>
-                      <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.text }}>
-                        {checkinTruck?.name || truckSlug}
-                      </div>
-                      {checkinTruck?.cuisine && <div style={{ fontSize: 12, color: C.textMuted, marginTop: 2 }}>{checkinTruck.cuisine}</div>}
-                    </div>
-                  </div>
-
-                  <label style={{ display: "block", fontSize: 12, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", color: C.textMuted, marginBottom: 8 }}>
-                    Where are you today?
-                  </label>
-                  <input
-                    type="text"
-                    value={checkinNote}
-                    onChange={e => setCheckinNote(e.target.value)}
-                    placeholder="e.g. Near the boat launch, Village parking lot…"
-                    style={{ width: "100%", boxSizing: "border-box", padding: "12px 14px", border: `1px solid ${C.sand}`, borderRadius: 8, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", color: C.text, background: C.warmWhite, outline: "none", marginBottom: 16 }}
-                  />
-
-                  <label style={{ display: "block", fontSize: 12, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", color: C.textMuted, marginBottom: 8 }}>
-                    Today's Special <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>(optional)</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={checkinSpecial}
-                    onChange={e => setCheckinSpecial(e.target.value)}
-                    placeholder="e.g. Half-price pulled pork, new brisket sandwich…"
-                    style={{ width: "100%", boxSizing: "border-box", padding: "12px 14px", border: `1px solid ${C.sand}`, borderRadius: 8, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", color: C.text, background: C.warmWhite, outline: "none", marginBottom: 16 }}
-                  />
-
-                  <label style={{ display: "block", fontSize: 12, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", color: C.textMuted, marginBottom: 8 }}>
-                    Leaving around… <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>(optional)</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={checkinDeparture}
-                    onChange={e => setCheckinDeparture(e.target.value)}
-                    placeholder="e.g. 3pm, sunset, until sold out"
-                    style={{ width: "100%", boxSizing: "border-box", padding: "12px 14px", border: `1px solid ${C.sand}`, borderRadius: 8, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", color: C.text, background: C.warmWhite, outline: "none", marginBottom: 8 }}
-                  />
-
-                  <p style={{ fontSize: 12, color: C.textMuted, marginTop: 0, marginBottom: 16, lineHeight: 1.5 }}>
-                    We'll also try to grab your GPS location automatically for map accuracy (optional).
-                  </p>
-                  {checkinStatus === "error" && (
-                    <div style={{ marginBottom: 8, fontSize: 13, color: "#c05a5a", fontWeight: 500 }}>{checkinMsg}</div>
-                  )}
-                  <button
-                    onClick={handleCheckin}
-                    disabled={checkinStatus === "loading"}
-                    style={{ marginTop: 4, width: "100%", padding: "14px", background: checkinStatus === "loading" ? C.sand : C.sage, color: C.cream, border: "none", borderRadius: 10, fontSize: 15, fontWeight: 700, cursor: checkinStatus === "loading" ? "default" : "pointer", transition: "background 0.2s", fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}
-                  >
-                    {checkinStatus === "loading" ? "Checking in…" : "I'm Here Today! 🚚"}
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
-        </section>
-      )}
-
       {/* Live Now section */}
-      <section style={{ background: C.warmWhite, padding: isCheckinMode ? "0 24px 72px" : "72px 24px" }}>
+      <section style={{ background: C.warmWhite, padding: "72px 24px" }}>
         <div style={{ maxWidth: 1000, margin: "0 auto" }}>
           <FadeIn>
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 32 }}>
