@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivider, PageSponsorBanner, DiagonalDivider, Btn } from '../components/Shared';
-import { Footer, Navbar } from '../components/Layout';
+import { Footer, GlobalStyles, Navbar, NewsletterInline, PromoBanner } from '../components/Layout';
 import { C } from '../data/config';
+import { DEVILS_LAKE_FISH } from './FishingPage';
+import { LakesPreservationBanner } from './RoundLakePage';
 
 // ============================================================
 // 🏖️  DEVILS LAKE PAGE (/devils-lake)

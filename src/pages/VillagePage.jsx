@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivider, PageSponsorBanner, DiagonalDivider, Btn } from '../components/Shared';
-import { Footer, Navbar } from '../components/Layout';
+import { Footer, GlobalStyles, Navbar, NewsletterInline, PromoBanner } from '../components/Layout';
 import { C } from '../data/config';
 
 // ============================================================
@@ -199,7 +199,7 @@ function VillageVisitCTA() {
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
             <Btn onClick={() => window.open("https://maps.google.com/?q=Devils+Lake+Hwy+Manitou+Beach+MI+49253", "_blank")} variant="sunset">Get Directions</Btn>
-            <Btn href="/featured" variant="outlineLight">List Your Business</Btn>
+            <Btn href="/business" variant="outlineLight">List Your Business</Btn>
           </div>
         </div>
       </FadeIn>

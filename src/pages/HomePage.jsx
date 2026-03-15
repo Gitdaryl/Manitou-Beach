@@ -33,7 +33,7 @@ function EventTicker() {
   if (tickerItems.length === 0) return null;
   const repeated = [...tickerItems, ...tickerItems, ...tickerItems, ...tickerItems];
   return (
-    <a href="/happening" style={{ textDecoration: "none", display: "block" }}>
+    <a href="/events" style={{ textDecoration: "none", display: "block" }}>
       <div style={{
         background: `linear-gradient(90deg, ${C.night} 0%, ${C.dusk} 50%, ${C.night} 100%)`,
         padding: "14px 0",
@@ -250,7 +250,7 @@ function Hero({ scrollTo }) {
 
             {/* Site nav buttons — below, visually separated from event CTA */}
             <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginTop: heroEvent.eventUrl ? 4 : 0 }}>
-              <Btn href="/happening" variant="sunset">See All Events</Btn>
+              <Btn href="/events" variant="sunset">See All Events</Btn>
               <Btn onClick={() => scrollTo("businesses")} variant="outlineLight">Explore the Community</Btn>
             </div>
           </div>
@@ -323,117 +323,6 @@ function Hero({ scrollTo }) {
       </div>
       {scrollIndicator}
     </section>
-  );
-}
-function FeaturedEventsStrip() {
-  const [events, setEvents] = useState([]);
-  const [stripPin, setStripPin] = useState(null);
-  const [lightboxEvent, setLightboxEvent] = useState(null);
-  useEffect(() => {
-    fetch("/api/events")
-      .then(r => r.json())
-      .then(data => setEvents((data.events || []).slice(0, 4)))
-      .catch(() => {});
-    fetch("/api/promotions")
-      .then(r => r.json())
-      .then(data => setStripPin(data.stripPin || null))
-      .catch(() => {});
-  }, []);
-
-  if (events.length === 0) return null;
-
-  const eventCatColors = { "Live Music": C.sunset, "Food & Social": "#8B5E3C", "Sports & Outdoors": C.sage, "Community": C.lakeBlue };
-  const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
-
-  // Inject strip pin promo at position 0 (bump last organic event out)
-  const displayEvents = stripPin
-    ? [{ ...stripPin, isPromoted: true }, ...events.slice(0, 3)]
-    : events;
-
-  return (
-    <div style={{
-      background: `linear-gradient(90deg, ${C.night} 0%, ${C.dusk} 50%, ${C.night} 100%)`,
-      padding: "28px 24px",
-      borderBottom: `1px solid rgba(255,255,255,0.05)`,
-    }}>
-      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3.5, textTransform: "uppercase", color: "rgba(255,255,255,0.3)" }}>
-            Coming Up
-          </div>
-          <a href="/happening" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", color: C.sunsetLight, textDecoration: "none" }}>
-            See All Events →
-          </a>
-        </div>
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: `repeat(${displayEvents.length}, 1fr)`,
-          gap: 12,
-          overflowX: "auto",
-        }}>
-          {displayEvents.map((event, i) => {
-            const d = event.date ? new Date(event.date + "T00:00:00") : null;
-            const month = d ? MONTHS[d.getMonth()] : "";
-            const day = d ? d.getDate() : "";
-            const color = event.isPromoted ? C.sunset : (eventCatColors[event.category] || C.sage);
-            const handleClick = () => {
-              if (event.isPromoted && event.eventUrl) { window.open(event.eventUrl, "_blank", "noopener noreferrer"); }
-              else { setLightboxEvent(event); }
-            };
-            return (
-              <div key={event.id || i} onClick={handleClick} style={{ cursor: "pointer" }}>
-                <div
-                  style={{
-                    background: event.isPromoted ? `${C.sunset}12` : "rgba(255,255,255,0.04)",
-                    border: event.isPromoted ? `1px solid ${C.sunset}40` : "1px solid rgba(255,255,255,0.07)",
-                    borderRadius: 10, overflow: "hidden",
-                    transition: "background 0.2s",
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.background = event.isPromoted ? `${C.sunset}20` : "rgba(255,255,255,0.08)"}
-                  onMouseLeave={e => e.currentTarget.style.background = event.isPromoted ? `${C.sunset}12` : "rgba(255,255,255,0.04)"}
-                >
-                  {/* Date block */}
-                  <div style={{
-                    background: `${color}20`, borderBottom: `2px solid ${color}`,
-                    padding: "10px 14px", display: "flex", alignItems: "baseline", gap: 6,
-                  }}>
-                    {d ? (
-                      <>
-                        <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, color, lineHeight: 1 }}>{day}</span>
-                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, color: `${color}cc`, textTransform: "uppercase" }}>{month}</span>
-                      </>
-                    ) : (
-                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, color: `${color}cc`, textTransform: "uppercase" }}>Featured</span>
-                    )}
-                  </div>
-                  {/* Info */}
-                  <div style={{ padding: "12px 14px" }}>
-                    <div style={{
-                      fontFamily: "'Libre Baskerville', serif", fontSize: 14, color: C.cream,
-                      lineHeight: 1.3, marginBottom: 6,
-                      display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
-                    }}>
-                      {event.name}
-                    </div>
-                    {event.location && (
-                      <div style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                        {event.location}
-                      </div>
-                    )}
-                    <div style={{ marginTop: 8 }}>
-                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color, background: `${color}15`, padding: "3px 8px", borderRadius: 3 }}>
-                        {event.isPromoted ? "★ Promoted" : event.recurring === 'Annual' ? '● Annual' : event.category}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-      <EventLightbox event={lightboxEvent} onClose={() => setLightboxEvent(null)} />
-    </div>
   );
 }
 function NewsletterBar() {
@@ -552,7 +441,7 @@ function HappeningSection() {
               <SectionLabel light>Events & News</SectionLabel>
               <SectionTitle light>What's Happening</SectionTitle>
             </div>
-            <Btn href="/happening" variant="outlineLight" small>See All Events →</Btn>
+            <Btn href="/events" variant="outlineLight" small>See All Events →</Btn>
           </div>
         </FadeIn>
 
@@ -623,7 +512,7 @@ function HappeningSection() {
                 weekly regulars, seasonal events & more
               </div>
             </div>
-            <Btn href="/happening" variant="sunset">Open Full Calendar →</Btn>
+            <Btn href="/events" variant="sunset">Open Full Calendar →</Btn>
           </div>
         </FadeIn>
       </div>
@@ -1234,7 +1123,7 @@ function BusinessDirectory() {
                 Top-of-directory placement, newsletter inclusion, and a business spotlight video from Holly & The Yeti.
               </p>
             </div>
-            <Btn href="/featured" variant="sunset">Upgrade Your Listing</Btn>
+            <Btn href="/business" variant="sunset">Upgrade Your Listing</Btn>
           </div>
         </FadeIn>
       </div>
@@ -1713,7 +1602,6 @@ function HomePage() {
       <ScrollProgress />
       <Navbar activeSection={activeSection} scrollTo={scrollTo} />
       <Hero scrollTo={scrollTo} />
-      <FeaturedEventsStrip />
       <LiveFoodTruckStrip />
       <EventTicker />
       <NewsletterBar />
@@ -1724,9 +1612,6 @@ function HomePage() {
       <ExploreSection />
       <DispatchPreviewSection />
       <NewsletterInline />
-      <div style={{ textAlign: "center", padding: "8px 24px 40px" }}>
-        <Btn onClick={() => window.open("https://maps.google.com/?q=Manitou+Beach+Michigan+49267", "_blank")} variant="dark">Get Directions</Btn>
-      </div>
       <BusinessDirectory />
       <DiagonalDivider topColor={C.warmWhite} bottomColor={C.night} />
       <HollyYetiSection />

@@ -572,7 +572,7 @@ export default function DiscoverPage() {
             <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.textMuted, maxWidth: 380, margin: '0 auto 24px' }}>
               Own a {activeCat.label.toLowerCase()} business near Manitou Beach? This is where locals and visitors look.
             </p>
-            <Btn href="/featured" variant="primary" small>Get Listed — from $9/mo</Btn>
+            <Btn href="/business" variant="primary" small>Get Listed — from $9/mo</Btn>
           </div>
         )}
       </div>
@@ -585,7 +585,7 @@ export default function DiscoverPage() {
             { icon: '🎣', label: 'Fishing Guide', href: '/fishing' },
             { icon: '🍷', label: 'Wineries', href: '/wineries' },
             { icon: '🛍️', label: 'The Village', href: '/village' },
-            { icon: '📅', label: 'Events', href: '/happening' },
+            { icon: '📅', label: 'Events', href: '/events' },
             { icon: '⛵', label: 'Devils Lake', href: '/devils-lake' },
             { icon: '💧', label: 'Round Lake', href: '/round-lake' },
             { icon: '🏛️', label: 'Local History', href: '/historical-society' },
@@ -633,7 +633,7 @@ export default function DiscoverPage() {
           Get your business in front of the people who live here, visit here, and move here.
         </p>
         <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Btn href="/featured" variant="primary">List Your Business</Btn>
+          <Btn href="/business" variant="primary">List Your Business</Btn>
           <Btn href="/promote" variant="sunset">List an Event</Btn>
         </div>
       </section>

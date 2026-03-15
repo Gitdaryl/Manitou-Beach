@@ -222,7 +222,7 @@ export function PageSponsorBanner({ pageName }) {
                   Exclusive · One brand per page · Seen all year long
                 </p>
               </div>
-              <a href="/featured#page-sponsorship" className="btn-animated" style={{
+              <a href="/business#page-sponsorship" className="btn-animated" style={{
                 display: "inline-flex", alignItems: "center", gap: 10,
                 padding: "18px 48px", borderRadius: 8,
                 background: C.sunset, color: C.cream,

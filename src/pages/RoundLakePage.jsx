@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivider, PageSponsorBanner, DiagonalDivider, Btn } from '../components/Shared';
-import { Footer, Navbar } from '../components/Layout';
+import { Footer, GlobalStyles, Navbar, NewsletterInline, PromoBanner } from '../components/Layout';
 import { C } from '../data/config';
 
 // ============================================================
@@ -226,7 +226,7 @@ function RoundLakeFishingSection() {
               <p style={{ fontSize: 14, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, margin: "0 0 20px 0", maxWidth: 500 }}>
                 Ice fishing contests for pike, walleye, bluegill, crappie, and perch. Plus snowmobile racing, ATV races, outhouse races, and community fundraising. One of the longest-running winter festivals in Michigan.
               </p>
-              <Btn href="/happening" variant="outlineLight" small>See All Events →</Btn>
+              <Btn href="/events" variant="outlineLight" small>See All Events →</Btn>
             </div>
           </div>
         </FadeIn>
@@ -286,7 +286,7 @@ function RoundLakeCommunitySection() {
   );
 }
 
-function LakesPreservationBanner() {
+export function LakesPreservationBanner() {
   return (
     <section style={{ background: C.cream, padding: "0 24px 60px" }}>
       <div style={{ maxWidth: 900, margin: "0 auto" }}>

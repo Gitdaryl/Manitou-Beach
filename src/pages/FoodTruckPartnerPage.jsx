@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Btn, FadeIn, ScrollProgress, SectionLabel, SectionTitle, WaveDivider } from '../components/Shared';
 import { C } from '../data/config';
-import { Footer, Navbar } from '../components/Layout';
+import { Footer, GlobalStyles, Navbar } from '../components/Layout';
 
 const TRUCK_HOW = [
   { step: "01", title: "Sign up for your Founding listing", copy: "Truck name, cuisine, email — that's it. Your founding rate is locked the moment you pay. Daryl sets you up with a check-in link the same day." },

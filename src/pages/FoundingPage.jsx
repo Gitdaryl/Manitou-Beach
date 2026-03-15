@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Btn, FadeIn, ScrollProgress, SectionLabel, SectionTitle, WaveDivider } from '../components/Shared';
 import { C } from '../data/config';
-import { Footer, Navbar } from '../components/Layout';
+import { Footer, GlobalStyles, Navbar, NewsletterInline } from '../components/Layout';
 
 const FOUNDING_TIERS = [
   { name: "Enhanced", price: 9,  perks: ["Business listing on Manitou Beach", "Map pin on /discover", "Category placement", "Contact info + description", "Link to your website", "Upgrade to Featured or Premium at founding rates — any time"] },
@@ -127,7 +127,7 @@ export default function FoundingPage() {
       {/* Private context strip */}
       <div style={{ background: C.night, borderBottom: "1px solid rgba(255,255,255,0.07)", padding: "9px 24px", display: "flex", alignItems: "center", justifyContent: "center", gap: 28, flexWrap: "wrap" }}>
         <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif" }}>This page isn't public — you're seeing it because someone sent it to you.</span>
-        <a href="/featured" style={{ fontSize: 12, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>See the Public Listing Page →</a>
+        <a href="/business" style={{ fontSize: 12, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>See the Public Listing Page →</a>
         <a href="/" style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", fontFamily: "'Libre Franklin', sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Visit Homepage →</a>
       </div>
 
@@ -149,7 +149,7 @@ export default function FoundingPage() {
           <p style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: "rgba(255,255,255,0.3)", marginBottom: 40 }}>
             Like locking in a rate before the market moves.
           </p>
-          <Btn href="/featured" variant="sunset" style={{ whiteSpace: "nowrap" }}>
+          <Btn href="/business" variant="sunset" style={{ whiteSpace: "nowrap" }}>
             See Listing Options →
           </Btn>
         </FadeIn>
@@ -282,7 +282,7 @@ export default function FoundingPage() {
                   </div>
                   <div style={{ marginTop: 28 }}>
                     <a
-                      href="/featured"
+                      href="/business"
                       style={{ display: "block", textAlign: "center", padding: "12px 20px", borderRadius: 24, background: tier.highlight ? C.sunset : "transparent", color: tier.highlight ? C.cream : C.sage, border: `1.5px solid ${tier.highlight ? C.sunset : C.sage}`, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none", transition: "all 0.2s" }}
                     >
                       List as {tier.name} →
@@ -366,7 +366,7 @@ export default function FoundingPage() {
             <p style={{ fontFamily: "'Caveat', cursive", fontSize: 19, color: "rgba(255,255,255,0.28)", marginBottom: 44 }}>
               Choose your tier and get listed in minutes.
             </p>
-            <Btn href="/featured" variant="sunset" style={{ whiteSpace: "nowrap" }}>
+            <Btn href="/business" variant="sunset" style={{ whiteSpace: "nowrap" }}>
               Start My Listing →
             </Btn>
           </FadeIn>

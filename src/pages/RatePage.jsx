@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Btn, FadeIn, SectionLabel } from '../components/Shared';
 import { C } from '../data/config';
-import { Footer, Navbar } from '../components/Layout';
+import { Footer, GlobalStyles, Navbar } from '../components/Layout';
 import { WINERY_VENUES } from './WineriesPage';
 
 const RATE_VENUES = (WINERY_VENUES || []).filter(v => v.section !== 'extended').map(v => v.name);

@@ -297,9 +297,11 @@ export default function App() {
         <Route path="/claim-promo" element={<ClaimPromoView />} />
         <Route path="/redeem-promo" element={<RedeemPromoView />} />
         <Route path="/" element={<HomePage />} />
+        <Route path="/events" element={<HappeningPage />} />
         <Route path="/happening" element={<HappeningPage />} />
         <Route path="/round-lake" element={<RoundLakePage />} />
         <Route path="/village" element={<VillagePage />} />
+        <Route path="/business" element={<FeaturedPage />} />
         <Route path="/featured" element={<FeaturedPage />} />
         <Route path="/mens-club" element={<MensClubPage />} />
         <Route path="/ladies-club" element={<LadiesClubPage />} />

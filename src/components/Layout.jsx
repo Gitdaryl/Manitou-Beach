@@ -1346,7 +1346,7 @@ export function Footer({ scrollTo }) {
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               <a
-                href="/featured"
+                href="/business"
                 style={{
                   display: "inline-block",
                   fontFamily: "'Libre Franklin', sans-serif",
@@ -1443,7 +1443,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
 
   const handleNavClick = (id) => {
     setMenuOpen(false);
-    if (id === "happening") { window.location.href = "/happening"; return; }
+    if (id === "happening") { window.location.href = "/events"; return; }
     if (id === "devils-lake") { window.location.href = "/devils-lake"; return; }
     if (id === "mens-club") { window.location.href = "/mens-club"; return; }
     if (id === "ladies-club") { window.location.href = "/ladies-club"; return; }
@@ -1472,7 +1472,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
         <div style={{ maxWidth: 1180, margin: "0 auto", padding: "0 28px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           {/* Logo */}
           <div style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 10 }} onClick={() => handleNavClick("home")}>
-            <img src="/images/manitou_beach_icon.png" alt="" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", opacity: solid ? 1 : 0.85, transition: "opacity 0.35s" }} />
+            <img src="/images/manitou_beach_icon.png" alt="Manitou Beach" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", opacity: solid ? 1 : 0.85, transition: "opacity 0.35s" }} />
             <div>
               <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 700, color: solid ? C.dusk : C.cream, transition: "color 0.35s" }}>
                 Manitou Beach
@@ -1566,13 +1566,13 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
                   {[
                     { label: "Holly & The Yeti", href: "/#holly" },
                     { label: "Food Truck Locator", href: "/food-trucks" },
-                    { label: "Devils Lake", id: "devils-lake" },
+                    { label: "Devils Lake", href: "/devils-lake" },
                     { label: "Round Lake", href: "/round-lake" },
                     { label: "The Village", href: "/village" },
                     { label: "Wineries & Breweries", href: "/wineries" },
-                    { label: "Men's Club", id: "mens-club" },
-                    { label: "Ladies Club", id: "ladies-club" },
-                    { label: "Historical Society", id: "historical-society" },
+                    { label: "Men's Club", href: "/mens-club" },
+                    { label: "Ladies Club", href: "/ladies-club" },
+                    { label: "Historical Society", href: "/historical-society" },
                     { label: "Gallery ↗", href: "https://photogallery.yetigroove.com/folder/muVgmuXuvFwI/", external: true },
                     ...(USA250_PUBLIC ? [{ label: "🇺🇸 USA 250th Fireworks", href: "/usa250" }] : []),
                   ].map((link, i) => (
@@ -1596,7 +1596,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
               )}
             </div>
             <div style={{ marginLeft: 8, display: "flex", gap: 8 }}>
-              <Btn href="/featured" variant="primary" small style={{ minWidth: 152, textAlign: "center", whiteSpace: "nowrap" }}>List Your Business</Btn>
+              <Btn href="/business" variant="primary" small style={{ minWidth: 152, textAlign: "center", whiteSpace: "nowrap" }}>List Your Business</Btn>
               <Btn href="/promote" variant="sunset" small style={{ minWidth: 152, textAlign: "center", whiteSpace: "nowrap" }}>List Your Event</Btn>
             </div>
           </div>
@@ -1605,6 +1605,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
           <button
             onClick={() => setMenuOpen(o => !o)}
             className="nav-hamburger"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
             style={{
               display: "none",
               background: "none",
@@ -1616,7 +1617,6 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
               alignItems: "center",
               justifyContent: "center",
             }}
-            aria-label="Toggle menu"
           >
             {[0, 1, 2].map(i => (
               <span key={i} style={{
@@ -1730,7 +1730,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
           Gallery ↗
         </a>
         <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 10, alignItems: "center" }}>
-          <Btn href="/featured" variant="primary" style={{ width: 200, textAlign: "center", whiteSpace: "nowrap" }}>List Your Business</Btn>
+          <Btn href="/business" variant="primary" style={{ width: 200, textAlign: "center", whiteSpace: "nowrap" }}>List Your Business</Btn>
           <Btn href="/promote" variant="sunset" style={{ width: 200, textAlign: "center", whiteSpace: "nowrap" }}>List Your Event</Btn>
         </div>
       </div>

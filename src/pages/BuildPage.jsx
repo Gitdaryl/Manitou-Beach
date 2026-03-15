@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Btn, FadeIn, ScrollProgress, SectionLabel, SectionTitle, WaveDivider } from '../components/Shared';
 import { C } from '../data/config';
-import { Footer, Navbar } from '../components/Layout';
+import { Footer, GlobalStyles, Navbar } from '../components/Layout';
 
 // ============================================================
 export default function BuildPage() {

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivider, PageSponsorBanner, Btn } from '../components/Shared';
-import { Footer, Navbar } from '../components/Layout';
+import { Footer, GlobalStyles, Navbar, NewsletterInline, PromoBanner } from '../components/Layout';
 import { C } from '../data/config';
 
 // ============================================================
 // 🎣  FISHING PAGE (/fishing)
 // ============================================================
-const DEVILS_LAKE_FISH = [
+export const DEVILS_LAKE_FISH = [
   {
     name: "Largemouth Bass",
     latin: "Micropterus salmoides",
@@ -532,7 +532,7 @@ function FishingTipUpCallout() {
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
             <Btn href="/mens-club" variant="sunset">Men's Club — Event Organizers</Btn>
-            <Btn href="/happening" variant="outlineLight" small>See All Events →</Btn>
+            <Btn href="/events" variant="outlineLight" small>See All Events →</Btn>
           </div>
         </FadeIn>
       </div>

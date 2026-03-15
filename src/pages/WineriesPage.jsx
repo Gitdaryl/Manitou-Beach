@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivider, PageSponsorBanner, DiagonalDivider, Btn } from '../components/Shared';
-import { Footer, Navbar } from '../components/Layout';
+import { Footer, GlobalStyles, Navbar, NewsletterInline, PromoBanner } from '../components/Layout';
 import { C } from '../data/config';
 
 // ============================================================
@@ -1053,7 +1053,7 @@ function WineriesCTASection() {
           </div>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
             <Btn href="/#holly" variant="sunset">Talk to Holly</Btn>
-            <Btn href="/happening" variant="outlineLight" small>What's On This Weekend →</Btn>
+            <Btn href="/events" variant="outlineLight" small>What's On This Weekend →</Btn>
           </div>
         </FadeIn>
       </div>
