@@ -40,6 +40,7 @@ export default function FoodTrucksPage() {
   // Vendor mode: captured location for map preview
   const [checkinLat, setCheckinLat] = useState(null);
   const [checkinLng, setCheckinLng] = useState(null);
+  const [pinStatus, setPinStatus] = useState(''); // '' | 'loading' | 'pinned' | 'denied'
   const [shareCopied, setShareCopied] = useState(false);
 
   // "Text me my link" recovery form
@@ -120,11 +121,25 @@ export default function FoodTrucksPage() {
       .catch(() => {});
   }, []);
 
-  // Check-in handler
+  // Drop pin handler — vendor taps this to capture GPS before submitting
+  const handleDropPin = () => {
+    if (!navigator.geolocation) { setPinStatus('denied'); return; }
+    setPinStatus('loading');
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        setCheckinLat(pos.coords.latitude);
+        setCheckinLng(pos.coords.longitude);
+        setPinStatus('pinned');
+      },
+      () => setPinStatus('denied'),
+      { timeout: 10000 }
+    );
+  };
+
+  // Check-in handler — uses pre-pinned coords if available, skips geo request
   const handleCheckin = () => {
     setCheckinStatus("loading");
     const doPost = (lat, lng) => {
-      if (typeof lat === 'number') { setCheckinLat(lat); setCheckinLng(lng); }
       fetch("/api/food-trucks", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -150,12 +165,9 @@ export default function FoodTrucksPage() {
         .catch(() => { setCheckinStatus("error"); setCheckinMsg("Network error. Try again."); });
     };
 
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        pos => doPost(pos.coords.latitude, pos.coords.longitude),
-        () => doPost(null, null),
-        { timeout: 8000 }
-      );
+    // Use already-pinned coords if vendor dropped a pin, otherwise skip geo
+    if (checkinLat && checkinLng) {
+      doPost(checkinLat, checkinLng);
     } else {
       doPost(null, null);
     }
@@ -426,7 +438,7 @@ export default function FoodTrucksPage() {
 
                 <div style={{ display: "flex", justifyContent: "center", gap: 24, marginTop: 24 }}>
                   <button
-                    onClick={() => { setCheckinStatus(""); setCheckinMsg(""); setCheckinSpecial(""); setCheckinDeparture(""); setCheckinNote(""); setCheckinLat(null); setCheckinLng(null); }}
+                    onClick={() => { setCheckinStatus(""); setCheckinMsg(""); setCheckinSpecial(""); setCheckinDeparture(""); setCheckinNote(""); setCheckinLat(null); setCheckinLng(null); setPinStatus(""); }}
                     style={{ fontSize: 13, color: C.textMuted, background: "none", border: "none", cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", textDecoration: "underline" }}
                   >
                     Check in again
@@ -458,9 +470,57 @@ export default function FoodTrucksPage() {
                 type="text"
                 value={checkinNote}
                 onChange={e => setCheckinNote(e.target.value)}
-                placeholder="e.g. Near the boat launch, Village parking lot…"
-                style={inputStyle}
+                placeholder="e.g. Near the boat launch, floating on Devils Lake…"
+                style={{ ...inputStyle, marginBottom: 10 }}
               />
+
+              {/* Drop Pin button */}
+              <div style={{ marginBottom: 20 }}>
+                {pinStatus !== 'pinned' ? (
+                  <button
+                    onClick={handleDropPin}
+                    disabled={pinStatus === 'loading'}
+                    style={{
+                      width: '100%', padding: '11px 14px',
+                      background: pinStatus === 'loading' ? C.sand : `${C.lakeBlue}15`,
+                      border: `1px dashed ${pinStatus === 'loading' ? C.sand : C.lakeBlue}`,
+                      borderRadius: 8, fontSize: 13, fontWeight: 600,
+                      color: pinStatus === 'loading' ? C.textMuted : C.lakeBlue,
+                      cursor: pinStatus === 'loading' ? 'default' : 'pointer',
+                      fontFamily: "'Libre Franklin', sans-serif",
+                      transition: 'all 0.2s',
+                    }}
+                  >
+                    {pinStatus === 'loading' ? 'Getting your location…' :
+                     pinStatus === 'denied' ? '📍 Location denied — no pin (that\'s ok)' :
+                     '📍 Drop My Pin — mark my exact spot'}
+                  </button>
+                ) : (
+                  <div>
+                    {/* Mini map thumbnail confirming pin dropped */}
+                    {mapsKey && (
+                      <div style={{ borderRadius: 8, overflow: 'hidden', border: `1px solid ${C.sage}40`, marginBottom: 8 }}>
+                        <img
+                          src={`https://maps.googleapis.com/maps/api/staticmap?center=${checkinLat},${checkinLng}&zoom=15&size=480x160&scale=2&markers=color:green|${checkinLat},${checkinLng}&key=${mapsKey}`}
+                          alt="Your pinned location"
+                          style={{ width: '100%', height: 120, objectFit: 'cover', display: 'block' }}
+                        />
+                      </div>
+                    )}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <span style={{ fontSize: 12, color: C.sage, fontWeight: 600 }}>
+                        ✓ Pin dropped — your spot is marked
+                      </span>
+                      <button
+                        onClick={handleDropPin}
+                        style={{ fontSize: 12, color: C.textMuted, background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'underline', padding: 0 }}
+                      >
+                        Re-drop
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
 
               <label style={labelStyle}>
                 Today's Special <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>(optional)</span>
