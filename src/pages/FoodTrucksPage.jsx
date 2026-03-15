@@ -43,6 +43,19 @@ export default function FoodTrucksPage() {
   const [pinStatus, setPinStatus] = useState(''); // '' | 'loading' | 'pinned' | 'denied'
   const [shareCopied, setShareCopied] = useState(false);
 
+  // Location history — per-truck, stored in localStorage
+  const locsKey = `mb-truck-locs-${truckSlug}`;
+  const [savedLocations, setSavedLocations] = useState(() => {
+    try { return JSON.parse(localStorage.getItem(locsKey) || '[]'); } catch { return []; }
+  });
+  const saveLocation = (note) => {
+    if (!note || !note.trim()) return;
+    const trimmed = note.trim();
+    const updated = [trimmed, ...savedLocations.filter(l => l !== trimmed)].slice(0, 6);
+    setSavedLocations(updated);
+    localStorage.setItem(locsKey, JSON.stringify(updated));
+  };
+
   // "Text me my link" recovery form
   const [smsPhone, setSmsPhone] = useState('');
   const [smsStatus, setSmsStatus] = useState(''); // '' | 'loading' | 'sent' | 'error'
@@ -157,6 +170,7 @@ export default function FoodTrucksPage() {
           if (d.ok) {
             setCheckinStatus("success");
             setCheckinMsg(`You're checked in! Customers can now see ${d.name} on the locator.`);
+            saveLocation(checkinNote);
           } else {
             setCheckinStatus("error");
             setCheckinMsg(d.error || "Check-in failed. Try again.");
@@ -466,11 +480,35 @@ export default function FoodTrucksPage() {
               <label style={labelStyle}>
                 Where are you today?
               </label>
+
+              {/* Saved location pills */}
+              {savedLocations.length > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 10 }}>
+                  {savedLocations.map(loc => (
+                    <button
+                      key={loc}
+                      onClick={() => setCheckinNote(loc)}
+                      style={{
+                        padding: '5px 12px', borderRadius: 20,
+                        background: checkinNote === loc ? `${C.sage}20` : C.warmWhite,
+                        border: `1px solid ${checkinNote === loc ? C.sage : C.sand}`,
+                        fontSize: 12, color: checkinNote === loc ? C.sage : C.textLight,
+                        fontWeight: checkinNote === loc ? 600 : 400,
+                        cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif",
+                        transition: 'all 0.15s',
+                      }}
+                    >
+                      {loc}
+                    </button>
+                  ))}
+                </div>
+              )}
+
               <input
                 type="text"
                 value={checkinNote}
                 onChange={e => setCheckinNote(e.target.value)}
-                placeholder="e.g. Near the boat launch, floating on Devils Lake…"
+                placeholder={savedLocations.length > 0 ? "Or type a new location…" : "e.g. Near the boat launch, floating on Devils Lake…"}
                 style={{ ...inputStyle, marginBottom: 10 }}
               />
 
