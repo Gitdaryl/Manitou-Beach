@@ -330,7 +330,6 @@ export default function MensClubPage() {
       <WaveDivider topColor={C.dusk} bottomColor={C.cream} flip />
       <MensClubGallerySection />
       <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
-      <MensClubSponsorsSection />
       <MensClubGetInvolved />
       <WaveDivider topColor={C.warmWhite} bottomColor={C.cream} />
       <NewsletterInline />

@@ -226,9 +226,7 @@ export default function VillagePage() {
       <VillageHistorySection />
       <DiagonalDivider topColor={C.cream} bottomColor={C.dusk} />
       <VillageVisitCTA />
-      <WaveDivider topColor={C.dusk} bottomColor={C.cream} />
-      <MBHRSTimelineSection />
-      <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
+      <WaveDivider topColor={C.dusk} bottomColor={C.warmWhite} />
       <NewsletterInline />
       <WaveDivider topColor={C.warmWhite} bottomColor={C.dusk} />
       <PageSponsorBanner pageName="village" />

@@ -324,7 +324,6 @@ export default function HistoricalSocietyPage() {
       <MBHRSBoatHouseFeature />
       <WaveDivider topColor={C.dusk} bottomColor={C.cream} flip />
       <MBHRSSupportSection />
-      <RoundLakeHistorySection />
       <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
       <NewsletterInline />
       <WaveDivider topColor={C.warmWhite} bottomColor={C.dusk} />
