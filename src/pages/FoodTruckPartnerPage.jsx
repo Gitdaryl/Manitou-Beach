@@ -4,9 +4,10 @@ import { C } from '../data/config';
 import { Footer, GlobalStyles, Navbar } from '../components/Layout';
 
 const TRUCK_HOW = [
-  { step: "01", title: "Sign up for your Founding listing", copy: "Truck name, cuisine, email — that's it. Your founding rate is locked the moment you pay. Daryl sets you up with a check-in link the same day." },
-  { step: "02", title: "Use your check-in URL when you're nearby", copy: "Heading to Manitou Beach? Hit your link. Your pin goes live on the map with a 'Live Now' badge. Takes three seconds." },
-  { step: "03", title: "Locals find you in real time", copy: "People checking the locator see you're here, right now. Not a static listing — a live signal that drives foot traffic." },
+  { step: "01", title: "Sign up — 2 minutes flat", copy: "Truck name, cuisine, email, photo. Pick your tier. Done. Daryl sends your personal check-in link the same day — it's a private URL just for you, no app, no login." },
+  { step: "02", title: "Tap your link every time you head out", copy: "Pulling into Manitou Beach? Open your link. Drop a location note ('near the boat launch'), add today's special, set your estimated departure. Tap 'I'm Here.' Your map pin goes live in seconds." },
+  { step: "03", title: "Locals find you right now", copy: "Anyone checking the locator sees your Live Now badge, today's special, and how long you'll be around. Not a static ad — a real-time signal that turns browsers into customers." },
+  { step: "04", title: "Pre-announce a run before you leave home", copy: "Planning to be there Saturday? Set your Coming Date and customers see 'Coming This Saturday' in the locator before you even hitch up. Build anticipation, drive a crowd." },
 ];
 const TRUCK_AUDIENCE = [
   { icon: "🏖️", label: "Lake crowd", copy: "Manitou Beach draws thousands of summer visitors — boaters, swimmers, families. They're hungry and they're looking." },
@@ -15,19 +16,21 @@ const TRUCK_AUDIENCE = [
   { icon: "📅", label: "Event weekends", copy: "Tournaments, festivals, car shows, open-air concerts. High-traffic weekends where a well-placed truck cleans up." },
 ];
 const TRUCK_GETS = [
-  { icon: "📍", title: "Live map pin", copy: "Your truck appears on the Manitou Beach Food Truck Locator the moment you check in. 'Live Now' badge, your name, what you serve." },
-  { icon: "🔗", title: "Personal check-in URL", copy: "A private link that's yours. Open it from your phone when you're rolling into town. No login, no app, no fuss." },
-  { icon: "📋", title: "Directory listing", copy: "Year-round presence in the All Trucks directory — your name, cuisine, and contact info visible even when you're not checked in." },
-  { icon: "☀️", title: "Summer season visibility", copy: "Manitou Beach peaks June through September. Your truck is in front of the right people at the right time." },
+  { icon: "📍", title: "Live map pin", copy: "Your truck appears on the locator the moment you check in — 'Live Now' badge, location, what you serve. Off when you're not here." },
+  { icon: "🔗", title: "Personal check-in URL", copy: "A private link that's yours forever. Open from your phone, fill in two fields, tap one button. On the map in under a minute." },
+  { icon: "⭐", title: "Today's Special badge", copy: "Running a lunch deal or testing a new item? Add it on check-in. It shows as a highlighted badge on your live card." },
+  { icon: "📅", title: "Coming Soon pre-announce", copy: "Planning a Saturday run? Set your date and customers see 'Coming This Saturday' in the locator before you arrive." },
+  { icon: "📰", title: "Newsletter shoutout", copy: "On send days when you're checked in, we mention you're open to hundreds of readers who already love Manitou Beach." },
+  { icon: "📋", title: "Directory listing year-round", copy: "Your name, cuisine, and contact info stay visible in the All Trucks list even when you're not checked in." },
 ];
 const TRUCK_FOUNDING_ITEMS = [
-  { icon: "📍", label: "Live map pin", sub: "Your truck appears on the map the moment you check in." },
-  { icon: "🔗", label: "Personal check-in URL", sub: "Your private link. Open from your phone. No app, no login." },
+  { icon: "📍", label: "Live map pin", sub: "Goes live the moment you check in. Off when you leave." },
+  { icon: "🔗", label: "Personal check-in URL", sub: "Your private link. Open from your phone. No app, no login — ever." },
+  { icon: "⭐", label: "Today's Special badge", sub: "Add a special on check-in — it highlights on your live card." },
+  { icon: "📅", label: "Coming Soon pre-announce", sub: "Set a future date. Customers see 'Coming This Saturday' before you arrive." },
   { icon: "🔗", label: "Website / menu / Instagram link", sub: "One tap to your menu on every live card." },
-  { icon: "⭐", label: "Featured Truck badge", sub: "You stand out in the map and directory." },
-  { icon: "📰", label: "Newsletter shoutout when live", sub: "On send days, we mention you're open. One email, hundreds of readers." },
-  { icon: "🥇", label: "Priority in All Trucks directory", sub: "Listed first. Above Basic trucks." },
-  { icon: "📅", label: "Seasonal schedule note (optional)", sub: "Tell regulars where to find you every week." },
+  { icon: "📰", label: "Newsletter shoutout when live", sub: "Hundreds of readers, on days you're checked in." },
+  { icon: "🥇", label: "Priority placement", sub: "Listed first — above Basic trucks in map and directory." },
 ];
 const TRUCK_BASIC_ITEMS = [
   { icon: "📋", label: "Directory listing", sub: "Your truck name and cuisine in the All Trucks list. Nothing else." },
@@ -38,6 +41,9 @@ const TRUCK_FOUNDING_MATH = [
   { subs: "500 subs",   newPrice: 13,   yourPrice: 9, label: "You still pay $9" },
   { subs: "1,000 subs", newPrice: 18,   yourPrice: 9, label: "You still pay $9" },
 ];
+// Update SPOTS_TAKEN as trucks sign up (check Notion → Food Trucks DB)
+const FOUNDING_SPOTS_TOTAL = 20;
+const FOUNDING_SPOTS_TAKEN = 3; // ← update this manually as trucks sign up
 
 export default function FoodTruckPartnerPage() {
   const subScrollTo = (id) => { window.location.href = "/#" + id; };
@@ -162,12 +168,18 @@ export default function FoodTruckPartnerPage() {
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(30px, 5vw, 58px)", fontWeight: 400, color: C.cream, margin: "20px 0 24px", lineHeight: 1.15 }}>
             Your truck. Live on the map.<br /><em>Every time you're nearby.</em>
           </h1>
-          <p style={{ fontSize: 16, color: "rgba(255,255,255,0.5)", maxWidth: 520, margin: "0 auto 40px", lineHeight: 1.85 }}>
-            Your name in the directory is free. Lock in a Founding rate for ${priceFor(9)}/mo and get a live map pin, check-in link, and newsletter reach.
+          <p style={{ fontSize: 16, color: "rgba(255,255,255,0.5)", maxWidth: 520, margin: "0 auto 32px", lineHeight: 1.85 }}>
+            Your name in the directory is free. Founding members get a live map pin, personal check-in link, Today's Special badge, and newsletter reach — locked at ${priceFor(9)}/mo for as long as you stay listed.
           </p>
+          {/* Urgency bar */}
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "rgba(212,132,90,0.18)", border: "1px solid rgba(212,132,90,0.4)", borderRadius: 50, padding: "8px 20px", marginBottom: 28 }}>
+            <span style={{ fontSize: 13, color: C.sunsetLight, fontWeight: 600 }}>
+              🔥 {FOUNDING_SPOTS_TOTAL - FOUNDING_SPOTS_TAKEN} of {FOUNDING_SPOTS_TOTAL} founding spots remaining — rate rises after spot {FOUNDING_SPOTS_TOTAL}
+            </span>
+          </div>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
             <Btn onClick={scrollToSignup} variant="sunset" style={{ whiteSpace: "nowrap" }}>
-              Claim Your Founding Rate — ${priceFor(9)}/mo →
+              Claim Your Founding Spot — ${priceFor(9)}/mo →
             </Btn>
             <Btn onClick={scrollToSignup} variant="outlineLight" style={{ whiteSpace: "nowrap" }}>
               Get the free listing →
@@ -188,7 +200,7 @@ export default function FoodTruckPartnerPage() {
               <img src="/images/foodtruck-2-illustration.png" alt="" aria-hidden="true" style={{ width: "min(320px, 80vw)", opacity: 0.92 }} />
             </div>
           </FadeIn>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 24, marginTop: 32 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 24, marginTop: 32 }}>
             {TRUCK_HOW.map((s, i) => (
               <FadeIn key={s.step} delay={i * 80}>
                 <div style={{ background: C.warmWhite, borderRadius: 16, padding: "32px 28px", border: `1px solid ${C.sand}`, position: "relative", overflow: "hidden", height: "100%", boxSizing: "border-box" }}>
@@ -267,13 +279,23 @@ export default function FoodTruckPartnerPage() {
           <FadeIn>
             <SectionLabel style={{ textAlign: "center", display: "block" }}>Pricing</SectionLabel>
             <SectionTitle center>The Founding Food Truck rate.</SectionTitle>
-            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 540, margin: "0 auto 16px", textAlign: "center" }}>
-              The rate you start at today is your rate permanently — as long as your listing stays active. After {GRACE} newsletter subscribers, new food trucks pay more. Yours doesn't change.
+            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 560, margin: "0 auto 16px", textAlign: "center" }}>
+              $9/month. Yours for life — as long as you stay listed. We're only offering this to the first {FOUNDING_SPOTS_TOTAL} trucks. After that, the price rises with the newsletter audience and new trucks pay more. Founding members never do.
             </p>
-            <div style={{ textAlign: "center", marginBottom: 44 }}>
+            <div style={{ textAlign: "center", marginBottom: 20 }}>
               <span style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: inGrace ? C.sage : C.sunset }}>
-                {inGrace ? `⚡ Founding rate — lock in today before subscriber ${GRACE}` : `↑ Price now rising with audience — lock in what's left`}
+                {inGrace ? `⚡ Founding rate active — ${FOUNDING_SPOTS_TOTAL - FOUNDING_SPOTS_TAKEN} of ${FOUNDING_SPOTS_TOTAL} spots left` : `↑ Price rising — lock in your rate now`}
               </span>
+            </div>
+            {/* Spots bar */}
+            <div style={{ maxWidth: 400, margin: "0 auto 36px" }}>
+              <div style={{ background: C.sand, borderRadius: 50, height: 8, overflow: "hidden" }}>
+                <div style={{ background: C.sunset, height: "100%", width: `${(FOUNDING_SPOTS_TAKEN / FOUNDING_SPOTS_TOTAL) * 100}%`, borderRadius: 50, transition: "width 0.6s ease" }} />
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8 }}>
+                <span style={{ fontSize: 12, color: C.textMuted }}>{FOUNDING_SPOTS_TAKEN} spots claimed</span>
+                <span style={{ fontSize: 12, color: C.sunset, fontWeight: 600 }}>{FOUNDING_SPOTS_TOTAL - FOUNDING_SPOTS_TAKEN} remaining</span>
+              </div>
             </div>
           </FadeIn>
 
@@ -338,7 +360,8 @@ export default function FoodTruckPartnerPage() {
                   <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 48, fontWeight: 700, color: C.cream }}>${priceFor(9)}</span>
                   <span style={{ fontSize: 14, color: "rgba(255,255,255,0.45)", marginLeft: 4 }}>/mo</span>
                 </div>
-                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: C.sunsetLight, marginBottom: 28 }}>today's rate — yours permanently</div>
+                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: C.sunsetLight, marginBottom: 4 }}>yours for life · locked the day you join</div>
+                <div style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", marginBottom: 28 }}>Spot {FOUNDING_SPOTS_TAKEN + 1} of {FOUNDING_SPOTS_TOTAL} — {FOUNDING_SPOTS_TOTAL - FOUNDING_SPOTS_TAKEN} remaining</div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {TRUCK_FOUNDING_ITEMS.map(item => (
                     <div key={item.label} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
@@ -405,7 +428,7 @@ export default function FoodTruckPartnerPage() {
               Your truck. Your listing.<br /><em style={{ color: C.sunsetLight }}>Pick your plan.</em>
             </h2>
             <p style={{ fontSize: 14, color: "rgba(255,255,255,0.42)", lineHeight: 1.85, marginBottom: 32, textAlign: "center" }}>
-              Free gets you in the directory. Founding rate gets you live on the map.
+              Free puts your name in the directory. Founding rate gets you live on the map — with a check-in link you'll use every single time you're nearby.
             </p>
 
             {submitted ? (
@@ -472,7 +495,7 @@ export default function FoodTruckPartnerPage() {
                       style={{ width: "100%", boxSizing: "border-box", padding: "13px 16px", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}
                     />
                   </div>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 10 }}>
                     <div>
                       <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 6 }}>Email *</label>
                       <input
@@ -580,8 +603,8 @@ export default function FoodTruckPartnerPage() {
                   </button>
                   <p style={{ fontSize: 11, color: "rgba(255,255,255,0.25)", textAlign: "center", lineHeight: 1.7, margin: "2px 0 0" }}>
                     {selectedTier === 'paid'
-                      ? "Secure checkout via Stripe. Daryl sets up your map pin and check-in link after payment — usually the same day."
-                      : "Free listings are reviewed and activated by Daryl, usually within 24 hours."
+                      ? `Secure checkout via Stripe. Daryl sends your personal check-in link after payment — usually same day. Spot ${FOUNDING_SPOTS_TAKEN + 1} of ${FOUNDING_SPOTS_TOTAL}.`
+                      : "Free listings reviewed by Daryl within 24 hours. You'll get a confirmation at the email above."
                     }
                   </p>
                 </div>
