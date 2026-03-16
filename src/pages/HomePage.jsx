@@ -598,7 +598,7 @@ function ExploreCard({ place, large = false, delay = 0 }) {
 
 function ExploreSection() {
   const places = [
-    { icon: "⛵", name: "Devils Lake", desc: "600+ acres of water for boating, fishing, and kayaking. The party lake.", image: "/images/explore-devils-lake.jpg", action: () => window.location.href = "/devils-lake", actionLabel: "Explore Devils Lake" },
+    { icon: "⛵", name: "Devils Lake", desc: "1,330 acres of water for boating, fishing, and kayaking. The party lake.", image: "/images/explore-devils-lake.jpg", action: () => window.location.href = "/devils-lake", actionLabel: "Explore Devils Lake" },
     { icon: "🏘️", name: "The Village", desc: "Boutique shops, a handmade cafe, wine tasting, and the lighthouse. The walkable heart of Manitou Beach.", image: "/images/explore-lighthouse.jpg", action: () => window.location.href = "/village" },
     { icon: "🌿", name: "Irish Hills", desc: "Rolling hills, hidden trails, and enough nature to justify the drive.", image: "/images/explore-Irish-hills.jpg", action: () => window.open("https://www.irishhills.com", "_blank"), actionLabel: "Explore Irish Hills" },
     { icon: "🍺", name: "Nightlife", desc: "Year-round bars and restaurants with a dock-side state of mind.", image: "/images/explore-nightlife.jpg", action: () => document.getElementById("businesses")?.scrollIntoView({ behavior: "smooth" }), actionLabel: "See Businesses" },
@@ -620,15 +620,20 @@ function ExploreSection() {
           </p>
         </FadeIn>
 
-        {/* Bento layout: 2 large cards on top, 4 smaller below */}
+        {/* Bento layout: 2 large cards on top, 3+2 smaller below */}
         <div className="mobile-col-1" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
           {places.slice(0, 2).map((p, i) => (
             <ExploreCard key={i} place={p} large delay={i * 100} />
           ))}
         </div>
-        <div className="mobile-col-1" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 16 }}>
-          {places.slice(2).map((p, i) => (
+        <div className="mobile-col-1" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 16 }}>
+          {places.slice(2, 5).map((p, i) => (
             <ExploreCard key={i + 2} place={p} delay={200 + i * 60} />
+          ))}
+        </div>
+        <div className="mobile-col-1" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 16 }}>
+          {places.slice(5).map((p, i) => (
+            <ExploreCard key={i + 5} place={p} delay={380 + i * 60} />
           ))}
         </div>
 
