@@ -35,6 +35,14 @@ export default async function handler(req, res) {
 
       await updateTruckStatus(truck.pageId, decision, reason);
 
+      if (decision === 'APPROVE' && truck.phone && truck.slug && truck.token) {
+        try {
+          await sendCheckinLink(truck);
+        } catch (err) {
+          console.error(`Failed to send check-in link to ${truck.name}:`, err.message);
+        }
+      }
+
       const bucket = decision === 'APPROVE' ? 'approved' : decision === 'REJECT' ? 'rejected' : 'flagged';
       results[bucket].push({ name: truck.name, reason });
       console.log(`QA: ${decision} — ${truck.name} — ${reason}`);
@@ -181,6 +189,45 @@ async function updateTruckStatus(pageId, decision, reason) {
   if (!response.ok) {
     console.error(`Notion update failed for ${pageId}:`, await response.text());
   }
+}
+
+// ─── TWILIO: text vendor their check-in link on approval ──────────────────
+
+async function sendCheckinLink(truck) {
+  const checkinUrl = `https://manitoubeach.com/food-trucks?truck=${encodeURIComponent(truck.slug)}&token=${encodeURIComponent(truck.token)}`;
+  const digits = truck.phone.replace(/\D/g, '');
+  const toPhone = digits.startsWith('1') ? `+${digits}` : `+1${digits}`;
+
+  const body = [
+    `🚚 Welcome to Manitou Beach, ${truck.name}!`,
+    `You're approved and ready to go live.`,
+    ``,
+    `Your personal check-in link:`,
+    checkinUrl,
+    ``,
+    `Tap it every time you head out — it puts your live pin on the map in seconds.`,
+    `Questions? Reply or text Daryl at ${process.env.DARYL_PHONE}.`,
+  ].join('\n');
+
+  await fetch(
+    `https://api.twilio.com/2010-04-01/Accounts/${process.env.TWILIO_ACCOUNT_SID}/Messages.json`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: 'Basic ' + Buffer.from(
+          `${process.env.TWILIO_ACCOUNT_SID}:${process.env.TWILIO_AUTH_TOKEN}`
+        ).toString('base64'),
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        From: process.env.TWILIO_PHONE,
+        To: toPhone,
+        Body: body,
+      }).toString(),
+    }
+  );
+
+  console.log(`Check-in link sent to ${truck.name} at ${toPhone}`);
 }
 
 // ─── TWILIO: text Daryl a summary ─────────────────────────────────────────
