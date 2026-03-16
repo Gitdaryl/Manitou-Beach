@@ -1,32 +1,42 @@
-import PrivacyPage from './pages/PrivacyPage';
-import TermsPage from './pages/TermsPage';
-import BuildPage from './pages/BuildPage';
-import RatePage from './pages/RatePage';
-import FoundingPage from './pages/FoundingPage';
-import FoodTruckPartnerPage from './pages/FoodTruckPartnerPage';
-import WinePartnerPage from './pages/WinePartnerPage';
-import FoodTrucksPage from './pages/FoodTrucksPage';
-import FoodTruckQRPage from './pages/FoodTruckQRPage';
-import DiscoverPage, { VoiceWidget } from './pages/DiscoverPage';
-import ClaimPage from './pages/ClaimPage';
-import YetiAdminPage from './pages/YetiAdminPage';
-import DispatchPage, { DispatchArticlePage } from './pages/DispatchPage';
-import PromotePage, { AdvertisePage } from './pages/PromotePage';
-import FeaturedPage from './pages/FeaturedPage';
-import HappeningPage from './pages/HappeningPage';
-import ClaimPromoView from "./pages/ClaimPromoView";
-import RedeemPromoView from "./pages/RedeemPromoView";
-import WineriesPage from './pages/WineriesPage';
-import FishingPage from './pages/FishingPage';
-import HistoricalSocietyPage from './pages/HistoricalSocietyPage';
-import MensClubPage from './pages/MensClubPage';
-import LadiesClubPage from './pages/LadiesClubPage';
-import DevilsLakePage from './pages/DevilsLakePage';
-import RoundLakePage from './pages/RoundLakePage';
-import VillagePage from './pages/VillagePage';
-import USA250Page from "./pages/USA250Page";
+import { lazy, Suspense } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+// Eager — first paint
 import HomePage from './pages/HomePage';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+// Lazy-loaded pages
+const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
+const TermsPage = lazy(() => import('./pages/TermsPage'));
+const BuildPage = lazy(() => import('./pages/BuildPage'));
+const RatePage = lazy(() => import('./pages/RatePage'));
+const FoundingPage = lazy(() => import('./pages/FoundingPage'));
+const FoodTruckPartnerPage = lazy(() => import('./pages/FoodTruckPartnerPage'));
+const WinePartnerPage = lazy(() => import('./pages/WinePartnerPage'));
+const FoodTrucksPage = lazy(() => import('./pages/FoodTrucksPage'));
+const FoodTruckQRPage = lazy(() => import('./pages/FoodTruckQRPage'));
+const DiscoverPage = lazy(() => import('./pages/DiscoverPage'));
+const ClaimPage = lazy(() => import('./pages/ClaimPage'));
+const YetiAdminPage = lazy(() => import('./pages/YetiAdminPage'));
+const DispatchPage = lazy(() => import('./pages/DispatchPage'));
+const PromotePage = lazy(() => import('./pages/PromotePage'));
+const FeaturedPage = lazy(() => import('./pages/FeaturedPage'));
+const HappeningPage = lazy(() => import('./pages/HappeningPage'));
+const ClaimPromoView = lazy(() => import('./pages/ClaimPromoView'));
+const RedeemPromoView = lazy(() => import('./pages/RedeemPromoView'));
+const WineriesPage = lazy(() => import('./pages/WineriesPage'));
+const FishingPage = lazy(() => import('./pages/FishingPage'));
+const HistoricalSocietyPage = lazy(() => import('./pages/HistoricalSocietyPage'));
+const MensClubPage = lazy(() => import('./pages/MensClubPage'));
+const LadiesClubPage = lazy(() => import('./pages/LadiesClubPage'));
+const DevilsLakePage = lazy(() => import('./pages/DevilsLakePage'));
+const RoundLakePage = lazy(() => import('./pages/RoundLakePage'));
+const VillagePage = lazy(() => import('./pages/VillagePage'));
+const USA250Page = lazy(() => import('./pages/USA250Page'));
+
+// Lazy sub-components from named exports
+const DispatchArticlePage = lazy(() => import('./pages/DispatchPage').then(m => ({ default: m.DispatchArticlePage })));
+const AdvertisePage = lazy(() => import('./pages/PromotePage').then(m => ({ default: m.AdvertisePage })));
+const VoiceWidget = lazy(() => import('./pages/DiscoverPage').then(m => ({ default: m.VoiceWidget })));
 
 // ============================================================
 // 📑  PROJECT STRUCTURE (post-extraction)
@@ -64,43 +74,44 @@ export { DISPATCH_CARD_SPONSORS, DISPATCH_CATEGORIES } from './data/config';
 export default function App() {
   return (
     <BrowserRouter>
-      <Routes>
-
-        <Route path="/claim-promo" element={<ClaimPromoView />} />
-        <Route path="/redeem-promo" element={<RedeemPromoView />} />
-        <Route path="/" element={<HomePage />} />
-        <Route path="/events" element={<HappeningPage />} />
-        <Route path="/happening" element={<HappeningPage />} />
-        <Route path="/round-lake" element={<RoundLakePage />} />
-        <Route path="/village" element={<VillagePage />} />
-        <Route path="/business" element={<FeaturedPage />} />
-        <Route path="/featured" element={<FeaturedPage />} />
-        <Route path="/mens-club" element={<MensClubPage />} />
-        <Route path="/ladies-club" element={<LadiesClubPage />} />
-        <Route path="/historical-society" element={<HistoricalSocietyPage />} />
-        <Route path="/fishing" element={<FishingPage />} />
-        <Route path="/wineries" element={<WineriesPage />} />
-        <Route path="/devils-lake" element={<DevilsLakePage />} />
-        <Route path="/promote" element={<PromotePage />} />
-        <Route path="/event" element={<PromotePage />} />
-        <Route path="/advertise" element={<AdvertisePage />} />
-        <Route path="/dispatch" element={<DispatchPage />} />
-        <Route path="/dispatch/:slug" element={<DispatchArticlePage />} />
-        <Route path="/yeti-admin" element={<YetiAdminPage />} />
-        <Route path="/claim/:slug" element={<ClaimPage />} />
-        <Route path="/discover" element={<DiscoverPage />} />
-        <Route path="/food-trucks" element={<FoodTrucksPage />} />
-        <Route path="/food-trucks/qr/:slug" element={<FoodTruckQRPage />} />
-        <Route path="/build" element={<BuildPage />} />
-        <Route path="/rate" element={<RatePage />} />
-        <Route path="/wine-partner" element={<WinePartnerPage />} />
-        <Route path="/food-truck-partner" element={<FoodTruckPartnerPage />} />
-        <Route path="/founding" element={<FoundingPage />} />
-        <Route path="/usa250" element={<USA250Page />} />
-        <Route path="/privacy" element={<PrivacyPage />} />
-        <Route path="/terms" element={<TermsPage />} />
-      </Routes>
-      <VoiceWidget />
+      <Suspense fallback={null}>
+        <Routes>
+          <Route path="/claim-promo" element={<ClaimPromoView />} />
+          <Route path="/redeem-promo" element={<RedeemPromoView />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/events" element={<HappeningPage />} />
+          <Route path="/happening" element={<HappeningPage />} />
+          <Route path="/round-lake" element={<RoundLakePage />} />
+          <Route path="/village" element={<VillagePage />} />
+          <Route path="/business" element={<FeaturedPage />} />
+          <Route path="/featured" element={<FeaturedPage />} />
+          <Route path="/mens-club" element={<MensClubPage />} />
+          <Route path="/ladies-club" element={<LadiesClubPage />} />
+          <Route path="/historical-society" element={<HistoricalSocietyPage />} />
+          <Route path="/fishing" element={<FishingPage />} />
+          <Route path="/wineries" element={<WineriesPage />} />
+          <Route path="/devils-lake" element={<DevilsLakePage />} />
+          <Route path="/promote" element={<PromotePage />} />
+          <Route path="/event" element={<PromotePage />} />
+          <Route path="/advertise" element={<AdvertisePage />} />
+          <Route path="/dispatch" element={<DispatchPage />} />
+          <Route path="/dispatch/:slug" element={<DispatchArticlePage />} />
+          <Route path="/yeti-admin" element={<YetiAdminPage />} />
+          <Route path="/claim/:slug" element={<ClaimPage />} />
+          <Route path="/discover" element={<DiscoverPage />} />
+          <Route path="/food-trucks" element={<FoodTrucksPage />} />
+          <Route path="/food-trucks/qr/:slug" element={<FoodTruckQRPage />} />
+          <Route path="/build" element={<BuildPage />} />
+          <Route path="/rate" element={<RatePage />} />
+          <Route path="/wine-partner" element={<WinePartnerPage />} />
+          <Route path="/food-truck-partner" element={<FoodTruckPartnerPage />} />
+          <Route path="/founding" element={<FoundingPage />} />
+          <Route path="/usa250" element={<USA250Page />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+        </Routes>
+        <VoiceWidget />
+      </Suspense>
     </BrowserRouter>
   );
 }
