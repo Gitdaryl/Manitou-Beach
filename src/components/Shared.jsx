@@ -154,25 +154,34 @@ export function ScrollProgress() {
   return <div className="scroll-progress-bar" style={{ width: `${progress}%` }} />;
 }
 
-// 3D card tilt hook
+// 3D card tilt hook — brochure lift effect
 export function useCardTilt(maxDeg = 6) {
   const ref = useRef(null);
+  const onMouseEnter = useCallback(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.style.transition = "transform 0.22s ease, box-shadow 0.22s ease";
+    el.style.transform = "perspective(800px) rotateY(0deg) rotateX(0deg) translateY(-10px)";
+    el.style.boxShadow = "0 24px 56px rgba(0,0,0,0.32), 0 8px 20px rgba(0,0,0,0.18)";
+  }, []);
   const onMouseMove = useCallback((e) => {
     const el = ref.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width - 0.5;
     const y = (e.clientY - rect.top) / rect.height - 0.5;
-    el.style.transform = `perspective(800px) rotateY(${x * maxDeg}deg) rotateX(${-y * maxDeg}deg) translateY(-4px)`;
-    el.style.boxShadow = `${x * 12}px ${8 + y * 8}px 30px rgba(0,0,0,0.12)`;
+    el.style.transition = "none";
+    el.style.transform = `perspective(800px) rotateY(${x * maxDeg}deg) rotateX(${-y * maxDeg}deg) translateY(-10px)`;
+    el.style.boxShadow = `${x * 16}px ${14 + y * 10}px 50px rgba(0,0,0,0.3), 0 24px 56px rgba(0,0,0,0.2)`;
   }, [maxDeg]);
   const onMouseLeave = useCallback(() => {
     const el = ref.current;
     if (!el) return;
+    el.style.transition = "transform 0.4s ease, box-shadow 0.4s ease";
     el.style.transform = "perspective(800px) rotateY(0deg) rotateX(0deg) translateY(0)";
     el.style.boxShadow = "";
   }, []);
-  return { ref, onMouseMove, onMouseLeave };
+  return { ref, onMouseEnter, onMouseMove, onMouseLeave };
 }
 
 // SVG wave divider

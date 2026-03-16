@@ -531,6 +531,7 @@ function ExploreCard({ place, large = false, delay = 0 }) {
     <FadeIn delay={delay} direction={large ? "scale" : "up"}>
       <div
         ref={tilt.ref}
+        onMouseEnter={tilt.onMouseEnter}
         onMouseMove={tilt.onMouseMove}
         onMouseLeave={tilt.onMouseLeave}
         onClick={place.action}
@@ -541,13 +542,13 @@ function ExploreCard({ place, large = false, delay = 0 }) {
           backgroundPosition: "center",
           border: "none",
           borderRadius: 14,
-          padding: large ? "36px 32px" : "20px 18px",
+          padding: large ? "36px 32px" : "24px 20px",
           cursor: "pointer",
           height: "100%",
           display: "flex",
           flexDirection: "column",
           justifyContent: "flex-end",
-          minHeight: large ? 260 : 170,
+          minHeight: large ? 280 : 200,
           position: "relative",
           overflow: "hidden",
           boxShadow: large ? "0 12px 40px rgba(0,0,0,0.2)" : "0 4px 20px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04)",
@@ -1143,6 +1144,7 @@ function FeaturedBusinessCard({ business }) {
   return (
     <div
       ref={tilt.ref}
+      onMouseEnter={tilt.onMouseEnter}
       onMouseMove={tilt.onMouseMove}
       onMouseLeave={tilt.onMouseLeave}
       className="card-tilt featured-card-glow"
