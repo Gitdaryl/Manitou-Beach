@@ -55,6 +55,7 @@ export default {
     promoClaims: 'NOTION_DB_PROMO_CLAIMS',
     websiteInquiries: 'NOTION_DB_WEBSITE_INQUIRIES',
     contact: 'NOTION_DB_CONTACT',
+    stays: 'NOTION_DB_STAYS',
   },
 
   // ── Feature flags ─────────────────────────────────────────
@@ -64,6 +65,7 @@ export default {
     foodTrucks: true,        // Food truck locator
     wineries: true,          // Wine trail & ratings
     discover: true,          // Interactive discover map
+    stays: true,             // Stays & Rentals directory
     usa250: false,           // USA 250th anniversary page
     newsletter: true,        // Beehiiv newsletter integration
     promos: true,            // Promo/coupon system

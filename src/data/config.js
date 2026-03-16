@@ -30,6 +30,7 @@ export const PAGE_SPONSORS = {
   'devils-lake':        null,
   dispatch:             null,
   discover:             null,
+  stays:                null,
   'historical-society': null,
   // To activate a sponsor, replace null with an object:
   // pageName: { name: "Business Name", logo: "/path/to/logo.png", tagline: "Your tagline here", url: "https://example.com" }

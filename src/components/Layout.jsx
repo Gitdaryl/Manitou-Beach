@@ -1588,6 +1588,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
                     { label: "Devils Lake", href: "/devils-lake" },
                     { label: "Round Lake", href: "/round-lake" },
                     { label: "The Village", href: "/village" },
+                    { label: "Stays & Rentals", href: "/stays" },
                     { label: "Wineries & Breweries", href: "/wineries" },
                     { label: "Men's Club", href: "/mens-club" },
                     { label: "Ladies Club", href: "/ladies-club" },
