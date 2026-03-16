@@ -1,6 +1,7 @@
 {
   "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }],
   "crons": [
-    { "path": "/api/qa-agent", "schedule": "*/30 * * * *" }
+    { "path": "/api/qa-agent", "schedule": "*/30 * * * *" },
+    { "path": "/api/cron-expire-featured", "schedule": "0 6 * * *" }
   ]
 }

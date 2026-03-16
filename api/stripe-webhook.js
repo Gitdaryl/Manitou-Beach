@@ -123,12 +123,16 @@ export default async function handler(req, res) {
     // 2. Featured placement one-time payment (/featured page)
     if (metadata.businessName && !metadata.type && metadata.days) {
       const businessName = metadata.businessName;
+      const days = parseInt(metadata.days, 10);
+      const expires = new Date(Date.now() + days * 24 * 60 * 60 * 1000);
+      const expiresISO = expires.toISOString().split('T')[0]; // YYYY-MM-DD
       try {
         const pageId = await updateNotionBusiness(businessName, {
-          'Status': { status: { name: 'Listed Featured' } }
+          'Status': { status: { name: 'Listed Featured' } },
+          'Featured Expires': { date: { start: expiresISO } },
         });
         if (pageId) {
-          console.log(`Successfully completed ONE-TIME upgrade for ${businessName} (${metadata.tier}, ${metadata.days} days).`);
+          console.log(`ONE-TIME upgrade: ${businessName} (${metadata.tier}, ${days} days, expires ${expiresISO})`);
         }
       } catch (err) {
         console.error('Notion Webhook Fulfillment Error:', err);
