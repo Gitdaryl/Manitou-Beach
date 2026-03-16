@@ -56,6 +56,7 @@ export default {
     websiteInquiries: 'NOTION_DB_WEBSITE_INQUIRIES',
     contact: 'NOTION_DB_CONTACT',
     stays: 'NOTION_DB_STAYS',
+    tickets: 'NOTION_DB_TICKETS',
   },
 
   // ── Feature flags ─────────────────────────────────────────
@@ -69,11 +70,13 @@ export default {
     usa250: false,           // USA 250th anniversary page
     newsletter: true,        // Beehiiv newsletter integration
     promos: true,            // Promo/coupon system
+    ticketing: true,         // Event ticketing (Yetickets)
   },
 
   // ── Stripe config ─────────────────────────────────────────
   stripe: {
     listingSlotCaps: { premium: 1, featured: 3 },
+    ticketFee: { percent: 0.03, flatCents: 25 }, // Track B: 3% + $0.25
     listingCategories: [
       'Real Estate', 'Food & Drink', 'Boating & Water', 'Breweries & Wineries',
       'Shopping & Gifts', 'Stays & Rentals', 'Creative Media', 'Home Services',

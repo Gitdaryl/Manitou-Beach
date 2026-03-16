@@ -291,8 +291,8 @@ function CalendarSection({ events, onEventClick, activeFilter, onFilterChange })
                     </div>
                   </div>
 
-                  {/* Cost badge */}
-                  <div className="calendar-cost-badge">
+                  {/* Cost badge + tickets indicator */}
+                  <div className="calendar-cost-badge" style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
                     <span style={{
                       fontFamily: "'Libre Franklin', sans-serif",
                       fontSize: 11, fontWeight: 600, letterSpacing: 1,
@@ -304,6 +304,17 @@ function CalendarSection({ events, onEventClick, activeFilter, onFilterChange })
                     }}>
                       {event.cost || "Free"}
                     </span>
+                    {event.ticketsEnabled && (
+                      <span style={{
+                        fontFamily: "'Libre Franklin', sans-serif",
+                        fontSize: 9, fontWeight: 700, letterSpacing: 1.5,
+                        color: event.ticketCapacity > 0 && event.ticketsSold >= event.ticketCapacity ? "#ff6b6b" : C.sage,
+                        textTransform: "uppercase",
+                        whiteSpace: "nowrap",
+                      }}>
+                        {event.ticketCapacity > 0 && event.ticketsSold >= event.ticketCapacity ? "Sold Out" : "Tickets Available"}
+                      </span>
+                    )}
                   </div>
                 </div>
               </FadeIn>

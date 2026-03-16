@@ -1756,6 +1756,11 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
 // 📅  /happening — FULL PAGE
 // ============================================================
 export function EventLightbox({ event, onClose }) {
+  const [ticketForm, setTicketForm] = React.useState({ buyerName: '', email: '', phone: '', quantity: 1 });
+  const [ticketLoading, setTicketLoading] = React.useState(false);
+  const [ticketError, setTicketError] = React.useState('');
+  const [showTicketForm, setShowTicketForm] = React.useState(false);
+
   if (!event) return null;
   const eventCatColors = { "Live Music": C.sunset, "Food & Social": "#8B5E3C", "Sports & Outdoors": C.sage, Community: C.lakeBlue };
   const color = eventCatColors[event.category] || C.sage;
@@ -1768,6 +1773,39 @@ export function EventLightbox({ event, onClose }) {
           return new Date(event.date + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
         } catch { return event.date; }
       })();
+
+  const ticketsSoldOut = event.ticketsEnabled && event.ticketCapacity > 0 && event.ticketsSold >= event.ticketCapacity;
+  const ticketsRemaining = event.ticketCapacity > 0 ? Math.max(0, event.ticketCapacity - (event.ticketsSold || 0)) : null;
+
+  const handleTicketPurchase = async (e) => {
+    e.preventDefault();
+    if (!ticketForm.buyerName || !ticketForm.email) {
+      setTicketError('Name and email are required');
+      return;
+    }
+    setTicketLoading(true);
+    setTicketError('');
+    try {
+      const res = await fetch('/api/ticket-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          eventId: event.id,
+          quantity: ticketForm.quantity,
+          buyerName: ticketForm.buyerName,
+          email: ticketForm.email,
+          phone: ticketForm.phone,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Checkout failed');
+      if (data.url) window.location.href = data.url;
+    } catch (err) {
+      setTicketError(err.message);
+    } finally {
+      setTicketLoading(false);
+    }
+  };
 
   return (
     <div
@@ -1847,6 +1885,96 @@ export function EventLightbox({ event, onClose }) {
           {event.description}
         </p>
 
+        {/* Ticket purchase section */}
+        {event.ticketsEnabled && (
+          <div style={{ marginBottom: 16 }}>
+            {ticketsSoldOut ? (
+              <div style={{
+                display: "inline-block",
+                fontFamily: "'Libre Franklin', sans-serif",
+                fontSize: 12, fontWeight: 700, letterSpacing: 1.5,
+                textTransform: "uppercase", color: "#ff6b6b",
+                background: "rgba(255,80,80,0.12)",
+                padding: "10px 22px", borderRadius: 6,
+              }}>
+                Sold Out
+              </div>
+            ) : !showTicketForm ? (
+              <div>
+                <button
+                  onClick={() => setShowTicketForm(true)}
+                  style={{
+                    fontFamily: "'Libre Franklin', sans-serif",
+                    fontSize: 13, fontWeight: 700, letterSpacing: 1.5,
+                    textTransform: "uppercase", color: C.cream,
+                    background: C.sage, padding: "12px 28px",
+                    borderRadius: 6, border: "none", cursor: "pointer",
+                    transition: "all 0.2s",
+                  }}
+                >
+                  Get Tickets — ${event.ticketPrice}
+                </button>
+                {ticketsRemaining !== null && ticketsRemaining <= 20 && (
+                  <span style={{ fontSize: 12, color: C.sunsetLight, marginLeft: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
+                    {ticketsRemaining} left
+                  </span>
+                )}
+              </div>
+            ) : (
+              <form onSubmit={handleTicketPurchase} style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "20px" }}>
+                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 14, fontFamily: "'Libre Franklin', sans-serif" }}>
+                  Ticket Details — ${event.ticketPrice}/ticket
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10 }}>
+                  <input
+                    value={ticketForm.buyerName} onChange={e => setTicketForm(f => ({ ...f, buyerName: e.target.value }))}
+                    placeholder="Your name *" required
+                    style={{ width: "100%", padding: "10px 12px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.06)", color: C.cream, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", outline: "none", boxSizing: "border-box" }}
+                  />
+                  <input
+                    type="email" value={ticketForm.email} onChange={e => setTicketForm(f => ({ ...f, email: e.target.value }))}
+                    placeholder="Email *" required
+                    style={{ width: "100%", padding: "10px 12px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.06)", color: C.cream, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", outline: "none", boxSizing: "border-box" }}
+                  />
+                  <input
+                    value={ticketForm.phone} onChange={e => setTicketForm(f => ({ ...f, phone: e.target.value }))}
+                    placeholder="Phone (optional)"
+                    style={{ width: "100%", padding: "10px 12px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.06)", color: C.cream, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", outline: "none", boxSizing: "border-box" }}
+                  />
+                  <select
+                    value={ticketForm.quantity} onChange={e => setTicketForm(f => ({ ...f, quantity: parseInt(e.target.value, 10) }))}
+                    style={{ width: "100%", padding: "10px 12px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.06)", color: C.cream, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", outline: "none", boxSizing: "border-box", appearance: "none" }}
+                  >
+                    {Array.from({ length: Math.min(10, ticketsRemaining || 10) }, (_, i) => i + 1).map(n => (
+                      <option key={n} value={n}>{n} ticket{n > 1 ? 's' : ''}</option>
+                    ))}
+                  </select>
+                </div>
+                {ticketError && <div style={{ fontSize: 12, color: "#ff6b6b", marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>{ticketError}</div>}
+                <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                  <button
+                    type="submit" disabled={ticketLoading}
+                    style={{
+                      padding: "10px 24px", background: C.sage, color: C.cream, border: "none", borderRadius: 6,
+                      fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase",
+                      cursor: ticketLoading ? "not-allowed" : "pointer", opacity: ticketLoading ? 0.6 : 1,
+                      fontFamily: "'Libre Franklin', sans-serif", transition: "all 0.2s",
+                    }}
+                  >
+                    {ticketLoading ? "Processing..." : `Pay $${(event.ticketPrice * ticketForm.quantity).toFixed(2)}`}
+                  </button>
+                  <button
+                    type="button" onClick={() => setShowTicketForm(false)}
+                    style={{ background: "none", border: "none", color: C.textMuted, fontSize: 12, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif" }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        )}
+
         {event.eventUrl && (
           <a
             href={event.eventUrl}
@@ -1857,11 +1985,13 @@ export function EventLightbox({ event, onClose }) {
               fontFamily: "'Libre Franklin', sans-serif",
               fontSize: 12, fontWeight: 700, letterSpacing: 1.5,
               textTransform: "uppercase", color: C.cream,
-              background: C.sunset, padding: "10px 22px",
+              background: event.ticketsEnabled ? 'transparent' : C.sunset,
+              border: event.ticketsEnabled ? `1px solid rgba(255,255,255,0.2)` : 'none',
+              padding: "10px 22px",
               borderRadius: 6, textDecoration: "none",
             }}
           >
-            Get Tickets / More Info →
+            {event.ticketsEnabled ? 'More Info →' : 'Get Tickets / More Info →'}
           </a>
         )}
       </div>

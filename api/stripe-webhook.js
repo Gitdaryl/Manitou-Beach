@@ -1,4 +1,8 @@
 import Stripe from 'stripe';
+import { put } from '@vercel/blob';
+import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import QRCode from 'qrcode';
+import bwipjs from 'bwip-js';
 
 export const config = {
   api: {
@@ -42,6 +46,163 @@ async function updateNotionBusiness(businessName, properties) {
     return pageId;
   }
   return null;
+}
+
+// Generate a unique ticket number: MB-XXXXXX (6 uppercase alphanumeric)
+function generateTicketNumber() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no 0/O/1/I confusion
+  let id = 'MB-';
+  for (let i = 0; i < 6; i++) id += chars[Math.floor(Math.random() * chars.length)];
+  return id;
+}
+
+// Generate printable ticket PDF with QR code + Code 128 barcode
+async function generateTicketPDF({ ticketId, eventName, eventDate, eventTime, eventLocation, buyerName, quantity }) {
+  const pdfDoc = await PDFDocument.create();
+  const page = pdfDoc.addPage([612, 400]); // landscape-ish ticket
+  const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const helveticaBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+  const dark = rgb(0.11, 0.16, 0.19);     // night
+  const accent = rgb(0.36, 0.49, 0.58);    // lakeBlue
+  const muted = rgb(0.54, 0.49, 0.43);     // warmGray
+  const white = rgb(1, 1, 1);
+  const cream = rgb(0.98, 0.96, 0.94);
+
+  // Background
+  page.drawRectangle({ x: 0, y: 0, width: 612, height: 400, color: cream });
+
+  // Header bar
+  page.drawRectangle({ x: 0, y: 340, width: 612, height: 60, color: dark });
+  page.drawText('MANITOU BEACH', { x: 24, y: 362, size: 16, font: helveticaBold, color: white });
+  page.drawText('EVENT TICKET', { x: 612 - 24 - helveticaBold.widthOfTextAtSize('EVENT TICKET', 12), y: 365, size: 12, font: helveticaBold, color: accent });
+
+  // Event name
+  const nameSize = eventName.length > 35 ? 18 : 22;
+  page.drawText(eventName, { x: 24, y: 305, size: nameSize, font: helveticaBold, color: dark, maxWidth: 360 });
+
+  // Event details
+  let detailY = 275;
+  if (eventDate) {
+    page.drawText(eventDate, { x: 24, y: detailY, size: 13, font: helveticaBold, color: accent });
+    detailY -= 18;
+  }
+  if (eventTime) {
+    page.drawText(eventTime, { x: 24, y: detailY, size: 12, font: helvetica, color: muted });
+    detailY -= 18;
+  }
+  if (eventLocation) {
+    page.drawText(eventLocation, { x: 24, y: detailY, size: 12, font: helvetica, color: muted });
+    detailY -= 18;
+  }
+
+  // Buyer info
+  detailY -= 10;
+  page.drawText(`Admit: ${buyerName}`, { x: 24, y: detailY, size: 12, font: helveticaBold, color: dark });
+  detailY -= 18;
+  page.drawText(`Quantity: ${quantity}`, { x: 24, y: detailY, size: 11, font: helvetica, color: muted });
+
+  // Ticket number (large, human-readable)
+  page.drawText(ticketId, { x: 24, y: 50, size: 20, font: helveticaBold, color: dark });
+  page.drawText('Print this page and bring it with you', { x: 24, y: 28, size: 9, font: helvetica, color: muted });
+
+  // QR code (right side)
+  const verifyUrl = `https://manitoubeach.com/check-in?ticket=${ticketId}`;
+  const qrDataUrl = await QRCode.toDataURL(verifyUrl, { width: 140, margin: 1, color: { dark: '#1A2830', light: '#FAF6EF' } });
+  const qrImageBytes = Buffer.from(qrDataUrl.split(',')[1], 'base64');
+  const qrImage = await pdfDoc.embedPng(qrImageBytes);
+  page.drawImage(qrImage, { x: 430, y: 160, width: 140, height: 140 });
+
+  // Code 128 barcode (below QR)
+  try {
+    const barcodeBuffer = await bwipjs.toBuffer({
+      bcid: 'code128',
+      text: ticketId,
+      scale: 3,
+      height: 12,
+      includetext: false,
+    });
+    const barcodeImage = await pdfDoc.embedPng(barcodeBuffer);
+    const barcodeWidth = 160;
+    const barcodeHeight = 36;
+    page.drawImage(barcodeImage, { x: 420, y: 115, width: barcodeWidth, height: barcodeHeight });
+  } catch (err) {
+    console.error('Barcode generation error:', err.message);
+  }
+
+  // Barcode label
+  const ticketIdWidth = helvetica.widthOfTextAtSize(ticketId, 9);
+  page.drawText(ticketId, { x: 420 + (160 - ticketIdWidth) / 2, y: 100, size: 9, font: helvetica, color: muted });
+
+  // Dashed tear line
+  for (let y = 340; y > 0; y -= 8) {
+    page.drawRectangle({ x: 405, y, width: 1, height: 4, color: muted });
+  }
+
+  const pdfBytes = await pdfDoc.save();
+  return Buffer.from(pdfBytes);
+}
+
+// Create ticket record in Notion Tickets DB
+async function createTicketInNotion({ ticketId, eventId, eventName, buyerName, email, phone, quantity, stripePaymentId, pdfUrl, ticketPartner }) {
+  const res = await fetch('https://api.notion.com/v1/pages', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${process.env.NOTION_TOKEN_EVENTS}`,
+      'Content-Type': 'application/json',
+      'Notion-Version': '2022-06-28',
+    },
+    body: JSON.stringify({
+      parent: { database_id: process.env.NOTION_DB_TICKETS },
+      properties: {
+        'Ticket ID':         { title: [{ text: { content: ticketId } }] },
+        'Event Name':        { rich_text: [{ text: { content: eventName } }] },
+        'Event Page ID':     { rich_text: [{ text: { content: eventId } }] },
+        'Buyer Name':        { rich_text: [{ text: { content: buyerName } }] },
+        'Email':             { email: email },
+        'Phone':             { phone_number: phone || null },
+        'Quantity':          { number: quantity },
+        'Status':            { select: { name: 'Valid' } },
+        'Stripe Payment ID': { rich_text: [{ text: { content: stripePaymentId } }] },
+        'PDF URL':           { url: pdfUrl },
+        'Created At':        { date: { start: new Date().toISOString() } },
+        ...(ticketPartner ? { 'Ticket Partner': { rich_text: [{ text: { content: ticketPartner } }] } } : {}),
+      },
+    }),
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(`Notion ticket creation failed: ${err.message || JSON.stringify(err)}`);
+  }
+  return res.json();
+}
+
+// Increment Tickets Sold count on the Event record
+async function incrementSoldCount(eventId, additionalQty) {
+  // Fetch current sold count
+  const getRes = await fetch(`https://api.notion.com/v1/pages/${eventId}`, {
+    headers: {
+      'Authorization': `Bearer ${process.env.NOTION_TOKEN_EVENTS}`,
+      'Notion-Version': '2022-06-28',
+    },
+  });
+  if (!getRes.ok) return;
+  const page = await getRes.json();
+  const currentSold = page.properties['Tickets Sold']?.number || 0;
+
+  await fetch(`https://api.notion.com/v1/pages/${eventId}`, {
+    method: 'PATCH',
+    headers: {
+      'Authorization': `Bearer ${process.env.NOTION_TOKEN_EVENTS}`,
+      'Content-Type': 'application/json',
+      'Notion-Version': '2022-06-28',
+    },
+    body: JSON.stringify({
+      properties: {
+        'Tickets Sold': { number: currentSold + additionalQty },
+      },
+    }),
+  });
 }
 
 // Log a promo or wine partner purchase to Website Inquiries DB
@@ -155,7 +316,55 @@ export default async function handler(req, res) {
       console.log(`Promo purchase recorded: ${eventName} — ${tier}`);
     }
 
-    // 4. Wine partner signup (from wine-partner-signup.js)
+    // 4. Ticket purchase (from ticket-checkout.js)
+    if (metadata.type === 'ticket' && metadata.eventId) {
+      const ticketId = generateTicketNumber();
+      const quantity = parseInt(metadata.quantity, 10) || 1;
+      try {
+        // Generate printable PDF
+        const pdfBuffer = await generateTicketPDF({
+          ticketId,
+          eventName: metadata.eventName || 'Event',
+          eventDate: metadata.eventDate || '',
+          eventTime: metadata.eventTime || '',
+          eventLocation: metadata.eventLocation || '',
+          buyerName: metadata.buyerName || 'Guest',
+          quantity,
+        });
+
+        // Store PDF in Vercel Blob
+        const { url: pdfUrl } = await put(`tickets/${ticketId}.pdf`, pdfBuffer, {
+          access: 'public',
+          contentType: 'application/pdf',
+        });
+
+        // Create ticket record in Notion
+        await createTicketInNotion({
+          ticketId,
+          eventId: metadata.eventId,
+          eventName: metadata.eventName || 'Event',
+          buyerName: metadata.buyerName || 'Guest',
+          email: session.customer_email || session.customer_details?.email || '',
+          phone: metadata.phone || '',
+          quantity,
+          stripePaymentId: session.payment_intent || session.id,
+          pdfUrl,
+          ticketPartner: metadata.ticketPartner || '',
+        });
+
+        // Increment sold count on the event
+        await incrementSoldCount(metadata.eventId, quantity);
+
+        // TODO: Send confirmation email with PDF link (after email provider setup)
+        // TODO: Send confirmation SMS (after A2P approval)
+
+        console.log(`Ticket sold: ${ticketId} — ${metadata.eventName} x${quantity} for ${metadata.buyerName}${metadata.ticketPartner ? ` (Partner: ${metadata.ticketPartner})` : ''} — PDF: ${pdfUrl}`);
+      } catch (err) {
+        console.error('Ticket fulfillment error:', err);
+      }
+    }
+
+    // 5. Wine partner signup (from wine-partner-signup.js)
     if (metadata.venueName) {
       const { venueName, contactName, phone, note } = metadata;
       const details = [

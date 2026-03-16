@@ -140,6 +140,10 @@ export default async function handler(req, res) {
           recurring: recurringVal,
           recurringDay: p['Recurring Day']?.select?.name || null,
           heroFeature: p['Hero Feature']?.checkbox || false,
+          ticketsEnabled: p['Tickets Enabled']?.checkbox || false,
+          ticketPrice: p['Ticket Price']?.number || null,
+          ticketCapacity: p['Ticket Capacity']?.number || null,
+          ticketsSold: p['Tickets Sold']?.number || 0,
         };
       })
       .filter(e => e.name);
