@@ -9,6 +9,10 @@ export function GlobalStyles() {
         0% { transform: translateY(100%); opacity: 0; }
         100% { transform: translateY(0); opacity: 1; }
       }
+      @media (max-width: 768px) {
+        .ft-hero-video { display: none !important; }
+        .ft-hero-section { background-image: url('/images/foodtruck_hero.jpg') !important; background-size: cover !important; background-position: center !important; }
+      }
       @keyframes marquee {
         0% { transform: translateX(0); }
         100% { transform: translateX(-50%); }

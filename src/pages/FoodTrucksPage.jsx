@@ -696,15 +696,23 @@ export default function FoodTrucksPage() {
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
 
       {/* Hero */}
-      <section style={{
-        background: `linear-gradient(160deg, ${C.night} 0%, ${C.dusk} 60%, ${C.lakeBlue}33 100%)`,
-        padding: "120px 24px 80px",
-        textAlign: "center",
-        position: "relative",
-        overflow: "hidden",
-      }}>
-        <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(ellipse at 60% 40%, rgba(91,126,149,0.12) 0%, transparent 65%)" }} />
-        <div style={{ maxWidth: 640, margin: "0 auto", position: "relative", zIndex: 1 }}>
+      <section className="ft-hero-section" style={{ position: "relative", overflow: "hidden", padding: "120px 24px 80px", textAlign: "center" }}>
+        {/* Video background — desktop only (hidden on mobile via CSS class) */}
+        <video
+          className="ft-hero-video"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="none"
+          poster="/images/foodtruck_hero.jpg"
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }}
+        >
+          <source src="https://dmg0joh3jdjfmu8k.public.blob.vercel-storage.com/foodtruck_webloop.mp4" type="video/mp4" />
+        </video>
+        {/* Overlay — darkens video for text legibility */}
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg, rgba(10,18,24,0.72) 0%, rgba(45,59,69,0.65) 60%, rgba(10,18,24,0.55) 100%)", zIndex: 1 }} />
+        <div style={{ maxWidth: 640, margin: "0 auto", position: "relative", zIndex: 2 }}>
           <FadeIn>
             <div style={{ fontSize: 48, marginBottom: 16 }}>🚚</div>
             <SectionLabel light>Live Locator</SectionLabel>
