@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { FadeIn, SectionTitle, SectionLabel, Btn, ShareBar, WaveDivider, PageSponsorBanner, ScrollProgress } from '../components/Shared';
+import { FadeIn, SectionTitle, SectionLabel, Btn, ShareBar, WaveDivider, PageSponsorBanner, ScrollProgress, CategoryPill } from '../components/Shared';
 import { C, PAGE_SPONSORS, VIDEOS } from '../data/config';
 import { Footer, GlobalStyles, PromoBanner, EventLightbox, EventTimeline, Navbar, compressImage } from '../components/Layout';
 
