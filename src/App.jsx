@@ -33,6 +33,7 @@ const RoundLakePage = lazy(() => import('./pages/RoundLakePage'));
 const VillagePage = lazy(() => import('./pages/VillagePage'));
 const USA250Page = lazy(() => import('./pages/USA250Page'));
 const StaysPage = lazy(() => import('./pages/StaysPage'));
+const HollyYetiPage = lazy(() => import('./pages/HollyYetiPage'));
 
 // Lazy sub-components from named exports
 const DispatchArticlePage = lazy(() => import('./pages/DispatchPage').then(m => ({ default: m.DispatchArticlePage })));
@@ -108,6 +109,7 @@ export default function App() {
           <Route path="/food-truck-partner" element={<FoodTruckPartnerPage />} />
           <Route path="/founding" element={<FoundingPage />} />
           <Route path="/stays" element={<StaysPage />} />
+          <Route path="/holly-yeti" element={<HollyYetiPage />} />
           <Route path="/usa250" element={<USA250Page />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />

@@ -1583,7 +1583,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
                   padding: "8px 0", minWidth: 200, zIndex: 1001,
                 }}>
                   {[
-                    { label: "Holly & The Yeti", href: "/#holly" },
+                    { label: "Holly & The Yeti", href: "/holly-yeti" },
                     { label: "Food Truck Locator", href: "/food-trucks" },
                     { label: "Devils Lake", href: "/devils-lake" },
                     { label: "Round Lake", href: "/round-lake" },
@@ -1711,7 +1711,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
         {/* Community sub-links */}
         <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.textMuted, marginTop: 8, fontFamily: "'Libre Franklin', sans-serif" }}>Community</div>
         {[
-          { label: "Holly & The Yeti", href: "/#holly" },
+          { label: "Holly & The Yeti", href: "/holly-yeti" },
           { label: "Food Truck Locator", href: "/food-trucks" },
           { label: "Devils Lake", href: "/devils-lake" },
           { label: "Round Lake", href: "/round-lake" },
