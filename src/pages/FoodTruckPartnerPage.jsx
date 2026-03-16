@@ -47,11 +47,14 @@ const FOUNDING_SPOTS_TAKEN = 3; // ← update this manually as trucks sign up
 
 export default function FoodTruckPartnerPage() {
   const subScrollTo = (id) => { window.location.href = "/#" + id; };
-  const scrollToSignup = () => document.getElementById('food-truck-signup')?.scrollIntoView({ behavior: 'smooth' });
+  const scrollToSignup = (tier) => {
+    if (tier) setSelectedTier(tier);
+    document.getElementById('food-truck-signup')?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const [subCount, setSubCount] = useState(null);
   const [form, setForm] = useState({ truckName: '', cuisine: '', email: '', phone: '', website: '' });
-  const [selectedTier, setSelectedTier] = useState('paid'); // 'free' | 'paid'
+  const [selectedTier, setSelectedTier] = useState('free'); // 'free' | 'paid'
   const [imageUrl, setImageUrl] = useState('');
   const [imagePreview, setImagePreview] = useState('');
   const [imageUploading, setImageUploading] = useState(false);
@@ -172,10 +175,10 @@ export default function FoodTruckPartnerPage() {
             Your name in the directory is free. Founding members get a live map pin, personal check-in link, Today's Special badge, and newsletter reach — locked at ${priceFor(9)}/mo for life. Price rises one cent per subscriber once we pass 100. The sooner you join, the more you save.
           </p>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
-            <Btn onClick={scrollToSignup} variant="sunset" style={{ whiteSpace: "nowrap" }}>
+            <Btn onClick={() => scrollToSignup('paid')} variant="sunset" style={{ whiteSpace: "nowrap" }}>
               Claim Your Founding Spot — ${priceFor(9)}/mo →
             </Btn>
-            <Btn onClick={scrollToSignup} variant="outlineLight" style={{ whiteSpace: "nowrap" }}>
+            <Btn onClick={() => scrollToSignup('free')} variant="outlineLight" style={{ whiteSpace: "nowrap" }}>
               Get the free listing →
             </Btn>
           </div>
@@ -326,7 +329,7 @@ export default function FoodTruckPartnerPage() {
                 </div>
                 <div style={{ marginTop: 28 }}>
                   <button
-                    onClick={scrollToSignup}
+                    onClick={() => scrollToSignup('free')}
                     style={{ display: "block", width: "100%", textAlign: "center", padding: "12px 20px", borderRadius: 24, background: "transparent", color: C.sage, border: `1.5px solid ${C.sage}`, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: "pointer" }}
                   >
                     Get the Free Listing →
@@ -358,7 +361,7 @@ export default function FoodTruckPartnerPage() {
                 </div>
                 <div style={{ marginTop: 28 }}>
                   <button
-                    onClick={() => document.getElementById('food-truck-signup')?.scrollIntoView({ behavior: 'smooth' })}
+                    onClick={() => scrollToSignup('paid')}
                     style={{ display: "block", width: "100%", textAlign: "center", padding: "12px 20px", borderRadius: 24, background: C.sunset, color: C.cream, border: "none", fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: "pointer" }}
                   >
                     Claim This Rate →
