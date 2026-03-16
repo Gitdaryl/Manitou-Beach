@@ -1,7 +1,7 @@
 // YouTube Data API v3 proxy — fetches latest videos from Holly & The Yeti channel
 // Falls back to hardcoded video list if API key is missing or request fails
 
-const CHANNEL_HANDLE = '@HollyandtheYetipodcast';
+const CHANNEL_ID = 'UCnjEuUEFlrsNzkWDyLkarcA';
 const MAX_RESULTS = 6;
 
 // Fallback videos (from config.js VIDEOS array)
@@ -22,18 +22,9 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Step 1: Resolve channel handle to channel ID
-    const channelRes = await fetch(
-      `https://www.googleapis.com/youtube/v3/channels?forHandle=${CHANNEL_HANDLE}&part=id&key=${apiKey}`
-    );
-    if (!channelRes.ok) throw new Error('Channel lookup failed');
-    const channelData = await channelRes.json();
-    const channelId = channelData.items?.[0]?.id;
-    if (!channelId) throw new Error('Channel not found');
-
-    // Step 2: Fetch latest videos
+    // Fetch latest videos directly using channel ID
     const searchRes = await fetch(
-      `https://www.googleapis.com/youtube/v3/search?channelId=${channelId}&order=date&type=video&part=snippet&maxResults=${MAX_RESULTS}&key=${apiKey}`
+      `https://www.googleapis.com/youtube/v3/search?channelId=${CHANNEL_ID}&order=date&type=video&part=snippet&maxResults=${MAX_RESULTS}&key=${apiKey}`
     );
     if (!searchRes.ok) throw new Error('Search failed');
     const searchData = await searchRes.json();
