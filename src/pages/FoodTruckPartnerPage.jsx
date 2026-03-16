@@ -169,14 +169,8 @@ export default function FoodTruckPartnerPage() {
             Your truck. Live on the map.<br /><em>Every time you're nearby.</em>
           </h1>
           <p style={{ fontSize: 16, color: "rgba(255,255,255,0.5)", maxWidth: 520, margin: "0 auto 32px", lineHeight: 1.85 }}>
-            Your name in the directory is free. Founding members get a live map pin, personal check-in link, Today's Special badge, and newsletter reach — locked at ${priceFor(9)}/mo for as long as you stay listed.
+            Your name in the directory is free. Founding members get a live map pin, personal check-in link, Today's Special badge, and newsletter reach — locked at ${priceFor(9)}/mo for life. Price rises one cent per subscriber once we pass 100. The sooner you join, the more you save.
           </p>
-          {/* Urgency bar */}
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "rgba(212,132,90,0.18)", border: "1px solid rgba(212,132,90,0.4)", borderRadius: 50, padding: "8px 20px", marginBottom: 28 }}>
-            <span style={{ fontSize: 13, color: C.sunsetLight, fontWeight: 600 }}>
-              🔥 {FOUNDING_SPOTS_TOTAL - FOUNDING_SPOTS_TAKEN} of {FOUNDING_SPOTS_TOTAL} founding spots remaining — rate rises after spot {FOUNDING_SPOTS_TOTAL}
-            </span>
-          </div>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
             <Btn onClick={scrollToSignup} variant="sunset" style={{ whiteSpace: "nowrap" }}>
               Claim Your Founding Spot — ${priceFor(9)}/mo →
@@ -280,22 +274,12 @@ export default function FoodTruckPartnerPage() {
             <SectionLabel style={{ textAlign: "center", display: "block" }}>Pricing</SectionLabel>
             <SectionTitle center>The Founding Food Truck rate.</SectionTitle>
             <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 560, margin: "0 auto 16px", textAlign: "center" }}>
-              $9/month. Yours for life — as long as you stay listed. We're only offering this to the first {FOUNDING_SPOTS_TOTAL} trucks. After that, the price rises with the newsletter audience and new trucks pay more. Founding members never do.
+              $9/month. Yours for life — as long as you stay listed. Price rises one cent per new subscriber after our first 100. Founding members are grandfathered forever at today's rate.
             </p>
-            <div style={{ textAlign: "center", marginBottom: 20 }}>
+            <div style={{ textAlign: "center", marginBottom: 36 }}>
               <span style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: inGrace ? C.sage : C.sunset }}>
-                {inGrace ? `⚡ Founding rate active — ${FOUNDING_SPOTS_TOTAL - FOUNDING_SPOTS_TAKEN} of ${FOUNDING_SPOTS_TOTAL} spots left` : `↑ Price rising — lock in your rate now`}
+                {inGrace ? `⚡ Founding rate active — price locks before we hit 100 subscribers` : `↑ Price rising — lock in your rate now`}
               </span>
-            </div>
-            {/* Spots bar */}
-            <div style={{ maxWidth: 400, margin: "0 auto 36px" }}>
-              <div style={{ background: C.sand, borderRadius: 50, height: 8, overflow: "hidden" }}>
-                <div style={{ background: C.sunset, height: "100%", width: `${(FOUNDING_SPOTS_TAKEN / FOUNDING_SPOTS_TOTAL) * 100}%`, borderRadius: 50, transition: "width 0.6s ease" }} />
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8 }}>
-                <span style={{ fontSize: 12, color: C.textMuted }}>{FOUNDING_SPOTS_TAKEN} spots claimed</span>
-                <span style={{ fontSize: 12, color: C.sunset, fontWeight: 600 }}>{FOUNDING_SPOTS_TOTAL - FOUNDING_SPOTS_TAKEN} remaining</span>
-              </div>
             </div>
           </FadeIn>
 
@@ -360,8 +344,7 @@ export default function FoodTruckPartnerPage() {
                   <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 48, fontWeight: 700, color: C.cream }}>${priceFor(9)}</span>
                   <span style={{ fontSize: 14, color: "rgba(255,255,255,0.45)", marginLeft: 4 }}>/mo</span>
                 </div>
-                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: C.sunsetLight, marginBottom: 4 }}>yours for life · locked the day you join</div>
-                <div style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", marginBottom: 28 }}>Spot {FOUNDING_SPOTS_TAKEN + 1} of {FOUNDING_SPOTS_TOTAL} — {FOUNDING_SPOTS_TOTAL - FOUNDING_SPOTS_TAKEN} remaining</div>
+                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: C.sunsetLight, marginBottom: 28 }}>yours for life · locked the day you join</div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {TRUCK_FOUNDING_ITEMS.map(item => (
                     <div key={item.label} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
@@ -603,7 +586,7 @@ export default function FoodTruckPartnerPage() {
                   </button>
                   <p style={{ fontSize: 11, color: "rgba(255,255,255,0.25)", textAlign: "center", lineHeight: 1.7, margin: "2px 0 0" }}>
                     {selectedTier === 'paid'
-                      ? `Secure checkout via Stripe. Daryl sends your personal check-in link after payment — usually same day. Spot ${FOUNDING_SPOTS_TAKEN + 1} of ${FOUNDING_SPOTS_TOTAL}.`
+                      ? `Secure checkout via Stripe. Daryl sends your personal check-in link after payment — usually same day.`
                       : "Free listings reviewed by Daryl within 24 hours. You'll get a confirmation at the email above."
                     }
                   </p>

@@ -71,14 +71,14 @@ export default async function handler(req, res) {
     const checkinUrl = `https://manitoubeach.com/food-trucks?truck=${encodeURIComponent(slug)}&token=${encodeURIComponent(token)}`;
     const toPhone = `+1${inputDigits}`;
 
-    // Send SMS via Twilio using API Key auth
+    // Send SMS via Twilio using Account SID + Auth Token
     const twilioRes = await fetch(
       `https://api.twilio.com/2010-04-01/Accounts/${process.env.TWILIO_ACCOUNT_SID}/Messages.json`,
       {
         method: 'POST',
         headers: {
           Authorization: 'Basic ' + Buffer.from(
-            `${process.env.TWILIO_API_KEY}:${process.env.TWILIO_API_SECRET}`
+            `${process.env.TWILIO_ACCOUNT_SID}:${process.env.TWILIO_AUTH_TOKEN}`
           ).toString('base64'),
           'Content-Type': 'application/x-www-form-urlencoded',
         },
