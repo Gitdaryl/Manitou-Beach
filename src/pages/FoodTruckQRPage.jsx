@@ -4,17 +4,8 @@
 // No navbar/footer — designed for window/counter printing
 
 import { useParams } from 'react-router-dom';
-
-const C = {
-  cream: '#FAF6EF',
-  sand: '#E8DFD0',
-  dusk: '#2D3B45',
-  night: '#0A1218',
-  sage: '#7A8E72',
-  sunset: '#D4845A',
-  text: '#3B3228',
-  textLight: '#6B5D52',
-};
+import QRCode from 'react-qr-code';
+import { C } from '../data/config';
 
 function toTitleCase(str) {
   return str
@@ -27,7 +18,6 @@ export default function FoodTruckQRPage() {
   const { slug } = useParams();
   const truckName = toTitleCase(slug || 'food-truck');
   const pageUrl = `${window.location.origin}/food-trucks`;
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=280x280&color=2D3B45&bgcolor=FAF6EF&data=${encodeURIComponent(pageUrl)}`;
 
   return (
     <>
@@ -107,11 +97,11 @@ export default function FoodTruckQRPage() {
             marginBottom: 24,
             background: C.cream,
           }}>
-            <img
-              src={qrUrl}
-              alt={`QR code for ${truckName}`}
-              width={280}
-              height={280}
+            <QRCode
+              value={pageUrl}
+              size={280}
+              fgColor="#2D3B45"
+              bgColor="#FAF6EF"
               style={{ display: 'block', borderRadius: 6 }}
             />
           </div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivider, PageSponsorBanner, DiagonalDivider, Btn } from '../components/Shared';
 import { Footer, GlobalStyles, Navbar, NewsletterInline, PromoBanner } from '../components/Layout';
 import { C } from '../data/config';
+import { DISCOVER_MAP_STYLES, createDiscoverPin } from '../data/discover';
 
 // ============================================================
 // 🍷  WINERIES PAGE (/wineries)
@@ -1349,8 +1350,7 @@ export default function WineriesPage() {
   const subScrollTo = (id) => { window.location.href = "/#" + id; };
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
-      <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
-      <GlobalStyles />
+<GlobalStyles />
       <ScrollProgress />
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
       <WineriesHero />

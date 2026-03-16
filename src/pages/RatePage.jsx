@@ -75,8 +75,7 @@ export default function RatePage() {
 
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: 'hidden', minHeight: '100vh' }}>
-      <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
-      <GlobalStyles />
+<GlobalStyles />
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
 
       {/* Hero */}

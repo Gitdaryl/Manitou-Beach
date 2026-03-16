@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { FadeIn, PageSponsorBanner, ScrollProgress, SectionLabel, SectionTitle, ShareBar, WaveDivider } from '../components/Shared';
 import { C, DISPATCH_CARD_SPONSORS, DISPATCH_CATEGORIES } from '../data/config';
 import { Footer, Navbar, GlobalStyles, NewsletterInline, CATEGORY_COLORS } from '../components/Layout';
-import { useDispatchAds, pickAd } from '../App';
+import { useDispatchAds, pickAd } from '../data/discover';
 
 
 // ============================================================
@@ -170,8 +170,7 @@ export function DispatchArticlePage() {
 
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: 'hidden', minHeight: '100vh' }}>
-      <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
-      <GlobalStyles />
+<GlobalStyles />
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
 
       <div style={{ paddingTop: 80, minHeight: '100vh' }}>
@@ -472,8 +471,7 @@ export default function DispatchPage() {
 
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: 'hidden' }}>
-      <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
-      <GlobalStyles />
+<GlobalStyles />
       <ScrollProgress />
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
 

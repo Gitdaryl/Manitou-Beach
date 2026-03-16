@@ -146,13 +146,13 @@ export default function FoodTrucksPage() {
   useEffect(() => {
     if (!mapsKey || isCheckinMode) return;
     if (window.google?.maps) { setMapReady(true); return; }
-    if (document.querySelector('[data-gmaps]')) return;
-    window.__gmapsReady = () => setMapReady(true);
-    const s = document.createElement('script');
-    s.dataset.gmaps = '1';
-    s.src = `https://maps.googleapis.com/maps/api/js?key=${mapsKey}&callback=__gmapsReady`;
-    s.async = true;
-    document.head.appendChild(s);
+    let active = true;
+    import('@googlemaps/js-api-loader').then(({ Loader }) => {
+      new Loader({ apiKey: mapsKey, version: 'weekly' }).load().then(() => {
+        if (active) setMapReady(true);
+      }).catch(err => console.error('Maps load error:', err.message));
+    }).catch(err => console.error('Maps loader error:', err.message));
+    return () => { active = false; };
   }, []);
 
   // Init map + markers whenever live trucks with coords change

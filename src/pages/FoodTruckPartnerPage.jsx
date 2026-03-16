@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Btn, FadeIn, ScrollProgress, SectionLabel, SectionTitle, WaveDivider } from '../components/Shared';
 import { C } from '../data/config';
+import { usePricing } from '../data/pricing';
 import { Footer, GlobalStyles, Navbar } from '../components/Layout';
 
 const TRUCK_HOW = [
@@ -52,7 +53,7 @@ export default function FoodTruckPartnerPage() {
     document.getElementById('food-truck-signup')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const [subCount, setSubCount] = useState(null);
+  const { priceFor, centsFor } = usePricing();
   const [form, setForm] = useState({ truckName: '', cuisine: '', email: '', phone: '', website: '' });
   const [selectedTier, setSelectedTier] = useState('free'); // 'free' | 'paid'
   const [imageUrl, setImageUrl] = useState('');
@@ -61,17 +62,6 @@ export default function FoodTruckPartnerPage() {
   const [loading, setLoading] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [submitted, setSubmitted] = useState(false);
-
-  const GRACE = 100;
-  const count = subCount ?? 0;
-  const increment = Math.max(0, count - GRACE);
-  const inGrace = count < GRACE;
-  const priceFor = (base) => (base + increment * 0.01).toFixed(2);
-  const centsFor = (base) => Math.round((base + increment * 0.01) * 100);
-
-  useEffect(() => {
-    fetch('/api/subscribe').then(r => r.json()).then(d => setSubCount(d.count ?? 0)).catch(() => setSubCount(0));
-  }, []);
 
   const handleImageSelect = async (file) => {
     if (!file || !file.type.startsWith('image/')) return;
@@ -150,8 +140,7 @@ export default function FoodTruckPartnerPage() {
   };
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
-      <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
-      <GlobalStyles />
+<GlobalStyles />
       <ScrollProgress />
 
       {/* Partner context strip */}

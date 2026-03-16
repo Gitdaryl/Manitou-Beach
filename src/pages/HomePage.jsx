@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { C, SECTIONS, CAT_COLORS } from '../data/config';
+import { usePricing, BASE_PRICES, GRACE } from '../data/pricing';
 import { ShareBar, CategoryPill, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivider, PageSponsorBanner, DiagonalDivider, Btn, useCardTilt } from '../components/Shared';
 import { GlobalStyles, PromoBanner, NewsletterInline, HollyYetiSection, EventLightbox, Footer, Navbar } from '../components/Layout';
 import { DispatchPreviewSection } from './DispatchPage';
@@ -643,27 +644,11 @@ function ExploreSection() {
   );
 }
 function PricingSection() {
-  const [subCount, setSubCount] = useState(null);
+  const { subCount, count, inGrace, priceFor, centsFor, progressPct } = usePricing();
   const [modal, setModal] = useState(null);
   const [form, setForm] = useState({ businessName: '', email: '' });
   const [loading, setLoading] = useState(false);
   const [checkoutError, setCheckoutError] = useState('');
-
-  useEffect(() => {
-    fetch('/api/subscribe')
-      .then(r => r.json())
-      .then(d => setSubCount(d.count ?? 0))
-      .catch(() => setSubCount(0));
-  }, []);
-
-  const BASE_PRICES = { enhanced: 9, featured: 23, premium: 43 };
-  const GRACE = 100;
-  const count = subCount ?? 0;
-  const increment = Math.max(0, count - GRACE);
-  const inGrace = count < GRACE;
-  const priceFor = (base) => (base + increment * 0.01).toFixed(2);
-  const centsFor = (base) => Math.round((base + increment * 0.01) * 100);
-  const progressPct = inGrace ? Math.min(100, (count / GRACE) * 100) : Math.min(100, ((count - GRACE) / 900) * 100);
 
   const PAID_TIERS = [
     {
@@ -1851,11 +1836,7 @@ function HomePage() {
 
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
-      <link
-        href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-      />
-      <GlobalStyles />
+<GlobalStyles />
       <ScrollProgress />
       <Navbar activeSection={activeSection} scrollTo={scrollTo} />
       <Hero scrollTo={scrollTo} />

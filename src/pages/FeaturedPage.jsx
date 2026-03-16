@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Btn, FadeIn, ScrollProgress, SectionLabel, SectionTitle } from '../components/Shared';
 import { C, LISTING_CATEGORIES, PAGE_SPONSORS, SLOT_CAPS } from '../data/config';
+import { usePricing, GRACE } from '../data/pricing';
 import { Footer, GlobalStyles, Navbar, SubmitSection } from '../components/Layout';
 
 // ============================================================
@@ -18,7 +19,7 @@ export default function FeaturedPage() {
   const spotsLeft = SPOTS_LEFT;
   const isFull = spotsLeft === 0;
 
-  const [subCount, setSubCount] = useState(null);
+  const { subCount, count, inGrace, priceFor, centsFor, progressPct } = usePricing();
   const [slotCounts, setSlotCounts] = useState(null);
   const [modal, setModal] = useState(null);
   const [form, setForm] = useState({ businessName: '', email: '', duration: 3, category: '' });
@@ -71,23 +72,11 @@ export default function FeaturedPage() {
   }, []);
 
   useEffect(() => {
-    fetch('/api/subscribe')
-      .then(r => r.json())
-      .then(d => setSubCount(d.count ?? 0))
-      .catch(() => setSubCount(0));
     fetch('/api/businesses?slots=true')
       .then(r => r.json())
       .then(d => setSlotCounts(d))
       .catch(() => {});
   }, []);
-
-  const GRACE = 100;
-  const count = subCount ?? 0;
-  const increment = Math.max(0, count - GRACE);
-  const inGrace = count < GRACE;
-  const priceFor = (base) => (base + increment * 0.01).toFixed(2);
-  const centsFor = (base) => Math.round((base + increment * 0.01) * 100);
-  const progressPct = inGrace ? Math.min(100, (count / GRACE) * 100) : Math.min(100, ((count - GRACE) / 900) * 100);
 
   const PAID_TIERS = [
     {
@@ -151,8 +140,7 @@ export default function FeaturedPage() {
 
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
-      <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
-      <GlobalStyles />
+<GlobalStyles />
       <ScrollProgress />
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
 

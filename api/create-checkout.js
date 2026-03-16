@@ -23,25 +23,48 @@ const TIERS = {
 };
 
 // Monthly recurring subscription tiers (used by business directory pricing section)
-// Prices are dynamic based on subscriber milestones — passed in from client
+// Prices computed server-side from subscriber count — never trust client-sent prices
 const LISTING_TIERS = {
   enhanced: {
     name: 'Enhanced Listing — Manitou Beach Directory',
     description: 'Clickable website link, business description, expandable listing card.',
+    basePrice: 9,
   },
   featured: {
     name: 'Featured Listing — Manitou Beach Directory',
     description: 'Spotlight card, logo display, above standard listings.',
+    basePrice: 23,
   },
   premium: {
     name: 'Premium Listing — Manitou Beach Directory',
     description: 'Full-width banner, large logo, top-of-directory placement, email contact button.',
+    basePrice: 43,
   },
   food_truck_founding: {
     name: 'Founding Food Truck — Manitou Beach Food Truck Locator',
     description: 'Live map pin, personal check-in URL, newsletter shoutout, Featured badge, priority placement.',
+    basePrice: 9,
   },
 };
+
+const GRACE = 100;
+
+// Fetch subscriber count from Beehiiv and compute price server-side
+async function computePriceCents(basePrice) {
+  let count = 0;
+  try {
+    const response = await fetch(
+      `https://api.beehiiv.com/v2/publications/${process.env.BEEHIIV_PUBLICATION_ID}/subscriptions?limit=1`,
+      { headers: { 'Authorization': `Bearer ${process.env.BEEHIIV_API_KEY}` } }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      count = data.total_results || 0;
+    }
+  } catch (_) {}
+  const increment = Math.max(0, count - GRACE);
+  return Math.round((basePrice + increment * 0.01) * 100);
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -55,7 +78,7 @@ export default async function handler(req, res) {
 
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-  const { tier, businessName, email, priceInCents, mode: checkoutMode, duration } = req.body;
+  const { tier, businessName, email, mode: checkoutMode, duration } = req.body;
 
   if (!tier || !businessName || !email) {
     return res.status(400).json({ error: 'Missing required fields' });
@@ -68,10 +91,11 @@ export default async function handler(req, res) {
   // Monthly subscription — business directory listing tiers
   if (checkoutMode === 'subscription') {
     const plan = LISTING_TIERS[tier];
-    if (!plan || !priceInCents) {
-      return res.status(400).json({ error: 'Invalid listing tier or price' });
+    if (!plan) {
+      return res.status(400).json({ error: 'Invalid listing tier' });
     }
     try {
+      const unitAmount = await computePriceCents(plan.basePrice);
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
         mode: 'subscription',
@@ -83,7 +107,7 @@ export default async function handler(req, res) {
               name: plan.name,
               description: `${plan.description} — ${businessName}`,
             },
-            unit_amount: priceInCents,
+            unit_amount: unitAmount,
             recurring: { interval: 'month' },
           },
           quantity: 1,

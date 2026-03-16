@@ -1,4 +1,5 @@
 import React from "react";
+import QRCode from "react-qr-code";
 import { Btn, C } from "../components/Shared";
 
 // ============================================================
@@ -71,9 +72,7 @@ export default function ClaimPromoView() {
   }
 
   if (code) {
-    // Show QR Code directly via a lightweight external img service (to skip huge library)
     const redeemUrl = `${window.location.origin}/redeem-promo?code=${code}`;
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(redeemUrl)}`;
     
     return (
       <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: C.night, padding: 24 }}>
@@ -92,7 +91,7 @@ export default function ClaimPromoView() {
             background: "#fff", padding: 20, border: `2px solid ${C.sand}`, borderRadius: 12, 
             display: "inline-block", marginBottom: 24, pointerEvents: "none"
           }}>
-             <img src={qrUrl} alt="QR Code" width={180} height={180} />
+             <QRCode value={redeemUrl} size={180} />
           </div>
 
           <div style={{ fontFamily: "'Courier New', monospace", fontSize: 24, fontWeight: 700, letterSpacing: 4, color: C.text, marginBottom: 32 }}>

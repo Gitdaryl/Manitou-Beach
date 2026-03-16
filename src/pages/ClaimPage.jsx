@@ -123,9 +123,7 @@ export default function ClaimPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: C.cream, fontFamily: "'Libre Franklin', sans-serif" }}>
-      <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-
-      {/* Header */}
+{/* Header */}
       <div style={{ background: C.dusk, padding: '14px 24px', textAlign: 'center' }}>
         <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.12em', color: C.sage }}>The Manitou Dispatch</div>
         <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', marginTop: 2 }}>× {biz.name}</div>

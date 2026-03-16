@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Btn, PageSponsorBanner, WaveDivider } from '../components/Shared';
 import { C } from '../data/config';
 import { Footer, Navbar, GlobalStyles } from '../components/Layout';
-import { VAPI_PUBLIC_KEY, VAPI_ASSISTANT_ID, SITE_KNOWLEDGE, DISCOVER_MAP_CENTER, DISCOVER_CATS, DISCOVER_POIS, DISCOVER_MAP_STYLES, createDiscoverPin, buildDiscoverInfoWindow } from '../App';
+import { VAPI_PUBLIC_KEY, VAPI_ASSISTANT_ID, SITE_KNOWLEDGE, DISCOVER_MAP_CENTER, DISCOVER_CATS, DISCOVER_POIS, DISCOVER_MAP_STYLES, createDiscoverPin, buildDiscoverInfoWindow } from '../data/discover';
 
 export function VoiceWidget() {
   const [status, setStatus] = useState('idle'); // idle | connecting | active | ending
@@ -78,7 +78,7 @@ export function VoiceWidget() {
       const [eventsRes, bizRes, wxRes] = await Promise.allSettled([
         fetch('/api/events').then(r => r.json()),
         fetch('/api/businesses?all=true').then(r => r.json()),
-        fetch('https://api.open-meteo.com/v1/forecast?latitude=41.96&longitude=-84.02&current=temperature_2m,wind_speed_10m,precipitation,weathercode&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weathercode&timezone=America%2FDetroit&forecast_days=3&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch').then(r => r.json()),
+        fetch('https://api.open-meteo.com/v1/forecast?latitude=42.005&longitude=-84.289&current=temperature_2m,wind_speed_10m,precipitation,weathercode&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weathercode&timezone=America%2FDetroit&forecast_days=3&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch').then(r => r.json()),
       ]);
 
       // Format events
