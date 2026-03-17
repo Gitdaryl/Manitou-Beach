@@ -131,8 +131,9 @@ function CheckInPage() {
 
       {/* Minimal header — no navbar needed for volunteers */}
       <div style={{ padding: '20px 24px', borderBottom: `1px solid ${C.dusk}`, textAlign: 'center' }}>
+        <img src="/images/yeti/yetickets.png" alt="Yetickets" style={{ width: 56, height: 56, objectFit: 'contain', marginBottom: 6 }} />
         <div style={{ fontSize: 11, letterSpacing: 3, textTransform: 'uppercase', color: C.textMuted, marginBottom: 4 }}>
-          Manitou Beach
+          Yetickets
         </div>
         <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.cream }}>
           Ticket Check-In

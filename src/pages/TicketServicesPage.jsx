@@ -13,7 +13,7 @@ const FEATURES = [
   { icon: "🎟️", title: "QR-Coded PDF Tickets", copy: "Every buyer receives a printable PDF ticket with a unique QR code and barcode — delivered instantly after purchase." },
   { icon: "📊", title: "Real-Time Capacity", copy: "Track how many tickets are sold vs. remaining. Your event page shows live availability — no overselling." },
   { icon: "📱", title: "Volunteer Check-In", copy: "Any volunteer with a phone can scan tickets at the door. No app to install — just open the check-in page and point the camera." },
-  { icon: "🌐", title: "Featured on Manitou Beach", copy: "Your event gets a listing on manitoubeach.com with a 'Get Tickets' button — seen by the region's most engaged local audience." },
+  { icon: "🌐", title: "Featured on Your Community Site", copy: "Your event gets a listing with a 'Get Tickets' button — seen by the region's most engaged local audience." },
   { icon: "💰", title: "Direct Bank Deposit", copy: "Ticket revenue goes straight to your bank account. No waiting for payouts, no holding your money." },
   { icon: "📉", title: "Half the Fees", copy: "We charge a fraction of what Eventbrite charges. Your attendees see one clean price — no surprise fees at checkout." },
 ];
@@ -122,7 +122,7 @@ export default function TicketServicesPage() {
 
       {/* Partner context strip */}
       <div style={{ background: C.night, borderBottom: "1px solid rgba(255,255,255,0.07)", padding: "9px 24px", display: "flex", alignItems: "center", justifyContent: "center", gap: 28, flexWrap: "wrap" }}>
-        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif" }}>Ticketing for community organizations</span>
+        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif" }}>Yetickets — Community event ticketing</span>
         <a href="/happening" style={{ fontSize: 12, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>See What's Happening →</a>
         <a href="/" style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", fontFamily: "'Libre Franklin', sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Visit Homepage →</a>
       </div>
@@ -133,7 +133,8 @@ export default function TicketServicesPage() {
       <section style={{ background: `linear-gradient(160deg, ${C.night} 0%, ${C.dusk} 55%, ${C.night} 100%)`, padding: "160px 24px 110px", textAlign: "center", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 60% 40%, rgba(90,132,160,0.15) 0%, transparent 65%)", pointerEvents: "none" }} />
         <FadeIn>
-          <SectionLabel light>Manitou Beach Ticketing</SectionLabel>
+          <img src="/images/yeti/yetickets.png" alt="Yetickets" style={{ width: 140, height: 140, objectFit: "contain", marginBottom: 16 }} />
+          <SectionLabel light>Yetickets</SectionLabel>
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(30px, 5vw, 58px)", fontWeight: 400, color: C.cream, margin: "20px 0 24px", lineHeight: 1.15 }}>
             Sell tickets.<br />Skip the middleman.<br /><em>Keep more money.</em>
           </h1>
@@ -220,9 +221,9 @@ export default function TicketServicesPage() {
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 36, fontWeight: 700, color: "rgba(255,255,255,0.35)", lineHeight: 1, marginBottom: 8 }}>~$2.34</div>
                 <div style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", lineHeight: 1.6 }}>per $25 ticket<br />6.2% + $0.79</div>
               </div>
-              {/* Manitou Beach */}
+              {/* Yetickets */}
               <div style={{ background: "rgba(90,132,160,0.12)", borderRadius: 16, padding: "32px 28px", border: `2px solid ${C.lakeBlue}`, transform: "scale(1.03)" }}>
-                <div style={{ fontSize: 12, color: C.lakeBlue, fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", marginBottom: 16 }}>Manitou Beach</div>
+                <div style={{ fontSize: 12, color: C.lakeBlue, fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", marginBottom: 16 }}>Yetickets</div>
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 36, fontWeight: 700, color: C.cream, lineHeight: 1, marginBottom: 8 }}>~$1.34</div>
                 <div style={{ fontSize: 13, color: "rgba(255,255,255,0.55)", lineHeight: 1.6 }}>per $25 ticket<br />Processing + 1.25%</div>
               </div>
@@ -236,7 +237,7 @@ export default function TicketServicesPage() {
                 {[
                   { label: "Your attendee pays", value: "$25.00", note: "Clean price, no surprises" },
                   { label: "Card processing (Stripe)", value: "−$1.03", note: "2.9% + $0.30 — industry standard" },
-                  { label: "Platform fee (Manitou Beach)", value: "−$0.31", note: "1.25% — keeps the lights on" },
+                  { label: "Platform fee (Yetickets)", value: "−$0.31", note: "1.25% — keeps the lights on" },
                   { label: "You receive", value: "$23.66", note: "Deposited directly to your bank", highlight: true },
                 ].map((row, i) => (
                   <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", padding: "8px 0", borderBottom: i < 3 ? "1px solid rgba(255,255,255,0.06)" : "none" }}>
