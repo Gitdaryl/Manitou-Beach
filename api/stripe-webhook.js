@@ -1,4 +1,5 @@
 import Stripe from 'stripe';
+import { Resend } from 'resend';
 import { put } from '@vercel/blob';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import QRCode from 'qrcode';
@@ -355,7 +356,51 @@ export default async function handler(req, res) {
         // Increment sold count on the event
         await incrementSoldCount(metadata.eventId, quantity);
 
-        // TODO: Send confirmation email with PDF link (after email provider setup)
+        // Send confirmation email with PDF download link
+        const buyerEmail = session.customer_email || session.customer_details?.email;
+        if (buyerEmail && process.env.RESEND_API_KEY) {
+          try {
+            const resend = new Resend(process.env.RESEND_API_KEY);
+            const eventDateLine = [metadata.eventDate, metadata.eventTime].filter(Boolean).join(' · ');
+            await resend.emails.send({
+              from: 'Yetickets <tickets@yetigroove.com>',
+              to: buyerEmail,
+              subject: `Your ticket for ${metadata.eventName || 'the event'} — ${ticketId}`,
+              html: `
+                <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#FAF6EF;">
+                  <img src="https://manitoubeach.com/images/yeti/yetickets_sign.png" alt="Yetickets" style="width:200px;margin-bottom:24px;" />
+                  <h1 style="color:#1A2830;font-size:22px;margin:0 0 8px;">You're in! 🎉</h1>
+                  <p style="color:#5C5248;font-size:15px;margin:0 0 24px;">
+                    Here's your ticket for <strong>${metadata.eventName || 'the event'}</strong>.
+                    ${eventDateLine ? `<br/>${eventDateLine}` : ''}
+                    ${metadata.eventLocation ? `<br/>${metadata.eventLocation}` : ''}
+                  </p>
+
+                  <div style="background:#fff;border-radius:12px;padding:20px 24px;margin-bottom:24px;border:1px solid #E8E0D5;">
+                    <p style="margin:0 0 4px;color:#8C806E;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Ticket ID</p>
+                    <p style="margin:0 0 16px;color:#1A2830;font-size:24px;font-weight:700;letter-spacing:2px;">${ticketId}</p>
+                    <p style="margin:0 0 4px;color:#8C806E;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Name</p>
+                    <p style="margin:0 0 16px;color:#1A2830;font-size:15px;">${metadata.buyerName || 'Guest'}</p>
+                    <p style="margin:0 0 4px;color:#8C806E;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Quantity</p>
+                    <p style="margin:0;color:#1A2830;font-size:15px;">${quantity}</p>
+                  </div>
+
+                  <a href="${pdfUrl}" style="display:inline-block;background:#1A2830;color:#fff;text-decoration:none;padding:14px 28px;border-radius:8px;font-size:15px;font-weight:600;margin-bottom:24px;">
+                    Download &amp; Print Ticket
+                  </a>
+
+                  <p style="color:#8C806E;font-size:13px;line-height:1.6;">
+                    Show this ticket (printed or on your phone) at the door. The QR code will be scanned for entry.<br/><br/>
+                    Lost your ticket? Reply to this email or visit <a href="https://manitoubeach.com" style="color:#5B7D8E;">manitoubeach.com</a> to retrieve it.
+                  </p>
+                </div>
+              `,
+            });
+            console.log(`Ticket email sent to ${buyerEmail} for ${ticketId}`);
+          } catch (emailErr) {
+            console.error('Ticket email send error:', emailErr.message);
+          }
+        }
         // TODO: Send confirmation SMS (after A2P approval)
 
         console.log(`Ticket sold: ${ticketId} — ${metadata.eventName} x${quantity} for ${metadata.buyerName}${metadata.ticketPartner ? ` (Partner: ${metadata.ticketPartner})` : ''} — PDF: ${pdfUrl}`);
