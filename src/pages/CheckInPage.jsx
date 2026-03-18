@@ -143,7 +143,7 @@ function CheckInPage() {
         {result && (
           <div style={{
             borderRadius: 16,
-            padding: '48px 32px',
+            padding: 'clamp(28px, 8vw, 48px) clamp(18px, 5vw, 32px)',
             textAlign: 'center',
             marginBottom: 24,
             background: result.status === 'valid' ? 'rgba(122,142,114,0.15)'

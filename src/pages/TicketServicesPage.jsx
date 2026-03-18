@@ -136,7 +136,7 @@ export default function TicketServicesPage() {
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
 
       {/* ── HERO ── */}
-      <section style={{ background: `linear-gradient(160deg, ${C.night} 0%, ${C.dusk} 55%, ${C.night} 100%)`, padding: "160px 24px 110px", textAlign: "center", position: "relative", overflow: "hidden" }}>
+      <section style={{ background: `linear-gradient(160deg, ${C.night} 0%, ${C.dusk} 55%, ${C.night} 100%)`, padding: "clamp(90px, 15vw, 160px) 24px clamp(60px, 10vw, 110px)", textAlign: "center", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 60% 40%, rgba(90,132,160,0.15) 0%, transparent 65%)", pointerEvents: "none" }} />
         <FadeIn>
           <img src="/images/yeti/yetickets_sign.png" alt="Yetickets" style={{ width: "100%", maxWidth: 520, objectFit: "contain", marginBottom: 32 }} />
@@ -232,7 +232,7 @@ export default function TicketServicesPage() {
             <SectionLabel style={{ textAlign: "center", display: "block" }}>What You Get</SectionLabel>
             <SectionTitle center>Everything you need to sell tickets — nothing you don't.</SectionTitle>
           </FadeIn>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 20, marginTop: 48 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20, marginTop: 48 }}>
             {FEATURES.map((item, i) => (
               <FadeIn key={item.title} delay={i * 70}>
                 <div style={{ background: C.cream, borderRadius: 14, padding: "28px 24px", border: `1px solid ${C.sand}`, borderTop: `3px solid ${C.lakeBlue}`, height: "100%", boxSizing: "border-box" }}>
@@ -306,7 +306,7 @@ export default function TicketServicesPage() {
       <WaveDivider topColor={C.dusk} bottomColor={C.night} />
 
       {/* ── SIGN UP ── */}
-      <section id="signup" style={{ background: C.night, padding: "80px 24px 110px" }}>
+      <section id="signup" style={{ background: C.night, padding: "80px 24px clamp(60px, 10vw, 110px)" }}>
         <div style={{ maxWidth: 640, margin: "0 auto" }}>
           <FadeIn>
             <SectionLabel light style={{ textAlign: "center", display: "block" }}>Get Started</SectionLabel>
@@ -351,7 +351,7 @@ export default function TicketServicesPage() {
                   </div>
                 </FadeIn>
               )}
-              <div style={{ background: "rgba(255,255,255,0.04)", borderRadius: 20, border: "1px solid rgba(255,255,255,0.1)", padding: "36px 32px" }}>
+              <div style={{ background: "rgba(255,255,255,0.04)", borderRadius: 20, border: "1px solid rgba(255,255,255,0.1)", padding: "36px clamp(16px, 5vw, 32px)" }}>
                 <SignupForm />
               </div>
             </>
