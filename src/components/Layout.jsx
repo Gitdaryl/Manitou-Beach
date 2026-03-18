@@ -980,15 +980,65 @@ export function SubmitSection() {
                 fontSize: 24, color: C.sage,
                 animation: "pulse-glow 2s ease-in-out infinite",
               }}>✓</div>
-              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, color: C.cream, marginBottom: 8, fontWeight: 400 }}>
-                Welcome to the directory.
+              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream, marginBottom: 8, fontWeight: 400 }}>
+                You're in — thanks for listing your business.
               </div>
-              <p style={{ fontSize: 15, color: C.sunsetLight, margin: "0 0 8px 0", fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600 }}>
-                You're part of the Manitou Beach community now.
+              <p style={{ fontSize: 14, color: C.sunsetLight, margin: "0 0 24px 0", fontFamily: "'Libre Franklin', sans-serif", fontStyle: "italic" }}>
+                We're building something real here and you're part of it.
               </p>
-              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.8, margin: "0 0 28px 0", maxWidth: 400, marginLeft: "auto", marginRight: "auto" }}>
-                We review every submission before it goes live — usually within 48 hours. Want more visibility? You can upgrade anytime from the directory.
+
+              {/* What happens next */}
+              <div style={{ textAlign: "left", maxWidth: 380, margin: "0 auto 24px" }}>
+                <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
+                  What happens next
+                </p>
+                {[
+                  "We'll review your listing within 48 hours",
+                  "Once approved, you'll appear in the directory and on the Discover map",
+                  "We're actively growing our audience — we want people finding you",
+                ].map((step, i) => (
+                  <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", marginBottom: 10 }}>
+                    <span style={{
+                      flexShrink: 0, width: 22, height: 22, borderRadius: "50%",
+                      background: `${C.sage}30`, border: `1px solid ${C.sage}60`,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: 11, fontWeight: 700, color: C.sage, fontFamily: "'Libre Franklin', sans-serif",
+                    }}>{i + 1}</span>
+                    <span style={{ fontSize: 14, color: "rgba(255,255,255,0.7)", lineHeight: 1.6, fontFamily: "'Libre Franklin', sans-serif" }}>{step}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Soft Enhanced upsell */}
+              <div style={{
+                background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)",
+                borderRadius: 8, padding: "16px 20px", maxWidth: 380, margin: "0 auto 20px", textAlign: "left",
+              }}>
+                <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>
+                  Whenever you're ready
+                </p>
+                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.6)", marginBottom: 10, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.6 }}>
+                  If you ever want a bit more visibility, the Enhanced listing adds:
+                </p>
+                <ul style={{ margin: 0, paddingLeft: 0, listStyle: "none" }}>
+                  {["Clickable website link", "Business description", "Expandable card", "Category search placement", "Pin on the Discover map"].map(b => (
+                    <li key={b} style={{ fontSize: 13, color: "rgba(255,255,255,0.55)", paddingLeft: 14, position: "relative", marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>
+                      <span style={{ position: "absolute", left: 0, color: C.sage }}>·</span>{b}
+                    </li>
+                  ))}
+                </ul>
+                <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginTop: 12, marginBottom: 0, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.5 }}>
+                  No pressure — it's always here when you want it.{" "}
+                  <a href="/business#pricing" style={{ color: C.sunsetLight, textDecoration: "underline" }}>See pricing →</a>
+                </p>
+              </div>
+
+              {/* Update listing link */}
+              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", marginBottom: 24, fontFamily: "'Libre Franklin', sans-serif" }}>
+                Need to add your logo or contact details?{" "}
+                <a href="/update-listing" style={{ color: "rgba(255,255,255,0.6)", textDecoration: "underline" }}>Update your listing →</a>
               </p>
+
               <button
                 onClick={() => setSubmitted(false)}
                 className="btn-animated"

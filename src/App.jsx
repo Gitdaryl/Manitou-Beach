@@ -35,6 +35,7 @@ const VillagePage = lazy(() => import('./pages/VillagePage'));
 const USA250Page = lazy(() => import('./pages/USA250Page'));
 const StaysPage = lazy(() => import('./pages/StaysPage'));
 const HollyYetiPage = lazy(() => import('./pages/HollyYetiPage'));
+const UpdateListingPage = lazy(() => import('./pages/UpdateListingPage'));
 const CheckInPage = lazy(() => import('./pages/CheckInPage'));
 const TicketServicesPage = lazy(() => import('./pages/TicketServicesPage'));
 const TicketSuccessPage = lazy(() => import('./pages/TicketSuccessPage'));
@@ -92,6 +93,7 @@ export default function App() {
           <Route path="/village" element={<VillagePage />} />
           <Route path="/business" element={<FeaturedPage />} />
           <Route path="/featured" element={<FeaturedPage />} />
+          <Route path="/update-listing" element={<UpdateListingPage />} />
           <Route path="/mens-club" element={<MensClubPage />} />
           <Route path="/ladies-club" element={<LadiesClubPage />} />
           <Route path="/historical-society" element={<HistoricalSocietyPage />} />
