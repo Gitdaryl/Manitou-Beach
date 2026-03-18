@@ -138,8 +138,8 @@ export default async function handler(req, res) {
         quantity: String(qty),
         ticketPartner: ticketPartner || '',
       },
-      success_url: `${baseUrl}/happening?tickets=success&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${baseUrl}/happening?tickets=cancelled`,
+      success_url: `${baseUrl}/ticket-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}/happening`,
     };
 
     // If event has a connected partner, use destination charges
