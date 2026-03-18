@@ -865,7 +865,7 @@ export function SubmitSection() {
   const [logoFile, setLogoFile] = useState(null);
   const [logoPreview, setLogoPreview] = useState(null);
   const [isLogoDragging, setIsLogoDragging] = useState(false);
-  const [form, setForm] = useState({ name: "", category: "", phone: "", address: "", website: "", email: "", description: "", logoUrl: "", tier: "Free", duration: "1", newsletter: true, _hp: "" });
+  const [form, setForm] = useState({ name: "", category: "", phone: "", address: "", website: "", email: "", description: "", logoUrl: "", newsletter: true, _hp: "" });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
