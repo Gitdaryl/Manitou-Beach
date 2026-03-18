@@ -7,6 +7,7 @@ import HomePage from './pages/HomePage';
 // Lazy-loaded pages
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
 const TermsPage = lazy(() => import('./pages/TermsPage'));
+const SMSOptInPage = lazy(() => import('./pages/SMSOptInPage'));
 const BuildPage = lazy(() => import('./pages/BuildPage'));
 const RatePage = lazy(() => import('./pages/RatePage'));
 const FoundingPage = lazy(() => import('./pages/FoundingPage'));
@@ -121,6 +122,7 @@ export default function App() {
           <Route path="/usa250" element={<USA250Page />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />
+          <Route path="/sms" element={<SMSOptInPage />} />
         </Routes>
         <VoiceWidget />
       </Suspense>

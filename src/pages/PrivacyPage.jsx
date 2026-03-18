@@ -26,18 +26,20 @@ export default function PrivacyPage() {
         <p style={S.p}><strong>Event submissions:</strong> Event name, description, date, and contact email. Used to list your event on the site.</p>
         <p style={S.p}><strong>Offer claims (QR/loyalty):</strong> Name and email, collected when you redeem a business offer. This information is shared with the participating business for redemption verification only.</p>
         <p style={S.p}><strong>Payment information:</strong> Processed entirely by Stripe. We never receive or store your card number, CVV, or bank details. Stripe's privacy policy governs payment data.</p>
+        <p style={S.p}><strong>SMS opt-ins:</strong> Your mobile phone number, collected when you voluntarily subscribe to SMS notifications through an opt-in form on this Site. We use this to send you text messages about community events, food truck check-ins, and local business alerts. You may opt out at any time by replying STOP to any message. SMS opt-in data and consent are never shared with third parties.</p>
 
         <h2 style={S.h2}>How we use it</h2>
         <ul style={{ paddingLeft: 20, margin: '0 0 14px' }}>
           {[
             'To display your business or event in the public directory',
             'To send the Manitou Beach newsletter (email only, opt-in)',
+            'To send SMS notifications you have explicitly opted in to receive',
             'To process paid listing subscriptions via Stripe',
             'To verify offer redemptions at participating businesses',
             'To improve the site and understand what content is useful',
           ].map((item, i) => <li key={i} style={S.li}>{item}</li>)}
         </ul>
-        <p style={S.p}>We do not sell, rent, or trade your personal information to any third party for marketing purposes.</p>
+        <p style={S.p}>We do not sell, rent, or trade your personal information to any third party for marketing purposes. SMS opt-in information is never shared with unauthorized third parties.</p>
 
         <h2 style={S.h2}>Third-party services</h2>
         <p style={S.p}>The Site uses the following third-party services, each with their own privacy practices:</p>
@@ -46,6 +48,7 @@ export default function PrivacyPage() {
             'Notion — business and event data storage',
             'beehiiv — newsletter delivery and subscriber management',
             'Stripe — payment processing for paid listings',
+            'Twilio — SMS delivery for community notifications (phone numbers are transmitted to Twilio solely for message delivery and are not shared with other parties)',
             'Google Maps — interactive map on the Discover page (may set cookies)',
             'Vercel — hosting and serverless functions',
             'OpenStreetMap / Nominatim — address geocoding (no personal data sent)',
