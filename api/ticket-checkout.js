@@ -67,33 +67,39 @@ export default async function handler(req, res) {
     const eventLocation = p['Location']?.rich_text?.[0]?.text?.content || '';
     const ticketPartner = p['Ticket Partner']?.rich_text?.[0]?.text?.content || '';
 
-    // Look up connected Stripe account for this partner (if any)
+    // Require a connected Stripe Express account — no account, no tickets
+    if (!ticketPartner) {
+      return res.status(400).json({ error: 'Ticket sales not configured for this event. Contact the organizer.' });
+    }
+
     let connectedAccountId = null;
-    if (ticketPartner) {
-      try {
-        const partnerRes = await fetch(`https://api.notion.com/v1/databases/${process.env.NOTION_DB_TICKET_PARTNERS}/query`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${process.env.NOTION_TOKEN_EVENTS}`,
-            'Content-Type': 'application/json',
-            'Notion-Version': '2022-06-28',
+    try {
+      const partnerRes = await fetch(`https://api.notion.com/v1/databases/${process.env.NOTION_DB_TICKET_PARTNERS}/query`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.NOTION_TOKEN_EVENTS}`,
+          'Content-Type': 'application/json',
+          'Notion-Version': '2022-06-28',
+        },
+        body: JSON.stringify({
+          filter: {
+            and: [
+              { property: 'Org Name', title: { equals: ticketPartner } },
+              { property: 'Status', select: { equals: 'Active' } },
+            ],
           },
-          body: JSON.stringify({
-            filter: {
-              and: [
-                { property: 'Org Name', title: { equals: ticketPartner } },
-                { property: 'Status', select: { equals: 'Active' } },
-              ],
-            },
-          }),
-        });
-        const partnerData = await partnerRes.json();
-        if (partnerData.results?.length > 0) {
-          connectedAccountId = partnerData.results[0].properties['Stripe Account ID']?.rich_text?.[0]?.text?.content || null;
-        }
-      } catch (err) {
-        console.error('Partner lookup error:', err.message);
+        }),
+      });
+      const partnerData = await partnerRes.json();
+      if (partnerData.results?.length > 0) {
+        connectedAccountId = partnerData.results[0].properties['Stripe Account ID']?.rich_text?.[0]?.text?.content || null;
       }
+    } catch (err) {
+      console.error('Partner lookup error:', err.message);
+    }
+
+    if (!connectedAccountId) {
+      return res.status(400).json({ error: 'Payment account not set up for this organizer. Contact the event organizer.' });
     }
 
     // Check capacity
@@ -151,18 +157,15 @@ export default async function handler(req, res) {
       cancel_url: `${baseUrl}/happening`,
     };
 
-    // If event has a connected partner, use destination charges
-    // Money goes directly to org, platform fee auto-deducted to Daryl's account
-    if (connectedAccountId) {
-      const totalCents = unitAmountCents * qty;
-      const applicationFee = Math.round(totalCents * PLATFORM_FEE_PERCENT);
-      sessionParams.payment_intent_data = {
-        application_fee_amount: applicationFee,
-        transfer_data: {
-          destination: connectedAccountId,
-        },
-      };
-    }
+    // Always route through Express Connect — platform fee to Daryl, rest to organizer
+    const totalCents = unitAmountCents * qty;
+    const applicationFee = Math.round(totalCents * PLATFORM_FEE_PERCENT);
+    sessionParams.payment_intent_data = {
+      application_fee_amount: applicationFee,
+      transfer_data: {
+        destination: connectedAccountId,
+      },
+    };
 
     const session = await stripe.checkout.sessions.create(sessionParams);
 
