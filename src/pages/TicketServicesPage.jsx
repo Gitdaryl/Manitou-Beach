@@ -358,7 +358,17 @@ export default function TicketServicesPage() {
           )}
 
           <FadeIn delay={300}>
-            <p style={{ marginTop: 32, fontSize: 12, color: "rgba(255,255,255,0.2)", textAlign: "center", lineHeight: 1.8, fontFamily: "'Libre Franklin', sans-serif" }}>
+            <div style={{ marginTop: 24, textAlign: 'center' }}>
+              <a href="/partner-intake" style={{
+                display: 'inline-block', padding: '10px 22px', borderRadius: 8,
+                border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.5)',
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, textDecoration: 'none',
+                letterSpacing: 0.5,
+              }}>
+                Not sure where to start? Fill out a quick intake form →
+              </a>
+            </div>
+            <p style={{ marginTop: 16, fontSize: 12, color: "rgba(255,255,255,0.2)", textAlign: "center", lineHeight: 1.8, fontFamily: "'Libre Franklin', sans-serif" }}>
               Questions? <a href="mailto:admin@yetigroove.com?subject=Ticketing" style={{ color: "rgba(255,255,255,0.35)", textDecoration: "none" }}>Email Daryl directly →</a>
             </p>
           </FadeIn>
