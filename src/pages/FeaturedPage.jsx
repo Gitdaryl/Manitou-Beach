@@ -163,42 +163,48 @@ export default function FeaturedPage() {
         </FadeIn>
       </section>
 
-      {/* Category Slot Availability Band — shows Featured tier (most popular) */}
+      {/* Category Slot Availability Band — shows Premium + Featured tier availability */}
       {slotCounts && slotCounts.tierCounts && !isFull && (() => {
-        const activeCats = LISTING_CATEGORIES.filter(cat => (slotCounts.tierCounts.featured?.[cat] || 0) > 0);
-        if (activeCats.length === 0) return null;
+        const premiumCats = LISTING_CATEGORIES.filter(cat => (slotCounts.tierCounts.premium?.[cat] || 0) > 0);
+        const featuredCats = LISTING_CATEGORIES.filter(cat => (slotCounts.tierCounts.featured?.[cat] || 0) > 0);
+        if (premiumCats.length === 0 && featuredCats.length === 0) return null;
+        const renderPills = (cats, tierId) => cats.map(cat => {
+          const used = slotCounts.tierCounts[tierId]?.[cat] || 0;
+          const cap = SLOT_CAPS[tierId];
+          const left = Math.max(0, cap - used);
+          const full = left === 0;
+          const almostFull = left === 1;
+          const dotColor = full ? C.sunset : almostFull ? C.driftwood : C.sage;
+          return (
+            <span key={cat} style={{
+              display: "inline-flex", alignItems: "center", gap: 5,
+              padding: "4px 10px", borderRadius: 20,
+              background: full ? `${C.sunset}12` : almostFull ? `${C.driftwood}12` : `${C.sage}10`,
+              border: `1px solid ${dotColor}28`,
+            }}>
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: dotColor, display: "inline-block", flexShrink: 0 }} />
+              <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.6)" }}>{cat}</span>
+              <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, color: full ? C.sunset : "rgba(255,255,255,0.3)" }}>
+                {full ? "Full" : `${left} of ${cap} left`}
+              </span>
+            </span>
+          );
+        });
         return (
           <div style={{ background: C.night, borderBottom: `1px solid rgba(255,255,255,0.06)`, padding: "14px 24px" }}>
-            <div style={{ maxWidth: 1000, margin: "0 auto", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
-              <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.3)", flexShrink: 0 }}>
-                Featured Spots
-              </span>
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                {activeCats.map(cat => {
-                  const used = slotCounts.tierCounts.featured?.[cat] || 0;
-                  const left = Math.max(0, SLOT_CAPS.featured - used);
-                  const full = left === 0;
-                  const almostFull = left === 1;
-                  const dotColor = full ? C.sunset : almostFull ? C.driftwood : C.sage;
-                  return (
-                    <span key={cat} style={{
-                      display: "inline-flex", alignItems: "center", gap: 5,
-                      padding: "4px 10px", borderRadius: 20,
-                      background: full ? `${C.sunset}12` : almostFull ? `${C.driftwood}12` : `${C.sage}10`,
-                      border: `1px solid ${dotColor}28`,
-                    }}>
-                      <span style={{ width: 6, height: 6, borderRadius: "50%", background: dotColor, display: "inline-block", flexShrink: 0 }} />
-                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.6)" }}>{cat}</span>
-                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, color: full ? C.sunset : "rgba(255,255,255,0.3)" }}>
-                        {full ? "Full" : `${left} of ${SLOT_CAPS.featured} left`}
-                      </span>
-                    </span>
-                  );
-                })}
-              </div>
-              <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, color: "rgba(255,255,255,0.2)", marginLeft: "auto" }}>
-                Premium: 1/cat · Featured: 3/cat · Enhanced: 6/cat
-              </span>
+            <div style={{ maxWidth: 1000, margin: "0 auto", display: "flex", flexDirection: "column", gap: 10 }}>
+              {premiumCats.length > 0 && (
+                <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: C.sunsetLight, flexShrink: 0, minWidth: 68 }}>Premium</span>
+                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{renderPills(premiumCats, 'premium')}</div>
+                </div>
+              )}
+              {featuredCats.length > 0 && (
+                <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: C.sage, flexShrink: 0, minWidth: 68 }}>Featured</span>
+                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{renderPills(featuredCats, 'featured')}</div>
+                </div>
+              )}
             </div>
           </div>
         );
@@ -324,7 +330,14 @@ export default function FeaturedPage() {
                       {tier.badge}
                     </div>
                   )}
-                  <div style={{ color: tier.color, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", marginBottom: 10 }}>{tier.name}</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10, flexWrap: "wrap" }}>
+                    <div style={{ color: tier.color, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase" }}>{tier.name}</div>
+                    {SLOT_CAPS[tier.id] && (
+                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", padding: "2px 8px", borderRadius: 20, background: `${tier.color}18`, color: tier.color, border: `1px solid ${tier.color}35`, whiteSpace: "nowrap" }}>
+                        {SLOT_CAPS[tier.id] === 1 ? 'Exclusive · 1 per category' : `${SLOT_CAPS[tier.id]} spots per category`}
+                      </span>
+                    )}
+                  </div>
                   <div style={{ marginBottom: 4 }}>
                     <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 36, color: C.cream, fontWeight: 700 }}>${tier.price}</span>
                     <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 14, fontFamily: "'Libre Franklin', sans-serif" }}>/mo</span>
