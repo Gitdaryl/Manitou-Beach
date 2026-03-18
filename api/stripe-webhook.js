@@ -108,7 +108,10 @@ async function generateTicketPDF({ ticketId, eventName, eventDate, eventTime, ev
   page.drawText('Print this page and bring it with you', { x: 24, y: 28, size: 9, font: helvetica, color: muted });
 
   // QR code (right side)
-  const verifyUrl = `https://manitoubeach.com/check-in?ticket=${ticketId}`;
+  const baseUrl = process.env.SITE_URL
+    || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null)
+    || 'http://localhost:3000';
+  const verifyUrl = `${baseUrl}/check-in?ticket=${ticketId}`;
   const qrDataUrl = await QRCode.toDataURL(verifyUrl, { width: 140, margin: 1, color: { dark: '#1A2830', light: '#FAF6EF' } });
   const qrImageBytes = Buffer.from(qrDataUrl.split(',')[1], 'base64');
   const qrImage = await pdfDoc.embedPng(qrImageBytes);
