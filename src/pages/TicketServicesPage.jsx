@@ -18,6 +18,12 @@ const FEATURES = [
   { icon: "📉", title: "Half the Fees", copy: "We charge a fraction of what Eventbrite charges. Your attendees see one clean price — no surprise fees at checkout." },
 ];
 
+const PHONE_RISKS = [
+  { icon: "🔒", title: "Card numbers over the phone are a liability", copy: "When someone reads you their Visa over the phone, you're now responsible for that number. One sticky note lost, one handwritten list misplaced — and you're the one explaining it." },
+  { icon: "✅", title: "Online checkout protects everyone", copy: "Buyers enter their own card directly into Stripe's bank-grade system. It never touches your hands — or your organization's inbox." },
+  { icon: "📋", title: "Every sale is automatically recorded", copy: "No spreadsheets, no callbacks, no 'I think I took that order.' Every ticket is logged instantly with the buyer's name and contact info." },
+];
+
 function SignupForm() {
   const [orgName, setOrgName] = useState('');
   const [contactName, setContactName] = useState('');
@@ -133,9 +139,8 @@ export default function TicketServicesPage() {
       <section style={{ background: `linear-gradient(160deg, ${C.night} 0%, ${C.dusk} 55%, ${C.night} 100%)`, padding: "160px 24px 110px", textAlign: "center", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 60% 40%, rgba(90,132,160,0.15) 0%, transparent 65%)", pointerEvents: "none" }} />
         <FadeIn>
-          <img src="/images/yeti/yetickets.png" alt="Yetickets" style={{ width: 140, height: 140, objectFit: "contain", marginBottom: 16 }} />
-          <SectionLabel light>Yetickets</SectionLabel>
-          <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(30px, 5vw, 58px)", fontWeight: 400, color: C.cream, margin: "20px 0 24px", lineHeight: 1.15 }}>
+          <img src="/images/yeti/yetickets_sign.png" alt="Yetickets" style={{ height: 80, maxWidth: 340, objectFit: "contain", marginBottom: 28 }} />
+          <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(30px, 5vw, 58px)", fontWeight: 400, color: C.cream, margin: "0 0 24px", lineHeight: 1.15 }}>
             Sell tickets.<br />Skip the middleman.<br /><em>Keep more money.</em>
           </h1>
           <p style={{ fontSize: 16, color: "rgba(255,255,255,0.5)", maxWidth: 540, margin: "0 auto 40px", lineHeight: 1.85 }}>
@@ -176,8 +181,49 @@ export default function TicketServicesPage() {
 
       <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
 
-      {/* ── WHAT YOU GET ── */}
+      {/* ── THE SAFER WAY ── */}
       <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
+        <div style={{ maxWidth: 960, margin: "0 auto" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 60, alignItems: "center" }}>
+            <FadeIn>
+              <div style={{ textAlign: "center" }}>
+                <img
+                  src="/images/yeti/yetickets.png"
+                  alt="Yetickets mascot"
+                  style={{ width: "100%", maxWidth: 260, objectFit: "contain", display: "block", margin: "0 auto" }}
+                />
+              </div>
+            </FadeIn>
+            <FadeIn delay={100}>
+              <SectionLabel>The Safer Way</SectionLabel>
+              <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 3.5vw, 36px)", fontWeight: 400, color: C.text, margin: "16px 0 20px", lineHeight: 1.3 }}>
+                Stop taking credit cards<br /><em>over the phone.</em>
+              </h2>
+              <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.9, marginBottom: 32 }}>
+                Every event ends up with someone in the back fielding calls and jotting down card numbers on a notepad. It feels like good service — but it's a real liability for your organization. One lost note, one wrong charge, one unhappy member, and it's your problem to untangle.
+              </p>
+              <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+                {PHONE_RISKS.map((item, i) => (
+                  <FadeIn key={item.title} delay={i * 70 + 150}>
+                    <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
+                      <div style={{ fontSize: 22, marginTop: 2, flexShrink: 0 }}>{item.icon}</div>
+                      <div>
+                        <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: C.text, marginBottom: 6 }}>{item.title}</div>
+                        <div style={{ fontSize: 13, color: C.textLight, lineHeight: 1.85 }}>{item.copy}</div>
+                      </div>
+                    </div>
+                  </FadeIn>
+                ))}
+              </div>
+            </FadeIn>
+          </div>
+        </div>
+      </section>
+
+      <WaveDivider topColor={C.warmWhite} bottomColor={C.cream} />
+
+      {/* ── WHAT YOU GET ── */}
+      <section style={{ background: C.cream, padding: "80px 24px" }}>
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
           <FadeIn>
             <SectionLabel style={{ textAlign: "center", display: "block" }}>What You Get</SectionLabel>
@@ -197,7 +243,7 @@ export default function TicketServicesPage() {
         </div>
       </section>
 
-      <WaveDivider topColor={C.warmWhite} bottomColor={C.dusk} />
+      <WaveDivider topColor={C.cream} bottomColor={C.dusk} />
 
       {/* ── PRICING ── */}
       <section style={{ background: C.dusk, padding: "80px 24px", textAlign: "center" }}>

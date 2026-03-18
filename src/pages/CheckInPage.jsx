@@ -130,13 +130,10 @@ function CheckInPage() {
       <GlobalStyles />
 
       {/* Minimal header — no navbar needed for volunteers */}
-      <div style={{ padding: '20px 24px', borderBottom: `1px solid ${C.dusk}`, textAlign: 'center' }}>
-        <img src="/images/yeti/yetickets.png" alt="Yetickets" style={{ width: 56, height: 56, objectFit: 'contain', marginBottom: 6 }} />
-        <div style={{ fontSize: 11, letterSpacing: 3, textTransform: 'uppercase', color: C.textMuted, marginBottom: 4 }}>
-          Yetickets
-        </div>
-        <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.cream }}>
-          Ticket Check-In
+      <div style={{ padding: '20px 24px 16px', borderBottom: `1px solid ${C.dusk}`, textAlign: 'center' }}>
+        <img src="/images/yeti/yetickets_sign.png" alt="Yetickets" style={{ height: 52, maxWidth: 240, objectFit: 'contain', display: 'block', margin: '0 auto 10px' }} />
+        <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream }}>
+          Event Check-In
         </div>
       </div>
 
@@ -249,27 +246,44 @@ function CheckInPage() {
         {!result && (
           <>
             {!scanning ? (
-              <button
-                onClick={startScanner}
-                disabled={loading}
-                style={{
-                  width: '100%',
-                  padding: '24px',
-                  background: C.sage,
-                  color: C.cream,
-                  border: 'none',
-                  borderRadius: 12,
-                  fontSize: 16,
-                  fontWeight: 700,
-                  letterSpacing: 1.5,
-                  textTransform: 'uppercase',
-                  cursor: 'pointer',
-                  fontFamily: "'Libre Franklin', sans-serif",
-                  marginBottom: 20,
-                }}
-              >
-                {loading ? 'Checking...' : 'Tap to Scan QR Code'}
-              </button>
+              <>
+                {/* Mascot + instructions */}
+                {!loading && (
+                  <div style={{ textAlign: 'center', padding: '28px 0 20px' }}>
+                    <img src="/images/yeti/yetickets.png" alt="" style={{ width: 110, height: 110, objectFit: 'contain', opacity: 0.9, display: 'block', margin: '0 auto 14px' }} />
+                    <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.cream, marginBottom: 10 }}>
+                      Ready to check people in?
+                    </div>
+                    <div style={{ fontSize: 15, color: C.textMuted, lineHeight: 1.8, maxWidth: 320, margin: '0 auto' }}>
+                      Tap the button below, then point your phone camera at the QR code on their ticket.
+                      You'll see a <span style={{ color: '#7bba6e', fontWeight: 700 }}>green checkmark</span> for valid
+                      or a <span style={{ color: '#ff6b6b', fontWeight: 700 }}>red X</span> if there's a problem.
+                    </div>
+                  </div>
+                )}
+                <button
+                  onClick={startScanner}
+                  disabled={loading}
+                  style={{
+                    width: '100%',
+                    padding: '26px',
+                    background: C.sage,
+                    color: C.cream,
+                    border: 'none',
+                    borderRadius: 14,
+                    fontSize: 18,
+                    fontWeight: 700,
+                    letterSpacing: 1.5,
+                    textTransform: 'uppercase',
+                    cursor: 'pointer',
+                    fontFamily: "'Libre Franklin', sans-serif",
+                    marginBottom: 20,
+                    boxShadow: '0 4px 20px rgba(122,142,114,0.3)',
+                  }}
+                >
+                  {loading ? 'Checking...' : '📷  Tap to Scan QR Code'}
+                </button>
+              </>
             ) : (
               <div style={{ marginBottom: 20 }}>
                 <div id="qr-reader" ref={scannerRef} style={{ borderRadius: 12, overflow: 'hidden', marginBottom: 12 }} />
