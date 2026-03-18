@@ -21,12 +21,11 @@ export default async function handler(req, res) {
     account = await stripe.accounts.create({
       type: 'express',
       email: email.trim(),
-      business_type: 'company',
-      company: { name: orgName.trim() },
       capabilities: {
         card_payments: { requested: true },
         transfers: { requested: true },
       },
+      metadata: { orgName: orgName.trim() },
     });
   } catch (err) {
     console.error('Stripe account creation error:', err.message);
