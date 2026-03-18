@@ -139,7 +139,7 @@ export default function TicketServicesPage() {
       <section style={{ background: `linear-gradient(160deg, ${C.night} 0%, ${C.dusk} 55%, ${C.night} 100%)`, padding: "160px 24px 110px", textAlign: "center", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 60% 40%, rgba(90,132,160,0.15) 0%, transparent 65%)", pointerEvents: "none" }} />
         <FadeIn>
-          <img src="/images/yeti/yetickets_sign.png" alt="Yetickets" style={{ height: 80, maxWidth: 340, objectFit: "contain", marginBottom: 28 }} />
+          <img src="/images/yeti/yetickets_sign.png" alt="Yetickets" style={{ width: "100%", maxWidth: 520, objectFit: "contain", marginBottom: 32 }} />
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(30px, 5vw, 58px)", fontWeight: 400, color: C.cream, margin: "0 0 24px", lineHeight: 1.15 }}>
             Sell tickets.<br />Skip the middleman.<br /><em>Keep more money.</em>
           </h1>
@@ -162,7 +162,7 @@ export default function TicketServicesPage() {
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
           <FadeIn>
             <div style={{ textAlign: "center", marginBottom: 8 }}>
-              <img src="/images/yeti/yetickets_get_tickets.png" alt="Yetickets box office" style={{ width: 160, height: 160, objectFit: "contain" }} />
+              <img src="/images/yeti/yetickets_get_tickets.png" alt="Yetickets box office" style={{ width: 260, height: 260, objectFit: "contain" }} />
             </div>
             <SectionLabel style={{ textAlign: "center", display: "block" }}>How It Works</SectionLabel>
             <SectionTitle center>Three steps. You're selling tickets in a day.</SectionTitle>
@@ -193,7 +193,7 @@ export default function TicketServicesPage() {
                 <img
                   src="/images/yeti/yetickets_pci.png"
                   alt="Yetickets PCI compliance"
-                  style={{ width: "100%", maxWidth: 280, objectFit: "contain", display: "block", margin: "0 auto" }}
+                  style={{ width: "100%", maxWidth: 380, objectFit: "contain", display: "block", margin: "0 auto" }}
                 />
               </div>
             </FadeIn>

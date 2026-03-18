@@ -131,7 +131,7 @@ function CheckInPage() {
 
       {/* Minimal header — no navbar needed for volunteers */}
       <div style={{ padding: '20px 24px 16px', borderBottom: `1px solid ${C.dusk}`, textAlign: 'center' }}>
-        <img src="/images/yeti/yetickets_sign.png" alt="Yetickets" style={{ height: 52, maxWidth: 240, objectFit: 'contain', display: 'block', margin: '0 auto 10px' }} />
+        <img src="/images/yeti/yetickets_sign.png" alt="Yetickets" style={{ height: 72, maxWidth: 320, objectFit: 'contain', display: 'block', margin: '0 auto 10px' }} />
         <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream }}>
           Event Check-In
         </div>
@@ -250,7 +250,7 @@ function CheckInPage() {
                 {/* Mascot + instructions */}
                 {!loading && (
                   <div style={{ textAlign: 'center', padding: '28px 0 20px' }}>
-                    <img src="/images/yeti/yetickets_doorman.png" alt="" style={{ width: 160, height: 160, objectFit: 'contain', display: 'block', margin: '0 auto 14px' }} />
+                    <img src="/images/yeti/yetickets_doorman.png" alt="" style={{ width: 220, height: 220, objectFit: 'contain', display: 'block', margin: '0 auto 14px' }} />
                     <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.cream, marginBottom: 10 }}>
                       Ready to check people in?
                     </div>
