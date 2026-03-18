@@ -1669,8 +1669,11 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: "flex-start",
         gap: 8,
+        overflowY: "auto",
+        paddingTop: 80,
+        paddingBottom: 40,
         transform: menuOpen ? "translateX(0)" : "translateX(100%)",
         transition: "transform 0.35s ease",
       }}>
