@@ -979,7 +979,7 @@ function BusinessDirectory() {
               <SectionLabel>The Directory</SectionLabel>
               <SectionTitle>Local Businesses</SectionTitle>
             </div>
-            <Btn href="/#submit" variant="outline" small>+ List Your Business (Free)</Btn>
+            <Btn href="/business" variant="outline" small>+ List Your Business (Free)</Btn>
           </div>
         </FadeIn>
 
