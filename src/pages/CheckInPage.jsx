@@ -250,7 +250,7 @@ function CheckInPage() {
                 {/* Mascot + instructions */}
                 {!loading && (
                   <div style={{ textAlign: 'center', padding: '28px 0 20px' }}>
-                    <img src="/images/yeti/yetickets.png" alt="" style={{ width: 110, height: 110, objectFit: 'contain', opacity: 0.9, display: 'block', margin: '0 auto 14px' }} />
+                    <img src="/images/yeti/yetickets_doorman.png" alt="" style={{ width: 160, height: 160, objectFit: 'contain', display: 'block', margin: '0 auto 14px' }} />
                     <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.cream, marginBottom: 10 }}>
                       Ready to check people in?
                     </div>

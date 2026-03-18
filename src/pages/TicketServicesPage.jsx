@@ -161,6 +161,9 @@ export default function TicketServicesPage() {
       <section style={{ background: C.cream, padding: "80px 24px" }}>
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
           <FadeIn>
+            <div style={{ textAlign: "center", marginBottom: 8 }}>
+              <img src="/images/yeti/yetickets_get_tickets.png" alt="Yetickets box office" style={{ width: 160, height: 160, objectFit: "contain" }} />
+            </div>
             <SectionLabel style={{ textAlign: "center", display: "block" }}>How It Works</SectionLabel>
             <SectionTitle center>Three steps. You're selling tickets in a day.</SectionTitle>
           </FadeIn>
@@ -188,9 +191,9 @@ export default function TicketServicesPage() {
             <FadeIn>
               <div style={{ textAlign: "center" }}>
                 <img
-                  src="/images/yeti/yetickets.png"
-                  alt="Yetickets mascot"
-                  style={{ width: "100%", maxWidth: 260, objectFit: "contain", display: "block", margin: "0 auto" }}
+                  src="/images/yeti/yetickets_pci.png"
+                  alt="Yetickets PCI compliance"
+                  style={{ width: "100%", maxWidth: 280, objectFit: "contain", display: "block", margin: "0 auto" }}
                 />
               </div>
             </FadeIn>
