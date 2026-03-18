@@ -319,7 +319,7 @@ export default async function handler(req, res) {
 
     // 4. Ticket purchase (from ticket-checkout.js)
     if (metadata.type === 'ticket' && metadata.eventId) {
-      const ticketId = generateTicketNumber();
+      const ticketId = metadata.ticketId || generateTicketNumber();
       const quantity = parseInt(metadata.quantity, 10) || 1;
       try {
         // Generate printable PDF

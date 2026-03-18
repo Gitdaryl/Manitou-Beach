@@ -19,7 +19,8 @@ export default async function handler(req, res) {
     const paymentIntentId = session.payment_intent;
     const buyerEmail = session.customer_email || session.customer_details?.email || '';
 
-    let ticketId = null;
+    // Ticket ID is pre-generated at checkout time — available immediately
+    let ticketId = metadata.ticketId || null;
     let pdfUrl = null;
 
     try {
@@ -40,7 +41,6 @@ export default async function handler(req, res) {
       const notionData = await notionRes.json();
       if (notionData.results?.length > 0) {
         const props = notionData.results[0].properties;
-        ticketId = props['Ticket ID']?.title?.[0]?.text?.content || null;
         pdfUrl = props['PDF URL']?.url || null;
       }
     } catch (notionErr) {

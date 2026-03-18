@@ -37,11 +37,16 @@ export default function TicketSuccessPage() {
 
         setTicket(data);
         setLoading(false);
-        if (data.pdfUrl) setPdfReady(true);
+
+        // Keep polling for PDF URL until webhook delivers it (up to 20 more seconds)
+        if (!data.pdfUrl && attempts < maxAttempts) {
+          attempts++;
+          setTimeout(poll, 2000);
+        }
       } catch (err) {
         attempts++;
         if (attempts < maxAttempts) {
-          setTimeout(poll, 2000); // retry every 2s while webhook processes
+          setTimeout(poll, 2000);
         } else {
           setError('Could not load ticket details. Check your email — your ticket was sent there.');
           setLoading(false);
@@ -62,7 +67,7 @@ export default function TicketSuccessPage() {
 
           {loading && (
             <div>
-              <img src="/images/yeti/yetickets_doorman.png" alt="Yetickets" style={{ width: 180, height: 180, marginBottom: 24 }} />
+              <img src="/images/yeti/yetickets_doorman.png" alt="Yetickets" style={{ width: 320, height: 320, marginBottom: 24 }} />
               <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, letterSpacing: 1 }}>
                 Preparing your ticket…
               </div>
@@ -92,7 +97,7 @@ export default function TicketSuccessPage() {
           {ticket && !loading && (
             <div>
               {/* Logo */}
-              <img src="/images/yeti/yetickets_sign.png" alt="Yetickets" style={{ width: 200, marginBottom: 8 }} />
+              <img src="/images/yeti/yetickets_sign.png" alt="Yetickets" style={{ width: '100%', maxWidth: 420, marginBottom: 16 }} />
 
               {/* Big checkmark */}
               <div style={{
@@ -151,8 +156,8 @@ export default function TicketSuccessPage() {
                 ))}
               </div>
 
-              {/* Download button */}
-              {pdfReady && (
+              {/* Download button — shows immediately, links to PDF once ready */}
+              {ticket.pdfUrl ? (
                 <a
                   href={ticket.pdfUrl}
                   target="_blank"
@@ -173,6 +178,21 @@ export default function TicketSuccessPage() {
                 >
                   🖨️ Download &amp; Print Ticket
                 </a>
+              ) : (
+                <div style={{
+                  display: 'block',
+                  background: `${C.night}55`,
+                  color: 'rgba(255,255,255,0.7)',
+                  padding: '18px 28px',
+                  borderRadius: 12,
+                  fontSize: 15,
+                  fontWeight: 600,
+                  marginBottom: 12,
+                  letterSpacing: 0.5,
+                  cursor: 'default',
+                }}>
+                  ⏳ Preparing your ticket PDF… check your email
+                </div>
               )}
 
               {/* Email confirmation */}

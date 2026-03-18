@@ -3,6 +3,14 @@ import Stripe from 'stripe';
 // Platform fee: 1.25% per ticket (deducted from org's payout via Stripe Connect)
 const PLATFORM_FEE_PERCENT = 0.0125;
 
+// Pre-generate ticket ID so it's available immediately on the success page
+function generateTicketNumber() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let id = 'MB-';
+  for (let i = 0; i < 6; i++) id += chars[Math.floor(Math.random() * chars.length)];
+  return id;
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -128,6 +136,7 @@ export default async function handler(req, res) {
       }],
       metadata: {
         type: 'ticket',
+        ticketId: generateTicketNumber(),
         eventId,
         eventName,
         eventDate,
