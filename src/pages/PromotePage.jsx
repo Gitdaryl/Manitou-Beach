@@ -52,6 +52,9 @@ const PROMOTE_PACKAGES = [
   { id: "spotlight",       label: "Full Launch Bundle",     detail: "Best Value",         price: "$149", fullPrice: "$299", diagramType: "bundle",
     desc: "Front page of the site for 7 days + top of the newsletter + featured calendar listing. All three at once.",
     plain: "The whole shebang. Front page of the website, top of the email, featured in the calendar. Maximum coverage — and you save $55 doing it this way.", badge: "Best Value" },
+  { id: "rsvp_collection", label: "RSVP Collection",        detail: "Per Event",          price: "$9",   fullPrice: "$19",  diagramType: "calendar",
+    desc: "In-app RSVP form, organizer notifications, and email reminders the day before and day of.",
+    plain: "Visitors register right on the site. You get notified for each RSVP. Everyone gets a reminder email the day before and day of your event. SMS reminders coming soon." },
 ];
 
 function PlacementDiagram({ type, dark = false }) {
@@ -481,7 +484,9 @@ export default function PromotePage() {
       )}
 
       {/* List Free — event submission */}
-      <HappeningSubmitCTA />
+      <div id="submit-event">
+        <HappeningSubmitCTA />
+      </div>
 
       {/* Package grid */}
       <section style={{ background: C.warmWhite, padding: "72px 24px 60px" }}>

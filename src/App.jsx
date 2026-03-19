@@ -40,6 +40,7 @@ const CheckInPage = lazy(() => import('./pages/CheckInPage'));
 const TicketServicesPage = lazy(() => import('./pages/TicketServicesPage'));
 const TicketSuccessPage = lazy(() => import('./pages/TicketSuccessPage'));
 const PartnerIntakePage = lazy(() => import('./pages/PartnerIntakePage'));
+const EventEditPage = lazy(() => import('./pages/EventEditPage'));
 
 // Lazy sub-components from named exports
 const DispatchArticlePage = lazy(() => import('./pages/DispatchPage').then(m => ({ default: m.DispatchArticlePage })));
@@ -88,6 +89,7 @@ export default function App() {
           <Route path="/redeem-promo" element={<RedeemPromoView />} />
           <Route path="/" element={<HomePage />} />
           <Route path="/events" element={<HappeningPage />} />
+          <Route path="/events/edit" element={<EventEditPage />} />
           <Route path="/happening" element={<HappeningPage />} />
           <Route path="/round-lake" element={<RoundLakePage />} />
           <Route path="/village" element={<VillagePage />} />

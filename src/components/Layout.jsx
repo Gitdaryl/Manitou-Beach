@@ -134,6 +134,23 @@ export function GlobalStyles() {
         border-color: rgba(212,132,90,0.5) !important;
         box-shadow: 0 0 20px rgba(212,132,90,0.10), 0 6px 18px rgba(0,0,0,0.25) !important;
       }
+      @keyframes premium-aura {
+        0%, 100% { box-shadow: 0 0 0 1px rgba(212,132,90,0.15), 0 4px 24px rgba(212,132,90,0.08); }
+        50%       { box-shadow: 0 0 0 2px rgba(212,132,90,0.35), 0 8px 40px rgba(212,132,90,0.18); }
+      }
+      .premium-banner-glow {
+        animation: premium-aura 3s ease-in-out infinite;
+      }
+      @keyframes featured-pulse {
+        0%, 100% { box-shadow: 0 0 0 1px rgba(122,142,114,0.12), 0 4px 16px rgba(0,0,0,0.2); }
+        50%       { box-shadow: 0 0 0 1px rgba(122,142,114,0.30), 0 6px 28px rgba(122,142,114,0.12); }
+      }
+      .featured-card-pulse {
+        animation: featured-pulse 4s ease-in-out infinite;
+      }
+      .listing-dot-pulse {
+        animation: dot-breathe 2.5s ease-in-out infinite;
+      }
       .mono-icon {
         filter: grayscale(1);
         opacity: 0.72;
@@ -614,12 +631,15 @@ export function EventTimeline() {
                         style={{ display: "flex", gap: 20, marginBottom: 24, position: "relative", cursor: "pointer" }}
                       >
                         {/* Dot */}
-                        <div style={{
-                          position: "absolute", left: -30, top: 5,
-                          width: 10, height: 10, borderRadius: "50%",
-                          background: color, border: `2px solid ${C.night}`,
-                          boxShadow: `0 0 0 2px ${color}40`, flexShrink: 0,
-                        }} />
+                        <div
+                          className={event.heroFeature ? "listing-dot-pulse" : ""}
+                          style={{
+                            position: "absolute", left: -30, top: 5,
+                            width: 10, height: 10, borderRadius: "50%",
+                            background: color, border: `2px solid ${C.night}`,
+                            boxShadow: `0 0 0 2px ${color}40`, flexShrink: 0,
+                          }}
+                        />
 
                         {/* Date block */}
                         <div style={{ minWidth: 40, textAlign: "center", flexShrink: 0 }}>
@@ -1936,6 +1956,10 @@ export function EventLightbox({ event, onClose }) {
   const [ticketLoading, setTicketLoading] = React.useState(false);
   const [ticketError, setTicketError] = React.useState('');
   const [showTicketForm, setShowTicketForm] = React.useState(false);
+  const [rsvpForm, setRsvpForm] = React.useState({ name: '', email: '', phone: '', guests: 1 });
+  const [rsvpLoading, setRsvpLoading] = React.useState(false);
+  const [rsvpError, setRsvpError] = React.useState('');
+  const [rsvpSubmitted, setRsvpSubmitted] = React.useState(false);
 
   if (!event) return null;
   const eventCatColors = { "Live Music": C.sunset, "Food & Social": "#8B5E3C", "Sports & Outdoors": C.sage, Community: C.lakeBlue };
@@ -1952,6 +1976,37 @@ export function EventLightbox({ event, onClose }) {
 
   const ticketsSoldOut = event.ticketsEnabled && event.ticketCapacity > 0 && event.ticketsSold >= event.ticketCapacity;
   const ticketsRemaining = event.ticketCapacity > 0 ? Math.max(0, event.ticketCapacity - (event.ticketsSold || 0)) : null;
+
+  const RSVP_ATTENDANCE_TYPES = ['rsvp_required', 'rsvp_appreciated', 'limited_spots', 'registration_required'];
+
+  const handleRsvp = async (e) => {
+    e.preventDefault();
+    if (!rsvpForm.name || !rsvpForm.email) { setRsvpError('Name and email are required'); return; }
+    setRsvpLoading(true);
+    setRsvpError('');
+    try {
+      const res = await fetch('/api/rsvp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          eventId: event.id,
+          eventName: event.name,
+          eventDate: event.date,
+          eventTime: event.time,
+          eventLocation: event.location,
+          organizerEmail: event.email,
+          ...rsvpForm,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'RSVP failed');
+      setRsvpSubmitted(true);
+    } catch (err) {
+      setRsvpError(err.message);
+    } finally {
+      setRsvpLoading(false);
+    }
+  };
 
   const handleTicketPurchase = async (e) => {
     e.preventDefault();
@@ -2031,6 +2086,11 @@ export function EventLightbox({ event, onClose }) {
               ● Annual Event
             </span>
           )}
+          {event.updated && (
+            <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: 1, color: C.sunsetLight, textTransform: "uppercase", fontStyle: "italic" }}>
+              ↻ Details recently updated
+            </span>
+          )}
         </div>
 
         <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 4vw, 32px)", color: C.cream, margin: "14px 0 10px 0", fontWeight: 400, lineHeight: 1.2 }}>
@@ -2042,11 +2102,11 @@ export function EventLightbox({ event, onClose }) {
           {!isRecurring && event.dateEnd && ` — ${new Date(event.dateEnd + "T00:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric" })}`}
         </div>
 
-        {(event.time || event.location) && (
-          <div style={{ display: "flex", gap: 16, marginBottom: 16, flexWrap: "wrap" }}>
+        {(event.time || event.location || event.attendance) && (
+          <div style={{ display: "flex", gap: 16, marginBottom: 16, flexWrap: "wrap", alignItems: "center" }}>
             {event.time && (
               <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", fontFamily: "'Libre Franklin', sans-serif" }}>
-                🕐 {event.time}
+                🕐 {event.time}{event.timeEnd ? ` – ${event.timeEnd}` : ""}
               </div>
             )}
             {event.location && (
@@ -2054,12 +2114,82 @@ export function EventLightbox({ event, onClose }) {
                 📍 {event.location}
               </div>
             )}
+            {event.attendance && (() => {
+              const LABELS = { just_show_up: "Just Show Up", rsvp_appreciated: "RSVP Appreciated", rsvp_required: "RSVP Required", limited_spots: "Limited Spots", registration_required: "Registration Required" };
+              const COLORS = { just_show_up: C.sage, rsvp_appreciated: C.lakeBlue, rsvp_required: C.lakeBlue, limited_spots: C.sunset, registration_required: C.sunset };
+              const ICONS = { just_show_up: "✓", rsvp_appreciated: "📋", rsvp_required: "📋", limited_spots: "⚡", registration_required: "📝" };
+              const aColor = COLORS[event.attendance] || C.sage;
+              return (
+                <div style={{ fontSize: 12, color: aColor, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 0.5, background: `${aColor}15`, padding: "3px 10px", borderRadius: 12 }}>
+                  {ICONS[event.attendance]} {LABELS[event.attendance]}
+                </div>
+              );
+            })()}
           </div>
         )}
 
         <p style={{ fontSize: 15, color: "rgba(255,255,255,0.55)", lineHeight: 1.8, margin: "0 0 20px 0" }}>
           {event.description}
         </p>
+
+        {/* RSVP section — full in-app form (paid feature) OR dead-end fix (free) */}
+        {RSVP_ATTENDANCE_TYPES.includes(event.attendance) && !event.ticketsEnabled && (
+          <div style={{ marginBottom: 20 }}>
+            {event.rsvpEnabled ? (
+              rsvpSubmitted ? (
+                <div style={{ background: `${C.sage}18`, border: `1px solid ${C.sage}40`, borderRadius: 10, padding: "14px 18px", fontSize: 14, color: C.sage, fontFamily: "'Libre Franklin', sans-serif" }}>
+                  ✓ You're registered! We'll send a reminder the day before.
+                </div>
+              ) : (
+                <form onSubmit={handleRsvp} style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "20px" }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.lakeBlue, marginBottom: 14, fontFamily: "'Libre Franklin', sans-serif" }}>
+                    RSVP — It's Free
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10 }}>
+                    {[
+                      { key: 'name', placeholder: 'Your name *', required: true, type: 'text' },
+                      { key: 'email', placeholder: 'Email *', required: true, type: 'email' },
+                      { key: 'phone', placeholder: 'Phone (optional)', required: false, type: 'text' },
+                    ].map(f => (
+                      <input key={f.key} type={f.type} value={rsvpForm[f.key]} onChange={e => setRsvpForm(p => ({ ...p, [f.key]: e.target.value }))}
+                        placeholder={f.placeholder} required={f.required}
+                        style={{ width: "100%", padding: "10px 12px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.06)", color: C.cream, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", outline: "none", boxSizing: "border-box" }}
+                      />
+                    ))}
+                    <select value={rsvpForm.guests} onChange={e => setRsvpForm(p => ({ ...p, guests: parseInt(e.target.value, 10) }))}
+                      style={{ padding: "10px 12px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.06)", color: C.cream, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", outline: "none" }}>
+                      {[1,2,3,4,5,6,7,8].map(n => <option key={n} value={n}>{n} {n === 1 ? 'person' : 'people'}</option>)}
+                    </select>
+                  </div>
+                  {rsvpError && <div style={{ fontSize: 12, color: "#ff6b6b", marginBottom: 10, fontFamily: "'Libre Franklin', sans-serif" }}>{rsvpError}</div>}
+                  <button type="submit" disabled={rsvpLoading}
+                    style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.cream, background: C.lakeBlue, padding: "12px 28px", borderRadius: 6, border: "none", cursor: rsvpLoading ? "not-allowed" : "pointer", opacity: rsvpLoading ? 0.6 : 1 }}>
+                    {rsvpLoading ? "Registering..." : "RSVP Now →"}
+                  </button>
+                </form>
+              )
+            ) : (
+              /* Dead-end fix — route to eventUrl / email / contact */
+              <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+                {event.eventUrl ? (
+                  <a href={event.eventUrl} target="_blank" rel="noopener noreferrer"
+                    style={{ display: "inline-block", fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.cream, background: C.sunset, padding: "10px 22px", borderRadius: 6, textDecoration: "none" }}>
+                    Register / RSVP →
+                  </a>
+                ) : event.email ? (
+                  <a href={`mailto:${event.email}?subject=RSVP: ${encodeURIComponent(event.name)}`}
+                    style={{ display: "inline-block", fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunset, border: `1px solid ${C.sunset}60`, padding: "10px 22px", borderRadius: 6, textDecoration: "none" }}>
+                    Email to Register →
+                  </a>
+                ) : (
+                  <div style={{ fontSize: 13, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif", fontStyle: "italic" }}>
+                    Contact the organizer to register.
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Ticket purchase section */}
         {event.ticketsEnabled && (

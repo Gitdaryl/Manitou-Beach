@@ -62,6 +62,12 @@ const PROMO_TIERS = {
     days: 7,
     description: 'Hero Feature 7 days + Newsletter Feature + Event Spotlight. Save $55.',
   },
+  rsvp_collection: {
+    name: 'RSVP Collection — Per Event',
+    price: 900, // $9 founding (full: $19)
+    days: null,
+    description: 'In-app RSVP form with organizer notifications and day-before + day-of email reminders.',
+  },
 };
 
 export default async function handler(req, res) {

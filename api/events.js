@@ -1,3 +1,5 @@
+import { Resend } from 'resend';
+
 // Ensure URLs entered in Notion without a protocol prefix still work as links
 function normalizeUrl(url) {
   if (!url || !url.trim()) return url;
@@ -8,7 +10,7 @@ function normalizeUrl(url) {
 export default async function handler(req, res) {
   // POST — submit a new event
   if (req.method === 'POST') {
-    const { name, category, email, phone, description, date, time, location, eventUrl, imageUrl, cost, recurring, recurringDay, _hp } = req.body;
+    const { name, category, email, phone, description, date, time, timeEnd, location, eventUrl, imageUrl, cost, recurring, recurringDay, attendance, _hp } = req.body;
 
     // Honeypot — bots fill hidden fields, humans don't
     if (_hp) return res.status(200).json({ success: true });
@@ -24,6 +26,8 @@ export default async function handler(req, res) {
       normalizedEventUrl = url;
     }
 
+    const editToken = crypto.randomUUID();
+
     const buildProperties = ({ includeEventUrl = true, includeImageUrl = true } = {}) => {
       const properties = {
         'Event Name': { title: [{ text: { content: name } }] },
@@ -33,6 +37,7 @@ export default async function handler(req, res) {
         'Description': { rich_text: [{ text: { content: description || '' } }] },
         'Time': { rich_text: [{ text: { content: time || '' } }] },
         'Location': { rich_text: [{ text: { content: location || '' } }] },
+        'Edit Token': { rich_text: [{ text: { content: editToken } }] },
       };
       if (date) properties['Event date'] = { date: { start: date } };
       if (includeEventUrl && normalizedEventUrl) properties['Event URL'] = { url: normalizedEventUrl };
@@ -40,6 +45,8 @@ export default async function handler(req, res) {
       if (cost) properties['Cost'] = { rich_text: [{ text: { content: cost } }] };
       if (recurring && recurring !== 'None') properties['Recurring'] = { select: { name: recurring } };
       if (recurringDay) properties['Recurring Day'] = { select: { name: recurringDay } };
+      if (timeEnd) properties['Time End'] = { rich_text: [{ text: { content: timeEnd } }] };
+      if (attendance) properties['Attendance'] = { select: { name: attendance } };
       return properties;
     };
 
@@ -80,6 +87,49 @@ export default async function handler(req, res) {
           });
         }
       }
+      // Send confirmation email (best-effort — never block the response)
+      if (email && process.env.RESEND_API_KEY) {
+        const editLink = `https://manitoubeach.com/events/edit?token=${editToken}`;
+        const dateDisplay = date ? new Date(date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) : '';
+        const timeDisplay = [time, timeEnd].filter(Boolean).join(' – ');
+        try {
+          const resend = new Resend(process.env.RESEND_API_KEY);
+          await resend.emails.send({
+            from: 'Manitou Beach <events@manitoubeach.com>',
+            to: email,
+            subject: `Your event "${name}" has been submitted`,
+            html: `
+              <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#FAF6EF;">
+                <h1 style="color:#1A2830;font-size:22px;margin:0 0 8px;">Event submitted!</h1>
+                <p style="color:#5C5248;font-size:15px;margin:0 0 24px;line-height:1.7;">
+                  <strong>${name}</strong> has been received and will be reviewed within 48 hours.
+                  ${dateDisplay ? `<br/>${dateDisplay}` : ''}
+                  ${timeDisplay ? `<br/>${timeDisplay}` : ''}
+                  ${location ? `<br/>${location}` : ''}
+                </p>
+                <div style="background:#fff;border-radius:12px;padding:20px 24px;margin-bottom:24px;border:1px solid #E8E0D5;">
+                  <p style="margin:0 0 4px;color:#8C806E;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Need to update details?</p>
+                  <p style="margin:0 0 16px;color:#3B3228;font-size:14px;line-height:1.6;">Use your private edit link to update your event's time, location, description, or photo at any time.</p>
+                  <a href="${editLink}" style="display:inline-block;background:#1A2830;color:#FAF6EF;text-decoration:none;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;">
+                    Edit My Event
+                  </a>
+                  <p style="margin:12px 0 0;color:#8C806E;font-size:11px;">Keep this email — it contains your private edit link.</p>
+                </div>
+                <div style="background:#FFF8F0;border-radius:12px;padding:20px 24px;border:1px solid #F0E4D0;">
+                  <p style="margin:0 0 8px;color:#D4845A;font-size:12px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Want more visibility?</p>
+                  <p style="margin:0 0 16px;color:#5C5248;font-size:14px;line-height:1.6;">Hero Feature · Newsletter Spotlight · Featured Banners.<br/>Get your event in front of every lake neighbor.</p>
+                  <a href="https://manitoubeach.com/promote" style="display:inline-block;background:#D4845A;color:#fff;text-decoration:none;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;">
+                    See Promotion Packages →
+                  </a>
+                </div>
+              </div>
+            `,
+          });
+        } catch (emailErr) {
+          console.error('Event confirmation email error:', emailErr.message);
+        }
+      }
+
       return res.status(200).json({ success: true });
     } catch (err) {
       console.error('Server error:', err.message);
@@ -139,6 +189,10 @@ export default async function handler(req, res) {
           cost: p['Cost']?.rich_text?.[0]?.text?.content || null,
           recurring: recurringVal,
           recurringDay: p['Recurring Day']?.select?.name || null,
+          timeEnd: p['Time End']?.rich_text?.[0]?.text?.content || null,
+          attendance: p['Attendance']?.select?.name || null,
+          updated: p['Updated']?.checkbox || false,
+          rsvpEnabled: p['RSVP Enabled']?.checkbox || false,
           heroFeature: p['Hero Feature']?.checkbox || false,
           ticketsEnabled: p['Tickets Enabled']?.checkbox || false,
           ticketPrice: p['Ticket Price']?.number || null,

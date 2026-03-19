@@ -3,6 +3,22 @@ import { FadeIn, SectionTitle, SectionLabel, Btn, ShareBar, WaveDivider, PageSpo
 import { C, PAGE_SPONSORS, VIDEOS } from '../data/config';
 import { Footer, GlobalStyles, PromoBanner, EventLightbox, EventTimeline, Navbar, compressImage } from '../components/Layout';
 
+const ATTENDANCE_LABELS = {
+  just_show_up: "Just Show Up",
+  rsvp_appreciated: "RSVP Appreciated",
+  rsvp_required: "RSVP Required",
+  limited_spots: "Limited Spots",
+  registration_required: "Registration Required",
+};
+
+const ATTENDANCE_COLORS = {
+  just_show_up: C.sage,
+  rsvp_appreciated: C.lakeBlue,
+  rsvp_required: C.lakeBlue,
+  limited_spots: C.sunset,
+  registration_required: C.sunset,
+};
+
 // ============================================================
 function HappeningHero() {
   const [loaded, setLoaded] = useState(false);
@@ -285,13 +301,13 @@ function CalendarSection({ events, onEventClick, activeFilter, onFilterChange })
                       {event.name}
                     </h3>
                     <div style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
-                      {event.time && <span>{event.time}</span>}
+                      {event.time && <span>{event.time}{event.timeEnd ? ` – ${event.timeEnd}` : ""}</span>}
                       {event.time && event.location && <span style={{ margin: "0 6px", opacity: 0.4 }}>·</span>}
                       {event.location && <span>{event.location}</span>}
                     </div>
                   </div>
 
-                  {/* Cost badge + tickets indicator */}
+                  {/* Cost badge + tickets + attendance + updated */}
                   <div className="calendar-cost-badge" style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
                     <span style={{
                       fontFamily: "'Libre Franklin', sans-serif",
@@ -313,6 +329,28 @@ function CalendarSection({ events, onEventClick, activeFilter, onFilterChange })
                         whiteSpace: "nowrap",
                       }}>
                         {event.ticketCapacity > 0 && event.ticketsSold >= event.ticketCapacity ? "Sold Out" : "Tickets Available"}
+                      </span>
+                    )}
+                    {event.attendance && !event.ticketsEnabled && (
+                      <span style={{
+                        fontFamily: "'Libre Franklin', sans-serif",
+                        fontSize: 9, fontWeight: 700, letterSpacing: 1.5,
+                        color: ATTENDANCE_COLORS[event.attendance] || C.sage,
+                        textTransform: "uppercase",
+                        whiteSpace: "nowrap",
+                      }}>
+                        {ATTENDANCE_LABELS[event.attendance]}
+                      </span>
+                    )}
+                    {event.updated && (
+                      <span style={{
+                        fontFamily: "'Libre Franklin', sans-serif",
+                        fontSize: 9, fontWeight: 700, letterSpacing: 1.5,
+                        color: C.sunsetLight,
+                        textTransform: "uppercase",
+                        whiteSpace: "nowrap",
+                      }}>
+                        ↻ Details Updated
                       </span>
                     )}
                   </div>
@@ -442,7 +480,7 @@ export function HappeningSubmitCTA({ simple = false }) {
   const [submitError, setSubmitError] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-  const [form, setForm] = useState({ name: "", category: "", date: "", time: "", location: "", description: "", eventUrl: "", email: "", phone: "", cost: "", _hp: "" });
+  const [form, setForm] = useState({ name: "", category: "", date: "", time: "", timeEnd: "", location: "", description: "", eventUrl: "", email: "", phone: "", cost: "", attendance: "", _hp: "" });
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
@@ -555,8 +593,12 @@ export function HappeningSubmitCTA({ simple = false }) {
               <input type="date" value={form.date} onChange={e => set("date", e.target.value)} style={inputStyle} />
             </div>
             <div>
-              <label style={labelStyle}>Time</label>
+              <label style={labelStyle}>Start Time</label>
               <input value={form.time} onChange={e => set("time", e.target.value)} placeholder="e.g. 7:00 PM" style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>End Time <span style={{ opacity: 0.5, fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>(optional)</span></label>
+              <input value={form.timeEnd} onChange={e => set("timeEnd", e.target.value)} placeholder="e.g. 10:00 PM" style={inputStyle} />
             </div>
             <div>
               <label style={labelStyle}>Location</label>
@@ -566,6 +608,33 @@ export function HappeningSubmitCTA({ simple = false }) {
               <label style={labelStyle}>Cost / Admission</label>
               <input value={form.cost} onChange={e => set("cost", e.target.value)} placeholder="e.g. Free · $10 at the door" style={inputStyle} />
             </div>
+            <div style={{ gridColumn: "1 / -1" }}>
+              <label style={labelStyle}>Attendance / RSVP</label>
+              <select value={form.attendance} onChange={e => set("attendance", e.target.value)} style={{ ...inputStyle, appearance: "none" }}>
+                <option value="">— Select attendance type (optional)</option>
+                <option value="just_show_up">Just Show Up — open to all, no registration needed</option>
+                <option value="rsvp_appreciated">RSVP Appreciated — please let us know, but not required</option>
+                <option value="rsvp_required">RSVP Required — must register to attend</option>
+                <option value="limited_spots">Limited Spots — finite capacity, act quickly</option>
+                <option value="registration_required">Registration Required — formal signup needed</option>
+              </select>
+            </div>
+            {['rsvp_appreciated','rsvp_required','limited_spots','registration_required'].includes(form.attendance) && (
+              <div style={{ gridColumn: "1 / -1", border: "1px solid rgba(212,132,90,0.3)", borderRadius: 10, padding: "18px 20px", background: "rgba(212,132,90,0.05)" }}>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 6 }}>
+                  RSVP Collection — Add-On · $9/event
+                </div>
+                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", lineHeight: 1.65, margin: "0 0 12px 0" }}>
+                  Collect in-app registrations, get notified on each RSVP, and send attendees email reminders the day before and day of. SMS reminders coming soon.
+                </p>
+                <a href="/promote" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunsetLight, textDecoration: "none" }}>
+                  Unlock RSVP Collection →
+                </a>
+                <div style={{ marginTop: 8, fontSize: 11, color: "rgba(255,255,255,0.25)", fontStyle: "italic" }}>
+                  Your attendance label still shows — upgrade anytime after submission.
+                </div>
+              </div>
+            )}
             <div style={{ gridColumn: "1 / -1" }}>
               <label style={labelStyle}>Description</label>
               <textarea value={form.description} onChange={e => set("description", e.target.value)} placeholder="Tell us about your event..." rows={3} style={{ ...inputStyle, resize: "vertical" }} />

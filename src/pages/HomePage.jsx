@@ -492,9 +492,14 @@ function HappeningSection() {
                     <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(18px, 2.5vw, 24px)", fontWeight: 400, color: C.cream, margin: "0 0 10px 0", lineHeight: 1.2 }}>
                       {event.name}
                     </h3>
-                    <p style={{ fontSize: 14, color: "rgba(255,255,255,0.45)", lineHeight: 1.75, margin: 0, maxWidth: 560 }}>
+                    <p style={{ fontSize: 14, color: "rgba(255,255,255,0.45)", lineHeight: 1.75, margin: "0 0 6px 0", maxWidth: 560, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                       {event.description}
                     </p>
+                    {event.description && (
+                      <span style={{ fontSize: 11, color: "rgba(255,255,255,0.22)", fontFamily: "'Libre Franklin', sans-serif", fontStyle: "italic", letterSpacing: 0.5 }}>
+                        click to see more...
+                      </span>
+                    )}
                   </div>
                 </div>
               </FadeIn>
@@ -1134,7 +1139,7 @@ function FeaturedBusinessCard({ business }) {
       onMouseEnter={tilt.onMouseEnter}
       onMouseMove={tilt.onMouseMove}
       onMouseLeave={tilt.onMouseLeave}
-      className="card-tilt featured-card-glow"
+      className="card-tilt featured-card-glow featured-card-pulse"
       style={{
         background: `linear-gradient(145deg, ${C.dusk} 0%, ${C.night} 100%)`,
         borderRadius: 12, padding: "18px 20px",
@@ -1194,7 +1199,7 @@ function FeaturedBusinessCard({ business }) {
 function PremiumBanner({ business }) {
   const color = CAT_COLORS[business.category] || C.sage;
   return (
-    <div style={{
+    <div className="premium-banner-glow" style={{
       background: `linear-gradient(135deg, ${C.dusk} 0%, ${C.lakeDark} 100%)`,
       borderRadius: 12, padding: "28px 32px",
       display: "flex", gap: 24, alignItems: "center", flexWrap: "wrap",
@@ -1240,6 +1245,7 @@ function EnhancedBusinessRow({ business }) {
   const [expanded, setExpanded] = useState(false);
   const color = CAT_COLORS[business.category] || C.sage;
   const tierLabel = business.tier === 'premium' ? 'Premium' : business.tier === 'featured' ? 'Featured' : 'Enhanced';
+  const isPremiumOrFeatured = business.tier === 'premium' || business.tier === 'featured';
 
   return (
     <div style={{ borderBottom: `1px solid ${C.sand}` }}>
@@ -1263,7 +1269,10 @@ function EnhancedBusinessRow({ business }) {
         onMouseLeave={e => { e.currentTarget.style.borderLeftColor = "transparent"; e.currentTarget.style.background = "transparent"; }}
       >
         {/* Category dot */}
-        <div style={{ width: 8, height: 8, borderRadius: "50%", background: color, flexShrink: 0 }} />
+        <div
+          className={isPremiumOrFeatured ? "listing-dot-pulse" : ""}
+          style={{ width: 8, height: 8, borderRadius: "50%", background: isPremiumOrFeatured && business.tier === 'premium' ? C.sunset : color, flexShrink: 0 }}
+        />
         {/* Name + tier badge + phone + address */}
         <div style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap" }}>
