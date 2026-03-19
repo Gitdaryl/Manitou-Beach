@@ -488,32 +488,11 @@ export function HappeningSubmitCTA({ simple = false }) {
   const [submitError, setSubmitError] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-  const [rsvpCheckoutLoading, setRsvpCheckoutLoading] = useState(false);
-  const [rsvpCardError, setRsvpCardError] = useState("");
+  const [rsvpSelected, setRsvpSelected] = useState(false);
   const [rsvpMonths, setRsvpMonths] = useState(1);
   const [form, setForm] = useState({ name: "", category: "", date: "", time: "", timeEnd: "", location: "", description: "", eventUrl: "", email: "", phone: "", cost: "", attendance: "", rsvpCapacity: "", _hp: "" });
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
-
-  const handleRsvpCheckout = async () => {
-    if (!form.name || !form.email) {
-      setRsvpCardError("Enter your event name and email above first.");
-      return;
-    }
-    setRsvpCardError("");
-    setRsvpCheckoutLoading(true);
-    try {
-      const resp = await fetch("/api/create-promo-checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tier: "rsvp_collection", eventName: form.name, email: form.email, months: rsvpMonths }),
-      });
-      const data = await resp.json();
-      if (data.url) window.location.href = data.url;
-    } catch { /* silent */ } finally {
-      setRsvpCheckoutLoading(false);
-    }
-  };
 
   const handleImage = async (file) => {
     if (!file) return;
@@ -542,6 +521,18 @@ export function HappeningSubmitCTA({ simple = false }) {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Submission failed");
+
+      // If RSVP add-on selected, redirect to Stripe after listing is saved
+      if (rsvpSelected) {
+        const promoRes = await fetch("/api/create-promo-checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ tier: "rsvp_collection", eventName: form.name, email: form.email, months: rsvpMonths, returnPath: "happening" }),
+        });
+        const promoData = await promoRes.json();
+        if (promoData.url) { window.location.href = promoData.url; return; }
+      }
+
       setSubmitted(true);
     } catch (err) {
       setSubmitError(err.message || "Something went wrong. Please try again.");
@@ -658,26 +649,46 @@ export function HappeningSubmitCTA({ simple = false }) {
                   <input type="number" min="1" value={form.rsvpCapacity} onChange={e => set("rsvpCapacity", e.target.value)} placeholder="e.g. 20" style={{ ...inputStyle, width: "120px" }} />
                 </div>
 
-                {/* RSVP Collection upsell card */}
-                <div style={{ gridColumn: "1 / -1", border: "1px solid rgba(212,132,90,0.4)", borderRadius: 10, padding: "20px 22px", background: "rgba(212,132,90,0.07)" }}>
-                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 20, flexWrap: "wrap" }}>
-                    <div style={{ flex: 1, minWidth: 220 }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-                        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunsetLight }}>
-                          RSVP Collection — Add-On
+                {/* RSVP Collection upsell card — click to select/deselect */}
+                <div
+                  onClick={() => setRsvpSelected(s => !s)}
+                  style={{ gridColumn: "1 / -1", border: `1px solid ${rsvpSelected ? "rgba(212,132,90,0.85)" : "rgba(212,132,90,0.4)"}`, borderRadius: 10, padding: "20px 22px", background: rsvpSelected ? "rgba(212,132,90,0.13)" : "rgba(212,132,90,0.07)", cursor: "pointer", transition: "all 0.2s" }}
+                >
+                  <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
+                    {/* Checkbox */}
+                    <div style={{ width: 18, height: 18, flexShrink: 0, marginTop: 2, borderRadius: 4, border: `2px solid ${rsvpSelected ? C.sunset : "rgba(255,255,255,0.25)"}`, background: rsvpSelected ? C.sunset : "transparent", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }}>
+                      {rsvpSelected && <span style={{ color: "#fff", fontSize: 11, lineHeight: 1, fontWeight: 700 }}>✓</span>}
+                    </div>
+
+                    <div style={{ flex: 1 }}>
+                      {/* Header row */}
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 6, flexWrap: "wrap" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunsetLight }}>
+                            RSVP Collection — Add-On
+                          </div>
+                          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sunset, background: "rgba(212,132,90,0.15)", border: "1px solid rgba(212,132,90,0.3)", borderRadius: 4, padding: "1px 6px", fontFamily: "'Libre Franklin', sans-serif" }}>
+                            Limited Time
+                          </div>
                         </div>
-                        <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sunset, background: "rgba(212,132,90,0.15)", border: "1px solid rgba(212,132,90,0.3)", borderRadius: 4, padding: "1px 6px", fontFamily: "'Libre Franklin', sans-serif" }}>
-                          Limited Time
+                        <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
+                          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 22, fontWeight: 700, color: C.cream, lineHeight: 1 }}>${rsvpMonths * 9}</span>
+                          <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif" }}>
+                            {rsvpMonths > 1 ? `(${rsvpMonths} × $9/mo)` : "/ month"}
+                          </span>
                         </div>
                       </div>
+
                       <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", lineHeight: 1.65, margin: "0 0 12px 0" }}>
                         In-app RSVP form, organizer notifications, and email reminders the day before and day of.
                       </p>
-                      {/* Duration selector */}
+
+                      {/* Duration selector — stop propagation so clicks don't toggle the card */}
                       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                         <span style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", fontFamily: "'Libre Franklin', sans-serif", marginRight: 2 }}>Duration:</span>
                         {[1, 2, 3, 6].map(m => (
-                          <button key={m} type="button" onClick={() => setRsvpMonths(m)}
+                          <button key={m} type="button"
+                            onClick={e => { e.stopPropagation(); setRsvpMonths(m); if (!rsvpSelected) setRsvpSelected(true); }}
                             style={{ padding: "4px 10px", borderRadius: 4, fontSize: 11, fontWeight: 700,
                               border: `1px solid ${rsvpMonths === m ? C.sunset : "rgba(255,255,255,0.15)"}`,
                               background: rsvpMonths === m ? "rgba(212,132,90,0.2)" : "transparent",
@@ -687,20 +698,12 @@ export function HappeningSubmitCTA({ simple = false }) {
                           </button>
                         ))}
                       </div>
-                    </div>
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6, flexShrink: 0 }}>
-                      <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
-                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 26, fontWeight: 700, color: C.cream, lineHeight: 1 }}>${rsvpMonths * 9}</span>
-                        <span style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif" }}>
-                          {rsvpMonths > 1 ? `(${rsvpMonths} × $9/mo)` : "/ month"}
-                        </span>
-                      </div>
-                      <button type="button" onClick={handleRsvpCheckout} disabled={rsvpCheckoutLoading}
-                        style={{ padding: "10px 20px", background: rsvpCheckoutLoading ? "rgba(212,132,90,0.4)" : C.sunset, color: "#fff", border: "none", borderRadius: 6, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: rsvpCheckoutLoading ? "not-allowed" : "pointer", transition: "all 0.2s", whiteSpace: "nowrap" }}>
-                        {rsvpCheckoutLoading ? "Loading…" : `Add for $${rsvpMonths * 9} →`}
-                      </button>
-                      {rsvpCardError && <div style={{ fontSize: 11, color: "#ff8a65", fontFamily: "'Libre Franklin', sans-serif", textAlign: "right" }}>{rsvpCardError}</div>}
-                      <div style={{ fontSize: 11, color: "rgba(255,255,255,0.22)", fontStyle: "italic", textAlign: "right" }}>Upgrade anytime after submission</div>
+
+                      {rsvpSelected && (
+                        <div style={{ marginTop: 10, fontSize: 11, color: "rgba(255,255,255,0.35)", fontStyle: "italic", fontFamily: "'Libre Franklin', sans-serif" }}>
+                          You'll be redirected to checkout after your listing is submitted.
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -750,7 +753,11 @@ export function HappeningSubmitCTA({ simple = false }) {
 
           <div style={{ display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap" }}>
             <button type="submit" disabled={submitting} style={{ padding: "13px 32px", background: C.sunset, color: "#fff", border: "none", borderRadius: 6, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: submitting ? "not-allowed" : "pointer", opacity: submitting ? 0.6 : 1, transition: "all 0.2s" }}>
-              {submitting ? "Submitting..." : "Submit Free Listing"}
+              {submitting
+                ? "Submitting..."
+                : rsvpSelected
+                  ? `Submit + Add RSVP ($${rsvpMonths * 9}${rsvpMonths > 1 ? ` · ${rsvpMonths} mo` : ""}) →`
+                  : "Submit Free Listing"}
             </button>
           </div>
         </form>
