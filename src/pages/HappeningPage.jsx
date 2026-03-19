@@ -480,9 +480,30 @@ export function HappeningSubmitCTA({ simple = false }) {
   const [submitError, setSubmitError] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [rsvpCheckoutLoading, setRsvpCheckoutLoading] = useState(false);
   const [form, setForm] = useState({ name: "", category: "", date: "", time: "", timeEnd: "", location: "", description: "", eventUrl: "", email: "", phone: "", cost: "", attendance: "", _hp: "" });
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+
+  const handleRsvpCheckout = async () => {
+    if (!form.name || !form.email) {
+      setSubmitError("Fill in your event name and email above first, then add RSVP Collection.");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    setRsvpCheckoutLoading(true);
+    try {
+      const resp = await fetch("/api/create-promo-checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tier: "rsvp_collection", eventName: form.name, email: form.email }),
+      });
+      const data = await resp.json();
+      if (data.url) window.location.href = data.url;
+    } catch { /* silent */ } finally {
+      setRsvpCheckoutLoading(false);
+    }
+  };
 
   const handleImage = async (file) => {
     if (!file) return;
@@ -620,18 +641,36 @@ export function HappeningSubmitCTA({ simple = false }) {
               </select>
             </div>
             {['rsvp_appreciated','rsvp_required','limited_spots','registration_required'].includes(form.attendance) && (
-              <div style={{ gridColumn: "1 / -1", border: "1px solid rgba(212,132,90,0.3)", borderRadius: 10, padding: "18px 20px", background: "rgba(212,132,90,0.05)" }}>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 6 }}>
-                  RSVP Collection — Add-On · $9/event
+              <div style={{ gridColumn: "1 / -1", border: "1px solid rgba(212,132,90,0.4)", borderRadius: 10, padding: "20px 22px", background: "rgba(212,132,90,0.07)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 20, flexWrap: "wrap" }}>
+                <div style={{ flex: 1, minWidth: 220 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                    <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunsetLight }}>
+                      RSVP Collection — Add-On
+                    </div>
+                    <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sunset, background: "rgba(212,132,90,0.15)", border: "1px solid rgba(212,132,90,0.3)", borderRadius: 4, padding: "1px 6px", fontFamily: "'Libre Franklin', sans-serif" }}>
+                      Limited Time
+                    </div>
+                  </div>
+                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", lineHeight: 1.65, margin: 0 }}>
+                    In-app RSVP form, organizer notifications, and email reminders the day before and day of.
+                  </p>
                 </div>
-                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", lineHeight: 1.65, margin: "0 0 12px 0" }}>
-                  Collect in-app registrations, get notified on each RSVP, and send attendees email reminders the day before and day of. SMS reminders coming soon.
-                </p>
-                <a href="/promote" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunsetLight, textDecoration: "none" }}>
-                  Unlock RSVP Collection →
-                </a>
-                <div style={{ marginTop: 8, fontSize: 11, color: "rgba(255,255,255,0.25)", fontStyle: "italic" }}>
-                  Your attendance label still shows — upgrade anytime after submission.
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6, flexShrink: 0 }}>
+                  <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
+                    <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 26, fontWeight: 700, color: C.cream, lineHeight: 1 }}>$9</span>
+                    <span style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif" }}>/ event</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleRsvpCheckout}
+                    disabled={rsvpCheckoutLoading}
+                    style={{ padding: "10px 20px", background: rsvpCheckoutLoading ? "rgba(212,132,90,0.4)" : C.sunset, color: "#fff", border: "none", borderRadius: 6, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: rsvpCheckoutLoading ? "not-allowed" : "pointer", transition: "all 0.2s", whiteSpace: "nowrap" }}
+                  >
+                    {rsvpCheckoutLoading ? "Loading…" : "Add for $9 →"}
+                  </button>
+                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.22)", fontStyle: "italic", textAlign: "right" }}>
+                    Upgrade anytime after submission
+                  </div>
                 </div>
               </div>
             )}

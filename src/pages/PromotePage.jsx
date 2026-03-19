@@ -498,10 +498,7 @@ export default function PromotePage() {
             </div>
           </div>
           <p style={{ fontSize: 14, color: C.textMuted, marginBottom: 40, fontFamily: "'Libre Franklin', sans-serif" }}>
-            These are our launch prices. Full rates take effect after summer 2026 —{" "}
-            <span style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunset, letterSpacing: 0.3 }}>
-              founding sponsors lock in today's rate for life.
-            </span>
+            These are our launch prices. Rates may increase as the platform grows.
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 20 }}>
             {/* Free listing card */}
