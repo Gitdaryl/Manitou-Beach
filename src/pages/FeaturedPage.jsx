@@ -45,38 +45,109 @@ export default function FeaturedPage() {
   const [wl, setWl] = useState({ name: "", email: "", businessName: "", tier: "featured_90", _hp: "" });
   const [wlStatus, setWlStatus] = useState("idle"); // idle | loading | success | error
 
-  // Page sponsorship interest form
+  // Page sponsorship
   const SPONSORABLE_PAGES = [
-    { id: 'home', label: 'Home' },
-    { id: 'happening', label: "What's Happening" },
-    { id: 'round-lake', label: 'Round Lake' },
-    { id: 'village', label: 'Village' },
-    { id: 'fishing', label: 'Fishing' },
-    { id: 'wineries', label: 'Wineries' },
-    { id: 'devils-lake', label: 'Devils Lake' },
-    { id: 'dispatch', label: 'Dispatch' },
-    { id: 'discover', label: 'Discover Map' },
+    { id: 'home',               label: 'Home' },
+    { id: 'happening',          label: "What's Happening" },
+    { id: 'round-lake',         label: 'Round Lake' },
+    { id: 'village',            label: 'Village' },
+    { id: 'fishing',            label: 'Fishing' },
+    { id: 'wineries',           label: 'Wineries' },
+    { id: 'devils-lake',        label: 'Devils Lake' },
+    { id: 'dispatch',           label: 'Dispatch' },
+    { id: 'discover',           label: 'Discover Map' },
+    { id: 'stays',              label: 'Stays & Rentals' },
+    { id: 'holly-yeti',         label: 'Holly & The Yeti' },
+    { id: 'food-trucks',        label: 'Food Trucks' },
     { id: 'historical-society', label: 'Historical Society' },
   ];
-  const [sponsorForm, setSponsorForm] = useState({ name: '', email: '', business: '', phone: '', page: 'home', term: 'monthly', message: '', _hp: '' });
+  const openPages = SPONSORABLE_PAGES.filter(p => !PAGE_SPONSORS[p.id]);
+  const [sponsorForm, setSponsorForm] = useState({ name: '', email: '', business: '', phone: '', page: openPages[0]?.id || 'home', tagline: '', term: 'monthly', _hp: '' });
   const [sponsorStatus, setSponsorStatus] = useState('idle');
+  const [sponsorReturnData, setSponsorReturnData] = useState(null);
+  const [logoFile, setLogoFile] = useState(null);
+  const [logoPreview, setLogoPreview] = useState('');
+  const [sponsorLoading, setSponsorLoading] = useState(false);
+  const [sponsorError, setSponsorError] = useState('');
+  const [takenPageWl, setTakenPageWl] = useState(null);
+  const [pageWlForm, setPageWlForm] = useState({ name: '', email: '', business: '', _hp: '' });
+  const [pageWlStatus, setPageWlStatus] = useState('idle');
   const setSF = (k, v) => setSponsorForm(f => ({ ...f, [k]: v }));
-  const handleSponsorInquiry = async (e) => {
+
+  const handleSponsorClaim = async (e) => {
     e.preventDefault();
     if (sponsorForm._hp) return;
-    const { name, email, business, phone, page, term, message } = sponsorForm;
-    const pageName = SPONSORABLE_PAGES.find(p => p.id === page)?.label || page;
-    const msgBody = `Page Sponsorship Inquiry — ${pageName}\nBusiness: ${business}\nPhone: ${phone}\nTerm: ${term === 'monthly' ? '$97/month' : '$970/year'}\n${message}`.trim();
+    setSponsorLoading(true);
+    setSponsorError('');
     try {
-      await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, category: 'Sponsorship Inquiry', message: msgBody, _hp: '' }) });
+      let logoUrl = '';
+      if (logoFile) {
+        const b64 = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result.split(',')[1]);
+          reader.onerror = reject;
+          reader.readAsDataURL(logoFile);
+        });
+        const uploadRes = await fetch('/api/upload-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ data: b64, filename: logoFile.name, contentType: logoFile.type, folder: 'sponsors' }),
+        });
+        const uploadData = await uploadRes.json();
+        if (uploadData.url) logoUrl = uploadData.url;
+      }
+      const { name, email, business, phone, page, tagline, term } = sponsorForm;
+      const pageName = SPONSORABLE_PAGES.find(p => p.id === page)?.label || page;
+      const checkoutRes = await fetch('/api/page-sponsor-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pageId: page, pageName, businessName: business, email, phone, tagline, logoUrl, term, _hp: '' }),
+      });
+      const checkoutData = await checkoutRes.json();
+      if (checkoutData.url) {
+        window.location.href = checkoutData.url;
+      } else {
+        setSponsorError(checkoutData.error || 'Something went wrong. Please try again.');
+        setSponsorLoading(false);
+      }
+    } catch {
+      setSponsorError('Something went wrong. Please try again.');
+      setSponsorLoading(false);
+    }
+  };
+
+  const handlePageWaitlist = async (e) => {
+    e.preventDefault();
+    if (pageWlForm._hp) return;
+    const pg = SPONSORABLE_PAGES.find(p => p.id === takenPageWl);
+    try {
+      await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: pageWlForm.name,
+          email: pageWlForm.email,
+          category: 'Page Sponsor Waitlist',
+          message: `Waitlist for "${pg?.label || takenPageWl}" page sponsorship. Business: ${pageWlForm.business}`,
+          _hp: '',
+        }),
+      });
     } catch {}
-    setSponsorStatus('success');
+    setPageWlStatus('success');
   };
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("success")) setStatus({ type: "success", business: params.get("business") || "" });
     else if (params.get("cancelled")) setStatus({ type: "cancelled" });
+    if (params.get("ps")) {
+      setSponsorStatus('success');
+      setSponsorReturnData({
+        pageName:     params.get("page") || '',
+        businessName: params.get("biz")  || '',
+        term:         params.get("term") || 'monthly',
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -581,7 +652,7 @@ export default function FeaturedPage() {
               <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: "rgba(255,255,255,0.5)", lineHeight: 1.75, maxWidth: 520, margin: "0 auto 12px" }}>
                 One exclusive sponsor per page. Your logo, your tagline, your brand — seen by everyone who visits that page, all year long.
               </p>
-              <div style={{ display: "flex", justifyContent: "center", gap: 24, flexWrap: "wrap", marginTop: 10 }}>
+              <div style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap", marginTop: 10 }}>
                 <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, fontWeight: 700, color: C.sunsetLight }}>$97 / month</span>
                 <span style={{ color: "rgba(255,255,255,0.2)", fontSize: 16 }}>·</span>
                 <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, fontWeight: 700, color: C.sage }}>$970 / year <span style={{ fontWeight: 400, fontSize: 12, color: "rgba(255,255,255,0.35)" }}>(2 months free)</span></span>
@@ -591,64 +662,198 @@ export default function FeaturedPage() {
 
           {/* Page availability grid */}
           <FadeIn>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 12, marginBottom: 56 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: 10, marginBottom: takenPageWl ? 20 : 40 }}>
               {SPONSORABLE_PAGES.map(pg => {
                 const taken = !!PAGE_SPONSORS[pg.id];
+                const sponsor = PAGE_SPONSORS[pg.id];
+                const isSelected = !taken && sponsorForm.page === pg.id;
+                const isWlActive = takenPageWl === pg.id;
                 return (
-                  <div key={pg.id} style={{
-                    background: taken ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.06)",
-                    border: `1px solid ${taken ? "rgba(255,255,255,0.08)" : C.sage + "50"}`,
-                    borderRadius: 10, padding: "16px 18px",
-                    display: "flex", justifyContent: "space-between", alignItems: "center",
-                  }}>
-                    <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: taken ? "rgba(255,255,255,0.35)" : C.cream }}>{pg.label}</span>
-                    <span style={{
-                      fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700,
-                      letterSpacing: 1.2, textTransform: "uppercase", padding: "3px 8px", borderRadius: 4,
-                      background: taken ? `${C.sunset}25` : `${C.sage}25`,
-                      color: taken ? C.sunsetLight : C.sage,
-                    }}>{taken ? "Sold" : "Open"}</span>
+                  <div
+                    key={pg.id}
+                    onClick={() => {
+                      if (taken) { setTakenPageWl(isWlActive ? null : pg.id); setPageWlStatus('idle'); }
+                      else { setSF('page', pg.id); setTakenPageWl(null); }
+                    }}
+                    style={{
+                      background: isSelected ? `${C.sage}18` : taken ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.06)",
+                      border: `1px solid ${isSelected ? C.sage + "80" : isWlActive ? C.sunsetLight + "55" : taken ? "rgba(255,255,255,0.07)" : C.sage + "40"}`,
+                      borderRadius: 10, padding: "14px 14px 10px", cursor: "pointer", transition: "all 0.18s",
+                    }}
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: taken ? "rgba(255,255,255,0.3)" : isSelected ? C.sage : C.cream, fontWeight: isSelected ? 600 : 400 }}>{pg.label}</span>
+                      <span style={{
+                        fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700,
+                        letterSpacing: 1.2, textTransform: "uppercase", padding: "2px 7px", borderRadius: 4, marginLeft: 6, flexShrink: 0,
+                        background: taken ? `${C.sunset}20` : `${C.sage}20`,
+                        color: taken ? C.sunsetLight : C.sage,
+                      }}>{taken ? "Taken" : "Open"}</span>
+                    </div>
+                    {taken && sponsor?.expiresAt && (
+                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, color: "rgba(255,255,255,0.22)", marginTop: 5 }}>Runs until {sponsor.expiresAt}</div>
+                    )}
+                    {taken && (
+                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, color: isWlActive ? C.sunsetLight : "rgba(255,255,255,0.28)", marginTop: 4, textDecoration: "underline" }}>
+                        {isWlActive ? "Hide ↑" : "Join waitlist →"}
+                      </div>
+                    )}
                   </div>
                 );
               })}
             </div>
+
+            {/* Waitlist panel for taken pages */}
+            {takenPageWl && (() => {
+              const pg = SPONSORABLE_PAGES.find(p => p.id === takenPageWl);
+              const sponsor = PAGE_SPONSORS[takenPageWl];
+              return (
+                <div style={{ maxWidth: 480, margin: "0 auto 48px", background: "rgba(255,255,255,0.04)", border: `1px solid ${C.sunsetLight}30`, borderRadius: 14, padding: "24px 28px" }}>
+                  {pageWlStatus === 'success' ? (
+                    <div style={{ textAlign: "center", padding: "12px 0" }}>
+                      <div style={{ fontSize: 28, marginBottom: 10, color: C.sage }}>✓</div>
+                      <h4 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.cream, margin: "0 0 8px" }}>You're on the list</h4>
+                      <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", lineHeight: 1.6, margin: 0 }}>
+                        When the <strong style={{ color: "rgba(255,255,255,0.6)" }}>{pg?.label}</strong> spot opens, you'll get an email. First in line gets first offer.
+                      </p>
+                    </div>
+                  ) : (
+                    <>
+                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 8 }}>
+                        Waitlist — {pg?.label}
+                      </div>
+                      <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginBottom: 14, lineHeight: 1.6 }}>
+                        {sponsor?.expiresAt
+                          ? <>Current sponsor runs until <strong style={{ color: "rgba(255,255,255,0.55)" }}>{sponsor.expiresAt}</strong>. If they don't renew, you're first to know.</>
+                          : "When this spot opens, we'll notify you by email. No obligation — you choose whether to claim it."
+                        }
+                      </p>
+                      <form onSubmit={handlePageWaitlist} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                        {[
+                          { k: 'name',     placeholder: 'Your name',      type: 'text',  required: true },
+                          { k: 'email',    placeholder: 'Email address',  type: 'email', required: true },
+                          { k: 'business', placeholder: 'Business name',  type: 'text',  required: true },
+                        ].map(({ k, placeholder, type, required }) => (
+                          <input key={k} type={type} placeholder={placeholder} required={required}
+                            value={pageWlForm[k]} onChange={e => setPageWlForm(f => ({ ...f, [k]: e.target.value }))}
+                            style={{ padding: "11px 14px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, outline: "none" }}
+                          />
+                        ))}
+                        <input aria-hidden="true" tabIndex={-1} autoComplete="off" value={pageWlForm._hp} onChange={e => setPageWlForm(f => ({ ...f, _hp: e.target.value }))} style={{ position: "absolute", left: "-9999px", opacity: 0 }} />
+                        <button type="submit" style={{
+                          padding: "11px 0", borderRadius: 8, border: "none",
+                          background: C.sunsetLight, color: C.night,
+                          fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", cursor: "pointer",
+                        }}>Notify Me When It Opens</button>
+                      </form>
+                    </>
+                  )}
+                </div>
+              );
+            })()}
           </FadeIn>
 
-          {/* Interest form */}
+          {/* Claim form */}
           <FadeIn>
             <div style={{ maxWidth: 560, margin: "0 auto" }}>
               {sponsorStatus === 'success' ? (
                 <div style={{ textAlign: "center", padding: "40px 0" }}>
-                  <div style={{ fontSize: 40, marginBottom: 16 }}>✓</div>
-                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, fontWeight: 400, color: C.cream, margin: "0 0 10px" }}>Inquiry sent!</h3>
-                  <p style={{ fontSize: 14, color: "rgba(255,255,255,0.45)", lineHeight: 1.7 }}>We'll be in touch within 24 hours to confirm availability and get your brand set up.</p>
+                  <div style={{ fontSize: 40, marginBottom: 16, color: C.sage }}>✓</div>
+                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, fontWeight: 400, color: C.cream, margin: "0 0 10px" }}>
+                    {sponsorReturnData?.businessName ? `${sponsorReturnData.businessName} is going live` : "Your page is being set up"}
+                  </h3>
+                  <p style={{ fontSize: 14, color: "rgba(255,255,255,0.55)", lineHeight: 1.8, maxWidth: 440, margin: "0 auto 24px" }}>
+                    Your sponsor banner for the <strong style={{ color: C.cream }}>{sponsorReturnData?.pageName || 'selected'}</strong> page goes live within 24 hours of payment confirmation.
+                  </p>
+                  <div style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 14, padding: "24px 28px", textAlign: "left", marginBottom: 20, maxWidth: 460, margin: "0 auto 20px" }}>
+                    <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: "rgba(255,255,255,0.3)", marginBottom: 14 }}>What to expect</div>
+                    {[
+                      "Your logo and tagline appear at the bottom of the page, seen by every visitor",
+                      `Subscription: ${sponsorReturnData?.term === 'annual' ? '$970/year — renews in 12 months' : '$97/month — renews monthly'}`,
+                      "30 days before renewal, we'll email you to renew or let it lapse",
+                      "If you don't renew, the spot is offered to the next person on the waitlist",
+                      "Check your inbox for a Stripe receipt confirming your subscription",
+                    ].map((line, i) => (
+                      <div key={i} style={{ display: "flex", gap: 10, marginBottom: i < 4 ? 10 : 0, alignItems: "flex-start" }}>
+                        <span style={{ color: C.sage, fontSize: 8, marginTop: 5, flexShrink: 0 }}>◆</span>
+                        <span style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", lineHeight: 1.6 }}>{line}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <p style={{ fontSize: 12, color: "rgba(255,255,255,0.22)", lineHeight: 1.6, maxWidth: 400, margin: "0 auto" }}>
+                    Questions? Email hello@manitou-beach.com and we'll be in touch within a few hours.
+                  </p>
                 </div>
               ) : (
-                <form onSubmit={handleSponsorInquiry} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                <form onSubmit={handleSponsorClaim} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                   <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 4, textAlign: "center" }}>
                     Claim a page
                   </div>
                   {[
-                    { key: 'name', placeholder: 'Your name', type: 'text', required: true },
-                    { key: 'email', placeholder: 'Email address', type: 'email', required: true },
-                    { key: 'business', placeholder: 'Business name', type: 'text', required: true },
-                    { key: 'phone', placeholder: 'Phone (optional)', type: 'tel', required: false },
+                    { key: 'name',     placeholder: 'Your name',       type: 'text',  required: true },
+                    { key: 'email',    placeholder: 'Email address',   type: 'email', required: true },
+                    { key: 'business', placeholder: 'Business name',   type: 'text',  required: true },
+                    { key: 'phone',    placeholder: 'Phone (optional)', type: 'tel',   required: false },
                   ].map(({ key, placeholder, type, required }) => (
                     <input key={key} type={type} placeholder={placeholder} required={required}
                       value={sponsorForm[key]} onChange={e => setSF(key, e.target.value)}
                       style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}
                     />
                   ))}
+
+                  {/* Page select */}
                   <select value={sponsorForm.page} onChange={e => setSF('page', e.target.value)}
                     style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "#2D3B45", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}>
                     {SPONSORABLE_PAGES.filter(p => !PAGE_SPONSORS[p.id]).map(p => (
                       <option key={p.id} value={p.id}>{p.label}</option>
                     ))}
                   </select>
-                  <div style={{ display: "flex", gap: 8 }}>
+
+                  {/* Tagline */}
+                  <input type="text" placeholder="Your tagline — e.g. 'Lakefront living starts here'" maxLength={80}
+                    value={sponsorForm.tagline} onChange={e => setSF('tagline', e.target.value)}
+                    style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}
+                  />
+
+                  {/* Logo upload */}
+                  <div>
+                    <label style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.35)", letterSpacing: 0.5, display: "block", marginBottom: 8 }}>
+                      Logo or brand image (optional — you can send it after)
+                    </label>
+                    {logoPreview ? (
+                      <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", background: "rgba(255,255,255,0.06)", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)" }}>
+                        <img src={logoPreview} alt="Logo preview" style={{ height: 40, maxWidth: 100, objectFit: "contain", filter: "brightness(2)" }} />
+                        <span style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{logoFile?.name}</span>
+                        <button type="button" onClick={() => { setLogoFile(null); setLogoPreview(''); }} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.35)", cursor: "pointer", fontSize: 20, padding: 0, lineHeight: 1 }}>×</button>
+                      </div>
+                    ) : (
+                      <label style={{
+                        display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                        padding: "16px", borderRadius: 10, border: "1px dashed rgba(255,255,255,0.18)",
+                        background: "rgba(255,255,255,0.03)", cursor: "pointer",
+                        fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.3)",
+                        transition: "all 0.18s",
+                      }}
+                        onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)"; e.currentTarget.style.color = "rgba(255,255,255,0.5)"; }}
+                        onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.18)"; e.currentTarget.style.color = "rgba(255,255,255,0.3)"; }}
+                      >
+                        <input type="file" accept="image/*" style={{ display: "none" }} onChange={e => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          if (file.size > 2 * 1024 * 1024) { alert('Image must be under 2MB'); return; }
+                          setLogoFile(file);
+                          setLogoPreview(URL.createObjectURL(file));
+                        }} />
+                        ↑ Upload logo or brand image
+                      </label>
+                    )}
+                  </div>
+
+                  {/* Term selector */}
+                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                     {[{ val: 'monthly', label: '$97/month' }, { val: 'annual', label: '$970/year (save $194)' }].map(({ val, label }) => (
                       <button key={val} type="button" onClick={() => setSF('term', val)} style={{
-                        flex: 1, padding: "11px 0", borderRadius: 8,
+                        flex: 1, minWidth: 130, padding: "11px 8px", borderRadius: 8,
                         border: `1px solid ${sponsorForm.term === val ? C.sage : "rgba(255,255,255,0.12)"}`,
                         background: sponsorForm.term === val ? `${C.sage}22` : "rgba(255,255,255,0.04)",
                         color: sponsorForm.term === val ? C.sage : "rgba(255,255,255,0.4)",
@@ -657,17 +862,24 @@ export default function FeaturedPage() {
                       }}>{label}</button>
                     ))}
                   </div>
-                  <textarea placeholder="Anything you'd like us to know?" value={sponsorForm.message} onChange={e => setSF('message', e.target.value)} rows={3}
-                    style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none", resize: "vertical" }} />
+
                   {/* Honeypot */}
                   <input aria-hidden="true" tabIndex={-1} autoComplete="off" value={sponsorForm._hp} onChange={e => setSF('_hp', e.target.value)} style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0, pointerEvents: "none" }} />
-                  <button type="submit" className="btn-animated" style={{
-                    padding: "14px 0", borderRadius: 8, border: "none",
-                    background: C.sage, color: C.cream,
-                    fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", cursor: "pointer",
-                  }}>Send Sponsorship Inquiry</button>
+
+                  {/* Error */}
+                  {sponsorError && <p style={{ fontSize: 13, color: C.sunsetLight, textAlign: "center", margin: 0 }}>{sponsorError}</p>}
+
+                  {/* Submit */}
+                  <button type="submit" disabled={sponsorLoading} className="btn-animated" style={{
+                    padding: "15px 0", borderRadius: 8, border: "none",
+                    background: sponsorLoading ? C.textMuted : C.sage, color: C.cream,
+                    fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase",
+                    cursor: sponsorLoading ? "default" : "pointer", transition: "background 0.2s",
+                  }}>
+                    {sponsorLoading ? "Processing…" : `Claim This Page — ${sponsorForm.term === 'annual' ? '$970/yr' : '$97/mo'}`}
+                  </button>
                   <p style={{ fontSize: 12, color: "rgba(255,255,255,0.28)", lineHeight: 1.6, textAlign: "center", margin: 0 }}>
-                    We'll confirm availability and set up your sponsor banner within 24 hours. No charge until you approve.
+                    You'll be taken to secure checkout. Sponsor banner goes live within 24 hours. Cancel anytime.
                   </p>
                 </form>
               )}

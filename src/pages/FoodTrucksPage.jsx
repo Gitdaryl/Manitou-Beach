@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Btn, FadeIn, ScrollProgress, SectionLabel, SectionTitle, WaveDivider } from '../components/Shared';
+import { Btn, FadeIn, PageSponsorBanner, ScrollProgress, SectionLabel, SectionTitle, WaveDivider } from '../components/Shared';
 import { C } from '../data/config';
 import { Footer, GlobalStyles, Navbar, NewsletterInline } from '../components/Layout';
 
@@ -1047,6 +1047,7 @@ export default function FoodTrucksPage() {
       <WaveDivider topColor={C.dusk} bottomColor={C.warmWhite} flip />
       <NewsletterInline />
       <WaveDivider topColor={C.warmWhite} bottomColor={C.dusk} />
+      <PageSponsorBanner pageName="food-trucks" />
       <Footer scrollTo={subScrollTo} />
     </div>
   );

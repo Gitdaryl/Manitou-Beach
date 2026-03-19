@@ -30,7 +30,7 @@ function HYHero() {
           Holly & The Yeti
         </h1>
         <p style={{ fontSize: 18, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, maxWidth: 520, margin: '0 auto 28px', fontFamily: "'Libre Franklin', sans-serif" }}>
-          A realtor. A cryptid. A podcast.<br />This is Manitou Beach.
+          A realtor. A cryptid. A podcast.<br />Sometimes he appears as Daryl — most people still call him Yeti.
         </p>
 
         {/* Social links */}
@@ -68,8 +68,8 @@ function MeetTheHosts() {
       traits: ['Lakefront Expert', 'Community Builder', 'Voice of Reason'],
     },
     {
-      name: 'The Yeti',
-      role: 'Community Character · Co-Host',
+      name: 'Daryl AKA The Yeti',
+      role: 'Creator · Filmmaker · Co-Host',
       image: '/images/yeti/yeti-director.png',
       accent: HOLLY_CORNER_COLOR,
       bio: "An AI-generated, Australian-accented cryptid who wandered out of the woods and into a podcast. The Yeti brings the comedy, the unexpected camera angles, and the community stories that make Manitou Beach feel like the place it actually is.",
@@ -114,7 +114,7 @@ function MeetTheHosts() {
 // ── Latest Videos ───────────────────────────────────────────
 function LatestVideos() {
   const [videos, setVideos] = useState([]);
-  const [playing, setPlaying] = useState(null);
+  const [lightboxId, setLightboxId] = useState(null);
 
   useEffect(() => {
     fetch('/api/youtube')
@@ -123,6 +123,14 @@ function LatestVideos() {
       .catch(() => {});
   }, []);
 
+  // Close lightbox on ESC
+  useEffect(() => {
+    if (!lightboxId) return;
+    const onKey = (e) => { if (e.key === 'Escape') setLightboxId(null); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [lightboxId]);
+
   if (!videos.length) return null;
 
   return (
@@ -130,37 +138,26 @@ function LatestVideos() {
       <div style={{ maxWidth: 900, margin: '0 auto' }}>
         <SectionLabel>Latest from the Show</SectionLabel>
         <SectionTitle>Watch Holly & The Yeti</SectionTitle>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 20, marginTop: 28 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 20, marginTop: 28 }}>
           {videos.map((v, i) => (
             <FadeIn key={v.videoId} delay={i * 80}>
               <div style={{
                 background: C.cream, border: `1px solid ${C.sand}`, borderRadius: 14,
                 overflow: 'hidden', cursor: 'pointer', transition: 'all 0.25s',
               }}
-              onClick={() => setPlaying(playing === v.videoId ? null : v.videoId)}
+              onClick={() => setLightboxId(v.videoId)}
               onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.08)'; }}
               onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none'; }}
               >
-                {playing === v.videoId ? (
-                  <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0 }}>
-                    <iframe
-                      src={`https://www.youtube.com/embed/${v.videoId}?autoplay=1`}
-                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }}
-                      allow="autoplay; encrypted-media"
-                      allowFullScreen
-                    />
+                <div style={{ position: 'relative' }}>
+                  <img src={v.thumbnail} alt={v.title} style={{ width: '100%', height: 160, objectFit: 'cover', display: 'block' }} />
+                  <div style={{
+                    position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: 'rgba(0,0,0,0.22)', transition: 'background 0.2s',
+                  }}>
+                    <div style={{ width: 52, height: 52, borderRadius: '50%', background: 'rgba(255,255,255,0.92)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, boxShadow: '0 4px 16px rgba(0,0,0,0.2)' }}>▶</div>
                   </div>
-                ) : (
-                  <div style={{ position: 'relative' }}>
-                    <img src={v.thumbnail} alt={v.title} style={{ width: '100%', height: 160, objectFit: 'cover', display: 'block' }} />
-                    <div style={{
-                      position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      background: 'rgba(0,0,0,0.25)', transition: 'background 0.2s',
-                    }}>
-                      <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'rgba(255,255,255,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>▶</div>
-                    </div>
-                  </div>
-                )}
+                </div>
                 <div style={{ padding: '14px 16px' }}>
                   <h4 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, fontWeight: 400, color: C.text, margin: 0, lineHeight: 1.4 }}>{v.title}</h4>
                   {v.publishedAt && <div style={{ fontSize: 11, color: C.textMuted, marginTop: 4, fontFamily: "'Libre Franklin', sans-serif" }}>{v.publishedAt}</div>}
@@ -175,6 +172,38 @@ function LatestVideos() {
           </Btn>
         </div>
       </div>
+
+      {/* Lightbox */}
+      {lightboxId && (
+        <div
+          onClick={() => setLightboxId(null)}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 9999,
+            background: 'rgba(0,0,0,0.92)', backdropFilter: 'blur(8px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px',
+          }}
+        >
+          <div onClick={e => e.stopPropagation()} style={{ width: '100%', maxWidth: 900 }}>
+            <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, borderRadius: 14, overflow: 'hidden', boxShadow: '0 32px 80px rgba(0,0,0,0.6)' }}>
+              <iframe
+                src={`https://www.youtube.com/embed/${lightboxId}?autoplay=1`}
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none' }}
+                allow="autoplay; encrypted-media; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+            <button
+              onClick={() => setLightboxId(null)}
+              style={{
+                display: 'block', margin: '16px auto 0', background: 'none',
+                border: '1px solid rgba(255,255,255,0.2)', color: 'rgba(255,255,255,0.5)',
+                padding: '8px 24px', borderRadius: 8, cursor: 'pointer',
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, letterSpacing: 1,
+              }}
+            >Close</button>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

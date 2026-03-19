@@ -746,10 +746,10 @@ export function HollyYetiSection() {
                 Holly &<br />The Yeti
               </h2>
               <p style={{ fontSize: 15, color: "rgba(255,255,255,0.62)", lineHeight: 1.85, marginBottom: 14 }}>
-                A local realtor with straight-shooter expertise and an Australian-accented community character with a flair for comedy walk into a podcast...
+                A local realtor with straight-shooter expertise and an Australian-accented community cryptid with a flair for comedy walk into a podcast...
               </p>
               <p style={{ fontSize: 15, color: "rgba(255,255,255,0.62)", lineHeight: 1.85, marginBottom: 32 }}>
-                Holly Griewahn brings the real estate knowledge and market insight. The Yeti brings the AI-generated videos and the stories that make Manitou Beach feel like the community it actually is.
+                Holly Griewahn brings the real estate knowledge and market insight. Daryl — AKA The Yeti — brings the AI-generated videos, the unexpected camera angles, and the community stories that make Manitou Beach feel like the place it actually is.
               </p>
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
                 <Btn href="https://www.youtube.com/@HollyandtheYetipodcast" variant="sunset" target="_blank" rel="noopener noreferrer">Watch on YouTube</Btn>
