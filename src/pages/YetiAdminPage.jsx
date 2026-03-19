@@ -76,6 +76,59 @@ export default function YetiAdminPage() {
     }
   };
 
+  // ── Org / Stripe Connect ───────────────────────────────────────
+  const [orgForm, setOrgForm] = useState({ orgPageId: '', orgName: '', orgEmail: '' });
+  const [orgConnectStatus, setOrgConnectStatus] = useState('idle'); // idle | loading | success | error
+  const [orgConnectResult, setOrgConnectResult] = useState(null);
+  const [orgCheckStatus, setOrgCheckStatus] = useState('idle');
+  const [orgCheckResult, setOrgCheckResult] = useState(null);
+
+  const handleOrgConnect = async () => {
+    if (!orgForm.orgPageId || !orgForm.orgName) return;
+    setOrgConnectStatus('loading');
+    setOrgConnectResult(null);
+    try {
+      const res = await adminFetch('/api/stripe-connect-onboard', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orgForm),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Onboarding failed');
+      setOrgConnectResult(data);
+      setOrgConnectStatus('success');
+    } catch (err) {
+      setOrgConnectResult({ error: err.message });
+      setOrgConnectStatus('error');
+    }
+  };
+
+  const handleOrgCheckStatus = async () => {
+    if (!orgForm.orgPageId) return;
+    setOrgCheckStatus('loading');
+    setOrgCheckResult(null);
+    try {
+      const res = await adminFetch(`/api/stripe-connect-status?orgPageId=${orgForm.orgPageId}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Status check failed');
+      setOrgCheckResult(data);
+      setOrgCheckStatus('done');
+    } catch (err) {
+      setOrgCheckResult({ error: err.message });
+      setOrgCheckStatus('error');
+    }
+  };
+
+  // Detect return from Stripe Connect onboarding
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('connect_return') === '1') {
+      setActiveTab('orgs');
+      const returnedOrgId = params.get('orgId');
+      if (returnedOrgId) setOrgForm(f => ({ ...f, orgPageId: returnedOrgId }));
+    }
+  }, []);
+
   // ── Batch geocoding ────────────────────────────────────────────
   const [geoStatus, setGeoStatus] = useState('idle'); // idle | running | done | error
   const [geoResult, setGeoResult] = useState(null);
@@ -662,7 +715,7 @@ export default function YetiAdminPage() {
 
         {/* Tabs */}
         <div style={{ display: 'flex', gap: 8, marginBottom: 32, flexWrap: 'wrap' }}>
-          {[{ id: 'write', label: '✍️  Write' }, { id: 'review', label: '📋  Review Queue' }, { id: 'dashboard', label: '📊  Dashboard' }, { id: 'advertisers', label: '🤝  Advertisers' }, { id: 'promos', label: '🎟️  Promos' }, { id: 'pois', label: '📍  Community POIs' }, { id: 'ratings', label: '🍷  Winery Ratings' }, { id: 'wines', label: '🍾  Wines Registry' }, { id: 'vendors', label: '🏪  Vendors' }].map(tab => (
+          {[{ id: 'write', label: '✍️  Write' }, { id: 'review', label: '📋  Review Queue' }, { id: 'dashboard', label: '📊  Dashboard' }, { id: 'advertisers', label: '🤝  Advertisers' }, { id: 'promos', label: '🎟️  Promos' }, { id: 'pois', label: '📍  Community POIs' }, { id: 'ratings', label: '🍷  Winery Ratings' }, { id: 'wines', label: '🍾  Wines Registry' }, { id: 'vendors', label: '🏪  Vendors' }, { id: 'orgs', label: '🏛️  Orgs' }].map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
@@ -1789,6 +1842,105 @@ export default function YetiAdminPage() {
             {vendorSetupStatus === 'error' && vendorSetupResult?.error && (
               <div style={{ background: '#fff0f0', border: '1px solid #f0b0b0', borderRadius: 12, padding: 20, color: '#c0392b', fontSize: 14 }}>
                 {vendorSetupResult.error}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── ORGS TAB ── */}
+        {activeTab === 'orgs' && (
+          <div style={{ maxWidth: 640 }}>
+            <div style={{ marginBottom: 24 }}>
+              <h2 style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 20, color: C.dusk, margin: '0 0 6px' }}>Community Org Stripe Connect</h2>
+              <p style={{ fontSize: 13, color: C.textMuted, margin: 0, lineHeight: 1.6 }}>
+                Connect a community org's bank account via Stripe Express. Once connected, their sponsorship form accepts online payments — funds go directly to their bank, Yetickets keeps 1.25%.
+              </p>
+            </div>
+
+            <div style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 12, padding: 24, marginBottom: 20, display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div>
+                <label style={labelStyle}>Notion Business DB Page ID *</label>
+                <input style={inputStyle} placeholder="e.g. 30d8c729eb59805b9444..." value={orgForm.orgPageId} onChange={e => setOrgForm(f => ({ ...f, orgPageId: e.target.value.replace(/-/g, '').trim() }))} />
+                <p style={{ margin: '4px 0 0', fontSize: 11, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>From the org's Notion Business DB record URL</p>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                <div>
+                  <label style={labelStyle}>Org Name *</label>
+                  <input style={inputStyle} placeholder="e.g. Ladies Club" value={orgForm.orgName} onChange={e => setOrgForm(f => ({ ...f, orgName: e.target.value }))} />
+                </div>
+                <div>
+                  <label style={labelStyle}>Org Contact Email</label>
+                  <input type="email" style={inputStyle} placeholder="treasurer@org.com" value={orgForm.orgEmail} onChange={e => setOrgForm(f => ({ ...f, orgEmail: e.target.value }))} />
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: 10 }}>
+                <button
+                  onClick={handleOrgConnect}
+                  disabled={orgConnectStatus === 'loading' || !orgForm.orgPageId || !orgForm.orgName}
+                  style={{
+                    flex: 1, padding: '12px 0',
+                    background: orgConnectStatus === 'loading' ? C.textMuted : C.dusk,
+                    color: '#fff', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 700,
+                    cursor: orgConnectStatus === 'loading' || !orgForm.orgPageId || !orgForm.orgName ? 'not-allowed' : 'pointer',
+                    fontFamily: 'Libre Franklin, sans-serif',
+                  }}
+                >
+                  {orgConnectStatus === 'loading' ? 'Generating link…' : 'Generate Stripe Connect Link →'}
+                </button>
+                <button
+                  onClick={handleOrgCheckStatus}
+                  disabled={orgCheckStatus === 'loading' || !orgForm.orgPageId}
+                  style={{
+                    padding: '12px 18px',
+                    background: 'transparent', color: C.lakeBlue,
+                    border: `1px solid ${C.lakeBlue}`, borderRadius: 8, fontSize: 13, fontWeight: 600,
+                    cursor: orgCheckStatus === 'loading' || !orgForm.orgPageId ? 'not-allowed' : 'pointer',
+                    fontFamily: 'Libre Franklin, sans-serif',
+                  }}
+                >
+                  {orgCheckStatus === 'loading' ? 'Checking…' : 'Check Status'}
+                </button>
+              </div>
+            </div>
+
+            {orgConnectStatus === 'success' && orgConnectResult && (
+              <div style={{ background: '#f0fff4', border: '1px solid #90d0a0', borderRadius: 12, padding: 24, marginBottom: 16 }}>
+                <div style={{ fontWeight: 700, color: '#1a5c2a', marginBottom: 12, fontSize: 15 }}>✓ Stripe Express account created</div>
+                <p style={{ fontSize: 13, color: '#3a5c40', margin: '0 0 12px', lineHeight: 1.6 }}>
+                  Send this link to the org. They'll complete Stripe's hosted onboarding (5 min) — bank details, ID verification. Once done, their sponsorship form accepts payments.
+                </p>
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 8 }}>
+                  <code style={{ flex: 1, background: '#fff', border: '1px solid #c0e0c8', borderRadius: 6, padding: '8px 12px', fontSize: 12, color: '#1A2830', wordBreak: 'break-all' }}>{orgConnectResult.onboardingUrl}</code>
+                  <button onClick={() => navigator.clipboard.writeText(orgConnectResult.onboardingUrl)} style={{ padding: '8px 14px', borderRadius: 6, border: '1px solid #c0e0c8', background: '#fff', fontSize: 12, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif', whiteSpace: 'nowrap' }}>Copy</button>
+                </div>
+                <p style={{ fontSize: 11, color: '#5c8a6a', margin: 0 }}>
+                  Account ID: <code style={{ background: '#fff', padding: '2px 6px', borderRadius: 4, fontSize: 11 }}>{orgConnectResult.accountId}</code> — saved to Notion.
+                </p>
+                <p style={{ fontSize: 12, color: '#5c8a6a', margin: '12px 0 0', lineHeight: 1.6 }}>
+                  Then add <code style={{ background: '#fff', padding: '2px 6px', borderRadius: 4, fontSize: 11 }}>orgPageId="{orgForm.orgPageId}"</code> to the{' '}
+                  <code style={{ background: '#fff', padding: '2px 6px', borderRadius: 4, fontSize: 11 }}>{'<CommunityDonationForm>'}</code> on their page to activate online payments.
+                </p>
+              </div>
+            )}
+
+            {orgCheckStatus === 'done' && orgCheckResult && (
+              <div style={{ background: orgCheckResult.connected ? '#f0fff4' : '#fff8e0', border: `1px solid ${orgCheckResult.connected ? '#90d0a0' : '#e0d090'}`, borderRadius: 12, padding: 20 }}>
+                <div style={{ fontWeight: 700, color: orgCheckResult.connected ? '#1a5c2a' : '#7a6010', marginBottom: 8, fontSize: 14 }}>
+                  {orgCheckResult.connected ? '✓ Account active — ready for payments' : '⏳ Onboarding not yet complete'}
+                </div>
+                <p style={{ fontSize: 12, color: orgCheckResult.connected ? '#3a5c40' : '#6a5010', margin: 0, lineHeight: 1.7 }}>
+                  Account ID: <code style={{ background: 'rgba(255,255,255,0.7)', padding: '2px 6px', borderRadius: 4, fontSize: 11 }}>{orgCheckResult.accountId}</code><br />
+                  Details submitted: {orgCheckResult.detailsSubmitted ? 'Yes' : 'No'} · Charges enabled: {orgCheckResult.chargesEnabled ? 'Yes' : 'No'}
+                  {orgCheckResult.email && <><br />Email: {orgCheckResult.email}</>}
+                </p>
+              </div>
+            )}
+
+            {(orgConnectStatus === 'error' || orgCheckStatus === 'error') && (orgConnectResult?.error || orgCheckResult?.error) && (
+              <div style={{ background: '#fff0f0', border: '1px solid #f0b0b0', borderRadius: 12, padding: 20, color: '#c0392b', fontSize: 14 }}>
+                {orgConnectResult?.error || orgCheckResult?.error}
               </div>
             )}
           </div>

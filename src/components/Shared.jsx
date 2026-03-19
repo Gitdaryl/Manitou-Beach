@@ -303,12 +303,21 @@ export function Btn({ children, onClick, href, variant = "primary", small = fals
 // Used on org pages (Men's Club, Ladies Club, Historical, Fireworks)
 // No platform branding. Uses 1.25% fee structure.
 // ============================================================
-export function CommunityDonationForm({ orgName, tiers, accentColor, darkBg = false, note, hideFee = false, logoTiers = [] }) {
+export function CommunityDonationForm({ orgName, orgPageId, tiers, accentColor, darkBg = false, note, hideFee = false, logoTiers = [] }) {
   const FEE_RATE = 0.0125;
+
+  // Detect return from Stripe checkout (?sponsor_success=1)
+  const urlParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+  const returnedName = urlParams?.get('name') || '';
+  const returnedTier = urlParams?.get('tier') || '';
+  const returnedId   = urlParams?.get('id') || '';
+  const paidReturn   = urlParams?.get('sponsor_success') === '1';
+
   const [selectedTier, setSelectedTier] = useState(tiers?.[1] ?? tiers?.[0] ?? null);
   const [customAmt, setCustomAmt] = useState('');
   const [form, setForm] = useState({ name: '', org: '', email: '', phone: '', message: '' });
-  const [submitted, setSubmitted] = useState(false);
+  const [submitted, setSubmitted] = useState(paidReturn);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [error, setError] = useState('');
   const [logoPreview, setLogoPreview] = useState(null);
   const [logoUploadStatus, setLogoUploadStatus] = useState('idle'); // idle | uploading | done | error
@@ -366,33 +375,81 @@ export function CommunityDonationForm({ orgName, tiers, accentColor, darkBg = fa
     reader.readAsDataURL(file);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!form.name.trim() || !form.email.trim()) { setError('Name and email are required.'); return; }
     if (!amount || amount < 1) { setError('Please select a sponsorship level or enter an amount.'); return; }
     setError('');
+
+    // If org is connected to Stripe — go to payment
+    if (orgPageId) {
+      setCheckoutLoading(true);
+      try {
+        const res = await fetch('/api/sponsor-checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            orgPageId,
+            orgName,
+            sponsorName: form.name,
+            email: form.email,
+            tierLevel: selectedTier?.level || `$${amount} Contribution`,
+            amount,
+            perks: selectedTier?.perks || [],
+            returnPath: typeof window !== 'undefined' ? window.location.pathname : '/',
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Checkout failed');
+        window.location.href = data.url;
+      } catch (err) {
+        setError(err.message || 'Something went wrong. Please try again.');
+        setCheckoutLoading(false);
+      }
+      return;
+    }
+
+    // Application-only fallback (no Stripe connected)
     setSubmitted(true);
   };
 
   if (submitted) {
+    const firstName = (paidReturn ? returnedName : form.name).split(' ')[0] || 'friend';
+    const confirmedTier = paidReturn ? returnedTier : (selectedTier?.level || `$${amount} contribution`);
+    const confirmId = paidReturn ? returnedId : '';
+
     return (
-      <div style={{ textAlign: 'center', padding: '56px 24px', background: cardBg, borderRadius: 16, border: `1px solid ${cardBorder}` }}>
-        <div style={{ fontSize: 52, marginBottom: 16 }}>🤝</div>
-        <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, color: textColor, fontWeight: 400, margin: '0 0 12px' }}>
-          Thank you, {form.name.split(' ')[0]}!
+      <div style={{ textAlign: 'center', padding: '56px 24px 48px', background: cardBg, borderRadius: 16, border: `1px solid ${cardBorder}` }}>
+        <div style={{ fontSize: 56, marginBottom: 20 }}>🌟</div>
+        <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, color: textColor, fontWeight: 700, margin: '0 0 10px', lineHeight: 1.2 }}>
+          You're making it happen, {firstName}.
         </h3>
-        <p style={{ fontSize: 15, color: textMuted, lineHeight: 1.8, maxWidth: 440, margin: '0 auto 16px' }}>
-          Your {selectedTier ? selectedTier.level : `$${amount} contribution`} application has been received.
-          Someone from {orgName} will be in touch at <strong style={{ color: accent }}>{form.email}</strong>.
+        <p style={{ fontSize: 16, color: textMuted, lineHeight: 1.9, maxWidth: 460, margin: '0 auto 24px' }}>
+          Your <strong style={{ color: accent }}>{confirmedTier}</strong> sponsorship of{' '}
+          <strong style={{ color: textColor }}>{orgName}</strong> is confirmed.
+          {paidReturn
+            ? ' A confirmation email and acknowledgment PDF are on their way to you.'
+            : ` Someone from ${orgName} will be in touch to confirm your sponsorship.`}
         </p>
         {logoUrl && (
-          <div style={{ margin: '0 auto 16px', display: 'inline-block' }}>
+          <div style={{ margin: '0 auto 20px', display: 'inline-block' }}>
             <img src={logoUrl} alt="Your logo" style={{ maxWidth: 120, maxHeight: 80, objectFit: 'contain', borderRadius: 6, background: '#fff', padding: 8, border: `1px solid ${cardBorder}` }} />
           </div>
         )}
-        {amount > 0 && (
-          <p style={{ fontSize: 12, color: textMuted, margin: 0, lineHeight: 1.9 }}>
-            Amount: <strong style={{ color: textColor }}>${amount.toLocaleString()}</strong>
-            {!hideFee && <>{' · '}Processing fee: <strong style={{ color: textColor }}>${fee.toFixed(2)}</strong>{' · '}{orgName} receives: <strong style={{ color: accent }}>${net.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></>}
+        <div style={{ display: 'inline-block', background: darkBg ? 'rgba(255,255,255,0.06)' : '#fff', border: `1px solid ${cardBorder}`, borderRadius: 12, padding: '20px 32px', marginBottom: confirmId ? 20 : 0 }}>
+          <p style={{ margin: 0, fontSize: 13, color: textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
+            {confirmedTier}
+            {amount > 0 && !paidReturn && (
+              <>
+                {' · '}
+                <strong style={{ color: textColor }}>${amount.toLocaleString()}</strong>
+                {!hideFee && <> · {orgName} receives: <strong style={{ color: accent }}>${net.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></>}
+              </>
+            )}
+          </p>
+        </div>
+        {confirmId && (
+          <p style={{ fontSize: 11, color: textMuted, margin: '16px 0 0', fontFamily: "'Libre Franklin', sans-serif" }}>
+            Confirmation ID: <strong style={{ color: textColor, letterSpacing: 1 }}>{confirmId}</strong>
           </p>
         )}
       </div>
@@ -540,12 +597,16 @@ export function CommunityDonationForm({ orgName, tiers, accentColor, darkBg = fa
             style={{ ...inputStyle, resize: 'vertical' }} />
         </div>
         {error && <p style={{ fontSize: 13, color: '#c0392b', margin: 0, fontFamily: "'Libre Franklin', sans-serif" }}>{error}</p>}
-        <button onClick={handleSubmit} style={{
-          padding: '15px 28px', borderRadius: 8, background: accent, color: C.cream, border: 'none',
+        <button onClick={handleSubmit} disabled={checkoutLoading} style={{
+          padding: '15px 28px', borderRadius: 8,
+          background: checkoutLoading ? C.textMuted : accent,
+          color: C.cream, border: 'none',
           fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700,
-          letterSpacing: 1.5, textTransform: 'uppercase', cursor: 'pointer',
+          letterSpacing: 1.5, textTransform: 'uppercase',
+          cursor: checkoutLoading ? 'not-allowed' : 'pointer',
+          transition: 'background 0.2s',
         }}>
-          Submit Application →
+          {checkoutLoading ? 'Redirecting to payment…' : orgPageId ? 'Sponsor Now →' : 'Submit Application →'}
         </button>
         {note && <p style={{ fontSize: 11, color: textMuted, textAlign: 'center', lineHeight: 1.7, margin: '4px 0 0', fontFamily: "'Libre Franklin', sans-serif" }}>{note}</p>}
       </div>

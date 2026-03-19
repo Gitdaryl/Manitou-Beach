@@ -49,6 +49,67 @@ async function updateNotionBusiness(businessName, properties) {
   return null;
 }
 
+// Generate sponsor acknowledgment PDF
+async function generateSponsorPDF({ sponsorId, orgName, sponsorName, tierLevel, amount, perks }) {
+  const pdfDoc = await PDFDocument.create();
+  const page = pdfDoc.addPage([612, 500]);
+  const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const helveticaBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+  const dark  = rgb(0.11, 0.16, 0.19);
+  const accent = rgb(0.36, 0.49, 0.58);
+  const muted = rgb(0.54, 0.49, 0.43);
+  const sage  = rgb(0.48, 0.56, 0.44);
+  const cream = rgb(0.98, 0.96, 0.94);
+  const white = rgb(1, 1, 1);
+
+  // Background
+  page.drawRectangle({ x: 0, y: 0, width: 612, height: 500, color: cream });
+
+  // Header bar
+  page.drawRectangle({ x: 0, y: 440, width: 612, height: 60, color: dark });
+  page.drawText(orgName.toUpperCase(), { x: 24, y: 462, size: 14, font: helveticaBold, color: white });
+  page.drawText('SPONSORSHIP ACKNOWLEDGMENT', {
+    x: 612 - 24 - helveticaBold.widthOfTextAtSize('SPONSORSHIP ACKNOWLEDGMENT', 10),
+    y: 465, size: 10, font: helveticaBold, color: accent,
+  });
+
+  // Thank you line
+  page.drawText(`Thank you for your support!`, { x: 24, y: 405, size: 18, font: helveticaBold, color: dark });
+
+  // Sponsor name + tier
+  page.drawText(`Sponsor: ${sponsorName}`, { x: 24, y: 370, size: 13, font: helveticaBold, color: dark });
+  page.drawText(`Tier: ${tierLevel}`, { x: 24, y: 350, size: 12, font: helvetica, color: muted });
+  page.drawText(`Amount: $${parseFloat(amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}`, { x: 24, y: 330, size: 13, font: helveticaBold, color: accent });
+
+  // Divider
+  page.drawRectangle({ x: 24, y: 312, width: 564, height: 1, color: muted });
+
+  // What's included
+  if (perks?.length > 0) {
+    page.drawText("What's Included", { x: 24, y: 295, size: 11, font: helveticaBold, color: sage });
+    let perkY = 275;
+    for (const perk of perks.slice(0, 8)) {
+      page.drawText(`✓  ${perk}`, { x: 32, y: perkY, size: 11, font: helvetica, color: dark, maxWidth: 550 });
+      perkY -= 18;
+    }
+  }
+
+  // Confirmation ID + date
+  const dateStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  page.drawText(`Confirmation ID: ${sponsorId}`, { x: 24, y: 70, size: 11, font: helveticaBold, color: dark });
+  page.drawText(`Date: ${dateStr}`, { x: 24, y: 52, size: 10, font: helvetica, color: muted });
+  page.drawText('This document serves as your sponsorship acknowledgment.', { x: 24, y: 34, size: 9, font: helvetica, color: muted });
+
+  // Powered-by footer
+  page.drawText('Powered by Yetickets · yetigroove.com', {
+    x: 612 - 24 - helvetica.widthOfTextAtSize('Powered by Yetickets · yetigroove.com', 8),
+    y: 20, size: 8, font: helvetica, color: muted,
+  });
+
+  return Buffer.from(await pdfDoc.save());
+}
+
 // Generate a unique ticket number: MB-XXXXXX (6 uppercase alphanumeric)
 function generateTicketNumber() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no 0/O/1/I confusion
@@ -412,7 +473,98 @@ export default async function handler(req, res) {
       }
     }
 
-    // 5. Wine partner signup (from wine-partner-signup.js)
+    // 5. Sponsorship payment (from sponsor-checkout.js)
+    if (metadata.type === 'sponsor_payment' && metadata.sponsorId) {
+      const { sponsorId, orgName, orgPageId, orgContactEmail, sponsorName, tierLevel, amount, perks } = metadata;
+      const perkList = perks ? perks.split('|').filter(Boolean) : [];
+      try {
+        // Generate PDF acknowledgment
+        const pdfBuffer = await generateSponsorPDF({ sponsorId, orgName, sponsorName, tierLevel, amount, perks: perkList });
+        const { url: pdfUrl } = await put(`sponsors/${sponsorId}.pdf`, pdfBuffer, {
+          access: 'public',
+          contentType: 'application/pdf',
+        });
+
+        const sponsorEmail = session.customer_email || session.customer_details?.email;
+
+        if (process.env.RESEND_API_KEY) {
+          const resend = new Resend(process.env.RESEND_API_KEY);
+          const amountFmt = `$${parseFloat(amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+
+          // Gratitude email → sponsor
+          if (sponsorEmail) {
+            await resend.emails.send({
+              from: 'Yetickets <tickets@yetigroove.com>',
+              to: sponsorEmail,
+              subject: `You're making it happen — ${orgName} thanks you!`,
+              html: `
+                <div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:40px 24px;background:#FAF6EF;">
+                  <h1 style="color:#1A2830;font-size:26px;font-weight:700;margin:0 0 6px;">You're making it happen.</h1>
+                  <p style="color:#5C5248;font-size:15px;margin:0 0 32px;line-height:1.7;">
+                    Your <strong>${tierLevel}</strong> sponsorship of <strong>${orgName}</strong> is confirmed —
+                    and it means more than you might think.
+                    Every dollar from sponsors like you is what turns a good idea into something the whole community gets to experience.
+                  </p>
+
+                  <div style="background:#fff;border-radius:12px;padding:24px;margin-bottom:20px;border:1px solid #E8E0D5;">
+                    <p style="margin:0 0 4px;color:#8C806E;font-size:11px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Your Sponsorship</p>
+                    <p style="margin:0 0 6px;color:#1A2830;font-size:20px;font-weight:700;">${tierLevel}</p>
+                    <p style="margin:0 0 16px;color:#5B7D8E;font-size:16px;font-weight:700;">${amountFmt}</p>
+                    ${perkList.length > 0 ? `
+                    <p style="margin:0 0 8px;color:#8C806E;font-size:11px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">What you get</p>
+                    <ul style="margin:0;padding:0 0 0 0;list-style:none;">
+                      ${perkList.map(p => `<li style="padding:3px 0;font-size:13px;color:#3A3028;">✓&nbsp; ${p}</li>`).join('')}
+                    </ul>` : ''}
+                  </div>
+
+                  <a href="${pdfUrl}" style="display:inline-block;background:#1A2830;color:#fff;text-decoration:none;padding:13px 26px;border-radius:8px;font-size:14px;font-weight:600;margin-bottom:32px;">
+                    Download Your Acknowledgment →
+                  </a>
+
+                  <p style="color:#8C806E;font-size:12px;line-height:1.7;margin:0;">
+                    Confirmation ID: <strong style="color:#1A2830;">${sponsorId}</strong><br />
+                    Powered by Yetickets · <a href="https://manitoubeach.com" style="color:#5B7D8E;">manitoubeach.com</a>
+                  </p>
+                </div>
+              `,
+            });
+          }
+
+          // Notification → org contact
+          if (orgContactEmail) {
+            await resend.emails.send({
+              from: 'Yetickets <tickets@yetigroove.com>',
+              to: orgContactEmail,
+              subject: `New sponsorship: ${sponsorName} — ${tierLevel} (${amountFmt})`,
+              html: `
+                <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#FAF6EF;">
+                  <h2 style="color:#1A2830;font-size:20px;margin:0 0 16px;">New sponsorship received 🎉</h2>
+                  <div style="background:#fff;border-radius:10px;padding:20px 24px;border:1px solid #E8E0D5;margin-bottom:20px;">
+                    <p style="margin:0 0 8px;font-size:14px;color:#3A3028;"><strong>Sponsor:</strong> ${sponsorName}</p>
+                    <p style="margin:0 0 8px;font-size:14px;color:#3A3028;"><strong>Email:</strong> ${sponsorEmail || 'n/a'}</p>
+                    <p style="margin:0 0 8px;font-size:14px;color:#3A3028;"><strong>Tier:</strong> ${tierLevel}</p>
+                    <p style="margin:0;font-size:14px;color:#3A3028;"><strong>Amount:</strong> <span style="color:#5B7D8E;font-weight:700;">${amountFmt}</span></p>
+                  </div>
+                  <a href="${pdfUrl}" style="display:inline-block;background:#5B7D8E;color:#fff;text-decoration:none;padding:11px 22px;border-radius:8px;font-size:13px;font-weight:600;margin-bottom:24px;">
+                    View Acknowledgment PDF →
+                  </a>
+                  <p style="color:#8C806E;font-size:12px;line-height:1.6;margin:0;">
+                    Confirmation ID: ${sponsorId}<br />
+                    Funds will be deposited to your connected bank account by Stripe.
+                  </p>
+                </div>
+              `,
+            });
+          }
+        }
+
+        console.log(`Sponsor payment: ${sponsorId} — ${sponsorName} → ${tierLevel} @ ${amount} for ${orgName} — PDF: ${pdfUrl}`);
+      } catch (err) {
+        console.error('Sponsor payment fulfillment error:', err);
+      }
+    }
+
+    // 6. Wine partner signup (from wine-partner-signup.js)
     if (metadata.venueName) {
       const { venueName, contactName, phone, note } = metadata;
       const details = [
