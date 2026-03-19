@@ -18,6 +18,12 @@ export default function FeaturedPage() {
   const subScrollTo = (id) => { window.location.href = "/#" + id; };
   const spotsLeft = SPOTS_LEFT;
   const isFull = spotsLeft === 0;
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 700);
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 700);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
   const { subCount, count, inGrace, priceFor, centsFor, progressPct } = usePricing();
   const [slotCounts, setSlotCounts] = useState(null);
@@ -131,11 +137,11 @@ export default function FeaturedPage() {
   };
 
   const benefits = [
-    { icon: "⚡", title: "Be First", desc: "When someone searches for a business like yours, you're what they find. Not buried three pages down — first." },
-    { icon: "🎨", title: "Look Like You Belong", desc: "A branded card with your logo tells people you're the real deal — an established part of this community, worth visiting." },
-    { icon: "📱", title: "One Tap Away", desc: "Customers decide in seconds. Your number, clickable on mobile, means no friction between them and your door." },
-    { icon: "📰", title: "In the Weekly Conversation", desc: "The Dispatch lands in local inboxes every week. Your business gets mentioned in the same breath as community news." },
-    { icon: "🎙️", title: "A Warm Introduction", desc: "Premium tier gets you a shoutout on the Holly & Yeti podcast — that's not just traffic, it's a neighbor telling hundreds of people you're worth knowing." },
+    { icon: "⚡", title: "More People Find You", desc: "Every week, visitors search this directory for exactly what you offer. The businesses at the top get the call. Right now, that's not you." },
+    { icon: "🎨", title: "Look Worth Visiting", desc: "A polished listing with your logo and photos signals quality before they ever arrive. First impressions convert." },
+    { icon: "📱", title: "Fewer Lost Customers", desc: "People decide in seconds on mobile. One tap to call you means the difference between a visit and a scroll past." },
+    { icon: "📰", title: "In Front of 500+ Local Inboxes Weekly", desc: "The Dispatch goes to subscribers who live here and spend here. Your business stays top of mind, not just when they're searching." },
+    { icon: "🎙️", title: "A Personal Endorsement", desc: "A podcast shoutout isn't an ad — it's a neighbor telling hundreds of people you're worth their money. That kind of trust doesn't come from a banner." },
   ];
 
   return (
@@ -230,21 +236,48 @@ export default function FeaturedPage() {
         <div style={{ maxWidth: 1000, margin: "0 auto" }}>
           <FadeIn>
             <div style={{ textAlign: "center", marginBottom: 56 }}>
-              <SectionLabel>What Changes</SectionLabel>
-              <SectionTitle center>This is what being found feels like</SectionTitle>
+              <SectionLabel>What It&apos;s Worth</SectionLabel>
+              <SectionTitle center>More customers. Less guesswork.</SectionTitle>
             </div>
           </FadeIn>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 20 }}>
-            {benefits.map((b, i) => (
-              <FadeIn key={i} delay={i * 60}>
-                <div style={{ padding: "24px 20px", background: C.warmWhite, borderRadius: 12, border: `1px solid ${C.sand}` }}>
-                  <div style={{ fontSize: 28, marginBottom: 10 }}>{b.icon}</div>
-                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text, margin: "0 0 6px 0" }}>{b.title}</h3>
-                  <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: 0 }}>{b.desc}</p>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
+          {isMobile ? (
+            <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 16 }}>
+              {benefits.map((b, i) => (
+                <FadeIn key={i} delay={i * 60}>
+                  <div style={{ padding: "24px 20px", background: C.warmWhite, borderRadius: 12, border: `1px solid ${C.sand}` }}>
+                    <div style={{ fontSize: 28, marginBottom: 10 }}>{b.icon}</div>
+                    <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text, margin: "0 0 6px 0" }}>{b.title}</h3>
+                    <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: 0 }}>{b.desc}</p>
+                  </div>
+                </FadeIn>
+              ))}
+            </div>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+                {benefits.slice(0, 3).map((b, i) => (
+                  <FadeIn key={i} delay={i * 60}>
+                    <div style={{ padding: "24px 20px", background: C.warmWhite, borderRadius: 12, border: `1px solid ${C.sand}` }}>
+                      <div style={{ fontSize: 28, marginBottom: 10 }}>{b.icon}</div>
+                      <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text, margin: "0 0 6px 0" }}>{b.title}</h3>
+                      <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: 0 }}>{b.desc}</p>
+                    </div>
+                  </FadeIn>
+                ))}
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 20, maxWidth: "66.66%", margin: "0 auto", width: "100%" }}>
+                {benefits.slice(3).map((b, i) => (
+                  <FadeIn key={i + 3} delay={(i + 3) * 60}>
+                    <div style={{ padding: "24px 20px", background: C.warmWhite, borderRadius: 12, border: `1px solid ${C.sand}` }}>
+                      <div style={{ fontSize: 28, marginBottom: 10 }}>{b.icon}</div>
+                      <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text, margin: "0 0 6px 0" }}>{b.title}</h3>
+                      <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: 0 }}>{b.desc}</p>
+                    </div>
+                  </FadeIn>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -378,6 +411,57 @@ export default function FeaturedPage() {
             <p style={{ textAlign: "center", color: "rgba(255,255,255,0.18)", fontSize: 12, marginTop: 24, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>
               Monthly subscriptions · Cancel anytime · Rate held while subscribed
             </p>
+          </div>
+        </section>
+      )}
+
+      {/* How Spots Work */}
+      {!isFull && (
+        <section style={{ background: C.cream, padding: "80px 24px" }}>
+          <div style={{ maxWidth: 860, margin: "0 auto" }}>
+            <FadeIn>
+              <div style={{ textAlign: "center", marginBottom: 52 }}>
+                <SectionLabel>How It Works</SectionLabel>
+                <SectionTitle center>No contracts. No year-long commitments.</SectionTitle>
+                <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.7, maxWidth: 540, margin: "16px auto 0" }}>
+                  Featured and Premium spots work month-to-month. Take a spot for the summer. Cancel in the off-season. Come back next year. Here's exactly how it works.
+                </p>
+              </div>
+            </FadeIn>
+            <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+              {[
+                {
+                  num: "01",
+                  title: "Pick your tier and your month",
+                  body: "Featured and Premium billing is monthly — nothing annual. If summer is your busy season, go Featured in June and cancel in September. Your founding rate is held while you're subscribed. Pause instead of canceling and your rate is locked when you come back.",
+                },
+                {
+                  num: "02",
+                  title: "Spots are limited — by category",
+                  body: "Featured has 3 spots per business category. Premium has 1 spot per category — it's exclusive. If you're a restaurant and all 3 Featured restaurant slots are taken, you go on the waitlist. Different categories have different availability, so it's worth checking yours.",
+                },
+                {
+                  num: "03",
+                  title: "On the waitlist? You'll get a text when a spot opens",
+                  body: "When you join the waitlist, we save your payment details — but we don't charge you anything yet. The moment a spot opens in your category, you'll get an SMS notification. You have 48 hours to claim it. If you claim it, your card is billed and your listing goes live. If you don't, no charge — the next person on the list gets the offer.",
+                },
+              ].map((step, i) => (
+                <FadeIn key={i} delay={i * 80}>
+                  <div style={{
+                    display: "flex", gap: isMobile ? 16 : 32, padding: "32px 0",
+                    borderBottom: i < 2 ? `1px solid ${C.sand}` : "none",
+                    flexDirection: isMobile ? "column" : "row",
+                    alignItems: isMobile ? "flex-start" : "flex-start",
+                  }}>
+                    <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 36, color: C.sand, fontWeight: 400, lineHeight: 1, flexShrink: 0, minWidth: 48 }}>{step.num}</div>
+                    <div>
+                      <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.text, margin: "0 0 10px 0" }}>{step.title}</h3>
+                      <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.75, margin: 0 }}>{step.body}</p>
+                    </div>
+                  </div>
+                </FadeIn>
+              ))}
+            </div>
           </div>
         </section>
       )}
@@ -599,9 +683,13 @@ export default function FeaturedPage() {
             </div>
           </FadeIn>
           {[
-            { q: "I already have a free listing. What changes?", a: "Your free listing stays as-is. The featured upgrade gives you a premium dark card at the top of the directory, above all free listings. It's a separate, more visible placement — not a replacement." },
-            { q: "What happens if I cancel my listing?", a: "Your listing reverts to the free directory. No lock-in, cancel anytime. If you cancel and later rejoin, you pay whatever the current rate is at that time — your original rate is not held after cancellation." },
-            { q: "What if I pause my subscription?", a: "Pausing is fine — your rate is held while your subscription is paused. Only a full cancellation resets your rate. If your business is seasonal, you can pause in the off-months and your founding rate is still there when you resume." },
+            { q: "Do I have to commit for a whole year?", a: "No. Everything is month-to-month. Featured is $25/month, Premium is $49/month — billed monthly, cancel anytime. There is no annual contract. Take a spot for one month, the whole summer, or as long as you want." },
+            { q: "Can I do Featured or Premium just for the summer?", a: "Yes, that's exactly how it's designed. Sign up when your season starts, cancel when it ends. If you pause instead of canceling, your rate is locked and waiting for you when you come back next year." },
+            { q: "What if the Featured or Premium spots in my category are taken?", a: "Join the waitlist. We'll save your payment details — but nothing gets charged yet. The moment a spot opens in your category, you'll receive a text notification. You'll have 48 hours to claim it. Claim it and your card is billed and your listing goes live. Don't claim it and no charge — the next person on the list gets the offer." },
+            { q: "How many businesses can be Featured or Premium in my category?", a: "Featured has 3 spots per category. Premium has 1 spot per category — it's exclusive, one business at a time. Different categories have different availability, so check the availability band at the top of this page to see where your category stands." },
+            { q: "I already have a free listing. What changes?", a: "Your free listing stays as-is. The featured upgrade gives you a premium card at the top of the directory, above all free listings. It's a separate, more visible placement — not a replacement." },
+            { q: "What happens if I cancel my listing?", a: "Your listing reverts to the free directory. No lock-in, cancel anytime. If you cancel and later rejoin, you pay whatever the current rate is at that time — your original rate is not held after a full cancellation." },
+            { q: "What if I pause my subscription?", a: "Pausing is fine — your rate is held while your subscription is paused. Only a full cancellation resets your rate. If your business is seasonal, pause in the off-months and your founding rate is still there when you resume." },
             { q: "Can I change my listing details after I pay?", a: "Absolutely. Email us and we'll update your logo, description, phone number, or link within 24 hours." },
             { q: "What's the Holly & Yeti podcast mention?", a: "Premium tier businesses get a shoutout on the Holly & Yeti community podcast, reaching the broader Devils Lake and Irish Hills audience." },
             { q: "Why are prices so low right now?", a: "We're in launch mode and want founding businesses on board. The rate you sign up at is held for as long as your subscription stays active — it only rises for new sign-ups after you. Lock in early." },

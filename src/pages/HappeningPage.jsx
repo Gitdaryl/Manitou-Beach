@@ -61,7 +61,7 @@ function HappeningHero() {
           <div style={{ fontFamily: "'Caveat', cursive", fontSize: "clamp(20px, 3vw, 30px)", color: C.sunsetLight, marginBottom: 48 }}>
             in Manitou Beach · Devils Lake, Michigan
           </div>
-          <Btn href="/#submit" variant="outlineLight">Submit an Event</Btn>
+          <Btn href="#submit-event" variant="outlineLight">Submit an Event</Btn>
           <ShareBar title="What's Happening in Manitou Beach" />
         </div>
       </div>
