@@ -6,7 +6,7 @@ import { Footer, GlobalStyles, Navbar } from '../components/Layout';
 const HOW_IT_WORKS = [
   { step: "01", title: "Sign up below", copy: "Tell us about your organization and event. Takes 30 seconds." },
   { step: "02", title: "Quick bank setup", copy: "You'll be taken to a secure Stripe form to enter your bank details. Money from ticket sales goes straight to your account." },
-  { step: "03", title: "We set up your event", copy: "Daryl configures your event on manitoubeach.com — pricing, capacity, dates. Your 'Get Tickets' button goes live." },
+  { step: "03", title: "We set up your event", copy: "Daryl configures your event on manitoubeachmichigan.com — pricing, capacity, dates. Your 'Get Tickets' button goes live." },
 ];
 
 const FEATURES = [

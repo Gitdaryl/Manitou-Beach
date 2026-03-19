@@ -432,7 +432,7 @@ export default function USA250Page() {
                   <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.7, marginBottom: 20 }}>
                     The bigger the crowd, the better the night. Share this page with everyone you know who loves Manitou Beach.
                   </p>
-                  <ShareBar url="https://manitoubeach.com/usa250" title="Manitou Beach is celebrating America's 250th — July 4, 2026. Be there." />
+                  <ShareBar url="https://manitou-beach.vercel.app/fireworks" title="Manitou Beach is celebrating America's 250th — July 4, 2026. Be there." />
                 </div>
                 <div style={{ background: "rgba(201,168,76,0.08)", borderRadius: 14, padding: "24px 22px", border: `1px solid ${C250.gold}30` }}>
                   <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C250.gold, marginBottom: 10 }}>Subscribe for Updates</div>
