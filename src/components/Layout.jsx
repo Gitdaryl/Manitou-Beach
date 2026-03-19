@@ -1485,7 +1485,9 @@ export function Footer({ scrollTo }) {
 export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
+  const [homeOpen, setHomeOpen] = useState(false);
   const [comOpen, setComOpen] = useState(false);
+  const homeRef = useRef(null);
   const comRef = useRef(null);
 
   useEffect(() => {
@@ -1501,9 +1503,12 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  // Close community dropdown on outside click
+  // Close dropdowns on outside click
   useEffect(() => {
-    const close = (e) => { if (comRef.current && !comRef.current.contains(e.target)) setComOpen(false); };
+    const close = (e) => {
+      if (homeRef.current && !homeRef.current.contains(e.target)) setHomeOpen(false);
+      if (comRef.current && !comRef.current.contains(e.target)) setComOpen(false);
+    };
     document.addEventListener("mousedown", close);
     return () => document.removeEventListener("mousedown", close);
   }, []);
@@ -1554,33 +1559,49 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
 
           {/* Desktop nav */}
           <div style={{ display: "flex", gap: 2, alignItems: "center", "@media(max-width:768px)": { display: "none" } }} className="nav-desktop">
-            {SECTIONS.filter(s => s.id !== "home").map(({ id, label }) => (
+
+            {/* Home dropdown */}
+            <div ref={homeRef} style={{ position: "relative" }}>
               <button
-                key={id}
-                onClick={() => handleNavClick(id)}
+                onClick={() => setHomeOpen(o => !o)}
                 style={{
-                  background: activeSection === id ? `${C.sage}18` : "transparent",
-                  border: "none",
-                  color: activeSection === id ? C.sageDark : solid ? C.text : "rgba(255,255,255,0.7)",
-                  fontFamily: "'Libre Franklin', sans-serif",
-                  fontSize: 12,
-                  fontWeight: activeSection === id ? 700 : 500,
-                  letterSpacing: 0.5,
-                  padding: "7px 13px",
-                  borderRadius: 6,
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                  whiteSpace: "nowrap",
+                  background: homeOpen ? `${C.sage}18` : "transparent",
+                  border: "none", color: solid ? C.text : "rgba(255,255,255,0.7)",
+                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 500, letterSpacing: 0.5,
+                  padding: "7px 13px", borderRadius: 6, cursor: "pointer", transition: "all 0.2s", whiteSpace: "nowrap",
                 }}
                 onMouseEnter={e => { e.currentTarget.style.color = solid ? C.dusk : C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
-                onMouseLeave={e => { e.currentTarget.style.color = activeSection === id ? C.sageDark : solid ? C.text : "rgba(255,255,255,0.7)"; e.currentTarget.style.background = activeSection === id ? `${C.sage}18` : "transparent"; }}
+                onMouseLeave={e => { if (!homeOpen) { e.currentTarget.style.color = solid ? C.text : "rgba(255,255,255,0.7)"; e.currentTarget.style.background = "transparent"; } }}
               >
-                {label}
+                Home ▾
               </button>
-            ))}
-            {/* Dispatch link */}
+              {homeOpen && (
+                <div style={{
+                  position: "absolute", top: "100%", left: 0, marginTop: 6,
+                  background: "rgba(250,246,239,0.98)", backdropFilter: "blur(14px)",
+                  borderRadius: 10, border: `1px solid ${C.sand}`, boxShadow: "0 12px 36px rgba(0,0,0,0.12)",
+                  padding: "8px 0", minWidth: 180, zIndex: 1001,
+                }}>
+                  {[
+                    { id: "explore",    label: "Explore" },
+                    { id: "businesses", label: "Local Businesses" },
+                    { id: "living",     label: "Living Here" },
+                    { id: "about",      label: "About" },
+                  ].map(({ id, label }) => (
+                    <button key={id} onClick={() => { setHomeOpen(false); handleNavClick(id); }} style={{
+                      display: "block", width: "100%", textAlign: "left", padding: "10px 18px", fontSize: 13, color: C.text,
+                      background: "none", border: "none", cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", transition: "background 0.15s",
+                    }} onMouseEnter={e => e.currentTarget.style.background = `${C.sage}10`} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* What's Happening */}
             <button
-              onClick={() => { window.location.href = "/dispatch"; }}
+              onClick={() => handleNavClick("happening")}
               style={{
                 background: "transparent", border: "none",
                 color: solid ? C.text : "rgba(255,255,255,0.7)",
@@ -1591,10 +1612,10 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
               onMouseEnter={e => { e.currentTarget.style.color = solid ? C.dusk : C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
               onMouseLeave={e => { e.currentTarget.style.color = solid ? C.text : "rgba(255,255,255,0.7)"; e.currentTarget.style.background = "transparent"; }}
             >
-              Blog
+              What&apos;s Happening
             </button>
 
-            {/* Local Guide link */}
+            {/* Local Guide */}
             <button
               onClick={() => { window.location.href = "/discover"; }}
               style={{
@@ -1608,6 +1629,22 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
               onMouseLeave={e => { e.currentTarget.style.color = solid ? C.text : "rgba(255,255,255,0.7)"; e.currentTarget.style.background = "transparent"; }}
             >
               Local Guide
+            </button>
+
+            {/* Blog */}
+            <button
+              onClick={() => { window.location.href = "/dispatch"; }}
+              style={{
+                background: "transparent", border: "none",
+                color: solid ? C.text : "rgba(255,255,255,0.7)",
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 500,
+                letterSpacing: 0.5, padding: "7px 13px", borderRadius: 6, cursor: "pointer",
+                transition: "all 0.2s", whiteSpace: "nowrap",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.color = solid ? C.dusk : C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
+              onMouseLeave={e => { e.currentTarget.style.color = solid ? C.text : "rgba(255,255,255,0.7)"; e.currentTarget.style.background = "transparent"; }}
+            >
+              Blog
             </button>
 
             {/* Community dropdown */}
@@ -1727,39 +1764,41 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
         transform: menuOpen ? "translateX(0)" : "translateX(100%)",
         transition: "transform 0.35s ease",
       }}>
-        {SECTIONS.filter(s => s.id !== "home").map(({ id, label }) => (
-          <button
-            key={id}
-            onClick={() => handleNavClick(id)}
-            style={{
-              background: "none",
-              border: "none",
-              fontFamily: "'Libre Baskerville', serif",
-              fontSize: 24,
-              fontWeight: 400,
-              color: activeSection === id ? C.sage : C.text,
-              cursor: "pointer",
-              padding: "12px 32px",
-              letterSpacing: 0.5,
-            }}
-          >
-            {label}
-          </button>
-        ))}
-        {/* Blog link — mobile */}
-        <button onClick={() => { setMenuOpen(false); window.location.href = "/dispatch"; }} style={{
+        {/* What's Happening — mobile top level */}
+        <button onClick={() => { setMenuOpen(false); handleNavClick("happening"); }} style={{
           background: "none", border: "none", fontFamily: "'Libre Baskerville', serif",
-          fontSize: 24, fontWeight: 400, color: C.text, cursor: "pointer", padding: "12px 32px",
+          fontSize: 24, fontWeight: 400, color: C.text, cursor: "pointer", padding: "12px 32px", letterSpacing: 0.5,
         }}>
-          Blog
+          What&apos;s Happening
         </button>
-        {/* Local Guide link — mobile */}
         <button onClick={() => { setMenuOpen(false); window.location.href = "/discover"; }} style={{
           background: "none", border: "none", fontFamily: "'Libre Baskerville', serif",
-          fontSize: 24, fontWeight: 400, color: C.text, cursor: "pointer", padding: "12px 32px",
+          fontSize: 24, fontWeight: 400, color: C.text, cursor: "pointer", padding: "12px 32px", letterSpacing: 0.5,
         }}>
           Local Guide
         </button>
+        <button onClick={() => { setMenuOpen(false); window.location.href = "/dispatch"; }} style={{
+          background: "none", border: "none", fontFamily: "'Libre Baskerville', serif",
+          fontSize: 24, fontWeight: 400, color: C.text, cursor: "pointer", padding: "12px 32px", letterSpacing: 0.5,
+        }}>
+          Blog
+        </button>
+
+        {/* Home sub-sections */}
+        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.textMuted, marginTop: 8, fontFamily: "'Libre Franklin', sans-serif" }}>On This Page</div>
+        {[
+          { id: "explore",    label: "Explore" },
+          { id: "businesses", label: "Local Businesses" },
+          { id: "living",     label: "Living Here" },
+          { id: "about",      label: "About" },
+        ].map(({ id, label }) => (
+          <button key={id} onClick={() => handleNavClick(id)} style={{
+            background: "none", border: "none", fontFamily: "'Libre Baskerville', serif",
+            fontSize: 20, fontWeight: 400, color: C.textLight, cursor: "pointer", padding: "8px 32px", letterSpacing: 0.5,
+          }}>
+            {label}
+          </button>
+        ))}
 
         {/* Community sub-links */}
         <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.textMuted, marginTop: 8, fontFamily: "'Libre Franklin', sans-serif" }}>Community</div>
