@@ -216,7 +216,7 @@ function BookSection() {
                 background: 'rgba(255,255,255,0.06)', border: `1px solid rgba(255,255,255,0.1)`,
                 borderRadius: 18, padding: '36px 28px', position: 'relative', overflow: 'hidden',
               }}>
-                <div style={{ fontSize: 40, marginBottom: 12 }}>{s.icon}</div>
+                <div className="mono-icon" style={{ fontSize: 40, marginBottom: 12 }}>{s.icon}</div>
                 <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.cream, margin: '0 0 8px' }}>{s.name}</h3>
                 <div style={{ display: 'flex', gap: 8, justifyContent: 'center', alignItems: 'baseline', marginBottom: 12 }}>
                   <span style={{ fontSize: 28, fontWeight: 700, color: C.sunset, fontFamily: "'Libre Franklin', sans-serif" }}>{s.price}</span>

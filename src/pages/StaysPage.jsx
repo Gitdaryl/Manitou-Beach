@@ -427,7 +427,6 @@ export default function StaysPage() {
       {/* Listings */}
       <section style={{ padding: '60px 24px 80px', background: C.cream }}>
         <div style={{ maxWidth: 800, margin: '0 auto' }}>
-          <PageSponsorBanner pageName="stays" />
           {loading ? (
             <p style={{ textAlign: 'center', color: C.textMuted, fontSize: 14 }}>Loading stays...</p>
           ) : filtered.length === 0 ? (
@@ -459,6 +458,7 @@ export default function StaysPage() {
 
       <ListYourPropertySection />
       <NewsletterInline />
+      <PageSponsorBanner pageName="stays" />
       <Footer />
     </>
   );

@@ -209,7 +209,7 @@ export default function TicketServicesPage() {
                 {PHONE_RISKS.map((item, i) => (
                   <FadeIn key={item.title} delay={i * 70 + 150}>
                     <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
-                      <div style={{ fontSize: 22, marginTop: 2, flexShrink: 0 }}>{item.icon}</div>
+                      <div className="mono-icon" style={{ fontSize: 22, marginTop: 2, flexShrink: 0 }}>{item.icon}</div>
                       <div>
                         <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: C.text, marginBottom: 6 }}>{item.title}</div>
                         <div style={{ fontSize: 13, color: C.textLight, lineHeight: 1.85 }}>{item.copy}</div>
@@ -236,7 +236,7 @@ export default function TicketServicesPage() {
             {FEATURES.map((item, i) => (
               <FadeIn key={item.title} delay={i * 70}>
                 <div style={{ background: C.cream, borderRadius: 14, padding: "28px 24px", border: `1px solid ${C.sand}`, borderTop: `3px solid ${C.lakeBlue}`, height: "100%", boxSizing: "border-box" }}>
-                  <div style={{ fontSize: 28, marginBottom: 14 }}>{item.icon}</div>
+                  <div className="mono-icon" style={{ fontSize: 28, marginBottom: 14 }}>{item.icon}</div>
                   <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.text, marginBottom: 10 }}>{item.title}</div>
                   <div style={{ fontSize: 13, color: C.textLight, lineHeight: 1.78 }}>{item.copy}</div>
                 </div>

@@ -298,6 +298,180 @@ export function Btn({ children, onClick, href, variant = "primary", small = fals
   );
 }
 
+// ============================================================
+// 🤝  COMMUNITY SPONSORSHIP / DONATION FORM
+// Used on org pages (Men's Club, Ladies Club, Historical, Fireworks)
+// No platform branding. Uses 1.25% fee structure.
+// ============================================================
+export function CommunityDonationForm({ orgName, tiers, accentColor, darkBg = false, note }) {
+  const FEE_RATE = 0.0125;
+  const [selectedTier, setSelectedTier] = useState(tiers?.[1] ?? tiers?.[0] ?? null);
+  const [customAmt, setCustomAmt] = useState('');
+  const [form, setForm] = useState({ name: '', org: '', email: '', phone: '', message: '' });
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
+
+  const amount = selectedTier ? selectedTier.amount : (parseFloat(customAmt) || 0);
+  const fee = amount ? parseFloat((amount * FEE_RATE).toFixed(2)) : 0;
+  const net = amount ? parseFloat((amount - fee).toFixed(2)) : 0;
+
+  const accent = accentColor || C.sunset;
+  const textColor = darkBg ? C.cream : C.text;
+  const textMuted = darkBg ? 'rgba(255,255,255,0.45)' : C.textMuted;
+  const inputBg = darkBg ? 'rgba(255,255,255,0.06)' : C.cream;
+  const inputBorder = darkBg ? '1px solid rgba(255,255,255,0.15)' : `1px solid ${C.sand}`;
+  const cardBg = darkBg ? 'rgba(255,255,255,0.04)' : C.cream;
+  const cardBorder = darkBg ? 'rgba(255,255,255,0.1)' : C.sand;
+
+  const inputStyle = {
+    width: '100%', boxSizing: 'border-box', padding: '12px 16px',
+    border: inputBorder, borderRadius: 8, background: inputBg,
+    color: textColor, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: 'none',
+  };
+  const labelStyle = {
+    display: 'block', fontSize: 11, fontWeight: 700, letterSpacing: 1,
+    textTransform: 'uppercase', color: textMuted, marginBottom: 6,
+    fontFamily: "'Libre Franklin', sans-serif",
+  };
+
+  const handleSubmit = () => {
+    if (!form.name.trim() || !form.email.trim()) { setError('Name and email are required.'); return; }
+    if (!amount || amount < 1) { setError('Please select a sponsorship level or enter an amount.'); return; }
+    setError('');
+    setSubmitted(true);
+  };
+
+  if (submitted) {
+    return (
+      <div style={{ textAlign: 'center', padding: '56px 24px', background: cardBg, borderRadius: 16, border: `1px solid ${cardBorder}` }}>
+        <div style={{ fontSize: 52, marginBottom: 16 }}>🤝</div>
+        <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, color: textColor, fontWeight: 400, margin: '0 0 12px' }}>
+          Thank you, {form.name.split(' ')[0]}!
+        </h3>
+        <p style={{ fontSize: 15, color: textMuted, lineHeight: 1.8, maxWidth: 440, margin: '0 auto 16px' }}>
+          Your {selectedTier ? selectedTier.level : `$${amount} contribution`} application has been received.
+          Someone from {orgName} will be in touch at <strong style={{ color: accent }}>{form.email}</strong>.
+        </p>
+        {amount > 0 && (
+          <p style={{ fontSize: 12, color: textMuted, margin: 0, lineHeight: 1.9 }}>
+            Amount: <strong style={{ color: textColor }}>${amount.toLocaleString()}</strong>
+            {' · '}Processing fee: <strong style={{ color: textColor }}>${fee.toFixed(2)}</strong>
+            {' · '}{orgName} receives: <strong style={{ color: accent }}>${net.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+          </p>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ maxWidth: 700, margin: '0 auto' }}>
+      {/* Tier picker */}
+      {tiers && (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 10, marginBottom: 24 }}>
+          {tiers.map((tier) => {
+            const active = selectedTier?.level === tier.level;
+            return (
+              <button key={tier.level} onClick={() => { setSelectedTier(tier); setCustomAmt(''); }} style={{
+                padding: '18px 14px', borderRadius: 10, cursor: 'pointer', textAlign: 'left',
+                border: active ? `2px solid ${accent}` : `2px solid ${cardBorder}`,
+                background: active ? `${accent}18` : cardBg,
+                transition: 'all 0.15s',
+              }}>
+                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', color: textMuted, marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>{tier.level}</div>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: active ? accent : textColor }}>${tier.amount.toLocaleString()}</div>
+              </button>
+            );
+          })}
+          <button onClick={() => setSelectedTier(null)} style={{
+            padding: '18px 14px', borderRadius: 10, cursor: 'pointer', textAlign: 'left',
+            border: selectedTier === null ? `2px solid ${accent}` : `2px solid ${cardBorder}`,
+            background: selectedTier === null ? `${accent}18` : cardBg,
+            transition: 'all 0.15s',
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', color: textMuted, marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>Custom</div>
+            <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: selectedTier === null ? accent : textColor }}>Any amount</div>
+          </button>
+        </div>
+      )}
+
+      {/* Custom amount */}
+      {selectedTier === null && (
+        <div style={{ marginBottom: 20 }}>
+          <label style={labelStyle}>Contribution Amount ($)</label>
+          <input type="number" min="1" value={customAmt} onChange={e => setCustomAmt(e.target.value)}
+            placeholder="Enter amount" style={inputStyle} />
+        </div>
+      )}
+
+      {/* Selected tier perks */}
+      {selectedTier?.perks?.length > 0 && (
+        <div style={{ marginBottom: 20, padding: '14px 18px', borderRadius: 10, background: darkBg ? 'rgba(255,255,255,0.04)' : `${C.sage}0D`, border: `1px solid ${darkBg ? 'rgba(255,255,255,0.08)' : `${C.sage}25`}` }}>
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: textMuted, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>What's Included</div>
+          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 4 }}>
+            {selectedTier.perks.map((perk, i) => (
+              <li key={i} style={{ display: 'flex', gap: 8, fontSize: 13, color: textMuted, lineHeight: 1.5 }}>
+                <span style={{ color: C.sage, flexShrink: 0 }}>✓</span>
+                {perk}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Fee summary */}
+      {amount > 0 && (
+        <div style={{ marginBottom: 20, padding: '12px 18px', borderRadius: 10, background: darkBg ? 'rgba(255,255,255,0.04)' : `${C.sage}10`, border: `1px solid ${darkBg ? 'rgba(255,255,255,0.08)' : `${C.sage}28`}` }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 4 }}>
+            <span>Processing fee (1.25%)</span><span>−${fee.toFixed(2)}</span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, fontWeight: 700, color: textColor, fontFamily: "'Libre Franklin', sans-serif" }}>
+            <span>{orgName} receives</span><span style={{ color: accent }}>${net.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Form fields */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div>
+            <label style={labelStyle}>Your Name *</label>
+            <input type="text" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="First &amp; Last Name" style={inputStyle} />
+          </div>
+          <div>
+            <label style={labelStyle}>Business or Organization</label>
+            <input type="text" value={form.org} onChange={e => setForm(f => ({ ...f, org: e.target.value }))} placeholder="Optional" style={inputStyle} />
+          </div>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div>
+            <label style={labelStyle}>Email Address *</label>
+            <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="your@email.com" style={inputStyle} />
+          </div>
+          <div>
+            <label style={labelStyle}>Phone Number</label>
+            <input type="tel" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="(555) 000-0000" style={inputStyle} />
+          </div>
+        </div>
+        <div>
+          <label style={labelStyle}>Message or Questions</label>
+          <textarea rows={3} value={form.message} onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
+            placeholder="Optional — any questions, notes, or special requests"
+            style={{ ...inputStyle, resize: 'vertical' }} />
+        </div>
+        {error && <p style={{ fontSize: 13, color: '#c0392b', margin: 0, fontFamily: "'Libre Franklin', sans-serif" }}>{error}</p>}
+        <button onClick={handleSubmit} style={{
+          padding: '15px 28px', borderRadius: 8, background: accent, color: C.cream, border: 'none',
+          fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700,
+          letterSpacing: 1.5, textTransform: 'uppercase', cursor: 'pointer',
+        }}>
+          Submit Application →
+        </button>
+        {note && <p style={{ fontSize: 11, color: textMuted, textAlign: 'center', lineHeight: 1.7, margin: '4px 0 0', fontFamily: "'Libre Franklin', sans-serif" }}>{note}</p>}
+      </div>
+    </div>
+  );
+}
+
 export function CategoryPill({ children, dark = false }) {
   return (
     <span style={{

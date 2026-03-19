@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivider, DiagonalDivider } from '../components/Shared';
+import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivider, DiagonalDivider, CommunityDonationForm } from '../components/Shared';
 import { Footer, GlobalStyles, Navbar, NewsletterInline } from '../components/Layout';
 import { C } from '../data/config';
 
@@ -169,7 +169,7 @@ function MensClubMissionSection() {
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               {MENS_CLUB_PROGRAMS.map((p, i) => (
                 <div key={i} style={{ display: "flex", gap: 14, alignItems: "flex-start", padding: "14px 16px", background: C.cream, borderRadius: 10, border: `1px solid ${C.sand}` }}>
-                  <span style={{ fontSize: 24, lineHeight: 1, flexShrink: 0 }}>{p.icon}</span>
+                  <span className="mono-icon" style={{ fontSize: 24, lineHeight: 1, flexShrink: 0 }}>{p.icon}</span>
                   <div>
                     <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, fontWeight: 400, color: C.text }}>{p.title}</div>
                     <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.5, marginTop: 2 }}>{p.desc}</div>
@@ -275,6 +275,37 @@ function MensClubGallerySection() {
   ) : null;
 }
 
+const MENS_CLUB_SPONSOR_TIERS = [
+  { level: "Presenting Sponsor", amount: 2500, perks: ["Named sponsor in all event promotions", "Logo on website & event banners", "Newsletter feature story", "On-site recognition at Tip-Up Festival", "Social media campaign inclusion"] },
+  { level: "Gold Sponsor", amount: 1000, perks: ["Logo on website & event banners", "Newsletter mention", "Social media tag", "On-site recognition at events"] },
+  { level: "Silver Sponsor", amount: 500, perks: ["Name on website", "Newsletter mention", "Community recognition at events"] },
+  { level: "Community Partner", amount: 100, perks: ["Name listed on website", "Community recognition"] },
+];
+
+function MensClubSponsorForm() {
+  return (
+    <section style={{ background: C.cream, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 800, margin: "0 auto" }}>
+        <FadeIn>
+          <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <SectionLabel>Support the Mission</SectionLabel>
+            <SectionTitle center>Become a Sponsor</SectionTitle>
+            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 520, margin: "0 auto" }}>
+              Your sponsorship directly funds laptops for students, Toys for Tots, the annual fireworks display, and the programs that have made Manitou Beach stronger for over 70 years.
+            </p>
+          </div>
+        </FadeIn>
+        <CommunityDonationForm
+          orgName="Devils & Round Lake Men's Club"
+          tiers={MENS_CLUB_SPONSOR_TIERS}
+          accentColor={C.sunset}
+          note="Your application will be reviewed and a club representative will follow up within 2 business days."
+        />
+      </div>
+    </section>
+  );
+}
+
 function MensClubGetInvolved() {
   return (
     <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
@@ -328,6 +359,7 @@ export default function MensClubPage() {
       <MensClubEventsSection />
       <WaveDivider topColor={C.dusk} bottomColor={C.cream} flip />
       <MensClubGallerySection />
+      <MensClubSponsorForm />
       <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
       <MensClubGetInvolved />
       <WaveDivider topColor={C.warmWhite} bottomColor={C.cream} />

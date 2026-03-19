@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Btn, FadeIn, ScrollProgress, SectionLabel, SectionTitle, WaveDivider } from '../components/Shared';
 import { C } from '../data/config';
-import { usePricing } from '../data/pricing';
+import { usePricing, GRACE } from '../data/pricing';
 import { Footer, GlobalStyles, Navbar } from '../components/Layout';
 
 const TRUCK_HOW = [
   { step: "01", title: "Sign up — 2 minutes flat", copy: "Truck name, cuisine, email, photo. Pick your tier. Done. Daryl sends your personal check-in link the same day — it's a private URL just for you, no app, no login." },
   { step: "02", title: "Tap your link every time you head out", copy: "Pulling into Manitou Beach? Open your link. Drop a location note ('near the boat launch'), add today's special, set your estimated departure. Tap 'I'm Here.' Your map pin goes live in seconds." },
   { step: "03", title: "Locals find you right now", copy: "Anyone checking the locator sees your Live Now badge, today's special, and how long you'll be around. Not a static ad — a real-time signal that turns browsers into customers." },
-  { step: "04", title: "Pre-announce a run before you leave home", copy: "Planning to be there Saturday? Set your Coming Date and customers see 'Coming This Saturday' in the locator before you even hitch up. Build anticipation, drive a crowd." },
+  { step: "04", title: "Pre-announce a run before you leave home", copy: "Planning to be there Saturday? Set your Coming Date and customers see 'Coming This Saturday' in the locator before you even hitch up. You show up to a crowd instead of building one." },
 ];
 const TRUCK_AUDIENCE = [
   { icon: "🏖️", label: "Lake crowd", copy: "Manitou Beach draws thousands of summer visitors — boaters, swimmers, families. They're hungry and they're looking." },
@@ -21,7 +21,7 @@ const TRUCK_GETS = [
   { icon: "🔗", title: "Personal check-in URL", copy: "A private link that's yours forever. Open from your phone, fill in two fields, tap one button. On the map in under a minute." },
   { icon: "⭐", title: "Today's Special badge", copy: "Running a lunch deal or testing a new item? Add it on check-in. It shows as a highlighted badge on your live card." },
   { icon: "📅", title: "Coming Soon pre-announce", copy: "Planning a Saturday run? Set your date and customers see 'Coming This Saturday' in the locator before you arrive." },
-  { icon: "📰", title: "Newsletter shoutout", copy: "On send days when you're checked in, we mention you're open to hundreds of readers who already love Manitou Beach." },
+  { icon: "📰", title: "Newsletter shoutout", copy: "When you're checked in on send days, hundreds of readers who follow Manitou Beach see your name." },
   { icon: "📋", title: "Directory listing year-round", copy: "Your name, cuisine, and contact info stay visible in the All Trucks list even when you're not checked in." },
 ];
 const TRUCK_FOUNDING_ITEMS = [
@@ -53,7 +53,7 @@ export default function FoodTruckPartnerPage() {
     document.getElementById('food-truck-signup')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const { priceFor, centsFor } = usePricing();
+  const { priceFor, centsFor, inGrace } = usePricing();
   const [form, setForm] = useState({ truckName: '', cuisine: '', email: '', phone: '', website: '' });
   const [selectedTier, setSelectedTier] = useState('free'); // 'free' | 'paid'
   const [imageUrl, setImageUrl] = useState('');
@@ -161,7 +161,7 @@ export default function FoodTruckPartnerPage() {
             Your truck. Live on the map.<br /><em>Every time you're nearby.</em>
           </h1>
           <p style={{ fontSize: 16, color: "rgba(255,255,255,0.5)", maxWidth: 520, margin: "0 auto 32px", lineHeight: 1.85 }}>
-            Your name in the directory is free. Founding members get a live map pin, personal check-in link, Today's Special badge, and newsletter reach — locked at ${priceFor(9)}/mo for life. Price rises one cent per subscriber once we pass 100. The sooner you join, the more you save.
+            Your name in the directory is free. Founding members get a live map pin, personal check-in link, Today's Special badge, and newsletter reach — locked at ${priceFor(9)}/mo as the list grows. Price rises one cent per subscriber once we pass 100. The sooner you sign up, the lower your rate.
           </p>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
             <Btn onClick={() => scrollToSignup('paid')} variant="sunset" style={{ whiteSpace: "nowrap" }}>
@@ -222,7 +222,7 @@ export default function FoodTruckPartnerPage() {
             {TRUCK_AUDIENCE.map((item, i) => (
               <FadeIn key={item.label} delay={i * 70}>
                 <div style={{ background: C.cream, borderRadius: 14, padding: "28px 24px", border: `1px solid ${C.sand}`, borderTop: `3px solid ${C.sunset}`, height: "100%", boxSizing: "border-box" }}>
-                  <div style={{ fontSize: 28, marginBottom: 14 }}>{item.icon}</div>
+                  <div className="mono-icon" style={{ fontSize: 28, marginBottom: 14 }}>{item.icon}</div>
                   <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.text, marginBottom: 10 }}>{item.label}</div>
                   <div style={{ fontSize: 13, color: C.textLight, lineHeight: 1.78 }}>{item.copy}</div>
                 </div>
@@ -247,7 +247,7 @@ export default function FoodTruckPartnerPage() {
             {TRUCK_GETS.map((item, i) => (
               <FadeIn key={item.title} delay={i * 70}>
                 <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: 14, padding: "28px 24px", border: "1px solid rgba(255,255,255,0.1)", height: "100%", boxSizing: "border-box" }}>
-                  <div style={{ fontSize: 28, marginBottom: 14 }}>{item.icon}</div>
+                  <div className="mono-icon" style={{ fontSize: 28, marginBottom: 14 }}>{item.icon}</div>
                   <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.cream, marginBottom: 10 }}>{item.title}</div>
                   <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", lineHeight: 1.78 }}>{item.copy}</div>
                 </div>
@@ -266,7 +266,7 @@ export default function FoodTruckPartnerPage() {
             <SectionLabel style={{ textAlign: "center", display: "block" }}>Pricing</SectionLabel>
             <SectionTitle center>The Founding Food Truck rate.</SectionTitle>
             <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 560, margin: "0 auto 16px", textAlign: "center" }}>
-              $9/month. Yours for life — as long as you stay listed. Price rises one cent per new subscriber after our first 100. Founding members are grandfathered forever at today's rate.
+            $9/month, locked as the newsletter grows. Price rises one cent per new subscriber after our first 100. Founding members keep today's rate as the list expands.
             </p>
             <div style={{ textAlign: "center", marginBottom: 36 }}>
               <span style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: inGrace ? C.sage : C.sunset }}>
@@ -336,7 +336,7 @@ export default function FoodTruckPartnerPage() {
                   <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 48, fontWeight: 700, color: C.cream }}>${priceFor(9)}</span>
                   <span style={{ fontSize: 14, color: "rgba(255,255,255,0.45)", marginLeft: 4 }}>/mo</span>
                 </div>
-                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: C.sunsetLight, marginBottom: 28 }}>yours for life · locked the day you join</div>
+                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: C.sunsetLight, marginBottom: 28 }}>your rate · locked as the list grows</div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {TRUCK_FOUNDING_ITEMS.map(item => (
                     <div key={item.label} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
@@ -403,7 +403,7 @@ export default function FoodTruckPartnerPage() {
               Your truck. Your listing.<br /><em style={{ color: C.sunsetLight }}>Pick your plan.</em>
             </h2>
             <p style={{ fontSize: 14, color: "rgba(255,255,255,0.42)", lineHeight: 1.85, marginBottom: 32, textAlign: "center" }}>
-              Free puts your name in the directory. Founding rate gets you live on the map — with a check-in link you'll use every single time you're nearby.
+              Free puts your name in the directory. Founding rate gets you live on the map, with a check-in link you'll use every time you pull into Manitou Beach.
             </p>
 
             {submitted ? (

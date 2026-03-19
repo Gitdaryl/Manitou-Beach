@@ -241,7 +241,7 @@ function DevilsLakeCommunitySection() {
                   {/* Image placeholder with icon centred, title overlaid at bottom */}
                   <div style={{ position: "relative", paddingTop: "62.5%", background: "rgba(255,255,255,0.03)", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
                     <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <span style={{ fontSize: 44, opacity: 0.6 }}>{item.icon}</span>
+                      <span className="mono-icon" style={{ fontSize: 44, opacity: 0.6 }}>{item.icon}</span>
                     </div>
                     <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, background: "linear-gradient(to top, rgba(14,24,32,0.88), transparent)", padding: "28px 20px 14px" }}>
                       <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.cream, margin: 0, lineHeight: 1.2 }}>{item.title}</h3>

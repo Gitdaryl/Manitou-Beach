@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivider, PageSponsorBanner, DiagonalDivider } from '../components/Shared';
+import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivider, PageSponsorBanner, DiagonalDivider, CommunityDonationForm } from '../components/Shared';
 import { Footer, GlobalStyles, Navbar, NewsletterInline } from '../components/Layout';
 import { C } from '../data/config';
 
@@ -308,6 +308,37 @@ function MBHRSSupportSection() {
   );
 }
 
+const MBHRS_SPONSOR_TIERS = [
+  { level: "Patron", amount: 1000, perks: ["Named sponsor on website & in all event materials", "Logo at Festival of the Arts & gallery events", "Newsletter feature", "Social media recognition", "Complimentary gallery invitations"] },
+  { level: "Supporter", amount: 500, perks: ["Logo on website & event materials", "Newsletter mention", "Social media tag", "Gallery recognition"] },
+  { level: "Friend", amount: 250, perks: ["Name on website", "Newsletter mention", "Community recognition"] },
+  { level: "Contributor", amount: 100, perks: ["Name listed on website", "Thank-you acknowledgment"] },
+];
+
+function MBHRSSponsorForm() {
+  return (
+    <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 800, margin: "0 auto" }}>
+        <FadeIn>
+          <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <SectionLabel>Support Preservation</SectionLabel>
+            <SectionTitle center>Become a Sponsor</SectionTitle>
+            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 520, margin: "0 auto" }}>
+              Your sponsorship preserves Manitou Beach history, supports the Boat House Art Gallery, and funds the Festival of the Arts — keeping our cultural heritage alive for the next generation.
+            </p>
+          </div>
+        </FadeIn>
+        <CommunityDonationForm
+          orgName="Manitou Beach Historical & Recreation Society"
+          tiers={MBHRS_SPONSOR_TIERS}
+          accentColor={C.lakeBlue}
+          note="MBHRS is a 501(c)(3) nonprofit. A representative will be in touch within 2 business days."
+        />
+      </div>
+    </section>
+  );
+}
+
 export default function HistoricalSocietyPage() {
   const subScrollTo = (id) => { window.location.href = "/#" + id; };
 
@@ -324,6 +355,8 @@ export default function HistoricalSocietyPage() {
       <WaveDivider topColor={C.dusk} bottomColor={C.cream} flip />
       <MBHRSSupportSection />
       <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
+      <MBHRSSponsorForm />
+      <WaveDivider topColor={C.warmWhite} bottomColor={C.cream} />
       <NewsletterInline />
       <WaveDivider topColor={C.warmWhite} bottomColor={C.dusk} />
       <PageSponsorBanner pageName="historical-society" />

@@ -121,6 +121,7 @@ export default function App() {
           <Route path="/ticket-services" element={<TicketServicesPage />} />
           <Route path="/ticket-success" element={<TicketSuccessPage />} />
           <Route path="/partner-intake" element={<PartnerIntakePage />} />
+          <Route path="/fireworks" element={<USA250Page />} />
           <Route path="/usa250" element={<USA250Page />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />

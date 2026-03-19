@@ -444,7 +444,7 @@ function FishingSeasonsSection() {
           {FISHING_SEASONS.map((s, i) => (
             <FadeIn key={i} delay={i * 80}>
               <div style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.09)", borderRadius: 14, padding: "32px 28px" }}>
-                <div style={{ fontSize: 32, marginBottom: 12 }}>{s.icon}</div>
+                <div className="mono-icon" style={{ fontSize: 32, marginBottom: 12 }}>{s.icon}</div>
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.cream, marginBottom: 12 }}>{s.season}</div>
                 <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, margin: "0 0 16px 0" }}>{s.desc}</p>
                 <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 14 }}>

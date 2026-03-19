@@ -203,7 +203,7 @@ export default function WinePartnerPage() {
             {WINE_PARTNER_GETS.map((item, i) => (
               <FadeIn key={item.title} delay={i * 70}>
                 <div style={{ background: C.cream, borderRadius: 14, padding: "28px 24px", border: `1px solid ${C.sand}`, borderTop: `3px solid ${C.sunset}`, height: "100%", boxSizing: "border-box" }}>
-                  <div style={{ fontSize: 28, marginBottom: 14 }}>{item.icon}</div>
+                  <div className="mono-icon" style={{ fontSize: 28, marginBottom: 14 }}>{item.icon}</div>
                   <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.text, marginBottom: 10 }}>{item.title}</div>
                   <div style={{ fontSize: 13, color: C.textLight, lineHeight: 1.78 }}>{item.copy}</div>
                 </div>
@@ -308,7 +308,7 @@ export default function WinePartnerPage() {
                   { icon: "🌐", text: "Full venue listing on Manitou Beach year-round" },
                 ].map((item, i) => (
                   <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: "10px 0", borderBottom: i < 7 ? "1px solid rgba(255,255,255,0.06)" : "none" }}>
-                    <span style={{ fontSize: 15, flexShrink: 0, marginTop: 1 }}>{item.icon}</span>
+                    <span className="mono-icon" style={{ fontSize: 15, flexShrink: 0, marginTop: 1 }}>{item.icon}</span>
                     <span style={{ fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 1.55 }}>{item.text}</span>
                   </div>
                 ))}

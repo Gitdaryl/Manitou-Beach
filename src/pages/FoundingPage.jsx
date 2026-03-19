@@ -143,10 +143,7 @@ export default function FoundingPage() {
             List your business now,<br />at the rate that holds.
           </h1>
           <p style={{ fontSize: 16, color: "rgba(255,255,255,0.5)", maxWidth: 520, margin: "0 auto 16px", lineHeight: 1.85 }}>
-            Manitou Beach pricing is tied to the newsletter audience. The rate you start at today is your rate permanently — even as the audience grows and new listings cost more.
-          </p>
-          <p style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: "rgba(255,255,255,0.3)", marginBottom: 40 }}>
-            Like locking in a rate before the market moves.
+            Manitou Beach pricing is tied to the newsletter audience. The rate you start at today is your rate as long as your listing runs — even as the audience grows and new listings cost more.
           </p>
           <Btn href="/business" variant="sunset" style={{ whiteSpace: "nowrap" }}>
             See Listing Options →
@@ -170,9 +167,9 @@ export default function FoundingPage() {
             </FadeIn>
             <FadeIn style={{ flex: "1 1 260px" }}>
               <SectionLabel>The Formula</SectionLabel>
-              <SectionTitle>Here's exactly how it works.</SectionTitle>
+              <SectionTitle>The pricing formula.</SectionTitle>
               <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, margin: 0 }}>
-                The base price is $9/mo for an Enhanced listing. After 100 newsletter subscribers, the price rises by one cent per new subscriber — automatically, for everyone who signs up after. But your rate? Locked in the day you join. Forever.
+                The base price is $9/mo for an Enhanced listing. After 100 newsletter subscribers, the price rises by one cent per new subscriber for everyone who signs up after. Your rate is locked the day you join.
               </p>
             </FadeIn>
           </div>
@@ -213,19 +210,19 @@ export default function FoundingPage() {
             <SectionLabel style={{ textAlign: "center", display: "block" }}>What's a Subscriber?</SectionLabel>
             <SectionTitle center>The newsletter, explained.</SectionTitle>
             <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 580, margin: "0 auto 40px", textAlign: "center" }}>
-              Manitou Beach runs a community newsletter through beehiiv — sent regularly to real people who live near, visit, or own property around Devils Lake and Manitou Beach. Not a random email list. People who opted in because they actually care about what's happening here.
+              Manitou Beach runs a community newsletter through beehiiv, sent to people who live near, visit, or own property around Devils Lake. They opted in. They read it.
             </p>
           </FadeIn>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16 }}>
             {[
               { icon: "📰", label: "What it covers", copy: "Upcoming events, seasonal guides, food truck locations, wine trail news, new business spotlights, and community updates." },
               { icon: "👥", label: "Who reads it", copy: "Lake homeowners, seasonal visitors, local residents, boaters, and anyone who follows the Irish Hills community." },
-              { icon: "📍", label: "Why it matters", copy: "As the list grows, your listing reaches more of those readers. The pricing formula reflects that growing value — which is why the rate rises." },
-              { icon: "🔒", label: "Your rate is fixed", copy: "Whatever rate you start at today is yours indefinitely. You don't reprice with the market. New subscribers don't affect your bill." },
+              { icon: "📍", label: "Why it matters", copy: "As the list grows, your listing reaches more of those readers. The rate rises to reflect that." },
+              { icon: "🔒", label: "Your rate is locked", copy: "Your rate is locked the day you join. New subscribers don't affect your bill." },
             ].map((item, i) => (
               <FadeIn key={item.label} delay={i * 60}>
                 <div style={{ background: C.cream, borderRadius: 12, padding: "22px 20px", border: `1px solid ${C.sand}` }}>
-                  <div style={{ fontSize: 24, marginBottom: 10 }}>{item.icon}</div>
+                  <div className="mono-icon" style={{ fontSize: 24, marginBottom: 10 }}>{item.icon}</div>
                   <div style={{ fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 6 }}>{item.label}</div>
                   <div style={{ fontSize: 12, color: C.textLight, lineHeight: 1.7 }}>{item.copy}</div>
                 </div>
@@ -244,7 +241,7 @@ export default function FoundingPage() {
             <SectionLabel style={{ textAlign: "center", display: "block" }}>Current Rates</SectionLabel>
             <SectionTitle center>Pick your listing level.</SectionTitle>
             <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 480, margin: "0 auto 48px", textAlign: "center" }}>
-              The rate you start at today is your rate for as long as your listing runs — regardless of where the newsletter audience goes after.
+              The rate you start at today is your rate as long as your listing runs. New subscribers pay more. You don't.
             </p>
           </FadeIn>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 20 }}>
@@ -270,7 +267,7 @@ export default function FoundingPage() {
                     <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 48, fontWeight: 700, color: tier.highlight ? C.cream : C.text }}>${tier.price}</span>
                     <span style={{ fontSize: 14, color: tier.highlight ? "rgba(255,255,255,0.45)" : C.textMuted, marginLeft: 4 }}>/mo</span>
                   </div>
-                  <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: tier.highlight ? C.sunsetLight : C.sage, marginBottom: 24 }}>today's rate — yours permanently</div>
+                  <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: tier.highlight ? C.sunsetLight : C.sage, marginBottom: 24 }}>today's rate · locked as the list grows</div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                     {tier.perks.map(p => (
                       <div key={p} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
@@ -304,27 +301,27 @@ export default function FoundingPage() {
             <FadeIn style={{ flex: "1 1 300px" }}>
               <SectionLabel>Founders Bonus</SectionLabel>
               <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 3.5vw, 36px)", fontWeight: 400, color: C.dusk, margin: "16px 0 20px", lineHeight: 1.25 }}>
-                Your founding rate follows you<br /><em style={{ color: C.sunset }}>all the way up.</em>
+                Your founding rate follows you<br /><em style={{ color: C.sunset }}>through every tier.</em>
               </h2>
               <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, marginBottom: 28 }}>
-                Start at Enhanced today. If you ever want a Featured or Premium listing — for a busy summer season, Tip-Up Festival, a grand opening — you upgrade at your original founding rate, not whatever the market rate is at that time. That protection follows you through every tier, permanently.
+                Start at Enhanced today. For a busy summer season, Tip-Up Festival, or a grand opening, upgrade to Featured or Premium at your original founding rate, not the market rate at that time.
               </p>
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 {[
                   { icon: "🔒", text: "Upgrade to any higher tier at your founding rate — whenever you want, for as long as you're listed" },
                   { icon: "📅", text: "Useful for seasonal peaks: Tip-Up Festival, July 4th, Memorial Day, summer opening weekend" },
-                  { icon: "⚡", text: "Founding rate access closes once early spots fill — first in, first protected. No exceptions after." },
+                  { icon: "⚡", text: "Founding rate access closes once early spots fill. No exceptions." },
                 ].map((item, i) => (
                   <FadeIn key={i} delay={i * 80 + 200}>
                     <div style={{ display: "flex", gap: 14, alignItems: "flex-start", background: C.warmWhite, borderRadius: 10, padding: "14px 16px", border: `1px solid ${C.sand}` }}>
-                      <span style={{ fontSize: 18, flexShrink: 0 }}>{item.icon}</span>
+                      <span className="mono-icon" style={{ fontSize: 18, flexShrink: 0 }}>{item.icon}</span>
                       <span style={{ fontSize: 13, color: C.textLight, lineHeight: 1.75, fontFamily: "'Libre Franklin', sans-serif" }}>{item.text}</span>
                     </div>
                   </FadeIn>
                 ))}
               </div>
               <div style={{ marginTop: 24 }}>
-                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: C.textMuted }}>No catch. Just the benefit of moving early.</div>
+                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: C.textMuted }}>The benefit of moving early.</div>
               </div>
             </FadeIn>
           </div>
@@ -342,7 +339,7 @@ export default function FoundingPage() {
               Join The Manitou Dispatch.
             </h2>
             <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 480, margin: "0 auto 32px" }}>
-              The community newsletter for Devils Lake and Manitou Beach. Events, local news, food truck locations, wine trail updates, and what's happening on the water — delivered to people who actually live here or love it here.
+              The community newsletter for Devils Lake and Manitou Beach. Events, local news, food truck locations, wine trail updates, and what's on the water — sent to people who live here or love it here.
             </p>
           </FadeIn>
           <NewsletterInline />

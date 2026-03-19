@@ -313,7 +313,7 @@ function Hero({ scrollTo }) {
             on Devils Lake, Michigan
           </div>
           <p style={{ fontSize: 18, color: "rgba(255,255,255,0.6)", lineHeight: 1.8, maxWidth: 520, margin: "0 0 48px 0" }}>
-            A lakeside community with a big personality. Devils Lake, Round Lake, and everything happening in the Irish Hills.
+            Boaters, lake homeowners, and Irish Hills regulars all end up here. Find what's on, where to eat, and who's worth knowing.
           </p>
           <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
             <Btn onClick={() => scrollTo("businesses")} variant="primary">Explore Businesses</Btn>
@@ -380,7 +380,7 @@ function NewsletterBar() {
           {subCount ? `${subCount.toLocaleString()}+ lake neighbors already subscribe.` : 'Your lake neighbors are already here.'} Weekly events, featured businesses, and everything happening on the water.
         </p>
         <p style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", margin: "0 0 28px 0", fontFamily: "'Libre Franklin', sans-serif" }}>
-          Free forever. Unsubscribe anytime. Just lake life.
+          Free. Unsubscribe anytime.
         </p>
         <form onSubmit={handleSubmit} style={{ display: "flex", gap: 10, maxWidth: 440, margin: "0 auto", flexWrap: "wrap", justifyContent: "center" }}>
           <input
@@ -567,7 +567,7 @@ function ExploreCard({ place, large = false, delay = 0 }) {
         }} />
         <div style={{ position: "relative", zIndex: 1 }}>
           {/* Only show icon on large cards */}
-          {large && <div style={{ fontSize: 36, marginBottom: 14 }}>{place.icon}</div>}
+          {large && <div className="mono-icon" style={{ fontSize: 36, marginBottom: 14 }}>{place.icon}</div>}
           <div style={{
             fontFamily: "'Libre Baskerville', serif",
             fontSize: large ? 22 : 15, fontWeight: 700,

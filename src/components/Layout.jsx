@@ -134,6 +134,10 @@ export function GlobalStyles() {
         border-color: rgba(212,132,90,0.5) !important;
         box-shadow: 0 0 20px rgba(212,132,90,0.10), 0 6px 18px rgba(0,0,0,0.25) !important;
       }
+      .mono-icon {
+        filter: grayscale(1);
+        opacity: 0.72;
+      }
       .horizontal-scroll {
         scrollbar-width: thin;
         scrollbar-color: #7A8E72 transparent;
@@ -494,8 +498,9 @@ export function NewsletterInline() {
         <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sage, marginBottom: 2 }}>
           The Manitou Beach Dispatch
         </div>
-        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted }}>
-          Join {subCount ? `${subCount.toLocaleString()}+ lake neighbors` : 'your lake neighbors'} getting weekly events, businesses & community news.
+        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, lineHeight: 1.55 }}>
+          <strong style={{ color: C.text }}>Free newsletter delivered to your email inbox.</strong><br />
+          Events, local businesses &amp; community news — every week. No cost, ever.{subCount ? ` Join ${subCount.toLocaleString()}+ neighbors already subscribed.` : ''}
         </div>
       </div>
       <div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Footer, GlobalStyles, Navbar, NewsletterInline } from "../components/Layout";
-import { FadeIn, SectionLabel, ScrollProgress, WaveDivider, DiagonalDivider, ShareBar, Btn } from "../components/Shared";
+import { FadeIn, SectionLabel, ScrollProgress, WaveDivider, DiagonalDivider, ShareBar, Btn, CommunityDonationForm } from "../components/Shared";
 import { C, USA250_PUBLIC } from "../data/config";
 
 // ============================================================
@@ -346,7 +346,30 @@ export default function USA250Page() {
         </div>
       </section>
 
-      <DiagonalDivider topColor={C.cream} bottomColor={C.dusk} />
+      {/* ── BUSINESS SPONSORSHIP FORM ── */}
+      <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
+        <div style={{ maxWidth: 800, margin: "0 auto" }}>
+          <FadeIn>
+            <div style={{ textAlign: "center", marginBottom: 48 }}>
+              <SectionLabel>Apply Now</SectionLabel>
+              <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px,4vw,40px)", fontWeight: 400, color: C250.navy, margin: "16px 0 12px", lineHeight: 1.2 }}>
+                Reserve Your Sponsorship
+              </h2>
+              <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 520, margin: "0 auto" }}>
+                Select a level below, fill in your information, and we will be in touch to finalize your commitment before July 4th, 2026.
+              </p>
+            </div>
+          </FadeIn>
+          <CommunityDonationForm
+            orgName="Devils & Round Lake Fireworks Association"
+            tiers={USA250_SPONSOR_TIERS.map(t => ({ level: t.tier, amount: parseInt(t.amount.replace(/[^0-9]/g, '')), perks: t.perks }))}
+            accentColor={C250.gold}
+            note="Your application will be reviewed and a committee member will follow up within 2 business days."
+          />
+        </div>
+      </section>
+
+      <DiagonalDivider topColor={C.warmWhite} bottomColor={C.dusk} />
 
       {/* ── GET INVOLVED ── */}
       <section id="get-involved" style={{ background: C.dusk, padding: "80px 24px" }}>
