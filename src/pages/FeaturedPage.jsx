@@ -61,13 +61,15 @@ export default function FeaturedPage() {
   const [sponsorForm, setSponsorForm] = useState({ name: '', email: '', business: '', phone: '', page: 'home', term: 'monthly', message: '', _hp: '' });
   const [sponsorStatus, setSponsorStatus] = useState('idle');
   const setSF = (k, v) => setSponsorForm(f => ({ ...f, [k]: v }));
-  const handleSponsorInquiry = (e) => {
+  const handleSponsorInquiry = async (e) => {
     e.preventDefault();
     if (sponsorForm._hp) return;
     const { name, email, business, phone, page, term, message } = sponsorForm;
-    const subject = encodeURIComponent(`Page Sponsorship Inquiry — ${SPONSORABLE_PAGES.find(p => p.id === page)?.label || page}`);
-    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\nBusiness: ${business}\nPhone: ${phone}\nPage: ${SPONSORABLE_PAGES.find(p => p.id === page)?.label || page}\nTerm: ${term === 'monthly' ? '$97/month' : '$970/year'}\nMessage: ${message}`);
-    window.open(`mailto:hello@manitoubeach.com?subject=${subject}&body=${body}`, '_blank');
+    const pageName = SPONSORABLE_PAGES.find(p => p.id === page)?.label || page;
+    const msgBody = `Page Sponsorship Inquiry — ${pageName}\nBusiness: ${business}\nPhone: ${phone}\nTerm: ${term === 'monthly' ? '$97/month' : '$970/year'}\n${message}`.trim();
+    try {
+      await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, category: 'Sponsorship Inquiry', message: msgBody, _hp: '' }) });
+    } catch {}
     setSponsorStatus('success');
   };
 

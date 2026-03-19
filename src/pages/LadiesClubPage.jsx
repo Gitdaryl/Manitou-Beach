@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, CommunityDonationForm } from '../components/Shared';
-import { Footer, GlobalStyles, Navbar, NewsletterInline } from '../components/Layout';
+import { Footer, GlobalStyles, Navbar, NewsletterInline, ContactModal } from '../components/Layout';
 import { C } from '../data/config';
 
 // ============================================================
@@ -597,8 +597,8 @@ function MensClubSponsorsSection() {
 
         <FadeIn delay={200}>
           <p style={{ textAlign: "center", fontSize: 13, color: C.textMuted, marginTop: 40, lineHeight: 1.7 }}>
-            Interested in sponsoring the Men's Club?{" "}
-            <a href="mailto:hello@manitoubeach.com" style={{ color: C.sage, textDecoration: "none" }}>Get in touch</a>{" "}
+            Interested in sponsoring the Ladies Club?{" "}
+            <button onClick={() => document.querySelector('[data-section="ladies-sponsor-form"]')?.scrollIntoView({ behavior: 'smooth' })} style={{ background: "none", border: "none", padding: 0, color: C.sage, cursor: "pointer", fontFamily: "inherit", fontSize: "inherit", textDecoration: "underline" }}>Get in touch</button>{" "}
             and we'll connect you with the club.
           </p>
         </FadeIn>
@@ -617,7 +617,7 @@ const LADIES_SPONSOR_TIERS = [
 
 function LadiesClubSponsorForm() {
   return (
-    <section style={{ background: C.cream, padding: "80px 24px" }}>
+    <section data-section="ladies-sponsor-form" style={{ background: C.cream, padding: "80px 24px" }}>
       <div style={{ maxWidth: 800, margin: "0 auto" }}>
         <FadeIn>
           <div style={{ textAlign: "center", marginBottom: 48 }}>

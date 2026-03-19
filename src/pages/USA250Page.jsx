@@ -73,12 +73,13 @@ export default function USA250Page() {
   const [volSent, setVolSent] = useState(false);
 
   const finalDonate = customAmount ? Number(customAmount) : donateAmount;
-  const donateMailto = `mailto:hello@manitoubeach.com?subject=USA250%20Donation%20%E2%80%94%20%24${finalDonate}&body=I%27d%20like%20to%20donate%20%24${finalDonate}%20to%20the%20Manitou%20Beach%20USA%20250th%20Anniversary%20fireworks%20campaign.%0A%0AName%3A%20%0APhone%3A%20%0A`;
 
-  const handleVolSubmit = () => {
+  const handleVolSubmit = async () => {
     if (!volForm.name || !volForm.email) return;
-    const body = `Name: ${volForm.name}%0AEmail: ${volForm.email}%0AHow I can help: ${volForm.role}%0AMessage: ${volForm.message || "—"}`;
-    window.location.href = `mailto:hello@manitoubeach.com?subject=USA250%20Volunteer%20%E2%80%94%20${encodeURIComponent(volForm.name)}&body=${body}`;
+    const message = `How I can help: ${volForm.role || '—'}\n\n${volForm.message || ''}`.trim();
+    try {
+      await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: volForm.name, email: volForm.email, category: 'General Question', message: `USA250 Volunteer Signup\n${message}`, _hp: '' }) });
+    } catch {}
     setVolSent(true);
   };
 
@@ -263,13 +264,14 @@ export default function USA250Page() {
                 style={{ width: 90, padding: "10px 14px", borderRadius: 6, fontSize: 15, fontWeight: 600, background: customAmount ? C250.gold : "transparent", color: customAmount ? C250.navy : C.cream, border: `2px solid ${customAmount ? C250.gold : "rgba(255,255,255,0.2)"}`, outline: "none", fontFamily: "'Libre Franklin', sans-serif" }}
               />
             </div>
-            <a href={donateMailto}
-              style={{ display: "inline-block", background: C250.gold, color: C250.navy, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none", padding: "14px 36px", borderRadius: 4, marginBottom: 14, transition: "opacity 0.2s" }}
+            <button
+              onClick={() => document.querySelector('[data-section="sponsor-form"]')?.scrollIntoView({ behavior: 'smooth' })}
+              style={{ display: "inline-block", background: C250.gold, color: C250.navy, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: 1.5, textTransform: "uppercase", border: "none", padding: "14px 36px", borderRadius: 4, marginBottom: 14, cursor: "pointer", transition: "opacity 0.2s" }}
               onMouseEnter={e => e.currentTarget.style.opacity = "0.85"}
               onMouseLeave={e => e.currentTarget.style.opacity = "1"}
             >
               Donate ${finalDonate || "—"} →
-            </a>
+            </button>
             <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif" }}>
               Opens your email app · Secure online payment link coming soon
             </div>
@@ -295,7 +297,6 @@ export default function USA250Page() {
             {USA250_SPONSOR_TIERS.map((tier, ti) => {
               const tierKey = ["presenting","gold","silver","community"][ti];
               const tierSponsors = USA250_SPONSORS.filter(s => s.tier === tierKey);
-              const mailtoLink = `mailto:hello@manitoubeach.com?subject=USA250%20Sponsorship%20%E2%80%94%20${encodeURIComponent(tier.tier)}&body=I%27d%20like%20to%20become%20a%20${encodeURIComponent(tier.tier)}%20for%20the%20USA%20250th%20fireworks%20at%20Manitou%20Beach.%0A%0AName%3A%20%0AContact%3A%20`;
               return (
               <FadeIn key={tier.tier} delay={ti * 60}>
                 <div>
@@ -328,12 +329,12 @@ export default function USA250Page() {
                       Sponsor slots available — your name here.
                     </div>
                   )}
-                  <a href={mailtoLink} style={{ display: "inline-block", fontSize: 12, color: C250.navy, fontFamily: "'Libre Franklin', sans-serif", textDecoration: "none", borderBottom: `1px solid ${C250.gold}80`, paddingBottom: 1 }}
+                  <button onClick={() => document.querySelector('[data-section="sponsor-form"]')?.scrollIntoView({ behavior: 'smooth' })} style={{ background: "none", border: "none", padding: 0, fontSize: 12, color: C250.navy, fontFamily: "'Libre Franklin', sans-serif", cursor: "pointer", borderBottom: `1px solid ${C250.gold}80`, paddingBottom: 1 }}
                     onMouseEnter={e => e.currentTarget.style.borderBottomColor = C250.gold}
                     onMouseLeave={e => e.currentTarget.style.borderBottomColor = `${C250.gold}80`}
                   >
                     Become a {tier.tier} →
-                  </a>
+                  </button>
                   <div style={{ marginTop: 10 }}>
                     <ul style={{ display: "flex", flexWrap: "wrap", gap: "4px 16px", padding: 0, margin: 0, listStyle: "none" }}>
                       {tier.perks.map(p => <li key={p} style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>✓ {p}</li>)}
@@ -347,7 +348,7 @@ export default function USA250Page() {
       </section>
 
       {/* ── BUSINESS SPONSORSHIP FORM ── */}
-      <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
+      <section data-section="sponsor-form" style={{ background: C.warmWhite, padding: "80px 24px" }}>
         <div style={{ maxWidth: 800, margin: "0 auto" }}>
           <FadeIn>
             <div style={{ textAlign: "center", marginBottom: 48 }}>

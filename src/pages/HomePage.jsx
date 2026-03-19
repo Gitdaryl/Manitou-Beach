@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { C, SECTIONS, CAT_COLORS } from '../data/config';
 import { usePricing, BASE_PRICES, GRACE } from '../data/pricing';
 import { ShareBar, CategoryPill, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivider, PageSponsorBanner, DiagonalDivider, Btn, useCardTilt } from '../components/Shared';
-import { GlobalStyles, PromoBanner, NewsletterInline, HollyYetiSection, EventLightbox, Footer, Navbar } from '../components/Layout';
+import { GlobalStyles, PromoBanner, NewsletterInline, HollyYetiSection, EventLightbox, Footer, Navbar, ContactModal } from '../components/Layout';
 import { DispatchPreviewSection } from './DispatchPage';
 
 // ============================================================
@@ -649,6 +649,7 @@ function PricingSection() {
   const [form, setForm] = useState({ businessName: '', email: '' });
   const [loading, setLoading] = useState(false);
   const [checkoutError, setCheckoutError] = useState('');
+  const [showContact, setShowContact] = useState(false);
 
   const PAID_TIERS = [
     {
@@ -686,6 +687,7 @@ function PricingSection() {
 
   return (
     <>
+      {showContact && <ContactModal onClose={() => setShowContact(false)} defaultCategory="Business Inquiry" />}
       <div id="listing-tiers" style={{ background: C.night, padding: "80px 24px 72px" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
 
@@ -804,9 +806,9 @@ function PricingSection() {
                     <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, color: C.lakeBlue, whiteSpace: "nowrap" }}>{item.price}</div>
                   </div>
                 ))}
-                <a href="mailto:hello@manitoubeach.com?subject=Newsletter%20Add-On%20Inquiry&body=Hi%2C%20I%27m%20interested%20in%20a%20newsletter%20add-on%20for%20my%20business.%20Please%20let%20me%20know%20next%20steps." style={{ textAlign: "center", padding: "10px", borderRadius: 8, background: "transparent", border: `1.5px solid ${C.lakeBlue}55`, color: C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none", marginTop: 4, display: "block" }}>
+                <button onClick={() => setShowContact(true)} style={{ textAlign: "center", padding: "10px", borderRadius: 8, background: "transparent", border: `1.5px solid ${C.lakeBlue}55`, color: C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: "pointer", marginTop: 4, display: "block", width: "100%" }}>
                   Inquire →
-                </a>
+                </button>
               </div>
             </div>
           </div>

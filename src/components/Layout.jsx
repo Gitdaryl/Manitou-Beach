@@ -1336,11 +1336,70 @@ export function FooterNewsletterModal({ onClose }) {
   );
 }
 
+export function ContactModal({ onClose, defaultCategory = 'General Question' }) {
+  const CATEGORIES = ['General Question', 'Bug Report', 'Website Issue', 'Business Inquiry', 'Sponsorship Inquiry'];
+  const [form, setForm] = useState({ name: '', email: '', category: defaultCategory, message: '' });
+  const [submitting, setSubmitting] = useState(false);
+  const [done, setDone] = useState(false);
+  const [error, setError] = useState('');
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [onClose]);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!form.name || !form.email || !form.message || submitting) return;
+    setSubmitting(true); setError('');
+    try {
+      const res = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: form.name, email: form.email, category: form.category, message: form.message, _hp: '' }) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed');
+      setDone(true);
+    } catch { setError('Something went wrong — please try again.'); }
+    finally { setSubmitting(false); }
+  };
+  const inp = { padding: '11px 14px', borderRadius: 6, border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.07)', color: C.cream, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", outline: 'none', width: '100%', boxSizing: 'border-box' };
+  return (
+    <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+      <div onClick={e => e.stopPropagation()} style={{ background: C.dusk, borderRadius: 16, padding: '40px 36px', maxWidth: 480, width: '100%', border: '1px solid rgba(255,255,255,0.08)', position: 'relative', maxHeight: '90vh', overflowY: 'auto' }}>
+        <button onClick={onClose} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', fontSize: 20, cursor: 'pointer', lineHeight: 1 }}>×</button>
+        <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.cream, marginBottom: 4 }}>Contact Us</div>
+        <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.7, margin: '0 0 24px 0' }}>Send us a message — we read every one.</p>
+        {done ? (
+          <div style={{ textAlign: 'center', padding: '16px 0' }}>
+            <div style={{ fontSize: 28, marginBottom: 10 }}>✓</div>
+            <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.cream, marginBottom: 6 }}>Message received!</div>
+            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', margin: 0 }}>We'll get back to you shortly.</p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <input type="text" placeholder="Your name" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} required style={inp} />
+            <input type="email" placeholder="your@email.com" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} required style={inp} />
+            <select value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))} style={{ ...inp, cursor: 'pointer' }}>
+              {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
+            <textarea placeholder="How can we help?" value={form.message} onChange={e => setForm(f => ({ ...f, message: e.target.value }))} required rows={4} style={{ ...inp, resize: 'vertical' }} />
+            {error && <div style={{ fontSize: 12, color: C.sunset }}>{error}</div>}
+            <button type="submit" disabled={submitting} style={{ padding: '12px 24px', background: C.sage, color: C.cream, border: 'none', borderRadius: 6, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', cursor: submitting ? 'wait' : 'pointer' }}>
+              {submitting ? 'Sending…' : 'Send Message'}
+            </button>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function Footer({ scrollTo }) {
   const [showNewsletter, setShowNewsletter] = useState(false);
+  const [showContact, setShowContact] = useState(false);
+  const [contactCategory, setContactCategory] = useState('General Question');
+  const openContact = (category = 'General Question') => { setContactCategory(category); setShowContact(true); };
   return (
     <>
     {showNewsletter && <FooterNewsletterModal onClose={() => setShowNewsletter(false)} />}
+    {showContact && <ContactModal onClose={() => setShowContact(false)} defaultCategory={contactCategory} />}
     <footer style={{ background: C.night, padding: "64px 24px 36px" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 40, marginBottom: 48 }}>
@@ -1408,6 +1467,26 @@ export function Footer({ scrollTo }) {
                 onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.4)"}
               >
                 Newsletter
+              </button>
+            </div>
+            <div style={{ marginBottom: 8 }}>
+              <button
+                onClick={() => openContact('General Question')}
+                style={{ background: "none", border: "none", padding: 0, color: "rgba(255,255,255,0.4)", fontSize: 13, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", transition: "color 0.2s" }}
+                onMouseEnter={e => e.target.style.color = C.sunsetLight}
+                onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.4)"}
+              >
+                Contact Us
+              </button>
+            </div>
+            <div style={{ marginBottom: 8 }}>
+              <button
+                onClick={() => openContact('Bug Report')}
+                style={{ background: "none", border: "none", padding: 0, color: "rgba(255,255,255,0.4)", fontSize: 13, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", transition: "color 0.2s" }}
+                onMouseEnter={e => e.target.style.color = C.sunsetLight}
+                onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.4)"}
+              >
+                Report a Bug
               </button>
             </div>
           </div>

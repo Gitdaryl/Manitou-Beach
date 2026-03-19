@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Btn, ScrollProgress, SectionLabel, SectionTitle, WaveDivider } from '../components/Shared';
 import { C } from '../data/config';
-import { Footer, Navbar, GlobalStyles, NewsletterInline, HollyYetiSection } from '../components/Layout';
+import { Footer, Navbar, GlobalStyles, NewsletterInline, HollyYetiSection, ContactModal } from '../components/Layout';
 import { HappeningSubmitCTA } from './HappeningPage';
 
 const PROMO_PAGES = ["Home", "Whats Happening", "Village", "Devils Lake", "Wineries", "Fishing", "Round Lake"];
@@ -82,6 +82,7 @@ export function AdvertisePage() {
   const [form, setForm] = useState({ brandName: "", email: "", tier: "", promoPages: [], notes: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showContact, setShowContact] = useState(false);
 
   const needsPages = ["banner_1p", "banner_3p"].includes(form.tier);
   const selectedPkg = ADVERTISE_PACKAGES.find(p => p.id === form.tier);
@@ -135,6 +136,7 @@ export function AdvertisePage() {
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
 <GlobalStyles />
+      {showContact && <ContactModal onClose={() => setShowContact(false)} defaultCategory="Sponsorship Inquiry" />}
       <ScrollProgress />
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
 
@@ -266,19 +268,19 @@ export function AdvertisePage() {
               <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1 }}>per year (2 months free)</div>
             </div>
           </div>
-          <a
-            href={`mailto:hello@manitoubeach.com?subject=Page%20Sponsorship%20Inquiry&body=Hi%2C%20I%27m%20interested%20in%20sponsoring%20a%20page%20on%20Manitou%20Beach.%0A%0ABusiness%2FBrand%3A%20%0APage%20of%20interest%3A%20%0AMonthly%20or%20annual%3A%20`}
+          <button
+            onClick={() => setShowContact(true)}
             style={{
               display: "inline-block",
               background: C.sunset, color: "#fff",
               fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600,
               fontSize: 12, letterSpacing: 1.5, textTransform: "uppercase",
-              textDecoration: "none", padding: "12px 28px", borderRadius: 4,
-              transition: "opacity 0.2s",
+              border: "none", padding: "12px 28px", borderRadius: 4,
+              cursor: "pointer", transition: "opacity 0.2s",
             }}
           >
             Check Availability →
-          </a>
+          </button>
           <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", marginTop: 14, fontFamily: "'Libre Franklin', sans-serif" }}>
             10 pages available · 1 sponsor per page · we'll confirm availability by email
           </div>
@@ -365,7 +367,7 @@ export function AdvertisePage() {
           <div style={{ maxWidth: 560, margin: "0 auto", textAlign: "center" }}>
             <div style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
               ↑ Select a package above to get started, or{" "}
-              <a href="mailto:hello@manitoubeach.com" style={{ color: C.lakeBlue, textDecoration: "none" }}>email us</a>{" "}
+              <button onClick={() => setShowContact(true)} style={{ background: "none", border: "none", padding: 0, color: C.lakeBlue, cursor: "pointer", fontFamily: "inherit", fontSize: "inherit", textDecoration: "underline" }}>contact us</button>{" "}
               if you'd like to discuss a custom arrangement.
             </div>
           </div>
