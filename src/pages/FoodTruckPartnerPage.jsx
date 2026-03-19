@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Btn, FadeIn, ScrollProgress, SectionLabel, SectionTitle, WaveDivider } from '../components/Shared';
 import { C } from '../data/config';
-import { usePricing, GRACE } from '../data/pricing';
+import { usePricing } from '../data/pricing';
 import { Footer, GlobalStyles, Navbar } from '../components/Layout';
 
 const TRUCK_HOW = [
@@ -21,30 +21,24 @@ const TRUCK_GETS = [
   { icon: "🔗", title: "Personal check-in URL", copy: "A private link that's yours forever. Open from your phone, fill in two fields, tap one button. On the map in under a minute." },
   { icon: "⭐", title: "Today's Special badge", copy: "Running a lunch deal or testing a new item? Add it on check-in. It shows as a highlighted badge on your live card." },
   { icon: "📅", title: "Coming Soon pre-announce", copy: "Planning a Saturday run? Set your date and customers see 'Coming This Saturday' in the locator before you arrive." },
+  { icon: "❤️", title: "Customer favorites", copy: "Regulars can heart your truck directly from the locator. They build a shortlist of favorites and never miss you when you're nearby." },
+  { icon: "📱", title: "Text alerts when you drop", copy: "When someone favorites your truck, they opt in to texts. Drop your pin — they get a notification the moment you go live." },
   { icon: "📰", title: "Newsletter shoutout", copy: "When you're checked in on send days, hundreds of readers who follow Manitou Beach see your name." },
   { icon: "📋", title: "Directory listing year-round", copy: "Your name, cuisine, and contact info stay visible in the All Trucks list even when you're not checked in." },
 ];
-const TRUCK_FOUNDING_ITEMS = [
+const TRUCK_PAID_ITEMS = [
   { icon: "📍", label: "Live map pin", sub: "Goes live the moment you check in. Off when you leave." },
   { icon: "🔗", label: "Personal check-in URL", sub: "Your private link. Open from your phone. No app, no login — ever." },
   { icon: "⭐", label: "Today's Special badge", sub: "Add a special on check-in — it highlights on your live card." },
   { icon: "📅", label: "Coming Soon pre-announce", sub: "Set a future date. Customers see 'Coming This Saturday' before you arrive." },
+  { icon: "❤️", label: "Customer favorites", sub: "Regulars heart your truck. They get texts the moment you go live." },
+  { icon: "📱", label: "Text alerts to your fans", sub: "Drop your pin — customers who favorited you get notified instantly." },
   { icon: "🔗", label: "Website / menu / Instagram link", sub: "One tap to your menu on every live card." },
   { icon: "📰", label: "Newsletter shoutout when live", sub: "Hundreds of readers, on days you're checked in." },
-  { icon: "🥇", label: "Priority placement", sub: "Listed first — above Basic trucks in map and directory." },
 ];
 const TRUCK_BASIC_ITEMS = [
   { icon: "📋", label: "Directory listing", sub: "Your truck name and cuisine in the All Trucks list. Nothing else." },
 ];
-const TRUCK_FOUNDING_MATH = [
-  { subs: "Today",      newPrice: null, yourPrice: 9, label: "Founding rate" },
-  { subs: "200 subs",   newPrice: 10,   yourPrice: 9, label: "You still pay $9" },
-  { subs: "500 subs",   newPrice: 13,   yourPrice: 9, label: "You still pay $9" },
-  { subs: "1,000 subs", newPrice: 18,   yourPrice: 9, label: "You still pay $9" },
-];
-// Update SPOTS_TAKEN as trucks sign up (check Notion → Food Trucks DB)
-const FOUNDING_SPOTS_TOTAL = 20;
-const FOUNDING_SPOTS_TAKEN = 3; // ← update this manually as trucks sign up
 
 export default function FoodTruckPartnerPage() {
   const subScrollTo = (id) => { window.location.href = "/#" + id; };
@@ -53,7 +47,7 @@ export default function FoodTruckPartnerPage() {
     document.getElementById('food-truck-signup')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const { priceFor, centsFor, inGrace } = usePricing();
+  const { centsFor } = usePricing();
   const [form, setForm] = useState({ truckName: '', cuisine: '', email: '', phone: '', website: '' });
   const [selectedTier, setSelectedTier] = useState('free'); // 'free' | 'paid'
   const [imageUrl, setImageUrl] = useState('');
@@ -161,11 +155,11 @@ export default function FoodTruckPartnerPage() {
             Your truck. Live on the map.<br /><em>Every time you're nearby.</em>
           </h1>
           <p style={{ fontSize: 16, color: "rgba(255,255,255,0.5)", maxWidth: 520, margin: "0 auto 32px", lineHeight: 1.85 }}>
-            Your name in the directory is free. Founding members get a live map pin, personal check-in link, Today's Special badge, and newsletter reach — locked at ${priceFor(9)}/mo as the list grows. Price rises one cent per subscriber once we pass 100. The sooner you sign up, the lower your rate.
+            Your name in the directory is free. For $9/month, your truck goes live on the map the moment you check in — and customers can favorite you and receive a text the instant you drop your pin.
           </p>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
             <Btn onClick={() => scrollToSignup('paid')} variant="sunset" style={{ whiteSpace: "nowrap" }}>
-              Claim Your Founding Spot — ${priceFor(9)}/mo →
+              Get on the Map — $9/mo →
             </Btn>
             <Btn onClick={() => scrollToSignup('free')} variant="outlineLight" style={{ whiteSpace: "nowrap" }}>
               Get the free listing →
@@ -238,9 +232,9 @@ export default function FoodTruckPartnerPage() {
       <section style={{ background: C.dusk, padding: "80px 24px" }}>
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
           <FadeIn>
-            <SectionLabel light>Founding Listing</SectionLabel>
+            <SectionLabel light>$9 / month</SectionLabel>
             <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 40px)", fontWeight: 400, color: C.cream, margin: "16px 0 48px", lineHeight: 1.2, textAlign: "center" }}>
-              Everything you get<br /><em style={{ color: C.sunsetLight }}>with your Founding listing.</em>
+              Everything you get<br /><em style={{ color: C.sunsetLight }}>for $9 a month.</em>
             </h2>
           </FadeIn>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 20 }}>
@@ -264,15 +258,10 @@ export default function FoodTruckPartnerPage() {
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
           <FadeIn>
             <SectionLabel style={{ textAlign: "center", display: "block" }}>Pricing</SectionLabel>
-            <SectionTitle center>The Founding Food Truck rate.</SectionTitle>
-            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 560, margin: "0 auto 16px", textAlign: "center" }}>
-            $9/month, locked as the newsletter grows. Price rises one cent per new subscriber after our first 100. Founding members keep today's rate as the list expands.
+            <SectionTitle center>One price. Everything included.</SectionTitle>
+            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 560, margin: "0 auto 48px", textAlign: "center" }}>
+              $9/month gets your truck live on the map, your fans notified when you arrive, and your name in front of hundreds of Manitou Beach followers. Free keeps you in the directory — nothing else.
             </p>
-            <div style={{ textAlign: "center", marginBottom: 36 }}>
-              <span style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: inGrace ? C.sage : C.sunset }}>
-                {inGrace ? `⚡ Founding rate active — price locks before we hit 100 subscribers` : `↑ Price rising — lock in your rate now`}
-              </span>
-            </div>
           </FadeIn>
 
           {/* Illustration */}
@@ -327,18 +316,17 @@ export default function FoodTruckPartnerPage() {
               </div>
             </FadeIn>
 
-            {/* Founding */}
+            {/* Live Listing */}
             <FadeIn delay={120}>
               <div style={{ background: C.dusk, borderRadius: 18, padding: "36px 28px", boxShadow: "0 12px 40px rgba(0,0,0,0.2)", position: "relative", overflow: "hidden", height: "100%", boxSizing: "border-box", transform: "scale(1.03)" }}>
-                <div style={{ position: "absolute", top: 16, right: 16, background: C.sunset, color: C.cream, fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", borderRadius: 50, padding: "4px 10px" }}>Founding Rate</div>
-                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 12 }}>Founding Food Truck</div>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 12 }}>Live Listing</div>
                 <div style={{ marginBottom: 4 }}>
-                  <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 48, fontWeight: 700, color: C.cream }}>${priceFor(9)}</span>
+                  <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 48, fontWeight: 700, color: C.cream }}>$9</span>
                   <span style={{ fontSize: 14, color: "rgba(255,255,255,0.45)", marginLeft: 4 }}>/mo</span>
                 </div>
-                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: C.sunsetLight, marginBottom: 28 }}>your rate · locked as the list grows</div>
+                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: C.sunsetLight, marginBottom: 28 }}>live on the map · fans get texts when you arrive</div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                  {TRUCK_FOUNDING_ITEMS.map(item => (
+                  {TRUCK_PAID_ITEMS.map(item => (
                     <div key={item.label} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
                       <span style={{ color: C.sunsetLight, fontSize: 13, flexShrink: 0, marginTop: 1 }}>✓</span>
                       <div>
@@ -353,41 +341,13 @@ export default function FoodTruckPartnerPage() {
                     onClick={() => scrollToSignup('paid')}
                     style={{ display: "block", width: "100%", textAlign: "center", padding: "12px 20px", borderRadius: 24, background: C.sunset, color: C.cream, border: "none", fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: "pointer" }}
                   >
-                    Claim This Rate →
+                    Get on the Map — $9/mo →
                   </button>
                 </div>
               </div>
             </FadeIn>
           </div>
 
-          {/* Math table */}
-          <FadeIn delay={140}>
-            <div style={{ maxWidth: 640, margin: "0 auto" }}>
-              <SectionLabel style={{ textAlign: "center", display: "block" }}>The Formula</SectionLabel>
-              <p style={{ fontSize: 14, color: C.textLight, textAlign: "center", marginBottom: 24, lineHeight: 1.75 }}>
-                After {GRACE} newsletter subscribers, the base price rises by one cent per new subscriber — for new sign-ups only. Your rate is fixed the day you join.
-              </p>
-              <div style={{ background: C.warmWhite, borderRadius: 16, border: `1px solid ${C.sand}`, overflow: "hidden" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", background: C.dusk, padding: "14px 28px" }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.5)" }}>When</div>
-                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.5)", textAlign: "center" }}>New trucks pay</div>
-                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sunsetLight, textAlign: "right" }}>You pay</div>
-                </div>
-                {TRUCK_FOUNDING_MATH.map((row, i) => (
-                  <div key={row.subs} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", padding: "18px 28px", borderBottom: i < TRUCK_FOUNDING_MATH.length - 1 ? `1px solid ${C.sand}` : "none", alignItems: "center" }}>
-                    <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.text, fontWeight: i === 0 ? 700 : 400 }}>{row.subs}</div>
-                    <div style={{ textAlign: "center", fontSize: 14, color: row.newPrice ? C.textLight : C.sage, fontWeight: 600 }}>
-                      {row.newPrice ? `$${row.newPrice}/mo` : <span style={{ fontFamily: "'Caveat', cursive", fontSize: 16, color: C.sage }}>founding rate</span>}
-                    </div>
-                    <div style={{ textAlign: "right" }}>
-                      <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 700, color: C.sunset }}>${row.yourPrice}/mo</span>
-                      {i > 0 && <div style={{ fontSize: 11, color: C.sage, fontWeight: 600 }}>✓ locked</div>}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </FadeIn>
         </div>
       </section>
 
@@ -403,7 +363,7 @@ export default function FoodTruckPartnerPage() {
               Your truck. Your listing.<br /><em style={{ color: C.sunsetLight }}>Pick your plan.</em>
             </h2>
             <p style={{ fontSize: 14, color: "rgba(255,255,255,0.42)", lineHeight: 1.85, marginBottom: 32, textAlign: "center" }}>
-              Free puts your name in the directory. Founding rate gets you live on the map, with a check-in link you'll use every time you pull into Manitou Beach.
+              Free puts your name in the directory. $9/month gets you live on the map — and your fans get a text the moment you arrive.
             </p>
 
             {submitted ? (
@@ -443,8 +403,8 @@ export default function FoodTruckPartnerPage() {
                       fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, cursor: "pointer", textAlign: "center", transition: "all 0.18s",
                     }}
                   >
-                    <div style={{ fontSize: 15, marginBottom: 3 }}>Founding Rate</div>
-                    <div style={{ fontSize: 11, fontWeight: 400, opacity: 0.7 }}>Live map + full perks · ${priceFor(9)}/mo</div>
+                    <div style={{ fontSize: 15, marginBottom: 3 }}>Live Listing</div>
+                    <div style={{ fontSize: 11, fontWeight: 400, opacity: 0.7 }}>Live map + fan texts · $9/mo</div>
                   </button>
                 </div>
 
@@ -572,7 +532,7 @@ export default function FoodTruckPartnerPage() {
                     {loading
                       ? (selectedTier === 'paid' ? "Redirecting to checkout…" : "Submitting…")
                       : selectedTier === 'paid'
-                        ? `Claim Founding Rate — $${priceFor(9)}/mo →`
+                        ? "Get on the Map — $9/mo →"
                         : "Get My Free Listing →"
                     }
                   </button>
