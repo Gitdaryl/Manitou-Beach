@@ -114,7 +114,7 @@ export default async function handler(req, res) {
       for (const rsvp of rsvps) {
         try {
           await resend.emails.send({
-            from: 'Manitou Beach <events@manitoubeach.com>',
+            from: 'Manitou Beach <events@yetigroove.com>',
             to: rsvp.email,
             subject: isToday
               ? `Happening today — ${event.name}`

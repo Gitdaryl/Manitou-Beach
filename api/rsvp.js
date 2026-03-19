@@ -80,7 +80,7 @@ export default async function handler(req, res) {
     // Confirmation to attendee
     try {
       await resend.emails.send({
-        from: 'Manitou Beach <events@manitoubeach.com>',
+        from: 'Manitou Beach <events@yetigroove.com>',
         to: email,
         subject: `You're registered for "${eventName}"`,
         html: `
@@ -111,7 +111,7 @@ export default async function handler(req, res) {
     if (organizerEmail) {
       try {
         await resend.emails.send({
-          from: 'Manitou Beach <events@manitoubeach.com>',
+          from: 'Manitou Beach <events@yetigroove.com>',
           to: organizerEmail,
           subject: `New RSVP for "${eventName}"`,
           html: `
