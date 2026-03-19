@@ -390,7 +390,7 @@ export default function PromotePage() {
   const isCancelled = params.get("cancelled") === "true";
   const successEvent = params.get("event") || "";
 
-  const [form, setForm] = useState({ eventName: "", email: "", tier: "free", promoPages: [], notes: "" });
+  const [form, setForm] = useState({ eventName: "", email: "", tier: "event_spotlight", promoPages: [], notes: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -409,10 +409,6 @@ export default function PromotePage() {
   const handleSubmit = async () => {
     if (!form.eventName || !form.email || !form.tier) {
       setError("Please fill in your event name, email, and promotion package.");
-      return;
-    }
-    if (form.tier === "free") {
-      document.getElementById("submit-event")?.scrollIntoView({ behavior: "smooth" });
       return;
     }
     if (needsPages && form.promoPages.length === 0) {
@@ -501,35 +497,6 @@ export default function PromotePage() {
             These are our launch prices. Rates may increase as the platform grows.
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 20 }}>
-            {/* Free listing card */}
-            <div
-              onClick={() => setForm(f => ({ ...f, tier: "free" }))}
-              style={{
-                background: form.tier === "free" ? `linear-gradient(135deg, ${C.night}, ${C.lakeDark})` : C.cream,
-                border: `2px solid ${form.tier === "free" ? C.sage : C.sand}`,
-                borderRadius: 14, padding: "24px 22px", cursor: "pointer",
-                transition: "all 0.2s",
-                boxShadow: form.tier === "free" ? "0 8px 24px rgba(0,0,0,0.15)" : "none",
-              }}
-              onMouseEnter={e => { if (form.tier !== "free") e.currentTarget.style.borderColor = C.lakeBlue; }}
-              onMouseLeave={e => { if (form.tier !== "free") e.currentTarget.style.borderColor = C.sand; }}
-            >
-              <PlacementDiagram type="free" dark={form.tier === "free"} />
-              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 2.5, textTransform: "uppercase", color: form.tier === "free" ? C.sunsetLight : C.textMuted, marginBottom: 8 }}>
-                Community Calendar
-              </div>
-              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: form.tier === "free" ? C.cream : C.text, marginBottom: 6 }}>
-                Free Listing
-              </div>
-              <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 10 }}>
-                <span style={{ fontSize: 28, fontWeight: 700, color: form.tier === "free" ? C.cream : C.text, fontFamily: "'Libre Franklin', sans-serif" }}>$0</span>
-                <span style={{ fontSize: 13, color: form.tier === "free" ? "rgba(255,255,255,0.35)" : C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>always free</span>
-              </div>
-              <div style={{ fontSize: 13, color: form.tier === "free" ? "rgba(255,255,255,0.55)" : C.textLight, lineHeight: 1.6 }}>
-                Your event on the community calendar where locals actually check what's happening this weekend. Live within 48 hours, no card required.
-              </div>
-            </div>
-
             {PROMOTE_PACKAGES.map(pkg => {
               const isSelected = form.tier === pkg.id;
               return (
@@ -581,9 +548,9 @@ export default function PromotePage() {
       {!isSuccess && (
         <section style={{ background: C.cream, padding: "72px 24px 80px" }}>
           <div style={{ maxWidth: 580, margin: "0 auto" }}>
-            <SectionTitle>Get Started</SectionTitle>
+            <SectionTitle>Boost Your Event's Visibility</SectionTitle>
             <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, margin: "0 0 40px 0" }}>
-              Fill in your details and click Purchase — you'll be taken to a secure Stripe checkout. Once payment is confirmed, we'll activate your promotion within 24 hours.
+              Choose a paid promotion package above to get your event in front of more people — homepage hero, newsletter feature, page banners, and more. Select your package, fill in your details, and you'll be taken to a secure Stripe checkout. Your promotion goes live within 24 hours of payment.
             </p>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
@@ -615,14 +582,10 @@ export default function PromotePage() {
                   onChange={e => setForm(f => ({ ...f, tier: e.target.value, promoPages: [] }))}
                   style={{ width: "100%", padding: "12px 14px", borderRadius: 8, border: `1px solid ${C.sand}`, fontSize: 15, fontFamily: "'Libre Franklin', sans-serif", boxSizing: "border-box", background: C.warmWhite, color: C.text, outline: "none" }}
                 >
-                  <option value="free">Free Listing — Community Calendar — $0</option>
                   {PROMOTE_PACKAGES.map(pkg => (
                     <option key={pkg.id} value={pkg.id}>{pkg.label} — {pkg.detail} — {pkg.price}</option>
                   ))}
                 </select>
-                {form.tier === "free" && (
-                  <div style={{ fontSize: 13, color: C.textLight, marginTop: 6, lineHeight: 1.5 }}>Your event will be listed in the community calendar — reviewed and live within 48 hours. No payment needed.</div>
-                )}
                 {selectedPkg && (
                   <div style={{ fontSize: 13, color: C.textLight, marginTop: 6, lineHeight: 1.5 }}>{selectedPkg.desc}</div>
                 )}
@@ -681,12 +644,11 @@ export default function PromotePage() {
                   width: "100%",
                 }}
               >
-                {loading ? "Redirecting to Checkout…" : form.tier === "free" ? "Submit Free Listing →" : `Purchase — ${selectedPkg?.price || ""}`}
+                {loading ? "Redirecting to Checkout…" : `Purchase — ${selectedPkg?.price || ""}`}
               </button>
 
               <p style={{ fontSize: 12, color: C.textMuted, textAlign: "center", lineHeight: 1.6, margin: 0 }}>
                 Secure checkout via Stripe. After payment, you'll receive a confirmation and your promotion will go live within 24 hours.
-                <br />Questions? <a href="mailto:holly@foundationrealty.com" style={{ color: C.lakeBlue }}>Email Holly</a>
               </p>
             </div>
           </div>

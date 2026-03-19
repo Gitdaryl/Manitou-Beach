@@ -51,6 +51,31 @@ export default function YetiAdminPage() {
   const [adSlots, setAdSlots] = useState(null);
   const [adSlotsLoading, setAdSlotsLoading] = useState(false);
 
+  // ── Vendor Setup ───────────────────────────────────────────────
+  const [vendorForm, setVendorForm] = useState({ eventId: '', organizerName: '', organizerEmail: '', organizerLogoUrl: '', vendorCapacity: '', vendorFee: '' });
+  const [vendorSetupStatus, setVendorSetupStatus] = useState('idle'); // idle | loading | success | error
+  const [vendorSetupResult, setVendorSetupResult] = useState(null);
+
+  const handleVendorSetup = async () => {
+    if (!vendorForm.eventId || !vendorForm.organizerEmail) return;
+    setVendorSetupStatus('loading');
+    setVendorSetupResult(null);
+    try {
+      const res = await adminFetch('/api/vendor-setup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(vendorForm),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Setup failed');
+      setVendorSetupResult(data);
+      setVendorSetupStatus('success');
+    } catch (err) {
+      setVendorSetupResult({ error: err.message });
+      setVendorSetupStatus('error');
+    }
+  };
+
   // ── Batch geocoding ────────────────────────────────────────────
   const [geoStatus, setGeoStatus] = useState('idle'); // idle | running | done | error
   const [geoResult, setGeoResult] = useState(null);
@@ -637,7 +662,7 @@ export default function YetiAdminPage() {
 
         {/* Tabs */}
         <div style={{ display: 'flex', gap: 8, marginBottom: 32, flexWrap: 'wrap' }}>
-          {[{ id: 'write', label: '✍️  Write' }, { id: 'review', label: '📋  Review Queue' }, { id: 'dashboard', label: '📊  Dashboard' }, { id: 'advertisers', label: '🤝  Advertisers' }, { id: 'promos', label: '🎟️  Promos' }, { id: 'pois', label: '📍  Community POIs' }, { id: 'ratings', label: '🍷  Winery Ratings' }, { id: 'wines', label: '🍾  Wines Registry' }].map(tab => (
+          {[{ id: 'write', label: '✍️  Write' }, { id: 'review', label: '📋  Review Queue' }, { id: 'dashboard', label: '📊  Dashboard' }, { id: 'advertisers', label: '🤝  Advertisers' }, { id: 'promos', label: '🎟️  Promos' }, { id: 'pois', label: '📍  Community POIs' }, { id: 'ratings', label: '🍷  Winery Ratings' }, { id: 'wines', label: '🍾  Wines Registry' }, { id: 'vendors', label: '🏪  Vendors' }].map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
@@ -1674,6 +1699,101 @@ export default function YetiAdminPage() {
           </div>
         )}
         </>}
+
+        {/* ── VENDORS TAB ── */}
+        {activeTab === 'vendors' && (
+          <div style={{ maxWidth: 640 }}>
+            <div style={{ marginBottom: 24 }}>
+              <div style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 22, color: C.text, marginBottom: 6 }}>Vendor Registration Setup</div>
+              <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: 0 }}>
+                Fill in the event details below and click Activate. The system will enable vendor registration, generate a secure portal token, patch Notion, and email the organizer their two ready-to-share URLs — all in one click.
+              </p>
+            </div>
+
+            <div style={{ background: '#fff', borderRadius: 12, padding: 28, boxShadow: '0 2px 16px rgba(0,0,0,0.07)', marginBottom: 24 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+                <div>
+                  <label style={labelStyle}>Notion Event Page ID * <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0, fontSize: 11, color: C.textMuted }}>(from Notion URL — the long hex string)</span></label>
+                  <input style={inputStyle} placeholder="e.g. 3288c729eb5981149a2ffeaa3c9dbda6" value={vendorForm.eventId} onChange={e => setVendorForm(f => ({ ...f, eventId: e.target.value.replace(/-/g, '').trim() }))} />
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                  <div>
+                    <label style={labelStyle}>Organizer Name *</label>
+                    <input style={inputStyle} placeholder="e.g. Corks & Kegs Festival" value={vendorForm.organizerName} onChange={e => setVendorForm(f => ({ ...f, organizerName: e.target.value }))} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Organizer Email *</label>
+                    <input type="email" style={inputStyle} placeholder="organizer@email.com" value={vendorForm.organizerEmail} onChange={e => setVendorForm(f => ({ ...f, organizerEmail: e.target.value }))} />
+                  </div>
+                </div>
+
+                <div>
+                  <label style={labelStyle}>Organizer Logo / Hero Image URL <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0, fontSize: 11, color: C.textMuted }}>(shown large on vendor reg page)</span></label>
+                  <input style={inputStyle} placeholder="https://... (full-width banner image)" value={vendorForm.organizerLogoUrl} onChange={e => setVendorForm(f => ({ ...f, organizerLogoUrl: e.target.value }))} />
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                  <div>
+                    <label style={labelStyle}>Vendor Capacity <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0, fontSize: 11 }}>(leave blank = unlimited)</span></label>
+                    <input type="number" style={inputStyle} placeholder="e.g. 40" value={vendorForm.vendorCapacity} onChange={e => setVendorForm(f => ({ ...f, vendorCapacity: e.target.value }))} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Booth Fee $ <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0, fontSize: 11 }}>(0 = free registration)</span></label>
+                    <input type="number" style={inputStyle} placeholder="e.g. 75" value={vendorForm.vendorFee} onChange={e => setVendorForm(f => ({ ...f, vendorFee: e.target.value }))} />
+                  </div>
+                </div>
+
+                <button
+                  onClick={handleVendorSetup}
+                  disabled={vendorSetupStatus === 'loading' || !vendorForm.eventId || !vendorForm.organizerEmail}
+                  style={{
+                    padding: '13px 0', background: vendorSetupStatus === 'loading' ? C.textMuted : C.dusk, color: '#fff',
+                    border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 700,
+                    cursor: vendorSetupStatus === 'loading' || !vendorForm.eventId || !vendorForm.organizerEmail ? 'not-allowed' : 'pointer',
+                    fontFamily: 'Libre Franklin, sans-serif', transition: 'background 0.2s',
+                  }}
+                >
+                  {vendorSetupStatus === 'loading' ? 'Activating…' : 'Activate Vendor Registration →'}
+                </button>
+              </div>
+            </div>
+
+            {vendorSetupStatus === 'success' && vendorSetupResult && (
+              <div style={{ background: '#f0fff4', border: '1px solid #90d0a0', borderRadius: 12, padding: 24 }}>
+                <div style={{ fontWeight: 700, color: '#1a5c2a', marginBottom: 16, fontSize: 15 }}>✓ Vendor registration activated — organizer emailed</div>
+
+                <div style={{ marginBottom: 14 }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: '#5c8a6a', marginBottom: 6 }}>Share with vendors</div>
+                  <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                    <code style={{ flex: 1, background: '#fff', border: '1px solid #c0e0c8', borderRadius: 6, padding: '8px 12px', fontSize: 13, color: '#1A2830', wordBreak: 'break-all' }}>{vendorSetupResult.registrationUrl}</code>
+                    <button onClick={() => navigator.clipboard.writeText(vendorSetupResult.registrationUrl)} style={{ padding: '8px 14px', borderRadius: 6, border: '1px solid #c0e0c8', background: '#fff', fontSize: 12, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif', whiteSpace: 'nowrap' }}>Copy</button>
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: 14 }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: '#5c8a6a', marginBottom: 6 }}>Organizer portal (private)</div>
+                  <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                    <code style={{ flex: 1, background: '#fff', border: '1px solid #c0e0c8', borderRadius: 6, padding: '8px 12px', fontSize: 13, color: '#1A2830', wordBreak: 'break-all' }}>{vendorSetupResult.portalUrl}</code>
+                    <button onClick={() => navigator.clipboard.writeText(vendorSetupResult.portalUrl)} style={{ padding: '8px 14px', borderRadius: 6, border: '1px solid #c0e0c8', background: '#fff', fontSize: 12, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif', whiteSpace: 'nowrap' }}>Copy</button>
+                  </div>
+                </div>
+
+                <p style={{ fontSize: 12, color: '#5c8a6a', margin: 0, lineHeight: 1.6 }}>
+                  Portal token: <code style={{ background: '#fff', padding: '2px 6px', borderRadius: 4, fontSize: 12 }}>{vendorSetupResult.portalToken}</code> — also saved to Notion.
+                </p>
+              </div>
+            )}
+
+            {vendorSetupStatus === 'error' && vendorSetupResult?.error && (
+              <div style={{ background: '#fff0f0', border: '1px solid #f0b0b0', borderRadius: 12, padding: 20, color: '#c0392b', fontSize: 14 }}>
+                {vendorSetupResult.error}
+              </div>
+            )}
+          </div>
+        )}
+
       </div>
     </div>
 

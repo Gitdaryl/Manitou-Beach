@@ -2340,6 +2340,24 @@ export function EventLightbox({ event, onClose }) {
           </div>
         )}
 
+        {event.vendorRegEnabled && (
+          <div style={{ marginBottom: 12 }}>
+            <a
+              href={`/vendor-register?event=${event.id}`}
+              style={{
+                display: "inline-block",
+                fontFamily: "'Libre Franklin', sans-serif",
+                fontSize: 12, fontWeight: 700, letterSpacing: 1.5,
+                textTransform: "uppercase", color: C.cream,
+                background: C.lakeBlue, padding: "10px 22px",
+                borderRadius: 6, textDecoration: "none",
+              }}
+            >
+              Register as a Vendor →
+            </a>
+          </div>
+        )}
+
         {event.eventUrl && (
           <a
             href={event.eventUrl}

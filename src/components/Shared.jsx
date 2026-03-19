@@ -303,13 +303,17 @@ export function Btn({ children, onClick, href, variant = "primary", small = fals
 // Used on org pages (Men's Club, Ladies Club, Historical, Fireworks)
 // No platform branding. Uses 1.25% fee structure.
 // ============================================================
-export function CommunityDonationForm({ orgName, tiers, accentColor, darkBg = false, note }) {
+export function CommunityDonationForm({ orgName, tiers, accentColor, darkBg = false, note, hideFee = false, logoTiers = [] }) {
   const FEE_RATE = 0.0125;
   const [selectedTier, setSelectedTier] = useState(tiers?.[1] ?? tiers?.[0] ?? null);
   const [customAmt, setCustomAmt] = useState('');
   const [form, setForm] = useState({ name: '', org: '', email: '', phone: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
+  const [logoPreview, setLogoPreview] = useState(null);
+  const [logoUploadStatus, setLogoUploadStatus] = useState('idle'); // idle | uploading | done | error
+  const [logoUrl, setLogoUrl] = useState(null);
+  const [isDraggingLogo, setIsDraggingLogo] = useState(false);
 
   const amount = selectedTier ? selectedTier.amount : (parseFloat(customAmt) || 0);
   const fee = amount ? parseFloat((amount * FEE_RATE).toFixed(2)) : 0;
@@ -334,6 +338,34 @@ export function CommunityDonationForm({ orgName, tiers, accentColor, darkBg = fa
     fontFamily: "'Libre Franklin', sans-serif",
   };
 
+  const showLogoUpload = logoTiers.length > 0 && selectedTier && logoTiers.includes(selectedTier.level);
+
+  const handleLogoSelect = (file) => {
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const src = e.target.result;
+      setLogoPreview(src);
+      setLogoUploadStatus('uploading');
+      try {
+        const base64 = src.split(',')[1];
+        const res = await fetch('/api/upload-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ filename: file.name, contentType: file.type, data: base64, folder: 'sponsors' }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Upload failed');
+        setLogoUrl(data.url);
+        setLogoUploadStatus('done');
+      } catch (err) {
+        console.error(err);
+        setLogoUploadStatus('error');
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleSubmit = () => {
     if (!form.name.trim() || !form.email.trim()) { setError('Name and email are required.'); return; }
     if (!amount || amount < 1) { setError('Please select a sponsorship level or enter an amount.'); return; }
@@ -352,11 +384,15 @@ export function CommunityDonationForm({ orgName, tiers, accentColor, darkBg = fa
           Your {selectedTier ? selectedTier.level : `$${amount} contribution`} application has been received.
           Someone from {orgName} will be in touch at <strong style={{ color: accent }}>{form.email}</strong>.
         </p>
+        {logoUrl && (
+          <div style={{ margin: '0 auto 16px', display: 'inline-block' }}>
+            <img src={logoUrl} alt="Your logo" style={{ maxWidth: 120, maxHeight: 80, objectFit: 'contain', borderRadius: 6, background: '#fff', padding: 8, border: `1px solid ${cardBorder}` }} />
+          </div>
+        )}
         {amount > 0 && (
           <p style={{ fontSize: 12, color: textMuted, margin: 0, lineHeight: 1.9 }}>
             Amount: <strong style={{ color: textColor }}>${amount.toLocaleString()}</strong>
-            {' · '}Processing fee: <strong style={{ color: textColor }}>${fee.toFixed(2)}</strong>
-            {' · '}{orgName} receives: <strong style={{ color: accent }}>${net.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+            {!hideFee && <>{' · '}Processing fee: <strong style={{ color: textColor }}>${fee.toFixed(2)}</strong>{' · '}{orgName} receives: <strong style={{ color: accent }}>${net.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></>}
           </p>
         )}
       </div>
@@ -418,8 +454,53 @@ export function CommunityDonationForm({ orgName, tiers, accentColor, darkBg = fa
         </div>
       )}
 
+      {/* Logo upload — shown for qualifying tiers */}
+      {showLogoUpload && (
+        <div style={{ marginBottom: 20 }}>
+          <label style={labelStyle}>Your Logo <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional)</span></label>
+          {logoUploadStatus === 'done' ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderRadius: 8, background: darkBg ? 'rgba(255,255,255,0.04)' : `${C.sage}10`, border: `1px solid ${darkBg ? 'rgba(255,255,255,0.08)' : `${C.sage}28`}` }}>
+              <img src={logoPreview} alt="Logo" style={{ width: 64, height: 64, objectFit: 'contain', borderRadius: 6, background: '#fff', padding: 4, border: `1px solid ${C.sand}` }} />
+              <div>
+                <div style={{ fontWeight: 700, color: C.sage, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif" }}>✓ Logo uploaded</div>
+                <button onClick={() => { setLogoPreview(null); setLogoUrl(null); setLogoUploadStatus('idle'); }} style={{ fontSize: 11, color: textMuted, background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", marginTop: 2 }}>
+                  Remove
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div
+              onDragOver={e => { e.preventDefault(); setIsDraggingLogo(true); }}
+              onDragLeave={() => setIsDraggingLogo(false)}
+              onDrop={e => { e.preventDefault(); setIsDraggingLogo(false); handleLogoSelect(e.dataTransfer.files[0]); }}
+              onClick={() => document.getElementById('sponsor-logo-input').click()}
+              style={{
+                border: `2px dashed ${isDraggingLogo ? accent : (darkBg ? 'rgba(255,255,255,0.2)' : C.sand)}`,
+                borderRadius: 10, padding: '20px 16px', textAlign: 'center',
+                cursor: 'pointer', background: isDraggingLogo ? `${accent}08` : 'transparent', transition: 'all 0.15s',
+              }}
+            >
+              <input id="sponsor-logo-input" type="file" accept="image/*" style={{ display: 'none' }} onChange={e => handleLogoSelect(e.target.files[0])} />
+              {logoUploadStatus === 'uploading' ? (
+                <p style={{ margin: 0, fontSize: 13, color: textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>Uploading…</p>
+              ) : (
+                <>
+                  <p style={{ margin: '0 0 4px', fontSize: 14, color: textColor, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif" }}>
+                    {isDraggingLogo ? 'Drop it!' : 'Drop your logo here'}
+                  </p>
+                  <p style={{ margin: 0, fontSize: 11, color: textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
+                    or click to browse · PNG, JPG, SVG
+                  </p>
+                </>
+              )}
+              {logoUploadStatus === 'error' && <p style={{ margin: '6px 0 0', color: '#c0392b', fontSize: 12 }}>Upload failed — try again</p>}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Fee summary */}
-      {amount > 0 && (
+      {amount > 0 && !hideFee && (
         <div style={{ marginBottom: 20, padding: '12px 18px', borderRadius: 10, background: darkBg ? 'rgba(255,255,255,0.04)' : `${C.sage}10`, border: `1px solid ${darkBg ? 'rgba(255,255,255,0.08)' : `${C.sage}28`}` }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 4 }}>
             <span>Processing fee (1.25%)</span><span>−${fee.toFixed(2)}</span>

@@ -201,6 +201,7 @@ export default async function handler(req, res) {
           ticketsSold: p['Tickets Sold']?.number || 0,
           rsvpCapacity: p['RSVP Capacity']?.number || 0,
           rsvpsCount: p['RSVPs Count']?.number || 0,
+          vendorRegEnabled: p['Vendor Reg Enabled']?.checkbox || false,
         };
       })
       .filter(e => e.name);

@@ -41,6 +41,8 @@ const TicketServicesPage = lazy(() => import('./pages/TicketServicesPage'));
 const TicketSuccessPage = lazy(() => import('./pages/TicketSuccessPage'));
 const PartnerIntakePage = lazy(() => import('./pages/PartnerIntakePage'));
 const EventEditPage = lazy(() => import('./pages/EventEditPage'));
+const VendorRegisterPage = lazy(() => import('./pages/VendorRegisterPage'));
+const VendorPortalPage = lazy(() => import('./pages/VendorPortalPage'));
 
 // Lazy sub-components from named exports
 const DispatchArticlePage = lazy(() => import('./pages/DispatchPage').then(m => ({ default: m.DispatchArticlePage })));
@@ -105,6 +107,8 @@ export default function App() {
           <Route path="/promote" element={<PromotePage />} />
           <Route path="/event" element={<PromotePage />} />
           <Route path="/advertise" element={<AdvertisePage />} />
+          <Route path="/vendor-register" element={<VendorRegisterPage />} />
+          <Route path="/vendor-portal" element={<VendorPortalPage />} />
           <Route path="/dispatch" element={<DispatchPage />} />
           <Route path="/dispatch/:slug" element={<DispatchArticlePage />} />
           <Route path="/yeti-admin" element={<YetiAdminPage />} />

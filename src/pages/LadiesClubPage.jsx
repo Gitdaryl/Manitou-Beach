@@ -505,12 +505,6 @@ function LadiesClubSponsorsSection() {
           </div>
         </FadeIn>
 
-        <FadeIn delay={200}>
-          <p style={{ textAlign: "center", fontSize: 13, color: C.textMuted, marginTop: 40, lineHeight: 1.7 }}>
-            Interested in sponsoring? Contact{" "}
-            <a href="mailto:michele.henson0003@gmail.com" style={{ color: C.sage, textDecoration: "none" }}>michele.henson0003@gmail.com</a>
-          </p>
-        </FadeIn>
       </div>
     </section>
   );
@@ -611,8 +605,8 @@ const LADIES_SPONSOR_TIERS = [
   { level: "Platinum Sponsor", amount: 500, perks: ["Named in all event promotions & signage", "Logo on website & Festival banners", "Largest logo on Festival T-shirt", "Social media feature", "Newsletter spotlight"] },
   { level: "Gold Sponsor", amount: 250, perks: ["Logo on website & Festival banners", "Logo on Festival T-shirt", "Social media tag", "Newsletter mention"] },
   { level: "Silver Sponsor", amount: 100, perks: ["Name on website", "Name on Festival T-shirt", "Social media mention"] },
-  { level: "Bronze Sponsor", amount: 50, perks: ["Name on Festival T-shirt", "Community recognition"] },
-  { level: "Friend", amount: 25, perks: ["Name listed on website", "Community recognition"] },
+  { level: "Bronze Sponsor", amount: 50, perks: ["Name on Festival T-shirt", "Online page recognition", "Community recognition"] },
+  { level: "Friend", amount: 25, perks: ["Name listed on website", "Online page recognition", "Community recognition"] },
 ];
 
 function LadiesClubSponsorForm() {
@@ -632,6 +626,8 @@ function LadiesClubSponsorForm() {
           orgName="Land & Lake Ladies Club"
           tiers={LADIES_SPONSOR_TIERS}
           accentColor={C.sunset}
+          hideFee
+          logoTiers={["Platinum Sponsor", "Gold Sponsor", "Silver Sponsor", "Bronze Sponsor"]}
           note="Checks payable to: Land and Lake Ladies Club · Sponsorship deadline: March 20th, 2026. A club representative will follow up within 2 business days."
         />
       </div>
