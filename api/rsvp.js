@@ -14,6 +14,23 @@ export default async function handler(req, res) {
   if (!name || !email) return res.status(400).json({ error: 'Name and email are required' });
   if (!eventId) return res.status(400).json({ error: 'Event ID required' });
 
+  // 0. Capacity check — block if event is full
+  let currentRsvpCount = 0;
+  try {
+    const eventPage = await fetch(`https://api.notion.com/v1/pages/${eventId}`, { headers: NOTION_HEADERS });
+    if (eventPage.ok) {
+      const ep = await eventPage.json();
+      const capacity = ep.properties?.['RSVP Capacity']?.number || 0;
+      currentRsvpCount = ep.properties?.['RSVPs Count']?.number || 0;
+      if (capacity > 0 && currentRsvpCount >= capacity) {
+        return res.status(409).json({ error: 'sold_out', message: 'This event is full.' });
+      }
+    }
+  } catch (err) {
+    console.error('RSVP capacity check error:', err.message);
+    // Continue — don't block on capacity check failure
+  }
+
   // 1. Write RSVP to Notion
   try {
     const properties = {
@@ -38,6 +55,17 @@ export default async function handler(req, res) {
   } catch (err) {
     console.error('RSVP Notion error:', err.message);
     return res.status(500).json({ error: 'Server error' });
+  }
+
+  // 1b. Increment RSVPs Count on the event page (best-effort)
+  try {
+    await fetch(`https://api.notion.com/v1/pages/${eventId}`, {
+      method: 'PATCH',
+      headers: NOTION_HEADERS,
+      body: JSON.stringify({ properties: { 'RSVPs Count': { number: currentRsvpCount + 1 } } }),
+    });
+  } catch (err) {
+    console.error('RSVP count increment error:', err.message);
   }
 
   // 2. Send confirmation email to attendee (best-effort)

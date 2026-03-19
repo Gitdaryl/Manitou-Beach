@@ -10,7 +10,7 @@ function normalizeUrl(url) {
 export default async function handler(req, res) {
   // POST — submit a new event
   if (req.method === 'POST') {
-    const { name, category, email, phone, description, date, time, timeEnd, location, eventUrl, imageUrl, cost, recurring, recurringDay, attendance, _hp } = req.body;
+    const { name, category, email, phone, description, date, time, timeEnd, location, eventUrl, imageUrl, cost, recurring, recurringDay, attendance, rsvpCapacity, _hp } = req.body;
 
     // Honeypot — bots fill hidden fields, humans don't
     if (_hp) return res.status(200).json({ success: true });
@@ -47,6 +47,7 @@ export default async function handler(req, res) {
       if (recurringDay) properties['Recurring Day'] = { select: { name: recurringDay } };
       if (timeEnd) properties['Time End'] = { rich_text: [{ text: { content: timeEnd } }] };
       if (attendance) properties['Attendance'] = { select: { name: attendance } };
+      if (rsvpCapacity) properties['RSVP Capacity'] = { number: parseInt(rsvpCapacity, 10) };
       return properties;
     };
 
@@ -198,6 +199,8 @@ export default async function handler(req, res) {
           ticketPrice: p['Ticket Price']?.number || null,
           ticketCapacity: p['Ticket Capacity']?.number || null,
           ticketsSold: p['Tickets Sold']?.number || 0,
+          rsvpCapacity: p['RSVP Capacity']?.number || 0,
+          rsvpsCount: p['RSVPs Count']?.number || 0,
         };
       })
       .filter(e => e.name);

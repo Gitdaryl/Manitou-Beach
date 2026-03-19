@@ -81,15 +81,21 @@ export default async function handler(req, res) {
 
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-  const { tier, eventName, email, promoPages, notes, returnPath = 'promote' } = req.body;
+  const { tier, eventName, email, promoPages, notes, returnPath = 'promote', months = 1 } = req.body;
 
   if (!tier || !eventName || !email) {
     return res.status(400).json({ error: 'Event name, email, and promotion package are required.' });
   }
 
-  const plan = PROMO_TIERS[tier];
+  let plan = PROMO_TIERS[tier];
   if (!plan) {
     return res.status(400).json({ error: 'Invalid promotion package.' });
+  }
+
+  // Multi-month pricing for RSVP Collection
+  const safeMonths = Math.min(Math.max(parseInt(months, 10) || 1, 1), 12);
+  if (tier === 'rsvp_collection' && safeMonths > 1) {
+    plan = { ...plan, price: plan.price * safeMonths, name: `${plan.name} · ${safeMonths} Months` };
   }
 
   try {

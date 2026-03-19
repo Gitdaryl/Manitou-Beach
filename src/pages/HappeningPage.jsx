@@ -331,7 +331,15 @@ function CalendarSection({ events, onEventClick, activeFilter, onFilterChange })
                         {event.ticketCapacity > 0 && event.ticketsSold >= event.ticketCapacity ? "Sold Out" : "Tickets Available"}
                       </span>
                     )}
-                    {event.attendance && !event.ticketsEnabled && (
+                    {event.rsvpEnabled && event.rsvpCapacity > 0 && event.rsvpsCount >= event.rsvpCapacity ? (
+                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1.5, color: "#ff6b6b", textTransform: "uppercase", whiteSpace: "nowrap" }}>
+                        Sold Out
+                      </span>
+                    ) : event.rsvpEnabled && event.rsvpCapacity > 0 && (event.rsvpCapacity - event.rsvpsCount) <= 5 ? (
+                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1.5, color: C.sunset, textTransform: "uppercase", whiteSpace: "nowrap" }}>
+                        {event.rsvpCapacity - event.rsvpsCount} spot{event.rsvpCapacity - event.rsvpsCount === 1 ? "" : "s"} left
+                      </span>
+                    ) : event.attendance && !event.ticketsEnabled && (
                       <span style={{
                         fontFamily: "'Libre Franklin', sans-serif",
                         fontSize: 9, fontWeight: 700, letterSpacing: 1.5,
@@ -481,22 +489,24 @@ export function HappeningSubmitCTA({ simple = false }) {
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [rsvpCheckoutLoading, setRsvpCheckoutLoading] = useState(false);
-  const [form, setForm] = useState({ name: "", category: "", date: "", time: "", timeEnd: "", location: "", description: "", eventUrl: "", email: "", phone: "", cost: "", attendance: "", _hp: "" });
+  const [rsvpCardError, setRsvpCardError] = useState("");
+  const [rsvpMonths, setRsvpMonths] = useState(1);
+  const [form, setForm] = useState({ name: "", category: "", date: "", time: "", timeEnd: "", location: "", description: "", eventUrl: "", email: "", phone: "", cost: "", attendance: "", rsvpCapacity: "", _hp: "" });
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
   const handleRsvpCheckout = async () => {
     if (!form.name || !form.email) {
-      setSubmitError("Fill in your event name and email above first, then add RSVP Collection.");
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      setRsvpCardError("Enter your event name and email above first.");
       return;
     }
+    setRsvpCardError("");
     setRsvpCheckoutLoading(true);
     try {
       const resp = await fetch("/api/create-promo-checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tier: "rsvp_collection", eventName: form.name, email: form.email }),
+        body: JSON.stringify({ tier: "rsvp_collection", eventName: form.name, email: form.email, months: rsvpMonths }),
       });
       const data = await resp.json();
       if (data.url) window.location.href = data.url;
@@ -641,38 +651,60 @@ export function HappeningSubmitCTA({ simple = false }) {
               </select>
             </div>
             {['rsvp_appreciated','rsvp_required','limited_spots','registration_required'].includes(form.attendance) && (
-              <div style={{ gridColumn: "1 / -1", border: "1px solid rgba(212,132,90,0.4)", borderRadius: 10, padding: "20px 22px", background: "rgba(212,132,90,0.07)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 20, flexWrap: "wrap" }}>
-                <div style={{ flex: 1, minWidth: 220 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-                    <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunsetLight }}>
-                      RSVP Collection — Add-On
-                    </div>
-                    <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sunset, background: "rgba(212,132,90,0.15)", border: "1px solid rgba(212,132,90,0.3)", borderRadius: 4, padding: "1px 6px", fontFamily: "'Libre Franklin', sans-serif" }}>
-                      Limited Time
-                    </div>
-                  </div>
-                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", lineHeight: 1.65, margin: 0 }}>
-                    In-app RSVP form, organizer notifications, and email reminders the day before and day of.
-                  </p>
+              <>
+                {/* Max attendees input */}
+                <div style={{ gridColumn: "1 / -1" }}>
+                  <label style={labelStyle}>Max Attendees <span style={{ opacity: 0.5, fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>(optional — leave blank for unlimited)</span></label>
+                  <input type="number" min="1" value={form.rsvpCapacity} onChange={e => set("rsvpCapacity", e.target.value)} placeholder="e.g. 20" style={{ ...inputStyle, width: "120px" }} />
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6, flexShrink: 0 }}>
-                  <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
-                    <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 26, fontWeight: 700, color: C.cream, lineHeight: 1 }}>$9</span>
-                    <span style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif" }}>/ event</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleRsvpCheckout}
-                    disabled={rsvpCheckoutLoading}
-                    style={{ padding: "10px 20px", background: rsvpCheckoutLoading ? "rgba(212,132,90,0.4)" : C.sunset, color: "#fff", border: "none", borderRadius: 6, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: rsvpCheckoutLoading ? "not-allowed" : "pointer", transition: "all 0.2s", whiteSpace: "nowrap" }}
-                  >
-                    {rsvpCheckoutLoading ? "Loading…" : "Add for $9 →"}
-                  </button>
-                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.22)", fontStyle: "italic", textAlign: "right" }}>
-                    Upgrade anytime after submission
+
+                {/* RSVP Collection upsell card */}
+                <div style={{ gridColumn: "1 / -1", border: "1px solid rgba(212,132,90,0.4)", borderRadius: 10, padding: "20px 22px", background: "rgba(212,132,90,0.07)" }}>
+                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 20, flexWrap: "wrap" }}>
+                    <div style={{ flex: 1, minWidth: 220 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunsetLight }}>
+                          RSVP Collection — Add-On
+                        </div>
+                        <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sunset, background: "rgba(212,132,90,0.15)", border: "1px solid rgba(212,132,90,0.3)", borderRadius: 4, padding: "1px 6px", fontFamily: "'Libre Franklin', sans-serif" }}>
+                          Limited Time
+                        </div>
+                      </div>
+                      <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", lineHeight: 1.65, margin: "0 0 12px 0" }}>
+                        In-app RSVP form, organizer notifications, and email reminders the day before and day of.
+                      </p>
+                      {/* Duration selector */}
+                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", fontFamily: "'Libre Franklin', sans-serif", marginRight: 2 }}>Duration:</span>
+                        {[1, 2, 3, 6].map(m => (
+                          <button key={m} type="button" onClick={() => setRsvpMonths(m)}
+                            style={{ padding: "4px 10px", borderRadius: 4, fontSize: 11, fontWeight: 700,
+                              border: `1px solid ${rsvpMonths === m ? C.sunset : "rgba(255,255,255,0.15)"}`,
+                              background: rsvpMonths === m ? "rgba(212,132,90,0.2)" : "transparent",
+                              color: rsvpMonths === m ? C.sunsetLight : "rgba(255,255,255,0.35)",
+                              cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", transition: "all 0.15s" }}>
+                            {m === 1 ? "1 mo" : `${m} mo`}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6, flexShrink: 0 }}>
+                      <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
+                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 26, fontWeight: 700, color: C.cream, lineHeight: 1 }}>${rsvpMonths * 9}</span>
+                        <span style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif" }}>
+                          {rsvpMonths > 1 ? `(${rsvpMonths} × $9/mo)` : "/ month"}
+                        </span>
+                      </div>
+                      <button type="button" onClick={handleRsvpCheckout} disabled={rsvpCheckoutLoading}
+                        style={{ padding: "10px 20px", background: rsvpCheckoutLoading ? "rgba(212,132,90,0.4)" : C.sunset, color: "#fff", border: "none", borderRadius: 6, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: rsvpCheckoutLoading ? "not-allowed" : "pointer", transition: "all 0.2s", whiteSpace: "nowrap" }}>
+                        {rsvpCheckoutLoading ? "Loading…" : `Add for $${rsvpMonths * 9} →`}
+                      </button>
+                      {rsvpCardError && <div style={{ fontSize: 11, color: "#ff8a65", fontFamily: "'Libre Franklin', sans-serif", textAlign: "right" }}>{rsvpCardError}</div>}
+                      <div style={{ fontSize: 11, color: "rgba(255,255,255,0.22)", fontStyle: "italic", textAlign: "right" }}>Upgrade anytime after submission</div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </>
             )}
             <div style={{ gridColumn: "1 / -1" }}>
               <label style={labelStyle}>Description</label>

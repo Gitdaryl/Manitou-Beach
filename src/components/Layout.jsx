@@ -1960,6 +1960,9 @@ export function EventLightbox({ event, onClose }) {
   const [rsvpLoading, setRsvpLoading] = React.useState(false);
   const [rsvpError, setRsvpError] = React.useState('');
   const [rsvpSubmitted, setRsvpSubmitted] = React.useState(false);
+  const [waitlistForm, setWaitlistForm] = React.useState({ name: '', email: '', phone: '' });
+  const [waitlistLoading, setWaitlistLoading] = React.useState(false);
+  const [waitlistSubmitted, setWaitlistSubmitted] = React.useState(false);
 
   if (!event) return null;
   const eventCatColors = { "Live Music": C.sunset, "Food & Social": "#8B5E3C", "Sports & Outdoors": C.sage, Community: C.lakeBlue };
@@ -1977,7 +1980,26 @@ export function EventLightbox({ event, onClose }) {
   const ticketsSoldOut = event.ticketsEnabled && event.ticketCapacity > 0 && event.ticketsSold >= event.ticketCapacity;
   const ticketsRemaining = event.ticketCapacity > 0 ? Math.max(0, event.ticketCapacity - (event.ticketsSold || 0)) : null;
 
+  const rsvpSoldOut = event.rsvpEnabled && event.rsvpCapacity > 0 && (event.rsvpsCount || 0) >= event.rsvpCapacity;
+  const rsvpSpotsLeft = event.rsvpCapacity > 0 ? Math.max(0, event.rsvpCapacity - (event.rsvpsCount || 0)) : null;
+
   const RSVP_ATTENDANCE_TYPES = ['rsvp_required', 'rsvp_appreciated', 'limited_spots', 'registration_required'];
+
+  const handleWaitlist = async (e) => {
+    e.preventDefault();
+    if (!waitlistForm.email) return;
+    setWaitlistLoading(true);
+    try {
+      await fetch('/api/rsvp-waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ eventId: event.id, eventName: event.name, ...waitlistForm }),
+      });
+      setWaitlistSubmitted(true);
+    } catch { /* silent */ } finally {
+      setWaitlistLoading(false);
+    }
+  };
 
   const handleRsvp = async (e) => {
     e.preventDefault();
@@ -1999,6 +2021,7 @@ export function EventLightbox({ event, onClose }) {
         }),
       });
       const data = await res.json();
+      if (res.status === 409) { setRsvpError('This event is now full — join the waitlist below.'); return; }
       if (!res.ok) throw new Error(data.error || 'RSVP failed');
       setRsvpSubmitted(true);
     } catch (err) {
@@ -2135,8 +2158,44 @@ export function EventLightbox({ event, onClose }) {
         {/* RSVP section — full in-app form (paid feature) OR dead-end fix (free) */}
         {RSVP_ATTENDANCE_TYPES.includes(event.attendance) && !event.ticketsEnabled && (
           <div style={{ marginBottom: 20 }}>
+            {/* Spots-left pill — only show when ≤5 remain and not yet sold out */}
+            {!rsvpSoldOut && rsvpSpotsLeft !== null && rsvpSpotsLeft <= 5 && (
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 5, background: "rgba(255,107,107,0.12)", border: "1px solid rgba(255,107,107,0.3)", borderRadius: 20, padding: "4px 12px", marginBottom: 12, fontSize: 12, fontWeight: 700, color: rsvpSpotsLeft <= 2 ? "#ff6b6b" : C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1 }}>
+                🔴 {rsvpSpotsLeft} spot{rsvpSpotsLeft === 1 ? "" : "s"} left
+              </div>
+            )}
             {event.rsvpEnabled ? (
-              rsvpSubmitted ? (
+              rsvpSoldOut ? (
+                /* Sold out state + notify-me form */
+                waitlistSubmitted ? (
+                  <div style={{ background: `${C.sage}18`, border: `1px solid ${C.sage}40`, borderRadius: 10, padding: "14px 18px", fontSize: 14, color: C.sage, fontFamily: "'Libre Franklin', sans-serif" }}>
+                    ✓ You're on the list! We'll let you know if a spot opens.
+                  </div>
+                ) : (
+                  <div style={{ background: "rgba(255,80,80,0.06)", border: "1px solid rgba(255,107,107,0.25)", borderRadius: 12, padding: "20px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+                      <div style={{ fontSize: 28 }}>🎟️</div>
+                      <div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: "#ff6b6b", fontFamily: "'Libre Franklin', sans-serif", marginBottom: 2 }}>This event is full</div>
+                        <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", fontFamily: "'Libre Franklin', sans-serif" }}>Join the waitlist — we'll notify you if a spot opens up.</div>
+                      </div>
+                    </div>
+                    <form onSubmit={handleWaitlist} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                        {[{ key: 'name', placeholder: 'Your name', type: 'text' }, { key: 'email', placeholder: 'Email *', type: 'email' }].map(f => (
+                          <input key={f.key} type={f.type} value={waitlistForm[f.key]} onChange={e => setWaitlistForm(p => ({ ...p, [f.key]: e.target.value }))}
+                            placeholder={f.placeholder} required={f.key === 'email'}
+                            style={{ padding: "9px 12px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.06)", color: C.cream, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", outline: "none", boxSizing: "border-box", width: "100%" }} />
+                        ))}
+                      </div>
+                      <button type="submit" disabled={waitlistLoading}
+                        style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.cream, background: "rgba(255,107,107,0.2)", border: "1px solid rgba(255,107,107,0.4)", padding: "10px 24px", borderRadius: 6, cursor: waitlistLoading ? "not-allowed" : "pointer", opacity: waitlistLoading ? 0.6 : 1, alignSelf: "flex-start" }}>
+                        {waitlistLoading ? "Saving..." : "Notify Me →"}
+                      </button>
+                    </form>
+                  </div>
+                )
+              ) : rsvpSubmitted ? (
                 <div style={{ background: `${C.sage}18`, border: `1px solid ${C.sage}40`, borderRadius: 10, padding: "14px 18px", fontSize: 14, color: C.sage, fontFamily: "'Libre Franklin', sans-serif" }}>
                   ✓ You're registered! We'll send a reminder the day before.
                 </div>
