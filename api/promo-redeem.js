@@ -1,5 +1,5 @@
 // Review URL fallback — replace with Blackbird's actual Google Place ID when confirmed
-const BLACKBIRD_GOOGLE_REVIEW = 'https://search.google.com/local/writereview?placeid=ChIJblackbirdplaceid';
+const BLACKBIRD_GOOGLE_REVIEW = 'https://search.google.com/local/writereview?placeid=ChIJdU4B4B9vOI4RhZlR_2NbeF4';
 
 export default async function handler(req, res) {
   // GET: Barista views the status of the code
