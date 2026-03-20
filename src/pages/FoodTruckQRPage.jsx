@@ -17,7 +17,7 @@ function toTitleCase(str) {
 export default function FoodTruckQRPage() {
   const { slug } = useParams();
   const truckName = toTitleCase(slug || 'food-truck');
-  const pageUrl = `${window.location.origin}/food-trucks`;
+  const pageUrl = `${window.location.origin}/food-trucks${slug ? `?truck=${slug}` : ''}`;
 
   return (
     <>
@@ -106,13 +106,13 @@ export default function FoodTruckQRPage() {
             />
           </div>
 
-          {/* Heart CTA */}
+          {/* Follow CTA */}
           <p style={{
             margin: '0 0 6px',
             fontSize: 20,
             color: C.sunset,
           }}>
-            ❤️
+            📱
           </p>
           <p style={{
             margin: '0 0 4px',
@@ -120,7 +120,7 @@ export default function FoodTruckQRPage() {
             fontWeight: 700,
             color: C.dusk,
           }}>
-            Love what you ordered?
+            Follow us — get a text when we're here.
           </p>
           <p style={{
             margin: '0 0 24px',
@@ -128,8 +128,8 @@ export default function FoodTruckQRPage() {
             color: C.textLight,
             lineHeight: 1.5,
           }}>
-            Scan to find us on the Manitou Beach<br />
-            Food Truck Locator &amp; tap your favourite dish
+            Scan to find {truckName} on the Manitou Beach<br />
+            Locator. Heart us once &amp; we'll text you next time we drop our pin.
           </p>
 
           {/* Divider */}
