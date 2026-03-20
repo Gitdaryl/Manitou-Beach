@@ -574,7 +574,7 @@ function WineReviewModal({ venue, accent, onSuccess, onClose }) {
 
 const venueSlug = name => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
 
-function WineryCard({ v, i, isStamped, onStamp, venueRating, autoOpen }) {
+function WineryCard({ v, i, isStamped, onStamp, venueRating, wineRankings, autoOpen }) {
   const [showModal, setShowModal] = useState(false);
   const cardRef = useRef(null);
   useEffect(() => {
@@ -613,11 +613,22 @@ function WineryCard({ v, i, isStamped, onStamp, venueRating, autoOpen }) {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 8, marginBottom: 6 }}>
             <div>
               <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.text, margin: "0 0 4px 0" }}>{v.name}</h3>
-              {venueRating && venueRating.count > 0 && (
-                <div style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
-                  <span style={{ color: C.sunset }}>★</span> {venueRating.avg} &nbsp;·&nbsp; {venueRating.count} {venueRating.count === 1 ? 'review' : 'reviews'}
+              {venueRating && venueRating.count > 0 ? (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
+                    <span style={{ color: C.sunset }}>★</span> {venueRating.avg} &nbsp;·&nbsp; {venueRating.count} {venueRating.count === 1 ? 'rating' : 'ratings'}
+                  </span>
+                  {wineRankings && wineRankings.find(w => w.venue === v.name) && (
+                    <span style={{ fontSize: 11, padding: '2px 10px', background: `${C.sunset}20`, color: C.sunset, borderRadius: 12, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700 }}>
+                      🏅 {wineRankings.find(w => w.venue === v.name)?.fullName || wineRankings.find(w => w.venue === v.name)?.name}
+                    </span>
+                  )}
                 </div>
-              )}
+              ) : onStamp ? (
+                <div style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", fontStyle: 'italic' }}>
+                  Be the first to rate this stop →
+                </div>
+              ) : null}
             </div>
             <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
               {v.openingDate && (
@@ -896,7 +907,7 @@ function WineriesVenueSection() {
   const trailVenues = WINERY_VENUES.filter(v => v.section === "trail");
   const extendedVenues = WINERY_VENUES.filter(v => v.section === "extended");
   const { stamped, toggleStamp, isStamped } = useWinePassport();
-  const { ratings } = useWineryRatings();
+  const { ratings, wineRankings } = useWineryRatings();
   const stampSlug = new URLSearchParams(window.location.search).get('stamp') || '';
 
   return (
@@ -914,7 +925,7 @@ function WineriesVenueSection() {
           </p>
         </FadeIn>
         <div style={{ display: "flex", flexDirection: "column", gap: 24, marginBottom: 80 }}>
-          {villageVenues.map((v, i) => <WineryCard key={i} v={v} i={i} isStamped={isStamped(v.name)} onStamp={toggleStamp} venueRating={ratings[v.name]} autoOpen={stampSlug === venueSlug(v.name)} />)}
+          {villageVenues.map((v, i) => <WineryCard key={i} v={v} i={i} isStamped={isStamped(v.name)} onStamp={toggleStamp} venueRating={ratings[v.name]} wineRankings={wineRankings} autoOpen={stampSlug === venueSlug(v.name)} />)}
         </div>
 
         {/* The Trail */}
@@ -926,7 +937,7 @@ function WineriesVenueSection() {
           </p>
         </FadeIn>
         <div style={{ display: "flex", flexDirection: "column", gap: 24, marginBottom: 80 }}>
-          {trailVenues.map((v, i) => <WineryCard key={i} v={v} i={i} isStamped={isStamped(v.name)} onStamp={toggleStamp} venueRating={ratings[v.name]} autoOpen={stampSlug === venueSlug(v.name)} />)}
+          {trailVenues.map((v, i) => <WineryCard key={i} v={v} i={i} isStamped={isStamped(v.name)} onStamp={toggleStamp} venueRating={ratings[v.name]} wineRankings={wineRankings} autoOpen={stampSlug === venueSlug(v.name)} />)}
         </div>
 
         {/* Worth the Drive */}
@@ -1346,6 +1357,69 @@ function WineScoreboardSection() {
   );
 }
 
+const WINE_PASSPORT_HOW = [
+  { icon: '🗺️', title: 'Plan your stops', desc: 'Eight venues across the Village and the Trail. One afternoon or a full day.' },
+  { icon: '🃏', title: 'Grab a passport card', desc: 'Pick one up at any tasting room counter. Grid on the back — one square per stop.' },
+  { icon: '🍷', title: 'Taste & scan', desc: 'Scan the QR, pick your wine, leave a star rating. Takes 30 seconds.' },
+  { icon: '📝', title: 'Stamp + 10% off', desc: 'Staff signs your card square. First visit earns 10% off a bottle.' },
+  { icon: '🏆', title: 'Live standings', desc: 'Ratings go live instantly. Scores go dark October 1st — winners revealed at the awards ceremony.' },
+];
+
+const WINERY_AWARD_CATEGORIES = [
+  "Best Red Wine", "Best White Wine", "Best Sweet Wine",
+  "Best Fruit or Specialty Wine", "Best Tasting Room Experience",
+  "Outstanding Customer Hospitality", "Best Atmosphere",
+];
+
+function WineriesHowItWorksSection() {
+  return (
+    <section style={{ background: C.night, padding: '72px 24px' }}>
+      <div style={{ maxWidth: 1000, margin: '0 auto' }}>
+        <FadeIn>
+          <SectionLabel dark>The Wine Passport</SectionLabel>
+          <SectionTitle dark>How It Works</SectionTitle>
+        </FadeIn>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 20, marginTop: 40 }}>
+          {WINE_PASSPORT_HOW.map((step, i) => (
+            <FadeIn key={i} delay={i * 80}>
+              <div style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 16, padding: '24px 20px' }}>
+                <div style={{ fontSize: 32, marginBottom: 12 }}>{step.icon}</div>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: '#fff', marginBottom: 8 }}>{step.title}</div>
+                <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', lineHeight: 1.6 }}>{step.desc}</div>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function WineAwardCeremonySection() {
+  return (
+    <section style={{ background: C.night, padding: '80px 24px' }}>
+      <div style={{ maxWidth: 760, margin: '0 auto', textAlign: 'center' }}>
+        <FadeIn>
+          <div style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)', marginBottom: 16 }}>Presented by The Manitou Dispatch</div>
+          <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 34, color: '#fff', margin: '0 0 12px', fontWeight: 400 }}>The 2026 Wine Trail Awards</h2>
+          <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.5)', marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>October · Manitou Beach</p>
+          <div style={{ width: 48, height: 2, background: C.sunset, margin: '20px auto 32px' }} />
+          <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.7)', lineHeight: 1.8, marginBottom: 36, fontFamily: "'Libre Franklin', sans-serif" }}>
+            Seven categories. Hundreds of votes cast all season long.<br />
+            Scores go dark October 1st. Nobody knows the winners until the night.
+          </p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', marginBottom: 40 }}>
+            {WINERY_AWARD_CATEGORIES.map((cat, i) => (
+              <span key={i} style={{ fontSize: 13, padding: '6px 14px', borderRadius: 20, border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.6)', fontFamily: "'Libre Franklin', sans-serif" }}>🏆 {cat}</span>
+            ))}
+          </div>
+          <NewsletterInline />
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
 export default function WineriesPage() {
   const subScrollTo = (id) => { window.location.href = "/#" + id; };
   return (
@@ -1355,6 +1429,7 @@ export default function WineriesPage() {
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
       <WineriesHero />
       <WaveDivider topColor={C.dusk} bottomColor={C.night} />
+      <WineriesHowItWorksSection />
       <WineriesVillageCallout />
       <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
       <PromoBanner page="Wineries" />
@@ -1370,9 +1445,9 @@ export default function WineriesPage() {
       <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
       <DiagonalDivider topColor={C.cream} bottomColor={C.dusk} />
       <WineriesCTASection />
-      <WaveDivider topColor={C.dusk} bottomColor={C.warmWhite} flip />
-      <NewsletterInline />
-      <WaveDivider topColor={C.warmWhite} bottomColor={C.dusk} />
+      <WaveDivider topColor={C.dusk} bottomColor={C.night} />
+      <WineAwardCeremonySection />
+      <WaveDivider topColor={C.night} bottomColor={C.warmWhite} flip />
       <PageSponsorBanner pageName="wineries" />
       <Footer scrollTo={subScrollTo} />
     </div>

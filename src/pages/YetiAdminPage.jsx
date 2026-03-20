@@ -83,6 +83,34 @@ export default function YetiAdminPage() {
   const [orgCheckStatus, setOrgCheckStatus] = useState('idle');
   const [orgCheckResult, setOrgCheckResult] = useState(null);
 
+  // ── Newsletter Composer ─────────────────────────────────────────
+  const [nlDate, setNlDate] = useState(() => {
+    const d = new Date();
+    const daysUntilThursday = (4 - d.getDay() + 7) % 7 || 7;
+    d.setDate(d.getDate() + daysUntilThursday);
+    return d.toISOString().split('T')[0];
+  });
+  const [nlSubject, setNlSubject] = useState('');
+  const [nlSubjectOptions, setNlSubjectOptions] = useState([]);
+  const [nlSubjectLoading, setNlSubjectLoading] = useState(false);
+  const [nlNote, setNlNote] = useState('');
+  const [nlWeekendText, setNlWeekendText] = useState('');
+  const [nlWeekendLoading, setNlWeekendLoading] = useState(false);
+  const [nlArticles, setNlArticles] = useState([]);
+  const [nlArticlesLoading, setNlArticlesLoading] = useState(false);
+  const [nlArticleId, setNlArticleId] = useState('');
+  const [nlAds, setNlAds] = useState([]);
+  const [nlAdsLoading, setNlAdsLoading] = useState(false);
+  const [nlAdId, setNlAdId] = useState('');
+  const [nlWelcomeEnabled, setNlWelcomeEnabled] = useState(false);
+  const [nlWelcomeText, setNlWelcomeText] = useState('');
+  const [nlWelcomeLoading, setNlWelcomeLoading] = useState(false);
+  const [nlGuestEnabled, setNlGuestEnabled] = useState(false);
+  const [nlGuestName, setNlGuestName] = useState('');
+  const [nlGuestBio, setNlGuestBio] = useState('');
+  const [nlGuestContent, setNlGuestContent] = useState('');
+  const [nlCopyStatus, setNlCopyStatus] = useState('idle');
+
   const handleOrgConnect = async () => {
     if (!orgForm.orgPageId || !orgForm.orgName) return;
     setOrgConnectStatus('loading');
@@ -305,6 +333,120 @@ export default function YetiAdminPage() {
     finally { setDraftsLoading(false); }
   };
 
+  const fetchNlArticles = async () => {
+    setNlArticlesLoading(true);
+    try {
+      const res = await adminFetch('/api/admin-articles');
+      const data = await res.json();
+      setNlArticles(data.articles || []);
+    } catch (err) { console.error('nl articles error:', err); }
+    finally { setNlArticlesLoading(false); }
+  };
+
+  const fetchNlAds = async () => {
+    setNlAdsLoading(true);
+    try {
+      const res = await adminFetch('/api/dispatch-ads?admin=true');
+      const data = await res.json();
+      setNlAds(data.promos || []);
+    } catch (err) { console.error('nl ads error:', err); }
+    finally { setNlAdsLoading(false); }
+  };
+
+  const handleNlPullEvents = async () => {
+    setNlWeekendLoading(true);
+    try {
+      const evRes = await fetch('/api/events');
+      const evData = await evRes.json();
+      const now = new Date();
+      const in7 = new Date(now.getTime() + 7 * 86400000);
+      const upcoming = (evData.events || evData || []).filter(e => {
+        const d = new Date(e.date || e.Date || e.startDate || '');
+        return d >= now && d <= in7;
+      });
+      const res = await adminFetch('/api/newsletter-compose', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'weekend-events', events: upcoming }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setNlWeekendText((data.bullets || []).join('\n'));
+    } catch (err) { console.error('nl pull events error:', err); }
+    finally { setNlWeekendLoading(false); }
+  };
+
+  const handleNlGenerateSubject = async () => {
+    const article = nlArticles.find(a => a.id === nlArticleId);
+    setNlSubjectLoading(true);
+    try {
+      const res = await adminFetch('/api/newsletter-compose', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'subject', articleTitle: article?.title || '', eventSummary: nlWeekendText.split('\n')[0] || '' }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setNlSubjectOptions(data.options || []);
+    } catch (err) { console.error('nl subject error:', err); }
+    finally { setNlSubjectLoading(false); }
+  };
+
+  const handleNlWelcomeGenerate = async () => {
+    setNlWelcomeLoading(true);
+    try {
+      const res = await adminFetch('/api/newsletter-compose', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'welcome', businesses: [] }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setNlWelcomeText(data.text || '');
+    } catch (err) { console.error('nl welcome error:', err); }
+    finally { setNlWelcomeLoading(false); }
+  };
+
+  const buildNlPreviewHtml = () => {
+    const article = nlArticles.find(a => a.id === nlArticleId);
+    const ad = nlAds.find(a => a.id === nlAdId);
+    const dateLabel = nlDate ? new Date(nlDate + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) : '';
+    return `<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+      body{margin:0;padding:0;background:#f5f0e8;font-family:'Libre Franklin',Arial,sans-serif;}
+      .wrap{max-width:600px;margin:0 auto;background:#fff;}
+      .header{background:#1A2830;padding:32px 40px;text-align:center;}
+      .header h1{color:#fff;font-size:24px;margin:0 0 4px;font-family:'Libre Baskerville',Georgia,serif;letter-spacing:0.04em;}
+      .header p{color:#a0b8c0;font-size:13px;margin:0;}
+      .section{padding:28px 40px;border-bottom:1px solid #e8e0d0;}
+      .section h2{color:#1A2830;font-size:17px;margin:0 0 14px;font-family:'Libre Baskerville',Georgia,serif;}
+      .article-box{background:#f9f6f0;border-left:4px solid #4a7c8a;padding:16px 20px;border-radius:0 8px 8px 0;}
+      .article-box .cat{font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:#4a7c8a;font-weight:700;margin-bottom:6px;}
+      .article-box .title{font-size:16px;font-weight:700;color:#1A2830;margin-bottom:6px;font-family:'Libre Baskerville',Georgia,serif;}
+      .article-box .excerpt{font-size:13px;color:#5a6a74;line-height:1.6;}
+      .ad-box{background:#fff8f0;border:1px solid #e8d0a0;border-radius:10px;padding:20px 24px;}
+      .ad-box .bar{height:4px;background:linear-gradient(90deg,#c87941,#e8a84a);border-radius:2px;margin-bottom:14px;}
+      .ad-box .biz{font-size:15px;font-weight:700;color:#1A2830;margin-bottom:4px;}
+      .ad-box .offer{font-size:13px;color:#5a4a34;line-height:1.5;margin-bottom:10px;}
+      .ad-box .cta{display:inline-block;background:#c87941;color:#fff;padding:8px 18px;border-radius:6px;font-size:12px;font-weight:700;text-decoration:none;}
+      .bullet{padding:6px 0;font-size:14px;color:#2a3a44;line-height:1.5;border-bottom:1px solid #f0ece4;}
+      .bullet:last-child{border-bottom:none;}
+      .footer{background:#1A2830;padding:24px 40px;text-align:center;}
+      .footer p{color:#7a9aa8;font-size:12px;margin:4px 0;line-height:1.6;}
+    </style></head><body><div class="wrap">
+      <div class="header">
+        <h1>The Manitou Dispatch</h1>
+        <p>${dateLabel}${nlSubject ? ' · ' + nlSubject : ''}</p>
+      </div>
+      ${article ? `<div class="section"><h2>This Week</h2><div class="article-box"><div class="cat">${article.category || 'Feature'}</div><div class="title">${article.title}</div><div class="excerpt">${article.excerpt || ''}</div></div></div>` : ''}
+      ${nlWeekendText ? `<div class="section"><h2>5 Things This Weekend</h2>${nlWeekendText.split('\n').filter(Boolean).map(b => `<div class="bullet">${b}</div>`).join('')}</div>` : ''}
+      ${ad ? `<div class="section"><h2>From Our Sponsors</h2><div class="ad-box"><div class="bar"></div><div class="biz">${ad.businessName || ad.business || ''}</div><div class="offer">${ad.offerText || ad.offer || ''}</div>${ad.link ? `<a class="cta" href="${ad.link}">Learn More →</a>` : ''}</div></div>` : `<div class="section"><h2>From Our Sponsors</h2><div class="ad-box"><div class="bar"></div><div class="biz">Your Business Here</div><div class="offer">Reach thousands of Manitou Beach visitors and locals every week.</div><a class="cta" href="/featured">Get Featured →</a></div></div>`}
+      ${nlWelcomeEnabled && nlWelcomeText ? `<div class="section"><h2>Welcome to the Beach 👋</h2><p style="font-size:14px;color:#3a4a54;line-height:1.7;margin:0">${nlWelcomeText}</p></div>` : ''}
+      ${nlGuestEnabled && nlGuestContent ? `<div class="section"><h2>Guest Corner</h2><p style="font-size:12px;font-weight:700;color:#4a7c8a;margin:0 0 10px">${nlGuestName}${nlGuestBio ? ' — ' + nlGuestBio : ''}</p><p style="font-size:14px;color:#3a4a54;line-height:1.7;margin:0">${nlGuestContent}</p></div>` : ''}
+      ${nlNote ? `<div class="section"><p style="font-size:13px;color:#7a8a94;font-style:italic;margin:0">📝 Internal note: ${nlNote}</p></div>` : ''}
+      <div class="footer"><p>The Manitou Dispatch · Manitou Beach, MI</p><p>You're receiving this because you subscribed.</p></div>
+    </div></body></html>`;
+  };
+
   const fetchDashboard = async () => {
     setDashLoading(true);
     try {
@@ -465,6 +607,7 @@ export default function YetiAdminPage() {
 
   useEffect(() => {
     if (!authed) return;
+    if (activeTab === 'newsletter') { fetchNlArticles(); fetchNlAds(); }
     if (activeTab === 'review') fetchDrafts();
     if (activeTab === 'dashboard') { fetchDashboard(); fetchAdSlots(); }
     if (activeTab === 'promos') fetchPromos();
@@ -715,7 +858,7 @@ export default function YetiAdminPage() {
 
         {/* Tabs */}
         <div style={{ display: 'flex', gap: 8, marginBottom: 32, flexWrap: 'wrap' }}>
-          {[{ id: 'write', label: '✍️  Write' }, { id: 'review', label: '📋  Review Queue' }, { id: 'dashboard', label: '📊  Dashboard' }, { id: 'advertisers', label: '🤝  Advertisers' }, { id: 'promos', label: '🎟️  Promos' }, { id: 'pois', label: '📍  Community POIs' }, { id: 'ratings', label: '🍷  Winery Ratings' }, { id: 'wines', label: '🍾  Wines Registry' }, { id: 'vendors', label: '🏪  Vendors' }, { id: 'orgs', label: '🏛️  Orgs' }].map(tab => (
+          {[{ id: 'write', label: '✍️  Write' }, { id: 'newsletter', label: '📰  Newsletter' }, { id: 'review', label: '📋  Review Queue' }, { id: 'dashboard', label: '📊  Dashboard' }, { id: 'advertisers', label: '🤝  Advertisers' }, { id: 'promos', label: '🎟️  Promos' }, { id: 'pois', label: '📍  Community POIs' }, { id: 'ratings', label: '🍷  Winery Ratings' }, { id: 'wines', label: '🍾  Wines Registry' }, { id: 'vendors', label: '🏪  Vendors' }, { id: 'orgs', label: '🏛️  Orgs' }].map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
@@ -1844,6 +1987,214 @@ export default function YetiAdminPage() {
                 {vendorSetupResult.error}
               </div>
             )}
+          </div>
+        )}
+
+        {/* ── NEWSLETTER COMPOSER TAB ── */}
+        {activeTab === 'newsletter' && (
+          <div style={{ maxWidth: 800 }}>
+            <div style={{ marginBottom: 28 }}>
+              <h2 style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 22, color: C.dusk, margin: '0 0 6px' }}>Newsletter Composer</h2>
+              <p style={{ fontSize: 13, color: C.textMuted, margin: 0 }}>Build each issue section-by-section, preview the HTML, then paste into beehiiv.</p>
+            </div>
+
+            {/* Section 1 — Issue Header */}
+            <div style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 12, padding: 24, marginBottom: 16 }}>
+              <div style={{ fontWeight: 700, color: C.dusk, fontSize: 14, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ background: C.dusk, color: '#fff', borderRadius: '50%', width: 22, height: 22, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 11 }}>1</span>
+                Issue Header
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
+                <div>
+                  <label style={labelStyle}>Issue Date</label>
+                  <input type="date" style={inputStyle} value={nlDate} onChange={e => setNlDate(e.target.value)} />
+                </div>
+                <div>
+                  <label style={labelStyle}>Internal Note</label>
+                  <input style={inputStyle} placeholder="e.g. Memorial Day weekend edition" value={nlNote} onChange={e => setNlNote(e.target.value)} />
+                </div>
+              </div>
+              <div>
+                <label style={labelStyle}>Subject Line</label>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <input style={{ ...inputStyle, flex: 1 }} placeholder="Write or pick from AI options below" value={nlSubject} onChange={e => setNlSubject(e.target.value)} />
+                  <button
+                    onClick={handleNlGenerateSubject}
+                    disabled={nlSubjectLoading}
+                    style={{ padding: '10px 16px', background: C.lakeBlue, color: '#fff', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: nlSubjectLoading ? 'not-allowed' : 'pointer', whiteSpace: 'nowrap', fontFamily: 'Libre Franklin, sans-serif' }}
+                  >{nlSubjectLoading ? 'Generating…' : '⚡ AI Generate'}</button>
+                </div>
+                {nlSubjectOptions.length > 0 && (
+                  <div style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    {nlSubjectOptions.map((opt, i) => (
+                      <button key={i} onClick={() => setNlSubject(opt)} style={{ textAlign: 'left', padding: '8px 14px', background: nlSubject === opt ? C.dusk : '#fff', color: nlSubject === opt ? '#fff' : C.text, border: `1px solid ${C.sand}`, borderRadius: 8, fontSize: 13, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}>{opt}</button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Section 2 — 5 Things This Weekend */}
+            <div style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 12, padding: 24, marginBottom: 16 }}>
+              <div style={{ fontWeight: 700, color: C.dusk, fontSize: 14, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ background: C.dusk, color: '#fff', borderRadius: '50%', width: 22, height: 22, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 11 }}>2</span>
+                5 Things This Weekend
+              </div>
+              <button
+                onClick={handleNlPullEvents}
+                disabled={nlWeekendLoading}
+                style={{ padding: '9px 18px', background: '#fff', color: C.lakeBlue, border: `1px solid ${C.lakeBlue}`, borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: nlWeekendLoading ? 'not-allowed' : 'pointer', marginBottom: 12, fontFamily: 'Libre Franklin, sans-serif' }}
+              >{nlWeekendLoading ? 'Pulling events…' : '📅 Pull from Events'}</button>
+              <textarea
+                style={{ ...inputStyle, minHeight: 120, resize: 'vertical', lineHeight: 1.6 }}
+                placeholder={'☀️ Fri · Event Name — one line why to go\n☀️ Sat · ...'}
+                value={nlWeekendText}
+                onChange={e => setNlWeekendText(e.target.value)}
+              />
+            </div>
+
+            {/* Section 3 — Main Article */}
+            <div style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 12, padding: 24, marginBottom: 16 }}>
+              <div style={{ fontWeight: 700, color: C.dusk, fontSize: 14, marginBottom: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ background: C.dusk, color: '#fff', borderRadius: '50%', width: 22, height: 22, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 11 }}>3</span>
+                  Main Article
+                </span>
+                <button onClick={() => setActiveTab('write')} style={{ fontSize: 12, color: C.lakeBlue, background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}>+ Go to Write tab →</button>
+              </div>
+              {nlArticlesLoading ? (
+                <p style={{ fontSize: 13, color: C.textMuted }}>Loading articles…</p>
+              ) : (
+                <select
+                  style={{ ...inputStyle }}
+                  value={nlArticleId}
+                  onChange={e => setNlArticleId(e.target.value)}
+                >
+                  <option value="">— Select an article —</option>
+                  {nlArticles.map(a => (
+                    <option key={a.id} value={a.id}>{a.title} {a.category ? `[${a.category}]` : ''} {a.blogSafe ? '✅' : '📝'}</option>
+                  ))}
+                </select>
+              )}
+              {nlArticleId && nlArticles.find(a => a.id === nlArticleId) && (
+                <div style={{ marginTop: 10, padding: '10px 14px', background: '#fff', border: `1px solid ${C.sand}`, borderRadius: 8, fontSize: 13, color: C.textLight, lineHeight: 1.6 }}>
+                  {nlArticles.find(a => a.id === nlArticleId)?.excerpt || 'No excerpt'}
+                </div>
+              )}
+            </div>
+
+            {/* Section 4 — Ad Slot */}
+            <div style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 12, padding: 24, marginBottom: 16 }}>
+              <div style={{ fontWeight: 700, color: C.dusk, fontSize: 14, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ background: C.dusk, color: '#fff', borderRadius: '50%', width: 22, height: 22, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 11 }}>4</span>
+                Ad Slot
+              </div>
+              {nlAdsLoading ? (
+                <p style={{ fontSize: 13, color: C.textMuted }}>Loading ads…</p>
+              ) : (
+                <select style={inputStyle} value={nlAdId} onChange={e => setNlAdId(e.target.value)}>
+                  <option value="">— House ad (default: /featured) —</option>
+                  {nlAds.map(a => (
+                    <option key={a.id} value={a.id}>{a.businessName || a.business || a.title} — {a.offerText || a.offer || ''}</option>
+                  ))}
+                </select>
+              )}
+              {nlAdId && nlAds.find(a => a.id === nlAdId) && (() => {
+                const ad = nlAds.find(a => a.id === nlAdId);
+                return (
+                  <div style={{ marginTop: 10, padding: '14px 18px', background: '#fff8f0', border: '1px solid #e8d0a0', borderRadius: 8 }}>
+                    <div style={{ height: 3, background: 'linear-gradient(90deg,#c87941,#e8a84a)', borderRadius: 2, marginBottom: 10 }} />
+                    <div style={{ fontWeight: 700, fontSize: 14, color: C.dusk, marginBottom: 4 }}>{ad.businessName || ad.business || ''}</div>
+                    <div style={{ fontSize: 13, color: C.textLight }}>{ad.offerText || ad.offer || ''}</div>
+                  </div>
+                );
+              })()}
+            </div>
+
+            {/* Section 5 — Welcome New Businesses */}
+            <div style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 12, padding: 24, marginBottom: 16 }}>
+              <div style={{ fontWeight: 700, color: C.dusk, fontSize: 14, marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ background: C.dusk, color: '#fff', borderRadius: '50%', width: 22, height: 22, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 11 }}>5</span>
+                  Welcome New Businesses
+                </span>
+                <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13, fontWeight: 600, color: C.textLight }}>
+                  <input type="checkbox" checked={nlWelcomeEnabled} onChange={e => setNlWelcomeEnabled(e.target.checked)} style={{ accentColor: C.dusk }} />
+                  Include
+                </label>
+              </div>
+              {nlWelcomeEnabled && (
+                <>
+                  <button
+                    onClick={handleNlWelcomeGenerate}
+                    disabled={nlWelcomeLoading}
+                    style={{ padding: '9px 18px', background: '#fff', color: C.lakeBlue, border: `1px solid ${C.lakeBlue}`, borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: nlWelcomeLoading ? 'not-allowed' : 'pointer', marginBottom: 12, fontFamily: 'Libre Franklin, sans-serif' }}
+                  >{nlWelcomeLoading ? 'Writing…' : '⚡ AI Write Shout-out'}</button>
+                  <textarea
+                    style={{ ...inputStyle, minHeight: 80, resize: 'vertical' }}
+                    placeholder="Welcome shout-out text…"
+                    value={nlWelcomeText}
+                    onChange={e => setNlWelcomeText(e.target.value)}
+                  />
+                </>
+              )}
+              {!nlWelcomeEnabled && <p style={{ fontSize: 13, color: C.textMuted, margin: 0 }}>Toggle on to include a welcome for new Featured businesses (added in last 14 days).</p>}
+            </div>
+
+            {/* Section 6 — Guest Contributor */}
+            <div style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 12, padding: 24, marginBottom: 24 }}>
+              <div style={{ fontWeight: 700, color: C.dusk, fontSize: 14, marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ background: C.dusk, color: '#fff', borderRadius: '50%', width: 22, height: 22, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 11 }}>6</span>
+                  Guest Contributor
+                </span>
+                <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13, fontWeight: 600, color: C.textLight }}>
+                  <input type="checkbox" checked={nlGuestEnabled} onChange={e => setNlGuestEnabled(e.target.checked)} style={{ accentColor: C.dusk }} />
+                  Include
+                </label>
+              </div>
+              {nlGuestEnabled ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                    <div>
+                      <label style={labelStyle}>Contributor Name</label>
+                      <input style={inputStyle} placeholder="Jane Smith" value={nlGuestName} onChange={e => setNlGuestName(e.target.value)} />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>1-Line Bio</label>
+                      <input style={inputStyle} placeholder="Local birder & lake historian" value={nlGuestBio} onChange={e => setNlGuestBio(e.target.value)} />
+                    </div>
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Content</label>
+                    <textarea style={{ ...inputStyle, minHeight: 100, resize: 'vertical' }} placeholder="Guest content…" value={nlGuestContent} onChange={e => setNlGuestContent(e.target.value)} />
+                  </div>
+                </div>
+              ) : (
+                <p style={{ fontSize: 13, color: C.textMuted, margin: 0 }}>Toggle on to include a guest column. Default: off.</p>
+              )}
+            </div>
+
+            {/* Preview Panel */}
+            <div style={{ border: `2px solid ${C.dusk}`, borderRadius: 12, overflow: 'hidden' }}>
+              <div style={{ background: C.dusk, padding: '14px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{ color: '#fff', fontWeight: 700, fontSize: 14 }}>Preview</span>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(buildNlPreviewHtml());
+                    setNlCopyStatus('copied');
+                    setTimeout(() => setNlCopyStatus('idle'), 2500);
+                  }}
+                  style={{ padding: '7px 16px', background: nlCopyStatus === 'copied' ? C.sage : C.sunset, color: '#fff', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}
+                >{nlCopyStatus === 'copied' ? '✓ Copied!' : '📋 Copy Preview HTML'}</button>
+              </div>
+              <iframe
+                key={`${nlDate}-${nlSubject}-${nlArticleId}-${nlAdId}-${nlWeekendText}-${nlWelcomeEnabled}-${nlWelcomeText}-${nlGuestEnabled}-${nlGuestContent}`}
+                srcDoc={buildNlPreviewHtml()}
+                style={{ width: '100%', height: 700, border: 'none', display: 'block' }}
+                title="Newsletter Preview"
+              />
+            </div>
           </div>
         )}
 

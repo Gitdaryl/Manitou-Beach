@@ -124,6 +124,83 @@ function WinePartnerSignupSection() {
   );
 }
 
+function WinePartnerReserveSection() {
+  const [open, setOpen] = useState(false);
+  const [venueName, setVenueName] = useState('');
+  const [contactName, setContactName] = useState('');
+  const [email, setEmail] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [done, setDone] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleReserve = async () => {
+    if (!venueName.trim() || !contactName.trim() || !email.trim()) {
+      setError('All three fields are required.');
+      return;
+    }
+    setSubmitting(true);
+    setError('');
+    try {
+      const res = await fetch('/api/wine-partner-signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ venueName: venueName.trim(), contactName: contactName.trim(), email: email.trim(), reserveOnly: true }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed');
+      setDone(true);
+    } catch (err) {
+      setError(err.message || 'Something went wrong. Please email admin@yetigroove.com directly.');
+      setSubmitting(false);
+    }
+  };
+
+  const fieldStyle = {
+    width: '100%', padding: '10px 14px', borderRadius: 10,
+    border: '1.5px solid rgba(255,255,255,0.15)', fontFamily: "'Libre Franklin', sans-serif",
+    fontSize: 14, color: C.text, background: '#fff', outline: 'none', boxSizing: 'border-box',
+  };
+  const labelStyle = {
+    fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700,
+    letterSpacing: 1, textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', display: 'block', marginBottom: 6,
+  };
+
+  if (done) return (
+    <div style={{ marginTop: 20, padding: '20px 24px', background: 'rgba(255,255,255,0.06)', borderRadius: 14, textAlign: 'center', border: '1px solid rgba(255,255,255,0.12)' }}>
+      <div style={{ fontSize: 16, color: '#fff', fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif" }}>✓ Spot reserved!</div>
+      <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', margin: '8px 0 0', fontFamily: "'Libre Franklin', sans-serif" }}>Daryl will follow up before cards go to print.</p>
+    </div>
+  );
+
+  return (
+    <div style={{ marginTop: 20 }}>
+      {!open ? (
+        <button onClick={() => setOpen(true)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', fontSize: 13, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0, textDecoration: 'underline' }}>
+          Not ready to pay yet? Reserve your spot →
+        </button>
+      ) : (
+        <div style={{ padding: '24px', background: 'rgba(255,255,255,0.04)', borderRadius: 14, border: '1px solid rgba(255,255,255,0.10)', marginTop: 4 }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)', marginBottom: 16, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.3 }}>Hold My Spot — No payment yet</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12, marginBottom: 12 }}>
+            <div><label style={labelStyle}>Venue Name</label><input style={fieldStyle} placeholder="Your tasting room" value={venueName} onChange={e => setVenueName(e.target.value)} /></div>
+            <div><label style={labelStyle}>Your Name</label><input style={fieldStyle} placeholder="First + last" value={contactName} onChange={e => setContactName(e.target.value)} /></div>
+            <div><label style={labelStyle}>Email</label><input type="email" style={fieldStyle} placeholder="best way to reach you" value={email} onChange={e => setEmail(e.target.value)} /></div>
+          </div>
+          {error && <div style={{ fontSize: 12, color: '#e07070', marginBottom: 12, fontFamily: "'Libre Franklin', sans-serif" }}>{error}</div>}
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button
+              onClick={handleReserve}
+              disabled={submitting}
+              style={{ flex: 1, padding: '12px', borderRadius: 28, background: 'rgba(255,255,255,0.12)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, cursor: submitting ? 'default' : 'pointer', opacity: submitting ? 0.6 : 1 }}
+            >{submitting ? 'Saving…' : 'Hold My Spot'}</button>
+            <button onClick={() => setOpen(false)} style={{ padding: '12px 18px', borderRadius: 28, background: 'none', color: 'rgba(255,255,255,0.3)', border: 'none', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", fontSize: 13 }}>Cancel</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function WinePartnerPage() {
   const subScrollTo = (id) => { window.location.href = "/#" + id; };
   const joined = new URLSearchParams(window.location.search).get('joined') === '1';
@@ -349,6 +426,7 @@ export default function WinePartnerPage() {
           ) : (
             <div style={{ background: "rgba(255,255,255,0.04)", borderRadius: 20, border: "1px solid rgba(255,255,255,0.1)", padding: "36px 32px" }}>
               <WinePartnerSignupSection />
+              <WinePartnerReserveSection />
             </div>
           )}
           <FadeIn delay={300}>

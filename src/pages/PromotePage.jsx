@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Btn, ScrollProgress, SectionLabel, SectionTitle, WaveDivider } from '../components/Shared';
 import { C } from '../data/config';
 import { Footer, Navbar, GlobalStyles, NewsletterInline, HollyYetiSection, ContactModal } from '../components/Layout';
@@ -13,6 +13,12 @@ const ADVERTISE_PACKAGES = [
   { id: "newsletter",         label: "Newsletter Feature",   detail: "1 Issue",            price: "$39",  fullPrice: "$79",  diagramType: "newsletter",
     desc: "A full dedicated section at the top of the next Manitou Beach Dispatch — before anyone scrolls.",
     plain: "Your business or event gets its own section at the very top of the email. Image, copy, link. The whole community sees it before anything else." },
+  { id: "newsletter_4pack",   label: "Newsletter 4-Pack",    detail: "4 Issues",           price: "$129", fullPrice: "$239", diagramType: "newsletter",
+    desc: "Your brand featured in 4 consecutive Dispatch issues.",
+    plain: "A month of newsletter presence. Save $27 vs buying four individually." },
+  { id: "newsletter_season",  label: "Season Contract",      detail: "All Season · 8 Issues", price: "$239", fullPrice: "$399", diagramType: "newsletter",
+    desc: "Top-of-newsletter placement across the full season. First right of renewal.",
+    plain: "Own the newsletter slot all season. Eight issues, first right of renewal at same rate.", badge: "Best Value" },
   { id: "banner_1p",          label: "Page Banner",          detail: "1 Page · 30 Days",  price: "$29",  fullPrice: "$59",  diagramType: "banner",
     desc: "A full-width banner for your brand on whichever page your customers visit most.",
     plain: "Like renting a billboard, but on the website. Pick the page — Fishing, Wineries, Devils Lake — and your banner sits right there for 30 days." },
@@ -86,6 +92,11 @@ export function AdvertisePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showContact, setShowContact] = useState(false);
+  const [subCount, setSubCount] = useState(null);
+
+  useEffect(() => {
+    fetch('/api/subscribe').then(r => r.json()).then(d => setSubCount(d.count || 0)).catch(() => {});
+  }, []);
 
   const needsPages = ["banner_1p", "banner_3p"].includes(form.tier);
   const selectedPkg = ADVERTISE_PACKAGES.find(p => p.id === form.tier);
@@ -209,6 +220,27 @@ export function AdvertisePage() {
               Early advertisers lock in today's rate for life.
             </span>
           </p>
+          {subCount !== null && (
+            <div style={{ marginBottom: 24, padding: '16px 20px', background: '#fff', border: `1px solid ${C.sand}`, borderRadius: 12 }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 8 }}>
+                <span style={{ fontSize: 15, fontWeight: 700, color: C.dusk, fontFamily: "'Libre Franklin', sans-serif" }}>
+                  📬 {subCount.toLocaleString()} subscribers and growing
+                </span>
+              </div>
+              <div style={{ height: 6, background: C.sand, borderRadius: 3, overflow: 'hidden', marginBottom: 8 }}>
+                <div style={{ height: '100%', width: `${Math.min((subCount / 1000) * 100, 100)}%`, background: C.sunset, borderRadius: 3, transition: 'width 0.8s ease' }} />
+              </div>
+              {subCount < 1000 ? (
+                <p style={{ margin: 0, fontSize: 14, fontFamily: "'Caveat', cursive", color: C.sunset, letterSpacing: 0.2 }}>
+                  Price increases at 1,000 subscribers · Lock in today's rate now
+                </p>
+              ) : (
+                <p style={{ margin: 0, fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
+                  Rate increase in effect — thank you for advertising with the Dispatch.
+                </p>
+              )}
+            </div>
+          )}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 20 }}>
             {ADVERTISE_PACKAGES.map(pkg => {
               const isSelected = form.tier === pkg.id;
