@@ -184,8 +184,8 @@ export default function ClaimPage() {
               <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginTop: 8 }}>{biz.offerText} · one use</div>
             </div>
             <div style={{ margin: '0 auto 20px', padding: '16px 20px', background: '#fdf9f3', border: `1px solid ${C.sand}`, borderRadius: 12, display: 'inline-block' }}>
-              <QRCode value={`${window.location.origin}/redeem-promo?code=${claimCode}`} size={160} />
-              <p style={{ margin: '10px 0 0', fontSize: 12, color: C.textMuted, textAlign: 'center', fontFamily: 'Libre Franklin, sans-serif' }}>Barista: scan to verify →</p>
+              <QRCode value={window.location.href} size={160} />
+              <p style={{ margin: '10px 0 0', fontSize: 12, color: C.textMuted, textAlign: 'center', fontFamily: 'Libre Franklin, sans-serif' }}>Barista: scan to see full screen →</p>
             </div>
             <div style={{ background: '#fff', borderRadius: 12, padding: 24, boxShadow: '0 2px 12px rgba(0,0,0,0.07)' }}>
               <p style={{ margin: '0 0 16px', color: C.text, fontSize: 15, lineHeight: 1.5 }}>

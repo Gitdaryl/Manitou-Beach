@@ -84,31 +84,34 @@ export default function YetiAdminPage() {
   const [orgCheckResult, setOrgCheckResult] = useState(null);
 
   // ── Newsletter Composer ─────────────────────────────────────────
-  const [nlDate, setNlDate] = useState(() => {
+  const NL_DRAFT_KEY = 'yeti_nl_draft';
+  const nlDraft = (() => { try { return JSON.parse(localStorage.getItem(NL_DRAFT_KEY) || '{}'); } catch { return {}; } })();
+  const nlDefaultDate = (() => {
     const d = new Date();
     const daysUntilThursday = (4 - d.getDay() + 7) % 7 || 7;
     d.setDate(d.getDate() + daysUntilThursday);
     return d.toISOString().split('T')[0];
-  });
-  const [nlSubject, setNlSubject] = useState('');
+  })();
+  const [nlDate, setNlDate] = useState(nlDraft.nlDate || nlDefaultDate);
+  const [nlSubject, setNlSubject] = useState(nlDraft.nlSubject || '');
   const [nlSubjectOptions, setNlSubjectOptions] = useState([]);
   const [nlSubjectLoading, setNlSubjectLoading] = useState(false);
-  const [nlNote, setNlNote] = useState('');
-  const [nlWeekendText, setNlWeekendText] = useState('');
+  const [nlNote, setNlNote] = useState(nlDraft.nlNote || '');
+  const [nlWeekendText, setNlWeekendText] = useState(nlDraft.nlWeekendText || '');
   const [nlWeekendLoading, setNlWeekendLoading] = useState(false);
   const [nlArticles, setNlArticles] = useState([]);
   const [nlArticlesLoading, setNlArticlesLoading] = useState(false);
-  const [nlArticleId, setNlArticleId] = useState('');
+  const [nlArticleId, setNlArticleId] = useState(nlDraft.nlArticleId || '');
   const [nlAds, setNlAds] = useState([]);
   const [nlAdsLoading, setNlAdsLoading] = useState(false);
-  const [nlAdId, setNlAdId] = useState('');
-  const [nlWelcomeEnabled, setNlWelcomeEnabled] = useState(false);
-  const [nlWelcomeText, setNlWelcomeText] = useState('');
+  const [nlAdId, setNlAdId] = useState(nlDraft.nlAdId || '');
+  const [nlWelcomeEnabled, setNlWelcomeEnabled] = useState(nlDraft.nlWelcomeEnabled || false);
+  const [nlWelcomeText, setNlWelcomeText] = useState(nlDraft.nlWelcomeText || '');
   const [nlWelcomeLoading, setNlWelcomeLoading] = useState(false);
-  const [nlGuestEnabled, setNlGuestEnabled] = useState(false);
-  const [nlGuestName, setNlGuestName] = useState('');
-  const [nlGuestBio, setNlGuestBio] = useState('');
-  const [nlGuestContent, setNlGuestContent] = useState('');
+  const [nlGuestEnabled, setNlGuestEnabled] = useState(nlDraft.nlGuestEnabled || false);
+  const [nlGuestName, setNlGuestName] = useState(nlDraft.nlGuestName || '');
+  const [nlGuestBio, setNlGuestBio] = useState(nlDraft.nlGuestBio || '');
+  const [nlGuestContent, setNlGuestContent] = useState(nlDraft.nlGuestContent || '');
   const [nlCopyStatus, setNlCopyStatus] = useState('idle');
 
   const handleOrgConnect = async () => {
@@ -406,6 +409,16 @@ export default function YetiAdminPage() {
     } catch (err) { console.error('nl welcome error:', err); }
     finally { setNlWelcomeLoading(false); }
   };
+
+  // Autosave draft to localStorage whenever any field changes
+  useEffect(() => {
+    try {
+      localStorage.setItem(NL_DRAFT_KEY, JSON.stringify({
+        nlDate, nlSubject, nlNote, nlWeekendText, nlArticleId, nlAdId,
+        nlWelcomeEnabled, nlWelcomeText, nlGuestEnabled, nlGuestName, nlGuestBio, nlGuestContent,
+      }));
+    } catch {}
+  }, [nlDate, nlSubject, nlNote, nlWeekendText, nlArticleId, nlAdId, nlWelcomeEnabled, nlWelcomeText, nlGuestEnabled, nlGuestName, nlGuestBio, nlGuestContent]);
 
   const buildNlPreviewHtml = () => {
     const article = nlArticles.find(a => a.id === nlArticleId);
@@ -1995,7 +2008,21 @@ export default function YetiAdminPage() {
           <div style={{ maxWidth: 800 }}>
             <div style={{ marginBottom: 28 }}>
               <h2 style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 22, color: C.dusk, margin: '0 0 6px' }}>Newsletter Composer</h2>
-              <p style={{ fontSize: 13, color: C.textMuted, margin: 0 }}>Build each issue section-by-section, preview the HTML, then paste into beehiiv.</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+                <p style={{ fontSize: 13, color: C.textMuted, margin: 0 }}>Build each issue section-by-section, preview the HTML, then paste into beehiiv.</p>
+                <span style={{ fontSize: 11, color: C.sage, fontFamily: 'Libre Franklin, sans-serif' }}>✓ Draft autosaved</span>
+                <button
+                  onClick={() => {
+                    if (!window.confirm('Clear this draft and start fresh?')) return;
+                    localStorage.removeItem(NL_DRAFT_KEY);
+                    setNlDate(nlDefaultDate); setNlSubject(''); setNlNote(''); setNlWeekendText('');
+                    setNlArticleId(''); setNlAdId(''); setNlWelcomeEnabled(false); setNlWelcomeText('');
+                    setNlGuestEnabled(false); setNlGuestName(''); setNlGuestBio(''); setNlGuestContent('');
+                    setNlSubjectOptions([]);
+                  }}
+                  style={{ fontSize: 11, color: C.textMuted, background: 'none', border: `1px solid ${C.sand}`, borderRadius: 6, padding: '3px 10px', cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}
+                >Clear draft</button>
+              </div>
             </div>
 
             {/* Section 1 — Issue Header */}
@@ -2076,11 +2103,22 @@ export default function YetiAdminPage() {
                   ))}
                 </select>
               )}
-              {nlArticleId && nlArticles.find(a => a.id === nlArticleId) && (
-                <div style={{ marginTop: 10, padding: '10px 14px', background: '#fff', border: `1px solid ${C.sand}`, borderRadius: 8, fontSize: 13, color: C.textLight, lineHeight: 1.6 }}>
-                  {nlArticles.find(a => a.id === nlArticleId)?.excerpt || 'No excerpt'}
-                </div>
-              )}
+              {nlArticleId && nlArticles.find(a => a.id === nlArticleId) && (() => {
+                const a = nlArticles.find(x => x.id === nlArticleId);
+                return (
+                  <div style={{ marginTop: 10 }}>
+                    {!a.blogSafe && (
+                      <div style={{ padding: '8px 14px', background: '#fff8e0', border: '1px solid #e8d080', borderRadius: 8, fontSize: 12, color: '#806010', marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+                        <span>⚠️ This article is still a Draft — it won't be on the blog when the newsletter goes out.</span>
+                        <button onClick={() => setActiveTab('review')} style={{ whiteSpace: 'nowrap', background: 'none', border: 'none', color: C.lakeBlue, fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}>Publish now →</button>
+                      </div>
+                    )}
+                    <div style={{ padding: '10px 14px', background: '#fff', border: `1px solid ${C.sand}`, borderRadius: 8, fontSize: 13, color: C.textLight, lineHeight: 1.6 }}>
+                      {a.excerpt || 'No excerpt'}
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
 
             {/* Section 4 — Ad Slot */}

@@ -3,7 +3,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { email, offer = 'Blackbird Cookie' } = req.body;
+  const { email, name = '', offer = 'Blackbird Cookie' } = req.body;
   if (!email) return res.status(400).json({ error: 'Email required' });
 
   try {
@@ -38,7 +38,8 @@ export default async function handler(req, res) {
       const existingRecord = searchData.results[0];
       const code = existingRecord.properties['Promo Code']?.title?.[0]?.text?.content;
       const status = existingRecord.properties['Status']?.select?.name;
-      return res.status(200).json({ code, status });
+      const savedName = existingRecord.properties['Name']?.rich_text?.[0]?.text?.content || '';
+      return res.status(200).json({ code, status, name: savedName });
     }
 
     // 2. Generate new unique code (e.g. BB-8X9P2R)
@@ -58,6 +59,7 @@ export default async function handler(req, res) {
         properties: {
           'Promo Code': { title: [{ text: { content: newCode } }] },
           'Email': { email: email },
+          'Name': { rich_text: [{ text: { content: name.trim() } }] },
           'Offer': { select: { name: offer } },
           'Status': { select: { name: 'Unclaimed' } }
         }
@@ -66,7 +68,7 @@ export default async function handler(req, res) {
 
     if (!createRes.ok) throw new Error('Failed to create in Notion');
 
-    return res.status(200).json({ code: newCode, status: 'Unclaimed' });
+    return res.status(200).json({ code: newCode, status: 'Unclaimed', name: name.trim() });
 
   } catch (err) {
     console.error('Promo claim error:', err);

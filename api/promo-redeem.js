@@ -1,3 +1,6 @@
+// Review URL fallback — replace with Blackbird's actual Google Place ID when confirmed
+const BLACKBIRD_GOOGLE_REVIEW = 'https://search.google.com/local/writereview?placeid=ChIJblackbirdplaceid';
+
 export default async function handler(req, res) {
   // GET: Barista views the status of the code
   if (req.method === 'GET') {
@@ -26,12 +29,17 @@ export default async function handler(req, res) {
 
       const record = data.results[0];
       const status = record.properties['Status']?.select?.name || 'Unclaimed';
-      
+      const subscriberName = record.properties['Name']?.rich_text?.[0]?.text?.content || '';
+      // Review URL can be overridden per vendor contract in the future via a 'Review URL' property
+      const reviewUrl = record.properties['Review URL']?.url || BLACKBIRD_GOOGLE_REVIEW;
+
       return res.status(200).json({
         id: record.id,
         code,
         status,
-        valid: status === 'Unclaimed'
+        valid: status === 'Unclaimed',
+        subscriberName,
+        reviewUrl,
       });
     } catch (err) {
       return res.status(200).json({ valid: true, status: 'Unclaimed', mockMode: true });
@@ -41,10 +49,10 @@ export default async function handler(req, res) {
   // POST: Barista hits "Redeem"
   if (req.method === 'POST') {
     const { id, code } = req.body;
-    
-    // If running in mockup mode before DB is created
+
+    // Mockup mode fallback
     if (!id && code === 'LAKEBOUND') {
-       return res.status(200).json({ success: true, mockMode: true });
+      return res.status(200).json({ success: true, mockMode: true });
     }
 
     if (!id) return res.status(400).json({ error: 'Record ID required' });
@@ -59,7 +67,8 @@ export default async function handler(req, res) {
         },
         body: JSON.stringify({
           properties: {
-            'Status': { select: { name: 'Redeemed' } }
+            'Status': { select: { name: 'Redeemed' } },
+            'Redeemed At': { date: { start: new Date().toISOString() } },
           }
         })
       });
