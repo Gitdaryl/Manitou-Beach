@@ -212,6 +212,17 @@ export default function YetiAdminPage() {
   const [ratingsUpdating, setRatingsUpdating] = useState({});
   const [ratingsFilter, setRatingsFilter] = useState('Pending'); // Pending | Published | Flagged | all
 
+  // ── Incentive Contracts ─────────────────────────────────────
+  const [contracts, setContracts] = useState([]);
+  const [contractsLoading, setContractsLoading] = useState(false);
+  const [contractsUnconfigured, setContractsUnconfigured] = useState(false);
+  const [contractForm, setContractForm] = useState({ vendorName: '', city: 'Manitou Beach, Michigan', offerText: '', tier: 'Single Drop', contactEmail: '', reviewUrl: '', redemptionCap: '' });
+  const [contractFormStatus, setContractFormStatus] = useState('idle'); // idle | saving | saved | error
+  const [contractFormError, setContractFormError] = useState('');
+  const [placeLookupStatus, setPlaceLookupStatus] = useState('idle'); // idle | loading | found | notfound | error
+  const [placeLookupResult, setPlaceLookupResult] = useState(null);
+  const [contractStatusUpdating, setContractStatusUpdating] = useState({});
+
   const fetchAdminPois = async () => {
     setAdminPoisLoading(true);
     try {
@@ -290,6 +301,75 @@ export default function YetiAdminPage() {
       setAdminRatings(prev => prev.map(r => r.id === id ? { ...r, status } : r));
     } catch { /* silent */ }
     finally { setRatingsUpdating(prev => { const n = { ...prev }; delete n[id]; return n; }); }
+  };
+
+  const fetchContracts = async () => {
+    setContractsLoading(true);
+    try {
+      const res = await adminFetch('/api/incentive-contracts');
+      const data = await res.json();
+      setContracts(data.contracts || []);
+      setContractsUnconfigured(!!data.unconfigured);
+    } catch { setContracts([]); }
+    finally { setContractsLoading(false); }
+  };
+
+  const handlePlaceLookup = async () => {
+    if (!contractForm.vendorName.trim()) return;
+    setPlaceLookupStatus('loading');
+    setPlaceLookupResult(null);
+    try {
+      const res = await adminFetch('/api/place-lookup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ businessName: contractForm.vendorName, city: contractForm.city }),
+      });
+      const data = await res.json();
+      if (!res.ok) { setPlaceLookupStatus('notfound'); setPlaceLookupResult({ error: data.error }); return; }
+      setPlaceLookupResult(data);
+      setContractForm(f => ({ ...f, reviewUrl: data.reviewUrl }));
+      setPlaceLookupStatus('found');
+    } catch (err) {
+      setPlaceLookupStatus('error');
+      setPlaceLookupResult({ error: err.message });
+    }
+  };
+
+  const handleContractSubmit = async () => {
+    if (!contractForm.vendorName.trim() || !contractForm.tier) return;
+    setContractFormStatus('saving');
+    setContractFormError('');
+    try {
+      const res = await adminFetch('/api/incentive-contracts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(contractForm),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Save failed');
+      setContractFormStatus('saved');
+      setContractForm({ vendorName: '', city: 'Manitou Beach, Michigan', offerText: '', tier: 'Single Drop', contactEmail: '', reviewUrl: '', redemptionCap: '' });
+      setPlaceLookupStatus('idle');
+      setPlaceLookupResult(null);
+      fetchContracts();
+      setTimeout(() => setContractFormStatus('idle'), 3000);
+    } catch (err) {
+      setContractFormError(err.message);
+      setContractFormStatus('error');
+    }
+  };
+
+  const updateContractStatus = async (id, status) => {
+    setContractStatusUpdating(prev => ({ ...prev, [id]: status }));
+    try {
+      await adminFetch('/api/incentive-contracts', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status }),
+      });
+      setContracts(prev => prev.map(c => c.id === id ? { ...c, status } : c));
+    } catch { /* silent */ }
+    finally { setContractStatusUpdating(prev => { const n = { ...prev }; delete n[id]; return n; }); }
   };
 
   // ── Publish abort timer (Gmail undo-send) ──────────────────────
@@ -627,6 +707,7 @@ export default function YetiAdminPage() {
     if (activeTab === 'pois') fetchAdminPois();
     if (activeTab === 'ratings') fetchAdminRatings();
     if (activeTab === 'wines') fetchAdminWines();
+    if (activeTab === 'incentives') fetchContracts();
   }, [activeTab, authed]);
 
   // Preview file locally before uploading — no network call yet
@@ -871,7 +952,7 @@ export default function YetiAdminPage() {
 
         {/* Tabs */}
         <div style={{ display: 'flex', gap: 8, marginBottom: 32, flexWrap: 'wrap' }}>
-          {[{ id: 'write', label: '✍️  Write' }, { id: 'newsletter', label: '📰  Newsletter' }, { id: 'review', label: '📋  Review Queue' }, { id: 'dashboard', label: '📊  Dashboard' }, { id: 'advertisers', label: '🤝  Advertisers' }, { id: 'promos', label: '🎟️  Promos' }, { id: 'pois', label: '📍  Community POIs' }, { id: 'ratings', label: '🍷  Winery Ratings' }, { id: 'wines', label: '🍾  Wines Registry' }, { id: 'vendors', label: '🏪  Vendors' }, { id: 'orgs', label: '🏛️  Orgs' }].map(tab => (
+          {[{ id: 'write', label: '✍️  Write' }, { id: 'newsletter', label: '📰  Newsletter' }, { id: 'review', label: '📋  Review Queue' }, { id: 'dashboard', label: '📊  Dashboard' }, { id: 'advertisers', label: '🤝  Advertisers' }, { id: 'promos', label: '🎟️  Promos' }, { id: 'pois', label: '📍  Community POIs' }, { id: 'ratings', label: '🍷  Winery Ratings' }, { id: 'wines', label: '🍾  Wines Registry' }, { id: 'vendors', label: '🏪  Vendors' }, { id: 'orgs', label: '🏛️  Orgs' }, { id: 'incentives', label: '🎁  Incentives' }].map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
@@ -2332,6 +2413,209 @@ export default function YetiAdminPage() {
                 {orgConnectResult?.error || orgCheckResult?.error}
               </div>
             )}
+          </div>
+        )}
+
+        {/* ── INCENTIVES TAB ── */}
+        {activeTab === 'incentives' && (
+          <div style={{ maxWidth: 700 }}>
+            <div style={{ marginBottom: 28 }}>
+              <h2 style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 22, color: C.dusk, margin: '0 0 6px' }}>Subscriber Incentive Contracts</h2>
+              <p style={{ fontSize: 13, color: C.textMuted, margin: 0, lineHeight: 1.6 }}>
+                Vendor partnerships that power subscriber welcome gifts — cookies, discounts, free tastings. Each contract links a vendor to a newsletter episode run and tracks their Google review URL.
+              </p>
+            </div>
+
+            {/* Tier reference cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 28 }}>
+              {[
+                { tier: 'Single Drop', episodes: '1 issue', price: '$49', desc: 'One-shot welcome gift — test the waters' },
+                { tier: '4-Episode', episodes: '4 issues', price: '$149', desc: 'One month of subscriber welcome drops' },
+                { tier: 'Season Run', episodes: '12 issues', price: '$399', desc: 'Full season · best ROI for the vendor', badge: 'Best Value' },
+              ].map(t => (
+                <div key={t.tier} style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 10, padding: '16px 14px', position: 'relative' }}>
+                  {t.badge && <span style={{ position: 'absolute', top: -8, right: 10, background: C.sunset, color: '#fff', fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', padding: '2px 8px', borderRadius: 10 }}>{t.badge}</span>}
+                  <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.08em', color: C.textMuted, marginBottom: 4, fontFamily: 'Libre Franklin, sans-serif' }}>{t.episodes}</div>
+                  <div style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 18, color: C.dusk, marginBottom: 2 }}>{t.tier}</div>
+                  <div style={{ fontSize: 20, fontWeight: 700, color: C.sunset, marginBottom: 6, fontFamily: 'Libre Franklin, sans-serif' }}>{t.price}</div>
+                  <div style={{ fontSize: 12, color: C.textLight, lineHeight: 1.5 }}>{t.desc}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* New Contract Form */}
+            <div style={{ background: '#fff', border: `1px solid ${C.sand}`, borderRadius: 12, padding: 28, marginBottom: 28 }}>
+              <div style={{ fontWeight: 700, color: C.dusk, fontSize: 15, marginBottom: 20, fontFamily: 'Libre Franklin, sans-serif' }}>New Contract</div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+                {/* Vendor name + Place lookup */}
+                <div>
+                  <label style={labelStyle}>Vendor Name *</label>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <input
+                      style={{ ...inputStyle, flex: 1 }}
+                      placeholder="e.g. Blackbird Cafe & Baking Company"
+                      value={contractForm.vendorName}
+                      onChange={e => { setContractForm(f => ({ ...f, vendorName: e.target.value })); setPlaceLookupStatus('idle'); setPlaceLookupResult(null); }}
+                    />
+                    <button
+                      onClick={handlePlaceLookup}
+                      disabled={placeLookupStatus === 'loading' || !contractForm.vendorName.trim()}
+                      style={{
+                        padding: '10px 14px', background: placeLookupStatus === 'found' ? C.sage : C.lakeBlue,
+                        color: '#fff', border: 'none', borderRadius: 8, fontSize: 12, fontWeight: 700,
+                        cursor: (placeLookupStatus === 'loading' || !contractForm.vendorName.trim()) ? 'not-allowed' : 'pointer',
+                        whiteSpace: 'nowrap', fontFamily: 'Libre Franklin, sans-serif', flexShrink: 0,
+                      }}
+                    >
+                      {placeLookupStatus === 'loading' ? 'Looking…' : placeLookupStatus === 'found' ? '✓ Found' : '🔍 Lookup on Google'}
+                    </button>
+                  </div>
+                  {placeLookupStatus === 'found' && placeLookupResult && (
+                    <div style={{ marginTop: 8, padding: '8px 12px', background: '#f0fff4', border: '1px solid #90d0a0', borderRadius: 8, fontSize: 12, color: '#1a5c2a' }}>
+                      ✓ <strong>{placeLookupResult.name}</strong> — {placeLookupResult.formattedAddress}<br />
+                      Place ID: <code style={{ background: '#fff', padding: '1px 5px', borderRadius: 3 }}>{placeLookupResult.placeId}</code>
+                    </div>
+                  )}
+                  {(placeLookupStatus === 'notfound' || placeLookupStatus === 'error') && placeLookupResult?.error && (
+                    <div style={{ marginTop: 8, padding: '8px 12px', background: '#fff8e0', border: '1px solid #e0d090', borderRadius: 8, fontSize: 12, color: '#7a5c00' }}>
+                      ⚠️ {placeLookupResult.error} — you can still enter the Review URL manually below.
+                    </div>
+                  )}
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                  <div>
+                    <label style={labelStyle}>City / Location</label>
+                    <input style={inputStyle} placeholder="Manitou Beach, Michigan" value={contractForm.city} onChange={e => setContractForm(f => ({ ...f, city: e.target.value }))} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Contract Tier *</label>
+                    <select style={inputStyle} value={contractForm.tier} onChange={e => setContractForm(f => ({ ...f, tier: e.target.value }))}>
+                      <option value="Single Drop">Single Drop — 1 issue · $49</option>
+                      <option value="4-Episode">4-Episode — 4 issues · $149</option>
+                      <option value="Season Run">Season Run — 12 issues · $399</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label style={labelStyle}>Offer Text</label>
+                  <input style={inputStyle} placeholder="e.g. Free cookie with any purchase — show this screen to your barista" value={contractForm.offerText} onChange={e => setContractForm(f => ({ ...f, offerText: e.target.value }))} />
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                  <div>
+                    <label style={labelStyle}>Contact Email</label>
+                    <input type="email" style={inputStyle} placeholder="vendor@email.com" value={contractForm.contactEmail} onChange={e => setContractForm(f => ({ ...f, contactEmail: e.target.value }))} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Max Redemptions</label>
+                    <input type="number" style={inputStyle} placeholder="leave blank = unlimited" value={contractForm.redemptionCap} onChange={e => setContractForm(f => ({ ...f, redemptionCap: e.target.value }))} />
+                  </div>
+                </div>
+
+                <div>
+                  <label style={labelStyle}>Google Review URL <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0, fontSize: 11, color: C.textMuted }}>(auto-filled by lookup, or paste manually)</span></label>
+                  <input style={inputStyle} placeholder="https://search.google.com/local/writereview?placeid=..." value={contractForm.reviewUrl} onChange={e => setContractForm(f => ({ ...f, reviewUrl: e.target.value }))} />
+                </div>
+
+                <button
+                  onClick={handleContractSubmit}
+                  disabled={contractFormStatus === 'saving' || !contractForm.vendorName.trim() || !contractForm.tier}
+                  style={{
+                    padding: '13px 0', border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 700,
+                    background: contractFormStatus === 'saved' ? C.sage : contractFormStatus === 'error' ? C.sunset : C.dusk,
+                    color: '#fff', cursor: (contractFormStatus === 'saving' || !contractForm.vendorName.trim()) ? 'not-allowed' : 'pointer',
+                    fontFamily: 'Libre Franklin, sans-serif', transition: 'background 0.2s',
+                  }}
+                >
+                  {contractFormStatus === 'saving' ? 'Saving…' : contractFormStatus === 'saved' ? '✓ Contract saved' : contractFormStatus === 'error' ? 'Save failed — retry' : 'Save Contract →'}
+                </button>
+                {contractFormStatus === 'error' && contractFormError && (
+                  <p style={{ margin: 0, fontSize: 12, color: C.sunset }}>{contractFormError}</p>
+                )}
+                {contractsUnconfigured && (
+                  <div style={{ padding: '10px 14px', background: '#fff8e0', border: '1px solid #e0d090', borderRadius: 8, fontSize: 12, color: '#7a5c00', lineHeight: 1.6 }}>
+                    ⚠️ <strong>NOTION_DB_INCENTIVE_CONTRACTS</strong> not set. Contracts won't save until you create the Notion DB and add the env var in Vercel.
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Contract Queue */}
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+                <div style={{ fontWeight: 700, color: C.dusk, fontSize: 15 }}>Contract Queue</div>
+                <button onClick={fetchContracts} style={{ fontSize: 12, color: C.lakeBlue, background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}>↻ Refresh</button>
+              </div>
+
+              {contractsLoading ? (
+                <div style={{ textAlign: 'center', padding: '40px 0', color: C.textMuted, fontSize: 13 }}>Loading contracts…</div>
+              ) : contracts.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '40px 0', color: C.textMuted, fontSize: 13, background: C.warmWhite, borderRadius: 10, border: `1px dashed ${C.sand}` }}>
+                  No contracts yet — add one above.
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {contracts.map(c => {
+                    const statusColor = c.status === 'Active' ? '#1a5c2a' : c.status === 'Expired' ? '#7a7a7a' : '#5c4a00';
+                    const statusBg = c.status === 'Active' ? '#f0fff4' : c.status === 'Expired' ? '#f5f5f5' : '#fff8e0';
+                    const statusBorder = c.status === 'Active' ? '#90d0a0' : c.status === 'Expired' ? '#ddd' : '#e0d090';
+                    return (
+                      <div key={c.id} style={{ background: '#fff', border: `1px solid ${C.sand}`, borderRadius: 10, padding: '16px 20px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, flexWrap: 'wrap' }}>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontWeight: 700, color: C.dusk, fontSize: 15, marginBottom: 2 }}>{c.vendorName}</div>
+                            <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 6 }}>
+                              {c.tier} · {c.issuesRemaining != null ? `${c.issuesRemaining} issues remaining` : ''} {c.city ? `· ${c.city}` : ''}
+                            </div>
+                            {c.offerText && <div style={{ fontSize: 13, color: C.textLight, marginBottom: 6, fontStyle: 'italic' }}>"{c.offerText}"</div>}
+                            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', fontSize: 11, color: C.textMuted }}>
+                              {c.contactEmail && <span>✉️ {c.contactEmail}</span>}
+                              {c.redemptionCap && <span>🎟️ Cap: {c.redemptionCap}</span>}
+                              {c.reviewUrl && <a href={c.reviewUrl} target="_blank" rel="noreferrer" style={{ color: C.lakeBlue, textDecoration: 'none' }}>Review link ↗</a>}
+                            </div>
+                          </div>
+                          <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexShrink: 0 }}>
+                            <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 10, background: statusBg, color: statusColor, border: `1px solid ${statusBorder}`, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                              {c.status}
+                            </span>
+                            {c.status === 'Queued' && (
+                              <button
+                                onClick={() => updateContractStatus(c.id, 'Active')}
+                                disabled={!!contractStatusUpdating[c.id]}
+                                style={{ fontSize: 11, fontWeight: 700, padding: '4px 12px', borderRadius: 8, background: C.sage, color: '#fff', border: 'none', cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}
+                              >
+                                {contractStatusUpdating[c.id] === 'Active' ? '…' : 'Activate'}
+                              </button>
+                            )}
+                            {c.status === 'Active' && (
+                              <button
+                                onClick={() => updateContractStatus(c.id, 'Expired')}
+                                disabled={!!contractStatusUpdating[c.id]}
+                                style={{ fontSize: 11, fontWeight: 600, padding: '4px 12px', borderRadius: 8, background: 'transparent', color: C.textMuted, border: `1px solid ${C.sand}`, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}
+                              >
+                                {contractStatusUpdating[c.id] === 'Expired' ? '…' : 'Expire'}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Setup instructions */}
+            <div style={{ marginTop: 28, padding: '16px 20px', background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 10, fontSize: 12, color: C.textLight, lineHeight: 1.7 }}>
+              <strong style={{ color: C.dusk }}>Setup checklist:</strong><br />
+              1. Create a Notion DB with properties: Name (title), Offer Text (rich text), Contract Tier (select), Status (select: Queued/Active/Expired), Contact Email, Review URL, City, Redemption Cap (number), Issues Remaining (number), Created At (date).<br />
+              2. Add <code style={{ background: '#fff', padding: '1px 4px', borderRadius: 3 }}>NOTION_DB_INCENTIVE_CONTRACTS</code> to Vercel env vars.<br />
+              3. Add <code style={{ background: '#fff', padding: '1px 4px', borderRadius: 3 }}>GOOGLE_PLACES_API_KEY</code> to Vercel env vars (enable Places API on the key in Google Cloud Console).
+            </div>
           </div>
         )}
 
