@@ -112,7 +112,7 @@ export default function FoodTruckQRPage() {
             fontSize: 20,
             color: C.sunset,
           }}>
-            📱
+            ❤️
           </p>
           <p style={{
             margin: '0 0 4px',
@@ -120,7 +120,7 @@ export default function FoodTruckQRPage() {
             fontWeight: 700,
             color: C.dusk,
           }}>
-            Follow us — get a text when we're here.
+            Love what you had? Leave us a heart.
           </p>
           <p style={{
             margin: '0 0 24px',
@@ -129,7 +129,8 @@ export default function FoodTruckQRPage() {
             lineHeight: 1.5,
           }}>
             Scan to find {truckName} on the Manitou Beach<br />
-            Locator. Heart us once &amp; we'll text you next time we drop our pin.
+            Locator. Heart us &amp; rate your dish — every love<br />
+            helps us rise in the Most Loved rankings.
           </p>
 
           {/* Divider */}

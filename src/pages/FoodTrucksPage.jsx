@@ -50,6 +50,7 @@ export default function FoodTrucksPage() {
   const mapDivRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markersRef = useRef([]);
+  const truckCardRefs = useRef({});
 
   // Location history — per-truck, stored in localStorage
   const locsKey = `mb-truck-locs-${truckSlug}`;
@@ -207,6 +208,19 @@ export default function FoodTrucksPage() {
     else { mapInstanceRef.current.fitBounds(bounds, { top: 40, right: 40, bottom: 40, left: 40 }); }
   }, [mapReady, trucks]);
 
+  // Scroll-to and highlight when landing from QR scan (?truck=slug, no token)
+  useEffect(() => {
+    if (!truckSlug || isCheckinMode || trucks === null) return;
+    const el = truckCardRefs.current[truckSlug];
+    if (!el) return;
+    setTimeout(() => {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      el.style.transition = 'box-shadow 0.4s';
+      el.style.boxShadow = `0 0 0 3px ${C.sunset}80`;
+      setTimeout(() => { el.style.boxShadow = ''; }, 2400);
+    }, 600);
+  }, [trucks, truckSlug, isCheckinMode]);
+
   // Drop pin handler — vendor taps this to capture GPS before submitting
   const handleDropPin = () => {
     if (!navigator.geolocation) { setPinStatus('denied'); return; }
@@ -288,6 +302,13 @@ export default function FoodTrucksPage() {
     t.comingDate && new Date(t.comingDate) > new Date() && !isLive(t)
   );
   const allTrucks = trucks || [];
+
+  // Popularity sort — by total love count (desc)
+  const loveCount = (slug) => loves[slug]?.total || 0;
+  const sortedLiveTrucks = [...liveTrucks].sort((a, b) => loveCount(b.slug) - loveCount(a.slug));
+  const sortedAllTrucks = [...allTrucks].sort((a, b) => loveCount(b.slug) - loveCount(a.slug));
+  const maxLoves = allTrucks.reduce((m, t) => Math.max(m, loveCount(t.slug)), 0);
+  const isMostLoved = (slug) => maxLoves >= 3 && loveCount(slug) === maxLoves;
 
   // Love pills renderer (shared between live + directory cards)
   const LovePills = ({ slug }) => {
@@ -819,15 +840,28 @@ export default function FoodTrucksPage() {
             </div>
           ) : (
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 20 }}>
-              {liveTrucks.map((truck, i) => (
+              {sortedLiveTrucks.map((truck, i) => (
                 <FadeIn key={truck.id} delay={i * 60}>
-                  <div style={{ background: C.cream, borderRadius: 14, border: `2px solid ${C.sage}33`, overflow: "hidden", height: "100%" }}>
+                  <div
+                    ref={el => { if (truck.slug) truckCardRefs.current[truck.slug] = el; }}
+                    style={{ background: C.cream, borderRadius: 14, border: `2px solid ${C.sage}33`, overflow: "hidden", height: "100%" }}
+                  >
                     {truck.photoUrl && (
                       <img src={truck.photoUrl} alt={truck.name} style={{ width: "100%", height: 160, objectFit: "cover" }} />
                     )}
                     <div style={{ padding: "20px 22px" }}>
                       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginBottom: 6 }}>
-                        <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.text, margin: 0 }}>{truck.name}</h3>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.text, margin: "0 0 4px" }}>{truck.name}</h3>
+                          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
+                            {isMostLoved(truck.slug) && (
+                              <span style={{ fontSize: 10, fontWeight: 700, color: C.sunset, background: `${C.sunset}15`, border: `1px solid ${C.sunset}30`, padding: "2px 7px", borderRadius: 10, letterSpacing: 0.5 }}>Most Loved ❤️</span>
+                            )}
+                            {loveCount(truck.slug) > 0 && (
+                              <span style={{ fontSize: 11, color: C.textMuted }}>❤️ {loveCount(truck.slug)}</span>
+                            )}
+                          </div>
+                        </div>
                         <div style={{ display: "flex", alignItems: "center", gap: 5, flexShrink: 0 }}>
                           <div style={{ width: 7, height: 7, borderRadius: "50%", background: C.sage }} />
                           <span style={{ fontSize: 11, color: C.sage, fontWeight: 600 }}>{timeAgo(truck.lastCheckin)}</span>
@@ -924,15 +958,18 @@ export default function FoodTrucksPage() {
             <FadeIn>
               <div style={{ marginBottom: 32 }}>
                 <SectionLabel>All Trucks</SectionLabel>
-                <SectionTitle>Find Your Favorite</SectionTitle>
+                <SectionTitle>Sorted by Most Loved</SectionTitle>
               </div>
             </FadeIn>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 16 }}>
-              {allTrucks.map((truck, i) => {
+              {sortedAllTrucks.map((truck, i) => {
                 const live = isLive(truck);
                 return (
                   <FadeIn key={truck.id} delay={i * 40}>
-                    <div style={{ background: C.warmWhite, borderRadius: 12, border: `1px solid ${C.sand}`, padding: "18px 20px" }}>
+                    <div
+                      ref={el => { if (truck.slug) truckCardRefs.current[truck.slug] = el; }}
+                      style={{ background: C.warmWhite, borderRadius: 12, border: `1px solid ${C.sand}`, padding: "18px 20px" }}
+                    >
                       <div style={{ display: "flex", gap: 14, alignItems: "flex-start", marginBottom: 10 }}>
                         <div style={{ width: 44, height: 44, borderRadius: 10, background: live ? `${C.sage}20` : `${C.sand}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>
                           🚚
@@ -941,7 +978,11 @@ export default function FoodTrucksPage() {
                           <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
                             <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, color: C.text }}>{truck.name}</span>
                             {live && <span style={{ fontSize: 10, fontWeight: 700, color: C.sage, background: `${C.sage}15`, padding: "2px 7px", borderRadius: 10, letterSpacing: 0.5, textTransform: "uppercase" }}>Open</span>}
+                            {isMostLoved(truck.slug) && <span style={{ fontSize: 10, fontWeight: 700, color: C.sunset, background: `${C.sunset}15`, border: `1px solid ${C.sunset}30`, padding: "2px 7px", borderRadius: 10, letterSpacing: 0.5 }}>Most Loved ❤️</span>}
                           </div>
+                          {loveCount(truck.slug) > 0 && (
+                            <div style={{ fontSize: 11, color: C.textMuted, marginTop: 3 }}>❤️ {loveCount(truck.slug)} love{loveCount(truck.slug) !== 1 ? 's' : ''}</div>
+                          )}
                           {truck.cuisine && <div style={{ fontSize: 12, color: C.textMuted, marginTop: 3 }}>{truck.cuisine}</div>}
                           {truck.phone && (
                             <a href={`tel:${truck.phone}`} style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", display: "block", marginTop: 6 }}>
@@ -981,10 +1022,10 @@ export default function FoodTrucksPage() {
             <div style={{ fontSize: 36, marginBottom: 16 }}>🚚</div>
             <SectionLabel light>Are You a Food Truck?</SectionLabel>
             <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 3.5vw, 32px)", fontWeight: 400, color: C.cream, margin: "16px 0 16px" }}>
-              Get on the Map — $9/mo Founding Rate
+              Get on the Map — $9/month
             </h2>
             <p style={{ fontSize: 14, color: "rgba(255,255,255,0.55)", lineHeight: 1.75, marginBottom: 28 }}>
-              Live map pin, personal check-in URL, newsletter shoutout when you're open. Lock in the founding rate before it moves.
+              Live map pin, personal check-in URL, Today's Special badge, and your name in front of hundreds of Manitou Beach followers.
             </p>
             <Btn href="/food-truck-partner" variant="sunset">
               See Listing Details →

@@ -21,8 +21,8 @@ const TRUCK_GETS = [
   { icon: "🔗", title: "Personal check-in URL", copy: "A private link that's yours forever. Open from your phone, fill in two fields, tap one button. On the map in under a minute." },
   { icon: "⭐", title: "Today's Special badge", copy: "Running a lunch deal or testing a new item? Add it on check-in. It shows as a highlighted badge on your live card." },
   { icon: "📅", title: "Coming Soon pre-announce", copy: "Planning a Saturday run? Set your date and customers see 'Coming This Saturday' in the locator before you arrive." },
-  { icon: "❤️", title: "Customer favorites", copy: "Regulars can heart your truck directly from the locator. They build a shortlist of favorites and never miss you when you're nearby." },
-  { icon: "📱", title: "Text alerts when you drop", copy: "When someone favorites your truck, they opt in to texts. Drop your pin — they get a notification the moment you go live." },
+  { icon: "❤️", title: "Customer hearts + dish ratings", copy: "Customers heart your truck and tag what they loved — 'the ribs', 'fish tacos'. Every heart builds your love count on the locator." },
+  { icon: "🏆", title: "Most Loved ranking", copy: "The locator sorts by love count. The truck with the most hearts and dish ratings rises to the top — more visibility, more customers." },
   { icon: "📰", title: "Newsletter shoutout", copy: "When you're checked in on send days, hundreds of readers who follow Manitou Beach see your name." },
   { icon: "📋", title: "Directory listing year-round", copy: "Your name, cuisine, and contact info stay visible in the All Trucks list even when you're not checked in." },
 ];
@@ -31,8 +31,8 @@ const TRUCK_PAID_ITEMS = [
   { icon: "🔗", label: "Personal check-in URL", sub: "Your private link. Open from your phone. No app, no login — ever." },
   { icon: "⭐", label: "Today's Special badge", sub: "Add a special on check-in — it highlights on your live card." },
   { icon: "📅", label: "Coming Soon pre-announce", sub: "Set a future date. Customers see 'Coming This Saturday' before you arrive." },
-  { icon: "❤️", label: "Customer favorites", sub: "Regulars heart your truck. They get texts the moment you go live." },
-  { icon: "📱", label: "Text alerts to your fans", sub: "Drop your pin — customers who favorited you get notified instantly." },
+  { icon: "❤️", label: "Customer hearts + dish ratings", sub: "Customers heart your truck and tag what they loved. Every heart counts." },
+  { icon: "🏆", label: "Most Loved ranking", sub: "More hearts = higher on the locator. The ranking is public and competitive." },
   { icon: "🔗", label: "Website / menu / Instagram link", sub: "One tap to your menu on every live card." },
   { icon: "📰", label: "Newsletter shoutout when live", sub: "Hundreds of readers, on days you're checked in." },
 ];
@@ -155,7 +155,7 @@ export default function FoodTruckPartnerPage() {
             Your truck. Live on the map.<br /><em>Every time you're nearby.</em>
           </h1>
           <p style={{ fontSize: 16, color: "rgba(255,255,255,0.5)", maxWidth: 520, margin: "0 auto 32px", lineHeight: 1.85 }}>
-            Your name in the directory is free. For $9/month, your truck goes live on the map the moment you check in — and customers can favorite you and receive a text the instant you drop your pin.
+            Your name in the directory is free. For $9/month, your truck goes live on the map the moment you check in — and customers can heart your truck, rate their favourite dishes, and push you to the top of the Most Loved rankings.
           </p>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
             <Btn onClick={() => scrollToSignup('paid')} variant="sunset" style={{ whiteSpace: "nowrap" }}>
@@ -260,7 +260,7 @@ export default function FoodTruckPartnerPage() {
             <SectionLabel style={{ textAlign: "center", display: "block" }}>Pricing</SectionLabel>
             <SectionTitle center>One price. Everything included.</SectionTitle>
             <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 560, margin: "0 auto 48px", textAlign: "center" }}>
-              $9/month gets your truck live on the map, your fans notified when you arrive, and your name in front of hundreds of Manitou Beach followers. Free keeps you in the directory — nothing else.
+              $9/month gets your truck live on the map, your name in front of hundreds of Manitou Beach followers, and customers competing to push you to the top of the Most Loved rankings. Free keeps you in the directory — nothing else.
             </p>
           </FadeIn>
 
@@ -324,7 +324,7 @@ export default function FoodTruckPartnerPage() {
                   <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 48, fontWeight: 700, color: C.cream }}>$9</span>
                   <span style={{ fontSize: 14, color: "rgba(255,255,255,0.45)", marginLeft: 4 }}>/mo</span>
                 </div>
-                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: C.sunsetLight, marginBottom: 28 }}>live on the map · fans get texts when you arrive</div>
+                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: C.sunsetLight, marginBottom: 28 }}>live on the map · build your love count · rise in the rankings</div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {TRUCK_PAID_ITEMS.map(item => (
                     <div key={item.label} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
@@ -363,7 +363,7 @@ export default function FoodTruckPartnerPage() {
               Your truck. Your listing.<br /><em style={{ color: C.sunsetLight }}>Pick your plan.</em>
             </h2>
             <p style={{ fontSize: 14, color: "rgba(255,255,255,0.42)", lineHeight: 1.85, marginBottom: 32, textAlign: "center" }}>
-              Free puts your name in the directory. $9/month gets you live on the map — and your fans get a text the moment you arrive.
+              Free puts your name in the directory. $9/month gets you live on the map — customers can heart your truck and push you to the top of the Most Loved rankings.
             </p>
 
             {submitted ? (
@@ -404,7 +404,7 @@ export default function FoodTruckPartnerPage() {
                     }}
                   >
                     <div style={{ fontSize: 15, marginBottom: 3 }}>Live Listing</div>
-                    <div style={{ fontSize: 11, fontWeight: 400, opacity: 0.7 }}>Live map + fan texts · $9/mo</div>
+                    <div style={{ fontSize: 11, fontWeight: 400, opacity: 0.7 }}>Live map + love rankings · $9/mo</div>
                   </button>
                 </div>
 
