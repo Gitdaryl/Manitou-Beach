@@ -103,7 +103,7 @@ export default function FeaturedPage() {
       const checkoutRes = await fetch('/api/page-sponsor-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pageId: page, pageName, businessName: business, name, email, phone, tagline, logoUrl, term, _hp: '' }),
+        body: JSON.stringify({ pageId: page, pageName, businessName: business, name, email, phone, tagline, logoUrl, term, betaSponsor: true, _hp: '' }),
       });
       const checkoutData = await checkoutRes.json();
       if (checkoutData.url) {
@@ -664,6 +664,24 @@ export default function FeaturedPage() {
                 <span style={{ color: "rgba(255,255,255,0.2)", fontSize: 16 }}>·</span>
                 <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, fontWeight: 700, color: C.sage }}>$970 / year <span style={{ fontWeight: 400, fontSize: 12, color: "rgba(255,255,255,0.35)" }}>(2 months free)</span></span>
               </div>
+              {/* Beta founding sponsor bonus — auto-hides after April 10 */}
+              {Date.now() < new Date('2026-04-10T16:00:00Z').getTime() && (
+                <div style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  background: "rgba(212,160,23,0.12)",
+                  border: "1px solid rgba(212,160,23,0.3)",
+                  borderRadius: 20,
+                  padding: "8px 18px",
+                  marginTop: 16,
+                }}>
+                  <span style={{ fontSize: 14 }}>🎁</span>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 600, color: "#D4A017" }}>
+                    Beta founding bonus: sign up now and get <strong>13 months</strong> for the price of 12
+                  </span>
+                </div>
+              )}
             </div>
           </FadeIn>
 

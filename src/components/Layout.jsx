@@ -2478,3 +2478,257 @@ export const CATEGORY_COLORS = {
 // 📢  AD SLOTS — Dispatch blog advertising
 // ============================================================
 
+// ============================================================
+// 🧪  BETA FEEDBACK STRIP — visible to beta testers until April 10
+// ============================================================
+
+const BETA_CODE_RE = /^MB[A-Z0-9]{4}$/;
+const BETA_LAUNCH_DATE = new Date('2026-04-10T16:00:00Z');
+
+export function BetaFeedbackStrip() {
+  const [visible, setVisible] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [form, setForm] = useState({ type: 'Bug', description: '', email: '' });
+  const [submitState, setSubmitState] = useState('idle'); // idle | submitting | done
+
+  useEffect(() => {
+    try {
+      const code = localStorage.getItem('mb_beta_code');
+      const alreadyDismissed = sessionStorage.getItem('mb_beta_strip_dismissed');
+      if (code && BETA_CODE_RE.test(code) && Date.now() < BETA_LAUNCH_DATE.getTime() && !alreadyDismissed) {
+        setVisible(true);
+        const storedEmail = localStorage.getItem('mb_beta_email');
+        if (storedEmail) setForm(f => ({ ...f, email: storedEmail }));
+      }
+    } catch {}
+  }, []);
+
+  const dismiss = () => {
+    try { sessionStorage.setItem('mb_beta_strip_dismissed', '1'); } catch {}
+    setDismissed(true);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!form.description.trim()) return;
+    setSubmitState('submitting');
+    try {
+      await fetch('/api/beta-feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          page:        window.location.pathname,
+          type:        form.type,
+          description: form.description.trim(),
+          email:       form.email.trim().toLowerCase(),
+        }),
+      });
+    } catch {}
+    setSubmitState('done');
+    setTimeout(() => { setOpen(false); setSubmitState('idle'); setForm(f => ({ ...f, description: '' })); }, 2000);
+  };
+
+  if (!visible || dismissed) return null;
+
+  const stripStyle = {
+    position: 'fixed',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 998,
+    background: '#D4A017',
+    color: '#1A2830',
+    padding: '8px 16px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+    fontFamily: "'Libre Franklin', sans-serif",
+    fontSize: 12,
+    fontWeight: 600,
+    boxShadow: '0 -2px 12px rgba(0,0,0,0.25)',
+  };
+
+  const btnStyle = {
+    background: 'rgba(26,40,48,0.15)',
+    border: '1px solid rgba(26,40,48,0.25)',
+    color: '#1A2830',
+    borderRadius: 4,
+    padding: '5px 12px',
+    fontFamily: "'Libre Franklin', sans-serif",
+    fontSize: 11,
+    fontWeight: 700,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+    cursor: 'pointer',
+  };
+
+  const overlayStyle = {
+    position: 'fixed',
+    inset: 0,
+    background: 'rgba(26,40,48,0.65)',
+    zIndex: 1100,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+  };
+
+  const modalStyle = {
+    background: C.cream,
+    borderRadius: 10,
+    padding: '28px 28px 24px',
+    width: '100%',
+    maxWidth: 420,
+    boxShadow: '0 8px 40px rgba(0,0,0,0.3)',
+    position: 'relative',
+  };
+
+  const inputStyle = {
+    width: '100%',
+    padding: '10px 12px',
+    borderRadius: 5,
+    border: '1px solid #C4B498',
+    fontSize: 14,
+    fontFamily: "'Libre Franklin', sans-serif",
+    color: C.text,
+    background: '#FAF6EF',
+    boxSizing: 'border-box',
+    outline: 'none',
+  };
+
+  const labelStyle = {
+    display: 'block',
+    fontSize: 10,
+    fontWeight: 700,
+    letterSpacing: 2.5,
+    textTransform: 'uppercase',
+    color: C.textMuted,
+    marginBottom: 5,
+    fontFamily: "'Libre Franklin', sans-serif",
+  };
+
+  return (
+    <>
+      {/* Strip */}
+      <div style={stripStyle}>
+        <span style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+          <span style={{
+            background: 'rgba(26,40,48,0.2)',
+            borderRadius: 3,
+            padding: '2px 7px',
+            fontSize: 9,
+            fontWeight: 800,
+            letterSpacing: 2,
+            textTransform: 'uppercase',
+            flexShrink: 0,
+          }}>BETA</span>
+          <span style={{ opacity: 0.75, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            This site is in development · Disappears April 10
+          </span>
+        </span>
+        <span style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+          <button style={btnStyle} onClick={() => setOpen(true)}>
+            Give Feedback
+          </button>
+          <button
+            onClick={dismiss}
+            style={{ ...btnStyle, padding: '5px 9px', background: 'transparent', border: 'none' }}
+            aria-label="Dismiss"
+          >
+            ✕
+          </button>
+        </span>
+      </div>
+
+      {/* Feedback modal */}
+      {open && (
+        <div style={overlayStyle} onClick={e => { if (e.target === e.currentTarget) setOpen(false); }}>
+          <div style={modalStyle}>
+            <button
+              onClick={() => setOpen(false)}
+              style={{ position: 'absolute', top: 14, right: 16, background: 'none', border: 'none', fontSize: 18, cursor: 'pointer', color: C.textMuted }}
+            >✕</button>
+
+            {submitState === 'done' ? (
+              <div style={{ textAlign: 'center', padding: '16px 0' }}>
+                <p style={{ fontFamily: "'Caveat', cursive", fontSize: 28, color: C.sunset, margin: '0 0 8px' }}>Thanks!</p>
+                <p style={{ fontSize: 14, color: C.textLight, margin: 0 }}>Your feedback was sent.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit}>
+                <p style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.text, margin: '0 0 18px', fontWeight: 400 }}>
+                  Beta Feedback
+                </p>
+
+                <div style={{ marginBottom: 14 }}>
+                  <label style={labelStyle}>Type</label>
+                  <select
+                    value={form.type}
+                    onChange={e => setForm(f => ({ ...f, type: e.target.value }))}
+                    style={{ ...inputStyle, cursor: 'pointer' }}
+                  >
+                    <option>Bug</option>
+                    <option>Suggestion</option>
+                    <option>Question</option>
+                  </select>
+                </div>
+
+                <div style={{ marginBottom: 14 }}>
+                  <label style={labelStyle}>
+                    Description <span style={{ color: C.sunset }}>*</span>
+                  </label>
+                  <textarea
+                    value={form.description}
+                    onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
+                    placeholder="Describe what you found or what you'd like to see…"
+                    rows={4}
+                    style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.5 }}
+                    required
+                  />
+                  <p style={{ fontSize: 11, color: C.textMuted, margin: '4px 0 0', fontFamily: "'Libre Franklin', sans-serif" }}>
+                    Page: <code style={{ fontSize: 11 }}>{typeof window !== 'undefined' ? window.location.pathname : ''}</code>
+                  </p>
+                </div>
+
+                <div style={{ marginBottom: 18 }}>
+                  <label style={labelStyle}>Your Email (optional — for follow-up)</label>
+                  <input
+                    type="email"
+                    value={form.email}
+                    onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                    placeholder="you@email.com"
+                    style={inputStyle}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={submitState === 'submitting' || !form.description.trim()}
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    background: submitState === 'submitting' ? 'rgba(212,132,90,0.5)' : C.sunset,
+                    color: C.cream,
+                    border: 'none',
+                    borderRadius: 4,
+                    fontFamily: "'Libre Franklin', sans-serif",
+                    fontWeight: 700,
+                    fontSize: 13,
+                    letterSpacing: 2,
+                    textTransform: 'uppercase',
+                    cursor: submitState === 'submitting' ? 'not-allowed' : 'pointer',
+                  }}
+                >
+                  {submitState === 'submitting' ? 'Sending…' : 'Send Feedback'}
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+

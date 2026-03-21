@@ -1,9 +1,10 @@
 {
   "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }],
   "crons": [
-    { "path": "/api/qa-agent", "schedule": "*/30 * * * *" },
-    { "path": "/api/cron-expire-featured", "schedule": "0 6 * * *" },
-    { "path": "/api/cron-event-reminders",  "schedule": "0 8 * * *" },
-    { "path": "/api/cron-sponsor-expiry",   "schedule": "0 9 * * *" }
+    { "path": "/api/qa-agent",               "schedule": "*/30 * * * *" },
+    { "path": "/api/cron-expire-featured",   "schedule": "0 6 * * *" },
+    { "path": "/api/cron-event-reminders",   "schedule": "0 8 * * *" },
+    { "path": "/api/cron-sponsor-expiry",    "schedule": "0 9 * * *" },
+    { "path": "/api/cron-beta-trial-expiry", "schedule": "0 10 * * *" }
   ]
 }

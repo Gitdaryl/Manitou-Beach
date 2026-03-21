@@ -78,7 +78,7 @@ export default async function handler(req, res) {
 
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-  const { tier, businessName, email, mode: checkoutMode, duration } = req.body;
+  const { tier, businessName, email, mode: checkoutMode, duration, isBeta } = req.body;
 
   if (!tier || !businessName || !email) {
     return res.status(400).json({ error: 'Missing required fields' });
@@ -88,6 +88,9 @@ export default async function handler(req, res) {
     || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null)
     || 'http://localhost:3000';
 
+  // Beta trial end: May 10 2026 at midnight UTC
+  const BETA_TRIAL_END = Math.floor(new Date('2026-05-10T00:00:00Z').getTime() / 1000);
+
   // Monthly subscription — business directory listing tiers
   if (checkoutMode === 'subscription') {
     const plan = LISTING_TIERS[tier];
@@ -96,7 +99,7 @@ export default async function handler(req, res) {
     }
     try {
       const unitAmount = await computePriceCents(plan.basePrice);
-      const session = await stripe.checkout.sessions.create({
+      const sessionParams = {
         payment_method_types: ['card'],
         mode: 'subscription',
         customer_email: email,
@@ -104,22 +107,36 @@ export default async function handler(req, res) {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: plan.name,
-              description: `${plan.description} — ${businessName}`,
+              name: isBeta ? `${plan.name} — Beta Founder` : plan.name,
+              description: isBeta
+                ? `${plan.description} — ${businessName} · Free through May 10, then $${plan.basePrice}/mo`
+                : `${plan.description} — ${businessName}`,
             },
             unit_amount: unitAmount,
             recurring: { interval: 'month' },
           },
           quantity: 1,
         }],
-        metadata: { businessName, tier, type: 'listing', ...(duration && { duration: String(duration) + ' months' }) },
-        success_url: tier === 'food_truck_founding'
-          ? `${baseUrl}/food-trucks?listed=true&truck=${encodeURIComponent(businessName)}`
-          : `${baseUrl}/?listed=true&business=${encodeURIComponent(businessName)}`,
-        cancel_url: tier === 'food_truck_founding'
-          ? `${baseUrl}/food-truck-partner#food-truck-signup`
-          : `${baseUrl}/#listing-tiers`,
-      });
+        metadata: {
+          businessName,
+          tier,
+          type: 'listing',
+          ...(duration && { duration: String(duration) + ' months' }),
+          ...(isBeta && { beta: 'true' }),
+        },
+        success_url: isBeta
+          ? `${baseUrl}/beta-business?success=true&business=${encodeURIComponent(businessName)}`
+          : tier === 'food_truck_founding'
+            ? `${baseUrl}/food-trucks?listed=true&truck=${encodeURIComponent(businessName)}`
+            : `${baseUrl}/?listed=true&business=${encodeURIComponent(businessName)}`,
+        cancel_url: isBeta
+          ? `${baseUrl}/beta-business`
+          : tier === 'food_truck_founding'
+            ? `${baseUrl}/food-truck-partner#food-truck-signup`
+            : `${baseUrl}/#listing-tiers`,
+        ...(isBeta && { subscription_data: { trial_end: BETA_TRIAL_END } }),
+      };
+      const session = await stripe.checkout.sessions.create(sessionParams);
       return res.status(200).json({ url: session.url });
     } catch (err) {
       console.error('Stripe subscription error:', err.message);

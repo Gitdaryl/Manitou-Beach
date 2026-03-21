@@ -45,6 +45,7 @@ const VendorRegisterPage = lazy(() => import('./pages/VendorRegisterPage'));
 const VendorPortalPage = lazy(() => import('./pages/VendorPortalPage'));
 const NightlifePage = lazy(() => import('./pages/NightlifePage'));
 const LaunchPage = lazy(() => import('./pages/LaunchPage'));
+const BetaBusinessPage = lazy(() => import('./pages/BetaBusinessPage'));
 
 // ── Beta gate — redirects / to /launch until LAUNCH_DATE
 //   ⚙️  Update LAUNCH_DATE when you have a firm date (must match LaunchPage.jsx)
@@ -66,6 +67,7 @@ function BetaGate({ children }) {
 const DispatchArticlePage = lazy(() => import('./pages/DispatchPage').then(m => ({ default: m.DispatchArticlePage })));
 const AdvertisePage = lazy(() => import('./pages/PromotePage').then(m => ({ default: m.AdvertisePage })));
 const VoiceWidget = lazy(() => import('./pages/DiscoverPage').then(m => ({ default: m.VoiceWidget })));
+const BetaFeedbackStrip = lazy(() => import('./components/Layout').then(m => ({ default: m.BetaFeedbackStrip })));
 
 // ============================================================
 // 📑  PROJECT STRUCTURE (post-extraction)
@@ -152,8 +154,10 @@ export default function App() {
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/sms" element={<SMSOptInPage />} />
+          <Route path="/beta-business" element={<BetaBusinessPage />} />
         </Routes>
         <VoiceWidget />
+        <BetaFeedbackStrip />
       </Suspense>
     </BrowserRouter>
   );

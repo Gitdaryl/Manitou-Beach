@@ -396,17 +396,66 @@ export default async function handler(req, res) {
       if (tierId === 'featured') statusName = 'Listed Featured';
       if (tierId === 'food_truck_founding') statusName = 'Listed Featured';
 
-      try {
-        const pageId = await updateNotionBusiness(businessName, {
-          'Status': { status: { name: statusName } }
-        });
-        if (pageId) {
-          console.log(`Successfully upgraded ${businessName} to ${statusName} in Notion.`);
-        } else {
-          console.error(`Webhook Error: Business "${businessName}" not found in Notion to upgrade.`);
+      // Beta business: CREATE a new Notion listing row (no existing row to update)
+      if (metadata.beta === 'true') {
+        try {
+          const customerEmail = session.customer_email || session.customer_details?.email || '';
+          await fetch('https://api.notion.com/v1/pages', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${process.env.NOTION_TOKEN_BUSINESS}`,
+              'Content-Type': 'application/json',
+              'Notion-Version': '2022-06-28',
+            },
+            body: JSON.stringify({
+              parent: { database_id: process.env.NOTION_DB_BUSINESS },
+              properties: {
+                'Name':               { title: [{ text: { content: businessName } }] },
+                'Email':              { email: customerEmail },
+                'Status':             { status: { name: statusName } },
+                'Beta':               { checkbox: true },
+                'Featured Expires':   { date: { start: '2026-05-10' } },
+                'Stripe Customer ID': { rich_text: [{ text: { content: String(session.customer || '') } }] },
+              },
+            }),
+          });
+          // Send confirmation email to business owner
+          if (customerEmail && process.env.RESEND_API_KEY) {
+            const resend = new Resend(process.env.RESEND_API_KEY);
+            resend.emails.send({
+              from: 'Manitou Beach <events@yetigroove.com>',
+              to: customerEmail,
+              subject: `Your ${tierId} listing is live — no charge until May 10`,
+              html: `
+                <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; color: #3B3228;">
+                  <p style="font-size: 18px;">Your listing is confirmed!</p>
+                  <p><strong>${businessName}</strong> is now listed on Manitou Beach as a <strong>${tierId.charAt(0).toUpperCase() + tierId.slice(1)}</strong> listing.</p>
+                  <p>Your listing goes live when the site opens on <strong>April 10</strong>. No charge until <strong>May 10</strong> — we'll send a reminder before then.</p>
+                  <p style="font-size: 13px; color: #8A7E6E;">Questions? Reply to this email or DM us on Facebook.</p>
+                  <hr style="border: none; border-top: 1px solid #E8DFD0; margin: 24px 0;">
+                  <p style="font-size: 11px; color: #9A8E7E;">Manitou Beach · Devils Lake, Michigan</p>
+                </div>
+              `,
+            }).catch(() => {});
+          }
+          console.log(`Beta listing created: ${businessName} → ${statusName}`);
+        } catch (err) {
+          console.error('Beta Notion listing creation error:', err);
         }
-      } catch (err) {
-        console.error('Notion Webhook Fulfillment Error:', err);
+      } else {
+        // Non-beta: update existing Notion row
+        try {
+          const pageId = await updateNotionBusiness(businessName, {
+            'Status': { status: { name: statusName } }
+          });
+          if (pageId) {
+            console.log(`Successfully upgraded ${businessName} to ${statusName} in Notion.`);
+          } else {
+            console.error(`Webhook Error: Business "${businessName}" not found in Notion to upgrade.`);
+          }
+        } catch (err) {
+          console.error('Notion Webhook Fulfillment Error:', err);
+        }
       }
     }
 
@@ -648,8 +697,9 @@ export default async function handler(req, res) {
     // 7. Page sponsorship (from FeaturedPage claim form)
     if (metadata.type === 'page_sponsorship') {
       try {
+        const bonusMonths = metadata.beta === 'true' ? 1 : 0;
         const expiry = new Date();
-        expiry.setMonth(expiry.getMonth() + (metadata.term === 'annual' ? 12 : 1));
+        expiry.setMonth(expiry.getMonth() + (metadata.term === 'annual' ? 12 : 1) + bonusMonths);
         const expiryDate = expiry.toISOString().split('T')[0];
         const startDate  = new Date().toISOString().split('T')[0];
         const siteUrl    = process.env.SITE_URL || 'https://manitou-beach.vercel.app';

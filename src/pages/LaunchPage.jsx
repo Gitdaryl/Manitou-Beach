@@ -121,11 +121,101 @@ function LaunchedMessage() {
   );
 }
 
+// ── BetaFullMessage ────────────────────────────────────────────────────────────
+function BetaFullMessage() {
+  return (
+    <div style={{
+      textAlign: 'center',
+      animation: 'slideUp 0.6s ease both',
+      maxWidth: 420,
+      width: '100%',
+    }}>
+      <p style={{
+        fontFamily: "'Caveat', cursive",
+        fontSize: 'clamp(26px, 5vw, 42px)',
+        color: C.sunsetLight,
+        margin: '0 0 14px 0',
+        lineHeight: 1.15,
+      }}>
+        All 29 spots are gone.
+      </p>
+      <p style={{
+        fontFamily: "'Libre Franklin', sans-serif",
+        fontSize: 14,
+        color: 'rgba(255,255,255,0.5)',
+        lineHeight: 1.7,
+        margin: '0 0 24px 0',
+      }}>
+        Beta access is full — thanks to everyone who grabbed a spot.<br />
+        <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: 12 }}>
+          The site opens to everyone on April 10 at noon.
+        </span>
+      </p>
+      <a
+        href="#notify"
+        onClick={e => { e.preventDefault(); document.getElementById('notify-email')?.focus(); }}
+        style={{
+          display: 'inline-block',
+          border: '1px solid rgba(255,255,255,0.2)',
+          color: 'rgba(255,255,255,0.5)',
+          fontFamily: "'Libre Franklin', sans-serif",
+          fontWeight: 700,
+          fontSize: 11,
+          letterSpacing: 2.5,
+          textTransform: 'uppercase',
+          padding: '11px 24px',
+          borderRadius: 4,
+          textDecoration: 'none',
+          cursor: 'pointer',
+        }}
+      >
+        Notify Me at Launch
+      </a>
+    </div>
+  );
+}
+
+// ── SpotsCounter ───────────────────────────────────────────────────────────────
+function SpotsCounter({ remaining }) {
+  if (remaining === null) return null; // loading — show nothing
+  const urgent = remaining <= 5;
+  return (
+    <div style={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 8,
+      marginBottom: 4,
+    }}>
+      {/* Pulsing dot */}
+      <span style={{
+        display: 'inline-block',
+        width: 7,
+        height: 7,
+        borderRadius: '50%',
+        background: urgent ? C.sunset : C.sage,
+        animation: 'pulse-glow 2s ease-in-out infinite',
+        flexShrink: 0,
+      }} />
+      <span style={{
+        fontFamily: "'Libre Franklin', sans-serif",
+        fontSize: 12,
+        fontWeight: 700,
+        letterSpacing: 2,
+        textTransform: 'uppercase',
+        color: urgent ? C.sunsetLight : 'rgba(255,255,255,0.45)',
+      }}>
+        {remaining === 0 ? 'No spots remaining' : `${remaining} spot${remaining === 1 ? '' : 's'} remaining`}
+      </span>
+    </div>
+  );
+}
+
 // ── SignupForm ─────────────────────────────────────────────────────────────────
-function SignupForm() {
-  const [form, setForm] = useState({ name: '', phone: '', _hp: '' });
+function SignupForm({ remaining, onSpotsUpdate }) {
+  const [form, setForm] = useState({ name: '', phone: '', email: '', is_business: false, _hp: '' });
   const [status, setStatus] = useState('idle'); // idle | submitting | success
-  const [result, setResult] = useState(null);   // { name, code }
+  const [result, setResult] = useState(null);   // { name, code, remaining, is_business }
   const [error, setError] = useState('');
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
@@ -133,6 +223,8 @@ function SignupForm() {
   const validate = () => {
     if (!form.name.trim()) { setError('Your name is required.'); return false; }
     if (form.phone.replace(/\D/g, '').length !== 10) { setError('Enter a valid 10-digit phone number.'); return false; }
+    const e = form.email.trim().toLowerCase();
+    if (!e || !e.includes('@')) { setError('A valid email address is required.'); return false; }
     return true;
   };
 
@@ -147,17 +239,27 @@ function SignupForm() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name:  form.name.trim(),
-          phone: form.phone.replace(/\D/g, ''),
-          _hp:   form._hp,
+          name:        form.name.trim(),
+          phone:       form.phone.replace(/\D/g, ''),
+          email:       form.email.trim().toLowerCase(),
+          is_business: form.is_business,
+          _hp:         form._hp,
         }),
       });
       const data = await res.json();
       if (data.success) {
         try { localStorage.setItem('mb_beta_code', data.code); } catch {}
-        setResult({ name: form.name.trim().split(' ')[0], code: data.code });
+        onSpotsUpdate(data.remaining_codes);
+        setResult({
+          name:        form.name.trim().split(' ')[0],
+          code:        data.code,
+          remaining:   data.remaining_codes,
+          is_business: data.is_business,
+        });
         setStatus('success');
       } else {
+        // Could be full — re-fetch count
+        onSpotsUpdate(0);
         setError(data.error || 'Something went wrong. Please try again.');
         setStatus('idle');
       }
@@ -217,7 +319,7 @@ function SignupForm() {
           background: 'rgba(212,132,90,0.08)',
           borderRadius: 8,
           padding: '20px 28px',
-          marginBottom: 20,
+          marginBottom: 16,
         }}>
           <div style={labelStyle}>Your Access Code</div>
           <div style={{
@@ -231,20 +333,69 @@ function SignupForm() {
           </div>
         </div>
 
-        <p style={{
-          fontFamily: "'Libre Franklin', sans-serif",
-          fontSize: 14,
-          color: 'rgba(255,255,255,0.5)',
-          lineHeight: 1.7,
-          margin: 0,
-        }}>
-          Check your phone — your code is on the way.<br />
-          <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: 12 }}>
-            Screenshot this as backup. Opens April 10 at noon.
-          </span>
-        </p>
+        {result.is_business ? (
+          <p style={{
+            fontFamily: "'Libre Franklin', sans-serif",
+            fontSize: 14,
+            color: 'rgba(255,255,255,0.55)',
+            lineHeight: 1.7,
+            margin: '0 0 10px 0',
+          }}>
+            Screenshot this — you'll need it on April 10.<br />
+            <span style={{ color: C.sunsetLight, fontWeight: 600 }}>
+              Check your email
+            </span>
+            <span style={{ color: 'rgba(255,255,255,0.4)' }}>
+              {' '}— we sent you a link to activate your free listing.<br />No charge until May 10.
+            </span>
+          </p>
+        ) : (
+          <p style={{
+            fontFamily: "'Libre Franklin', sans-serif",
+            fontSize: 14,
+            color: 'rgba(255,255,255,0.5)',
+            lineHeight: 1.7,
+            margin: '0 0 10px 0',
+          }}>
+            Screenshot this — you'll need it on April 10.<br />
+            <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: 12 }}>
+              Opens April 10 at noon · Welcome to the beta.
+            </span>
+          </p>
+        )}
+
+        {/* Remaining spots after this signup */}
+        {result.remaining !== null && result.remaining > 0 && (
+          <p style={{
+            fontFamily: "'Libre Franklin', sans-serif",
+            fontSize: 11,
+            color: result.remaining <= 5 ? C.sunsetLight : 'rgba(255,255,255,0.25)',
+            letterSpacing: 1.5,
+            textTransform: 'uppercase',
+            margin: 0,
+          }}>
+            Only {result.remaining} spot{result.remaining === 1 ? '' : 's'} left after yours.
+          </p>
+        )}
+        {result.remaining === 0 && (
+          <p style={{
+            fontFamily: "'Libre Franklin', sans-serif",
+            fontSize: 11,
+            color: 'rgba(255,255,255,0.25)',
+            letterSpacing: 1.5,
+            textTransform: 'uppercase',
+            margin: 0,
+          }}>
+            You got the last spot.
+          </p>
+        )}
       </div>
     );
+  }
+
+  // ── Full state (no spots left) ─────────────────────────────────────────────
+  if (remaining === 0) {
+    return <BetaFullMessage />;
   }
 
   // ── Form ───────────────────────────────────────────────────────────────────
@@ -299,6 +450,47 @@ function SignupForm() {
         </div>
       </div>
 
+      {/* Email */}
+      <div style={{ marginBottom: 12 }}>
+        <label style={labelStyle} htmlFor="beta-email">Email</label>
+        <input
+          id="beta-email"
+          type="email"
+          autoComplete="email"
+          placeholder="your@email.com"
+          value={form.email}
+          onChange={e => set('email', e.target.value)}
+          style={inputStyle}
+          disabled={status === 'submitting'}
+        />
+      </div>
+
+      {/* Business owner checkbox */}
+      <div style={{ marginBottom: 14 }}>
+        <label style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 10,
+          cursor: 'pointer',
+        }}>
+          <input
+            type="checkbox"
+            checked={form.is_business}
+            onChange={e => set('is_business', e.target.checked)}
+            disabled={status === 'submitting'}
+            style={{ accentColor: C.sunset, width: 16, height: 16, flexShrink: 0, cursor: 'pointer' }}
+          />
+          <span style={{
+            fontFamily: "'Libre Franklin', sans-serif",
+            fontSize: 13,
+            color: 'rgba(255,255,255,0.45)',
+            lineHeight: 1.3,
+          }}>
+            I own or manage a business at Manitou Beach
+          </span>
+        </label>
+      </div>
+
       {error && (
         <p style={{
           fontFamily: "'Libre Franklin', sans-serif",
@@ -331,7 +523,7 @@ function SignupForm() {
           animation: status === 'idle' ? 'pulse-glow 3s ease-in-out infinite' : 'none',
         }}
       >
-        {status === 'submitting' ? 'Sending…' : 'Request Beta Access'}
+        {status === 'submitting' ? 'Saving your spot…' : 'Request Beta Access'}
       </button>
 
       <p style={{
@@ -342,7 +534,7 @@ function SignupForm() {
         margin: '10px 0 0 0',
         letterSpacing: 0.5,
       }}>
-        Code arrives by text · No spam · Unsubscribe anytime
+        Code appears on screen · No spam · Unsubscribe anytime
       </p>
     </form>
   );
@@ -352,10 +544,19 @@ function SignupForm() {
 export default function LaunchPage() {
   const parts = useCountdown(LAUNCH_DATE);
   const videoRef = useRef(null);
+  const [remaining, setRemaining] = useState(null); // null = loading
 
   // Ensure video mute (iOS workaround)
   useEffect(() => {
     if (videoRef.current) videoRef.current.muted = true;
+  }, []);
+
+  // Fetch remaining spots on mount
+  useEffect(() => {
+    fetch('/api/beta-signup')
+      .then(r => r.json())
+      .then(d => setRemaining(d.remaining ?? null))
+      .catch(() => setRemaining(null));
   }, []);
 
   return (
@@ -363,8 +564,6 @@ export default function LaunchPage() {
       position: 'fixed',
       inset: 0,
       height: '100vh',
-      // 100dvh accounts for mobile browser chrome
-      // eslint-disable-next-line no-dupe-keys
       overflow: 'hidden',
       background: C.night,
       display: 'flex',
@@ -489,8 +688,16 @@ export default function LaunchPage() {
           }} />
         )}
 
+        {/* Spots counter */}
+        {!parts.launched && <SpotsCounter remaining={remaining} />}
+
         {/* Form */}
-        {!parts.launched && <SignupForm />}
+        {!parts.launched && (
+          <SignupForm
+            remaining={remaining}
+            onSpotsUpdate={setRemaining}
+          />
+        )}
       </div>
 
       {/* Bottom privacy note */}
