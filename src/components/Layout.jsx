@@ -534,6 +534,9 @@ export function NewsletterInline() {
           <Btn variant="primary" small disabled={submitting}>{submitting ? 'Joining…' : 'Subscribe'}</Btn>
         </form>
         {error && <p style={{ margin: '6px 0 0', fontSize: 12, color: C.sunset }}>{error}</p>}
+        <p style={{ margin: '6px 0 0', fontSize: 11, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
+          No spam. No tracking cookies. Unsubscribe anytime.
+        </p>
       </div>
       {DISPATCH_CARD_SPONSORS.length > 0 && (
         <div style={{ flexBasis: '100%', borderTop: '1px solid rgba(122,142,114,0.15)', paddingTop: 12, display: 'flex', alignItems: 'center', gap: 10 }}>

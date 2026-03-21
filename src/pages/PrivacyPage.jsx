@@ -56,7 +56,10 @@ export default function PrivacyPage() {
         </ul>
 
         <h2 style={S.h2}>Cookies &amp; browser storage</h2>
-        <p style={S.p}>We do not use advertising or analytics cookies. Google Maps may store data in your browser to function correctly. We do not track you across other websites.</p>
+        <p style={S.p}><strong>What we don't use:</strong> We have no advertising cookies, no analytics tracking cookies, no Facebook Pixel, no Google Analytics, and no third-party tracking of any kind. We do not follow you across other websites.</p>
+        <p style={S.p}><strong>What we do use:</strong> We use your browser's <em>local storage</em> (not cookies) for purely functional features — things like remembering your saved food truck favorites, wine trail preferences, and offer claim codes between visits. This data never leaves your device and is not accessible to us or any third party.</p>
+        <p style={S.p}><strong>Third-party storage:</strong> Google Maps (used on our Discover, Stays, and Food Trucks pages) may store data in your browser to function. Google Fonts loads typefaces from Google's servers, which may log your request. Stripe sets session cookies during payment flows. None of these are used for advertising or cross-site tracking on our behalf.</p>
+        <p style={S.p}>If you'd like to clear any locally stored data, you can do so through your browser's settings at any time.</p>
 
         <h2 style={S.h2}>Data retention</h2>
         <p style={S.p}>Business listings remain in our Notion database until you request removal. Newsletter subscriptions are retained until you unsubscribe. You may request deletion of any personal information at any time by emailing us.</p>

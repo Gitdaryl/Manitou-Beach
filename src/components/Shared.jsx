@@ -310,9 +310,7 @@ export function Btn({ children, onClick, href, variant = "primary", small = fals
 // Used on org pages (Men's Club, Ladies Club, Historical, Fireworks)
 // No platform branding. Uses 1.25% fee structure.
 // ============================================================
-export function CommunityDonationForm({ orgName, orgPageId, tiers, accentColor, darkBg = false, note, hideFee = false, logoTiers = [] }) {
-  const FEE_RATE = 0.0125;
-
+export function CommunityDonationForm({ orgName, orgPageId, tiers, accentColor, darkBg = false, note, hideFee, logoTiers = [] }) {
   // Detect return from Stripe checkout (?sponsor_success=1)
   const urlParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
   const returnedName = urlParams?.get('name') || '';
@@ -332,8 +330,6 @@ export function CommunityDonationForm({ orgName, orgPageId, tiers, accentColor, 
   const [isDraggingLogo, setIsDraggingLogo] = useState(false);
 
   const amount = selectedTier ? selectedTier.amount : (parseFloat(customAmt) || 0);
-  const fee = amount ? parseFloat((amount * FEE_RATE).toFixed(2)) : 0;
-  const net = amount ? parseFloat((amount - fee).toFixed(2)) : 0;
 
   const accent = accentColor || C.sunset;
   const textColor = darkBg ? C.cream : C.text;
@@ -449,7 +445,6 @@ export function CommunityDonationForm({ orgName, orgPageId, tiers, accentColor, 
               <>
                 {' · '}
                 <strong style={{ color: textColor }}>${amount.toLocaleString()}</strong>
-                {!hideFee && <> · {orgName} receives: <strong style={{ color: accent }}>${net.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></>}
               </>
             )}
           </p>
@@ -560,18 +555,6 @@ export function CommunityDonationForm({ orgName, orgPageId, tiers, accentColor, 
               {logoUploadStatus === 'error' && <p style={{ margin: '6px 0 0', color: '#c0392b', fontSize: 12 }}>Upload failed — try again</p>}
             </div>
           )}
-        </div>
-      )}
-
-      {/* Fee summary */}
-      {amount > 0 && !hideFee && (
-        <div style={{ marginBottom: 20, padding: '12px 18px', borderRadius: 10, background: darkBg ? 'rgba(255,255,255,0.04)' : `${C.sage}10`, border: `1px solid ${darkBg ? 'rgba(255,255,255,0.08)' : `${C.sage}28`}` }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 4 }}>
-            <span>Processing fee (1.25%)</span><span>−${fee.toFixed(2)}</span>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, fontWeight: 700, color: textColor, fontFamily: "'Libre Franklin', sans-serif" }}>
-            <span>{orgName} receives</span><span style={{ color: accent }}>${net.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-          </div>
         </div>
       )}
 
