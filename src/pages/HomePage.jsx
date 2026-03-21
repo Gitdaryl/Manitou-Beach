@@ -1168,9 +1168,6 @@ function FeaturedBusinessCard({ business }) {
           }
         </div>
         <div>
-          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color, background: `${color}20`, padding: "2px 7px", borderRadius: 3, display: "inline-block", marginBottom: 4 }}>
-            Featured
-          </span>
           <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, fontWeight: 400, color: C.cream, margin: 0, lineHeight: 1.3 }}>
             {business.name}
           </h3>
@@ -1216,7 +1213,6 @@ function PremiumBanner({ business }) {
       {/* Info */}
       <div style={{ flex: 1, minWidth: 200 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8, flexWrap: "wrap" }}>
-          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunset, background: `${C.sunset}20`, padding: "3px 8px", borderRadius: 3 }}>Premium Partner</span>
           <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.35)", textTransform: "uppercase", letterSpacing: 1 }}>{business.category}</span>
         </div>
         <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.cream, marginBottom: 8 }}>{business.name}</div>
@@ -1246,8 +1242,6 @@ function EnhancedBusinessRow({ business }) {
   const color = CAT_COLORS[business.category] || C.sage;
   const isPremium = business.tier === 'premium';
   const isFeatured = business.tier === 'featured';
-  const tierLabel = isPremium ? 'Premium' : isFeatured ? 'Featured' : 'Enhanced';
-  const tierIcon = isPremium ? '◆' : isFeatured ? '★' : '✦';
   const dotColor = isPremium ? C.sunset : color;
 
   return (
@@ -1281,9 +1275,6 @@ function EnhancedBusinessRow({ business }) {
         <div style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
             <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: C.text, fontWeight: 400 }}>{business.name}</span>
-            <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", color: dotColor, background: `${dotColor}20`, border: `1px solid ${dotColor}35`, padding: "2px 8px", borderRadius: 4, display: "inline-flex", alignItems: "center", gap: 4 }}>
-              <span style={{ fontSize: 9 }}>{tierIcon}</span>{tierLabel}
-            </span>
             {business.phone && (
               <span style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", whiteSpace: "nowrap" }}>{business.phone}</span>
             )}
