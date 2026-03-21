@@ -422,18 +422,38 @@ export default async function handler(req, res) {
           // Send confirmation email to business owner
           if (customerEmail && process.env.RESEND_API_KEY) {
             const resend = new Resend(process.env.RESEND_API_KEY);
+            const tierLabel = tierId.charAt(0).toUpperCase() + tierId.slice(1);
+            const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
             resend.emails.send({
               from: 'Manitou Beach <events@yetigroove.com>',
               to: customerEmail,
-              subject: `Your ${tierId} listing is live — no charge until May 10`,
+              subject: `You're on the map — ${businessName} is a Manitou Beach founding business`,
               html: `
-                <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; color: #3B3228;">
-                  <p style="font-size: 18px;">Your listing is confirmed!</p>
-                  <p><strong>${businessName}</strong> is now listed on Manitou Beach as a <strong>${tierId.charAt(0).toUpperCase() + tierId.slice(1)}</strong> listing.</p>
-                  <p>Your listing goes live when the site opens on <strong>April 10</strong>. No charge until <strong>May 10</strong> — we'll send a reminder before then.</p>
-                  <p style="font-size: 13px; color: #8A7E6E;">Questions? Reply to this email or DM us on Facebook.</p>
-                  <hr style="border: none; border-top: 1px solid #E8DFD0; margin: 24px 0;">
-                  <p style="font-size: 11px; color: #9A8E7E;">Manitou Beach · Devils Lake, Michigan</p>
+                <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; color: #3B3228; background: #FAF6EF; padding: 40px 32px; border-radius: 8px;">
+                  <p style="font-size: 26px; font-weight: bold; margin: 0 0 8px; color: #1A2830;">You're on the map.</p>
+                  <p style="font-size: 15px; color: #6B5F52; margin: 0 0 24px; line-height: 1.7;">
+                    <strong>${businessName}</strong> is now a founding business on Manitou Beach — the community platform for Devils Lake, Michigan.
+                    When the site opens on <strong>April 10</strong>, every visitor heading to the lake this summer will find you here.
+                  </p>
+                  <div style="background: #fff; border-radius: 6px; padding: 20px 24px; margin-bottom: 28px; border: 1px solid #E8DFD0;">
+                    <p style="margin: 0 0 8px; font-size: 12px; color: #8A7E6E; text-transform: uppercase; letter-spacing: 1px; font-family: sans-serif;">Your listing</p>
+                    <p style="margin: 0 0 4px; font-size: 18px; font-weight: bold; color: #1A2830;">${businessName}</p>
+                    <p style="margin: 0 0 12px; font-size: 14px; color: #D4845A; font-weight: bold;">${tierLabel} Founding Business</p>
+                    <p style="margin: 0; font-size: 13px; color: #8A7E6E; line-height: 1.6;">
+                      Free through <strong style="color: #3B3228;">May 10</strong> — no charge until then.<br>
+                      We'll send you a reminder 5 days before billing starts.
+                    </p>
+                  </div>
+                  <p style="margin: 0 0 28px;">
+                    <a href="${siteUrl}/discover" style="background: #1A2830; color: #FAF6EF; text-decoration: none; padding: 15px 30px; border-radius: 4px; font-family: sans-serif; font-weight: bold; font-size: 14px; letter-spacing: 1px; display: inline-block;">
+                      See Your Listing →
+                    </a>
+                  </p>
+                  <p style="font-size: 13px; color: #8A7E6E; margin: 0 0 6px; line-height: 1.7;">
+                    Want to update your business info, add a logo, or change your tagline? Reply to this email and we'll take care of it.
+                  </p>
+                  <hr style="border: none; border-top: 1px solid #E8DFD0; margin: 28px 0 16px;">
+                  <p style="font-size: 11px; color: #9A8E7E; margin: 0;">Manitou Beach · Devils Lake, Michigan · manitoubeachmichigan.com</p>
                 </div>
               `,
             }).catch(() => {});

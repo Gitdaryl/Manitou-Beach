@@ -143,25 +143,28 @@ export default async function handler(req, res) {
       resend.emails.send({
         from: 'Manitou Beach <events@yetigroove.com>',
         to: emailClean,
-        subject: 'Your free beta listing is waiting — choose your tier',
+        subject: `You're in, ${firstName} — your free Manitou Beach listing is waiting`,
         html: `
-          <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; color: #3B3228;">
-            <p style="font-size: 18px; margin-bottom: 8px;">Hi ${firstName},</p>
-            <p>Welcome to the Manitou Beach beta! Your access code is <strong>${code}</strong> — screenshot it, you'll need it on April 10.</p>
-            <p>As a local business owner, your listing is <strong>free through May 10th</strong>. Choose your tier and add your card — no charge until May 10:</p>
-            <p style="margin: 24px 0;">
-              <a href="${baseUrl}/beta-business" style="background: #D4845A; color: #FAF6EF; text-decoration: none; padding: 14px 28px; border-radius: 4px; font-family: sans-serif; font-weight: bold; font-size: 14px; letter-spacing: 1px;">
-                Activate My Free Listing →
+          <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; color: #3B3228; background: #FAF6EF; padding: 40px 32px; border-radius: 8px;">
+            <p style="font-size: 22px; font-weight: bold; margin: 0 0 6px; color: #1A2830;">Welcome to Manitou Beach, ${firstName}.</p>
+            <p style="font-size: 15px; color: #6B5F52; margin: 0 0 24px; line-height: 1.7;">You're one of the first businesses on a platform built for this community — for the people who love Devils Lake and come back every summer.</p>
+            <p style="font-size: 15px; margin: 0 0 8px;">Your beta code: <strong style="font-size: 20px; letter-spacing: 3px; color: #1A2830;">${code}</strong></p>
+            <p style="font-size: 13px; color: #8A7E6E; margin: 0 0 28px;">Screenshot it — you'll enter it when the site opens April 10.</p>
+            <p style="font-size: 15px; margin: 0 0 16px; line-height: 1.7;">As a founding business, your listing is <strong>completely free through May 10</strong>. Add your card now — you won't be charged a cent until after the site launches.</p>
+            <p style="margin: 28px 0;">
+              <a href="${baseUrl}/beta-business" style="background: #D4845A; color: #FAF6EF; text-decoration: none; padding: 15px 30px; border-radius: 4px; font-family: sans-serif; font-weight: bold; font-size: 14px; letter-spacing: 1px; display: inline-block;">
+                Choose My Listing Tier →
               </a>
             </p>
-            <p style="font-size: 13px; color: #8A7E6E;">
-              <strong>Enhanced</strong> — $9/mo · Clickable link, description, expandable card<br>
-              <strong>Featured</strong> — $23/mo · Spotlight card, logo, priority placement<br>
-              <strong>Premium</strong> — $43/mo · Full-width banner, top placement (1 slot)
-            </p>
-            <p style="font-size: 13px; color: #8A7E6E;">Questions? Reply to this email or DM us on Facebook.</p>
-            <hr style="border: none; border-top: 1px solid #E8DFD0; margin: 24px 0;">
-            <p style="font-size: 11px; color: #9A8E7E;">Manitou Beach · Devils Lake, Michigan · manitoubeachmichigan.com</p>
+            <div style="background: #fff; border-radius: 6px; padding: 20px 24px; margin-bottom: 24px; border: 1px solid #E8DFD0;">
+              <p style="margin: 0 0 10px; font-size: 12px; color: #8A7E6E; text-transform: uppercase; letter-spacing: 1px; font-family: sans-serif;">Three tiers. All free until May 10.</p>
+              <p style="margin: 0 0 6px; font-size: 14px;"><strong>Enhanced</strong> <span style="color: #8A7E6E;">— $9/mo</span> · Link, description, expandable card</p>
+              <p style="margin: 0 0 6px; font-size: 14px;"><strong>Featured</strong> <span style="color: #8A7E6E;">— $23/mo</span> · Spotlight card, logo, priority placement (3 slots)</p>
+              <p style="margin: 0; font-size: 14px;"><strong>Premium</strong> <span style="color: #8A7E6E;">— $43/mo</span> · Full-width banner, top of page (1 slot)</p>
+            </div>
+            <p style="font-size: 13px; color: #8A7E6E; margin: 0 0 6px;">Questions? Reply here or DM us on Facebook. We'll get back to you fast.</p>
+            <hr style="border: none; border-top: 1px solid #E8DFD0; margin: 28px 0 16px;">
+            <p style="font-size: 11px; color: #9A8E7E; margin: 0;">Manitou Beach · Devils Lake, Michigan · manitoubeachmichigan.com</p>
           </div>
         `,
       }).catch(() => {});
@@ -204,7 +207,8 @@ export default async function handler(req, res) {
     }
 
     const remaining_codes = Math.max(0, max - count - 1);
-    return res.status(200).json({ success: true, code, remaining_codes, is_business: !!is_business });
+    const spot_number = count + 1;
+    return res.status(200).json({ success: true, code, remaining_codes, spot_number, is_business: !!is_business });
   } catch (err) {
     console.error('beta-signup error:', err.message);
     return res.status(500).json({ error: 'Server error — please try again' });
