@@ -119,32 +119,66 @@ export default function BuildPage() {
 
       <WaveDivider topColor={C.night} bottomColor={C.cream} />
 
-      {/* ── 3. OUTCOMES — no features, no jargon ── */}
-      <section style={{ background: C.cream, padding: "80px 24px" }}>
+      {/* ── 3. PAIN POINTS — recognition before solution ── */}
+      <section style={{ background: C.cream, padding: "80px 24px 60px" }}>
+        <div style={{ maxWidth: 780, margin: "0 auto" }}>
+          <FadeIn>
+            <div style={{ textAlign: "center", marginBottom: 44 }}>
+              <SectionLabel>Sound Familiar?</SectionLabel>
+              <SectionTitle center>Most local businesses are losing customers they never knew were looking.</SectionTitle>
+            </div>
+          </FadeIn>
+          <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+            {[
+              "Someone searched for what you do, found your competitor, and went there. You never knew they'd tried.",
+              "A customer wanted to book with you but couldn't find your hours or how to reach you — so they didn't.",
+              "You've heard you should 'be on Google' but have no idea what that actually means or where to start.",
+              "Your regulars love you. Getting new people through the door? That's a different story.",
+              "People drive past your place every summer and still don't know what you do or that you're open.",
+              "You suspect people are leaving reviews somewhere — but you've never seen them and have no idea how to ask for more.",
+            ].map((point, i) => (
+              <FadeIn key={i} delay={i * 50}>
+                <div style={{ display: "flex", alignItems: "flex-start", gap: 16, padding: "18px 0", borderBottom: `1px solid ${C.sand}` }}>
+                  <span style={{ color: C.sunset, fontSize: 18, flexShrink: 0, marginTop: 2 }}>→</span>
+                  <p style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.text, lineHeight: 1.65, margin: 0 }}>{point}</p>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+          <FadeIn delay={340}>
+            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, margin: "36px 0 0", textAlign: "center" }}>
+              None of this is your fault — it's just not your job to know this stuff. It is ours.
+            </p>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* ── 4. OUTCOMES — what actually changes ── */}
+      <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
           <FadeIn>
             <div style={{ textAlign: "center", marginBottom: 52 }}>
               <SectionLabel>What Actually Changes</SectionLabel>
-              <SectionTitle center>This is what a good web presence does for you.</SectionTitle>
+              <SectionTitle center>More paying customers. That's the whole point.</SectionTitle>
             </div>
           </FadeIn>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24 }}>
             {[
               {
-                headline: "People find you when they search",
-                body: "Google, the directory, word of mouth — they all point somewhere. Right now that somewhere might be nothing. A real web presence changes that.",
+                headline: "People start finding you",
+                body: "When someone searches for what you do in this area, your name comes up. Not your competitor's. Yours. That's the first thing a proper web presence fixes.",
               },
               {
-                headline: "You look worth visiting before they arrive",
-                body: "A good site does the selling before they ever walk in. Photos, hours, a phone number that works on mobile — that's the difference between a visit and a scroll past.",
+                headline: "You look like you mean business",
+                body: "First impressions happen before anyone walks in. A clean, clear online presence tells people you're the real deal — professional, open, and worth their time.",
               },
               {
-                headline: "You stop losing customers to businesses with better websites",
-                body: "This is the real cost of not having one. Someone searches, they find your competitor, they go there. You never knew they were looking.",
+                headline: "More calls. More bookings. Fewer no-shows.",
+                body: "When people can find your information easily, they use it. Appointments get booked. Questions get asked. Customers actually show up because they know what to expect.",
               },
             ].map((card, i) => (
               <FadeIn key={i} delay={i * 80}>
-                <div style={{ background: C.warmWhite, borderRadius: 14, padding: "32px 28px", border: `1px solid ${C.sand}`, height: "100%", boxSizing: "border-box" }}>
+                <div style={{ background: C.cream, borderRadius: 14, padding: "32px 28px", border: `1px solid ${C.sand}`, height: "100%", boxSizing: "border-box" }}>
                   <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.text, margin: "0 0 14px 0", lineHeight: 1.35 }}>{card.headline}</h3>
                   <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.75, margin: 0 }}>{card.body}</p>
                 </div>
@@ -154,9 +188,9 @@ export default function BuildPage() {
         </div>
       </section>
 
-      <WaveDivider topColor={C.cream} bottomColor={C.dusk} />
+      <WaveDivider topColor={C.warmWhite} bottomColor={C.dusk} />
 
-      {/* ── 4. YETI / WHO YOU'RE TALKING TO ── */}
+      {/* ── 5. YETI / WHO YOU'RE TALKING TO ── */}
       <section style={{ background: C.dusk, padding: "80px 24px" }}>
         <div style={{ maxWidth: 960, margin: "0 auto", display: "flex", gap: 60, alignItems: "center", flexWrap: "wrap", justifyContent: "center" }}>
           <FadeIn>
@@ -191,7 +225,7 @@ export default function BuildPage() {
 
       <WaveDivider topColor={C.dusk} bottomColor={C.warmWhite} flip />
 
-      {/* ── 5. CONSULTATION FORM ── */}
+      {/* ── 6. CONSULTATION FORM ── */}
       <section id="get-started" style={{ background: C.warmWhite, padding: "80px 24px" }}>
         <div style={{ maxWidth: 520, margin: "0 auto" }}>
           <FadeIn>

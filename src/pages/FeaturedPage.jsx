@@ -248,7 +248,7 @@ export default function FeaturedPage() {
           </h1>
           <p style={{ fontSize: "clamp(14px, 1.5vw, 17px)", color: "rgba(255,255,255,0.45)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto 0" }}>
             {isFull
-              ? "All founding spots are taken — but join the waitlist and we'll hold your early-bird rate when the next one opens."
+              ? "All spots are claimed for now — join the waitlist and you'll be first to know when your category opens up."
               : "This is where Manitou Beach looks first. Make sure you're here when they do."}
           </p>
         </FadeIn>
@@ -373,37 +373,32 @@ export default function FeaturedPage() {
             <FadeIn>
               <div style={{ textAlign: "center", marginBottom: 52 }}>
                 <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 4, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 14 }}>
-                  {inGrace ? 'Founding Flex Rate · Limited Time' : 'List Your Business'}
+                  Your Place in the Community
                 </div>
                 <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 4vw, 42px)", fontWeight: 400, color: C.cream, margin: "0 0 14px 0" }}>
-                  {inGrace ? 'Start at $9. Lock in every tier.' : 'Choose Your Visibility'}
+                  Enhanced is real visibility. There's more when you're ready.
                 </h2>
-                <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 16, maxWidth: 560, margin: "0 auto 32px", lineHeight: 1.65 }}>
-                  {inGrace
-                    ? '$9 today locks in your Featured and Premium rate too. Flex up whenever your season calls for it — you\'ll pay what was live when you joined, not whatever it costs new businesses then.'
-                    : 'Your rate is set the day you join. As the community grows, your audience goes up. Your cost doesn\'t.'}
+                <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 16, maxWidth: 600, margin: "0 auto 32px", lineHeight: 1.65 }}>
+                  Every listing here reaches people who chose to follow Manitou Beach — neighbors, visitors, and regulars who care where they spend. Enhanced puts your business in front of that audience. Featured and Premium go further, but spots at each tier are limited by business category. The businesses that claim them own their space in this community.
                 </p>
                 {/* Live subscriber counter */}
                 <div style={{ maxWidth: 460, margin: "0 auto", background: "rgba(255,255,255,0.05)", borderRadius: 14, padding: "20px 24px", border: "1px solid rgba(255,255,255,0.1)" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4 }}>
                     <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 1.5, textTransform: "uppercase", color: "rgba(255,255,255,0.35)" }}>
-                      Weekly Dispatch readers
+                      Community members reached
                     </span>
                     <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream }}>
                       {subCount === null ? '—' : count.toLocaleString()}
-                      {inGrace && <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.28)", marginLeft: 6 }}>/ {GRACE}</span>}
                     </span>
                   </div>
                   <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.45)", margin: "0 0 12px 0", lineHeight: 1.5, textAlign: "left" }}>
-                    Local residents who chose to follow Manitou Beach — and will see your listing every week.
+                    Residents and visitors who follow Manitou Beach — and see every listing, every week.
                   </p>
                   <div style={{ background: "rgba(255,255,255,0.08)", borderRadius: 999, height: 6, overflow: "hidden" }}>
                     <div style={{ height: "100%", width: `${progressPct}%`, background: `linear-gradient(90deg, ${C.sage}, ${C.sunsetLight})`, borderRadius: 999, transition: "width 1s ease" }} />
                   </div>
                   <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.sunsetLight, margin: "10px 0 0", letterSpacing: 0.3, lineHeight: 1.55 }}>
-                    {inGrace
-                      ? `⚡ Founding rate locks in today and stays fixed for as long as you stay subscribed. After ${GRACE} readers, new listings pay more — you won't.`
-                      : '⚡ New listings pay more as the audience grows. Your rate stays fixed for as long as your subscription is active — cancel and rejoin and the current rate applies.'}
+                    ✦ Featured and Premium hold a limited number of spots per business category. If yours is full, join the waitlist — you'll be first to know when a seat opens.
                   </p>
                 </div>
               </div>
@@ -460,8 +455,8 @@ export default function FeaturedPage() {
                     <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 36, color: C.cream, fontWeight: 700 }}>${tier.price}</span>
                     <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 14, fontFamily: "'Libre Franklin', sans-serif" }}>/mo</span>
                   </div>
-                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: inGrace ? "rgba(255,255,255,0.35)" : C.sunsetLight, marginBottom: 16, letterSpacing: 0.3 }}>
-                    {inGrace ? 'Founding rate · flex up at this price too' : '↑ rises with every new subscriber'}
+                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.sunsetLight, marginBottom: 16, letterSpacing: 0.3 }}>
+                    Limited spots per category
                   </div>
                   <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px 0", flexGrow: 1, display: "flex", flexDirection: "column", gap: 9 }}>
                     {tier.features.map(f => (
@@ -518,7 +513,7 @@ export default function FeaturedPage() {
                 {
                   num: "01",
                   title: "Pick your tier and your month",
-                  body: "Featured and Premium billing is monthly — nothing annual. If summer is your busy season, go Featured in June and cancel in September. Your founding rate is held while you're subscribed. Pause instead of canceling and your rate is locked when you come back.",
+                  body: "Featured and Premium billing is monthly — nothing annual. If summer is your busy season, go Featured in June and cancel in September. Pause instead of canceling and your spot is held when you're ready to come back.",
                 },
                 {
                   num: "02",
@@ -923,10 +918,9 @@ export default function FeaturedPage() {
             { q: "How many businesses can be Featured or Premium in my category?", a: "Featured has 3 spots per category. Premium has 1 spot per category — it's exclusive, one business at a time. Different categories have different availability, so check the availability band at the top of this page to see where your category stands." },
             { q: "I already have a free listing. What changes?", a: "Your free listing stays as-is. The featured upgrade gives you a premium card at the top of the directory, above all free listings. It's a separate, more visible placement — not a replacement." },
             { q: "What happens if I cancel my listing?", a: "Your listing reverts to the free directory. No lock-in, cancel anytime. If you cancel and later rejoin, you pay whatever the current rate is at that time — your original rate is not held after a full cancellation." },
-            { q: "What if I pause my subscription?", a: "Pausing is fine — your rate is held while your subscription is paused. Only a full cancellation resets your rate. If your business is seasonal, pause in the off-months and your founding rate is still there when you resume." },
+            { q: "What if I pause my subscription?", a: "Pausing is fine — your spot and rate are held while paused. Only a full cancellation releases your category spot. If your business is seasonal, pause in the off-months and your placement is waiting when you come back." },
             { q: "Can I change my listing details after I pay?", a: "Absolutely. Email us and we'll update your logo, description, phone number, or link within 24 hours." },
             { q: "What's the Holly & Yeti podcast mention?", a: "Premium tier businesses get a shoutout on the Holly & Yeti community podcast, reaching the broader Devils Lake and Irish Hills audience." },
-            { q: "Why are prices so low right now?", a: "We're in launch mode and want founding businesses on board. The rate you sign up at is held for as long as your subscription stays active — it only rises for new sign-ups after you. Lock in early." },
           ].map((faq, i) => (
             <FadeIn key={i} delay={i * 60}>
               <div style={{ padding: "24px 0", borderBottom: `1px solid ${C.sand}` }}>
@@ -1041,14 +1035,14 @@ export default function FeaturedPage() {
         <div style={{ maxWidth: 780, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}>
           <div>
             <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.text, marginBottom: 6 }}>
-              Don't have a website yet?
+              Customers are looking for you. Are you showing up?
             </div>
             <div style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6 }}>
-              We build 5-page sites for local businesses — $499 to launch, $49/mo. Free Enhanced listing included.
+              If you don't have a proper web presence, people move on to whoever does. We help local businesses get found — no tech knowledge needed.
             </div>
           </div>
           <Btn href="/build" variant="outline" style={{ whiteSpace: "nowrap", flexShrink: 0 }}>
-            Learn More →
+            See How It Works →
           </Btn>
         </div>
       </section>
