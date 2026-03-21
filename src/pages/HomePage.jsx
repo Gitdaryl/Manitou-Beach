@@ -1240,16 +1240,19 @@ function PremiumBanner({ business }) {
   );
 }
 
-// Enhanced business row — collapses to look identical to Free row, expands on click
+// Enhanced business row — visually distinct from Free row with persistent border, tint, and icon badge
 function EnhancedBusinessRow({ business }) {
   const [expanded, setExpanded] = useState(false);
   const color = CAT_COLORS[business.category] || C.sage;
-  const tierLabel = business.tier === 'premium' ? 'Premium' : business.tier === 'featured' ? 'Featured' : 'Enhanced';
-  const isPremiumOrFeatured = business.tier === 'premium' || business.tier === 'featured';
+  const isPremium = business.tier === 'premium';
+  const isFeatured = business.tier === 'featured';
+  const tierLabel = isPremium ? 'Premium' : isFeatured ? 'Featured' : 'Enhanced';
+  const tierIcon = isPremium ? '◆' : isFeatured ? '★' : '✦';
+  const dotColor = isPremium ? C.sunset : color;
 
   return (
     <div style={{ borderBottom: `1px solid ${C.sand}` }}>
-      {/* Collapsed header — same grid as BusinessRow */}
+      {/* Collapsed header — persistent left border + tint to distinguish from free listings */}
       <div
         onClick={() => setExpanded(e => !e)}
         style={{
@@ -1258,26 +1261,29 @@ function EnhancedBusinessRow({ business }) {
           gap: "0 20px",
           alignItems: "center",
           padding: "15px 10px",
-          borderLeft: "3px solid transparent",
+          borderLeft: `3px solid ${color}55`,
           marginLeft: -13,
           paddingLeft: 10,
+          background: `${color}06`,
           transition: "all 0.18s",
           borderRadius: expanded ? "0 4px 0 0" : "0 4px 4px 0",
           cursor: "pointer",
         }}
-        onMouseEnter={e => { e.currentTarget.style.borderLeftColor = color; e.currentTarget.style.background = `${color}08`; }}
-        onMouseLeave={e => { e.currentTarget.style.borderLeftColor = "transparent"; e.currentTarget.style.background = "transparent"; }}
+        onMouseEnter={e => { e.currentTarget.style.borderLeftColor = color; e.currentTarget.style.background = `${color}12`; }}
+        onMouseLeave={e => { e.currentTarget.style.borderLeftColor = `${color}55`; e.currentTarget.style.background = `${color}06`; }}
       >
-        {/* Category dot */}
+        {/* Category dot — all enhanced+ tiers get the pulse */}
         <div
-          className={isPremiumOrFeatured ? "listing-dot-pulse" : ""}
-          style={{ width: 8, height: 8, borderRadius: "50%", background: isPremiumOrFeatured && business.tier === 'premium' ? C.sunset : color, flexShrink: 0 }}
+          className="listing-dot-pulse"
+          style={{ width: 8, height: 8, borderRadius: "50%", background: dotColor, flexShrink: 0 }}
         />
-        {/* Name + tier badge + phone + address */}
+        {/* Name + icon badge + phone + address */}
         <div style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
-          <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
             <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: C.text, fontWeight: 400 }}>{business.name}</span>
-            <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color, background: `${color}15`, padding: "2px 7px", borderRadius: 3 }}>{tierLabel}</span>
+            <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", color: dotColor, background: `${dotColor}20`, border: `1px solid ${dotColor}35`, padding: "2px 8px", borderRadius: 4, display: "inline-flex", alignItems: "center", gap: 4 }}>
+              <span style={{ fontSize: 9 }}>{tierIcon}</span>{tierLabel}
+            </span>
             {business.phone && (
               <span style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", whiteSpace: "nowrap" }}>{business.phone}</span>
             )}
