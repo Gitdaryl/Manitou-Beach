@@ -1,65 +1,98 @@
 import React, { useState, useEffect } from "react";
 import { Footer, GlobalStyles, Navbar, NewsletterInline } from "../components/Layout";
-import { FadeIn, SectionLabel, ScrollProgress, WaveDivider, DiagonalDivider, ShareBar, Btn, CommunityDonationForm } from "../components/Shared";
-import { C, USA250_PUBLIC } from "../data/config";
+import { FadeIn, SectionLabel, SectionTitle, ScrollProgress, WaveDivider, DiagonalDivider, ShareBar, CommunityDonationForm } from "../components/Shared";
+import { C, USA250_VIDEO_URL } from "../data/config";
 
 // ============================================================
-// 🇺🇸  USA 250th ANNIVERSARY PAGE (/usa250)
+// 🎆  DEVILS & ROUND LAKE FIREWORKS PAGE (/fireworks)
 // ============================================================
 
-const C250 = { navy: "#0D1B3E", gold: "#C9A84C", goldLight: "#E8C97A", red: "#B22234" };
+// Patriotic accent palette — blends with the site's warm cream theming
+const FW = {
+  gold: "#C9A84C",
+  goldLight: "#E8C97A",
+  navy: "#0D1B3E",
+  red: "#B22234",
+};
 
-const USA250_TIMELINE = [
-  { year: "1776", title: "The First Celebration", body: "Philadelphia erupts in bonfires, bells, and cannon fire on July 4th. John Adams writes to Abigail that the day should be 'celebrated with Pomp and Parade, with Shews, Games, Sports, Guns, Bells, Bonfires and Illuminations.'" },
-  { year: "1777", title: "Congress Makes It Official", body: "The Second Continental Congress celebrates with a 13-gun salute, a band, fireworks, and illuminated ships. The tradition is born by the vote of the nation's founders." },
-  { year: "1870s", title: "Manitou Beach Is Born", body: "As commercial fireworks manufacturers emerge across America, the resort era begins on Devils Lake. Manitou Beach is platted in 1888 — and the Fourth of July becomes the summer's signature night." },
-  { year: "1920s", title: "The Golden Age of Fireworks", body: "Synchronized aerial displays become an American institution. Italian pyrotechnics families bring the art to its peak. The country lights up from coast to coast every July 4th." },
-  { year: "1976", title: "The Bicentennial", body: "America's 200th birthday sets the record for celebration. Operation Sail brings tall ships to New York Harbor. Communities across the country stage their greatest displays yet." },
-  { year: "2026", title: "Semiquincentennial", body: "The 250th. The biggest Fourth of July in American history. Manitou Beach — this lake, this community — stands alongside the nation in celebrating 250 years of freedom, fireworks, and the people who make a place home." },
+const COMMITTEE = [
+  { name: "Craig Gabel",       role: "Chair"     },
+  { name: "Byrne Stapleton",   role: "Treasurer" },
+  { name: "Chris Sherman",     role: "Committee" },
+  { name: "Brent Hopson",      role: "Committee" },
+  { name: "Troy Langenderfer", role: "Committee" },
+  { name: "Mike Clark",        role: "Founder"   },
 ];
 
-const USA250_SPONSOR_TIERS = [
-  { tier: "Presenting Sponsor", amount: "$2,500+", perks: ["Named in all promotions", "Logo on this page (largest)", "Newsletter feature", "Social media campaign inclusion", "On-site banner placement"] },
-  { tier: "Gold Sponsor", amount: "$1,000+", perks: ["Logo on this page", "Newsletter mention", "Social media tag", "On-site recognition"] },
-  { tier: "Silver Sponsor", amount: "$500+", perks: ["Name on this page", "Newsletter mention", "Community recognition"] },
-  { tier: "Community Partner", amount: "$100+", perks: ["Name listed on this page", "Community recognition"] },
+const FIREWORKS_SPONSOR_TIERS = [
+  {
+    level: "Presenting Sponsor",
+    amount: 2500,
+    color: FW.gold,
+    perks: [
+      "Named in all event promotions and announcements",
+      "Largest logo placement on this page",
+      "Featured in the Manitou Beach Dispatch newsletter",
+      "Social media campaign inclusion",
+      "On-site recognition at the event",
+    ],
+  },
+  {
+    level: "Gold Sponsor",
+    amount: 1000,
+    color: "#E8C97A",
+    perks: [
+      "Logo featured on this page",
+      "Newsletter mention leading to July 3rd",
+      "Social media tag",
+      "On-site recognition",
+    ],
+  },
+  {
+    level: "Silver Sponsor",
+    amount: 500,
+    color: "#A8B8C8",
+    perks: [
+      "Name listed on this page",
+      "Newsletter mention",
+      "Community recognition",
+    ],
+  },
+  {
+    level: "Community Supporter",
+    amount: 100,
+    color: C.sage,
+    perks: [
+      "Name listed on this page",
+      "Community recognition",
+    ],
+  },
 ];
 
-// Named donors — populated after the organizing meeting. Add any tier.
-// Format: { name: "The Smith Family", tier: "presenting" | "gold" | "silver" | "community" }
-const USA250_SPONSORS = [
-  // Presenting
+// Named sponsors — populate as confirmed
+// Format: { name: "Business Name", tier: "presenting" | "gold" | "silver" | "community" }
+const FIREWORKS_SPONSORS = [
   // { name: "Example Business", tier: "presenting" },
-  // Gold
-  // { name: "The Johnson Family", tier: "gold" },
-  // Silver
-  // { name: "Lakeside Hardware", tier: "silver" },
-  // Community — families, individuals, small donors
-  // { name: "The Williams Family", tier: "community" },
 ];
 
-export default function USA250Page() {
-  const subScrollTo = (id) => { window.location.href = "/#" + id; };
-  const isPreview = window.location.search.includes("preview=true");
+// ─── Hero ────────────────────────────────────────────────────────────────────
 
-  // Redirect if not public and no preview param
-  if (!USA250_PUBLIC && !isPreview) {
-    window.location.replace("/");
-    return null;
-  }
-
-  // Countdown to July 4, 2026 9:00 PM
+function FireworksHero() {
+  const [loaded, setLoaded] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, mins: 0, secs: 0 });
+
   useEffect(() => {
-    const target = new Date("2026-07-04T21:00:00");
+    setTimeout(() => setLoaded(true), 80);
+    // Countdown to Friday July 3, 2026 9:00 PM
+    const target = new Date("2026-07-03T21:00:00");
     const calc = () => {
       const diff = target - new Date();
       if (diff <= 0) return setTimeLeft({ days: 0, hours: 0, mins: 0, secs: 0 });
       setTimeLeft({
-        days: Math.floor(diff / 86400000),
+        days:  Math.floor(diff / 86400000),
         hours: Math.floor((diff % 86400000) / 3600000),
-        mins: Math.floor((diff % 3600000) / 60000),
-        secs: Math.floor((diff % 60000) / 1000),
+        mins:  Math.floor((diff % 3600000)  / 60000),
+        secs:  Math.floor((diff % 60000)    / 1000),
       });
     };
     calc();
@@ -67,391 +100,763 @@ export default function USA250Page() {
     return () => clearInterval(t);
   }, []);
 
-  const [donateAmount, setDonateAmount] = useState(50);
-  const [customAmount, setCustomAmount] = useState("");
-  const [volForm, setVolForm] = useState({ name: "", email: "", role: "", message: "" });
-  const [volSent, setVolSent] = useState(false);
-
-  const finalDonate = customAmount ? Number(customAmount) : donateAmount;
-
-  const handleVolSubmit = async () => {
-    if (!volForm.name || !volForm.email) return;
-    const message = `How I can help: ${volForm.role || '—'}\n\n${volForm.message || ''}`.trim();
-    try {
-      await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: volForm.name, email: volForm.email, category: 'General Question', message: `USA250 Volunteer Signup\n${message}`, _hp: '' }) });
-    } catch {}
-    setVolSent(true);
-  };
-
   const pad = n => String(n).padStart(2, "0");
 
   return (
-    <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C250.navy, color: C.cream, overflowX: "hidden" }}>
-<GlobalStyles />
-      <ScrollProgress />
-      <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
-
-      {/* Draft banner */}
-      {isPreview && !USA250_PUBLIC && (
-        <div style={{ background: C250.gold, color: C250.navy, textAlign: "center", padding: "8px 24px", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", fontFamily: "'Libre Franklin', sans-serif", position: "relative", zIndex: 999 }}>
-          Preview Mode — This page is not yet public
-        </div>
+    <section style={{
+      position: "relative",
+      minHeight: "100vh",
+      display: "flex", flexDirection: "column",
+      alignItems: "center", justifyContent: "center",
+      overflow: "hidden",
+      background: `linear-gradient(160deg, ${FW.navy} 0%, #0A1218 40%, #16091e 100%)`,
+    }}>
+      {/* Loop video — drop file at /images/fireworks/fireworks-loop.mp4 */}
+      {USA250_VIDEO_URL && (
+        <video autoPlay muted loop playsInline
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }}
+          src={USA250_VIDEO_URL}
+        />
       )}
 
-      {/* ── HERO ── */}
-      <section style={{ position: "relative", minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", overflow: "hidden", background: `linear-gradient(160deg, ${C250.navy} 0%, #0A1218 40%, #1a0a2e 100%)` }}>
-        {/* Video background */}
-        {USA250_VIDEO_URL && (
-          <video autoPlay muted loop playsInline style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }} src={USA250_VIDEO_URL} />
-        )}
-        {/* Star/spark overlay */}
-        <div style={{ position: "absolute", inset: 0, zIndex: 1, background: USA250_VIDEO_URL ? "linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(13,27,62,0.8) 100%)" : "none", pointerEvents: "none" }} />
-        {/* Animated sparkles via CSS */}
-        {!USA250_VIDEO_URL && (
+      {/* Video overlay */}
+      {USA250_VIDEO_URL && (
+        <div style={{
+          position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none",
+          background: "linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(13,27,62,0.88) 100%)",
+        }} />
+      )}
+
+      {/* Sparkle field — visible when no video */}
+      {!USA250_VIDEO_URL && (
+        <>
           <style>{`
-            @keyframes twinkle{0%,100%{opacity:.15;transform:scale(1)}50%{opacity:.8;transform:scale(1.3)}}
-            .spark{position:absolute;border-radius:50%;background:${C250.gold};animation:twinkle var(--d,2.5s) ease-in-out infinite;animation-delay:var(--delay,0s)}
+            @keyframes fw-twinkle {
+              0%,100% { opacity:.12; transform:scale(1) }
+              50%      { opacity:.9;  transform:scale(1.5) }
+            }
+            @keyframes fw-burst {
+              0%   { opacity:0; transform:scale(0.2) }
+              25%  { opacity:1 }
+              100% { opacity:0; transform:scale(3) }
+            }
+            .fw-spark {
+              position:absolute; border-radius:50%;
+              animation: fw-twinkle var(--d,2.5s) ease-in-out infinite;
+              animation-delay: var(--dl,0s);
+              pointer-events: none;
+            }
+            .fw-ring {
+              position:absolute; border-radius:50%;
+              animation: fw-burst var(--d,4s) ease-out infinite;
+              animation-delay: var(--dl,0s);
+              pointer-events:none;
+            }
           `}</style>
-        )}
-        {!USA250_VIDEO_URL && Array.from({ length: 40 }).map((_, i) => (
-          <div key={i} className="spark" style={{ width: i % 3 === 0 ? 3 : 2, height: i % 3 === 0 ? 3 : 2, left: `${Math.sin(i * 137.5) * 50 + 50}%`, top: `${Math.cos(i * 97.3) * 50 + 50}%`, "--d": `${2 + (i % 5) * 0.7}s`, "--delay": `${(i % 7) * 0.4}s`, zIndex: 1 }} />
-        ))}
 
-        {/* Hero content */}
-        <div style={{ position: "relative", zIndex: 2, textAlign: "center", padding: "140px 24px 80px", maxWidth: 860 }}>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
-            <div style={{ fontSize: 24 }}>🇺🇸</div>
-            <SectionLabel light style={{ margin: 0, color: C250.gold, letterSpacing: 6 }}>July 4, 2026 · Manitou Beach</SectionLabel>
-            <div style={{ fontSize: 24 }}>🇺🇸</div>
-          </div>
-          <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(48px, 9vw, 88px)", fontWeight: 700, color: C.cream, margin: "0 0 16px 0", lineHeight: 1.05, letterSpacing: -1 }}>
-            America Turns 250.
-          </h1>
-          <p style={{ fontSize: "clamp(15px, 2.2vw, 19px)", color: "rgba(255,255,255,0.65)", lineHeight: 1.8, maxWidth: 620, margin: "0 auto 48px" }}>
-            Manitou Beach celebrates the nation's most significant Fourth of July in a generation. One night. One lake. 250 years of freedom.
-          </p>
+          {/* Sparks */}
+          {Array.from({ length: 50 }).map((_, i) => (
+            <div key={i} className="fw-spark" style={{
+              width:  i % 4 === 0 ? 4 : i % 3 === 0 ? 3 : 2,
+              height: i % 4 === 0 ? 4 : i % 3 === 0 ? 3 : 2,
+              left: `${Math.sin(i * 137.5) * 48 + 50}%`,
+              top:  `${Math.cos(i * 97.3)  * 48 + 50}%`,
+              background: i % 5 === 0 ? FW.red : i % 7 === 0 ? "#ffffff" : FW.gold,
+              "--d":  `${2 + (i % 5) * 0.6}s`,
+              "--dl": `${(i % 9) * 0.35}s`,
+              zIndex: 1,
+            }} />
+          ))}
 
-          {/* Countdown */}
-          <div style={{ display: "flex", gap: "clamp(12px,3vw,32px)", justifyContent: "center", marginBottom: 52, flexWrap: "wrap" }}>
-            {[{ val: timeLeft.days, label: "Days" }, { val: timeLeft.hours, label: "Hrs" }, { val: timeLeft.mins, label: "Min" }, { val: timeLeft.secs, label: "Sec" }].map(({ val, label }) => (
-              <div key={label} style={{ textAlign: "center", minWidth: 72 }}>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: "clamp(42px,7vw,72px)", fontWeight: 700, color: C250.gold, lineHeight: 1, letterSpacing: -2, fontVariantNumeric: "tabular-nums" }}>
-                  {pad(val)}
-                </div>
-                <div style={{ fontSize: 11, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginTop: 6, fontWeight: 600 }}>{label}</div>
+          {/* Burst rings */}
+          {[
+            { l: "18%", t: "28%", sz: 130, c: `${FW.gold}18`,    d: "4s",   dl: "0.4s" },
+            { l: "76%", t: "22%", sz: 90,  c: `${FW.red}15`,     d: "5.2s", dl: "1.9s" },
+            { l: "60%", t: "68%", sz: 110, c: `${FW.goldLight}12`,d: "4.8s", dl: "3.1s" },
+            { l: "35%", t: "75%", sz: 70,  c: `#ffffff0e`,        d: "3.5s", dl: "2.2s" },
+          ].map((b, i) => (
+            <div key={i} className="fw-ring" style={{
+              left: b.l, top: b.t, width: b.sz, height: b.sz,
+              background: `radial-gradient(circle, ${b.c} 0%, transparent 65%)`,
+              "--d": b.d, "--dl": b.dl, zIndex: 1,
+            }} />
+          ))}
+        </>
+      )}
+
+      {/* Hero content */}
+      <div style={{
+        position: "relative", zIndex: 2,
+        textAlign: "center",
+        padding: "160px 24px 80px",
+        maxWidth: 840,
+        opacity: loaded ? 1 : 0,
+        transform: loaded ? "translateY(0)" : "translateY(28px)",
+        transition: "all 0.9s ease",
+      }}>
+
+        {/* Eyebrow */}
+        <div style={{
+          display: "inline-flex", alignItems: "center", gap: 14,
+          marginBottom: 28,
+          fontFamily: "'Libre Franklin', sans-serif",
+          fontSize: 10, fontWeight: 700, letterSpacing: 4.5,
+          textTransform: "uppercase", color: FW.gold,
+        }}>
+          <span style={{ width: 36, height: 1, background: `${FW.gold}55`, display: "block" }} />
+          Devils &amp; Round Lake · Manitou Beach
+          <span style={{ width: 36, height: 1, background: `${FW.gold}55`, display: "block" }} />
+        </div>
+
+        {/* Title */}
+        <h1 style={{
+          fontFamily: "'Libre Baskerville', serif",
+          fontSize: "clamp(44px, 9vw, 90px)",
+          fontWeight: 700,
+          color: C.cream,
+          margin: "0 0 4px 0",
+          lineHeight: 1.0,
+          letterSpacing: -1.5,
+        }}>
+          Fireworks
+        </h1>
+        <div style={{
+          fontFamily: "'Libre Baskerville', serif",
+          fontSize: "clamp(40px, 8vw, 82px)",
+          fontWeight: 700,
+          color: FW.gold,
+          margin: "0 0 20px 0",
+          lineHeight: 1.0,
+          letterSpacing: -1,
+        }}>
+          2026
+        </div>
+
+        <div style={{
+          fontFamily: "'Caveat', cursive",
+          fontSize: "clamp(18px, 2.5vw, 26px)",
+          color: "rgba(255,255,255,0.6)",
+          marginBottom: 52,
+          lineHeight: 1.4,
+        }}>
+          Friday, July 3rd · 9:00 PM · America's 250th Anniversary
+        </div>
+
+        {/* Countdown */}
+        <div style={{
+          display: "flex",
+          gap: "clamp(16px, 4vw, 44px)",
+          justifyContent: "center",
+          marginBottom: 56,
+          flexWrap: "wrap",
+        }}>
+          {[
+            { val: timeLeft.days,  label: "Days"  },
+            { val: timeLeft.hours, label: "Hours" },
+            { val: timeLeft.mins,  label: "Min"   },
+            { val: timeLeft.secs,  label: "Sec"   },
+          ].map(({ val, label }) => (
+            <div key={label} style={{ textAlign: "center", minWidth: 68 }}>
+              <div style={{
+                fontFamily: "'Libre Franklin', sans-serif",
+                fontSize: "clamp(46px, 7.5vw, 76px)",
+                fontWeight: 700,
+                color: FW.gold,
+                lineHeight: 1,
+                letterSpacing: -2,
+                fontVariantNumeric: "tabular-nums",
+              }}>
+                {pad(val)}
               </div>
-            ))}
-          </div>
+              <div style={{
+                fontSize: 9, letterSpacing: 3.5, textTransform: "uppercase",
+                color: "rgba(255,255,255,0.3)", marginTop: 7, fontWeight: 700,
+                fontFamily: "'Libre Franklin', sans-serif",
+              }}>
+                {label}
+              </div>
+            </div>
+          ))}
+        </div>
 
-          <a href="#get-involved" style={{ display: "inline-block", background: C250.gold, color: C250.navy, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none", padding: "14px 36px", borderRadius: 4, transition: "opacity 0.2s" }}
-            onMouseEnter={e => e.currentTarget.style.opacity = "0.85"}
-            onMouseLeave={e => e.currentTarget.style.opacity = "1"}
-          >
-            🎆 Be Part of It
+        {/* CTAs */}
+        <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", alignItems: "center" }}>
+          <a href="#donate" className="btn-animated" style={{
+            display: "inline-flex", alignItems: "center", gap: 8,
+            padding: "14px 32px", borderRadius: 6,
+            background: FW.gold, color: FW.navy,
+            fontFamily: "'Libre Franklin', sans-serif",
+            fontSize: 12, fontWeight: 700, letterSpacing: 1.5,
+            textTransform: "uppercase", textDecoration: "none",
+          }}>
+            Help Light the Sky →
           </a>
-          <div style={{ marginTop: 16, fontSize: 12, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif" }}>
-            Fireworks begin at 9:00 PM · Devils Lake, Manitou Beach
-          </div>
+          <ShareBar title="Devils &amp; Round Lake Fireworks 2026 — Manitou Beach, July 3rd" />
         </div>
+      </div>
 
-        {/* Scroll indicator */}
-        <div style={{ position: "absolute", bottom: 28, left: "50%", transform: "translateX(-50%)", zIndex: 2, animation: "bounce 2s ease-in-out infinite", fontSize: 18, opacity: 0.4 }}>↓</div>
-        <style>{`@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}`}</style>
-      </section>
+      {/* Scroll hint */}
+      <div style={{
+        position: "absolute", bottom: 28, left: "50%", transform: "translateX(-50%)",
+        zIndex: 2, fontSize: 18, opacity: 0.3,
+      }}>↓</div>
+    </section>
+  );
+}
 
-      {/* ── HOLLY & YETI CAMPAIGN ── */}
-      <section style={{ background: C.night, padding: "80px 24px" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 56, alignItems: "center" }} className="mobile-col-1">
+// ─── Story / Committee ────────────────────────────────────────────────────────
+
+function FireworksStorySection() {
+  return (
+    <section style={{ background: C.warmWhite, padding: "100px 24px" }}>
+      <div style={{ maxWidth: 960, margin: "0 auto" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "start" }} className="mobile-col-1">
+
+          {/* Copy */}
           <FadeIn>
-            <SectionLabel light>Campaign Partners</SectionLabel>
-            <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px,3.5vw,38px)", fontWeight: 400, color: C.cream, margin: "0 0 18px 0", lineHeight: 1.2 }}>
-              Holly & The Yeti<br/>Are Covering It
-            </h2>
-            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.55)", lineHeight: 1.8, marginBottom: 24 }}>
-              Holly & The Yeti are documenting the effort to bring Manitou Beach's biggest-ever July 4th to life — fundraising, community organizing, and the story behind the spectacle.
+            <SectionLabel>The Origin</SectionLabel>
+            <SectionTitle>A Legacy in the Sky</SectionTitle>
+            <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.9, marginBottom: 18 }}>
+              Years ago, Mike Clark looked out over Devils and Round Lake and decided this place deserved something worth gathering for. He wasn't thinking about a single show — he was thinking about a tradition. A summer night that families would plan around, that kids would grow up remembering, that neighbors would watch from their docks year after year.
             </p>
-            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.55)", lineHeight: 1.8, marginBottom: 28 }}>
-              From the first planning meeting to the final burst over the lake, they're getting it on camera so the community can be part of it even before the night arrives.
+            <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.9, marginBottom: 18 }}>
+              Mike was the original — the OG — but even the boldest visions need a crew. He called on fellow lifetime "Lakers," people who knew these waters and these summer nights like their own backyard. Together, they built something that's been growing ever since.
             </p>
-            <Btn href="/#holly" variant="outlineLight" small style={{ whiteSpace: "nowrap" }}>Meet Holly & The Yeti →</Btn>
+            <p style={{ fontSize: 15, color: C.textMuted, lineHeight: 1.85 }}>
+              What began as a vision became a tradition. What became a tradition is now, in 2026, something legendary.
+            </p>
           </FadeIn>
-          <FadeIn delay={150}>
-            {/* Video placeholder */}
-            <div style={{ position: "relative", paddingBottom: "56.25%", background: "rgba(255,255,255,0.04)", borderRadius: 12, border: `1px solid rgba(255,255,255,0.1)`, overflow: "hidden" }}>
-              <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 12 }}>
-                <div style={{ width: 56, height: 56, borderRadius: "50%", background: C250.gold, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22 }}>▶</div>
-                <div style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", fontFamily: "'Libre Franklin', sans-serif", textAlign: "center", padding: "0 24px" }}>
-                  Campaign video<br/>coming soon
-                </div>
-              </div>
-            </div>
-          </FadeIn>
-        </div>
-      </section>
 
-      <WaveDivider topColor={C.night} bottomColor={C.warmWhite} />
-
-      {/* ── TIMELINE ── */}
-      <section style={{ background: C.warmWhite, padding: "72px 24px 80px" }}>
-        <div style={{ maxWidth: 960, margin: "0 auto" }}>
-          <FadeIn>
-            <div style={{ textAlign: "center", marginBottom: 56 }}>
-              <SectionLabel style={{ color: C250.navy, textAlign: "center", display: "block" }}>250 Years of the Tradition</SectionLabel>
-              <SectionTitle center style={{ color: C250.navy }}>A History Written in Light and Fire</SectionTitle>
+          {/* Committee */}
+          <FadeIn delay={120}>
+            <div style={{
+              fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase",
+              color: C.sage, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 24,
+            }}>
+              The Committee
             </div>
-          </FadeIn>
-          <div style={{ position: "relative" }}>
-            {/* Timeline spine */}
-            <div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 2, background: `linear-gradient(to bottom, ${C250.navy}, ${C250.gold})`, transform: "translateX(-50%)", opacity: 0.2 }} />
-            <div style={{ display: "flex", flexDirection: "column", gap: 36 }}>
-              {USA250_TIMELINE.map((item, i) => (
-                <FadeIn key={i} delay={i * 80}>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 40px 1fr", alignItems: "start", gap: 0 }}>
-                    {/* Left side (odd) */}
-                    <div style={{ padding: "0 32px 0 0", textAlign: "right", ...(i % 2 !== 0 ? { opacity: 0 } : {}) }}>
-                      {i % 2 === 0 && (
-                        <div style={{ background: C.cream, borderRadius: 12, padding: "20px 22px", border: `1px solid ${C.sand}`, display: "inline-block", maxWidth: 340, textAlign: "left" }}>
-                          <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, fontWeight: 700, color: C250.navy, marginBottom: 4 }}>{item.year}</div>
-                          <div style={{ fontSize: 14, fontWeight: 700, color: C.text, marginBottom: 8 }}>{item.title}</div>
-                          <div style={{ fontSize: 13, color: C.textLight, lineHeight: 1.7 }}>{item.body}</div>
-                        </div>
-                      )}
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {COMMITTEE.map((m, i) => (
+                <FadeIn key={i} delay={140 + i * 40}>
+                  <div style={{
+                    display: "flex", alignItems: "center", gap: 16,
+                    background: m.role === "Founder"
+                      ? `linear-gradient(135deg, rgba(201,168,76,0.07) 0%, ${C.cream} 100%)`
+                      : C.cream,
+                    border: `1px solid ${m.role === "Founder" ? FW.gold + "55" : C.sand}`,
+                    borderRadius: 12, padding: "16px 20px",
+                  }}>
+                    <div style={{
+                      width: 38, height: 38, borderRadius: "50%", flexShrink: 0,
+                      background: m.role === "Founder" ? `${FW.gold}22`
+                               : m.role === "Chair"    ? `${C.lakeBlue}1e`
+                               : `${C.sage}18`,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontFamily: "'Libre Baskerville', serif",
+                      fontSize: 14, fontWeight: 700,
+                      color: m.role === "Founder" ? FW.gold
+                           : m.role === "Chair"    ? C.lakeBlue
+                           : C.sage,
+                    }}>
+                      {m.name.charAt(0)}
                     </div>
-                    {/* Center dot */}
-                    <div style={{ display: "flex", justifyContent: "center", paddingTop: 20 }}>
-                      <div style={{ width: 12, height: 12, borderRadius: "50%", background: C250.gold, border: `2px solid ${C250.navy}`, flexShrink: 0 }} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700, color: C.text }}>{m.name}</div>
+                      <div style={{ fontSize: 11, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>{m.role}</div>
                     </div>
-                    {/* Right side (even) */}
-                    <div style={{ padding: "0 0 0 32px", ...(i % 2 === 0 ? { opacity: 0 } : {}) }}>
-                      {i % 2 !== 0 && (
-                        <div style={{ background: C.cream, borderRadius: 12, padding: "20px 22px", border: `1px solid ${C.sand}`, display: "inline-block", maxWidth: 340 }}>
-                          <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, fontWeight: 700, color: C250.navy, marginBottom: 4 }}>{item.year}</div>
-                          <div style={{ fontSize: 14, fontWeight: 700, color: C.text, marginBottom: 8 }}>{item.title}</div>
-                          <div style={{ fontSize: 13, color: C.textLight, lineHeight: 1.7 }}>{item.body}</div>
-                        </div>
-                      )}
-                    </div>
+                    {m.role === "Founder" && (
+                      <div style={{
+                        fontSize: 9, fontWeight: 700, letterSpacing: 2,
+                        textTransform: "uppercase", color: FW.gold,
+                        fontFamily: "'Libre Franklin', sans-serif",
+                        border: `1px solid ${FW.gold}45`,
+                        borderRadius: 4, padding: "3px 9px", flexShrink: 0,
+                      }}>
+                        OG
+                      </div>
+                    )}
                   </div>
                 </FadeIn>
               ))}
             </div>
-          </div>
+          </FadeIn>
+
         </div>
-      </section>
+      </div>
+    </section>
+  );
+}
 
-      <DiagonalDivider topColor={C.warmWhite} bottomColor={C250.navy} />
+// ─── 2026 Show Details ────────────────────────────────────────────────────────
 
-      {/* ── DONATE ── */}
-      <section style={{ background: C250.navy, padding: "80px 24px" }}>
-        <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center" }}>
-          <FadeIn>
-            <SectionLabel light style={{ color: C250.gold, textAlign: "center", display: "block" }}>Support the Effort</SectionLabel>
-            <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(28px,4vw,44px)", fontWeight: 700, color: C.cream, margin: "0 0 16px 0", lineHeight: 1.15 }}>Help Light Up the Sky</h2>
-            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.55)", lineHeight: 1.8, maxWidth: 500, margin: "0 auto 36px" }}>
-              The 250th is a once-in-a-lifetime celebration. Your donation helps fund the most ambitious fireworks display Manitou Beach has ever seen — and every dollar stays in this community.
+function Fireworks2026Section() {
+  const stats = [
+    { number: "17",     label: "Launch Barges",  detail: "Positioned across both lakes — every shoreline is the best seat in the house" },
+    { number: "2,500+", label: "Shells",          detail: "Each one a tribute to 250 years of American freedom" },
+    { number: "2",      label: "Lakes",           detail: "Devils and Round Lake, covered from every dock" },
+    { number: "250",    label: "Years",           detail: "America's semiquincentennial — the biggest Fourth of our lifetime" },
+  ];
+
+  return (
+    <section style={{ background: C.night, padding: "100px 24px", position: "relative", overflow: "hidden" }}>
+      <div style={{
+        position: "absolute", inset: 0,
+        backgroundImage: "url(/images/community-bg.jpg)",
+        backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed",
+        opacity: 0.09,
+      }} />
+      <div style={{ maxWidth: 1000, margin: "0 auto", position: "relative", zIndex: 1 }}>
+
+        <FadeIn>
+          <div style={{ textAlign: "center", marginBottom: 64 }}>
+            <SectionLabel light>This Year</SectionLabel>
+            <SectionTitle center light>2026: Bigger Than Ever Before</SectionTitle>
+            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.85, maxWidth: 600, margin: "0 auto" }}>
+              In honor of America's 250th, the committee is honoring it properly. At dawn on July 3rd, the crew heads out on the water to position 17 launch barges across both lakes — so no matter where you're watching from, you've got a front-row view.
             </p>
-            {/* Preset amounts */}
-            <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap", marginBottom: 16 }}>
-              {[25, 50, 100, 250].map(amt => (
-                <button key={amt} onClick={() => { setDonateAmount(amt); setCustomAmount(""); }}
-                  style={{ padding: "10px 22px", borderRadius: 6, fontSize: 15, fontWeight: 700, cursor: "pointer", transition: "all 0.15s", fontFamily: "'Libre Franklin', sans-serif", border: `2px solid ${donateAmount === amt && !customAmount ? C250.gold : "rgba(255,255,255,0.2)"}`, background: donateAmount === amt && !customAmount ? C250.gold : "transparent", color: donateAmount === amt && !customAmount ? C250.navy : C.cream }}
-                >${amt}</button>
-              ))}
-              <input
-                type="number" min="1" placeholder="Custom"
-                value={customAmount}
-                onChange={e => { setCustomAmount(e.target.value); setDonateAmount(0); }}
-                style={{ width: 90, padding: "10px 14px", borderRadius: 6, fontSize: 15, fontWeight: 600, background: customAmount ? C250.gold : "transparent", color: customAmount ? C250.navy : C.cream, border: `2px solid ${customAmount ? C250.gold : "rgba(255,255,255,0.2)"}`, outline: "none", fontFamily: "'Libre Franklin', sans-serif" }}
-              />
-            </div>
-            <button
-              onClick={() => document.querySelector('[data-section="sponsor-form"]')?.scrollIntoView({ behavior: 'smooth' })}
-              style={{ display: "inline-block", background: C250.gold, color: C250.navy, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: 1.5, textTransform: "uppercase", border: "none", padding: "14px 36px", borderRadius: 4, marginBottom: 14, cursor: "pointer", transition: "opacity 0.2s" }}
-              onMouseEnter={e => e.currentTarget.style.opacity = "0.85"}
-              onMouseLeave={e => e.currentTarget.style.opacity = "1"}
-            >
-              Donate ${finalDonate || "—"} →
-            </button>
-            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif" }}>
-              Opens your email app · Secure online payment link coming soon
-            </div>
-          </FadeIn>
-        </div>
-      </section>
-
-      <WaveDivider topColor={C250.navy} bottomColor={C.cream} flip />
-
-      {/* ── SPONSORS ── */}
-      <section style={{ background: C.cream, padding: "72px 24px" }}>
-        <div style={{ maxWidth: 960, margin: "0 auto" }}>
-          <FadeIn>
-            <div style={{ textAlign: "center", marginBottom: 48 }}>
-              <SectionLabel style={{ color: C250.navy, textAlign: "center", display: "block" }}>Supporting This Celebration</SectionLabel>
-              <SectionTitle center style={{ color: C250.navy }}>Our Sponsors</SectionTitle>
-              <p style={{ fontSize: 14, color: C.textMuted, maxWidth: 500, margin: "0 auto" }}>
-                Sponsor recognition is displayed here and in every Dispatch newsletter leading to July 4th.
-              </p>
-            </div>
-          </FadeIn>
-          <div style={{ display: "flex", flexDirection: "column", gap: 36 }}>
-            {USA250_SPONSOR_TIERS.map((tier, ti) => {
-              const tierKey = ["presenting","gold","silver","community"][ti];
-              const tierSponsors = USA250_SPONSORS.filter(s => s.tier === tierKey);
-              return (
-              <FadeIn key={tier.tier} delay={ti * 60}>
-                <div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-                    <div style={{ height: 1, flex: 1, background: C.sand }} />
-                    <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2.5, textTransform: "uppercase", color: C250.navy, fontFamily: "'Libre Franklin', sans-serif" }}>{tier.tier}</span>
-                    <span style={{ fontSize: 11, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>{tier.amount}</span>
-                    <div style={{ height: 1, flex: 1, background: C.sand }} />
-                  </div>
-                  {tierSponsors.length > 0 ? (
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: ti <= 1 ? 14 : 10, marginBottom: 14 }}>
-                      {tierSponsors.map((s, si) => (
-                        <div key={si} style={{
-                          padding: ti === 0 ? "14px 28px" : ti === 1 ? "10px 20px" : "7px 16px",
-                          borderRadius: ti === 0 ? 10 : 8,
-                          background: ti === 0 ? C250.navy : ti === 1 ? C.warmWhite : "transparent",
-                          border: ti === 0 ? `1px solid ${C250.gold}40` : ti <= 1 ? `1px solid ${C.sand}` : "none",
-                          fontFamily: "'Libre Baskerville', serif",
-                          fontSize: ti === 0 ? 18 : ti === 1 ? 15 : 13,
-                          fontWeight: ti === 0 ? 700 : 400,
-                          color: ti === 0 ? C250.gold : C250.navy,
-                          letterSpacing: ti === 0 ? 0.5 : 0,
-                        }}>
-                          {s.name}
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div style={{ color: C.textMuted, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontStyle: "italic", marginBottom: 12 }}>
-                      Sponsor slots available — your name here.
-                    </div>
-                  )}
-                  <button onClick={() => document.querySelector('[data-section="sponsor-form"]')?.scrollIntoView({ behavior: 'smooth' })} style={{ background: "none", border: "none", padding: 0, fontSize: 12, color: C250.navy, fontFamily: "'Libre Franklin', sans-serif", cursor: "pointer", borderBottom: `1px solid ${C250.gold}80`, paddingBottom: 1 }}
-                    onMouseEnter={e => e.currentTarget.style.borderBottomColor = C250.gold}
-                    onMouseLeave={e => e.currentTarget.style.borderBottomColor = `${C250.gold}80`}
-                  >
-                    Become a {tier.tier} →
-                  </button>
-                  <div style={{ marginTop: 10 }}>
-                    <ul style={{ display: "flex", flexWrap: "wrap", gap: "4px 16px", padding: 0, margin: 0, listStyle: "none" }}>
-                      {tier.perks.map(p => <li key={p} style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>✓ {p}</li>)}
-                    </ul>
-                  </div>
-                </div>
-              </FadeIn>
-            );})}
           </div>
-        </div>
-      </section>
+        </FadeIn>
 
-      {/* ── BUSINESS SPONSORSHIP FORM ── */}
-      <section data-section="sponsor-form" style={{ background: C.warmWhite, padding: "80px 24px" }}>
-        <div style={{ maxWidth: 800, margin: "0 auto" }}>
-          <FadeIn>
-            <div style={{ textAlign: "center", marginBottom: 48 }}>
-              <SectionLabel>Apply Now</SectionLabel>
-              <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px,4vw,40px)", fontWeight: 400, color: C250.navy, margin: "16px 0 12px", lineHeight: 1.2 }}>
-                Reserve Your Sponsorship
-              </h2>
-              <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 520, margin: "0 auto" }}>
-                Select a level below, fill in your information, and we will be in touch to finalize your commitment before July 4th, 2026.
-              </p>
-            </div>
-          </FadeIn>
-          <CommunityDonationForm
-            orgName="Devils & Round Lake Fireworks Association"
-            tiers={USA250_SPONSOR_TIERS.map(t => ({ level: t.tier, amount: parseInt(t.amount.replace(/[^0-9]/g, '')), perks: t.perks }))}
-            accentColor={C250.gold}
-            note="Your application will be reviewed and a committee member will follow up within 2 business days."
-          />
-        </div>
-      </section>
-
-      <DiagonalDivider topColor={C.warmWhite} bottomColor={C.dusk} />
-
-      {/* ── GET INVOLVED ── */}
-      <section id="get-involved" style={{ background: C.dusk, padding: "80px 24px" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto" }}>
-          <FadeIn>
-            <div style={{ textAlign: "center", marginBottom: 52 }}>
-              <SectionLabel light style={{ textAlign: "center", display: "block" }}>Get Involved</SectionLabel>
-              <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(28px,4vw,44px)", fontWeight: 400, color: C.cream, margin: "0 0 12px 0", lineHeight: 1.2 }}>This Is Your Celebration Too</h2>
-              <p style={{ fontSize: 15, color: "rgba(255,255,255,0.5)", maxWidth: 520, margin: "0 auto" }}>
-                Whether you're setting up chairs or spreading the word — there's a place for you in making this night happen.
-              </p>
-            </div>
-          </FadeIn>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40 }} className="mobile-col-1">
-            {/* Volunteer form */}
-            <FadeIn>
-              <div style={{ background: "rgba(255,255,255,0.05)", borderRadius: 14, padding: "28px 24px", border: "1px solid rgba(255,255,255,0.08)" }}>
-                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.cream, marginBottom: 20 }}>Volunteer Sign-Up</div>
-                {volSent ? (
-                  <div style={{ textAlign: "center", padding: "20px 0" }}>
-                    <div style={{ fontSize: 32, marginBottom: 12 }}>🎆</div>
-                    <div style={{ color: C250.gold, fontWeight: 600, marginBottom: 8 }}>You're in!</div>
-                    <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)" }}>We'll be in touch as the date approaches. Thank you.</div>
-                  </div>
-                ) : (
-                  <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                    {[{ key: "name", label: "Your Name *", type: "text", ph: "Jane Smith" }, { key: "email", label: "Email *", type: "email", ph: "jane@example.com" }].map(f => (
-                      <div key={f.key}>
-                        <label style={{ display: "block", fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 5 }}>{f.label}</label>
-                        <input type={f.type} placeholder={f.ph} value={volForm[f.key]} onChange={e => setVolForm(v => ({ ...v, [f.key]: e.target.value }))}
-                          style={{ width: "100%", padding: "10px 12px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", boxSizing: "border-box", outline: "none" }} />
-                      </div>
-                    ))}
-                    <div>
-                      <label style={{ display: "block", fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 5 }}>How Would You Like to Help?</label>
-                      <select value={volForm.role} onChange={e => setVolForm(v => ({ ...v, role: e.target.value }))}
-                        style={{ width: "100%", padding: "10px 12px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(30,40,55,0.9)", color: C.cream, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", outline: "none" }}>
-                        <option value="">Select a role…</option>
-                        {["Set up / tear down", "Parking & traffic", "Photography or video", "Food service", "Fundraising", "Promotion & social media", "Other"].map(r => <option key={r} value={r}>{r}</option>)}
-                      </select>
-                    </div>
-                    <div>
-                      <label style={{ display: "block", fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 5 }}>Message (optional)</label>
-                      <textarea rows={2} placeholder="Anything else you'd like us to know…" value={volForm.message} onChange={e => setVolForm(v => ({ ...v, message: e.target.value }))}
-                        style={{ width: "100%", padding: "10px 12px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", resize: "vertical", boxSizing: "border-box", outline: "none" }} />
-                    </div>
-                    <button onClick={handleVolSubmit}
-                      style={{ background: C250.gold, color: C250.navy, border: "none", borderRadius: 4, padding: "12px 24px", fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: "pointer", marginTop: 4 }}>
-                      Sign Me Up →
-                    </button>
-                  </div>
-                )}
+        {/* Stats */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 16, marginBottom: 56 }}>
+          {stats.map((s, i) => (
+            <FadeIn key={i} delay={i * 60}>
+              <div style={{
+                background: "rgba(255,255,255,0.04)",
+                border: `1px solid ${FW.gold}25`,
+                borderRadius: 16, padding: "32px 20px",
+                textAlign: "center",
+              }}>
+                <div style={{
+                  fontFamily: "'Libre Baskerville', serif",
+                  fontSize: "clamp(36px, 5vw, 54px)",
+                  fontWeight: 700, color: FW.gold,
+                  lineHeight: 1, marginBottom: 10,
+                }}>
+                  {s.number}
+                </div>
+                <div style={{
+                  fontFamily: "'Libre Franklin', sans-serif",
+                  fontSize: 11, fontWeight: 700, letterSpacing: 2,
+                  textTransform: "uppercase", color: C.cream, marginBottom: 10,
+                }}>
+                  {s.label}
+                </div>
+                <p style={{ fontSize: 12, color: "rgba(255,255,255,0.32)", lineHeight: 1.65, margin: 0 }}>
+                  {s.detail}
+                </p>
               </div>
             </FadeIn>
-            {/* Share */}
-            <FadeIn delay={120}>
-              <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-                <div style={{ background: "rgba(255,255,255,0.05)", borderRadius: 14, padding: "28px 24px", border: "1px solid rgba(255,255,255,0.08)" }}>
-                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.cream, marginBottom: 12 }}>Spread the Word</div>
-                  <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.7, marginBottom: 20 }}>
-                    The bigger the crowd, the better the night. Share this page with everyone you know who loves Manitou Beach.
-                  </p>
-                  <ShareBar url="https://manitou-beach.vercel.app/fireworks" title="Manitou Beach is celebrating America's 250th — July 4, 2026. Be there." />
+          ))}
+        </div>
+
+        {/* Narrative callout */}
+        <FadeIn delay={220}>
+          <div style={{
+            background: `linear-gradient(135deg, rgba(201,168,76,0.09) 0%, rgba(201,168,76,0.02) 100%)`,
+            border: `1px solid ${FW.gold}22`,
+            borderRadius: 20, padding: "44px 48px",
+          }}>
+            <div style={{
+              fontFamily: "'Caveat', cursive",
+              fontSize: 22, color: FW.goldLight, marginBottom: 20,
+            }}>
+              And there's something new this year.
+            </div>
+            <p style={{ fontSize: 16, color: "rgba(255,255,255,0.62)", lineHeight: 1.9, margin: "0 0 20px 0", maxWidth: 700 }}>
+              When the sky ignites on July 3rd, 2,500 shells will go up in waves of color, thunder, and light. Reflections across the water. Cheers from every dock. And when you think the show is winding down — there's something new in the program. Something the committee is keeping close to the vest. Something worthy of 250 years.
+            </p>
+            <p style={{ fontSize: 14, color: "rgba(255,255,255,0.38)", lineHeight: 1.85, margin: 0, maxWidth: 680 }}>
+              This is early mornings loading barges. Volunteers giving their time. Neighbors becoming friends. A community pulling together to create something worth remembering — not just a show, but a night.
+            </p>
+          </div>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+// ─── Gallery ─────────────────────────────────────────────────────────────────
+
+function GalleryTile({ src, alt }) {
+  const [failed, setFailed] = useState(false);
+
+  if (failed) {
+    return (
+      <div style={{
+        borderRadius: 14, overflow: "hidden", paddingTop: "75%",
+        background: C.warmWhite, border: `1px solid ${C.sand}`,
+        position: "relative",
+      }}>
+        <div style={{
+          position: "absolute", inset: 0,
+          display: "flex", flexDirection: "column",
+          alignItems: "center", justifyContent: "center", gap: 8,
+        }}>
+          <div style={{
+            width: 42, height: 42, borderRadius: "50%",
+            background: C.sand,
+            display: "flex", alignItems: "center", justifyContent: "center",
+          }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.textMuted} strokeWidth="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <path d="m21 15-5-5L5 21"/>
+            </svg>
+          </div>
+          <span style={{ fontSize: 11, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.4 }}>
+            Photo coming soon
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{
+      borderRadius: 14, overflow: "hidden", paddingTop: "75%",
+      position: "relative", background: C.warmWhite,
+    }}>
+      <img
+        src={src} alt={alt}
+        onError={() => setFailed(true)}
+        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+      />
+    </div>
+  );
+}
+
+function FireworksGallerySection() {
+  // Images resolve from /images/fireworks/ — placeholders show until photos are added
+  const images = [
+    "/images/fireworks/gallery-1.jpg",
+    "/images/fireworks/gallery-2.jpg",
+    "/images/fireworks/gallery-3.jpg",
+    "/images/fireworks/gallery-4.jpg",
+    "/images/fireworks/gallery-5.jpg",
+    "/images/fireworks/gallery-6.jpg",
+  ];
+
+  return (
+    <section style={{ background: C.cream, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+        <FadeIn>
+          <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <SectionLabel>Memories</SectionLabel>
+            <SectionTitle center>Gallery</SectionTitle>
+          </div>
+        </FadeIn>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(290px, 1fr))", gap: 12 }}>
+          {images.map((src, i) => (
+            <FadeIn key={i} delay={i * 55} direction="scale">
+              <GalleryTile src={src} alt={`Fireworks ${2026 - i}`} />
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Sponsor Tiers ────────────────────────────────────────────────────────────
+
+function FireworksSponsorTiersSection() {
+  return (
+    <section style={{ background: C.night, padding: "100px 24px", position: "relative", overflow: "hidden" }}>
+      <div style={{
+        position: "absolute", inset: 0,
+        backgroundImage: "url(/images/community-bg.jpg)",
+        backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed",
+        opacity: 0.1,
+      }} />
+      <div style={{ maxWidth: 1000, margin: "0 auto", position: "relative", zIndex: 1 }}>
+
+        <FadeIn>
+          <div style={{ textAlign: "center", marginBottom: 56 }}>
+            <SectionLabel light>Support the Tradition</SectionLabel>
+            <SectionTitle center light>Become a Sponsor</SectionTitle>
+            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.85, maxWidth: 580, margin: "0 auto" }}>
+              The Devils &amp; Round Lake Fireworks are 100% community funded. Every dollar goes directly into the sky — into bigger shells, brighter colors, and a show worthy of this lake and this milestone. No overhead, no shortcuts. Just neighbors making something unforgettable happen together.
+            </p>
+          </div>
+        </FadeIn>
+
+        {/* Presenting — full width featured */}
+        {FIREWORKS_SPONSOR_TIERS.slice(0, 1).map(tier => (
+          <FadeIn key={tier.level} delay={100}>
+            <div style={{
+              background: `linear-gradient(135deg, rgba(201,168,76,0.11) 0%, rgba(201,168,76,0.02) 100%)`,
+              border: `1px solid ${tier.color}40`,
+              borderRadius: 18, padding: "36px 40px", marginBottom: 16,
+              position: "relative", overflow: "hidden",
+            }}>
+              <div style={{ position: "absolute", top: 0, left: 0, width: 5, height: "100%", background: tier.color, borderRadius: "18px 0 0 18px" }} />
+              <div style={{ display: "flex", alignItems: "baseline", gap: 14, marginBottom: 24 }}>
+                <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, color: tier.color }}>{tier.level}</span>
+                <span style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: "rgba(255,255,255,0.52)" }}>${tier.amount.toLocaleString()}+</span>
+              </div>
+              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "10px 28px" }}>
+                {tier.perks.map((b, j) => (
+                  <li key={j} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+                    <span style={{ color: tier.color, fontSize: 14, marginTop: 2, flexShrink: 0 }}>✓</span>
+                    <span style={{ fontSize: 13, color: "rgba(255,255,255,0.55)", lineHeight: 1.55 }}>{b}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </FadeIn>
+        ))}
+
+        {/* Gold + Silver */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }} className="mobile-col-1">
+          {FIREWORKS_SPONSOR_TIERS.slice(1, 3).map((tier, i) => (
+            <FadeIn key={tier.level} delay={140 + i * 55}>
+              <div style={{
+                background: "rgba(255,255,255,0.04)",
+                border: `1px solid ${tier.color}28`,
+                borderRadius: 14, padding: "28px",
+                position: "relative", overflow: "hidden",
+              }}>
+                <div style={{ position: "absolute", top: 0, left: 0, width: 4, height: "100%", background: tier.color, borderRadius: "14px 0 0 14px" }} />
+                <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 18 }}>
+                  <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: tier.color }}>{tier.level}</span>
+                  <span style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: "rgba(255,255,255,0.42)" }}>${tier.amount.toLocaleString()}+</span>
                 </div>
-                <div style={{ background: "rgba(201,168,76,0.08)", borderRadius: 14, padding: "24px 22px", border: `1px solid ${C250.gold}30` }}>
-                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C250.gold, marginBottom: 10 }}>Subscribe for Updates</div>
-                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.6, marginBottom: 16 }}>
-                    Get event updates, fundraising milestones, and Holly & Yeti behind-the-scenes content in the Manitou Beach Dispatch.
-                  </p>
-                  <Btn href="/#newsletter" variant="outlineLight" small style={{ whiteSpace: "nowrap" }}>Subscribe to The Dispatch →</Btn>
-                </div>
+                <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                  {tier.perks.map((b, j) => (
+                    <li key={j} style={{ display: "flex", gap: 8, marginBottom: 8, alignItems: "flex-start" }}>
+                      <span style={{ color: tier.color, fontSize: 13, marginTop: 1, flexShrink: 0 }}>✓</span>
+                      <span style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", lineHeight: 1.55 }}>{b}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </FadeIn>
-          </div>
+          ))}
         </div>
-      </section>
 
-      <WaveDivider topColor={C.dusk} bottomColor={C.cream} flip />
+        {/* Community Supporter */}
+        {FIREWORKS_SPONSOR_TIERS.slice(3).map(tier => (
+          <FadeIn key={tier.level} delay={250}>
+            <div style={{
+              background: "rgba(255,255,255,0.03)",
+              border: `1px solid ${tier.color}22`,
+              borderRadius: 14, padding: "22px 28px",
+              position: "relative", overflow: "hidden",
+            }}>
+              <div style={{ position: "absolute", top: 0, left: 0, width: 4, height: "100%", background: tier.color, borderRadius: "14px 0 0 14px" }} />
+              <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 14 }}>
+                <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: tier.color }}>{tier.level}</span>
+                <span style={{ fontFamily: "'Caveat', cursive", fontSize: 16, color: "rgba(255,255,255,0.38)" }}>${tier.amount}+</span>
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 24px" }}>
+                {tier.perks.map((b, j) => (
+                  <span key={j} style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", display: "flex", alignItems: "center", gap: 6 }}>
+                    <span style={{ color: tier.color }}>✓</span> {b}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </FadeIn>
+        ))}
+
+        <FadeIn delay={300}>
+          <div style={{ textAlign: "center", paddingTop: 44 }}>
+            <a href="#donate" className="btn-animated" style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              padding: "14px 36px", borderRadius: 6,
+              background: FW.gold, color: FW.navy,
+              fontFamily: "'Libre Franklin', sans-serif",
+              fontSize: 12, fontWeight: 700, letterSpacing: 1.5,
+              textTransform: "uppercase", textDecoration: "none",
+            }}>
+              Reserve Your Sponsorship →
+            </a>
+          </div>
+        </FadeIn>
+
+      </div>
+    </section>
+  );
+}
+
+// ─── Sponsors Display ─────────────────────────────────────────────────────────
+
+function FireworksSponsorsSection() {
+  const SponsorTile = ({ height = 110 }) => (
+    <div style={{
+      background: "#fff", border: `1.5px dashed ${C.sand}`, borderRadius: 12,
+      height, display: "flex", flexDirection: "column",
+      alignItems: "center", justifyContent: "center", gap: 6,
+    }}>
+      <div style={{
+        width: 28, height: 28, borderRadius: "50%", background: C.sand,
+        display: "flex", alignItems: "center", justifyContent: "center",
+      }}>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={C.textMuted} strokeWidth="1.5">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
+        </svg>
+      </div>
+      <span style={{ fontSize: 9, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.8, textTransform: "uppercase" }}>Logo</span>
+    </div>
+  );
+
+  const TierHeader = ({ label, color }) => (
+    <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16, marginTop: 40 }}>
+      <div style={{ flex: 1, height: 1, background: C.sand }} />
+      <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 13, color, fontWeight: 400, letterSpacing: 1, textTransform: "uppercase" }}>{label}</span>
+      <div style={{ flex: 1, height: 1, background: C.sand }} />
+    </div>
+  );
+
+  return (
+    <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+        <FadeIn>
+          <div style={{ textAlign: "center", marginBottom: 16 }}>
+            <SectionLabel>Thank You</SectionLabel>
+            <SectionTitle center>Our 2026 Sponsors</SectionTitle>
+            <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, maxWidth: 500, margin: "0 auto" }}>
+              The Devils &amp; Round Lake Fireworks exist because this community shows up — year after year — to make it happen.
+            </p>
+          </div>
+        </FadeIn>
+
+        <FadeIn>
+          <TierHeader label="Presenting Sponsors" color={FW.gold} />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
+            {[0,1,2].map(i => <SponsorTile key={i} height={140} />)}
+          </div>
+        </FadeIn>
+
+        <FadeIn>
+          <TierHeader label="Gold Sponsors" color="#c9a227" />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14 }}>
+            {[0,1,2,3].map(i => <SponsorTile key={i} height={120} />)}
+          </div>
+        </FadeIn>
+
+        <FadeIn>
+          <TierHeader label="Silver Sponsors" color="#8a9ba8" />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 12 }}>
+            {[0,1,2,3,4].map(i => <SponsorTile key={i} height={100} />)}
+          </div>
+        </FadeIn>
+
+        <FadeIn>
+          <TierHeader label="Community Supporters" color={C.sage} />
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 28px", justifyContent: "center", padding: "4px 0 8px" }}>
+            {Array.from({ length: 12 }).map((_, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ width: 6, height: 6, borderRadius: "50%", background: C.sage, flexShrink: 0 }} />
+                <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted }}>Supporter Name</span>
+              </div>
+            ))}
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={200}>
+          <p style={{ textAlign: "center", fontSize: 13, color: C.textMuted, marginTop: 44, lineHeight: 1.7 }}>
+            Want your name or logo here?{" "}
+            <a href="#donate" style={{ color: C.lakeBlue, textDecoration: "underline" }}>Become a sponsor</a>
+            {" "}and we'll get you listed before July 3rd.
+          </p>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+// ─── Donation Form ────────────────────────────────────────────────────────────
+
+function FireworksDonationSection() {
+  return (
+    <section id="donate" data-section="fireworks-donate" style={{ background: C.cream, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 800, margin: "0 auto" }}>
+        <FadeIn>
+          <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <SectionLabel>Community Funded</SectionLabel>
+            <SectionTitle center>Help Light Up the Sky</SectionTitle>
+            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 560, margin: "0 auto" }}>
+              Every dollar donated goes directly into the show — into bigger shells, brighter colors, and a night worthy of this lake and this country's 250th. If this tradition has ever meant something to you, here's your chance to be part of making 2026 the biggest show yet.
+            </p>
+          </div>
+        </FadeIn>
+        <CommunityDonationForm
+          orgName="Devils & Round Lake Fireworks Committee"
+          tiers={FIREWORKS_SPONSOR_TIERS}
+          accentColor={FW.gold}
+          logoTiers={["Presenting Sponsor", "Gold Sponsor", "Silver Sponsor"]}
+          note="The committee will follow up within 2 business days to confirm your contribution. Every dollar goes directly to the show — 100% community funded."
+        />
+      </div>
+    </section>
+  );
+}
+
+// ─── Get Involved ─────────────────────────────────────────────────────────────
+
+function FireworksGetInvolved() {
+  return (
+    <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 600, margin: "0 auto", textAlign: "center" }}>
+        <FadeIn>
+          <SectionLabel>Stay Connected</SectionLabel>
+          <SectionTitle center>Questions? Want to Help?</SectionTitle>
+          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, marginBottom: 36 }}>
+            Whether you're interested in sponsoring, volunteering, or just want updates on the show — follow the Manitou Beach Dispatch. Every milestone, every announcement, every behind-the-scenes detail lands there first.
+          </p>
+          <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+            <a href="/#newsletter" className="btn-animated" style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              padding: "14px 32px", borderRadius: 8,
+              background: C.sunset, color: C.cream,
+              fontFamily: "'Libre Franklin', sans-serif",
+              fontSize: 14, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+            }}>
+              Subscribe to The Dispatch
+            </a>
+            <a href="/devils-lake" className="btn-animated" style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              padding: "14px 32px", borderRadius: 8,
+              background: "transparent", border: `1.5px solid ${C.sand}`, color: C.text,
+              fontFamily: "'Libre Franklin', sans-serif",
+              fontSize: 14, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+            }}>
+              Back to Devils Lake
+            </a>
+          </div>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
+export default function USA250Page() {
+  const subScrollTo = (id) => { window.location.href = "/#" + id; };
+
+  return (
+    <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+      <GlobalStyles />
+      <ScrollProgress />
+      <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
+      <FireworksHero />
+      <WaveDivider topColor={FW.navy} bottomColor={C.warmWhite} />
+      <FireworksStorySection />
+      <DiagonalDivider topColor={C.warmWhite} bottomColor={C.night} />
+      <Fireworks2026Section />
+      <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
+      <FireworksGallerySection />
+      <DiagonalDivider topColor={C.cream} bottomColor={C.night} />
+      <FireworksSponsorTiersSection />
+      <WaveDivider topColor={C.night} bottomColor={C.warmWhite} flip />
+      <FireworksSponsorsSection />
+      <FireworksDonationSection />
+      <FireworksGetInvolved />
       <NewsletterInline />
       <Footer scrollTo={subScrollTo} />
     </div>
   );
 }
-

@@ -31,6 +31,7 @@ const DEVILS_LAKE_COMMUNITY = [
   { icon: "🏘️", title: "Manitou Beach Village", desc: "Walk from the lake to boutique shops, a cafe, satellite wine tasting rooms, and the iconic lighthouse — all within five minutes.", href: "/village" },
   { icon: "🏒", title: "Devils & Round Lake Mens Club", desc: "The civic backbone of the lakes community — organizing the Tip-Up Festival, Firecracker 7K, Shop with a Cop, and year-round events since the 1940s.", href: "/mens-club" },
   { icon: "🌿", title: "Land & Lake Ladies Club", desc: "A community of women dedicated to the lakes, the land, and the social fabric of Manitou Beach — hosting events, fundraisers, and the beloved Summer Festival.", href: "/ladies-club" },
+  { icon: "🎆", title: "Devils & Round Lake Fireworks", desc: "The annual July 4th fireworks tradition — 100% community funded, lighting up both lakes every summer. 2026 marks America's 250th with the biggest show yet.", href: "/fireworks" },
   { icon: "🏛️", title: "Historic Renovation Society", desc: "Restoring the Village, cultivating the arts, and conserving the land and water — MBHRS is the steward of Manitou Beach's past, present, and future.", href: "/historical-society" },
 ];
 

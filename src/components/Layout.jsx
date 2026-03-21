@@ -1625,6 +1625,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
     if (id === "devils-lake") { window.location.href = "/devils-lake"; return; }
     if (id === "mens-club") { window.location.href = "/mens-club"; return; }
     if (id === "ladies-club") { window.location.href = "/ladies-club"; return; }
+    if (id === "fireworks") { window.location.href = "/fireworks"; return; }
     if (id === "historical-society") { window.location.href = "/historical-society"; return; }
     if (id === "round-lake") { window.location.href = "/round-lake"; return; }
     if (id === "village") { window.location.href = "/village"; return; }
@@ -1785,7 +1786,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
                     { label: "Ladies Club", href: "/ladies-club" },
                     { label: "Historical Society", href: "/historical-society" },
                     { label: "Gallery ↗", href: "https://photogallery.yetigroove.com/folder/muVgmuXuvFwI/", external: true },
-                    ...(USA250_PUBLIC ? [{ label: "🇺🇸 USA 250th Fireworks", href: "/usa250" }] : []),
+                    ...(USA250_PUBLIC ? [{ label: "July 4th Fireworks", href: "/fireworks" }] : []),
                   ].map((link, i) => (
                     link.href ? (
                       <a key={i} href={link.href} {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={{
@@ -1915,6 +1916,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
           { label: "Wineries & Breweries", href: "/wineries" },
           { label: "Men's Club", href: "/mens-club" },
           { label: "Ladies Club", href: "/ladies-club" },
+          { label: "July 4th Fireworks", href: "/fireworks" },
           { label: "Historical Society", href: "/historical-society" },
         ].map(link => (
           <a key={link.href} href={link.href} onClick={() => setMenuOpen(false)} style={{

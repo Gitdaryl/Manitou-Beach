@@ -42,7 +42,7 @@ export const PAGE_SPONSORS = {
 // ============================================================
 // 🧭  NAV SECTIONS
 // USA250 — set true to make the page publicly visible + add to Community nav
-export const USA250_PUBLIC = false;
+export const USA250_PUBLIC = true;
 
 // Slot caps per tier per category — Enhanced has no cap
 export const SLOT_CAPS = { premium: 1, featured: 3 };
