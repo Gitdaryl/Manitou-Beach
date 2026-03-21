@@ -51,6 +51,8 @@ const LaunchPage = lazy(() => import('./pages/LaunchPage'));
 const LAUNCH_DATE = new Date('2026-04-10T16:00:00Z'); // 12:00pm ET
 
 function BetaGate({ children }) {
+  // Gate only activates on the production domain — Vercel preview URLs bypass it entirely
+  if (typeof window !== 'undefined' && window.location.hostname !== 'manitoubeachmichigan.com') return children;
   if (Date.now() >= LAUNCH_DATE.getTime()) return children;
   try {
     const code = localStorage.getItem('mb_beta_code');
