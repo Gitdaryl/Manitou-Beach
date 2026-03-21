@@ -60,8 +60,10 @@ export default function FeaturedPage() {
     { id: 'holly-yeti',         label: 'Holly & The Yeti' },
     { id: 'food-trucks',        label: 'Food Trucks' },
     { id: 'historical-society', label: 'Historical Society' },
+    { id: 'nightlife',          label: 'Nightlife' },
   ];
-  const openPages = SPONSORABLE_PAGES.filter(p => !PAGE_SPONSORS[p.id]);
+  const [takenPageIds, setTakenPageIds] = useState(() => new Set(Object.keys(PAGE_SPONSORS).filter(k => PAGE_SPONSORS[k])));
+  const openPages = SPONSORABLE_PAGES.filter(p => !takenPageIds.has(p.id));
   const [sponsorForm, setSponsorForm] = useState({ name: '', email: '', business: '', phone: '', page: openPages[0]?.id || 'home', tagline: '', term: 'monthly', _hp: '' });
   const [sponsorStatus, setSponsorStatus] = useState('idle');
   const [sponsorReturnData, setSponsorReturnData] = useState(null);
@@ -101,7 +103,7 @@ export default function FeaturedPage() {
       const checkoutRes = await fetch('/api/page-sponsor-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pageId: page, pageName, businessName: business, email, phone, tagline, logoUrl, term, _hp: '' }),
+        body: JSON.stringify({ pageId: page, pageName, businessName: business, name, email, phone, tagline, logoUrl, term, _hp: '' }),
       });
       const checkoutData = await checkoutRes.json();
       if (checkoutData.url) {
@@ -121,14 +123,15 @@ export default function FeaturedPage() {
     if (pageWlForm._hp) return;
     const pg = SPONSORABLE_PAGES.find(p => p.id === takenPageWl);
     try {
-      await fetch('/api/contact', {
+      await fetch('/api/sponsor-waitlist', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: pageWlForm.name,
           email: pageWlForm.email,
-          category: 'Page Sponsor Waitlist',
-          message: `Waitlist for "${pg?.label || takenPageWl}" page sponsorship. Business: ${pageWlForm.business}`,
+          businessName: pageWlForm.business,
+          pageId: takenPageWl,
+          pageLabel: pg?.label || takenPageWl,
           _hp: '',
         }),
       });
@@ -146,6 +149,7 @@ export default function FeaturedPage() {
         pageName:     params.get("page") || '',
         businessName: params.get("biz")  || '',
         term:         params.get("term") || 'monthly',
+        expiresAt:    params.get("exp")  || '',
       });
     }
   }, []);
@@ -154,6 +158,14 @@ export default function FeaturedPage() {
     fetch('/api/businesses?slots=true')
       .then(r => r.json())
       .then(d => setSlotCounts(d))
+      .catch(() => {});
+    fetch('/api/page-sponsors?all=true')
+      .then(r => r.json())
+      .then(d => {
+        if (d.taken?.length) {
+          setTakenPageIds(new Set(d.taken.map(s => s.pageId)));
+        }
+      })
       .catch(() => {});
   }, []);
 
@@ -664,7 +676,7 @@ export default function FeaturedPage() {
           <FadeIn>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: 10, marginBottom: takenPageWl ? 20 : 40 }}>
               {SPONSORABLE_PAGES.map(pg => {
-                const taken = !!PAGE_SPONSORS[pg.id];
+                const taken = takenPageIds.has(pg.id);
                 const sponsor = PAGE_SPONSORS[pg.id];
                 const isSelected = !taken && sponsorForm.page === pg.id;
                 const isWlActive = takenPageWl === pg.id;
@@ -762,15 +774,23 @@ export default function FeaturedPage() {
                   <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, fontWeight: 400, color: C.cream, margin: "0 0 10px" }}>
                     {sponsorReturnData?.businessName ? `${sponsorReturnData.businessName} is going live` : "Your page is being set up"}
                   </h3>
-                  <p style={{ fontSize: 14, color: "rgba(255,255,255,0.55)", lineHeight: 1.8, maxWidth: 440, margin: "0 auto 24px" }}>
+                  <p style={{ fontSize: 14, color: "rgba(255,255,255,0.55)", lineHeight: 1.8, maxWidth: 440, margin: "0 auto 12px" }}>
                     Your sponsor banner for the <strong style={{ color: C.cream }}>{sponsorReturnData?.pageName || 'selected'}</strong> page goes live within 24 hours of payment confirmation.
+                  </p>
+                  {sponsorReturnData?.expiresAt && (
+                    <p style={{ fontSize: 13, color: "rgba(255,255,255,0.35)", margin: "0 auto 12px" }}>
+                      Sponsorship runs until <strong style={{ color: C.sunsetLight }}>{new Date(sponsorReturnData.expiresAt + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</strong>
+                    </p>
+                  )}
+                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.35)", margin: "0 auto 24px" }}>
+                    A confirmation email is on its way to your inbox.
                   </p>
                   <div style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 14, padding: "24px 28px", textAlign: "left", marginBottom: 20, maxWidth: 460, margin: "0 auto 20px" }}>
                     <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: "rgba(255,255,255,0.3)", marginBottom: 14 }}>What to expect</div>
                     {[
                       "Your logo and tagline appear at the bottom of the page, seen by every visitor",
                       `Subscription: ${sponsorReturnData?.term === 'annual' ? '$970/year — renews in 12 months' : '$97/month — renews monthly'}`,
-                      "30 days before renewal, we'll email you to renew or let it lapse",
+                      "5 days before expiry, we'll email you to renew or let it go",
                       "If you don't renew, the spot is offered to the next person on the waitlist",
                       "Check your inbox for a Stripe receipt confirming your subscription",
                     ].map((line, i) => (
@@ -804,13 +824,13 @@ export default function FeaturedPage() {
                   {/* Page select */}
                   <select value={sponsorForm.page} onChange={e => setSF('page', e.target.value)}
                     style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "#2D3B45", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}>
-                    {SPONSORABLE_PAGES.filter(p => !PAGE_SPONSORS[p.id]).map(p => (
+                    {SPONSORABLE_PAGES.filter(p => !takenPageIds.has(p.id)).map(p => (
                       <option key={p.id} value={p.id}>{p.label}</option>
                     ))}
                   </select>
 
                   {/* Tagline */}
-                  <input type="text" placeholder="Your tagline — e.g. 'Lakefront living starts here'" maxLength={80}
+                  <input type="text" placeholder="Your slogan or short description (optional)" maxLength={80}
                     value={sponsorForm.tagline} onChange={e => setSF('tagline', e.target.value)}
                     style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}
                   />

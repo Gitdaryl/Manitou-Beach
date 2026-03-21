@@ -49,6 +49,70 @@ async function updateNotionBusiness(businessName, properties) {
   return null;
 }
 
+// Notify the first waiting entry in the Sponsor Waitlist for a given page
+async function notifyFirstWaitlistEntry(notionToken, pageId, pageLabel) {
+  const dbId = process.env.NOTION_DB_SPONSOR_WAITLIST;
+  if (!dbId || !pageId) return;
+  try {
+    const res = await fetch(`https://api.notion.com/v1/databases/${dbId}/query`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${notionToken}`, 'Content-Type': 'application/json', 'Notion-Version': '2022-06-28' },
+      body: JSON.stringify({
+        filter: { and: [{ property: 'Page ID', select: { equals: pageId } }, { property: 'Status', select: { equals: 'waiting' } }] },
+        sorts: [{ timestamp: 'created_time', direction: 'ascending' }],
+        page_size: 1,
+      }),
+    });
+    const data = await res.json();
+    if (!data.results?.length) return;
+
+    const entry    = data.results[0];
+    const entryId  = entry.id;
+    const email    = entry.properties['Email']?.email;
+    const name     = entry.properties['Name']?.title?.[0]?.plain_text || 'there';
+    const bizName  = entry.properties['Business Name']?.rich_text?.[0]?.plain_text || '';
+    const siteUrl  = process.env.SITE_URL || 'https://manitou-beach.vercel.app';
+
+    // Mark as notified
+    await fetch(`https://api.notion.com/v1/pages/${entryId}`, {
+      method: 'PATCH',
+      headers: { 'Authorization': `Bearer ${notionToken}`, 'Content-Type': 'application/json', 'Notion-Version': '2022-06-28' },
+      body: JSON.stringify({ properties: { 'Status': { select: { name: 'notified' } }, 'Notified At': { date: { start: new Date().toISOString().split('T')[0] } } } }),
+    });
+
+    // Send email
+    if (email && process.env.RESEND_API_KEY) {
+      const { Resend } = await import('resend');
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      await resend.emails.send({
+        from: 'Manitou Beach <hello@manitou-beach.com>',
+        to: email,
+        subject: `The ${pageLabel} sponsorship spot just opened`,
+        html: `
+          <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:40px 24px;background:#FAF6EF;">
+            <h1 style="color:#1A2830;font-size:22px;font-weight:700;margin:0 0 8px;">Good news, ${name}.</h1>
+            <p style="color:#5C5248;font-size:15px;margin:0 0 24px;line-height:1.7;">
+              The <strong>${pageLabel}</strong> page sponsorship on Manitou Beach just opened up.
+              ${bizName ? `We saved your spot for <strong>${bizName}</strong>.` : ''}
+              You're first in line — but spots go fast.
+            </p>
+            <a href="${siteUrl}/business#page-sponsorship" style="display:inline-block;background:#1A2830;color:#fff;text-decoration:none;padding:14px 28px;border-radius:8px;font-size:15px;font-weight:600;margin-bottom:28px;">
+              Claim the ${pageLabel} Page →
+            </a>
+            <p style="color:#8C806E;font-size:12px;line-height:1.6;margin:0;">
+              $97/month or $970/year. One exclusive sponsor per page, seen by every visitor all year long.<br/>
+              If you've changed your mind, just ignore this email.
+            </p>
+          </div>
+        `,
+      });
+      console.log(`Waitlist notified: ${email} for ${pageLabel}`);
+    }
+  } catch (err) {
+    console.error('notifyFirstWaitlistEntry error:', err.message);
+  }
+}
+
 // Generate sponsor acknowledgment PDF
 async function generateSponsorPDF({ sponsorId, orgName, sponsorName, tierLevel, amount, perks }) {
   const pdfDoc = await PDFDocument.create();
@@ -580,6 +644,104 @@ export default async function handler(req, res) {
       await logPurchaseToNotion(`Wine Partner: ${venueName} — PAID`, details);
       console.log(`Wine partner payment recorded: ${venueName}`);
     }
+
+    // 7. Page sponsorship (from FeaturedPage claim form)
+    if (metadata.type === 'page_sponsorship') {
+      try {
+        const expiry = new Date();
+        expiry.setMonth(expiry.getMonth() + (metadata.term === 'annual' ? 12 : 1));
+        const expiryDate = expiry.toISOString().split('T')[0];
+        const startDate  = new Date().toISOString().split('T')[0];
+        const siteUrl    = process.env.SITE_URL || 'https://manitou-beach.vercel.app';
+        const token      = process.env.NOTION_TOKEN_PAGE_SPONSORS || process.env.NOTION_TOKEN_BUSINESS;
+        const dbId       = process.env.NOTION_DB_PAGE_SPONSORS;
+
+        // Write to Notion
+        if (token && dbId) {
+          await fetch('https://api.notion.com/v1/pages', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Notion-Version': '2022-06-28' },
+            body: JSON.stringify({
+              parent: { database_id: dbId },
+              properties: {
+                'Business Name':      { title:        [{ text: { content: metadata.businessName || '' } }] },
+                'Page ID':            { select:       { name: metadata.pageId || '' } },
+                'Page Label':         { rich_text:    [{ text: { content: metadata.pageName || '' } }] },
+                'Contact Name':       { rich_text:    [{ text: { content: metadata.name || '' } }] },
+                'Email':              { email:        session.customer_email || session.customer_details?.email || '' },
+                'Phone':              { phone_number: metadata.phone || null },
+                'Tagline':            { rich_text:    [{ text: { content: metadata.tagline || '' } }] },
+                'Logo URL':           { url:          metadata.logoUrl || null },
+                'Website URL':        { url:          null },
+                'Stripe Sub ID':      { rich_text:    [{ text: { content: session.subscription || '' } }] },
+                'Stripe Customer ID': { rich_text:    [{ text: { content: String(session.customer || '') } }] },
+                'Term':               { select:       { name: metadata.term || 'monthly' } },
+                'Status':             { select:       { name: 'active' } },
+                'Start Date':         { date:         { start: startDate } },
+                'Expiry Date':        { date:         { start: expiryDate } },
+              },
+            }),
+          });
+        }
+
+        // Send confirmation email to sponsor
+        const sponsorEmail = session.customer_email || session.customer_details?.email;
+        if (sponsorEmail && process.env.RESEND_API_KEY) {
+          const resend = new Resend(process.env.RESEND_API_KEY);
+          const expiryFmt = new Date(expiryDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+          const amountFmt = metadata.term === 'annual' ? '$970/year' : '$97/month';
+          await resend.emails.send({
+            from: 'Manitou Beach <hello@manitou-beach.com>',
+            to: sponsorEmail,
+            subject: `You own the ${metadata.pageName} page — confirmed`,
+            html: `
+              <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:40px 24px;background:#FAF6EF;">
+                <h1 style="color:#1A2830;font-size:24px;font-weight:700;margin:0 0 8px;">You're live.</h1>
+                <p style="color:#5C5248;font-size:15px;margin:0 0 28px;line-height:1.7;">
+                  <strong>${metadata.businessName}</strong> now sponsors the <strong>${metadata.pageName}</strong> page.
+                  Your banner goes live within 24 hours.
+                </p>
+                <div style="background:#fff;border-radius:12px;padding:24px;margin-bottom:24px;border:1px solid #E8E0D5;">
+                  <p style="margin:0 0 6px;font-size:14px;color:#3A3028;"><strong>Page:</strong> ${metadata.pageName}</p>
+                  <p style="margin:0 0 6px;font-size:14px;color:#3A3028;"><strong>Rate:</strong> ${amountFmt}</p>
+                  <p style="margin:0 0 6px;font-size:14px;color:#3A3028;"><strong>Runs until:</strong> <span style="color:#D4845A;font-weight:700;">${expiryFmt}</span></p>
+                  ${metadata.tagline ? `<p style="margin:0;font-size:14px;color:#3A3028;"><strong>Tagline:</strong> "${metadata.tagline}"</p>` : ''}
+                </div>
+                <p style="color:#8C806E;font-size:13px;line-height:1.75;margin:0 0 8px;">
+                  We'll email you 5 days before expiry to renew or pass. If you don't renew, the spot goes to the next person on the waitlist.
+                </p>
+                <p style="color:#8C806E;font-size:12px;margin:0;">Questions? Reply to this email.</p>
+              </div>
+            `,
+          });
+        }
+
+        // Admin notification
+        if (process.env.RESEND_API_KEY) {
+          const resend = new Resend(process.env.RESEND_API_KEY);
+          const amountFmt = metadata.term === 'annual' ? '$970/year' : '$97/month';
+          await resend.emails.send({
+            from: 'Manitou Beach <hello@manitou-beach.com>',
+            to: 'hello@manitou-beach.com',
+            subject: `New page sponsor: ${metadata.businessName} → ${metadata.pageName}`,
+            html: `<div style="font-family:sans-serif;padding:24px;"><h2>New Page Sponsor</h2>
+              <p><strong>Business:</strong> ${metadata.businessName}</p>
+              <p><strong>Contact:</strong> ${metadata.name || '—'}</p>
+              <p><strong>Email:</strong> ${session.customer_email || session.customer_details?.email || '—'}</p>
+              <p><strong>Phone:</strong> ${metadata.phone || '—'}</p>
+              <p><strong>Page:</strong> ${metadata.pageName}</p>
+              <p><strong>Term:</strong> ${amountFmt}</p>
+              <p><strong>Expires:</strong> ${expiryDate}</p>
+              ${metadata.tagline ? `<p><strong>Tagline:</strong> "${metadata.tagline}"</p>` : ''}
+              ${metadata.logoUrl ? `<p><strong>Logo:</strong> <a href="${metadata.logoUrl}">View</a></p>` : ''}
+            </div>`,
+          }).catch(() => {});
+        }
+        console.log(`Page sponsorship confirmed: ${metadata.businessName} → ${metadata.pageName} (${metadata.term}) expires ${expiryDate}`);
+      } catch (err) {
+        console.error('Page sponsorship fulfillment error:', err);
+      }
+    }
   }
 
   // ── customer.subscription.deleted ───────────────────────────
@@ -587,6 +749,8 @@ export default async function handler(req, res) {
   if (event.type === 'customer.subscription.deleted') {
     const subscription = event.data.object;
     const metadata = subscription.metadata || {};
+
+    // Listing subscription cancelled
     if (metadata.businessName && metadata.type === 'listing') {
       try {
         const pageId = await updateNotionBusiness(metadata.businessName, {
@@ -597,6 +761,41 @@ export default async function handler(req, res) {
         }
       } catch (err) {
         console.error('Subscription cancellation Notion error:', err);
+      }
+    }
+
+    // Page sponsorship subscription cancelled/lapsed — mark expired and notify waitlist
+    if (metadata.type === 'page_sponsorship') {
+      try {
+        const token = process.env.NOTION_TOKEN_PAGE_SPONSORS || process.env.NOTION_TOKEN_BUSINESS;
+        const dbId  = process.env.NOTION_DB_PAGE_SPONSORS;
+        if (token && dbId) {
+          const findRes = await fetch(`https://api.notion.com/v1/databases/${dbId}/query`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Notion-Version': '2022-06-28' },
+            body: JSON.stringify({ filter: { property: 'Stripe Sub ID', rich_text: { equals: subscription.id } } }),
+          });
+          const findData = await findRes.json();
+          if (findData.results?.length > 0) {
+            const record   = findData.results[0];
+            const recordId = record.id;
+            const pgId     = record.properties['Page ID']?.select?.name;
+            const pgLabel  = record.properties['Page Label']?.rich_text?.[0]?.plain_text || pgId;
+
+            // Mark as expired/cancelled
+            await fetch(`https://api.notion.com/v1/pages/${recordId}`, {
+              method: 'PATCH',
+              headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Notion-Version': '2022-06-28' },
+              body: JSON.stringify({ properties: { 'Status': { select: { name: 'expired' } } } }),
+            });
+
+            // Notify first waitlist entry
+            await notifyFirstWaitlistEntry(token, pgId, pgLabel);
+            console.log(`Page sponsorship lapsed: ${pgLabel} — waitlist notified`);
+          }
+        }
+      } catch (err) {
+        console.error('Page sponsorship cancellation error:', err);
       }
     }
   }

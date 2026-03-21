@@ -29,6 +29,11 @@ export default async function handler(req, res) {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
     const siteUrl = process.env.SITE_URL || 'https://manitou-beach.vercel.app';
 
+    // Calculate expiry for display on success screen
+    const expiry = new Date();
+    expiry.setMonth(expiry.getMonth() + (term === 'annual' ? 12 : 1));
+    const expiryDate = expiry.toISOString().split('T')[0];
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'subscription',
@@ -56,7 +61,7 @@ export default async function handler(req, res) {
         logoUrl: logoUrl || '',
         term,
       },
-      success_url: `${siteUrl}/business?ps=1&page=${encodeURIComponent(pageName)}&biz=${encodeURIComponent(businessName)}&term=${term}#page-sponsorship`,
+      success_url: `${siteUrl}/business?ps=1&page=${encodeURIComponent(pageName)}&biz=${encodeURIComponent(businessName)}&term=${term}&exp=${expiryDate}#page-sponsorship`,
       cancel_url:  `${siteUrl}/business#page-sponsorship`,
     });
 

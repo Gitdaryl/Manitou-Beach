@@ -203,7 +203,14 @@ export function WaveDivider({ topColor, bottomColor, flip = false, height = 80 }
 // 💛  PAGE SPONSOR BANNER — appears above Footer on eligible pages
 // ============================================================
 export function PageSponsorBanner({ pageName }) {
-  const sponsor = PAGE_SPONSORS[pageName] || null;
+  // Start with config.js fallback (instant, no flash), then upgrade from Notion if active sponsor found
+  const [sponsor, setSponsor] = useState(PAGE_SPONSORS[pageName] || null);
+  useEffect(() => {
+    fetch(`/api/page-sponsors?page=${pageName}`)
+      .then(r => r.json())
+      .then(d => { if (d.sponsor) setSponsor(d.sponsor); })
+      .catch(() => {});
+  }, [pageName]);
   return (
     <section style={{ background: C.night, padding: "88px 24px", textAlign: "center", position: "relative", overflow: "hidden" }}>
       {/* Radial glow for depth */}

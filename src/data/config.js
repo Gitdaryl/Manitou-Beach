@@ -34,6 +34,7 @@ export const PAGE_SPONSORS = {
   'holly-yeti':         null,
   'food-trucks':        null,
   'historical-society': null,
+  'nightlife':          null,
   // To activate a sponsor, replace null with an object:
   // pageName: { name: "Business Name", logo: "/path/to/logo.png", tagline: "Your tagline here", url: "https://example.com", expiresAt: "March 2027" }
 };
