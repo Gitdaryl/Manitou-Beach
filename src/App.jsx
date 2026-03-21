@@ -44,6 +44,21 @@ const EventEditPage = lazy(() => import('./pages/EventEditPage'));
 const VendorRegisterPage = lazy(() => import('./pages/VendorRegisterPage'));
 const VendorPortalPage = lazy(() => import('./pages/VendorPortalPage'));
 const NightlifePage = lazy(() => import('./pages/NightlifePage'));
+const LaunchPage = lazy(() => import('./pages/LaunchPage'));
+
+// ── Beta gate — redirects / to /launch until LAUNCH_DATE
+//   ⚙️  Update LAUNCH_DATE when you have a firm date (must match LaunchPage.jsx)
+const LAUNCH_DATE = new Date('2026-04-10T16:00:00Z'); // 12:00pm ET
+
+function BetaGate({ children }) {
+  if (Date.now() >= LAUNCH_DATE.getTime()) return children;
+  try {
+    const code = localStorage.getItem('mb_beta_code');
+    if (code && /^MB[A-Z0-9]{4}$/.test(code)) return children;
+  } catch {} // Safari private mode throws on localStorage
+  if (typeof window !== 'undefined') window.location.replace('/launch');
+  return null;
+}
 
 // Lazy sub-components from named exports
 const DispatchArticlePage = lazy(() => import('./pages/DispatchPage').then(m => ({ default: m.DispatchArticlePage })));
@@ -90,7 +105,8 @@ export default function App() {
         <Routes>
           <Route path="/claim-promo" element={<ClaimPromoView />} />
           <Route path="/redeem-promo" element={<RedeemPromoView />} />
-          <Route path="/" element={<HomePage />} />
+          <Route path="/launch" element={<LaunchPage />} />
+          <Route path="/" element={<BetaGate><HomePage /></BetaGate>} />
           <Route path="/events" element={<HappeningPage />} />
           <Route path="/events/edit" element={<EventEditPage />} />
           <Route path="/happening" element={<HappeningPage />} />
