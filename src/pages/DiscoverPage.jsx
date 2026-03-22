@@ -409,7 +409,11 @@ export default function DiscoverPage() {
     });
 
     const allPinned = [...pois, ...bizPins];
-    if (allPinned.length > 1) {
+    if (activeCategory === 'all') {
+      // Lock "All" view to the lake — fitBounds would zoom way out to cover distant POIs
+      map.panTo(DISCOVER_MAP_CENTER);
+      map.setZoom(13);
+    } else if (allPinned.length > 1) {
       const bounds = new google.maps.LatLngBounds();
       allPinned.forEach(p => bounds.extend({ lat: p.lat, lng: p.lng }));
       map.fitBounds(bounds, { top: 60, right: 40, bottom: 40, left: 40 });
@@ -475,8 +479,8 @@ export default function DiscoverPage() {
                 boxShadow: active ? `0 2px 8px ${cat.color}40` : 'none',
               }}>
                 {cat.icon
-                  ? <CatIcon icon={cat.icon} size={17} style={{ filter: active ? 'brightness(0) invert(1)' : 'none', transition: 'filter 0.18s' }} />
-                  : <span style={{ fontSize: 13, opacity: 0.6 }}>★</span>
+                  ? <CatIcon icon={cat.icon} size={28} style={{ filter: active ? 'brightness(0) invert(1)' : 'none', transition: 'filter 0.18s' }} />
+                  : <span style={{ fontSize: 20, opacity: 0.6 }}>★</span>
                 }
                 {cat.label}
               </button>
@@ -489,7 +493,7 @@ export default function DiscoverPage() {
             cursor: 'pointer', transition: 'all 0.18s', whiteSpace: 'nowrap',
             display: 'flex', alignItems: 'center', gap: 6, textDecoration: 'none',
           }}>
-            <CatIcon icon="/images/icons/food-truck-icon-dark.png" size={17} />
+            <CatIcon icon="/images/icons/food-truck-icon-dark.png" size={28} />
             Food Trucks
           </a>
         </div>

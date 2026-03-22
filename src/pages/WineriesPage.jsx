@@ -420,13 +420,13 @@ function WinePassportWidget({ stamped, villageVenues, trailVenues }) {
           </div>
           {allComplete && (
             <div style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 40, marginBottom: 4 }}>🏆</div>
+              <img src="/images/icons/trophy-icon.png" alt="" style={{ width: 48, height: 48, objectFit: 'contain', marginBottom: 4 }} />
               <div style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunset }}>Full Trail Badge</div>
             </div>
           )}
           {villageComplete && !allComplete && (
             <div style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 36, marginBottom: 4 }}>🍷</div>
+              <img src="/images/icons/wine-rating.png" alt="" style={{ width: 44, height: 44, objectFit: 'contain', marginBottom: 4 }} />
               <div style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunset }}>Village Badge</div>
             </div>
           )}
@@ -1422,11 +1422,11 @@ function WineScoreboardSection() {
 }
 
 const WINE_PASSPORT_HOW = [
-  { icon: '🗺️', title: 'Plan your stops', desc: 'Eight venues across the Village and the Trail. One afternoon or a full day.' },
-  { icon: '🃏', title: 'Grab a passport card', desc: 'Pick one up at any tasting room counter. Grid on the back — one square per stop.' },
-  { icon: '🍷', title: 'Taste & scan', desc: 'Scan the QR, pick your wine, leave a star rating. Takes 30 seconds.' },
-  { icon: '📝', title: 'Stamp + 10% off', desc: 'Staff signs your card square. Each stamp earns 10% off a bottle — buy before you leave.' },
-  { icon: '🏆', title: 'Live standings', desc: 'Ratings post live as they come in. Scores go dark for the final 30 days — winners revealed at an October awards ceremony.' },
+  { icon: '/images/icons/plan-map-icon.png',    title: 'Plan your stops',     desc: 'Eight venues across the Village and the Trail. One afternoon or a full day.' },
+  { icon: '/images/icons/passport-icon.png',    title: 'Grab a passport card', desc: 'Pick one up at any tasting room counter. Grid on the back — one square per stop.' },
+  { icon: '/images/icons/wine-rating.png',      title: 'Taste & scan',         desc: 'Scan the QR, pick your wine, leave a star rating. Takes 30 seconds.' },
+  { icon: '/images/icons/stamp-offer-icon.png', title: 'Stamp + 10% off',      desc: 'Staff signs your card square. Each stamp earns 10% off a bottle — buy before you leave.' },
+  { icon: '/images/icons/trophy-icon.png',      title: 'Live standings',       desc: 'Ratings post live as they come in. Scores go dark for the final 30 days — winners revealed at an October awards ceremony.' },
 ];
 
 const WINERY_AWARD_CATEGORIES = [
@@ -1447,7 +1447,7 @@ function WineriesHowItWorksSection() {
           {WINE_PASSPORT_HOW.map((step, i) => (
             <FadeIn key={i} delay={i * 80} style={{ height: '100%' }}>
               <div style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 16, padding: '24px 20px', height: '100%', boxSizing: 'border-box' }}>
-                <div style={{ fontSize: 32, marginBottom: 12 }}>{step.icon}</div>
+                <img src={step.icon} alt="" style={{ width: 52, height: 52, objectFit: 'contain', marginBottom: 12, opacity: 0.92 }} />
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: '#fff', marginBottom: 8 }}>{step.title}</div>
                 <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', lineHeight: 1.6 }}>{step.desc}</div>
               </div>

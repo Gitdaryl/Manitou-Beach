@@ -85,7 +85,11 @@ export const DISCOVER_CATS = [
 // When admin creates an icon for a new category, add it here to wire it up.
 // Key = exact Notion Category select value.
 export const DISCOVER_DYNAMIC_CAT_ICONS = {
-  'Activities': { icon: '/images/icons/activities-icon-dark.png', color: '#8B7355' },
+  'Activities':     { icon: '/images/icons/activities-icon-dark.png',  color: '#8B7355' },
+  'Real Estate':    { icon: '/images/icons/realestate-icon-dark.png',  color: '#5B6E8A' },
+  'Creative Media': { icon: '/images/icons/creative-icon-dark.png',    color: '#8B5E8B' },
+  'Health & Beauty':{ icon: '/images/icons/beauty-icon-dark.png',      color: '#C07080' },
+  'Pet Services':   { icon: '/images/icons/pets-icon-dark.png',        color: '#7A8E5A' },
 };
 
 export const DISCOVER_POIS = [
