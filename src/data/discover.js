@@ -63,7 +63,7 @@ DEVILS LAKE YACHT CLUB: Fine dining overlooking Devils Lake, sailing races, and 
 // 🗺️  MAP CONSTANTS
 // ============================================================
 
-export const DISCOVER_MAP_CENTER = { lat: 42.0047, lng: -84.2888 };
+export const DISCOVER_MAP_CENTER = { lat: 42.0160, lng: -84.2888 };
 
 export const DISCOVER_CATS = [
   { id: 'all',        label: 'All',               icon: '/images/icons/plan-map-icon-dark.png',      color: '#7A8E72' },

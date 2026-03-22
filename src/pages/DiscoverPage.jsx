@@ -412,7 +412,7 @@ export default function DiscoverPage() {
     if (activeCategory === 'all') {
       // Lock "All" view to the lake — fitBounds would zoom way out to cover distant POIs
       map.panTo(DISCOVER_MAP_CENTER);
-      map.setZoom(13);
+      map.setZoom(12);
     } else if (allPinned.length > 1) {
       const bounds = new google.maps.LatLngBounds();
       allPinned.forEach(p => bounds.extend({ lat: p.lat, lng: p.lng }));
