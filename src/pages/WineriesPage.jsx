@@ -1474,14 +1474,14 @@ function WineAwardCeremonySection() {
           <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16, padding: '28px 32px', maxWidth: 560, margin: '0 auto 40px', textAlign: 'left' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               {[
-                { icon: '🍷', text: 'Visitors rate what they tried at each stop — wine quality, service, atmosphere. Scores go live instantly.' },
-                { icon: '📊', text: 'Rankings build all season. Every rating is a vote. The leaderboard updates in real time.' },
-                { icon: '🌑', text: 'Scores go dark in the final 30 days. Nobody knows the winners — until the ceremony.' },
-                { icon: '🏆', text: 'At the awards night (location TBA), winners receive a custom framed certificate to hang on their wall.' },
-                { icon: '📅', text: 'This is an annual event — May to October, every year. The trail grows. The awards grow with it.' },
+                { icon: '/images/icons/wine-rating.png',      text: 'Visitors rate what they tried at each stop — wine quality, service, atmosphere. Scores go live instantly.' },
+                { icon: '/images/icons/stamp-offer-icon.png', text: 'Rankings build all season. Every rating is a vote. The leaderboard updates in real time.' },
+                { icon: '/images/icons/passport-icon.png',    text: 'Scores go dark in the final 30 days. Nobody knows the winners — until the ceremony.' },
+                { icon: '/images/icons/trophy-icon.png',      text: 'At the awards night (location TBA), winners receive a custom framed certificate to hang on their wall.' },
+                { icon: '/images/icons/events-icon.png',      text: 'This is an annual event — May to October, every year. The trail grows. The awards grow with it.' },
               ].map((row, i) => (
                 <div key={i} style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
-                  <span style={{ fontSize: 18, flexShrink: 0, marginTop: 2 }}>{row.icon}</span>
+                  <img src={row.icon} alt="" style={{ width: 26, height: 26, objectFit: 'contain', flexShrink: 0, marginTop: 1, opacity: 0.88 }} />
                   <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7 }}>{row.text}</span>
                 </div>
               ))}
@@ -1494,7 +1494,10 @@ function WineAwardCeremonySection() {
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', marginBottom: 44 }}>
             {WINERY_AWARD_CATEGORIES.map((cat, i) => (
-              <span key={i} style={{ fontSize: 13, padding: '7px 16px', borderRadius: 20, border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.65)', fontFamily: "'Libre Franklin', sans-serif" }}>🏆 {cat}</span>
+              <span key={i} style={{ fontSize: 13, padding: '7px 16px', borderRadius: 20, border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.65)', fontFamily: "'Libre Franklin', sans-serif", display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                <img src="/images/icons/trophy-icon.png" alt="" style={{ width: 14, height: 14, objectFit: 'contain', opacity: 0.8 }} />
+                {cat}
+              </span>
             ))}
           </div>
 

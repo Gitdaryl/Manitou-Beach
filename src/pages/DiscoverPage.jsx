@@ -554,7 +554,7 @@ export default function DiscoverPage() {
                   <div style={{ padding: '15px 18px', flex: 1 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4, gap: 8 }}>
                       <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, fontWeight: 400, color: C.dusk, lineHeight: 1.3 }}>{poi.name}</div>
-                      <CatIcon icon={catInfo?.icon} size={20} style={{ flexShrink: 0, opacity: 0.75 }} />
+                      <CatIcon icon={catInfo?.icon} size={28} style={{ flexShrink: 0, opacity: 0.75 }} />
                     </div>
                     <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, marginBottom: 5 }}>{poi.sub}</div>
                     {poi.address && <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.text, marginBottom: 3 }}>{poi.address}</div>}
