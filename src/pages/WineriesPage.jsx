@@ -1073,7 +1073,7 @@ function WineriesItinerarySection() {
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
         <FadeIn>
           <SectionLabel light>How to Do It</SectionLabel>
-          <SectionTitle>Three Ways to Run the Trail</SectionTitle>
+          <SectionTitle light>Three Ways to Run the Trail</SectionTitle>
           <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 520, margin: "0 0 52px 0" }}>
             Pick your pace. Two hours or two days — the trail works either way.
           </p>
