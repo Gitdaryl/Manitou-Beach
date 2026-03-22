@@ -160,6 +160,34 @@ export default function YetiAdminPage() {
     }
   }, []);
 
+  // ── Category Sync ───────────────────────────────────────────────
+  const [catSyncStatus, setCatSyncStatus] = useState('idle'); // idle | loading | done | error
+  const [catSyncResult, setCatSyncResult] = useState(null);
+  const [catPreview, setCatPreview] = useState(null); // live preview from /api/categories
+
+  const loadCatPreview = async () => {
+    try {
+      const r = await fetch('/api/categories');
+      const d = await r.json();
+      setCatPreview(d);
+    } catch { setCatPreview({ unknownCategories: [], hasOther: false }); }
+  };
+
+  const runCatSync = async () => {
+    setCatSyncStatus('loading');
+    setCatSyncResult(null);
+    try {
+      const r = await adminFetch('/api/admin/sync-categories', { method: 'POST' });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.error || 'Sync failed');
+      setCatSyncResult(d);
+      setCatSyncStatus('done');
+    } catch (err) {
+      setCatSyncResult({ error: err.message });
+      setCatSyncStatus('error');
+    }
+  };
+
   // ── Batch geocoding ────────────────────────────────────────────
   const [geoStatus, setGeoStatus] = useState('idle'); // idle | running | done | error
   const [geoResult, setGeoResult] = useState(null);
@@ -708,6 +736,7 @@ export default function YetiAdminPage() {
     if (activeTab === 'ratings') fetchAdminRatings();
     if (activeTab === 'wines') fetchAdminWines();
     if (activeTab === 'incentives') fetchContracts();
+    if (activeTab === 'categories') loadCatPreview();
   }, [activeTab, authed]);
 
   // Preview file locally before uploading — no network call yet
@@ -952,7 +981,7 @@ export default function YetiAdminPage() {
 
         {/* Tabs */}
         <div style={{ display: 'flex', gap: 8, marginBottom: 32, flexWrap: 'wrap' }}>
-          {[{ id: 'write', label: '✍️  Write' }, { id: 'newsletter', label: '📰  Newsletter' }, { id: 'review', label: '📋  Review Queue' }, { id: 'dashboard', label: '📊  Dashboard' }, { id: 'advertisers', label: '🤝  Advertisers' }, { id: 'promos', label: '🎟️  Promos' }, { id: 'pois', label: '📍  Community POIs' }, { id: 'ratings', label: '🍷  Winery Ratings' }, { id: 'wines', label: '🍾  Wines Registry' }, { id: 'vendors', label: '🏪  Vendors' }, { id: 'orgs', label: '🏛️  Orgs' }, { id: 'incentives', label: '🎁  Incentives' }].map(tab => (
+          {[{ id: 'write', label: '✍️  Write' }, { id: 'newsletter', label: '📰  Newsletter' }, { id: 'review', label: '📋  Review Queue' }, { id: 'dashboard', label: '📊  Dashboard' }, { id: 'advertisers', label: '🤝  Advertisers' }, { id: 'promos', label: '🎟️  Promos' }, { id: 'pois', label: '📍  Community POIs' }, { id: 'ratings', label: '🍷  Winery Ratings' }, { id: 'wines', label: '🍾  Wines Registry' }, { id: 'vendors', label: '🏪  Vendors' }, { id: 'orgs', label: '🏛️  Orgs' }, { id: 'incentives', label: '🎁  Incentives' }, { id: 'categories', label: '🗂️  Categories' }].map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
@@ -2615,6 +2644,75 @@ export default function YetiAdminPage() {
               1. Create a Notion DB with properties: Name (title), Offer Text (rich text), Contract Tier (select), Status (select: Queued/Active/Expired), Contact Email, Review URL, City, Redemption Cap (number), Issues Remaining (number), Created At (date).<br />
               2. Add <code style={{ background: '#fff', padding: '1px 4px', borderRadius: 3 }}>NOTION_DB_INCENTIVE_CONTRACTS</code> to Vercel env vars.<br />
               3. Add <code style={{ background: '#fff', padding: '1px 4px', borderRadius: 3 }}>GOOGLE_PLACES_API_KEY</code> to Vercel env vars (enable Places API on the key in Google Cloud Console).
+            </div>
+          </div>
+        )}
+
+        {/* ── Categories ── */}
+        {activeTab === 'categories' && (
+          <div>
+            <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: C.textMuted, marginBottom: 20 }}>Local Guide — Category Monitor</div>
+
+            {/* Live preview */}
+            <div style={{ background: '#fff', border: `1px solid ${C.sand}`, borderRadius: 12, padding: 24, marginBottom: 20 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
+                <div style={{ fontWeight: 700, color: C.dusk, fontSize: 15, fontFamily: 'Libre Franklin, sans-serif' }}>Current Notion Categories</div>
+                <button onClick={loadCatPreview} style={{ padding: '7px 16px', background: C.lakeBlue, color: '#fff', border: 'none', borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}>Refresh</button>
+              </div>
+
+              {!catPreview && (
+                <div style={{ fontSize: 13, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>Click Refresh to load the current state from Notion.</div>
+              )}
+
+              {catPreview && !catPreview.hasOther && catPreview.unknownCategories?.length === 0 && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: C.sage, fontFamily: 'Libre Franklin, sans-serif' }}>
+                  <span>✓</span> All categories are mapped. No action needed.
+                </div>
+              )}
+
+              {catPreview?.hasOther && (
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, background: '#fff8e0', border: '1px solid #e0d090', borderRadius: 8, padding: '12px 16px', marginBottom: 12, fontFamily: 'Libre Franklin, sans-serif', fontSize: 13 }}>
+                  <span>⚠️</span>
+                  <div>
+                    <strong>"Other"</strong> is in use — a business is uncategorized. Open Notion, find it, and assign a proper category name.
+                  </div>
+                </div>
+              )}
+
+              {catPreview?.unknownCategories?.map(cat => (
+                <div key={cat} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, background: '#f0f4ff', border: '1px solid #c0cdf0', borderRadius: 8, padding: '12px 16px', marginBottom: 10, fontFamily: 'Libre Franklin, sans-serif', fontSize: 13 }}>
+                  <span>🗂️</span>
+                  <div>
+                    <strong>"{cat}"</strong> — new category detected. Showing on Local Guide with a placeholder icon.
+                    <div style={{ marginTop: 4, color: C.textMuted, fontSize: 12 }}>
+                      To add a real icon: drop <code style={{ background: '#e8edf8', padding: '1px 5px', borderRadius: 3 }}>/images/icons/{cat.toLowerCase().replace(/\s+/g, '-')}-icon-dark.png</code> into the repo, then add it to <code style={{ background: '#e8edf8', padding: '1px 5px', borderRadius: 3 }}>discover.js → DISCOVER_DYNAMIC_CAT_ICONS</code>.
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Sync & notify */}
+            <div style={{ background: '#fff', border: `1px solid ${C.sand}`, borderRadius: 12, padding: 24 }}>
+              <div style={{ fontWeight: 700, color: C.dusk, fontSize: 15, fontFamily: 'Libre Franklin, sans-serif', marginBottom: 8 }}>Send Sync Report by Email</div>
+              <p style={{ fontSize: 13, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif', margin: '0 0 16px 0' }}>
+                Emails a summary of all unmapped and "Other" categories to <strong>daryl@yetigroove.com</strong>. Use this when you want a reminder with the exact steps to fix each one.
+              </p>
+              <button
+                onClick={runCatSync}
+                disabled={catSyncStatus === 'loading'}
+                style={{ padding: '10px 24px', background: catSyncStatus === 'loading' ? C.textMuted : C.dusk, color: '#fff', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: catSyncStatus === 'loading' ? 'not-allowed' : 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}
+              >
+                {catSyncStatus === 'loading' ? 'Sending…' : 'Sync & Send Report'}
+              </button>
+              {catSyncStatus === 'done' && catSyncResult && (
+                <div style={{ marginTop: 12, fontSize: 13, color: catSyncResult.emailSent ? C.sage : C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>
+                  {catSyncResult.emailSent ? `✓ Report sent — ${(catSyncResult.unknown?.length || 0) + (catSyncResult.hasOther ? 1 : 0)} item(s) flagged.` : `✓ ${catSyncResult.message}`}
+                </div>
+              )}
+              {catSyncStatus === 'error' && catSyncResult?.error && (
+                <div style={{ marginTop: 12, fontSize: 13, color: '#c05a5a', fontFamily: 'Libre Franklin, sans-serif' }}>Error: {catSyncResult.error}</div>
+              )}
             </div>
           </div>
         )}

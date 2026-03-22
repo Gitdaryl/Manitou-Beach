@@ -109,10 +109,31 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: 'Failed to save submission', detail: err?.message || JSON.stringify(err) });
       }
 
+      const newPage = await response.json();
+
       // Auto-geocode address and write lat/lng back to Notion (fire-and-forget, never blocks submission)
       if (address && address.trim()) {
-        const newPage = await response.json();
         geocodeAndStore(newPage.id, address).catch(() => {});
+      }
+
+      // Alert admin when a business submits with no category or "Other"
+      if (!category || category === 'Other') {
+        import('resend').then(({ Resend }) => {
+          const resend = new Resend(process.env.RESEND_API_KEY);
+          resend.emails.send({
+            from: 'Manitou Beach <hello@manitou-beach.com>',
+            to: process.env.ADMIN_EMAIL || 'daryl@yetigroove.com',
+            subject: `⚠️ Uncategorized business listing — "${name}"`,
+            html: `
+              <div style="font-family:sans-serif;max-width:480px">
+                <h2 style="color:#2D3B45">Uncategorized Business Listing</h2>
+                <p><strong>${name}</strong> was submitted with category <em>"Other"</em>.</p>
+                ${address ? `<p>Address: ${address}</p>` : ''}
+                <p>Open Notion, find this listing, and assign a proper category — or create a new one if needed. Once categorized, it will automatically appear under the correct Local Guide pill.</p>
+              </div>
+            `,
+          }).catch(() => {});
+        }).catch(() => {});
       }
 
       return res.status(200).json({ success: true });

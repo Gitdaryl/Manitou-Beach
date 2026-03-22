@@ -66,20 +66,27 @@ DEVILS LAKE YACHT CLUB: Fine dining overlooking Devils Lake, sailing races, and 
 export const DISCOVER_MAP_CENTER = { lat: 42.0047, lng: -84.2888 };
 
 export const DISCOVER_CATS = [
-  { id: 'all',        label: 'All',                icon: '🗺️', color: '#7A8E72' },
-  { id: 'food',       label: 'Food & Drink',        icon: '🍽️', color: '#D4845A', notionKey: 'Food & Drink' },
-  { id: 'stays',      label: 'Stays & Rentals',      icon: '🏠', color: '#2D3B45', notionKey: 'Stays & Rentals' },
-  { id: 'wineries',   label: 'Wineries',             icon: '🍷', color: '#7B4F2E', notionKey: 'Breweries & Wineries' },
-  { id: 'water',      label: 'Boat & Water',         icon: '⛵', color: '#3A6B85', notionKey: 'Boating & Water' },
-  { id: 'events',     label: 'Events & Venues',      icon: '🥂', color: '#8B6BA8', notionKey: 'Events & Venues' },
-  { id: 'shopping',   label: 'Shopping',             icon: '🛍️', color: '#B07D62', notionKey: 'Shopping & Gifts' },
-  { id: 'services',   label: 'Home Services',        icon: '🔧', color: '#5B6E5A', notionKey: 'Home Services' },
-  { id: 'healthcare', label: 'Healthcare',           icon: '🏥', color: '#c05a5a' },
-  { id: 'grocery',    label: 'Grocery & Pharmacy',  icon: '🛒', color: '#5B7E95' },
-  { id: 'schools',    label: 'Schools',              icon: '🎓', color: '#6B7EC8' },
-  { id: 'community',  label: 'Community',            icon: '🏛️', color: '#7A8E72' },
-  { id: 'gas',        label: 'Gas Stations',         icon: '⛽', color: '#B8860B' },
+  { id: 'all',        label: 'All',               icon: '/images/icons/plan-map-icon-dark.png',      color: '#7A8E72' },
+  { id: 'food',       label: 'Food & Drink',       icon: '/images/icons/food-drink-icon-dark.png',    color: '#D4845A', notionKey: 'Food & Drink' },
+  { id: 'stays',      label: 'Stays & Rentals',    icon: '/images/icons/stays-icon-dark.png',         color: '#2D3B45', notionKey: 'Stays & Rentals' },
+  { id: 'wineries',   label: 'Wineries',           icon: '/images/icons/wine-rating-dark.png',        color: '#7B4F2E', notionKey: 'Breweries & Wineries' },
+  { id: 'water',      label: 'Boat & Water',       icon: '/images/icons/boat-icon-dark.png',          color: '#3A6B85', notionKey: 'Boating & Water' },
+  { id: 'events',     label: 'Events & Venues',    icon: '/images/icons/events-icon-dark.png',        color: '#8B6BA8', notionKey: 'Events & Venues' },
+  { id: 'shopping',   label: 'Shopping',           icon: '/images/icons/shopping-icon-dark.png',      color: '#B07D62', notionKey: 'Shopping & Gifts' },
+  { id: 'services',   label: 'Home Services',      icon: '/images/icons/home-services-icon-dark.png', color: '#5B6E5A', notionKey: 'Home Services' },
+  { id: 'healthcare', label: 'Healthcare',         icon: '/images/icons/medical-icon-dark.png',       color: '#c05a5a' },
+  { id: 'grocery',    label: 'Grocery & Pharmacy', icon: '/images/icons/grocery-icon-dark.png',       color: '#5B7E95' },
+  { id: 'schools',    label: 'Schools',            icon: '/images/icons/school-icon-dark.png',        color: '#6B7EC8' },
+  { id: 'community',  label: 'Community',          icon: '/images/icons/community-icon-dark.png',     color: '#7A8E72' },
+  { id: 'gas',        label: 'Gas Stations',       icon: '/images/icons/gas-station-icon-dark.png',   color: '#B8860B' },
 ];
+
+// Icon/color overrides for dynamic categories detected in Notion but not yet in DISCOVER_CATS.
+// When admin creates an icon for a new category, add it here to wire it up.
+// Key = exact Notion Category select value.
+export const DISCOVER_DYNAMIC_CAT_ICONS = {
+  'Activities': { icon: '/images/icons/activities-icon-dark.png', color: '#8B7355' },
+};
 
 export const DISCOVER_POIS = [
   // Healthcare

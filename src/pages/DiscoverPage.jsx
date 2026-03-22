@@ -2,7 +2,16 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Btn, PageSponsorBanner, WaveDivider } from '../components/Shared';
 import { C } from '../data/config';
 import { Footer, Navbar, GlobalStyles } from '../components/Layout';
-import { VAPI_PUBLIC_KEY, VAPI_ASSISTANT_ID, SITE_KNOWLEDGE, DISCOVER_MAP_CENTER, DISCOVER_CATS, DISCOVER_POIS, DISCOVER_MAP_STYLES, createDiscoverPin, buildDiscoverInfoWindow } from '../data/discover';
+import { VAPI_PUBLIC_KEY, VAPI_ASSISTANT_ID, SITE_KNOWLEDGE, DISCOVER_MAP_CENTER, DISCOVER_CATS, DISCOVER_DYNAMIC_CAT_ICONS, DISCOVER_POIS, DISCOVER_MAP_STYLES, createDiscoverPin, buildDiscoverInfoWindow } from '../data/discover';
+
+// Renders a PNG icon (when path starts with /) or falls back to emoji/text
+function CatIcon({ icon, size = 18, style = {} }) {
+  if (!icon) return null;
+  if (icon.startsWith('/')) {
+    return <img src={icon} alt="" style={{ width: size, height: size, objectFit: 'contain', display: 'inline-block', ...style }} />;
+  }
+  return <span style={{ fontSize: size - 2, lineHeight: 1, ...style }}>{icon}</span>;
+}
 
 export function VoiceWidget() {
   const [status, setStatus] = useState('idle'); // idle | connecting | active | ending
@@ -252,6 +261,7 @@ export function VoiceWidget() {
 export default function DiscoverPage() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [businesses, setBusinesses] = useState([]);
+  const [dynamicCats, setDynamicCats] = useState([]); // categories from Notion not in DISCOVER_CATS
   const [communityPois, setCommunityPois] = useState(null); // null = loading, [] = loaded (empty or not)
   const [mapReady, setMapReady] = useState(false);
   const [mapError, setMapError] = useState(null);
@@ -271,6 +281,24 @@ export default function DiscoverPage() {
       .then(r => r.json())
       .then(d => setCommunityPois(d.pois || []))
       .catch(() => setCommunityPois([])); // fall back to hardcoded on error
+    // Dynamic categories — Notion categories not yet in DISCOVER_CATS get auto-pills
+    fetch('/api/categories')
+      .then(r => r.json())
+      .then(d => {
+        const cats = (d.unknownCategories || []).map(notionKey => {
+          const override = DISCOVER_DYNAMIC_CAT_ICONS[notionKey];
+          return {
+            id: `dynamic-${notionKey.toLowerCase().replace(/\s+/g, '-')}`,
+            label: notionKey,
+            notionKey,
+            icon: override?.icon || null, // null = star placeholder rendered inline
+            color: override?.color || '#9B8B7A',
+            dynamic: true,
+          };
+        });
+        setDynamicCats(cats);
+      })
+      .catch(() => {});
   }, []);
 
   // Load Google Maps
@@ -325,7 +353,7 @@ export default function DiscoverPage() {
     if (!google || !map) return;
     markersRef.current.forEach(m => m.setMap(null));
     markersRef.current = [];
-    const activeCatObj = DISCOVER_CATS.find(c => c.id === activeCategory) || DISCOVER_CATS[0];
+    const activeCatObj = [...DISCOVER_CATS, ...dynamicCats].find(c => c.id === activeCategory) || DISCOVER_CATS[0];
 
     // Paid Notion businesses with valid coords — these take precedence over hardcoded POIs
     const bizPins = businesses.filter(b =>
@@ -389,9 +417,10 @@ export default function DiscoverPage() {
       map.panTo({ lat: allPinned[0].lat, lng: allPinned[0].lng });
       map.setZoom(14);
     }
-  }, [activeCategory, mapReady, businesses, communityPois]);
+  }, [activeCategory, mapReady, businesses, communityPois, dynamicCats]);
 
-  const activeCat = DISCOVER_CATS.find(c => c.id === activeCategory) || DISCOVER_CATS[0];
+  const allCats = [...DISCOVER_CATS, ...dynamicCats];
+  const activeCat = allCats.find(c => c.id === activeCategory) || DISCOVER_CATS[0];
   const filteredPois = activeCategory === 'all' ? mergedPois : mergedPois.filter(p => (p.cats || [p.cat]).includes(activeCategory));
   const filteredBizzes = activeCat.notionKey
     ? businesses
@@ -434,7 +463,7 @@ export default function DiscoverPage() {
       {/* ── Sticky Category Chips ── */}
       <div style={{ position: 'sticky', top: 64, zIndex: 100, background: 'rgba(250,246,239,0.97)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${C.sand}`, boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
         <div className="discover-chips-bar" style={{ maxWidth: 1100, margin: '0 auto', padding: '10px 20px', display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          {DISCOVER_CATS.map(cat => {
+          {allCats.map(cat => {
             const active = activeCategory === cat.id;
             return (
               <button key={cat.id} onClick={() => setActiveCategory(cat.id)} style={{
@@ -445,7 +474,10 @@ export default function DiscoverPage() {
                 display: 'flex', alignItems: 'center', gap: 6,
                 boxShadow: active ? `0 2px 8px ${cat.color}40` : 'none',
               }}>
-                <span style={{ fontSize: 15 }}>{cat.icon}</span>
+                {cat.icon
+                  ? <CatIcon icon={cat.icon} size={17} style={{ filter: active ? 'brightness(0) invert(1)' : 'none', transition: 'filter 0.18s' }} />
+                  : <span style={{ fontSize: 13, opacity: 0.6 }}>★</span>
+                }
                 {cat.label}
               </button>
             );
@@ -457,7 +489,7 @@ export default function DiscoverPage() {
             cursor: 'pointer', transition: 'all 0.18s', whiteSpace: 'nowrap',
             display: 'flex', alignItems: 'center', gap: 6, textDecoration: 'none',
           }}>
-            <span style={{ fontSize: 15 }}>🚚</span>
+            <CatIcon icon="/images/icons/food-truck-icon-dark.png" size={17} />
             Food Trucks
           </a>
         </div>
@@ -518,7 +550,7 @@ export default function DiscoverPage() {
                   <div style={{ padding: '15px 18px', flex: 1 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4, gap: 8 }}>
                       <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, fontWeight: 400, color: C.dusk, lineHeight: 1.3 }}>{poi.name}</div>
-                      <span style={{ fontSize: 16, flexShrink: 0 }}>{catInfo?.icon}</span>
+                      <CatIcon icon={catInfo?.icon} size={20} style={{ flexShrink: 0, opacity: 0.75 }} />
                     </div>
                     <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, marginBottom: 5 }}>{poi.sub}</div>
                     {poi.address && <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.text, marginBottom: 3 }}>{poi.address}</div>}
@@ -544,7 +576,9 @@ export default function DiscoverPage() {
                 <div key={biz.id || i} style={{ background: '#fff', border: `1px solid ${C.sand}`, borderRadius: 12, padding: '18px 20px', display: 'flex', gap: 14, alignItems: 'flex-start' }}>
                   {biz.logo
                     ? <img src={biz.logo} alt={biz.name} style={{ width: 46, height: 46, borderRadius: 8, objectFit: 'contain', border: `1px solid ${C.sand}`, background: '#faf5ef', padding: 4, flexShrink: 0 }} />
-                    : <div style={{ width: 46, height: 46, borderRadius: 8, background: `${activeCat.color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, flexShrink: 0 }}>{activeCat.icon}</div>
+                    : <div style={{ width: 46, height: 46, borderRadius: 8, background: `${activeCat.color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                        {activeCat.icon ? <CatIcon icon={activeCat.icon} size={24} /> : <span style={{ fontSize: 20 }}>★</span>}
+                      </div>
                   }
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 3, flexWrap: 'wrap' }}>
@@ -565,7 +599,9 @@ export default function DiscoverPage() {
 
         {showBizCTA && (
           <div style={{ background: `${activeCat.color}08`, border: `1.5px dashed ${activeCat.color}45`, borderRadius: 16, padding: '40px 32px', textAlign: 'center', marginTop: filteredPois.length > 0 ? 32 : 0 }}>
-            <div style={{ fontSize: 40, marginBottom: 12 }}>{activeCat.icon}</div>
+            <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'center' }}>
+              {activeCat.icon ? <CatIcon icon={activeCat.icon} size={48} /> : <span style={{ fontSize: 40 }}>★</span>}
+            </div>
             <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.dusk, marginBottom: 8 }}>
               No {activeCat.label} businesses listed yet.
             </div>
