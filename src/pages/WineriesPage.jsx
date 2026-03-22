@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import ReactDOM from 'react-dom';
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 600);
@@ -790,13 +791,14 @@ function WineryCard({ v, i, isStamped, onStamp, venueRating, wineRankings, autoO
           </div>
         </div>
       </div>
-      {showModal && (
+      {showModal && ReactDOM.createPortal(
         <WineReviewModal
           venue={v.name}
           accent={v.accent}
           onSuccess={() => { onStamp(v.name); setShowModal(false); }}
           onClose={() => setShowModal(false)}
-        />
+        />,
+        document.body
       )}
     </FadeIn>
   );
