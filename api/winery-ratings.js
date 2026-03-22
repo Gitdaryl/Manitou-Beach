@@ -11,7 +11,7 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'POST') {
-    const { venue, rating, service, atmosphere, value, wineTried, note, quote, sessionId } = req.body || {};
+    const { venue, rating, service, atmosphere, value, wineTried, note, firstName, sessionId } = req.body || {};
 
     if (!venue || !rating || !wineTried) {
       return res.status(400).json({ error: 'venue, rating, and wineTried are required' });
@@ -28,14 +28,15 @@ export default async function handler(req, res) {
       'Rating':    { number:    Number(rating) },
       'WineTried': { rich_text: [{ text: { content: String(wineTried).slice(0, 2000) } }] },
       'Note':      { rich_text: [{ text: { content: String(note || '').slice(0, 2000) } }] },
-      'Quote':     { rich_text: [{ text: { content: String(quote || '').slice(0, 2000) } }] },
+      // Quote stores the visitor's first name so comments can be attributed on site
+      'Quote':     { rich_text: [{ text: { content: String(firstName || '').slice(0, 100) } }] },
       'SessionID': { rich_text: [{ text: { content: String(sessionId || '') } }] },
       'Date':      { date:      { start: today } },
       'Status':    { select:    { name: 'Pending' } },
     };
-    if (service   && service   >= 1 && service   <= 5) props['Service']    = { number: Number(service) };
+    if (service    && service    >= 1 && service    <= 5) props['Service']    = { number: Number(service) };
     if (atmosphere && atmosphere >= 1 && atmosphere <= 5) props['Atmosphere'] = { number: Number(atmosphere) };
-    if (value     && value     >= 1 && value     <= 5) props['Value']      = { number: Number(value) };
+    if (value      && value      >= 1 && value      <= 5) props['Value']      = { number: Number(value) };
 
     const response = await fetch('https://api.notion.com/v1/pages', {
       method: 'POST',
@@ -52,6 +53,67 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Failed to save rating' });
     }
 
+    // ── Auto-register unknown wines ────────────────────────────────────────
+    // If the wine typed doesn't match anything in the registry, add it as
+    // inactive (Active: false) so admin can review and categorise it.
+    if (WINES_DB_ID && wineTried.trim()) {
+      try {
+        const winesRes = await fetch(
+          `https://api.notion.com/v1/databases/${WINES_DB_ID}/query`,
+          {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${TOKEN}`,
+              'Content-Type': 'application/json',
+              'Notion-Version': '2022-06-28',
+            },
+            body: JSON.stringify({
+              page_size: 100,
+              filter: { property: 'Venue', select: { equals: venue } },
+            }),
+          }
+        );
+
+        if (winesRes.ok) {
+          const winesData = await winesRes.json();
+          const existingNames = winesData.results.map(p =>
+            (p.properties['Name']?.title?.[0]?.text?.content || '').toLowerCase()
+          );
+
+          const inputLC = wineTried.trim().toLowerCase();
+          const alreadyKnown = existingNames.some(n =>
+            n.includes(inputLC) || inputLC.includes(n)
+          );
+
+          if (!alreadyKnown) {
+            // Add as inactive — admin reviews before it goes live on the leaderboard
+            await fetch('https://api.notion.com/v1/pages', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${TOKEN}`,
+                'Content-Type': 'application/json',
+                'Notion-Version': '2022-06-28',
+              },
+              body: JSON.stringify({
+                parent: { database_id: WINES_DB_ID },
+                properties: {
+                  'Name':      { title:     [{ text: { content: wineTried.trim().slice(0, 200) } }] },
+                  'Venue':     { select:    { name: venue } },
+                  'Category':  { select:    { name: 'Unknown' } },
+                  'Full Name': { rich_text: [{ text: { content: `${venue} · ${wineTried.trim()}`.slice(0, 200) } }] },
+                  'Active':    { checkbox: false },
+                  'Season':    { select:    { name: '2026' } },
+                },
+              }),
+            });
+          }
+        }
+      } catch (err) {
+        // Non-fatal — the rating was already saved successfully
+        console.error('Auto-wine-register error:', err.message);
+      }
+    }
+
     return res.status(200).json({ ok: true });
   }
 
@@ -64,6 +126,7 @@ export default async function handler(req, res) {
         const body = {
           page_size: 100,
           filter: { property: 'Status', select: { equals: 'Published' } },
+          sorts: [{ property: 'Date', direction: 'descending' }],
           ...(cursor ? { start_cursor: cursor } : {}),
         };
 
@@ -91,22 +154,36 @@ export default async function handler(req, res) {
       return res.status(200).json({ ratings: {} });
     }
 
-    // Aggregate by venue: { avg, count, service_avg, atmosphere_avg, value_avg }
+    // ── Aggregate by venue: { avg, count, service_avg, atmosphere_avg, value_avg, comments } ──
     const agg = {};
+    const commentsByVenue = {};
+
     for (const page of allResults) {
       const p = page.properties;
       const venue = p['Venue']?.select?.name;
       const rating = p['Rating']?.number;
       if (!venue || !rating) continue;
+
       if (!agg[venue]) agg[venue] = { total: 0, count: 0, svcTotal: 0, svcCount: 0, atmTotal: 0, atmCount: 0, valTotal: 0, valCount: 0 };
       agg[venue].total += rating;
       agg[venue].count += 1;
+
       const svc = p['Service']?.number;
       const atm = p['Atmosphere']?.number;
       const val = p['Value']?.number;
       if (svc) { agg[venue].svcTotal += svc; agg[venue].svcCount += 1; }
       if (atm) { agg[venue].atmTotal += atm; agg[venue].atmCount += 1; }
       if (val) { agg[venue].valTotal += val; agg[venue].valCount += 1; }
+
+      // Collect comments (Quote = firstName, Note = comment body)
+      const note = p['Note']?.rich_text?.[0]?.text?.content?.trim() || '';
+      if (note) {
+        const firstName = p['Quote']?.rich_text?.[0]?.text?.content?.trim() || '';
+        const wineTried = p['WineTried']?.rich_text?.[0]?.text?.content?.trim() || '';
+        const date = p['Date']?.date?.start || '';
+        if (!commentsByVenue[venue]) commentsByVenue[venue] = [];
+        commentsByVenue[venue].push({ firstName, note, wineTried, date });
+      }
     }
 
     const ratings = {};
@@ -118,6 +195,8 @@ export default async function handler(req, res) {
         service_avg:    rnd(d.svcTotal, d.svcCount),
         atmosphere_avg: rnd(d.atmTotal, d.atmCount),
         value_avg:      rnd(d.valTotal, d.valCount),
+        // Most recent 3 comments (results already sorted descending by date)
+        comments:       (commentsByVenue[venue] || []).slice(0, 3),
       };
     }
 
@@ -125,7 +204,6 @@ export default async function handler(req, res) {
     let wineRankings = [];
     if (WINES_DB_ID && allResults.length > 0) {
       try {
-        // Fetch the wine registry
         const winesRes = await fetch(
           `https://api.notion.com/v1/databases/${WINES_DB_ID}/query`,
           {

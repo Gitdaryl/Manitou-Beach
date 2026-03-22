@@ -700,6 +700,24 @@ function WineryCard({ v, i, isStamped, onStamp, venueRating, wineRankings, autoO
               ✦ {v.highlight}
             </div>
           )}
+
+          {/* Visitor comments */}
+          {venueRating?.comments?.length > 0 && (
+            <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {venueRating.comments.map((c, ci) => (
+                <div key={ci} style={{ background: C.cream, borderRadius: 10, padding: '12px 14px', borderLeft: `3px solid ${v.accent}40`, position: 'relative' }}>
+                  <div style={{ fontSize: 13, color: C.textLight, lineHeight: 1.65, fontStyle: 'italic' }}>
+                    "{c.note}"
+                  </div>
+                  <div style={{ marginTop: 6, fontSize: 11, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
+                    {c.firstName ? `— ${c.firstName}` : '— Trail visitor'}
+                    {c.wineTried && <span style={{ color: v.accent, marginLeft: 6 }}>· {c.wineTried}</span>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginTop: 16 }}>
             {v.website && (
               <a
