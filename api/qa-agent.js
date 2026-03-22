@@ -6,6 +6,9 @@
 // Required env vars:   ANTHROPIC_API_KEY, NOTION_TOKEN_BUSINESS,
 //                      NOTION_DB_FOOD_TRUCKS, TWILIO_ACCOUNT_SID,
 //                      TWILIO_AUTH_TOKEN, TWILIO_PHONE, DARYL_PHONE
+//                      RESEND_API_KEY (for email fallback when SMS fails)
+
+import { Resend } from 'resend';
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
@@ -35,11 +38,25 @@ export default async function handler(req, res) {
 
       await updateTruckStatus(truck.pageId, decision, reason);
 
-      if (decision === 'APPROVE' && truck.phone && truck.slug && truck.token) {
-        try {
-          await sendCheckinLink(truck);
-        } catch (err) {
-          console.error(`Failed to send check-in link to ${truck.name}:`, err.message);
+      if (decision === 'APPROVE' && truck.slug && truck.token) {
+        if (truck.phone) {
+          try {
+            await sendCheckinLink(truck);
+          } catch (smsErr) {
+            console.error(`SMS failed for ${truck.name} — trying email fallback:`, smsErr.message);
+            try {
+              await sendCheckinLinkEmail(truck);
+            } catch (emailErr) {
+              console.error(`Email fallback also failed for ${truck.name}:`, emailErr.message);
+            }
+          }
+        } else if (truck.email) {
+          // No phone on file — go straight to email
+          try {
+            await sendCheckinLinkEmail(truck);
+          } catch (err) {
+            console.error(`Failed to send check-in email to ${truck.name}:`, err.message);
+          }
         }
       }
 
@@ -91,6 +108,7 @@ async function getPendingTrucks() {
         cuisine:     p['Cuisine']?.select?.name || '',
         description: p['Description']?.rich_text?.[0]?.text?.content || '',
         phone:       p['Phone']?.phone_number || '',
+        email:       p['Email']?.email || '',
         slug:        p['Slug']?.rich_text?.[0]?.text?.content || '',
         token:       p['Checkin Token']?.rich_text?.[0]?.text?.content || '',
         website:     p['Website']?.url || '',
@@ -193,8 +211,12 @@ async function updateTruckStatus(pageId, decision, reason) {
 
 // ─── TWILIO: text vendor their check-in link on approval ──────────────────
 
+function buildCheckinUrl(truck) {
+  return `https://manitou-beach.vercel.app/food-trucks?truck=${encodeURIComponent(truck.slug)}&token=${encodeURIComponent(truck.token)}`;
+}
+
 async function sendCheckinLink(truck) {
-  const checkinUrl = `https://manitoubeach.com/food-trucks?truck=${encodeURIComponent(truck.slug)}&token=${encodeURIComponent(truck.token)}`;
+  const checkinUrl = buildCheckinUrl(truck);
   const digits = truck.phone.replace(/\D/g, '');
   const toPhone = digits.startsWith('1') ? `+${digits}` : `+1${digits}`;
 
@@ -209,7 +231,7 @@ async function sendCheckinLink(truck) {
     `Questions? Reply or text Daryl at ${process.env.DARYL_PHONE}.`,
   ].join('\n');
 
-  await fetch(
+  const twilioRes = await fetch(
     `https://api.twilio.com/2010-04-01/Accounts/${process.env.TWILIO_ACCOUNT_SID}/Messages.json`,
     {
       method: 'POST',
@@ -227,7 +249,48 @@ async function sendCheckinLink(truck) {
     }
   );
 
-  console.log(`Check-in link sent to ${truck.name} at ${toPhone}`);
+  if (!twilioRes.ok) {
+    const errText = await twilioRes.text();
+    throw new Error(`Twilio error ${twilioRes.status}: ${errText}`);
+  }
+
+  console.log(`Check-in link SMS sent to ${truck.name} at ${toPhone}`);
+}
+
+// ─── RESEND: email fallback when Twilio SMS fails ─────────────────────────
+
+async function sendCheckinLinkEmail(truck) {
+  if (!truck.email || !process.env.RESEND_API_KEY) {
+    throw new Error('No email address or RESEND_API_KEY — cannot send fallback email');
+  }
+
+  const checkinUrl = buildCheckinUrl(truck);
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  await resend.emails.send({
+    from: 'Manitou Beach <hello@manitoubeach.com>',
+    to: truck.email,
+    subject: `🚚 You're approved — here's your Manitou Beach check-in link`,
+    html: `
+      <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#FAF6EF;">
+        <h1 style="color:#1A2830;font-size:22px;margin:0 0 8px;">Welcome to Manitou Beach, ${truck.name}!</h1>
+        <p style="color:#5C5248;font-size:15px;margin:0 0 24px;line-height:1.7;">
+          You're approved and ready to go live on the food truck map.
+        </p>
+        <div style="background:#fff;border-radius:12px;padding:20px 24px;margin-bottom:24px;border:1px solid #E8E0D5;">
+          <p style="margin:0 0 4px;color:#8C806E;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Your personal check-in link</p>
+          <p style="margin:0 0 16px;color:#3B3228;font-size:14px;line-height:1.6;">Tap this every time you head out — it puts your live pin on the map in seconds.</p>
+          <a href="${checkinUrl}" style="display:inline-block;background:#1A2830;color:#FAF6EF;text-decoration:none;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;">
+            Open My Check-In Link →
+          </a>
+          <p style="margin:12px 0 0;color:#8C806E;font-size:11px;">Bookmark this link — it's unique to your truck.</p>
+        </div>
+        <p style="color:#8C806E;font-size:13px;">Questions? Reply to this email or text Daryl at ${process.env.DARYL_PHONE || 'the number on file'}.</p>
+      </div>
+    `,
+  });
+
+  console.log(`Check-in link email sent to ${truck.name} at ${truck.email}`);
 }
 
 // ─── TWILIO: text Daryl a summary ─────────────────────────────────────────
