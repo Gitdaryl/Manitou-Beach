@@ -1,5 +1,26 @@
 import { Resend } from 'resend';
 
+// Fetch all pages from a Notion database query, following cursors past the 100-record limit
+async function queryAllNotionPages(dbId, token, body) {
+  const url = `https://api.notion.com/v1/databases/${dbId}/query`;
+  const headers = {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json',
+    'Notion-Version': '2022-06-28',
+  };
+  let results = [];
+  let startCursor;
+  do {
+    const pageBody = startCursor ? { ...body, start_cursor: startCursor } : body;
+    const res = await fetch(url, { method: 'POST', headers, body: JSON.stringify(pageBody) });
+    if (!res.ok) throw new Error(`Notion query failed: ${await res.text()}`);
+    const data = await res.json();
+    results = results.concat(data.results);
+    startCursor = data.has_more ? data.next_cursor : null;
+  } while (startCursor);
+  return results;
+}
+
 // Ensure URLs entered in Notion without a protocol prefix still work as links
 function normalizeUrl(url) {
   if (!url || !url.trim()) return url;
@@ -141,36 +162,27 @@ export default async function handler(req, res) {
   // GET — fetch approved/published events
   res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate');
   try {
-    const response = await fetch(
-      `https://api.notion.com/v1/databases/${process.env.NOTION_DB_EVENTS}/query`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${process.env.NOTION_TOKEN_EVENTS}`,
-          'Content-Type': 'application/json',
-          'Notion-Version': '2022-06-28',
-        },
-        body: JSON.stringify({
-          filter: {
-            or: [
-              { property: 'Status', status: { equals: 'Approved' } },
-              { property: 'Status', status: { equals: 'Published' } },
-            ],
-          },
-          sorts: [{ property: 'Event date', direction: 'ascending' }],
-        }),
-      }
-    );
+    const queryBody = {
+      filter: {
+        or: [
+          { property: 'Status', status: { equals: 'Approved' } },
+          { property: 'Status', status: { equals: 'Published' } },
+        ],
+      },
+      sorts: [{ property: 'Event date', direction: 'ascending' }],
+    };
 
-    if (!response.ok) {
-      console.error('Notion query failed:', await response.text());
+    let pages;
+    try {
+      pages = await queryAllNotionPages(process.env.NOTION_DB_EVENTS, process.env.NOTION_TOKEN_EVENTS, queryBody);
+    } catch (err) {
+      console.error('Notion query failed:', err.message);
       return res.status(200).json({ events: [], recurring: [] });
     }
 
-    const data = await response.json();
     const now = new Date();
 
-    const allEvents = data.results
+    const allEvents = pages
       .map(page => {
         const p = page.properties;
         const dateStr = p['Event date']?.date?.start;

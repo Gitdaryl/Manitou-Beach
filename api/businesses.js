@@ -1,3 +1,24 @@
+// Fetch all pages from a Notion database query, following cursors past the 100-record limit
+async function queryAllNotionPages(dbId, token, body) {
+  const url = `https://api.notion.com/v1/databases/${dbId}/query`;
+  const headers = {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json',
+    'Notion-Version': '2022-06-28',
+  };
+  let results = [];
+  let startCursor;
+  do {
+    const pageBody = startCursor ? { ...body, start_cursor: startCursor } : body;
+    const res = await fetch(url, { method: 'POST', headers, body: JSON.stringify(pageBody) });
+    if (!res.ok) throw new Error(`Notion query failed: ${await res.text()}`);
+    const data = await res.json();
+    results = results.concat(data.results);
+    startCursor = data.has_more ? data.next_cursor : null;
+  } while (startCursor);
+  return results;
+}
+
 // Ensure URLs entered in Notion without a protocol prefix still work as links
 function normalizeUrl(url) {
   if (!url || !url.trim()) return url;
@@ -145,42 +166,33 @@ export default async function handler(req, res) {
   // no-store: coordinates update frequently (geocoding) — stale CDN data caused random pin behavior
   res.setHeader('Cache-Control', 'no-store');
   try {
-    const response = await fetch(
-      `https://api.notion.com/v1/databases/${process.env.NOTION_DB_BUSINESS}/query`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${process.env.NOTION_TOKEN_BUSINESS}`,
-          'Content-Type': 'application/json',
-          'Notion-Version': '2022-06-28',
+    const queryBody = {
+      ...(req.query.all !== 'true' && {
+        filter: {
+          or: [
+            { property: 'Status', status: { equals: 'Listed Free' } },
+            { property: 'Status', status: { equals: 'Listed Enhanced' } },
+            { property: 'Status', status: { equals: 'Listed Featured' } },
+            { property: 'Status', status: { equals: 'Listed Premium' } },
+          ],
         },
-        body: JSON.stringify({
-          ...(req.query.all !== 'true' && {
-            filter: {
-              or: [
-                { property: 'Status', status: { equals: 'Listed Free' } },
-                { property: 'Status', status: { equals: 'Listed Enhanced' } },
-                { property: 'Status', status: { equals: 'Listed Featured' } },
-                { property: 'Status', status: { equals: 'Listed Premium' } },
-              ],
-            },
-          }),
-          sorts: [{ property: 'Name', direction: 'ascending' }],
-        }),
-      }
-    );
+      }),
+      sorts: [{ property: 'Name', direction: 'ascending' }],
+    };
 
-    if (!response.ok) {
-      console.error('Notion query failed:', await response.text());
+    let pages;
+    try {
+      pages = await queryAllNotionPages(process.env.NOTION_DB_BUSINESS, process.env.NOTION_TOKEN_BUSINESS, queryBody);
+    } catch (err) {
+      console.error('Notion query failed:', err.message);
       return res.status(200).json({ free: [], enhanced: [], featured: [], premium: [] });
     }
 
-    const data = await response.json();
     const free = [], enhanced = [], featured = [], premium = [];
 
     const today = new Date().toISOString().split('T')[0];
 
-    data.results.forEach(page => {
+    pages.forEach(page => {
       const p = page.properties;
       const status = p['Status']?.status?.name || '';
       const featuredExpires = p['Featured Expires']?.date?.start || null;
