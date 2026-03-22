@@ -881,7 +881,7 @@ function WineriesMapSection() {
   }, [mapReady]);
 
   return (
-    <section style={{ background: C.warmWhite, padding: '80px 24px' }}>
+    <section style={{ background: C.warmWhite, padding: '52px 24px' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
         <FadeIn>
           <SectionLabel>Plan Your Visit</SectionLabel>
@@ -928,10 +928,10 @@ function WineriesScorecardSection() {
   };
 
   return (
-    <section style={{ background: C.warmWhite, padding: '80px 24px' }}>
+    <section style={{ background: C.warmWhite, padding: '52px 24px' }}>
       <div style={{ maxWidth: 1000, margin: '0 auto' }}>
         <FadeIn>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 16, marginBottom: 48 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 16, marginBottom: 28 }}>
             <div>
               <SectionLabel>Visitor Scores</SectionLabel>
               <SectionTitle>What Visitors Are Saying</SectionTitle>
@@ -989,7 +989,7 @@ function WineriesVenueSection() {
   const stampSlug = new URLSearchParams(window.location.search).get('stamp') || '';
 
   return (
-    <section style={{ background: C.cream, padding: "100px 24px" }}>
+    <section style={{ background: C.cream, padding: "56px 24px" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
 
         <WinePassportWidget stamped={stamped} villageVenues={villageVenues} trailVenues={trailVenues} />
@@ -1069,7 +1069,7 @@ const WINERY_ITINERARIES = [
 
 function WineriesItinerarySection() {
   return (
-    <section style={{ background: C.night, padding: "100px 24px" }}>
+    <section style={{ background: C.night, padding: "64px 24px" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
         <FadeIn>
           <SectionLabel light>How to Do It</SectionLabel>
@@ -1117,7 +1117,7 @@ function WineriesItinerarySection() {
 
 function WineriesCTASection() {
   return (
-    <section style={{ background: C.dusk, padding: "100px 24px" }}>
+    <section style={{ background: C.dusk, padding: "64px 24px" }}>
       <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
         <FadeIn>
           <SectionLabel light>Plan Your Visit</SectionLabel>
@@ -1197,12 +1197,12 @@ function WineScoreboardSection() {
       });
 
   return (
-    <section style={{ background: C.dusk, padding: '80px 24px' }}>
+    <section style={{ background: C.dusk, padding: '52px 24px' }}>
       <div style={{ maxWidth: 1000, margin: '0 auto' }}>
 
         {/* Header + live total */}
         <FadeIn>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 16, marginBottom: 48 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 16, marginBottom: 32 }}>
             <div>
               <SectionLabel light>People's Choice</SectionLabel>
               <SectionTitle light>Season Standings</SectionTitle>
@@ -1423,8 +1423,8 @@ const WINE_PASSPORT_HOW = [
   { icon: '🗺️', title: 'Plan your stops', desc: 'Eight venues across the Village and the Trail. One afternoon or a full day.' },
   { icon: '🃏', title: 'Grab a passport card', desc: 'Pick one up at any tasting room counter. Grid on the back — one square per stop.' },
   { icon: '🍷', title: 'Taste & scan', desc: 'Scan the QR, pick your wine, leave a star rating. Takes 30 seconds.' },
-  { icon: '📝', title: 'Stamp + 10% off', desc: 'Staff signs your card square. First visit earns 10% off a bottle.' },
-  { icon: '🏆', title: 'Live standings', desc: 'Ratings go live instantly. Scores go dark October 1st — winners revealed at the awards ceremony.' },
+  { icon: '📝', title: 'Stamp + 10% off', desc: 'Staff signs your card square. Each stamp earns 10% off a bottle — buy before you leave.' },
+  { icon: '🏆', title: 'Live standings', desc: 'Ratings post live as they come in. Scores go dark for the final 30 days — winners revealed at an October awards ceremony.' },
 ];
 
 const WINERY_AWARD_CATEGORIES = [
@@ -1435,19 +1435,19 @@ const WINERY_AWARD_CATEGORIES = [
 
 function WineriesHowItWorksSection() {
   return (
-    <section style={{ background: C.night, padding: '72px 24px' }}>
+    <section style={{ background: C.night, padding: '52px 24px' }}>
       <div style={{ maxWidth: 1000, margin: '0 auto' }}>
         <FadeIn>
-          <SectionLabel dark>The Wine Passport</SectionLabel>
-          <SectionTitle dark>How It Works</SectionTitle>
+          <SectionLabel light>The Wine Passport</SectionLabel>
+          <SectionTitle light>How It Works</SectionTitle>
         </FadeIn>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 20, marginTop: 40 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 20, marginTop: 24, alignItems: 'stretch' }}>
           {WINE_PASSPORT_HOW.map((step, i) => (
-            <FadeIn key={i} delay={i * 80}>
-              <div style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 16, padding: '24px 20px' }}>
+            <FadeIn key={i} delay={i * 80} style={{ height: '100%' }}>
+              <div style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 16, padding: '24px 20px', height: '100%', boxSizing: 'border-box' }}>
                 <div style={{ fontSize: 32, marginBottom: 12 }}>{step.icon}</div>
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: '#fff', marginBottom: 8 }}>{step.title}</div>
-                <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', lineHeight: 1.6 }}>{step.desc}</div>
+                <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', lineHeight: 1.6 }}>{step.desc}</div>
               </div>
             </FadeIn>
           ))}
@@ -1459,7 +1459,7 @@ function WineriesHowItWorksSection() {
 
 function WineAwardCeremonySection() {
   return (
-    <section style={{ background: C.night, padding: '80px 24px' }}>
+    <section style={{ background: C.night, padding: '52px 24px' }}>
       <div style={{ maxWidth: 760, margin: '0 auto', textAlign: 'center' }}>
         <FadeIn>
           <SectionLabel light>Annual Awards · May – October</SectionLabel>
