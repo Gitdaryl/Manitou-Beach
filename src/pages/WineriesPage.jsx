@@ -358,16 +358,16 @@ function WinePassportWidget({ stamped, villageVenues, trailVenues }) {
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
           <div>
             <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: allComplete ? C.cream : C.text, marginBottom: 4 }}>
-              {allComplete ? "Trail Complete — Well Done." : "Your Wine Trail Passport"}
+              {allComplete ? "Trail Complete — Well Done." : "Your Digital Trail Tracker"}
             </div>
             <div style={{ fontSize: 13, color: allComplete ? "rgba(255,255,255,0.5)" : C.textLight, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.65, marginBottom: 4 }}>
               {allComplete
                 ? "You've visited every stop on the Manitou Beach Wine Trail. Show this screen at any participating venue — they'll know what it means."
-                : "Eight stops across the Irish Hills. Two loops — the Village walkabout, and the full day-trip trail. Stamp each one as you go."}
+                : "Track your stops online as you go. Visit a tasting room, hit '+ Stamp My Visit', rate your pour. Eight stops — Village walkabout + the full trail loop."}
             </div>
             {!allComplete && (
               <div style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 16 }}>
-                Each stamp requires a quick tasting note — takes 30 seconds and earns you the visit.{" "}
+                Pick up a physical passport card at any tasting room counter — staff signs your card square and you earn 10% off a bottle.{" "}
                 <span style={{ fontStyle: "italic" }}>Complete all eight and you've done something worth talking about.</span>
               </div>
             )}
@@ -455,6 +455,7 @@ function WineReviewModal({ venue, accent, onSuccess, onClose }) {
   const [value, setValue] = useState(0);
   const [wineTried, setWineTried] = useState('');
   const [note, setNote] = useState('');
+  const [firstName, setFirstName] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [wineList, setWineList] = useState([]);
@@ -482,6 +483,7 @@ function WineReviewModal({ venue, accent, onSuccess, onClose }) {
           value:      value      || undefined,
           wineTried: wineTried.trim(),
           note: note.trim(),
+          firstName: firstName.trim() || undefined,
           sessionId: getWineSessionId(),
         }),
       });
@@ -541,9 +543,9 @@ function WineReviewModal({ venue, accent, onSuccess, onClose }) {
             })()}
           </div>
 
-          <div style={{ marginBottom: 24 }}>
+          <div style={{ marginBottom: 16 }}>
             <label style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, display: 'block', marginBottom: 8 }}>
-              Anything else? <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional)</span>
+              Leave a comment? <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional — shows on site)</span>
             </label>
             <textarea
               value={note}
@@ -553,6 +555,20 @@ function WineReviewModal({ venue, accent, onSuccess, onClose }) {
               style={{ width: '100%', padding: '10px 14px', borderRadius: 10, border: `1.5px solid ${C.sand}`, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.text, background: C.cream, outline: 'none', resize: 'none', boxSizing: 'border-box' }}
             />
           </div>
+          {note.trim().length > 0 && (
+            <div style={{ marginBottom: 24 }}>
+              <label style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, display: 'block', marginBottom: 8 }}>
+                First name <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(shows with your comment)</span>
+              </label>
+              <input
+                type="text"
+                value={firstName}
+                onChange={e => setFirstName(e.target.value)}
+                placeholder="e.g. Sarah"
+                style={{ width: '100%', padding: '10px 14px', borderRadius: 10, border: `1.5px solid ${C.sand}`, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.text, background: C.cream, outline: 'none', boxSizing: 'border-box' }}
+              />
+            </div>
+          )}
 
           {error && <div style={{ fontSize: 12, color: '#c0392b', marginBottom: 12, fontFamily: "'Libre Franklin', sans-serif" }}>{error}</div>}
 
@@ -612,11 +628,18 @@ function WineryCard({ v, i, isStamped, onStamp, venueRating, wineRankings, autoO
         <div style={{ flex: 1 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 8, marginBottom: 6 }}>
             <div>
-              <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.text, margin: "0 0 4px 0" }}>{v.name}</h3>
+              <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.text, margin: "0 0 6px 0" }}>{v.name}</h3>
               {venueRating && venueRating.count > 0 ? (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                  {/* Amazon-style: bold score, filled stars, count */}
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 20, fontWeight: 700, color: C.sunset, lineHeight: 1 }}>
+                    {venueRating.avg}
+                  </span>
+                  <span style={{ color: C.sunset, fontSize: 16, letterSpacing: 1 }}>
+                    {'★'.repeat(Math.round(venueRating.avg))}{'☆'.repeat(5 - Math.round(venueRating.avg))}
+                  </span>
                   <span style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
-                    <span style={{ color: C.sunset }}>★</span> {venueRating.avg} &nbsp;·&nbsp; {venueRating.count} {venueRating.count === 1 ? 'rating' : 'ratings'}
+                    out of 5 &nbsp;·&nbsp; {venueRating.count.toLocaleString()} {venueRating.count === 1 ? 'rating' : 'ratings'}
                   </span>
                   {wineRankings && wineRankings.find(w => w.venue === v.name) && (
                     <span style={{ fontSize: 11, padding: '2px 10px', background: `${C.sunset}20`, color: C.sunset, borderRadius: 12, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700 }}>
@@ -940,18 +963,6 @@ function WineriesVenueSection() {
           {trailVenues.map((v, i) => <WineryCard key={i} v={v} i={i} isStamped={isStamped(v.name)} onStamp={toggleStamp} venueRating={ratings[v.name]} wineRankings={wineRankings} autoOpen={stampSlug === venueSlug(v.name)} />)}
         </div>
 
-        {/* Worth the Drive */}
-        <FadeIn>
-          <SectionLabel>Extending Your Trail</SectionLabel>
-          <SectionTitle>Worth the Drive</SectionTitle>
-          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 580, margin: "0 0 48px 0" }}>
-            Full winery destinations beyond the Village loop — the kind of stops that become the reason you came. Add one to anchor a longer day, or build a trip around them.
-          </p>
-        </FadeIn>
-        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-          {extendedVenues.map((v, i) => <WineryCard key={i} v={v} i={i} />)}
-        </div>
-
       </div>
     </section>
   );
@@ -969,7 +980,7 @@ const WINERY_ITINERARIES = [
       { time: "11:30am", stop: "Ang & Co", note: "French Road Cellars + Chateau Fontaine — most variety in one stop" },
       { time: "Noon", stop: "Boathouse Art Gallery", note: "Amoritas Vineyard — gallery browse and a pour" },
       { time: "12:30pm", stop: "Devils Lake View Living", note: "Brenman Family Winery — fashion, home goods, lighthouse out front" },
-      { time: "1pm", stop: "Lunch at the lake", note: "You've earned it" },
+      { time: "1pm", stop: "Lunch at Blackbird Cafe or Two Lakes Tavern", note: "Lakeside dining — you've earned it" },
     ],
   },
   {
@@ -983,21 +994,20 @@ const WINERY_ITINERARIES = [
       { time: "11:30am", stop: "Cherry Creek Cellars", note: "Small-batch Michigan wines in Brooklyn's laid-back tasting room" },
       { time: "1pm", stop: "Chateau Aeronautique", note: "Lunch + live music — all-weather biergarten, aviation-themed" },
       { time: "3:30pm", stop: "Gypsy Blue Vineyards", note: "Wines, ciders, flower farm — the most scenic stop on the loop" },
-      { time: "6pm", stop: "Back to the lake", note: "Dinner in the Village or on the dock" },
     ],
   },
   {
-    title: "The Extended Weekend",
+    title: "The Full Weekend",
     duration: "2 Days",
     badge: "The Full Experience",
     accent: C.sage,
-    intro: "Village Saturday morning. Full trail Saturday afternoon. Sunday at the lake. The version you tell people about on Monday.",
+    intro: "All eight stops across two days. Village Saturday morning, trail Saturday afternoon and evening, Sunday wine country. The version you talk about all winter.",
     stops: [
       { time: "Sat AM", stop: "Village Tasting Rooms", note: "Walk all four stops — two hours, zero driving" },
-      { time: "Sat PM", stop: "Cherry Creek + Chateau Aeronautique", note: "Two trail stops, lunch at Chateau, live music" },
-      { time: "Sat Eve", stop: "Dinner lakeside", note: "Village dining or back to the cottage" },
-      { time: "Sun AM", stop: "Gypsy Blue Vineyards", note: "The drive earns it — flower farm, ciders, the works" },
-      { time: "Sun PM", stop: "Devils Lake", note: "Pontoon, paddleboard, or just a dock chair" },
+      { time: "Sat Noon", stop: "Cherry Creek Cellars", note: "Lunch stop in Brooklyn — small-batch wines, laid-back room" },
+      { time: "Sat Eve", stop: "Chateau Aeronautique", note: "Evening entertainment — live tribute bands, all-weather biergarten" },
+      { time: "Sun Brunch", stop: "Meckleys Flavor Fruit Farm", note: "Brunch at the farm — fresh fruit, jams, the perfect wake-up" },
+      { time: "Sun PM", stop: "Gypsy Blue Vineyards", note: "Flower farm, ciders, wines — the most scenic finish on the trail" },
     ],
   },
 ];
@@ -1056,16 +1066,13 @@ function WineriesCTASection() {
       <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
         <FadeIn>
           <SectionLabel light>Plan Your Visit</SectionLabel>
-          <SectionTitle light center>Build Your Wine Trail Day</SectionTitle>
-          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 560, margin: "0 auto 16px" }}>
+          <SectionTitle light center>Make a Day of It</SectionTitle>
+          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 560, margin: "0 auto 36px" }}>
             Spend a morning at the lake, a leisurely lunch in the Village, an afternoon tasting at Chateau Aeronautique, and an evening back on the water. That's a Manitou Beach Saturday.
           </p>
-          <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: C.sunsetLight, marginBottom: 32 }}>
-            Holly can help you find the perfect lakefront home to come back to.
-          </div>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-            <Btn href="/#holly" variant="sunset">Talk to Holly</Btn>
-            <Btn href="/events" variant="outlineLight" small>What's On This Weekend →</Btn>
+            <Btn href="/happening" variant="sunset">What's On This Weekend →</Btn>
+            <Btn href="/village" variant="outlineLight" small>Explore the Village →</Btn>
           </div>
         </FadeIn>
       </div>
@@ -1400,20 +1407,58 @@ function WineAwardCeremonySection() {
     <section style={{ background: C.night, padding: '80px 24px' }}>
       <div style={{ maxWidth: 760, margin: '0 auto', textAlign: 'center' }}>
         <FadeIn>
-          <div style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)', marginBottom: 16 }}>Presented by The Manitou Dispatch</div>
-          <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 34, color: '#fff', margin: '0 0 12px', fontWeight: 400 }}>The 2026 Wine Trail Awards</h2>
-          <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.5)', marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>October · Manitou Beach</p>
-          <div style={{ width: 48, height: 2, background: C.sunset, margin: '20px auto 32px' }} />
-          <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.7)', lineHeight: 1.8, marginBottom: 36, fontFamily: "'Libre Franklin', sans-serif" }}>
-            Seven categories. Hundreds of votes cast all season long.<br />
-            Scores go dark October 1st. Nobody knows the winners until the night.
+          <SectionLabel light>Annual Awards · May – October</SectionLabel>
+          <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 4vw, 40px)", color: '#fff', margin: '16px 0 20px', fontWeight: 400, lineHeight: 1.15 }}>
+            The 2026 Manitou Beach<br /><em style={{ color: C.sunsetLight }}>Wine Trail Awards</em>
+          </h2>
+          <div style={{ width: 48, height: 2, background: C.sunset, margin: '0 auto 28px' }} />
+
+          {/* How it runs */}
+          <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16, padding: '28px 32px', maxWidth: 560, margin: '0 auto 40px', textAlign: 'left' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {[
+                { icon: '🍷', text: 'Visitors rate what they tried at each stop — wine quality, service, atmosphere. Scores go live instantly.' },
+                { icon: '📊', text: 'Rankings build all season. Every rating is a vote. The leaderboard updates in real time.' },
+                { icon: '🌑', text: 'Scores go dark in the final 30 days. Nobody knows the winners — until the ceremony.' },
+                { icon: '🏆', text: 'At the awards night (location TBA), winners receive a custom framed certificate to hang on their wall.' },
+                { icon: '📅', text: 'This is an annual event — May to October, every year. The trail grows. The awards grow with it.' },
+              ].map((row, i) => (
+                <div key={i} style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+                  <span style={{ fontSize: 18, flexShrink: 0, marginTop: 2 }}>{row.icon}</span>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7 }}>{row.text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Award categories */}
+          <p style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunsetLight, marginBottom: 16 }}>
+            7 awards up for grabs
           </p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', marginBottom: 40 }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', marginBottom: 44 }}>
             {WINERY_AWARD_CATEGORIES.map((cat, i) => (
-              <span key={i} style={{ fontSize: 13, padding: '6px 14px', borderRadius: 20, border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.6)', fontFamily: "'Libre Franklin', sans-serif" }}>🏆 {cat}</span>
+              <span key={i} style={{ fontSize: 13, padding: '7px 16px', borderRadius: 20, border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.65)', fontFamily: "'Libre Franklin', sans-serif" }}>🏆 {cat}</span>
             ))}
           </div>
-          <NewsletterInline />
+
+          {/* Yeti note */}
+          <div style={{ background: 'rgba(212,132,90,0.1)', border: '1px solid rgba(212,132,90,0.22)', borderRadius: 14, padding: '24px 28px', maxWidth: 480, margin: '0 auto 44px', textAlign: 'left' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+              <img src="/images/yeti/yeti-camera.png" alt="The Yeti" style={{ width: 52, height: 52, borderRadius: '50%', objectFit: 'cover', flexShrink: 0, border: '2px solid rgba(212,132,90,0.3)' }} />
+              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 19, color: C.sunsetLight }}>A note from The Yeti</div>
+            </div>
+            <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', lineHeight: 1.85, margin: 0, fontFamily: "'Libre Franklin', sans-serif" }}>
+              "100% peoples choice. Voted on by every real person who sat at their counter and tried something. The certificates look great on a wall — and I plan to be at the ceremony, which should tell you something."
+            </p>
+          </div>
+
+          {/* Newsletter — constrained so it doesn't blow out */}
+          <div style={{ maxWidth: 540, margin: '0 auto' }}>
+            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)', marginBottom: 16, fontFamily: "'Libre Franklin', sans-serif" }}>
+              Get notified when awards are announced — join the Dispatch:
+            </p>
+            <NewsletterInline />
+          </div>
         </FadeIn>
       </div>
     </section>
@@ -1431,6 +1476,7 @@ export default function WineriesPage() {
       <WaveDivider topColor={C.dusk} bottomColor={C.night} />
       <WineriesHowItWorksSection />
       <WineriesVillageCallout />
+      <WineriesItinerarySection />
       <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
       <PromoBanner page="Wineries" />
       <WineriesMapSection />
@@ -1441,13 +1487,10 @@ export default function WineriesPage() {
       <WaveDivider topColor={C.warmWhite} bottomColor={C.dusk} />
       <WineScoreboardSection />
       <WaveDivider topColor={C.dusk} bottomColor={C.night} />
-      <WineriesItinerarySection />
-      <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
-      <DiagonalDivider topColor={C.cream} bottomColor={C.dusk} />
-      <WineriesCTASection />
-      <WaveDivider topColor={C.dusk} bottomColor={C.night} />
       <WineAwardCeremonySection />
-      <WaveDivider topColor={C.night} bottomColor={C.warmWhite} flip />
+      <WaveDivider topColor={C.night} bottomColor={C.dusk} />
+      <WineriesCTASection />
+      <WaveDivider topColor={C.dusk} bottomColor={C.warmWhite} />
       <PageSponsorBanner pageName="wineries" />
       <Footer scrollTo={subScrollTo} />
     </div>
