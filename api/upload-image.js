@@ -14,7 +14,13 @@ export default async function handler(req, res) {
   const { action = 'upload' } = req.body || {};
 
   // action=apply — update a Notion article's Cover Image URL (no file upload)
+  // Admin-only: requires x-admin-token header matching ADMIN_TOKEN env var
   if (action === 'apply') {
+    const adminToken = req.headers['x-admin-token'];
+    if (!adminToken || adminToken !== process.env.ADMIN_TOKEN) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
     const { notionId, filename, url } = req.body;
     if (!notionId || (!filename && !url)) {
       return res.status(400).json({ error: 'notionId and either filename or url required' });
