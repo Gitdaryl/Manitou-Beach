@@ -180,7 +180,7 @@ export default function FoodTruckPartnerPage() {
               <img src="/images/foodtruck-2-illustration.png" alt="" aria-hidden="true" style={{ width: "min(320px, 80vw)", opacity: 0.92 }} />
             </div>
           </FadeIn>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 24, marginTop: 32 }}>
+          <div className="ft-how-grid" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 24, marginTop: 32 }}>
             {TRUCK_HOW.map((s, i) => (
               <FadeIn key={s.step} delay={i * 80}>
                 <div style={{ background: C.warmWhite, borderRadius: 16, padding: "32px 28px", border: `1px solid ${C.sand}`, position: "relative", overflow: "hidden", height: "100%", boxSizing: "border-box" }}>
@@ -318,7 +318,7 @@ export default function FoodTruckPartnerPage() {
 
             {/* Live Listing */}
             <FadeIn delay={120}>
-              <div style={{ background: C.dusk, borderRadius: 18, padding: "36px 28px", boxShadow: "0 12px 40px rgba(0,0,0,0.2)", position: "relative", overflow: "hidden", height: "100%", boxSizing: "border-box", transform: "scale(1.03)" }}>
+              <div className="ft-pricing-paid" style={{ background: C.dusk, borderRadius: 18, padding: "36px 28px", boxShadow: "0 12px 40px rgba(0,0,0,0.2)", position: "relative", overflow: "hidden", height: "100%", boxSizing: "border-box", transform: "scale(1.03)" }}>
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 12 }}>Live Listing</div>
                 <div style={{ marginBottom: 4 }}>
                   <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 48, fontWeight: 700, color: C.cream }}>$9</span>

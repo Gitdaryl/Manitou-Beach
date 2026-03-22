@@ -28,6 +28,10 @@ export default function FoodTruckQRPage() {
           .no-print { display: none !important; }
         }
         body { margin: 0; background: ${C.cream}; }
+        @media (max-width: 480px) {
+          .qr-card { padding: 36px 24px !important; }
+          .qr-outer { padding: 16px !important; }
+        }
       `}</style>
 
       {/* Print button — hidden on print */}
@@ -55,7 +59,7 @@ export default function FoodTruckQRPage() {
         background: C.cream, fontFamily: "'Libre Franklin', sans-serif",
         padding: 32,
       }}>
-        <div style={{
+        <div className="qr-card" style={{
           background: '#fff',
           border: `2px solid ${C.sand}`,
           borderRadius: 20,
@@ -89,20 +93,22 @@ export default function FoodTruckQRPage() {
           </h1>
 
           {/* QR code */}
-          <div style={{
+          <div className="qr-outer" style={{
             display: 'inline-block',
             border: `3px solid ${C.sand}`,
             borderRadius: 12,
             padding: 12,
             marginBottom: 24,
             background: C.cream,
+            maxWidth: '100%',
+            boxSizing: 'border-box',
           }}>
             <QRCode
               value={pageUrl}
               size={280}
               fgColor="#2D3B45"
               bgColor="#FAF6EF"
-              style={{ display: 'block', borderRadius: 6 }}
+              style={{ display: 'block', borderRadius: 6, maxWidth: '100%', height: 'auto' }}
             />
           </div>
 

@@ -1,4 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 600);
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < 600);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
+  return isMobile;
+}
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivider, PageSponsorBanner, DiagonalDivider, Btn } from '../components/Shared';
 import { Footer, GlobalStyles, Navbar, NewsletterInline, PromoBanner } from '../components/Layout';
 import { C } from '../data/config';
@@ -427,28 +437,31 @@ function WinePassportWidget({ stamped, villageVenues, trailVenues }) {
 
 function StarRow({ label, required, value, onChange }) {
   const [hover, setHover] = useState(0);
+  const isMobile = useIsMobile();
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
-      <div style={{ width: 110, fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase', color: C.textMuted, flexShrink: 0 }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 8 : 12, marginBottom: isMobile ? 14 : 10 }}>
+      <div style={{ width: isMobile ? 80 : 110, fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 0.6, textTransform: 'uppercase', color: C.textMuted, flexShrink: 0, lineHeight: 1.3 }}>
         {label}{required && <span style={{ color: C.sunset }}> *</span>}
       </div>
-      <div style={{ display: 'flex', gap: 2 }}>
+      <div style={{ display: 'flex', gap: isMobile ? 4 : 2 }}>
         {[1,2,3,4,5].map(s => (
           <button
             key={s}
             onClick={() => onChange(s === value ? 0 : s)}
             onMouseEnter={() => setHover(s)}
             onMouseLeave={() => setHover(0)}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 24, padding: '1px 2px', color: s <= (hover || value) ? C.sunset : C.sand, transition: 'color 0.1s' }}
+            // 44px minimum touch target on mobile (Apple HIG)
+            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: isMobile ? 28 : 24, padding: isMobile ? '8px 6px' : '1px 2px', minWidth: isMobile ? 44 : 'auto', minHeight: isMobile ? 44 : 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center', color: s <= (hover || value) ? C.sunset : C.sand, transition: 'color 0.1s' }}
           >★</button>
         ))}
       </div>
-      {!required && value === 0 && <span style={{ fontSize: 11, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>optional</span>}
+      {!required && value === 0 && !isMobile && <span style={{ fontSize: 11, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>optional</span>}
     </div>
   );
 }
 
 function WineReviewModal({ venue, accent, onSuccess, onClose }) {
+  const isMobile = useIsMobile();
   const [rating, setRating] = useState(0);
   const [service, setService] = useState(0);
   const [atmosphere, setAtmosphere] = useState(0);
@@ -498,11 +511,35 @@ function WineReviewModal({ venue, accent, onSuccess, onClose }) {
   return (
     <div
       onClick={e => e.stopPropagation()}
-      style={{ position: 'fixed', inset: 0, background: 'rgba(10,18,24,0.7)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}
+      style={{
+        position: 'fixed', inset: 0, background: 'rgba(10,18,24,0.7)', zIndex: 1000,
+        display: 'flex',
+        // On mobile: pin to bottom like a sheet; on desktop: centre
+        alignItems: isMobile ? 'flex-end' : 'center',
+        justifyContent: 'center',
+        padding: isMobile ? 0 : 24,
+      }}
     >
-      <div style={{ background: C.warmWhite, borderRadius: 20, width: '100%', maxWidth: 480, boxShadow: '0 24px 80px rgba(0,0,0,0.3)', overflow: 'hidden', maxHeight: '90vh', overflowY: 'auto' }}>
+      <div style={{
+        background: C.warmWhite,
+        borderRadius: isMobile ? '20px 20px 0 0' : 20,
+        width: '100%',
+        maxWidth: isMobile ? '100%' : 480,
+        boxShadow: '0 -8px 40px rgba(0,0,0,0.25)',
+        overflow: 'hidden',
+        maxHeight: isMobile ? '92vh' : '90vh',
+        overflowY: 'auto',
+        // Prevent rubber-band scroll bleeding through on iOS
+        WebkitOverflowScrolling: 'touch',
+      }}>
+        {/* Drag handle on mobile */}
+        {isMobile && (
+          <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 12, paddingBottom: 4 }}>
+            <div style={{ width: 36, height: 4, borderRadius: 2, background: C.sand }} />
+          </div>
+        )}
         <div style={{ height: 5, background: accent }} />
-        <div style={{ padding: '28px 32px 32px' }}>
+        <div style={{ padding: isMobile ? '20px 16px 32px' : '28px 32px 32px' }}>
           <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 19, fontWeight: 400, color: C.text, marginBottom: 4 }}>Log Your Visit</div>
           <div style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 24 }}>{venue}</div>
 

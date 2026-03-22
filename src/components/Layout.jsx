@@ -11,7 +11,9 @@ export function GlobalStyles() {
       }
       @media (max-width: 768px) {
         .ft-hero-video { display: none !important; }
-        .ft-hero-section { background-image: url('/images/foodtruck_hero.jpg') !important; background-size: cover !important; background-position: center !important; }
+        .ft-hero-section { background-image: url('/images/foodtruck_hero.jpg') !important; background-size: cover !important; background-position: center !important; padding-top: 80px !important; padding-bottom: 60px !important; }
+        .ft-how-grid { grid-template-columns: 1fr !important; }
+        .ft-pricing-paid { transform: none !important; }
       }
       @keyframes marquee {
         0% { transform: translateX(0); }

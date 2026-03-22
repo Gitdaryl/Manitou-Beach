@@ -92,7 +92,7 @@ async function handleGet(req, res) {
 
 async function handlePost(req, res) {
   try {
-    const { slug, token, lat, lng, note, todaysSpecial, departureTime } = req.body || {};
+    const { slug, token, action, comingDate, lat, lng, note, todaysSpecial, departureTime } = req.body || {};
 
     if (!slug || !token) {
       return res.status(400).json({ error: 'slug and token are required' });
@@ -137,6 +137,27 @@ async function handlePost(req, res) {
 
     if (storedToken !== token) {
       return res.status(403).json({ error: 'Invalid token' });
+    }
+
+    // ── SCHEDULE ACTION — only patches Coming Date ──
+    if (action === 'schedule') {
+      const updateProps = {
+        'Coming Date': comingDate ? { date: { start: comingDate } } : { date: null },
+      };
+      const patchRes = await fetch(`https://api.notion.com/v1/pages/${page.id}`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${process.env.NOTION_TOKEN_BUSINESS}`,
+          'Content-Type': 'application/json',
+          'Notion-Version': '2022-06-28',
+        },
+        body: JSON.stringify({ properties: updateProps }),
+      });
+      if (!patchRes.ok) {
+        console.error('Food Trucks schedule PATCH failed:', await patchRes.text());
+        return res.status(500).json({ error: 'Schedule update failed' });
+      }
+      return res.status(200).json({ ok: true, comingDate: comingDate || null });
     }
 
     // Update the truck's location and last check-in time

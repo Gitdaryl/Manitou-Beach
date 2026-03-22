@@ -69,6 +69,12 @@ export default function FoodTrucksPage() {
   const [smsPhone, setSmsPhone] = useState('');
   const [smsStatus, setSmsStatus] = useState(''); // '' | 'loading' | 'sent' | 'error'
 
+  // Coming schedule (vendor mode)
+  const [comingDateLocal, setComingDateLocal] = useState(null);
+  const [scheduleDate, setScheduleDate] = useState('');
+  const [scheduleStatus, setScheduleStatus] = useState(''); // '' | 'loading' | 'saved' | 'cleared' | 'error'
+  const tomorrowStr = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
+
   // Share + love input state
   const [sharedId, setSharedId] = useState(null);
   const [loveInput, setLoveInput] = useState({ slug: '', text: '' }); // one open at a time
@@ -85,6 +91,41 @@ export default function FoodTrucksPage() {
       setSharedId(truck.id);
       setTimeout(() => setSharedId(null), 2200);
     }
+  };
+
+  // Sync comingDateLocal when checkinTruck first loads
+  useEffect(() => {
+    if (checkinTruck?.comingDate) setComingDateLocal(checkinTruck.comingDate);
+  }, [checkinTruck]);
+
+  // Schedule handlers (vendor mode)
+  const handleSchedule = async () => {
+    if (!scheduleDate) return;
+    setScheduleStatus('loading');
+    try {
+      const res = await fetch('/api/food-trucks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slug: truckSlug, token: truckToken, action: 'schedule', comingDate: scheduleDate }),
+      });
+      const d = await res.json();
+      if (d.ok) { setComingDateLocal(scheduleDate); setScheduleDate(''); setScheduleStatus('saved'); }
+      else setScheduleStatus('error');
+    } catch { setScheduleStatus('error'); }
+  };
+
+  const handleClearSchedule = async () => {
+    setScheduleStatus('loading');
+    try {
+      const res = await fetch('/api/food-trucks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slug: truckSlug, token: truckToken, action: 'schedule', comingDate: null }),
+      });
+      const d = await res.json();
+      if (d.ok) { setComingDateLocal(null); setScheduleStatus('cleared'); }
+      else setScheduleStatus('error');
+    } catch { setScheduleStatus('error'); }
   };
 
   // Handle love tap
@@ -373,6 +414,20 @@ export default function FoodTrucksPage() {
               ✕
             </button>
           </div>
+        ) : sortedItems.length === 0 ? (
+          <button
+            onClick={() => setLoveInput({ slug, text: '' })}
+            style={{
+              display: "inline-flex", alignItems: "center", gap: 5,
+              padding: "6px 14px", borderRadius: 20,
+              background: `${C.sunset}12`, border: `1.5px dashed ${C.sunset}40`,
+              fontSize: 12, color: C.sunset, fontWeight: 600,
+              cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif",
+              transition: "all 0.18s",
+            }}
+          >
+            ❤️ Love a dish
+          </button>
         ) : (
           <button
             onClick={() => setLoveInput({ slug, text: '' })}
@@ -696,6 +751,63 @@ export default function FoodTrucksPage() {
               </button>
             </div>
           )}
+
+          {/* ── COMING RUNS — self-serve schedule (always visible once truck loads) ── */}
+          {trucks !== null && checkinTruck && (
+            <div style={{ marginTop: 24 }}>
+              <div style={{ background: "#fff", borderRadius: 16, border: `1px solid ${C.sand}`, padding: "24px", boxShadow: "0 4px 20px rgba(0,0,0,0.04)" }}>
+                <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text, margin: "0 0 4px" }}>
+                  📅 Coming Runs
+                </h3>
+                <p style={{ fontSize: 12, color: C.textMuted, margin: "0 0 16px", lineHeight: 1.5 }}>
+                  Let customers know when you're planning a run before you arrive — they'll see it on the locator.
+                </p>
+
+                {comingDateLocal && new Date(comingDateLocal) > new Date() && (
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: `${C.lakeBlue}10`, border: `1px solid ${C.lakeBlue}30`, borderRadius: 8, padding: "10px 14px", marginBottom: 14 }}>
+                    <span style={{ fontSize: 13, color: C.lakeBlue, fontWeight: 600 }}>
+                      📅 {formatComingDate(comingDateLocal)} — showing on the locator
+                    </span>
+                    <button
+                      onClick={handleClearSchedule}
+                      disabled={scheduleStatus === 'loading'}
+                      style={{ fontSize: 12, color: C.textMuted, background: "none", border: "none", cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", padding: 0, textDecoration: "underline" }}
+                    >
+                      Clear
+                    </button>
+                  </div>
+                )}
+
+                <div style={{ display: "flex", gap: 8 }}>
+                  <input
+                    type="date"
+                    min={tomorrowStr}
+                    value={scheduleDate}
+                    onChange={e => { setScheduleDate(e.target.value); setScheduleStatus(''); }}
+                    style={{ flex: 1, padding: "11px 12px", border: `1px solid ${C.sand}`, borderRadius: 8, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", color: C.text, background: C.warmWhite, outline: "none" }}
+                  />
+                  <button
+                    onClick={handleSchedule}
+                    disabled={!scheduleDate || scheduleStatus === 'loading'}
+                    style={{
+                      padding: "11px 16px", borderRadius: 8, whiteSpace: "nowrap",
+                      background: !scheduleDate || scheduleStatus === 'loading' ? C.sand : C.lakeBlue,
+                      color: C.cream, border: "none", fontSize: 13, fontWeight: 700,
+                      cursor: !scheduleDate || scheduleStatus === 'loading' ? "default" : "pointer",
+                      fontFamily: "'Libre Franklin', sans-serif", transition: "background 0.2s",
+                    }}
+                  >
+                    {scheduleStatus === 'loading' ? '…' : 'Set Date'}
+                  </button>
+                </div>
+
+                {scheduleStatus === 'saved' && <p style={{ fontSize: 12, color: C.sage, fontWeight: 600, margin: "10px 0 0" }}>✓ Saved! Customers will see this on the locator.</p>}
+                {scheduleStatus === 'cleared' && <p style={{ fontSize: 12, color: C.textMuted, margin: "10px 0 0" }}>Coming date cleared.</p>}
+                {scheduleStatus === 'error' && <p style={{ fontSize: 12, color: "#c05a5a", margin: "10px 0 0" }}>Something went wrong — try again.</p>}
+              </div>
+            </div>
+          )}
+
         </div>
 
         {/* Vendor Footer */}
