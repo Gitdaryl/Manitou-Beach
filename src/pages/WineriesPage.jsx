@@ -1475,13 +1475,13 @@ function WineAwardCeremonySection() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               {[
                 { icon: '/images/icons/wine-rating.png',      text: 'Visitors rate what they tried at each stop — wine quality, service, atmosphere. Scores go live instantly.' },
-                { icon: '/images/icons/stamp-offer-icon.png', text: 'Rankings build all season. Every rating is a vote. The leaderboard updates in real time.' },
-                { icon: '/images/icons/passport-icon.png',    text: 'Scores go dark in the final 30 days. Nobody knows the winners — until the ceremony.' },
-                { icon: '/images/icons/trophy-icon.png',      text: 'At the awards night (location TBA), winners receive a custom framed certificate to hang on their wall.' },
-                { icon: '/images/icons/events-icon.png',      text: 'This is an annual event — May to October, every year. The trail grows. The awards grow with it.' },
+                { icon: '/images/icons/leaderboard-icon.png', text: 'Rankings build all season. Every rating is a vote. The leaderboard updates in real time.' },
+                { icon: '/images/icons/sealed-icon.png',       text: 'Scores go dark in the final 30 days. Nobody knows the winners — until the ceremony.' },
+                { icon: '/images/icons/trophy-icon.png',       text: 'At the awards night (location TBA), winners receive a custom framed certificate to hang on their wall.' },
+                { icon: '/images/icons/events-icon.png',       text: 'This is an annual event — May to October, every year. The trail grows. The awards grow with it.' },
               ].map((row, i) => (
-                <div key={i} style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
-                  <img src={row.icon} alt="" style={{ width: 26, height: 26, objectFit: 'contain', flexShrink: 0, marginTop: 1, opacity: 0.88 }} />
+                <div key={i} style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+                  <img src={row.icon} alt="" style={{ width: 40, height: 40, objectFit: 'contain', flexShrink: 0, marginTop: 1, opacity: 0.88 }} />
                   <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7 }}>{row.text}</span>
                 </div>
               ))}
