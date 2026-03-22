@@ -574,7 +574,7 @@ export function HappeningSubmitCTA({ simple = false }) {
             <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "28px 32px", marginBottom: 24 }}>
               <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 10 }}>Promote Your Event</div>
               <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.7, margin: "0 0 20px 0" }}>
-                Hero Feature · Newsletter Spotlight · Featured Banners.<br/>Founding rates available now — limited spots.
+                Want more people to show up? We can put your event front and center — on the homepage, in the newsletter, and across the site.<br/>Founding rates available now — limited spots.
               </p>
               <Btn href="/promote" variant="sunset">See Promotion Packages →</Btn>
             </div>
@@ -805,7 +805,7 @@ export default function HappeningPage() {
               Want more exposure?
             </div>
             <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.cream, fontWeight: 400 }}>
-              Hero Feature · Newsletter Spotlight · Featured Banners
+              Homepage · Newsletter · Featured Banners
             </div>
             <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.4)", marginTop: 4 }}>
               Founding sponsor rates available now — limited spots

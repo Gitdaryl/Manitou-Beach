@@ -103,7 +103,7 @@ function SignupForm() {
             cursor: submitting ? 'default' : 'pointer', opacity: submitting ? 0.7 : 1, transition: 'opacity 0.2s',
           }}
         >
-          {submitting ? 'One moment...' : 'Get Started — Connect Your Bank →'}
+          {submitting ? 'One moment...' : 'Get Started — Tell Us Where to Send Your Money →'}
         </button>
         <p style={{ marginTop: 14, fontSize: 12, color: 'rgba(255,255,255,0.25)', textAlign: 'center', lineHeight: 1.6, fontFamily: "'Libre Franklin', sans-serif" }}>
           You'll be taken to a secure Stripe form to set up your bank details. No charge — this just tells us where to send your ticket revenue.

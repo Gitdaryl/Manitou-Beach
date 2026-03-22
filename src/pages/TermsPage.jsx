@@ -36,7 +36,7 @@ export default function TermsPage() {
         <p style={S.p}>We reserve the right to approve, edit, or remove any listing at our sole discretion. Free listings are not guaranteed placement or visibility.</p>
 
         <h2 style={S.h2}>Paid subscriptions</h2>
-        <p style={S.p}>Paid listing tiers (Enhanced, Featured, Premium) are billed monthly via Stripe. By subscribing, you authorize recurring charges. You may cancel at any time; your listing will remain active through the end of the current billing period. No refunds for partial months.</p>
+        <p style={S.p}>Paid listing tiers (Showcased, Highlighted, Front and Center) are billed monthly via Stripe. By subscribing, you authorize recurring charges. You may cancel at any time; your listing will remain active through the end of the current billing period. No refunds for partial months.</p>
         <p style={S.p}>Pricing may change with 30 days' notice. Founding members who are currently subscribed will not be subject to price increases while their subscription remains active.</p>
 
         <h2 style={S.h2}>SMS notifications</h2>

@@ -5,9 +5,9 @@ import { GlobalStyles, Navbar, Footer } from '../components/Layout';
 const TIERS = [
   {
     id: 'enhanced',
-    label: 'Enhanced',
+    label: 'Showcased',
     price: 9,
-    tagline: 'Get discovered online',
+    tagline: 'Show up when lake visitors go looking',
     features: [
       'Clickable website link',
       'Business description',
@@ -19,11 +19,11 @@ const TIERS = [
   },
   {
     id: 'featured',
-    label: 'Featured',
+    label: 'Highlighted',
     price: 23,
     tagline: 'Stand out from the crowd',
     features: [
-      'Everything in Enhanced',
+      'Everything in Showcased',
       'Spotlight card with logo',
       'Above standard listings',
       'Priority directory placement',
@@ -34,11 +34,11 @@ const TIERS = [
   },
   {
     id: 'premium',
-    label: 'Premium',
+    label: 'Front and Center',
     price: 43,
     tagline: 'Maximum visibility',
     features: [
-      'Everything in Featured',
+      'Everything in Highlighted',
       'Full-width banner display',
       'Large logo prominence',
       'Top-of-directory placement',
@@ -489,7 +489,7 @@ export default function BetaBusinessPage() {
             color: C.sunsetLight,
             marginBottom: 8,
           }}>
-            Beta Business Listing
+            Founding Business Listing
           </p>
           <h1 style={{
             fontFamily: "'Libre Baskerville', serif",
@@ -529,7 +529,7 @@ export default function BetaBusinessPage() {
             color: C.sunsetLight,
             margin: '0 0 12px',
           }}>
-            Beta Business Offer
+            Founding Business — Get Listed Before We Open
           </p>
           <h1 style={{
             fontFamily: "'Libre Baskerville', serif",
@@ -549,8 +549,8 @@ export default function BetaBusinessPage() {
             margin: '0 auto 24px',
             lineHeight: 1.7,
           }}>
-            Choose your tier and add your card. We won't charge anything until May 10 —
-            that's your entire beta period free. Cancel before then and you owe nothing.
+            This is where Manitou Beach lives online. This summer, it's where lake visitors will find you.<br/><br/>Choose your tier and add your card. We won't charge anything until May 10 —
+            that's your entire founding period free. Cancel before then and you owe nothing.
           </p>
 
           {/* Beta bonus badge */}
@@ -601,7 +601,7 @@ export default function BetaBusinessPage() {
           lineHeight: 1.7,
         }}>
           All listings are monthly subscriptions — cancel anytime, no contracts.
-          Beta business owners keep founding pricing for as long as they remain subscribed.
+          Founding members keep this pricing for as long as they remain subscribed.
           Questions? <a href="mailto:events@yetigroove.com" style={{ color: C.lakeBlue }}>Email us</a> or DM on Facebook.
         </p>
       </div>

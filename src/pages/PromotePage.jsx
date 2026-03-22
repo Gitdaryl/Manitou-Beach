@@ -8,13 +8,13 @@ const PROMO_PAGES = ["Home", "Whats Happening", "Village", "Devils Lake", "Winer
 
 const ADVERTISE_PACKAGES = [
   { id: "newsletter_mention", label: "Newsletter Mention",   detail: "1 Issue",            price: "$29",  fullPrice: "$49",  diagramType: "newsletter_sm",
-    desc: "Your brand, product, or event mentioned with a link in the next Dispatch email.",
+    desc: "Your business, product, or event mentioned with a link in the next Dispatch email.",
     plain: "One or two sentences about you, with a link, in front of everyone who reads the weekly email. Simple and effective." },
   { id: "newsletter",         label: "Newsletter Feature",   detail: "1 Issue",            price: "$39",  fullPrice: "$79",  diagramType: "newsletter",
     desc: "A full dedicated section at the top of the next Manitou Beach Dispatch — before anyone scrolls.",
     plain: "Your business or event gets its own section at the very top of the email. Image, copy, link. The whole community sees it before anything else." },
   { id: "newsletter_4pack",   label: "Newsletter 4-Pack",    detail: "4 Issues",           price: "$129", fullPrice: "$239", diagramType: "newsletter",
-    desc: "Your brand featured in 4 consecutive Dispatch issues.",
+    desc: "Your business featured in 4 consecutive Dispatch issues.",
     plain: "A month of newsletter presence. Save $27 vs buying four individually." },
   { id: "newsletter_season",  label: "Season Contract",      detail: "All Season · 8 Issues", price: "$239", fullPrice: "$399", diagramType: "newsletter",
     desc: "Top-of-newsletter placement across the full season. First right of renewal.",
@@ -162,7 +162,7 @@ export function AdvertisePage() {
       }}>
         <SectionLabel light>Advertising &amp; Sponsorships</SectionLabel>
         <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(34px, 5.5vw, 62px)", fontWeight: 400, color: C.cream, margin: "0 0 20px 0", lineHeight: 1.15 }}>
-          Your brand, in front of people<br/>who actually live here.
+          Put your business in front of<br/>the people who spend their summers here.
         </h1>
         <p style={{ fontSize: 16, color: "rgba(255,255,255,0.5)", lineHeight: 1.8, maxWidth: 540, margin: "0 auto" }}>
           Manitou Beach isn't a passing-through crowd. These are lake residents, seasonal visitors, and local loyalists — a tight community that buys local and pays attention.
@@ -192,7 +192,7 @@ export function AdvertisePage() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 20, marginTop: 20 }}>
             {[
               { icon: "🏪", title: "Local Businesses", body: "You're already in the directory. Now put your brand in front of the community beyond search results — in their inbox, on the pages they actually visit." },
-              { icon: "🗺️", title: "Regional Brands", body: "Reach a highly-engaged audience of lake homeowners, cottage visitors, and outdoor recreation buyers. Targeted placements, no ad-tech overhead." },
+              { icon: "🗺️", title: "Regional Brands", body: "Reach a highly-engaged audience of lake homeowners, cottage visitors, and outdoor recreation buyers. No agency required — just pick a spot and we'll handle the rest." },
               { icon: "📣", title: "Event Organizers", body: "Running a market, festival, or fundraiser? Page banners and newsletter features put your event in front of the right crowd before the date." },
             ].map(({ icon, title, body }) => (
               <div key={title} style={{ background: C.cream, borderRadius: 12, padding: "24px 20px", border: `1px solid ${C.sand}` }}>

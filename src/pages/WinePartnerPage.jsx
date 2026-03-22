@@ -377,7 +377,7 @@ export default function WinePartnerPage() {
                 {[
                   { icon: "📍", text: "Your venue on the interactive trail map" },
                   { icon: "📊", text: "Live community scorecard — Wine Quality, Service, Atmosphere, Value" },
-                  { icon: "🎟️", text: "Passport gamification — guests collect stamps, come back to finish the trail" },
+                  { icon: "🎟️", text: "Stamp trail — guests collect a stamp at each stop and come back to finish the full trail" },
                   { icon: "⭐", text: "Verified public reviews, curated before publishing" },
                   { icon: "📄", text: "100 printed stamp cards (6×4) + counter display insert" },
                   { icon: "📬", text: "QR code setup, cards delivered to your door" },

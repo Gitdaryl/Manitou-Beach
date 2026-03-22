@@ -6,9 +6,9 @@ import { Footer, GlobalStyles, Navbar, SubmitSection } from '../components/Layou
 
 // ============================================================
 const FEATURED_TIERS = [
-  { id: "enhanced", name: "Enhanced" },
-  { id: "featured", name: "Featured" },
-  { id: "premium", name: "Premium" },
+  { id: "enhanced", name: "Showcased" },
+  { id: "featured", name: "Highlighted" },
+  { id: "premium", name: "Front and Center" },
 ];
 
 const SPOTS_TOTAL = 8;
@@ -171,17 +171,17 @@ export default function FeaturedPage() {
 
   const PAID_TIERS = [
     {
-      id: 'enhanced', name: 'Enhanced', color: C.lakeBlue, badge: null,
+      id: 'enhanced', name: 'Showcased', color: C.lakeBlue, badge: null,
       price: priceFor(9), priceInCents: centsFor(9),
       features: ['Everything in Free', 'Clickable website link', 'Business description', 'Expandable listing card', 'Category search placement', 'Pin on Discover map'],
     },
     {
-      id: 'featured', name: 'Featured', color: C.sage, badge: 'Most Popular',
+      id: 'featured', name: 'Highlighted', color: C.sage, badge: 'Most Popular',
       price: priceFor(23), priceInCents: centsFor(23),
-      features: ['Everything in Enhanced', 'Spotlight card placement', 'Logo or photo display', 'Above standard listings', 'Email contact button'],
+      features: ['Everything in Showcased', 'Spotlight card placement', 'Logo or photo display', 'Above standard listings', 'Email contact button'],
     },
     {
-      id: 'premium', name: 'Premium', color: C.sunsetLight, badge: 'Best Visibility',
+      id: 'premium', name: 'Front and Center', color: C.sunsetLight, badge: 'Best Visibility',
       price: priceFor(43), priceInCents: centsFor(43),
       features: ['Everything in Featured', 'Full-width banner placement', 'Large logo (110×110)', 'Top-of-directory position', 'Cross-page placements'],
     },
@@ -376,10 +376,10 @@ export default function FeaturedPage() {
                   Your Place in the Community
                 </div>
                 <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 4vw, 42px)", fontWeight: 400, color: C.cream, margin: "0 0 14px 0" }}>
-                  Enhanced is real visibility. There's more when you're ready.
+                  Showcased is real visibility. There's more when you're ready.
                 </h2>
                 <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 16, maxWidth: 600, margin: "0 auto 32px", lineHeight: 1.65 }}>
-                  Every listing here reaches people who chose to follow Manitou Beach — neighbors, visitors, and regulars who care where they spend. Enhanced puts your business in front of that audience. Featured and Premium go further, but spots at each tier are limited by business category. The businesses that claim them own their space in this community.
+                  Every listing here reaches people who chose to follow Manitou Beach — neighbors, visitors, and regulars who care where they spend. Showcased puts your business in front of that audience. Highlighted and Front and Center go further, but spots at each tier are limited by business category. The businesses that claim them own their space in this community.
                 </p>
                 {/* Live subscriber counter */}
                 <div style={{ maxWidth: 460, margin: "0 auto", background: "rgba(255,255,255,0.05)", borderRadius: 14, padding: "20px 24px", border: "1px solid rgba(255,255,255,0.1)" }}>
