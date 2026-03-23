@@ -101,7 +101,7 @@ function BetaFullMessage() {
   return (
     <div style={{ textAlign: 'center', animation: 'slideUp 0.6s ease both', maxWidth: 420, width: '100%' }}>
       <p style={{ fontFamily: "'Caveat', cursive", fontSize: 'clamp(26px, 5vw, 42px)', color: C.sunsetLight, margin: '0 0 14px 0', lineHeight: 1.15 }}>
-        All 29 spots are gone.
+        All 30 spots are gone.
       </p>
       <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, margin: '0 0 24px 0' }}>
         Beta access is full — thanks to everyone who grabbed a spot.<br />
@@ -422,7 +422,7 @@ function SignupForm({ remaining, onSpotsUpdate }) {
               fontSize: 12, fontWeight: 700, letterSpacing: 2,
               textTransform: 'uppercase', color: C.sage, margin: 0,
             }}>
-              You're beta tester #{result.spot_number} of 29
+              You're beta tester #{result.spot_number} of 30
             </p>
           )}
         </div>

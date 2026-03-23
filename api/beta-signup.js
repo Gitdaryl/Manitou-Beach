@@ -46,7 +46,7 @@ async function getBetaCount() {
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
 
-  const max = parseInt(process.env.MAX_BETA_CODES || '29', 10);
+  const max = parseInt(process.env.MAX_BETA_CODES || '30', 10);
 
   // ── GET: return remaining spots ───────────────────────────────────────────
   if (req.method === 'GET') {

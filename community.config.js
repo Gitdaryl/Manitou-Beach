@@ -57,6 +57,7 @@ export default {
     contact: 'NOTION_DB_CONTACT',
     stays: 'NOTION_DB_STAYS',
     tickets: 'NOTION_DB_TICKETS',
+    smsSubscribers: 'NOTION_DB_SMS_SUBSCRIBERS',
   },
 
   // ── Feature flags ─────────────────────────────────────────
