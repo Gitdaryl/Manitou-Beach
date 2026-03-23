@@ -92,8 +92,12 @@ export default async function handler(req, res) {
         quantity: 1,
       }],
       metadata: { venueName, contactName, phone: phone || '', note: note || '' },
-      success_url: `${baseUrl}/wine-partner?joined=1`,
-      cancel_url:  `${baseUrl}/wine-partner#signup`,
+      success_url: (note || '').includes('/activate-winery')
+        ? `${baseUrl}/activate-winery?joined=1&venue=${encodeURIComponent(venueName)}`
+        : `${baseUrl}/wine-partner?joined=1`,
+      cancel_url: (note || '').includes('/activate-winery')
+        ? `${baseUrl}/activate-winery?venue=${encodeURIComponent(venueName)}`
+        : `${baseUrl}/wine-partner#signup`,
     });
 
     return res.status(200).json({ url: session.url });

@@ -195,6 +195,7 @@ export default async function handler(req, res) {
             { property: 'Status', status: { equals: 'Listed Enhanced' } },
             { property: 'Status', status: { equals: 'Listed Featured' } },
             { property: 'Status', status: { equals: 'Listed Premium' } },
+            { property: 'Status', status: { equals: 'Listed Comp' } },
           ],
         },
       }),
@@ -241,7 +242,7 @@ export default async function handler(req, res) {
 
       if (status === 'Listed Premium') premium.push({ ...business, tier: 'premium' });
       else if (status === 'Listed Featured' && !expired) featured.push({ ...business, tier: 'featured' });
-      else if (status === 'Listed Enhanced') enhanced.push({ ...business, tier: 'enhanced' });
+      else if (status === 'Listed Enhanced' || status === 'Listed Comp') enhanced.push({ ...business, tier: 'enhanced' });
       else free.push({ ...business, tier: 'free' });
     });
 

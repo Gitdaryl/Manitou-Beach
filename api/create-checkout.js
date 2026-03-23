@@ -78,7 +78,7 @@ export default async function handler(req, res) {
 
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-  const { tier, businessName, email, mode: checkoutMode, duration, isBeta } = req.body;
+  const { tier, businessName, email, mode: checkoutMode, duration, isBeta, billingInterval } = req.body;
 
   if (!tier || !businessName || !email) {
     return res.status(400).json({ error: 'Missing required fields' });
@@ -98,7 +98,14 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Invalid listing tier' });
     }
     try {
-      const unitAmount = await computePriceCents(plan.basePrice);
+      const isAnnual = billingInterval === 'year';
+      const monthlyAmount = await computePriceCents(plan.basePrice);
+      const unitAmount = isAnnual ? monthlyAmount * 12 : monthlyAmount;
+      const interval = isAnnual ? 'year' : 'month';
+      const priceLabel = isAnnual
+        ? `$${(unitAmount / 100).toFixed(0)}/yr`
+        : `$${plan.basePrice}/mo`;
+
       const sessionParams = {
         payment_method_types: ['card'],
         mode: 'subscription',
@@ -109,11 +116,11 @@ export default async function handler(req, res) {
             product_data: {
               name: isBeta ? `${plan.name} — Beta Founder` : plan.name,
               description: isBeta
-                ? `${plan.description} — ${businessName} · Free through May 10, then $${plan.basePrice}/mo`
+                ? `${plan.description} — ${businessName} · Free through May 10, then ${priceLabel}`
                 : `${plan.description} — ${businessName}`,
             },
             unit_amount: unitAmount,
-            recurring: { interval: 'month' },
+            recurring: { interval },
           },
           quantity: 1,
         }],
@@ -121,6 +128,7 @@ export default async function handler(req, res) {
           businessName,
           tier,
           type: 'listing',
+          billingInterval: interval,
           ...(duration && { duration: String(duration) + ' months' }),
           ...(isBeta && { beta: 'true' }),
         },
@@ -128,12 +136,12 @@ export default async function handler(req, res) {
           ? `${baseUrl}/beta-business?success=true&business=${encodeURIComponent(businessName)}`
           : tier === 'food_truck_founding'
             ? `${baseUrl}/food-trucks?listed=true&truck=${encodeURIComponent(businessName)}`
-            : `${baseUrl}/?listed=true&business=${encodeURIComponent(businessName)}`,
+            : `${baseUrl}/activate?success=true&business=${encodeURIComponent(businessName)}`,
         cancel_url: isBeta
           ? `${baseUrl}/beta-business`
           : tier === 'food_truck_founding'
             ? `${baseUrl}/food-truck-partner#food-truck-signup`
-            : `${baseUrl}/#listing-tiers`,
+            : `${baseUrl}/activate?business=${encodeURIComponent(businessName)}&tier=${tier}`,
         ...(isBeta && { subscription_data: { trial_end: BETA_TRIAL_END } }),
       };
       const session = await stripe.checkout.sessions.create(sessionParams);
