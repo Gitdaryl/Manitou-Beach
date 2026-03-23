@@ -100,14 +100,15 @@ function LaunchedMessage() {
 function BetaFullMessage() {
   return (
     <div style={{ textAlign: 'center', animation: 'slideUp 0.6s ease both', maxWidth: 420, width: '100%' }}>
-      <p style={{ fontFamily: "'Caveat', cursive", fontSize: 'clamp(26px, 5vw, 42px)', color: C.sunsetLight, margin: '0 0 14px 0', lineHeight: 1.15 }}>
-        All 30 spots are gone.
+      <p style={{ fontFamily: "'Caveat', cursive", fontSize: 'clamp(30px, 5.5vw, 48px)', color: C.sunsetLight, margin: '0 0 10px 0', lineHeight: 1.15 }}>
+        The yeti ate all 30 spots.
       </p>
-      <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, margin: '0 0 24px 0' }}>
-        Beta access is full — thanks to everyone who grabbed a spot.<br />
-        <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: 12 }}>
-          The site opens to everyone on April 10 at noon.
-        </span>
+      <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, margin: '0 0 8px 0' }}>
+        Beta access is full — every last one, gone like hot cookies at Blackbird.
+      </p>
+      <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.35)', lineHeight: 1.7, margin: '0 0 24px 0' }}>
+        But the gates open to everyone on April 10 at noon.<br />
+        See you on the lake.
       </p>
     </div>
   );

@@ -462,6 +462,8 @@ function SubscribeModal({ alreadySubscribed, onClose }) {
 // ============================================================
 export function NewsletterInline() {
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [wantSMS, setWantSMS] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [alreadySubscribed, setAlreadySubscribed] = useState(false);
@@ -485,9 +487,19 @@ export function NewsletterInline() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed');
+      // Fire-and-forget SMS opt-in if phone provided
+      if (wantSMS && phone.replace(/\D/g, '').length === 10) {
+        fetch('/api/sms-optin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone: phone.replace(/\D/g, ''), type: 'welcome', source: 'newsletter-inline' }),
+        }).catch(() => {});
+      }
       setAlreadySubscribed(data.alreadySubscribed);
       setShowModal(true);
       setEmail('');
+      setPhone('');
+      setWantSMS(false);
     } catch {
       setError('Something went wrong — try again.');
     } finally {
@@ -535,9 +547,27 @@ export function NewsletterInline() {
           />
           <Btn variant="primary" small disabled={submitting}>{submitting ? 'Joining…' : 'Subscribe'}</Btn>
         </form>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginTop: 8, flexBasis: '100%' }}>
+          <input type="checkbox" id="nl-sms" checked={wantSMS} onChange={e => setWantSMS(e.target.checked)}
+            style={{ marginTop: 2, flexShrink: 0, cursor: 'pointer' }} />
+          <label htmlFor="nl-sms" style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", cursor: 'pointer', lineHeight: 1.4 }}>
+            Also text me weekend highlights
+          </label>
+        </div>
+        {wantSMS && (
+          <input
+            type="tel" placeholder="(555) 555-5555" value={phone}
+            onChange={e => setPhone(e.target.value)} inputMode="numeric" autoComplete="tel"
+            style={{
+              padding: "10px 16px", borderRadius: 6, border: `1.5px solid ${C.sand}`,
+              background: C.cream, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif",
+              color: C.text, outline: "none", minWidth: 200, marginTop: 4,
+            }}
+          />
+        )}
         {error && <p style={{ margin: '6px 0 0', fontSize: 12, color: C.sunset }}>{error}</p>}
         <p style={{ margin: '6px 0 0', fontSize: 11, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
-          No spam. No tracking cookies. Unsubscribe anytime.
+          No spam. No tracking cookies. Unsubscribe anytime.{wantSMS ? ' SMS: reply STOP to opt out.' : ''}
         </p>
       </div>
       {DISPATCH_CARD_SPONSORS.length > 0 && (
@@ -1315,6 +1345,8 @@ export function SubmitSection() {
 // ============================================================
 export function FooterNewsletterModal({ onClose }) {
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [wantSMS, setWantSMS] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
@@ -1331,6 +1363,13 @@ export function FooterNewsletterModal({ onClose }) {
       const res = await fetch("/api/subscribe", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed");
+      if (wantSMS && phone.replace(/\D/g, '').length === 10) {
+        fetch('/api/sms-optin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone: phone.replace(/\D/g, ''), type: 'welcome', source: 'newsletter-footer-modal' }),
+        }).catch(() => {});
+      }
       setDone(true);
     } catch { setError("Something went wrong — try again."); }
     finally { setSubmitting(false); }
@@ -1353,6 +1392,13 @@ export function FooterNewsletterModal({ onClose }) {
             <button type="submit" disabled={submitting} style={{ padding: "11px 22px", background: C.sage, color: C.cream, border: "none", borderRadius: 6, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: submitting ? "wait" : "pointer" }}>
               {submitting ? "..." : "Subscribe"}
             </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', marginTop: 4 }}>
+              <input type="checkbox" id="fnl-sms" checked={wantSMS} onChange={e => setWantSMS(e.target.checked)} style={{ flexShrink: 0, cursor: 'pointer' }} />
+              <label htmlFor="fnl-sms" style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', fontFamily: "'Libre Franklin', sans-serif", cursor: 'pointer' }}>Also text me weekend highlights</label>
+            </div>
+            {wantSMS && (
+              <input type="tel" placeholder="(555) 555-5555" value={phone} onChange={e => setPhone(e.target.value)} inputMode="numeric" autoComplete="tel" style={{ flex: 1, minWidth: 180, padding: "11px 16px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.07)", color: C.cream, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", outline: "none" }} />
+            )}
             {error && <div style={{ width: "100%", fontSize: 12, color: C.sunset, marginTop: 4 }}>{error}</div>}
           </form>
         )}

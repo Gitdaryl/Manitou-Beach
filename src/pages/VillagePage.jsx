@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivider, PageSponsorBanner, DiagonalDivider, Btn } from '../components/Shared';
 import { Footer, GlobalStyles, Navbar, NewsletterInline, PromoBanner } from '../components/Layout';
 import { C, VILLAGE_BUSINESSES, CAT_COLORS } from '../data/config';
+import SMSOptInWidget from '../components/SMSOptInWidget';
 
 // ============================================================
 // 🏘️  MANITOU BEACH VILLAGE PAGE
@@ -223,6 +224,17 @@ export default function VillagePage() {
       <DiagonalDivider topColor={C.cream} bottomColor={C.dusk} />
       <VillageVisitCTA />
       <WaveDivider topColor={C.dusk} bottomColor={C.warmWhite} />
+
+      {/* SMS opt-in for business deals */}
+      <div style={{ maxWidth: 560, margin: '0 auto 24px', padding: '0 24px' }}>
+        <SMSOptInWidget
+          type="deals"
+          source="village"
+          heading="Get deal alerts"
+          subtext="Time-sensitive specials from Village shops and restaurants — straight to your phone."
+        />
+      </div>
+
       <NewsletterInline />
       <WaveDivider topColor={C.warmWhite} bottomColor={C.dusk} />
       <PageSponsorBanner pageName="village" />

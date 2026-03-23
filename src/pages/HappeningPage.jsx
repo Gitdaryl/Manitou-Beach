@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { FadeIn, SectionTitle, SectionLabel, Btn, ShareBar, WaveDivider, PageSponsorBanner, ScrollProgress, CategoryPill } from '../components/Shared';
 import { C, PAGE_SPONSORS, VIDEOS } from '../data/config';
 import { Footer, GlobalStyles, PromoBanner, EventLightbox, EventTimeline, Navbar, compressImage } from '../components/Layout';
+import SMSOptInWidget from '../components/SMSOptInWidget';
 
 const ATTENDANCE_LABELS = {
   just_show_up: "Just Show Up",
@@ -816,6 +817,17 @@ export default function HappeningPage() {
       </div>
 
       <VideoSection />
+
+      {/* SMS opt-in for event reminders */}
+      <div style={{ maxWidth: 560, margin: '0 auto', padding: '0 24px 40px' }}>
+        <SMSOptInWidget
+          type="event"
+          source="happening"
+          heading="Never miss an event"
+          subtext="Get a text before Fish Fry, festivals, and live music at Manitou Beach."
+        />
+      </div>
+
       <HappeningSubmitCTA simple />
       <WaveDivider topColor={C.night} bottomColor={C.dusk} />
       <PageSponsorBanner pageName="happening" />
