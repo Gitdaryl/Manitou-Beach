@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 Manitou Beach Wine Trail — Sponsorship Opportunities</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@400;600;700;800&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --cream: #FAF6EF; --sand: #E8DFD0; --driftwood: #C4B498; --sage: #7A8E72;
+    --lake: #5B7E95; --dusk: #2D3B45; --night: #1A2830; --sunset: #D4845A;
+    --sunset-light: #E8A87C; --text: #3B3228; --text-light: #6B6052;
+  }
+  @page { size: letter; margin: 0; }
+  body { font-family: 'Libre Franklin', sans-serif; color: var(--text); background: var(--cream); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page { width: 8.5in; height: 11in; margin: 0 auto; overflow: hidden; display: flex; flex-direction: column; }
+
+  /* ── HERO ── */
+  .hero { background: linear-gradient(165deg, var(--night) 0%, var(--dusk) 100%); padding: 36px 44px 28px; position: relative; }
+  .hero::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, var(--sunset), var(--sunset-light), var(--sunset)); }
+  .hero-eyebrow { font-size: 9px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--sunset); margin-bottom: 10px; }
+  .hero h1 { font-family: 'Libre Baskerville', serif; font-size: 30px; font-weight: 400; color: var(--cream); line-height: 1.25; margin-bottom: 10px; }
+  .hero h1 em { font-style: italic; color: var(--sunset-light); }
+  .hero-sub { font-size: 12px; color: rgba(250,246,239,0.55); line-height: 1.65; max-width: 460px; }
+  .hero-stats { display: flex; gap: 30px; margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.1); }
+  .hero-stat { text-align: center; }
+  .hero-stat-num { font-size: 26px; font-weight: 800; color: var(--sunset); line-height: 1; }
+  .hero-stat-label { font-size: 8px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(250,246,239,0.4); margin-top: 4px; }
+
+  /* ── SECTIONS ── */
+  .body-section { padding: 22px 44px; }
+  .section-label { font-size: 8px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--sunset); margin-bottom: 6px; }
+  .section-title { font-family: 'Libre Baskerville', serif; font-size: 19px; font-weight: 400; color: var(--night); line-height: 1.3; margin-bottom: 12px; }
+
+  /* ── COMPARISON ── */
+  .compare { background: var(--night); padding: 22px 44px; }
+  .compare .section-label { color: var(--sunset-light); }
+  .compare .section-title { color: var(--cream); }
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 4px; }
+  .compare-card { border-radius: 12px; padding: 16px; position: relative; }
+  .compare-card.theirs { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); }
+  .compare-card.yours { background: linear-gradient(135deg, rgba(212,132,90,0.15), rgba(232,168,124,0.08)); border: 1.5px solid var(--sunset); }
+  .compare-card .badge { position: absolute; top: -9px; right: 14px; background: var(--sunset); color: #fff; font-size: 8px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; }
+  .compare-card h3 { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.5); margin-bottom: 2px; }
+  .compare-card .price { font-size: 24px; font-weight: 800; color: var(--cream); margin-bottom: 10px; }
+  .compare-card .price span { font-size: 11px; font-weight: 400; color: rgba(255,255,255,0.35); }
+  .compare-card ul { list-style: none; padding: 0; }
+  .compare-card ul li { font-size: 11px; color: rgba(255,255,255,0.6); line-height: 1.5; padding: 2px 0 2px 16px; position: relative; }
+  .compare-card ul li::before { content: '·'; position: absolute; left: 3px; color: rgba(255,255,255,0.25); font-size: 16px; line-height: 1.1; }
+  .compare-card.yours ul li::before { content: '✓'; color: var(--sunset); font-size: 10px; top: 2px; }
+
+  /* ── ASSETS ── */
+  .assets-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+  .asset-card { background: #fff; border: 1px solid var(--sand); border-radius: 10px; padding: 12px 10px; text-align: center; }
+  .asset-icon { font-size: 22px; margin-bottom: 4px; }
+  .asset-name { font-size: 10px; font-weight: 700; color: var(--night); margin-bottom: 2px; }
+  .asset-detail { font-size: 9px; color: var(--text-light); line-height: 1.45; }
+
+  /* ── CTA ── */
+  .cta-bar { background: var(--night); padding: 20px 44px; display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+  .cta-bar h3 { font-family: 'Libre Baskerville', serif; font-size: 15px; color: var(--cream); font-weight: 400; }
+  .cta-bar p { font-size: 10px; color: rgba(255,255,255,0.45); margin-top: 3px; }
+  .cta-contact { text-align: right; }
+  .cta-contact .name { font-size: 12px; font-weight: 700; color: var(--sunset); }
+  .cta-contact .detail { font-size: 10px; color: rgba(255,255,255,0.5); line-height: 1.5; }
+
+  /* ── PAGE 2: TIERS ── */
+  .tiers-grid { display: grid; grid-template-columns: 1fr; gap: 0; }
+  .tier-row { display: grid; grid-template-columns: 150px 1fr; border-bottom: 1px solid var(--sand); padding: 10px 0; align-items: start; }
+  .tier-row:last-child { border-bottom: none; }
+  .tier-name { font-family: 'Libre Baskerville', serif; font-size: 13px; font-weight: 700; color: var(--night); }
+  .tier-price { font-size: 18px; font-weight: 800; color: var(--sunset); margin-top: 1px; }
+  .tier-avail { font-size: 9px; color: var(--text-light); margin-top: 1px; font-style: italic; }
+  .tier-benefits { font-size: 10.5px; color: var(--text-light); line-height: 1.55; }
+  .tier-benefits strong { color: var(--text); font-weight: 600; }
+  .tier-row.presenting { background: linear-gradient(90deg, rgba(212,132,90,0.08), transparent); padding: 12px 12px; border-radius: 10px; margin: 0 -12px; border-bottom: none; }
+  .tier-row.presenting + .tier-row { margin-top: 4px; }
+
+  /* ── AWARDS ── */
+  .awards-strip { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .award-badge { background: var(--night); color: var(--cream); font-size: 10px; font-weight: 600; padding: 5px 12px; border-radius: 20px; white-space: nowrap; }
+
+  .page-break { page-break-before: always; }
+  @media print { body { background: white; } .page { width: 100%; } .no-print { display: none; } }
+  @media screen { .page { margin: 20px auto; box-shadow: 0 4px 40px rgba(0,0,0,0.12); } .page + .page { margin-top: 40px; } }
+</style>
+</head>
+<body>
+
+<!-- ═══════ PAGE 1 ═══════ -->
+<div class="page">
+  <div class="hero">
+    <div class="hero-eyebrow">2026 Sponsorship Opportunities</div>
+    <h1>The Manitou Beach<br>Wine Trail <em>needs a title sponsor.</em></h1>
+    <p class="hero-sub">Eight venues. Five months. 800 passport cards in people's hands all summer. A People's Choice Awards ceremony in November. Your brand woven into every moment.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-num">8</div><div class="hero-stat-label">Venues</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">163</div><div class="hero-stat-label">Days on Trail</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">800+</div><div class="hero-stat-label">Passport Cards</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">20+</div><div class="hero-stat-label">Newsletter Issues</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">7</div><div class="hero-stat-label">Awards</div></div>
+    </div>
+  </div>
+
+  <div class="compare">
+    <div class="section-label">Why This Is Different</div>
+    <div class="section-title" style="color: var(--cream);">One night vs. one season.</div>
+    <div class="compare-grid">
+      <div class="compare-card theirs">
+        <h3>Typical Chamber Sponsorship</h3>
+        <div class="price">$300+ <span>/ one night</span></div>
+        <ul>
+          <li>Patron ad in printed program</li>
+          <li>Name on video loop at entrance</li>
+          <li>Single signage placement</li>
+          <li>Newsletter mention (one issue)</li>
+          <li>Event ends — exposure ends</li>
+        </ul>
+      </div>
+      <div class="compare-card yours">
+        <div class="badge">Better Value</div>
+        <h3>Wine Trail Sponsorship</h3>
+        <div class="price">$200+ <span>/ full season</span></div>
+        <ul>
+          <li>Brand on 800 physical passport cards</li>
+          <li>Logo on manitoubeachmichigan.com all season</li>
+          <li>Featured in 20+ weekly newsletters</li>
+          <li>Name on wine rating confirmation screen</li>
+          <li>Awards ceremony table + signage</li>
+          <li>5+ months of continuous exposure</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="body-section" style="flex: 1;">
+    <div class="section-label">Your Brand Appears On</div>
+    <div class="section-title">Six touchpoints, all season long.</div>
+    <div class="assets-grid">
+      <div class="asset-card"><div class="asset-icon">🃏</div><div class="asset-name">Passport Cards</div><div class="asset-detail">800+ printed cards held by customers all summer</div></div>
+      <div class="asset-card"><div class="asset-icon">🌐</div><div class="asset-name">Website</div><div class="asset-detail">manitoubeachmichigan.com wine trail page — logo + link</div></div>
+      <div class="asset-card"><div class="asset-icon">📬</div><div class="asset-name">The Dispatch</div><div class="asset-detail">Weekly newsletter to a growing subscriber list</div></div>
+      <div class="asset-card"><div class="asset-icon">📱</div><div class="asset-name">Rating Screen</div><div class="asset-detail">Every QR scan shows your brand at the moment of engagement</div></div>
+      <div class="asset-card"><div class="asset-icon">🏆</div><div class="asset-name">Awards Ceremony</div><div class="asset-detail">Dinner, live band, 7 People's Choice awards — November</div></div>
+      <div class="asset-card"><div class="asset-icon">📣</div><div class="asset-name">Social Media</div><div class="asset-detail">Tagged in wine trail posts throughout the season</div></div>
+    </div>
+  </div>
+
+  <div class="cta-bar">
+    <div><h3>Ready to be part of the trail?</h3><p>Sponsorships are limited. Presenting Sponsor is exclusive to one business.</p></div>
+    <div class="cta-contact"><div class="name">Daryl Young</div><div class="detail">Yeti Groove Media<br>admin@yetigroove.com<br>manitoubeachmichigan.com/wineries</div></div>
+  </div>
+</div>
+
+<!-- ═══════ PAGE 2 ═══════ -->
+<div class="page page-break">
+  <div class="body-section" style="padding-top: 36px;">
+    <div class="section-label">Sponsorship Tiers</div>
+    <div class="section-title">Choose your level of involvement.</div>
+    <div class="tiers-grid">
+      <div class="tier-row presenting">
+        <div><div class="tier-name">Presenting Sponsor</div><div class="tier-price">$2,000</div><div class="tier-avail">1 available — exclusive</div></div>
+        <div class="tier-benefits"><strong>"The 2026 Wine Trail, Presented by [You]"</strong> — naming rights on all materials.<br>Logo on 800 passport cards. Logo + link on website header. Featured in every newsletter issue. "Brought to you by" on every QR rating screen. 8-person reserved table at awards ceremony. Emcee recognition throughout the evening. Present one of the 7 awards on stage. Banner at venue entrance + stage. Full-page ceremony program feature.</div>
+      </div>
+      <div class="tier-row">
+        <div><div class="tier-name">Gold</div><div class="tier-price">$750</div><div class="tier-avail">3 available</div></div>
+        <div class="tier-benefits">Logo on website sponsor strip. Sponsor spotlight in <strong>4 newsletter issues</strong> (rotating monthly). Name on passport card back. Social media mention in 2 trail posts. <strong>4-person reserved table</strong> at awards ceremony. Half-page in ceremony program. Emcee announcement.</div>
+      </div>
+      <div class="tier-row">
+        <div><div class="tier-name">Silver</div><div class="tier-price">$400</div><div class="tier-avail">5 available</div></div>
+        <div class="tier-benefits">Name + link on website sponsor section. Sponsor mention in <strong>2 newsletter issues</strong>. <strong>2 tickets</strong> to awards ceremony. Signage at ceremony. Listed in ceremony program.</div>
+      </div>
+      <div class="tier-row">
+        <div><div class="tier-name">Bronze</div><div class="tier-price">$200</div><div class="tier-avail">Unlimited</div></div>
+        <div class="tier-benefits">Name on website sponsor section. <strong>2 tickets</strong> to awards ceremony. Listed in ceremony program. Post-event thank-you in newsletter.</div>
+      </div>
+      <div class="tier-row">
+        <div><div class="tier-name">Friend of the Trail</div><div class="tier-price">$75</div><div class="tier-avail">Unlimited</div></div>
+        <div class="tier-benefits">Name in ceremony program. Post-event thank-you in newsletter. Open to individuals and businesses.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="body-section" style="padding-top: 8px;">
+    <div class="section-label">People's Choice Awards — November 2026</div>
+    <div class="section-title">Seven awards. Community-voted. Season-long.</div>
+    <p style="font-size: 11px; color: var(--text-light); line-height: 1.6; margin-bottom: 10px;">Customers rate wines and venues via QR scans throughout the season. Scores are live on manitoubeachmichigan.com until October 1st, when they go dark. Nobody — not even the venues — knows the final rankings until the awards ceremony. Winners receive a custom framed certificate. All trail wineries receive 2 complimentary ceremony seats with their $279 membership, plus 50% off additional tickets ($25/person) for their team.</p>
+    <div class="awards-strip">
+      <span class="award-badge">Best Red Wine</span><span class="award-badge">Best White Wine</span><span class="award-badge">Best Sweet Wine</span><span class="award-badge">Best Fruit / Specialty Wine</span>
+      <span class="award-badge">Best Tasting Room Experience</span><span class="award-badge">Outstanding Customer Hospitality</span><span class="award-badge">Best Atmosphere</span>
+    </div>
+  </div>
+
+  <div class="body-section" style="padding-top: 14px; flex: 1;">
+    <div class="section-label">Season Timeline</div>
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 6px;">
+      <div style="text-align: center; padding: 12px 6px; background: rgba(212,132,90,0.08); border-radius: 8px;">
+        <div style="font-size: 9px; font-weight: 700; color: var(--sunset); letter-spacing: 1px; text-transform: uppercase;">April</div>
+        <div style="font-size: 10px; color: var(--text); margin-top: 4px; line-height: 1.4;">Sponsors confirmed<br>Cards printed</div>
+      </div>
+      <div style="text-align: center; padding: 12px 6px; background: rgba(212,132,90,0.12); border-radius: 8px;">
+        <div style="font-size: 9px; font-weight: 700; color: var(--sunset); letter-spacing: 1px; text-transform: uppercase;">May 22</div>
+        <div style="font-size: 10px; color: var(--text); margin-top: 4px; line-height: 1.4;">Season opens<br>Cards distributed</div>
+      </div>
+      <div style="text-align: center; padding: 12px 6px; background: rgba(212,132,90,0.12); border-radius: 8px;">
+        <div style="font-size: 9px; font-weight: 700; color: var(--sunset); letter-spacing: 1px; text-transform: uppercase;">Oct 1</div>
+        <div style="font-size: 10px; color: var(--text); margin-top: 4px; line-height: 1.4;">Scores go dark<br>Voting closes Oct 31</div>
+      </div>
+      <div style="text-align: center; padding: 12px 6px; background: rgba(26,40,48,0.08); border-radius: 8px; border: 1.5px solid var(--night);">
+        <div style="font-size: 9px; font-weight: 700; color: var(--night); letter-spacing: 1px; text-transform: uppercase;">November</div>
+        <div style="font-size: 10px; color: var(--text); margin-top: 4px; line-height: 1.4;">Awards Ceremony<br>Winners revealed</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-bar">
+    <div><h3>Let's talk about your season.</h3><p>In-person meetings available this week. Sponsorships close when spots fill.</p></div>
+    <div class="cta-contact"><div class="name">Daryl Young</div><div class="detail">Yeti Groove Media<br>admin@yetigroove.com<br>manitoubeachmichigan.com/wineries</div></div>
+  </div>
+</div>
+
+</body>
+</html>

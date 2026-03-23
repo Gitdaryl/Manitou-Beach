@@ -142,6 +142,7 @@ export default function ActivateWineryPage() {
               'Trail map pin', 'Live scorecard',
               '100 passport cards', 'QR setup + delivery',
               'Season-end award', 'Year-round listing',
+              '2 ceremony seats included', '50% off extra ceremony tickets',
             ].map(item => (
               <div key={item} style={{
                 fontFamily: "'Libre Franklin', sans-serif", fontSize: 12,
