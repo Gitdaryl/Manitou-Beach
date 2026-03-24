@@ -225,16 +225,16 @@ function WineriesHero() {
       <div style={{ maxWidth: 960, margin: "0 auto", position: "relative", zIndex: 1 }}>
         <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? "none" : "translateY(24px)", transition: "all 0.9s ease" }}>
           <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 28 }}>
-            Michigan Wine · Irish Hills · Manitou Beach Village
+            Wine · Beer · Cider · Irish Hills · Manitou Beach Village
           </div>
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(48px, 9vw, 110px)", fontWeight: 400, color: C.cream, lineHeight: 0.95, margin: "0 0 20px 0" }}>
-            Wineries &<br />Wine Trails
+            Wineries &<br />Breweries Trail
           </h1>
           <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: "clamp(14px, 1.6vw, 17px)", color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 520, margin: "0 0 32px 0" }}>
-            Michigan wine country meets lake country. From lakeside tasting rooms in the Village to full winery destinations in the Irish Hills — sip your way through one of the state's most scenic wine trails.
+            Michigan wine country meets lake country. From lakeside tasting rooms in the Village to full winery and brewery destinations in the Irish Hills — sip your way through wine, craft beer, and hard cider on one of the state's most scenic trails.
           </p>
           <Btn href="/" variant="outlineLight" small>← Back to Home</Btn>
-          <ShareBar title="Irish Hills Wineries & Wine Trail — Manitou Beach" />
+          <ShareBar title="Irish Hills Wineries & Breweries Trail — Manitou Beach" />
         </div>
       </div>
     </section>
@@ -898,7 +898,7 @@ function WineriesMapSection() {
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, color: C.textLight }}>
               <span style={{ width: 11, height: 11, borderRadius: '50%', background: C.lakeBlue, display: 'inline-block' }} />
-              Wine Trail Stops
+              Wineries & Breweries Trail Stops
             </div>
           </div>
         </FadeIn>
@@ -1011,7 +1011,7 @@ function WineriesVenueSection() {
         {/* The Trail */}
         <FadeIn>
           <SectionLabel>Day Trips</SectionLabel>
-          <SectionTitle>The Wine Trail</SectionTitle>
+          <SectionTitle>The Wineries & Breweries Trail</SectionTitle>
           <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 580, margin: "0 0 48px 0" }}>
             Pack the cooler, pick a starting point, and make a day of it. Meckleys to reset the palate, Cherry Creek for the laid-back pour, Chateau Aeronautique to close it out right.
           </p>
