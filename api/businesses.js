@@ -132,8 +132,9 @@ export default async function handler(req, res) {
                 <p>Open Notion, find this listing, and assign a proper category — or create a new one if needed. Once categorized, it will automatically appear under the correct Local Guide pill.</p>
               </div>
             `,
-          }).catch(() => {});
-        }).catch(() => {});
+          }).then(r => { if (r.error) console.error('Resend admin alert error:', JSON.stringify(r.error)); })
+            .catch(err => console.error('Resend admin alert exception:', err.message));
+        }).catch(err => console.error('Resend import error (admin):', err.message));
       }
 
       // Welcome email to business owner
@@ -180,8 +181,9 @@ export default async function handler(req, res) {
                 </p>
               </div>
             `,
-          }).catch(() => {});
-        }).catch(() => {});
+          }).then(r => { if (r.error) console.error('Resend welcome email error:', JSON.stringify(r.error)); })
+            .catch(err => console.error('Resend welcome email exception:', err.message));
+        }).catch(err => console.error('Resend import error (welcome):', err.message));
       }
 
       return res.status(200).json({ success: true });
