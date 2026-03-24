@@ -213,22 +213,19 @@ export default function UpdateListingPage() {
                     />
                   </div>
 
-                  <Field label="Phone Number" value={form.phone} onChange={v => setForm(f => ({ ...f, phone: v }))} type="tel" />
-                  <Field label="Website" value={form.website} onChange={v => setForm(f => ({ ...f, website: v }))} placeholder="Your website address (if you have one)" />
-                  <Field label="Address" value={form.address} onChange={v => setForm(f => ({ ...f, address: v }))} />
-                  <Field label="Description" value={form.description} onChange={v => setForm(f => ({ ...f, description: v }))} multiline placeholder="Brief description (2–3 sentences)" />
-
-                  {/* Food Truck interstitial — redirect instead of update */}
-                  {form.category === 'Food Truck' ? (
-                    <div style={{ background: `linear-gradient(135deg, #1A2830 0%, #2D4A3E 100%)`, borderRadius: 12, padding: '28px 24px' }}>
-                      <div style={{ fontSize: 28, marginBottom: 12 }}>🚚</div>
-                      <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: '#F5F0E8', marginBottom: 10, fontWeight: 400 }}>
-                        Hold on — you qualify for something better
+                  {/* Food Truck interstitial — shown right after category selection */}
+                  {form.category === 'Food Truck' && (
+                    <div style={{ background: `linear-gradient(135deg, #1A2830 0%, #2D4A3E 100%)`, borderRadius: 12, padding: '24px 20px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+                        <img src="/images/icons/food-truck-icon.png" alt="Food truck" style={{ width: 44, height: 44, objectFit: 'contain', flexShrink: 0 }} />
+                        <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, color: '#F5F0E8', fontWeight: 400, lineHeight: 1.3 }}>
+                          Hold on — you qualify for something better
+                        </div>
                       </div>
-                      <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.65)', lineHeight: 1.7, margin: '0 0 20px', fontFamily: "'Libre Franklin', sans-serif" }}>
-                        Manitou Beach has a whole special section just for food trucks — way more than a basic business listing. You get your own personal page you tap when you're parked and open. Anyone following your truck gets a text message the moment you're there. You can even show which events you'll be at. Takes about two minutes to finish, and we've already saved your info to get you started.
+                      <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.65)', lineHeight: 1.7, margin: '0 0 18px', fontFamily: "'Libre Franklin', sans-serif" }}>
+                        Manitou Beach has a whole special section just for food trucks — way more than a basic listing. You get your own personal page you tap when you're parked and open. Anyone following your truck gets a text message the moment you're there. Takes about two minutes to finish.
                       </p>
-                      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+                      <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
                         <button
                           type="button"
                           onClick={() => {
@@ -239,23 +236,28 @@ export default function UpdateListingPage() {
                             if (form.website) params.set('website', form.website);
                             window.location.href = `/food-truck-partner?${params.toString()}`;
                           }}
-                          style={{
-                            fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700,
-                            padding: '12px 24px', borderRadius: 8, border: 'none',
-                            background: C.sage, color: '#fff', cursor: 'pointer',
-                          }}
+                          style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, padding: '12px 24px', borderRadius: 8, border: 'none', background: '#4A7A5A', color: '#fff', cursor: 'pointer' }}
                         >
                           Set up my truck →
                         </button>
-                        <button type="button" onClick={() => setStep(1)} style={{
-                          background: 'none', border: 'none', fontSize: 13, color: 'rgba(255,255,255,0.45)',
+                        <button type="button" onClick={() => setForm(f => ({ ...f, category: '' }))} style={{
+                          background: 'none', border: 'none', fontSize: 13, color: 'rgba(255,255,255,0.4)',
                           cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0,
                         }}>
                           ← Start over
                         </button>
                       </div>
                     </div>
-                  ) : (
+                  )}
+
+                  {form.category !== 'Food Truck' && <>
+                  <Field label="Phone Number" value={form.phone} onChange={v => setForm(f => ({ ...f, phone: v }))} type="tel" />
+                  <Field label="Website" value={form.website} onChange={v => setForm(f => ({ ...f, website: v }))} placeholder="Your website address (if you have one)" />
+                  <Field label="Address" value={form.address} onChange={v => setForm(f => ({ ...f, address: v }))} />
+                  <Field label="Description" value={form.description} onChange={v => setForm(f => ({ ...f, description: v }))} multiline placeholder="Brief description (2–3 sentences)" />
+                  </>}
+
+                  {form.category !== 'Food Truck' && (
                     <>
                       {submitError && (
                         <p style={{ fontSize: 13, color: '#C0392B', background: '#FDF0F0', border: '1px solid #F5C6C6', borderRadius: 6, padding: '10px 14px', margin: 0 }}>

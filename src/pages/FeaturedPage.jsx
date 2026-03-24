@@ -1004,26 +1004,33 @@ export default function FeaturedPage() {
 
             {/* Food Truck interstitial */}
             {form.category === 'Food Truck' ? (
-              <div style={{ background: 'linear-gradient(135deg, #1A2830 0%, #2D4A3E 100%)', borderRadius: 12, padding: '24px 20px', marginTop: 4 }}>
-                <div style={{ fontSize: 26, marginBottom: 10 }}>🚚</div>
-                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, color: '#F5F0E8', marginBottom: 8, fontWeight: 400 }}>
-                  Hold on — you qualify for something better
+              <div style={{ background: 'linear-gradient(135deg, #1A2830 0%, #2D4A3E 100%)', borderRadius: 12, padding: '24px 20px', marginTop: 4, border: '1px solid rgba(255,255,255,0.08)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+                  <img src="/images/icons/food-truck-icon.png" alt="Food truck" style={{ width: 44, height: 44, objectFit: 'contain', flexShrink: 0 }} />
+                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, color: '#F5F0E8', fontWeight: 400, lineHeight: 1.3 }}>
+                    Hold on — you qualify for something better
+                  </div>
                 </div>
                 <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.65)', lineHeight: 1.7, margin: '0 0 18px', fontFamily: "'Libre Franklin', sans-serif" }}>
-                  Manitou Beach has a whole special section just for food trucks — way more than a basic listing. You get your own personal page you tap when you're parked and open. Anyone following your truck gets a text message the moment you're there. You can even show which events you'll be at. Takes about two minutes to finish, and we've already saved your info to get you started.
+                  Manitou Beach has a whole special section just for food trucks — way more than a basic listing. You get your own personal page you tap when you're parked and open. Anyone following your truck gets a text message the moment you're there. Takes about two minutes to finish.
                 </p>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const params = new URLSearchParams();
-                    if (form.businessName) params.set('name', form.businessName);
-                    if (form.email) params.set('email', form.email);
-                    window.location.href = `/food-truck-partner?${params.toString()}`;
-                  }}
-                  style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, padding: '12px 22px', borderRadius: 8, border: 'none', background: '#4A7A5A', color: '#fff', cursor: 'pointer', width: '100%' }}
-                >
-                  Set up my truck →
-                </button>
+                <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const params = new URLSearchParams();
+                      if (form.businessName) params.set('name', form.businessName);
+                      if (form.email) params.set('email', form.email);
+                      window.location.href = `/food-truck-partner?${params.toString()}`;
+                    }}
+                    style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, padding: '12px 22px', borderRadius: 8, border: 'none', background: '#4A7A5A', color: '#fff', cursor: 'pointer' }}
+                  >
+                    Set up my truck →
+                  </button>
+                  <button type="button" onClick={() => setForm(f => ({ ...f, category: '' }))} style={{ background: 'none', border: 'none', fontSize: 13, color: 'rgba(255,255,255,0.4)', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0 }}>
+                    ← Start over
+                  </button>
+                </div>
               </div>
             ) : (
             <>

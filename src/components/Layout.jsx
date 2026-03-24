@@ -964,11 +964,12 @@ export function SubmitSection() {
     }
   };
 
-  const input = (field, placeholder, type = "text") => (
+  const input = (field, placeholder, type = "text", required = false) => (
     <input
       type={type}
       placeholder={placeholder}
       value={form[field]}
+      required={required}
       autoComplete="off"
       data-lpignore="true"
       data-form-type="other"
@@ -1199,10 +1200,10 @@ export function SubmitSection() {
                     </div>
                   )}
 
-                  {input("phone", "Phone Number", "tel")}
+                  {input("phone", "Phone Number *", "tel", true)}
                   {input("address", "Address (optional)")}
                   {input("website", "Website (e.g. yetigroove.com)")}
-                  {input("email", "Your Email", "email")}
+                  {input("email", "Your Email *", "email", true)}
                   <textarea
                     placeholder="Brief description (2-3 sentences)"
                     value={form.description}
