@@ -80,7 +80,7 @@ export default function UpdateListingPage() {
         if (data.business.logo) setLogoPreview(data.business.logo);
         setStep(2);
       } else {
-        setVerifyError("We couldn't find a listing with that name and email. Double-check and try again, or email hello@manitoubeach.com");
+        setVerifyError("We couldn't find a match for that name and email address. Make sure they're spelled exactly as you entered them when you first signed up. Still stuck? Just email us at hello@manitoubeach.com and we'll sort it out.");
       }
     } catch {
       setVerifyError('Something went wrong — please try again.');
@@ -146,24 +146,24 @@ export default function UpdateListingPage() {
         <section style={{ background: C.warmWhite, padding: '80px 24px 100px' }}>
           <div style={{ maxWidth: 560, margin: '0 auto' }}>
             <FadeIn>
-              <SectionLabel>Business Directory</SectionLabel>
-              <SectionTitle>Update Your Listing</SectionTitle>
+              <SectionLabel>Your Business</SectionLabel>
+              <SectionTitle>Need to change something?</SectionTitle>
               <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.75, marginBottom: 40 }}>
-                Enter the name and email you used when you originally listed your business, and we'll pull up your details.
+                No problem at all — happens to everyone. Just type in your business name and the email address you used when you signed up, and we'll bring up your info right away.
               </p>
 
               {/* ── Step 1: verify ───────────────────────── */}
               {step === 1 && (
                 <form onSubmit={handleVerify} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                  <Field label="Business Name" value={verifyName} onChange={setVerifyName} placeholder="Exact name from your listing" />
-                  <Field label="Email" value={verifyEmail} onChange={setVerifyEmail} type="email" placeholder="Email used when you listed" />
+                  <Field label="Business Name" value={verifyName} onChange={setVerifyName} placeholder="Same name you used when you signed up" />
+                  <Field label="Email Address" value={verifyEmail} onChange={setVerifyEmail} type="email" placeholder="Email address you used when you signed up" />
                   {verifyError && (
                     <p style={{ fontSize: 13, color: '#C0392B', background: '#FDF0F0', border: '1px solid #F5C6C6', borderRadius: 6, padding: '10px 14px', margin: 0 }}>
                       {verifyError}
                     </p>
                   )}
                   <Btn variant="primary" style={{ marginTop: 4, alignSelf: 'flex-start' }}>
-                    {verifyLoading ? 'Looking up…' : 'Find my listing →'}
+                    {verifyLoading ? 'Looking…' : 'Find my business →'}
                   </Btn>
                 </form>
               )}
@@ -196,7 +196,7 @@ export default function UpdateListingPage() {
                           {logoPreview ? 'Change logo' : 'Upload logo'}
                         </button>
                         <p style={{ fontSize: 12, color: C.textMuted, margin: '6px 0 0', fontFamily: "'Libre Franklin', sans-serif" }}>
-                          JPG or PNG · Max 5MB · Will be compressed
+                          Any photo works — we'll handle the rest
                         </p>
                       </div>
                     </div>
@@ -214,7 +214,7 @@ export default function UpdateListingPage() {
                   </div>
 
                   <Field label="Phone Number" value={form.phone} onChange={v => setForm(f => ({ ...f, phone: v }))} type="tel" />
-                  <Field label="Website" value={form.website} onChange={v => setForm(f => ({ ...f, website: v }))} placeholder="e.g. yourbusiness.com" />
+                  <Field label="Website" value={form.website} onChange={v => setForm(f => ({ ...f, website: v }))} placeholder="Your website address (if you have one)" />
                   <Field label="Address" value={form.address} onChange={v => setForm(f => ({ ...f, address: v }))} />
                   <Field label="Description" value={form.description} onChange={v => setForm(f => ({ ...f, description: v }))} multiline placeholder="Brief description (2–3 sentences)" />
 
@@ -226,7 +226,7 @@ export default function UpdateListingPage() {
                         Hold on — you qualify for something better
                       </div>
                       <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.65)', lineHeight: 1.7, margin: '0 0 20px', fontFamily: "'Libre Franklin', sans-serif" }}>
-                        Manitou Beach has a whole dedicated food truck platform — not just a directory spot. Your own live check-in link. A real-time map pin when you're parked up. SMS alerts to anyone following your truck. Event scheduling for the big summer weekends. Two minutes to set up, and we've already got your info ready to go.
+                        Manitou Beach has a whole special section just for food trucks — way more than a basic business listing. You get your own personal page you tap when you're parked and open. Anyone following your truck gets a text message the moment you're there. You can even show which events you'll be at. Takes about two minutes to finish, and we've already saved your info to get you started.
                       </p>
                       <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
                         <button
@@ -263,11 +263,11 @@ export default function UpdateListingPage() {
                         </p>
                       )}
                       <p style={{ fontSize: 13, color: C.textMuted, margin: 0, fontFamily: "'Libre Franklin', sans-serif" }}>
-                        We'll review and apply your update within 24 hours.
+                        We'll take a look and get your changes showing within 24 hours.
                       </p>
                       <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginTop: 4, flexWrap: 'wrap' }}>
                         <Btn variant="primary">
-                          {submitLoading ? 'Submitting…' : 'Submit update →'}
+                          {submitLoading ? 'Sending…' : 'Save my changes →'}
                         </Btn>
                         <button type="button" onClick={() => setStep(1)} style={{
                           background: 'none', border: 'none', fontSize: 13, color: C.textMuted,
@@ -294,13 +294,13 @@ export default function UpdateListingPage() {
                     margin: '0 auto 20px', fontSize: 22, color: C.sage,
                   }}>✓</div>
                   <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream, marginBottom: 10, fontWeight: 400 }}>
-                    Update submitted.
+                    Got it — thank you!
                   </div>
                   <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', lineHeight: 1.7, margin: '0 0 28px', fontFamily: "'Libre Franklin', sans-serif" }}>
-                    We'll review and apply your changes within 24 hours. Thanks for keeping your listing current — it helps people find you.
+                    We'll take a look and have your changes showing within 24 hours. We really appreciate you keeping things up to date — it makes a big difference for people trying to find you.
                   </p>
                   <Btn href="/business" variant="outline" style={{ borderColor: 'rgba(255,255,255,0.3)', color: 'rgba(255,255,255,0.7)' }}>
-                    Back to directory
+                    See all local businesses
                   </Btn>
                 </div>
               )}

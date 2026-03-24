@@ -1010,7 +1010,7 @@ export default function FeaturedPage() {
                   Hold on — you qualify for something better
                 </div>
                 <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.65)', lineHeight: 1.7, margin: '0 0 18px', fontFamily: "'Libre Franklin', sans-serif" }}>
-                  Manitou Beach has a whole dedicated food truck platform — not just a directory spot. Your own live check-in link. A real-time map pin when you're parked up. SMS alerts to anyone following your truck. Event scheduling for the big summer weekends. Two minutes to set up, and we've already got your info ready to go.
+                  Manitou Beach has a whole special section just for food trucks — way more than a basic listing. You get your own personal page you tap when you're parked and open. Anyone following your truck gets a text message the moment you're there. You can even show which events you'll be at. Takes about two minutes to finish, and we've already saved your info to get you started.
                 </p>
                 <button
                   type="button"
