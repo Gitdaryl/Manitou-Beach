@@ -1,4 +1,35 @@
 import { Resend } from 'resend';
+import { createHmac } from 'crypto';
+
+function makeConfirmToken(pageId) {
+  const secret = process.env.NOTION_TOKEN_BUSINESS || 'fallback';
+  return createHmac('sha256', secret).update(pageId).digest('hex').slice(0, 40);
+}
+
+async function sendSMS(to, body) {
+  const sid = process.env.TWILIO_ACCOUNT_SID;
+  const token = process.env.TWILIO_AUTH_TOKEN;
+  const from = process.env.TWILIO_PHONE;
+  if (!sid || !token || !from) return false;
+  try {
+    const digits = to.replace(/\D/g, '');
+    if (digits.length < 10) return false;
+    const res = await fetch(
+      `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: 'Basic ' + Buffer.from(`${sid}:${token}`).toString('base64'),
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({ From: from, To: `+1${digits}`, Body: body }).toString(),
+      }
+    );
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
 
 // Fetch all pages from a Notion database query, following cursors past the 100-record limit
 async function queryAllNotionPages(dbId, token, body) {
@@ -118,28 +149,26 @@ export default async function handler(req, res) {
         geocodeAndStore(newPage.id, address).catch(() => {});
       }
 
-      // Auto-approve: if name + real category provided, list immediately (no manual review needed)
-      const autoApproved = !!(name && category && category !== 'Other');
-      if (autoApproved) {
-        fetch(`https://api.notion.com/v1/pages/${newPage.id}`, {
-          method: 'PATCH',
-          headers: {
-            'Authorization': `Bearer ${process.env.NOTION_TOKEN_BUSINESS}`,
-            'Content-Type': 'application/json',
-            'Notion-Version': '2022-06-28',
-          },
-          body: JSON.stringify({ properties: { 'Status': { status: { name: 'Listed Free' } } } }),
-        }).catch(err => console.error('Auto-approve status patch failed:', err.message));
+      // Build confirmation URL — used in both SMS and email
+      const siteUrl = process.env.SITE_URL || `https://manitou-beach.vercel.app`;
+      const confirmToken = makeConfirmToken(newPage.id);
+      const confirmUrl = `${siteUrl}/api/confirm-listing?id=${newPage.id}&token=${confirmToken}`;
+
+      const tasks = [];
+
+      // SMS confirmation (primary — highest open rate, now that A2P is approved)
+      if (phone && phone.trim()) {
+        tasks.push(
+          sendSMS(phone, `Manitou Beach: Tap to confirm your listing for ${name} and go live instantly.\n${confirmUrl}`)
+            .then(ok => { if (!ok) console.error('SMS confirmation failed to send for', name); })
+        );
       }
 
-      // Send emails — awaited before returning so Vercel doesn't kill the function first
       const resend = new Resend(process.env.RESEND_API_KEY);
-      const siteUrl = process.env.SITE_URL || 'https://manitou-beach.vercel.app';
-      const emailTasks = [];
 
       // Alert admin when a business submits with no category or "Other"
       if (!category || category === 'Other') {
-        emailTasks.push(
+        tasks.push(
           resend.emails.send({
             from: 'Manitou Beach <hello@yetigroove.com>',
             to: process.env.ADMIN_EMAIL || 'daryl@yetigroove.com',
@@ -149,7 +178,7 @@ export default async function handler(req, res) {
                 <h2 style="color:#2D3B45">Uncategorized Business Listing</h2>
                 <p><strong>${name}</strong> was submitted with category <em>"Other"</em>.</p>
                 ${address ? `<p>Address: ${address}</p>` : ''}
-                <p>Open Notion, find this listing, and assign a proper category — or create a new one if needed. Once categorized, it will automatically appear under the correct Local Guide pill.</p>
+                <p>Open Notion, find this listing, and assign a proper category. Once categorized and confirmed, it will appear under the correct Local Guide pill.</p>
               </div>
             `,
           }).then(r => { if (r.error) console.error('Resend admin alert error:', JSON.stringify(r.error)); })
@@ -157,21 +186,25 @@ export default async function handler(req, res) {
         );
       }
 
-      // Welcome email to business owner
+      // Welcome + confirmation email (secondary delivery channel)
       if (email) {
-        emailTasks.push(
+        tasks.push(
           resend.emails.send({
             from: 'Manitou Beach <hello@yetigroove.com>',
             reply_to: 'hello@yetigroove.com',
             to: email,
-            subject: `Welcome to Manitou Beach, ${name} — you're in!`,
+            subject: `Confirm your listing — ${name}`,
             html: `
               <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#FAF6EF;">
-                <h1 style="color:#1A2830;font-size:22px;margin:0 0 8px;">So glad you're here!</h1>
+                <h1 style="color:#1A2830;font-size:22px;margin:0 0 8px;">One tap and you're live</h1>
                 <p style="color:#5C5248;font-size:15px;margin:0 0 24px;line-height:1.6;">
-                  We got your info for <strong>${name}</strong> and we're so happy to have you as part of the Manitou Beach community.
-                  We'll take a quick look and get you showing on the page very shortly.
+                  We've got your info for <strong>${name}</strong>. Hit the button below to confirm it's you — your listing goes live instantly.
                 </p>
+                <div style="text-align:center;margin:0 0 28px;">
+                  <a href="${confirmUrl}" style="display:inline-block;background:#2D6A4F;color:#fff;text-decoration:none;padding:16px 36px;border-radius:10px;font-size:17px;font-weight:700;letter-spacing:0.3px;">
+                    Confirm &amp; Go Live →
+                  </a>
+                </div>
                 <div style="background:#fff;border-radius:12px;padding:20px 24px;margin-bottom:24px;border:1px solid #E8E0D5;">
                   <p style="margin:0 0 4px;color:#8C806E;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Business</p>
                   <p style="margin:0 0 16px;color:#1A2830;font-size:16px;font-weight:600;">${name}</p>
@@ -182,31 +215,22 @@ export default async function handler(req, res) {
                   <p style="margin:0 0 4px;color:#8C806E;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Address</p>
                   <p style="margin:0;color:#1A2830;font-size:15px;">${address}</p>` : ''}
                 </div>
-                <p style="color:#5C5248;font-size:14px;line-height:1.6;margin:0 0 20px;">
-                  Need to change something — your phone number, address, description, or the type of business you selected? No problem at all. Just tap the button below anytime and we'll pull up your info right away. You'll just need this email address and your business name.
+                <p style="color:#5C5248;font-size:13px;line-height:1.6;margin:0 0 16px;">
+                  Need to fix something first? <a href="${siteUrl}/update-listing" style="color:#2D6A4F;">Update your info →</a>
                 </p>
-                <a href="${siteUrl}/update-listing" style="display:inline-block;background:#1A2830;color:#fff;text-decoration:none;padding:14px 28px;border-radius:8px;font-size:15px;font-weight:600;margin-bottom:24px;">
-                  Fix or Update My Info
-                </a>
-                <div style="background:#F0F4F0;border-radius:8px;padding:14px 18px;margin-bottom:20px;border-left:3px solid #4A7C6A;">
-                  <p style="color:#2D4A3E;font-size:13px;font-weight:600;margin:0 0 4px;">Save our email address to your contacts</p>
-                  <p style="color:#5C5248;font-size:13px;line-height:1.6;margin:0;">
-                    Add <strong>hello@yetigroove.com</strong> to your contacts so our emails always land in your inbox and never your spam folder.
-                  </p>
-                </div>
                 <p style="color:#8C806E;font-size:13px;line-height:1.6;margin:0;">
-                  Any questions at all — just reply to this email. A real person will get back to you.
+                  Any questions — just reply to this email.
                 </p>
               </div>
             `,
-          }).then(r => { if (r.error) console.error('Resend welcome email error:', JSON.stringify(r.error)); })
-            .catch(err => console.error('Resend welcome email exception:', err.message))
+          }).then(r => { if (r.error) console.error('Resend confirmation email error:', JSON.stringify(r.error)); })
+            .catch(err => console.error('Resend confirmation email exception:', err.message))
         );
       }
 
-      await Promise.allSettled(emailTasks);
+      await Promise.allSettled(tasks);
 
-      return res.status(200).json({ success: true, autoApproved });
+      return res.status(200).json({ success: true });
     } catch (err) {
       console.error('Server error:', err.message);
       return res.status(500).json({ error: 'Server error' });

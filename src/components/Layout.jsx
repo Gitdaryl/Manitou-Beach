@@ -920,7 +920,6 @@ export async function compressImage(file, maxWidth = 1200, quality = 0.7) {
 
 export function SubmitSection() {
   const [submitted, setSubmitted] = useState(false);
-  const [autoApproved, setAutoApproved] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [logoFile, setLogoFile] = useState(null);
@@ -953,7 +952,6 @@ export function SubmitSection() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || data.error || "Submission failed");
-      setAutoApproved(!!data.autoApproved);
       setSubmitted(true);
     } catch (err) {
       setSubmitError(err.message && err.message !== "Submission failed"
@@ -1044,27 +1042,22 @@ export function SubmitSection() {
                 animation: "pulse-glow 2s ease-in-out infinite",
               }}>✓</div>
               <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream, marginBottom: 8, fontWeight: 400 }}>
-                {autoApproved ? "You're live — welcome to Manitou Beach." : "Got it — we'll take a look shortly."}
+                Check your phone — one tap and you're live.
               </div>
               <p style={{ fontSize: 14, color: C.sunsetLight, margin: "0 0 20px 0", fontFamily: "'Libre Franklin', sans-serif", fontStyle: "italic" }}>
-                {autoApproved ? "Your listing is up. People can find you right now." : "We're building something real here and you're part of it."}
+                We texted you a confirmation link. Takes two seconds.
               </p>
 
-              {/* Email confirmation notice */}
+              {/* Phone + email notice */}
               <div style={{
                 background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)",
                 borderRadius: 8, padding: "14px 18px", maxWidth: 380, margin: "0 auto 24px", textAlign: "left",
               }}>
-                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.85)", margin: "0 0 4px", fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600 }}>
-                  Check your email — we just sent you a welcome note
+                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.85)", margin: "0 0 6px", fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600 }}>
+                  We sent a text to {form.phone || "your phone"}
                 </p>
-                {form.email && (
-                  <p style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", margin: "0 0 6px", fontFamily: "'Libre Franklin', sans-serif" }}>
-                    Sent to: {form.email}
-                  </p>
-                )}
                 <p style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", margin: 0, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.6 }}>
-                  Don't see it? Check your spam or junk folder — sometimes it lands there the first time. Mark it as safe and we'll always come straight to your inbox from here on.
+                  Can't find it? Check your email — we sent the confirm link there too.
                 </p>
               </div>
 
@@ -1073,15 +1066,11 @@ export function SubmitSection() {
                 <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
                   What happens next
                 </p>
-                {(autoApproved ? [
-                  "You're already showing in the Local Guide and on the Discover map",
-                  "Check your email — we sent you a welcome note with a link to update your info anytime",
+                {[
+                  "Tap the confirmation link in your text — your listing goes live instantly",
+                  "You'll appear in the Local Guide and on the Discover map",
                   "We're actively growing our audience — we want people finding you",
-                ] : [
-                  "We'll take a look and get you showing within 24 hours",
-                  "Once live, you'll appear in the Local Guide and on the Discover map",
-                  "We're actively growing our audience — we want people finding you",
-                ]).map((step, i) => (
+                ].map((step, i) => (
                   <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", marginBottom: 10 }}>
                     <span style={{
                       flexShrink: 0, width: 22, height: 22, borderRadius: "50%",
