@@ -1162,6 +1162,43 @@ export function SubmitSection() {
                     <option value="" disabled>Category</option>
                     {LISTING_CATEGORIES.map(cat => <option key={cat}>{cat}</option>)}
                   </select>
+                  {form.category === 'Food Truck' && (
+                    <div style={{ background: 'linear-gradient(135deg, #1A2830 0%, #2D4A3E 100%)', borderRadius: 12, padding: '24px 20px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+                        <img src="/images/icons/food-truck-icon.png" alt="Food truck" style={{ width: 44, height: 44, objectFit: 'contain', flexShrink: 0 }} />
+                        <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, color: '#F5F0E8', fontWeight: 400, lineHeight: 1.3 }}>
+                          Hold on — you qualify for something better
+                        </div>
+                      </div>
+                      <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.65)', lineHeight: 1.7, margin: '0 0 18px', fontFamily: "'Libre Franklin', sans-serif" }}>
+                        Manitou Beach has a whole special section just for food trucks — way more than a basic listing. You get your own personal page you tap when you're parked and open. Anyone following your truck gets a text message the moment you're there. Takes about two minutes to finish.
+                      </p>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const params = new URLSearchParams();
+                            if (form.name) params.set('name', form.name);
+                            if (form.email) params.set('email', form.email);
+                            if (form.phone) params.set('phone', form.phone);
+                            if (form.website) params.set('website', form.website);
+                            window.location.href = `/food-truck-partner?${params.toString()}`;
+                          }}
+                          style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, padding: '12px 24px', borderRadius: 8, border: 'none', background: '#4A7A5A', color: '#fff', cursor: 'pointer' }}
+                        >
+                          Set up my truck →
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setForm(f => ({ ...f, category: '' }))}
+                          style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.4)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                        >
+                          ← Start over
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
                   {input("phone", "Phone Number", "tel")}
                   {input("address", "Address (optional)")}
                   {input("website", "Website (e.g. yetigroove.com)")}
@@ -1308,31 +1345,7 @@ export function SubmitSection() {
                   </label>
               </>
 
-              {form.category === 'Food Truck' ? (
-                <div style={{ background: 'linear-gradient(135deg, #1A2830 0%, #2D4A3E 100%)', borderRadius: 10, padding: '22px 20px' }}>
-                  <div style={{ fontSize: 24, marginBottom: 8 }}>🚚</div>
-                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: '#F5F0E8', marginBottom: 8, fontWeight: 400 }}>
-                    Hold on — you qualify for something better
-                  </div>
-                  <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.65)', lineHeight: 1.7, margin: '0 0 16px', fontFamily: "'Libre Franklin', sans-serif" }}>
-                    Manitou Beach has a whole special section just for food trucks — way more than a basic listing. You get your own personal page you tap when you're parked and open. Anyone following your truck gets a text message the moment you're there. Takes about two minutes to finish.
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const params = new URLSearchParams();
-                      if (form.name) params.set('name', form.name);
-                      if (form.email) params.set('email', form.email);
-                      if (form.phone) params.set('phone', form.phone);
-                      if (form.website) params.set('website', form.website);
-                      window.location.href = `/food-truck-partner?${params.toString()}`;
-                    }}
-                    style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, padding: '12px 20px', borderRadius: 8, border: 'none', background: '#4A7A5A', color: '#fff', cursor: 'pointer', width: '100%' }}
-                  >
-                    Set up my truck →
-                  </button>
-                </div>
-              ) : (
+              {form.category !== 'Food Truck' && (
               <>
               <button
                 type="submit"
