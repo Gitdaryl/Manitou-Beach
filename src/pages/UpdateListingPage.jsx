@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Btn, FadeIn, SectionLabel, SectionTitle } from '../components/Shared';
-import { C } from '../data/config';
+import { C, LISTING_CATEGORIES } from '../data/config';
 import { Footer, GlobalStyles, Navbar, compressImage } from '../components/Layout';
 
 // ─── helpers ────────────────────────────────────────────────
@@ -24,18 +24,6 @@ function Field({ label, value, onChange, type = 'text', placeholder, multiline }
   return multiline ? <textarea {...props} /> : <input {...props} />;
 }
 
-const CATEGORIES = [
-  'Food & Drink',
-  'Food Truck',
-  'Stays & Rentals',
-  'Breweries & Wineries',
-  'Boating & Water',
-  'Events & Venues',
-  'Shopping & Gifts',
-  'Home Services',
-  'Other',
-];
-
 function CategorySelect({ value, onChange }) {
   const [focused, setFocused] = useState(false);
   return (
@@ -47,7 +35,7 @@ function CategorySelect({ value, onChange }) {
       style={{ ...inputStyle(focused), appearance: 'none', backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 14px center', paddingRight: 36 }}
     >
       <option value="">Select a category…</option>
-      {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+      {LISTING_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
     </select>
   );
 }

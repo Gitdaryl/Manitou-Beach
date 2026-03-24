@@ -47,9 +47,10 @@ export const USA250_PUBLIC = true;
 // Slot caps per tier per category — Enhanced has no cap
 export const SLOT_CAPS = { premium: 1, featured: 3 };
 export const LISTING_CATEGORIES = [
-  "Real Estate", "Food & Drink", "Boating & Water", "Breweries & Wineries",
-  "Shopping & Gifts", "Stays & Rentals", "Creative Media", "Home Services",
-  "Health & Beauty", "Pet Services", "Arts & Culture", "Other",
+  "Food & Drink", "Food Truck", "Stays & Rentals", "Breweries & Wineries",
+  "Boating & Water", "Events & Venues", "Shopping & Gifts", "Home Services",
+  "Health & Beauty", "Real Estate", "Creative Media", "Pet Services",
+  "Arts & Culture", "Other",
 ];
 // Drop your drone fireworks video in public/images/ and set the path here:
 export const USA250_VIDEO_URL = "/images/fireworks/devilslake-fireworks-hero.mp4";

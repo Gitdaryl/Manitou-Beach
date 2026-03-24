@@ -1001,6 +1001,32 @@ export default function FeaturedPage() {
                 })()}
               </div>
             </div>
+
+            {/* Food Truck interstitial */}
+            {form.category === 'Food Truck' ? (
+              <div style={{ background: 'linear-gradient(135deg, #1A2830 0%, #2D4A3E 100%)', borderRadius: 12, padding: '24px 20px', marginTop: 4 }}>
+                <div style={{ fontSize: 26, marginBottom: 10 }}>🚚</div>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, color: '#F5F0E8', marginBottom: 8, fontWeight: 400 }}>
+                  Hold on — you qualify for something better
+                </div>
+                <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.65)', lineHeight: 1.7, margin: '0 0 18px', fontFamily: "'Libre Franklin', sans-serif" }}>
+                  Manitou Beach has a whole dedicated food truck platform — not just a directory spot. Your own live check-in link. A real-time map pin when you're parked up. SMS alerts to anyone following your truck. Event scheduling for the big summer weekends. Two minutes to set up, and we've already got your info ready to go.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const params = new URLSearchParams();
+                    if (form.businessName) params.set('name', form.businessName);
+                    if (form.email) params.set('email', form.email);
+                    window.location.href = `/food-truck-partner?${params.toString()}`;
+                  }}
+                  style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, padding: '12px 22px', borderRadius: 8, border: 'none', background: '#4A7A5A', color: '#fff', cursor: 'pointer', width: '100%' }}
+                >
+                  Set up my truck →
+                </button>
+              </div>
+            ) : (
+            <>
             {/* Contract duration */}
             <div style={{ marginBottom: 6 }}>
               <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 2.5, textTransform: "uppercase", color: "rgba(255,255,255,0.3)", marginBottom: 10 }}>
@@ -1044,6 +1070,8 @@ export default function FeaturedPage() {
             <p style={{ textAlign: "center", fontSize: 11, color: "rgba(255,255,255,0.22)", marginTop: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
               Powered by Stripe · Your card details are never stored here
             </p>
+            </>
+            )}
           </div>
         </div>
       )}
