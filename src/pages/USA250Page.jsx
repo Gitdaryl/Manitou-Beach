@@ -437,9 +437,9 @@ function Fireworks2026Section() {
         position: "absolute", inset: 0,
         backgroundImage: "url(/images/fireworks/devilslake-dlyc-bg1.jpg)",
         backgroundSize: "cover", backgroundPosition: "center",
-        opacity: 0.18,
+        backgroundAttachment: "fixed",
+        opacity: 0.22,
       }} />
-      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(26,40,48,0.6) 0%, rgba(26,40,48,0.3) 50%, rgba(26,40,48,0.7) 100%)" }} />
       <div style={{ maxWidth: 1000, margin: "0 auto", position: "relative", zIndex: 1 }}>
 
         <FadeIn>
@@ -608,9 +608,9 @@ function FireworksSponsorTiersSection() {
         position: "absolute", inset: 0,
         backgroundImage: "url(/images/fireworks/devilslake-dlyc-bg2.jpg)",
         backgroundSize: "cover", backgroundPosition: "center",
-        opacity: 0.18,
+        backgroundAttachment: "fixed",
+        opacity: 0.22,
       }} />
-      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(26,40,48,0.6) 0%, rgba(26,40,48,0.3) 50%, rgba(26,40,48,0.7) 100%)" }} />
       <div style={{ maxWidth: 1000, margin: "0 auto", position: "relative", zIndex: 1 }}>
 
         <FadeIn>
