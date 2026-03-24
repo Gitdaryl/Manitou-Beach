@@ -149,13 +149,26 @@ export default async function handler(req, res) {
 
     const isPaid = tier === 'paid';
 
-    // Update Notion: set slug, token, status
+    // Beta grace period: before May 10 2026, everyone gets Featured/Active for free
+    const BETA_END = new Date('2026-05-10T00:00:00');
+    const isBeta = new Date() < BETA_END;
+
+    // During beta: activate everyone as Featured immediately (no Stripe needed)
+    // After beta: free tier → Active/Basic, paid tier → Verified (needs Stripe)
+    const activateNow = isBeta || !isPaid;
+
     const updateProps = {
       'Slug':              { rich_text: [{ text: { content: slug } }] },
       'Checkin Token':     { rich_text: [{ text: { content: checkinToken } }] },
       'Verification Code': { rich_text: [{ text: { content: '' } }] }, // clear code
-      'Status':            { select: { name: isPaid ? 'Verified' : 'Active' } },
+      'Status':            { select: { name: activateNow ? 'Active' : 'Verified' } },
     };
+
+    // Beta users get Featured tier regardless of selection
+    if (isBeta) {
+      updateProps['Tier'] = { select: { name: 'Featured' } };
+      updateProps['Beta Expires'] = { date: { start: '2026-05-10' } };
+    }
 
     const patchRes = await fetch(`https://api.notion.com/v1/pages/${match.id}`, {
       method: 'PATCH',
@@ -175,23 +188,26 @@ export default async function handler(req, res) {
     const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
     const checkinUrl = `${siteUrl}/food-trucks?truck=${encodeURIComponent(slug)}&token=${encodeURIComponent(checkinToken)}`;
 
-    if (!isPaid) {
-      // Free tier — active immediately, send check-in link
+    if (activateNow) {
+      // Active immediately — send check-in link
+      const betaNote = isBeta && isPaid
+        ? `\n\nYou're a founding food truck — everything is free through May 10. After that, it's $9/month to stay live on the map.`
+        : '';
       await sendSMS(inputDigits,
-        `Manitou Beach Food Trucks\n\n${truckName} is live! 🎉\n\nHere's your personal check-in link:\n${checkinUrl}\n\nOpen it each time you head to Manitou Beach. Drop your pin, add today's special, and go live on the map.\n\nSave this to your home screen for quick access.`
+        `Manitou Beach Food Trucks\n\n${truckName} is live! 🎉\n\nHere's your personal check-in link:\n${checkinUrl}\n\nOpen it each time you head to Manitou Beach. Drop your pin, add today's special, and go live on the map.${betaNote}\n\nSave this to your home screen for quick access.`
       );
 
       return res.status(200).json({
         ok: true,
         activated: true,
+        beta: isBeta,
         slug,
         checkinUrl,
         truckName,
       });
     }
 
-    // Paid tier — verified but needs Stripe payment to activate
-    // Store slug/token in Notion for webhook to use later
+    // Post-beta paid tier — verified but needs Stripe payment to activate
     return res.status(200).json({
       ok: true,
       verified: true,

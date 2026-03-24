@@ -49,7 +49,7 @@ export default function FoodTruckPartnerPage() {
 
   const { centsFor } = usePricing();
   const [form, setForm] = useState({ truckName: '', cuisine: '', email: '', phone: '', website: '' });
-  const [selectedTier, setSelectedTier] = useState('free'); // 'free' | 'paid'
+  const [selectedTier, setSelectedTier] = useState('paid'); // beta: everyone gets Featured
   const [imageUrl, setImageUrl] = useState('');
   const [imagePreview, setImagePreview] = useState('');
   const [imageUploading, setImageUploading] = useState(false);
@@ -215,15 +215,15 @@ export default function FoodTruckPartnerPage() {
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(30px, 5vw, 58px)", fontWeight: 400, color: C.cream, margin: "20px 0 24px", lineHeight: 1.15 }}>
             Your truck. Live on the map.<br /><em>Every time you're nearby.</em>
           </h1>
-          <p style={{ fontSize: 16, color: "rgba(255,255,255,0.5)", maxWidth: 520, margin: "0 auto 32px", lineHeight: 1.85 }}>
-            Your name in the directory is free. For $9/month, your truck goes live on the map the moment you check in — and customers can heart your truck, rate their favourite dishes, and push you to the top of the Most Loved rankings.
+          <p style={{ fontSize: 16, color: "rgba(255,255,255,0.5)", maxWidth: 520, margin: "0 auto 20px", lineHeight: 1.85 }}>
+            Live on the map the moment you check in — customers heart your truck, rate their favourite dishes, and push you to the top of the Most Loved rankings.
           </p>
+          <div style={{ display: "inline-block", background: "rgba(212,132,90,0.15)", border: "1px solid rgba(212,132,90,0.3)", borderRadius: 12, padding: "12px 24px", marginBottom: 28 }}>
+            <span style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: C.sunsetLight }}>Founding trucks get everything free through May 10</span>
+          </div>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
             <Btn onClick={() => scrollToSignup('paid')} variant="sunset" style={{ whiteSpace: "nowrap" }}>
-              Get on the Map — $9/mo →
-            </Btn>
-            <Btn onClick={() => scrollToSignup('free')} variant="outlineLight" style={{ whiteSpace: "nowrap" }}>
-              Get the free listing →
+              Get on the Map — Free During Beta →
             </Btn>
           </div>
         </FadeIn>
@@ -293,9 +293,9 @@ export default function FoodTruckPartnerPage() {
       <section style={{ background: C.dusk, padding: "80px 24px" }}>
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
           <FadeIn>
-            <SectionLabel light>$9 / month</SectionLabel>
+            <SectionLabel light>Founding Truck Beta</SectionLabel>
             <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 40px)", fontWeight: 400, color: C.cream, margin: "16px 0 48px", lineHeight: 1.2, textAlign: "center" }}>
-              Everything you get<br /><em style={{ color: C.sunsetLight }}>for $9 a month.</em>
+              Everything you get<br /><em style={{ color: C.sunsetLight }}>free through May 10.</em>
             </h2>
           </FadeIn>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 20 }}>
@@ -318,10 +318,10 @@ export default function FoodTruckPartnerPage() {
       <section style={{ background: C.cream, padding: "80px 24px" }}>
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
           <FadeIn>
-            <SectionLabel style={{ textAlign: "center", display: "block" }}>Pricing</SectionLabel>
-            <SectionTitle center>One price. Everything included.</SectionTitle>
+            <SectionLabel style={{ textAlign: "center", display: "block" }}>Beta Launch</SectionLabel>
+            <SectionTitle center>Founding trucks get everything.</SectionTitle>
             <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 560, margin: "0 auto 48px", textAlign: "center" }}>
-              $9/month gets your truck live on the map, your name in front of hundreds of Manitou Beach followers, and customers competing to push you to the top of the Most Loved rankings. Free keeps you in the directory — nothing else.
+              Sign up now and get the full Featured experience — live map pin, customer hearts, Most Loved rankings, newsletter mentions — completely free through May 10. After that, it's $9/month to stay live on the map.
             </p>
           </FadeIn>
 
@@ -332,60 +332,17 @@ export default function FoodTruckPartnerPage() {
             </div>
           </FadeIn>
 
-          {/* Two-tier pricing cards */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24, maxWidth: 720, margin: "0 auto 56px" }}>
-            {/* Basic */}
-            <FadeIn delay={60}>
-              <div style={{ background: C.warmWhite, borderRadius: 18, padding: "36px 28px", border: `1.5px solid ${C.sand}`, height: "100%", boxSizing: "border-box" }}>
-                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.textMuted, marginBottom: 12 }}>Basic</div>
+          {/* Single founding beta card */}
+          <div style={{ maxWidth: 480, margin: "0 auto 56px" }}>
+            <FadeIn delay={80}>
+              <div style={{ background: C.dusk, borderRadius: 18, padding: "36px 28px", boxShadow: "0 12px 40px rgba(0,0,0,0.2)", position: "relative", overflow: "hidden" }}>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 12 }}>Founding Truck</div>
                 <div style={{ marginBottom: 4 }}>
-                  <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 48, fontWeight: 700, color: C.text }}>$0</span>
-                  <span style={{ fontSize: 14, color: C.textMuted, marginLeft: 4 }}>/mo</span>
+                  <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 48, fontWeight: 700, color: C.cream }}>$0</span>
+                  <span style={{ fontSize: 14, color: "rgba(255,255,255,0.45)", marginLeft: 4 }}>/mo through May 10</span>
                 </div>
-                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: C.textMuted, marginBottom: 28 }}>always free</div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                  {TRUCK_BASIC_ITEMS.map(item => (
-                    <div key={item.label} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
-                      <span style={{ color: C.sage, fontSize: 13, flexShrink: 0, marginTop: 1 }}>✓</span>
-                      <div>
-                        <div style={{ fontSize: 13, color: C.text, fontWeight: 600 }}>{item.label}</div>
-                        <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.6, marginTop: 2 }}>{item.sub}</div>
-                      </div>
-                    </div>
-                  ))}
-                  {/* Show explicitly what's NOT included */}
-                  {[
-                    "No map pin",
-                    "No check-in URL",
-                    "No website link",
-                    "No newsletter mention",
-                  ].map(x => (
-                    <div key={x} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <span style={{ color: C.sand, fontSize: 13, flexShrink: 0 }}>—</span>
-                      <span style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.5 }}>{x}</span>
-                    </div>
-                  ))}
-                </div>
-                <div style={{ marginTop: 28 }}>
-                  <button
-                    onClick={() => scrollToSignup('free')}
-                    style={{ display: "block", width: "100%", textAlign: "center", padding: "12px 20px", borderRadius: 24, background: "transparent", color: C.sage, border: `1.5px solid ${C.sage}`, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: "pointer" }}
-                  >
-                    Get the Free Listing →
-                  </button>
-                </div>
-              </div>
-            </FadeIn>
-
-            {/* Live Listing */}
-            <FadeIn delay={120}>
-              <div className="ft-pricing-paid" style={{ background: C.dusk, borderRadius: 18, padding: "36px 28px", boxShadow: "0 12px 40px rgba(0,0,0,0.2)", position: "relative", overflow: "hidden", height: "100%", boxSizing: "border-box", transform: "scale(1.03)" }}>
-                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 12 }}>Live Listing</div>
-                <div style={{ marginBottom: 4 }}>
-                  <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 48, fontWeight: 700, color: C.cream }}>$9</span>
-                  <span style={{ fontSize: 14, color: "rgba(255,255,255,0.45)", marginLeft: 4 }}>/mo</span>
-                </div>
-                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: C.sunsetLight, marginBottom: 28 }}>live on the map · build your love count · rise in the rankings</div>
+                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: C.sunsetLight, marginBottom: 8 }}>everything included · no card required</div>
+                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginBottom: 24, lineHeight: 1.6 }}>After May 10: $9/mo to stay live on the map, or downgrade to a free directory listing.</div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {TRUCK_PAID_ITEMS.map(item => (
                     <div key={item.label} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
@@ -400,9 +357,9 @@ export default function FoodTruckPartnerPage() {
                 <div style={{ marginTop: 28 }}>
                   <button
                     onClick={() => scrollToSignup('paid')}
-                    style={{ display: "block", width: "100%", textAlign: "center", padding: "12px 20px", borderRadius: 24, background: C.sunset, color: C.cream, border: "none", fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: "pointer" }}
+                    style={{ display: "block", width: "100%", textAlign: "center", padding: "14px 20px", borderRadius: 24, background: C.sunset, color: C.cream, border: "none", fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: "pointer" }}
                   >
-                    Get on the Map — $9/mo →
+                    Sign Up Free →
                   </button>
                 </div>
               </div>
@@ -421,10 +378,10 @@ export default function FoodTruckPartnerPage() {
             <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 60%, rgba(212,132,90,0.12) 0%, transparent 65%)", pointerEvents: "none" }} />
             <SectionLabel light>Get Listed</SectionLabel>
             <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 40px)", fontWeight: 400, color: C.cream, margin: "16px 0 12px", lineHeight: 1.25, textAlign: "center" }}>
-              Your truck. Your listing.<br /><em style={{ color: C.sunsetLight }}>Pick your plan.</em>
+              Your truck. Live on the map.<br /><em style={{ color: C.sunsetLight }}>Free through May 10.</em>
             </h2>
             <p style={{ fontSize: 14, color: "rgba(255,255,255,0.42)", lineHeight: 1.85, marginBottom: 32, textAlign: "center" }}>
-              Free puts your name in the directory. $9/month gets you live on the map — customers can heart your truck and push you to the top of the Most Loved rankings.
+              Founding trucks get the full Featured experience — live map pin, customer hearts, Most Loved rankings — completely free. No card required.
             </p>
 
             {step === 'activated' ? (
@@ -435,7 +392,7 @@ export default function FoodTruckPartnerPage() {
                   {activationData?.truckName || 'Your truck'} is live!
                 </h3>
                 <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: C.sunsetLight, marginBottom: 20 }}>
-                  Check your texts — your personal check-in link just landed.
+                  You're a founding truck — check your texts for your personal check-in link.
                 </div>
                 <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.8, margin: "0 0 28px", maxWidth: 400, marginLeft: "auto", marginRight: "auto" }}>
                   Open that link every time you head to Manitou Beach. Drop your pin, add today's special, and you're live on the map in seconds.
@@ -526,32 +483,10 @@ export default function FoodTruckPartnerPage() {
 
             ) : (
               <>
-                {/* ── TIER SELECTOR ── */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 28 }}>
-                  <button
-                    onClick={() => setSelectedTier('free')}
-                    style={{
-                      padding: "14px 12px", borderRadius: 10, border: selectedTier === 'free' ? `2px solid ${C.sage}` : "2px solid rgba(255,255,255,0.12)",
-                      background: selectedTier === 'free' ? "rgba(122,142,114,0.15)" : "rgba(255,255,255,0.04)",
-                      color: selectedTier === 'free' ? C.cream : "rgba(255,255,255,0.45)",
-                      fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, cursor: "pointer", textAlign: "center", transition: "all 0.18s",
-                    }}
-                  >
-                    <div style={{ fontSize: 15, marginBottom: 3 }}>Free Listing</div>
-                    <div style={{ fontSize: 11, fontWeight: 400, opacity: 0.7 }}>Directory only · $0/mo</div>
-                  </button>
-                  <button
-                    onClick={() => setSelectedTier('paid')}
-                    style={{
-                      padding: "14px 12px", borderRadius: 10, border: selectedTier === 'paid' ? `2px solid ${C.sunset}` : "2px solid rgba(255,255,255,0.12)",
-                      background: selectedTier === 'paid' ? "rgba(212,132,90,0.15)" : "rgba(255,255,255,0.04)",
-                      color: selectedTier === 'paid' ? C.cream : "rgba(255,255,255,0.45)",
-                      fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, cursor: "pointer", textAlign: "center", transition: "all 0.18s",
-                    }}
-                  >
-                    <div style={{ fontSize: 15, marginBottom: 3 }}>Live Listing</div>
-                    <div style={{ fontSize: 11, fontWeight: 400, opacity: 0.7 }}>Live map + love rankings · $9/mo</div>
-                  </button>
+                {/* ── BETA BADGE ── */}
+                <div style={{ textAlign: "center", marginBottom: 24, padding: "14px 20px", background: "rgba(212,132,90,0.12)", border: "1px solid rgba(212,132,90,0.25)", borderRadius: 12 }}>
+                  <div style={{ fontFamily: "'Caveat', cursive", fontSize: 17, color: C.sunsetLight, marginBottom: 2 }}>Founding Truck — Free through May 10</div>
+                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)" }}>Full Featured experience. No credit card. No catch.</div>
                 </div>
 
                 {/* ── FORM FIELDS ── */}
@@ -668,7 +603,7 @@ export default function FoodTruckPartnerPage() {
                     disabled={loading || imageUploading}
                     style={{
                       marginTop: 6, padding: "15px 24px",
-                      background: loading ? C.sand : selectedTier === 'paid' ? C.sunset : C.sage,
+                      background: loading ? C.sand : C.sunset,
                       color: C.cream, border: "none", borderRadius: 8, fontSize: 13, fontWeight: 700,
                       letterSpacing: 1.5, textTransform: "uppercase",
                       cursor: (loading || imageUploading) ? "default" : "pointer",
@@ -677,13 +612,11 @@ export default function FoodTruckPartnerPage() {
                   >
                     {loading
                       ? "Sending verification code…"
-                      : selectedTier === 'paid'
-                        ? "Get on the Map — $9/mo →"
-                        : "Get My Free Listing →"
+                      : "Get on the Map — Free →"
                     }
                   </button>
                   <p style={{ fontSize: 11, color: "rgba(255,255,255,0.25)", textAlign: "center", lineHeight: 1.7, margin: "2px 0 0" }}>
-                    We'll text a verification code to your phone. {selectedTier === 'paid' ? 'After verification, secure checkout via Stripe.' : 'Once verified, your listing goes live instantly.'}
+                    We'll text a verification code to your phone. Once verified, you're live on the map instantly.
                   </p>
                 </div>
               </>
