@@ -12,8 +12,9 @@ async function sendSMS(to, body) {
   const from = process.env.TWILIO_PHONE;
   if (!sid || !token || !from) return false;
   try {
-    const digits = to.replace(/\D/g, '');
-    if (digits.length < 10) return false;
+    let digits = to.replace(/\D/g, '');
+    if (digits.length === 11 && digits.startsWith('1')) digits = digits.slice(1);
+    if (digits.length !== 10) return false;
     const res = await fetch(
       `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,
       {
