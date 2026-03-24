@@ -1,3 +1,5 @@
+import { Resend } from 'resend';
+
 // Fetch all pages from a Notion database query, following cursors past the 100-record limit
 async function queryAllNotionPages(dbId, token, body) {
   const url = `https://api.notion.com/v1/databases/${dbId}/query`;
@@ -130,10 +132,14 @@ export default async function handler(req, res) {
         }).catch(err => console.error('Auto-approve status patch failed:', err.message));
       }
 
+      // Send emails — awaited before returning so Vercel doesn't kill the function first
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      const siteUrl = process.env.SITE_URL || 'https://manitou-beach.vercel.app';
+      const emailTasks = [];
+
       // Alert admin when a business submits with no category or "Other"
       if (!category || category === 'Other') {
-        import('resend').then(({ Resend }) => {
-          const resend = new Resend(process.env.RESEND_API_KEY);
+        emailTasks.push(
           resend.emails.send({
             from: 'Manitou Beach <hello@yetigroove.com>',
             to: process.env.ADMIN_EMAIL || 'daryl@yetigroove.com',
@@ -147,15 +153,13 @@ export default async function handler(req, res) {
               </div>
             `,
           }).then(r => { if (r.error) console.error('Resend admin alert error:', JSON.stringify(r.error)); })
-            .catch(err => console.error('Resend admin alert exception:', err.message));
-        }).catch(err => console.error('Resend import error (admin):', err.message));
+            .catch(err => console.error('Resend admin alert exception:', err.message))
+        );
       }
 
       // Welcome email to business owner
       if (email) {
-        import('resend').then(({ Resend }) => {
-          const resend = new Resend(process.env.RESEND_API_KEY);
-          const siteUrl = process.env.SITE_URL || 'https://manitoubeach.com';
+        emailTasks.push(
           resend.emails.send({
             from: 'Manitou Beach <hello@yetigroove.com>',
             reply_to: 'hello@yetigroove.com',
@@ -196,9 +200,11 @@ export default async function handler(req, res) {
               </div>
             `,
           }).then(r => { if (r.error) console.error('Resend welcome email error:', JSON.stringify(r.error)); })
-            .catch(err => console.error('Resend welcome email exception:', err.message));
-        }).catch(err => console.error('Resend import error (welcome):', err.message));
+            .catch(err => console.error('Resend welcome email exception:', err.message))
+        );
       }
+
+      await Promise.allSettled(emailTasks);
 
       return res.status(200).json({ success: true, autoApproved });
     } catch (err) {
