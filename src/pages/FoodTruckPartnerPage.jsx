@@ -5,7 +5,7 @@ import { usePricing } from '../data/pricing';
 import { Footer, GlobalStyles, Navbar } from '../components/Layout';
 
 const TRUCK_HOW = [
-  { step: "01", title: "Sign up — 2 minutes flat", copy: "Truck name, cuisine, email, photo. Pick your tier. Done. Daryl sends your personal check-in link the same day — it's a private URL just for you, no app, no login." },
+  { step: "01", title: "Sign up — 2 minutes flat", copy: "Truck name, cuisine, phone, photo. Pick your tier. Verify your phone with a quick text code — and your personal check-in link arrives instantly. No app, no login, no waiting." },
   { step: "02", title: "Tap your link every time you head out", copy: "Pulling into Manitou Beach? Open your link. Drop a location note ('near the boat launch'), add today's special, set your estimated departure. Tap 'I'm Here.' Your map pin goes live in seconds." },
   { step: "03", title: "Locals find you right now", copy: "Anyone checking the locator sees your Live Now badge, today's special, and how long you'll be around. Not a static ad — a real-time signal that turns browsers into customers." },
   { step: "04", title: "Pre-announce a run before you leave home", copy: "Planning to be there Saturday? Set your Coming Date and customers see 'Coming This Saturday' in the locator before you even hitch up. You show up to a crowd instead of building one." },
@@ -55,7 +55,14 @@ export default function FoodTruckPartnerPage() {
   const [imageUploading, setImageUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [submitError, setSubmitError] = useState('');
-  const [submitted, setSubmitted] = useState(false);
+
+  // Verification flow states
+  const [step, setStep] = useState('form'); // 'form' | 'verify' | 'activated' | 'redirecting'
+  const [verifyCode, setVerifyCode] = useState('');
+  const [verifyLoading, setVerifyLoading] = useState(false);
+  const [verifyError, setVerifyError] = useState('');
+  const [activationData, setActivationData] = useState(null); // { slug, checkinUrl, truckName }
+  const [resending, setResending] = useState(false);
 
   const handleImageSelect = async (file) => {
     if (!file || !file.type.startsWith('image/')) return;
@@ -85,11 +92,15 @@ export default function FoodTruckPartnerPage() {
       setSubmitError('Truck name and email are required.');
       return;
     }
+    const phoneDigits = (form.phone || '').replace(/\D/g, '');
+    if (phoneDigits.length < 10) {
+      setSubmitError('A valid phone number is required — we\'ll text you a verification code.');
+      return;
+    }
     setLoading(true);
     setSubmitError('');
     try {
-      // Always record in Notion first
-      await fetch('/api/submit-food-truck', {
+      const res = await fetch('/api/submit-food-truck', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -102,34 +113,84 @@ export default function FoodTruckPartnerPage() {
           tier: selectedTier,
         }),
       });
-
-      if (selectedTier === 'free') {
-        setSubmitted(true);
-        return;
-      }
-
-      // Paid tier → Stripe checkout
-      const res = await fetch('/api/create-checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          tier: 'food_truck_founding',
-          businessName: form.truckName,
-          email: form.email,
-          priceInCents: centsFor(9),
-          mode: 'subscription',
-        }),
-      });
       const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        setSubmitError(data.error || 'Something went wrong. Please try again.');
+      if (data.needsVerification) {
+        setStep('verify');
+      } else if (data.error) {
+        setSubmitError(data.error);
       }
     } catch {
       setSubmitError('Something went wrong. Please try again.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleVerify = async () => {
+    if (verifyCode.trim().length !== 6) {
+      setVerifyError('Enter the 6-digit code from your text message.');
+      return;
+    }
+    setVerifyLoading(true);
+    setVerifyError('');
+    try {
+      const res = await fetch('/api/verify-food-truck', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: form.phone, code: verifyCode.trim(), tier: selectedTier }),
+      });
+      const data = await res.json();
+
+      if (data.error) {
+        setVerifyError(data.error);
+        setVerifyLoading(false);
+        return;
+      }
+
+      if (data.activated) {
+        // Free tier — they're live
+        setActivationData({ slug: data.slug, checkinUrl: data.checkinUrl, truckName: data.truckName });
+        setStep('activated');
+      } else if (data.needsPayment) {
+        // Paid tier — verified, now redirect to Stripe
+        setStep('redirecting');
+        const checkoutRes = await fetch('/api/create-checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            tier: 'food_truck_founding',
+            businessName: form.truckName,
+            email: form.email,
+            priceInCents: centsFor(9),
+            mode: 'subscription',
+          }),
+        });
+        const checkoutData = await checkoutRes.json();
+        if (checkoutData.url) {
+          window.location.href = checkoutData.url;
+        } else {
+          setVerifyError(checkoutData.error || 'Checkout failed. Please try again.');
+          setStep('verify');
+        }
+      }
+    } catch {
+      setVerifyError('Something went wrong. Please try again.');
+    } finally {
+      setVerifyLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    setResending(true);
+    try {
+      await fetch('/api/verify-food-truck', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: form.phone, resend: true }),
+      });
+    } catch { /* silent */ }
+    finally {
+      setTimeout(() => setResending(false), 3000); // 3s cooldown
     }
   };
   return (
@@ -366,18 +427,103 @@ export default function FoodTruckPartnerPage() {
               Free puts your name in the directory. $9/month gets you live on the map — customers can heart your truck and push you to the top of the Most Loved rankings.
             </p>
 
-            {submitted ? (
-              /* ── FREE TIER SUCCESS ── */
+            {step === 'activated' ? (
+              /* ── ACTIVATED SUCCESS ── */
               <div style={{ textAlign: "center", padding: "48px 24px", background: "rgba(255,255,255,0.04)", borderRadius: 16, border: "1px solid rgba(255,255,255,0.1)" }}>
-                <div style={{ fontSize: 48, marginBottom: 16 }}>🍔</div>
-                <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream, fontWeight: 400, margin: "0 0 12px" }}>You're in the directory!</h3>
-                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.8, margin: "0 0 28px" }}>
-                  Daryl will review and activate your listing within 24 hours. You'll hear from him at <strong style={{ color: C.sunsetLight }}>{form.email}</strong>.
+                <div style={{ fontSize: 56, marginBottom: 16, animation: "foodTruckPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)" }}>🎉</div>
+                <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, color: C.cream, fontWeight: 400, margin: "0 0 8px" }}>
+                  {activationData?.truckName || 'Your truck'} is live!
+                </h3>
+                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: C.sunsetLight, marginBottom: 20 }}>
+                  Check your texts — your personal check-in link just landed.
+                </div>
+                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.8, margin: "0 0 28px", maxWidth: 400, marginLeft: "auto", marginRight: "auto" }}>
+                  Open that link every time you head to Manitou Beach. Drop your pin, add today's special, and you're live on the map in seconds.
                 </p>
-                <a href="/food-trucks" style={{ fontSize: 13, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textDecoration: "none" }}>
-                  See the locator →
+                <a href="/food-trucks" style={{
+                  display: "inline-block", padding: "14px 32px", background: C.sunset, color: C.cream, borderRadius: 28,
+                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5,
+                  textTransform: "uppercase", textDecoration: "none",
+                }}>
+                  See the Locator →
                 </a>
+                <style>{`@keyframes foodTruckPop { 0% { transform: scale(0); } 60% { transform: scale(1.2); } 100% { transform: scale(1); } }`}</style>
               </div>
+
+            ) : step === 'verify' ? (
+              /* ── VERIFICATION CODE ENTRY ── */
+              <div style={{ textAlign: "center", padding: "44px 28px", background: "rgba(255,255,255,0.04)", borderRadius: 16, border: "1px solid rgba(255,255,255,0.1)" }}>
+                <div style={{ fontSize: 40, marginBottom: 16 }}>📱</div>
+                <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream, fontWeight: 400, margin: "0 0 8px" }}>
+                  Check your texts
+                </h3>
+                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.8, margin: "0 0 28px" }}>
+                  We sent a 6-digit code to <strong style={{ color: C.sunsetLight }}>{form.phone}</strong>
+                </p>
+                <div style={{ maxWidth: 240, margin: "0 auto 20px" }}>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={6}
+                    value={verifyCode}
+                    onChange={e => setVerifyCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                    placeholder="000000"
+                    autoFocus
+                    style={{
+                      width: "100%", boxSizing: "border-box", padding: "16px 20px",
+                      border: `2px solid ${verifyError ? '#e07070' : 'rgba(255,255,255,0.2)'}`,
+                      borderRadius: 12, background: "rgba(255,255,255,0.06)", color: C.cream,
+                      fontFamily: "'Libre Franklin', sans-serif", fontSize: 28, fontWeight: 700,
+                      textAlign: "center", letterSpacing: 8, outline: "none",
+                      transition: "border-color 0.2s",
+                    }}
+                    onFocus={e => { if (!verifyError) e.currentTarget.style.borderColor = C.sunset; }}
+                    onBlur={e => { if (!verifyError) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'; }}
+                  />
+                </div>
+                {verifyError && (
+                  <div style={{ fontSize: 13, color: "#e07070", fontWeight: 500, marginBottom: 16 }}>{verifyError}</div>
+                )}
+                <button
+                  onClick={handleVerify}
+                  disabled={verifyLoading || verifyCode.length !== 6}
+                  style={{
+                    padding: "14px 36px", background: verifyLoading ? C.sand : C.sunset,
+                    color: C.cream, border: "none", borderRadius: 28, fontSize: 13, fontWeight: 700,
+                    letterSpacing: 1.5, textTransform: "uppercase", cursor: verifyLoading ? "default" : "pointer",
+                    fontFamily: "'Libre Franklin', sans-serif", transition: "background 0.2s",
+                    opacity: verifyCode.length !== 6 ? 0.5 : 1,
+                  }}
+                >
+                  {verifyLoading ? (step === 'redirecting' ? "Heading to checkout…" : "Verifying…") : "Verify & Activate →"}
+                </button>
+                <div style={{ marginTop: 20 }}>
+                  <button
+                    onClick={handleResend}
+                    disabled={resending}
+                    style={{
+                      background: "none", border: "none", fontFamily: "'Libre Franklin', sans-serif",
+                      fontSize: 12, color: resending ? C.sage : "rgba(255,255,255,0.35)",
+                      cursor: resending ? "default" : "pointer", padding: "6px 12px",
+                    }}
+                  >
+                    {resending ? "✓ Code re-sent" : "Didn't get it? Resend code"}
+                  </button>
+                </div>
+              </div>
+
+            ) : step === 'redirecting' ? (
+              /* ── STRIPE REDIRECT ── */
+              <div style={{ textAlign: "center", padding: "48px 24px", background: "rgba(255,255,255,0.04)", borderRadius: 16, border: "1px solid rgba(255,255,255,0.1)" }}>
+                <div style={{ fontSize: 40, marginBottom: 16 }}>✓</div>
+                <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream, fontWeight: 400, margin: "0 0 12px" }}>
+                  Phone verified — heading to checkout
+                </h3>
+                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.8 }}>
+                  Redirecting to Stripe…
+                </p>
+              </div>
+
             ) : (
               <>
                 {/* ── TIER SELECTOR ── */}
@@ -442,7 +588,7 @@ export default function FoodTruckPartnerPage() {
                       />
                     </div>
                     <div>
-                      <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 6 }}>Phone</label>
+                      <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 6 }}>Phone * <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>— for verification</span></label>
                       <input
                         type="tel"
                         value={form.phone}
@@ -530,17 +676,14 @@ export default function FoodTruckPartnerPage() {
                     }}
                   >
                     {loading
-                      ? (selectedTier === 'paid' ? "Redirecting to checkout…" : "Submitting…")
+                      ? "Sending verification code…"
                       : selectedTier === 'paid'
                         ? "Get on the Map — $9/mo →"
                         : "Get My Free Listing →"
                     }
                   </button>
                   <p style={{ fontSize: 11, color: "rgba(255,255,255,0.25)", textAlign: "center", lineHeight: 1.7, margin: "2px 0 0" }}>
-                    {selectedTier === 'paid'
-                      ? `Secure checkout via Stripe. Daryl sends your personal check-in link after payment — usually same day.`
-                      : "Free listings reviewed by Daryl within 24 hours. You'll get a confirmation at the email above."
-                    }
+                    We'll text a verification code to your phone. {selectedTier === 'paid' ? 'After verification, secure checkout via Stripe.' : 'Once verified, your listing goes live instantly.'}
                   </p>
                 </div>
               </>

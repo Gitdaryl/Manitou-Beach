@@ -386,15 +386,91 @@ export default async function handler(req, res) {
     const session = event.data.object;
     const metadata = session.metadata || {};
 
-    // 1. Business Listing subscription checkout
-    if (metadata.businessName && metadata.type === 'listing') {
+    // 0. Food Truck founding subscription — activate in FOOD_TRUCKS db, not BUSINESS
+    if (metadata.tier === 'food_truck_founding' && metadata.businessName) {
+      const truckName = metadata.businessName;
+      try {
+        // Find the truck by name in Food Trucks DB (status should be "Verified" from phone verification)
+        const ftQuery = await fetch(`https://api.notion.com/v1/databases/${process.env.NOTION_DB_FOOD_TRUCKS}/query`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.NOTION_TOKEN_BUSINESS}`,
+            'Content-Type': 'application/json',
+            'Notion-Version': '2022-06-28',
+          },
+          body: JSON.stringify({
+            filter: {
+              and: [
+                { property: 'Name', title: { equals: truckName } },
+                { property: 'Status', select: { equals: 'Verified' } },
+              ],
+            },
+            page_size: 1,
+          }),
+        });
+        const ftData = await ftQuery.json();
+        const ftPage = ftData.results?.[0];
+
+        if (ftPage) {
+          // Activate the truck
+          await fetch(`https://api.notion.com/v1/pages/${ftPage.id}`, {
+            method: 'PATCH',
+            headers: {
+              'Authorization': `Bearer ${process.env.NOTION_TOKEN_BUSINESS}`,
+              'Content-Type': 'application/json',
+              'Notion-Version': '2022-06-28',
+            },
+            body: JSON.stringify({
+              properties: {
+                'Status': { select: { name: 'Active' } },
+              },
+            }),
+          });
+
+          // SMS the check-in link
+          const slug = ftPage.properties['Slug']?.rich_text?.[0]?.text?.content || '';
+          const token = ftPage.properties['Checkin Token']?.rich_text?.[0]?.text?.content || '';
+          const phone = ftPage.properties['Phone']?.phone_number || '';
+          const phoneDigits = (phone || '').replace(/\D/g, '').slice(-10);
+
+          if (slug && token && phoneDigits.length >= 10 && process.env.TWILIO_ACCOUNT_SID) {
+            const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
+            const checkinUrl = `${siteUrl}/food-trucks?truck=${encodeURIComponent(slug)}&token=${encodeURIComponent(token)}`;
+            await fetch(
+              `https://api.twilio.com/2010-04-01/Accounts/${process.env.TWILIO_ACCOUNT_SID}/Messages.json`,
+              {
+                method: 'POST',
+                headers: {
+                  Authorization: 'Basic ' + Buffer.from(
+                    `${process.env.TWILIO_ACCOUNT_SID}:${process.env.TWILIO_AUTH_TOKEN}`
+                  ).toString('base64'),
+                  'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                  From: process.env.TWILIO_PHONE,
+                  To: `+1${phoneDigits}`,
+                  Body: `Manitou Beach Food Trucks\n\n${truckName} is live on the map! 🎉\n\nHere's your personal check-in link:\n${checkinUrl}\n\nOpen it each time you head to Manitou Beach. Drop your pin, add today's special, and go live on the map.\n\nSave this to your home screen for quick access.`,
+                }).toString(),
+              }
+            );
+          }
+          console.log(`Food truck activated: ${truckName}`);
+        } else {
+          console.error(`Webhook: Food truck "${truckName}" not found in Verified status`);
+        }
+      } catch (err) {
+        console.error('Food truck webhook activation error:', err);
+      }
+    }
+
+    // 1. Business Listing subscription checkout (non-food-truck)
+    if (metadata.businessName && metadata.type === 'listing' && metadata.tier !== 'food_truck_founding') {
       const businessName = metadata.businessName;
       const tierId = metadata.tier;
 
       let statusName = 'Listed Enhanced';
       if (tierId === 'premium') statusName = 'Listed Premium';
       if (tierId === 'featured') statusName = 'Listed Featured';
-      if (tierId === 'food_truck_founding') statusName = 'Listed Featured';
 
       // Beta business: CREATE a new Notion listing row (no existing row to update)
       if (metadata.beta === 'true') {

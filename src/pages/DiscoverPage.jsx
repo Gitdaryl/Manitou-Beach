@@ -532,6 +532,21 @@ export default function DiscoverPage() {
           <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted }}>
             {filteredPois.length + filteredBizzes.length} place{filteredPois.length + filteredBizzes.length !== 1 ? 's' : ''}
           </span>
+          {activeCategory === 'food' && (
+            <a href="/food-trucks" style={{
+              display: 'flex', alignItems: 'center', gap: 10, background: 'rgba(212,132,90,0.08)',
+              border: '1px solid rgba(212,132,90,0.2)', borderRadius: 8, padding: '10px 16px',
+              textDecoration: 'none', transition: 'background 0.15s', maxWidth: 520,
+            }}
+              onMouseEnter={e => e.currentTarget.style.background = 'rgba(212,132,90,0.14)'}
+              onMouseLeave={e => e.currentTarget.style.background = 'rgba(212,132,90,0.08)'}
+            >
+              <span style={{ fontSize: 20, flexShrink: 0 }}>🔥</span>
+              <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.text, lineHeight: 1.5 }}>
+                <strong style={{ color: C.sunset }}>Looking for food trucks?</strong> They have their own live locator — see who's here right now, where they're parked, and what they're serving. <span style={{ color: C.sunset, fontWeight: 600 }}>Open the locator →</span>
+              </span>
+            </a>
+          )}
           {activeCategory === 'healthcare' && (
             <div style={{ background: '#c05a5a10', border: '1px solid #c05a5a28', borderRadius: 8, padding: '6px 14px', fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: '#c05a5a', lineHeight: 1.45, maxWidth: 500 }}>
               <strong>Tip:</strong> Always call your insurance first — network coverage varies by plan. Use the number on your card or your insurer's provider finder.
