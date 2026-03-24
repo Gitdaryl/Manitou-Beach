@@ -116,6 +116,20 @@ export default async function handler(req, res) {
         geocodeAndStore(newPage.id, address).catch(() => {});
       }
 
+      // Auto-approve: if name + real category provided, list immediately (no manual review needed)
+      const autoApproved = !!(name && category && category !== 'Other');
+      if (autoApproved) {
+        fetch(`https://api.notion.com/v1/pages/${newPage.id}`, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Bearer ${process.env.NOTION_TOKEN_BUSINESS}`,
+            'Content-Type': 'application/json',
+            'Notion-Version': '2022-06-28',
+          },
+          body: JSON.stringify({ properties: { 'Status': { status: { name: 'Listed Free' } } } }),
+        }).catch(err => console.error('Auto-approve status patch failed:', err.message));
+      }
+
       // Alert admin when a business submits with no category or "Other"
       if (!category || category === 'Other') {
         import('resend').then(({ Resend }) => {
@@ -186,7 +200,7 @@ export default async function handler(req, res) {
         }).catch(err => console.error('Resend import error (welcome):', err.message));
       }
 
-      return res.status(200).json({ success: true });
+      return res.status(200).json({ success: true, autoApproved });
     } catch (err) {
       console.error('Server error:', err.message);
       return res.status(500).json({ error: 'Server error' });

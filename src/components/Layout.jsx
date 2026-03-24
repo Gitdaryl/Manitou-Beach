@@ -920,6 +920,7 @@ export async function compressImage(file, maxWidth = 1200, quality = 0.7) {
 
 export function SubmitSection() {
   const [submitted, setSubmitted] = useState(false);
+  const [autoApproved, setAutoApproved] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [logoFile, setLogoFile] = useState(null);
@@ -952,6 +953,7 @@ export function SubmitSection() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || data.error || "Submission failed");
+      setAutoApproved(!!data.autoApproved);
       setSubmitted(true);
     } catch (err) {
       setSubmitError(err.message && err.message !== "Submission failed"
@@ -1041,10 +1043,10 @@ export function SubmitSection() {
                 animation: "pulse-glow 2s ease-in-out infinite",
               }}>✓</div>
               <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream, marginBottom: 8, fontWeight: 400 }}>
-                You're in — thanks for listing your business.
+                {autoApproved ? "You're live — welcome to Manitou Beach." : "Got it — we'll take a look shortly."}
               </div>
               <p style={{ fontSize: 14, color: C.sunsetLight, margin: "0 0 20px 0", fontFamily: "'Libre Franklin', sans-serif", fontStyle: "italic" }}>
-                We're building something real here and you're part of it.
+                {autoApproved ? "Your listing is up. People can find you right now." : "We're building something real here and you're part of it."}
               </p>
 
               {/* Email confirmation notice */}
@@ -1070,11 +1072,15 @@ export function SubmitSection() {
                 <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
                   What happens next
                 </p>
-                {[
-                  "We'll review your listing within 48 hours",
-                  "Once approved, you'll appear in the directory and on the Discover map",
+                {(autoApproved ? [
+                  "You're already showing in the Local Guide and on the Discover map",
+                  "Check your email — we sent you a welcome note with a link to update your info anytime",
                   "We're actively growing our audience — we want people finding you",
-                ].map((step, i) => (
+                ] : [
+                  "We'll take a look and get you showing within 24 hours",
+                  "Once live, you'll appear in the Local Guide and on the Discover map",
+                  "We're actively growing our audience — we want people finding you",
+                ]).map((step, i) => (
                   <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", marginBottom: 10 }}>
                     <span style={{
                       flexShrink: 0, width: 22, height: 22, borderRadius: "50%",
