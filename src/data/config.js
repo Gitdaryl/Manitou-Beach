@@ -50,7 +50,7 @@ export const LISTING_CATEGORIES = [
   "Food & Drink", "Food Truck", "Stays & Rentals", "Breweries & Wineries",
   "Boating & Water", "Events & Venues", "Shopping & Gifts", "Home Services",
   "Health & Beauty", "Real Estate", "Creative Media", "Pet Services",
-  "Arts & Culture", "Other",
+  "Arts & Culture", "Activities", "Other",
 ];
 // Drop your drone fireworks video in public/images/ and set the path here:
 export const USA250_VIDEO_URL = "/images/fireworks/devilslake-fireworks-hero.mp4";
