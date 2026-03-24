@@ -84,7 +84,7 @@ function FireworksHero() {
   useEffect(() => {
     setTimeout(() => setLoaded(true), 80);
     // Countdown to Friday July 3, 2026 9:00 PM
-    const target = new Date("2026-07-03T21:00:00");
+    const target = new Date("2026-07-03T22:00:00");
     const calc = () => {
       const diff = target - new Date();
       if (diff <= 0) return setTimeLeft({ days: 0, hours: 0, mins: 0, secs: 0 });
@@ -239,7 +239,7 @@ function FireworksHero() {
           marginBottom: 52,
           lineHeight: 1.4,
         }}>
-          Friday, July 3rd · 9:00 PM · America's 250th Anniversary
+          Friday, July 3rd · 10:00 PM · America's 250th Anniversary
         </div>
 
         {/* Countdown */}

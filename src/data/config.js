@@ -52,7 +52,7 @@ export const LISTING_CATEGORIES = [
   "Health & Beauty", "Pet Services", "Arts & Culture", "Other",
 ];
 // Drop your drone fireworks video in public/images/ and set the path here:
-export const USA250_VIDEO_URL = ""; // e.g. "/images/fireworks-2025.mp4"
+export const USA250_VIDEO_URL = "/images/fireworks/devilslake-fireworks-hero.mp4";
 
 // ============================================================
 export const SECTIONS = [
