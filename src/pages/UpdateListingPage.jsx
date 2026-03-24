@@ -235,10 +235,10 @@ export default function UpdateListingPage() {
                     <div style={{ background: `linear-gradient(135deg, #1A2830 0%, #2D4A3E 100%)`, borderRadius: 12, padding: '28px 24px' }}>
                       <div style={{ fontSize: 28, marginBottom: 12 }}>🚚</div>
                       <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: '#F5F0E8', marginBottom: 10, fontWeight: 400 }}>
-                        Food trucks get their own platform
+                        Hold on — you qualify for something better
                       </div>
                       <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.65)', lineHeight: 1.7, margin: '0 0 20px', fontFamily: "'Libre Franklin', sans-serif" }}>
-                        We have a dedicated food truck directory with check-in links, event scheduling, and SMS alerts — way more than a standard business listing. We'll take you there now with your info pre-filled.
+                        Manitou Beach has a whole dedicated food truck platform — not just a directory spot. Your own live check-in link. A real-time map pin when you're parked up. SMS alerts to anyone following your truck. Event scheduling for the big summer weekends. Two minutes to set up, and we've already got your info ready to go.
                       </p>
                       <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
                         <button
@@ -257,7 +257,7 @@ export default function UpdateListingPage() {
                             background: C.sage, color: '#fff', cursor: 'pointer',
                           }}
                         >
-                          Take me to the food truck signup →
+                          Set up my truck →
                         </button>
                         <button type="button" onClick={() => setStep(1)} style={{
                           background: 'none', border: 'none', fontSize: 13, color: 'rgba(255,255,255,0.45)',
