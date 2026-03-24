@@ -529,12 +529,12 @@ function GalleryTile({ src, alt }) {
 function FireworksGallerySection() {
   // Images resolve from /images/fireworks/ — placeholders show until photos are added
   const images = [
-    "/images/fireworks/gallery-1.jpg",
-    "/images/fireworks/gallery-2.jpg",
-    "/images/fireworks/gallery-3.jpg",
-    "/images/fireworks/gallery-4.jpg",
-    "/images/fireworks/gallery-5.jpg",
-    "/images/fireworks/gallery-6.jpg",
+    "/images/fireworks/devilslake-fireworks-1.jpg",
+    "/images/fireworks/devilslake-fireworks-2.jpg",
+    "/images/fireworks/devilslake-fireworks-3.jpg",
+    "/images/fireworks/devilslake-fireworks-4.jpg",
+    "/images/fireworks/devilslake-fireworks-5.jpg",
+    "/images/fireworks/devilslake-fireworks-6.jpg",
   ];
 
   return (
