@@ -48,7 +48,20 @@ export default function FoodTruckPartnerPage() {
   };
 
   const { centsFor } = usePricing();
-  const [form, setForm] = useState({ truckName: '', cuisine: '', email: '', phone: '', website: '' });
+
+  // Pre-fill from URL params (e.g. redirected from /update-listing)
+  const prefill = (() => {
+    try { return Object.fromEntries(new URLSearchParams(window.location.search)); }
+    catch { return {}; }
+  })();
+
+  const [form, setForm] = useState({
+    truckName: prefill.name || '',
+    cuisine: '',
+    email: prefill.email || '',
+    phone: prefill.phone || '',
+    website: prefill.website || '',
+  });
   const [selectedTier, setSelectedTier] = useState('paid'); // beta: everyone gets Featured
   const [imageUrl, setImageUrl] = useState('');
   const [imagePreview, setImagePreview] = useState('');

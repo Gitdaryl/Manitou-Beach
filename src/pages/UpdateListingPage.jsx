@@ -26,6 +26,7 @@ function Field({ label, value, onChange, type = 'text', placeholder, multiline }
 
 const CATEGORIES = [
   'Food & Drink',
+  'Food Truck',
   'Stays & Rentals',
   'Breweries & Wineries',
   'Boating & Water',
@@ -229,27 +230,66 @@ export default function UpdateListingPage() {
                   <Field label="Address" value={form.address} onChange={v => setForm(f => ({ ...f, address: v }))} />
                   <Field label="Description" value={form.description} onChange={v => setForm(f => ({ ...f, description: v }))} multiline placeholder="Brief description (2–3 sentences)" />
 
-                  {submitError && (
-                    <p style={{ fontSize: 13, color: '#C0392B', background: '#FDF0F0', border: '1px solid #F5C6C6', borderRadius: 6, padding: '10px 14px', margin: 0 }}>
-                      {submitError}
-                    </p>
+                  {/* Food Truck interstitial — redirect instead of update */}
+                  {form.category === 'Food Truck' ? (
+                    <div style={{ background: `linear-gradient(135deg, #1A2830 0%, #2D4A3E 100%)`, borderRadius: 12, padding: '28px 24px' }}>
+                      <div style={{ fontSize: 28, marginBottom: 12 }}>🚚</div>
+                      <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: '#F5F0E8', marginBottom: 10, fontWeight: 400 }}>
+                        Food trucks get their own platform
+                      </div>
+                      <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.65)', lineHeight: 1.7, margin: '0 0 20px', fontFamily: "'Libre Franklin', sans-serif" }}>
+                        We have a dedicated food truck directory with check-in links, event scheduling, and SMS alerts — way more than a standard business listing. We'll take you there now with your info pre-filled.
+                      </p>
+                      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const params = new URLSearchParams();
+                            if (business?.name) params.set('name', business.name);
+                            if (business?.email) params.set('email', business.email);
+                            if (form.phone) params.set('phone', form.phone);
+                            if (form.website) params.set('website', form.website);
+                            window.location.href = `/food-truck-partner?${params.toString()}`;
+                          }}
+                          style={{
+                            fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700,
+                            padding: '12px 24px', borderRadius: 8, border: 'none',
+                            background: C.sage, color: '#fff', cursor: 'pointer',
+                          }}
+                        >
+                          Take me to the food truck signup →
+                        </button>
+                        <button type="button" onClick={() => setStep(1)} style={{
+                          background: 'none', border: 'none', fontSize: 13, color: 'rgba(255,255,255,0.45)',
+                          cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0,
+                        }}>
+                          ← Start over
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      {submitError && (
+                        <p style={{ fontSize: 13, color: '#C0392B', background: '#FDF0F0', border: '1px solid #F5C6C6', borderRadius: 6, padding: '10px 14px', margin: 0 }}>
+                          {submitError}
+                        </p>
+                      )}
+                      <p style={{ fontSize: 13, color: C.textMuted, margin: 0, fontFamily: "'Libre Franklin', sans-serif" }}>
+                        We'll review and apply your update within 24 hours.
+                      </p>
+                      <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginTop: 4, flexWrap: 'wrap' }}>
+                        <Btn variant="primary">
+                          {submitLoading ? 'Submitting…' : 'Submit update →'}
+                        </Btn>
+                        <button type="button" onClick={() => setStep(1)} style={{
+                          background: 'none', border: 'none', fontSize: 13, color: C.textMuted,
+                          cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0,
+                        }}>
+                          ← Start over
+                        </button>
+                      </div>
+                    </>
                   )}
-
-                  <p style={{ fontSize: 13, color: C.textMuted, margin: 0, fontFamily: "'Libre Franklin', sans-serif" }}>
-                    We'll review and apply your update within 24 hours.
-                  </p>
-
-                  <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginTop: 4, flexWrap: 'wrap' }}>
-                    <Btn variant="primary">
-                      {submitLoading ? 'Submitting…' : 'Submit update →'}
-                    </Btn>
-                    <button type="button" onClick={() => setStep(1)} style={{
-                      background: 'none', border: 'none', fontSize: 13, color: C.textMuted,
-                      cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0,
-                    }}>
-                      ← Start over
-                    </button>
-                  </div>
                 </form>
               )}
 
