@@ -35,5 +35,5 @@ export default async function handler(req, res) {
 
   // Redirect to business directory with a confirmed flag
   const siteUrl = process.env.SITE_URL || `https://${req.headers.host}`;
-  return res.redirect(302, `${siteUrl}/business?confirmed=true`);
+  return res.redirect(302, `${siteUrl}/listing-confirmed`);
 }

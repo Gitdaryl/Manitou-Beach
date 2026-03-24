@@ -48,6 +48,7 @@ const LaunchPage = lazy(() => import('./pages/LaunchPage'));
 const BetaBusinessPage = lazy(() => import('./pages/BetaBusinessPage'));
 const ActivateBusinessPage = lazy(() => import('./pages/ActivateBusinessPage'));
 const ActivateWineryPage = lazy(() => import('./pages/ActivateWineryPage'));
+const ListingConfirmedPage = lazy(() => import('./pages/ListingConfirmedPage'));
 
 // ── Beta gate — redirects / to /launch until LAUNCH_DATE
 //   ⚙️  Update LAUNCH_DATE when you have a firm date (must match LaunchPage.jsx)
@@ -122,6 +123,7 @@ export default function App() {
           <Route path="/business" element={<FeaturedPage />} />
           <Route path="/featured" element={<FeaturedPage />} />
           <Route path="/update-listing" element={<UpdateListingPage />} />
+          <Route path="/listing-confirmed" element={<ListingConfirmedPage />} />
           <Route path="/mens-club" element={<MensClubPage />} />
           <Route path="/ladies-club" element={<LadiesClubPage />} />
           <Route path="/historical-society" element={<HistoricalSocietyPage />} />
