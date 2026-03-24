@@ -26,8 +26,13 @@ async function sendSMS(to, body) {
         body: new URLSearchParams({ From: from, To: `+1${digits}`, Body: body }).toString(),
       }
     );
+    if (!res.ok) {
+      const errText = await res.text();
+      console.error('Twilio SMS failed:', res.status, errText);
+    }
     return res.ok;
-  } catch {
+  } catch (e) {
+    console.error('Twilio SMS exception:', e);
     return false;
   }
 }
