@@ -121,7 +121,7 @@ export default async function handler(req, res) {
         import('resend').then(({ Resend }) => {
           const resend = new Resend(process.env.RESEND_API_KEY);
           resend.emails.send({
-            from: 'Manitou Beach <hello@manitou-beach.com>',
+            from: 'Manitou Beach <hello@yetigroove.com>',
             to: process.env.ADMIN_EMAIL || 'daryl@yetigroove.com',
             subject: `⚠️ Uncategorized business listing — "${name}"`,
             html: `
@@ -143,8 +143,8 @@ export default async function handler(req, res) {
           const resend = new Resend(process.env.RESEND_API_KEY);
           const siteUrl = process.env.SITE_URL || 'https://manitoubeach.com';
           resend.emails.send({
-            from: 'Manitou Beach <hello@manitou-beach.com>',
-            reply_to: 'hello@manitou-beach.com',
+            from: 'Manitou Beach <hello@yetigroove.com>',
+            reply_to: 'hello@yetigroove.com',
             to: email,
             subject: `Welcome to Manitou Beach, ${name} — you're in!`,
             html: `
@@ -173,7 +173,7 @@ export default async function handler(req, res) {
                 <div style="background:#F0F4F0;border-radius:8px;padding:14px 18px;margin-bottom:20px;border-left:3px solid #4A7C6A;">
                   <p style="color:#2D4A3E;font-size:13px;font-weight:600;margin:0 0 4px;">Save our email address to your contacts</p>
                   <p style="color:#5C5248;font-size:13px;line-height:1.6;margin:0;">
-                    Add <strong>hello@manitou-beach.com</strong> to your contacts so our emails always land in your inbox and never your spam folder.
+                    Add <strong>hello@yetigroove.com</strong> to your contacts so our emails always land in your inbox and never your spam folder.
                   </p>
                 </div>
                 <p style="color:#8C806E;font-size:13px;line-height:1.6;margin:0;">

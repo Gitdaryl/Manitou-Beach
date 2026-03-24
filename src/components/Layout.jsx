@@ -1061,7 +1061,7 @@ export function SubmitSection() {
                   </p>
                 )}
                 <p style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", margin: 0, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.6 }}>
-                  Don't see it? Check your spam or junk folder — sometimes it lands there the first time. The email comes from hello@manitou-beach.com, so you can mark it as safe and we'll always come straight to your inbox from here on.
+                  Don't see it? Check your spam or junk folder — sometimes it lands there the first time. Mark it as safe and we'll always come straight to your inbox from here on.
                 </p>
               </div>
 
