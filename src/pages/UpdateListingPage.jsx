@@ -24,6 +24,33 @@ function Field({ label, value, onChange, type = 'text', placeholder, multiline }
   return multiline ? <textarea {...props} /> : <input {...props} />;
 }
 
+const CATEGORIES = [
+  'Food & Drink',
+  'Stays & Rentals',
+  'Breweries & Wineries',
+  'Boating & Water',
+  'Events & Venues',
+  'Shopping & Gifts',
+  'Home Services',
+  'Other',
+];
+
+function CategorySelect({ value, onChange }) {
+  const [focused, setFocused] = useState(false);
+  return (
+    <select
+      value={value}
+      onChange={e => onChange(e.target.value)}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
+      style={{ ...inputStyle(focused), appearance: 'none', backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 14px center', paddingRight: 36 }}
+    >
+      <option value="">Select a category…</option>
+      {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+    </select>
+  );
+}
+
 // ─── main component ─────────────────────────────────────────
 export default function UpdateListingPage() {
   const [step, setStep] = useState(1); // 1 = verify, 2 = update form, 3 = done
@@ -36,7 +63,7 @@ export default function UpdateListingPage() {
 
   // Step 2 state — pre-filled from Notion response
   const [business, setBusiness] = useState(null);
-  const [form, setForm] = useState({ phone: '', website: '', address: '', description: '' });
+  const [form, setForm] = useState({ phone: '', website: '', address: '', description: '', category: '' });
   const [logoFile, setLogoFile] = useState(null);
   const [logoPreview, setLogoPreview] = useState(null);
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -59,6 +86,7 @@ export default function UpdateListingPage() {
           website: data.business.website || '',
           address: data.business.address || '',
           description: data.business.description || '',
+          category: data.business.category || '',
         });
         if (data.business.logo) setLogoPreview(data.business.logo);
         setStep(2);
@@ -108,6 +136,7 @@ export default function UpdateListingPage() {
           email: business.email,
           ...form,
           logoUrl,
+          category: form.category || null,
         }),
       });
       const data = await res.json();
@@ -182,6 +211,17 @@ export default function UpdateListingPage() {
                         </p>
                       </div>
                     </div>
+                  </div>
+
+                  {/* Category */}
+                  <div>
+                    <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>
+                      Category
+                    </p>
+                    <CategorySelect
+                      value={form.category}
+                      onChange={v => setForm(f => ({ ...f, category: v }))}
+                    />
                   </div>
 
                   <Field label="Phone Number" value={form.phone} onChange={v => setForm(f => ({ ...f, phone: v }))} type="tel" />

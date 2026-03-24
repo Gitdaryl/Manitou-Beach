@@ -46,6 +46,7 @@ export default async function handler(req, res) {
           address: p['Address']?.rich_text?.[0]?.text?.content || '',
           description: p['Description']?.rich_text?.[0]?.text?.content || '',
           logo: p['Logo URL']?.url || '',
+          category: p['Category']?.select?.name || '',
         },
       });
     } catch (err) {
@@ -56,7 +57,7 @@ export default async function handler(req, res) {
 
   // POST — submit an update request
   if (req.method === 'POST') {
-    const { name, email, phone, website, address, description, logoUrl } = req.body;
+    const { name, email, phone, website, address, description, logoUrl, category } = req.body;
     if (!name || !email) return res.status(400).json({ success: false, error: 'Name and email are required' });
 
     try {
@@ -90,6 +91,7 @@ export default async function handler(req, res) {
             ...(address && { 'Address': { rich_text: [{ text: { content: address } }] } }),
             ...(description && { 'Description': { rich_text: [{ text: { content: description } }] } }),
             ...(normalizedLogo && { 'Logo URL': { url: normalizedLogo } }),
+            ...(category && { 'Category': { select: { name: category } } }),
           },
         }),
       });
