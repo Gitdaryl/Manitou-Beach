@@ -1136,18 +1136,7 @@ export function SubmitSection() {
                     onBlur={e => e.target.style.borderColor = C.sand}
                   >
                     <option value="" disabled>Category</option>
-                    <option>Food & Drink</option>
-                    <option>Events & Venues</option>
-                    <option>Stays & Rentals</option>
-                    <option>Boating & Water</option>
-                    <option>Breweries & Wineries</option>
-                    <option>Shopping & Gifts</option>
-                    <option>Home Services</option>
-                    <option>Health & Beauty</option>
-                    <option>Real Estate</option>
-                    <option>Creative Media</option>
-                    <option>Pet Services</option>
-                    <option>Other</option>
+                    {LISTING_CATEGORIES.map(cat => <option key={cat}>{cat}</option>)}
                   </select>
                   {input("phone", "Phone Number", "tel")}
                   {input("address", "Address (optional)")}
@@ -1295,6 +1284,32 @@ export function SubmitSection() {
                   </label>
               </>
 
+              {form.category === 'Food Truck' ? (
+                <div style={{ background: 'linear-gradient(135deg, #1A2830 0%, #2D4A3E 100%)', borderRadius: 10, padding: '22px 20px' }}>
+                  <div style={{ fontSize: 24, marginBottom: 8 }}>🚚</div>
+                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: '#F5F0E8', marginBottom: 8, fontWeight: 400 }}>
+                    Hold on — you qualify for something better
+                  </div>
+                  <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.65)', lineHeight: 1.7, margin: '0 0 16px', fontFamily: "'Libre Franklin', sans-serif" }}>
+                    Manitou Beach has a whole special section just for food trucks — way more than a basic listing. You get your own personal page you tap when you're parked and open. Anyone following your truck gets a text message the moment you're there. Takes about two minutes to finish.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const params = new URLSearchParams();
+                      if (form.name) params.set('name', form.name);
+                      if (form.email) params.set('email', form.email);
+                      if (form.phone) params.set('phone', form.phone);
+                      if (form.website) params.set('website', form.website);
+                      window.location.href = `/food-truck-partner?${params.toString()}`;
+                    }}
+                    style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, padding: '12px 20px', borderRadius: 8, border: 'none', background: '#4A7A5A', color: '#fff', cursor: 'pointer', width: '100%' }}
+                  >
+                    Set up my truck →
+                  </button>
+                </div>
+              ) : (
+              <>
               <button
                 type="submit"
                 disabled={submitting}
@@ -1332,6 +1347,8 @@ export function SubmitSection() {
               <p style={{ fontSize: 12, color: C.textMuted, textAlign: "center", margin: 0 }}>
                 Have an event? <a href="/promote" style={{ color: C.sage, textDecoration: "none", fontWeight: 600 }}>List it on the promote page →</a>
               </p>
+              </>
+              )}
             </form>
           )}
         </FadeIn>
