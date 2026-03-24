@@ -136,6 +136,47 @@ export default async function handler(req, res) {
         }).catch(() => {});
       }
 
+      // Welcome email to business owner
+      if (email) {
+        import('resend').then(({ Resend }) => {
+          const resend = new Resend(process.env.RESEND_API_KEY);
+          const siteUrl = process.env.SITE_URL || 'https://manitoubeach.com';
+          resend.emails.send({
+            from: 'Manitou Beach <hello@manitou-beach.com>',
+            to: email,
+            subject: `Your listing is in — welcome to Manitou Beach, ${name}`,
+            html: `
+              <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#FAF6EF;">
+                <h1 style="color:#1A2830;font-size:22px;margin:0 0 8px;">You're listed!</h1>
+                <p style="color:#5C5248;font-size:15px;margin:0 0 24px;line-height:1.6;">
+                  Thanks for adding <strong>${name}</strong> to the Manitou Beach community directory.
+                  We'll review your listing and have it live shortly.
+                </p>
+                <div style="background:#fff;border-radius:12px;padding:20px 24px;margin-bottom:24px;border:1px solid #E8E0D5;">
+                  <p style="margin:0 0 4px;color:#8C806E;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Business</p>
+                  <p style="margin:0 0 16px;color:#1A2830;font-size:16px;font-weight:600;">${name}</p>
+                  ${category && category !== 'Other' ? `
+                  <p style="margin:0 0 4px;color:#8C806E;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Category</p>
+                  <p style="margin:0 0 16px;color:#1A2830;font-size:15px;">${category}</p>` : ''}
+                  ${address ? `
+                  <p style="margin:0 0 4px;color:#8C806E;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Address</p>
+                  <p style="margin:0;color:#1A2830;font-size:15px;">${address}</p>` : ''}
+                </div>
+                <p style="color:#5C5248;font-size:14px;line-height:1.6;margin:0 0 20px;">
+                  Need to update your info, fix a category, or upload a logo? Use the link below anytime — just enter the business name and this email address.
+                </p>
+                <a href="${siteUrl}/update-listing" style="display:inline-block;background:#1A2830;color:#fff;text-decoration:none;padding:14px 28px;border-radius:8px;font-size:15px;font-weight:600;margin-bottom:24px;">
+                  Update My Listing →
+                </a>
+                <p style="color:#8C806E;font-size:13px;line-height:1.6;margin:0;">
+                  Questions? Reply to this email or reach us at <a href="mailto:hello@manitoubeach.com" style="color:#5B7D8E;">hello@manitoubeach.com</a>.
+                </p>
+              </div>
+            `,
+          }).catch(() => {});
+        }).catch(() => {});
+      }
+
       return res.status(200).json({ success: true });
     } catch (err) {
       console.error('Server error:', err.message);
