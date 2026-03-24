@@ -1043,9 +1043,27 @@ export function SubmitSection() {
               <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream, marginBottom: 8, fontWeight: 400 }}>
                 You're in — thanks for listing your business.
               </div>
-              <p style={{ fontSize: 14, color: C.sunsetLight, margin: "0 0 24px 0", fontFamily: "'Libre Franklin', sans-serif", fontStyle: "italic" }}>
+              <p style={{ fontSize: 14, color: C.sunsetLight, margin: "0 0 20px 0", fontFamily: "'Libre Franklin', sans-serif", fontStyle: "italic" }}>
                 We're building something real here and you're part of it.
               </p>
+
+              {/* Email confirmation notice */}
+              <div style={{
+                background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)",
+                borderRadius: 8, padding: "14px 18px", maxWidth: 380, margin: "0 auto 24px", textAlign: "left",
+              }}>
+                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.85)", margin: "0 0 4px", fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600 }}>
+                  Check your email — we just sent you a welcome note
+                </p>
+                {form.email && (
+                  <p style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", margin: "0 0 6px", fontFamily: "'Libre Franklin', sans-serif" }}>
+                    Sent to: {form.email}
+                  </p>
+                )}
+                <p style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", margin: 0, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.6 }}>
+                  Don't see it? Check your spam or junk folder — sometimes it lands there the first time. The email comes from hello@manitou-beach.com, so you can mark it as safe and we'll always come straight to your inbox from here on.
+                </p>
+              </div>
 
               {/* What happens next */}
               <div style={{ textAlign: "left", maxWidth: 380, margin: "0 auto 24px" }}>

@@ -143,6 +143,7 @@ export default async function handler(req, res) {
           const siteUrl = process.env.SITE_URL || 'https://manitoubeach.com';
           resend.emails.send({
             from: 'Manitou Beach <hello@manitou-beach.com>',
+            reply_to: 'hello@manitou-beach.com',
             to: email,
             subject: `Welcome to Manitou Beach, ${name} — you're in!`,
             html: `
@@ -168,8 +169,14 @@ export default async function handler(req, res) {
                 <a href="${siteUrl}/update-listing" style="display:inline-block;background:#1A2830;color:#fff;text-decoration:none;padding:14px 28px;border-radius:8px;font-size:15px;font-weight:600;margin-bottom:24px;">
                   Fix or Update My Info
                 </a>
+                <div style="background:#F0F4F0;border-radius:8px;padding:14px 18px;margin-bottom:20px;border-left:3px solid #4A7C6A;">
+                  <p style="color:#2D4A3E;font-size:13px;font-weight:600;margin:0 0 4px;">Save our email address to your contacts</p>
+                  <p style="color:#5C5248;font-size:13px;line-height:1.6;margin:0;">
+                    Add <strong>hello@manitou-beach.com</strong> to your contacts so our emails always land in your inbox and never your spam folder.
+                  </p>
+                </div>
                 <p style="color:#8C806E;font-size:13px;line-height:1.6;margin:0;">
-                  Any questions at all — just reply to this email. A real person will get back to you. You can also reach us at <a href="mailto:hello@manitoubeach.com" style="color:#5B7D8E;">hello@manitoubeach.com</a>.
+                  Any questions at all — just reply to this email. A real person will get back to you.
                 </p>
               </div>
             `,
