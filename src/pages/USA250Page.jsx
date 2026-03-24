@@ -242,142 +242,58 @@ function FireworksHero() {
           Friday, July 3rd · 10:00 PM · America's 250th Anniversary
         </div>
 
-        {/* ── OPTION A — Glass Cards ── */}
-        <div style={{ marginBottom: 12 }}>
-          <div style={{ fontSize: 9, letterSpacing: 3, textTransform: "uppercase", color: FW.gold, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 16, opacity: 0.7 }}>Option A — Glass Cards</div>
-          <style>{`
-            @keyframes fw-colon-pulse { 0%,100%{opacity:1} 50%{opacity:0.15} }
-          `}</style>
-          <div style={{ display: "flex", gap: "clamp(8px, 2vw, 20px)", justifyContent: "center", flexWrap: "wrap", alignItems: "center" }}>
-            {[
-              { val: timeLeft.days,  label: "Days"  },
-              { val: timeLeft.hours, label: "Hours" },
-              { val: timeLeft.mins,  label: "Min"   },
-              { val: timeLeft.secs,  label: "Sec"   },
-            ].map(({ val, label }, i) => (
-              <React.Fragment key={label}>
+        {/* Countdown — Glass Cards */}
+        <style>{`
+          @keyframes fw-colon-pulse { 0%,100%{opacity:1} 50%{opacity:0.15} }
+        `}</style>
+        <div style={{ display: "flex", gap: "clamp(8px, 2vw, 20px)", justifyContent: "center", flexWrap: "wrap", alignItems: "center", marginBottom: 56 }}>
+          {[
+            { val: timeLeft.days,  label: "Days"  },
+            { val: timeLeft.hours, label: "Hours" },
+            { val: timeLeft.mins,  label: "Min"   },
+            { val: timeLeft.secs,  label: "Sec"   },
+          ].map(({ val, label }, i) => (
+            <React.Fragment key={label}>
+              <div style={{
+                textAlign: "center",
+                background: "rgba(255,255,255,0.06)",
+                backdropFilter: "blur(12px)",
+                border: `1px solid ${FW.gold}40`,
+                borderRadius: 16,
+                padding: "clamp(16px, 2.5vw, 28px) clamp(18px, 3vw, 36px)",
+                boxShadow: `0 0 32px ${FW.gold}18, inset 0 1px 0 rgba(255,255,255,0.08)`,
+                minWidth: "clamp(72px, 10vw, 110px)",
+              }}>
                 <div style={{
-                  textAlign: "center",
-                  background: "rgba(255,255,255,0.06)",
-                  backdropFilter: "blur(12px)",
-                  border: `1px solid ${FW.gold}40`,
-                  borderRadius: 16,
-                  padding: "clamp(16px, 2.5vw, 28px) clamp(18px, 3vw, 36px)",
-                  boxShadow: `0 0 32px ${FW.gold}18, inset 0 1px 0 rgba(255,255,255,0.08)`,
-                  minWidth: "clamp(72px, 10vw, 110px)",
-                }}>
-                  <div style={{
-                    fontFamily: "'Libre Baskerville', serif",
-                    fontSize: "clamp(52px, 8vw, 88px)",
-                    fontWeight: 700,
-                    color: FW.gold,
-                    lineHeight: 1,
-                    letterSpacing: -2,
-                    fontVariantNumeric: "tabular-nums",
-                    textShadow: `0 0 40px ${FW.gold}55`,
-                  }}>
-                    {pad(val)}
-                  </div>
-                  <div style={{
-                    fontSize: 9, letterSpacing: 4, textTransform: "uppercase",
-                    color: "rgba(255,255,255,0.4)", marginTop: 10, fontWeight: 700,
-                    fontFamily: "'Libre Franklin', sans-serif",
-                  }}>
-                    {label}
-                  </div>
-                </div>
-                {i < 3 && (
-                  <div style={{
-                    fontSize: "clamp(32px, 5vw, 56px)",
-                    color: FW.gold, fontFamily: "'Libre Baskerville', serif",
-                    lineHeight: 1, opacity: 0.5, paddingBottom: 28,
-                    animation: "fw-colon-pulse 1s steps(1) infinite",
-                  }}>:</div>
-                )}
-              </React.Fragment>
-            ))}
-          </div>
-        </div>
-
-        {/* ── OPTION B — Raw Scale ── */}
-        <div style={{ marginBottom: 12, marginTop: 32 }}>
-          <div style={{ fontSize: 9, letterSpacing: 3, textTransform: "uppercase", color: FW.gold, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 16, opacity: 0.7 }}>Option B — Raw Scale</div>
-          <div style={{ display: "flex", gap: "clamp(20px, 5vw, 64px)", justifyContent: "center", flexWrap: "wrap" }}>
-            {[
-              { val: timeLeft.days,  label: "Days"  },
-              { val: timeLeft.hours, label: "Hours" },
-              { val: timeLeft.mins,  label: "Min"   },
-              { val: timeLeft.secs,  label: "Sec"   },
-            ].map(({ val, label }) => (
-              <div key={label} style={{ textAlign: "center" }}>
-                <div style={{
-                  fontFamily: "'Libre Franklin', sans-serif",
-                  fontSize: "clamp(64px, 11vw, 120px)",
-                  fontWeight: 700,
-                  lineHeight: 1,
-                  letterSpacing: -3,
-                  fontVariantNumeric: "tabular-nums",
-                  background: `linear-gradient(160deg, #fff 0%, ${FW.goldLight} 40%, ${FW.gold} 100%)`,
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                }}>
-                  {pad(val)}
-                </div>
-                <div style={{
-                  fontSize: 8, letterSpacing: 5, textTransform: "uppercase",
-                  color: "rgba(255,255,255,0.25)", marginTop: 8, fontWeight: 700,
-                  fontFamily: "'Libre Franklin', sans-serif",
-                }}>
-                  {label}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* ── OPTION C — Glow + Pulse ── */}
-        <div style={{ marginBottom: 56, marginTop: 32 }}>
-          <div style={{ fontSize: 9, letterSpacing: 3, textTransform: "uppercase", color: FW.gold, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 16, opacity: 0.7 }}>Option C — Glow + Pulse</div>
-          <style>{`
-            @keyframes fw-sec-tick {
-              0%  { transform: scale(1.08); }
-              15% { transform: scale(1); }
-              100%{ transform: scale(1); }
-            }
-          `}</style>
-          <div style={{ display: "flex", gap: "clamp(16px, 4vw, 44px)", justifyContent: "center", flexWrap: "wrap" }}>
-            {[
-              { val: timeLeft.days,  label: "Days",  pulse: false },
-              { val: timeLeft.hours, label: "Hours", pulse: false },
-              { val: timeLeft.mins,  label: "Min",   pulse: false },
-              { val: timeLeft.secs,  label: "Sec",   pulse: true  },
-            ].map(({ val, label, pulse }) => (
-              <div key={label} style={{ textAlign: "center", minWidth: 68 }}>
-                <div style={{
-                  fontFamily: "'Libre Franklin', sans-serif",
-                  fontSize: "clamp(52px, 8.5vw, 92px)",
+                  fontFamily: "'Libre Baskerville', serif",
+                  fontSize: "clamp(52px, 8vw, 88px)",
                   fontWeight: 700,
                   color: FW.gold,
                   lineHeight: 1,
                   letterSpacing: -2,
                   fontVariantNumeric: "tabular-nums",
-                  textShadow: `0 0 20px ${FW.gold}88, 0 0 60px ${FW.gold}44, 0 0 100px ${FW.gold}22`,
-                  display: "inline-block",
-                  animation: pulse ? `fw-sec-tick 1s steps(1) infinite` : "none",
+                  textShadow: `0 0 40px ${FW.gold}55`,
                 }}>
                   {pad(val)}
                 </div>
                 <div style={{
-                  fontSize: 9, letterSpacing: 3.5, textTransform: "uppercase",
-                  color: "rgba(255,255,255,0.35)", marginTop: 7, fontWeight: 700,
+                  fontSize: 9, letterSpacing: 4, textTransform: "uppercase",
+                  color: "rgba(255,255,255,0.4)", marginTop: 10, fontWeight: 700,
                   fontFamily: "'Libre Franklin', sans-serif",
                 }}>
                   {label}
                 </div>
               </div>
-            ))}
-          </div>
+              {i < 3 && (
+                <div style={{
+                  fontSize: "clamp(32px, 5vw, 56px)",
+                  color: FW.gold, fontFamily: "'Libre Baskerville', serif",
+                  lineHeight: 1, opacity: 0.5, paddingBottom: 28,
+                  animation: "fw-colon-pulse 1s steps(1) infinite",
+                }}>:</div>
+              )}
+            </React.Fragment>
+          ))}
         </div>
 
         {/* CTAs */}
