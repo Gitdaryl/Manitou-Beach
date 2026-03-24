@@ -245,8 +245,58 @@ function FireworksHero() {
         {/* Countdown — Glass Cards */}
         <style>{`
           @keyframes fw-colon-pulse { 0%,100%{opacity:1} 50%{opacity:0.15} }
+          .fw-countdown {
+            display: flex;
+            gap: clamp(4px, 1.5vw, 16px);
+            justify-content: center;
+            flex-wrap: nowrap;
+            align-items: center;
+            margin-bottom: 56px;
+            width: 100%;
+          }
+          .fw-card {
+            text-align: center;
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(201,168,76,0.25);
+            border-radius: 16px;
+            padding: clamp(10px,2vw,28px) clamp(8px,2vw,32px);
+            box-shadow: 0 0 32px rgba(201,168,76,0.09), inset 0 1px 0 rgba(255,255,255,0.08);
+            flex: 1;
+            min-width: 0;
+            max-width: 130px;
+          }
+          .fw-num {
+            font-family: 'Libre Baskerville', serif;
+            font-size: clamp(32px, 6.5vw, 88px);
+            font-weight: 700;
+            color: #C9A84C;
+            line-height: 1;
+            letter-spacing: -2px;
+            font-variant-numeric: tabular-nums;
+            text-shadow: 0 0 40px rgba(201,168,76,0.33);
+          }
+          .fw-unit {
+            font-size: clamp(7px, 1vw, 9px);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.4);
+            margin-top: 8px;
+            font-weight: 700;
+            font-family: 'Libre Franklin', sans-serif;
+          }
+          .fw-colon {
+            font-size: clamp(18px, 3.5vw, 52px);
+            color: #C9A84C;
+            font-family: 'Libre Baskerville', serif;
+            line-height: 1;
+            opacity: 0.5;
+            padding-bottom: clamp(14px, 2.5vw, 28px);
+            animation: fw-colon-pulse 1s steps(1) infinite;
+            flex-shrink: 0;
+          }
         `}</style>
-        <div style={{ display: "flex", gap: "clamp(8px, 2vw, 20px)", justifyContent: "center", flexWrap: "wrap", alignItems: "center", marginBottom: 56 }}>
+        <div className="fw-countdown">
           {[
             { val: timeLeft.days,  label: "Days"  },
             { val: timeLeft.hours, label: "Hours" },
@@ -254,44 +304,11 @@ function FireworksHero() {
             { val: timeLeft.secs,  label: "Sec"   },
           ].map(({ val, label }, i) => (
             <React.Fragment key={label}>
-              <div style={{
-                textAlign: "center",
-                background: "rgba(255,255,255,0.06)",
-                backdropFilter: "blur(12px)",
-                border: `1px solid ${FW.gold}40`,
-                borderRadius: 16,
-                padding: "clamp(16px, 2.5vw, 28px) clamp(18px, 3vw, 36px)",
-                boxShadow: `0 0 32px ${FW.gold}18, inset 0 1px 0 rgba(255,255,255,0.08)`,
-                minWidth: "clamp(72px, 10vw, 110px)",
-              }}>
-                <div style={{
-                  fontFamily: "'Libre Baskerville', serif",
-                  fontSize: "clamp(52px, 8vw, 88px)",
-                  fontWeight: 700,
-                  color: FW.gold,
-                  lineHeight: 1,
-                  letterSpacing: -2,
-                  fontVariantNumeric: "tabular-nums",
-                  textShadow: `0 0 40px ${FW.gold}55`,
-                }}>
-                  {pad(val)}
-                </div>
-                <div style={{
-                  fontSize: 9, letterSpacing: 4, textTransform: "uppercase",
-                  color: "rgba(255,255,255,0.4)", marginTop: 10, fontWeight: 700,
-                  fontFamily: "'Libre Franklin', sans-serif",
-                }}>
-                  {label}
-                </div>
+              <div className="fw-card">
+                <div className="fw-num">{pad(val)}</div>
+                <div className="fw-unit">{label}</div>
               </div>
-              {i < 3 && (
-                <div style={{
-                  fontSize: "clamp(32px, 5vw, 56px)",
-                  color: FW.gold, fontFamily: "'Libre Baskerville', serif",
-                  lineHeight: 1, opacity: 0.5, paddingBottom: 28,
-                  animation: "fw-colon-pulse 1s steps(1) infinite",
-                }}>:</div>
-              )}
+              {i < 3 && <div className="fw-colon">:</div>}
             </React.Fragment>
           ))}
         </div>
@@ -439,10 +456,13 @@ function Fireworks2026Section() {
           {stats.map((s, i) => (
             <FadeIn key={i} delay={i * 60}>
               <div style={{
-                background: "rgba(255,255,255,0.04)",
-                border: `1px solid ${FW.gold}25`,
+                background: "rgba(255,255,255,0.06)",
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+                border: `1px solid ${FW.gold}30`,
                 borderRadius: 16, padding: "32px 20px",
                 textAlign: "center",
+                boxShadow: `inset 0 1px 0 rgba(255,255,255,0.10), inset 0 -1px 0 rgba(0,0,0,0.15), 0 4px 24px rgba(0,0,0,0.2)`,
               }}>
                 <div style={{
                   fontFamily: "'Libre Baskerville', serif",
@@ -470,9 +490,12 @@ function Fireworks2026Section() {
         {/* Narrative callout */}
         <FadeIn delay={220}>
           <div style={{
-            background: `linear-gradient(135deg, rgba(201,168,76,0.09) 0%, rgba(201,168,76,0.02) 100%)`,
-            border: `1px solid ${FW.gold}22`,
+            background: `linear-gradient(135deg, rgba(201,168,76,0.10) 0%, rgba(255,255,255,0.04) 100%)`,
+            backdropFilter: "blur(14px)",
+            WebkitBackdropFilter: "blur(14px)",
+            border: `1px solid ${FW.gold}30`,
             borderRadius: 20, padding: "44px 48px",
+            boxShadow: `inset 0 1px 0 rgba(255,255,255,0.10), inset 0 -1px 0 rgba(0,0,0,0.12), 0 8px 32px rgba(0,0,0,0.25)`,
           }}>
             <div style={{
               fontFamily: "'Caveat', cursive",
@@ -602,10 +625,13 @@ function FireworksSponsorTiersSection() {
         {FIREWORKS_SPONSOR_TIERS.slice(0, 1).map(tier => (
           <FadeIn key={tier.level} delay={100}>
             <div style={{
-              background: `linear-gradient(135deg, rgba(201,168,76,0.11) 0%, rgba(201,168,76,0.02) 100%)`,
-              border: `1px solid ${tier.color}40`,
+              background: `linear-gradient(135deg, rgba(201,168,76,0.10) 0%, rgba(255,255,255,0.04) 100%)`,
+              backdropFilter: "blur(14px)",
+              WebkitBackdropFilter: "blur(14px)",
+              border: `1px solid ${tier.color}45`,
               borderRadius: 18, padding: "36px 40px", marginBottom: 16,
               position: "relative", overflow: "hidden",
+              boxShadow: `inset 0 1px 0 rgba(255,255,255,0.10), inset 0 -1px 0 rgba(0,0,0,0.12), 0 8px 32px rgba(0,0,0,0.25)`,
             }}>
               <div style={{ position: "absolute", top: 0, left: 0, width: 5, height: "100%", background: tier.color, borderRadius: "18px 0 0 18px" }} />
               <div style={{ display: "flex", alignItems: "baseline", gap: 14, marginBottom: 24 }}>
@@ -629,10 +655,13 @@ function FireworksSponsorTiersSection() {
           {FIREWORKS_SPONSOR_TIERS.slice(1, 3).map((tier, i) => (
             <FadeIn key={tier.level} delay={140 + i * 55}>
               <div style={{
-                background: "rgba(255,255,255,0.04)",
-                border: `1px solid ${tier.color}28`,
+                background: "rgba(255,255,255,0.06)",
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+                border: `1px solid ${tier.color}35`,
                 borderRadius: 14, padding: "28px",
                 position: "relative", overflow: "hidden",
+                boxShadow: `inset 0 1px 0 rgba(255,255,255,0.09), inset 0 -1px 0 rgba(0,0,0,0.12), 0 4px 20px rgba(0,0,0,0.2)`,
               }}>
                 <div style={{ position: "absolute", top: 0, left: 0, width: 4, height: "100%", background: tier.color, borderRadius: "14px 0 0 14px" }} />
                 <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 18 }}>
@@ -656,10 +685,13 @@ function FireworksSponsorTiersSection() {
         {FIREWORKS_SPONSOR_TIERS.slice(3).map(tier => (
           <FadeIn key={tier.level} delay={250}>
             <div style={{
-              background: "rgba(255,255,255,0.03)",
-              border: `1px solid ${tier.color}22`,
+              background: "rgba(255,255,255,0.05)",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+              border: `1px solid ${tier.color}30`,
               borderRadius: 14, padding: "22px 28px",
               position: "relative", overflow: "hidden",
+              boxShadow: `inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -1px 0 rgba(0,0,0,0.10), 0 4px 20px rgba(0,0,0,0.18)`,
             }}>
               <div style={{ position: "absolute", top: 0, left: 0, width: 4, height: "100%", background: tier.color, borderRadius: "14px 0 0 14px" }} />
               <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 14 }}>
