@@ -75,6 +75,8 @@ async function handleGet(req, res) {
           todaysSpecial: p['Todays Special']?.rich_text?.[0]?.text?.content || '',
           departureTime: p['Departure Time']?.rich_text?.[0]?.text?.content || '',
           comingDate: p['Coming Date']?.date?.start || null,
+          comingEventId: p['Coming Event ID']?.rich_text?.[0]?.text?.content || null,
+          comingEventName: p['Coming Event Name']?.rich_text?.[0]?.text?.content || null,
         };
       })
       .filter(Boolean)
@@ -93,7 +95,7 @@ async function handleGet(req, res) {
 
 async function handlePost(req, res) {
   try {
-    const { slug, token, action, comingDate, lat, lng, note, todaysSpecial, departureTime } = req.body || {};
+    const { slug, token, action, comingDate, scheduleNote, lat, lng, note, todaysSpecial, departureTime } = req.body || {};
 
     if (!slug || !token) {
       return res.status(400).json({ error: 'slug and token are required' });
@@ -144,6 +146,9 @@ async function handlePost(req, res) {
     if (action === 'schedule') {
       const updateProps = {
         'Coming Date': comingDate ? { date: { start: comingDate } } : { date: null },
+        'Schedule Note': { rich_text: [{ type: 'text', text: { content: (scheduleNote || '').slice(0, 200) } }] },
+        'Coming Event ID': { rich_text: [{ text: { content: '' } }] },
+        'Coming Event Name': { rich_text: [{ text: { content: '' } }] },
       };
       const patchRes = await fetch(`https://api.notion.com/v1/pages/${page.id}`, {
         method: 'PATCH',

@@ -1,40 +1,10 @@
 import { Resend } from 'resend';
 import { createHmac } from 'crypto';
+import { sendSMS, normalizePhone } from './lib/twilio.js';
 
 function makeConfirmToken(pageId) {
   const secret = process.env.NOTION_TOKEN_BUSINESS || 'fallback';
   return createHmac('sha256', secret).update(pageId).digest('hex').slice(0, 40);
-}
-
-async function sendSMS(to, body) {
-  const sid = process.env.TWILIO_ACCOUNT_SID;
-  const token = process.env.TWILIO_AUTH_TOKEN;
-  const from = process.env.TWILIO_PHONE;
-  if (!sid || !token || !from) return false;
-  try {
-    let digits = to.replace(/\D/g, '');
-    if (digits.length === 11 && digits.startsWith('1')) digits = digits.slice(1);
-    if (digits.length !== 10) return false;
-    const res = await fetch(
-      `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: 'Basic ' + Buffer.from(`${sid}:${token}`).toString('base64'),
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({ From: from, To: `+1${digits}`, Body: body }).toString(),
-      }
-    );
-    if (!res.ok) {
-      const errText = await res.text();
-      console.error('Twilio SMS failed:', res.status, errText);
-    }
-    return res.ok;
-  } catch (e) {
-    console.error('Twilio SMS exception:', e);
-    return false;
-  }
 }
 
 // Fetch all pages from a Notion database query, following cursors past the 100-record limit
@@ -165,7 +135,7 @@ export default async function handler(req, res) {
       // SMS confirmation (primary — highest open rate, now that A2P is approved)
       if (phone && phone.trim()) {
         tasks.push(
-          sendSMS(phone, `Manitou Beach: Tap to confirm your listing for ${name} and go live instantly.\n${confirmUrl}`)
+          sendSMS(normalizePhone(phone), `Manitou Beach: Tap to confirm your listing for ${name} and go live instantly.\n${confirmUrl}`)
             .then(ok => { if (!ok) console.error('SMS confirmation failed to send for', name); })
         );
       }

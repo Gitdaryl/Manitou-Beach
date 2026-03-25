@@ -2,6 +2,7 @@
 // GET  — returns { remaining } spots count
 // POST { name, phone, email, is_business } — saves beta tester, returns access code on screen
 import { Resend } from 'resend';
+import { normalizePhone } from './lib/twilio.js';
 
 const LAUNCH_DATE_DISPLAY = 'April 10 at noon';
 
@@ -19,10 +20,6 @@ function generateCode() {
     code += chars[Math.floor(Math.random() * chars.length)];
   }
   return code; // e.g. "MB7X2K"
-}
-
-function normalizePhone(raw) {
-  return (raw || '').replace(/\D/g, '').slice(-10);
 }
 
 async function getBetaCount() {

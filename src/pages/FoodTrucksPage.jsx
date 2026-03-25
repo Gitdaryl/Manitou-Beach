@@ -72,8 +72,15 @@ export default function FoodTrucksPage() {
   // Coming schedule (vendor mode)
   const [comingDateLocal, setComingDateLocal] = useState(null);
   const [scheduleDate, setScheduleDate] = useState('');
+  const [scheduleNote, setScheduleNote] = useState('');
   const [scheduleStatus, setScheduleStatus] = useState(''); // '' | 'loading' | 'saved' | 'cleared' | 'error'
   const tomorrowStr = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
+
+  // Event apply (vendor mode)
+  const [vendorEvents, setVendorEvents] = useState([]);
+  const [selectedEventId, setSelectedEventId] = useState('');
+  const [applyStatus, setApplyStatus] = useState(''); // '' | 'loading' | 'applied' | 'duplicate' | 'error'
+  const [applyEventName, setApplyEventName] = useState('');
 
   // Share + love input state
   const [sharedId, setSharedId] = useState(null);
@@ -98,6 +105,18 @@ export default function FoodTrucksPage() {
     if (checkinTruck?.comingDate) setComingDateLocal(checkinTruck.comingDate);
   }, [checkinTruck]);
 
+  // Fetch events accepting vendors (vendor mode)
+  useEffect(() => {
+    if (!isCheckinMode) return;
+    fetch('/api/events')
+      .then(r => r.json())
+      .then(data => {
+        const eligible = (data.events || []).filter(e => e.vendorRegEnabled);
+        setVendorEvents(eligible);
+      })
+      .catch(() => {});
+  }, [isCheckinMode]);
+
   // Schedule handlers (vendor mode)
   const handleSchedule = async () => {
     if (!scheduleDate) return;
@@ -106,10 +125,10 @@ export default function FoodTrucksPage() {
       const res = await fetch('/api/food-trucks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slug: truckSlug, token: truckToken, action: 'schedule', comingDate: scheduleDate }),
+        body: JSON.stringify({ slug: truckSlug, token: truckToken, action: 'schedule', comingDate: scheduleDate, scheduleNote }),
       });
       const d = await res.json();
-      if (d.ok) { setComingDateLocal(scheduleDate); setScheduleDate(''); setScheduleStatus('saved'); }
+      if (d.ok) { setComingDateLocal(scheduleDate); setScheduleDate(''); setScheduleNote(''); setScheduleStatus('saved'); }
       else setScheduleStatus('error');
     } catch { setScheduleStatus('error'); }
   };
@@ -126,6 +145,31 @@ export default function FoodTrucksPage() {
       if (d.ok) { setComingDateLocal(null); setScheduleStatus('cleared'); }
       else setScheduleStatus('error');
     } catch { setScheduleStatus('error'); }
+  };
+
+  // Apply to event (vendor mode)
+  const handleEventApply = async () => {
+    if (!selectedEventId) return;
+    setApplyStatus('loading');
+    try {
+      const res = await fetch('/api/food-truck-event-apply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slug: truckSlug, token: truckToken, eventId: selectedEventId }),
+      });
+      const d = await res.json();
+      if (d.duplicate) {
+        setApplyEventName(d.eventName || '');
+        setApplyStatus('duplicate');
+      } else if (d.ok) {
+        setApplyEventName(d.eventName || '');
+        if (d.eventDate) setComingDateLocal(d.eventDate);
+        setApplyStatus('applied');
+        setSelectedEventId('');
+      } else {
+        setApplyStatus('error');
+      }
+    } catch { setApplyStatus('error'); }
   };
 
   // Handle love tap
@@ -476,12 +520,28 @@ export default function FoodTrucksPage() {
       setTimeout(() => setShareCopied(false), 2200);
     };
 
-    const inputStyle = { width: "100%", boxSizing: "border-box", padding: "12px 14px", border: `1px solid ${C.sand}`, borderRadius: 8, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", color: C.text, background: C.warmWhite, outline: "none", marginBottom: 16 };
+    const inputStyle = { width: "100%", boxSizing: "border-box", padding: "13px 14px", border: `1px solid ${C.sand}`, borderRadius: 8, fontSize: 16, fontFamily: "'Libre Franklin', sans-serif", color: C.text, background: C.warmWhite, outline: "none", marginBottom: 16 };
     const labelStyle = { display: "block", fontSize: 12, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", color: C.textMuted, marginBottom: 8 };
 
     return (
       <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-        <div style={{ flex: 1, maxWidth: 480, width: "100%", margin: "0 auto", padding: "48px 24px 32px" }}>
+      <style>{`
+        @keyframes pinDrop {
+          0%   { transform: translateY(-20px) scale(1.3); opacity: 0; }
+          60%  { transform: translateY(4px) scale(0.95); opacity: 1; }
+          80%  { transform: translateY(-4px) scale(1.05); }
+          100% { transform: translateY(0) scale(1); opacity: 1; }
+        }
+        @keyframes pinPulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(122,142,114,0.5); }
+          50%       { box-shadow: 0 0 0 10px rgba(122,142,114,0); }
+        }
+        @keyframes fadeSlideUp {
+          from { opacity: 0; transform: translateY(10px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
+        <div style={{ flex: 1, maxWidth: 480, width: "100%", margin: "0 auto", padding: "clamp(24px, 6vw, 48px) 24px 32px" }}>
 
           {/* Vendor Header — always visible */}
           <div style={{ textAlign: "center", marginBottom: 32 }}>
@@ -632,11 +692,79 @@ export default function FoodTrucksPage() {
                 Let your customers know you're here
               </h2>
               <p style={{ fontSize: 13, color: C.textMuted, textAlign: "center", margin: "0 0 24px" }}>
-                Fill in the details and go live on the locator.
+                Drop your pin and go live on the locator.
               </p>
 
+              {/* ── DROP PIN — primary action, front and center ── */}
+              <div style={{ marginBottom: 20 }}>
+                {pinStatus !== 'pinned' ? (
+                  <button
+                    onClick={handleDropPin}
+                    disabled={pinStatus === 'loading'}
+                    style={{
+                      width: '100%', padding: '16px 14px',
+                      background: pinStatus === 'loading' ? C.sand
+                        : pinStatus === 'denied' ? `${C.driftwood}` : C.lakeBlue,
+                      border: 'none',
+                      borderRadius: 12, fontSize: 16, fontWeight: 700,
+                      color: pinStatus === 'loading' ? C.textMuted : C.cream,
+                      cursor: pinStatus === 'loading' ? 'default' : 'pointer',
+                      fontFamily: "'Libre Franklin', sans-serif",
+                      letterSpacing: 0.5,
+                      transition: 'all 0.2s',
+                      boxShadow: pinStatus === 'loading' || pinStatus === 'denied'
+                        ? 'none' : '0 4px 18px rgba(91,126,149,0.35)',
+                    }}
+                  >
+                    {pinStatus === 'loading' ? '⏳  Getting your location…' :
+                     pinStatus === 'denied' ? '📍  Location denied — type your spot below' :
+                     '📍  Drop My Pin'}
+                  </button>
+                ) : (
+                  <div style={{ animation: 'fadeSlideUp 0.35s ease' }}>
+                    {/* Magic moment — pin bounce + map reveal */}
+                    <div style={{
+                      display: 'flex', alignItems: 'center', gap: 12,
+                      background: `${C.sage}12`, border: `1.5px solid ${C.sage}50`,
+                      borderRadius: 12, padding: '12px 16px', marginBottom: 10,
+                      animation: 'pinPulse 1.5s ease 1',
+                    }}>
+                      <span style={{ fontSize: 28, lineHeight: 1, animation: 'pinDrop 0.55s cubic-bezier(.36,.07,.19,.97) both' }}>
+                        📍
+                      </span>
+                      <div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: C.sage }}>Your spot is locked in!</div>
+                        <div style={{ fontSize: 12, color: C.textMuted }}>Customers will see your exact location on the map.</div>
+                      </div>
+                      <button
+                        onClick={handleDropPin}
+                        style={{ marginLeft: 'auto', fontSize: 12, color: C.textMuted, background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'underline', padding: 0, flexShrink: 0 }}
+                      >
+                        Re-drop
+                      </button>
+                    </div>
+                    {mapsKey && (
+                      <div style={{ borderRadius: 10, overflow: 'hidden', border: `1px solid ${C.sage}30`, animation: 'fadeSlideUp 0.4s ease 0.15s both' }}>
+                        <img
+                          src={`https://maps.googleapis.com/maps/api/staticmap?center=${checkinLat},${checkinLng}&zoom=15&size=480x160&scale=2&markers=color:green|${checkinLat},${checkinLng}&key=${mapsKey}`}
+                          alt="Your pinned location"
+                          style={{ width: '100%', height: 130, objectFit: 'cover', display: 'block' }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+                {pinStatus === '' && (
+                  <p style={{ fontSize: 11, color: C.textMuted, textAlign: 'center', margin: '8px 0 0', lineHeight: 1.5 }}>
+                    Tap to mark your exact spot on the map — no typing needed.
+                  </p>
+                )}
+              </div>
+
+              {/* ── LOCATION NOTE — optional, clearly secondary ── */}
               <label style={labelStyle}>
-                Where are you today?
+                {pinStatus === 'pinned' ? 'Add a note to help people find you' : 'Where are you today?'}{' '}
+                <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>(optional)</span>
               </label>
 
               {/* Saved location pills */}
@@ -666,57 +794,9 @@ export default function FoodTrucksPage() {
                 type="text"
                 value={checkinNote}
                 onChange={e => setCheckinNote(e.target.value)}
-                placeholder={savedLocations.length > 0 ? "Or type a new location…" : "e.g. Near the boat launch, floating on Devils Lake…"}
-                style={{ ...inputStyle, marginBottom: 10 }}
+                placeholder={savedLocations.length > 0 ? "Or type a new location…" : "e.g. Near the boat launch, by the park pavilion…"}
+                style={{ ...inputStyle, marginBottom: pinStatus === 'pinned' ? 0 : 16 }}
               />
-
-              {/* Drop Pin button */}
-              <div style={{ marginBottom: 20 }}>
-                {pinStatus !== 'pinned' ? (
-                  <button
-                    onClick={handleDropPin}
-                    disabled={pinStatus === 'loading'}
-                    style={{
-                      width: '100%', padding: '11px 14px',
-                      background: pinStatus === 'loading' ? C.sand : `${C.lakeBlue}15`,
-                      border: `1px dashed ${pinStatus === 'loading' ? C.sand : C.lakeBlue}`,
-                      borderRadius: 8, fontSize: 13, fontWeight: 600,
-                      color: pinStatus === 'loading' ? C.textMuted : C.lakeBlue,
-                      cursor: pinStatus === 'loading' ? 'default' : 'pointer',
-                      fontFamily: "'Libre Franklin', sans-serif",
-                      transition: 'all 0.2s',
-                    }}
-                  >
-                    {pinStatus === 'loading' ? 'Getting your location…' :
-                     pinStatus === 'denied' ? '📍 Location denied — no pin (that\'s ok)' :
-                     '📍 Drop My Pin — mark my exact spot'}
-                  </button>
-                ) : (
-                  <div>
-                    {/* Mini map thumbnail confirming pin dropped */}
-                    {mapsKey && (
-                      <div style={{ borderRadius: 8, overflow: 'hidden', border: `1px solid ${C.sage}40`, marginBottom: 8 }}>
-                        <img
-                          src={`https://maps.googleapis.com/maps/api/staticmap?center=${checkinLat},${checkinLng}&zoom=15&size=480x160&scale=2&markers=color:green|${checkinLat},${checkinLng}&key=${mapsKey}`}
-                          alt="Your pinned location"
-                          style={{ width: '100%', height: 120, objectFit: 'cover', display: 'block' }}
-                        />
-                      </div>
-                    )}
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <span style={{ fontSize: 12, color: C.sage, fontWeight: 600 }}>
-                        ✓ Pin dropped — your spot is marked
-                      </span>
-                      <button
-                        onClick={handleDropPin}
-                        style={{ fontSize: 12, color: C.textMuted, background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'underline', padding: 0 }}
-                      >
-                        Re-drop
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
 
               <label style={labelStyle}>
                 Today's Special <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>(optional)</span>
@@ -777,6 +857,45 @@ export default function FoodTrucksPage() {
                   Let customers know when you're planning a run before you arrive — they'll see it on the locator.
                 </p>
 
+                {/* Apply to an event */}
+                {vendorEvents.length > 0 && (
+                  <div style={{ marginBottom: 16, padding: "14px 16px", background: `${C.sunset}08`, border: `1px solid ${C.sunset}25`, borderRadius: 10 }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunset, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>
+                      Join an Upcoming Event
+                    </div>
+                    <div style={{ display: "flex", gap: 8 }}>
+                      <select
+                        value={selectedEventId}
+                        onChange={e => { setSelectedEventId(e.target.value); setApplyStatus(''); }}
+                        style={{ flex: 1, padding: "11px 12px", border: `1px solid ${C.sand}`, borderRadius: 8, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", color: C.text, background: "#fff", outline: "none", appearance: "none" }}
+                      >
+                        <option value="">Pick your next event…</option>
+                        {vendorEvents.map(ev => (
+                          <option key={ev.id} value={ev.id}>
+                            {ev.name}{ev.date ? ` — ${new Date(ev.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}` : ''}
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        onClick={handleEventApply}
+                        disabled={!selectedEventId || applyStatus === 'loading'}
+                        style={{
+                          padding: "11px 16px", borderRadius: 8, whiteSpace: "nowrap",
+                          background: !selectedEventId || applyStatus === 'loading' ? C.sand : C.sunset,
+                          color: C.cream, border: "none", fontSize: 13, fontWeight: 700,
+                          cursor: !selectedEventId || applyStatus === 'loading' ? "default" : "pointer",
+                          fontFamily: "'Libre Franklin', sans-serif", transition: "background 0.2s",
+                        }}
+                      >
+                        {applyStatus === 'loading' ? '…' : 'Apply'}
+                      </button>
+                    </div>
+                    {applyStatus === 'applied' && <p style={{ fontSize: 12, color: C.sage, fontWeight: 600, margin: "8px 0 0", wordBreak: "break-word" }}>You're on the lineup for {applyEventName}! The organizer will be in touch with details.</p>}
+                    {applyStatus === 'duplicate' && <p style={{ fontSize: 12, color: C.lakeBlue, margin: "8px 0 0", wordBreak: "break-word" }}>You're already on the list for {applyEventName} — you're all set!</p>}
+                    {applyStatus === 'error' && <p style={{ fontSize: 12, color: "#c05a5a", margin: "8px 0 0" }}>Something went wrong — try again.</p>}
+                  </div>
+                )}
+
                 {comingDateLocal && new Date(comingDateLocal) > new Date() && (
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: `${C.lakeBlue}10`, border: `1px solid ${C.lakeBlue}30`, borderRadius: 8, padding: "10px 14px", marginBottom: 14 }}>
                     <span style={{ fontSize: 13, color: C.lakeBlue, fontWeight: 600 }}>
@@ -792,19 +911,19 @@ export default function FoodTrucksPage() {
                   </div>
                 )}
 
-                <div style={{ display: "flex", gap: 8 }}>
+                <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
                   <input
                     type="date"
                     min={tomorrowStr}
                     value={scheduleDate}
                     onChange={e => { setScheduleDate(e.target.value); setScheduleStatus(''); }}
-                    style={{ flex: 1, padding: "11px 12px", border: `1px solid ${C.sand}`, borderRadius: 8, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", color: C.text, background: C.warmWhite, outline: "none" }}
+                    style={{ flex: 1, padding: "13px 12px", border: `1px solid ${C.sand}`, borderRadius: 8, fontSize: 16, fontFamily: "'Libre Franklin', sans-serif", color: C.text, background: C.warmWhite, outline: "none" }}
                   />
                   <button
                     onClick={handleSchedule}
                     disabled={!scheduleDate || scheduleStatus === 'loading'}
                     style={{
-                      padding: "11px 16px", borderRadius: 8, whiteSpace: "nowrap",
+                      padding: "13px 18px", borderRadius: 8, whiteSpace: "nowrap",
                       background: !scheduleDate || scheduleStatus === 'loading' ? C.sand : C.lakeBlue,
                       color: C.cream, border: "none", fontSize: 13, fontWeight: 700,
                       cursor: !scheduleDate || scheduleStatus === 'loading' ? "default" : "pointer",
@@ -814,6 +933,13 @@ export default function FoodTrucksPage() {
                     {scheduleStatus === 'loading' ? '…' : 'Set Date'}
                   </button>
                 </div>
+                <input
+                  type="text"
+                  value={scheduleNote}
+                  onChange={e => { setScheduleNote(e.target.value); setScheduleStatus(''); }}
+                  placeholder="Where / what event? e.g. Summer Festival, Beer Tent, Boat Launch…"
+                  style={{ width: "100%", boxSizing: "border-box", padding: "13px 12px", border: `1px solid ${C.sand}`, borderRadius: 8, fontSize: 16, fontFamily: "'Libre Franklin', sans-serif", color: C.text, background: C.warmWhite, outline: "none" }}
+                />
 
                 {scheduleStatus === 'saved' && <p style={{ fontSize: 12, color: C.sage, fontWeight: 600, margin: "10px 0 0" }}>✓ Saved! Customers will see this on the locator.</p>}
                 {scheduleStatus === 'cleared' && <p style={{ fontSize: 12, color: C.textMuted, margin: "10px 0 0" }}>Coming date cleared.</p>}
@@ -1068,6 +1194,12 @@ export default function FoodTrucksPage() {
                       <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, color: C.text }}>{truck.name}</div>
                       {truck.cuisine && <div style={{ fontSize: 11, color: C.textMuted, marginTop: 2 }}>{truck.cuisine}</div>}
                       <div style={{ fontSize: 12, color: C.lakeBlue, fontWeight: 600, marginTop: 4 }}>{formatComingDate(truck.comingDate)}</div>
+                      {truck.comingEventName && (
+                        <a href="/happening" style={{ fontSize: 11, color: C.sunset, fontWeight: 600, marginTop: 2, display: "block", textDecoration: "none", lineHeight: 1.4 }}>
+                          {truck.comingEventName}
+                        </a>
+                      )}
+                      {truck.scheduleNote && !truck.comingEventName && <div style={{ fontSize: 11, color: C.textMuted, marginTop: 2, lineHeight: 1.4 }}>{truck.scheduleNote}</div>}
                     </div>
                   </div>
                 </FadeIn>

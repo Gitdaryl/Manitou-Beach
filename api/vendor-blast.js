@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { sendSMS, normalizePhone } from './lib/twilio.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
@@ -6,11 +7,6 @@ export default async function handler(req, res) {
   const { token, eventId, subject, message, channel } = req.body;
   if (!token || !eventId || !subject || !message) {
     return res.status(400).json({ error: 'Missing required fields: token, eventId, subject, message' });
-  }
-
-  // SMS is stubbed until A2P approval
-  if (channel === 'sms') {
-    return res.status(200).json({ status: 'pending_a2p', message: 'SMS blast available after A2P registration is approved.' });
   }
 
   try {
@@ -58,6 +54,35 @@ export default async function handler(req, res) {
     if (!vendorRes.ok) return res.status(500).json({ error: 'Failed to fetch vendor list' });
     const vendorData = await vendorRes.json();
 
+    // ── SMS channel ──
+    if (channel === 'sms') {
+      const phones = vendorData.results
+        .map(v => v.properties['Phone']?.phone_number)
+        .filter(Boolean);
+
+      if (phones.length === 0) {
+        return res.status(200).json({ sent: 0, message: 'No confirmed vendors with phone numbers.' });
+      }
+
+      let sent = 0;
+      const errors = [];
+      for (const phone of phones) {
+        const digits = normalizePhone(phone);
+        if (digits.length !== 10) continue;
+        try {
+          const ok = await sendSMS(digits, `${organizerName}\n\n${message.trim()}\n\n— ${eventName}`);
+          if (ok) sent++;
+          else errors.push({ phone, error: 'Send failed' });
+        } catch (e) {
+          errors.push({ phone, error: e.message });
+        }
+      }
+
+      console.log(`Vendor SMS blast: ${sent}/${phones.length} sent for event ${eventId}`);
+      return res.status(200).json({ sent, total: phones.length, errors: errors.length ? errors : undefined });
+    }
+
+    // ── Email channel (default) ──
     const recipients = vendorData.results
       .map(v => v.properties['Email']?.email)
       .filter(Boolean);
@@ -72,7 +97,6 @@ export default async function handler(req, res) {
 
     const resend = new Resend(process.env.RESEND_API_KEY);
 
-    // Resend batch API — send individually to each recipient to avoid exposing addresses
     let sent = 0;
     const errors = [];
     const messageHtml = message.replace(/\n/g, '<br/>');
@@ -101,7 +125,7 @@ export default async function handler(req, res) {
     }
 
     console.log(`Vendor blast: ${sent}/${recipients.length} sent for event ${eventId}`);
-    return res.status(200).json({ sent, total: recipients.length, errors });
+    return res.status(200).json({ sent, total: recipients.length, errors: errors.length ? errors : undefined });
 
   } catch (err) {
     console.error('vendor-blast error:', err);

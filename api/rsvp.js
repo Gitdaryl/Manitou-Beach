@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { sendSMS, normalizePhone } from './lib/twilio.js';
 
 const NOTION_HEADERS = {
   'Authorization': `Bearer ${process.env.NOTION_TOKEN_EVENTS}`,
@@ -66,6 +67,22 @@ export default async function handler(req, res) {
     });
   } catch (err) {
     console.error('RSVP count increment error:', err.message);
+  }
+
+  // 1c. Send SMS confirmation (best-effort)
+  if (phone) {
+    const digits = normalizePhone(phone);
+    if (digits.length === 10) {
+      const dateLine = eventDate
+        ? new Date(eventDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
+        : '';
+      const parts = [`You're registered for ${eventName}!`];
+      if (dateLine) parts.push(dateLine);
+      if (eventTime) parts.push(eventTime);
+      if (eventLocation) parts.push(eventLocation);
+      parts.push("We'll text you a reminder before the event. — Manitou Beach");
+      sendSMS(digits, parts.join('\n')).catch(() => {});
+    }
   }
 
   // 2. Send confirmation email to attendee (best-effort)

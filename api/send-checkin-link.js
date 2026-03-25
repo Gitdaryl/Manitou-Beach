@@ -2,10 +2,7 @@
 // POST { phone } — looks up truck by phone in Notion, texts check-in URL via Twilio
 // Used by vendors who forgot their check-in link
 
-function normalizePhone(raw) {
-  // Strip everything except digits, return last 10
-  return (raw || '').replace(/\D/g, '').slice(-10);
-}
+import { sendSMSFull, normalizePhone } from './lib/twilio.js';
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
@@ -69,30 +66,13 @@ export default async function handler(req, res) {
     }
 
     const checkinUrl = `https://manitoubeach.com/food-trucks?truck=${encodeURIComponent(slug)}&token=${encodeURIComponent(token)}`;
-    const toPhone = `+1${inputDigits}`;
 
-    // Send SMS via Twilio using Account SID + Auth Token
-    const twilioRes = await fetch(
-      `https://api.twilio.com/2010-04-01/Accounts/${process.env.TWILIO_ACCOUNT_SID}/Messages.json`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: 'Basic ' + Buffer.from(
-            `${process.env.TWILIO_ACCOUNT_SID}:${process.env.TWILIO_AUTH_TOKEN}`
-          ).toString('base64'),
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          From: process.env.TWILIO_PHONE,
-          To: toPhone,
-          Body: `Manitou Beach Food Trucks\n\nHere's your check-in link for ${name}:\n${checkinUrl}\n\nSave this to your home screen for quick access each day.`,
-        }).toString(),
-      }
+    const ok = await sendSMSFull(
+      `+1${inputDigits}`,
+      `Manitou Beach Food Trucks\n\nHere's your check-in link for ${name}:\n${checkinUrl}\n\nSave this to your home screen for quick access each day.`
     );
 
-    if (!twilioRes.ok) {
-      const err = await twilioRes.text();
-      console.error('Twilio send failed:', err);
+    if (!ok) {
       return res.status(500).json({ error: 'SMS failed' });
     }
 

@@ -12,29 +12,10 @@
 
 import Stripe from 'stripe';
 import crypto from 'crypto';
+import { sendSMSFull } from './lib/twilio.js';
 
 function generateToken() {
   return crypto.randomBytes(16).toString('hex');
-}
-
-async function sendSMS(toPhone, body) {
-  await fetch(
-    `https://api.twilio.com/2010-04-01/Accounts/${process.env.TWILIO_ACCOUNT_SID}/Messages.json`,
-    {
-      method: 'POST',
-      headers: {
-        Authorization: 'Basic ' + Buffer.from(
-          `${process.env.TWILIO_ACCOUNT_SID}:${process.env.TWILIO_AUTH_TOKEN}`
-        ).toString('base64'),
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        From: process.env.TWILIO_PHONE,
-        To: toPhone,
-        Body: body,
-      }).toString(),
-    }
-  ).catch(e => console.error('event-stripe-return SMS failed:', e));
 }
 
 export default async function handler(req, res) {
@@ -111,7 +92,7 @@ export default async function handler(req, res) {
         smsBody = `Manitou Beach Events\n\n${eventName} is live with ticketing! 🎉\n\nEdit your event:\n${editUrl}`;
       }
 
-      await sendSMS(toPhone, smsBody);
+      await sendSMSFull(toPhone, smsBody);
     }
 
     // Redirect to confirmed page

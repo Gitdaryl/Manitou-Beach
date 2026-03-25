@@ -3,30 +3,13 @@
 // Body: { token, type?: 'general'|'event'|'deals'|'welcome', slug?, message }
 // token = ADMIN_SECRET env var (prevents unauthorized blasts)
 
+import { sendSMSFull } from './lib/twilio.js';
+
 const NOTION_HEADERS = {
   Authorization: `Bearer ${process.env.NOTION_TOKEN_BUSINESS}`,
   'Content-Type': 'application/json',
   'Notion-Version': '2022-06-28',
 };
-
-async function sendSMS(to, body) {
-  const sid = process.env.TWILIO_ACCOUNT_SID;
-  const authToken = process.env.TWILIO_AUTH_TOKEN;
-  const from = process.env.TWILIO_PHONE;
-
-  const res = await fetch(
-    `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,
-    {
-      method: 'POST',
-      headers: {
-        Authorization: 'Basic ' + Buffer.from(`${sid}:${authToken}`).toString('base64'),
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({ From: from, To: to, Body: body }).toString(),
-    }
-  );
-  return res.ok;
-}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
@@ -119,7 +102,7 @@ export default async function handler(req, res) {
 
     for (const phone of phones) {
       try {
-        const ok = await sendSMS(phone, message.trim());
+        const ok = await sendSMSFull(phone, message.trim());
         if (ok) sent++;
         else errors.push({ phone, error: 'Send failed' });
       } catch (e) {

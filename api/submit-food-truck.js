@@ -4,13 +4,10 @@
 // skipVerification=true: activates immediately (used when phone already verified via business listing)
 
 import crypto from 'crypto';
+import { sendSMS, sendSMSFull, normalizePhone } from './lib/twilio.js';
 
 function generateCode() {
   return String(Math.floor(100000 + Math.random() * 900000));
-}
-
-function normalizePhone(raw) {
-  return (raw || '').replace(/\D/g, '').slice(-10);
 }
 
 function slugify(name) {
@@ -100,19 +97,10 @@ export default async function handler(req, res) {
       const checkinUrl = `${siteUrl}/food-trucks?truck=${encodeURIComponent(slug)}&token=${encodeURIComponent(checkinToken)}`;
 
       // Send welcome SMS with check-in link
-      const toPhone = `+1${digits}`;
-      await fetch(`https://api.twilio.com/2010-04-01/Accounts/${process.env.TWILIO_ACCOUNT_SID}/Messages.json`, {
-        method: 'POST',
-        headers: {
-          Authorization: 'Basic ' + Buffer.from(`${process.env.TWILIO_ACCOUNT_SID}:${process.env.TWILIO_AUTH_TOKEN}`).toString('base64'),
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          From: process.env.TWILIO_PHONE,
-          To: toPhone,
-          Body: `Manitou Beach Food Trucks\n\n${truckName.trim()} is live! 🎉\n\nHere's your personal check-in link:\n${checkinUrl}\n\nOpen it each time you head to Manitou Beach. Save it to your home screen for quick access.`,
-        }).toString(),
-      }).catch(e => console.error('Welcome SMS failed:', e));
+      await sendSMS(
+        digits,
+        `Manitou Beach Food Trucks\n\n${truckName.trim()} is live! 🎉\n\nHere's your personal check-in link:\n${checkinUrl}\n\nOpen it each time you head to Manitou Beach. Save it to your home screen for quick access.`
+      );
 
       return res.status(200).json({ ok: true, activated: true, slug, checkinUrl, truckName: truckName.trim() });
     }
@@ -143,25 +131,12 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Something went wrong. Please try again.' });
     }
 
-    const twilioRes = await fetch(
-      `https://api.twilio.com/2010-04-01/Accounts/${process.env.TWILIO_ACCOUNT_SID}/Messages.json`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: 'Basic ' + Buffer.from(`${process.env.TWILIO_ACCOUNT_SID}:${process.env.TWILIO_AUTH_TOKEN}`).toString('base64'),
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          From: process.env.TWILIO_PHONE,
-          To: `+1${digits}`,
-          Body: `Manitou Beach Food Trucks\n\nYour verification code is: ${code}\n\nEnter this on the signup page to activate your listing.`,
-        }).toString(),
-      }
+    const smsOk = await sendSMS(
+      digits,
+      `Manitou Beach Food Trucks\n\nYour verification code is: ${code}\n\nEnter this on the signup page to activate your listing.`
     );
 
-    if (!twilioRes.ok) {
-      const err = await twilioRes.text();
-      console.error('Twilio verification SMS failed:', err);
+    if (!smsOk) {
       return res.status(200).json({ ok: true, needsVerification: true, smsFailed: true });
     }
 

@@ -6,10 +6,7 @@
 // The frontend then calls /api/event-stripe-onboard to create the Stripe Express account.
 
 import crypto from 'crypto';
-
-function normalizePhone(raw) {
-  return (raw || '').replace(/\D/g, '').slice(-10);
-}
+import { sendSMS, normalizePhone } from './lib/twilio.js';
 
 function generateToken() {
   return crypto.randomBytes(16).toString('hex');
@@ -23,28 +20,6 @@ function generateSessionToken(normalizedPhone) {
     .createHmac('sha256', process.env.NOTION_TOKEN_EVENTS)
     .update(`${normalizedPhone}:${window}`)
     .digest('hex');
-}
-
-async function sendSMS(toDigits, body) {
-  const res = await fetch(
-    `https://api.twilio.com/2010-04-01/Accounts/${process.env.TWILIO_ACCOUNT_SID}/Messages.json`,
-    {
-      method: 'POST',
-      headers: {
-        Authorization: 'Basic ' + Buffer.from(
-          `${process.env.TWILIO_ACCOUNT_SID}:${process.env.TWILIO_AUTH_TOKEN}`
-        ).toString('base64'),
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        From: process.env.TWILIO_PHONE,
-        To: `+1${toDigits}`,
-        Body: body,
-      }).toString(),
-    }
-  );
-  if (!res.ok) console.error('verify-event SMS failed:', await res.text());
-  return res.ok;
 }
 
 async function queryPendingEvents(notionToken, dbId) {

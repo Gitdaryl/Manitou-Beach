@@ -2,15 +2,13 @@
 // Subscribes a phone number to SMS alerts. Saves to Notion, sends confirmation via Twilio.
 // Body: { phone, name?, type: 'general'|'event'|'deals'|'welcome', preference?, source? }
 
+import { sendSMS, normalizePhone } from './lib/twilio.js';
+
 const NOTION_HEADERS = {
   Authorization: `Bearer ${process.env.NOTION_TOKEN_BUSINESS}`,
   'Content-Type': 'application/json',
   'Notion-Version': '2022-06-28',
 };
-
-function normalizePhone(raw) {
-  return (raw || '').replace(/\D/g, '').slice(-10);
-}
 
 async function findExistingSubscriber(phone) {
   const dbId = process.env.NOTION_DB_SMS_SUBSCRIBERS;
@@ -29,30 +27,6 @@ async function findExistingSubscriber(phone) {
     return data.results?.[0] || null;
   } catch {
     return null;
-  }
-}
-
-async function sendSMS(to, body) {
-  const sid = process.env.TWILIO_ACCOUNT_SID;
-  const token = process.env.TWILIO_AUTH_TOKEN;
-  const from = process.env.TWILIO_PHONE;
-  if (!sid || !token || !from) return false;
-
-  try {
-    const res = await fetch(
-      `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: 'Basic ' + Buffer.from(`${sid}:${token}`).toString('base64'),
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({ From: from, To: `+1${to}`, Body: body }).toString(),
-      }
-    );
-    return res.ok;
-  } catch {
-    return false;
   }
 }
 

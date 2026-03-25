@@ -8,10 +8,7 @@
 // Also handles resend: POST { phone, resend: true } — re-sends the code
 
 import crypto from 'crypto';
-
-function normalizePhone(raw) {
-  return (raw || '').replace(/\D/g, '').slice(-10);
-}
+import { sendSMS, normalizePhone } from './lib/twilio.js';
 
 function slugify(name) {
   return (name || '')
@@ -71,28 +68,6 @@ function dedupeSlug(base, existingSlugs) {
     if (!existingSlugs.includes(candidate)) return candidate;
   }
   return `${base}-${Date.now()}`;
-}
-
-async function sendSMS(toDigits, body) {
-  const res = await fetch(
-    `https://api.twilio.com/2010-04-01/Accounts/${process.env.TWILIO_ACCOUNT_SID}/Messages.json`,
-    {
-      method: 'POST',
-      headers: {
-        Authorization: 'Basic ' + Buffer.from(
-          `${process.env.TWILIO_ACCOUNT_SID}:${process.env.TWILIO_AUTH_TOKEN}`
-        ).toString('base64'),
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        From: process.env.TWILIO_PHONE,
-        To: `+1${toDigits}`,
-        Body: body,
-      }).toString(),
-    }
-  );
-  if (!res.ok) console.error('Twilio SMS failed:', await res.text());
-  return res.ok;
 }
 
 export default async function handler(req, res) {

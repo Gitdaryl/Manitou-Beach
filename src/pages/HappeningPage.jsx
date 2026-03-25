@@ -362,6 +362,17 @@ function CalendarSection({ events, onEventClick, activeFilter, onFilterChange })
                         ↻ Details Updated
                       </span>
                     )}
+                    {event.vendorRegEnabled && (
+                      <span style={{
+                        fontFamily: "'Libre Franklin', sans-serif",
+                        fontSize: 9, fontWeight: 700, letterSpacing: 1.5,
+                        color: "#8B5E3C",
+                        textTransform: "uppercase",
+                        whiteSpace: "nowrap",
+                      }}>
+                        Vendors Welcome
+                      </span>
+                    )}
                   </div>
                 </div>
               </FadeIn>

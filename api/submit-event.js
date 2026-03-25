@@ -9,13 +9,10 @@
 // the event is published immediately without SMS — lets reps log multiple events in one sitting.
 
 import crypto from 'crypto';
+import { sendSMS, normalizePhone } from './lib/twilio.js';
 
 function generateCode() {
   return String(Math.floor(100000 + Math.random() * 900000));
-}
-
-function normalizePhone(raw) {
-  return (raw || '').replace(/\D/g, '').slice(-10);
 }
 
 // Validates the HMAC session token issued by verify-event.js.
@@ -162,25 +159,12 @@ export default async function handler(req, res) {
     }
 
     // Send SMS verification code
-    const twilioRes = await fetch(
-      `https://api.twilio.com/2010-04-01/Accounts/${process.env.TWILIO_ACCOUNT_SID}/Messages.json`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: 'Basic ' + Buffer.from(`${process.env.TWILIO_ACCOUNT_SID}:${process.env.TWILIO_AUTH_TOKEN}`).toString('base64'),
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          From: process.env.TWILIO_PHONE,
-          To: `+1${digits}`,
-          Body: `Manitou Beach Events\n\nYour verification code is: ${code}\n\nEnter this to publish your event listing.`,
-        }).toString(),
-      }
+    const smsOk = await sendSMS(
+      digits,
+      `Manitou Beach Events\n\nYour verification code is: ${code}\n\nEnter this to publish your event listing.`
     );
 
-    if (!twilioRes.ok) {
-      const err = await twilioRes.text();
-      console.error('submit-event Twilio error:', err);
+    if (!smsOk) {
       return res.status(200).json({ ok: true, needsVerification: true, smsFailed: true });
     }
 
