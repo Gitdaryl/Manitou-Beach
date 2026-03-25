@@ -124,10 +124,14 @@ export default function FoodTruckPartnerPage() {
           website: form.website,
           imageUrl,
           tier: selectedTier,
+          skipVerification: prefill.verified === 'true',
         }),
       });
       const data = await res.json();
-      if (data.needsVerification) {
+      if (data.activated) {
+        setActivationData({ slug: data.slug, checkinUrl: data.checkinUrl, truckName: data.truckName });
+        setStep('activated');
+      } else if (data.needsVerification) {
         setStep('verify');
       } else if (data.error) {
         setSubmitError(data.error);

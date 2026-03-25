@@ -234,6 +234,7 @@ export default function UpdateListingPage() {
                             if (business?.email) params.set('email', business.email);
                             if (form.phone) params.set('phone', form.phone);
                             if (form.website) params.set('website', form.website);
+                            params.set('verified', 'true');
                             window.location.href = `/food-truck-partner?${params.toString()}`;
                           }}
                           style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, padding: '12px 24px', borderRadius: 8, border: 'none', background: '#4A7A5A', color: '#fff', cursor: 'pointer' }}
