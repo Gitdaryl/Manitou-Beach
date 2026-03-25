@@ -50,6 +50,7 @@ export default async function handler(req, res) {
     const vendors = vendorData.results.map(v => {
       const vp = v.properties;
       return {
+        pageId: v.id,
         vendorId: vp['Vendor ID']?.title?.[0]?.plain_text || '',
         vendorName: vp['Vendor Name']?.rich_text?.[0]?.plain_text || '',
         contactName: vp['Contact Name']?.rich_text?.[0]?.plain_text || '',

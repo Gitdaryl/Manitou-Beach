@@ -4,6 +4,7 @@
 // Auth: slug + checkin token (same as food-trucks.js POST)
 
 import { sendSMS, normalizePhone } from './lib/twilio.js';
+import { Resend } from 'resend';
 
 const NOTION_EVENTS_HEADERS = {
   Authorization: `Bearer ${process.env.NOTION_TOKEN_EVENTS}`,
@@ -55,6 +56,8 @@ async function fetchEventDetails(eventId) {
     vendorCapacity: getProp('Vendor Capacity', 'number') || 0,
     organizerName: getProp('Organizer Name', 'text'),
     organizerEmail: getProp('Organizer Email', 'text'),
+    organizerPhone: getProp('Organizer Phone', 'text'),
+    vendorPortalToken: getProp('Vendor Portal Token', 'text'),
   };
 }
 
@@ -200,35 +203,62 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Failed to create registration.' });
     }
 
-    // 6. PATCH truck record with event info
-    const patchProps = {
-      'Coming Event ID':   { rich_text: [{ text: { content: eventId } }] },
-      'Coming Event Name': { rich_text: [{ text: { content: event.name } }] },
-    };
-    if (event.date) {
-      patchProps['Coming Date'] = { date: { start: event.date } };
-    }
-
-    await fetch(`https://api.notion.com/v1/pages/${truck.id}`, {
-      method: 'PATCH',
-      headers: NOTION_BUSINESS_HEADERS,
-      body: JSON.stringify({ properties: patchProps }),
-    });
-
-    // 7. Send confirmation SMS (best-effort)
+    // 6. Send "pending review" SMS to truck (best-effort)
+    // Coming Event fields are NOT set here — they're set on organizer approval via vendor-status.js
     if (truckPhone) {
       const digits = normalizePhone(truckPhone);
       if (digits.length === 10) {
-        const dateLine = event.date
-          ? new Date(event.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
-          : '';
-        const parts = [`You're on the lineup for ${event.name}!`];
-        if (dateLine) parts.push(dateLine);
-        if (event.location) parts.push(event.location);
-        parts.push(`The organizer will be in touch with details. See you lakeside!`);
-        parts.push('— Manitou Beach');
-        sendSMS(digits, parts.join('\n')).catch(() => {});
+        sendSMS(
+          digits,
+          `Applied to ${event.name}! The organizer will review your application and you'll get a text when confirmed. — Manitou Beach`
+        ).catch(() => {});
       }
+    }
+
+    // 7. Notify organizer of new application (best-effort)
+    const siteUrl = process.env.SITE_URL || 'https://manitoubeach.com';
+    const portalUrl = event.vendorPortalToken
+      ? `${siteUrl}/vendor-portal?token=${event.vendorPortalToken}&event=${eventId}`
+      : null;
+
+    // Organizer SMS
+    if (event.organizerPhone) {
+      const orgDigits = normalizePhone(event.organizerPhone);
+      if (orgDigits.length === 10) {
+        const sms = portalUrl
+          ? `${truckName} wants to join ${event.name} — review in your vendor portal:\n${portalUrl}`
+          : `${truckName} wants to join ${event.name} — check your vendor portal to review.`;
+        sendSMS(orgDigits, sms).catch(() => {});
+      }
+    }
+
+    // Organizer email
+    if (event.organizerEmail && process.env.RESEND_API_KEY) {
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      const orgName = event.organizerName || event.name;
+      resend.emails.send({
+        from: `Manitou Beach <tickets@yetigroove.com>`,
+        to: event.organizerEmail,
+        subject: `New vendor application: ${truckName} → ${event.name}`,
+        html: `
+          <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#FAF6EF;">
+            <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#8C806E;margin-bottom:8px;">Vendor Application</div>
+            <h2 style="color:#1A2830;font-size:20px;margin:0 0 16px;">${truckName} wants to join ${event.name}</h2>
+            <div style="font-size:15px;color:#3A3028;line-height:1.7;">
+              <strong>Booth type:</strong> ${truckCuisine ? `Food Truck — ${truckCuisine}` : 'Food Truck'}<br/>
+              ${truckEmail ? `<strong>Email:</strong> ${truckEmail}<br/>` : ''}
+              ${truckPhone ? `<strong>Phone:</strong> ${truckPhone}<br/>` : ''}
+            </div>
+            ${portalUrl ? `
+            <div style="margin-top:24px;">
+              <a href="${portalUrl}" style="display:inline-block;padding:12px 28px;background:#1A2830;color:#fff;text-decoration:none;border-radius:8px;font-weight:700;font-size:14px;">Review in Vendor Portal</a>
+            </div>` : ''}
+            <div style="margin-top:32px;padding-top:20px;border-top:1px solid #E8E0D5;">
+              <p style="font-size:12px;color:#8C806E;margin:0;">This application is pending your review.</p>
+            </div>
+          </div>
+        `,
+      }).catch(() => {});
     }
 
     console.log(`Food truck event apply: ${truckName} (${slug}) → ${event.name} (${eventId}), vendor ID: ${vendorId}`);

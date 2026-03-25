@@ -39,6 +39,7 @@ export default function VendorPortalPage() {
   const [blast, setBlast] = useState({ subject: '', message: '' });
   const [blasting, setBlasting] = useState(false);
   const [blastResult, setBlastResult] = useState(null);
+  const [statusLoading, setStatusLoading] = useState({});
 
   useEffect(() => {
     if (!token || !eventId) { setAuthError(true); setLoading(false); return; }
@@ -79,7 +80,36 @@ export default function VendorPortalPage() {
     }
   }
 
+  const [showRejected, setShowRejected] = useState(false);
+
+  async function updateStatus(pageId, newStatus, vendorName) {
+    if (newStatus === 'Rejected') {
+      const ok = window.confirm(`Are you sure you want to pass on ${vendorName || 'this vendor'}? They'll get a text letting them know.`);
+      if (!ok) return;
+    }
+    setStatusLoading(prev => ({ ...prev, [pageId]: newStatus }));
+    try {
+      const res = await fetch('/api/vendor-status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ registrationId: pageId, status: newStatus, token, eventId }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        alert(data.error || 'Something went wrong — please try again.');
+        return;
+      }
+      await fetchVendors();
+    } catch {
+      alert('Connection issue — check your internet and try again.');
+    } finally {
+      setStatusLoading(prev => ({ ...prev, [pageId]: null }));
+    }
+  }
+
+  const pending = vendors.filter(v => v.status === 'Pending');
   const confirmed = vendors.filter(v => v.status === 'Confirmed');
+  const rejected = vendors.filter(v => v.status === 'Rejected');
 
   if (loading) return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#FAF6EF', fontFamily: "'Libre Franklin', sans-serif", color: '#8C806E' }}>
@@ -106,9 +136,15 @@ export default function VendorPortalPage() {
           <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: '#fff' }}>{eventName}</div>
         </div>
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          {pending.length > 0 && (
+            <div style={{ background: 'rgba(212,132,90,0.2)', borderRadius: 8, padding: '10px 18px', textAlign: 'center' }}>
+              <div style={{ fontSize: 24, fontWeight: 700, color: '#D4845A', lineHeight: 1 }}>{pending.length}</div>
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', marginTop: 3 }}>Pending</div>
+            </div>
+          )}
           <div style={{ background: 'rgba(255,255,255,0.08)', borderRadius: 8, padding: '10px 18px', textAlign: 'center' }}>
             <div style={{ fontSize: 24, fontWeight: 700, color: '#fff', lineHeight: 1 }}>{confirmed.length}</div>
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', marginTop: 3 }}>Registered</div>
+            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', marginTop: 3 }}>Confirmed</div>
           </div>
           {vendorCapacity > 0 && (
             <div style={{ background: 'rgba(255,255,255,0.08)', borderRadius: 8, padding: '10px 18px', textAlign: 'center' }}>
@@ -121,7 +157,71 @@ export default function VendorPortalPage() {
 
       <div style={{ maxWidth: 1000, margin: '0 auto', padding: '32px 24px' }}>
 
-        {/* Vendor list */}
+        {/* Pending applications — card layout for mobile-friendliness */}
+        {pending.length > 0 && (
+          <div style={{ background: '#fff', borderRadius: 12, border: '2px solid #D4845A', marginBottom: 28, overflow: 'hidden' }}>
+            <div style={{ padding: '20px 24px', borderBottom: '1px solid #E8E0D5', background: 'rgba(212,132,90,0.06)' }}>
+              <div style={{ fontWeight: 700, fontSize: 17, color: '#1A2830' }}>New Applications ({pending.length})</div>
+              <div style={{ fontSize: 13, color: '#5C5248', marginTop: 6, lineHeight: 1.5 }}>
+                These folks want to be part of your event! Tap <strong>Welcome Aboard</strong> to confirm them, or <strong>Not This Time</strong> to pass. Either way, they'll get a friendly text from us.
+              </div>
+            </div>
+            <div style={{ padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {pending.map(v => (
+                <div key={v.pageId || v.vendorId} style={{ background: '#FAF6EF', borderRadius: 10, padding: '18px 20px', border: '1px solid #E8E0D5' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}>
+                    <div>
+                      <div style={{ fontWeight: 700, fontSize: 16, color: '#1A2830' }}>{v.vendorName}</div>
+                      <div style={{ fontSize: 13, color: '#5C5248', marginTop: 2 }}>{v.boothType || 'Vendor'}</div>
+                    </div>
+                    <div style={{ fontSize: 12, color: '#8C806E' }}>
+                      Applied {v.registeredAt ? new Date(v.registeredAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : ''}
+                    </div>
+                  </div>
+                  {(v.email || v.phone) && (
+                    <div style={{ fontSize: 13, color: '#5C5248', marginBottom: 14, lineHeight: 1.6 }}>
+                      {v.email && <div>{v.email}</div>}
+                      {v.phone && <div>{v.phone}</div>}
+                    </div>
+                  )}
+                  <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                    <button
+                      onClick={() => updateStatus(v.pageId, 'Confirmed', v.vendorName)}
+                      disabled={!!statusLoading[v.pageId]}
+                      style={{
+                        padding: '12px 24px', borderRadius: 8, fontSize: 15, fontWeight: 700,
+                        fontFamily: "'Libre Franklin', sans-serif", minHeight: 44,
+                        background: statusLoading[v.pageId] === 'Confirmed' ? '#6a9a6a' : '#2a7a3a',
+                        color: '#fff', border: 'none', flex: '1 1 140px',
+                        cursor: statusLoading[v.pageId] ? 'wait' : 'pointer',
+                        transition: 'background 0.2s',
+                      }}
+                    >
+                      {statusLoading[v.pageId] === 'Confirmed' ? 'Confirming...' : 'Welcome Aboard'}
+                    </button>
+                    <button
+                      onClick={() => updateStatus(v.pageId, 'Rejected', v.vendorName)}
+                      disabled={!!statusLoading[v.pageId]}
+                      style={{
+                        padding: '12px 24px', borderRadius: 8, fontSize: 15, fontWeight: 700,
+                        fontFamily: "'Libre Franklin', sans-serif", minHeight: 44,
+                        background: statusLoading[v.pageId] === 'Rejected' ? '#c08080' : '#fff',
+                        color: statusLoading[v.pageId] === 'Rejected' ? '#fff' : '#8C806E',
+                        border: '1px solid #E8E0D5', flex: '0 1 160px',
+                        cursor: statusLoading[v.pageId] ? 'wait' : 'pointer',
+                        transition: 'background 0.2s',
+                      }}
+                    >
+                      {statusLoading[v.pageId] === 'Rejected' ? 'Sending...' : 'Not This Time'}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Confirmed vendor list */}
         <div style={{ background: '#fff', borderRadius: 12, border: '1px solid #E8E0D5', marginBottom: 28, overflow: 'hidden' }}>
           <div style={{ padding: '18px 24px', borderBottom: '1px solid #E8E0D5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
             <div style={{ fontWeight: 700, fontSize: 15, color: '#1A2830' }}>Registered Vendors ({confirmed.length})</div>
@@ -137,7 +237,7 @@ export default function VendorPortalPage() {
 
           {confirmed.length === 0 ? (
             <div style={{ padding: '40px 24px', textAlign: 'center', color: '#8C806E', fontSize: 14 }}>
-              No vendors registered yet. Share your registration link to get started.
+              No confirmed vendors yet. Once you approve pending applications, they'll show up here.
             </div>
           ) : (
             <div style={{ overflowX: 'auto' }}>
@@ -175,6 +275,38 @@ export default function VendorPortalPage() {
             </div>
           )}
         </div>
+
+        {/* Rejected vendors — collapsible record */}
+        {rejected.length > 0 && (
+          <div style={{ background: '#fff', borderRadius: 12, border: '1px solid #E8E0D5', marginBottom: 28, overflow: 'hidden' }}>
+            <button
+              onClick={() => setShowRejected(!showRejected)}
+              style={{
+                width: '100%', padding: '14px 24px', background: 'none', border: 'none',
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif",
+              }}
+            >
+              <span style={{ fontWeight: 600, fontSize: 13, color: '#8C806E' }}>Passed On ({rejected.length})</span>
+              <span style={{ fontSize: 12, color: '#8C806E' }}>{showRejected ? 'Hide' : 'Show'}</span>
+            </button>
+            {showRejected && (
+              <div style={{ padding: '0 24px 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {rejected.map(v => (
+                  <div key={v.pageId || v.vendorId} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', background: '#FAF6EF', borderRadius: 6, flexWrap: 'wrap', gap: 6 }}>
+                    <div>
+                      <span style={{ fontWeight: 600, fontSize: 13, color: '#8C806E' }}>{v.vendorName}</span>
+                      <span style={{ fontSize: 12, color: '#a09080', marginLeft: 8 }}>{v.boothType}</span>
+                    </div>
+                    <span style={{ fontSize: 11, color: '#a09080' }}>
+                      {v.registeredAt ? new Date(v.registeredAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : ''}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Blast panel */}
         <div style={{ background: '#fff', borderRadius: 12, border: '1px solid #E8E0D5', padding: '24px' }}>
