@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar, Footer } from '../components/Layout';
 import { C } from '../data/config';
 
@@ -14,6 +14,41 @@ const EVENT_TYPES = [
 const RECURRING_OPTIONS = ['None', 'Annual', 'Weekly'];
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
+const SESSION_KEY = 'mb_event_session';
+const SESSION_HOURS = 8;
+
+function loadSession() {
+  try {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if (!raw) return null;
+    const s = JSON.parse(raw);
+    if (!s.token || !s.phone || Date.now() > s.expires) {
+      localStorage.removeItem(SESSION_KEY);
+      return null;
+    }
+    return s;
+  } catch { return null; }
+}
+
+function saveSession({ token, phone, organizerName, email }) {
+  localStorage.setItem(SESSION_KEY, JSON.stringify({
+    token, phone, organizerName, email,
+    expires: Date.now() + SESSION_HOURS * 60 * 60 * 1000,
+  }));
+}
+
+const EMPTY_FORM = {
+  eventName: '', date: '', timeStart: '', timeEnd: '',
+  location: '', description: '', cost: '',
+  organizerName: '', email: '', phone: '',
+  eventUrl: '', imageUrl: '',
+  ticketPrice: '', ticketCapacity: '',
+  rsvpCapacity: '',
+  vendorFee: '', vendorCapacity: '',
+  recurring: 'None', recurringDay: '',
+  eventType: 'free',
+};
+
 const input = {
   width: '100%', boxSizing: 'border-box', padding: '13px 16px',
   border: '1px solid rgba(255,255,255,0.12)', borderRadius: 8,
@@ -27,17 +62,8 @@ const label = {
 };
 
 export default function SubmitEventPage() {
-  const [form, setForm] = useState({
-    eventName: '', date: '', timeStart: '', timeEnd: '',
-    location: '', description: '', cost: '',
-    organizerName: '', email: '', phone: '',
-    eventUrl: '', imageUrl: '',
-    ticketPrice: '', ticketCapacity: '',
-    rsvpCapacity: '',
-    vendorFee: '', vendorCapacity: '',
-    recurring: 'None', recurringDay: '',
-    eventType: 'free',
-  });
+  const [form, setForm] = useState(EMPTY_FORM);
+  const [session, setSession] = useState(null); // active verified session
 
   const [step, setStep]               = useState('form'); // 'form' | 'verify' | 'stripe_redirect' | 'done'
   const [verifyCode, setVerifyCode]   = useState('');
@@ -48,8 +74,36 @@ export default function SubmitEventPage() {
   const [verifyError, setVerifyError] = useState('');
   const [activatedData, setActivatedData] = useState(null);
 
+  // On mount: restore active session and pre-fill organizer fields
+  useEffect(() => {
+    const s = loadSession();
+    if (s) {
+      setSession(s);
+      setForm(f => ({
+        ...f,
+        phone: s.phone || '',
+        organizerName: s.organizerName || '',
+        email: s.email || '',
+      }));
+    }
+  }, []);
+
   const set = (k) => (e) => setForm(f => ({ ...f, [k]: e.target.value }));
   const needsStripe = form.eventType === 'platform_ticketing' || form.eventType === 'vendor_market';
+
+  const resetForNextEvent = () => {
+    setForm(f => ({
+      ...EMPTY_FORM,
+      phone: f.phone,
+      organizerName: f.organizerName,
+      email: f.email,
+    }));
+    setStep('form');
+    setActivatedData(null);
+    setVerifyCode('');
+    setSubmitError('');
+    setVerifyError('');
+  };
 
   const handleSubmit = async () => {
     if (!form.eventName.trim()) { setSubmitError('Event name is required.'); return; }
@@ -61,14 +115,23 @@ export default function SubmitEventPage() {
     setLoading(true);
     setSubmitError('');
     try {
+      const body = session
+        ? { ...form, sessionToken: session.token, _hp: '' }
+        : { ...form, _hp: '' };
+
       const res = await fetch('/api/submit-event', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, _hp: '' }),
+        body: JSON.stringify(body),
       });
       const data = await res.json();
       if (data.error) { setSubmitError(data.error); return; }
-      if (data.needsVerification) setStep('verify');
+      if (data.activated) {
+        setActivatedData(data);
+        setStep('done');
+      } else if (data.needsVerification) {
+        setStep('verify');
+      }
     } catch {
       setSubmitError('Something went wrong. Please try again.');
     } finally {
@@ -88,6 +151,13 @@ export default function SubmitEventPage() {
       });
       const data = await res.json();
       if (data.error) { setVerifyError(data.error); setVerifyLoading(false); return; }
+
+      // Save session so subsequent events skip verification
+      if (data.sessionToken) {
+        const s = { token: data.sessionToken, phone: form.phone, organizerName: form.organizerName, email: form.email };
+        saveSession(s);
+        setSession(s);
+      }
 
       if (data.activated && data.needsStripe) {
         // Trigger Stripe Express onboarding
@@ -145,11 +215,19 @@ export default function SubmitEventPage() {
               {activatedData?.eventName || 'Your event'} is live!
             </h1>
             <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', lineHeight: 1.8, marginBottom: 28 }}>
-              Check your texts — we sent you a private edit link so you can update details anytime.
+              {session ? 'Published instantly — your verified session is still active.' : 'Check your texts — we sent you a private edit link so you can update details anytime.'}
             </p>
-            <a href="/happening" style={{ display: 'inline-block', padding: '14px 32px', background: '#7A8E72', color: '#fff', borderRadius: 28, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', textDecoration: 'none' }}>
-              See What's Happening →
-            </a>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
+              <button
+                onClick={resetForNextEvent}
+                style={{ padding: '14px 32px', background: '#D4845A', color: '#fff', border: 'none', borderRadius: 28, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', cursor: 'pointer' }}
+              >
+                Submit Another Event →
+              </button>
+              <a href="/happening" style={{ display: 'inline-block', padding: '14px 32px', background: 'rgba(255,255,255,0.08)', color: C.cream, borderRadius: 28, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', textDecoration: 'none' }}>
+                See What's Happening
+              </a>
+            </div>
           </div>
 
         ) : step === 'stripe_redirect' ? (
@@ -386,7 +464,7 @@ export default function SubmitEventPage() {
                       <input style={input} type="email" value={form.email} onChange={set('email')} placeholder="you@example.com" />
                     </div>
                     <div>
-                      <label style={label}>Phone * <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>— for verification</span></label>
+                      <label style={label}>Phone * <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>— for verification only, not shown publicly</span></label>
                       <input style={input} type="tel" value={form.phone} onChange={set('phone')} placeholder="(555) 000-0000" />
                     </div>
                   </div>
@@ -398,15 +476,28 @@ export default function SubmitEventPage() {
 
               {submitError && <div style={{ fontSize: 13, color: '#e07070', fontWeight: 500 }}>{submitError}</div>}
 
+              {session && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', background: 'rgba(122,142,114,0.12)', border: '1px solid rgba(122,142,114,0.3)', borderRadius: 8 }}>
+                  <span style={{ color: '#7A8E72', fontSize: 14 }}>✓</span>
+                  <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)' }}>
+                    Verified session active — events publish instantly, no code needed.
+                  </span>
+                </div>
+              )}
+
               <button
                 onClick={handleSubmit}
                 disabled={loading}
                 style={{ padding: '15px 24px', background: loading ? '#5C5248' : '#D4845A', color: '#fff', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', cursor: loading ? 'default' : 'pointer', fontFamily: "'Libre Franklin', sans-serif", transition: 'background 0.2s', marginTop: 4 }}
               >
-                {loading ? 'Sending verification code…' : 'Submit Event — Get Verified →'}
+                {loading
+                  ? (session ? 'Publishing…' : 'Sending verification code…')
+                  : (session ? 'Publish Event →' : 'Submit Event — Get Verified →')}
               </button>
               <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)', textAlign: 'center', lineHeight: 1.7, margin: '0' }}>
-                We'll text a code to verify it's you. Once verified, your event goes live instantly.
+                {session
+                  ? 'Your phone is already verified. Events go live immediately.'
+                  : "We'll text a code to verify it's you. Once verified, your event goes live instantly."}
               </p>
 
             </div>

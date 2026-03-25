@@ -4,6 +4,11 @@
 // On verify (verify-event.js): Status → Published, Edit Token set.
 // For platform_ticketing + vendor_market types: verify-event.js returns needsStripe=true
 // and the frontend then calls event-stripe-onboard.js to create the Express account.
+//
+// Session flow: if a valid sessionToken is provided (issued by verify-event.js),
+// the event is published immediately without SMS — lets reps log multiple events in one sitting.
+
+import crypto from 'crypto';
 
 function generateCode() {
   return String(Math.floor(100000 + Math.random() * 900000));
@@ -11,6 +16,18 @@ function generateCode() {
 
 function normalizePhone(raw) {
   return (raw || '').replace(/\D/g, '').slice(-10);
+}
+
+// Validates the HMAC session token issued by verify-event.js.
+// Token is bound to the phone number and the current 8-hour window.
+function validateSessionToken(normalizedPhone, token) {
+  if (!token || !normalizedPhone || normalizedPhone.length < 10) return false;
+  const window = Math.floor(Date.now() / (8 * 60 * 60 * 1000));
+  const expected = crypto
+    .createHmac('sha256', process.env.NOTION_TOKEN_EVENTS)
+    .update(`${normalizedPhone}:${window}`)
+    .digest('hex');
+  return token === expected;
 }
 
 function normalizeUrl(url) {
@@ -35,8 +52,12 @@ export default async function handler(req, res) {
     vendorCapacity,  // for vendor_market
     recurring,       // 'Annual' | 'Weekly' | 'None'
     recurringDay,    // 'Monday' … 'Sunday'
+    sessionToken,    // HMAC token from a prior verify — skip SMS if valid
     _hp,             // honeypot
   } = req.body || {};
+
+  const digits = normalizePhone(phone);
+  const hasValidSession = validateSessionToken(digits, sessionToken);
 
   // Honeypot — bots fill hidden fields, humans don't
   if (_hp) return res.status(200).json({ ok: true, needsVerification: true });
@@ -45,22 +66,25 @@ export default async function handler(req, res) {
   if (!email?.trim() || !email.includes('@')) return res.status(400).json({ error: 'A valid email is required.' });
   if (!date) return res.status(400).json({ error: 'Event date is required.' });
 
-  const digits = normalizePhone(phone);
   if (digits.length < 10) return res.status(400).json({ error: 'A valid phone number is required — we\'ll text you a verification code.' });
 
   const notionToken = process.env.NOTION_TOKEN_EVENTS;
   const dbId = process.env.NOTION_DB_EVENTS;
-  const code = generateCode();
+  const code = hasValidSession ? '' : generateCode();
+  const editToken = hasValidSession ? crypto.randomBytes(16).toString('hex') : '';
 
   // Build Notion properties based on event type
   const properties = {
     'Event Name':        { title: [{ text: { content: eventName.trim() } }] },
-    'Status':            { status: { name: 'Pending' } },
+    'Status':            { status: { name: hasValidSession ? 'Published' : 'Pending' } },
     'Verification Code': { rich_text: [{ text: { content: code } }] },
     'Source':            { select: { name: 'Self-Submitted' } },
     'Email':             { email: email.trim() },
     'Phone':             { phone_number: phone.trim() },
   };
+  if (hasValidSession && editToken) {
+    properties['Edit Token'] = { rich_text: [{ text: { content: editToken } }] };
+  }
 
   if (organizerName?.trim()) properties['Organizer Name'] = { rich_text: [{ text: { content: organizerName.trim() } }] };
   if (date) properties['Event date'] = { date: { start: date } };
@@ -124,6 +148,11 @@ export default async function handler(req, res) {
       const err = await notionRes.text();
       console.error('submit-event Notion error:', err);
       return res.status(500).json({ error: 'Something went wrong. Please try again.' });
+    }
+
+    // Session path — already published, no SMS needed
+    if (hasValidSession) {
+      return res.status(200).json({ ok: true, activated: true, eventName: eventName.trim(), editToken });
     }
 
     // Send SMS verification code

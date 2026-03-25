@@ -15,6 +15,16 @@ function generateToken() {
   return crypto.randomBytes(16).toString('hex');
 }
 
+// HMAC session token — valid for the current 8-hour window.
+// Lets a rep verify once and submit multiple events without re-verifying.
+function generateSessionToken(normalizedPhone) {
+  const window = Math.floor(Date.now() / (8 * 60 * 60 * 1000));
+  return crypto
+    .createHmac('sha256', process.env.NOTION_TOKEN_EVENTS)
+    .update(`${normalizedPhone}:${window}`)
+    .digest('hex');
+}
+
 async function sendSMS(toDigits, body) {
   const res = await fetch(
     `https://api.twilio.com/2010-04-01/Accounts/${process.env.TWILIO_ACCOUNT_SID}/Messages.json`,
@@ -141,6 +151,8 @@ export default async function handler(req, res) {
 
     const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
 
+    const sessionToken = generateSessionToken(inputDigits);
+
     // Types requiring Stripe Express onboarding — don't send welcome SMS yet,
     // that happens in event-stripe-return.js after onboarding completes.
     if (eventType === 'platform_ticketing' || eventType === 'vendor_market') {
@@ -153,6 +165,7 @@ export default async function handler(req, res) {
         eventType,
         email,
         editToken,
+        sessionToken,
       });
     }
 
@@ -168,6 +181,7 @@ export default async function handler(req, res) {
       eventName,
       eventType,
       editToken,
+      sessionToken,
     });
 
   } catch (err) {
