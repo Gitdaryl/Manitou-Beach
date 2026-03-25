@@ -275,9 +275,24 @@ export default function SubmitEventPage() {
 
               {/* Conditional: Own ticketing URL */}
               {form.eventType === 'own_ticketing' && (
-                <div>
-                  <label style={label}>Ticket Link *</label>
-                  <input style={input} type="text" value={form.eventUrl} onChange={set('eventUrl')} placeholder="e.g. eventbrite.com/your-event" />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  <div>
+                    <label style={label}>Ticket Link *</label>
+                    <input style={input} type="text" value={form.eventUrl} onChange={set('eventUrl')} placeholder="e.g. eventbrite.com/your-event" />
+                  </div>
+                  <div style={{ background: 'rgba(122,142,114,0.1)', border: '1px solid rgba(122,142,114,0.25)', borderRadius: 8, padding: '12px 14px' }}>
+                    <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, margin: '0 0 6px' }}>
+                      <strong style={{ color: 'rgba(255,255,255,0.75)' }}>Don't have a ticketing system yet?</strong> We can handle it — buyers pay right on this site, money goes straight to your bank, and you skip the Eventbrite fees.
+                    </p>
+                    <a
+                      href="/ticket-services"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ fontSize: 12, color: '#7A8E72', fontWeight: 700, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}
+                    >
+                      See how Manitou Beach ticketing works →
+                    </a>
+                  </div>
                 </div>
               )}
 

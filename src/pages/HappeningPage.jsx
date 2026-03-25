@@ -680,8 +680,8 @@ export function HappeningSubmitCTA({ simple = false }) {
                         </div>
                       </div>
 
-                      <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", lineHeight: 1.65, margin: "0 0 12px 0" }}>
-                        In-app RSVP form, organizer notifications, and email reminders the day before and day of.
+                      <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", lineHeight: 1.75, margin: "0 0 12px 0" }}>
+                        You'll know exactly who's coming — and they won't forget to show up. People register right on this page. You get notified every time someone signs up, so you can see momentum building in real time. The day before your event, everyone on the list gets an automatic reminder. Morning of, they get another one. You stop guessing whether you'll have 10 people or 60. They stop meaning to come and then forgetting. For $9, it's probably the highest-ROI thing you can do for a local event.
                       </p>
 
                       {/* Duration selector — stop propagation so clicks don't toggle the card */}
