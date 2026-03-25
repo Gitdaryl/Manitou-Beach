@@ -231,7 +231,7 @@ export const VILLAGE_BUSINESSES = [
     name: "South Shore Marine",
     category: "Boating & Water",
     description: "Marine sales, service, and repair on Devils Lake. Pontoon boats, outboards, and everything to keep your boat running all season long.",
-    address: "209 Devils Lake Hwy, Manitou Beach",
+    address: "290 Devils Lake Hwy, Manitou Beach",
     village: true,
     featured: false,
     logo: "/images/ss-marine-logo.png",
