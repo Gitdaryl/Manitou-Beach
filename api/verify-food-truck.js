@@ -111,14 +111,24 @@ export default async function handler(req, res) {
   try {
     // Find pending truck matching this phone
     const pendingTrucks = await queryPendingTrucks(notionToken, dbId);
-    const match = pendingTrucks.find(page => {
+    // Find all pending records for this phone, then match by code (handles duplicate submissions)
+    const phoneMatches = pendingTrucks.filter(page => {
       const stored = page.properties['Phone']?.phone_number || '';
       return normalizePhone(stored) === inputDigits;
     });
 
-    if (!match) {
+    if (phoneMatches.length === 0) {
       return res.status(404).json({ error: 'No pending signup found for this phone number.' });
     }
+
+    // For resend, use the most recent record
+    // For verify, find the record whose code matches
+    const match = resend
+      ? phoneMatches[phoneMatches.length - 1]
+      : phoneMatches.find(page => {
+          const c = page.properties['Verification Code']?.rich_text?.[0]?.text?.content || '';
+          return c === (code?.trim() || '');
+        }) || phoneMatches[phoneMatches.length - 1];
 
     const storedCode = match.properties['Verification Code']?.rich_text?.[0]?.text?.content || '';
     const truckName = match.properties['Name']?.title?.[0]?.text?.content || '';
