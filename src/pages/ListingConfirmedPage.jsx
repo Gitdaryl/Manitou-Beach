@@ -61,10 +61,17 @@ export default function ListingConfirmedPage() {
             ))}
           </div>
 
+          {/* Accuracy prompt */}
+          <div style={{ marginBottom: 20 }}>
+            <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: 'rgba(255,255,255,0.5)', margin: '0 0 16px' }}>
+              Does your listing look right? If anything needs fixing — name, phone, address — update it now.
+            </p>
+          </div>
+
           {/* CTAs */}
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
             <a
-              href="/local-guide"
+              href="/#businesses"
               style={{
                 fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700,
                 padding: '13px 24px', borderRadius: 8, background: C.sage, color: '#fff',
@@ -82,7 +89,7 @@ export default function ListingConfirmedPage() {
                 textDecoration: 'none', display: 'inline-block', background: 'transparent',
               }}
             >
-              Update my info
+              Fix something →
             </a>
           </div>
 
