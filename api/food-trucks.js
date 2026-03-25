@@ -61,7 +61,8 @@ async function handleGet(req, res) {
           name,
           tier: tierRaw.toLowerCase() === 'featured' ? 'featured' : 'basic',
           slug: p['Slug']?.rich_text?.[0]?.text?.content || '',
-          description: p['Description']?.rich_text?.[0]?.text?.content || '',
+          description: (p['Description']?.rich_text?.[0]?.text?.content || '')
+            .split('\n').filter(l => !l.startsWith('Contact Email:') && !l.startsWith('Image URL:')).join('\n').trim(),
           phone: p['Phone']?.phone_number || '',
           website: p['Website']?.url || '',
           photoUrl: p['Photo URL']?.url || '',
