@@ -5,13 +5,13 @@ import { Footer, GlobalStyles, Navbar } from '../components/Layout';
 
 const WINE_PARTNER_HOW = [
   { step: "01", title: "A customer visits your tasting room", copy: "They enjoy a pour, browse your space, connect with what you offer. That experience is already happening — we just give them a way to capture it." },
-  { step: "02", title: "You hand them a 5×7 passport card", copy: "One side has the trail map and QR code. The other is a 2×4 grid — one square per stop on the trail. They keep this card for the whole season." },
+  { step: "02", title: "You hand them a 4×6 passport card", copy: "One side has the trail map and QR code. The other is a 2×4 grid — one square per stop on the trail. They keep this card for the whole season." },
   { step: "03", title: "They scan, rate, and you stamp", copy: "They scan the QR, pick their wine from the dropdown (or add a new one), leave a star rating. You sign their card square — that's the stamp. They earn 10% off a bottle, right now, while they're there. Leave without buying? Offer expires." },
   { step: "04", title: "Ratings go live — and build all season", copy: "Every rating is a vote. Your scores update in real time on the Manitou Beach wine trail page, visible to every visitor planning their trip. Your fans become your marketing." },
 ];
 const WINE_PARTNER_GETS = [
   { icon: "📊", title: "Live Public Scorecard", copy: "Real-time community ratings across Wine Quality, Service, Atmosphere, and Value. Visitors research the trail before they drive — your scores are what they see first." },
-  { icon: "🃏", title: "Passport Cards — Delivered", copy: "100 printed 5×7 passport cards for your counter plus a display insert. Yeti Groove handles design, print, and delivery. Refills available when you run out." },
+  { icon: "🃏", title: "Passport Cards — Delivered", copy: "100 printed 4×6 passport cards for your counter plus a display insert. Yeti Groove handles design, print, and delivery. Refills available when you run out." },
   { icon: "🏆", title: "Framed Certificate Award", copy: "Top-rated venues in each category receive a custom framed certificate to hang on your wall — something to be proud of and post about. Scores go dark in the final 30 days, so nobody knows until the ceremony." },
   { icon: "👥", title: "Community Visibility", copy: "Your venue on the Manitou Beach wine trail — seen by the region's most engaged local audience: visitors planning trips, seasonal residents, and year-round locals." },
   { icon: "💰", title: "Built-In Bottle Sales", copy: "Every stamp earns the customer 10% off a bottle — but only if they buy before they leave. If they walk out, the offer expires. The card physically drives in-store purchases." },
@@ -254,7 +254,7 @@ export default function WinePartnerPage() {
               <img src="/images/passport-review-illustration.png" alt="" aria-hidden="true" style={{ width: "min(760px, 90vw)", opacity: 0.93 }} />
             </div>
           </FadeIn>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 24 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(420px, 1fr))", gap: 24 }}>
             {WINE_PARTNER_HOW.map((s, i) => (
               <FadeIn key={s.step} delay={i * 80}>
                 <div style={{ background: C.warmWhite, borderRadius: 16, padding: "32px 28px", border: `1px solid ${C.sand}`, position: "relative", overflow: "hidden", height: "100%", boxSizing: "border-box" }}>
@@ -278,7 +278,7 @@ export default function WinePartnerPage() {
             <SectionLabel style={{ textAlign: "center", display: "block" }}>What You Get</SectionLabel>
             <SectionTitle center>Everything that comes with being on the trail.</SectionTitle>
           </FadeIn>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 20, marginTop: 48 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 20, marginTop: 48 }}>
             {WINE_PARTNER_GETS.map((item, i) => (
               <FadeIn key={item.title} delay={i * 70}>
                 <div style={{ background: C.cream, borderRadius: 14, padding: "28px 24px", border: `1px solid ${C.sand}`, borderTop: `3px solid ${C.sunset}`, height: "100%", boxSizing: "border-box" }}>
@@ -319,7 +319,7 @@ export default function WinePartnerPage() {
               <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.2, textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 16 }}>How it works</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                 {[
-                  { icon: '🃏', text: 'A visitor gets a 5×7 passport card at your counter — grid on the back, one square per stop on the trail.' },
+                  { icon: '🃏', text: 'A visitor gets a 4×6 passport card at your counter — grid on the back, one square per stop on the trail.' },
                   { icon: '⭐', text: 'They scan the QR code, pick their wine from the dropdown (or add a new one), and leave a star rating. Takes 30 seconds.' },
                   { icon: '✍️', text: 'You sign their card square. That\'s the stamp. They earn 10% off a bottle right now, on the spot — expires if they leave.' },
                   { icon: '📊', text: 'Ratings go live immediately. Season Standings update in real time — every vote moves the board.' },
@@ -383,7 +383,7 @@ export default function WinePartnerPage() {
                   { icon: "📊", text: "Live community scorecard — Wine Quality, Service, Atmosphere, Value" },
                   { icon: "🎟️", text: "Stamp trail — guests collect a stamp at each stop and come back to finish the full trail" },
                   { icon: "⭐", text: "Verified public reviews, curated before publishing" },
-                  { icon: "🃏", text: "100 printed 5×7 passport cards + counter display insert" },
+                  { icon: "🃏", text: "100 printed 4×6 passport cards + counter display insert" },
                   { icon: "📬", text: "QR code setup, cards delivered to your door" },
                   { icon: "🏆", text: "Season-end framed certificate award — designed, printed, and delivered" },
                   { icon: "🌐", text: "Full venue listing on Manitou Beach year-round" },

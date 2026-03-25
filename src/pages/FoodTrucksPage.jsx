@@ -1083,9 +1083,13 @@ export default function FoodTrucksPage() {
                       style={{ background: C.warmWhite, borderRadius: 12, border: `1px solid ${C.sand}`, padding: "18px 20px" }}
                     >
                       <div style={{ display: "flex", gap: 14, alignItems: "flex-start", marginBottom: 10 }}>
-                        <div style={{ width: 44, height: 44, borderRadius: 10, background: live ? `${C.sage}20` : `${C.sand}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>
-                          🚚
-                        </div>
+                        {truck.photoUrl ? (
+                          <img src={truck.photoUrl} alt={truck.name} style={{ width: 44, height: 44, borderRadius: 10, objectFit: "cover", flexShrink: 0 }} />
+                        ) : (
+                          <div style={{ width: 44, height: 44, borderRadius: 10, background: live ? `${C.sage}20` : `${C.sand}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>
+                            🚚
+                          </div>
+                        )}
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
                             <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, color: C.text }}>{truck.name}</span>
