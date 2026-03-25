@@ -13,6 +13,7 @@ const EVENT_TYPES = [
 
 const RECURRING_OPTIONS = ['None', 'Annual', 'Weekly'];
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const RECURRING_LABELS = { None: 'None', Annual: 'Annual', Weekly: 'Weekly — pick a day below' };
 
 const SESSION_KEY = 'mb_event_session';
 const SESSION_HOURS = 8;
@@ -38,16 +39,18 @@ function saveSession({ token, phone, organizerName, email }) {
 }
 
 const EMPTY_FORM = {
-  eventName: '', date: '', timeStart: '', timeEnd: '',
+  eventName: '', date: '', dateEnd: '', timeStart: '', timeEnd: '',
   location: '', description: '', cost: '',
   organizerName: '', email: '', phone: '',
   eventUrl: '', imageUrl: '',
   ticketPrice: '', ticketCapacity: '',
   rsvpCapacity: '',
   vendorFee: '', vendorCapacity: '',
-  recurring: 'None', recurringDay: '',
+  recurring: 'None', recurringDay: '', recurringEndDate: '',
   eventType: 'free',
 };
+
+const GUIDE_KEY = 'mb_event_guide_dismissed';
 
 const input = {
   width: '100%', boxSizing: 'border-box', padding: '13px 16px',
@@ -64,6 +67,7 @@ const label = {
 export default function SubmitEventPage() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [session, setSession] = useState(null); // active verified session
+  const [guideOpen, setGuideOpen] = useState(false);
 
   const [step, setStep]               = useState('form'); // 'form' | 'verify' | 'stripe_redirect' | 'done'
   const [verifyCode, setVerifyCode]   = useState('');
@@ -74,7 +78,7 @@ export default function SubmitEventPage() {
   const [verifyError, setVerifyError] = useState('');
   const [activatedData, setActivatedData] = useState(null);
 
-  // On mount: restore active session and pre-fill organizer fields
+  // On mount: restore active session and pre-fill organizer fields; show guide if not dismissed
   useEffect(() => {
     const s = loadSession();
     if (s) {
@@ -86,7 +90,15 @@ export default function SubmitEventPage() {
         email: s.email || '',
       }));
     }
+    if (!localStorage.getItem(GUIDE_KEY)) {
+      setGuideOpen(true);
+    }
   }, []);
+
+  const dismissGuide = () => {
+    localStorage.setItem(GUIDE_KEY, '1');
+    setGuideOpen(false);
+  };
 
   const set = (k) => (e) => setForm(f => ({ ...f, [k]: e.target.value }));
   const needsStripe = form.eventType === 'platform_ticketing' || form.eventType === 'vendor_market';
@@ -294,6 +306,45 @@ export default function SubmitEventPage() {
               </p>
             </div>
 
+            {/* ── YETI GUIDE ── */}
+            {guideOpen && (
+              <div style={{ background: 'rgba(212,132,90,0.07)', border: '1px solid rgba(212,132,90,0.22)', borderRadius: 12, padding: '18px 20px', marginBottom: 28, position: 'relative' }}>
+                <button
+                  onClick={dismissGuide}
+                  style={{ position: 'absolute', top: 12, right: 14, background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', fontSize: 18, cursor: 'pointer', lineHeight: 1, padding: 0 }}
+                  aria-label="Dismiss guide"
+                >×</button>
+                <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: '#D4845A', margin: '0 0 10px' }}>Yeti Guide — Got more than one event?</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {[
+                    ['① Verify once.', 'Your first event asks for a quick text code — 30 seconds, done. After that your session stays active for 8 hours.'],
+                    ['② Everything after = one click.', 'Every event you submit in the same session publishes instantly. No more codes. Your name, email, and phone stay filled in automatically — just swap out the event details.'],
+                    ['③ Seasonal series? One entry covers it.', 'For a farmers market every Saturday May–October, or live music every Friday in August — pick Weekly or Monthly under Recurring, choose the day, and set a "Runs through" date. Done.'],
+                    ['④ Multi-day event?', 'Set a start date and an end date (e.g. a festival that runs Friday + Saturday). The calendar will show the full range.'],
+                  ].map(([title, body]) => (
+                    <div key={title} style={{ display: 'flex', gap: 10 }}>
+                      <div style={{ flexShrink: 0 }}>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: C.cream }}>{title}</span>{' '}
+                        <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', lineHeight: 1.6 }}>{body}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <button onClick={dismissGuide} style={{ marginTop: 14, background: 'none', border: '1px solid rgba(212,132,90,0.3)', borderRadius: 20, padding: '6px 16px', color: 'rgba(255,255,255,0.4)', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}>
+                  Got it — hide this
+                </button>
+              </div>
+            )}
+
+            {!guideOpen && (
+              <button
+                onClick={() => setGuideOpen(true)}
+                style={{ alignSelf: 'flex-start', background: 'none', border: 'none', color: 'rgba(212,132,90,0.5)', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0, marginBottom: 4 }}
+              >
+                ? Tips for listing multiple events
+              </button>
+            )}
+
             <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
 
               {/* Event Name */}
@@ -303,11 +354,17 @@ export default function SubmitEventPage() {
               </div>
 
               {/* Date + Times */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 <div>
-                  <label style={label}>Date *</label>
+                  <label style={label}>Start Date *</label>
                   <input style={input} type="date" value={form.date} onChange={set('date')} />
                 </div>
+                <div>
+                  <label style={label}>End Date <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>— multi-day events</span></label>
+                  <input style={input} type="date" value={form.dateEnd} onChange={set('dateEnd')} min={form.date || undefined} />
+                </div>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 <div>
                   <label style={label}>Start Time</label>
                   <input style={input} type="text" value={form.timeStart} onChange={set('timeStart')} placeholder="e.g. 10:00 AM" />
@@ -432,21 +489,34 @@ export default function SubmitEventPage() {
               </div>
 
               {/* Recurring */}
-              <div style={{ display: 'grid', gridTemplateColumns: form.recurring !== 'None' ? '1fr 1fr' : '1fr', gap: 10 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 <div>
                   <label style={label}>Recurring?</label>
                   <select value={form.recurring} onChange={set('recurring')} style={{ ...input, cursor: 'pointer' }}>
-                    {RECURRING_OPTIONS.map(o => <option key={o} value={o}>{o}</option>)}
+                    {RECURRING_OPTIONS.map(o => (
+                      <option key={o} value={o}>{RECURRING_LABELS[o] || o}</option>
+                    ))}
                   </select>
                 </div>
                 {form.recurring !== 'None' && (
-                  <div>
-                    <label style={label}>Day of Week</label>
-                    <select value={form.recurringDay} onChange={set('recurringDay')} style={{ ...input, cursor: 'pointer' }}>
-                      <option value="">— select —</option>
-                      {DAYS.map(d => <option key={d} value={d}>{d}</option>)}
-                    </select>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                    <div>
+                      <label style={label}>Day of Week</label>
+                      <select value={form.recurringDay} onChange={set('recurringDay')} style={{ ...input, cursor: 'pointer' }}>
+                        <option value="">— select —</option>
+                        {DAYS.map(d => <option key={d} value={d}>{d}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label style={label}>Runs through <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>— last date of series</span></label>
+                      <input style={input} type="date" value={form.recurringEndDate} onChange={set('recurringEndDate')} min={form.date || undefined} />
+                    </div>
                   </div>
+                )}
+                {form.recurring !== 'None' && (
+                  <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)', lineHeight: 1.6, margin: 0 }}>
+                    e.g. Farmers market every Saturday, May 22 – Oct 15 → Weekly · Saturday · Runs through Oct 15
+                  </p>
                 )}
               </div>
 

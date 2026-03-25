@@ -40,20 +40,21 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const {
-    eventName, date, timeStart, timeEnd, location, description, cost,
+    eventName, date, dateEnd, timeStart, timeEnd, location, description, cost,
     email, phone, organizerName,
-    eventType,       // 'free' | 'rsvp_appreciated' | 'rsvp_required' | 'own_ticketing' | 'platform_ticketing' | 'vendor_market'
-    eventUrl,        // for own_ticketing
+    eventType,          // 'free' | 'rsvp_appreciated' | 'rsvp_required' | 'own_ticketing' | 'platform_ticketing' | 'vendor_market'
+    eventUrl,           // for own_ticketing
     imageUrl,
-    ticketPrice,     // for platform_ticketing
-    ticketCapacity,  // for platform_ticketing
-    rsvpCapacity,    // for rsvp_required
-    vendorFee,       // for vendor_market
-    vendorCapacity,  // for vendor_market
-    recurring,       // 'Annual' | 'Weekly' | 'None'
-    recurringDay,    // 'Monday' … 'Sunday'
-    sessionToken,    // HMAC token from a prior verify — skip SMS if valid
-    _hp,             // honeypot
+    ticketPrice,        // for platform_ticketing
+    ticketCapacity,     // for platform_ticketing
+    rsvpCapacity,       // for rsvp_required
+    vendorFee,          // for vendor_market
+    vendorCapacity,     // for vendor_market
+    recurring,          // 'Annual' | 'Weekly' | 'Monthly' | 'None'
+    recurringDay,       // 'Monday' … 'Sunday'
+    recurringEndDate,   // last date in the recurring series (stored in description metadata)
+    sessionToken,       // HMAC token from a prior verify — skip SMS if valid
+    _hp,                // honeypot
   } = req.body || {};
 
   const digits = normalizePhone(phone);
@@ -87,11 +88,16 @@ export default async function handler(req, res) {
   }
 
   if (organizerName?.trim()) properties['Organizer Name'] = { rich_text: [{ text: { content: organizerName.trim() } }] };
-  if (date) properties['Event date'] = { date: { start: date } };
+  // Support multi-day events via Notion's native date range (start + end)
+  if (date) properties['Event date'] = { date: { start: date, ...(dateEnd?.trim() && { end: dateEnd.trim() }) } };
   if (timeStart?.trim()) properties['Time End'] = { rich_text: [{ text: { content: timeStart.trim() } }] }; // stored in Time End temporarily; Time field is system created_time
   if (timeEnd?.trim()) properties['Time End'] = { rich_text: [{ text: { content: [timeStart, timeEnd].filter(Boolean).join(' – ') } }] };
   if (location?.trim()) properties['Location'] = { rich_text: [{ text: { content: location.trim() } }] };
-  if (description?.trim()) properties['Description'] = { rich_text: [{ text: { content: description.trim() } }] };
+  // Append recurring end date as metadata to description (stripped before public display)
+  const descParts = [];
+  if (description?.trim()) descParts.push(description.trim());
+  if (recurringEndDate?.trim()) descParts.push(`Runs until: ${recurringEndDate.trim()}`);
+  if (descParts.length) properties['Description'] = { rich_text: [{ text: { content: descParts.join('\n') } }] };
   if (cost?.trim()) properties['Cost'] = { rich_text: [{ text: { content: cost.trim() } }] };
   if (imageUrl?.trim()) { try { properties['Image URL'] = { url: normalizeUrl(imageUrl) }; } catch (_) {} }
   if (recurring && recurring !== 'None') properties['Recurring'] = { select: { name: recurring } };
