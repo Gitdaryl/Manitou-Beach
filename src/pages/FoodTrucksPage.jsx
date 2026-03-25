@@ -290,7 +290,11 @@ export default function FoodTrucksPage() {
           lat, lng,
           note: checkinNote,
           todaysSpecial: checkinSpecial,
-          departureTime: checkinDeparture,
+          departureTime: (() => {
+            if (!checkinDeparture || checkinDeparture === 'after-dark') return checkinDeparture || '';
+            const d = new Date(); d.setHours(parseInt(checkinDeparture), 0, 0, 0);
+            return d.toISOString();
+          })(),
         }),
       })
         .then(r => r.json())
@@ -319,7 +323,12 @@ export default function FoodTrucksPage() {
   const now = Date.now();
   const isLive = (truck) => {
     if (!truck.lastCheckin) return false;
-    return (now - new Date(truck.lastCheckin).getTime()) < 12 * 60 * 60 * 1000;
+    if ((now - new Date(truck.lastCheckin).getTime()) > 12 * 60 * 60 * 1000) return false;
+    if (truck.departureTime) {
+      const dept = new Date(truck.departureTime);
+      if (!isNaN(dept.getTime())) return now < dept.getTime();
+    }
+    return true;
   };
   const timeAgo = (iso) => {
     const diff = Math.floor((now - new Date(iso).getTime()) / 60000);
@@ -548,7 +557,7 @@ export default function FoodTrucksPage() {
                   )}
                   {checkinDeparture && (
                     <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 8 }}>
-                      ⏱ Open until {checkinDeparture}
+                      ⏱ Open until {checkinDeparture === 'after-dark' ? 'after dark' : (() => { const d = new Date(); d.setHours(parseInt(checkinDeparture), 0, 0, 0); return isNaN(d.getTime()) ? checkinDeparture : d.toLocaleTimeString('en-US', { hour: 'numeric', hour12: true }); })()}
                     </div>
                   )}
                   {checkinTruck?.description && <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: 0 }}>{checkinTruck.description}</p>}
@@ -723,13 +732,18 @@ export default function FoodTrucksPage() {
               <label style={labelStyle}>
                 Leaving around… <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>(optional)</span>
               </label>
-              <input
-                type="text"
+              <select
                 value={checkinDeparture}
                 onChange={e => setCheckinDeparture(e.target.value)}
-                placeholder="e.g. 3pm, sunset, until sold out"
-                style={{ ...inputStyle, marginBottom: 8 }}
-              />
+                style={{ ...inputStyle, marginBottom: 8, appearance: 'none', backgroundImage: 'none' }}
+              >
+                <option value="">— not sure</option>
+                {['10','11','12','13','14','15','16','17','18','19','20','21','22'].map(h => {
+                  const d = new Date(); d.setHours(parseInt(h), 0, 0, 0);
+                  return <option key={h} value={h}>{d.toLocaleTimeString('en-US', { hour: 'numeric', hour12: true })}</option>;
+                })}
+                <option value="after-dark">After dark</option>
+              </select>
 
               {checkinStatus === "error" && (
                 <div style={{ marginBottom: 12, fontSize: 13, color: "#c05a5a", fontWeight: 500 }}>{checkinMsg}</div>
