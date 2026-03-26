@@ -189,11 +189,15 @@ export default async function handler(req, res) {
         const p = page.properties;
         const dateStr = p['Event date']?.date?.start;
         const recurringVal = p['Recurring']?.select?.name || null;
+        const desc = p['Description']?.rich_text?.[0]?.text?.content || '';
+        // Fall back to parsing "Runs until: YYYY-MM-DD" from description if Notion date has no end
+        const notionDateEnd = p['Event date']?.date?.end || null;
+        const parsedEnd = !notionDateEnd && desc.match(/Runs until:?\s*(\d{4}-\d{2}-\d{2})/i)?.[1] || null;
         return {
           id: page.id,
           name: p['Event Name']?.title?.[0]?.text?.content || '',
           date: dateStr || '',
-          dateEnd: p['Event date']?.date?.end || null,
+          dateEnd: notionDateEnd || parsedEnd,
           category: p['Category']?.rich_text?.[0]?.text?.content || 'Community',
           description: p['Description']?.rich_text?.[0]?.text?.content || '',
           time: p['Time']?.rich_text?.[0]?.text?.content || '',
