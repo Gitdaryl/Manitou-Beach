@@ -775,8 +775,7 @@ export default function SubmitEventPage() {
                 <div>
                   <div style={{ fontSize: 14, fontWeight: 700, color: C.cream, marginBottom: 4 }}>Know your numbers</div>
                   <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.7 }}>
-                    See how many tickets sold, who showed up, and what you earned — all in one place.
-                    <span style={{ display: 'inline-block', marginLeft: 6, fontSize: 11, color: 'rgba(212,132,90,0.6)', fontWeight: 600 }}>Coming soon</span>
+                    See how many tickets sold, who showed up, and what you earned — all in one place. We'll text you the link when your event goes live.
                   </div>
                 </div>
               </div>

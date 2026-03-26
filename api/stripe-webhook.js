@@ -4,6 +4,7 @@ import { put } from '@vercel/blob';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import QRCode from 'qrcode';
 import bwipjs from 'bwip-js';
+import { sendSMS, normalizePhone } from './lib/twilio.js';
 
 export const config = {
   api: {
@@ -317,7 +318,8 @@ async function incrementSoldCount(eventId, additionalQty) {
   });
   if (!getRes.ok) return;
   const page = await getRes.json();
-  const currentSold = page.properties['Tickets Sold']?.number || 0;
+  const p = page.properties;
+  const currentSold = p['Tickets Sold']?.number || 0;
 
   await fetch(`https://api.notion.com/v1/pages/${eventId}`, {
     method: 'PATCH',
@@ -332,6 +334,25 @@ async function incrementSoldCount(eventId, additionalQty) {
       },
     }),
   });
+
+  // First sale — send organizer a notification with their sales page link
+  if (currentSold === 0) {
+    try {
+      const phone = p['Phone']?.phone_number || '';
+      const editToken = p['Edit Token']?.rich_text?.[0]?.plain_text || '';
+      const eventName = p['Event Name']?.title?.[0]?.plain_text || 'Your event';
+      if (phone && editToken) {
+        const digits = normalizePhone(phone);
+        const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
+        const dashboardUrl = `${siteUrl}/organizer-dashboard?token=${editToken}&event=${eventId}`;
+        await sendSMS(digits,
+          `Manitou Beach Events\n\nYour first ticket for ${eventName} just sold! 🎉\n\nSee who bought, who showed up, and what you earned:\n${dashboardUrl}`
+        );
+      }
+    } catch (err) {
+      console.error('First-sale SMS error:', err.message);
+    }
+  }
 }
 
 // Log a promo or wine partner purchase to Website Inquiries DB

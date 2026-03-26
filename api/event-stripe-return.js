@@ -84,12 +84,14 @@ export default async function handler(req, res) {
       const toPhone = `+1${digits}`;
       const editUrl = `${baseUrl}/events/edit?token=${editToken}`;
 
+      const dashboardUrl = `${baseUrl}/organizer-dashboard?token=${editToken}&event=${eventPageId}`;
+
       let smsBody;
       if (eventType === 'vendor_market') {
         const portalUrl = `${baseUrl}/vendor-portal?token=${vendorPortalToken}&event=${eventPageId}`;
-        smsBody = `Manitou Beach Events\n\n${eventName} is live with vendor registration! 🎉\n\nYour organizer portal (share this with vendors):\n${portalUrl}\n\nEdit your event:\n${editUrl}`;
+        smsBody = `Manitou Beach Events\n\n${eventName} is live with vendor registration! 🎉\n\nYour organizer portal (share this with vendors):\n${portalUrl}\n\nSee your ticket sales + check-ins:\n${dashboardUrl}\n\nEdit your event:\n${editUrl}`;
       } else {
-        smsBody = `Manitou Beach Events\n\n${eventName} is live with ticketing! 🎉\n\nEdit your event:\n${editUrl}`;
+        smsBody = `Manitou Beach Events\n\n${eventName} is live with ticketing! 🎉\n\nSee your ticket sales + check-ins:\n${dashboardUrl}\n\nEdit your event:\n${editUrl}`;
       }
 
       await sendSMSFull(toPhone, smsBody);
