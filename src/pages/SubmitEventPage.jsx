@@ -11,9 +11,9 @@ const EVENT_TYPES = [
   { value: 'vendor_market',     label: 'Vendor market — vendors pay for booths', sub: 'Vendors register and pay via Stripe directly to your account. You get an organizer portal.' },
 ];
 
-const RECURRING_OPTIONS = ['None', 'Annual', 'Weekly'];
+const RECURRING_OPTIONS = ['None', 'Annual', 'Monthly', 'Weekly'];
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-const RECURRING_LABELS = { None: 'None', Annual: 'Annual', Weekly: 'Weekly — pick a day below' };
+const RECURRING_LABELS = { None: 'None', Annual: 'Annual', Monthly: 'Monthly — pick a day below', Weekly: 'Weekly — pick a day below' };
 
 const SESSION_KEY = 'mb_event_session';
 const SESSION_HOURS = 8;
