@@ -81,6 +81,7 @@ export default function SubmitEventPage() {
   const [imagePreview, setImagePreview] = useState('');
   const [imageUploading, setImageUploading] = useState(false);
   const [imageDragOver, setImageDragOver] = useState(false);
+  const [ticketInfoOpen, setTicketInfoOpen] = useState(false);
 
   const handleImageFile = async (file) => {
     if (!file || !file.type.startsWith('image/')) return;
@@ -510,14 +511,12 @@ export default function SubmitEventPage() {
                     <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', lineHeight: 1.6, margin: '0 0 8px' }}>
                       Stripe charges their standard processing fee (~2.9% + 30¢) on top — that's the same fee they charge everyone, including Eventbrite.
                     </p>
-                    <a
-                      href="/ticket-services"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ fontSize: 12, color: '#7A8E72', fontWeight: 700, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}
+                    <button
+                      onClick={() => setTicketInfoOpen(true)}
+                      style={{ fontSize: 12, color: '#7A8E72', fontWeight: 700, background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", textAlign: 'left' }}
                     >
-                      Learn more about Manitou Beach ticketing →
-                    </a>
+                      See how it works for you and your attendees →
+                    </button>
                   </div>
                 </div>
               )}
@@ -693,6 +692,145 @@ export default function SubmitEventPage() {
       </main>
 
       <Footer scrollTo={() => {}} />
+
+      {/* ── TICKETING INFO LIGHTBOX ── */}
+      {ticketInfoOpen && (
+        <div
+          onClick={() => setTicketInfoOpen(false)}
+          style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{ background: '#1a1f2a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 16, maxWidth: 520, width: '100%', maxHeight: '85vh', overflowY: 'auto', padding: '32px 28px', position: 'relative' }}
+          >
+            {/* Close button */}
+            <button
+              onClick={() => setTicketInfoOpen(false)}
+              style={{ position: 'absolute', top: 14, right: 16, background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', fontSize: 22, cursor: 'pointer', lineHeight: 1, padding: 0 }}
+              aria-label="Close"
+            >×</button>
+
+            <h3 style={{ fontSize: 18, fontWeight: 700, color: C.cream, margin: '0 0 6px', fontFamily: "'Libre Franklin', sans-serif" }}>
+              Here's what happens when you sell tickets through us
+            </h3>
+            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', margin: '0 0 28px', lineHeight: 1.6 }}>
+              You focus on your event — we handle the rest.
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+
+              {/* 1. Tickets */}
+              <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+                <div style={{ flexShrink: 0, width: 52, height: 52, borderRadius: 12, background: 'rgba(122,142,114,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#7A8E72" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/>
+                    <path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/>
+                  </svg>
+                </div>
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: C.cream, marginBottom: 4 }}>Tickets that work for everyone</div>
+                  <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.7 }}>
+                    Your attendees buy right on this site — no account needed. They can save the ticket to their phone or print it at home. Works either way.
+                  </div>
+                </div>
+              </div>
+
+              {/* 2. Reminders */}
+              <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+                <div style={{ flexShrink: 0, width: 52, height: 52, borderRadius: 12, background: 'rgba(212,132,90,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#D4845A" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>
+                    <path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/>
+                  </svg>
+                </div>
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: C.cream, marginBottom: 4 }}>Better turnout, automatically</div>
+                  <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.7 }}>
+                    We text your attendees the day before — <em style={{ color: 'rgba(255,255,255,0.65)' }}>"Looking forward to seeing you tomorrow!"</em> — and again the morning of. No-shows drop, you don't lift a finger.
+                  </div>
+                </div>
+              </div>
+
+              {/* 3. QR Check-in */}
+              <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+                <div style={{ flexShrink: 0, width: 52, height: 52, borderRadius: 12, background: 'rgba(122,142,114,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#7A8E72" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+                    <rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3z"/><path d="M21 14v7h-7"/>
+                  </svg>
+                </div>
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: C.cream, marginBottom: 4 }}>Smooth check-in at the door</div>
+                  <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.7 }}>
+                    Every ticket has a QR code. Any staff member or volunteer opens their phone camera, scans it — valid or not, instant answer. No special app, no equipment.
+                  </div>
+                </div>
+              </div>
+
+              {/* 4. Dashboard */}
+              <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+                <div style={{ flexShrink: 0, width: 52, height: 52, borderRadius: 12, background: 'rgba(212,132,90,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#D4845A" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 4-6"/>
+                  </svg>
+                </div>
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: C.cream, marginBottom: 4 }}>Know your numbers</div>
+                  <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.7 }}>
+                    See how many tickets sold, who showed up, and what you earned — all in one place.
+                    <span style={{ display: 'inline-block', marginLeft: 6, fontSize: 11, color: 'rgba(212,132,90,0.6)', fontWeight: 600 }}>Coming soon</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 5. Announcements */}
+              <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+                <div style={{ flexShrink: 0, width: 52, height: 52, borderRadius: 12, background: 'rgba(122,142,114,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#7A8E72" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="m3 11 18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/>
+                  </svg>
+                </div>
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: C.cream, marginBottom: 4 }}>Plans change? We've got it</div>
+                  <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.7 }}>
+                    If your event gets postponed, moved, or cancelled — we notify every ticket holder by text so they know right away. No frantic phone calls.
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Fee summary */}
+            <div style={{ marginTop: 28, padding: '16px 18px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 10 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: C.cream, marginBottom: 8 }}>What it costs</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: 'rgba(255,255,255,0.5)' }}>
+                  <span>Setup fee</span><span style={{ fontWeight: 600, color: '#7A8E72' }}>None</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: 'rgba(255,255,255,0.5)' }}>
+                  <span>Monthly fee</span><span style={{ fontWeight: 600, color: '#7A8E72' }}>None</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: 'rgba(255,255,255,0.5)' }}>
+                  <span>Platform fee</span><span style={{ fontWeight: 600, color: C.cream }}>1.25% per ticket</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: 'rgba(255,255,255,0.5)' }}>
+                  <span>Card processing</span><span style={{ fontWeight: 600, color: C.cream }}>~2.9% + 30¢</span>
+                </div>
+              </div>
+              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', margin: '10px 0 0', lineHeight: 1.5 }}>
+                Card processing is Stripe's standard rate — the same fee every platform pays, including Eventbrite. The difference is we don't pile our own fees on top of it.
+              </p>
+            </div>
+
+            <button
+              onClick={() => setTicketInfoOpen(false)}
+              style={{ marginTop: 20, width: '100%', padding: '12px 20px', background: 'rgba(122,142,114,0.2)', border: '1px solid rgba(122,142,114,0.35)', borderRadius: 10, color: C.cream, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}
+            >
+              Got it — back to my event
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
