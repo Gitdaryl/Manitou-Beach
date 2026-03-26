@@ -53,6 +53,7 @@ export default async function handler(req, res) {
       const properties = {
         'Event Name': { title: [{ text: { content: name } }] },
         'Category': { rich_text: [{ text: { content: category || '' } }] },
+        'Status': { status: { name: 'Published' } },
         'Email': { email: email },
         'Phone': { phone_number: phone || null },
         'Description': { rich_text: [{ text: { content: description || '' } }] },
@@ -120,12 +121,12 @@ export default async function handler(req, res) {
           await resend.emails.send({
             from: 'Manitou Beach <events@yetigroove.com>',
             to: email,
-            subject: `Your event "${name}" has been submitted`,
+            subject: `"${name}" is live on Manitou Beach!`,
             html: `
               <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#FAF6EF;">
-                <h1 style="color:#1A2830;font-size:22px;margin:0 0 8px;">Event submitted!</h1>
+                <h1 style="color:#1A2830;font-size:22px;margin:0 0 8px;">You're on the calendar!</h1>
                 <p style="color:#5C5248;font-size:15px;margin:0 0 24px;line-height:1.7;">
-                  <strong>${name}</strong> has been received and will be reviewed within 48 hours.
+                  <strong>${name}</strong> is live on the What's Happening page right now. The whole lake can see it.
                   ${dateDisplay ? `<br/>${dateDisplay}` : ''}
                   ${timeDisplay ? `<br/>${timeDisplay}` : ''}
                   ${location ? `<br/>${location}` : ''}

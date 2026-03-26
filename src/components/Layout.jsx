@@ -1383,10 +1383,10 @@ export function SubmitSection() {
               )}
 
               <p style={{ fontSize: 11, color: C.textMuted, textAlign: "center", margin: 0, lineHeight: 1.6 }}>
-                Free forever. Reviewed within 48 hours. No fees unless you choose to upgrade.
+                Free forever. No fees unless you choose to upgrade.
               </p>
               <p style={{ fontSize: 12, color: C.textMuted, textAlign: "center", margin: 0 }}>
-                Have an event? <a href="/promote" style={{ color: C.sage, textDecoration: "none", fontWeight: 600 }}>List it on the promote page →</a>
+                Have an event? <a href="/submit-event" style={{ color: C.sage, textDecoration: "none", fontWeight: 600 }}>List it free →</a>
               </p>
               </>
               )}

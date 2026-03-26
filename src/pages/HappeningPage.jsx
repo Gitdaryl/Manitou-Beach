@@ -504,111 +504,22 @@ function VideoSection() {
 }
 
 // ============================================================
-// 📅  /happening — INLINE SUBMIT FORM
+// 📅  SUBMIT EVENT CTA — redirects to /submit-event
 // ============================================================
-const EVENT_CATEGORIES = ["Live Music", "Food & Social", "Sports & Outdoors", "Community", "Arts & Culture", "Markets & Vendors", "Other"];
 
 export function HappeningSubmitCTA({ simple = false }) {
-  const [submitted, setSubmitted] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState("");
-  const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
-  const [rsvpSelected, setRsvpSelected] = useState(false);
-  const [rsvpMonths, setRsvpMonths] = useState(1);
-  const [form, setForm] = useState({ name: "", category: "", date: "", time: "", timeEnd: "", location: "", description: "", eventUrl: "", email: "", phone: "", cost: "", attendance: "", rsvpCapacity: "", _hp: "" });
-
-  const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
-
-  const handleImage = async (file) => {
-    if (!file) return;
-    setImageFile(file);
-    const reader = new FileReader();
-    reader.onload = ev => setImagePreview(ev.target.result);
-    reader.readAsDataURL(file);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!form.name || !form.email) { setSubmitError("Event name and email are required."); return; }
-    setSubmitting(true); setSubmitError("");
-    try {
-      let imageUrl = null;
-      if (imageFile) {
-        const { base64, filename } = await compressImage(imageFile);
-        const up = await fetch("/api/upload-image", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ data: base64, filename, contentType: "image/jpeg" }) });
-        const upData = await up.json();
-        if (up.ok) imageUrl = upData.url;
-      }
-      const res = await fetch("/api/events", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, imageUrl }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Submission failed");
-
-      // If RSVP add-on selected, redirect to Stripe after listing is saved
-      if (rsvpSelected) {
-        const promoRes = await fetch("/api/create-promo-checkout", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ tier: "rsvp_collection", eventName: form.name, email: form.email, months: rsvpMonths, returnPath: "happening" }),
-        });
-        const promoData = await promoRes.json();
-        if (promoData.url) { window.location.href = promoData.url; return; }
-      }
-
-      setSubmitted(true);
-    } catch (err) {
-      setSubmitError(err.message || "Something went wrong. Please try again.");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const inputStyle = { width: "100%", padding: "11px 14px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.12)", fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", background: "rgba(255,255,255,0.06)", color: C.cream, outline: "none", boxSizing: "border-box" };
-  const labelStyle = { display: "block", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" };
-
   if (simple) {
     return (
       <section style={{ background: C.night, padding: "72px 24px", textAlign: "center" }}>
         <FadeIn>
           <SectionLabel light>Get Involved</SectionLabel>
           <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 38px)", fontWeight: 400, color: C.cream, margin: "0 0 12px 0" }}>
-            Have an event to share?
+            Got something good happening?
           </h3>
           <p style={{ fontSize: 15, color: "rgba(255,255,255,0.4)", margin: "0 0 32px 0", lineHeight: 1.75 }}>
-            Free community calendar listings — reviewed and live within 48 hours.
+            Verify your number and your event goes live instantly — no waiting, no approval queue.
           </p>
-          <Btn href="/promote" variant="sunset">Submit Free Listing</Btn>
-        </FadeIn>
-      </section>
-    );
-  }
-
-  if (submitted) {
-    return (
-      <section style={{ background: C.night, padding: "80px 24px", textAlign: "center" }}>
-        <FadeIn>
-          <div style={{ maxWidth: 520, margin: "0 auto" }}>
-            <div style={{ fontSize: 48, marginBottom: 16 }}>✓</div>
-            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 3vw, 32px)", fontWeight: 400, color: C.cream, margin: "0 0 12px 0" }}>Event submitted!</h3>
-            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.75, margin: "0 0 16px 0" }}>
-              We'll review and get it listed within 48 hours.
-            </p>
-            <p style={{ fontSize: 14, color: "rgba(255,255,255,0.35)", lineHeight: 1.7, margin: "0 0 36px 0", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 8, padding: "12px 16px" }}>
-              Check your email for a confirmation and your private edit link.<br/>
-              <span style={{ color: "rgba(255,200,100,0.6)" }}>Don't see it? Check your spam or junk folder.</span>
-            </p>
-            <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "28px 32px", marginBottom: 24 }}>
-              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 10 }}>Promote Your Event</div>
-              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.7, margin: "0 0 20px 0" }}>
-                Want more people to show up? We can put your event front and center — on the homepage, in the newsletter, and across the site.<br/>Founding rates available now — limited spots.
-              </p>
-              <Btn href="/promote" variant="sunset">See Promotion Packages →</Btn>
-            </div>
-          </div>
+          <Btn href="/submit-event" variant="sunset">List Your Event Free →</Btn>
         </FadeIn>
       </section>
     );
@@ -616,181 +527,33 @@ export function HappeningSubmitCTA({ simple = false }) {
 
   return (
     <section id="submit-event" style={{ background: C.night, padding: "80px 24px" }}>
-      <div style={{ maxWidth: 680, margin: "0 auto" }}>
+      <div style={{ maxWidth: 680, margin: "0 auto", textAlign: "center" }}>
         <FadeIn>
           <SectionLabel light>Get Involved</SectionLabel>
-          <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 40px)", fontWeight: 400, color: C.cream, margin: "0 0 8px 0" }}>
-            Have an event to share?
+          <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 40px)", fontWeight: 400, color: C.cream, margin: "0 0 16px 0" }}>
+            Got something good happening?
           </h3>
-          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.4)", margin: "0 0 40px 0", lineHeight: 1.75 }}>
-            Free community calendar listings — reviewed and live within 48 hours.
+          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", margin: "0 0 44px 0", lineHeight: 1.8 }}>
+            Tell the whole lake about it. Free listings, no waiting room —<br />verify your number and it's live.
+          </p>
+          <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap", marginBottom: 44 }}>
+            {[
+              { icon: "📱", label: "Verify your number", sub: "Quick text code — 30 seconds" },
+              { icon: "✓", label: "Event goes live", sub: "Right on the calendar, right now" },
+              { icon: "✏️", label: "Edit anytime", sub: "We send you a private edit link" },
+            ].map(({ icon, label, sub }) => (
+              <div key={label} style={{ flex: "1 1 160px", maxWidth: 200, padding: "20px 16px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12 }}>
+                <div style={{ fontSize: 26, marginBottom: 8 }}>{icon}</div>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, color: C.cream, marginBottom: 4 }}>{label}</div>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.4)", lineHeight: 1.5 }}>{sub}</div>
+              </div>
+            ))}
+          </div>
+          <Btn href="/submit-event" variant="sunset">List Your Event Free →</Btn>
+          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.25)", marginTop: 18, lineHeight: 1.6 }}>
+            Free forever. Events go live the moment you verify.
           </p>
         </FadeIn>
-
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-            <div style={{ gridColumn: "1 / -1" }}>
-              <label style={labelStyle}>Event Name *</label>
-              <input value={form.name} onChange={e => set("name", e.target.value)} placeholder="e.g. Summer Bonfire at the Point" style={inputStyle} required />
-            </div>
-            <div>
-              <label style={labelStyle}>Category</label>
-              <select value={form.category} onChange={e => set("category", e.target.value)} style={{ ...inputStyle, appearance: "none" }}>
-                <option value="">Select a category</option>
-                {EVENT_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-              </select>
-            </div>
-            <div>
-              <label style={labelStyle}>Date</label>
-              <input type="date" value={form.date} onChange={e => set("date", e.target.value)} style={inputStyle} />
-            </div>
-            <div>
-              <label style={labelStyle}>Start Time</label>
-              <input value={form.time} onChange={e => set("time", e.target.value)} placeholder="e.g. 7:00 PM" style={inputStyle} />
-            </div>
-            <div>
-              <label style={labelStyle}>End Time <span style={{ opacity: 0.5, fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>(optional)</span></label>
-              <input value={form.timeEnd} onChange={e => set("timeEnd", e.target.value)} placeholder="e.g. 10:00 PM" style={inputStyle} />
-            </div>
-            <div>
-              <label style={labelStyle}>Location</label>
-              <input value={form.location} onChange={e => set("location", e.target.value)} placeholder="e.g. Devils Lake Pavilion" style={inputStyle} />
-            </div>
-            <div>
-              <label style={labelStyle}>Cost / Admission</label>
-              <input value={form.cost} onChange={e => set("cost", e.target.value)} placeholder="e.g. Free · $10 at the door" style={inputStyle} />
-            </div>
-            <div style={{ gridColumn: "1 / -1" }}>
-              <label style={labelStyle}>Attendance / RSVP</label>
-              <select value={form.attendance} onChange={e => set("attendance", e.target.value)} style={{ ...inputStyle, appearance: "none" }}>
-                <option value="">— Select attendance type (optional)</option>
-                <option value="just_show_up">Just Show Up — open to all, no registration needed</option>
-                <option value="rsvp_appreciated">RSVP Appreciated — please let us know, but not required</option>
-                <option value="rsvp_required">RSVP Required — must register to attend</option>
-                <option value="limited_spots">Limited Spots — finite capacity, act quickly</option>
-                <option value="registration_required">Registration Required — formal signup needed</option>
-              </select>
-            </div>
-            {['rsvp_appreciated','rsvp_required','limited_spots','registration_required'].includes(form.attendance) && (
-              <>
-                {/* Max attendees input */}
-                <div style={{ gridColumn: "1 / -1" }}>
-                  <label style={labelStyle}>Max Attendees <span style={{ opacity: 0.5, fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>(optional — leave blank for unlimited)</span></label>
-                  <input type="number" min="1" value={form.rsvpCapacity} onChange={e => set("rsvpCapacity", e.target.value)} placeholder="e.g. 20" style={{ ...inputStyle, width: "120px" }} />
-                </div>
-
-                {/* RSVP Collection upsell card — click to select/deselect */}
-                <div
-                  onClick={() => setRsvpSelected(s => !s)}
-                  style={{ gridColumn: "1 / -1", border: `1px solid ${rsvpSelected ? "rgba(212,132,90,0.85)" : "rgba(212,132,90,0.4)"}`, borderRadius: 10, padding: "20px 22px", background: rsvpSelected ? "rgba(212,132,90,0.13)" : "rgba(212,132,90,0.07)", cursor: "pointer", transition: "all 0.2s" }}
-                >
-                  <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
-                    {/* Checkbox */}
-                    <div style={{ width: 18, height: 18, flexShrink: 0, marginTop: 2, borderRadius: 4, border: `2px solid ${rsvpSelected ? C.sunset : "rgba(255,255,255,0.25)"}`, background: rsvpSelected ? C.sunset : "transparent", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s" }}>
-                      {rsvpSelected && <span style={{ color: "#fff", fontSize: 11, lineHeight: 1, fontWeight: 700 }}>✓</span>}
-                    </div>
-
-                    <div style={{ flex: 1 }}>
-                      {/* Header row */}
-                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 6, flexWrap: "wrap" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunsetLight }}>
-                            RSVP Collection — Add-On
-                          </div>
-                          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sunset, background: "rgba(212,132,90,0.15)", border: "1px solid rgba(212,132,90,0.3)", borderRadius: 4, padding: "1px 6px", fontFamily: "'Libre Franklin', sans-serif" }}>
-                            Limited Time
-                          </div>
-                        </div>
-                        <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
-                          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 22, fontWeight: 700, color: C.cream, lineHeight: 1 }}>${rsvpMonths * 9}</span>
-                          <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif" }}>
-                            {rsvpMonths > 1 ? `(${rsvpMonths} × $9/mo)` : "/ month"}
-                          </span>
-                        </div>
-                      </div>
-
-                      <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", lineHeight: 1.75, margin: "0 0 12px 0" }}>
-                        You'll know exactly who's coming — and they won't forget to show up. People register right on this page. You get notified every time someone signs up, so you can see momentum building in real time. The day before your event, everyone on the list gets an automatic reminder. Morning of, they get another one. You stop guessing whether you'll have 10 people or 60. They stop meaning to come and then forgetting. For $9, it's probably the highest-ROI thing you can do for a local event.
-                      </p>
-
-                      {/* Duration selector — stop propagation so clicks don't toggle the card */}
-                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", fontFamily: "'Libre Franklin', sans-serif", marginRight: 2 }}>Duration:</span>
-                        {[1, 2, 3, 6].map(m => (
-                          <button key={m} type="button"
-                            onClick={e => { e.stopPropagation(); setRsvpMonths(m); if (!rsvpSelected) setRsvpSelected(true); }}
-                            style={{ padding: "4px 10px", borderRadius: 4, fontSize: 11, fontWeight: 700,
-                              border: `1px solid ${rsvpMonths === m ? C.sunset : "rgba(255,255,255,0.15)"}`,
-                              background: rsvpMonths === m ? "rgba(212,132,90,0.2)" : "transparent",
-                              color: rsvpMonths === m ? C.sunsetLight : "rgba(255,255,255,0.35)",
-                              cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", transition: "all 0.15s" }}>
-                            {m === 1 ? "1 mo" : `${m} mo`}
-                          </button>
-                        ))}
-                      </div>
-
-                      {rsvpSelected && (
-                        <div style={{ marginTop: 10, fontSize: 11, color: "rgba(255,255,255,0.35)", fontStyle: "italic", fontFamily: "'Libre Franklin', sans-serif" }}>
-                          You'll be redirected to checkout after your listing is submitted.
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
-            <div style={{ gridColumn: "1 / -1" }}>
-              <label style={labelStyle}>Description</label>
-              <textarea value={form.description} onChange={e => set("description", e.target.value)} placeholder="Tell us about your event..." rows={3} style={{ ...inputStyle, resize: "vertical" }} />
-            </div>
-            <div style={{ gridColumn: "1 / -1" }}>
-              <label style={labelStyle}>Ticket / Event URL</label>
-              <input value={form.eventUrl} onChange={e => set("eventUrl", e.target.value)} placeholder="https://" style={inputStyle} />
-            </div>
-            <div>
-              <label style={labelStyle}>Your Email *</label>
-              <input type="email" value={form.email} onChange={e => set("email", e.target.value)} placeholder="you@email.com" style={inputStyle} required />
-            </div>
-            <div>
-              <label style={labelStyle}>Phone (optional)</label>
-              <input value={form.phone} onChange={e => set("phone", e.target.value)} placeholder="555-555-5555" style={inputStyle} />
-            </div>
-            {/* Image upload */}
-            <div style={{ gridColumn: "1 / -1" }}>
-              <label style={labelStyle}>Event Image (optional)</label>
-              <div
-                onClick={() => document.getElementById("happening-img-upload").click()}
-                onDragOver={e => e.preventDefault()}
-                onDrop={e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f && f.type.startsWith("image/")) handleImage(f); }}
-                style={{ border: "1.5px dashed rgba(255,255,255,0.15)", borderRadius: 10, padding: "20px", textAlign: "center", cursor: "pointer", transition: "border-color 0.2s" }}
-                onMouseEnter={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)"}
-                onMouseLeave={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.15)"}
-              >
-                {imagePreview ? (
-                  <img src={imagePreview} alt="preview" style={{ maxHeight: 120, borderRadius: 6, objectFit: "cover" }} />
-                ) : (
-                  <span style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif" }}>Click or drag an image here</span>
-                )}
-                <input id="happening-img-upload" type="file" accept="image/*" style={{ display: "none" }} onChange={e => handleImage(e.target.files[0])} />
-              </div>
-            </div>
-          </div>
-
-          {/* Honeypot — hidden from humans, bots fill it automatically */}
-          <input aria-hidden="true" tabIndex={-1} autoComplete="off" value={form._hp} onChange={e => set("_hp", e.target.value)} style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0, pointerEvents: "none" }} />
-
-          {submitError && <div style={{ fontSize: 13, color: "#ff6b6b", fontFamily: "'Libre Franklin', sans-serif" }}>{submitError}</div>}
-
-          <div style={{ display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap" }}>
-            <button type="submit" disabled={submitting} style={{ padding: "13px 32px", background: C.sunset, color: "#fff", border: "none", borderRadius: 6, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: submitting ? "not-allowed" : "pointer", opacity: submitting ? 0.6 : 1, transition: "all 0.2s" }}>
-              {submitting
-                ? "Submitting..."
-                : rsvpSelected
-                  ? `Submit + Add RSVP ($${rsvpMonths * 9}${rsvpMonths > 1 ? ` · ${rsvpMonths} mo` : ""}) →`
-                  : "Submit Free Listing"}
-            </button>
-          </div>
-        </form>
       </div>
     </section>
   );
