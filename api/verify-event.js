@@ -7,6 +7,7 @@
 
 import crypto from 'crypto';
 import { sendSMS, normalizePhone } from './lib/twilio.js';
+import { Resend } from 'resend';
 
 function generateToken() {
   return crypto.randomBytes(16).toString('hex');
@@ -128,6 +129,9 @@ export default async function handler(req, res) {
 
     const sessionToken = generateSessionToken(inputDigits);
 
+    // Notify admin of new self-submitted event (best-effort)
+    notifyAdmin({ eventName, email, eventType, organizerName: match.properties['Organizer Name']?.rich_text?.[0]?.plain_text || '' }).catch(() => {});
+
     // Types requiring Stripe Express onboarding — don't send welcome SMS yet,
     // that happens in event-stripe-return.js after onboarding completes.
     if (eventType === 'platform_ticketing' || eventType === 'vendor_market') {
@@ -162,5 +166,44 @@ export default async function handler(req, res) {
   } catch (err) {
     console.error('verify-event error:', err.message);
     return res.status(500).json({ error: 'Something went wrong. Please try again.' });
+  }
+}
+
+async function notifyAdmin({ eventName, email, eventType, organizerName }) {
+  const adminEmail = process.env.ADMIN_EMAIL || 'daryl@yetigroove.com';
+  const darylPhone = process.env.DARYL_PHONE;
+  const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
+
+  // SMS
+  if (darylPhone) {
+    const typeLabel = {
+      free: 'Free', rsvp_appreciated: 'RSVP', rsvp_required: 'RSVP Required',
+      own_ticketing: 'Own Ticketing', platform_ticketing: 'Platform Ticketing', vendor_market: 'Vendor Market',
+    }[eventType] || eventType;
+    sendSMS(darylPhone, `New event live on Manitou Beach:\n${eventName}\n${organizerName || email} · ${typeLabel}\n${siteUrl}/happening`).catch(() => {});
+  }
+
+  // Email
+  if (process.env.RESEND_API_KEY) {
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    resend.emails.send({
+      from: 'Manitou Beach <tickets@yetigroove.com>',
+      to: adminEmail,
+      subject: `New event published: ${eventName}`,
+      html: `
+        <div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:28px 20px;background:#FAF6EF;">
+          <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#8C806E;margin-bottom:6px;">New Event · Self-Submitted</div>
+          <h2 style="color:#1A2830;font-size:20px;margin:0 0 14px;">${eventName}</h2>
+          <div style="font-size:14px;color:#3A3028;line-height:1.7;">
+            ${organizerName ? `<strong>Organizer:</strong> ${organizerName}<br/>` : ''}
+            <strong>Email:</strong> ${email}<br/>
+            <strong>Type:</strong> ${eventType}
+          </div>
+          <div style="margin-top:20px;">
+            <a href="${siteUrl}/happening" style="display:inline-block;padding:10px 22px;background:#1A2830;color:#fff;text-decoration:none;border-radius:6px;font-size:13px;font-weight:700;">View on Happening →</a>
+          </div>
+        </div>
+      `,
+    }).catch(() => {});
   }
 }
