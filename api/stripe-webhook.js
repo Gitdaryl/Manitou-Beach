@@ -542,12 +542,54 @@ export default async function handler(req, res) {
         // Non-beta: update existing Notion row
         try {
           const pageId = await updateNotionBusiness(businessName, {
-            'Status': { status: { name: statusName } }
+            'Status': { status: { name: statusName } },
+            ...(session.customer && { 'Stripe Customer ID': { rich_text: [{ text: { content: String(session.customer) } }] } }),
           });
           if (pageId) {
             console.log(`Successfully upgraded ${businessName} to ${statusName} in Notion.`);
           } else {
             console.error(`Webhook Error: Business "${businessName}" not found in Notion to upgrade.`);
+          }
+          // Send confirmation email
+          const customerEmail = session.customer_email || session.customer_details?.email || '';
+          if (customerEmail && process.env.RESEND_API_KEY) {
+            const resend = new Resend(process.env.RESEND_API_KEY);
+            const tierLabel = tierId === 'premium' ? 'Front and Center' : tierId === 'featured' ? 'Highlighted' : 'Showcased';
+            const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
+            const billingLabel = metadata.billingInterval === 'year' ? '/yr' : '/mo';
+            const amount = `$${(session.amount_total / 100).toFixed(0)}${billingLabel}`;
+            resend.emails.send({
+              from: 'Manitou Beach <events@yetigroove.com>',
+              to: customerEmail,
+              subject: `Welcome to Manitou Beach — ${businessName} is listed`,
+              html: `
+                <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; color: #3B3228; background: #FAF6EF; padding: 40px 32px; border-radius: 8px;">
+                  <p style="font-size: 26px; font-weight: bold; margin: 0 0 8px; color: #1A2830;">You're on the map.</p>
+                  <p style="font-size: 15px; color: #6B5F52; margin: 0 0 24px; line-height: 1.7;">
+                    <strong>${businessName}</strong> is now listed on Manitou Beach — the community hub for Devils Lake, Michigan.
+                    Visitors heading to the lake will find you right here.
+                  </p>
+                  <div style="background: #fff; border-radius: 6px; padding: 20px 24px; margin-bottom: 28px; border: 1px solid #E8DFD0;">
+                    <p style="margin: 0 0 8px; font-size: 12px; color: #8A7E6E; text-transform: uppercase; letter-spacing: 1px; font-family: sans-serif;">Your listing</p>
+                    <p style="margin: 0 0 4px; font-size: 18px; font-weight: bold; color: #1A2830;">${businessName}</p>
+                    <p style="margin: 0 0 4px; font-size: 14px; color: #D4845A; font-weight: bold;">${tierLabel} · ${amount}</p>
+                    <p style="margin: 0; font-size: 13px; color: #8A7E6E; line-height: 1.6;">
+                      Cancel anytime — no contracts, no hassle.
+                    </p>
+                  </div>
+                  <p style="margin: 0 0 28px;">
+                    <a href="${siteUrl}/discover" style="background: #1A2830; color: #FAF6EF; text-decoration: none; padding: 15px 30px; border-radius: 4px; font-family: sans-serif; font-weight: bold; font-size: 14px; letter-spacing: 1px; display: inline-block;">
+                      See Your Listing →
+                    </a>
+                  </p>
+                  <p style="font-size: 13px; color: #8A7E6E; margin: 0 0 6px; line-height: 1.7;">
+                    Want to update your info, add a logo, or change anything? Just reply to this email.
+                  </p>
+                  <hr style="border: none; border-top: 1px solid #E8DFD0; margin: 28px 0 16px;">
+                  <p style="font-size: 11px; color: #9A8E7E; margin: 0;">Manitou Beach · Devils Lake, Michigan · manitoubeachmichigan.com</p>
+                </div>
+              `,
+            }).catch(() => {});
           }
         } catch (err) {
           console.error('Notion Webhook Fulfillment Error:', err);
@@ -561,6 +603,7 @@ export default async function handler(req, res) {
       const days = parseInt(metadata.days, 10);
       const expires = new Date(Date.now() + days * 24 * 60 * 60 * 1000);
       const expiresISO = expires.toISOString().split('T')[0]; // YYYY-MM-DD
+      const expiresReadable = expires.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
       try {
         const pageId = await updateNotionBusiness(businessName, {
           'Status': { status: { name: 'Listed Featured' } },
@@ -568,6 +611,44 @@ export default async function handler(req, res) {
         });
         if (pageId) {
           console.log(`ONE-TIME upgrade: ${businessName} (${metadata.tier}, ${days} days, expires ${expiresISO})`);
+        }
+        // Send confirmation email
+        const customerEmail = session.customer_email || session.customer_details?.email || '';
+        if (customerEmail && process.env.RESEND_API_KEY) {
+          const resend = new Resend(process.env.RESEND_API_KEY);
+          const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
+          resend.emails.send({
+            from: 'Manitou Beach <events@yetigroove.com>',
+            to: customerEmail,
+            subject: `${businessName} is now Featured on Manitou Beach`,
+            html: `
+              <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; color: #3B3228; background: #FAF6EF; padding: 40px 32px; border-radius: 8px;">
+                <p style="font-size: 26px; font-weight: bold; margin: 0 0 8px; color: #1A2830;">You're featured.</p>
+                <p style="font-size: 15px; color: #6B5F52; margin: 0 0 24px; line-height: 1.7;">
+                  <strong>${businessName}</strong> now has a spotlight listing on Manitou Beach.
+                  Your featured card goes live within 24 hours and stays up through <strong>${expiresReadable}</strong>.
+                </p>
+                <div style="background: #fff; border-radius: 6px; padding: 20px 24px; margin-bottom: 28px; border: 1px solid #E8DFD0;">
+                  <p style="margin: 0 0 8px; font-size: 12px; color: #8A7E6E; text-transform: uppercase; letter-spacing: 1px; font-family: sans-serif;">Your placement</p>
+                  <p style="margin: 0 0 4px; font-size: 18px; font-weight: bold; color: #1A2830;">${businessName}</p>
+                  <p style="margin: 0 0 4px; font-size: 14px; color: #D4845A; font-weight: bold;">Featured · ${days} days</p>
+                  <p style="margin: 0; font-size: 13px; color: #8A7E6E; line-height: 1.6;">
+                    Active through ${expiresReadable}
+                  </p>
+                </div>
+                <p style="margin: 0 0 28px;">
+                  <a href="${siteUrl}/discover" style="background: #1A2830; color: #FAF6EF; text-decoration: none; padding: 15px 30px; border-radius: 4px; font-family: sans-serif; font-weight: bold; font-size: 14px; letter-spacing: 1px; display: inline-block;">
+                    See Your Listing →
+                  </a>
+                </p>
+                <p style="font-size: 13px; color: #8A7E6E; margin: 0 0 6px; line-height: 1.7;">
+                  Questions or want to extend your placement? Just reply to this email.
+                </p>
+                <hr style="border: none; border-top: 1px solid #E8DFD0; margin: 28px 0 16px;">
+                <p style="font-size: 11px; color: #9A8E7E; margin: 0;">Manitou Beach · Devils Lake, Michigan · manitoubeachmichigan.com</p>
+              </div>
+            `,
+          }).catch(() => {});
         }
       } catch (err) {
         console.error('Notion Webhook Fulfillment Error:', err);

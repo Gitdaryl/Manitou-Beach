@@ -1230,8 +1230,8 @@ export function SubmitSection() {
                     >
                       <option value="Free">Free — $0 · Name, category & phone</option>
                       <option value="Enhanced">Enhanced — $9/mo · + Website link & description</option>
-                      <option value="Featured">Featured — $23/mo · + Spotlight card & logo</option>
-                      <option value="Premium">Premium — $43/mo · + Full banner & top placement</option>
+                      <option value="Featured">Featured — $25/mo · + Spotlight card & logo</option>
+                      <option value="Premium">Premium — $49/mo · + Full banner & top placement</option>
                     </select>
                   </div>
 
@@ -1257,7 +1257,7 @@ export function SubmitSection() {
                         ))}
                       </select>
                       <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, marginTop: 6, paddingLeft: 2 }}>
-                        Total: ${({ Free: 0, Enhanced: 9, Featured: 23, Premium: 43 }[form.tier] * parseInt(form.duration)).toLocaleString()} · We'll confirm and invoice before going live
+                        Total: ${({ Free: 0, Enhanced: 9, Featured: 25, Premium: 49 }[form.tier] * parseInt(form.duration)).toLocaleString()} · We'll confirm and invoice before going live
                       </div>
                     </div>
                   )}

@@ -5,15 +5,15 @@ import { Footer, GlobalStyles, Navbar, NewsletterInline } from '../components/La
 
 const FOUNDING_TIERS = [
   { name: "Showcased",        price: 9,  perks: ["Business listing on Manitou Beach", "Map pin on /discover", "Category placement", "Contact info + description", "Link to your website", "Upgrade to Highlighted or Front and Center at founding rates — any time"] },
-  { name: "Highlighted",      price: 23, highlight: true, perks: ["Everything in Showcased", "Priority placement in category", "Logo displayed on listing", "Newsletter mention eligibility", "Highlighted card styling", "Upgrade to Front and Center at founding rates — any time"] },
-  { name: "Front and Center", price: 43, perks: ["Everything in Highlighted", "Top of category, always", "Monthly newsletter feature eligible", "First call for sponsorship spots", "Founding badge on listing"] },
+  { name: "Highlighted",      price: 25, highlight: true, perks: ["Everything in Showcased", "Priority placement in category", "Logo displayed on listing", "Newsletter mention eligibility", "Highlighted card styling", "Upgrade to Front and Center at founding rates — any time"] },
+  { name: "Front and Center", price: 49, perks: ["Everything in Highlighted", "Top of category, always", "Monthly newsletter feature eligible", "First call for sponsorship spots", "Founding badge on listing"] },
 ];
 
-const FOUNDING_MATH = [
-  { subs: "Today",    newPrice: null,  yourPrice: 9,  label: "Founding rate" },
-  { subs: "200 subs", newPrice: 10,   yourPrice: 9,  label: "You still pay $9" },
-  { subs: "500 subs", newPrice: 13,   yourPrice: 9,  label: "You still pay $9" },
-  { subs: "1,000 subs", newPrice: 18, yourPrice: 9,  label: "You still pay $9" },
+const FOUNDING_PERKS = [
+  { icon: "🏅", label: "Founding 30 Badge", copy: "A permanent badge on your listing. Everyone who visits the directory sees you were here from the start." },
+  { icon: "🔑", label: "First Access", copy: "New features, new pages, new tools — you get them before anyone else. No waiting list, no rollout phases." },
+  { icon: "📖", label: "Named in History", copy: "Your business is permanently listed in the 'Businesses That Built This Community' section. That's not a perk — it's a legacy." },
+  { icon: "📣", label: "Direct Line", copy: "Questions, ideas, feedback — you talk directly to the person building this, not a support inbox. That never goes away." },
 ];
 
 function FoundingListingDemo() {
@@ -137,13 +137,13 @@ export default function FoundingPage() {
         <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 40%, rgba(91,126,149,0.18) 0%, transparent 65%)", pointerEvents: "none" }} />
         <FadeIn>
           <div style={{ display: "inline-block", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 50, padding: "6px 16px", marginBottom: 24 }}>
-            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1.5, textTransform: "uppercase" }}>Early Rate Access</span>
+            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1.5, textTransform: "uppercase" }}>Founding Businesses</span>
           </div>
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(30px, 5vw, 58px)", fontWeight: 400, color: C.cream, margin: "0 0 24px", lineHeight: 1.15 }}>
-            List your business now,<br />at the rate that holds.
+            Be one of the first.<br />That matters here.
           </h1>
           <p style={{ fontSize: 16, color: "rgba(255,255,255,0.5)", maxWidth: 520, margin: "0 auto 16px", lineHeight: 1.85 }}>
-            Manitou Beach pricing is tied to the newsletter audience. The rate you start at today is your rate as long as your listing runs — even as the audience grows and new listings cost more.
+            The first businesses to join Manitou Beach aren't just getting a listing — they're helping build the community hub that everyone else will rely on. Founding members get recognized for that, permanently.
           </p>
           <Btn href="/business" variant="sunset" style={{ whiteSpace: "nowrap" }}>
             See Listing Options →
@@ -158,65 +158,46 @@ export default function FoundingPage() {
 
       <WaveDivider topColor={C.cream} bottomColor={C.cream} />
 
-      {/* ── THE MATH ── */}
+      {/* ── FOUNDING PERKS ── */}
       <section style={{ background: C.cream, padding: "80px 24px" }}>
         <div style={{ maxWidth: 760, margin: "0 auto" }}>
-          <div style={{ display: "flex", gap: 48, alignItems: "center", marginBottom: 40, flexWrap: "wrap-reverse" }}>
-            <FadeIn delay={120} style={{ flex: "0 0 auto", textAlign: "center" }}>
-              <img src="/images/founding-rate-illustration.png" alt="" aria-hidden="true" style={{ width: "min(420px, 80vw)", opacity: 0.92 }} />
-            </FadeIn>
-            <FadeIn style={{ flex: "1 1 260px" }}>
-              <SectionLabel>The Formula</SectionLabel>
-              <SectionTitle>The pricing formula.</SectionTitle>
-              <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, margin: 0 }}>
-                The base price is $9/mo for an Enhanced listing. After 100 newsletter subscribers, the price rises by one cent per new subscriber for everyone who signs up after. Your rate is locked the day you join.
-              </p>
-            </FadeIn>
-          </div>
-          <FadeIn delay={100}>
-            <div style={{ background: C.warmWhite, borderRadius: 16, border: `1px solid ${C.sand}`, overflow: "hidden" }}>
-              {/* Header */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", background: C.dusk, padding: "14px 28px" }}>
-                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.5)" }}>When</div>
-                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.5)", textAlign: "center" }}>New members pay</div>
-                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sunsetLight, textAlign: "right" }}>You pay</div>
-              </div>
-              {FOUNDING_MATH.map((row, i) => (
-                <div key={row.subs} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", padding: "18px 28px", borderBottom: i < FOUNDING_MATH.length - 1 ? `1px solid ${C.sand}` : "none", alignItems: "center" }}>
-                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.text, fontWeight: i === 0 ? 700 : 400 }}>{row.subs}</div>
-                  <div style={{ textAlign: "center", fontSize: 14, color: row.newPrice ? C.textLight : C.sage, fontWeight: 600 }}>
-                    {row.newPrice ? `$${row.newPrice}/mo` : <span style={{ fontFamily: "'Caveat', cursive", fontSize: 16, color: C.sage }}>founding rate</span>}
-                  </div>
-                  <div style={{ textAlign: "right" }}>
-                    <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 700, color: C.sunset }}>${row.yourPrice}/mo</span>
-                    {i > 0 && <div style={{ fontSize: 11, color: C.sage, fontWeight: 600 }}>✓ locked</div>}
-                  </div>
-                </div>
-              ))}
-            </div>
-            <p style={{ fontSize: 12, color: C.textMuted, textAlign: "center", marginTop: 14, lineHeight: 1.7 }}>
-              Example shown for Enhanced tier. Featured and Premium follow the same formula from their base rates.
+          <FadeIn>
+            <SectionLabel style={{ textAlign: "center", display: "block" }}>Why Founding Matters</SectionLabel>
+            <SectionTitle center>You helped build this place.</SectionTitle>
+            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 580, margin: "0 auto 40px", textAlign: "center" }}>
+              Founding businesses aren't just early adopters — they're the ones who showed up before there was a crowd. That means something here, and it always will.
             </p>
           </FadeIn>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 20 }}>
+            {FOUNDING_PERKS.map(perk => (
+              <FadeIn key={perk.label}>
+                <div style={{ background: C.warmWhite, borderRadius: 14, padding: "28px 24px", border: `1px solid ${C.sand}`, height: "100%" }}>
+                  <div style={{ fontSize: 28, marginBottom: 12 }}>{perk.icon}</div>
+                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.text, marginBottom: 8 }}>{perk.label}</div>
+                  <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.75, margin: 0 }}>{perk.copy}</p>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
         </div>
       </section>
 
       <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
 
-      {/* ── WHAT'S A SUBSCRIBER ── */}
+      {/* ── WHO SEES YOUR LISTING ── */}
       <section style={{ background: C.warmWhite, padding: "64px 24px" }}>
         <div style={{ maxWidth: 760, margin: "0 auto" }}>
           <FadeIn>
-            <SectionLabel style={{ textAlign: "center", display: "block" }}>What's a Subscriber?</SectionLabel>
-            <SectionTitle center>The newsletter, explained.</SectionTitle>
+            <SectionLabel style={{ textAlign: "center", display: "block" }}>Your Audience</SectionLabel>
+            <SectionTitle center>Real people, already looking.</SectionTitle>
             <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 580, margin: "0 auto 40px", textAlign: "center" }}>
-              Manitou Beach runs a community newsletter through beehiiv, sent to people who live near, visit, or own property around Devils Lake. They opted in. They read it.
+              Manitou Beach reaches lake homeowners, seasonal visitors, and locals through the community directory, weekly newsletter, and event calendar. These aren't random clicks — they're your neighbors and their guests.
             </p>
           </FadeIn>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16 }}>
             {[
-              { icon: "📰", label: "What it covers", copy: "Upcoming events, seasonal guides, food truck locations, wine trail news, new business spotlights, and community updates." },
-              { icon: "👥", label: "Who reads it", copy: "Lake homeowners, seasonal visitors, local residents, boaters, and anyone who follows the Irish Hills community." },
+              { icon: "📰", label: "Weekly newsletter", copy: "Events, food trucks, wine trail news, business spotlights, and community updates — delivered to inboxes every week." },
+              { icon: "👥", label: "Who's reading", copy: "Lake homeowners, seasonal visitors, local residents, boaters, and anyone who follows the Irish Hills community." },
               { icon: "📍", label: "Why it matters", copy: "As the list grows, your listing reaches more of those readers. The rate rises to reflect that." },
               { icon: "🔒", label: "Your rate is locked", copy: "Your rate is locked the day you join. New subscribers don't affect your bill." },
             ].map((item, i) => (

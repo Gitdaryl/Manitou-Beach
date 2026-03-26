@@ -33,12 +33,12 @@ const LISTING_TIERS = {
   featured: {
     name: 'Featured Listing — Manitou Beach Directory',
     description: 'Spotlight card, logo display, above standard listings.',
-    basePrice: 23,
+    basePrice: 25,
   },
   premium: {
     name: 'Premium Listing — Manitou Beach Directory',
     description: 'Full-width banner, large logo, top-of-directory placement, email contact button.',
-    basePrice: 43,
+    basePrice: 49,
   },
   food_truck_founding: {
     name: 'Founding Food Truck — Manitou Beach Food Truck Locator',
@@ -47,23 +47,9 @@ const LISTING_TIERS = {
   },
 };
 
-const GRACE = 100;
-
-// Fetch subscriber count from Beehiiv and compute price server-side
-async function computePriceCents(basePrice) {
-  let count = 0;
-  try {
-    const response = await fetch(
-      `https://api.beehiiv.com/v2/publications/${process.env.BEEHIIV_PUBLICATION_ID}/subscriptions?limit=1`,
-      { headers: { 'Authorization': `Bearer ${process.env.BEEHIIV_API_KEY}` } }
-    );
-    if (response.ok) {
-      const data = await response.json();
-      count = data.total_results || 0;
-    }
-  } catch (_) {}
-  const increment = Math.max(0, count - GRACE);
-  return Math.round((basePrice + increment * 0.01) * 100);
+// Fixed pricing — no dynamic escalator
+function computePriceCents(basePrice) {
+  return Math.round(basePrice * 100);
 }
 
 export default async function handler(req, res) {

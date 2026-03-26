@@ -4,8 +4,8 @@ import { GlobalStyles, Navbar, Footer } from '../components/Layout';
 
 const TIERS = {
   enhanced: { label: 'Showcased', price: 9, annual: 108 },
-  featured: { label: 'Highlighted', price: 23, annual: 276 },
-  premium:  { label: 'Front and Center', price: 43, annual: 516 },
+  featured: { label: 'Highlighted', price: 25, annual: 300 },
+  premium:  { label: 'Front and Center', price: 49, annual: 588 },
 };
 
 export default function ActivateBusinessPage() {
@@ -71,7 +71,7 @@ export default function ActivateBusinessPage() {
             {decodeURIComponent(returnedBiz)} is activated.
           </p>
           <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.textLight, maxWidth: 420, lineHeight: 1.7, margin: '0 0 32px' }}>
-            Your card is on file but you won't be charged until May 10. Check your email for a receipt from Stripe — you can manage or cancel anytime from there.
+            Check your email for a confirmation from us. You can cancel or manage your listing anytime — just reply to the email.
           </p>
           <a href="/" style={{
             display: 'inline-block', background: C.sunset, color: C.cream,

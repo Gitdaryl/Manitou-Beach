@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Btn, FadeIn, ScrollProgress, SectionLabel, SectionTitle } from '../components/Shared';
 import { C, LISTING_CATEGORIES, PAGE_SPONSORS, SLOT_CAPS } from '../data/config';
-import { usePricing, GRACE } from '../data/pricing';
+import { BASE_PRICES } from '../data/pricing';
 import { Footer, GlobalStyles, Navbar, SubmitSection } from '../components/Layout';
 
 // ============================================================
@@ -25,7 +25,8 @@ export default function FeaturedPage() {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  const { subCount, count, inGrace, priceFor, centsFor, progressPct } = usePricing();
+  const priceFor = (base) => base.toFixed(2);
+  const centsFor = (base) => Math.round(base * 100);
   const [slotCounts, setSlotCounts] = useState(null);
   const [modal, setModal] = useState(null);
   const [form, setForm] = useState({ businessName: '', email: '', duration: 3, category: '' });
@@ -177,12 +178,12 @@ export default function FeaturedPage() {
     },
     {
       id: 'featured', name: 'Highlighted', color: C.sage, badge: 'Most Popular',
-      price: priceFor(23), priceInCents: centsFor(23),
+      price: priceFor(25), priceInCents: centsFor(25),
       features: ['Everything in Showcased', 'Spotlight card placement', 'Logo or photo display', 'Above standard listings', 'Email contact button'],
     },
     {
       id: 'premium', name: 'Front and Center', color: C.sunsetLight, badge: 'Best Visibility',
-      price: priceFor(43), priceInCents: centsFor(43),
+      price: priceFor(49), priceInCents: centsFor(49),
       features: ['Everything in Featured', 'Full-width banner placement', 'Large logo (110×110)', 'Top-of-directory position', 'Cross-page placements'],
     },
   ];
@@ -306,7 +307,7 @@ export default function FeaturedPage() {
         <div style={{ background: `${C.sage}20`, borderBottom: `2px solid ${C.sage}`, padding: "24px", textAlign: "center" }}>
           <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.sage, marginBottom: 6 }}>You're in!</div>
           <p style={{ fontSize: 14, color: C.textLight, margin: 0 }}>
-            {status.business ? `${decodeURIComponent(status.business)} — ` : ""}Your featured listing will be live within 24 hours. We'll email you when it's up.
+            {status.business ? `${decodeURIComponent(status.business)} — ` : ""}Your featured listing will be live within 24 hours. Check your inbox for a confirmation with all the details.
           </p>
         </div>
       )}
@@ -381,24 +382,9 @@ export default function FeaturedPage() {
                 <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 16, maxWidth: 600, margin: "0 auto 32px", lineHeight: 1.65 }}>
                   Every listing here reaches people who chose to follow Manitou Beach — neighbors, visitors, and regulars who care where they spend. Showcased puts your business in front of that audience. Highlighted and Front and Center go further, but spots at each tier are limited by business category. The businesses that claim them own their space in this community.
                 </p>
-                {/* Live subscriber counter */}
                 <div style={{ maxWidth: 460, margin: "0 auto", background: "rgba(255,255,255,0.05)", borderRadius: 14, padding: "20px 24px", border: "1px solid rgba(255,255,255,0.1)" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4 }}>
-                    <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 1.5, textTransform: "uppercase", color: "rgba(255,255,255,0.35)" }}>
-                      Community members reached
-                    </span>
-                    <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream }}>
-                      {subCount === null ? '—' : count.toLocaleString()}
-                    </span>
-                  </div>
-                  <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.45)", margin: "0 0 12px 0", lineHeight: 1.5, textAlign: "left" }}>
-                    Residents and visitors who follow Manitou Beach — and see every listing, every week.
-                  </p>
-                  <div style={{ background: "rgba(255,255,255,0.08)", borderRadius: 999, height: 6, overflow: "hidden" }}>
-                    <div style={{ height: "100%", width: `${progressPct}%`, background: `linear-gradient(90deg, ${C.sage}, ${C.sunsetLight})`, borderRadius: 999, transition: "width 1s ease" }} />
-                  </div>
-                  <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.sunsetLight, margin: "10px 0 0", letterSpacing: 0.3, lineHeight: 1.55 }}>
-                    ✦ Featured and Premium hold a limited number of spots per business category. If yours is full, join the waitlist — you'll be first to know when a seat opens.
+                  <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.55)", margin: 0, lineHeight: 1.65, textAlign: "center" }}>
+                    Highlighted and Front and Center hold a limited number of spots per business category. If yours is full, join the waitlist — you'll be first to know when a seat opens.
                   </p>
                 </div>
               </div>

@@ -20,7 +20,7 @@ const TIERS = [
   {
     id: 'featured',
     label: 'Highlighted',
-    price: 23,
+    price: 25,
     tagline: 'Stand out from the crowd',
     features: [
       'Everything in Showcased',
@@ -35,7 +35,7 @@ const TIERS = [
   {
     id: 'premium',
     label: 'Front and Center',
-    price: 43,
+    price: 49,
     tagline: 'Maximum visibility',
     features: [
       'Everything in Highlighted',

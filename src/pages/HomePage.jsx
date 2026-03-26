@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { C, SECTIONS, CAT_COLORS } from '../data/config';
-import { usePricing, BASE_PRICES, GRACE } from '../data/pricing';
+import { BASE_PRICES } from '../data/pricing';
 import { ShareBar, CategoryPill, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivider, PageSponsorBanner, DiagonalDivider, Btn, useCardTilt } from '../components/Shared';
 import { GlobalStyles, PromoBanner, NewsletterInline, HollyYetiSection, EventLightbox, Footer, Navbar, ContactModal } from '../components/Layout';
 import { DispatchPreviewSection } from './DispatchPage';
@@ -649,7 +649,6 @@ function ExploreSection() {
   );
 }
 function PricingSection() {
-  const { subCount, count, inGrace, priceFor, centsFor, progressPct } = usePricing();
   const [modal, setModal] = useState(null);
   const [form, setForm] = useState({ businessName: '', email: '' });
   const [loading, setLoading] = useState(false);
@@ -659,17 +658,17 @@ function PricingSection() {
   const PAID_TIERS = [
     {
       id: 'enhanced', name: 'Enhanced', color: C.lakeBlue, badge: null,
-      price: priceFor(BASE_PRICES.enhanced), priceInCents: centsFor(BASE_PRICES.enhanced),
+      price: BASE_PRICES.enhanced.toFixed(2), priceInCents: BASE_PRICES.enhanced * 100,
       features: ['Everything in Free', 'Clickable website link', 'Business description', 'Expandable listing card', 'Category search placement'],
     },
     {
       id: 'featured', name: 'Featured', color: C.sage, badge: 'Most Popular',
-      price: priceFor(BASE_PRICES.featured), priceInCents: centsFor(BASE_PRICES.featured),
+      price: BASE_PRICES.featured.toFixed(2), priceInCents: BASE_PRICES.featured * 100,
       features: ['Everything in Enhanced', 'Spotlight card placement', 'Logo or photo display', 'Above standard listings', 'Email contact button'],
     },
     {
       id: 'premium', name: 'Premium', color: C.sunsetLight, badge: 'Best Visibility',
-      price: priceFor(BASE_PRICES.premium), priceInCents: centsFor(BASE_PRICES.premium),
+      price: BASE_PRICES.premium.toFixed(2), priceInCents: BASE_PRICES.premium * 100,
       features: ['Everything in Featured', 'Full-width banner placement', 'Large logo (110×110)', 'Top-of-directory position', 'Cross-page placements'],
     },
   ];
@@ -705,29 +704,8 @@ function PricingSection() {
               Choose Your Visibility
             </h2>
             <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 16, maxWidth: 520, margin: "0 auto 32px" }}>
-              Get discovered by the Manitou Beach community. Lock in your rate today — it's yours forever, no matter what happens next.
+              When visitors search for what's here, your business shows up. Simple as that. Pick a tier, get listed, and let the lake do the rest.
             </p>
-
-            {/* Live subscriber counter */}
-            <div style={{ maxWidth: 460, margin: "0 auto", background: "rgba(255,255,255,0.05)", borderRadius: 14, padding: "20px 24px", border: "1px solid rgba(255,255,255,0.1)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
-                <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.45)", letterSpacing: 0.5 }}>
-                  {inGrace ? 'Founding subscribers' : 'Newsletter subscribers'}
-                </span>
-                <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.cream }}>
-                  {subCount === null ? '—' : count.toLocaleString()}
-                  {inGrace && <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.3)", marginLeft: 6 }}>/ {GRACE}</span>}
-                </span>
-              </div>
-              <div style={{ background: "rgba(255,255,255,0.08)", borderRadius: 999, height: 6, overflow: "hidden" }}>
-                <div style={{ height: "100%", width: `${progressPct}%`, background: `linear-gradient(90deg, ${C.sage}, ${C.sunsetLight})`, borderRadius: 999, transition: "width 1s ease" }} />
-              </div>
-              <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.sunsetLight, margin: "10px 0 0", letterSpacing: 0.3 }}>
-                {inGrace
-                  ? `⚡ Founding rate locks in today and stays fixed while your subscription is active. After ${GRACE} readers, new listings pay more — you won't.`
-                  : '⚡ New listings pay more as the audience grows. Your rate stays fixed while your subscription is active — cancel and rejoin and the current rate applies.'}
-              </p>
-            </div>
           </div>
 
           {/* Free tier — compact row */}
@@ -766,8 +744,8 @@ function PricingSection() {
                   <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 36, color: C.cream, fontWeight: 700 }}>${tier.price}</span>
                   <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 14, fontFamily: "'Libre Franklin', sans-serif" }}>/mo</span>
                 </div>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: inGrace ? "rgba(255,255,255,0.35)" : C.sunsetLight, marginBottom: 16, letterSpacing: 0.3 }}>
-                  {inGrace ? `Founding rate · locked at sign-up` : `↑ rises with every new subscriber`}
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.35)", marginBottom: 16, letterSpacing: 0.3 }}>
+                  Cancel anytime · no contracts
                 </div>
                 <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px 0", flexGrow: 1, display: "flex", flexDirection: "column", gap: 9 }}>
                   {tier.features.map(f => (

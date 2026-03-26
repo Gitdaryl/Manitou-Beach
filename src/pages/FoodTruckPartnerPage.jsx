@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Btn, FadeIn, ScrollProgress, SectionLabel, SectionTitle, WaveDivider } from '../components/Shared';
 import { C } from '../data/config';
-import { usePricing } from '../data/pricing';
+import { BASE_PRICES } from '../data/pricing';
 import { Footer, GlobalStyles, Navbar } from '../components/Layout';
 
 const TRUCK_HOW = [
@@ -47,7 +47,7 @@ export default function FoodTruckPartnerPage() {
     document.getElementById('food-truck-signup')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const { centsFor } = usePricing();
+  const centsFor = (base) => Math.round(base * 100);
 
   // Pre-fill from URL params (e.g. redirected from /update-listing)
   const prefill = (() => {
