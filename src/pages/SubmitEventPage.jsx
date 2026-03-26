@@ -9,7 +9,7 @@ const EVENT_TYPES = [
   { value: 'rsvp_required',     label: 'RSVP required — limited spots',        sub: 'Attendees must register. Set a capacity cap if needed.' },
   { value: 'own_ticketing',     label: 'Ticketed — I use my own system',       sub: "We'll show a \"Get Tickets\" button linking to your site or Eventbrite." },
   { value: 'platform_ticketing',label: "Ticketed — we'll handle it for you", sub: 'Secure checkout right on this site. No setup fees, no monthly charges. 1.25% + standard card processing.' },
-  { value: 'vendor_market',     label: 'Vendor market — vendors pay for booths', sub: 'Vendors register and pay via Stripe directly to your account. You get an organizer portal.' },
+  { value: 'vendor_market',     label: 'Vendor market — vendors pay for booths', sub: 'Vendors register and pay securely on this site. Money goes straight to your bank. You get an organizer portal.' },
 ];
 
 const RECURRING_OPTIONS = ['None', 'Annual', 'Monthly', 'Weekly'];
@@ -479,14 +479,12 @@ export default function SubmitEventPage() {
                     <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, margin: '0 0 6px' }}>
                       <strong style={{ color: 'rgba(255,255,255,0.75)' }}>Don't have a ticketing system yet?</strong> We can handle it — buyers pay right on this site, money goes straight to your bank, and you skip the Eventbrite fees.
                     </p>
-                    <a
-                      href="/ticket-services"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ fontSize: 12, color: '#7A8E72', fontWeight: 700, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}
+                    <button
+                      onClick={() => setTicketInfoOpen(true)}
+                      style={{ fontSize: 12, color: '#7A8E72', fontWeight: 700, background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", textAlign: 'left' }}
                     >
-                      See how Manitou Beach ticketing works →
-                    </a>
+                      See what you and your attendees get →
+                    </button>
                   </div>
                 </div>
               )}
@@ -547,7 +545,7 @@ export default function SubmitEventPage() {
               {needsStripe && (
                 <div style={{ background: 'rgba(212,132,90,0.1)', border: '1px solid rgba(212,132,90,0.25)', borderRadius: 10, padding: '14px 16px' }}>
                   <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', lineHeight: 1.7, margin: 0 }}>
-                    After verifying your phone, you'll connect your bank account via Stripe (takes ~5 minutes). Money goes directly to you — our platform fee is just 1.25%.
+                    After verifying your phone, we'll walk you through connecting your bank account (takes ~5 minutes). Money goes directly to you — our platform fee is just 1.25%.
                   </p>
                 </div>
               )}
