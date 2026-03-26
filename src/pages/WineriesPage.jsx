@@ -12,6 +12,7 @@ function useIsMobile() {
 }
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivider, PageSponsorBanner, DiagonalDivider, Btn } from '../components/Shared';
 import { Footer, GlobalStyles, Navbar, NewsletterInline, PromoBanner } from '../components/Layout';
+import SMSOptInWidget from '../components/SMSOptInWidget';
 import { C } from '../data/config';
 import { DISCOVER_MAP_STYLES, createDiscoverPin } from '../data/discover';
 import yeti from '../data/errorMessages';
@@ -20,7 +21,7 @@ import yeti from '../data/errorMessages';
 // 🍷  WINERIES PAGE (/wineries)
 // ============================================================
 export const WINERY_VENUES = [
-  // ── Village Tasting Rooms (opening May 22, 2026) ──────────────────────
+  // ── Village Tasting Rooms (opening Spring 2026) ──────────────────────
   {
     section: "village",
     name: "Faust House Scrap n Craft",
@@ -32,7 +33,7 @@ export const WINERY_VENUES = [
     logo: "/images/faust_house_logo.png",
     accent: "#8B5E3C",
     distance: "In the Village",
-    openingDate: "May 22, 2026",
+    openingDate: "Spring 2026",
     hours: "Hours announced May 2026",
     lat: 41.9717, lng: -84.3091,
     hostedBrands: [
@@ -53,7 +54,7 @@ export const WINERY_VENUES = [
     logo: "/images/ang_co_logo.png",
     accent: C.sunsetLight,
     distance: "In the Village",
-    openingDate: "May 22, 2026",
+    openingDate: "Spring 2026",
     hours: "Hours announced soon",
     lat: 41.9712, lng: -84.3093,
     hostedBrands: [
@@ -78,7 +79,7 @@ export const WINERY_VENUES = [
     logo: "/images/boathouse-art-gallery-logo.jpg",
     accent: C.lakeBlue,
     distance: "In the Village",
-    openingDate: "May 22, 2026",
+    openingDate: "Spring 2026",
     hours: "Hours announced soon",
     lat: 41.971727, lng: -84.309131,
     hostedBrands: [
@@ -99,7 +100,7 @@ export const WINERY_VENUES = [
     logo: "/images/dl-view-living-logo.png",
     accent: C.sage,
     distance: "In the Village",
-    openingDate: "May 22, 2026",
+    openingDate: "Spring 2026",
     hours: "Hours announced soon",
     lat: 41.9708, lng: -84.3099,
     hostedBrands: [
@@ -123,7 +124,7 @@ export const WINERY_VENUES = [
     accent: "#B35A1A",
     hours: "Wed–Sat 9am–6pm (seasonal — call ahead)",
     highlight: "The ideal first stop — palate fresh, appetite building",
-    distance: "~20 min from Manitou Beach",
+    distance: "~16 min from Manitou Beach",
     lat: 42.0589177, lng: -84.4059253,
   },
   {
@@ -137,8 +138,8 @@ export const WINERY_VENUES = [
     logo: "/images/cherry_creek_logo.png",
     accent: C.sage,
     hours: "Mon–Sat 11am–6pm · Sun Noon–6pm",
-    highlight: "Also poured at Faust House in the Village starting May 22",
-    distance: "~15 min from Manitou Beach",
+    highlight: "Also poured at Faust House in the Village — opening soon",
+    distance: "~13 min from Manitou Beach",
     lat: 42.0505, lng: -84.3012,
   },
   {
@@ -153,7 +154,7 @@ export const WINERY_VENUES = [
     accent: C.sunset,
     hours: "Wed–Thu 3–9pm · Fri–Sat Noon–9pm · Sun Noon–6pm",
     highlight: "Live music every weekend + Michigan-crafted wines",
-    distance: "~20 min from Manitou Beach",
+    distance: "~22 min from Manitou Beach",
     lat: 42.0582, lng: -84.1274,
   },
   {
@@ -166,9 +167,10 @@ export const WINERY_VENUES = [
     website: "https://gypsybluevineyards.com",
     logo: "/images/gypsy_blue_logo.png",
     accent: C.lakeBlue,
+    openingDate: "Spring 2026",
     hours: "Check website for current hours",
     highlight: "Wines + ciders + flower farm — a full afternoon stop",
-    distance: "~20 min from Manitou Beach",
+    distance: "~6 min from Manitou Beach",
     lat: 41.9170, lng: -84.3115,
     photos: [
       "/images/wineries/gypsy_blue_01.jpg",
@@ -247,38 +249,68 @@ function WineriesVillageCallout() {
     <section style={{ background: C.night, padding: "80px 24px" }}>
       <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
         <FadeIn>
-          <SectionLabel light>Opening May 22, 2026</SectionLabel>
+          <SectionLabel light>Opening Spring 2026</SectionLabel>
           <SectionTitle light center>The Village Comes Alive</SectionTitle>
           <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 620, margin: "0 auto 20px" }}>
-            This May, four Manitou Beach Village shops open their doors as satellite tasting rooms for Michigan wineries. Walk the boulevard. Pop into a gallery. Pick up something for the cottage. Stay for a glass.
+            Four Manitou Beach Village shops are opening their doors as satellite tasting rooms for Michigan wineries. Walk the boulevard. Pop into a gallery. Pick up something for the cottage. Stay for a glass.
           </p>
           <p style={{ fontSize: 15, color: "rgba(255,255,255,0.35)", lineHeight: 1.8, maxWidth: 560, margin: "0 auto 32px", fontStyle: "italic" }}>
             Cherry Creek Cellars · French Road Cellars · Chateau Fontaine · Amoritas Vineyard · Brenman Family Winery — all in the Village, all within steps of the lake.
           </p>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
             <Btn href="/village" variant="sunset">Explore the Village</Btn>
-            <div style={{ display: "flex", gap: 16, flexWrap: "wrap", justifyContent: "center" }}>
-              <a
-                href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Manitou+Beach+Wine+Trail+Opens&dates=20260522%2F20260523&details=Four+Village+shops+open+as+satellite+tasting+rooms+for+Michigan+wineries.+Walk+the+boulevard%2C+pop+into+a+gallery%2C+stay+for+a+glass.&location=N+Lakeview+Blvd%2C+Manitou+Beach%2C+MI"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.15)", paddingBottom: 2, transition: "color 0.2s" }}
-                onMouseEnter={e => e.target.style.color = "rgba(255,255,255,0.75)"}
-                onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.4)"}
-              >
-                + Google Calendar
-              </a>
-              <a
-                href={"data:text/calendar;charset=utf8," + encodeURIComponent("BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nDTSTART;VALUE=DATE:20260522\nDTEND;VALUE=DATE:20260523\nSUMMARY:Manitou Beach Wine Trail Opens\nDESCRIPTION:Four Village shops open as satellite tasting rooms for Michigan wineries.\nLOCATION:N Lakeview Blvd\\, Manitou Beach\\, MI\nURL:https://manitoubeach.app/wineries\nEND:VEVENT\nEND:VCALENDAR")}
-                download="manitou-beach-wine-trail.ics"
-                style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.15)", paddingBottom: 2, transition: "color 0.2s" }}
-                onMouseEnter={e => e.target.style.color = "rgba(255,255,255,0.75)"}
-                onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.4)"}
-              >
-                + Apple / iCal
-              </a>
+            <div style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginTop: 4 }}>
+              Exact date announced when licenses are approved
             </div>
           </div>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+function WineTrailNotifySection() {
+  return (
+    <section style={{ background: C.cream, padding: '64px 24px' }}>
+      <div style={{ maxWidth: 520, margin: '0 auto', textAlign: 'center' }}>
+        <FadeIn>
+          <div style={{ marginBottom: 24 }}>
+            <div style={{
+              fontFamily: "'Libre Baskerville', serif",
+              fontSize: 'clamp(22px, 4vw, 30px)',
+              fontWeight: 400,
+              color: C.text,
+              lineHeight: 1.25,
+              marginBottom: 12,
+            }}>
+              Be the First to Know
+            </div>
+            <p style={{
+              fontFamily: "'Libre Franklin', sans-serif",
+              fontSize: 15,
+              color: C.textLight,
+              lineHeight: 1.75,
+              maxWidth: 460,
+              margin: '0 auto',
+            }}>
+              The Village tasting rooms are finishing up their final licensing approvals. Drop your number and we'll text you the moment the first pour is ready — no spam, just the good news.
+            </p>
+          </div>
+          <SMSOptInWidget
+            type="wine-trail"
+            source="wineries"
+            heading="Text me when the trail opens"
+            subtext="One text when the first tasting room opens. That's it."
+          />
+          <p style={{
+            fontFamily: "'Caveat', cursive",
+            fontSize: 17,
+            color: C.textMuted,
+            marginTop: 20,
+            marginBottom: 0,
+          }}>
+            Four shops hosting five Michigan wineries — all within steps of the lake.
+          </p>
         </FadeIn>
       </div>
     </section>
@@ -1002,7 +1034,7 @@ function WineriesVenueSection() {
           <SectionLabel>In the Village</SectionLabel>
           <SectionTitle>Village Tasting Rooms</SectionTitle>
           <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 580, margin: "0 0 48px 0" }}>
-            Starting May 22, four Village shops open their doors as satellite tasting rooms. Walk the boulevard — each stop is a new pour, a new story, all within steps of the lake.
+            Four Village shops are opening their doors as satellite tasting rooms. Walk the boulevard — each stop is a new pour, a new story, all within steps of the lake.
           </p>
         </FadeIn>
         <div style={{ display: "flex", flexDirection: "column", gap: 24, marginBottom: 80 }}>
@@ -1030,7 +1062,7 @@ const WINERY_ITINERARIES = [
   {
     title: "The Village Half-Day",
     duration: "2–3 Hours",
-    badge: "Starting May 22",
+    badge: "Opening Soon",
     accent: C.sunset,
     intro: "Four tasting rooms, one boulevard, zero driving. Walk the Village loop — start anywhere, end at the lake.",
     stops: [
@@ -1432,7 +1464,8 @@ const WINE_PASSPORT_HOW = [
 
 const WINERY_AWARD_CATEGORIES = [
   "Best Red Wine", "Best White Wine", "Best Sweet Wine",
-  "Best Fruit or Specialty Wine", "Best Tasting Room Experience",
+  "Best Fruit or Specialty Wine", "Best Hard Cider",
+  "Best Craft Ale or Brew", "Best Tasting Room Experience",
   "Outstanding Customer Hospitality", "Best Atmosphere",
 ];
 
@@ -1491,7 +1524,7 @@ function WineAwardCeremonySection() {
 
           {/* Award categories */}
           <p style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunsetLight, marginBottom: 16 }}>
-            7 awards up for grabs
+            9 awards up for grabs
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', marginBottom: 44 }}>
             {WINERY_AWARD_CATEGORIES.map((cat, i) => (
@@ -1537,6 +1570,9 @@ export default function WineriesPage() {
       <WaveDivider topColor={C.dusk} bottomColor={C.night} />
       <WineriesHowItWorksSection />
       <WineriesVillageCallout />
+      <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
+      <WineTrailNotifySection />
+      <WaveDivider topColor={C.cream} bottomColor={C.night} />
       <WineriesItinerarySection />
       <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
       <PromoBanner page="Wineries" />

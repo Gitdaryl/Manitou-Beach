@@ -25,17 +25,19 @@ export default function SMSOptInWidget({
   const [error, setError] = useState('');
 
   const defaultHeadings = {
-    general: 'Get text alerts',
-    event:   'Never miss an event',
-    deals:   'Get deal alerts',
-    welcome: 'Weekend highlights by text',
+    general:      'Get text alerts',
+    event:        'Never miss an event',
+    deals:        'Get deal alerts',
+    welcome:      'Weekend highlights by text',
+    'wine-trail': 'Get notified when the trail opens',
   };
 
   const defaultSubtext = {
-    general: "What's happening at Manitou Beach — straight to your phone.",
-    event:   'Get a reminder before events you care about.',
-    deals:   'Time-sensitive specials from local businesses.',
-    welcome: "One text with this weekend's highlights when you arrive.",
+    general:      "What's happening at Manitou Beach — straight to your phone.",
+    event:        'Get a reminder before events you care about.',
+    deals:        'Time-sensitive specials from local businesses.',
+    welcome:      "One text with this weekend's highlights when you arrive.",
+    'wine-trail': "We'll text you when the first Village tasting room opens its doors.",
   };
 
   const handleSubmit = async (e) => {
