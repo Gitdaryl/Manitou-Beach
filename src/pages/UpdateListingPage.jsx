@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Btn, FadeIn, SectionLabel, SectionTitle } from '../components/Shared';
 import { C, LISTING_CATEGORIES } from '../data/config';
 import { Footer, GlobalStyles, Navbar, compressImage } from '../components/Layout';
+import yeti from '../data/errorMessages';
 
 // ─── helpers ────────────────────────────────────────────────
 function inputStyle(focused) {
@@ -83,7 +84,7 @@ export default function UpdateListingPage() {
         setVerifyError("We couldn't find a match for that name and email address. Make sure they're spelled exactly as you entered them when you first signed up. Still stuck? Just email us at hello@yetigroove.com and we'll sort it out.");
       }
     } catch {
-      setVerifyError('Something went wrong — please try again.');
+      setVerifyError(yeti.network());
     } finally {
       setVerifyLoading(false);
     }
@@ -132,7 +133,7 @@ export default function UpdateListingPage() {
       if (!data.success) throw new Error(data.error || 'Update failed');
       setStep(3);
     } catch (err) {
-      setSubmitError(err.message || 'Something went wrong — please try again.');
+      setSubmitError(err.message || yeti.oops());
     } finally {
       setSubmitLoading(false);
     }

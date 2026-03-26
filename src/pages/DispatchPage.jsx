@@ -4,6 +4,7 @@ import { FadeIn, PageSponsorBanner, ScrollProgress, SectionLabel, SectionTitle, 
 import { C, DISPATCH_CARD_SPONSORS, DISPATCH_CATEGORIES } from '../data/config';
 import { Footer, Navbar, GlobalStyles, NewsletterInline, CATEGORY_COLORS } from '../components/Layout';
 import { useDispatchAds, pickAd } from '../data/discover';
+import yeti from '../data/errorMessages';
 
 
 // ============================================================
@@ -178,7 +179,7 @@ export function DispatchArticlePage() {
           <div style={{ textAlign: 'center', padding: '80px 20px', color: C.sage }}>Loading…</div>
         ) : !article ? (
           <div style={{ textAlign: 'center', padding: '80px 20px' }}>
-            <p style={{ marginBottom: 20, color: '#888' }}>Article not found.</p>
+            <p style={{ marginBottom: 20, color: '#888' }}>Can't find that article — it may have been moved or unpublished.</p>
             <button onClick={() => navigate('/dispatch')} style={{ background: C.sage, color: '#fff', border: 'none', borderRadius: 8, padding: '10px 24px', cursor: 'pointer', fontSize: 15 }}>← Back to Dispatch</button>
           </div>
         ) : (
@@ -345,7 +346,7 @@ export function DispatchArticlePage() {
                     >
                       {subStatus === 'loading' ? 'Joining…' : 'Subscribe Free'}
                     </button>
-                    {subStatus === 'error' && <p style={{ width: '100%', color: '#ff9f9f', fontSize: 13, marginTop: 4 }}>Something went wrong — try again.</p>}
+                    {subStatus === 'error' && <p style={{ width: '100%', color: '#ff9f9f', fontSize: 13, marginTop: 4 }}>{yeti.subscribe()}</p>}
                   </form>
                 )}
               </div>

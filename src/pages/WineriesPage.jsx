@@ -14,6 +14,7 @@ import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivid
 import { Footer, GlobalStyles, Navbar, NewsletterInline, PromoBanner } from '../components/Layout';
 import { C } from '../data/config';
 import { DISCOVER_MAP_STYLES, createDiscoverPin } from '../data/discover';
+import yeti from '../data/errorMessages';
 
 // ============================================================
 // 🍷  WINERIES PAGE (/wineries)
@@ -504,7 +505,7 @@ function WineReviewModal({ venue, accent, onSuccess, onClose }) {
       if (!res.ok) throw new Error('Failed');
       onSuccess();
     } catch {
-      setError('Something went wrong — your stamp was saved locally.');
+      setError(yeti.oops());
       onSuccess();
     }
   };

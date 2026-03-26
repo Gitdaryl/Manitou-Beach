@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { C } from '../data/config';
 import { GlobalStyles } from '../components/Layout';
+import yeti from '../data/errorMessages';
 
 const LAUNCH_DATE = new Date('2026-04-10T16:00:00Z');
 const SITE_URL = 'https://manitoubeachmichigan.com';
@@ -378,11 +379,11 @@ function SignupForm({ remaining, onSpotsUpdate }) {
         setStatus('success');
       } else {
         onSpotsUpdate(0);
-        setError(data.error || 'Something went wrong. Please try again.');
+        setError(data.error || yeti.oops());
         setStatus('idle');
       }
     } catch {
-      setError('Unable to connect. Please try again.');
+      setError(yeti.network());
       setStatus('idle');
     }
   };

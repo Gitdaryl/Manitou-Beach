@@ -3,6 +3,7 @@ import { ShareBar, SectionLabel, SectionTitle, FadeIn, WaveDivider, PageSponsorB
 import { Footer, GlobalStyles, Navbar, NewsletterInline, PromoBanner } from '../components/Layout';
 import { C } from '../data/config';
 import { DISCOVER_MAP_STYLES } from '../data/discover';
+import yeti from '../data/errorMessages';
 
 const STAY_TYPES = ['All', 'Cottage', 'Airbnb', 'Tiny Home', 'Camping', 'Inn/B&B'];
 
@@ -366,7 +367,7 @@ function ListYourPropertySection() {
             <Btn type="submit" variant="primary" style={{ marginTop: 8 }}>
               {status === 'sending' ? 'Submitting...' : 'Submit Listing'}
             </Btn>
-            {status === 'error' && <p style={{ color: '#c0392b', fontSize: 13, textAlign: 'center' }}>Something went wrong. Please try again or email us.</p>}
+            {status === 'error' && <p style={{ color: '#c0392b', fontSize: 13, textAlign: 'center' }}>{yeti.oops()}</p>}
           </form>
         )}
       </div>

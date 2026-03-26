@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Btn, ScrollProgress, SectionLabel, SectionTitle, WaveDivider } from '../components/Shared';
 import { C } from '../data/config';
 import { Footer, Navbar, GlobalStyles, NewsletterInline, HollyYetiSection, ContactModal } from '../components/Layout';
+import yeti from '../data/errorMessages';
 import { HappeningSubmitCTA } from './HappeningPage';
 
 const PROMO_PAGES = ["Home", "Whats Happening", "Village", "Devils Lake", "Wineries", "Fishing", "Round Lake"];
@@ -138,11 +139,11 @@ export function AdvertisePage() {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        setError(data.error || "Something went wrong. Please try again.");
+        setError(data.error || yeti.oops());
         setLoading(false);
       }
     } catch {
-      setError("Network error. Please try again.");
+      setError(yeti.network());
       setLoading(false);
     }
   };
@@ -181,7 +182,7 @@ export function AdvertisePage() {
       )}
       {isCancelled && (
         <div style={{ background: "#2a1a1a", padding: "24px 24px", textAlign: "center" }}>
-          <div style={{ fontSize: 15, color: "rgba(255,255,255,0.5)" }}>Checkout was cancelled — your details are saved below if you'd like to try again.</div>
+          <div style={{ fontSize: 15, color: "rgba(255,255,255,0.5)" }}>No worries — checkout was cancelled. Your info is still here whenever you're ready.</div>
         </div>
       )}
 
@@ -484,11 +485,11 @@ export default function PromotePage() {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        setError(data.error || "Something went wrong. Please try again.");
+        setError(data.error || yeti.oops());
         setLoading(false);
       }
     } catch {
-      setError("Network error. Please try again.");
+      setError(yeti.network());
       setLoading(false);
     }
   };
@@ -526,7 +527,7 @@ export default function PromotePage() {
       )}
       {isCancelled && (
         <div style={{ background: "#2a1a1a", padding: "24px 24px", textAlign: "center" }}>
-          <div style={{ fontSize: 15, color: "rgba(255,255,255,0.5)" }}>Checkout was cancelled — your details are still saved below if you'd like to try again.</div>
+          <div style={{ fontSize: 15, color: "rgba(255,255,255,0.5)" }}>All good — nothing was charged. Your details are saved whenever you want to try again.</div>
         </div>
       )}
 

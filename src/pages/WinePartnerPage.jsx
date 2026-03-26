@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Btn, FadeIn, ScrollProgress, SectionLabel, SectionTitle, WaveDivider } from '../components/Shared';
 import { C } from '../data/config';
 import { Footer, GlobalStyles, Navbar } from '../components/Layout';
+import yeti from '../data/errorMessages';
 
 const WINE_PARTNER_HOW = [
   { step: "01", title: "A customer visits your tasting room", copy: "They enjoy a pour, browse your space, connect with what you offer. That experience is already happening — we just give them a way to capture it." },
@@ -60,7 +61,7 @@ function WinePartnerSignupSection() {
       if (!res.ok) throw new Error(data.error || 'Failed');
       window.location.href = data.url;
     } catch (err) {
-      setError(err.message || 'Something went wrong. Please email admin@yetigroove.com directly.');
+      setError(err.message || yeti.oops());
       setSubmitting(false);
     }
   };
@@ -152,7 +153,7 @@ function WinePartnerReserveSection() {
       if (!res.ok) throw new Error(data.error || 'Failed');
       setDone(true);
     } catch (err) {
-      setError(err.message || 'Something went wrong. Please email admin@yetigroove.com directly.');
+      setError(err.message || yeti.oops());
       setSubmitting(false);
     }
   };

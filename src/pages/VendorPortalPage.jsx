@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { C } from '../data/config';
 import { GlobalStyles } from '../components/Layout';
+import yeti from '../data/errorMessages';
 
 function exportCSV(vendors, eventName) {
   const headers = ['Vendor ID', 'Business Name', 'Contact', 'Email', 'Phone', 'Booth Type', 'Notes', 'Status', 'Registered At'];
@@ -74,7 +75,7 @@ export default function VendorPortalPage() {
       const data = await res.json();
       setBlastResult({ channel, ...data });
     } catch {
-      setBlastResult({ error: 'Network error. Please try again.' });
+      setBlastResult({ error: yeti.network() });
     } finally {
       setBlasting(false);
     }
@@ -96,12 +97,12 @@ export default function VendorPortalPage() {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        alert(data.error || 'Something went wrong — please try again.');
+        alert(data.error || yeti.oops());
         return;
       }
       await fetchVendors();
     } catch {
-      alert('Connection issue — check your internet and try again.');
+      alert(yeti.network());
     } finally {
       setStatusLoading(prev => ({ ...prev, [pageId]: null }));
     }
@@ -121,7 +122,7 @@ export default function VendorPortalPage() {
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#FAF6EF', fontFamily: "'Libre Franklin', sans-serif", padding: 24 }}>
       <div style={{ fontSize: 36, marginBottom: 16 }}>🔒</div>
       <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: '#1A2830', marginBottom: 8 }}>Access denied</div>
-      <div style={{ fontSize: 15, color: '#8C806E' }}>This link is invalid or your access token has expired.</div>
+      <div style={{ fontSize: 15, color: '#8C806E' }}>This link doesn't seem right. Check your texts for the latest one?</div>
     </div>
   );
 

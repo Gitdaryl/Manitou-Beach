@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { C } from '../data/config';
 import { GlobalStyles, Navbar, Footer } from '../components/Layout';
+import yeti from '../data/errorMessages';
 
 const TIERS = {
   enhanced: { label: 'Showcased', price: 9, annual: 108 },
@@ -44,11 +45,11 @@ export default function ActivateBusinessPage() {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        setError(data.error || 'Something went wrong. Please try again.');
+        setError(data.error || yeti.oops());
         setStatus('idle');
       }
     } catch {
-      setError('Unable to connect. Please try again.');
+      setError(yeti.network());
       setStatus('idle');
     }
   };

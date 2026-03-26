@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Btn, FadeIn, SectionLabel, SectionTitle } from '../components/Shared';
 import { C } from '../data/config';
 import { Footer, GlobalStyles, Navbar } from '../components/Layout';
+import yeti from '../data/errorMessages';
 
 const TIERS = {
   enhanced: { label: 'Showcased',        price: 9,  annual: 108, description: 'Clickable website link, business description, expandable listing card.' },
@@ -68,7 +69,7 @@ export default function UpgradeListingPage() {
         setVerifyError("We couldn't find an active subscription listing for that name and email. Need help? Email us at hello@yetigroove.com.");
       }
     } catch {
-      setVerifyError('Something went wrong — please try again.');
+      setVerifyError(yeti.network());
     } finally {
       setVerifyLoading(false);
     }
@@ -94,11 +95,11 @@ export default function UpgradeListingPage() {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        setCheckoutError(data.error || 'Something went wrong. Please try again.');
+        setCheckoutError(data.error || yeti.oops());
         setCheckoutLoading(false);
       }
     } catch {
-      setCheckoutError('Unable to connect. Please try again.');
+      setCheckoutError(yeti.network());
       setCheckoutLoading(false);
     }
   }

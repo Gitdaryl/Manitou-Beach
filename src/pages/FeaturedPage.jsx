@@ -3,6 +3,7 @@ import { Btn, FadeIn, ScrollProgress, SectionLabel, SectionTitle } from '../comp
 import { C, LISTING_CATEGORIES, PAGE_SPONSORS, SLOT_CAPS } from '../data/config';
 import { BASE_PRICES } from '../data/pricing';
 import { Footer, GlobalStyles, Navbar, SubmitSection } from '../components/Layout';
+import yeti from '../data/errorMessages';
 
 // ============================================================
 const FEATURED_TIERS = [
@@ -110,11 +111,11 @@ export default function FeaturedPage() {
       if (checkoutData.url) {
         window.location.href = checkoutData.url;
       } else {
-        setSponsorError(checkoutData.error || 'Something went wrong. Please try again.');
+        setSponsorError(checkoutData.error || yeti.oops());
         setSponsorLoading(false);
       }
     } catch {
-      setSponsorError('Something went wrong. Please try again.');
+      setSponsorError(yeti.network());
       setSponsorLoading(false);
     }
   };
@@ -199,8 +200,8 @@ export default function FeaturedPage() {
       });
       const data = await res.json();
       if (data.url) { window.location.href = data.url; }
-      else { setCheckoutError(data.error || 'Something went wrong. Please try again.'); }
-    } catch { setCheckoutError('Something went wrong. Please try again.'); }
+      else { setCheckoutError(data.error || yeti.oops()); }
+    } catch { setCheckoutError(yeti.network()); }
     finally { setLoading(false); }
   };
 
@@ -607,7 +608,7 @@ export default function FeaturedPage() {
 
                 {wlStatus === "error" && (
                   <div style={{ background: `${C.sunset}15`, border: `1px solid ${C.sunset}40`, borderRadius: 8, padding: "12px 16px", fontSize: 13, color: C.sunset }}>
-                    Something went wrong. Please try again or email hello@yetigroove.com
+                    {yeti.oops()}
                   </div>
                 )}
 

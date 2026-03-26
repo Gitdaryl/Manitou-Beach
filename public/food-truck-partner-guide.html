@@ -85,6 +85,27 @@
   .page-break { page-break-before: always; }
   @media print { body { background: white; } .page { width: 100%; } .no-print { display: none; } }
   @media screen { .page { margin: 20px auto; box-shadow: 0 4px 40px rgba(0,0,0,0.12); } .page + .page { margin-top: 40px; } }
+
+  /* ── MOBILE ── */
+  @media screen and (max-width: 640px) {
+    .page { width: 100%; min-height: auto; }
+    .hero { padding: 28px 20px 22px; }
+    .hero h1 { font-size: 22px; }
+    .hero-sub { font-size: 12px; }
+    .body-section { padding: 16px 20px; }
+    .dark-section { padding: 18px 20px; }
+    .section-title { font-size: 16px; }
+    .step-row { grid-template-columns: 28px 1fr; gap: 8px; }
+    .step-num { font-size: 16px; }
+    .step-copy { font-size: 11px; }
+    .feature-grid { grid-template-columns: 1fr; gap: 8px; }
+    .feature-card { padding: 10px 12px; }
+    .compare-table th, .compare-table td { font-size: 10px; padding: 5px 6px; }
+    .maslow-strip { grid-template-columns: 1fr 1fr; }
+    .cta-bar { flex-direction: column; text-align: center; padding: 16px 20px; gap: 12px; }
+    .cta-contact { text-align: center; }
+    .callout { padding: 12px 14px; }
+  }
 </style>
 </head>
 <body>
@@ -99,35 +120,35 @@
   </div>
 
   <div class="body-section" style="padding-top: 24px;">
-    <div class="section-label">The Signup — One Time, Two Minutes</div>
-    <div class="section-title">Five fields and a text message. That's it.</div>
+    <div class="section-label">Getting Started — One Time, Super Easy</div>
+    <div class="section-title">Five fields and a text message. Seriously, that's it.</div>
     <div class="step-grid">
       <div class="step-row">
         <div class="step-num">1</div>
         <div>
-          <div class="step-title">I send you the partner link</div>
-          <div class="step-copy">It's a private page — not public on the site. You'll see what the locator does, what you get, and the signup form at the bottom. Takes about 30 seconds to read if you're skimming.</div>
+          <div class="step-title">I send you the link</div>
+          <div class="step-copy">It's a simple page with the signup form. Takes about 30 seconds to read — and that's if you read slow like me.</div>
         </div>
       </div>
       <div class="step-row">
         <div class="step-num">2</div>
         <div>
           <div class="step-title">Fill in the basics</div>
-          <div class="step-copy"><strong>Truck name, what you serve, email, phone.</strong> That's it for required fields. You can also drop in your website or Instagram (it links straight from your live card so customers find your menu) and upload a truck photo or logo. The photo's optional but it makes your card look great.</div>
+          <div class="step-copy"><strong>Truck name, what you serve, email, phone.</strong> That's the must-haves. You can also add your website or Instagram — it links right from your card so hungry people find your menu. A truck photo makes your card pop but it's not required.</div>
         </div>
       </div>
       <div class="step-row">
         <div class="step-num">3</div>
         <div>
-          <div class="step-title">Verify your phone</div>
-          <div class="step-copy">You'll get a text with a 6-digit code. Punch it in on-screen. This confirms you're a real human with a real truck — not a bot trying to sell me crypto.</div>
+          <div class="step-title">Quick phone check</div>
+          <div class="step-copy">We text you a 6-digit code, you type it in. Just making sure you're a real person with a real truck — not a robot trying to sell me cryptocurrency.</div>
         </div>
       </div>
       <div class="step-row">
         <div class="step-num">4</div>
         <div>
-          <div class="step-title">Your personal check-in link arrives by text</div>
-          <div class="step-copy">This is your key to the map. Bookmark it, pin it, tattoo it on your forearm — it's yours forever. No app to install, no password to remember, no account to manage. Just a link on your phone.</div>
+          <div class="step-title">Your check-in link arrives by text</div>
+          <div class="step-copy">This is your golden ticket to the map. Bookmark it, pin it to your home screen, tattoo it on your arm — whatever works. No app, no password, no account. Just a link on your phone.</div>
           <div class="step-magic">Magic Moment: you're live on the locator before you've even left the signup page.</div>
         </div>
       </div>
@@ -185,17 +206,17 @@
 <div class="page page-break">
   <div class="dark-section" style="padding-top: 32px;">
     <div class="section-label">What You Get — Free Through May 10</div>
-    <div class="section-title" style="color: var(--cream);">The full Featured experience. No card. No catch.</div>
+    <div class="section-title" style="color: var(--cream);">Everything's included. No credit card, no catch.</div>
     <div class="feature-grid">
       <div class="feature-card">
         <div class="feature-icon">📍</div>
         <div class="feature-name">Live Map Pin</div>
-        <div class="feature-detail">Goes live the second you check in. Comes down when you leave. Customers see you in real time — not a stale directory listing from 2019.</div>
+        <div class="feature-detail">You check in, you're on the map. You leave, you come off. People see where you are right now — not some dusty listing from 2019.</div>
       </div>
       <div class="feature-card">
         <div class="feature-icon">🔗</div>
         <div class="feature-name">Personal Check-In URL</div>
-        <div class="feature-detail">Your private link. Works from any phone, any browser. No app, no login — ever. Open it, tap a button, you're live.</div>
+        <div class="feature-detail">Works on any phone, any browser. No app to download, no login to remember. Just tap and go.</div>
       </div>
       <div class="feature-card">
         <div class="feature-icon">⭐</div>
@@ -262,8 +283,8 @@
   </div>
 
   <div class="body-section" style="padding-top: 16px;">
-    <div class="section-label">Why This Works — The Stuff Nobody Says Out Loud</div>
-    <div class="section-title">It's not just a map pin. It's how people feel.</div>
+    <div class="section-label">Why This Actually Works</div>
+    <div class="section-title">It's not about the tech. It's about the feeling.</div>
     <div class="maslow-strip">
       <div class="maslow-card" style="background: rgba(90,126,149,0.1);">
         <div class="m-icon">🛡️</div>
@@ -294,7 +315,7 @@
   </div>
 
   <div class="body-section" style="padding-top: 14px;">
-    <div class="section-label">The Honest Pitch From the Yeti</div>
+    <div class="section-label">Straight From the Yeti</div>
     <div style="font-size: 11px; color: var(--text); line-height: 1.75; max-width: 580px;">
       Manitou Beach draws <strong>thousands</strong> of people every summer — boaters, wine trail day-trippers, 300+ lake homeowners, event weekends that pack the place. Right now you're getting in as a founding truck with zero risk and zero cost. I'm not asking for a commitment. I'm asking you to try it: sign up, check in a couple of times, and see if it moves the needle. If it does, $9/month is the best deal in food truck marketing. If it doesn't, you keep a free directory listing and we're still good.
     </div>

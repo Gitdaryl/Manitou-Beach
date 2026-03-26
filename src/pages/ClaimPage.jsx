@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import QRCode from 'react-qr-code';
 import { C } from '../data/config';
+import yeti from '../data/errorMessages';
 
 const CLAIM_BUSINESSES = {
   cafe: {
@@ -118,7 +119,7 @@ export default function ClaimPage() {
 
   if (!biz) return (
     <div style={{ minHeight: '100vh', background: C.cream, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
-      <p style={{ color: C.textLight }}>Offer not found.</p>
+      <p style={{ color: C.textLight }}>Hmm, can't find that offer. It may have already been claimed!</p>
     </div>
   );
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { C } from '../data/config';
 import { Btn, ScrollProgress } from '../components/Shared';
 import { Navbar, Footer, GlobalStyles } from '../components/Layout';
+import yeti from '../data/errorMessages';
 
 const subScrollTo = (id) => { window.location.href = '/#' + id; };
 
@@ -81,11 +82,11 @@ export default function VendorRegisterPage() {
       if (data.success) {
         setSuccess({ vendorId: data.vendorId, pdfUrl: data.pdfUrl, eventName: data.eventName });
       } else {
-        setError(data.error || 'Registration failed. Please try again.');
+        setError(data.error || yeti.oops());
         setSubmitting(false);
       }
     } catch {
-      setError('Network error. Please try again.');
+      setError(yeti.network());
       setSubmitting(false);
     }
   }
@@ -101,8 +102,8 @@ export default function VendorRegisterPage() {
   if (notFound || !event) return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: C.cream, fontFamily: "'Libre Franklin', sans-serif", padding: 24 }}>
       <div style={{ fontSize: 36, marginBottom: 16 }}>🔍</div>
-      <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.text, marginBottom: 8 }}>Event not found</div>
-      <div style={{ fontSize: 15, color: C.textMuted }}>This registration link may be invalid or expired.</div>
+      <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.text, marginBottom: 8 }}>Hmm, can't find that event</div>
+      <div style={{ fontSize: 15, color: C.textMuted }}>This link might be old or the event moved. Double-check with the organizer?</div>
     </div>
   );
 

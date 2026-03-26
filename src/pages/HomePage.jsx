@@ -4,6 +4,7 @@ import { BASE_PRICES } from '../data/pricing';
 import { ShareBar, CategoryPill, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivider, PageSponsorBanner, DiagonalDivider, Btn, useCardTilt } from '../components/Shared';
 import { GlobalStyles, PromoBanner, NewsletterInline, HollyYetiSection, EventLightbox, Footer, Navbar, ContactModal } from '../components/Layout';
 import { DispatchPreviewSection } from './DispatchPage';
+import yeti from '../data/errorMessages';
 
 // ============================================================
 // 🏠  HOME PAGE — EventTicker, Hero, FeaturedEventsStrip,
@@ -354,7 +355,7 @@ function NewsletterBar() {
       setAlreadySubscribed(data.alreadySubscribed);
       setShowModal(true);
     } catch (err) {
-      setError('Something went wrong — try again.');
+      setError(yeti.oops());
     } finally {
       setSubmitting(false);
     }
@@ -684,8 +685,8 @@ function PricingSection() {
       });
       const data = await res.json();
       if (data.url) { window.location.href = data.url; }
-      else { setCheckoutError(data.error || 'Something went wrong. Please try again.'); }
-    } catch { setCheckoutError('Something went wrong. Please try again.'); }
+      else { setCheckoutError(data.error || yeti.oops()); }
+    } catch { setCheckoutError(yeti.network()); }
     finally { setLoading(false); }
   };
 
@@ -1748,7 +1749,7 @@ function AboutSection() {
                 </div>
 
                 {contactStatus === 'error' && (
-                  <p style={{ fontSize: 13, color: "#E87461", marginTop: 12 }}>Something went wrong — please try again.</p>
+                  <p style={{ fontSize: 13, color: "#E87461", marginTop: 12 }}>{yeti.oops()}</p>
                 )}
 
                 <div style={{ marginTop: 24 }}>

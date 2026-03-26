@@ -1,5 +1,6 @@
 import React from "react";
 import { C } from "../components/Shared";
+import yeti from '../data/errorMessages';
 
 // ============================================================
 // ☕️  BARISTA REDEEM VIEW — single-use, shows subscriber name
@@ -33,7 +34,7 @@ export default function RedeemPromoView() {
       if (!res.ok) throw new Error("Failed");
       setSuccess(true);
     } catch {
-      alert("Error redeeming code. Check internet connection.");
+      alert(yeti.network());
     } finally {
       setRedeeming(false);
     }
@@ -49,7 +50,7 @@ export default function RedeemPromoView() {
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#1a0000", padding: 24, textAlign: "center" }}>
       <div>
         <div style={{ fontSize: 56, marginBottom: 16 }}>❌</div>
-        <h1 style={{ color: "#fca5a5", fontFamily: "sans-serif", fontSize: 22, margin: "0 0 8px" }}>Code Not Found</h1>
+        <h1 style={{ color: "#fca5a5", fontFamily: "sans-serif", fontSize: 22, margin: "0 0 8px" }}>Hmm, That Code Didn't Work</h1>
         <p style={{ color: "rgba(255,255,255,0.4)", fontFamily: "sans-serif", fontSize: 14 }}>This code doesn't exist in the system.</p>
       </div>
     </div>

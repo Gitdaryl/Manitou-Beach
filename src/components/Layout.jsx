@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { C, PAGE_SPONSORS, SECTIONS, LISTING_CATEGORIES, VIDEOS, DISPATCH_CARD_SPONSORS, USA250_PUBLIC } from '../data/config';
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, WaveDivider, Btn, CategoryPill, PageSponsorBanner } from './Shared';
+import yeti from '../data/errorMessages';
 
 export function GlobalStyles() {
   return (
@@ -191,6 +192,7 @@ export function GlobalStyles() {
       }
       @media (max-width: 640px) {
         .mobile-col-1 { grid-template-columns: 1fr !important; }
+        .event-form-grid { grid-template-columns: 1fr !important; }
         .holly-grid { grid-template-columns: 1fr !important; }
         .weekly-event-row {
           grid-template-columns: 1fr !important;
@@ -501,7 +503,7 @@ export function NewsletterInline() {
       setPhone('');
       setWantSMS(false);
     } catch {
-      setError('Something went wrong — try again.');
+      setError(yeti.subscribe());
     } finally {
       setSubmitting(false);
     }
@@ -970,7 +972,7 @@ export function SubmitSection() {
     } catch (err) {
       setSubmitError(err.message && err.message !== "Submission failed"
         ? err.message
-        : "Something went wrong. Please try again or email us directly.");
+        : yeti.oops());
     } finally {
       setSubmitting(false);
     }
@@ -1429,7 +1431,7 @@ export function FooterNewsletterModal({ onClose }) {
         }).catch(() => {});
       }
       setDone(true);
-    } catch { setError("Something went wrong — try again."); }
+    } catch { setError(yeti.subscribe()); }
     finally { setSubmitting(false); }
   };
   return (
@@ -1485,7 +1487,7 @@ export function ContactModal({ onClose, defaultCategory = 'General Question' }) 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed');
       setDone(true);
-    } catch { setError('Something went wrong — please try again.'); }
+    } catch { setError(yeti.oops()); }
     finally { setSubmitting(false); }
   };
   const inp = { padding: '11px 14px', borderRadius: 6, border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.07)', color: C.cream, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", outline: 'none', width: '100%', boxSizing: 'border-box' };
@@ -2132,8 +2134,8 @@ export function EventLightbox({ event, onClose }) {
         }),
       });
       const data = await res.json();
-      if (res.status === 409) { setRsvpError('This event is now full — join the waitlist below.'); return; }
-      if (!res.ok) throw new Error(data.error || 'RSVP failed');
+      if (res.status === 409) { setRsvpError('Dang — it just filled up! You can hop on the waitlist below though.'); return; }
+      if (!res.ok) throw new Error(data.error || yeti.oops());
       setRsvpSubmitted(true);
     } catch (err) {
       setRsvpError(err.message);
@@ -2163,7 +2165,7 @@ export function EventLightbox({ event, onClose }) {
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Checkout failed');
+      if (!res.ok) throw new Error(data.error || yeti.payment());
       if (data.url) window.location.href = data.url;
     } catch (err) {
       setTicketError(err.message);

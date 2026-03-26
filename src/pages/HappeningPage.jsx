@@ -517,7 +517,7 @@ export function HappeningSubmitCTA({ simple = false }) {
             Got something good happening?
           </h3>
           <p style={{ fontSize: 15, color: "rgba(255,255,255,0.4)", margin: "0 0 32px 0", lineHeight: 1.75 }}>
-            Verify your number and your event goes live instantly — no waiting, no approval queue.
+            Quick text code, fill in the fun stuff, and you're on the calendar.
           </p>
           <Btn href="/submit-event" variant="sunset">List Your Event Free →</Btn>
         </FadeIn>
@@ -534,13 +534,13 @@ export function HappeningSubmitCTA({ simple = false }) {
             Got something good happening?
           </h3>
           <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", margin: "0 0 44px 0", lineHeight: 1.8 }}>
-            Tell the whole lake about it. Free listings, no waiting room —<br />verify your number and it's live.
+            Tell the whole lake about it. Fill in the details, verify your number,<br />and you're on the calendar. Simple as that.
           </p>
           <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap", marginBottom: 44 }}>
             {[
-              { icon: "📱", label: "Verify your number", sub: "Quick text code — 30 seconds" },
-              { icon: "✓", label: "Event goes live", sub: "Right on the calendar, right now" },
-              { icon: "✏️", label: "Edit anytime", sub: "We send you a private edit link" },
+              { icon: "📱", label: "Quick text code", sub: "Takes about 30 seconds" },
+              { icon: "✓", label: "You're on the calendar", sub: "People can see it right away" },
+              { icon: "✏️", label: "Change stuff anytime", sub: "We text you an edit link" },
             ].map(({ icon, label, sub }) => (
               <div key={label} style={{ flex: "1 1 160px", maxWidth: 200, padding: "20px 16px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12 }}>
                 <div style={{ fontSize: 26, marginBottom: 8 }}>{icon}</div>
@@ -551,7 +551,7 @@ export function HappeningSubmitCTA({ simple = false }) {
           </div>
           <Btn href="/submit-event" variant="sunset">List Your Event Free →</Btn>
           <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.25)", marginTop: 18, lineHeight: 1.6 }}>
-            Free forever. Events go live the moment you verify.
+            Always free. Always easy. That's how we roll at the lake.
           </p>
         </FadeIn>
       </div>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { C } from '../data/config';
+import yeti from '../data/errorMessages';
 
 // Reusable SMS opt-in widget — drop into any page
 // Props:
@@ -55,11 +56,11 @@ export default function SMSOptInWidget({
       if (res.ok && data.success) {
         setStatus('success');
       } else {
-        setError(data.error || 'Something went wrong.');
+        setError(data.error || yeti.subscribe());
         setStatus('error');
       }
     } catch {
-      setError('Unable to connect. Try again.');
+      setError(yeti.network());
       setStatus('error');
     }
   };

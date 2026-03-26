@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import QRCode from "react-qr-code";
 import { Btn, C } from "../components/Shared";
+import yeti from '../data/errorMessages';
 
 // ============================================================
 // 📱  SUBSCRIBER CLAIM VIEW — get code, show QR, auto-detect redemption
@@ -59,7 +60,7 @@ export default function ClaimPromoView() {
         if (!name && data.name) setName(data.name);
       }
     } catch {
-      setError("There was a problem grabbing your code. Try again.");
+      setError(yeti.oops());
     } finally {
       setLoading(false);
     }

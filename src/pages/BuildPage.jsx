@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FadeIn, ScrollProgress, SectionLabel, SectionTitle, WaveDivider } from '../components/Shared';
 import { C } from '../data/config';
 import { Footer, GlobalStyles, Navbar } from '../components/Layout';
+import yeti from '../data/errorMessages';
 
 // ============================================================
 export default function BuildPage() {
@@ -33,10 +34,10 @@ export default function BuildPage() {
       if (data.success) {
         setSubmitted(true);
       } else {
-        setError(data.error || "Something went wrong. Please try again.");
+        setError(data.error || yeti.oops());
       }
     } catch {
-      setError("Network error. Please try again.");
+      setError(yeti.network());
     } finally {
       setSubmitting(false);
     }

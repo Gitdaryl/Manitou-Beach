@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FadeIn, SectionTitle, SectionLabel, Btn } from '../components/Shared';
 import { C } from '../data/config';
 import { Footer, GlobalStyles, Navbar, compressImage } from '../components/Layout';
+import yeti from '../data/errorMessages';
 
 const EVENT_CATEGORIES = ["Live Music", "Food & Social", "Sports & Outdoors", "Community", "Arts & Culture", "Markets & Vendors", "Other"];
 
@@ -92,7 +93,7 @@ export default function EventEditPage() {
       if (!res.ok) throw new Error(data.error || "Update failed");
       setSubmitted(true);
     } catch (err) {
-      setSubmitError(err.message || "Something went wrong. Please try again.");
+      setSubmitError(err.message || yeti.oops());
     } finally {
       setSubmitting(false);
     }
@@ -115,9 +116,9 @@ export default function EventEditPage() {
             <FadeIn>
               <div style={{ maxWidth: 480, margin: "0 auto" }}>
                 <div style={{ fontSize: 48, marginBottom: 16 }}>🔍</div>
-                <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, fontWeight: 400, color: C.cream, margin: "0 0 12px 0" }}>Event not found</h2>
+                <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, fontWeight: 400, color: C.cream, margin: "0 0 12px 0" }}>Hmm, can't find that one</h2>
                 <p style={{ fontSize: 15, color: "rgba(255,255,255,0.4)", lineHeight: 1.75, margin: "0 0 32px 0" }}>
-                  This edit link may be invalid or expired. Check your confirmation email for the correct link.
+                  This link might be old or mistyped. Check your texts for the right one — we sent it when you submitted.
                 </p>
                 <Btn href="/events" variant="outlineLight">Back to Events</Btn>
               </div>
@@ -128,17 +129,17 @@ export default function EventEditPage() {
             <FadeIn>
               <div style={{ maxWidth: 520, margin: "0 auto" }}>
                 <div style={{ fontSize: 48, marginBottom: 16 }}>✓</div>
-                <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, fontWeight: 400, color: C.cream, margin: "0 0 12px 0" }}>Event updated!</h2>
+                <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, fontWeight: 400, color: C.cream, margin: "0 0 12px 0" }}>All saved!</h2>
                 <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.75, margin: "0 0 32px 0" }}>
-                  Changes will be reviewed and reflected on the calendar shortly.
+                  Your updates are live on the calendar. Looking good!
                 </p>
                 <Btn href="/events" variant="sunset">Back to Events</Btn>
 
                 {eventPageId && (
                   <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "28px 32px", marginTop: 32 }}>
-                    <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 10 }}>Want more people there?</div>
+                    <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 10 }}>Want a bigger crowd?</div>
                     <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.7, margin: "0 0 20px 0" }}>
-                      Put your event front and center — homepage hero, newsletter spotlight, featured banners. Founding rates available now.
+                      Get your event on the homepage, in the newsletter, or featured with a banner. We've got some fun options.
                     </p>
                     <Btn href={`/promote?event=${encodeURIComponent(eventPageId)}&token=${encodeURIComponent(token)}`} variant="sunset">Promote This Event →</Btn>
                   </div>
@@ -153,7 +154,7 @@ export default function EventEditPage() {
                 <SectionLabel light>Edit Event</SectionLabel>
                 <SectionTitle light>{form.name}</SectionTitle>
                 <p style={{ fontSize: 15, color: "rgba(255,255,255,0.4)", lineHeight: 1.75, margin: "0 0 48px 0" }}>
-                  Update your event details below. Changes will appear on the calendar after a quick review.
+                  Change whatever you need — it goes live right away.
                 </p>
               </FadeIn>
 

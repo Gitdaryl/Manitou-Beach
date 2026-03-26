@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { C, PAGE_SPONSORS } from "../data/config";
+import yeti from "../data/errorMessages";
 export { C };
 
 // ============================================================
@@ -405,7 +406,7 @@ export function CommunityDonationForm({ orgName, orgPageId, tiers, accentColor, 
         if (!res.ok) throw new Error(data.error || 'Checkout failed');
         window.location.href = data.url;
       } catch (err) {
-        setError(err.message || 'Something went wrong. Please try again.');
+        setError(err.message || yeti.payment());
         setCheckoutLoading(false);
       }
       return;

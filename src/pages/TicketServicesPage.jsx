@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Btn, FadeIn, ScrollProgress, SectionLabel, SectionTitle, WaveDivider } from '../components/Shared';
 import { C } from '../data/config';
 import { Footer, GlobalStyles, Navbar } from '../components/Layout';
+import yeti from '../data/errorMessages';
 
 const HOW_IT_WORKS = [
   { step: "01", title: "Sign up below", copy: "Tell us about your organization and event. Takes 30 seconds." },
@@ -51,7 +52,7 @@ function SignupForm() {
       // Redirect to Stripe Express onboarding
       window.location.href = data.onboardingUrl;
     } catch (err) {
-      setError(err.message || 'Something went wrong. Please email admin@yetigroove.com directly.');
+      setError(err.message || yeti.oops());
       setSubmitting(false);
     }
   };
@@ -346,7 +347,7 @@ export default function TicketServicesPage() {
                 <FadeIn>
                   <div style={{ textAlign: "center", padding: "16px 24px", background: "rgba(224,112,112,0.12)", borderRadius: 12, border: "1px solid rgba(224,112,112,0.25)", marginBottom: 24 }}>
                     <div style={{ fontSize: 14, color: "#e07070", fontFamily: "'Libre Franklin', sans-serif" }}>
-                      Something went wrong with the bank setup. Please try again below, or <a href="mailto:admin@yetigroove.com" style={{ color: "#e07070" }}>email Daryl</a>.
+                      Bank setup hit a snag — no worries, nothing's broken. Try again below or <a href="sms:+15177961058" style={{ color: "#e07070" }}>text Daryl</a>.
                     </div>
                   </div>
                 </FadeIn>

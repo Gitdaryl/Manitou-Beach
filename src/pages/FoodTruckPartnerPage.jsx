@@ -3,6 +3,7 @@ import { Btn, FadeIn, ScrollProgress, SectionLabel, SectionTitle, WaveDivider } 
 import { C } from '../data/config';
 import { BASE_PRICES } from '../data/pricing';
 import { Footer, GlobalStyles, Navbar } from '../components/Layout';
+import yeti from '../data/errorMessages';
 
 const TRUCK_HOW = [
   { step: "01", title: "Sign up — 2 minutes flat", copy: "Truck name, cuisine, phone, photo. Pick your tier. Verify your phone with a quick text code — and your personal check-in link arrives instantly. No app, no login, no waiting." },
@@ -137,7 +138,7 @@ export default function FoodTruckPartnerPage() {
         setSubmitError(data.error);
       }
     } catch {
-      setSubmitError('Something went wrong. Please try again.');
+      setSubmitError(yeti.network());
     } finally {
       setLoading(false);
     }
@@ -186,12 +187,12 @@ export default function FoodTruckPartnerPage() {
         if (checkoutData.url) {
           window.location.href = checkoutData.url;
         } else {
-          setVerifyError(checkoutData.error || 'Checkout failed. Please try again.');
+          setVerifyError(checkoutData.error || yeti.payment());
           setStep('verify');
         }
       }
     } catch {
-      setVerifyError('Something went wrong. Please try again.');
+      setVerifyError(yeti.network());
     } finally {
       setVerifyLoading(false);
     }

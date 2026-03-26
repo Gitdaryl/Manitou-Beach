@@ -16,19 +16,19 @@ function getParams() {
 
 const TIPS = {
   platform_ticketing: [
-    { title: 'Tickets go live on the What\'s Happening page', body: 'Attendees can buy directly from the event card. Funds land in your Stripe account within 2 business days of the event.' },
-    { title: 'You can update event details anytime', body: 'Check your texts — we sent you a private edit link. Use it to update the time, location, or description at any time.' },
-    { title: 'Want more visibility?', body: 'Add a hero banner, newsletter spotlight, or promo pin to get your event in front of every lake neighbor before it sells out.' },
+    { title: 'People can buy tickets right now', body: 'Your event is live on What\'s Happening — anyone browsing can grab tickets. Money goes straight to your bank.' },
+    { title: 'Need to change something?', body: 'We texted you an edit link. Tap it anytime to update the details — no hoops.' },
+    { title: 'Want the whole lake to know?', body: 'Homepage hero, newsletter shoutout, featured banners — there are some fun ways to pack the house.' },
   ],
   vendor_market: [
-    { title: 'Vendors register and pay directly to you', body: 'Share your vendor portal link with potential vendors. They register, pay their booth fee, and you receive the money minus the 1.25% platform fee.' },
-    { title: 'You\'ll receive the vendor portal link by text', body: 'Your organizer portal shows all registered vendors, their details, and lets you blast last-minute updates.' },
-    { title: 'Update your event details anytime', body: 'We sent a private edit link to your phone. Use it to adjust the date, location, or description.' },
+    { title: 'Vendors can sign up and pay now', body: 'Share your vendor portal link and they handle everything themselves. Money lands in your account minus a tiny 1.25% fee.' },
+    { title: 'Check your texts for your portal link', body: 'That\'s your command center — see who\'s registered, send updates, all that good stuff.' },
+    { title: 'Need to tweak the details?', body: 'We sent you an edit link by text too. Change the date, location, whatever — anytime.' },
   ],
   default: [
-    { title: 'Your event is showing right now', body: 'It\'s live on the What\'s Happening page and visible to everyone browsing the site.' },
-    { title: 'You can update it anytime', body: 'Check your texts — we sent you a private edit link. Change the time, location, description, or photo whenever you need to.' },
-    { title: 'Want more visibility?', body: 'A newsletter shoutout or hero banner gets your event in front of every lake neighbor. Visit the promote page to see options.' },
+    { title: 'It\'s live — people can see it right now', body: 'Head over to What\'s Happening and you\'ll see your event on the calendar.' },
+    { title: 'Want to change something later?', body: 'We texted you an edit link. Tap it whenever you need to update anything.' },
+    { title: 'Want the whole lake to know?', body: 'A newsletter shoutout or homepage feature gets your event in front of everyone around the lake.' },
   ],
 };
 
@@ -64,20 +64,20 @@ export default function EventConfirmedPage() {
           </div>
 
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, color: C.cream, fontWeight: 400, margin: '0 0 12px' }}>
-            {isVendor ? 'Your event is live with vendor registration.' : isTicketing ? 'Your event is live with ticketing.' : 'Your event is live on Manitou Beach.'}
+            {isVendor ? 'You\'re all set — vendors can start signing up!' : isTicketing ? 'Tickets are live — let\'s sell some!' : 'Your event is on the calendar!'}
           </h1>
           <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.sunsetLight, fontStyle: 'italic', margin: '0 0 36px', lineHeight: 1.6 }}>
             {isVendor
-              ? 'Vendors can register and pay directly. Check your texts for your organizer portal link.'
+              ? 'Check your texts — we sent you a link to your organizer portal.'
               : isTicketing
-                ? 'Attendees can buy tickets right now. Check your texts for your edit link.'
-                : 'It\'s showing on What\'s Happening right now. People can find it.'}
+                ? 'People can buy tickets right now. We texted you an edit link too.'
+                : 'It\'s showing on What\'s Happening right now. Nice work!'}
           </p>
 
           {/* Tips */}
           <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, padding: '24px 28px', textAlign: 'left', marginBottom: 32 }}>
             <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)', margin: '0 0 16px' }}>
-              A few things worth knowing
+              Here's the good stuff
             </p>
             {tips.map(({ title, body }, i) => (
               <div key={i} style={{ display: 'flex', gap: 14, marginBottom: i < tips.length - 1 ? 18 : 0 }}>

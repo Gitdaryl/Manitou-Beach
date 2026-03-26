@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Btn, FadeIn, PageSponsorBanner, ScrollProgress, SectionLabel, SectionTitle, WaveDivider } from '../components/Shared';
 import { C } from '../data/config';
 import { Footer, GlobalStyles, Navbar, NewsletterInline } from '../components/Layout';
+import yeti from '../data/errorMessages';
 
 // Session ID for rate-limiting loves (one love per item per session)
 function getTruckSessionId() {
@@ -349,10 +350,10 @@ export default function FoodTrucksPage() {
             saveLocation(checkinNote);
           } else {
             setCheckinStatus("error");
-            setCheckinMsg(d.error || "Check-in failed. Try again.");
+            setCheckinMsg(d.error || yeti.oops());
           }
         })
-        .catch(() => { setCheckinStatus("error"); setCheckinMsg("Network error. Try again."); });
+        .catch(() => { setCheckinStatus("error"); setCheckinMsg(yeti.network()); });
     };
 
     // Use already-pinned coords if vendor dropped a pin, otherwise skip geo
@@ -892,7 +893,7 @@ export default function FoodTrucksPage() {
                     </div>
                     {applyStatus === 'applied' && <p style={{ fontSize: 12, color: C.sage, fontWeight: 600, margin: "8px 0 0", wordBreak: "break-word" }}>You're on the lineup for {applyEventName}! The organizer will be in touch with details.</p>}
                     {applyStatus === 'duplicate' && <p style={{ fontSize: 12, color: C.lakeBlue, margin: "8px 0 0", wordBreak: "break-word" }}>You're already on the list for {applyEventName} — you're all set!</p>}
-                    {applyStatus === 'error' && <p style={{ fontSize: 12, color: "#c05a5a", margin: "8px 0 0" }}>Something went wrong — try again.</p>}
+                    {applyStatus === 'error' && <p style={{ fontSize: 12, color: "#c05a5a", margin: "8px 0 0" }}>{yeti.oops()}</p>}
                   </div>
                 )}
 
@@ -943,7 +944,7 @@ export default function FoodTrucksPage() {
 
                 {scheduleStatus === 'saved' && <p style={{ fontSize: 12, color: C.sage, fontWeight: 600, margin: "10px 0 0" }}>✓ Saved! Customers will see this on the locator.</p>}
                 {scheduleStatus === 'cleared' && <p style={{ fontSize: 12, color: C.textMuted, margin: "10px 0 0" }}>Coming date cleared.</p>}
-                {scheduleStatus === 'error' && <p style={{ fontSize: 12, color: "#c05a5a", margin: "10px 0 0" }}>Something went wrong — try again.</p>}
+                {scheduleStatus === 'error' && <p style={{ fontSize: 12, color: "#c05a5a", margin: "10px 0 0" }}>{yeti.oops()}</p>}
               </div>
             </div>
           )}

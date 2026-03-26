@@ -3,6 +3,7 @@ import { Btn, FadeIn, SectionLabel } from '../components/Shared';
 import { C } from '../data/config';
 import { Footer, GlobalStyles, Navbar } from '../components/Layout';
 import { WINERY_VENUES } from './WineriesPage';
+import yeti from '../data/errorMessages';
 
 const RATE_VENUES = (WINERY_VENUES || []).filter(v => v.section !== 'extended').map(v => v.name);
 
@@ -58,7 +59,7 @@ export default function RatePage() {
       if (!res.ok) throw new Error('Failed');
       setSubmitted(true);
     } catch {
-      setError('Something went wrong. Please try again or find us at the event.');
+      setError(yeti.oops());
       setSubmitting(false);
     }
   };

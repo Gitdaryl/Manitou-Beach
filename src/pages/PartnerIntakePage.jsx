@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { C } from '../data/config';
 import { Navbar, Footer, GlobalStyles } from '../components/Layout';
 import { FadeIn } from '../components/Shared';
+import yeti from '../data/errorMessages';
 
 const FIELD = {
   width: '100%', padding: '11px 14px', borderRadius: 10,
@@ -91,7 +92,7 @@ export default function PartnerIntakePage() {
       if (!res.ok) throw new Error(data.error || 'Failed');
       setSubmitted(true);
     } catch (err) {
-      setError(err.message || 'Something went wrong. Try again or email admin@yetigroove.com.');
+      setError(err.message || yeti.oops());
       setSubmitting(false);
     }
   };
