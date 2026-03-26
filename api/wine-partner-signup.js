@@ -3,7 +3,10 @@ import Stripe from 'stripe';
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { venueName, contactName, email, phone, note, reserveOnly } = req.body || {};
+  const { venueName, contactName, email, phone, note, reserveOnly, _hp } = req.body || {};
+
+  // Honeypot — bots fill hidden fields, humans don't
+  if (_hp) return res.status(200).json({ ok: true });
 
   if (!venueName || !contactName || !email || !email.includes('@')) {
     return res.status(400).json({ error: 'Venue name, your name, and a valid email are required.' });

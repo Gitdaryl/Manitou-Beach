@@ -167,9 +167,10 @@ export default function SubmitEventPage() {
     setLoading(true);
     setSubmitError('');
     try {
+      const hpVal = document.querySelector('input[name="_hp"]')?.value || '';
       const body = session
-        ? { ...form, sessionToken: session.token, _hp: '' }
-        : { ...form, _hp: '' };
+        ? { ...form, sessionToken: session.token, _hp: hpVal }
+        : { ...form, _hp: hpVal };
 
       const res = await fetch('/api/submit-event', {
         method: 'POST',
@@ -262,7 +263,7 @@ export default function SubmitEventPage() {
         {step === 'done' ? (
           /* ── DONE ── */
           <div style={{ textAlign: 'center', paddingTop: 40 }}>
-            <div style={{ fontSize: 56, marginBottom: 20 }}>🎉</div>
+            <img src="/images/yeti/yeti-celebrates.png" alt="Yeti celebrating your event" style={{ width: 'clamp(140px, 28vw, 220px)', height: 'auto', marginBottom: 16, filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.3))' }} />
             <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, fontWeight: 400, color: C.cream, margin: '0 0 12px' }}>
               {activatedData?.eventName || 'Your event'} is live!
             </h1>
@@ -279,6 +280,13 @@ export default function SubmitEventPage() {
               <a href="/happening" style={{ display: 'inline-block', padding: '14px 32px', background: 'rgba(255,255,255,0.08)', color: C.cream, borderRadius: 28, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', textDecoration: 'none' }}>
                 See What's Happening
               </a>
+            </div>
+            <div style={{ marginTop: 36, padding: '20px 24px', background: 'rgba(255,255,255,0.04)', borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)' }}>
+              <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.45)', margin: 0, lineHeight: 1.7 }}>
+                Want more people to see it? Check out our{' '}
+                <a href="/promote" style={{ color: '#D4845A', textDecoration: 'none', fontWeight: 600 }}>promotion packages</a>{' '}
+                — homepage features, newsletter spots, and more starting at $9.
+              </p>
             </div>
           </div>
 
@@ -337,6 +345,19 @@ export default function SubmitEventPage() {
           /* ── FORM ── */
           <>
             <div style={{ marginBottom: 40 }}>
+              <div className="submit-hero-row" style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 24 }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ background: 'rgba(122,142,114,0.2)', border: '1px solid rgba(122,142,114,0.35)', borderRadius: 12, padding: '14px 18px', marginBottom: 0 }}>
+                    <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(16px, 3vw, 20px)', color: C.cream, lineHeight: 1.3, marginBottom: 6 }}>
+                      This is free. Always.
+                    </div>
+                    <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', lineHeight: 1.6 }}>
+                      No credit card. No catch. Fill it out, verify your phone number, and you're on the community calendar.
+                    </div>
+                  </div>
+                </div>
+                <img src="/images/yeti/yeti-celebrates.png" alt="Yeti celebrating" style={{ width: 'clamp(100px, 20vw, 180px)', height: 'auto', flexShrink: 0, filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.3))' }} />
+              </div>
               <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)', margin: '0 0 8px' }}>Manitou Beach · Submit an Event</p>
               <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 400, color: C.cream, margin: '0 0 12px', lineHeight: 1.2 }}>
                 Get your event in front of<br /><em>the whole lake community.</em>
@@ -641,7 +662,7 @@ export default function SubmitEventPage() {
                   ? (session ? 'Publishing…' : 'Sending verification code…')
                   : (session ? 'Publish Event →' : 'Submit Event — Get Verified →')}
               </button>
-              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)', textAlign: 'center', lineHeight: 1.7, margin: '0' }}>
+              <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', textAlign: 'center', lineHeight: 1.7, margin: '4px 0 0' }}>
                 {session
                   ? 'You\'re good to go — publish as many as you want.'
                   : "We'll text you a quick code to make sure you're real. Takes 30 seconds."}

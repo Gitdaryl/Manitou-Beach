@@ -207,15 +207,24 @@ export function GlobalStyles() {
           padding: 0 20px 16px !important;
         }
         .calendar-event-row {
-          grid-template-columns: auto 1fr !important;
-          gap: 0 16px !important;
+          grid-template-columns: 1fr !important;
+          gap: 8px !important;
         }
-        .calendar-cost-badge { display: none !important; }
+        .calendar-event-row .calendar-cost-badge {
+          flex-direction: row !important;
+          align-items: center !important;
+          justify-content: flex-start !important;
+          gap: 8px !important;
+          flex-wrap: wrap !important;
+        }
         .living-here-grid { grid-template-columns: 1fr !important; }
         .mens-club-stats { grid-template-columns: repeat(2, 1fr) !important; }
         .village-roots-grid { grid-template-columns: 1fr !important; }
         .scoreboard-venue-name { width: 100px !important; font-size: 11px !important; }
         .scoreboard-explainer-grid { grid-template-columns: 1fr !important; gap: 20px !important; }
+        .submit-hero-row { flex-direction: column-reverse !important; text-align: center !important; }
+        .submit-hero-row img { width: clamp(120px, 30vw, 160px) !important; }
+        .event-lightbox-panel { padding: 20px !important; border-radius: 12px !important; }
       }
       @keyframes bar-breathe {
         0%, 100% { opacity: 1; }
@@ -1920,7 +1929,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
             </div>
             <div style={{ marginLeft: 8, display: "flex", gap: 8 }}>
               <Btn href="/business" variant="primary" small style={{ minWidth: 152, textAlign: "center", whiteSpace: "nowrap" }}>List Your Business</Btn>
-              <Btn href="/event" variant="sunset" small style={{ minWidth: 152, textAlign: "center", whiteSpace: "nowrap" }}>List Your Event</Btn>
+              <Btn href="/submit-event" variant="sunset" small style={{ minWidth: 152, textAlign: "center", whiteSpace: "nowrap" }}>List Your Event</Btn>
             </div>
           </div>
 
@@ -2052,7 +2061,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
         </a>
         <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 10, alignItems: "center" }}>
           <Btn href="/business" variant="primary" style={{ width: 200, textAlign: "center", whiteSpace: "nowrap" }}>List Your Business</Btn>
-          <Btn href="/event" variant="sunset" style={{ width: 200, textAlign: "center", whiteSpace: "nowrap" }}>List Your Event</Btn>
+          <Btn href="/submit-event" variant="sunset" style={{ width: 200, textAlign: "center", whiteSpace: "nowrap" }}>List Your Event</Btn>
         </div>
       </div>
 
@@ -2186,6 +2195,7 @@ export function EventLightbox({ event, onClose }) {
     >
       <div
         onClick={e => e.stopPropagation()}
+        className="event-lightbox-panel"
         style={{
           background: `linear-gradient(145deg, ${C.dusk} 0%, ${C.night} 100%)`,
           border: "1px solid rgba(255,255,255,0.1)",
@@ -2490,6 +2500,12 @@ export function EventLightbox({ event, onClose }) {
             {event.ticketsEnabled ? 'More Info →' : 'Get Tickets / More Info →'}
           </a>
         )}
+
+        {/* Share this event */}
+        <ShareBar
+          title={`${event.name}${event.date ? ` — ${(() => { try { return new Date(event.date + "T00:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric" }); } catch { return event.date; } })()}` : ""} at Manitou Beach`}
+          url={typeof window !== "undefined" ? `${window.location.origin}/happening` : "/happening"}
+        />
       </div>
     </div>
   );

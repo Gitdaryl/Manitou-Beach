@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 // Eager — first paint
 import HomePage from './pages/HomePage';
@@ -137,7 +137,7 @@ export default function App() {
           <Route path="/wineries" element={<WineriesPage />} />
           <Route path="/devils-lake" element={<DevilsLakePage />} />
           <Route path="/promote" element={<PromotePage />} />
-          <Route path="/event" element={<PromotePage />} />
+          <Route path="/event" element={<Navigate to="/submit-event" replace />} />
           <Route path="/advertise" element={<AdvertisePage />} />
           <Route path="/vendor-register" element={<VendorRegisterPage />} />
           <Route path="/vendor-portal" element={<VendorPortalPage />} />

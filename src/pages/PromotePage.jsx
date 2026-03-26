@@ -3,7 +3,6 @@ import { Btn, ScrollProgress, SectionLabel, SectionTitle, WaveDivider } from '..
 import { C } from '../data/config';
 import { Footer, Navbar, GlobalStyles, NewsletterInline, HollyYetiSection, ContactModal } from '../components/Layout';
 import yeti from '../data/errorMessages';
-import { HappeningSubmitCTA } from './HappeningPage';
 
 const PROMO_PAGES = ["Home", "Whats Happening", "Village", "Devils Lake", "Wineries", "Fishing", "Round Lake"];
 
@@ -506,13 +505,16 @@ export default function PromotePage() {
         padding: "140px 24px 80px",
         textAlign: "center",
       }}>
-        <SectionLabel light>Reach the Community</SectionLabel>
+        <SectionLabel light>Paid Event Promotion</SectionLabel>
         <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(36px, 6vw, 68px)", fontWeight: 400, color: C.cream, margin: "0 0 20px 0", lineHeight: 1.1 }}>
-          Your event deserves a full room.
+          Give your event the spotlight.
         </h1>
-        <p style={{ fontSize: 16, color: "rgba(255,255,255,0.5)", lineHeight: 1.8, maxWidth: 560, margin: "0 auto 0" }}>
-          Manitou Beach people want things to do. Give them something to show up for — and the place to find it.
+        <p style={{ fontSize: 16, color: "rgba(255,255,255,0.5)", lineHeight: 1.8, maxWidth: 560, margin: "0 auto 24px" }}>
+          Already listed on the calendar? These paid promotion packages put your event front and center — homepage features, newsletter spots, page banners, and more.
         </p>
+        <a href="/submit-event" style={{ fontSize: 15, color: C.sunsetLight, textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif", borderBottom: "1px solid rgba(255,255,255,0.2)", paddingBottom: 2 }}>
+          Just want to list your event for free? Go here — takes 2 minutes →
+        </a>
       </section>
 
       {/* Success / Cancelled states */}
@@ -531,10 +533,16 @@ export default function PromotePage() {
         </div>
       )}
 
-      {/* List Free — event submission */}
-      <div id="submit-event">
-        <HappeningSubmitCTA />
-      </div>
+      {/* Free listing nudge — clear separation from paid options */}
+      <section style={{ background: C.warmWhite, padding: "28px 24px", textAlign: "center", borderBottom: `1px solid ${C.sand}` }}>
+        <p style={{ fontSize: 15, color: C.textMuted, margin: 0, fontFamily: "'Libre Franklin', sans-serif" }}>
+          Listing your event on the calendar is <strong style={{ color: C.text }}>always free</strong>.{" "}
+          <a href="/submit-event" style={{ color: C.lakeBlue, fontWeight: 600, textDecoration: "none" }}>
+            Submit your event here →
+          </a>{" "}
+          The options below are for extra promotion if you want more eyeballs.
+        </p>
+      </section>
 
       {/* Package grid */}
       <section style={{ background: C.warmWhite, padding: "72px 24px 60px" }}>

@@ -45,7 +45,7 @@ function SignupForm() {
       const res = await fetch('/api/ticket-partner-signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orgName: orgName.trim(), contactName: contactName.trim(), email: email.trim(), phone: phone.trim() }),
+        body: JSON.stringify({ orgName: orgName.trim(), contactName: contactName.trim(), email: email.trim(), phone: phone.trim(), _hp: document.querySelector('input[name="_hp"]')?.value || '' }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed');
@@ -70,7 +70,7 @@ function SignupForm() {
   return (
     <FadeIn>
       <form onSubmit={handleSubmit} noValidate>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 14 }}>
+        <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 14 }}>
           <div>
             <label style={labelStyle}>Organization Name *</label>
             <input type="text" value={orgName} onChange={e => setOrgName(e.target.value)} placeholder="Rotary Club, Lake Association, ..." style={fieldStyle} />
@@ -80,7 +80,7 @@ function SignupForm() {
             <input type="text" value={contactName} onChange={e => setContactName(e.target.value)} placeholder="First + last" style={fieldStyle} />
           </div>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 28 }}>
+        <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 28 }}>
           <div>
             <label style={labelStyle}>Email *</label>
             <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="best way to reach you" style={fieldStyle} />
@@ -90,6 +90,8 @@ function SignupForm() {
             <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="(555) 555-5555" style={fieldStyle} />
           </div>
         </div>
+
+        <input type="text" name="_hp" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
 
         {error && <div style={{ fontSize: 13, color: '#e07070', marginBottom: 16, fontFamily: "'Libre Franklin', sans-serif" }}>{error}</div>}
 

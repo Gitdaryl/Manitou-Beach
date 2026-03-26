@@ -55,7 +55,7 @@ function WinePartnerSignupSection() {
       const res = await fetch('/api/wine-partner-signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ venueName: venueName.trim(), contactName: contactName.trim(), email: email.trim(), phone: phone.trim(), note: note.trim() }),
+        body: JSON.stringify({ venueName: venueName.trim(), contactName: contactName.trim(), email: email.trim(), phone: phone.trim(), note: note.trim(), _hp: document.querySelector('input[name="_hp"]')?.value || '' }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed');
@@ -79,7 +79,7 @@ function WinePartnerSignupSection() {
   return (
     <FadeIn>
       <form onSubmit={handleSubmit} noValidate>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 14 }}>
+        <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 14 }}>
           <div>
             <label style={labelStyle}>Venue Name *</label>
             <input type="text" value={venueName} onChange={e => setVenueName(e.target.value)} placeholder="Faust House, Ang & Co, ..." style={fieldStyle} />
@@ -89,7 +89,7 @@ function WinePartnerSignupSection() {
             <input type="text" value={contactName} onChange={e => setContactName(e.target.value)} placeholder="First + last" style={fieldStyle} />
           </div>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 14 }}>
+        <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 14 }}>
           <div>
             <label style={labelStyle}>Email *</label>
             <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="best way to reach you" style={fieldStyle} />
@@ -103,6 +103,8 @@ function WinePartnerSignupSection() {
           <label style={labelStyle}>Anything else? <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional)</span></label>
           <textarea value={note} onChange={e => setNote(e.target.value)} placeholder="Delivery address, questions, anything helpful..." rows={2} style={{ ...fieldStyle, resize: 'none' }} />
         </div>
+
+        <input type="text" name="_hp" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
 
         {error && <div style={{ fontSize: 13, color: '#e07070', marginBottom: 16, fontFamily: "'Libre Franklin', sans-serif" }}>{error}</div>}
 
@@ -147,7 +149,7 @@ function WinePartnerReserveSection() {
       const res = await fetch('/api/wine-partner-signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ venueName: venueName.trim(), contactName: contactName.trim(), email: email.trim(), reserveOnly: true }),
+        body: JSON.stringify({ venueName: venueName.trim(), contactName: contactName.trim(), email: email.trim(), reserveOnly: true, _hp: document.querySelector('input[name="_hp_r"]')?.value || '' }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed');
@@ -184,11 +186,12 @@ function WinePartnerReserveSection() {
       ) : (
         <div style={{ padding: '24px', background: 'rgba(255,255,255,0.04)', borderRadius: 14, border: '1px solid rgba(255,255,255,0.10)', marginTop: 4 }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)', marginBottom: 16, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.3 }}>Hold My Spot — No payment yet</div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12, marginBottom: 12 }}>
+          <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12, marginBottom: 12 }}>
             <div><label style={labelStyle}>Venue Name</label><input style={fieldStyle} placeholder="Your tasting room" value={venueName} onChange={e => setVenueName(e.target.value)} /></div>
             <div><label style={labelStyle}>Your Name</label><input style={fieldStyle} placeholder="First + last" value={contactName} onChange={e => setContactName(e.target.value)} /></div>
             <div><label style={labelStyle}>Email</label><input type="email" style={fieldStyle} placeholder="best way to reach you" value={email} onChange={e => setEmail(e.target.value)} /></div>
           </div>
+          <input type="text" name="_hp_r" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
           {error && <div style={{ fontSize: 12, color: '#e07070', marginBottom: 12, fontFamily: "'Libre Franklin', sans-serif" }}>{error}</div>}
           <div style={{ display: 'flex', gap: 10 }}>
             <button

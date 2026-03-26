@@ -172,8 +172,8 @@ function WeeklyEventsSection({ events, onEventClick }) {
                     </p>
                   </div>
 
-                  {/* Cost badge */}
-                  <div style={{ paddingTop: 8 }}>
+                  {/* Cost badge + share */}
+                  <div style={{ paddingTop: 8, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8 }}>
                     <span style={{
                       fontFamily: "'Libre Franklin', sans-serif",
                       fontSize: 11, fontWeight: 600, letterSpacing: 1,
@@ -184,6 +184,7 @@ function WeeklyEventsSection({ events, onEventClick }) {
                     }}>
                       {event.cost || "Free"}
                     </span>
+                    <EventShareBtn event={event} color={color} />
                   </div>
                 </div>
               </FadeIn>
@@ -193,6 +194,107 @@ function WeeklyEventsSection({ events, onEventClick }) {
         )}
       </div>
     </section>
+  );
+}
+
+// ============================================================
+// 🔗 COMPACT SHARE BUTTON — for individual event rows
+// ============================================================
+function EventShareBtn({ event, color }) {
+  const [open, setOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const ref = useRef(null);
+
+  const siteUrl = typeof window !== "undefined" ? window.location.origin : "";
+  const shareUrl = `${siteUrl}/happening`;
+  const shareText = `${event.name}${event.date ? ` — ${formatEventDate(event.date)}` : ""} at Manitou Beach`;
+
+  useEffect(() => {
+    if (!open) return;
+    const close = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener("click", close);
+    return () => document.removeEventListener("click", close);
+  }, [open]);
+
+  const handleClick = async (e) => {
+    e.stopPropagation();
+    if (navigator.share) {
+      try { await navigator.share({ title: shareText, url: shareUrl }); } catch (_) {}
+      return;
+    }
+    setOpen(!open);
+  };
+
+  const share = (platform, e) => {
+    e.stopPropagation();
+    if (platform === "facebook") {
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`, "_blank");
+    } else if (platform === "x") {
+      window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`, "_blank");
+    } else if (platform === "copy") {
+      navigator.clipboard.writeText(`${shareText}\n${shareUrl}`).then(() => {
+        setCopied(true);
+        setTimeout(() => { setCopied(false); setOpen(false); }, 1500);
+      });
+    }
+  };
+
+  const pillStyle = {
+    display: "inline-flex", alignItems: "center", gap: 4,
+    padding: "4px 10px", borderRadius: 14, border: "none",
+    background: `${color || C.sage}12`, color: color || C.sage,
+    fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 600,
+    letterSpacing: 0.5, cursor: "pointer", transition: "all 0.2s",
+    whiteSpace: "nowrap",
+  };
+
+  return (
+    <div ref={ref} style={{ position: "relative", display: "inline-block" }}>
+      <button
+        onClick={handleClick}
+        style={pillStyle}
+        onMouseEnter={e => { e.currentTarget.style.background = `${color || C.sage}25`; }}
+        onMouseLeave={e => { e.currentTarget.style.background = `${color || C.sage}12`; }}
+        aria-label={`Share ${event.name}`}
+      >
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+        </svg>
+        Share
+      </button>
+      {open && (
+        <div style={{
+          position: "absolute", right: 0, top: "100%", marginTop: 6, zIndex: 20,
+          background: "#fff", borderRadius: 10, boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
+          border: `1px solid ${C.sand}`, padding: "6px 4px", minWidth: 140,
+          display: "flex", flexDirection: "column", gap: 2,
+        }}>
+          {[
+            { key: "facebook", label: "Facebook" },
+            { key: "x", label: "X / Twitter" },
+            { key: "copy", label: copied ? "Copied!" : "Copy Link" },
+          ].map(({ key, label }) => (
+            <button
+              key={key}
+              onClick={(e) => share(key, e)}
+              style={{
+                display: "block", width: "100%", textAlign: "left",
+                padding: "8px 14px", border: "none", borderRadius: 6,
+                background: key === "copy" && copied ? `${C.sage}15` : "transparent",
+                color: key === "copy" && copied ? C.sage : C.text,
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 500,
+                cursor: "pointer", transition: "background 0.15s",
+              }}
+              onMouseEnter={e => { if (!(key === "copy" && copied)) e.currentTarget.style.background = `${C.sand}80`; }}
+              onMouseLeave={e => { if (!(key === "copy" && copied)) e.currentTarget.style.background = "transparent"; }}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -387,6 +489,7 @@ function CalendarSection({ events, onEventClick, activeFilter, onFilterChange })
                         Vendors Welcome
                       </span>
                     )}
+                    <EventShareBtn event={event} color={color} />
                   </div>
                 </div>
               </FadeIn>
@@ -512,12 +615,13 @@ export function HappeningSubmitCTA({ simple = false }) {
     return (
       <section style={{ background: C.night, padding: "72px 24px", textAlign: "center" }}>
         <FadeIn>
+          <img src="/images/yeti/yeti-clapper.png" alt="Yeti with clapperboard" style={{ width: 'clamp(120px, 22vw, 200px)', height: 'auto', marginBottom: 20, filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.3))' }} />
           <SectionLabel light>Get Involved</SectionLabel>
           <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 38px)", fontWeight: 400, color: C.cream, margin: "0 0 12px 0" }}>
             Got something good happening?
           </h3>
           <p style={{ fontSize: 15, color: "rgba(255,255,255,0.4)", margin: "0 0 32px 0", lineHeight: 1.75 }}>
-            Quick text code, fill in the fun stuff, and you're on the calendar.
+            Quick text code, fill in the fun stuff, and you're on the calendar. It's free — always.
           </p>
           <Btn href="/submit-event" variant="sunset">List Your Event Free →</Btn>
         </FadeIn>
@@ -529,12 +633,13 @@ export function HappeningSubmitCTA({ simple = false }) {
     <section id="submit-event" style={{ background: C.night, padding: "80px 24px" }}>
       <div style={{ maxWidth: 680, margin: "0 auto", textAlign: "center" }}>
         <FadeIn>
+          <img src="/images/yeti/yeti-clapper.png" alt="Yeti with clapperboard" style={{ width: 'clamp(140px, 25vw, 220px)', height: 'auto', marginBottom: 20, filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.3))' }} />
           <SectionLabel light>Get Involved</SectionLabel>
           <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 40px)", fontWeight: 400, color: C.cream, margin: "0 0 16px 0" }}>
             Got something good happening?
           </h3>
           <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", margin: "0 0 44px 0", lineHeight: 1.8 }}>
-            Tell the whole lake about it. Fill in the details, verify your number,<br />and you're on the calendar. Simple as that.
+            Tell the whole lake about it. Fill in the details, verify your number,<br />and you're on the calendar. It's free — always.
           </p>
           <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap", marginBottom: 44 }}>
             {[

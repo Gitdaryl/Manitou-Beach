@@ -126,6 +126,7 @@ export default function FoodTruckPartnerPage() {
           imageUrl,
           tier: selectedTier,
           skipVerification: prefill.verified === 'true',
+          _hp: document.querySelector('input[name="_hp"]')?.value || '',
         }),
       });
       const data = await res.json();
@@ -529,7 +530,7 @@ export default function FoodTruckPartnerPage() {
                       style={{ width: "100%", boxSizing: "border-box", padding: "13px 16px", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}
                     />
                   </div>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 10 }}>
+                  <div className="event-form-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 10 }}>
                     <div>
                       <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 6 }}>Email *</label>
                       <input
@@ -611,6 +612,9 @@ export default function FoodTruckPartnerPage() {
                       onChange={e => { const f = e.target.files?.[0]; if (f) handleImageSelect(f); }}
                     />
                   </div>
+
+                  {/* Hidden honeypot */}
+                  <input type="text" name="_hp" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
 
                   {submitError && (
                     <div style={{ fontSize: 13, color: "#e07070", fontWeight: 500 }}>{submitError}</div>

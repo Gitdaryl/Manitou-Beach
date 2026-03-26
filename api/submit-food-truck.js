@@ -38,7 +38,10 @@ function dedupeSlug(base, existing) {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { truckName, cuisine, email, phone, website, imageUrl, tier, skipVerification } = req.body || {};
+  const { truckName, cuisine, email, phone, website, imageUrl, tier, skipVerification, _hp } = req.body || {};
+
+  // Honeypot — bots fill hidden fields, humans don't
+  if (_hp) return res.status(200).json({ ok: true, needsVerification: true });
 
   if (!truckName?.trim() || !email?.trim() || !email.includes('@')) {
     return res.status(400).json({ error: 'Truck name and valid email are required.' });

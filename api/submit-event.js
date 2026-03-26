@@ -33,6 +33,33 @@ function normalizeUrl(url) {
   return /^https?:\/\//i.test(u) ? u : 'https://' + u;
 }
 
+// Quick content moderation for session-path (already verified, submitting another event)
+function moderateContent(name, description, location) {
+  const combined = `${name} ${description} ${location}`.toLowerCase();
+  const flags = [];
+
+  if (name.trim().length < 3) flags.push('Event name too short');
+  if (name.length > 5 && name === name.toUpperCase() && /[A-Z]/.test(name)) flags.push('ALL CAPS name');
+
+  const urlCount = (description.match(/https?:\/\//gi) || []).length;
+  if (urlCount > 2) flags.push(`${urlCount} URLs in description`);
+
+  const spamWords = ['buy now', 'limited offer', 'act fast', 'click here', 'make money', 'work from home',
+    'crypto', 'bitcoin', 'forex', 'mlm', 'weight loss', 'diet pills', 'viagra', 'casino', 'betting',
+    'free money', 'wire transfer', 'lottery'];
+  const spamHits = spamWords.filter(w => combined.includes(w));
+  if (spamHits.length > 0) flags.push(`Spam: ${spamHits.join(', ')}`);
+
+  const letters = name.replace(/[^a-zA-Z]/g, '').toLowerCase();
+  if (letters.length > 6) {
+    const vowels = (letters.match(/[aeiou]/g) || []).length;
+    if (vowels / letters.length < 0.15) flags.push('Gibberish name');
+  }
+
+  const shouldHold = flags.length >= 2 || spamHits.length >= 2;
+  return { shouldHold, flags };
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
@@ -71,10 +98,18 @@ export default async function handler(req, res) {
   const code = hasValidSession ? '' : generateCode();
   const editToken = hasValidSession ? crypto.randomBytes(16).toString('hex') : '';
 
+  // Run content moderation for session-path (immediate publish)
+  const modCheck = hasValidSession
+    ? moderateContent(eventName || '', description || '', location || '')
+    : { shouldHold: false, flags: [] };
+  const sessionStatus = hasValidSession
+    ? (modCheck.shouldHold ? 'Review' : 'Published')
+    : 'Pending';
+
   // Build Notion properties based on event type
   const properties = {
     'Event Name':        { title: [{ text: { content: eventName.trim() } }] },
-    'Status':            { status: { name: hasValidSession ? 'Published' : 'Pending' } },
+    'Status':            { status: { name: sessionStatus } },
     'Verification Code': { rich_text: [{ text: { content: code } }] },
     'Source':            { select: { name: 'Self-Submitted' } },
     'Email':             { email: email.trim() },
@@ -148,13 +183,35 @@ export default async function handler(req, res) {
     });
 
     if (!notionRes.ok) {
-      const err = await notionRes.text();
-      console.error('submit-event Notion error:', err);
-      return res.status(500).json({ error: 'Something went wrong. Please try again.' });
+      const errText = await notionRes.text();
+      // If "Review" status doesn't exist in Notion, retry with "Pending"
+      if (sessionStatus === 'Review' && errText.includes('Review')) {
+        console.warn('submit-event: "Review" status not in Notion, falling back to "Pending"');
+        properties['Status'] = { status: { name: 'Pending' } };
+        const retryRes = await fetch('https://api.notion.com/v1/pages', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${notionToken}`, 'Content-Type': 'application/json', 'Notion-Version': '2022-06-28' },
+          body: JSON.stringify({ parent: { database_id: dbId }, properties }),
+        });
+        if (!retryRes.ok) {
+          console.error('submit-event retry Notion error:', await retryRes.text());
+          return res.status(500).json({ error: 'Something went wrong. Please try again.' });
+        }
+      } else {
+        console.error('submit-event Notion error:', errText);
+        return res.status(500).json({ error: 'Something went wrong. Please try again.' });
+      }
     }
 
-    // Session path — already published, no SMS needed
+    // Session path — already verified, moderation decides status
     if (hasValidSession) {
+      // Notify admin if flagged (best-effort)
+      if (modCheck.flags.length > 0 && process.env.DARYL_PHONE) {
+        const { sendSMS: sms } = await import('./lib/twilio.js');
+        const prefix = modCheck.shouldHold ? '🚩 EVENT HELD:' : '⚠️ Flagged (live):';
+        sms(process.env.DARYL_PHONE, `${prefix}\n${eventName.trim()}\n${organizerName || email}\nFlags: ${modCheck.flags.join('; ')}`).catch(() => {});
+      }
+      // Return activated=true either way — user doesn't know about the hold
       return res.status(200).json({ ok: true, activated: true, eventName: eventName.trim(), editToken });
     }
 
