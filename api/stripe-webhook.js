@@ -550,6 +550,22 @@ export default async function handler(req, res) {
           } else {
             console.error(`Webhook Error: Business "${businessName}" not found in Notion to upgrade.`);
           }
+
+          // If this is a tier upgrade, cancel any old subscriptions for this customer
+          if (metadata.upgrade === 'true' && session.customer && session.subscription) {
+            try {
+              const subs = await stripe.subscriptions.list({ customer: session.customer, status: 'active' });
+              for (const sub of subs.data) {
+                if (sub.id !== session.subscription) {
+                  await stripe.subscriptions.cancel(sub.id);
+                  console.log(`Cancelled old subscription ${sub.id} on upgrade — ${businessName}`);
+                }
+              }
+            } catch (err) {
+              console.error('Error cancelling old subscription on upgrade:', err);
+            }
+          }
+
           // Send confirmation email
           const customerEmail = session.customer_email || session.customer_details?.email || '';
           if (customerEmail && process.env.RESEND_API_KEY) {
@@ -558,11 +574,41 @@ export default async function handler(req, res) {
             const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
             const billingLabel = metadata.billingInterval === 'year' ? '/yr' : '/mo';
             const amount = `$${(session.amount_total / 100).toFixed(0)}${billingLabel}`;
+
+            const isUpgrade = metadata.upgrade === 'true';
             resend.emails.send({
               from: 'Manitou Beach <events@yetigroove.com>',
               to: customerEmail,
-              subject: `Welcome to Manitou Beach — ${businessName} is listed`,
-              html: `
+              subject: isUpgrade
+                ? `Your listing just got an upgrade — ${businessName} is now ${tierLabel}`
+                : `Welcome to Manitou Beach — ${businessName} is listed`,
+              html: isUpgrade ? `
+                <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; color: #3B3228; background: #FAF6EF; padding: 40px 32px; border-radius: 8px;">
+                  <p style="font-size: 26px; font-weight: bold; margin: 0 0 8px; color: #1A2830;">You're moving up.</p>
+                  <p style="font-size: 15px; color: #6B5F52; margin: 0 0 24px; line-height: 1.7;">
+                    <strong>${businessName}</strong> has been upgraded to <strong>${tierLabel}</strong> on Manitou Beach.
+                    Your previous subscription has been cancelled — nothing else you need to do.
+                  </p>
+                  <div style="background: #fff; border-radius: 6px; padding: 20px 24px; margin-bottom: 28px; border: 1px solid #E8DFD0;">
+                    <p style="margin: 0 0 8px; font-size: 12px; color: #8A7E6E; text-transform: uppercase; letter-spacing: 1px; font-family: sans-serif;">Your listing</p>
+                    <p style="margin: 0 0 4px; font-size: 18px; font-weight: bold; color: #1A2830;">${businessName}</p>
+                    <p style="margin: 0 0 4px; font-size: 14px; color: #D4845A; font-weight: bold;">${tierLabel} · ${amount}</p>
+                    <p style="margin: 0; font-size: 13px; color: #8A7E6E; line-height: 1.6;">
+                      Cancel anytime — no contracts, no hassle.
+                    </p>
+                  </div>
+                  <p style="margin: 0 0 28px;">
+                    <a href="${siteUrl}/discover" style="background: #1A2830; color: #FAF6EF; text-decoration: none; padding: 15px 30px; border-radius: 4px; font-family: sans-serif; font-weight: bold; font-size: 14px; letter-spacing: 1px; display: inline-block;">
+                      See Your Listing →
+                    </a>
+                  </p>
+                  <p style="font-size: 13px; color: #8A7E6E; margin: 0 0 6px; line-height: 1.7;">
+                    Want to update your info or add a logo? Just reply to this email.
+                  </p>
+                  <hr style="border: none; border-top: 1px solid #E8DFD0; margin: 28px 0 16px;">
+                  <p style="font-size: 11px; color: #9A8E7E; margin: 0;">Manitou Beach · Devils Lake, Michigan · manitoubeachmichigan.com</p>
+                </div>
+              ` : `
                 <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; color: #3B3228; background: #FAF6EF; padding: 40px 32px; border-radius: 8px;">
                   <p style="font-size: 26px; font-weight: bold; margin: 0 0 8px; color: #1A2830;">You're on the map.</p>
                   <p style="font-size: 15px; color: #6B5F52; margin: 0 0 24px; line-height: 1.7;">
@@ -583,7 +629,7 @@ export default async function handler(req, res) {
                     </a>
                   </p>
                   <p style="font-size: 13px; color: #8A7E6E; margin: 0 0 6px; line-height: 1.7;">
-                    Want to update your info, add a logo, or change anything? Just reply to this email.
+                    Want to update your info, add a logo, or change anything? Just reply to this email. Want more visibility? <a href="${siteUrl}/upgrade-listing" style="color: #4A7A5A;">Upgrade your listing anytime →</a>
                   </p>
                   <hr style="border: none; border-top: 1px solid #E8DFD0; margin: 28px 0 16px;">
                   <p style="font-size: 11px; color: #9A8E7E; margin: 0;">Manitou Beach · Devils Lake, Michigan · manitoubeachmichigan.com</p>

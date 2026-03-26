@@ -36,6 +36,7 @@ const USA250Page = lazy(() => import('./pages/USA250Page'));
 const StaysPage = lazy(() => import('./pages/StaysPage'));
 const HollyYetiPage = lazy(() => import('./pages/HollyYetiPage'));
 const UpdateListingPage = lazy(() => import('./pages/UpdateListingPage'));
+const UpgradeListingPage = lazy(() => import('./pages/UpgradeListingPage'));
 const CheckInPage = lazy(() => import('./pages/CheckInPage'));
 const TicketServicesPage = lazy(() => import('./pages/TicketServicesPage'));
 const TicketSuccessPage = lazy(() => import('./pages/TicketSuccessPage'));
@@ -125,6 +126,7 @@ export default function App() {
           <Route path="/business" element={<FeaturedPage />} />
           <Route path="/featured" element={<FeaturedPage />} />
           <Route path="/update-listing" element={<UpdateListingPage />} />
+          <Route path="/upgrade-listing" element={<UpgradeListingPage />} />
           <Route path="/listing-confirmed" element={<ListingConfirmedPage />} />
           <Route path="/submit-event" element={<SubmitEventPage />} />
           <Route path="/event-confirmed" element={<EventConfirmedPage />} />

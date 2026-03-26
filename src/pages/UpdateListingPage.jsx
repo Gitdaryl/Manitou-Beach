@@ -302,9 +302,14 @@ export default function UpdateListingPage() {
                   <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', lineHeight: 1.7, margin: '0 0 28px', fontFamily: "'Libre Franklin', sans-serif" }}>
                     We'll take a look and have your changes showing within 24 hours. We really appreciate you keeping things up to date — it makes a big difference for people trying to find you.
                   </p>
-                  <Btn href="/business" variant="outline" style={{ borderColor: 'rgba(255,255,255,0.3)', color: 'rgba(255,255,255,0.7)' }}>
-                    See all local businesses
-                  </Btn>
+                  <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+                    <Btn href="/business" variant="outline" style={{ borderColor: 'rgba(255,255,255,0.3)', color: 'rgba(255,255,255,0.7)' }}>
+                      See all local businesses
+                    </Btn>
+                    <Btn href={`/upgrade-listing?business=${encodeURIComponent(business?.name || '')}`} variant="outline" style={{ borderColor: 'rgba(255,255,255,0.3)', color: 'rgba(255,255,255,0.7)' }}>
+                      Upgrade your listing →
+                    </Btn>
+                  </div>
                 </div>
               )}
             </FadeIn>
