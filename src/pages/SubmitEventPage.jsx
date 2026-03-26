@@ -4,7 +4,7 @@ import { C } from '../data/config';
 import yeti from '../data/errorMessages';
 
 const EVENT_TYPES = [
-  { value: 'free',              label: 'Free — people just show up',          sub: "No registration needed. We'll show a \"Free · All welcome\" badge." },
+  { value: 'free',              label: 'Just show up — no registration',       sub: "No sign-up needed. Leave the price blank if it's free, or add a door price below." },
   { value: 'rsvp_appreciated',  label: 'RSVP encouraged (but not required)',   sub: "We'll show an RSVP option, but people can still walk in." },
   { value: 'rsvp_required',     label: 'RSVP required — limited spots',        sub: 'Attendees must register. Set a capacity cap if needed.' },
   { value: 'own_ticketing',     label: 'Ticketed — I use my own system',       sub: "We'll show a \"Get Tickets\" button linking to your site or Eventbrite." },
@@ -435,6 +435,38 @@ export default function SubmitEventPage() {
                 </div>
               </div>
 
+              {/* Recurring — up front like one-way/return on flight bookings */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <div>
+                  <label style={label}>Recurring?</label>
+                  <select value={form.recurring} onChange={set('recurring')} style={{ ...input, cursor: 'pointer' }}>
+                    {RECURRING_OPTIONS.map(o => (
+                      <option key={o} value={o}>{RECURRING_LABELS[o] || o}</option>
+                    ))}
+                  </select>
+                </div>
+                {form.recurring !== 'None' && (
+                  <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                    <div>
+                      <label style={label}>Day of Week</label>
+                      <select value={form.recurringDay} onChange={set('recurringDay')} style={{ ...input, cursor: 'pointer' }}>
+                        <option value="">— select —</option>
+                        {DAYS.map(d => <option key={d} value={d}>{d}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label style={label}>Runs through <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>— last date of series</span></label>
+                      <input style={input} type="date" value={form.recurringEndDate} onChange={set('recurringEndDate')} min={form.date || undefined} />
+                    </div>
+                  </div>
+                )}
+                {form.recurring !== 'None' && (
+                  <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)', lineHeight: 1.6, margin: 0 }}>
+                    e.g. Farmers market every Saturday, May 22 – Oct 15 → Weekly · Saturday · Runs through Oct 15
+                  </p>
+                )}
+              </div>
+
               {/* Location */}
               <div>
                 <label style={label}>Location / Venue</label>
@@ -552,8 +584,8 @@ export default function SubmitEventPage() {
 
               {/* Cost */}
               <div>
-                <label style={label}>Cost description <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>— shown on the event card</span></label>
-                <input style={input} type="text" value={form.cost} onChange={set('cost')} placeholder='e.g. "Free", "$10 at the door", "Tickets from $25"' />
+                <label style={label}>Cost {form.eventType === 'free' ? '' : 'description '}<span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>— {form.eventType === 'free' ? 'leave blank if free' : 'shown on the event card'}</span></label>
+                <input style={input} type="text" value={form.cost} onChange={set('cost')} placeholder={form.eventType === 'free' ? 'e.g. "$5 at the door" — or leave blank for free' : 'e.g. "Free", "$10 at the door", "Tickets from $25"'} />
               </div>
 
               {/* Image Upload */}
@@ -598,38 +630,6 @@ export default function SubmitEventPage() {
                   >
                     ✕ Remove image
                   </button>
-                )}
-              </div>
-
-              {/* Recurring */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                <div>
-                  <label style={label}>Recurring?</label>
-                  <select value={form.recurring} onChange={set('recurring')} style={{ ...input, cursor: 'pointer' }}>
-                    {RECURRING_OPTIONS.map(o => (
-                      <option key={o} value={o}>{RECURRING_LABELS[o] || o}</option>
-                    ))}
-                  </select>
-                </div>
-                {form.recurring !== 'None' && (
-                  <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                    <div>
-                      <label style={label}>Day of Week</label>
-                      <select value={form.recurringDay} onChange={set('recurringDay')} style={{ ...input, cursor: 'pointer' }}>
-                        <option value="">— select —</option>
-                        {DAYS.map(d => <option key={d} value={d}>{d}</option>)}
-                      </select>
-                    </div>
-                    <div>
-                      <label style={label}>Runs through <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>— last date of series</span></label>
-                      <input style={input} type="date" value={form.recurringEndDate} onChange={set('recurringEndDate')} min={form.date || undefined} />
-                    </div>
-                  </div>
-                )}
-                {form.recurring !== 'None' && (
-                  <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)', lineHeight: 1.6, margin: 0 }}>
-                    e.g. Farmers market every Saturday, May 22 – Oct 15 → Weekly · Saturday · Runs through Oct 15
-                  </p>
                 )}
               </div>
 
