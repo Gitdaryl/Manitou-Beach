@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar, Footer } from '../components/Layout';
 import { C } from '../data/config';
+import yeti from '../data/errorMessages';
 
 const EVENT_TYPES = [
   { value: 'free',              label: 'Free — people just show up',          sub: "No registration needed. We'll show a \"Free · All welcome\" badge." },
@@ -77,6 +78,43 @@ export default function SubmitEventPage() {
   const [submitError, setSubmitError] = useState('');
   const [verifyError, setVerifyError] = useState('');
   const [activatedData, setActivatedData] = useState(null);
+  const [imagePreview, setImagePreview] = useState('');
+  const [imageUploading, setImageUploading] = useState(false);
+  const [imageDragOver, setImageDragOver] = useState(false);
+
+  const handleImageFile = async (file) => {
+    if (!file || !file.type.startsWith('image/')) return;
+    if (file.size > 2 * 1024 * 1024) { setSubmitError('Image must be under 2 MB.'); return; }
+    // Show preview immediately
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const src = e.target.result;
+      setImagePreview(src);
+      setImageUploading(true);
+      setSubmitError('');
+      try {
+        const base64 = src.split(',')[1];
+        const res = await fetch('/api/upload-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ filename: file.name, contentType: file.type, data: base64, folder: 'events' }),
+        });
+        const data = await res.json();
+        if (data.url) {
+          setForm(f => ({ ...f, imageUrl: data.url }));
+        } else {
+          setSubmitError(data.error || 'Image upload failed.');
+          setImagePreview('');
+        }
+      } catch {
+        setSubmitError('Image upload failed — try again or paste a URL instead.');
+        setImagePreview('');
+      } finally {
+        setImageUploading(false);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   // On mount: restore active session and pre-fill organizer fields; show guide if not dismissed
   useEffect(() => {
@@ -115,6 +153,8 @@ export default function SubmitEventPage() {
     setVerifyCode('');
     setSubmitError('');
     setVerifyError('');
+    setImagePreview('');
+    setImageDragOver(false);
   };
 
   const handleSubmit = async () => {
@@ -145,7 +185,7 @@ export default function SubmitEventPage() {
         setStep('verify');
       }
     } catch {
-      setSubmitError('Something went wrong. Please try again.');
+      setSubmitError(yeti.oops());
     } finally {
       setLoading(false);
     }
@@ -188,7 +228,7 @@ export default function SubmitEventPage() {
         if (onboardData.onboardingUrl) {
           window.location.href = onboardData.onboardingUrl;
         } else {
-          setVerifyError(onboardData.error || 'Payment setup failed. Please try again.');
+          setVerifyError(onboardData.error || yeti.payment());
           setStep('verify');
         }
       } else if (data.activated) {
@@ -196,7 +236,7 @@ export default function SubmitEventPage() {
         setStep('done');
       }
     } catch {
-      setVerifyError('Something went wrong. Please try again.');
+      setVerifyError(yeti.oops());
       setVerifyLoading(false);
     }
   };
@@ -227,7 +267,7 @@ export default function SubmitEventPage() {
               {activatedData?.eventName || 'Your event'} is live!
             </h1>
             <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', lineHeight: 1.8, marginBottom: 28 }}>
-              {session ? 'Published instantly — your verified session is still active.' : 'Check your texts — we sent you a private edit link so you can update details anytime.'}
+              {session ? 'Boom — published! Want to add another?' : 'Check your texts — we sent you a link to update it anytime. Easy peasy.'}
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
               <button
@@ -302,7 +342,7 @@ export default function SubmitEventPage() {
                 Get your event in front of<br /><em>the whole lake community.</em>
               </h1>
               <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.45)', lineHeight: 1.8, margin: 0 }}>
-                Verify your phone and your event goes live immediately — no waiting for approval.
+                Quick text code, fill in the fun stuff, and you're on the calendar. That's it.
               </p>
             </div>
 
@@ -314,19 +354,17 @@ export default function SubmitEventPage() {
                   style={{ position: 'absolute', top: 12, right: 14, background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', fontSize: 18, cursor: 'pointer', lineHeight: 1, padding: 0 }}
                   aria-label="Dismiss guide"
                 >×</button>
-                <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: '#D4845A', margin: '0 0 10px' }}>Yeti Guide — Got more than one event?</p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <p style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: '#D4845A', margin: '0 0 12px' }}>Hey — quick heads up from the Yeti</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                   {[
-                    ['① Verify once.', 'Your first event asks for a quick text code — 30 seconds, done. After that your session stays active for 8 hours.'],
-                    ['② Everything after = one click.', 'Every event you submit in the same session publishes instantly. No more codes. Your name, email, and phone stay filled in automatically — just swap out the event details.'],
-                    ['③ Seasonal series? One entry covers it.', 'For a farmers market every Saturday May–October, or live music every Friday in August — pick Weekly or Monthly under Recurring, choose the day, and set a "Runs through" date. Done.'],
-                    ['④ Multi-day event?', 'Set a start date and an end date (e.g. a festival that runs Friday + Saturday). The calendar will show the full range.'],
+                    ['① One text code, you\'re in.', 'First event? We\'ll text you a quick code. After that you\'re good for 8 hours — no more codes, just submit and go.'],
+                    ['② Got a bunch of events?', 'Once you\'re verified, each one publishes with a single click. Your name and info stay filled in — just change the event stuff.'],
+                    ['③ Weekly thing? One entry does it.', 'Farmers market every Saturday? Live music every Friday? Pick "Weekly," choose the day, set when it ends. Boom — whole season covered.'],
+                    ['④ Multi-day?', 'Set a start and end date. We\'ll show the full range on the calendar. Easy.'],
                   ].map(([title, body]) => (
-                    <div key={title} style={{ display: 'flex', gap: 10 }}>
-                      <div style={{ flexShrink: 0 }}>
-                        <span style={{ fontSize: 12, fontWeight: 700, color: C.cream }}>{title}</span>{' '}
-                        <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', lineHeight: 1.6 }}>{body}</span>
-                      </div>
+                    <div key={title} style={{ marginBottom: 2 }}>
+                      <span style={{ fontSize: 13, fontWeight: 700, color: C.cream }}>{title}</span>{' '}
+                      <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.7 }}>{body}</span>
                     </div>
                   ))}
                 </div>
@@ -354,7 +392,7 @@ export default function SubmitEventPage() {
               </div>
 
               {/* Date + Times */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 <div>
                   <label style={label}>Start Date *</label>
                   <input style={input} type="date" value={form.date} onChange={set('date')} />
@@ -364,7 +402,7 @@ export default function SubmitEventPage() {
                   <input style={input} type="date" value={form.dateEnd} onChange={set('dateEnd')} min={form.date || undefined} />
                 </div>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 <div>
                   <label style={label}>Start Time</label>
                   <input style={input} type="text" value={form.timeStart} onChange={set('timeStart')} placeholder="e.g. 10:00 AM" />
@@ -433,7 +471,7 @@ export default function SubmitEventPage() {
 
               {/* Conditional: Platform ticketing */}
               {form.eventType === 'platform_ticketing' && (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                   <div>
                     <label style={label}>Ticket Price ($)</label>
                     <input style={input} type="number" min="0" step="0.01" value={form.ticketPrice} onChange={set('ticketPrice')} placeholder="25.00" />
@@ -455,7 +493,7 @@ export default function SubmitEventPage() {
 
               {/* Conditional: Vendor market */}
               {form.eventType === 'vendor_market' && (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                   <div>
                     <label style={label}>Booth Fee ($)</label>
                     <input style={input} type="number" min="0" step="0.01" value={form.vendorFee} onChange={set('vendorFee')} placeholder="20.00" />
@@ -482,10 +520,49 @@ export default function SubmitEventPage() {
                 <input style={input} type="text" value={form.cost} onChange={set('cost')} placeholder='e.g. "Free", "$10 at the door", "Tickets from $25"' />
               </div>
 
-              {/* Image URL */}
+              {/* Image Upload */}
               <div>
-                <label style={label}>Event Image URL <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>— optional</span></label>
-                <input style={input} type="text" value={form.imageUrl} onChange={set('imageUrl')} placeholder="https://..." />
+                <label style={label}>Event Image / Logo <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>— optional</span></label>
+                <div
+                  onClick={() => document.getElementById('event-img-upload').click()}
+                  onDragOver={e => { e.preventDefault(); setImageDragOver(true); }}
+                  onDragLeave={() => setImageDragOver(false)}
+                  onDrop={e => { e.preventDefault(); setImageDragOver(false); const f = e.dataTransfer.files[0]; if (f) handleImageFile(f); }}
+                  style={{ border: `1.5px dashed ${imageDragOver ? 'rgba(212,132,90,0.6)' : 'rgba(255,255,255,0.15)'}`, borderRadius: 10, padding: imagePreview || form.imageUrl ? '12px' : '28px 20px', textAlign: 'center', cursor: 'pointer', transition: 'border-color 0.2s', background: imageDragOver ? 'rgba(212,132,90,0.06)' : 'rgba(255,255,255,0.03)' }}
+                  onMouseEnter={e => { if (!imageDragOver) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'; }}
+                  onMouseLeave={e => { if (!imageDragOver) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)'; }}
+                >
+                  {imageUploading ? (
+                    <span style={{ fontSize: 13, color: '#D4845A', fontFamily: "'Libre Franklin', sans-serif" }}>Uploading…</span>
+                  ) : imagePreview || form.imageUrl ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+                      <img src={imagePreview || form.imageUrl} alt="preview" style={{ maxHeight: 140, maxWidth: '100%', borderRadius: 8, objectFit: 'cover' }} />
+                      <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', fontFamily: "'Libre Franklin', sans-serif" }}>Click or drop to replace</span>
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+                      <span style={{ fontSize: 28, opacity: 0.3 }}>📷</span>
+                      <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)', fontFamily: "'Libre Franklin', sans-serif" }}>Drop an image here or click to upload</span>
+                      <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.2)', fontFamily: "'Libre Franklin', sans-serif" }}>JPG, PNG, or WebP · Max 2 MB</span>
+                    </div>
+                  )}
+                  <input id="event-img-upload" type="file" accept="image/*" style={{ display: 'none' }} onChange={e => { if (e.target.files[0]) handleImageFile(e.target.files[0]); e.target.value = ''; }} />
+                </div>
+                {/* Fallback: paste a URL */}
+                {!imagePreview && !form.imageUrl && (
+                  <div style={{ marginTop: 8 }}>
+                    <input style={{ ...input, fontSize: 12 }} type="text" value={form.imageUrl} onChange={set('imageUrl')} placeholder="…or paste an image URL" />
+                  </div>
+                )}
+                {(imagePreview || form.imageUrl) && (
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); setImagePreview(''); setForm(f => ({ ...f, imageUrl: '' })); }}
+                    style={{ marginTop: 8, background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0 }}
+                  >
+                    ✕ Remove image
+                  </button>
+                )}
               </div>
 
               {/* Recurring */}
@@ -499,7 +576,7 @@ export default function SubmitEventPage() {
                   </select>
                 </div>
                 {form.recurring !== 'None' && (
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                  <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                     <div>
                       <label style={label}>Day of Week</label>
                       <select value={form.recurringDay} onChange={set('recurringDay')} style={{ ...input, cursor: 'pointer' }}>
@@ -528,13 +605,13 @@ export default function SubmitEventPage() {
                     <label style={label}>Your Name / Organization</label>
                     <input style={input} type="text" value={form.organizerName} onChange={set('organizerName')} placeholder="e.g. Irish Hills Wine Trail" />
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                  <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                     <div>
                       <label style={label}>Email *</label>
                       <input style={input} type="email" value={form.email} onChange={set('email')} placeholder="you@example.com" />
                     </div>
                     <div>
-                      <label style={label}>Phone * <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>— for verification only, not shown publicly</span></label>
+                      <label style={label}>Phone * <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>— we'll text you a code</span></label>
                       <input style={input} type="tel" value={form.phone} onChange={set('phone')} placeholder="(555) 000-0000" />
                     </div>
                   </div>
@@ -550,7 +627,7 @@ export default function SubmitEventPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', background: 'rgba(122,142,114,0.12)', border: '1px solid rgba(122,142,114,0.3)', borderRadius: 8 }}>
                   <span style={{ color: '#7A8E72', fontSize: 14 }}>✓</span>
                   <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)' }}>
-                    Verified session active — events publish instantly, no code needed.
+                    You're verified — just fill it out and hit publish!
                   </span>
                 </div>
               )}
@@ -566,8 +643,8 @@ export default function SubmitEventPage() {
               </button>
               <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)', textAlign: 'center', lineHeight: 1.7, margin: '0' }}>
                 {session
-                  ? 'Your phone is already verified. Events go live immediately.'
-                  : "We'll text a code to verify it's you. Once verified, your event goes live instantly."}
+                  ? 'You\'re good to go — publish as many as you want.'
+                  : "We'll text you a quick code to make sure you're real. Takes 30 seconds."}
               </p>
 
             </div>
