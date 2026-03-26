@@ -607,7 +607,7 @@ export default function FeaturedPage() {
 
                 {wlStatus === "error" && (
                   <div style={{ background: `${C.sunset}15`, border: `1px solid ${C.sunset}40`, borderRadius: 8, padding: "12px 16px", fontSize: 13, color: C.sunset }}>
-                    Something went wrong. Please try again or email hello@manitoubeach.com
+                    Something went wrong. Please try again or email hello@yetigroove.com
                   </div>
                 )}
 

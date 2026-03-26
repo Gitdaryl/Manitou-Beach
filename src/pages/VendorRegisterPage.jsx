@@ -304,7 +304,7 @@ export default function VendorRegisterPage() {
       <div style={{ background: C.cream, borderTop: `1px solid ${C.sand}`, padding: '16px 24px', textAlign: 'center' }}>
         <span style={{ fontSize: 11, color: C.textMuted, letterSpacing: 0.5 }}>
           Vendor registration powered by{' '}
-          <a href="https://manitoubeach.com/ticket-services" style={{ color: C.textMuted, textDecoration: 'underline' }}>Yetickets</a>
+          <a href="https://manitoubeachmichigan.com/ticket-services" style={{ color: C.textMuted, textDecoration: 'underline' }}>Yetickets</a>
         </span>
       </div>
     </div>

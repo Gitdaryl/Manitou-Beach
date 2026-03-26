@@ -594,8 +594,12 @@ export function HappeningSubmitCTA({ simple = false }) {
           <div style={{ maxWidth: 520, margin: "0 auto" }}>
             <div style={{ fontSize: 48, marginBottom: 16 }}>✓</div>
             <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 3vw, 32px)", fontWeight: 400, color: C.cream, margin: "0 0 12px 0" }}>Event submitted!</h3>
-            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.75, margin: "0 0 36px 0" }}>
-              We'll review and get it listed within 48 hours. Want more eyes on it?
+            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.75, margin: "0 0 16px 0" }}>
+              We'll review and get it listed within 48 hours.
+            </p>
+            <p style={{ fontSize: 14, color: "rgba(255,255,255,0.35)", lineHeight: 1.7, margin: "0 0 36px 0", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 8, padding: "12px 16px" }}>
+              Check your email for a confirmation and your private edit link.<br/>
+              <span style={{ color: "rgba(255,200,100,0.6)" }}>Don't see it? Check your spam or junk folder.</span>
             </p>
             <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "28px 32px", marginBottom: 24 }}>
               <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 10 }}>Promote Your Event</div>

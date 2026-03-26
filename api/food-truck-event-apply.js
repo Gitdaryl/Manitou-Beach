@@ -216,7 +216,7 @@ export default async function handler(req, res) {
     }
 
     // 7. Notify organizer of new application (best-effort)
-    const siteUrl = process.env.SITE_URL || 'https://manitoubeach.com';
+    const siteUrl = process.env.SITE_URL || 'https://manitoubeach.yetigroove.com';
     const portalUrl = event.vendorPortalToken
       ? `${siteUrl}/vendor-portal?token=${event.vendorPortalToken}&event=${eventId}`
       : null;

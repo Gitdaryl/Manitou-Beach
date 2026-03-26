@@ -8,8 +8,8 @@ export default {
   // ── Identity ──────────────────────────────────────────────
   name: 'Manitou Beach',
   tagline: 'Where the Lake Meets the Land',
-  domain: 'manitoubeach.com',
-  email: 'hello@manitoubeach.com',
+  domain: 'manitoubeachmichigan.com',
+  email: 'hello@yetigroove.com',
 
   // ── Location ──────────────────────────────────────────────
   location: {

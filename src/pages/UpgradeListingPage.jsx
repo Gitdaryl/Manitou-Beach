@@ -65,7 +65,7 @@ export default function UpgradeListingPage() {
         setBusiness({ name: data.businessName, email: verifyEmail.trim().toLowerCase(), tier: data.tier });
         setStep(2);
       } else {
-        setVerifyError("We couldn't find an active subscription listing for that name and email. Need help? Email us at hello@manitoubeach.com.");
+        setVerifyError("We couldn't find an active subscription listing for that name and email. Need help? Email us at hello@yetigroove.com.");
       }
     } catch {
       setVerifyError('Something went wrong — please try again.');

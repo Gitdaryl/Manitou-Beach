@@ -17,7 +17,7 @@ export default async function handler(req, res) {
 
   try {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-    const siteUrl = process.env.SITE_URL || 'https://manitoubeach.com';
+    const siteUrl = process.env.SITE_URL || 'https://manitoubeach.yetigroove.com';
 
     // Create Stripe Express account
     const account = await stripe.accounts.create({

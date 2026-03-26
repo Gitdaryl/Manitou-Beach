@@ -18,7 +18,7 @@ export default function TermsPage() {
         <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(30px, 5vw, 46px)', fontWeight: 400, color: C.dusk, margin: '0 0 8px' }}>Terms of Service</h1>
         <p style={{ ...S.p, color: C.textMuted, fontSize: 13, marginBottom: 40 }}>Effective date: March 2026 &nbsp;·&nbsp; Yeti Groove Media LLC</p>
 
-        <p style={S.p}>By using the Manitou Beach community platform at manitoubeach.com ("the Site"), you agree to these Terms. If you don't agree, please don't use the Site.</p>
+        <p style={S.p}>By using the Manitou Beach community platform at manitoubeachmichigan.com ("the Site"), you agree to these Terms. If you don't agree, please don't use the Site.</p>
 
         <h2 style={S.h2}>Who we are</h2>
         <p style={S.p}>The Site is operated by Yeti Groove Media LLC, a Michigan limited liability company. Contact: <a href="mailto:admin@yetigroove.com" style={{ color: C.sage }}>admin@yetigroove.com</a>.</p>

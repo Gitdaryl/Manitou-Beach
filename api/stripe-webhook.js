@@ -862,7 +862,7 @@ export default async function handler(req, res) {
               subject: `Your ticket for ${metadata.eventName || 'the event'} — ${ticketId}`,
               html: `
                 <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#FAF6EF;">
-                  <img src="https://manitoubeach.com/images/yeti/yetickets_sign.png" alt="Yetickets" style="width:200px;margin-bottom:24px;" />
+                  <img src="${(process.env.SITE_URL || 'https://manitoubeach.yetigroove.com')}/images/yeti/yetickets_sign.png" alt="Yetickets" style="width:200px;margin-bottom:24px;" />
                   <h1 style="color:#1A2830;font-size:22px;margin:0 0 8px;">You're in! 🎉</h1>
                   <p style="color:#5C5248;font-size:15px;margin:0 0 24px;">
                     Here's your ticket for <strong>${metadata.eventName || 'the event'}</strong>.
@@ -885,7 +885,7 @@ export default async function handler(req, res) {
 
                   <p style="color:#8C806E;font-size:13px;line-height:1.6;">
                     Show this ticket (printed or on your phone) at the door. The QR code will be scanned for entry.<br/><br/>
-                    Lost your ticket? Reply to this email or visit <a href="https://manitoubeach.com" style="color:#5B7D8E;">manitoubeach.com</a> to retrieve it.
+                    Lost your ticket? Reply to this email or visit <a href="${process.env.SITE_URL || 'https://manitoubeach.yetigroove.com'}" style="color:#5B7D8E;">manitoubeachmichigan.com</a> to retrieve it.
                   </p>
                 </div>
               `,
@@ -953,7 +953,7 @@ export default async function handler(req, res) {
 
                   <p style="color:#8C806E;font-size:12px;line-height:1.7;margin:0;">
                     Confirmation ID: <strong style="color:#1A2830;">${sponsorId}</strong><br />
-                    Powered by Yetickets · <a href="https://manitoubeach.com" style="color:#5B7D8E;">manitoubeach.com</a>
+                    Powered by Yetickets · <a href="${process.env.SITE_URL || 'https://manitoubeach.yetigroove.com'}" style="color:#5B7D8E;">manitoubeachmichigan.com</a>
                   </p>
                 </div>
               `,

@@ -111,13 +111,14 @@ export default async function handler(req, res) {
       }
       // Send confirmation email (best-effort — never block the response)
       if (email && process.env.RESEND_API_KEY) {
-        const editLink = `https://manitoubeach.com/events/edit?token=${editToken}`;
+        const siteUrl = process.env.SITE_URL || 'https://manitoubeach.yetigroove.com';
+        const editLink = `${siteUrl}/events/edit?token=${editToken}`;
         const dateDisplay = date ? new Date(date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) : '';
         const timeDisplay = [time, timeEnd].filter(Boolean).join(' – ');
         try {
           const resend = new Resend(process.env.RESEND_API_KEY);
           await resend.emails.send({
-            from: 'Manitou Beach <events@manitoubeach.com>',
+            from: 'Manitou Beach <events@yetigroove.com>',
             to: email,
             subject: `Your event "${name}" has been submitted`,
             html: `
@@ -140,7 +141,7 @@ export default async function handler(req, res) {
                 <div style="background:#FFF8F0;border-radius:12px;padding:20px 24px;border:1px solid #F0E4D0;">
                   <p style="margin:0 0 8px;color:#D4845A;font-size:12px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Want more visibility?</p>
                   <p style="margin:0 0 16px;color:#5C5248;font-size:14px;line-height:1.6;">Hero Feature · Newsletter Spotlight · Featured Banners.<br/>Get your event in front of every lake neighbor.</p>
-                  <a href="https://manitoubeach.com/promote" style="display:inline-block;background:#D4845A;color:#fff;text-decoration:none;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;">
+                  <a href="${siteUrl}/promote" style="display:inline-block;background:#D4845A;color:#fff;text-decoration:none;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;">
                     See Promotion Packages →
                   </a>
                 </div>

@@ -26,7 +26,7 @@ export default async function handler(req, res) {
     // Generate portal token
     const portalToken = generatePortalToken();
 
-    const siteUrl = process.env.SITE_URL || 'https://manitoubeach.com';
+    const siteUrl = process.env.SITE_URL || 'https://manitoubeach.yetigroove.com';
     const registrationUrl = `${siteUrl}/vendor-register?event=${eventId}`;
     const portalUrl = `${siteUrl}/vendor-portal?token=${portalToken}&event=${eventId}`;
 
@@ -101,7 +101,7 @@ export default async function handler(req, res) {
             </div>
 
             <p style="color:#8C806E;font-size:12px;line-height:1.6;margin:0;">
-              Powered by Yetickets · <a href="https://manitoubeach.com/ticket-services" style="color:#5B7D8E;">manitoubeach.com</a>
+              Powered by Yetickets · <a href="${siteUrl}/ticket-services" style="color:#5B7D8E;">manitoubeachmichigan.com</a>
             </p>
           </div>
         `,

@@ -115,7 +115,7 @@ export default async function handler(req, res) {
               We'll send you a reminder the day before. See you there!
             </p>
             <p style="margin-top:24px;color:#8C806E;font-size:12px;">
-              <a href="https://manitoubeach.com/events" style="color:#5B7D8E;">Browse more events →</a>
+              <a href="${process.env.SITE_URL || 'https://manitoubeach.yetigroove.com'}/events" style="color:#5B7D8E;">Browse more events →</a>
             </p>
           </div>
         `,

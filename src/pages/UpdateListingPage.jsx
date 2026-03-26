@@ -80,7 +80,7 @@ export default function UpdateListingPage() {
         if (data.business.logo) setLogoPreview(data.business.logo);
         setStep(2);
       } else {
-        setVerifyError("We couldn't find a match for that name and email address. Make sure they're spelled exactly as you entered them when you first signed up. Still stuck? Just email us at hello@manitoubeach.com and we'll sort it out.");
+        setVerifyError("We couldn't find a match for that name and email address. Make sure they're spelled exactly as you entered them when you first signed up. Still stuck? Just email us at hello@yetigroove.com and we'll sort it out.");
       }
     } catch {
       setVerifyError('Something went wrong — please try again.');
