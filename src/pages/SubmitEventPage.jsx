@@ -8,7 +8,7 @@ const EVENT_TYPES = [
   { value: 'rsvp_appreciated',  label: 'RSVP encouraged (but not required)',   sub: "We'll show an RSVP option, but people can still walk in." },
   { value: 'rsvp_required',     label: 'RSVP required — limited spots',        sub: 'Attendees must register. Set a capacity cap if needed.' },
   { value: 'own_ticketing',     label: 'Ticketed — I use my own system',       sub: "We'll show a \"Get Tickets\" button linking to your site or Eventbrite." },
-  { value: 'platform_ticketing',label: 'Ticketed — use Manitou Beach ticketing', sub: 'Stripe-powered checkout. Funds go directly to your bank. 1.25% platform fee.' },
+  { value: 'platform_ticketing',label: "Ticketed — we'll handle it for you", sub: 'Secure checkout right on this site. No setup fees, no monthly charges. 1.25% + standard card processing.' },
   { value: 'vendor_market',     label: 'Vendor market — vendors pay for booths', sub: 'Vendors register and pay via Stripe directly to your account. You get an organizer portal.' },
 ];
 
@@ -492,14 +492,32 @@ export default function SubmitEventPage() {
 
               {/* Conditional: Platform ticketing */}
               {form.eventType === 'platform_ticketing' && (
-                <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                  <div>
-                    <label style={label}>Ticket Price ($)</label>
-                    <input style={input} type="number" min="0" step="0.01" value={form.ticketPrice} onChange={set('ticketPrice')} placeholder="25.00" />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                    <div>
+                      <label style={label}>Ticket Price ($)</label>
+                      <input style={input} type="number" min="0" step="0.01" value={form.ticketPrice} onChange={set('ticketPrice')} placeholder="25.00" />
+                    </div>
+                    <div>
+                      <label style={label}>Capacity <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>— optional</span></label>
+                      <input style={input} type="number" min="1" value={form.ticketCapacity} onChange={set('ticketCapacity')} placeholder="e.g. 200" />
+                    </div>
                   </div>
-                  <div>
-                    <label style={label}>Capacity <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>— optional</span></label>
-                    <input style={input} type="number" min="1" value={form.ticketCapacity} onChange={set('ticketCapacity')} placeholder="e.g. 200" />
+                  <div style={{ background: 'rgba(122,142,114,0.1)', border: '1px solid rgba(122,142,114,0.25)', borderRadius: 8, padding: '14px 16px' }}>
+                    <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, margin: '0 0 8px' }}>
+                      <strong style={{ color: 'rgba(255,255,255,0.75)' }}>What your 1.25% gets your attendees:</strong> automatic email & text reminders the day before and day of your event, plus instant notifications if anything changes — postponed, moved, cancelled. No extra cost, no extra work.
+                    </p>
+                    <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', lineHeight: 1.6, margin: '0 0 8px' }}>
+                      Stripe charges their standard processing fee (~2.9% + 30¢) on top — that's the same fee they charge everyone, including Eventbrite.
+                    </p>
+                    <a
+                      href="/ticket-services"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ fontSize: 12, color: '#7A8E72', fontWeight: 700, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}
+                    >
+                      Learn more about Manitou Beach ticketing →
+                    </a>
                   </div>
                 </div>
               )}
@@ -530,7 +548,7 @@ export default function SubmitEventPage() {
               {needsStripe && (
                 <div style={{ background: 'rgba(212,132,90,0.1)', border: '1px solid rgba(212,132,90,0.25)', borderRadius: 10, padding: '14px 16px' }}>
                   <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', lineHeight: 1.7, margin: 0 }}>
-                    After verifying your phone, you'll connect your bank account via Stripe (takes ~5 minutes). Money goes directly to you — we take 1.25%.
+                    After verifying your phone, you'll connect your bank account via Stripe (takes ~5 minutes). Money goes directly to you — our platform fee is just 1.25%.
                   </p>
                 </div>
               )}
