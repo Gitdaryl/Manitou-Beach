@@ -291,16 +291,30 @@ function CalendarSection({ events, onEventClick, activeFilter, onFilterChange })
 
                   {/* Event info */}
                   <div>
-                    <h3 style={{
-                      fontFamily: "'Libre Baskerville', serif",
-                      fontSize: "clamp(16px, 2vw, 22px)",
-                      fontWeight: 400,
-                      color: C.text,
-                      margin: "0 0 4px 0",
-                      lineHeight: 1.3,
-                    }}>
-                      {event.name}
-                    </h3>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
+                      <h3 style={{
+                        fontFamily: "'Libre Baskerville', serif",
+                        fontSize: "clamp(16px, 2vw, 22px)",
+                        fontWeight: 400,
+                        color: C.text,
+                        margin: 0,
+                        lineHeight: 1.3,
+                      }}>
+                        {event.name}
+                      </h3>
+                      {event.promoType && (!event.promoEnd || new Date(event.promoEnd + 'T23:59:59') >= new Date()) && (
+                        <span style={{
+                          fontFamily: "'Libre Franklin', sans-serif",
+                          fontSize: 9, fontWeight: 700, letterSpacing: 1.5,
+                          textTransform: "uppercase",
+                          color: C.sage, background: `${C.sage}18`,
+                          padding: "3px 10px", borderRadius: 10,
+                          whiteSpace: "nowrap", flexShrink: 0,
+                        }}>
+                          Featured
+                        </span>
+                      )}
+                    </div>
                     <div style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
                       {event.time && <span>{event.time}{event.timeEnd ? ` – ${event.timeEnd}` : ""}</span>}
                       {event.time && event.location && <span style={{ margin: "0 6px", opacity: 0.4 }}>·</span>}
@@ -781,9 +795,79 @@ export function HappeningSubmitCTA({ simple = false }) {
 // ============================================================
 // 🗺️  EXPLORE
 
+// ============================================================
+// HERO TAKEOVER — full-width featured event from promotions API
+// ============================================================
+function HeroTakeover({ event, onEventClick }) {
+  if (!event) return null;
+  return (
+    <section style={{
+      background: `linear-gradient(135deg, ${C.night} 0%, #1e3326 100%)`,
+      padding: "48px 24px",
+      borderBottom: `3px solid ${C.sage}50`,
+    }}>
+      <div style={{
+        maxWidth: 1100, margin: "0 auto",
+        display: "flex", gap: 32, alignItems: "center", flexWrap: "wrap",
+      }}>
+        {(event.heroImageUrl || event.imageUrl) && (
+          <img
+            src={event.heroImageUrl || event.imageUrl}
+            alt={event.name}
+            style={{ width: 240, height: 160, objectFit: "cover", borderRadius: 12, flexShrink: 0, boxShadow: "0 8px 32px rgba(0,0,0,0.4)" }}
+          />
+        )}
+        <div style={{ flex: 1, minWidth: 240 }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 8 }}>
+            Featured Event
+          </div>
+          <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 36px)", color: C.cream, lineHeight: 1.2, marginBottom: 8 }}>
+            {event.promoHeadline || event.name}
+          </div>
+          {(event.date || event.location) && (
+            <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: "rgba(255,255,255,0.5)", marginBottom: 4 }}>
+              {event.date && new Date(event.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+              {event.date && event.location && " · "}
+              {event.location}
+            </div>
+          )}
+          {event.time && (
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.35)", marginBottom: 16 }}>
+              {event.time}
+            </div>
+          )}
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+            {event.eventUrl ? (
+              <a href={event.eventUrl} target="_blank" rel="noopener noreferrer" style={{
+                display: "inline-block", padding: "12px 28px",
+                background: C.sage, color: "#fff", borderRadius: 6,
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 13,
+                fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase",
+                textDecoration: "none",
+              }}>
+                {event.ctaLabel || "Get Details"}
+              </a>
+            ) : (
+              <button onClick={() => onEventClick && onEventClick(event)} style={{
+                padding: "12px 28px", background: C.sage, color: "#fff", border: "none", borderRadius: 6,
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 13,
+                fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: "pointer",
+              }}>
+                View Event
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function HappeningPage() {
   const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [weeklyEvents, setWeeklyEvents] = useState([]);
+  const [heroTakeover, setHeroTakeover] = useState(null);
+  const [stripPin, setStripPin] = useState(null);
   const subScrollTo = (id) => { window.location.href = "/#" + id; };
   const [lightboxEvent, setLightboxEvent] = useState(null);
   const [activeFilter, setActiveFilter] = useState("All");
@@ -796,6 +880,14 @@ export default function HappeningPage() {
         setWeeklyEvents(data.recurring || []);
       })
       .catch(() => {});
+
+    fetch("/api/promotions")
+      .then(r => r.json())
+      .then(data => {
+        if (data.heroTakeover?.length > 0) setHeroTakeover(data.heroTakeover[0]);
+        if (data.stripPin) setStripPin(data.stripPin);
+      })
+      .catch(() => {});
   }, []);
 
   return (
@@ -805,7 +897,8 @@ export default function HappeningPage() {
       <Navbar activeSection="happening" scrollTo={subScrollTo} isSubPage={true} />
       <HappeningHero />
       <PromoBanner page="Whats Happening" />
-      <EventTimeline />
+      <HeroTakeover event={heroTakeover} onEventClick={setLightboxEvent} />
+      <EventTimeline stripPin={stripPin} />
       <WeeklyEventsSection events={weeklyEvents} onEventClick={setLightboxEvent} />
       <CalendarSection events={upcomingEvents} onEventClick={setLightboxEvent} activeFilter={activeFilter} onFilterChange={setActiveFilter} />
 

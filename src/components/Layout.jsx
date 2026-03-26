@@ -592,7 +592,7 @@ export function NewsletterInline() {
 // ============================================================
 // 📅  12-MONTH ROLLING EVENT TIMELINE
 // ============================================================
-export function EventTimeline() {
+export function EventTimeline({ stripPin = null }) {
   const [notionEvents, setNotionEvents] = useState([]);
   const [lightboxEvent, setLightboxEvent] = useState(null);
 
@@ -608,9 +608,18 @@ export function EventTimeline() {
   const cutoff = new Date(now.getFullYear(), now.getMonth() + 3, now.getDate());
 
   // 100% Notion-driven — no hardcoded events
-  const allEvents = notionEvents
+  let allEvents = notionEvents
     .filter(e => { const d = new Date(e.date + "T00:00:00"); return d >= now && d <= cutoff; })
     .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  // Pin strip pin promo event to position 1
+  if (stripPin) {
+    const pinIdx = allEvents.findIndex(e => e.id === stripPin.id);
+    if (pinIdx > 0) {
+      const [pinned] = allEvents.splice(pinIdx, 1);
+      allEvents = [pinned, ...allEvents];
+    }
+  }
 
   const catColor = (cat) => ({ "Live Music": C.sunset, "Food & Social": "#8B5E3C", "Sports & Outdoors": C.sage, "Community": C.lakeBlue }[cat] || C.sage);
 
@@ -690,7 +699,12 @@ export function EventTimeline() {
                           onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.06)"}
                           onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.03)"}
                         >
-                          <div style={{ fontSize: 10, color, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 4 }}>{event.category}</div>
+                          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                            <span style={{ fontSize: 10, color, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase" }}>{event.category}</span>
+                            {stripPin && event.id === stripPin.id && (
+                              <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunsetLight, background: "rgba(212,132,90,0.2)", padding: "2px 8px", borderRadius: 8, fontFamily: "'Libre Franklin', sans-serif" }}>Featured</span>
+                            )}
+                          </div>
                           <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.cream, lineHeight: 1.3, marginBottom: 4 }}>{event.name}</div>
                           <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif" }}>
                             {event.time}{event.location ? ` · ${event.location}` : ""}

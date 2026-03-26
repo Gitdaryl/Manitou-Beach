@@ -5,6 +5,7 @@
     { "path": "/api/cron-expire-featured",   "schedule": "0 6 * * *" },
     { "path": "/api/cron-event-reminders",   "schedule": "0 8 * * *" },
     { "path": "/api/cron-sponsor-expiry",    "schedule": "0 9 * * *" },
-    { "path": "/api/cron-beta-trial-expiry", "schedule": "0 10 * * *" }
+    { "path": "/api/cron-beta-trial-expiry", "schedule": "0 10 * * *" },
+    { "path": "/api/cron-expire-promotions", "schedule": "0 7 * * *" }
   ]
 }

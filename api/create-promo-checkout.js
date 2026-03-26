@@ -81,7 +81,7 @@ export default async function handler(req, res) {
 
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-  const { tier, eventName, email, promoPages, notes, returnPath = 'promote', months = 1 } = req.body;
+  const { tier, eventName, email, promoPages, notes, returnPath = 'promote', months = 1, eventPageId } = req.body;
 
   if (!tier || !eventName || !email) {
     return res.status(400).json({ error: 'Event name, email, and promotion package are required.' });
@@ -126,6 +126,7 @@ export default async function handler(req, res) {
         days: plan.days ? String(plan.days) : 'n/a',
         promoPages: promoPages || '',
         notes: notes || '',
+        eventPageId: eventPageId || '',
       },
       success_url: `${baseUrl}/${returnPath}?success=true&event=${encodeURIComponent(eventName)}`,
       cancel_url: `${baseUrl}/${returnPath}?cancelled=true`,

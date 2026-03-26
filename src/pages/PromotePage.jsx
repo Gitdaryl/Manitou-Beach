@@ -422,9 +422,27 @@ export default function PromotePage() {
   const isCancelled = params.get("cancelled") === "true";
   const successEvent = params.get("event") || "";
 
-  const [form, setForm] = useState({ eventName: "", email: "", tier: "event_spotlight", promoPages: [], notes: "" });
+  // If linked from EventEditPage, pre-fill event details
+  const linkedEventId = params.get("event");
+  const linkedToken = params.get("token");
+
+  const [form, setForm] = useState({ eventName: "", email: "", tier: "event_spotlight", promoPages: [], notes: "", eventPageId: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Pre-fill event name when linked from EventEditPage
+  useEffect(() => {
+    if (linkedToken && linkedEventId && !isSuccess) {
+      fetch(`/api/event-edit?token=${encodeURIComponent(linkedToken)}`)
+        .then(r => r.json())
+        .then(data => {
+          if (data.name) {
+            setForm(f => ({ ...f, eventName: data.name, eventPageId: linkedEventId }));
+          }
+        })
+        .catch(() => {});
+    }
+  }, []);
 
   const needsPages = ["banner_1p", "banner_3p"].includes(form.tier);
   const selectedPkg = PROMOTE_PACKAGES.find(p => p.id === form.tier);
@@ -459,6 +477,7 @@ export default function PromotePage() {
           email: form.email,
           promoPages: form.promoPages.join(", "),
           notes: form.notes,
+          eventPageId: form.eventPageId || undefined,
         }),
       });
       const data = await resp.json();

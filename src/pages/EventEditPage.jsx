@@ -23,6 +23,7 @@ export default function EventEditPage() {
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [token, setToken] = useState("");
+  const [eventPageId, setEventPageId] = useState("");
   const [form, setForm] = useState({
     name: "", date: "", time: "", timeEnd: "", location: "",
     description: "", cost: "", eventUrl: "", attendance: "",
@@ -41,6 +42,7 @@ export default function EventEditPage() {
       .then(data => {
         if (data.error) { setNotFound(true); }
         else {
+          if (data.id) setEventPageId(data.id);
           setForm({
             name: data.name || "",
             date: data.date || "",
@@ -124,13 +126,23 @@ export default function EventEditPage() {
         ) : submitted ? (
           <div style={{ padding: "100px 24px", textAlign: "center" }}>
             <FadeIn>
-              <div style={{ maxWidth: 480, margin: "0 auto" }}>
+              <div style={{ maxWidth: 520, margin: "0 auto" }}>
                 <div style={{ fontSize: 48, marginBottom: 16 }}>✓</div>
                 <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, fontWeight: 400, color: C.cream, margin: "0 0 12px 0" }}>Event updated!</h2>
                 <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.75, margin: "0 0 32px 0" }}>
                   Changes will be reviewed and reflected on the calendar shortly.
                 </p>
                 <Btn href="/events" variant="sunset">Back to Events</Btn>
+
+                {eventPageId && (
+                  <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "28px 32px", marginTop: 32 }}>
+                    <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 10 }}>Want more people there?</div>
+                    <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.7, margin: "0 0 20px 0" }}>
+                      Put your event front and center — homepage hero, newsletter spotlight, featured banners. Founding rates available now.
+                    </p>
+                    <Btn href={`/promote?event=${encodeURIComponent(eventPageId)}&token=${encodeURIComponent(token)}`} variant="sunset">Promote This Event →</Btn>
+                  </div>
+                )}
               </div>
             </FadeIn>
           </div>

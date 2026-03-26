@@ -207,6 +207,8 @@ export default async function handler(req, res) {
           updated: p['Updated']?.checkbox || false,
           rsvpEnabled: p['RSVP Enabled']?.checkbox || false,
           heroFeature: p['Hero Feature']?.checkbox || false,
+          promoType: p['Promo Type']?.select?.name || null,
+          promoEnd: p['Promo End']?.date?.start || null,
           ticketsEnabled: p['Tickets Enabled']?.checkbox || false,
           ticketPrice: p['Ticket Price']?.number || null,
           ticketCapacity: p['Ticket Capacity']?.number || null,

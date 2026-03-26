@@ -703,18 +703,112 @@ export default async function handler(req, res) {
 
     // 3. Event/Advertising promo purchase (from create-promo-checkout.js)
     if (metadata.eventName) {
-      const { eventName, tier, days, promoPages, notes } = metadata;
+      const { eventName, tier, days, promoPages, notes, eventPageId } = metadata;
       const details = [
         `Promo tier: ${tier}`,
         days && days !== 'n/a' ? `Duration: ${days} days` : null,
         promoPages ? `Pages: ${promoPages}` : null,
         notes ? `Notes: ${notes}` : null,
+        eventPageId ? `Event Page ID: ${eventPageId}` : null,
         `Stripe Payment: ${session.payment_intent || session.id}`,
         `Amount: $${(session.amount_total / 100).toFixed(2)}`,
       ].filter(Boolean).join('\n');
 
       await logPurchaseToNotion(`Promo: ${eventName} — ${tier}`, details);
       console.log(`Promo purchase recorded: ${eventName} — ${tier}`);
+
+      // Update the actual event record in Notion with promo fields
+      if (eventPageId) {
+        const TIER_TO_PROMO_TYPE = {
+          event_spotlight: 'Event Spotlight',
+          hero_7d: 'Hero Takeover',
+          hero_30d: 'Hero Takeover',
+          banner_1p: 'Page Banner',
+          banner_3p: 'Page Banner',
+          strip_pin: 'Strip Pin',
+          holly_yeti: 'Video Spotlight',
+          spotlight: 'Hero Takeover', // bundle includes hero
+        };
+        const HERO_TIERS = ['hero_7d', 'hero_30d', 'spotlight'];
+
+        const promoType = TIER_TO_PROMO_TYPE[tier];
+        if (promoType) {
+          try {
+            const today = new Date();
+            const promoDays = (days && days !== 'n/a') ? parseInt(days, 10) : 30;
+            const promoEnd = new Date(today);
+            promoEnd.setDate(promoEnd.getDate() + promoDays);
+
+            const promoProperties = {
+              'Promo Type': { select: { name: promoType } },
+              'Promo Start': { date: { start: today.toISOString().split('T')[0] } },
+              'Promo End': { date: { start: promoEnd.toISOString().split('T')[0] } },
+            };
+
+            if (HERO_TIERS.includes(tier)) {
+              promoProperties['Hero Feature'] = { checkbox: true };
+            }
+
+            if (promoPages && (tier === 'banner_1p' || tier === 'banner_3p')) {
+              const pageNames = promoPages.split(',').map(p => p.trim()).filter(Boolean);
+              if (pageNames.length > 0) {
+                promoProperties['Promo Pages'] = { multi_select: pageNames.map(name => ({ name })) };
+              }
+            }
+
+            await fetch(`https://api.notion.com/v1/pages/${eventPageId}`, {
+              method: 'PATCH',
+              headers: {
+                'Authorization': `Bearer ${process.env.NOTION_TOKEN_EVENTS}`,
+                'Content-Type': 'application/json',
+                'Notion-Version': '2022-06-28',
+              },
+              body: JSON.stringify({ properties: promoProperties }),
+            });
+            console.log(`Promo fields updated on event ${eventPageId}: ${promoType}`);
+          } catch (promoErr) {
+            console.error('Failed to update event promo fields:', promoErr.message);
+          }
+        }
+      }
+
+      // Send promo purchase confirmation email
+      const buyerEmail = session.customer_email || session.customer_details?.email;
+      if (buyerEmail && process.env.RESEND_API_KEY) {
+        try {
+          const resend = new Resend(process.env.RESEND_API_KEY);
+          const promoDays = (days && days !== 'n/a') ? parseInt(days, 10) : null;
+          const expiresDate = promoDays
+            ? new Date(Date.now() + promoDays * 86400000).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
+            : null;
+
+          await resend.emails.send({
+            from: 'Manitou Beach <events@yetigroove.com>',
+            to: buyerEmail,
+            subject: `Your promotion for "${eventName}" is live!`,
+            html: `
+              <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#FAF6EF;">
+                <h1 style="color:#1A2830;font-size:22px;margin:0 0 8px;">Promotion confirmed!</h1>
+                <p style="color:#5C5248;font-size:15px;margin:0 0 24px;line-height:1.7;">
+                  Your <strong>${tier.replace(/_/g, ' ')}</strong> for <strong>${eventName}</strong> is being activated now.
+                  ${expiresDate ? `<br/>It will run through <strong>${expiresDate}</strong>.` : ''}
+                </p>
+                <div style="background:#fff;border-radius:12px;padding:20px 24px;margin-bottom:24px;border:1px solid #E8E0D5;">
+                  <p style="margin:0 0 4px;color:#8C806E;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Amount Paid</p>
+                  <p style="margin:0 0 16px;color:#1A2830;font-size:24px;font-weight:700;">$${(session.amount_total / 100).toFixed(2)}</p>
+                  <p style="margin:0 0 4px;color:#8C806E;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Package</p>
+                  <p style="margin:0;color:#1A2830;font-size:15px;">${tier.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</p>
+                </div>
+                <p style="color:#8C806E;font-size:13px;line-height:1.6;">
+                  Your promotion will be visible on the site within 24 hours. Questions? Reply to this email.
+                </p>
+              </div>
+            `,
+          });
+        } catch (emailErr) {
+          console.error('Promo confirmation email error:', emailErr.message);
+        }
+      }
     }
 
     // 4. Ticket purchase (from ticket-checkout.js)
