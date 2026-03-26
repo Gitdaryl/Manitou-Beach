@@ -237,6 +237,9 @@ export default function FoodTruckPartnerPage() {
           <p style={{ fontSize: 16, color: "rgba(255,255,255,0.5)", maxWidth: 520, margin: "0 auto 20px", lineHeight: 1.85 }}>
             Live on the map the moment you check in — customers heart your truck, rate their favourite dishes, and push you to the top of the Most Loved rankings.
           </p>
+          <div style={{ marginBottom: 20 }}>
+            <img src="/images/yeti/yeti-celebrates.png" alt="The Yeti" style={{ width: 120, height: 120, objectFit: "contain" }} />
+          </div>
           <div style={{ display: "inline-block", background: "rgba(212,132,90,0.15)", border: "1px solid rgba(212,132,90,0.3)", borderRadius: 12, padding: "12px 24px", marginBottom: 28 }}>
             <span style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: C.sunsetLight }}>Founding trucks get everything free through May 10</span>
           </div>
@@ -328,6 +331,21 @@ export default function FoodTruckPartnerPage() {
               </FadeIn>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── MAGIC MOMENT ── */}
+      <section style={{ background: C.dusk, padding: "0 24px 48px" }}>
+        <div style={{ maxWidth: 640, margin: "0 auto", background: "rgba(212,132,90,0.1)", border: "1px solid rgba(212,132,90,0.2)", borderRadius: 18, padding: "28px 32px", textAlign: "center" }}>
+          <FadeIn>
+            <div style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.sunsetLight, marginBottom: 8 }}>The Magic Moment</div>
+            <p style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.cream, lineHeight: 1.6, margin: "0 0 8px" }}>
+              A customer walks up and says:<br /><em style={{ color: C.sunsetLight }}>"I saw you on the map and came straight here."</em>
+            </p>
+            <p style={{ fontSize: 14, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, margin: 0 }}>
+              That's the moment your truck becomes a destination, not an accident. Everything we built is designed to create more of those moments — for you and for the hungry people at the lake.
+            </p>
+          </FadeIn>
         </div>
       </section>
 

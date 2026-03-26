@@ -17,70 +17,77 @@
   .page { width: 8.5in; min-height: 11in; margin: 0 auto; overflow: hidden; display: flex; flex-direction: column; }
 
   /* ── HERO ── */
-  .hero { background: linear-gradient(165deg, var(--night) 0%, var(--dusk) 100%); padding: 36px 44px 28px; position: relative; }
+  .hero { background: linear-gradient(165deg, var(--night) 0%, var(--dusk) 100%); padding: 40px 44px 32px; position: relative; }
   .hero::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, var(--sunset), var(--sunset-light), var(--sunset)); }
-  .hero-eyebrow { font-size: 9px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--sunset); margin-bottom: 10px; }
-  .hero h1 { font-family: 'Libre Baskerville', serif; font-size: 28px; font-weight: 400; color: var(--cream); line-height: 1.3; margin-bottom: 10px; }
+  .hero-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--sunset); margin-bottom: 12px; }
+  .hero h1 { font-family: 'Libre Baskerville', serif; font-size: 32px; font-weight: 400; color: var(--cream); line-height: 1.3; margin-bottom: 14px; }
   .hero h1 em { font-style: italic; color: var(--sunset-light); }
-  .hero-sub { font-size: 12px; color: rgba(250,246,239,0.6); line-height: 1.7; max-width: 520px; }
-  .hero-note { font-family: 'Caveat', cursive; font-size: 16px; color: var(--sunset-light); margin-top: 14px; }
+  .hero-sub { font-size: 15px; color: rgba(250,246,239,0.65); line-height: 1.8; max-width: 520px; }
+  .hero-note { font-family: 'Caveat', cursive; font-size: 19px; color: var(--sunset-light); margin-top: 16px; }
+  .hero-yeti { position: absolute; right: 36px; bottom: 12px; width: 110px; opacity: 0.85; }
 
   /* ── SECTIONS ── */
-  .body-section { padding: 20px 44px; }
-  .section-label { font-size: 8px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--sunset); margin-bottom: 6px; }
-  .section-title { font-family: 'Libre Baskerville', serif; font-size: 18px; font-weight: 400; color: var(--night); line-height: 1.3; margin-bottom: 10px; }
-  .section-intro { font-size: 11px; color: var(--text-light); line-height: 1.65; margin-bottom: 14px; }
+  .body-section { padding: 22px 44px; }
+  .section-label { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--sunset); margin-bottom: 8px; }
+  .section-title { font-family: 'Libre Baskerville', serif; font-size: 22px; font-weight: 400; color: var(--night); line-height: 1.3; margin-bottom: 12px; }
+  .section-intro { font-size: 14px; color: var(--text-light); line-height: 1.7; margin-bottom: 16px; }
 
   /* ── STEPS ── */
-  .step-grid { display: flex; flex-direction: column; gap: 8px; }
-  .step-row { display: grid; grid-template-columns: 36px 1fr; gap: 10px; align-items: start; }
-  .step-num { font-family: 'Libre Baskerville', serif; font-size: 18px; font-weight: 700; color: var(--sunset); line-height: 1.3; }
-  .step-title { font-size: 12px; font-weight: 700; color: var(--night); margin-bottom: 1px; }
-  .step-copy { font-size: 10.5px; color: var(--text-light); line-height: 1.55; }
-  .step-magic { font-family: 'Caveat', cursive; font-size: 12px; color: var(--sunset); margin-top: 2px; display: inline-block; }
+  .step-grid { display: flex; flex-direction: column; gap: 10px; }
+  .step-row { display: grid; grid-template-columns: 40px 1fr; gap: 12px; align-items: start; }
+  .step-num { font-family: 'Libre Baskerville', serif; font-size: 22px; font-weight: 700; color: var(--sunset); line-height: 1.3; }
+  .step-title { font-size: 15px; font-weight: 700; color: var(--night); margin-bottom: 2px; }
+  .step-copy { font-size: 13px; color: var(--text-light); line-height: 1.65; }
+  .step-magic { display: inline-block; margin-top: 4px; font-family: 'Caveat', cursive; font-size: 15px; color: var(--sunset); background: rgba(212,132,90,0.08); border-radius: 8px; padding: 4px 10px; }
 
   /* ── DARK SECTION ── */
-  .dark-section { background: var(--night); padding: 22px 44px; }
+  .dark-section { background: var(--night); padding: 24px 44px; }
   .dark-section .section-label { color: var(--sunset-light); }
   .dark-section .section-title { color: var(--cream); }
 
   /* ── FEATURE GRID ── */
-  .feature-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-  .feature-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 12px 14px; }
-  .feature-icon { font-size: 18px; margin-bottom: 4px; }
-  .feature-name { font-size: 11px; font-weight: 700; color: var(--cream); margin-bottom: 2px; }
-  .feature-detail { font-size: 9.5px; color: rgba(255,255,255,0.5); line-height: 1.5; }
+  .feature-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .feature-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 18px; }
+  .feature-icon { width: 32px; height: 32px; object-fit: contain; margin-bottom: 6px; }
+  .feature-name { font-size: 14px; font-weight: 700; color: var(--cream); margin-bottom: 4px; }
+  .feature-detail { font-size: 12px; color: rgba(255,255,255,0.55); line-height: 1.6; }
 
   /* ── COMPARISON TABLE ── */
-  .compare-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
-  .compare-table th { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 8px 10px; text-align: left; }
+  .compare-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+  .compare-table th { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 10px 12px; text-align: left; }
   .compare-table th.col-feature { color: rgba(255,255,255,0.35); }
   .compare-table th.col-featured { color: var(--sunset-light); }
   .compare-table th.col-free { color: rgba(255,255,255,0.3); }
-  .compare-table td { font-size: 10.5px; color: rgba(255,255,255,0.55); padding: 5px 10px; border-top: 1px solid rgba(255,255,255,0.06); }
+  .compare-table td { font-size: 13px; color: rgba(255,255,255,0.55); padding: 7px 12px; border-top: 1px solid rgba(255,255,255,0.06); }
   .compare-table td:first-child { font-weight: 600; color: rgba(255,255,255,0.7); }
   .compare-table .yes { color: var(--sunset-light); font-weight: 700; }
   .compare-table .no { color: rgba(255,255,255,0.2); }
 
   /* ── CTA ── */
-  .cta-bar { background: var(--night); padding: 18px 44px; display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
-  .cta-bar h3 { font-family: 'Libre Baskerville', serif; font-size: 14px; color: var(--cream); font-weight: 400; }
-  .cta-bar p { font-size: 10px; color: rgba(255,255,255,0.45); margin-top: 3px; }
+  .cta-bar { background: var(--night); padding: 20px 44px; display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+  .cta-bar h3 { font-family: 'Libre Baskerville', serif; font-size: 16px; color: var(--cream); font-weight: 400; }
+  .cta-bar p { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 4px; }
   .cta-contact { text-align: right; }
-  .cta-contact .name { font-size: 12px; font-weight: 700; color: var(--sunset); }
-  .cta-contact .detail { font-size: 10px; color: rgba(255,255,255,0.5); line-height: 1.5; }
+  .cta-contact .name { font-size: 14px; font-weight: 700; color: var(--sunset); }
+  .cta-contact .detail { font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.5; }
 
   /* ── CALLOUT BOX ── */
-  .callout { background: rgba(212,132,90,0.08); border: 1px solid rgba(212,132,90,0.2); border-radius: 10px; padding: 14px 18px; margin-top: 12px; }
-  .callout-title { font-family: 'Caveat', cursive; font-size: 16px; color: var(--sunset); margin-bottom: 4px; }
-  .callout-body { font-size: 10.5px; color: var(--text-light); line-height: 1.6; }
+  .callout { background: rgba(212,132,90,0.08); border: 1px solid rgba(212,132,90,0.2); border-radius: 12px; padding: 16px 20px; margin-top: 14px; }
+  .callout-title { font-family: 'Caveat', cursive; font-size: 19px; color: var(--sunset); margin-bottom: 6px; }
+  .callout-body { font-size: 13px; color: var(--text-light); line-height: 1.7; }
+
+  /* ── MAGIC MOMENT ── */
+  .magic-box { background: linear-gradient(135deg, rgba(212,132,90,0.12) 0%, rgba(232,168,124,0.08) 100%); border: 1px solid rgba(212,132,90,0.25); border-radius: 14px; padding: 20px 22px; margin-top: 16px; }
+  .magic-box .magic-label { font-family: 'Caveat', cursive; font-size: 20px; color: var(--sunset); margin-bottom: 6px; }
+  .magic-box .magic-body { font-size: 14px; color: var(--text); line-height: 1.7; }
+  .magic-box .magic-body em { color: var(--sunset); font-style: italic; }
 
   /* ── MASLOW STRIP ── */
-  .maslow-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 12px; }
-  .maslow-card { text-align: center; padding: 10px 6px; border-radius: 8px; }
-  .maslow-card .m-icon { font-size: 20px; margin-bottom: 3px; }
-  .maslow-card .m-label { font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2px; }
-  .maslow-card .m-copy { font-size: 9px; line-height: 1.45; }
+  .maslow-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 14px; }
+  .maslow-card { text-align: center; padding: 14px 8px; border-radius: 10px; }
+  .maslow-card .m-icon { width: 36px; height: 36px; object-fit: contain; margin: 0 auto 6px; display: block; }
+  .maslow-card .m-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+  .maslow-card .m-copy { font-size: 11px; line-height: 1.55; }
 
   .page-break { page-break-before: always; }
   @media print { body { background: white; } .page { width: 100%; } .no-print { display: none; } }
@@ -90,240 +97,242 @@
   @media screen and (max-width: 640px) {
     .page { width: 100%; min-height: auto; }
     .hero { padding: 28px 20px 22px; }
-    .hero h1 { font-size: 22px; }
-    .hero-sub { font-size: 12px; }
-    .body-section { padding: 16px 20px; }
-    .dark-section { padding: 18px 20px; }
-    .section-title { font-size: 16px; }
-    .step-row { grid-template-columns: 28px 1fr; gap: 8px; }
-    .step-num { font-size: 16px; }
-    .step-copy { font-size: 11px; }
-    .feature-grid { grid-template-columns: 1fr; gap: 8px; }
-    .feature-card { padding: 10px 12px; }
-    .compare-table th, .compare-table td { font-size: 10px; padding: 5px 6px; }
+    .hero h1 { font-size: 24px; }
+    .hero-sub { font-size: 14px; }
+    .hero-yeti { width: 80px; right: 16px; bottom: 8px; }
+    .body-section { padding: 18px 20px; }
+    .dark-section { padding: 20px 20px; }
+    .section-title { font-size: 19px; }
+    .step-row { grid-template-columns: 32px 1fr; gap: 10px; }
+    .step-num { font-size: 18px; }
+    .step-copy { font-size: 13px; }
+    .feature-grid { grid-template-columns: 1fr; gap: 10px; }
+    .feature-card { padding: 14px 16px; }
+    .compare-table th, .compare-table td { font-size: 12px; padding: 6px 8px; }
     .maslow-strip { grid-template-columns: 1fr 1fr; }
-    .cta-bar { flex-direction: column; text-align: center; padding: 16px 20px; gap: 12px; }
+    .cta-bar { flex-direction: column; text-align: center; padding: 18px 20px; gap: 14px; }
     .cta-contact { text-align: center; }
-    .callout { padding: 12px 14px; }
+    .callout { padding: 14px 16px; }
   }
 </style>
 </head>
 <body>
 
-<!-- ═══════ PAGE 1 ═══════ -->
+<!-- PAGE 1 -->
 <div class="page">
   <div class="hero">
     <div class="hero-eyebrow">Food Truck Partner Guide</div>
-    <h1>Hey — it's the Yeti.<br>Here's <em>exactly what happens</em><br>when you sign up.</h1>
-    <p class="hero-sub">I built a live food truck locator for Manitou Beach. You sign up once, check in from your phone whenever you're nearby, and locals find you on a live map — in real time. No app. No login. No hoops. Here's the whole thing, step by step.</p>
-    <div class="hero-note">You're getting in as a founding truck. Everything's free through May 10. No card required.</div>
+    <h1>Hey, it's the Yeti.<br>Here's <em>exactly what happens</em><br>when you sign up.</h1>
+    <p class="hero-sub">I built a live food truck finder for Manitou Beach. You sign up once, tap a button from your phone whenever you're nearby, and hungry locals find you on a live map. No app to download. No password to remember. No hoops to jump through.</p>
+    <div class="hero-note">You're getting in as a founding truck. Everything's free through May 10. No card needed.</div>
+    <img src="/images/yeti/yeti-celebrates.png" alt="The Yeti" class="hero-yeti" />
   </div>
 
-  <div class="body-section" style="padding-top: 24px;">
-    <div class="section-label">Getting Started — One Time, Super Easy</div>
-    <div class="section-title">Five fields and a text message. Seriously, that's it.</div>
+  <div class="body-section" style="padding-top: 26px;">
+    <div class="section-label">Signing Up — One Time, Takes Two Minutes</div>
+    <div class="section-title">Five things to fill in. That's the whole process.</div>
     <div class="step-grid">
       <div class="step-row">
         <div class="step-num">1</div>
         <div>
-          <div class="step-title">I send you the link</div>
-          <div class="step-copy">It's a simple page with the signup form. Takes about 30 seconds to read — and that's if you read slow like me.</div>
+          <div class="step-title">I send you the sign-up link</div>
+          <div class="step-copy">It opens on your phone. No app store, no download — just a regular web page with a short form.</div>
         </div>
       </div>
       <div class="step-row">
         <div class="step-num">2</div>
         <div>
-          <div class="step-title">Fill in the basics</div>
-          <div class="step-copy"><strong>Truck name, what you serve, email, phone.</strong> That's the must-haves. You can also add your website or Instagram — it links right from your card so hungry people find your menu. A truck photo makes your card pop but it's not required.</div>
+          <div class="step-title">Type in the basics</div>
+          <div class="step-copy"><strong>Your truck name, what you cook, email, phone number.</strong> That's the must-haves. You can also add your website or Instagram so customers find your menu. A truck photo makes your card look great but it's totally optional.</div>
         </div>
       </div>
       <div class="step-row">
         <div class="step-num">3</div>
         <div>
-          <div class="step-title">Quick phone check</div>
-          <div class="step-copy">We text you a 6-digit code, you type it in. Just making sure you're a real person with a real truck — not a robot trying to sell me cryptocurrency.</div>
+          <div class="step-title">We text you a code — type it in</div>
+          <div class="step-copy">Six numbers. Just making sure you're a real person with a real truck and not a robot trying to sell me crypto.</div>
         </div>
       </div>
       <div class="step-row">
         <div class="step-num">4</div>
         <div>
-          <div class="step-title">Your check-in link arrives by text</div>
-          <div class="step-copy">This is your golden ticket to the map. Bookmark it, pin it to your home screen, tattoo it on your arm — whatever works. No app, no password, no account. Just a link on your phone.</div>
-          <div class="step-magic">Magic Moment: you're live on the locator before you've even left the signup page.</div>
+          <div class="step-title">Your personal link arrives by text</div>
+          <div class="step-copy">This is your ticket to the map. Save it on your phone however you like — bookmark, home screen, sticky note on the fridge. No app, no password, no account to manage. Just a link.</div>
+          <div class="step-magic">Magic Moment: you're live on the map before you've even closed the sign-up page.</div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="body-section" style="padding-top: 12px;">
+  <div class="body-section" style="padding-top: 14px;">
     <div class="section-label">Every Time You Head to the Lake</div>
-    <div class="section-title">Open your link. Tap one button. You're on the map.</div>
+    <div class="section-title">Open your link. Tap one button. Done.</div>
     <div class="step-grid">
       <div class="step-row">
         <div class="step-num">1</div>
         <div>
-          <div class="step-title">Open your check-in link</div>
-          <div class="step-copy">The one we texted you. It opens right in your phone's browser — no app, no login screen, nothing.</div>
+          <div class="step-title">Open the link on your phone</div>
+          <div class="step-copy">The one we texted you. It opens right in your browser. Nothing to log into.</div>
         </div>
       </div>
       <div class="step-row">
         <div class="step-num">2</div>
         <div>
-          <div class="step-title">Drop a location note</div>
-          <div class="step-copy">"Near the boat launch." "By the park pavilion." "Corner of the lot by the big tree." Whatever helps people find you. Quick and casual.</div>
+          <div class="step-title">Tell people where you're parked</div>
+          <div class="step-copy">"By the boat launch." "Corner of the parking lot." Whatever helps folks find you. Keep it casual.</div>
         </div>
       </div>
       <div class="step-row">
         <div class="step-num">3</div>
         <div>
-          <div class="step-title">Add today's special (optional but smart)</div>
-          <div class="step-copy">Running a lunch deal? Testing a new item? Add it here — it shows as a highlighted badge on your card. Customers browsing the locator see it immediately. That's the thing that turns "maybe later" into "let's go now."</div>
-          <div class="step-magic">Magic Moment: the customer's stomach growls reading "brisket burnt ends — today only."</div>
+          <div class="step-title">Add today's special (if you've got one)</div>
+          <div class="step-copy">Running a lunch deal? Trying something new? Type it in — it shows up right on your card so people scrolling the map see it. That's the thing that turns "maybe" into "let's go."</div>
+          <div class="step-magic">Magic Moment: someone's stomach growls reading "brisket burnt ends — today only."</div>
         </div>
       </div>
       <div class="step-row">
         <div class="step-num">4</div>
         <div>
-          <div class="step-title">Tap "I'm Here" — you're live</div>
-          <div class="step-copy">Your map pin goes live. <strong>Live Now</strong> badge, your location, your special. Anyone checking the locator — or getting a notification — sees you in seconds. When you leave, you come down. Simple.</div>
+          <div class="step-title">Tap "I'm Here" — you're on the map</div>
+          <div class="step-copy">Your pin goes live. People see you're open <em>right now</em> — your spot, your special, everything. When you pack up and leave, you come off the map. Simple as that.</div>
         </div>
       </div>
     </div>
 
     <div class="callout">
-      <div class="callout-title">Pro move: pre-announce before you leave home</div>
-      <div class="callout-body">Planning to be at Manitou Saturday? Open your link and set a <strong>Coming Date</strong>. Customers browsing the locator see "Coming This Saturday" on your card before you even hitch up. You show up to a crowd instead of building one. That's the difference between hoping for foot traffic and creating demand.</div>
+      <div class="callout-title">Smart move: tell people you're coming before you leave home</div>
+      <div class="callout-body">Heading to Manitou Beach Saturday? Open your link and set a <strong>Coming Date</strong>. People browsing the map see "Coming This Saturday" on your card before you even hitch up. You show up to a crowd instead of building one.</div>
     </div>
   </div>
 
   <div class="cta-bar">
-    <div><h3>Questions? Just text me.</h3><p>I'm the guy who built this. I'm also the guy who'll eat at your truck.</p></div>
+    <div><h3>Questions? Just text me.</h3><p>I built this. I also eat at food trucks constantly.</p></div>
     <div class="cta-contact"><div class="name">Daryl "Yeti" Young</div><div class="detail">Yeti Groove Media<br>admin@yetigroove.com<br>manitoubeachmichigan.com/food-trucks</div></div>
   </div>
 </div>
 
-<!-- ═══════ PAGE 2 ═══════ -->
+<!-- PAGE 2 -->
 <div class="page page-break">
-  <div class="dark-section" style="padding-top: 32px;">
+  <div class="dark-section" style="padding-top: 34px;">
     <div class="section-label">What You Get — Free Through May 10</div>
-    <div class="section-title" style="color: var(--cream);">Everything's included. No credit card, no catch.</div>
+    <div class="section-title" style="color: var(--cream);">Everything listed below. No credit card. No catch.</div>
     <div class="feature-grid">
       <div class="feature-card">
-        <div class="feature-icon">📍</div>
+        <img src="/images/icons/food-truck-icon.png" alt="" class="feature-icon" />
         <div class="feature-name">Live Map Pin</div>
-        <div class="feature-detail">You check in, you're on the map. You leave, you come off. People see where you are right now — not some dusty listing from 2019.</div>
+        <div class="feature-detail">You check in, you're on the map. You leave, you come off. People see where you are right now — not some dusty listing from last year.</div>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">🔗</div>
-        <div class="feature-name">Personal Check-In URL</div>
-        <div class="feature-detail">Works on any phone, any browser. No app to download, no login to remember. Just tap and go.</div>
+        <img src="/images/icons/food-truck-icon.png" alt="" class="feature-icon" />
+        <div class="feature-name">Your Own Check-In Link</div>
+        <div class="feature-detail">Works on any phone, any browser. No app to download, no password to remember. Just tap and go.</div>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">⭐</div>
+        <img src="/images/icons/food-truck-icon.png" alt="" class="feature-icon" />
         <div class="feature-name">Today's Special Badge</div>
-        <div class="feature-detail">Add your special on check-in. It highlights on your card. Turns window-shoppers into "I need that right now" customers.</div>
+        <div class="feature-detail">Add your daily special when you check in. It shows right on your card. Turns window-shoppers into "I need that right now" customers.</div>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">📅</div>
-        <div class="feature-name">Coming Soon Pre-Announce</div>
-        <div class="feature-detail">Set a future date. Customers see "Coming This Saturday" before you arrive. Build the crowd before you build the grill.</div>
+        <img src="/images/icons/food-truck-icon.png" alt="" class="feature-icon" />
+        <div class="feature-name">Coming Soon Preview</div>
+        <div class="feature-detail">Set a future date. Customers see "Coming This Saturday" before you arrive. Build the crowd before you fire up the grill.</div>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">❤️</div>
-        <div class="feature-name">Customer Hearts + Dish Ratings</div>
-        <div class="feature-detail">Customers tap a heart. They tag what they loved — "the ribs," "fish tacos," "that spicy mayo." Every heart builds your reputation.</div>
+        <img src="/images/icons/food-truck-icon.png" alt="" class="feature-icon" />
+        <div class="feature-name">Customer Hearts + Dish Love</div>
+        <div class="feature-detail">Customers tap a heart and say what they loved — "the ribs," "fish tacos," "that spicy mayo." Every heart builds your reputation.</div>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">🏆</div>
+        <img src="/images/icons/food-truck-icon.png" alt="" class="feature-icon" />
         <div class="feature-name">Most Loved Ranking</div>
-        <div class="feature-detail">The locator sorts by hearts. More love = higher on the page = more eyeballs. It's public. It's competitive. The cream rises.</div>
+        <div class="feature-detail">The map sorts by hearts. More love = higher on the page = more eyeballs on your truck. It's public. It's competitive. The best food wins.</div>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">📰</div>
-        <div class="feature-name">Newsletter Shoutout</div>
-        <div class="feature-detail">When you're checked in on send days, hundreds of subscribers see your name in The Dispatch. Free advertising to people who already care about this lake.</div>
+        <img src="/images/icons/food-truck-icon.png" alt="" class="feature-icon" />
+        <div class="feature-name">Newsletter Mention</div>
+        <div class="feature-detail">When you're checked in on newsletter days, hundreds of local subscribers see your name in The Dispatch. Free word-of-mouth to people who already love this lake.</div>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">📋</div>
-        <div class="feature-name">Year-Round Directory</div>
-        <div class="feature-detail">Your name, cuisine, and contact stay in the All Trucks list even in the off-season. People plan ahead — you want to be findable.</div>
+        <img src="/images/icons/food-truck-icon.png" alt="" class="feature-icon" />
+        <div class="feature-name">Year-Round Listing</div>
+        <div class="feature-detail">Your name, what you cook, and how to reach you stays visible even in the off-season. People plan ahead — you want to be findable.</div>
       </div>
     </div>
   </div>
 
-  <div class="body-section" style="padding-top: 22px;">
+  <div class="body-section" style="padding-top: 24px;">
     <div class="section-label">After May 10 — What Changes</div>
-    <div class="section-title">Two paths. Totally your call.</div>
-    <div class="section-intro">Beta ends May 10. You decide whether to keep the full Featured experience or drop to a free listing. Either way, every heart and dish rating you earned stays on your profile. Nothing disappears.</div>
+    <div class="section-title">Two options. Totally your call.</div>
+    <div class="section-intro">Beta ends May 10. You decide whether to keep the full experience or drop to a free listing. Either way, every heart and dish rating you earned stays. Nothing disappears.</div>
 
     <table class="compare-table" style="background: var(--night); border-radius: 12px; overflow: hidden;">
       <thead>
         <tr>
-          <th class="col-feature" style="width: 40%;">Feature</th>
-          <th class="col-featured" style="width: 30%;">Featured — $9/mo</th>
-          <th class="col-free" style="width: 30%;">Free Tier</th>
+          <th class="col-feature" style="width: 40%;">What You Get</th>
+          <th class="col-featured" style="width: 30%;">Full — $9/mo</th>
+          <th class="col-free" style="width: 30%;">Free</th>
         </tr>
       </thead>
       <tbody>
         <tr><td>Live map pin</td><td class="yes">Yes</td><td class="no">—</td></tr>
-        <tr><td>Personal check-in URL</td><td class="yes">Yes</td><td class="no">—</td></tr>
+        <tr><td>Your check-in link</td><td class="yes">Yes</td><td class="no">—</td></tr>
         <tr><td>Today's Special badge</td><td class="yes">Yes</td><td class="no">—</td></tr>
-        <tr><td>Coming Soon pre-announce</td><td class="yes">Yes</td><td class="no">—</td></tr>
-        <tr><td>Customer hearts + dish ratings</td><td class="yes">Yes</td><td class="no">—</td></tr>
+        <tr><td>Coming Soon preview</td><td class="yes">Yes</td><td class="no">—</td></tr>
+        <tr><td>Customer hearts + dish love</td><td class="yes">Yes</td><td class="no">—</td></tr>
         <tr><td>Most Loved ranking</td><td class="yes">Yes</td><td class="no">—</td></tr>
         <tr><td>Website / Instagram link</td><td class="yes">Yes</td><td class="no">—</td></tr>
-        <tr><td>Newsletter shoutouts</td><td class="yes">Yes</td><td class="no">—</td></tr>
+        <tr><td>Newsletter mentions</td><td class="yes">Yes</td><td class="no">—</td></tr>
         <tr><td>Directory listing</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
       </tbody>
     </table>
 
-    <div style="font-size: 10px; color: var(--text-light); line-height: 1.6; margin-top: 10px;">
-      <strong>$9/month</strong> keeps everything you had during beta. Standard Stripe billing — cancel anytime, no contract, no cancellation fee. If you don't subscribe, your account drops to the free directory tier automatically. No drama, no guilt trip. You can upgrade back anytime.
+    <div style="font-size: 13px; color: var(--text-light); line-height: 1.7; margin-top: 12px;">
+      <strong>$9/month</strong> keeps everything you had during beta. Cancel anytime — no contract, no cancellation fee. If you don't subscribe, your listing drops to the free tier automatically. No guilt trip. You can come back to the full version whenever you want.
+    </div>
+  </div>
+
+  <div class="body-section" style="padding-top: 18px;">
+    <div class="section-label">Why People Love Finding You Here</div>
+    <div class="section-title">It's not about the tech. It's about how it makes people feel.</div>
+    <div class="maslow-strip">
+      <div class="maslow-card" style="background: rgba(90,126,149,0.1);">
+        <img src="/images/icons/food-truck-icon-dark.png" alt="" class="m-icon" />
+        <div class="m-label" style="color: var(--lake);">Trust</div>
+        <div class="m-copy" style="color: var(--text-light);">People see you're <em>here right now</em> — real, live, open. No guessing, no driving around hoping.</div>
+      </div>
+      <div class="maslow-card" style="background: rgba(122,142,114,0.1);">
+        <img src="/images/icons/food-truck-icon-dark.png" alt="" class="m-icon" />
+        <div class="m-label" style="color: var(--sage);">Belonging</div>
+        <div class="m-copy" style="color: var(--text-light);">You become part of this lake community. Not a random truck — <em>our</em> truck. People learn your name.</div>
+      </div>
+      <div class="maslow-card" style="background: rgba(212,132,90,0.1);">
+        <img src="/images/icons/food-truck-icon-dark.png" alt="" class="m-icon" />
+        <div class="m-label" style="color: var(--sunset);">Love</div>
+        <div class="m-copy" style="color: var(--text-light);">Hearts, dish favorites, Most Loved rankings. Customers tell the world "this truck is amazing."</div>
+      </div>
+      <div class="maslow-card" style="background: rgba(45,59,69,0.08);">
+        <img src="/images/icons/food-truck-icon-dark.png" alt="" class="m-icon" />
+        <div class="m-label" style="color: var(--night);">Growth</div>
+        <div class="m-copy" style="color: var(--text-light);">Build a following. Show up to a crowd. Turn your side hustle into something people plan their weekend around.</div>
+      </div>
+    </div>
+
+    <div class="magic-box" style="margin-top: 16px;">
+      <div class="magic-label">The real Magic Moment?</div>
+      <div class="magic-body">It's the first time a customer walks up and says <em>"I saw you on the map and came straight here."</em> That's when you stop wondering if this works. That's when your truck becomes a destination, not an accident. I built this whole thing to create more of those moments — for you and for the folks at the lake who are hungry and looking for something good.</div>
     </div>
   </div>
 
   <div class="body-section" style="padding-top: 16px;">
-    <div class="section-label">Why This Actually Works</div>
-    <div class="section-title">It's not about the tech. It's about the feeling.</div>
-    <div class="maslow-strip">
-      <div class="maslow-card" style="background: rgba(90,126,149,0.1);">
-        <div class="m-icon">🛡️</div>
-        <div class="m-label" style="color: var(--lake);">Trust</div>
-        <div class="m-copy" style="color: var(--text-light);">Customers see you're <em>here right now</em> — verified, real, live. No guessing. No driving around hoping.</div>
-      </div>
-      <div class="maslow-card" style="background: rgba(122,142,114,0.1);">
-        <div class="m-icon">🤝</div>
-        <div class="m-label" style="color: var(--sage);">Belonging</div>
-        <div class="m-copy" style="color: var(--text-light);">You become part of the lake community — not a random truck, but <em>our</em> truck. People learn your name.</div>
-      </div>
-      <div class="maslow-card" style="background: rgba(212,132,90,0.1);">
-        <div class="m-icon">❤️</div>
-        <div class="m-label" style="color: var(--sunset);">Recognition</div>
-        <div class="m-copy" style="color: var(--text-light);">Hearts, dish ratings, Most Loved rankings. Customers publicly say "this truck is great." That's esteem you earned.</div>
-      </div>
-      <div class="maslow-card" style="background: rgba(45,59,69,0.08);">
-        <div class="m-icon">🚀</div>
-        <div class="m-label" style="color: var(--night);">Growth</div>
-        <div class="m-copy" style="color: var(--text-light);">Build a following. Pre-announce runs. Show up to a crowd. Turn a side hustle into a thing people plan around.</div>
-      </div>
-    </div>
-
-    <div class="callout" style="margin-top: 14px;">
-      <div class="callout-title">The real magic moment?</div>
-      <div class="callout-body">It's not the tech. It's the first time a customer walks up and says "I saw you on the map and came straight here." That's the moment you stop wondering if this works. That's the moment your truck becomes a destination, not an accident. I built this whole thing to create more of those moments — for you and for the people at the lake looking for something good to eat.</div>
-    </div>
-  </div>
-
-  <div class="body-section" style="padding-top: 14px;">
     <div class="section-label">Straight From the Yeti</div>
-    <div style="font-size: 11px; color: var(--text); line-height: 1.75; max-width: 580px;">
-      Manitou Beach draws <strong>thousands</strong> of people every summer — boaters, wine trail day-trippers, 300+ lake homeowners, event weekends that pack the place. Right now you're getting in as a founding truck with zero risk and zero cost. I'm not asking for a commitment. I'm asking you to try it: sign up, check in a couple of times, and see if it moves the needle. If it does, $9/month is the best deal in food truck marketing. If it doesn't, you keep a free directory listing and we're still good.
+    <div style="font-size: 14px; color: var(--text); line-height: 1.8; max-width: 580px;">
+      Manitou Beach draws <strong>thousands</strong> of people every summer — boaters, wine trail day-trippers, 300+ lake homeowners, event weekends that pack the place. Right now you're getting in as a founding truck with zero risk and zero cost. I'm not asking for a commitment. I'm asking you to try it: sign up, check in a couple of times, and see what happens. If it brings you customers, $9/month is cheaper than a single banner ad. If it doesn't, you keep a free listing and we're still good.
     </div>
-    <div style="font-family: 'Caveat', cursive; font-size: 15px; color: var(--sunset); margin-top: 10px;">— Daryl "Yeti" Young, the guy who lives on this lake and will definitely order your tacos</div>
+    <div style="font-family: 'Caveat', cursive; font-size: 18px; color: var(--sunset); margin-top: 12px;">— Daryl "Yeti" Young, the guy who lives on this lake and will 100% order your tacos</div>
   </div>
 
   <div class="cta-bar">
-    <div><h3>Ready? I'll send you the signup link.</h3><p>Two minutes. No card. On the map today.</p></div>
+    <div><h3>Ready? I'll send you the sign-up link.</h3><p>Two minutes. No card. On the map today.</p></div>
     <div class="cta-contact"><div class="name">Daryl "Yeti" Young</div><div class="detail">Yeti Groove Media<br>admin@yetigroove.com<br>manitoubeachmichigan.com/food-trucks</div></div>
   </div>
 </div>
