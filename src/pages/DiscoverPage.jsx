@@ -423,6 +423,17 @@ export default function DiscoverPage() {
     }
   }, [activeCategory, mapReady, businesses, communityPois, dynamicCats]);
 
+  // Auto-scroll active chip into view on mobile
+  const chipsRef = useRef(null);
+  useEffect(() => {
+    const bar = chipsRef.current;
+    if (!bar) return;
+    const activeChip = bar.querySelector('[data-chip-active]');
+    if (activeChip) {
+      activeChip.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+  }, [activeCategory]);
+
   const allCats = [...DISCOVER_CATS, ...dynamicCats];
   const activeCat = allCats.find(c => c.id === activeCategory) || DISCOVER_CATS[0];
   const filteredPois = activeCategory === 'all' ? mergedPois : mergedPois.filter(p => (p.cats || [p.cat]).includes(activeCategory));
@@ -465,12 +476,12 @@ export default function DiscoverPage() {
       </div>
 
       {/* ── Sticky Category Chips ── */}
-      <div style={{ position: 'sticky', top: 64, zIndex: 100, background: 'rgba(250,246,239,0.97)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${C.sand}`, boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
-        <div className="discover-chips-bar" style={{ maxWidth: 1100, margin: '0 auto', padding: '10px 20px', display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+      <div className="discover-chips-wrapper" style={{ position: 'sticky', top: 64, zIndex: 100, background: 'rgba(250,246,239,0.97)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${C.sand}`, boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+        <div ref={chipsRef} className="discover-chips-bar" style={{ maxWidth: 1100, margin: '0 auto', padding: '10px 20px', display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           {allCats.map(cat => {
             const active = activeCategory === cat.id;
             return (
-              <button key={cat.id} onClick={() => setActiveCategory(cat.id)} style={{
+              <button key={cat.id} data-chip-active={active || undefined} onClick={() => setActiveCategory(cat.id)} style={{
                 flexShrink: 0, background: active ? cat.color : '#fff', color: active ? '#fff' : C.text,
                 border: `1.5px solid ${active ? cat.color : C.sand}`, borderRadius: 24, padding: '6px 14px',
                 fontSize: 13, fontWeight: active ? 700 : 500, fontFamily: "'Libre Franklin', sans-serif",
@@ -697,10 +708,32 @@ export default function DiscoverPage() {
       <style>{`
         @keyframes discspin { to { transform: rotate(360deg); } }
         .discover-hero-inner { padding: 80px 48px 36px; }
-        @media (max-width: 640px) {
+        @media (max-width: 768px) {
           .discover-hero-inner { padding: 80px 20px 28px; }
-          .discover-chips-bar { padding: 10px 16px !important; gap: 6px !important; }
-          .discover-chips-bar button { padding: 6px 12px !important; font-size: 12px !important; }
+          .discover-chips-bar {
+            padding: 10px 16px !important;
+            gap: 6px !important;
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+          }
+          .discover-chips-bar::-webkit-scrollbar { display: none; }
+          .discover-chips-bar button,
+          .discover-chips-bar a { padding: 6px 12px !important; font-size: 12px !important; }
+          /* Fade hints on edges to show scrollability */
+          .discover-chips-wrapper {
+            position: relative;
+          }
+          .discover-chips-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; bottom: 0;
+            width: 32px;
+            background: linear-gradient(90deg, transparent, rgba(250,246,239,0.97));
+            pointer-events: none;
+            z-index: 1;
+          }
         }
       `}</style>
       <Footer scrollTo={subScrollTo} />
