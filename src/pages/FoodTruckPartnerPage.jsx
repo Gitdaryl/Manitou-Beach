@@ -238,7 +238,7 @@ export default function FoodTruckPartnerPage() {
             Live on the map the moment you check in — customers heart your truck, rate their favourite dishes, and push you to the top of the Most Loved rankings.
           </p>
           <div style={{ marginBottom: 20 }}>
-            <img src="/images/yeti/yeti-celebrates.png" alt="The Yeti" style={{ width: 120, height: 120, objectFit: "contain" }} />
+            <img src="/images/yeti/yeti-celebrates.png" alt="The Yeti" style={{ width: 200, height: 200, objectFit: "contain" }} />
           </div>
           <div style={{ display: "inline-block", background: "rgba(212,132,90,0.15)", border: "1px solid rgba(212,132,90,0.3)", borderRadius: 12, padding: "12px 24px", marginBottom: 28 }}>
             <span style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: C.sunsetLight }}>Founding trucks get everything free through May 10</span>

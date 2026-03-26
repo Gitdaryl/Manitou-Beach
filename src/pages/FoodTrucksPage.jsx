@@ -552,7 +552,7 @@ export default function FoodTrucksPage() {
             {checkinTruck?.photoUrl ? (
               <img src={checkinTruck.photoUrl} alt={truckName} style={{ width: 72, height: 72, borderRadius: 14, objectFit: "cover", border: `2px solid ${C.sand}`, margin: "0 auto 12px", display: "block" }} />
             ) : (
-              <div style={{ width: 72, height: 72, borderRadius: 14, background: `${C.sage}20`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px" }}><img src="/images/icons/food-truck-icon-dark.png" alt="" style={{ width: 48, height: 48, objectFit: "contain" }} /></div>
+              <div style={{ width: 72, height: 72, borderRadius: 14, background: `${C.sage}20`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px" }}><img src="/images/icons/food-truck-icon-dark.png" alt="" style={{ width: 56, height: 56, objectFit: "contain" }} /></div>
             )}
             <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, fontWeight: 400, color: C.text, margin: "0 0 4px" }}>
               {truckName}
@@ -988,7 +988,7 @@ export default function FoodTrucksPage() {
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg, rgba(10,18,24,0.72) 0%, rgba(45,59,69,0.65) 60%, rgba(10,18,24,0.55) 100%)", zIndex: 1 }} />
         <div style={{ maxWidth: 640, margin: "0 auto", position: "relative", zIndex: 2 }}>
           <FadeIn>
-            <div style={{ marginBottom: 16 }}><img src="/images/icons/food-truck-icon.png" alt="" style={{ width: 64, height: 64, objectFit: "contain" }} /></div>
+            <div style={{ marginBottom: 16 }}><img src="/images/icons/food-truck-icon.png" alt="" style={{ width: 140, height: 140, objectFit: "contain" }} /></div>
             <SectionLabel light>Live Locator</SectionLabel>
             <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(28px, 5vw, 48px)", fontWeight: 400, color: C.cream, lineHeight: 1.15, margin: "16px 0 20px" }}>
               Find a Food Truck
@@ -1202,7 +1202,7 @@ export default function FoodTrucksPage() {
               {comingTrucks.map((truck, i) => (
                 <FadeIn key={truck.id} delay={i * 40}>
                   <div style={{ background: C.warmWhite, borderRadius: 12, border: `1px solid ${C.sand}`, padding: "16px 18px", display: "flex", gap: 12, alignItems: "center" }}>
-                    <div style={{ width: 38, height: 38, borderRadius: 8, background: `${C.lakeBlue}15`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><img src="/images/icons/food-truck-icon-dark.png" alt="" style={{ width: 26, height: 26, objectFit: "contain" }} /></div>
+                    <div style={{ width: 52, height: 52, borderRadius: 10, background: `${C.lakeBlue}15`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><img src="/images/icons/food-truck-icon-dark.png" alt="" style={{ width: 40, height: 40, objectFit: "contain" }} /></div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, color: C.text }}>{truck.name}</div>
                       {truck.cuisine && <div style={{ fontSize: 11, color: C.textMuted, marginTop: 2 }}>{truck.cuisine}</div>}
@@ -1245,8 +1245,8 @@ export default function FoodTrucksPage() {
                         {truck.photoUrl ? (
                           <img src={truck.photoUrl} alt={truck.name} style={{ width: 44, height: 44, borderRadius: 10, objectFit: "cover", flexShrink: 0 }} />
                         ) : (
-                          <div style={{ width: 44, height: 44, borderRadius: 10, background: live ? `${C.sage}20` : `${C.sand}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                            <img src="/images/icons/food-truck-icon-dark.png" alt="" style={{ width: 30, height: 30, objectFit: "contain" }} />
+                          <div style={{ width: 56, height: 56, borderRadius: 12, background: live ? `${C.sage}20` : `${C.sand}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                            <img src="/images/icons/food-truck-icon-dark.png" alt="" style={{ width: 44, height: 44, objectFit: "contain" }} />
                           </div>
                         )}
                         <div style={{ flex: 1, minWidth: 0 }}>
@@ -1294,7 +1294,7 @@ export default function FoodTrucksPage() {
       <section style={{ background: C.dusk, padding: "64px 24px", textAlign: "center" }}>
         <div style={{ maxWidth: 520, margin: "0 auto" }}>
           <FadeIn>
-            <div style={{ marginBottom: 16 }}><img src="/images/icons/food-truck-icon.png" alt="" style={{ width: 56, height: 56, objectFit: "contain" }} /></div>
+            <div style={{ marginBottom: 16 }}><img src="/images/icons/food-truck-icon.png" alt="" style={{ width: 120, height: 120, objectFit: "contain" }} /></div>
             <SectionLabel light>Are You a Food Truck?</SectionLabel>
             <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 3.5vw, 32px)", fontWeight: 400, color: C.cream, margin: "16px 0 16px" }}>
               Get on the Map — $9/month
