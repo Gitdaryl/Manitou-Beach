@@ -99,6 +99,22 @@ function WeeklyEventsSection({ events, onEventClick }) {
     return shorts[day] || day.slice(0, 3).toUpperCase() || "WKL";
   };
 
+  // Build a friendly recurrence label like "Every Sunday in June" or "Every Saturday, May – Sep"
+  const recurrenceLabel = (event) => {
+    const day = event.recurringDay;
+    if (!day) return null;
+    const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    const startDate = event.date ? new Date(event.date + "T00:00:00") : null;
+    const endDate = event.dateEnd ? new Date(event.dateEnd + "T00:00:00") : null;
+    if (!endDate) return `Every ${day}`;
+    const endMonth = months[endDate.getMonth()];
+    if (!startDate || startDate.getMonth() === endDate.getMonth()) {
+      return `Every ${day} in ${endMonth}`;
+    }
+    const startMonth = months[startDate.getMonth()];
+    return `Every ${day}, ${startMonth} – ${endMonth}`;
+  };
+
   return (
     <section style={{ background: C.warmWhite, padding: "100px 24px" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
@@ -168,8 +184,13 @@ function WeeklyEventsSection({ events, onEventClick }) {
                       </div>
                     )}
                     <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: 0, maxWidth: 520 }}>
-                      {event.description}
+                      {event.description?.replace(/\.?\s*Runs until:?\s*\d{4}-\d{2}-\d{2}\.?/i, "").trim()}
                     </p>
+                    {recurrenceLabel(event) && (
+                      <div style={{ fontSize: 12, color: C.textMuted, fontStyle: "italic", marginTop: 6, fontFamily: "'Libre Franklin', sans-serif" }}>
+                        {recurrenceLabel(event)}
+                      </div>
+                    )}
                   </div>
 
                   {/* Cost badge + share */}

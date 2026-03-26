@@ -2091,8 +2091,16 @@ export function EventLightbox({ event, onClose }) {
   const color = eventCatColors[event.category] || C.sage;
   const isRecurring = event.recurring === 'Weekly' || event.recurring === 'Monthly';
   const isAnnual = event.recurring === 'Annual';
+  const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
   const dateDisplay = isRecurring
-    ? `Every ${event.recurringDay || "Week"}`
+    ? (() => {
+        const day = event.recurringDay || "Week";
+        const endDate = event.dateEnd ? new Date(event.dateEnd + "T00:00:00") : null;
+        const startDate = event.date ? new Date(event.date + "T00:00:00") : null;
+        if (!endDate) return `Every ${day}`;
+        if (!startDate || startDate.getMonth() === endDate.getMonth()) return `Every ${day} in ${months[endDate.getMonth()]}`;
+        return `Every ${day}, ${months[startDate.getMonth()]} – ${months[endDate.getMonth()]}`;
+      })()
     : (() => {
         try {
           return new Date(event.date + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
@@ -2275,7 +2283,7 @@ export function EventLightbox({ event, onClose }) {
         )}
 
         <p style={{ fontSize: 15, color: "rgba(255,255,255,0.55)", lineHeight: 1.8, margin: "0 0 20px 0" }}>
-          {event.description}
+          {event.description?.replace(/\.?\s*Runs until:?\s*\d{4}-\d{2}-\d{2}\.?/i, "").trim()}
         </p>
 
         {/* RSVP section — full in-app form (paid feature) OR dead-end fix (free) */}
