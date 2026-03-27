@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, Component } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 // Eager — first paint
@@ -75,6 +75,13 @@ const DispatchArticlePage = lazy(() => import('./pages/DispatchPage').then(m => 
 const AdvertisePage = lazy(() => import('./pages/PromotePage').then(m => ({ default: m.AdvertisePage })));
 const BetaFeedbackStrip = lazy(() => import('./components/Layout').then(m => ({ default: m.BetaFeedbackStrip })));
 const VoiceConcierge = lazy(() => import('./components/VoiceConcierge'));
+
+class SafeVoice extends Component {
+  state = { err: false };
+  static getDerivedStateFromError() { return { err: true }; }
+  componentDidCatch(e) { console.error('VoiceConcierge crashed:', e); }
+  render() { return this.state.err ? null : this.props.children; }
+}
 
 // ============================================================
 // 📑  PROJECT STRUCTURE (post-extraction)
@@ -170,7 +177,7 @@ export default function App() {
           <Route path="/activate" element={<ActivateBusinessPage />} />
           <Route path="/activate-winery" element={<ActivateWineryPage />} />
         </Routes>
-        <VoiceConcierge />
+        <SafeVoice><VoiceConcierge /></SafeVoice>
         <BetaFeedbackStrip />
       </Suspense>
     </BrowserRouter>
