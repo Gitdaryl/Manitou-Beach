@@ -294,10 +294,12 @@ export default function FoodTrucksPage() {
     markersRef.current.forEach(m => m.setMap(null));
     markersRef.current = [];
 
+    const nearbyPts = pts.filter(isNearby);
     const bounds = new G.LatLngBounds();
+
     pts.forEach(truck => {
-      bounds.extend({ lat: truck.lat, lng: truck.lng });
-      const m = new G.Marker({ position: { lat: truck.lat, lng: truck.lng }, map: mapInstanceRef.current, icon: makeIcon(truck.name, false), title: truck.name });
+      if (isNearby(truck)) bounds.extend({ lat: truck.lat, lng: truck.lng });
+      const m = new G.Marker({ position: { lat: truck.lat, lng: truck.lng }, map: mapInstanceRef.current, icon: makeIcon(truck.name, !isNearby(truck) ? false : false), title: truck.name });
       m.addListener('click', () => {
         setSelectedTruck(prev => prev?.id === truck.id ? null : truck);
         markersRef.current.forEach(mk => mk.setIcon(makeIcon(mk.getTitle(), mk.getTitle() === truck.name)));
@@ -305,8 +307,10 @@ export default function FoodTrucksPage() {
       markersRef.current.push(m);
     });
 
-    if (pts.length === 1) { mapInstanceRef.current.setCenter({ lat: pts[0].lat, lng: pts[0].lng }); mapInstanceRef.current.setZoom(15); }
-    else { mapInstanceRef.current.fitBounds(bounds, { top: 40, right: 40, bottom: 40, left: 40 }); }
+    // Fit bounds only to nearby trucks so far-away ones don't zoom out the map
+    if (nearbyPts.length === 1) { mapInstanceRef.current.setCenter({ lat: nearbyPts[0].lat, lng: nearbyPts[0].lng }); mapInstanceRef.current.setZoom(15); }
+    else if (nearbyPts.length > 1) { mapInstanceRef.current.fitBounds(bounds, { top: 40, right: 40, bottom: 40, left: 40 }); }
+    else { mapInstanceRef.current.setCenter({ lat: GEO.centerLat, lng: GEO.centerLng }); mapInstanceRef.current.setZoom(12); }
   }, [mapReady, trucks]);
 
   // Scroll-to and highlight when landing from QR scan (?truck=slug, no token)
@@ -407,6 +411,8 @@ export default function FoodTrucksPage() {
   };
 
   const liveTrucks = (trucks || []).filter(isLive);
+  const nearbyLiveTrucks = liveTrucks.filter(isNearby);
+  const travelingLiveTrucks = liveTrucks.filter(t => !isNearby(t));
   const liveTrucksWithCoords = liveTrucks.filter(t => typeof t.lat === 'number' && typeof t.lng === 'number');
   const comingTrucks = (trucks || []).filter(t =>
     t.comingDate && new Date(t.comingDate) > new Date() && !isLive(t)
@@ -415,7 +421,8 @@ export default function FoodTrucksPage() {
 
   // Popularity sort — by total love count (desc)
   const loveCount = (slug) => loves[slug]?.total || 0;
-  const sortedLiveTrucks = [...liveTrucks].sort((a, b) => loveCount(b.slug) - loveCount(a.slug));
+  const sortedLiveTrucks = [...nearbyLiveTrucks].sort((a, b) => loveCount(b.slug) - loveCount(a.slug));
+  const sortedTravelingTrucks = [...travelingLiveTrucks].sort((a, b) => loveCount(b.slug) - loveCount(a.slug));
   const sortedAllTrucks = [...allTrucks].sort((a, b) => loveCount(b.slug) - loveCount(a.slug));
   const maxLoves = allTrucks.reduce((m, t) => Math.max(m, loveCount(t.slug)), 0);
   const isMostLoved = (slug) => maxLoves >= 3 && loveCount(slug) === maxLoves;
@@ -1091,15 +1098,15 @@ export default function FoodTrucksPage() {
         <div style={{ maxWidth: 1000, margin: "0 auto" }}>
           <FadeIn>
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 32 }}>
-              <div style={{ width: 10, height: 10, borderRadius: "50%", background: liveTrucks.length > 0 ? C.sage : C.sand, flexShrink: 0 }} />
+              <div style={{ width: 10, height: 10, borderRadius: "50%", background: nearbyLiveTrucks.length > 0 ? C.sage : C.sand, flexShrink: 0 }} />
               <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(20px, 3vw, 28px)", fontWeight: 400, color: C.text, margin: 0 }}>
-                {liveTrucks.length > 0 ? "Open Right Now" : "No trucks checked in today"}
+                {nearbyLiveTrucks.length > 0 ? "Open Right Now" : liveTrucks.length > 0 ? "No nearby trucks right now" : "No trucks checked in today"}
               </h2>
             </div>
           </FadeIn>
           {trucks === null ? (
             <div style={{ textAlign: "center", padding: "48px", color: C.textMuted, fontSize: 14 }}>Loading trucks…</div>
-          ) : liveTrucks.length === 0 ? (
+          ) : nearbyLiveTrucks.length === 0 && travelingLiveTrucks.length === 0 ? (
             <div style={{ textAlign: "center", padding: "48px 24px", background: C.cream, borderRadius: 14, border: `1px solid ${C.sand}` }}>
               <div style={{ fontSize: 36, marginBottom: 12 }}>🌤️</div>
               <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.7, maxWidth: 360, margin: "0 auto" }}>
@@ -1183,6 +1190,79 @@ export default function FoodTrucksPage() {
                 </FadeIn>
               ))}
             </div>
+          )}
+
+          {/* Also Serving Today — live trucks outside the map radius */}
+          {sortedTravelingTrucks.length > 0 && (
+            <>
+              <FadeIn>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 48, marginBottom: 20 }}>
+                  <span style={{ fontSize: 18 }}>🛣️</span>
+                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(16px, 2.5vw, 22px)", fontWeight: 400, color: C.text, margin: 0 }}>
+                    Also Serving Today
+                  </h3>
+                  <span style={{ fontSize: 12, color: C.textMuted, fontStyle: "italic" }}>farther out</span>
+                </div>
+              </FadeIn>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 20 }}>
+                {sortedTravelingTrucks.map((truck, i) => {
+                  const dist = typeof truck.lat === 'number' && typeof truck.lng === 'number'
+                    ? Math.round(milesFrom(GEO.centerLat, GEO.centerLng, truck.lat, truck.lng))
+                    : null;
+                  return (
+                    <FadeIn key={truck.id} delay={i * 60}>
+                      <div
+                        ref={el => { if (truck.slug) truckCardRefs.current[truck.slug] = el; }}
+                        style={{ background: C.cream, borderRadius: 14, border: `2px solid ${C.driftwood}44`, overflow: "hidden", height: "100%" }}
+                      >
+                        {truck.photoUrl && (
+                          <img src={truck.photoUrl} alt={truck.name} style={{ width: "100%", height: 160, objectFit: "cover" }} />
+                        )}
+                        <div style={{ padding: "20px 22px" }}>
+                          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginBottom: 6 }}>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.text, margin: "0 0 4px" }}>{truck.name}</h3>
+                              {dist && <span style={{ fontSize: 11, color: C.textMuted }}>~{dist} mi away</span>}
+                            </div>
+                            <div style={{ display: "flex", alignItems: "center", gap: 5, flexShrink: 0 }}>
+                              <div style={{ width: 7, height: 7, borderRadius: "50%", background: C.driftwood }} />
+                              <span style={{ fontSize: 11, color: C.driftwood, fontWeight: 600 }}>{timeAgo(truck.lastCheckin)}</span>
+                            </div>
+                          </div>
+                          {truck.cuisine && <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 8 }}>{truck.cuisine}</div>}
+                          {truck.locationNote && <div style={{ fontSize: 13, color: C.text, fontWeight: 500, marginBottom: 8 }}>📍 {truck.locationNote}</div>}
+                          {truck.todaysSpecial && (
+                            <div style={{ fontSize: 13, background: `${C.sunset}12`, border: `1px solid ${C.sunset}30`, borderRadius: 8, padding: "7px 12px", marginBottom: 8, color: C.sunset, fontWeight: 500 }}>
+                              ⭐ {truck.todaysSpecial}
+                            </div>
+                          )}
+                          {truck.description && <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: "0 0 10px" }}>{truck.description}</p>}
+                          {truck.slug && <LovePills slug={truck.slug} />}
+                          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", marginTop: 8 }}>
+                            {truck.lat && truck.lng && (
+                              <a href={`https://www.google.com/maps?q=${truck.lat},${truck.lng}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 4 }}>
+                                🗺️ Directions
+                              </a>
+                            )}
+                            {truck.phone && (
+                              <a href={`tel:${truck.phone}`} style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 4 }}>
+                                📱 Call
+                              </a>
+                            )}
+                            <button
+                              onClick={() => shareTruck(truck)}
+                              style={{ fontSize: 12, color: sharedId === truck.id ? C.sage : C.sunset, background: "none", border: "none", padding: 0, fontWeight: 700, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", display: "inline-flex", alignItems: "center", gap: 4, transition: "color 0.2s" }}
+                            >
+                              {sharedId === truck.id ? '✓ Copied' : '↗ Tell a friend'}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </FadeIn>
+                  );
+                })}
+              </div>
+            </>
           )}
         </div>
       </section>
