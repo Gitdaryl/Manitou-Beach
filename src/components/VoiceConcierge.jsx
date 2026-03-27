@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { ConversationProvider, useConversation } from '@elevenlabs/react';
 import { C } from '../data/config';
 
@@ -14,21 +14,17 @@ export default function VoiceConcierge() {
 }
 
 function VoiceConciergeInner() {
-  const [panelOpen, setPanelOpen] = useState(false);
-  const [transcript, setTranscript] = useState([]);
-  const [links, setLinks] = useState([]);
-  const scrollRef = useRef(null);
+  const [cards, setCards] = useState([]);       // link/contact/info cards
+  const [trayOpen, setTrayOpen] = useState(false);
+  const trayRef = useRef(null);
+
+  // Auto-open tray when cards arrive, auto-close when cleared
+  useEffect(() => {
+    if (cards.length > 0) setTrayOpen(true);
+  }, [cards.length]);
 
   const conversation = useConversation({
-    onMessage: ({ message, source }) => {
-      if (message) {
-        setTranscript(prev => [...prev.slice(-12), { role: source === 'user' ? 'user' : 'assistant', text: message }]);
-        setTimeout(() => scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' }), 60);
-      }
-    },
-    onError: (err) => {
-      console.error('ElevenLabs error:', err);
-    },
+    onError: (err) => console.error('ElevenLabs error:', err),
   });
 
   const { status, isSpeaking } = conversation;
@@ -36,22 +32,36 @@ function VoiceConciergeInner() {
   const isConnecting = status === 'connecting';
 
   const startConversation = useCallback(async () => {
-    setPanelOpen(true);
-    setTranscript([]);
-    setLinks([]);
+    setCards([]);
+    setTrayOpen(false);
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
       await conversation.startSession({
         agentId: AGENT_ID,
         clientTools: {
+          // Surface a clickable link card
           showLink: async ({ url, label, sublabel }) => {
-            setLinks(prev => prev.some(l => l.url === url) ? prev : [...prev, { url, label: label || 'Open Link', sublabel }]);
+            setCards(prev => prev.some(c => c.id === url) ? prev : [...prev, { type: 'link', id: url, url, label: label || 'Open Link', sublabel }]);
             return 'Link shown to user';
           },
+          // Surface a business/contact card
+          showContact: async ({ name, phone, address, url }) => {
+            const id = `contact-${name}`;
+            setCards(prev => prev.some(c => c.id === id) ? prev : [...prev, { type: 'contact', id, name, phone, address, url }]);
+            return 'Contact card shown to user';
+          },
+          // Surface a text info card (event details, directions, etc.)
+          showInfo: async ({ title, text }) => {
+            const id = `info-${title}`;
+            setCards(prev => prev.some(c => c.id === id) ? prev : [...prev, { type: 'info', id, title, text }]);
+            return 'Info card shown to user';
+          },
+          // Navigate to a page on the site
           navigateTo: async ({ path }) => {
             window.location.href = path;
             return 'Navigating user to ' + path;
           },
+          // Get user's GPS location
           getUserLocation: async () => {
             try {
               const pos = await new Promise((resolve, reject) =>
@@ -73,98 +83,135 @@ function VoiceConciergeInner() {
     await conversation.endSession();
   }, [conversation]);
 
+  const dismissCard = (id) => {
+    setCards(prev => {
+      const next = prev.filter(c => c.id !== id);
+      if (next.length === 0) setTrayOpen(false);
+      return next;
+    });
+  };
+
+  const hasCards = cards.length > 0;
+
   return (
     <>
-      {/* Chat Panel */}
-      {panelOpen && (
-        <div style={{
+      {/* ── Card Tray — slides up when agent surfaces info ── */}
+      {trayOpen && hasCards && (
+        <div ref={trayRef} style={{
           position: 'fixed', bottom: 92, right: 24, zIndex: 9997,
-          width: 340, maxHeight: 480,
-          background: 'rgba(26,40,48,0.96)',
-          backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
-          border: '1px solid rgba(255,255,255,0.1)',
-          borderRadius: 16, overflow: 'hidden',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
-          display: 'flex', flexDirection: 'column',
+          width: 320,
+          display: 'flex', flexDirection: 'column', gap: 8,
+          animation: 'vc-slide-up 0.3s ease-out',
         }}>
-          {/* Header */}
-          <div style={{ padding: '14px 18px', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{
-                width: 8, height: 8, borderRadius: '50%',
-                background: isActive ? C.sage : isConnecting ? C.sunset : 'rgba(255,255,255,0.25)',
-                animation: isActive ? 'vc-breathe 1.5s ease-in-out infinite' : 'none',
-              }} />
-              <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)' }}>
-                {isConnecting ? 'Connecting…' : isActive ? (isSpeaking ? 'Speaking' : 'Listening') : 'Manitou Beach Guide'}
-              </span>
-            </div>
-            <button onClick={() => setPanelOpen(false)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer', fontSize: 20, lineHeight: 1, padding: '2px 4px' }}>×</button>
-          </div>
+          {/* Dismiss all */}
+          <button onClick={() => { setCards([]); setTrayOpen(false); }} style={{
+            alignSelf: 'flex-end', background: 'none', border: 'none',
+            color: 'rgba(255,255,255,0.35)', fontSize: 11, cursor: 'pointer',
+            fontFamily: "'Libre Franklin', sans-serif", padding: '2px 0',
+          }}>Clear all ×</button>
 
-          {/* Transcript */}
-          <div ref={scrollRef} style={{ flex: 1, overflowY: 'auto', padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 320 }}>
-            {transcript.length === 0 && isConnecting && (
-              <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)', fontFamily: "'Libre Franklin', sans-serif", textAlign: 'center', margin: '24px 0' }}>Connecting to your guide…</p>
-            )}
-            {transcript.length === 0 && isActive && (
-              <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)', fontFamily: "'Libre Franklin', sans-serif", textAlign: 'center', margin: '24px 0' }}>Ask me anything about Manitou Beach…</p>
-            )}
-            {!isActive && !isConnecting && transcript.length === 0 && (
-              <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)', fontFamily: "'Libre Franklin', sans-serif", textAlign: 'center', margin: '24px 0' }}>Tap the mic to start talking</p>
-            )}
-            {transcript.map((t, i) => (
-              <div key={i} style={{
-                alignSelf: t.role === 'user' ? 'flex-end' : 'flex-start',
-                maxWidth: '88%',
-                background: t.role === 'user' ? `${C.sage}22` : 'rgba(255,255,255,0.07)',
-                border: `1px solid ${t.role === 'user' ? C.sage + '35' : 'rgba(255,255,255,0.08)'}`,
-                borderRadius: t.role === 'user' ? '14px 14px 4px 14px' : '14px 14px 14px 4px',
-                padding: '8px 12px',
-              }}>
-                <p style={{ margin: 0, fontSize: 13, color: 'rgba(255,255,255,0.85)', fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.55 }}>{t.text}</p>
-              </div>
-            ))}
-            {isSpeaking && (
-              <div style={{ alignSelf: 'flex-start', display: 'flex', gap: 4, padding: '10px 14px', background: 'rgba(255,255,255,0.07)', borderRadius: '14px 14px 14px 4px' }}>
-                {[0, 1, 2].map(i => (
-                  <div key={i} style={{ width: 6, height: 6, borderRadius: '50%', background: C.sage, animation: `vc-float 0.6s ease-in-out ${i * 0.15}s infinite alternate` }} />
-                ))}
-              </div>
-            )}
-            {links.map((link, i) => (
-              <a key={i} href={link.url} target="_blank" rel="noopener noreferrer" style={{
-                display: 'block', textDecoration: 'none',
-                background: `${C.sunset}15`, border: `1px solid ${C.sunset}40`,
-                borderRadius: 10, padding: '10px 14px', transition: 'background 0.2s',
-              }}
-                onMouseEnter={e => e.currentTarget.style.background = `${C.sunset}28`}
-                onMouseLeave={e => e.currentTarget.style.background = `${C.sunset}15`}
-              >
-                <div style={{ fontSize: 13, fontWeight: 600, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif" }}>{link.label}</div>
-                {link.sublabel && <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 2, fontFamily: "'Libre Franklin', sans-serif" }}>{link.sublabel}</div>}
-                <div style={{ fontSize: 11, color: C.sunset, marginTop: 4, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600 }}>Open →</div>
-              </a>
-            ))}
-          </div>
+          {cards.map(card => (
+            <div key={card.id} style={{
+              background: 'rgba(26,40,48,0.96)',
+              backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              borderRadius: 14, overflow: 'hidden',
+              boxShadow: '0 12px 40px rgba(0,0,0,0.35)',
+              position: 'relative',
+            }}>
+              {/* Dismiss single card */}
+              <button onClick={() => dismissCard(card.id)} style={{
+                position: 'absolute', top: 8, right: 10,
+                background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)',
+                fontSize: 16, cursor: 'pointer', lineHeight: 1, padding: 0,
+              }}>×</button>
 
-          {/* End call */}
-          {isActive && (
-            <div style={{ padding: '12px 18px', borderTop: '1px solid rgba(255,255,255,0.08)', display: 'flex', justifyContent: 'center' }}>
-              <button onClick={endConversation} style={{
-                background: 'rgba(220,60,60,0.12)', border: '1px solid rgba(220,60,60,0.3)',
-                color: '#ff7070', borderRadius: 8, padding: '7px 22px',
-                fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase',
-                fontFamily: "'Libre Franklin', sans-serif", cursor: 'pointer',
-              }}>
-                End Call
-              </button>
+              {card.type === 'link' && (
+                <a href={card.url} target="_blank" rel="noopener noreferrer" style={{
+                  display: 'block', textDecoration: 'none', padding: '14px 16px',
+                }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", paddingRight: 20 }}>{card.label}</div>
+                  {card.sublabel && <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 3, fontFamily: "'Libre Franklin', sans-serif" }}>{card.sublabel}</div>}
+                  <div style={{ fontSize: 11, color: C.sunset, marginTop: 6, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600 }}>Open →</div>
+                </a>
+              )}
+
+              {card.type === 'contact' && (
+                <div style={{ padding: '14px 16px' }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', fontFamily: "'Libre Franklin', sans-serif", paddingRight: 20 }}>{card.name}</div>
+                  {card.phone && (
+                    <a href={`tel:${card.phone}`} style={{ display: 'block', fontSize: 13, color: C.sage, marginTop: 6, fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'none', fontWeight: 600 }}>
+                      📞 {card.phone}
+                    </a>
+                  )}
+                  {card.address && <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', marginTop: 4, fontFamily: "'Libre Franklin', sans-serif" }}>{card.address}</div>}
+                  {card.url && (
+                    <a href={card.url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', fontSize: 11, color: C.sunset, marginTop: 6, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textDecoration: 'none' }}>
+                      Visit website →
+                    </a>
+                  )}
+                </div>
+              )}
+
+              {card.type === 'info' && (
+                <div style={{ padding: '14px 16px' }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", paddingRight: 20 }}>{card.title}</div>
+                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', marginTop: 6, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.5 }}>{card.text}</div>
+                </div>
+              )}
             </div>
-          )}
+          ))}
         </div>
       )}
 
-      {/* Floating mic button */}
+      {/* ── Status pill — shows during active call ── */}
+      {(isActive || isConnecting) && (
+        <div style={{
+          position: 'fixed', bottom: 88, right: 24, zIndex: 9996,
+          display: 'flex', alignItems: 'center', gap: 8,
+          background: 'rgba(26,40,48,0.92)',
+          backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          borderRadius: 20, padding: '6px 14px 6px 10px',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
+          animation: 'vc-fade-in 0.25s ease-out',
+        }}>
+          {/* Status dot */}
+          <div style={{
+            width: 7, height: 7, borderRadius: '50%',
+            background: isConnecting ? C.sunset : C.sage,
+            animation: isActive ? 'vc-breathe 1.5s ease-in-out infinite' : 'none',
+          }} />
+          <span style={{
+            fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700,
+            letterSpacing: 1.2, textTransform: 'uppercase',
+            color: 'rgba(255,255,255,0.5)',
+          }}>
+            {isConnecting ? 'Connecting…' : isSpeaking ? 'Speaking' : 'Listening'}
+          </span>
+          {/* Audio bars animation when speaking */}
+          {isSpeaking && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 2, marginLeft: 2 }}>
+              {[0, 1, 2, 3].map(i => (
+                <div key={i} style={{
+                  width: 2, borderRadius: 1,
+                  background: C.sage,
+                  animation: `vc-bar 0.5s ease-in-out ${i * 0.1}s infinite alternate`,
+                }} />
+              ))}
+            </div>
+          )}
+          {/* End button inline */}
+          <button onClick={endConversation} style={{
+            background: 'none', border: 'none', color: 'rgba(255,100,100,0.7)',
+            fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase',
+            fontFamily: "'Libre Franklin', sans-serif", cursor: 'pointer',
+            marginLeft: 4, padding: '2px 0',
+          }}>End</button>
+        </div>
+      )}
+
+      {/* ── Floating mic button ── */}
       <button
         onClick={isActive ? endConversation : startConversation}
         title={isActive ? 'End call' : 'Ask your Manitou Beach guide'}
@@ -200,6 +247,9 @@ function VoiceConciergeInner() {
         @keyframes vc-breathe { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
         @keyframes vc-float { to { transform: translateY(-4px); } }
         @keyframes vc-pulse { 0%, 100% { box-shadow: 0 0 0 8px ${C.sunset}18, 0 8px 28px rgba(0,0,0,0.35); } 50% { box-shadow: 0 0 0 14px ${C.sunset}08, 0 8px 28px rgba(0,0,0,0.35); } }
+        @keyframes vc-slide-up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes vc-fade-in { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes vc-bar { from { height: 4px; } to { height: 12px; } }
       `}</style>
     </>
   );
