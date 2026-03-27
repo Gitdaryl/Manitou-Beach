@@ -523,3 +523,264 @@ The site offers SMS notifications for community updates. Visitors and locals can
 SMS opt-in page: /sms
 Privacy policy: /privacy
 Terms of service: /terms
+
+
+========================================
+SECTION 17: EVENT ORGANIZER GUIDE
+========================================
+
+This is the complete walkthrough for anyone who wants to put on an event in the Manitou Beach area — from a free community barbecue to a ticketed festival with vendor booths.
+
+SUBMITTING A FREE EVENT LISTING:
+
+First, head to /submit-event. You'll see a form that collects everything we need to get your event on the community calendar. Here's what you'll fill in:
+
+Start with your event name — make it catchy, this is what people see first on the calendar. Then pick your event date. If it spans multiple days, there's an end date field too. Set your start and end times so people know when to show up and when it wraps.
+
+For location, type in the venue name and address — people need to know where to go. Write a description that tells the story of your event: what it is, why someone should come, what to expect. If there's a door price, you can add that in the cost field. If it's free, just leave it blank.
+
+Next, pick your event type. You've got six options:
+
+"Just show up" — no registration needed, perfect for open community events.
+"RSVP encouraged" — we'll show an RSVP option, but people can still walk in.
+"RSVP required" — registration is mandatory, and you can set a capacity cap so it doesn't oversell.
+"Ticketed — I use my own system" — we'll add a "Get Tickets" button that links to your own ticketing site or Eventbrite.
+"Ticketed — we'll handle it for you" — secure checkout right on the site through Yetickets. No setup fees, no monthly charges. Just 1.25% plus standard card processing.
+"Vendor market — vendors pay for booths" — vendors register and pay securely on the site. Money goes straight to your bank. You get an organizer portal to manage everything.
+
+If your event repeats, you can set it as weekly, monthly, or annual and pick the day of the week.
+
+You can upload an event image or flyer — this makes your listing stand out on the calendar. Just drag and drop or tap to upload. Keep it under 2 MB.
+
+Fill in your name, email, and phone number. Your phone is required because we verify submissions with a quick text code — this keeps spam off the calendar. Once you enter the 6-digit code from the text, your event goes through a quick review and appears on the calendar.
+
+If you've already verified your phone in the same session, you can submit additional events without re-verifying — your session lasts 8 hours.
+
+SETTING UP TICKETED EVENTS WITH YETICKETS:
+
+If you want to sell tickets directly through the site, head to /ticket-services. Yetickets is the community ticketing platform built right into manitoubeachmichigan.com. Here's what you get:
+
+QR-coded PDF tickets delivered instantly after every purchase — buyers can print them or show them on their phone.
+Real-time capacity tracking so your event never oversells.
+Volunteer check-in at the door — any person with a phone can scan tickets. No app to install, just open the check-in page and point the camera.
+Direct bank deposit — ticket revenue goes straight to your organization's bank account through Stripe Express Connect. No waiting for payouts.
+
+The fee is 1.25% plus standard card processing (about 2.9% + $0.30 from Stripe). On a $25 ticket, you receive about $23.66. That's roughly half what Eventbrite charges.
+
+To get set up, go to /ticket-services and fill in your organization name, your name, email, and phone. You'll be taken to a secure Stripe form to enter your bank details — this is a one-time setup. Then Daryl configures your event on the site with pricing, capacity, and dates. Your "Get Tickets" button goes live and you're selling tickets.
+
+There are no setup fees and no monthly charges. You only pay when tickets actually sell.
+
+PROMOTING YOUR EVENT — EVERY OPTION AND PRICE:
+
+Once your event is on the calendar, you can boost it. Head to /promote to see all the event promotion options. Here's what's available at founding rates:
+
+Event Spotlight — $25. Your event shows up in the calendar with a photo and a big "Get Tickets" button instead of a plain text listing. Stands out from the free listings.
+
+Hero Feature (7 days) — $75. Your event takes over the front page of the entire website for a full week. Full-screen, first thing anyone sees when they visit the site.
+
+Hero Feature (30 days) — $249. Same front-page treatment, but for an entire month. Great for building anticipation leading up to a big event.
+
+Newsletter Feature — $39. Your event gets a big beautiful section at the very top of the next Manitou Beach Dispatch email. The whole community sees it in their inbox before anything else.
+
+Page Feature Banner (1 page, 30 days) — $29. A full-width banner for your event on whichever page your crowd visits most — Fishing, Wineries, Devils Lake, and more. Like a billboard on the website.
+
+Page Feature Banner (3 pages, 30 days) — $69. Same billboard treatment across three pages at once. Cover more ground.
+
+Featured Strip Pin (30 days) — $19. Your event goes first in the "Coming Up" scrolling list on the homepage. Hard to scroll past.
+
+Holly & Yeti Spotlight (30 days) — $179. Holly and The Yeti come out and shoot a short video about your event. It lives on the website for a month and gets shared on social media.
+
+Full Launch Bundle — $149. The whole package: front page for 7 days, top of the newsletter, and a featured calendar listing. Maximum coverage, and you save $55 doing it this way. Best value.
+
+RSVP Collection — $9. An in-app RSVP form for your event. You get notified for each signup, and attendees receive reminder emails the day before and day of. SMS reminders coming soon.
+
+All of these are at founding rates and early advertisers lock in the current pricing.
+
+ADVERTISING IN THE DISPATCH NEWSLETTER:
+
+For newsletter-specific advertising, head to /advertise. Options include:
+
+Newsletter Mention (1 issue) — $29. One or two sentences about your business or event with a link in the weekly email.
+Newsletter Feature (1 issue) — $39. A full dedicated section at the very top of the email with an image, copy, and link.
+Newsletter 4-Pack (4 issues) — $129. A month of newsletter presence. Save $27 versus buying four individually.
+Season Contract (8 issues) — $239. Own the top-of-newsletter slot for the whole season. First right of renewal at the same rate. Best value.
+Page Banner (1 page, 30 days) — $29. A full-width banner on whichever page your customers visit most.
+Page Banner (3 pages, 30 days) — $69. Same treatment across three pages.
+Holly & Yeti Feature (30 days) — $179. A short video about your business created by Holly and The Yeti. Lives on the site and shared on social.
+
+PAGE SPONSORSHIPS:
+
+Want to own an entire page? Page sponsorships are $97 per month or $970 per year (which gets you 2 months free). There are 10 pages available with one exclusive sponsor per page. Your logo, tagline, and link are the only ad on that page. Think: a bait shop sponsoring the Fishing page, or a winery sponsoring the Wineries page. Contact us through the site to check availability.
+
+ORGANIZER DASHBOARD:
+
+Once your event is set up, you can manage it from the organizer dashboard at /organizer-dashboard. This is where you track ticket sales, manage vendors, view registrations, and stay on top of everything for your event.
+
+
+========================================
+SECTION 18: FOOD TRUCK VENDOR GUIDE
+========================================
+
+This is the complete walkthrough for food truck operators who want to serve the Manitou Beach lake crowd.
+
+REGISTERING AS A FOOD TRUCK PARTNER:
+
+Head to /food-truck-partner to get started. The signup takes about two minutes. Here's what you'll fill in:
+
+Truck name — the name of your food truck as you want it to appear on the map.
+Cuisine / what you serve — BBQ, tacos, wood-fired pizza, whatever your specialty is.
+Email — required for your account.
+Phone — required, because we'll text you a verification code.
+Website or Instagram — optional, but it gives customers a way to check out your menu.
+Truck photo or logo — optional, but it makes your listing look great. Upload a JPG or PNG under 2 MB.
+
+Once you fill everything in and tap "Get on the Map," we'll text a 6-digit verification code to your phone. Enter that code and you're verified.
+
+Right now during the founding beta, everything is free through May 10. No credit card required. After May 10, the rate is $9 per month to stay live on the map. If you don't want to pay, you can downgrade to a free directory-only listing — your name and cuisine stay visible, but no live map features.
+
+After you're verified, you'll get a personal check-in URL sent to your phone by text. This link is yours forever. Bookmark it — you'll use it every time you head to Manitou Beach.
+
+WHAT'S INCLUDED WITH YOUR LISTING:
+
+Live map pin — your truck appears on the food truck locator the moment you check in, with a "Live Now" badge.
+Personal check-in URL — open from your phone, no app, no login. Fill in two fields and tap one button.
+Today's Special badge — running a lunch deal or testing a new item? Add it during check-in and it highlights on your live card.
+Coming Soon pre-announce — planning a Saturday run? Set a future date and customers see "Coming This Saturday" before you even arrive.
+Customer hearts and dish ratings — customers can heart your truck and tag what they loved. Every heart builds your love count.
+Most Loved ranking — the locator sorts by love count. More hearts means higher on the list, more visibility, more customers.
+Website, menu, and Instagram link — one tap to your menu from every live card.
+Newsletter shoutout — when you're checked in on days the Dispatch goes out, hundreds of readers see your name.
+Directory listing year-round — your name, cuisine, and contact info stay visible in the All Trucks list even when you're not checked in.
+
+CHECKING IN WHEN YOU'RE SERVING:
+
+When you're heading to Manitou Beach, open your personal check-in link. You'll see fields to:
+
+Drop a location note — type where you are, like "near the boat launch" or "village parking lot."
+Add today's special — whatever deal or dish you want to highlight.
+Set your estimated departure time — so customers know how long you'll be around.
+
+Tap "I'm Here" and your map pin goes live in seconds. Customers checking /food-trucks see you right away with your Live Now badge, your special, and your location.
+
+If you've been to the same spot before, your location history is saved for quick one-tap re-check-in.
+
+REGISTERING FOR SPECIFIC EVENTS AS A VENDOR:
+
+When a community event like a market or festival needs food vendors, you can register at /vendor-register. This page is event-specific — the organizer will share a link that includes the event details.
+
+On that page you'll see the event name, date, time, location, and booth fee (if any). Some events have free registration, others charge a booth fee. You'll fill in:
+
+Business or vendor name — required.
+Your name — required.
+Email — required, this is where your confirmation goes.
+Phone — optional.
+What you're selling / booth type — required. Describe what you'll be serving.
+Notes to the organizer — optional. Mention booth size needs, power requirements, or any questions.
+
+If there's a booth fee, you'll pay through Stripe during registration. Once submitted, you get a confirmation receipt by email with a unique confirmation ID and a downloadable PDF receipt. The organizer may follow up with load-in details and parking instructions closer to the event.
+
+The page also shows a capacity bar so you can see how many vendor spots are left.
+
+THE VENDOR PORTAL:
+
+Once you're registered for events, the vendor portal at /vendor-portal gives organizers a way to manage their vendors. But for you as a vendor, the key thing to know is: the organizer can approve or reject applications, and you'll get a text letting you know either way.
+
+If you're an event organizer managing vendors, the portal shows you pending applications, confirmed vendors, and lets you:
+
+Approve vendors ("Welcome Aboard") or pass on them ("Not This Time") — they get a friendly text notification either way.
+See the full list of confirmed vendors with their contact info and booth type.
+Download a CSV of all registered vendors.
+Send email blasts to all vendors at once — perfect for parking instructions, gate codes, load-in times, and last-minute changes.
+
+HOW THE QR CODE SYSTEM WORKS:
+
+Each food truck gets a unique QR code page at /food-trucks/qr/ followed by their truck slug. This QR code links directly to the truck's locator card. Trucks can print this and put it on their truck window or hand it to customers — scanning it shows the truck's live status, specials, and lets customers heart the truck.
+
+HOW CUSTOMERS FIND FOOD TRUCKS:
+
+Visitors go to /food-trucks and see a live map showing GPS-pinned locations of every truck that's checked in. Each truck card shows their name, what they serve, where they are, today's special, and how long they plan to be around. Customers can heart a truck, rate their favorite dishes, and share the truck's location with friends. Trucks that aren't currently checked in still appear in the All Trucks directory so people know they exist.
+
+
+========================================
+SECTION 19: BUSINESS OWNER COMPLETE GUIDE
+========================================
+
+This is the detailed step-by-step for business owners who want to get listed, upgrade, update, or promote their business on manitoubeachmichigan.com.
+
+ACTIVATING A NEW BUSINESS LISTING:
+
+Head to /activate to get your business on the site. You'll arrive at a checkout page that shows your business name and chosen tier. Here's what happens:
+
+First, pick your billing preference — monthly or annual. Annual pays once and is a better deal overall.
+
+Then enter your email address. This is where Stripe receipts and listing updates go.
+
+Tap "Continue to Checkout" and you'll be taken to Stripe's secure payment page. Your card is stored but not charged until May 10 during the current founding period — cancel before then and it costs you nothing.
+
+After payment, your listing goes live after a quick review. You'll get a confirmation email.
+
+THE THREE LISTING TIERS IN DETAIL:
+
+Showcased (Basic) — $9 per month ($108 per year)
+This is your starting point. You get your business name, category, description, and contact info in the full directory listing at /business. It gets you found by people browsing the directory. A solid foundation for any local business.
+
+Highlighted (Enhanced) — $25 per month ($300 per year)
+Everything in Showcased, plus your logo displayed on your listing, a clickable website link, and enhanced visual placement that stands out from the basic listings. You get a spotlight card that sits above standard listings. No slot cap — unlimited businesses can be at this tier. This is the sweet spot for most businesses.
+
+Front and Center (Featured) — $49 per month ($588 per year)
+The premium option. Full-width banner card with a large logo, top-of-directory placement in your category, a featured badge, an email contact button, and maximum visibility. Limited to 3 slots per category — first come, first served. If you want to stand out above everyone else, this is it.
+
+There's also a Premium tier above Featured for businesses that want the absolute top spot — limited to 1 per category.
+
+UPGRADING YOUR LISTING:
+
+Already listed and want more visibility? Head to /upgrade-listing. The process takes about two minutes:
+
+First, enter your business name and the email you used when you signed up. We'll look up your current listing to confirm your identity.
+
+Once verified, you'll see which tiers are available above your current one. Pick monthly or annual billing, then tap the tier you want to upgrade to. You'll be taken to Stripe checkout to set up the new subscription. Your old subscription gets cancelled automatically — nothing extra for you to do.
+
+After upgrading, check your email for confirmation. Your listing bumps up to its new tier right away.
+
+UPDATING YOUR LISTING INFO:
+
+Need to change your description, contact details, hours, or anything else? Go to /update-listing. This is where you edit all the details on your existing listing.
+
+CLAIMING AN EXISTING LISTING:
+
+If your business is already showing on the site but you haven't claimed it yet, go to /claim/ followed by your business slug (the URL-friendly version of your business name). Claiming gives you control over your listing info and connects your subscription.
+
+PROMOTION OPTIONS FOR BUSINESSES:
+
+Beyond your directory listing, there are several ways to get more eyeballs on your business:
+
+Page Sponsorship — $97 per month or $970 per year. Sponsor an entire page on the site. Your logo, tagline, and link are the only ad on that page. 10 pages available, one exclusive sponsor per page. Check availability at /promote.
+
+Newsletter Advertising — Run ads in The Dispatch, the weekly community newsletter. Options start at $29 for a mention and go up to $239 for a full season contract (8 issues). All details at /advertise.
+
+Page Banners — $29 for one page or $69 for three pages, both for 30 days. Your banner sits right in the middle of the pages your customers visit most. Available at both /promote and /advertise.
+
+Holly & Yeti Feature — $179 for 30 days. Holly and The Yeti come out and create a short video about your business. It lives on the website for a month and gets shared on social. The kind of thing the community actually watches.
+
+Full Launch Bundle — $149 for businesses that want maximum coverage: front page of the site for 7 days, top of the newsletter, and a featured calendar listing. Save $55 compared to buying each separately.
+
+WINERY-SPECIFIC: JOINING THE WINE TRAIL:
+
+If you're a winery or tasting room, you can join the Manitou Beach Wine Trail. Head to /wine-partner (or /activate-winery) to get started.
+
+The Wine Trail is a season-long program running May 22 through October 31, 2026. The cost is $279 for the full season — one-time payment, no subscription.
+
+Here's what you get as a wine trail partner:
+
+Your venue on the interactive trail map at /wineries, visible to every visitor planning their trip.
+A live public scorecard with community ratings across Wine Quality, Service, Atmosphere, and Value.
+100 printed 4x6 passport cards delivered to your counter plus a display insert. When a customer visits, they scan the QR code on the card, pick their wine, and leave a star rating. You sign their card square — that's the stamp. They earn 10% off a bottle right then and there, but only if they buy before they leave.
+Ratings go live immediately and update in real time on the wine trail page. Every rating is a vote.
+At the end of the season, the top-rated venues receive a custom framed certificate award. There are 7 awards: Best Red Wine, Best White Wine, Best Sweet Wine, Best Fruit or Specialty Wine, Best Tasting Room Experience, Outstanding Customer Hospitality, and Best Atmosphere. These are 100% people's choice — voted on by real visitors.
+Scores go dark in the final 30 days of the season so nobody knows the winners until the awards ceremony.
+Full venue listing on the site year-round.
+
+To sign up, fill in your venue name, your name, email, and optionally your phone and any notes about delivery. You'll be taken to Stripe for the one-time $279 payment. Cards will be delivered before the season opens.
+
+Not ready to pay yet? You can reserve your spot without payment — just fill in venue name, your name, and email, and Daryl will follow up before cards go to print.
