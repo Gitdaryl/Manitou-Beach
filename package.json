@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
+    "@elevenlabs/react": "^1.0.0",
     "@googlemaps/js-api-loader": "^1.16.10",
-    "@vapi-ai/web": "^2.5.2",
     "@vercel/blob": "^2.3.0",
     "bwip-js": "^4.8.0",
     "html5-qrcode": "^2.3.8",

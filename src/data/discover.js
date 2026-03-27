@@ -25,10 +25,8 @@ export function pickAd(slotAds) {
 }
 
 // ============================================================
-// 🎤  VOICE WIDGET — Vapi + ElevenLabs
+// 🎤  VOICE CONCIERGE — Site Knowledge Base
 // ============================================================
-export const VAPI_PUBLIC_KEY = import.meta.env.VITE_VAPI_PUBLIC_KEY;
-export const VAPI_ASSISTANT_ID = import.meta.env.VITE_VAPI_ASSISTANT_ID;
 
 export const SITE_KNOWLEDGE = `
 ABOUT MANITOU BEACH & DEVILS LAKE:

@@ -1,0 +1,9 @@
+{
+    "agents": [
+        {
+            "config": "agent_configs/Manitou-Beach-Concierge.json",
+            "id": "agent_4701kmr2kg6afnmvnpdwnk58yjn5",
+            "env": "prod"
+        }
+    ]
+}

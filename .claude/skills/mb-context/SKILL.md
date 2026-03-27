@@ -18,7 +18,7 @@ Owner: Daryl Young | Agency: Yeti Groove Media
 
 - React 18 + Vite | `npm run dev` | `npm run build`
 - Vercel serverless APIs in `/api/` (13 endpoints)
-- Notion CMS, Stripe checkout, beehiiv newsletter, Vapi voice AI, Vercel Blob
+- Notion CMS, Stripe checkout, beehiiv newsletter, ElevenLabs voice concierge (pending), Vercel Blob
 
 ---
 

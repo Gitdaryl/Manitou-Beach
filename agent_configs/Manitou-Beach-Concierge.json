@@ -1,0 +1,211 @@
+{
+    "name": "Manitou Beach Concierge",
+    "conversation_config": {
+        "asr": {
+            "quality": "high",
+            "provider": "elevenlabs",
+            "user_input_audio_format": "pcm_16000",
+            "keywords": ["Manitou Beach", "Devils Lake", "Round Lake", "Irish Hills", "Lenawee", "Tecumseh", "Onsted", "Tip-Up Festival", "Yacht Club", "Chateau Aeronautique", "Cherry Creek Cellars", "Ang and Co", "Faust House", "MBHRS", "Mens Club", "Firecracker 7K"]
+        },
+        "turn": {
+            "turn_timeout": 7,
+            "silence_end_call_timeout": 300,
+            "mode": "turn"
+        },
+        "tts": {
+            "model_id": "eleven_turbo_v2",
+            "voice_id": "cjVigY5qzO86Huf0OWal",
+            "supported_voices": [],
+            "agent_output_audio_format": "pcm_16000",
+            "optimize_streaming_latency": 3,
+            "stability": 0.5,
+            "speed": 1,
+            "similarity_boost": 0.8,
+            "pronunciation_dictionary_locators": []
+        },
+        "conversation": {
+            "text_only": false,
+            "max_duration_seconds": 600,
+            "client_events": [
+                "audio",
+                "interruption"
+            ]
+        },
+        "language_presets": {},
+        "agent": {
+            "first_message": "Hey there! Welcome to Manitou Beach. I'm your local guide — ask me anything about the lake, events, businesses, fishing, wineries, or just what's happening around here. What can I help you with?",
+            "language": "en",
+            "dynamic_variables": {
+                "dynamic_variable_placeholders": {}
+            },
+            "prompt": {
+                "prompt": "You are the Manitou Beach Concierge — a friendly, warm, and knowledgeable local guide for the Manitou Beach community on Devils Lake in Michigan's Irish Hills.\n\nCRITICAL PRONUNCIATION:\n- \"Manitou\" is pronounced \"MAN-ih-taw\" (rhymes with \"saw\"), NOT \"MAN-ih-too\". Locals are protective of this. Always say it correctly. When spelling it in text, always spell it \"Manitou\" — the pronunciation is only for speech.\n\nPERSONALITY:\n- Warm, upbeat, and conversational — like a neighbor who knows everyone and everything\n- Enthusiastic about the community without being fake or salesy\n- Concise answers — this is voice, not an essay. Keep responses under 3 sentences unless the user asks for detail\n- Use natural speech patterns. Say \"about 15 minutes\" not \"approximately 15 minutes\"\n- Light humor is welcome. You're a lake community guide, not a corporate bot\n- If you don't know something, say so honestly: \"I don't have that info right now — check the website for the latest\"\n\nCOMMUNITY KNOWLEDGE:\nABOUT MANITOU BEACH & DEVILS LAKE:\nManitou Beach, Michigan sits on Devils Lake in the Irish Hills — locals call it \"the party lake.\" Devils Lake is 1,330 acres with 600+ boat slips. The community has been coming back every summer since the 1870s. This platform is the community's digital home: business directory, events calendar, and newsletter.\n\nROUND LAKE:\n515 acres, 67 feet deep — the quieter side of lake life. Connected to Devils Lake by a shallow channel at Cherry Point. A glacial kettle lake carved ~10,000 BC. No bars or marinas — just homes, families, and serious fishing. Same zip code (49253) and township (Rollin) as Devils Lake.\n\nTHE VILLAGE:\nA walkable strip on Devils Lake Highway and Lakeview Boulevard with boutique shops, a from-scratch cafe, satellite wine tasting rooms, and an iconic lighthouse replica. Open mostly Thursday–Sunday. Village shops include satellite tasting rooms for Michigan wineries — Ang & Co pours Chateau Fontaine, Faust House pours Cherry Creek Cellars.\n\nFISHING:\nEight warm-water species: Largemouth Bass (aggressive, near docks/weed edges), Bluegill (excellent numbers, great for families), Northern Pike (Tip-Up Festival star, through ice in winter), Yellow Perch (averaged 9\"+ in DNR surveys, a winter staple), Black Crappie, Smallmouth Bass, Walleye (Round Lake), Pumpkinseed Sunfish. Spring bass spawn in shallows. Winter ice fishing on frozen Devils Lake is a major tradition.\n\nWINERIES:\nCherry Creek Cellars — small-batch Michigan wines, 11500 Silver Lake Hwy, Brooklyn MI 49230, 20 min from Manitou Beach. Gypsy Blue Vineyards — new vineyard in the Irish Hills. Chateau Aeronautique Winery — 1849 E Parnall Rd, Jackson MI, 30 min, live music weekends. Village tasting rooms: Ang & Co (141 N. Lakeview Blvd) and Faust House Scrap n Craft (140 N. Lakeview Blvd).\n\nMEN'S CLUB (Devils and Round Lake Men's Club):\n501(c)(3) nonprofit running the Tip-Up Festival (70+ year ice fishing festival on frozen Devils Lake, held in February) and the Fourth of July Firecracker 7K run starting at 3171 Round Lake Hwy. Raises funds for scholarships, Toys for Tots, Shop with a Cop, and Christmas gift baskets.\n\nHISTORICAL SOCIETY (MBHRS — Manitou Beach Historic Renovation Society):\nRestoring and revitalizing the village. Home of the Boat House Art Gallery — largest nonprofit gallery in Lenawee County, 50+ Michigan artists, at 138 N. Lakeview Blvd. Annual events: Devils Lake Festival of the Arts and Village Car Shows. Located at 762 Manitou Road.\n\nHISTORY:\nPre-1830: Potawatomi and Ojibwa people camped along the shores. 1870s: Grand hotels, dance pavilion, bathhouses, and two railroad stations. 1888: Manitou Beach officially platted. 1920s–40s: Yacht Club established. 1950s: Tip-Up Festival launched. Today: boating, fishing, festivals, and a tight-knit lake community.\n\nDEVILS LAKE YACHT CLUB:\nFine dining overlooking Devils Lake, sailing races, and a gathering place for the boating community.\n\nNEARBY SERVICES:\n- Hospital: ProMedica Herrick Hospital, Tecumseh, ~15 min\n- Major Medical: Henry Ford Allegiance Health, Jackson, ~30 min\n- Urgent Care: Tecumseh, ~15 min\n- Grocery: Meijer (Tecumseh, 15 min), Walmart (Adrian, 20 min)\n- Schools: Onsted (10 min), Tecumseh (15 min), Adrian (20 min)\n- Gas: Multiple stations within 10-15 min drive\n\nPLATFORM FEATURES (for business owners asking):\n- Business listings from $9/mo (Enhanced $25, Featured $49)\n- Event submissions and ticketing\n- Food truck registration and live locator\n- Wine trail page with ratings\n- Weekly newsletter (The Dispatch)\n- Community check-in for visitors\n\nRULES:\n- Never make up events, businesses, phone numbers, or hours you don't know\n- When mentioning a business or event, offer to show the user a link if it exists\n- For emergencies, always say \"call 911\" first\n- Keep the website URL as manitoubeachmichigan.com\n- Don't discuss pricing details you're unsure about — direct them to the website",
+                "llm": "gemini-2.0-flash",
+                "temperature": 0.4,
+                "max_tokens": 300,
+                "tools": [],
+                "tool_ids": [],
+                "mcp_server_ids": [],
+                "native_mcp_server_ids": [],
+                "knowledge_base": [],
+                "ignore_default_personality": false,
+                "rag": {
+                    "enabled": false,
+                    "embedding_model": "e5_mistral_7b_instruct",
+                    "max_vector_distance": 0.6,
+                    "max_documents_length": 50000,
+                    "max_retrieved_rag_chunks_count": 20
+                },
+                "custom_llm": null
+            }
+        }
+    },
+    "platform_settings": {
+        "auth": {
+            "enable_auth": false,
+            "allowlist": [],
+            "shareable_token": null
+        },
+        "evaluation": {
+            "criteria": []
+        },
+        "widget": {
+            "variant": "full",
+            "placement": "bottom-right",
+            "expandable": "never",
+            "avatar": {
+                "type": "orb",
+                "color_1": "#7A8E72",
+                "color_2": "#5B7E95"
+            },
+            "feedback_mode": "none",
+            "bg_color": "#1A2830",
+            "text_color": "#FAF6EF",
+            "btn_color": "#7A8E72",
+            "btn_text_color": "#FAF6EF",
+            "border_color": "#2D3B45",
+            "focus_color": "#7A8E72",
+            "shareable_page_show_terms": true,
+            "show_avatar_when_collapsed": false,
+            "disable_banner": false,
+            "mic_muting_enabled": true,
+            "transcript_enabled": true,
+            "text_input_enabled": true,
+            "text_contents": {
+                "main_label": "Manitou Beach Guide",
+                "start_call": "Talk to your guide",
+                "new_call": "New conversation",
+                "end_call": "End",
+                "mute_microphone": null,
+                "change_language": null,
+                "collapse": null,
+                "expand": null,
+                "copied": null,
+                "accept_terms": null,
+                "dismiss_terms": null,
+                "listening_status": "Listening...",
+                "speaking_status": "Your guide is speaking",
+                "connecting_status": "Connecting...",
+                "input_label": null,
+                "input_placeholder": "Ask about events, fishing, businesses...",
+                "user_ended_conversation": null,
+                "agent_ended_conversation": null,
+                "conversation_id": null,
+                "error_occurred": null,
+                "copy_id": null
+            },
+            "language_selector": false,
+            "supports_text_only": true,
+            "language_presets": {},
+            "styles": {
+                "base": null,
+                "base_hover": null,
+                "base_active": null,
+                "base_border": null,
+                "base_subtle": null,
+                "base_primary": null,
+                "base_error": null,
+                "accent": null,
+                "accent_hover": null,
+                "accent_active": null,
+                "accent_border": null,
+                "accent_subtle": null,
+                "accent_primary": null,
+                "overlay_padding": null,
+                "button_radius": null,
+                "input_radius": null,
+                "bubble_radius": null,
+                "sheet_radius": null,
+                "compact_sheet_radius": null,
+                "dropdown_sheet_radius": null
+            },
+            "border_radius": null,
+            "btn_radius": null,
+            "action_text": null,
+            "start_call_text": null,
+            "end_call_text": null,
+            "expand_text": null,
+            "listening_text": null,
+            "speaking_text": null,
+            "shareable_page_text": null,
+            "terms_text": null,
+            "terms_html": null,
+            "terms_key": null,
+            "override_link": null,
+            "custom_avatar_path": null
+        },
+        "data_collection": {},
+        "overrides": {
+            "conversation_config_override": {
+                "tts": {
+                    "voice_id": false
+                },
+                "conversation": {
+                    "text_only": true
+                },
+                "agent": {
+                    "first_message": false,
+                    "language": false,
+                    "prompt": {
+                        "prompt": false
+                    }
+                }
+            },
+            "custom_llm_extra_body": false,
+            "enable_conversation_initiation_client_data_from_webhook": false
+        },
+        "call_limits": {
+            "agent_concurrency_limit": -1,
+            "daily_limit": 100000,
+            "bursting_enabled": true
+        },
+        "privacy": {
+            "record_voice": true,
+            "retention_days": -1,
+            "delete_transcript_and_pii": false,
+            "delete_audio": false,
+            "apply_to_existing_conversations": false,
+            "zero_retention_mode": false
+        },
+        "workspace_overrides": {
+            "webhooks": {
+                "post_call_webhook_id": null
+            },
+            "conversation_initiation_client_data_webhook": null
+        },
+        "safety": {
+            "is_blocked_ivc": false,
+            "is_blocked_non_ivc": false,
+            "ignore_safety_evaluation": false
+        },
+        "testing": {
+            "attached_tests": []
+        },
+        "ban": null
+    },
+    "tags": [
+        "concierge",
+        "community",
+        "manitou-beach"
+    ]
+}

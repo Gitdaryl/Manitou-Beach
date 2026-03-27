@@ -62,7 +62,7 @@ export default {
 
   // ── Feature flags ─────────────────────────────────────────
   features: {
-    voiceWidget: true,       // Vapi AI voice assistant
+    voiceWidget: false,      // Voice concierge (ElevenLabs — pending)
     dispatch: true,          // Community newspaper
     foodTrucks: true,        // Food truck locator
     wineries: true,          // Wine trail & ratings

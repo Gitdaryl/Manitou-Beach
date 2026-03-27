@@ -73,8 +73,8 @@ function BetaGate({ children }) {
 // Lazy sub-components from named exports
 const DispatchArticlePage = lazy(() => import('./pages/DispatchPage').then(m => ({ default: m.DispatchArticlePage })));
 const AdvertisePage = lazy(() => import('./pages/PromotePage').then(m => ({ default: m.AdvertisePage })));
-const VoiceWidget = lazy(() => import('./pages/DiscoverPage').then(m => ({ default: m.VoiceWidget })));
 const BetaFeedbackStrip = lazy(() => import('./components/Layout').then(m => ({ default: m.BetaFeedbackStrip })));
+const VoiceConcierge = lazy(() => import('./components/VoiceConcierge'));
 
 // ============================================================
 // 📑  PROJECT STRUCTURE (post-extraction)
@@ -100,7 +100,7 @@ export { GlobalStyles, PromoBanner, NewsletterInline, EventTimeline, HollyYetiSe
 } from './components/Layout';
 
 // Re-exports from data modules (backward compat for any remaining imports from '../App')
-export { useDispatchAds, pickAd, VAPI_PUBLIC_KEY, VAPI_ASSISTANT_ID, SITE_KNOWLEDGE,
+export { useDispatchAds, pickAd, SITE_KNOWLEDGE,
   DISCOVER_MAP_CENTER, DISCOVER_CATS, DISCOVER_POIS, DISCOVER_MAP_STYLES,
   createDiscoverPin, buildDiscoverInfoWindow } from './data/discover';
 export { DISPATCH_CARD_SPONSORS, DISPATCH_CATEGORIES } from './data/config';
@@ -170,7 +170,7 @@ export default function App() {
           <Route path="/activate" element={<ActivateBusinessPage />} />
           <Route path="/activate-winery" element={<ActivateWineryPage />} />
         </Routes>
-        <VoiceWidget />
+        <VoiceConcierge />
         <BetaFeedbackStrip />
       </Suspense>
     </BrowserRouter>
