@@ -4,25 +4,30 @@ function normalizeUrl(url) {
   return /^https?:\/\//i.test(u) ? u : 'https://' + u;
 }
 
-const NOTION_HEADERS = {
-  'Authorization': `Bearer ${process.env.NOTION_TOKEN_EVENTS}`,
-  'Content-Type': 'application/json',
-  'Notion-Version': '2022-06-28',
-};
+function notionHeaders() {
+  return {
+    'Authorization': `Bearer ${process.env.NOTION_TOKEN_EVENTS}`,
+    'Content-Type': 'application/json',
+    'Notion-Version': '2022-06-28',
+  };
+}
 
 async function findEventByToken(token) {
   const response = await fetch(
     `https://api.notion.com/v1/databases/${process.env.NOTION_DB_EVENTS}/query`,
     {
       method: 'POST',
-      headers: NOTION_HEADERS,
+      headers: notionHeaders(),
       body: JSON.stringify({
         filter: { property: 'Edit Token', rich_text: { equals: token } },
         page_size: 1,
       }),
     }
   );
-  if (!response.ok) return null;
+  if (!response.ok) {
+    console.error('event-edit: Notion query failed:', response.status, await response.text());
+    return null;
+  }
   const data = await response.json();
   return data.results?.[0] || null;
 }
@@ -42,8 +47,15 @@ export default async function handler(req, res) {
         id: page.id,
         name: p['Event Name']?.title?.[0]?.text?.content || '',
         date: p['Event date']?.date?.start || '',
-        time: p['Time']?.rich_text?.[0]?.text?.content || '',
-        timeEnd: p['Time End']?.rich_text?.[0]?.text?.content || '',
+        // Time data is stored in 'Time End' as "start – end" or just "start"
+        time: (() => {
+          const raw = p['Time End']?.rich_text?.[0]?.text?.content || '';
+          return raw.includes('–') ? raw.split('–')[0].trim() : raw;
+        })(),
+        timeEnd: (() => {
+          const raw = p['Time End']?.rich_text?.[0]?.text?.content || '';
+          return raw.includes('–') ? raw.split('–')[1].trim() : '';
+        })(),
         location: p['Location']?.rich_text?.[0]?.text?.content || '',
         description: p['Description']?.rich_text?.[0]?.text?.content || '',
         cost: p['Cost']?.rich_text?.[0]?.text?.content || '',
@@ -68,8 +80,13 @@ export default async function handler(req, res) {
       if (!page) return res.status(404).json({ error: 'Event not found or token invalid' });
 
       const properties = { 'Updated': { checkbox: true } };
-      if (time !== undefined) properties['Time'] = { rich_text: [{ text: { content: time || '' } }] };
-      if (timeEnd !== undefined) properties['Time End'] = { rich_text: [{ text: { content: timeEnd || '' } }] };
+      // Combine start + end time into 'Time End' property (same format as submit-event.js)
+      if (time !== undefined || timeEnd !== undefined) {
+        const start = time || '';
+        const end = timeEnd || '';
+        const combined = start && end ? `${start} – ${end}` : start || end;
+        properties['Time End'] = { rich_text: [{ text: { content: combined } }] };
+      }
       if (location !== undefined) properties['Location'] = { rich_text: [{ text: { content: location || '' } }] };
       if (description !== undefined) properties['Description'] = { rich_text: [{ text: { content: description || '' } }] };
       if (cost !== undefined) properties['Cost'] = { rich_text: [{ text: { content: cost || '' } }] };
@@ -87,7 +104,7 @@ export default async function handler(req, res) {
 
       const updateRes = await fetch(`https://api.notion.com/v1/pages/${page.id}`, {
         method: 'PATCH',
-        headers: NOTION_HEADERS,
+        headers: notionHeaders(),
         body: JSON.stringify({ properties }),
       });
 
