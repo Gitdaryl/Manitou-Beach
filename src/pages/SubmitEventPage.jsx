@@ -262,46 +262,84 @@ export default function SubmitEventPage() {
       <main style={{ maxWidth: 600, margin: '0 auto', padding: '80px 24px 110px' }}>
 
         {step === 'done' ? (
-          /* ── DONE ── */
-          <div style={{ textAlign: 'center', paddingTop: 40 }}>
-            <img src="/images/yeti/yeti-celebrates.png" alt="Yeti celebrating your event" style={{ width: 'clamp(140px, 28vw, 220px)', height: 'auto', marginBottom: 16, filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.3))' }} />
-            <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, fontWeight: 400, color: C.cream, margin: '0 0 12px' }}>
-              {activatedData?.eventName || 'Your event'} is live!
-            </h1>
-            <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', lineHeight: 1.8, marginBottom: 16 }}>
-              {session ? 'Boom — published! Want to add another?' : 'Check your texts — we sent you a link to update it anytime. Easy peasy.'}
-            </p>
-            {activatedData?.editToken && (
-              <div style={{ marginBottom: 20, padding: '14px 18px', background: 'rgba(122,142,114,0.12)', border: '1px solid rgba(122,142,114,0.3)', borderRadius: 10, textAlign: 'left' }}>
-                <p style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.5)', margin: '0 0 6px', letterSpacing: 0.5, textTransform: 'uppercase' }}>Edit link — bookmark this!</p>
-                <a
-                  href={`/events/edit?token=${activatedData.editToken}`}
-                  style={{ fontSize: 13, color: '#D4845A', wordBreak: 'break-all', textDecoration: 'none', fontWeight: 600 }}
-                >
-                  {window.location.origin}/events/edit?token={activatedData.editToken}
-                </a>
-                <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', margin: '8px 0 0', lineHeight: 1.5 }}>
-                  {session ? 'Since you\'re in a session, we didn\'t text this one — save it now if you might need to edit later.' : 'This was also texted to you.'}
-                </p>
+          /* ── DONE — MAGIC MOMENT ── */
+          <div style={{ paddingTop: 40 }}>
+            <div style={{ textAlign: 'center', marginBottom: 32 }}>
+              <img src="/images/yeti/yeti-celebrates.png" alt="Yeti celebrating your event" style={{ width: 'clamp(140px, 28vw, 220px)', height: 'auto', marginBottom: 16, filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.3))' }} />
+              <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, fontWeight: 400, color: C.cream, margin: '0 0 12px' }}>
+                {activatedData?.eventName || 'Your event'} is live!
+              </h1>
+              <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.55)', lineHeight: 1.8, margin: 0 }}>
+                This sounds fun — want to see what it looks like on the calendar?
+              </p>
+            </div>
+
+            {/* See it live */}
+            <a
+              href="/happening"
+              style={{ display: 'block', padding: '18px 22px', background: 'rgba(122,142,114,0.15)', border: '1px solid rgba(122,142,114,0.35)', borderRadius: 12, textDecoration: 'none', marginBottom: 14, transition: 'background 0.15s' }}
+              onMouseEnter={e => e.currentTarget.style.background = 'rgba(122,142,114,0.25)'}
+              onMouseLeave={e => e.currentTarget.style.background = 'rgba(122,142,114,0.15)'}
+            >
+              <div style={{ fontSize: 14, fontWeight: 700, color: C.cream, marginBottom: 4 }}>See your event on the page</div>
+              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>
+                Check out how it looks on the community calendar — make sure everything reads right.
               </div>
+            </a>
+
+            {/* Edit */}
+            {activatedData?.editToken && (
+              <a
+                href={`/events/edit?token=${activatedData.editToken}`}
+                style={{ display: 'block', padding: '18px 22px', background: 'rgba(212,132,90,0.08)', border: '1px solid rgba(212,132,90,0.2)', borderRadius: 12, textDecoration: 'none', marginBottom: 14, transition: 'background 0.15s' }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(212,132,90,0.15)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'rgba(212,132,90,0.08)'}
+              >
+                <div style={{ fontSize: 14, fontWeight: 700, color: C.cream, marginBottom: 4 }}>Need to change something?</div>
+                <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>
+                  {session
+                    ? 'Tap here to edit — and bookmark this link so you can come back anytime.'
+                    : 'We also emailed you an edit link. You can update your event anytime — no login needed.'}
+                </div>
+              </a>
             )}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
+
+            {/* Share to Facebook */}
+            <a
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(typeof window !== 'undefined' ? window.location.origin + '/happening' : 'https://manitoubeachmichigan.com/happening')}&quote=${encodeURIComponent((activatedData?.eventName || 'My event') + ' is happening at Manitou Beach! Check it out:')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ display: 'block', padding: '18px 22px', background: 'rgba(66,103,178,0.1)', border: '1px solid rgba(66,103,178,0.25)', borderRadius: 12, textDecoration: 'none', marginBottom: 14, transition: 'background 0.15s' }}
+              onMouseEnter={e => e.currentTarget.style.background = 'rgba(66,103,178,0.18)'}
+              onMouseLeave={e => e.currentTarget.style.background = 'rgba(66,103,178,0.1)'}
+            >
+              <div style={{ fontSize: 14, fontWeight: 700, color: C.cream, marginBottom: 4 }}>Share it on Facebook — free exposure</div>
+              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>
+                The more people who know, the better the turnout. One tap, and your friends and neighbors see it.
+              </div>
+            </a>
+
+            {/* Promote upsell */}
+            <a
+              href="/promote"
+              style={{ display: 'block', padding: '18px 22px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, textDecoration: 'none', marginBottom: 28, transition: 'background 0.15s' }}
+              onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.07)'}
+              onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.04)'}
+            >
+              <div style={{ fontSize: 14, fontWeight: 700, color: C.cream, marginBottom: 4 }}>Want even more eyeballs?</div>
+              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>
+                Homepage features, newsletter spots, and social boosts starting at $9. Over 4,000 locals see these every week.
+              </div>
+            </a>
+
+            {/* Submit another */}
+            <div style={{ textAlign: 'center' }}>
               <button
                 onClick={resetForNextEvent}
                 style={{ padding: '14px 32px', background: '#D4845A', color: '#fff', border: 'none', borderRadius: 28, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', cursor: 'pointer' }}
               >
                 Submit Another Event →
               </button>
-              <a href="/happening" style={{ display: 'inline-block', padding: '14px 32px', background: 'rgba(255,255,255,0.08)', color: C.cream, borderRadius: 28, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', textDecoration: 'none' }}>
-                See What's Happening
-              </a>
-            </div>
-            <div style={{ marginTop: 36, padding: '20px 24px', background: 'rgba(255,255,255,0.04)', borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)' }}>
-              <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.45)', margin: 0, lineHeight: 1.7 }}>
-                Want more people to see it? Check out our{' '}
-                <a href="/promote" style={{ color: '#D4845A', textDecoration: 'none', fontWeight: 600 }}>promotion packages</a>{' '}
-                — homepage features, newsletter spots, and more starting at $9.
-              </p>
             </div>
           </div>
 

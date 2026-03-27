@@ -248,6 +248,9 @@ export default async function handler(req, res) {
       `Manitou Beach Events\n\n${eventName} is live! 🎉\n\nEdit your event anytime:\n${editUrl}`
     );
 
+    // Send welcome email to organizer
+    sendOrganizerWelcomeEmail({ eventName, email, editUrl, siteUrl, organizerName }).catch(() => {});
+
     return res.status(200).json({
       ok: true,
       activated: true,
@@ -325,4 +328,81 @@ async function notifyAdmin({ eventName, email, eventType, organizerName, modFlag
       `,
     }).catch(() => {});
   }
+}
+
+async function sendOrganizerWelcomeEmail({ eventName, email, editUrl, siteUrl, organizerName }) {
+  if (!process.env.RESEND_API_KEY || !email) return;
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  const happeningUrl = `${siteUrl}/happening`;
+  const promoteUrl = `${siteUrl}/promote`;
+  const fbShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(happeningUrl)}&quote=${encodeURIComponent(`${eventName} is happening at Manitou Beach! Check it out:`)}`;
+  const firstName = (organizerName || '').split(' ')[0] || 'Hey';
+
+  await resend.emails.send({
+    from: 'Manitou Beach Events <tickets@yetigroove.com>',
+    to: email,
+    subject: `${eventName} is live on the community calendar!`,
+    html: `
+      <div style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;max-width:520px;margin:0 auto;padding:0;background:#FAF6EF;">
+        <!-- Header -->
+        <div style="background:#1A2830;padding:32px 28px 24px;text-align:center;">
+          <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:8px;">Manitou Beach Events</div>
+          <h1 style="font-size:24px;font-weight:400;color:#FAF6EF;margin:0;font-family:Georgia,serif;line-height:1.3;">
+            ${eventName} is live!
+          </h1>
+        </div>
+
+        <div style="padding:28px 28px 20px;">
+          <p style="font-size:15px;color:#3A3028;line-height:1.8;margin:0 0 24px;">
+            ${firstName} — your event is on the community calendar and people can see it right now. Nice work.
+          </p>
+
+          <!-- See it live -->
+          <a href="${happeningUrl}" style="display:block;padding:16px 20px;background:#7A8E72;color:#fff;text-decoration:none;border-radius:10px;margin-bottom:14px;">
+            <div style="font-size:14px;font-weight:700;margin-bottom:2px;">See your event on the calendar →</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.7);">Check how it looks — make sure everything reads right.</div>
+          </a>
+
+          <!-- Edit link -->
+          <a href="${editUrl}" style="display:block;padding:16px 20px;background:#F5EDE3;color:#3A3028;text-decoration:none;border-radius:10px;border:1px solid #E8DDD0;margin-bottom:14px;">
+            <div style="font-size:14px;font-weight:700;margin-bottom:2px;">Need to change something?</div>
+            <div style="font-size:12px;color:#8C806E;line-height:1.5;">Tap here to edit your event anytime — no login needed. Bookmark this link.</div>
+          </a>
+
+          <!-- Share divider -->
+          <div style="border-top:1px solid #E8DDD0;margin:24px 0 20px;"></div>
+          <p style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#8C806E;margin:0 0 12px;">Get the word out — free</p>
+
+          <!-- Facebook share -->
+          <a href="${fbShareUrl}" style="display:block;padding:14px 20px;background:#4267B2;color:#fff;text-decoration:none;border-radius:10px;margin-bottom:12px;text-align:center;">
+            <div style="font-size:14px;font-weight:700;">Share on Facebook</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.7);margin-top:2px;">The more people who know, the better the turnout.</div>
+          </a>
+
+          <p style="font-size:13px;color:#8C806E;line-height:1.7;margin:16px 0 0;">
+            Copy this link and post it anywhere — text it to friends, drop it in a group chat, pin it on Nextdoor:<br/>
+            <a href="${happeningUrl}" style="color:#D4845A;font-weight:600;text-decoration:none;">${happeningUrl}</a>
+          </p>
+
+          <!-- Promote upsell -->
+          <div style="border-top:1px solid #E8DDD0;margin:24px 0 20px;"></div>
+          <p style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#8C806E;margin:0 0 12px;">Want even more eyeballs?</p>
+          <a href="${promoteUrl}" style="display:block;padding:16px 20px;background:#FAF6EF;border:1.5px solid #D4845A;color:#3A3028;text-decoration:none;border-radius:10px;">
+            <div style="font-size:14px;font-weight:700;color:#D4845A;margin-bottom:4px;">Promotion packages from $9</div>
+            <div style="font-size:13px;color:#8C806E;line-height:1.6;">
+              Homepage feature, newsletter spotlight, social boost — over 4,000 locals see these every week. Choose what fits your event.
+            </div>
+          </a>
+        </div>
+
+        <!-- Footer -->
+        <div style="padding:20px 28px;background:#F0EAE0;text-align:center;">
+          <p style="font-size:11px;color:#8C806E;margin:0;line-height:1.6;">
+            Manitou Beach · Community calendar for the lake folks<br/>
+            <a href="${siteUrl}" style="color:#D4845A;text-decoration:none;">${siteUrl.replace('https://', '')}</a>
+          </p>
+        </div>
+      </div>
+    `,
+  });
 }
