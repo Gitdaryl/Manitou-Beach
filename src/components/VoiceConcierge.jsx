@@ -56,6 +56,12 @@ function VoiceConciergeInner() {
             setCards(prev => prev.some(c => c.id === id) ? prev : [...prev, { type: 'info', id, title, text }]);
             return 'Info card shown to user';
           },
+          // Surface a numbered step-by-step guide the user can follow along
+          showSteps: async ({ title, steps, actionUrl, actionLabel }) => {
+            const id = `steps-${title}`;
+            setCards(prev => prev.some(c => c.id === id) ? prev : [...prev, { type: 'steps', id, title, steps: steps || [], actionUrl, actionLabel }]);
+            return 'Step-by-step guide shown to user';
+          },
           // Navigate to a page on the site
           navigateTo: async ({ path }) => {
             window.location.href = path;
@@ -157,6 +163,32 @@ function VoiceConciergeInner() {
                 <div style={{ padding: '14px 16px' }}>
                   <div style={{ fontSize: 13, fontWeight: 700, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", paddingRight: 20 }}>{card.title}</div>
                   <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', marginTop: 6, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.5 }}>{card.text}</div>
+                </div>
+              )}
+
+              {card.type === 'steps' && (
+                <div style={{ padding: '14px 16px' }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: C.sage, fontFamily: "'Libre Franklin', sans-serif", paddingRight: 20, marginBottom: 10 }}>{card.title}</div>
+                  <ol style={{ margin: 0, paddingLeft: 20 }}>
+                    {(card.steps || []).map((step, si) => (
+                      <li key={si} style={{
+                        fontSize: 12, color: 'rgba(255,255,255,0.75)', fontFamily: "'Libre Franklin', sans-serif",
+                        lineHeight: 1.55, marginBottom: 6, paddingLeft: 4,
+                      }}>
+                        {step}
+                      </li>
+                    ))}
+                  </ol>
+                  {card.actionUrl && (
+                    <a href={card.actionUrl} style={{
+                      display: 'inline-block', marginTop: 10, padding: '7px 16px',
+                      background: `${C.sage}25`, border: `1px solid ${C.sage}50`,
+                      borderRadius: 8, fontSize: 12, fontWeight: 700, color: C.sage,
+                      fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'none',
+                    }}>
+                      {card.actionLabel || 'Get started'} →
+                    </a>
+                  )}
                 </div>
               )}
             </div>
