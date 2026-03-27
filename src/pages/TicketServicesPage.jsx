@@ -132,7 +132,7 @@ export default function TicketServicesPage() {
       {/* Partner context strip */}
       <div style={{ background: C.night, borderBottom: "1px solid rgba(255,255,255,0.07)", padding: "9px 24px", display: "flex", alignItems: "center", justifyContent: "center", gap: 28, flexWrap: "wrap" }}>
         <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif" }}>Yetickets — Community event ticketing</span>
-        <a href="/happening" style={{ fontSize: 12, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>See What's Happening →</a>
+        <a href="/happening" style={{ fontSize: 12, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>See Events →</a>
         <a href="/" style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", fontFamily: "'Libre Franklin', sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Visit Homepage →</a>
       </div>
 
@@ -329,7 +329,7 @@ export default function TicketServicesPage() {
                 <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 15, lineHeight: 1.7, maxWidth: 380, margin: "0 auto 28px" }}>
                   Your bank account is connected. Daryl will reach out to set up your first event — usually within a day.
                 </p>
-                <Btn href="/happening" variant="outline" style={{ whiteSpace: "nowrap" }}>See What's Happening →</Btn>
+                <Btn href="/happening" variant="outline" style={{ whiteSpace: "nowrap" }}>See Events →</Btn>
               </div>
             </FadeIn>
           ) : refresh ? (

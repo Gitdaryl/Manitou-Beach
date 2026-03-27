@@ -15,7 +15,7 @@ Every page on manitoubeachmichigan.com and what it does. When directing someone 
 
 To see the home page with community highlights, featured businesses, and videos, go to the Home page at /
 
-To find upcoming events, live music, festivals, and the community calendar, go to What's Happening at /events (also accessible at /happening)
+To find upcoming events, live music, festivals, and the community calendar, go to Events at /events (also accessible at /happening)
 
 To submit a new community event, go to Submit an Event at /submit-event
 

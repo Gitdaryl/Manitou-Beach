@@ -4,7 +4,7 @@ import { C } from '../data/config';
 import { Footer, Navbar, GlobalStyles, NewsletterInline, HollyYetiSection, ContactModal } from '../components/Layout';
 import yeti from '../data/errorMessages';
 
-const PROMO_PAGES = ["Home", "Whats Happening", "Village", "Devils Lake", "Wineries", "Fishing", "Round Lake"];
+const PROMO_PAGES = ["Home", "Events", "Village", "Devils Lake", "Wineries", "Fishing", "Round Lake"];
 
 const ADVERTISE_PACKAGES = [
   { id: "newsletter_mention", label: "Newsletter Mention",   detail: "1 Issue",            price: "$29",  fullPrice: "$49",  diagramType: "newsletter_sm",

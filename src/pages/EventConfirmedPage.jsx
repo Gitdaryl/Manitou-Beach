@@ -103,7 +103,7 @@ export default function EventConfirmedPage() {
               href="/happening"
               style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, padding: '13px 24px', borderRadius: 8, background: C.sage, color: '#fff', textDecoration: 'none', display: 'inline-block' }}
             >
-              See What's Happening →
+              See Events →
             </a>
 
             {vendorPortalUrl && (

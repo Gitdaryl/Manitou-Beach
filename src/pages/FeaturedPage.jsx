@@ -50,7 +50,7 @@ export default function FeaturedPage() {
   // Page sponsorship
   const SPONSORABLE_PAGES = [
     { id: 'home',               label: 'Home' },
-    { id: 'happening',          label: "What's Happening" },
+    { id: 'happening',          label: "Events" },
     { id: 'round-lake',         label: 'Round Lake' },
     { id: 'village',            label: 'Village' },
     { id: 'fishing',            label: 'Fishing' },

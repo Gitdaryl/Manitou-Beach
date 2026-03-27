@@ -318,7 +318,7 @@ function Hero({ scrollTo }) {
           </p>
           <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
             <Btn onClick={() => scrollTo("businesses")} variant="primary">Explore Businesses</Btn>
-            <Btn onClick={() => scrollTo("happening")} variant="outlineLight">What's Happening</Btn>
+            <Btn onClick={() => scrollTo("happening")} variant="outlineLight">Events</Btn>
           </div>
           <ShareBar title="Manitou Beach — Irish Hills, Michigan" />
         </div>
@@ -441,7 +441,7 @@ function HappeningSection() {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 16, marginBottom: 56 }}>
             <div>
               <SectionLabel light>Events & News</SectionLabel>
-              <SectionTitle light>What's Happening</SectionTitle>
+              <SectionTitle light>Events</SectionTitle>
             </div>
             <Btn href="/events" variant="outlineLight" small>See All Events →</Btn>
           </div>

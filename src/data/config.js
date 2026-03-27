@@ -58,7 +58,7 @@ export const USA250_VIDEO_URL = "/images/fireworks/devilslake-fireworks-hero.mp4
 // ============================================================
 export const SECTIONS = [
   { id: "home",       label: "Home" },
-  { id: "happening",  label: "What's Happening" },
+  { id: "happening",  label: "Events" },
   { id: "explore",    label: "Explore" },
   { id: "businesses", label: "Local Businesses" },
   { id: "living",     label: "Living Here" },

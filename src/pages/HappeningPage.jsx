@@ -73,13 +73,13 @@ function HappeningHero() {
             margin: "0 0 20px 0",
             letterSpacing: -2,
           }}>
-            What's<br />Happening
+            Events
           </h1>
           <div style={{ fontFamily: "'Caveat', cursive", fontSize: "clamp(20px, 3vw, 30px)", color: C.sunsetLight, marginBottom: 48 }}>
             in Manitou Beach · Devils Lake, Michigan
           </div>
           <Btn href="#submit-event" variant="outlineLight">Submit an Event</Btn>
-          <ShareBar title="What's Happening in Manitou Beach" />
+          <ShareBar title="Events in Manitou Beach" />
         </div>
       </div>
     </section>
@@ -789,7 +789,7 @@ export default function HappeningPage() {
       <ScrollProgress />
       <Navbar activeSection="happening" scrollTo={subScrollTo} isSubPage={true} />
       <HappeningHero />
-      <PromoBanner page="Whats Happening" />
+      <PromoBanner page="Events" />
       <HeroTakeover event={heroTakeover} onEventClick={setLightboxEvent} />
       <EventTimeline stripPin={stripPin} />
       <WeeklyEventsSection events={weeklyEvents} onEventClick={setLightboxEvent} />

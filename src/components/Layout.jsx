@@ -1824,7 +1824,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
               )}
             </div>
 
-            {/* What's Happening */}
+            {/* Events */}
             <button
               onClick={() => handleNavClick("happening")}
               style={{
@@ -1837,7 +1837,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
               onMouseEnter={e => { e.currentTarget.style.color = solid ? C.dusk : C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
               onMouseLeave={e => { e.currentTarget.style.color = solid ? C.text : "rgba(255,255,255,0.7)"; e.currentTarget.style.background = "transparent"; }}
             >
-              What&apos;s Happening
+              Events
             </button>
 
             {/* Local Guide */}
@@ -1989,12 +1989,12 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
         transform: menuOpen ? "translateX(0)" : "translateX(100%)",
         transition: "transform 0.35s ease",
       }}>
-        {/* What's Happening — mobile top level */}
+        {/* Events — mobile top level */}
         <button onClick={() => { setMenuOpen(false); handleNavClick("happening"); }} style={{
           background: "none", border: "none", fontFamily: "'Libre Baskerville', serif",
           fontSize: 24, fontWeight: 400, color: C.text, cursor: "pointer", padding: "12px 32px", letterSpacing: 0.5,
         }}>
-          What&apos;s Happening
+          Events
         </button>
         <button onClick={() => { setMenuOpen(false); window.location.href = "/discover"; }} style={{
           background: "none", border: "none", fontFamily: "'Libre Baskerville', serif",
@@ -2561,7 +2561,7 @@ const PROMOTE_PACKAGES = [
 ];
 
 
-const PROMO_PAGES = ["Home", "Whats Happening", "Village", "Devils Lake", "Wineries", "Fishing", "Round Lake"];
+const PROMO_PAGES = ["Home", "Events", "Village", "Devils Lake", "Wineries", "Fishing", "Round Lake"];
 
 // ─── /advertise ──────────────────────────────────────────────────────────────
 
