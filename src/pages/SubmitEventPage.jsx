@@ -268,9 +268,23 @@ export default function SubmitEventPage() {
             <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, fontWeight: 400, color: C.cream, margin: '0 0 12px' }}>
               {activatedData?.eventName || 'Your event'} is live!
             </h1>
-            <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', lineHeight: 1.8, marginBottom: 28 }}>
+            <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', lineHeight: 1.8, marginBottom: 16 }}>
               {session ? 'Boom — published! Want to add another?' : 'Check your texts — we sent you a link to update it anytime. Easy peasy.'}
             </p>
+            {activatedData?.editToken && (
+              <div style={{ marginBottom: 20, padding: '14px 18px', background: 'rgba(122,142,114,0.12)', border: '1px solid rgba(122,142,114,0.3)', borderRadius: 10, textAlign: 'left' }}>
+                <p style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.5)', margin: '0 0 6px', letterSpacing: 0.5, textTransform: 'uppercase' }}>Edit link — bookmark this!</p>
+                <a
+                  href={`/events/edit?token=${activatedData.editToken}`}
+                  style={{ fontSize: 13, color: '#D4845A', wordBreak: 'break-all', textDecoration: 'none', fontWeight: 600 }}
+                >
+                  {window.location.origin}/events/edit?token={activatedData.editToken}
+                </a>
+                <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', margin: '8px 0 0', lineHeight: 1.5 }}>
+                  {session ? 'Since you\'re in a session, we didn\'t text this one — save it now if you might need to edit later.' : 'This was also texted to you.'}
+                </p>
+              </div>
+            )}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
               <button
                 onClick={resetForNextEvent}
@@ -407,23 +421,89 @@ export default function SubmitEventPage() {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
 
+              {/* One-time vs Recurring — like one-way / return on flight bookings */}
+              <div>
+                <p style={{ fontSize: 15, color: C.cream, margin: '0 0 14px', lineHeight: 1.5 }}>
+                  Awesome — you've got an event to share!
+                </p>
+                <div style={{ display: 'flex', gap: 0, borderRadius: 8, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.15)' }}>
+                  <button
+                    type="button"
+                    onClick={() => setForm(f => ({ ...f, recurring: 'None' }))}
+                    style={{ flex: 1, padding: '14px 16px', border: 'none', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 0.5, transition: 'all 0.15s', background: form.recurring === 'None' ? '#D4845A' : 'rgba(255,255,255,0.04)', color: form.recurring === 'None' ? '#fff' : 'rgba(255,255,255,0.45)' }}
+                  >
+                    One-time event
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setForm(f => ({ ...f, recurring: f.recurring === 'None' ? 'Weekly' : f.recurring }))}
+                    style={{ flex: 1, padding: '14px 16px', border: 'none', borderLeft: '1px solid rgba(255,255,255,0.15)', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 0.5, transition: 'all 0.15s', background: form.recurring !== 'None' ? '#D4845A' : 'rgba(255,255,255,0.04)', color: form.recurring !== 'None' ? '#fff' : 'rgba(255,255,255,0.45)' }}
+                  >
+                    Recurring event
+                  </button>
+                </div>
+              </div>
+
               {/* Event Name */}
               <div>
                 <label style={label}>Event Name *</label>
                 <input style={input} type="text" value={form.eventName} onChange={set('eventName')} placeholder="e.g. Corks & Kegs Wine Festival" />
               </div>
 
-              {/* Date + Times */}
-              <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                <div>
-                  <label style={label}>Start Date *</label>
-                  <input style={input} type="date" value={form.date} onChange={set('date')} />
-                </div>
-                <div>
-                  <label style={label}>End Date <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>— multi-day events</span></label>
-                  <input style={input} type="date" value={form.dateEnd} onChange={set('dateEnd')} min={form.date || undefined} />
-                </div>
-              </div>
+              {/* Date section — adapts based on one-time vs recurring */}
+              {form.recurring === 'None' ? (
+                <>
+                  {/* One-time: Start Date + optional End Date for multi-day */}
+                  <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                    <div>
+                      <label style={label}>Date *</label>
+                      <input style={input} type="date" value={form.date} onChange={set('date')} />
+                    </div>
+                    <div>
+                      <label style={label}>End Date <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>— if multi-day</span></label>
+                      <input style={input} type="date" value={form.dateEnd} onChange={set('dateEnd')} min={form.date || undefined} />
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {/* Recurring: frequency, day, date range */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                      <div>
+                        <label style={label}>How often?</label>
+                        <select value={form.recurring} onChange={set('recurring')} style={{ ...input, cursor: 'pointer' }}>
+                          {RECURRING_OPTIONS.filter(o => o !== 'None').map(o => (
+                            <option key={o} value={o}>{o}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label style={label}>Day of Week</label>
+                        <select value={form.recurringDay} onChange={set('recurringDay')} style={{ ...input, cursor: 'pointer' }}>
+                          <option value="">— select —</option>
+                          {DAYS.map(d => <option key={d} value={d}>{d}</option>)}
+                        </select>
+                      </div>
+                    </div>
+                    <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                      <div>
+                        <label style={label}>First date *</label>
+                        <input style={input} type="date" value={form.date} onChange={set('date')} />
+                      </div>
+                      <div>
+                        <label style={label}>Last date of series</label>
+                        <input style={input} type="date" value={form.recurringEndDate} onChange={set('recurringEndDate')} min={form.date || undefined} />
+                      </div>
+                    </div>
+                    <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)', lineHeight: 1.6, margin: 0 }}>
+                      e.g. Farmers market every Saturday, May 24 – Oct 11 → Weekly · Saturday
+                    </p>
+                  </div>
+                </>
+              )}
+
+              {/* Times — shown for both */}
               <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 <div>
                   <label style={label}>Start Time</label>
@@ -433,38 +513,6 @@ export default function SubmitEventPage() {
                   <label style={label}>End Time</label>
                   <input style={input} type="text" value={form.timeEnd} onChange={set('timeEnd')} placeholder="e.g. 4:00 PM" />
                 </div>
-              </div>
-
-              {/* Recurring — up front like one-way/return on flight bookings */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                <div>
-                  <label style={label}>Recurring?</label>
-                  <select value={form.recurring} onChange={set('recurring')} style={{ ...input, cursor: 'pointer' }}>
-                    {RECURRING_OPTIONS.map(o => (
-                      <option key={o} value={o}>{RECURRING_LABELS[o] || o}</option>
-                    ))}
-                  </select>
-                </div>
-                {form.recurring !== 'None' && (
-                  <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                    <div>
-                      <label style={label}>Day of Week</label>
-                      <select value={form.recurringDay} onChange={set('recurringDay')} style={{ ...input, cursor: 'pointer' }}>
-                        <option value="">— select —</option>
-                        {DAYS.map(d => <option key={d} value={d}>{d}</option>)}
-                      </select>
-                    </div>
-                    <div>
-                      <label style={label}>Runs through <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>— last date of series</span></label>
-                      <input style={input} type="date" value={form.recurringEndDate} onChange={set('recurringEndDate')} min={form.date || undefined} />
-                    </div>
-                  </div>
-                )}
-                {form.recurring !== 'None' && (
-                  <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)', lineHeight: 1.6, margin: 0 }}>
-                    e.g. Farmers market every Saturday, May 22 – Oct 15 → Weekly · Saturday · Runs through Oct 15
-                  </p>
-                )}
               </div>
 
               {/* Location */}
