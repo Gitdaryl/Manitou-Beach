@@ -1,10 +1,19 @@
 import { useState, useCallback, useRef } from 'react';
-import { useConversation } from '@elevenlabs/react';
+import { ConversationProvider, useConversation } from '@elevenlabs/react';
 import { C } from '../data/config';
 
 const AGENT_ID = import.meta.env.VITE_ELEVENLABS_AGENT_ID;
 
 export default function VoiceConcierge() {
+  if (!AGENT_ID) return null;
+  return (
+    <ConversationProvider>
+      <VoiceConciergeInner />
+    </ConversationProvider>
+  );
+}
+
+function VoiceConciergeInner() {
   const [panelOpen, setPanelOpen] = useState(false);
   const [transcript, setTranscript] = useState([]);
   const [links, setLinks] = useState([]);
@@ -27,7 +36,6 @@ export default function VoiceConcierge() {
   const isConnecting = status === 'connecting';
 
   const startConversation = useCallback(async () => {
-    if (!AGENT_ID) return;
     setPanelOpen(true);
     setTranscript([]);
     setLinks([]);
@@ -36,17 +44,14 @@ export default function VoiceConcierge() {
       await conversation.startSession({
         agentId: AGENT_ID,
         clientTools: {
-          // Client tool: show a clickable link card in the panel
           showLink: async ({ url, label, sublabel }) => {
             setLinks(prev => prev.some(l => l.url === url) ? prev : [...prev, { url, label: label || 'Open Link', sublabel }]);
             return 'Link shown to user';
           },
-          // Client tool: navigate to a page on the site
           navigateTo: async ({ path }) => {
             window.location.href = path;
             return 'Navigating user to ' + path;
           },
-          // Client tool: get user's GPS location
           getUserLocation: async () => {
             try {
               const pos = await new Promise((resolve, reject) =>
@@ -67,8 +72,6 @@ export default function VoiceConcierge() {
   const endConversation = useCallback(async () => {
     await conversation.endSession();
   }, [conversation]);
-
-  if (!AGENT_ID) return null;
 
   return (
     <>
