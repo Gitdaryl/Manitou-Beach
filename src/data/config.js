@@ -17,6 +17,14 @@ export const C = {
   textMuted:   "#9A8E7E",
 };
 
+// Community geo-center + map radius (miles) — used for food truck map bounds
+// Change these values per community when duplicating for Yetickets
+export const GEO = {
+  centerLat: 42.0081,
+  centerLng: -84.2794,
+  mapRadiusMiles: 25,
+};
+
 // ============================================================
 // 💛  PAGE SPONSORS — update to activate; null = show placeholder
 // ============================================================

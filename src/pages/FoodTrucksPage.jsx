@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Btn, FadeIn, PageSponsorBanner, ScrollProgress, SectionLabel, SectionTitle, WaveDivider } from '../components/Shared';
-import { C } from '../data/config';
+import { C, GEO } from '../data/config';
 import { Footer, GlobalStyles, Navbar, NewsletterInline } from '../components/Layout';
 import yeti from '../data/errorMessages';
 
@@ -13,6 +13,21 @@ function getTruckSessionId() {
     localStorage.setItem(key, sid);
   }
   return sid;
+}
+
+// Haversine distance in miles between two lat/lng points
+function milesFrom(lat1, lng1, lat2, lng2) {
+  const R = 3958.8; // Earth radius in miles
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function isNearby(truck) {
+  if (typeof truck.lat !== 'number' || typeof truck.lng !== 'number') return true; // no coords = show in list, skip map
+  return milesFrom(GEO.centerLat, GEO.centerLng, truck.lat, truck.lng) <= GEO.mapRadiusMiles;
 }
 
 // ============================================================

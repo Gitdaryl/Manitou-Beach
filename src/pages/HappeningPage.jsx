@@ -183,7 +183,7 @@ function WeeklyEventsSection({ events, onEventClick }) {
                         {event.location}
                       </div>
                     )}
-                    <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: 0, maxWidth: 520 }}>
+                    <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: 0, maxWidth: 520, whiteSpace: "pre-line" }}>
                       {event.description?.replace(/\.?\s*Runs until:?\s*\d{4}-\d{2}-\d{2}\.?/i, "").trim()}
                     </p>
                     {recurrenceLabel(event) && (

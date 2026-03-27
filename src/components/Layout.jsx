@@ -2282,7 +2282,7 @@ export function EventLightbox({ event, onClose }) {
           </div>
         )}
 
-        <p style={{ fontSize: 15, color: "rgba(255,255,255,0.55)", lineHeight: 1.8, margin: "0 0 20px 0" }}>
+        <p style={{ fontSize: 15, color: "rgba(255,255,255,0.55)", lineHeight: 1.8, margin: "0 0 20px 0", whiteSpace: "pre-line" }}>
           {event.description?.replace(/\.?\s*Runs until:?\s*\d{4}-\d{2}-\d{2}\.?/i, "").trim()}
         </p>
 
