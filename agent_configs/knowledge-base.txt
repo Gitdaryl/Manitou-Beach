@@ -1,0 +1,525 @@
+MANITOU BEACH VOICE CONCIERGE — KNOWLEDGE BASE
+================================================
+This document is the complete reference for the Manitou Beach community platform voice concierge. Use it to answer questions about the website, local businesses, events, lakes, fishing, wineries, and community life.
+
+Website: manitoubeachmichigan.com
+Location: Manitou Beach, Michigan — on Devils Lake in the Irish Hills, Lenawee County
+Zip code: 49253 · Township: Rollin
+
+
+========================================
+SECTION 1: SITE NAVIGATION MAP
+========================================
+
+Every page on manitoubeachmichigan.com and what it does. When directing someone to a page, give them the page name and its path.
+
+To see the home page with community highlights, featured businesses, and videos, go to the Home page at /
+
+To find upcoming events, live music, festivals, and the community calendar, go to What's Happening at /events (also accessible at /happening)
+
+To submit a new community event, go to Submit an Event at /submit-event
+
+To browse all local businesses by category, go to the Business Directory at /business (also accessible at /featured)
+
+To explore an interactive map of businesses, points of interest, schools, healthcare, and more, go to the Discover Map at /discover
+
+To find food trucks that are here today with a live map, go to Food Trucks at /food-trucks
+
+To explore the wine trail with wineries, tasting rooms, and ratings, go to Wineries at /wineries
+
+To get fishing tips, species guides, and seasonal advice for Devils Lake, go to the Fishing Guide at /fishing
+
+To read the community newsletter with local stories and updates, go to The Dispatch at /dispatch
+
+To find short-term rentals, cottages, and places to stay, go to Stays at /stays
+
+To learn about Devils Lake — the main lake, go to Devils Lake at /devils-lake
+
+To learn about Round Lake — the quieter sister lake, go to Round Lake at /round-lake
+
+To explore the walkable village with shops, cafes, and tasting rooms, go to the Village page at /village
+
+To find nightlife, bars, and evening entertainment, go to Nightlife at /nightlife
+
+To learn about the Men's Club (Tip-Up Festival, Firecracker 7K), go to Men's Club at /mens-club
+
+To learn about the Ladies Club, go to Ladies Club at /ladies-club
+
+To learn about the Historical Society and Boat House Art Gallery, go to Historical Society at /historical-society
+
+To see the USA 250th celebration and fireworks content, go to USA 250 at /usa250 or /fireworks
+
+To check in as a visitor and get oriented, go to Visitor Check-In at /check-in
+
+To claim or update an existing business listing, go to Update Listing at /update-listing
+
+To upgrade a business listing to a higher tier, go to Upgrade Listing at /upgrade-listing
+
+To register as a food truck vendor, go to Food Truck Partner at /food-truck-partner
+
+To join the wine trail as a winery partner, go to Wine Partner at /wine-partner
+
+To learn about event ticketing services for organizations, go to Ticket Services at /ticket-services
+
+To advertise in The Dispatch newsletter, go to Advertise at /advertise
+
+To promote your business with page sponsorships and directory upgrades, go to Promote at /promote
+
+To register as a vendor for a specific event (like a market or festival), go to Vendor Registration at /vendor-register
+
+To access the food truck vendor portal (for registered trucks), go to Vendor Portal at /vendor-portal
+
+To access the event organizer dashboard, go to Organizer Dashboard at /organizer-dashboard
+
+To activate a new business listing, go to Activate at /activate
+
+To activate a winery listing, go to Activate Winery at /activate-winery
+
+
+========================================
+SECTION 2: BUSINESS DIRECTORY
+========================================
+
+The business directory at /business is the central hub for finding local businesses around Manitou Beach, Devils Lake, and the Irish Hills. Businesses are pulled from a Notion database and displayed by category.
+
+LISTING TIERS AND PRICING:
+
+Basic tier — $9 per month (called "Showcased")
+- Business name, category, description, and contact info
+- Appears in the full directory listing
+- Great starting point for any local business
+
+Enhanced tier — $25 per month (called "Highlighted")
+- Everything in Basic plus logo display, website link, and enhanced visual placement
+- No slot cap — unlimited businesses can be at this tier in any category
+- Best value for businesses wanting more visibility
+
+Featured tier — $49 per month (called "Front and Center")
+- Premium placement at the top of their category
+- Logo, full description, featured badge, and maximum visibility
+- Limited to 3 slots per category — first come, first served
+- The most visible option for businesses that want to stand out
+
+There is also a Premium tier above Featured, limited to 1 slot per category.
+
+BUSINESS CATEGORIES:
+Food & Drink, Food Truck, Stays & Rentals, Breweries & Wineries, Boating & Water, Events & Venues, Shopping & Gifts, Home Services, Health & Beauty, Real Estate, Creative Media, Pet Services, Arts & Culture, Activities, Other
+
+HOW TO GET LISTED:
+To get a new business listed, go to /activate. Fill out the business info, pick a tier, and complete payment through Stripe. The listing goes live after a quick review.
+
+HOW TO CLAIM AN EXISTING LISTING:
+If a business is already showing on the site but hasn't been claimed by the owner, they can claim it at /claim followed by their business slug. This lets them take control of their listing info.
+
+HOW TO UPDATE A LISTING:
+Business owners can update their listing details at /update-listing.
+
+HOW TO UPGRADE:
+To move from Basic to Enhanced or Featured, go to /upgrade-listing.
+
+PAGE SPONSORSHIPS:
+Businesses can sponsor an entire page on the site (like the Fishing page, Events page, etc.) for exclusive brand placement. There are 14 sponsorable pages. Details at /promote. Sponsor gets their logo, tagline, and link shown as a banner on that page.
+
+NEWSLETTER ADVERTISING:
+Businesses can also run ads inside The Dispatch newsletter. Go to /advertise for details.
+
+
+========================================
+SECTION 3: EVENTS
+========================================
+
+The events calendar lives at /events (or /happening). It shows all upcoming community events pulled from a Notion database. Events include one-time events, weekly recurring events (like trivia nights or live music), and annual traditions.
+
+EVENT TYPES SUPPORTED:
+- Free events — just show up, no registration needed
+- RSVP encouraged — optional sign-up
+- RSVP required — registration required, capacity limited
+- Ticketed (external) — links to the organizer's own ticketing system
+- Ticketed (platform) — secure checkout right on manitoubeachmichigan.com via Yetickets
+- Vendor market — vendors register and pay for booths through the site
+
+HOW TO SUBMIT AN EVENT:
+Anyone can submit a community event at /submit-event. The form collects event name, date, time, location, description, cost, and event type. For recurring events (weekly or monthly), you pick the day of the week. Events go through a quick approval process before appearing on the calendar.
+
+Phone verification via SMS is required before submitting. This keeps submissions legitimate.
+
+EVENT TICKETING (YETICKETS):
+Community organizations can sell tickets directly through the site. Powered by Stripe Express Connect — ticket revenue goes straight to the organization's bank account. Features include:
+- QR-coded PDF tickets delivered instantly after purchase
+- Real-time capacity tracking (no overselling)
+- Volunteer check-in at the door — any phone can scan QR codes at /check-in
+- Fees: 1.25% platform fee plus standard card processing (about half what Eventbrite charges)
+- No setup fees, no monthly charges
+
+To sign up for ticketing services as an organization, go to /ticket-services.
+
+VENDOR REGISTRATION:
+For vendor markets and festivals, vendors can register and pay for their booth at /vendor-register. The organizer sets booth fees and capacity. Vendors get a PDF receipt after registration. The organizer manages vendors through the organizer dashboard at /organizer-dashboard.
+
+KEY ANNUAL EVENTS:
+- Tip-Up Festival — February ice fishing festival on frozen Devils Lake, organized by the Men's Club. 70+ year tradition.
+- Firecracker 7K — Fourth of July run starting at 3171 Round Lake Hwy, organized by the Men's Club
+- Devils Lake Festival of the Arts — run by the Historical Society, 100+ artist booths, live music, food trucks
+- Village Car Shows — organized by the Historical Society
+- Fourth of July fireworks on Devils Lake
+
+
+========================================
+SECTION 4: FOOD TRUCKS
+========================================
+
+The food truck locator at /food-trucks shows which food trucks are in the area today. It features a live map showing truck locations, plus cards for each truck with their current location note, menu highlights, and specials.
+
+HOW IT WORKS FOR VISITORS:
+- Visit /food-trucks to see who's around today
+- The map shows GPS-pinned locations of trucks that have checked in
+- Each truck card shows their name, what they serve, where they are, and any daily specials
+- You can "love" a truck and share their location with friends
+
+HOW IT WORKS FOR FOOD TRUCK OWNERS:
+- Register as a food truck vendor at /food-truck-partner
+- Founding rate: $9/month
+- Once registered, trucks get a unique check-in link. They check in each day they're serving by visiting their link, dropping a GPS pin or typing their location, and adding a daily special
+- Trucks can also schedule upcoming dates and apply to serve at community events
+- The vendor portal at /vendor-portal gives access to manage their listing
+
+FOOD TRUCK FEATURES:
+- GPS check-in with map preview
+- Daily specials and departure time
+- Location history (saved spots for quick re-check-in)
+- Event application — trucks can apply to serve at upcoming events
+- "Coming soon" scheduling so visitors know when to expect them
+- Love/share buttons for visitors to show support
+
+
+========================================
+SECTION 5: WINE TRAIL
+========================================
+
+The wine trail page at /wineries showcases wineries and tasting rooms in and around Manitou Beach. It's split into two sections: Village Tasting Rooms (walkable, right in Manitou Beach) and The Trail (day trips to nearby wineries).
+
+VILLAGE TASTING ROOMS (opening Spring 2026):
+These are satellite tasting rooms inside existing village shops. You can walk between them all in the village.
+
+1. Faust House Scrap n Craft — 140 N Lakeview Blvd
+   Pours: Cherry Creek Cellars (small-batch Michigan wines from Brooklyn)
+   Phone: (517) 403-1788
+
+2. Ang & Co — 141 N. Lakeview Blvd
+   Pours: French Road Cellars (Leelanau Peninsula) and Chateau Fontaine (one of Michigan's most decorated estate wineries — their Pinot Gris alone is worth the trip)
+   Phone: (517) 547-6030
+
+3. Manitou Beach Boathouse Art Gallery — 138 N. Lakeview Blvd
+   Pours: Amoritas Vineyard
+   Phone: (517) 224-1984
+
+4. Devils Lake View Living — 200 Devils Lake Hwy
+   Pours: Brenman Family Winery
+   Phone: (517) 252-5287
+
+THE TRAIL (day trips from Manitou Beach):
+
+1. Meckleys Flavor Fruit Farm — 11025 S Jackson Rd, Cement City
+   Not a winery but the ideal first stop: fresh-picked fruit and homemade jams to reset the palate
+   About 16 min from Manitou Beach
+   Hours: Wed-Sat 9am-6pm (seasonal)
+
+2. Cherry Creek Cellars — 11500 Silver Lake Hwy, Brooklyn
+   Small-batch Michigan wines in a laid-back tasting room
+   About 13 min from Manitou Beach
+   Hours: Mon-Sat 11am-6pm, Sun Noon-6pm
+   Phone: (517) 592-4848
+
+3. Chateau Aeronautique Winery — 12000 Pentecost Hwy, Onsted
+   Aviation-themed, all-weather Biergarten, live tribute concerts every weekend
+   About 22 min from Manitou Beach
+   Hours: Wed-Thu 3-9pm, Fri-Sat Noon-9pm, Sun Noon-6pm
+   Phone: (517) 795-3620
+
+4. Gypsy Blue Vineyards — 16476 Forrister Rd, Hudson
+   Handcrafted wines, crisp hard ciders, and a seasonal flower farm
+   About 6 min from Manitou Beach
+   Phone: (517) 252-5023
+
+WINE PARTNER PROGRAM:
+Wineries can join the trail and get listed at /wine-partner.
+
+WINE RATINGS:
+Visitors can rate wines on the site at /rate. Ratings help other visitors discover what's good.
+
+
+========================================
+SECTION 6: FISHING GUIDE
+========================================
+
+The fishing guide at /fishing is a comprehensive resource for fishing Devils Lake and Round Lake. It covers species, tackle, best times, and seasonal tips.
+
+SPECIES IN DEVILS LAKE AND ROUND LAKE:
+
+1. Largemouth Bass — The king of Devils Lake. Ambush predators near docks, fallen timber, and weed edges. Aggressive fighters. Best bait: plastic worms (Texas rig), jigs with crawfish trailer, topwater frogs, spinnerbaits. Tackle: medium-heavy rod, 12-17 lb fluorocarbon or braid. Best time: dawn and dusk, especially the first two hours after sunrise. Peak season: June-July spawn through October. Healthy, naturally reproducing population.
+
+2. Smallmouth Bass — Pound-for-pound one of the hardest-fighting freshwater fish. Found along rocky shoreline areas and gravelly points. Best bait: tube jigs, drop shot with finesse worm, small crankbaits, live crayfish. Tackle: medium rod, 8-12 lb fluorocarbon. Best season: spring pre-spawn and fall. More common near rocky areas on the north shore.
+
+3. Bluegill — The ultimate family fish and best eating in the lake. Excellent numbers. Beds visible from shore in 2-4 feet of water during the June spawn. Great for kids and beginners. Best bait: small worms on #8 hook, crickets, small jigs (1/32 oz), wax worms. Tackle: light rod, 4-6 lb monofilament, small bobber. Averaged 7 inches in DNR surveys — 70% legal size. One of the healthiest panfish populations in the region.
+
+4. Northern Pike — The Tip-Up Festival star. Aggressive with a mouth full of teeth — use a wire leader. Through the ice in February they're at their most accessible. Best bait: large swimbaits, live suckers or shiners for ice fishing, tip-ups with sucker minnow. Tackle: medium-heavy to heavy rod, 20-30 lb braid, steel or titanium wire leader. A 36-inch-plus fish is a real trophy on Devils Lake.
+
+5. Black Crappie — Light flaky meat that fries up beautifully. School up in spring near submerged structure like brush piles, dock pilings, and fallen trees. Best bait: small tube jigs (1/16-1/8 oz), crappie jigs with marabou, small minnows under bobber. Tackle: ultralight rod, 4-6 lb monofilament. Best spring action near dock structures in 4-8 feet of water.
+
+6. Yellow Perch — Michigan's favorite panfish. Where you find one, you find a hundred. Sweet, firm white meat. A Devils Lake winter staple through the ice. Best bait: small jigs tipped with wax worm, live minnows, perch rigs. Tackle: ultralight to light rod, 4-6 lb monofilament. Averaged 9 inches-plus in DNR surveys — above state average.
+
+7. Pumpkinseed Sunfish — One of the most colorful freshwater fish in Michigan. Orange and blue markings that look almost tropical. Abundant near weed beds. A favorite for kids and great on ultralight tackle. Best bait: small worms, wax worms, tiny jigs.
+
+8. Brown Bullhead — Michigan's classic catfish. Night fishing for bullheads on warm summer evenings is a Manitou Beach tradition — cast and wait. Best bait: night crawlers, chicken liver, stink bait. Tackle: medium rod, 8-10 lb monofilament, bottom rig. Best after dark, May through August.
+
+FISHING SEASONS:
+
+Spring — Bass spawn in the shallows late May through June. Pike are aggressive post ice-out. Best topwater action of the year. Tip: target weed edges at dawn. Bluegill nests visible in 2-4 ft of water.
+
+Summer — Largemouth bass hold on deep structure during midday heat. Early morning and evening topwater is productive on both lakes. Round Lake walleye troll at 10-15 ft. Tip: 7 AM and 7 PM are prime windows. Dock fishing produces bass all day on Devils Lake.
+
+Fall — Feeding frenzy before winter. Bass, pike, and walleye all pack on weight. Some of the best fishing of the year. Round Lake perch can be exceptional in October. Tip: jerkbaits and spinnerbaits through October.
+
+Ice Fishing — February means Tip-Up Festival. Northern pike, walleye, bluegill, crappie, and perch through the ice on both lakes. Tip: 6-8 inches of clear ice typically by mid-January. Always check DNR ice conditions before venturing out.
+
+Round Lake is the better lake for walleye. Devils Lake is the better lake for bass and the ice fishing tradition.
+
+
+========================================
+SECTION 7: COMMUNITY ORGANIZATIONS
+========================================
+
+DEVILS AND ROUND LAKE MEN'S CLUB
+Page: /mens-club
+A 501(c)(3) nonprofit that runs two of the community's biggest events:
+- Tip-Up Festival — a 70+ year ice fishing festival held in February on frozen Devils Lake. One of Michigan's beloved winter traditions.
+- Firecracker 7K — a Fourth of July run starting at 3171 Round Lake Hwy
+They raise funds for scholarships, Toys for Tots, Shop with a Cop, and Christmas gift baskets for families in need.
+
+MANITOU BEACH LADIES CLUB
+Page: /ladies-club
+A women's community organization supporting the Manitou Beach area.
+
+MANITOU BEACH HISTORIC RENOVATION SOCIETY (MBHRS)
+Page: /historical-society
+The organization restoring and revitalizing the Manitou Beach village. They are home to the Boat House Art Gallery at 138 N. Lakeview Blvd — the largest nonprofit art gallery in Lenawee County, featuring 50+ Michigan artists. Located at 762 Manitou Road, Manitou Beach MI 49253.
+
+Annual events:
+- Devils Lake Festival of the Arts — 100+ artist booths, live music, food trucks
+- Village Car Shows
+
+DEVILS LAKE YACHT CLUB
+The Yacht Club offers fine dining overlooking Devils Lake, sailing races and regattas, and is a gathering place for the boating community. Address: 2097 Marsh Dr, Manitou Beach. Website: devilslakeyachtclub.com. Known for their Friday Fish Fry. Established in the 1940s.
+
+LAKES PRESERVATION LEAGUE
+Mission to Preserve and Protect the Lakes for Current and Future Generations. Advocacy, stewardship, and community engagement for the Irish Hills lakes. Website: lakespreservationleague.org. Phone: (989) 205-5079.
+
+
+========================================
+SECTION 8: THE LAKES
+========================================
+
+DEVILS LAKE
+Page: /devils-lake
+1,330 acres with 600+ boat slips. Locals call it "the party lake." It's the center of community life in Manitou Beach — boating, fishing, festivals, fireworks, and generations of family memories. The community has been coming back every summer since the 1870s.
+
+The public boat launch is on Devils Lake Highway with a free paved ramp and 60-car trailer parking. The Manitou Beach Marina at 9517 Devils Lake Hwy has 600+ slips for seasonal dockage.
+
+ROUND LAKE
+Page: /round-lake
+515 acres, 67 feet deep — the quieter side of lake life. Connected to Devils Lake by a shallow channel at Cherry Point. A glacial kettle lake carved around 10,000 BC. No bars or marinas — just homes, families, and serious fishing. Same zip code (49253) and township (Rollin) as Devils Lake. DNR access site for kayaks, canoes, and small boats.
+
+Round Lake is known for walleye fishing. It's the calmer, more peaceful lake compared to the social scene on Devils Lake.
+
+THE VILLAGE
+Page: /village
+A walkable strip on Devils Lake Highway and Lakeview Boulevard with boutique shops, a from-scratch cafe, satellite wine tasting rooms, and an iconic lighthouse replica. Open mostly Thursday through Sunday.
+
+Village businesses include:
+- Two Lakes Tavern — family-owned lakeside restaurant known for smoked entrees, right on the shores of Devils Lake. 110 Walnut St. Phone: (517) 547-7490
+- Blackbird Cafe — everything handmade including the coffee syrups. From-scratch cafe with pastries and specialty drinks. 135 Devils Lake Hwy. Phone: (567) 404-9655
+- Ang & Co — dirty sodas, satellite wine tasting, custom sweatshirt printing, curated gifts. 141 N. Lakeview Blvd. Phone: (517) 547-6030
+- Faust House Scrap n Craft — scrapbooking supplies, craft workshops, and satellite wine tasting. 140 N Lakeview Blvd. Phone: (517) 403-1788
+- Devils Lake View Living — high-end fashion, curated home goods, and the iconic lighthouse replica. 200 Devils Lake Hwy. Phone: (517) 252-5287
+- Michigan Gypsy — gift boutique with unique finds and local goods. 136 North Lakeview Blvd. Phone: (517) 224-1984
+- Boathouse Art Gallery — largest nonprofit gallery in Lenawee County, 50+ Michigan artists. 138 N. Lakeview Blvd. Phone: (517) 224-1984
+- Trends Salon & Spa — full-service salon and spa. 126 N Lakeview Blvd. Phone: (517) 547-5544
+- Phoenix Rising Wellness — holistic wellness, massage, energy work, natural healing. 131 Devils Lake Hwy. Phone: (517) 759-4018
+- Diamond in the Ruff — professional pet grooming. 251 Devils Lake Hwy. Phone: (517) 252-5255
+- South Shore Marine — marine sales, service, and repair. Pontoon boats and outboards. 290 Devils Lake Hwy. Phone: (517) 260-6910
+- Foundation Realty — Holly Griewahn, 30+ years of local real estate expertise. 100 Walnut St. Phone: (517) 266-8888
+- Devils Lake Inn — six stylish modern apartments, year-round, walking distance to the village. 103 Walnut Street. Phone: (517) 252-5017
+- Trillium House — spacious 5-bedroom vacation rental that sleeps 9. 350 Devils Lake Hwy. Phone: (419) 290-9974
+
+
+========================================
+SECTION 9: VISITOR INFORMATION
+========================================
+
+VISITOR CHECK-IN:
+New to the area? Visit /check-in to check in as a visitor.
+
+GETTING AROUND:
+Manitou Beach is a small community. The village is walkable. Most other destinations require a car. Drive times from Manitou Beach:
+- Tecumseh: about 15 minutes
+- Adrian: about 20 minutes
+- Jackson: about 30 minutes
+
+NEARBY HEALTHCARE:
+- ProMedica Herrick Hospital — 500 E Pottawatamie St, Tecumseh. About 15 min. Phone: (517) 424-3000. Full hospital with ER.
+- Henry Ford Allegiance Health — 205 N East Ave, Jackson. About 30 min. Phone: (517) 788-4800. Major medical center, Level II Trauma.
+- Urgent Care — 821 W Chicago Blvd, Tecumseh. About 15 min. Phone: (517) 423-3200. Walk-in, no appointment needed.
+- CVS Pharmacy — W Chicago Blvd, Tecumseh. About 15 min.
+- Walgreens — N Main St, Adrian. About 20 min. Open late.
+For emergencies, always call 911 first.
+
+GROCERY:
+- Meijer — W Chicago Blvd, Tecumseh. About 15 min. Grocery and gas station.
+- Walmart Supercenter — 1601 E US Hwy 223, Adrian. About 20 min. Grocery, pharmacy, bait and tackle.
+
+GAS STATIONS:
+Multiple stations within a 10-15 minute drive. Meijer in Tecumseh has gas.
+
+SCHOOLS NEAR MANITOU BEACH:
+- Onsted Community Schools — about 10 min, closest district. Phone: (517) 467-2170
+- Tecumseh Public Schools — about 15 min. Phone: (517) 423-3366
+- Adrian Public Schools — about 20 min. Phone: (517) 263-2115
+- Addison Community Schools — about 15 min. Phone: (517) 547-6500
+- Lenawee Christian School — about 20 min, private K-12. Phone: (517) 265-5020
+
+BOATING ACCESS:
+- Public Boat Launch on Devils Lake Highway — free, paved ramp, 60-car trailer parking
+- DNR Access Site on Round Lake — kayaks, canoes, small boats
+- Manitou Beach Marina — 9517 Devils Lake Hwy, 600+ seasonal slips
+
+
+========================================
+SECTION 10: THE DISPATCH (COMMUNITY NEWSLETTER)
+========================================
+
+The Dispatch is the Manitou Beach community newsletter. It's a weekly publication covering local stories, events, community updates, food and drink, real estate, history, recreation, and seasonal tips.
+
+To read The Dispatch, go to /dispatch. Articles are organized by category and issue.
+
+Newsletter categories: Lake Life, Community, Events, Real Estate, Food & Drink, History, Recreation, Seasonal Tips, Holly's Corner, Advertorial
+
+HOW TO SUBSCRIBE:
+The newsletter is powered by Beehiiv. Subscription forms appear on the homepage, the Dispatch page, and throughout the site. Enter your email to get it delivered to your inbox.
+
+Blackbird Cafe sponsors The Dispatch — new subscribers can get a free cookie.
+
+ADVERTISING IN THE DISPATCH:
+Businesses can run ads inside the newsletter. Go to /advertise for details on ad placements, pricing, and how to get started.
+
+
+========================================
+SECTION 11: FOR BUSINESS OWNERS
+========================================
+
+HOW TO GET YOUR BUSINESS ON THE SITE:
+1. Go to /activate
+2. Fill out your business information (name, category, description, contact info, logo)
+3. Choose your tier: Basic ($9/mo), Enhanced ($25/mo), or Featured ($49/mo)
+4. Complete payment through Stripe
+5. Your listing goes live after a quick review
+
+HOW TO UPGRADE YOUR LISTING:
+Go to /upgrade-listing to move to a higher tier for more visibility.
+
+HOW TO UPDATE YOUR LISTING:
+Go to /update-listing to change your business info, description, or contact details.
+
+WAYS TO PROMOTE YOUR BUSINESS:
+
+1. Directory Listing (starting at $9/mo) — get found in the business directory at /business
+2. Page Sponsorship — sponsor a page on the site and get your logo, tagline, and link as a banner. 14 pages available. Details at /promote
+3. Newsletter Advertising — run ads in The Dispatch newsletter reaching the most engaged local audience. Details at /advertise
+4. Event Ticketing — if you host events, use Yetickets to sell tickets directly on the site at half the typical fees. Sign up at /ticket-services
+
+FOOD TRUCK OWNERS:
+Register at /food-truck-partner for $9/mo (founding rate). Get a live map listing, daily check-in, event applications, and your own vendor portal.
+
+WINERY OWNERS:
+Join the wine trail at /wine-partner. Get listed on the wineries page with your info, hours, and location on the trail map.
+
+STAYS AND RENTAL OWNERS:
+List your rental property at /stays. Cottages, Airbnbs, tiny homes, camping, and inns are all welcome.
+
+
+========================================
+SECTION 12: STAYS AND RENTALS
+========================================
+
+The Stays page at /stays shows short-term rental listings around Devils Lake and Round Lake. Categories include Cottage, Airbnb, Tiny Home, Camping, and Inn/B&B.
+
+Each listing can show amenities like Waterfront, Pet Friendly, WiFi, AC, Fire Pit, Dock, Boat Launch, Kitchen, and Grill.
+
+Listings are pulled from a Notion database. Visitors browse on the site and book directly with the host.
+
+KNOWN STAYS IN THE AREA:
+- Devils Lake Inn — six stylish modern apartments, year-round. 103 Walnut Street, walking distance to the village. Phone: (517) 252-5017. Website: devilslakeinn.com
+- Trillium House — 5-bedroom rental sleeping 9, central air, two full baths, washer/dryer. 350 Devils Lake Hwy. Phone: (419) 290-9974. Website: trilliumhouserental.com
+
+
+========================================
+SECTION 13: HISTORY OF MANITOU BEACH
+========================================
+
+Pre-1830: Potawatomi and Ojibwa people camped along the shores of Devils Lake.
+
+1870s: Grand hotels, a dance pavilion, bathhouses, and two railroad stations made Devils Lake a top Michigan summer destination. People came by train from Detroit and Toledo.
+
+1888: Manitou Beach was officially platted as a community.
+
+1920s-1940s: The Yacht Club was established. The community solidified as a summer destination.
+
+1950s: The Tip-Up Festival launched, becoming one of Michigan's most beloved winter traditions.
+
+Today: Boating, fishing, festivals, and a tight-knit lake community that keeps coming back generation after generation.
+
+PRONUNCIATION NOTE: "Manitou" is pronounced "MAN-ih-taw" (rhymes with "saw"), not "MAN-ih-too." Locals are protective of this.
+
+
+========================================
+SECTION 14: NIGHTLIFE
+========================================
+
+The Nightlife page at /nightlife shows evening entertainment, bars, live music, and things to do after dark around the lakes.
+
+Key nightlife spots:
+- Devils Lake Yacht Club — fine dining, gathering spot for the boating community
+- Two Lakes Tavern — lakeside restaurant and bar
+
+The page pulls live music events and nightlife listings from the community events database.
+
+
+========================================
+SECTION 15: PLATFORM OVERVIEW
+========================================
+
+manitoubeachmichigan.com is the digital home for the Manitou Beach community. It serves as:
+- A business directory for local businesses
+- An events calendar for community happenings
+- A food truck locator with live GPS check-ins
+- A wine trail guide with tasting room info and ratings
+- A fishing guide for Devils Lake and Round Lake
+- A community newsletter (The Dispatch)
+- A visitor welcome system
+- An event ticketing platform (Yetickets)
+- A stays and rentals directory
+- An interactive map of everything in the area (Discover)
+
+The platform is built to help locals stay connected, help visitors discover what's here, and help businesses get found by the people who are already here.
+
+The site also features community videos documenting life on the lake, including Party on Devils Lake, Wooden Boats on Devils Lake, July 4th celebrations, Tip-Up Festival coverage, and summer cruising footage.
+
+
+========================================
+SECTION 16: SMS AND NOTIFICATIONS
+========================================
+
+The site offers SMS notifications for community updates. Visitors and locals can opt in to receive text messages about events, food truck arrivals, deals, and community news.
+
+SMS opt-in page: /sms
+Privacy policy: /privacy
+Terms of service: /terms
