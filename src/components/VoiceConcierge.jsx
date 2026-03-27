@@ -59,7 +59,9 @@ function VoiceConciergeInner() {
           // Surface a numbered step-by-step guide the user can follow along
           showSteps: async ({ title, steps, actionUrl, actionLabel }) => {
             const id = `steps-${title}`;
-            setCards(prev => prev.some(c => c.id === id) ? prev : [...prev, { type: 'steps', id, title, steps: steps || [], actionUrl, actionLabel }]);
+            // steps may come as newline-separated string or array
+            const stepList = Array.isArray(steps) ? steps : (steps || '').split('\n').filter(Boolean);
+            setCards(prev => prev.some(c => c.id === id) ? prev : [...prev, { type: 'steps', id, title, steps: stepList, actionUrl, actionLabel }]);
             return 'Step-by-step guide shown to user';
           },
           // Navigate to a page on the site
