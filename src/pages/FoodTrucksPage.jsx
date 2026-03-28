@@ -1528,57 +1528,68 @@ export default function FoodTrucksPage() {
                 <SectionTitle>Sorted by Most Loved</SectionTitle>
               </div>
             </FadeIn>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 16 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 20 }}>
               {sortedAllTrucks.map((truck, i) => {
                 const live = isLive(truck);
                 return (
                   <FadeIn key={truck.id} delay={i * 40}>
                     <div
                       ref={el => { if (truck.slug) truckCardRefs.current[truck.slug] = el; }}
-                      style={{ background: C.warmWhite, borderRadius: 12, border: `1px solid ${C.sand}`, padding: "18px 20px" }}
+                      style={{ background: C.warmWhite, borderRadius: 18, border: `1.5px solid ${C.sand}`, overflow: "hidden", boxShadow: `0 2px 10px ${C.driftwood}10` }}
                     >
-                      <div style={{ display: "flex", gap: 14, alignItems: "flex-start", marginBottom: 10 }}>
-                        {truck.photoUrl ? (
-                          <div style={{ width: 72, height: 72, borderRadius: 14, background: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, overflow: "hidden", boxShadow: `0 2px 8px ${C.driftwood}18`, border: `2px solid #FFFFFF` }}>
-                            <img src={truck.photoUrl} alt={truck.name} style={{ width: "100%", height: "100%", objectFit: "contain", padding: 3 }} />
-                          </div>
-                        ) : (
-                          <div style={{ width: 72, height: 72, borderRadius: 14, background: live ? `${C.sage}15` : `${C.sand}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                            <img src="/images/icons/food-truck-icon-dark.png" alt="" style={{ width: 48, height: 48, objectFit: "contain" }} />
+                      {/* Hero header */}
+                      <div style={{ background: `linear-gradient(160deg, ${C.cream} 0%, ${C.sand}33 100%)`, padding: "24px 20px 16px", textAlign: "center", position: "relative" }}>
+                        {/* Badges — top corners */}
+                        {live && (
+                          <div style={{ position: "absolute", top: 12, left: 14 }}>
+                            <span style={{ fontSize: 10, fontWeight: 700, color: C.sage, background: `${C.sage}15`, padding: "3px 9px", borderRadius: 10, letterSpacing: 0.5, textTransform: "uppercase" }}>Open</span>
                           </div>
                         )}
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-                            <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, color: C.text }}>{truck.name}</span>
-                            {live && <span style={{ fontSize: 10, fontWeight: 700, color: C.sage, background: `${C.sage}15`, padding: "2px 7px", borderRadius: 10, letterSpacing: 0.5, textTransform: "uppercase" }}>Open</span>}
-                            {isMostLoved(truck.slug) && <span style={{ fontSize: 10, fontWeight: 700, color: C.sunset, background: `${C.sunset}15`, border: `1px solid ${C.sunset}30`, padding: "2px 7px", borderRadius: 10, letterSpacing: 0.5 }}>Most Loved ❤️</span>}
+                        {truck.tier === 'featured' && (
+                          <div style={{ position: "absolute", top: 12, right: 14 }}>
+                            <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sunset, background: `${C.sunset}12`, border: `1px solid ${C.sunset}25`, borderRadius: 8, padding: "3px 8px" }}>Featured</span>
                           </div>
-                          {loveCount(truck.slug) > 0 && (
-                            <div style={{ fontSize: 11, color: C.textMuted, marginTop: 3 }}>❤️ {loveCount(truck.slug)} love{loveCount(truck.slug) !== 1 ? 's' : ''}</div>
-                          )}
-                          {truck.cuisine && <div style={{ fontSize: 12, color: C.textMuted, marginTop: 3 }}>{truck.cuisine}</div>}
+                        )}
+                        {/* Logo */}
+                        {truck.photoUrl ? (
+                          <div style={{ width: 120, height: 120, borderRadius: 20, background: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px", overflow: "hidden", boxShadow: `0 3px 14px ${C.driftwood}22`, border: `2px solid #FFFFFF` }}>
+                            <img src={truck.photoUrl} alt={truck.name} style={{ width: "100%", height: "100%", objectFit: "contain", padding: 5 }} />
+                          </div>
+                        ) : (
+                          <div style={{ width: 120, height: 120, borderRadius: 20, background: live ? `${C.sage}10` : `${C.sand}66`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px" }}>
+                            <img src="/images/icons/food-truck-icon-dark.png" alt="" style={{ width: 72, height: 72, objectFit: "contain" }} />
+                          </div>
+                        )}
+                        {/* Name + badges */}
+                        <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.text, margin: "0 0 4px" }}>{truck.name}</h3>
+                        {truck.cuisine && <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 2 }}>{truck.cuisine}</div>}
+                        {isMostLoved(truck.slug) && (
+                          <span style={{ fontSize: 10, fontWeight: 700, color: C.sunset, background: `${C.sunset}15`, border: `1px solid ${C.sunset}30`, padding: "2px 8px", borderRadius: 10, letterSpacing: 0.5 }}>Most Loved ❤️</span>
+                        )}
+                        {loveCount(truck.slug) > 0 && !isMostLoved(truck.slug) && (
+                          <div style={{ fontSize: 11, color: C.textMuted, marginTop: 2 }}>❤️ {loveCount(truck.slug)} love{loveCount(truck.slug) !== 1 ? 's' : ''}</div>
+                        )}
+                      </div>
+                      {/* Card body */}
+                      <div style={{ padding: "14px 20px 18px", textAlign: "center" }}>
+                        {truck.scheduleNote && (
+                          <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 8, lineHeight: 1.5 }}>📅 {truck.scheduleNote}</div>
+                        )}
+                        {truck.slug && <LovePills slug={truck.slug} />}
+                        {/* Actions */}
+                        <div style={{ display: "flex", justifyContent: "center", gap: 6, flexWrap: "wrap", marginTop: 12, borderTop: `1px solid ${C.sand}`, paddingTop: 12 }}>
                           {truck.phone && (
-                            <a href={`tel:${truck.phone}`} style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", display: "block", marginTop: 6 }}>
-                              {truck.phone}
+                            <a href={`tel:${truck.phone}`} style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}10`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1px solid ${C.lakeBlue}20` }}>
+                              📱 {truck.phone}
                             </a>
                           )}
                           {truck.tier === 'featured' && truck.website && (
-                            <a href={truck.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.sunset, textDecoration: "none", display: "block", marginTop: 4, fontWeight: 600 }}>
+                            <a href={truck.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.sunset, textDecoration: "none", fontWeight: 600, background: `${C.sunset}10`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1px solid ${C.sunset}20` }}>
                               Menu / Info →
                             </a>
                           )}
-                          {truck.scheduleNote && (
-                            <div style={{ fontSize: 11, color: C.textMuted, marginTop: 4, lineHeight: 1.5 }}>📅 {truck.scheduleNote}</div>
-                          )}
                         </div>
-                        {truck.tier === 'featured' && (
-                          <div style={{ flexShrink: 0, fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sunset, background: `${C.sunset}15`, border: `1px solid ${C.sunset}30`, borderRadius: 6, padding: "3px 7px", alignSelf: "flex-start" }}>
-                            Featured
-                          </div>
-                        )}
                       </div>
-                      {/* Love pills in directory too */}
-                      {truck.slug && <LovePills slug={truck.slug} />}
                     </div>
                   </FadeIn>
                 );
