@@ -497,20 +497,14 @@ function CalendarSection({ events, onEventClick, activeFilter, onFilterChange })
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const weekEnd = new Date(today);
   weekEnd.setDate(today.getDate() + 7);
-  const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
-
   // Bucket events
   const thisWeek = filtered.filter(e => {
     const d = new Date(e.date + "T00:00:00");
     return d >= today && d < weekEnd;
   });
-  const thisMonth = filtered.filter(e => {
-    const d = new Date(e.date + "T00:00:00");
-    return d >= weekEnd && d <= monthEnd;
-  });
   const later = filtered.filter(e => {
     const d = new Date(e.date + "T00:00:00");
-    return d > monthEnd;
+    return d >= weekEnd;
   });
 
   // Group "later" by month
@@ -524,9 +518,6 @@ function CalendarSection({ events, onEventClick, activeFilter, onFilterChange })
     });
     return Object.entries(grouped).sort(([a], [b]) => a.localeCompare(b));
   }, [later]);
-
-  const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-  const currentMonthName = monthNames[now.getMonth()];
 
   // Find next upcoming event when this week is empty
   const nextEvent = filtered.length > 0 ? filtered[0] : null;
@@ -596,32 +587,13 @@ function CalendarSection({ events, onEventClick, activeFilter, onFilterChange })
         </div>
       </section>
 
-      {/* ─── THIS MONTH (rest of month after this week) ─── */}
-      {thisMonth.length > 0 && (
-        <section style={{ background: C.cream, padding: "80px 24px" }}>
-          <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-            <FadeIn>
-              <SectionLabel>More in {currentMonthName}</SectionLabel>
-              <SectionTitle>Coming Up</SectionTitle>
-            </FadeIn>
-            <div>
-              {thisMonth.map((event, i) => (
-                <FadeIn key={event.id} delay={i * 40}>
-                  <EventRow event={event} onEventClick={onEventClick} isLast={i === thisMonth.length - 1} />
-                </FadeIn>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ─── LATER THIS YEAR — month-by-month accordion ─── */}
+      {/* ─── COMING UP — month-by-month accordion ─── */}
       {laterByMonth.length > 0 && (
         <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
           <div style={{ maxWidth: 1100, margin: "0 auto" }}>
             <FadeIn>
               <SectionLabel>Plan Ahead</SectionLabel>
-              <SectionTitle>Later This Year</SectionTitle>
+              <SectionTitle>Coming Up</SectionTitle>
             </FadeIn>
 
             <div style={{ marginTop: 32 }}>
@@ -962,9 +934,8 @@ export default function HappeningPage() {
       <HappeningHero />
       <PromoBanner page="Events" />
       <HeroTakeover event={heroTakeover} onEventClick={setLightboxEvent} />
-      <EventTimeline stripPin={stripPin} />
-      <WeeklyEventsSection events={weeklyEvents} onEventClick={setLightboxEvent} />
       <CalendarSection events={upcomingEvents} onEventClick={setLightboxEvent} activeFilter={activeFilter} onFilterChange={setActiveFilter} />
+      <WeeklyEventsSection events={weeklyEvents} onEventClick={setLightboxEvent} />
 
       {/* Promote upsell strip */}
       <div style={{ background: C.dusk, padding: "32px 24px" }}>
