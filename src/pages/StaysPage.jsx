@@ -61,8 +61,9 @@ function StayCard({ stay, i }) {
     <FadeIn delay={i * 80} direction={i % 2 === 0 ? 'left' : 'right'}>
       <div
         style={{
-          background: isFeatured ? C.dusk : C.warmWhite,
-          border: `1px solid ${isFeatured ? C.lakeDark : C.sand}`,
+          background: isFeatured ? C.dusk : '#fff',
+          border: `1px solid ${isFeatured ? C.lakeDark : '#e0dbd4'}`,
+          boxShadow: isFeatured ? 'none' : '0 2px 12px rgba(0,0,0,0.06)',
           borderRadius: 16,
           padding: '32px 28px',
           display: 'flex',
@@ -71,11 +72,13 @@ function StayCard({ stay, i }) {
           position: 'relative',
           overflow: 'hidden',
           transition: 'all 0.25s',
-          cursor: (stay.bookingUrl || stay.website) ? 'pointer' : 'default',
+          cursor: (stay.bookingUrl || stay.website || stay.email || stay.phone) ? 'pointer' : 'default',
         }}
         onClick={() => {
           const url = stay.bookingUrl || stay.website;
           if (url) window.open(url, '_blank');
+          else if (stay.email) window.location.href = `mailto:${stay.email}?subject=Inquiry about ${encodeURIComponent(stay.name)}`;
+          else if (stay.phone) window.location.href = `tel:${stay.phone}`;
         }}
         onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = `0 8px 32px rgba(0,0,0,0.1), 0 0 0 1px ${accent}30`; }}
         onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none'; }}
@@ -129,10 +132,12 @@ function StayCard({ stay, i }) {
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 14 }}>
               {stay.amenities.map(a => (
                 <span key={a} style={{
-                  fontSize: 11, padding: '3px 8px', borderRadius: 12,
-                  background: isFeatured ? 'rgba(255,255,255,0.1)' : `${C.sage}12`,
-                  color: isFeatured ? 'rgba(255,255,255,0.6)' : C.textMuted,
+                  fontSize: 11, padding: '4px 10px', borderRadius: 12,
+                  background: isFeatured ? 'rgba(255,255,255,0.1)' : `${accent}10`,
+                  color: isFeatured ? 'rgba(255,255,255,0.6)' : accent,
                   fontFamily: "'Libre Franklin', sans-serif",
+                  fontWeight: 600,
+                  border: `1px solid ${isFeatured ? 'rgba(255,255,255,0.08)' : `${accent}20`}`,
                 }}>
                   {AMENITY_ICONS[a] || '·'} {a}
                 </span>
@@ -140,30 +145,28 @@ function StayCard({ stay, i }) {
             </div>
           )}
 
-          {/* Address & Phone */}
+          {/* Address, Phone & Email */}
           <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', marginBottom: 12 }}>
             {stay.address && <span style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted }}>📍 {stay.address}</span>}
-            {stay.phone && <span style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted }}>📞 {stay.phone}</span>}
+            {stay.phone && <a href={`tel:${stay.phone}`} onClick={e => e.stopPropagation()} style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted, textDecoration: 'none' }}>📞 {stay.phone}</a>}
+            {stay.email && <a href={`mailto:${stay.email}?subject=Inquiry about ${encodeURIComponent(stay.name)}`} onClick={e => e.stopPropagation()} style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted, textDecoration: 'none' }}>✉️ {stay.email}</a>}
           </div>
 
           {/* CTA */}
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-            {(stay.bookingUrl || stay.website) && (
-              <a
-                href={stay.bookingUrl || stay.website}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={e => e.stopPropagation()}
-                style={{
-                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700,
-                  letterSpacing: 1.5, textTransform: 'uppercase',
-                  color: isFeatured ? C.sunset : accent,
-                  textDecoration: 'none',
-                }}
-              >
-                {stay.bookingUrl ? 'Book Now →' : 'Visit Website →'}
-              </a>
-            )}
+            {(() => {
+              const ctaStyle = {
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700,
+                letterSpacing: 1.5, textTransform: 'uppercase',
+                color: isFeatured ? C.sunset : accent,
+                textDecoration: 'none',
+              };
+              if (stay.bookingUrl) return <a href={stay.bookingUrl} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={ctaStyle}>Book Now →</a>;
+              if (stay.website) return <a href={stay.website} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={ctaStyle}>Visit Website →</a>;
+              if (stay.email) return <a href={`mailto:${stay.email}?subject=Inquiry about ${encodeURIComponent(stay.name)}`} onClick={e => e.stopPropagation()} style={ctaStyle}>Send Inquiry →</a>;
+              if (stay.phone) return <a href={`tel:${stay.phone}`} onClick={e => e.stopPropagation()} style={ctaStyle}>Call to Inquire →</a>;
+              return null;
+            })()}
           </div>
         </div>
       </div>
@@ -230,7 +233,7 @@ function StaysMapSection({ stays }) {
             <strong style="font-size:14px">${stay.name}</strong><br>
             <span style="font-size:11px;color:#666">${stay.stayType || ''}</span>
             ${stay.beds ? `<br><span style="font-size:11px">🛏 ${stay.beds} beds · 👥 ${stay.guests || '?'} guests</span>` : ''}
-            ${bookLink ? `<br><a href="${bookLink}" target="_blank" style="font-size:12px;color:${C.sunset};font-weight:700;text-decoration:none">${stay.bookingUrl ? 'Book Now →' : 'Website →'}</a>` : ''}
+            ${bookLink ? `<br><a href="${bookLink}" target="_blank" style="font-size:12px;color:${C.sunset};font-weight:700;text-decoration:none">${stay.bookingUrl ? 'Book Now →' : 'Website →'}</a>` : stay.email ? `<br><a href="mailto:${stay.email}?subject=Inquiry about ${encodeURIComponent(stay.name)}" style="font-size:12px;color:${C.sunset};font-weight:700;text-decoration:none">Send Inquiry →</a>` : stay.phone ? `<br><a href="tel:${stay.phone}" style="font-size:12px;color:${C.sunset};font-weight:700;text-decoration:none">Call →</a>` : ''}
           </div>
         `);
         infoWindowRef.current.open(mapObjRef.current, marker);
@@ -258,7 +261,7 @@ function StaysMapSection({ stays }) {
 
 // ── List Your Property Form ─────────────────────────────────
 function ListYourPropertySection() {
-  const [form, setForm] = useState({ name: '', stayType: '', address: '', bookingUrl: '', description: '', phone: '', beds: '', guests: '', amenities: [], _hp: '' });
+  const [form, setForm] = useState({ name: '', stayType: '', address: '', bookingUrl: '', email: '', description: '', phone: '', beds: '', guests: '', amenities: [], _hp: '' });
   const [status, setStatus] = useState(null);
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
@@ -291,14 +294,37 @@ function ListYourPropertySection() {
   const labelStyle = { fontSize: 12, fontWeight: 600, color: C.textLight, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 4, display: 'block' };
 
   return (
-    <section style={{ padding: '80px 24px', background: C.warmWhite }}>
+    <section id="list-property" style={{ padding: '80px 24px', background: C.warmWhite }}>
       <div style={{ maxWidth: 640, margin: '0 auto' }}>
         <SectionLabel>Property Owners</SectionLabel>
         <SectionTitle>List Your Property</SectionTitle>
-        <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.7, textAlign: 'center', marginBottom: 32 }}>
-          Own a rental, cottage, or campground? Get found by visitors looking for their next stay.
-          Free listings include your name and a link — enhanced listings ($9/mo) add photos, amenities, and a prominent booking button.
+        <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.7, textAlign: 'center', marginBottom: 24 }}>
+          Own a rental, cottage, or campground? Get found by visitors already here looking for their next stay.
         </p>
+
+        {/* Tier cards */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 14, marginBottom: 36 }}>
+          {[
+            { name: 'Free', price: '$0', color: C.textMuted, features: ['Name & type in directory', 'Basic text listing'] },
+            { name: 'Listed', price: '$9/mo', color: C.lakeBlue, features: ['Photo & amenities', 'Map pin & address', 'Booking/inquiry CTA', 'Full listing card'] },
+            { name: 'Featured', price: '$25/mo', color: C.sunset, features: ['Everything in Listed', 'Top placement', 'Staff Pick badge', 'Premium dark card', '3 slots per type'] },
+          ].map(tier => (
+            <div key={tier.name} style={{
+              background: '#fff', borderRadius: 12, padding: '20px 18px',
+              border: `1.5px solid ${tier.color}25`, textAlign: 'center',
+            }}>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: tier.color, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 4 }}>
+                {tier.name}
+              </div>
+              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.text, marginBottom: 10 }}>
+                {tier.price}
+              </div>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: 12, color: C.textLight, lineHeight: 1.8, textAlign: 'left' }}>
+                {tier.features.map(f => <li key={f} style={{ paddingLeft: 14, position: 'relative' }}><span style={{ position: 'absolute', left: 0, color: tier.color }}>✓</span> {f}</li>)}
+              </ul>
+            </div>
+          ))}
+        </div>
 
         {status === 'success' ? (
           <div style={{ textAlign: 'center', padding: 40, background: C.cream, borderRadius: 16, border: `1px solid ${C.sage}30` }}>
@@ -327,11 +353,15 @@ function ListYourPropertySection() {
               </div>
             </div>
             <div>
+              <label style={labelStyle}>Email (for inquiries — shown on your listing if no booking URL)</label>
+              <input type="email" style={inputStyle} value={form.email} onChange={e => set('email', e.target.value)} placeholder="you@example.com" />
+            </div>
+            <div>
               <label style={labelStyle}>Address</label>
               <input style={inputStyle} value={form.address} onChange={e => set('address', e.target.value)} placeholder="123 Lake St, Manitou Beach" />
             </div>
             <div>
-              <label style={labelStyle}>Booking URL (Airbnb, VRBO, or your site)</label>
+              <label style={labelStyle}>Booking URL (Airbnb, VRBO, or your site — leave blank if you prefer direct inquiries)</label>
               <input style={inputStyle} value={form.bookingUrl} onChange={e => set('bookingUrl', e.target.value)} placeholder="https://airbnb.com/rooms/..." />
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>

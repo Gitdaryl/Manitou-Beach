@@ -1413,6 +1413,71 @@ export default function FoodTrucksPage() {
         </div>
       </section>
 
+      {/* Partner quick-recovery strip — visible right below hero */}
+      <div style={{ background: "rgba(10,18,24,0.85)", borderBottom: `1px solid rgba(255,255,255,0.06)`, padding: "14px 24px", textAlign: "center" }}>
+        <div style={{ maxWidth: 520, margin: "0 auto", display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center", gap: 10 }}>
+          {smsStatus === 'sent' ? (
+            <p style={{ fontSize: 13, color: C.sage, fontWeight: 600, margin: 0 }}>Check your texts — your check-in link is on its way.</p>
+          ) : (
+            <>
+              <span style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", whiteSpace: "nowrap" }}>Already a partner?</span>
+              <div style={{ display: "flex", gap: 6 }}>
+                <input
+                  type="tel"
+                  value={smsPhone}
+                  onChange={e => setSmsPhone(e.target.value)}
+                  placeholder="Your phone number"
+                  style={{
+                    width: 160, padding: "8px 12px", borderRadius: 6,
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    background: "rgba(255,255,255,0.06)", color: C.cream,
+                    fontSize: 13, fontFamily: "'Libre Franklin', sans-serif",
+                    outline: "none",
+                  }}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' && smsPhone.replace(/\D/g, '').length >= 10) {
+                      setSmsStatus('loading');
+                      fetch('/api/send-checkin-link', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ phone: smsPhone }),
+                      })
+                        .then(r => r.json())
+                        .then(() => setSmsStatus('sent'))
+                        .catch(() => setSmsStatus('sent'));
+                    }
+                  }}
+                />
+                <button
+                  onClick={() => {
+                    if (smsPhone.replace(/\D/g, '').length < 10) return;
+                    setSmsStatus('loading');
+                    fetch('/api/send-checkin-link', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ phone: smsPhone }),
+                    })
+                      .then(r => r.json())
+                      .then(() => setSmsStatus('sent'))
+                      .catch(() => setSmsStatus('sent'));
+                  }}
+                  disabled={smsStatus === 'loading'}
+                  style={{
+                    padding: "8px 14px", borderRadius: 6,
+                    background: smsStatus === 'loading' ? "rgba(255,255,255,0.08)" : C.sage,
+                    color: C.cream, border: "none", fontSize: 12, fontWeight: 700,
+                    cursor: smsStatus === 'loading' ? "default" : "pointer",
+                    fontFamily: "'Libre Franklin', sans-serif", whiteSpace: "nowrap",
+                  }}
+                >
+                  {smsStatus === 'loading' ? '...' : 'Text My Link'}
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
       <WaveDivider topColor={C.night} bottomColor={mapsKey && liveTrucksWithCoords.length > 0 ? C.dusk : C.warmWhite} />
 
       {/* Live Map — only when trucks have coordinates */}
@@ -1857,7 +1922,7 @@ export default function FoodTrucksPage() {
                   />
                   <button
                     onClick={() => {
-                      if (!smsPhone.replace(/\D/g, '').length >= 10) return;
+                      if (smsPhone.replace(/\D/g, '').length < 10) return;
                       setSmsStatus('loading');
                       fetch('/api/send-checkin-link', {
                         method: 'POST',

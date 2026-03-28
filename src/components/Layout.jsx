@@ -1872,6 +1872,22 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
               Blog
             </button>
 
+            {/* Stays & Rentals */}
+            <button
+              onClick={() => { window.location.href = "/stays"; }}
+              style={{
+                background: "transparent", border: "none",
+                color: solid ? C.text : "rgba(255,255,255,0.7)",
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 500,
+                letterSpacing: 0.5, padding: "7px 13px", borderRadius: 6, cursor: "pointer",
+                transition: "all 0.2s", whiteSpace: "nowrap",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.color = solid ? C.dusk : C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
+              onMouseLeave={e => { e.currentTarget.style.color = solid ? C.text : "rgba(255,255,255,0.7)"; e.currentTarget.style.background = "transparent"; }}
+            >
+              Stays
+            </button>
+
             {/* Community dropdown */}
             <div ref={comRef} style={{ position: "relative" }}>
               <button
@@ -1900,7 +1916,6 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
                     { label: "Devils Lake", href: "/devils-lake" },
                     { label: "Round Lake", href: "/round-lake" },
                     { label: "The Village", href: "/village" },
-                    { label: "Stays & Rentals", href: "/stays" },
                     { label: "Wineries & Breweries", href: "/wineries" },
                     { label: "Men's Club", href: "/mens-club" },
                     { label: "Ladies Club", href: "/ladies-club" },
@@ -2007,6 +2022,12 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
           fontSize: 24, fontWeight: 400, color: C.text, cursor: "pointer", padding: "12px 32px", letterSpacing: 0.5,
         }}>
           Blog
+        </button>
+        <button onClick={() => { setMenuOpen(false); window.location.href = "/stays"; }} style={{
+          background: "none", border: "none", fontFamily: "'Libre Baskerville', serif",
+          fontSize: 24, fontWeight: 400, color: C.text, cursor: "pointer", padding: "12px 32px", letterSpacing: 0.5,
+        }}>
+          Stays
         </button>
 
         {/* Home sub-sections */}

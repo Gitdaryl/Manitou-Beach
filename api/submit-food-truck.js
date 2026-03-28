@@ -80,7 +80,7 @@ export default async function handler(req, res) {
       };
       if (isBeta) properties['Beta Expires'] = { date: { start: '2026-05-10' } };
       if (cuisine?.trim()) properties['Cuisine'] = { select: { name: cuisine.trim() } };
-      if (phone?.trim()) properties['Phone'] = { phone_number: phone.trim() };
+      if (digits) properties['Phone'] = { phone_number: digits };
       if (website?.trim()) properties['Website'] = { url: website.trim().startsWith('http') ? website.trim() : `https://${website.trim()}` };
       if (imageUrl?.trim()) properties['Photo URL'] = { url: imageUrl.trim() };
 
@@ -118,7 +118,7 @@ export default async function handler(req, res) {
       'Verification Code': { rich_text: [{ text: { content: code } }] },
     };
     if (cuisine?.trim()) properties['Cuisine'] = { select: { name: cuisine.trim() } };
-    if (phone?.trim()) properties['Phone'] = { phone_number: phone.trim() };
+    if (digits) properties['Phone'] = { phone_number: digits };
     if (website?.trim()) properties['Website'] = { url: website.trim().startsWith('http') ? website.trim() : `https://${website.trim()}` };
     if (imageUrl?.trim()) properties['Photo URL'] = { url: imageUrl.trim() };
 

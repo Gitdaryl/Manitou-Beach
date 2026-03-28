@@ -1396,7 +1396,7 @@ function LivingSection() {
                 <div style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.5, marginBottom: 10 }}>Holly Griewahn at Foundation Realty knows this lake like the back of her hand.</div>
                 <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunsetLight }}>Talk to Holly →</span>
               </a>
-              <a href="#businesses" style={{
+              <a href="/stays" style={{
                 display: "block", textDecoration: "none",
                 background: "rgba(255,255,255,0.07)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
                 border: "1px solid rgba(255,255,255,0.12)", borderRadius: 12, padding: "20px 22px",
@@ -1424,10 +1424,8 @@ function LivingSection() {
                 Lakefront cottages, village apartments, and the kind of view that makes you forget what day it is. Whether you're here for a weekend or a whole season — we'll help you find your spot.
               </p>
               <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
-                <Btn href="#businesses" variant="outline" small>Browse Stays →</Btn>
-                <span style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: C.sunset }}>
-                  Full Rentals Directory — Coming Soon
-                </span>
+                <Btn href="/stays" variant="outline" small>Browse Stays →</Btn>
+                <Btn href="/stays#list-property" variant="sunset" small>List Your Property →</Btn>
               </div>
             </div>
           </FadeIn>

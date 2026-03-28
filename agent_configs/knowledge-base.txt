@@ -776,3 +776,29 @@ Full venue listing on the site year-round.
 To sign up, fill in your venue name, your name, email, and optionally your phone and any notes about delivery. You'll be taken to Stripe for the one-time $279 payment. Cards will be delivered before the season opens.
 
 Not ready to pay yet? You can reserve your spot without payment — just fill in venue name, your name, and email, and Daryl will follow up before cards go to print.
+
+
+========================================
+SECTION 20: FOOD TRUCK PARTNER — CHECK-IN LINK RECOVERY
+========================================
+
+This is the most common support question from food truck partners: "How do I drop my pin again?" or "I forgot my check-in link."
+
+QUICK ANSWER FOR FOOD TRUCK PARTNERS:
+Right at the top of the Food Truck Locator page (/food-trucks), there's a bar that says "Already a partner?" with a phone number input and a "Text My Link" button. Enter the phone number you signed up with and tap Text My Link — your personal check-in URL gets texted to you in seconds. You can also find this at the bottom of the same page.
+
+STEP BY STEP:
+1. Go to /food-trucks (click Community in the menu bar, then Food Truck Locator)
+2. Right below the hero image, you'll see "Already a partner?" with a phone input
+3. Type in the phone number you registered with
+4. Tap "Text My Link"
+5. Check your texts — your personal check-in link arrives in seconds
+6. Open that link, drop your pin, add today's special, and you're live on the map
+
+IMPORTANT: The system always says "link is on its way" regardless of whether the phone number is registered. This is for privacy — we don't reveal whether a number is in our system. If the truck operator doesn't receive a text within a minute, they likely used a different phone number when they signed up, or they haven't registered yet.
+
+IF THEY HAVEN'T REGISTERED YET:
+Direct them to /food-truck-partner to sign up. It takes about two minutes. During the founding beta (through May 10), everything is free.
+
+TIP FOR THE CONCIERGE:
+When a food truck partner asks about dropping their pin or checking in, don't make them hunt. Tell them exactly: "Right at the top of the Food Truck Locator page there's a spot where you type your phone number and it texts you your check-in link. Want me to take you there?" Then use navigateTo to send them to /food-trucks.

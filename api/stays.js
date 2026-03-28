@@ -30,7 +30,7 @@ async function geocodeAndStore(pageId, address) {
 export default async function handler(req, res) {
   // POST — submit a new stay listing
   if (req.method === 'POST') {
-    const { name, stayType, phone, website, bookingUrl, description, address, beds, guests, amenities, logoUrl, _hp } = req.body;
+    const { name, stayType, phone, email, website, bookingUrl, description, address, beds, guests, amenities, logoUrl, _hp } = req.body;
 
     if (_hp) return res.status(200).json({ success: true });
     if (!name) return res.status(400).json({ error: 'Property name is required' });
@@ -51,6 +51,7 @@ export default async function handler(req, res) {
             'Name': { title: [{ text: { content: name } }] },
             ...(stayType && { 'Stay Type': { select: { name: stayType } } }),
             'Phone': { phone_number: phone || null },
+            ...(email && { 'Email': { email: email } }),
             'Website': { url: normalizeUrl(website) || null },
             ...(bookingUrl && { 'Booking URL': { url: normalizeUrl(bookingUrl) } }),
             'Description': { rich_text: [{ text: { content: description || '' } }] },
@@ -133,6 +134,7 @@ export default async function handler(req, res) {
         bookingUrl: normalizeUrl(p['Booking URL']?.url || ''),
         website: normalizeUrl(p['Website']?.url || ''),
         phone: p['Phone']?.phone_number || '',
+        email: p['Email']?.email || '',
         photo: normalizeUrl(p['Photo URL']?.url || ''),
         logo: normalizeUrl(p['Logo URL']?.url || null),
         lat: p['Lat']?.number ?? null,
