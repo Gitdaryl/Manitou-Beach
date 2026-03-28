@@ -1296,76 +1296,83 @@ export default function FoodTrucksPage() {
                 <FadeIn key={truck.id} delay={i * 60}>
                   <div
                     ref={el => { if (truck.slug) truckCardRefs.current[truck.slug] = el; }}
-                    style={{ background: C.cream, borderRadius: 14, border: `2px solid ${C.sage}33`, overflow: "hidden", height: "100%" }}
+                    style={{ background: C.cream, borderRadius: 18, border: `1.5px solid ${C.sage}28`, overflow: "hidden", height: "100%", boxShadow: `0 2px 12px ${C.sage}12` }}
                   >
-                    <div style={{ padding: "20px 22px" }}>
-                      <div style={{ display: "flex", alignItems: "flex-start", gap: 14, marginBottom: 10 }}>
-                        {truck.photoUrl ? (
-                          <div style={{ width: 72, height: 72, borderRadius: 14, background: `${C.sand}66`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, overflow: "hidden" }}>
-                            <img src={truck.photoUrl} alt={truck.name} style={{ width: "100%", height: "100%", objectFit: "contain", padding: 2 }} />
-                          </div>
-                        ) : (
-                          <div style={{ width: 72, height: 72, borderRadius: 14, background: `${C.sage}15`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                            <img src="/images/icons/food-truck-icon-dark.png" alt="" style={{ width: 48, height: 48, objectFit: "contain" }} />
-                          </div>
-                        )}
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8 }}>
-                            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.text, margin: "0 0 4px" }}>{truck.name}</h3>
-                            <div style={{ display: "flex", alignItems: "center", gap: 5, flexShrink: 0 }}>
-                              <div style={{ width: 7, height: 7, borderRadius: "50%", background: C.sage }} />
-                              <span style={{ fontSize: 11, color: C.sage, fontWeight: 600 }}>{timeAgo(truck.lastCheckin)}</span>
-                            </div>
-                          </div>
-                          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
-                            {isMostLoved(truck.slug) && (
-                              <span style={{ fontSize: 10, fontWeight: 700, color: C.sunset, background: `${C.sunset}15`, border: `1px solid ${C.sunset}30`, padding: "2px 7px", borderRadius: 10, letterSpacing: 0.5 }}>Most Loved ❤️</span>
-                            )}
-                            {loveCount(truck.slug) > 0 && (
-                              <span style={{ fontSize: 11, color: C.textMuted }}>❤️ {loveCount(truck.slug)}</span>
-                            )}
-                          </div>
-                        </div>
+                    {/* Hero header — logo gets the spotlight */}
+                    <div style={{ background: `linear-gradient(160deg, ${C.warmWhite} 0%, ${C.sand}44 100%)`, padding: "24px 22px 18px", textAlign: "center", position: "relative" }}>
+                      {/* Live badge — top right */}
+                      <div style={{ position: "absolute", top: 14, right: 16, display: "flex", alignItems: "center", gap: 5 }}>
+                        <div style={{ width: 8, height: 8, borderRadius: "50%", background: C.sage, boxShadow: `0 0 6px ${C.sage}88` }} />
+                        <span style={{ fontSize: 11, color: C.sage, fontWeight: 700, letterSpacing: 0.3 }}>{timeAgo(truck.lastCheckin)}</span>
                       </div>
-                      {truck.cuisine && <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 8 }}>{truck.cuisine}</div>}
-                      {truck.locationNote && (
-                        <div style={{ fontSize: 13, color: C.text, fontWeight: 500, marginBottom: 8 }}>
-                          📍 {truck.locationNote}
+                      {/* Most Loved badge — top left */}
+                      {isMostLoved(truck.slug) && (
+                        <div style={{ position: "absolute", top: 14, left: 16 }}>
+                          <span style={{ fontSize: 10, fontWeight: 700, color: C.sunset, background: `${C.sunset}15`, border: `1px solid ${C.sunset}30`, padding: "3px 9px", borderRadius: 10, letterSpacing: 0.5 }}>Most Loved ❤️</span>
                         </div>
                       )}
-                      {/* Today's Special + Departure */}
+                      {/* Logo */}
+                      {truck.photoUrl ? (
+                        <div style={{ width: 100, height: 100, borderRadius: 20, background: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px", overflow: "hidden", boxShadow: `0 3px 16px ${C.driftwood}30`, border: `2px solid #FFFFFF` }}>
+                          <img src={truck.photoUrl} alt={truck.name} style={{ width: "100%", height: "100%", objectFit: "contain", padding: 4 }} />
+                        </div>
+                      ) : (
+                        <div style={{ width: 100, height: 100, borderRadius: 20, background: `${C.sage}12`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px", border: `2px solid ${C.sage}20` }}>
+                          <img src="/images/icons/food-truck-icon-dark.png" alt="" style={{ width: 64, height: 64, objectFit: "contain" }} />
+                        </div>
+                      )}
+                      {/* Name */}
+                      <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.text, margin: "0 0 6px", lineHeight: 1.3 }}>{truck.name}</h3>
+                      {/* Meta line — cuisine + location on one line */}
+                      <div style={{ fontSize: 13, color: C.textLight, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, flexWrap: "wrap" }}>
+                        {truck.cuisine && <span>{truck.cuisine}</span>}
+                        {truck.cuisine && truck.locationNote && <span style={{ color: C.driftwood }}>·</span>}
+                        {truck.locationNote && <span style={{ fontWeight: 500 }}>📍 {truck.locationNote}</span>}
+                      </div>
+                      {/* Love count */}
+                      {loveCount(truck.slug) > 0 && (
+                        <div style={{ fontSize: 12, color: C.textMuted, marginTop: 6 }}>❤️ {loveCount(truck.slug)} love{loveCount(truck.slug) !== 1 ? 's' : ''}</div>
+                      )}
+                    </div>
+
+                    {/* Card body */}
+                    <div style={{ padding: "16px 22px 20px" }}>
+                      {/* Today's Special — prominent callout */}
                       {truck.todaysSpecial && (
-                        <div style={{ fontSize: 13, background: `${C.sunset}12`, border: `1px solid ${C.sunset}30`, borderRadius: 8, padding: "7px 12px", marginBottom: 8, color: C.sunset, fontWeight: 500 }}>
-                          ⭐ {truck.todaysSpecial}
+                        <div style={{ background: `linear-gradient(135deg, ${C.sunset}10 0%, ${C.sunset}06 100%)`, border: `1px solid ${C.sunset}25`, borderRadius: 12, padding: "11px 16px", marginBottom: 12, display: "flex", alignItems: "center", gap: 10 }}>
+                          <span style={{ fontSize: 18, lineHeight: 1 }}>⭐</span>
+                          <span style={{ fontSize: 14, color: C.sunset, fontWeight: 600, lineHeight: 1.4 }}>{truck.todaysSpecial}</span>
                         </div>
                       )}
+                      {/* Departure time */}
                       {truck.departureTime && (
-                        <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 8 }}>
+                        <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 12, textAlign: "center" }}>
                           ⏱ Open until {formatDeparture(truck.departureTime)}
                         </div>
                       )}
-                      {truck.description && <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: "0 0 10px" }}>{truck.description}</p>}
+                      {truck.description && <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: "0 0 12px", textAlign: "center" }}>{truck.description}</p>}
                       {/* Love Pills */}
                       {truck.slug && <LovePills slug={truck.slug} />}
-                      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", marginTop: 8 }}>
+                      {/* Action toolbar */}
+                      <div style={{ display: "flex", justifyContent: "center", gap: 6, flexWrap: "wrap", marginTop: 14, borderTop: `1px solid ${C.sand}`, paddingTop: 14 }}>
                         {truck.phone && (
-                          <a href={`tel:${truck.phone}`} style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 4 }}>
+                          <a href={`tel:${truck.phone}`} style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}10`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1px solid ${C.lakeBlue}20` }}>
                             📱 Call
                           </a>
                         )}
                         {truck.lat && truck.lng && (
-                          <a href={`https://www.google.com/maps?q=${truck.lat},${truck.lng}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 4 }}>
+                          <a href={`https://www.google.com/maps?q=${truck.lat},${truck.lng}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}10`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1px solid ${C.lakeBlue}20` }}>
                             🗺️ Directions
                           </a>
                         )}
                         {truck.website && (
-                          <a href={truck.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600 }}>
+                          <a href={truck.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}10`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1px solid ${C.lakeBlue}20` }}>
                             Website →
                           </a>
                         )}
                         <button
                           onClick={() => shareTruck(truck)}
-                          style={{ fontSize: 12, color: sharedId === truck.id ? C.sage : C.sunset, background: "none", border: "none", padding: 0, fontWeight: 700, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", display: "inline-flex", alignItems: "center", gap: 4, transition: "color 0.2s" }}
+                          style={{ fontSize: 12, color: sharedId === truck.id ? C.sage : C.sunset, background: sharedId === truck.id ? `${C.sage}10` : `${C.sunset}10`, border: `1px solid ${sharedId === truck.id ? C.sage : C.sunset}20`, padding: "6px 14px", borderRadius: 20, fontWeight: 700, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", display: "inline-flex", alignItems: "center", gap: 5, transition: "all 0.2s" }}
                         >
                           {sharedId === truck.id ? '✓ Copied' : '↗ Tell a friend'}
                         </button>
@@ -1398,53 +1405,54 @@ export default function FoodTrucksPage() {
                     <FadeIn key={truck.id} delay={i * 60}>
                       <div
                         ref={el => { if (truck.slug) truckCardRefs.current[truck.slug] = el; }}
-                        style={{ background: C.cream, borderRadius: 14, border: `2px solid ${C.driftwood}44`, overflow: "hidden", height: "100%" }}
+                        style={{ background: C.cream, borderRadius: 18, border: `1.5px solid ${C.driftwood}30`, overflow: "hidden", height: "100%", boxShadow: `0 2px 12px ${C.driftwood}10`, opacity: 0.85 }}
                       >
-                        <div style={{ padding: "20px 22px" }}>
-                          <div style={{ display: "flex", alignItems: "flex-start", gap: 14, marginBottom: 10 }}>
-                            {truck.photoUrl ? (
-                              <div style={{ width: 72, height: 72, borderRadius: 14, background: `${C.sand}66`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, overflow: "hidden" }}>
-                                <img src={truck.photoUrl} alt={truck.name} style={{ width: "100%", height: "100%", objectFit: "contain", padding: 2 }} />
-                              </div>
-                            ) : (
-                              <div style={{ width: 72, height: 72, borderRadius: 14, background: `${C.driftwood}15`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                                <img src="/images/icons/food-truck-icon-dark.png" alt="" style={{ width: 48, height: 48, objectFit: "contain" }} />
-                              </div>
-                            )}
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8 }}>
-                                <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.text, margin: "0 0 4px" }}>{truck.name}</h3>
-                                <div style={{ display: "flex", alignItems: "center", gap: 5, flexShrink: 0 }}>
-                                  <div style={{ width: 7, height: 7, borderRadius: "50%", background: C.driftwood }} />
-                                  <span style={{ fontSize: 11, color: C.driftwood, fontWeight: 600 }}>{timeAgo(truck.lastCheckin)}</span>
-                                </div>
-                              </div>
-                              {dist && <span style={{ fontSize: 11, color: C.textMuted }}>~{dist} mi away</span>}
-                            </div>
+                        {/* Hero header */}
+                        <div style={{ background: `linear-gradient(160deg, ${C.warmWhite} 0%, ${C.sand}33 100%)`, padding: "24px 22px 18px", textAlign: "center", position: "relative" }}>
+                          <div style={{ position: "absolute", top: 14, right: 16, display: "flex", alignItems: "center", gap: 5 }}>
+                            <div style={{ width: 7, height: 7, borderRadius: "50%", background: C.driftwood }} />
+                            <span style={{ fontSize: 11, color: C.driftwood, fontWeight: 600 }}>{timeAgo(truck.lastCheckin)}</span>
                           </div>
-                          {truck.cuisine && <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 8 }}>{truck.cuisine}</div>}
-                          {truck.locationNote && <div style={{ fontSize: 13, color: C.text, fontWeight: 500, marginBottom: 8 }}>📍 {truck.locationNote}</div>}
-                          {truck.todaysSpecial && (
-                            <div style={{ fontSize: 13, background: `${C.sunset}12`, border: `1px solid ${C.sunset}30`, borderRadius: 8, padding: "7px 12px", marginBottom: 8, color: C.sunset, fontWeight: 500 }}>
-                              ⭐ {truck.todaysSpecial}
+                          {truck.photoUrl ? (
+                            <div style={{ width: 88, height: 88, borderRadius: 18, background: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px", overflow: "hidden", boxShadow: `0 2px 10px ${C.driftwood}20`, border: `2px solid #FFFFFF` }}>
+                              <img src={truck.photoUrl} alt={truck.name} style={{ width: "100%", height: "100%", objectFit: "contain", padding: 4 }} />
+                            </div>
+                          ) : (
+                            <div style={{ width: 88, height: 88, borderRadius: 18, background: `${C.driftwood}10`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px", border: `2px solid ${C.driftwood}18` }}>
+                              <img src="/images/icons/food-truck-icon-dark.png" alt="" style={{ width: 56, height: 56, objectFit: "contain" }} />
                             </div>
                           )}
-                          {truck.description && <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: "0 0 10px" }}>{truck.description}</p>}
+                          <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.text, margin: "0 0 6px" }}>{truck.name}</h3>
+                          <div style={{ fontSize: 13, color: C.textLight, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, flexWrap: "wrap" }}>
+                            {truck.cuisine && <span>{truck.cuisine}</span>}
+                            {truck.cuisine && truck.locationNote && <span style={{ color: C.driftwood }}>·</span>}
+                            {truck.locationNote && <span style={{ fontWeight: 500 }}>📍 {truck.locationNote}</span>}
+                          </div>
+                          {dist && <div style={{ fontSize: 11, color: C.textMuted, marginTop: 4 }}>~{dist} mi away</div>}
+                        </div>
+                        <div style={{ padding: "14px 22px 18px" }}>
+                          {truck.todaysSpecial && (
+                            <div style={{ background: `linear-gradient(135deg, ${C.sunset}10 0%, ${C.sunset}06 100%)`, border: `1px solid ${C.sunset}25`, borderRadius: 12, padding: "11px 16px", marginBottom: 12, display: "flex", alignItems: "center", gap: 10 }}>
+                              <span style={{ fontSize: 18, lineHeight: 1 }}>⭐</span>
+                              <span style={{ fontSize: 14, color: C.sunset, fontWeight: 600 }}>{truck.todaysSpecial}</span>
+                            </div>
+                          )}
+                          {truck.description && <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: "0 0 12px", textAlign: "center" }}>{truck.description}</p>}
                           {truck.slug && <LovePills slug={truck.slug} />}
-                          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", marginTop: 8 }}>
+                          <div style={{ display: "flex", justifyContent: "center", gap: 6, flexWrap: "wrap", marginTop: 14, borderTop: `1px solid ${C.sand}`, paddingTop: 14 }}>
                             {truck.lat && truck.lng && (
-                              <a href={`https://www.google.com/maps?q=${truck.lat},${truck.lng}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 4 }}>
+                              <a href={`https://www.google.com/maps?q=${truck.lat},${truck.lng}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}10`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1px solid ${C.lakeBlue}20` }}>
                                 🗺️ Directions
                               </a>
                             )}
                             {truck.phone && (
-                              <a href={`tel:${truck.phone}`} style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 4 }}>
+                              <a href={`tel:${truck.phone}`} style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}10`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1px solid ${C.lakeBlue}20` }}>
                                 📱 Call
                               </a>
                             )}
                             <button
                               onClick={() => shareTruck(truck)}
-                              style={{ fontSize: 12, color: sharedId === truck.id ? C.sage : C.sunset, background: "none", border: "none", padding: 0, fontWeight: 700, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", display: "inline-flex", alignItems: "center", gap: 4, transition: "color 0.2s" }}
+                              style={{ fontSize: 12, color: sharedId === truck.id ? C.sage : C.sunset, background: sharedId === truck.id ? `${C.sage}10` : `${C.sunset}10`, border: `1px solid ${sharedId === truck.id ? C.sage : C.sunset}20`, padding: "6px 14px", borderRadius: 20, fontWeight: 700, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", display: "inline-flex", alignItems: "center", gap: 5, transition: "all 0.2s" }}
                             >
                               {sharedId === truck.id ? '✓ Copied' : '↗ Tell a friend'}
                             </button>
