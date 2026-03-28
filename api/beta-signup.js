@@ -4,7 +4,7 @@
 import { Resend } from 'resend';
 import { normalizePhone } from './lib/twilio.js';
 
-const LAUNCH_DATE_DISPLAY = 'April 10 at noon';
+const LAUNCH_DATE_DISPLAY = 'May 1 at noon';
 
 const NOTION_HEADERS = {
   Authorization: `Bearer ${process.env.NOTION_TOKEN_BUSINESS}`,
@@ -81,7 +81,7 @@ export default async function handler(req, res) {
     if (count >= max) {
       return res.status(200).json({
         success: false,
-        error: 'Beta access is full. Join us on launch day — April 10.',
+        error: 'Beta access is full. Join us on launch day — May 1.',
       });
     }
 
@@ -176,9 +176,10 @@ export default async function handler(req, res) {
     if (twilioReady) {
       try {
         const smsBody =
-          `Hey ${firstName} — welcome to Manitou Beach!\n\n` +
-          `Your beta access code: ${code}\n\n` +
-          `Opens ${LAUNCH_DATE_DISPLAY}. Enter your code at manitoubeachmichigan.com — save this message.\n\n` +
+          `Hey ${firstName} — you're in! Welcome to the Manitou Beach beta.\n\n` +
+          `Your personal access code: ${code}\n\n` +
+          `This code is unique to you — please don't share it. Use it to enter the site each time you visit.\n\n` +
+          `Save this message. Site opens ${LAUNCH_DATE_DISPLAY} at manitoubeachmichigan.com\n\n` +
           `Reply STOP to opt out.`;
 
         await fetch(

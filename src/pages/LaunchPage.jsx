@@ -3,7 +3,7 @@ import { C } from '../data/config';
 import { GlobalStyles } from '../components/Layout';
 import yeti from '../data/errorMessages';
 
-const LAUNCH_DATE = new Date('2026-04-10T16:00:00Z');
+const LAUNCH_DATE = new Date('2026-05-01T16:00:00Z');
 const SITE_URL = 'https://manitoubeachmichigan.com';
 
 // ── Countdown hook ─────────────────────────────────────────────────────────────
@@ -613,6 +613,121 @@ function SignupForm({ remaining, onSpotsUpdate }) {
   );
 }
 
+// ── CodeEntryForm — for returning testers on a new device ──────────────────────
+function CodeEntryForm() {
+  const [open, setOpen] = useState(false);
+  const [code, setCode] = useState('');
+  const [status, setStatus] = useState('idle'); // idle | checking | success | error
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const clean = code.trim().toUpperCase();
+    if (!/^MB[A-Z0-9]{4}$/.test(clean)) {
+      setErrorMsg('Codes start with MB followed by 4 characters — e.g. MB7X2K.');
+      return;
+    }
+    setStatus('checking');
+    setErrorMsg('');
+    try {
+      const res = await fetch('/api/beta-validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: clean }),
+      });
+      const data = await res.json();
+      if (data.valid) {
+        try { localStorage.setItem('mb_beta_code', clean); } catch {}
+        setStatus('success');
+        setTimeout(() => { window.location.replace('/'); }, 1200);
+      } else {
+        setErrorMsg("That code didn't match. Double-check the text we sent you.");
+        setStatus('idle');
+      }
+    } catch {
+      setErrorMsg("Couldn't reach the server — try again in a moment.");
+      setStatus('idle');
+    }
+  };
+
+  const inputBase = {
+    width: '100%', padding: '13px 16px', borderRadius: 6,
+    border: '1px solid rgba(255,255,255,0.15)', background: 'rgba(255,255,255,0.07)',
+    color: C.cream, outline: 'none', boxSizing: 'border-box',
+    fontFamily: "'Libre Franklin', sans-serif", WebkitAppearance: 'none',
+  };
+
+  return (
+    <div style={{ width: '100%', maxWidth: 360, textAlign: 'center' }}>
+      {!open ? (
+        <button
+          onClick={() => setOpen(true)}
+          style={{
+            background: 'none', border: 'none', cursor: 'pointer', padding: '8px 0',
+            fontFamily: "'Libre Franklin', sans-serif",
+            fontSize: 11, fontWeight: 700, letterSpacing: 2,
+            textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)',
+            textDecoration: 'underline',
+          }}
+        >
+          Already have a code?
+        </button>
+      ) : (
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <p style={{
+            fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700,
+            letterSpacing: 2.5, textTransform: 'uppercase',
+            color: 'rgba(255,255,255,0.4)', margin: 0,
+          }}>
+            Enter your beta code
+          </p>
+          <input
+            value={code}
+            onChange={e => { setCode(e.target.value.toUpperCase()); setErrorMsg(''); }}
+            placeholder="MB7X2K"
+            maxLength={6}
+            autoFocus
+            autoCapitalize="characters"
+            style={{ ...inputBase, fontSize: 22, fontWeight: 700, letterSpacing: 6, textAlign: 'center' }}
+          />
+          {errorMsg && (
+            <p style={{
+              color: '#ff8b7b', fontSize: 13, margin: 0,
+              fontFamily: "'Libre Franklin', sans-serif",
+            }}>
+              {errorMsg}
+            </p>
+          )}
+          {status === 'success' ? (
+            <p style={{
+              color: C.sage, fontSize: 14, margin: 0,
+              fontFamily: "'Libre Franklin', sans-serif",
+            }}>
+              ✓ Code accepted — heading in...
+            </p>
+          ) : (
+            <button
+              type="submit"
+              disabled={status === 'checking'}
+              style={{
+                padding: '13px 24px', borderRadius: 6, border: 'none',
+                background: status === 'checking' ? 'rgba(255,255,255,0.08)' : C.sunset,
+                color: status === 'checking' ? 'rgba(255,255,255,0.35)' : '#fff',
+                fontFamily: "'Libre Franklin', sans-serif",
+                fontSize: 13, fontWeight: 700, letterSpacing: 1.5,
+                textTransform: 'uppercase',
+                cursor: status === 'checking' ? 'default' : 'pointer',
+              }}
+            >
+              {status === 'checking' ? 'Checking...' : 'Enter the Site'}
+            </button>
+          )}
+        </form>
+      )}
+    </div>
+  );
+}
+
 // ── LaunchPage ─────────────────────────────────────────────────────────────────
 export default function LaunchPage() {
   const parts = useCountdown(LAUNCH_DATE);
@@ -685,7 +800,7 @@ export default function LaunchPage() {
           letterSpacing: 3.5, textTransform: 'uppercase', color: C.sunsetLight,
           margin: 0, opacity: 0.85,
         }}>
-          Beta Access · Opening April 10
+          Beta Access · Launching May 1
         </p>
 
         {/* Headline */}
@@ -718,6 +833,14 @@ export default function LaunchPage() {
 
         {!parts.launched && (
           <SignupForm remaining={remaining} onSpotsUpdate={setRemaining} />
+        )}
+
+        {/* Returning tester on a new device — always visible pre-launch */}
+        {!parts.launched && (
+          <>
+            <div style={{ width: 40, height: 1, background: 'rgba(255,255,255,0.1)' }} />
+            <CodeEntryForm />
+          </>
         )}
       </div>
 

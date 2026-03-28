@@ -131,6 +131,7 @@ export default function FoodTruckPartnerPage() {
       });
       const data = await res.json();
       if (data.activated) {
+        try { localStorage.setItem('mb_ft_slug', data.slug); } catch {}
         setActivationData({ slug: data.slug, checkinUrl: data.checkinUrl, truckName: data.truckName });
         setStep('activated');
       } else if (data.needsVerification) {
@@ -168,6 +169,7 @@ export default function FoodTruckPartnerPage() {
 
       if (data.activated) {
         // Free tier — they're live
+        try { localStorage.setItem('mb_ft_slug', data.slug); } catch {}
         setActivationData({ slug: data.slug, checkinUrl: data.checkinUrl, truckName: data.truckName });
         setStep('activated');
       } else if (data.needsPayment) {

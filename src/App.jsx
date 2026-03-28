@@ -56,15 +56,19 @@ const EventConfirmedPage = lazy(() => import('./pages/EventConfirmedPage'));
 
 // ── Beta gate — redirects / to /launch until LAUNCH_DATE
 //   ⚙️  Update LAUNCH_DATE when you have a firm date (must match LaunchPage.jsx)
-const LAUNCH_DATE = new Date('2026-04-10T16:00:00Z'); // 12:00pm ET
+const LAUNCH_DATE = new Date('2026-05-01T16:00:00Z'); // 12:00pm ET May 1
 
 function BetaGate({ children }) {
   // Gate only activates on the production domain — Vercel preview URLs bypass it entirely
   if (typeof window !== 'undefined' && window.location.hostname !== 'manitoubeachmichigan.com') return children;
   if (Date.now() >= LAUNCH_DATE.getTime()) return children;
   try {
+    // Beta testers — unique access code issued at signup
     const code = localStorage.getItem('mb_beta_code');
     if (code && /^MB[A-Z0-9]{4}$/.test(code)) return children;
+    // Food truck operators — backstage crew access after partner registration
+    const ftSlug = localStorage.getItem('mb_ft_slug');
+    if (ftSlug) return children;
   } catch {} // Safari private mode throws on localStorage
   if (typeof window !== 'undefined') window.location.replace('/launch');
   return null;
