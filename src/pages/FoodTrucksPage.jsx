@@ -1298,8 +1298,8 @@ export default function FoodTrucksPage() {
                     ref={el => { if (truck.slug) truckCardRefs.current[truck.slug] = el; }}
                     style={{ background: C.cream, borderRadius: 18, border: `1.5px solid ${C.sage}28`, overflow: "hidden", height: "100%", boxShadow: `0 2px 12px ${C.sage}12` }}
                   >
-                    {/* Hero header — logo gets the spotlight */}
-                    <div style={{ background: `linear-gradient(160deg, ${C.warmWhite} 0%, ${C.sand}44 100%)`, padding: "24px 22px 18px", textAlign: "center", position: "relative" }}>
+                    {/* Hero header — logo IS the brand */}
+                    <div style={{ background: `linear-gradient(160deg, ${C.warmWhite} 0%, ${C.sand}44 100%)`, padding: "28px 22px 18px", textAlign: "center", position: "relative" }}>
                       {/* Live badge — top right */}
                       <div style={{ position: "absolute", top: 14, right: 16, display: "flex", alignItems: "center", gap: 5 }}>
                         <div style={{ width: 8, height: 8, borderRadius: "50%", background: C.sage, boxShadow: `0 0 6px ${C.sage}88` }} />
@@ -1311,14 +1311,14 @@ export default function FoodTrucksPage() {
                           <span style={{ fontSize: 10, fontWeight: 700, color: C.sunset, background: `${C.sunset}15`, border: `1px solid ${C.sunset}30`, padding: "3px 9px", borderRadius: 10, letterSpacing: 0.5 }}>Most Loved ❤️</span>
                         </div>
                       )}
-                      {/* Logo */}
+                      {/* Logo — big and proud, this is their identity */}
                       {truck.photoUrl ? (
-                        <div style={{ width: 100, height: 100, borderRadius: 20, background: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px", overflow: "hidden", boxShadow: `0 3px 16px ${C.driftwood}30`, border: `2px solid #FFFFFF` }}>
-                          <img src={truck.photoUrl} alt={truck.name} style={{ width: "100%", height: "100%", objectFit: "contain", padding: 4 }} />
+                        <div style={{ width: 160, height: 160, borderRadius: 24, background: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", overflow: "hidden", boxShadow: `0 4px 20px ${C.driftwood}30`, border: `3px solid #FFFFFF` }}>
+                          <img src={truck.photoUrl} alt={truck.name} style={{ width: "100%", height: "100%", objectFit: "contain", padding: 6 }} />
                         </div>
                       ) : (
-                        <div style={{ width: 100, height: 100, borderRadius: 20, background: `${C.sage}12`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px", border: `2px solid ${C.sage}20` }}>
-                          <img src="/images/icons/food-truck-icon-dark.png" alt="" style={{ width: 64, height: 64, objectFit: "contain" }} />
+                        <div style={{ width: 160, height: 160, borderRadius: 24, background: `${C.sage}12`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", border: `3px solid ${C.sage}20` }}>
+                          <img src="/images/icons/food-truck-icon-dark.png" alt="" style={{ width: 96, height: 96, objectFit: "contain" }} />
                         </div>
                       )}
                       {/* Name */}
@@ -1414,12 +1414,12 @@ export default function FoodTrucksPage() {
                             <span style={{ fontSize: 11, color: C.driftwood, fontWeight: 600 }}>{timeAgo(truck.lastCheckin)}</span>
                           </div>
                           {truck.photoUrl ? (
-                            <div style={{ width: 88, height: 88, borderRadius: 18, background: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px", overflow: "hidden", boxShadow: `0 2px 10px ${C.driftwood}20`, border: `2px solid #FFFFFF` }}>
-                              <img src={truck.photoUrl} alt={truck.name} style={{ width: "100%", height: "100%", objectFit: "contain", padding: 4 }} />
+                            <div style={{ width: 140, height: 140, borderRadius: 22, background: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px", overflow: "hidden", boxShadow: `0 3px 14px ${C.driftwood}20`, border: `3px solid #FFFFFF` }}>
+                              <img src={truck.photoUrl} alt={truck.name} style={{ width: "100%", height: "100%", objectFit: "contain", padding: 6 }} />
                             </div>
                           ) : (
-                            <div style={{ width: 88, height: 88, borderRadius: 18, background: `${C.driftwood}10`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px", border: `2px solid ${C.driftwood}18` }}>
-                              <img src="/images/icons/food-truck-icon-dark.png" alt="" style={{ width: 56, height: 56, objectFit: "contain" }} />
+                            <div style={{ width: 140, height: 140, borderRadius: 22, background: `${C.driftwood}10`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px", border: `3px solid ${C.driftwood}18` }}>
+                              <img src="/images/icons/food-truck-icon-dark.png" alt="" style={{ width: 80, height: 80, objectFit: "contain" }} />
                             </div>
                           )}
                           <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.text, margin: "0 0 6px" }}>{truck.name}</h3>
@@ -1539,12 +1539,12 @@ export default function FoodTrucksPage() {
                     >
                       <div style={{ display: "flex", gap: 14, alignItems: "flex-start", marginBottom: 10 }}>
                         {truck.photoUrl ? (
-                          <div style={{ width: 56, height: 56, borderRadius: 12, background: `${C.sand}66`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, overflow: "hidden" }}>
-                            <img src={truck.photoUrl} alt={truck.name} style={{ width: "100%", height: "100%", objectFit: "contain", padding: 2 }} />
+                          <div style={{ width: 72, height: 72, borderRadius: 14, background: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, overflow: "hidden", boxShadow: `0 2px 8px ${C.driftwood}18`, border: `2px solid #FFFFFF` }}>
+                            <img src={truck.photoUrl} alt={truck.name} style={{ width: "100%", height: "100%", objectFit: "contain", padding: 3 }} />
                           </div>
                         ) : (
-                          <div style={{ width: 56, height: 56, borderRadius: 12, background: live ? `${C.sage}20` : `${C.sand}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                            <img src="/images/icons/food-truck-icon-dark.png" alt="" style={{ width: 44, height: 44, objectFit: "contain" }} />
+                          <div style={{ width: 72, height: 72, borderRadius: 14, background: live ? `${C.sage}15` : `${C.sand}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                            <img src="/images/icons/food-truck-icon-dark.png" alt="" style={{ width: 48, height: 48, objectFit: "contain" }} />
                           </div>
                         )}
                         <div style={{ flex: 1, minWidth: 0 }}>
