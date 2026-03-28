@@ -4,6 +4,187 @@ import { C, GEO } from '../data/config';
 import { Footer, GlobalStyles, Navbar, NewsletterInline } from '../components/Layout';
 import yeti from '../data/errorMessages';
 
+// Format departure time for display — always today, so just show local time
+function formatDeparture(dt) {
+  if (!dt) return '';
+  if (dt === 'after-dark') return 'after dark';
+  const d = new Date(dt);
+  if (!isNaN(d.getTime())) return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+  return dt;
+}
+
+// Build a teardrop drop-pin SVG with floating name callout
+function makeMapPin(name, selected, G) {
+  const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const initial = name.charAt(0).toUpperCase();
+
+  // Pin geometry
+  const pinR = 18; // pin head outer radius
+  const circR = 13; // inner circle radius (for initial)
+  const pinTip = 14; // length of the point below the circle
+  const pinW = pinR * 2 + 4;
+  const pinH = pinR * 2 + pinTip + 4;
+  const pinCy = pinR + 2; // vertical center of circle head
+
+  // Label geometry
+  const charW = 6.2;
+  const labelPad = 14;
+  const labelW = Math.min(name.length * charW + labelPad * 2, 180);
+  const labelH = 22;
+  const gap = 6;
+
+  // Total canvas
+  const totalW = Math.max(pinW, labelW) + 4; // +4 for shadow room
+  const totalH = labelH + gap + pinH + 4;
+  const midX = totalW / 2;
+
+  // Label position
+  const labelX = (totalW - labelW) / 2;
+
+  // Pin position
+  const pCx = midX;
+  const pCy = labelH + gap + pinCy;
+  const pBottom = labelH + gap + pinH;
+
+  // Colors
+  const pinFill = selected ? '#5B7A52' : '#7A8E72';
+  const pinStroke = selected ? '#3F5A38' : '#5E7258';
+  const innerFill = '#FFFFFF';
+  const initialColor = pinFill;
+  const labelBg = selected ? '#5B7A52' : '#FAF6EF';
+  const labelStroke = selected ? '#3F5A38' : '#7A8E72';
+  const labelText = selected ? '#FFFFFF' : '#3B3228';
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${totalW}" height="${totalH}">
+<defs>
+  <filter id="d"><feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-opacity="0.22"/></filter>
+</defs>
+<rect x="${labelX}" y="1" width="${labelW}" height="${labelH}" rx="11" fill="${labelBg}" stroke="${labelStroke}" stroke-width="1.2" filter="url(#d)"/>
+<text x="${midX}" y="${1 + labelH / 2 + 4}" font-family="system-ui,-apple-system,sans-serif" font-size="11" font-weight="600" fill="${labelText}" text-anchor="middle">${esc(name)}</text>
+<line x1="${midX}" y1="${1 + labelH}" x2="${midX}" y2="${labelH + gap}" stroke="${labelStroke}" stroke-width="1" opacity="0.35"/>
+<path d="M${pCx},${pBottom} C${pCx - 4},${pCy + pinR * 0.7} ${pCx - pinR},${pCy + pinR * 0.25} ${pCx - pinR},${pCy} A${pinR},${pinR} 0 1,1 ${pCx + pinR},${pCy} C${pCx + pinR},${pCy + pinR * 0.25} ${pCx + 4},${pCy + pinR * 0.7} ${pCx},${pBottom}Z" fill="${pinFill}" stroke="${pinStroke}" stroke-width="1.5" filter="url(#d)"/>
+<circle cx="${pCx}" cy="${pCy}" r="${circR}" fill="${innerFill}"/>
+<text x="${pCx}" y="${pCy + 5}" font-family="system-ui,-apple-system,sans-serif" font-size="15" font-weight="700" fill="${initialColor}" text-anchor="middle">${initial}</text>
+</svg>`;
+
+  return {
+    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
+    scaledSize: new G.Size(totalW, totalH),
+    anchor: new G.Point(midX, pBottom),
+  };
+}
+
+// Upgrade a pin to show the truck's photo instead of an initial
+function upgradeMarkerWithPhoto(marker, photoUrl, name, selected, G) {
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = () => {
+    // Pin geometry (must match makeMapPin)
+    const pinR = 18, circR = 13, pinTip = 14;
+    const pinW = pinR * 2 + 4, pinH = pinR * 2 + pinTip + 4, pinCy = pinR + 2;
+    const charW = 6.2, labelPad = 14;
+    const labelW = Math.min(name.length * charW + labelPad * 2, 180);
+    const labelH = 22, gap = 6;
+    const scale = 2; // retina
+    const totalW = Math.max(pinW, labelW) + 4;
+    const totalH = labelH + gap + pinH + 4;
+    const midX = totalW / 2;
+    const pCy = labelH + gap + pinCy;
+    const pBottom = labelH + gap + pinH;
+    const labelX = (totalW - labelW) / 2;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = totalW * scale;
+    canvas.height = totalH * scale;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(scale, scale);
+
+    const pinFill = selected ? '#5B7A52' : '#7A8E72';
+    const pinStroke = selected ? '#3F5A38' : '#5E7258';
+    const labelBg = selected ? '#5B7A52' : '#FAF6EF';
+    const labelStroke = selected ? '#3F5A38' : '#7A8E72';
+    const labelText = selected ? '#FFFFFF' : '#3B3228';
+
+    // Shadow
+    ctx.shadowColor = 'rgba(0,0,0,0.22)';
+    ctx.shadowBlur = 3;
+    ctx.shadowOffsetY = 1;
+
+    // Label pill
+    const r = 11;
+    ctx.beginPath();
+    ctx.roundRect(labelX, 1, labelW, labelH, r);
+    ctx.fillStyle = labelBg;
+    ctx.fill();
+    ctx.strokeStyle = labelStroke;
+    ctx.lineWidth = 1.2;
+    ctx.stroke();
+
+    // Label text
+    ctx.shadowColor = 'transparent';
+    ctx.font = '600 11px system-ui,-apple-system,sans-serif';
+    ctx.fillStyle = labelText;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(name, midX, 1 + labelH / 2);
+
+    // Connector line
+    ctx.beginPath();
+    ctx.moveTo(midX, 1 + labelH);
+    ctx.lineTo(midX, labelH + gap);
+    ctx.strokeStyle = labelStroke;
+    ctx.lineWidth = 1;
+    ctx.globalAlpha = 0.35;
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+
+    // Teardrop pin
+    ctx.shadowColor = 'rgba(0,0,0,0.22)';
+    ctx.shadowBlur = 3;
+    ctx.shadowOffsetY = 1;
+    ctx.beginPath();
+    ctx.moveTo(midX, pBottom);
+    ctx.bezierCurveTo(midX - 4, pCy + pinR * 0.7, midX - pinR, pCy + pinR * 0.25, midX - pinR, pCy);
+    ctx.arc(midX, pCy, pinR, Math.PI, 0, false);
+    ctx.bezierCurveTo(midX + pinR, pCy + pinR * 0.25, midX + 4, pCy + pinR * 0.7, midX, pBottom);
+    ctx.closePath();
+    ctx.fillStyle = pinFill;
+    ctx.fill();
+    ctx.strokeStyle = pinStroke;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Clip circle for photo
+    ctx.shadowColor = 'transparent';
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(midX, pCy, circR, 0, Math.PI * 2);
+    ctx.clip();
+    // Draw photo centered and covering the circle
+    const sz = circR * 2;
+    const aspect = img.width / img.height;
+    let dw = sz, dh = sz;
+    if (aspect > 1) dw = sz * aspect; else dh = sz / aspect;
+    ctx.drawImage(img, midX - dw / 2, pCy - dh / 2, dw, dh);
+    ctx.restore();
+
+    // Circle border
+    ctx.beginPath();
+    ctx.arc(midX, pCy, circR, 0, Math.PI * 2);
+    ctx.strokeStyle = '#FFFFFF';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    marker.setIcon({
+      url: canvas.toDataURL(),
+      scaledSize: new G.Size(totalW, totalH),
+      anchor: new G.Point(midX, pBottom),
+    });
+  };
+  img.onerror = () => {}; // keep the initial-based pin on failure
+  img.src = photoUrl;
+}
+
 // Session ID for rate-limiting loves (one love per item per session)
 function getTruckSessionId() {
   const key = 'mb-truck-session';
@@ -264,19 +445,7 @@ export default function FoodTrucksPage() {
     if (!pts.length) return;
 
     const G = window.google.maps;
-    const makeIcon = (name, selected) => {
-      const w = Math.min(name.length * 7 + 28, 160);
-      const h = 26;
-      const bg = selected ? '#7A8E72' : '#FAF6EF';
-      const fg = selected ? '#FAF6EF' : '#3B3228';
-      const border = '#7A8E72';
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h + 8}">
-        <rect x="0" y="0" width="${w}" height="${h}" rx="13" fill="${bg}" stroke="${border}" stroke-width="1.5"/>
-        <text x="${w / 2}" y="17" font-family="sans-serif" font-size="11" font-weight="600" fill="${fg}" text-anchor="middle">${name}</text>
-        <polygon points="${w / 2 - 5},${h} ${w / 2 + 5},${h} ${w / 2},${h + 7}" fill="${bg}" stroke="${border}" stroke-width="1.5"/>
-      </svg>`;
-      return { url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg), scaledSize: new G.Size(w, h + 8), anchor: new G.Point(w / 2, h + 8) };
-    };
+    const makeIcon = (name, selected) => makeMapPin(name, selected, G);
 
     if (!mapInstanceRef.current) {
       mapInstanceRef.current = new G.Map(mapDivRef.current, {
@@ -299,12 +468,20 @@ export default function FoodTrucksPage() {
 
     pts.forEach(truck => {
       if (isNearby(truck)) bounds.extend({ lat: truck.lat, lng: truck.lng });
-      const m = new G.Marker({ position: { lat: truck.lat, lng: truck.lng }, map: mapInstanceRef.current, icon: makeIcon(truck.name, !isNearby(truck) ? false : false), title: truck.name });
+      const m = new G.Marker({ position: { lat: truck.lat, lng: truck.lng }, map: mapInstanceRef.current, icon: makeIcon(truck.name, false), title: truck.name });
       m.addListener('click', () => {
         setSelectedTruck(prev => prev?.id === truck.id ? null : truck);
-        markersRef.current.forEach(mk => mk.setIcon(makeIcon(mk.getTitle(), mk.getTitle() === truck.name)));
+        markersRef.current.forEach(mk => {
+          const sel = mk.getTitle() === truck.name;
+          mk.setIcon(makeIcon(mk.getTitle(), sel));
+          // Re-upgrade photo pins after selection change
+          const t = pts.find(p => p.name === mk.getTitle());
+          if (t?.photoUrl) upgradeMarkerWithPhoto(mk, t.photoUrl, t.name, sel, G);
+        });
       });
       markersRef.current.push(m);
+      // Upgrade to photo pin if truck has a photo
+      if (truck.photoUrl) upgradeMarkerWithPhoto(m, truck.photoUrl, truck.name, false, G);
     });
 
     // Fit bounds only to nearby trucks so far-away ones don't zoom out the map
@@ -1069,12 +1246,12 @@ export default function FoodTrucksPage() {
                           <span style={{ fontSize: 12, color: C.sunset, fontWeight: 500 }}>⭐ {selectedTruck.todaysSpecial}</span>
                         )}
                         {selectedTruck.departureTime && (
-                          <span style={{ fontSize: 12, color: C.textMuted }}>⏱ Until {selectedTruck.departureTime}</span>
+                          <span style={{ fontSize: 12, color: C.textMuted }}>⏱ Until {formatDeparture(selectedTruck.departureTime)}</span>
                         )}
                       </div>
                     </div>
                     <button
-                      onClick={() => { setSelectedTruck(null); markersRef.current.forEach(m => { const pts2 = liveTrucksWithCoords; m.setIcon((() => { const w2 = Math.min(m.getTitle().length * 7 + 28, 160); const h2 = 26; const svg2 = `<svg xmlns="http://www.w3.org/2000/svg" width="${w2}" height="${h2 + 8}"><rect x="0" y="0" width="${w2}" height="${h2}" rx="13" fill="#FAF6EF" stroke="#7A8E72" stroke-width="1.5"/><text x="${w2/2}" y="17" font-family="sans-serif" font-size="11" font-weight="600" fill="#3B3228" text-anchor="middle">${m.getTitle()}</text><polygon points="${w2/2-5},${h2} ${w2/2+5},${h2} ${w2/2},${h2+7}" fill="#FAF6EF" stroke="#7A8E72" stroke-width="1.5"/></svg>`; return { url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg2), scaledSize: new window.google.maps.Size(w2, h2 + 8), anchor: new window.google.maps.Point(w2 / 2, h2 + 8) }; })()); }); }}
+                      onClick={() => { setSelectedTruck(null); const G = window.google.maps; const pts2 = (trucks || []).filter(t => isLive(t) && typeof t.lat === 'number'); markersRef.current.forEach(m => { m.setIcon(makeMapPin(m.getTitle(), false, G)); const t = pts2.find(p => p.name === m.getTitle()); if (t?.photoUrl) upgradeMarkerWithPhoto(m, t.photoUrl, t.name, false, G); }); }}
                       style={{ flexShrink: 0, width: 28, height: 28, borderRadius: '50%', background: C.sand, border: 'none', cursor: 'pointer', fontSize: 14, color: C.textMuted, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'sans-serif' }}
                     >×</button>
                   </div>
@@ -1121,13 +1298,25 @@ export default function FoodTrucksPage() {
                     ref={el => { if (truck.slug) truckCardRefs.current[truck.slug] = el; }}
                     style={{ background: C.cream, borderRadius: 14, border: `2px solid ${C.sage}33`, overflow: "hidden", height: "100%" }}
                   >
-                    {truck.photoUrl && (
-                      <img src={truck.photoUrl} alt={truck.name} style={{ width: "100%", height: 160, objectFit: "cover" }} />
-                    )}
                     <div style={{ padding: "20px 22px" }}>
-                      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginBottom: 6 }}>
+                      <div style={{ display: "flex", alignItems: "flex-start", gap: 14, marginBottom: 10 }}>
+                        {truck.photoUrl ? (
+                          <div style={{ width: 72, height: 72, borderRadius: 14, background: `${C.sand}66`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, overflow: "hidden" }}>
+                            <img src={truck.photoUrl} alt={truck.name} style={{ width: "100%", height: "100%", objectFit: "contain", padding: 2 }} />
+                          </div>
+                        ) : (
+                          <div style={{ width: 72, height: 72, borderRadius: 14, background: `${C.sage}15`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                            <img src="/images/icons/food-truck-icon-dark.png" alt="" style={{ width: 48, height: 48, objectFit: "contain" }} />
+                          </div>
+                        )}
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.text, margin: "0 0 4px" }}>{truck.name}</h3>
+                          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8 }}>
+                            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.text, margin: "0 0 4px" }}>{truck.name}</h3>
+                            <div style={{ display: "flex", alignItems: "center", gap: 5, flexShrink: 0 }}>
+                              <div style={{ width: 7, height: 7, borderRadius: "50%", background: C.sage }} />
+                              <span style={{ fontSize: 11, color: C.sage, fontWeight: 600 }}>{timeAgo(truck.lastCheckin)}</span>
+                            </div>
+                          </div>
                           <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
                             {isMostLoved(truck.slug) && (
                               <span style={{ fontSize: 10, fontWeight: 700, color: C.sunset, background: `${C.sunset}15`, border: `1px solid ${C.sunset}30`, padding: "2px 7px", borderRadius: 10, letterSpacing: 0.5 }}>Most Loved ❤️</span>
@@ -1136,10 +1325,6 @@ export default function FoodTrucksPage() {
                               <span style={{ fontSize: 11, color: C.textMuted }}>❤️ {loveCount(truck.slug)}</span>
                             )}
                           </div>
-                        </div>
-                        <div style={{ display: "flex", alignItems: "center", gap: 5, flexShrink: 0 }}>
-                          <div style={{ width: 7, height: 7, borderRadius: "50%", background: C.sage }} />
-                          <span style={{ fontSize: 11, color: C.sage, fontWeight: 600 }}>{timeAgo(truck.lastCheckin)}</span>
                         </div>
                       </div>
                       {truck.cuisine && <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 8 }}>{truck.cuisine}</div>}
@@ -1156,7 +1341,7 @@ export default function FoodTrucksPage() {
                       )}
                       {truck.departureTime && (
                         <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 8 }}>
-                          ⏱ Open until {truck.departureTime}
+                          ⏱ Open until {formatDeparture(truck.departureTime)}
                         </div>
                       )}
                       {truck.description && <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: "0 0 10px" }}>{truck.description}</p>}
@@ -1215,18 +1400,26 @@ export default function FoodTrucksPage() {
                         ref={el => { if (truck.slug) truckCardRefs.current[truck.slug] = el; }}
                         style={{ background: C.cream, borderRadius: 14, border: `2px solid ${C.driftwood}44`, overflow: "hidden", height: "100%" }}
                       >
-                        {truck.photoUrl && (
-                          <img src={truck.photoUrl} alt={truck.name} style={{ width: "100%", height: 160, objectFit: "cover" }} />
-                        )}
                         <div style={{ padding: "20px 22px" }}>
-                          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginBottom: 6 }}>
+                          <div style={{ display: "flex", alignItems: "flex-start", gap: 14, marginBottom: 10 }}>
+                            {truck.photoUrl ? (
+                              <div style={{ width: 72, height: 72, borderRadius: 14, background: `${C.sand}66`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, overflow: "hidden" }}>
+                                <img src={truck.photoUrl} alt={truck.name} style={{ width: "100%", height: "100%", objectFit: "contain", padding: 2 }} />
+                              </div>
+                            ) : (
+                              <div style={{ width: 72, height: 72, borderRadius: 14, background: `${C.driftwood}15`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                                <img src="/images/icons/food-truck-icon-dark.png" alt="" style={{ width: 48, height: 48, objectFit: "contain" }} />
+                              </div>
+                            )}
                             <div style={{ flex: 1, minWidth: 0 }}>
-                              <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.text, margin: "0 0 4px" }}>{truck.name}</h3>
+                              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8 }}>
+                                <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.text, margin: "0 0 4px" }}>{truck.name}</h3>
+                                <div style={{ display: "flex", alignItems: "center", gap: 5, flexShrink: 0 }}>
+                                  <div style={{ width: 7, height: 7, borderRadius: "50%", background: C.driftwood }} />
+                                  <span style={{ fontSize: 11, color: C.driftwood, fontWeight: 600 }}>{timeAgo(truck.lastCheckin)}</span>
+                                </div>
+                              </div>
                               {dist && <span style={{ fontSize: 11, color: C.textMuted }}>~{dist} mi away</span>}
-                            </div>
-                            <div style={{ display: "flex", alignItems: "center", gap: 5, flexShrink: 0 }}>
-                              <div style={{ width: 7, height: 7, borderRadius: "50%", background: C.driftwood }} />
-                              <span style={{ fontSize: 11, color: C.driftwood, fontWeight: 600 }}>{timeAgo(truck.lastCheckin)}</span>
                             </div>
                           </div>
                           {truck.cuisine && <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 8 }}>{truck.cuisine}</div>}
@@ -1338,7 +1531,9 @@ export default function FoodTrucksPage() {
                     >
                       <div style={{ display: "flex", gap: 14, alignItems: "flex-start", marginBottom: 10 }}>
                         {truck.photoUrl ? (
-                          <img src={truck.photoUrl} alt={truck.name} style={{ width: 44, height: 44, borderRadius: 10, objectFit: "cover", flexShrink: 0 }} />
+                          <div style={{ width: 56, height: 56, borderRadius: 12, background: `${C.sand}66`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, overflow: "hidden" }}>
+                            <img src={truck.photoUrl} alt={truck.name} style={{ width: "100%", height: "100%", objectFit: "contain", padding: 2 }} />
+                          </div>
                         ) : (
                           <div style={{ width: 56, height: 56, borderRadius: 12, background: live ? `${C.sage}20` : `${C.sand}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                             <img src="/images/icons/food-truck-icon-dark.png" alt="" style={{ width: 44, height: 44, objectFit: "contain" }} />
