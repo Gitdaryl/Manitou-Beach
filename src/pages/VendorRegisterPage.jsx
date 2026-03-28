@@ -204,10 +204,12 @@ export default function VendorRegisterPage() {
               <>
                 <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, color: C.text, margin: '0 0 6px' }}>Register as a Vendor</h2>
                 <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: '0 0 32px' }}>
-                  Fill in your details below to secure your vendor spot. You'll receive a confirmation receipt by email.
+                  Takes about 30 seconds. You'll get a confirmation receipt right away.
                 </p>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+                  {/* Section: About You */}
+                  <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: C.textMuted, margin: '0 0 -8px', borderBottom: `1px solid ${C.sand}`, paddingBottom: 8 }}>About You</p>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                     <div>
                       <label style={{ display: 'block', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>Business / Vendor Name *</label>
@@ -252,6 +254,8 @@ export default function VendorRegisterPage() {
                     </div>
                   </div>
 
+                  {/* Section: About Your Booth */}
+                  <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: C.textMuted, margin: '4px 0 -8px', borderBottom: `1px solid ${C.sand}`, paddingBottom: 8 }}>About Your Booth</p>
                   <div>
                     <label style={{ display: 'block', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>What Are You Selling / Booth Type *</label>
                     <input

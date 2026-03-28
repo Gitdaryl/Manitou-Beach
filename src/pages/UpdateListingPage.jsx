@@ -44,7 +44,7 @@ function CategorySelect({ value, onChange }) {
 
 // ─── main component ─────────────────────────────────────────
 export default function UpdateListingPage() {
-  const [step, setStep] = useState(1); // 1 = verify, 2 = update form, 3 = done
+  const [step, setStep] = useState(1); // 1 = verify, 2 = update form, 3 = done, 'food_truck' = redirect prompt
 
   // Step 1 state
   const [verifyName, setVerifyName] = useState('');
@@ -71,7 +71,8 @@ export default function UpdateListingPage() {
       const res = await fetch(`/api/update-listing?name=${encodeURIComponent(verifyName.trim())}&email=${encodeURIComponent(verifyEmail.trim().toLowerCase())}`);
       const data = await res.json();
       if (data.found) {
-        setBusiness({ name: verifyName.trim(), email: verifyEmail.trim().toLowerCase() });
+        const biz = { name: verifyName.trim(), email: verifyEmail.trim().toLowerCase() };
+        setBusiness(biz);
         setForm({
           phone: data.business.phone || '',
           website: data.business.website || '',
@@ -80,7 +81,12 @@ export default function UpdateListingPage() {
           category: data.business.category || '',
         });
         if (data.business.logo) setLogoPreview(data.business.logo);
-        setStep(2);
+        // If they're already a food truck, show the redirect prompt first
+        if (data.business.category === 'Food Truck') {
+          setStep('food_truck');
+        } else {
+          setStep(2);
+        }
       } else {
         setVerifyError("We couldn't find a match for that name and email address. Make sure they're spelled exactly as you entered them when you first signed up. Still stuck? Just email us at hello@yetigroove.com and we'll sort it out.");
       }
@@ -171,6 +177,46 @@ export default function UpdateListingPage() {
                 </form>
               )}
 
+              {/* ── Food Truck redirect prompt ─────────────── */}
+              {step === 'food_truck' && business && (
+                <div style={{ background: `linear-gradient(135deg, #1A2830 0%, #2D4A3E 100%)`, borderRadius: 12, padding: '28px 24px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 14 }}>
+                    <img src="/images/icons/food-truck-icon.png" alt="Food truck" style={{ width: 52, height: 52, objectFit: 'contain', flexShrink: 0 }} />
+                    <div>
+                      <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 19, color: '#F5F0E8', fontWeight: 400, lineHeight: 1.3 }}>
+                        Hey — you've got a dedicated truck page!
+                      </div>
+                    </div>
+                  </div>
+                  <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.65)', lineHeight: 1.7, margin: '0 0 20px', fontFamily: "'Libre Franklin', sans-serif" }}>
+                    Food trucks on Manitou Beach get way more than a basic listing — your own check-in page, live map pin, and text alerts to anyone following your truck. That's where you'll want to make your updates.
+                  </p>
+                  <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const params = new URLSearchParams();
+                        if (business?.name) params.set('name', business.name);
+                        if (business?.email) params.set('email', business.email);
+                        if (form.phone) params.set('phone', form.phone);
+                        if (form.website) params.set('website', form.website);
+                        params.set('verified', 'true');
+                        window.location.href = `/food-truck-partner?${params.toString()}`;
+                      }}
+                      style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700, padding: '14px 28px', borderRadius: 8, border: 'none', background: '#4A7A5A', color: '#fff', cursor: 'pointer' }}
+                    >
+                      Go to my truck page →
+                    </button>
+                    <button type="button" onClick={() => setStep(2)} style={{
+                      background: 'none', border: 'none', fontSize: 13, color: 'rgba(255,255,255,0.4)',
+                      cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0,
+                    }}>
+                      No thanks — just update the basic listing
+                    </button>
+                  </div>
+                </div>
+              )}
+
               {/* ── Step 2: update form ───────────────────── */}
               {step === 2 && business && (
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -216,19 +262,19 @@ export default function UpdateListingPage() {
                     />
                   </div>
 
-                  {/* Food Truck interstitial — shown right after category selection */}
+                  {/* Food Truck nudge — shown if user changes category to Food Truck mid-form */}
                   {form.category === 'Food Truck' && (
-                    <div style={{ background: `linear-gradient(135deg, #1A2830 0%, #2D4A3E 100%)`, borderRadius: 12, padding: '24px 20px', border: '1px solid rgba(255,255,255,0.08)' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-                        <img src="/images/icons/food-truck-icon.png" alt="Food truck" style={{ width: 44, height: 44, objectFit: 'contain', flexShrink: 0 }} />
-                        <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, color: '#F5F0E8', fontWeight: 400, lineHeight: 1.3 }}>
-                          Hold on — you qualify for something better
+                    <div style={{ background: `linear-gradient(135deg, #1A2830 0%, #2D4A3E 100%)`, borderRadius: 12, padding: '20px 18px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
+                        <img src="/images/icons/food-truck-icon.png" alt="Food truck" style={{ width: 36, height: 36, objectFit: 'contain', flexShrink: 0 }} />
+                        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: '#F5F0E8', fontWeight: 600, lineHeight: 1.3 }}>
+                          Food trucks get their own special page
                         </div>
                       </div>
-                      <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.65)', lineHeight: 1.7, margin: '0 0 18px', fontFamily: "'Libre Franklin', sans-serif" }}>
-                        Manitou Beach has a whole special section just for food trucks — way more than a basic listing. You get your own personal page you tap when you're parked and open. Anyone following your truck gets a text message the moment you're there. Takes about two minutes to finish.
+                      <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', lineHeight: 1.6, margin: '0 0 14px', fontFamily: "'Libre Franklin', sans-serif" }}>
+                        Live map pin, check-in alerts, follower notifications — way more than a basic listing.
                       </p>
-                      <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
+                      <div style={{ display: 'flex', gap: 14, alignItems: 'center', flexWrap: 'wrap' }}>
                         <button
                           type="button"
                           onClick={() => {
@@ -240,15 +286,15 @@ export default function UpdateListingPage() {
                             params.set('verified', 'true');
                             window.location.href = `/food-truck-partner?${params.toString()}`;
                           }}
-                          style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, padding: '12px 24px', borderRadius: 8, border: 'none', background: '#4A7A5A', color: '#fff', cursor: 'pointer' }}
+                          style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, padding: '10px 20px', borderRadius: 8, border: 'none', background: '#4A7A5A', color: '#fff', cursor: 'pointer' }}
                         >
                           Set up my truck →
                         </button>
                         <button type="button" onClick={() => setForm(f => ({ ...f, category: '' }))} style={{
-                          background: 'none', border: 'none', fontSize: 13, color: 'rgba(255,255,255,0.4)',
+                          background: 'none', border: 'none', fontSize: 12, color: 'rgba(255,255,255,0.35)',
                           cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0,
                         }}>
-                          ← Start over
+                          Pick a different category
                         </button>
                       </div>
                     </div>

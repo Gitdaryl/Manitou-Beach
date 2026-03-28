@@ -131,7 +131,7 @@ export default function ActivateBusinessPage() {
             fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.textLight,
             lineHeight: 1.7, maxWidth: 400, margin: '0 auto',
           }}>
-            Your listing is already live on Manitou Beach. Add your payment info to keep it active — you won't be charged until May 10.
+            Your listing is already live. Add your payment info to keep it going — totally free until May 10.
           </p>
         </div>
 
@@ -161,19 +161,15 @@ export default function ActivateBusinessPage() {
           ))}
         </div>
 
-        {/* Selected plan badge */}
+        {/* Selected plan confirmation */}
         <div style={{
           background: '#F0F7FB', border: '1px solid rgba(91,126,149,0.2)',
           borderRadius: 8, padding: '14px 18px', marginBottom: 24,
         }}>
           <div style={{
-            fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700,
-            letterSpacing: 2, textTransform: 'uppercase', color: C.lakeBlue, marginBottom: 4,
+            fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textLight, lineHeight: 1.5,
           }}>
-            {tier.label} Listing — {billing === 'year' ? 'Annual' : 'Monthly'}
-          </div>
-          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textLight }}>
-            Free through May 10 · then {billing === 'year' ? `$${tier.annual}/yr` : `$${tier.price}/mo`} · cancel anytime
+            <strong style={{ color: C.lakeBlue }}>{tier.label}</strong> · {billing === 'year' ? `$${tier.annual}/yr` : `$${tier.price}/mo`} · cancel anytime
           </div>
         </div>
 
@@ -221,7 +217,7 @@ export default function ActivateBusinessPage() {
             fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted,
             textAlign: 'center', margin: '12px 0 0', lineHeight: 1.6,
           }}>
-            Secured by Stripe · Card stored, not charged until May 10 · Cancel before then for zero cost
+            Secured by Stripe · Cancel anytime, no questions asked
           </p>
         </form>
       </div>
