@@ -13,24 +13,36 @@ function formatDeparture(dt) {
   return dt;
 }
 
-// Pin color palette — truck owners pick one at check-in
-const PIN_COLORS = [
-  { id: 'sage',      fill: '#7A8E72', stroke: '#5E7258', label: 'Sage' },
-  { id: 'red',       fill: '#C44D3F', stroke: '#9B3A2F', label: 'Red' },
-  { id: 'blue',      fill: '#4A7FB5', stroke: '#365D87', label: 'Blue' },
-  { id: 'orange',    fill: '#D4845A', stroke: '#B06A42', label: 'Orange' },
-  { id: 'purple',    fill: '#7B5EA7', stroke: '#5D4580', label: 'Purple' },
-  { id: 'teal',      fill: '#4A9E8E', stroke: '#367A6D', label: 'Teal' },
-  { id: 'gold',      fill: '#C4A035', stroke: '#9E7F28', label: 'Gold' },
-  { id: 'navy',      fill: '#3D5A6E', stroke: '#2B4050', label: 'Navy' },
-  { id: 'coral',     fill: '#E07060', stroke: '#B85A4C', label: 'Coral' },
-  { id: 'forest',    fill: '#4A6741', stroke: '#354D30', label: 'Forest' },
-  { id: 'charcoal',  fill: '#555555', stroke: '#3A3A3A', label: 'Charcoal' },
-  { id: 'berry',     fill: '#A3456A', stroke: '#7D3452', label: 'Berry' },
+// Quick-pick preset colors (shown as swatches) — stored as hex
+const PIN_PRESETS = [
+  '#C44D3F', '#E07060', '#D4845A', '#C4A035',
+  '#7A8E72', '#4A6741', '#4A9E8E', '#4A7FB5',
+  '#3D5A6E', '#7B5EA7', '#A3456A', '#555555',
+  '#E84393', '#0984E3', '#00B894', '#FDCB6E',
+  '#E17055', '#6C5CE7', '#00CEC9', '#2D3436',
 ];
 
-function getPinColor(colorId) {
-  return PIN_COLORS.find(c => c.id === colorId) || PIN_COLORS[0];
+// Darken a hex color by ~25% for the pin stroke
+function darkenHex(hex) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  const d = (v) => Math.max(0, Math.round(v * 0.72)).toString(16).padStart(2, '0');
+  return `#${d(r)}${d(g)}${d(b)}`;
+}
+
+// Legacy ID → hex migration map (for trucks that checked in with old color IDs)
+const LEGACY_COLORS = {
+  sage: '#7A8E72', red: '#C44D3F', blue: '#4A7FB5', orange: '#D4845A',
+  purple: '#7B5EA7', teal: '#4A9E8E', gold: '#C4A035', navy: '#3D5A6E',
+  coral: '#E07060', forest: '#4A6741', charcoal: '#555555', berry: '#A3456A',
+};
+
+function getPinColor(colorVal) {
+  // Accept hex (#xxxxxx), legacy ID, or empty
+  let hex = colorVal?.startsWith('#') ? colorVal : LEGACY_COLORS[colorVal] || '#7A8E72';
+  if (!/^#[0-9a-fA-F]{6}$/.test(hex)) hex = '#7A8E72'; // fallback to sage
+  return { fill: hex, stroke: darkenHex(hex) };
 }
 
 // Build a teardrop drop-pin SVG with floating name callout
@@ -253,7 +265,7 @@ export default function FoodTrucksPage() {
   const [checkinNote, setCheckinNote] = useState("");
   const [checkinSpecial, setCheckinSpecial] = useState("");
   const [checkinDeparture, setCheckinDeparture] = useState("");
-  const [checkinPinColor, setCheckinPinColor] = useState("sage");
+  const [checkinPinColor, setCheckinPinColor] = useState("#7A8E72");
   const [checkinStatus, setCheckinStatus] = useState("");
   const [checkinMsg, setCheckinMsg] = useState("");
 
@@ -323,7 +335,10 @@ export default function FoodTrucksPage() {
   // Sync comingDateLocal and pinColor when checkinTruck first loads
   useEffect(() => {
     if (checkinTruck?.comingDate) setComingDateLocal(checkinTruck.comingDate);
-    if (checkinTruck?.pinColor) setCheckinPinColor(checkinTruck.pinColor);
+    if (checkinTruck?.pinColor) {
+      const pc = checkinTruck.pinColor;
+      setCheckinPinColor(pc.startsWith('#') ? pc : LEGACY_COLORS[pc] || '#7A8E72');
+    }
   }, [checkinTruck]);
 
   // Fetch events accepting vendors (vendor mode)
@@ -852,30 +867,51 @@ export default function FoodTrucksPage() {
                 <label style={{ fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: C.textMuted, fontWeight: 600, display: "block", marginBottom: 8 }}>
                   Change your pin color
                 </label>
-                <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-                  {PIN_COLORS.map(c => (
+                <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
+                  {PIN_PRESETS.map(hex => (
                     <button
-                      key={c.id}
+                      key={hex}
                       type="button"
-                      title={c.label}
                       onClick={() => {
-                        setCheckinPinColor(c.id);
+                        setCheckinPinColor(hex);
                         fetch("/api/food-trucks", {
                           method: "POST",
                           headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify({ slug: truckSlug, token: truckToken, pinColor: c.id, action: 'update-pin-color' }),
+                          body: JSON.stringify({ slug: truckSlug, token: truckToken, pinColor: hex, action: 'update-pin-color' }),
                         }).catch(() => {});
                       }}
                       style={{
-                        width: 28, height: 28, borderRadius: "50%",
-                        background: c.fill,
-                        border: checkinPinColor === c.id ? `3px solid ${C.text}` : `2px solid transparent`,
+                        width: 26, height: 26, borderRadius: "50%",
+                        background: hex,
+                        border: checkinPinColor === hex ? `3px solid ${C.text}` : `2px solid transparent`,
                         cursor: "pointer",
-                        boxShadow: checkinPinColor === c.id ? `0 0 0 2px #FFFFFF, 0 0 8px ${c.fill}66` : 'none',
+                        boxShadow: checkinPinColor === hex ? `0 0 0 2px #FFFFFF, 0 0 6px ${hex}66` : 'none',
                         transition: "all 0.15s",
                       }}
                     />
                   ))}
+                  <label style={{ position: "relative", width: 26, height: 26, cursor: "pointer" }}>
+                    <input
+                      type="color"
+                      value={checkinPinColor}
+                      onChange={e => {
+                        const hex = e.target.value;
+                        setCheckinPinColor(hex);
+                        fetch("/api/food-trucks", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ slug: truckSlug, token: truckToken, pinColor: hex, action: 'update-pin-color' }),
+                        }).catch(() => {});
+                      }}
+                      style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0, cursor: "pointer" }}
+                    />
+                    <div style={{
+                      width: 26, height: 26, borderRadius: "50%",
+                      background: `conic-gradient(red, yellow, lime, aqua, blue, magenta, red)`,
+                      border: !PIN_PRESETS.includes(checkinPinColor) ? `3px solid ${C.text}` : `2px solid ${C.sand}`,
+                      boxShadow: !PIN_PRESETS.includes(checkinPinColor) ? `0 0 0 2px #FFFFFF, 0 0 6px ${checkinPinColor}66` : 'none',
+                    }} />
+                  </label>
                 </div>
               </div>
 
@@ -1067,23 +1103,37 @@ export default function FoodTrucksPage() {
               <label style={labelStyle}>
                 Your Pin Color
               </label>
-              <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 16 }}>
-                {PIN_COLORS.map(c => (
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center", marginBottom: 16 }}>
+                {PIN_PRESETS.map(hex => (
                   <button
-                    key={c.id}
+                    key={hex}
                     type="button"
-                    onClick={() => setCheckinPinColor(c.id)}
-                    title={c.label}
+                    onClick={() => setCheckinPinColor(hex)}
                     style={{
-                      width: 32, height: 32, borderRadius: "50%",
-                      background: c.fill,
-                      border: checkinPinColor === c.id ? `3px solid ${C.text}` : `2px solid transparent`,
+                      width: 30, height: 30, borderRadius: "50%",
+                      background: hex,
+                      border: checkinPinColor === hex ? `3px solid ${C.text}` : `2px solid transparent`,
                       cursor: "pointer",
-                      boxShadow: checkinPinColor === c.id ? `0 0 0 2px #FFFFFF, 0 0 8px ${c.fill}66` : 'none',
+                      boxShadow: checkinPinColor === hex ? `0 0 0 2px #FFFFFF, 0 0 8px ${hex}66` : 'none',
                       transition: "all 0.15s",
                     }}
                   />
                 ))}
+                {/* Custom color picker */}
+                <label style={{ position: "relative", width: 30, height: 30, cursor: "pointer" }}>
+                  <input
+                    type="color"
+                    value={checkinPinColor}
+                    onChange={e => setCheckinPinColor(e.target.value)}
+                    style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0, cursor: "pointer" }}
+                  />
+                  <div style={{
+                    width: 30, height: 30, borderRadius: "50%",
+                    background: `conic-gradient(red, yellow, lime, aqua, blue, magenta, red)`,
+                    border: !PIN_PRESETS.includes(checkinPinColor) ? `3px solid ${C.text}` : `2px solid ${C.sand}`,
+                    boxShadow: !PIN_PRESETS.includes(checkinPinColor) ? `0 0 0 2px #FFFFFF, 0 0 8px ${checkinPinColor}66` : 'none',
+                  }} />
+                </label>
               </div>
 
               <label style={labelStyle}>
