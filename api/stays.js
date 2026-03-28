@@ -28,6 +28,59 @@ async function geocodeAndStore(pageId, address) {
 }
 
 export default async function handler(req, res) {
+  // PATCH — update an existing listing
+  if (req.method === 'PATCH') {
+    const { pageId, name, stayType, phone, email, website, bookingUrl, description, address, beds, guests, amenities, photoUrl, photoUrl2, photoUrl3 } = req.body;
+    if (!pageId) return res.status(400).json({ error: 'pageId is required' });
+
+    const amenityTags = (amenities || []).map(a => ({ name: a }));
+
+    try {
+      const properties = {
+        ...(name && { 'Name': { title: [{ text: { content: name } }] } }),
+        ...(stayType && { 'Stay Type': { select: { name: stayType } } }),
+        'Phone': { phone_number: phone || null },
+        ...(email && { 'Email': { email } }),
+        'Website': { url: normalizeUrl(website) || null },
+        ...(bookingUrl !== undefined && { 'Booking URL': { url: normalizeUrl(bookingUrl) || null } }),
+        'Description': { rich_text: [{ text: { content: description || '' } }] },
+        'Address': { rich_text: [{ text: { content: address || '' } }] },
+        ...(beds !== undefined && { 'Beds': { number: beds ? parseInt(beds, 10) : null } }),
+        ...(guests !== undefined && { 'Guests': { number: guests ? parseInt(guests, 10) : null } }),
+        'Amenities': { multi_select: amenityTags },
+        ...(photoUrl !== undefined && { 'Photo URL': { url: normalizeUrl(photoUrl) || null } }),
+        ...(photoUrl2 !== undefined && { 'Photo URL 2': { url: normalizeUrl(photoUrl2) || null } }),
+        ...(photoUrl3 !== undefined && { 'Photo URL 3': { url: normalizeUrl(photoUrl3) || null } }),
+      };
+
+      const response = await fetch(`https://api.notion.com/v1/pages/${pageId}`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${process.env.NOTION_TOKEN_BUSINESS}`,
+          'Content-Type': 'application/json',
+          'Notion-Version': '2022-06-28',
+        },
+        body: JSON.stringify({ properties }),
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        console.error('Notion update error:', err);
+        return res.status(500).json({ error: 'Failed to update listing' });
+      }
+
+      // Re-geocode if address changed
+      if (address && address.trim()) {
+        geocodeAndStore(pageId, address).catch(() => {});
+      }
+
+      return res.status(200).json({ success: true });
+    } catch (err) {
+      console.error('Update error:', err.message);
+      return res.status(500).json({ error: 'Server error' });
+    }
+  }
+
   // POST — submit a new stay listing
   if (req.method === 'POST') {
     const { name, stayType, phone, email, website, bookingUrl, description, address, beds, guests, amenities, logoUrl, photoUrl, photoUrl2, photoUrl3, tier, _hp } = req.body;
@@ -86,9 +139,17 @@ export default async function handler(req, res) {
     }
   }
 
-  // GET — fetch listed stays
+  // GET — fetch listed stays (or owner lookup via ?manage=email)
+  const manageEmail = req.query?.manage;
   res.setHeader('Cache-Control', 'no-store');
   try {
+    const queryBody = {
+      sorts: [{ property: 'Name', direction: 'ascending' }],
+    };
+    // If manage email provided, filter to just that owner's listings
+    if (manageEmail) {
+      queryBody.filter = { property: 'Email', email: { equals: manageEmail } };
+    }
     const response = await fetch(
       `https://api.notion.com/v1/databases/${process.env.NOTION_DB_STAYS}/query`,
       {
@@ -98,9 +159,7 @@ export default async function handler(req, res) {
           'Content-Type': 'application/json',
           'Notion-Version': '2022-06-28',
         },
-        body: JSON.stringify({
-          sorts: [{ property: 'Name', direction: 'ascending' }],
-        }),
+        body: JSON.stringify(queryBody),
       }
     );
 
@@ -118,8 +177,8 @@ export default async function handler(req, res) {
       const featuredExpires = p['Featured Expires']?.date?.start || null;
       const status = p['Status']?.status?.name || '';
 
-      // Skip entries still in "New" status (unapproved submissions)
-      if (status === 'New') return;
+      // Skip entries still in "New" status (unapproved submissions) — unless owner is managing
+      if (status === 'New' && !manageEmail) return;
 
       const expired = status === 'Listed Featured' && featuredExpires && featuredExpires < today;
       let tier = 'free';
@@ -128,6 +187,7 @@ export default async function handler(req, res) {
 
       const stay = {
         id: `stay-${page.id}`,
+        ...(manageEmail && { pageId: page.id }),
         name: p['Name']?.title?.[0]?.text?.content || '',
         stayType: p['Stay Type']?.select?.name || '',
         description: p['Description']?.rich_text?.[0]?.text?.content || '',
@@ -140,6 +200,8 @@ export default async function handler(req, res) {
         phone: p['Phone']?.phone_number || '',
         email: p['Email']?.email || '',
         photo: normalizeUrl(p['Photo URL']?.url || ''),
+        photo2: normalizeUrl(p['Photo URL 2']?.url || ''),
+        photo3: normalizeUrl(p['Photo URL 3']?.url || ''),
         logo: normalizeUrl(p['Logo URL']?.url || null),
         lat: p['Lat']?.number ?? null,
         lng: p['Lng']?.number ?? null,
