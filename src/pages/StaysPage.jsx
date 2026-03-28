@@ -667,7 +667,6 @@ function ListYourPropertySection({ stays = [] }) {
 
   const selectTier = (key) => {
     setTier(key);
-    setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
   };
 
   const submit = async (e) => {
@@ -866,17 +865,17 @@ function ListYourPropertySection({ stays = [] }) {
           ))}
         </div>
 
-        {/* ── Sample Listings — what each tier looks like ── */}
-        <div style={{ marginBottom: 32 }}>
+        {/* ── Sample Listings — same property, three tiers ── */}
+        <div key={tier} style={{ marginBottom: 32, animation: 'sampleFadeIn 0.35s ease' }}>
           <div style={{
             fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase',
             color: activeTier.accent, fontFamily: "'Libre Franklin', sans-serif",
             textAlign: 'center', marginBottom: 14,
           }}>
-            {tier === 'free' ? 'Your listing will look like this' : tier === 'listed' ? 'Your listing will look like this' : 'This is what guests see'}
+            Your listing will look like this
           </div>
 
-          {/* Free sample — matches real StayCard layout */}
+          {/* Free sample — same cabin, bare minimum */}
           {tier === 'free' && (
             <div style={{
               background: '#fff', border: `1px solid #e0dbd4`, borderRadius: 16,
@@ -884,24 +883,24 @@ function ListYourPropertySection({ stays = [] }) {
               position: 'relative', overflow: 'hidden',
               boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
             }}>
-              <div style={{ position: 'absolute', top: 0, left: 0, width: 4, height: '100%', background: C.warmGray, borderRadius: '16px 0 0 16px' }} />
+              <div style={{ position: 'absolute', top: 0, left: 0, width: 4, height: '100%', background: C.lakeBlue, borderRadius: '16px 0 0 16px' }} />
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 8, marginBottom: 6 }}>
                   <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.text, margin: 0 }}>
-                    Lakeside Cottage
+                    Yeti's Cozy Cabin
                   </h3>
                   <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.lakeBlue, background: `${C.lakeBlue}15`, padding: '4px 10px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>
                     Cottage
                   </span>
                 </div>
                 <p style={{ fontSize: 12, color: C.textMuted, marginTop: 6, marginBottom: 0, fontStyle: 'italic', lineHeight: 1.6 }}>
-                  Name and type only — no photo, no booking link, no amenities. Enough to be found, but guests won't have much to go on.
+                  That's it. Name and type only — no photo, no description, no booking link. Guests see you exist, but have nothing to go on.
                 </p>
               </div>
             </div>
           )}
 
-          {/* Listed ($9) sample — matches real StayCard layout */}
+          {/* Listed ($9) sample — same cabin, full card with photo */}
           {tier === 'listed' && (
             <div style={{
               background: '#fff', border: `1px solid #e0dbd4`, borderRadius: 16,
@@ -909,36 +908,34 @@ function ListYourPropertySection({ stays = [] }) {
               position: 'relative', overflow: 'hidden',
               boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
             }}>
-              <div style={{ position: 'absolute', top: 0, left: 0, width: 4, height: '100%', background: '#7A8E72', borderRadius: '16px 0 0 16px' }} />
-              <div style={{ width: 120, height: 120, borderRadius: 16, background: `linear-gradient(135deg, ${C.lakeBlue}20, ${C.sage}15)`, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 40 }}>
-                🏕
-              </div>
+              <div style={{ position: 'absolute', top: 0, left: 0, width: 4, height: '100%', background: C.lakeBlue, borderRadius: '16px 0 0 16px' }} />
+              <img src="/images/yeti/yeti-cabin.jpg" alt="" style={{ width: 120, height: 120, borderRadius: 16, objectFit: 'cover', flexShrink: 0, background: C.sand }} />
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 8, marginBottom: 6 }}>
-                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.text, margin: 0 }}>Pine Ridge Campsite</h3>
-                  <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: '#7A8E72', background: '#7A8E7215', padding: '4px 10px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>Camping</span>
+                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.text, margin: 0 }}>Yeti's Cozy Cabin</h3>
+                  <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.lakeBlue, background: `${C.lakeBlue}15`, padding: '4px 10px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>Cottage</span>
                 </div>
-                <div style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 8 }}>🛏 2 beds · 👥 Sleeps 6</div>
+                <div style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 8 }}>🛏 3 beds · 👥 Sleeps 8</div>
                 <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: '0 0 14px' }}>
-                  Wooded sites with fire rings, just a short walk to the lake. Wake up to birdsong and coffee over the campfire.
+                  Lakefront cabin with a fire pit, private dock, and the best sunset view on Devils Lake. The kind of place you never want to leave.
                 </p>
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 14 }}>
-                  {['Waterfront', 'Fire Pit', 'Boat Launch'].map(a => (
-                    <span key={a} style={{ fontSize: 11, padding: '4px 10px', borderRadius: 12, background: `#7A8E7210`, color: '#7A8E72', fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, border: `1px solid #7A8E7220` }}>
+                  {['Waterfront', 'Fire Pit', 'Dock', 'WiFi', 'Kitchen'].map(a => (
+                    <span key={a} style={{ fontSize: 11, padding: '4px 10px', borderRadius: 12, background: `${C.lakeBlue}10`, color: C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, border: `1px solid ${C.lakeBlue}20` }}>
                       {AMENITY_ICONS[a]} {a}
                     </span>
                   ))}
                 </div>
                 <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', marginBottom: 12 }}>
-                  <span style={{ fontSize: 12, color: C.textMuted }}>📍 4521 Round Lake Rd</span>
-                  <span style={{ fontSize: 12, color: C.textMuted }}>📞 (517) 555-0142</span>
+                  <span style={{ fontSize: 12, color: C.textMuted }}>📍 7832 Devils Lake Hwy</span>
+                  <span style={{ fontSize: 12, color: C.textMuted }}>📞 (517) 555-0199</span>
                 </div>
-                <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: '#7A8E72', fontFamily: "'Libre Franklin', sans-serif" }}>Book Now →</span>
+                <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif" }}>Book Now →</span>
               </div>
             </div>
           )}
 
-          {/* Featured ($25) sample — StayCard layout + photo gallery */}
+          {/* Featured ($25) sample — same cabin, premium treatment */}
           {tier === 'featured' && (() => {
             const samplePhotos = ['/images/yeti/yeti-cabin.jpg', '/images/yeti/yeti-cabin-2.jpg', '/images/yeti/yeti-cabin-3.jpg'];
             return (
@@ -948,7 +945,7 @@ function ListYourPropertySection({ stays = [] }) {
               }}>
                 <div style={{ position: 'absolute', top: 0, left: 0, width: 4, height: '100%', background: C.sunset, borderRadius: '16px 0 0 16px' }} />
 
-                {/* Card body — matches StayCard */}
+                {/* Card body */}
                 <div style={{ padding: '32px 28px', display: 'flex', gap: 24, alignItems: 'flex-start' }}>
                   <img
                     src={samplePhotos[0]}
@@ -1012,9 +1009,10 @@ function ListYourPropertySection({ stays = [] }) {
         </div>
 
         {/* ── The Form ── */}
-        <div ref={formRef} style={{
+        <div key={`form-${tier}`} ref={formRef} style={{
           background: formBg,
           border: formBorder,
+          animation: 'sampleFadeIn 0.35s ease',
           borderRadius: 20,
           padding: isFeatured ? '40px 32px' : isPaid ? '36px 28px' : '28px 24px',
           boxShadow: isFeatured
@@ -1426,11 +1424,15 @@ function ListYourPropertySection({ stays = [] }) {
           )}
         </div>
 
-        {/* CSS animation */}
+        {/* CSS animations */}
         <style>{`
           @keyframes fadeSlideIn {
             from { opacity: 0; transform: translateY(6px); }
             to { opacity: 1; transform: translateY(0); }
+          }
+          @keyframes sampleFadeIn {
+            from { opacity: 0; transform: translateY(8px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
           }
         `}</style>
       </div>
