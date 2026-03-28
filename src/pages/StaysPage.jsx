@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, WaveDivider, PageSponsorBanner, Btn } from '../components/Shared';
 import { Footer, GlobalStyles, Navbar, NewsletterInline, PromoBanner } from '../components/Layout';
 import { C } from '../data/config';
@@ -21,6 +21,128 @@ const AMENITY_ICONS = {
 };
 
 const AMENITY_OPTIONS = Object.keys(AMENITY_ICONS);
+
+// ── Photo Lightbox (infinite carousel) ──────────────────────
+function PhotoLightbox({ images, startIndex = 0, onClose }) {
+  const [idx, setIdx] = useState(startIndex);
+  const overlayRef = useRef(null);
+
+  const prev = useCallback(() => setIdx(i => (i - 1 + images.length) % images.length), [images.length]);
+  const next = useCallback(() => setIdx(i => (i + 1) % images.length), [images.length]);
+
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.key === 'Escape') onClose();
+      if (e.key === 'ArrowLeft') prev();
+      if (e.key === 'ArrowRight') next();
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [onClose, prev, next]);
+
+  return (
+    <div
+      ref={overlayRef}
+      onClick={e => { if (e.target === overlayRef.current) onClose(); }}
+      style={{
+        position: 'fixed', inset: 0, zIndex: 9999,
+        background: 'rgba(0,0,0,0.92)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        cursor: 'pointer',
+        animation: 'lbFadeIn 0.2s ease',
+      }}
+    >
+      {/* Close */}
+      <button onClick={onClose} style={{
+        position: 'absolute', top: 20, right: 24,
+        background: 'none', border: 'none', color: 'rgba(255,255,255,0.6)',
+        fontSize: 28, cursor: 'pointer', fontFamily: 'sans-serif', lineHeight: 1,
+        padding: 8,
+      }}>
+        ×
+      </button>
+
+      {/* Counter */}
+      <div style={{
+        position: 'absolute', top: 24, left: '50%', transform: 'translateX(-50%)',
+        fontSize: 12, color: 'rgba(255,255,255,0.4)', fontFamily: "'Libre Franklin', sans-serif",
+        letterSpacing: 2,
+      }}>
+        {idx + 1} / {images.length}
+      </div>
+
+      {/* Prev */}
+      <button onClick={e => { e.stopPropagation(); prev(); }} style={{
+        position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)',
+        background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)',
+        borderRadius: '50%', width: 48, height: 48, cursor: 'pointer',
+        color: '#fff', fontSize: 22, display: 'flex', alignItems: 'center', justifyContent: 'center',
+        transition: 'background 0.2s',
+      }}
+        onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.15)'}
+        onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'}
+      >
+        ‹
+      </button>
+
+      {/* Image */}
+      <img
+        key={idx}
+        src={images[idx]}
+        alt=""
+        onClick={e => e.stopPropagation()}
+        style={{
+          maxWidth: '85vw', maxHeight: '85vh',
+          borderRadius: 12, objectFit: 'contain',
+          cursor: 'default',
+          animation: 'lbSlideIn 0.25s ease',
+        }}
+      />
+
+      {/* Next */}
+      <button onClick={e => { e.stopPropagation(); next(); }} style={{
+        position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)',
+        background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)',
+        borderRadius: '50%', width: 48, height: 48, cursor: 'pointer',
+        color: '#fff', fontSize: 22, display: 'flex', alignItems: 'center', justifyContent: 'center',
+        transition: 'background 0.2s',
+      }}
+        onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.15)'}
+        onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'}
+      >
+        ›
+      </button>
+
+      {/* Thumbnail strip */}
+      {images.length > 1 && (
+        <div style={{
+          position: 'absolute', bottom: 24, left: '50%', transform: 'translateX(-50%)',
+          display: 'flex', gap: 8,
+        }}>
+          {images.map((img, i) => (
+            <img
+              key={i}
+              src={img}
+              alt=""
+              onClick={e => { e.stopPropagation(); setIdx(i); }}
+              style={{
+                width: 56, height: 56, borderRadius: 8, objectFit: 'cover',
+                border: i === idx ? `2px solid ${C.sunset}` : '2px solid transparent',
+                opacity: i === idx ? 1 : 0.5,
+                cursor: 'pointer', transition: 'all 0.2s',
+              }}
+            />
+          ))}
+        </div>
+      )}
+
+      <style>{`
+        @keyframes lbFadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes lbSlideIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+      `}</style>
+    </div>
+  );
+}
 
 // ── Hero ────────────────────────────────────────────────────
 function StaysHero() {
@@ -285,6 +407,7 @@ function ListYourPropertySection({ stays = [] }) {
   const [form, setForm] = useState({ name: '', stayType: '', address: '', bookingUrl: '', email: '', description: '', phone: '', beds: '', guests: '', amenities: [], photoUrl: '', photoUrl2: '', photoUrl3: '', _hp: '' });
   const [status, setStatus] = useState(null);
   const [dragOver, setDragOver] = useState(false);
+  const [lightbox, setLightbox] = useState(null); // { images, startIndex }
   const formRef = useRef(null);
 
   const activeTier = TIERS.find(t => t.key === tier);
@@ -366,6 +489,14 @@ function ListYourPropertySection({ stays = [] }) {
       : `1px solid ${C.sand}`;
 
   return (
+    <>
+    {lightbox && (
+      <PhotoLightbox
+        images={lightbox.images}
+        startIndex={lightbox.startIndex}
+        onClose={() => setLightbox(null)}
+      />
+    )}
     <section id="list-property" style={{ padding: '80px 24px', background: C.warmWhite }}>
       <div style={{ maxWidth: 720, margin: '0 auto' }}>
         <SectionLabel>Property Owners</SectionLabel>
@@ -561,36 +692,75 @@ function ListYourPropertySection({ stays = [] }) {
           )}
 
           {/* Featured ($25) sample */}
-          {tier === 'featured' && (
-            <div style={{
-              background: C.dusk, border: `1px solid ${C.lakeDark}`, borderRadius: 16,
-              padding: '28px 24px', display: 'flex', gap: 20, position: 'relative', overflow: 'hidden',
-            }}>
-              <div style={{ position: 'absolute', top: 0, left: 0, width: 4, height: '100%', background: C.sunset, borderRadius: '16px 0 0 16px' }} />
-              <img src="/images/yeti/yeti-cabin.jpg" alt="" style={{ width: 120, height: 120, borderRadius: 14, objectFit: 'cover', flexShrink: 0, background: C.night }} />
-              <div style={{ flex: 1 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 6, marginBottom: 4 }}>
-                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.cream, margin: 0 }}>Yeti's Cozy Cabin</h3>
-                  <div style={{ display: 'flex', gap: 6 }}>
-                    <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.cream, background: C.sunset, padding: '3px 8px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>✦ Staff Pick</span>
-                    <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.cream, background: `${C.lakeBlue}40`, padding: '3px 8px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>Cottage</span>
+          {tier === 'featured' && (() => {
+            const samplePhotos = ['/images/yeti/yeti-cabin.jpg', '/images/yeti/yeti-cabin-2.jpg', '/images/yeti/yeti-cabin-3.jpg'];
+            return (
+              <div style={{
+                background: C.dusk, border: `1px solid ${C.lakeDark}`, borderRadius: 16,
+                padding: '28px 24px', position: 'relative', overflow: 'hidden',
+              }}>
+                <div style={{ position: 'absolute', top: 0, left: 0, width: 4, height: '100%', background: C.sunset, borderRadius: '16px 0 0 16px' }} />
+
+                {/* Photo strip — 3 images */}
+                <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
+                  {/* Hero image — large */}
+                  <img
+                    src={samplePhotos[0]}
+                    alt=""
+                    onClick={() => setLightbox({ images: samplePhotos, startIndex: 0 })}
+                    style={{
+                      width: '55%', height: 180, borderRadius: 14, objectFit: 'cover',
+                      cursor: 'pointer', transition: 'transform 0.2s, box-shadow 0.2s',
+                      background: C.night,
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.01)'; e.currentTarget.style.boxShadow = `0 4px 20px rgba(0,0,0,0.4)`; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none'; }}
+                  />
+                  {/* Gallery stack — 2 images */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10, flex: 1 }}>
+                    {samplePhotos.slice(1).map((src, i) => (
+                      <img
+                        key={i}
+                        src={src}
+                        alt=""
+                        onClick={() => setLightbox({ images: samplePhotos, startIndex: i + 1 })}
+                        style={{
+                          width: '100%', height: 85, borderRadius: 12, objectFit: 'cover',
+                          cursor: 'pointer', transition: 'transform 0.2s, box-shadow 0.2s',
+                          background: C.night,
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.02)'; e.currentTarget.style.boxShadow = `0 4px 16px rgba(0,0,0,0.3)`; }}
+                        onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none'; }}
+                      />
+                    ))}
                   </div>
                 </div>
-                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontFamily: "'Libre Franklin', sans-serif", marginBottom: 6 }}>🛏 3 beds · 👥 Sleeps 8</div>
-                <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', lineHeight: 1.6, margin: '0 0 10px' }}>
-                  Lakefront cabin with a hot tub, fire pit, and the best sunset view on Devils Lake. The kind of place you never want to leave.
-                </p>
-                <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', marginBottom: 10 }}>
-                  {['Waterfront', 'Fire Pit', 'Dock', 'WiFi', 'Kitchen'].map(a => (
-                    <span key={a} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 10, background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)', fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, border: '1px solid rgba(255,255,255,0.08)' }}>
-                      {AMENITY_ICONS[a]} {a}
-                    </span>
-                  ))}
+
+                {/* Card content */}
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 6, marginBottom: 4 }}>
+                    <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.cream, margin: 0 }}>Yeti's Cozy Cabin</h3>
+                    <div style={{ display: 'flex', gap: 6 }}>
+                      <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.cream, background: C.sunset, padding: '3px 8px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>✦ Staff Pick</span>
+                      <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.cream, background: `${C.lakeBlue}40`, padding: '3px 8px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>Cottage</span>
+                    </div>
+                  </div>
+                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontFamily: "'Libre Franklin', sans-serif", marginBottom: 6 }}>🛏 3 beds · 👥 Sleeps 8</div>
+                  <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', lineHeight: 1.6, margin: '0 0 10px' }}>
+                    Lakefront cabin with a hot tub, fire pit, and the best sunset view on Devils Lake. The kind of place you never want to leave.
+                  </p>
+                  <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', marginBottom: 10 }}>
+                    {['Waterfront', 'Fire Pit', 'Dock', 'WiFi', 'Kitchen'].map(a => (
+                      <span key={a} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 10, background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)', fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, border: '1px solid rgba(255,255,255,0.08)' }}>
+                        {AMENITY_ICONS[a]} {a}
+                      </span>
+                    ))}
+                  </div>
+                  <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: C.sunset, fontFamily: "'Libre Franklin', sans-serif" }}>Book Now →</span>
                 </div>
-                <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: C.sunset, fontFamily: "'Libre Franklin', sans-serif" }}>Book Now →</span>
               </div>
-            </div>
-          )}
+            );
+          })()}
         </div>
 
         {/* ── The Form ── */}
@@ -1086,6 +1256,7 @@ function ListYourPropertySection({ stays = [] }) {
         `}</style>
       </div>
     </section>
+    </>
   );
 }
 
