@@ -89,7 +89,10 @@ function HappeningHero() {
 // ============================================================
 // 📅  /happening — WEEKLY RECURRING EVENTS
 // ============================================================
+const WEEKLY_DESC_LIMIT = 180;
+
 function WeeklyEventsSection({ events, onEventClick }) {
+  const [expanded, setExpanded] = useState({});
   const eventCatColors = { "Live Music": C.sunset, "Food & Social": "#8B5E3C", "Sports & Outdoors": C.sage, Community: C.lakeBlue };
 
   // Map full day name to short label — handles Notion "Recurring Day" select values
@@ -183,9 +186,32 @@ function WeeklyEventsSection({ events, onEventClick }) {
                         {event.location}
                       </div>
                     )}
-                    <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: 0, maxWidth: 520, whiteSpace: "pre-line" }}>
-                      {event.description?.replace(/\.?\s*Runs until:?\s*\d{4}-\d{2}-\d{2}\.?/i, "").trim()}
-                    </p>
+                    {(() => {
+                      const desc = event.description?.replace(/\.?\s*Runs until:?\s*\d{4}-\d{2}-\d{2}\.?/i, "").trim();
+                      if (!desc) return null;
+                      const isLong = desc.length > WEEKLY_DESC_LIMIT;
+                      const isExpanded = expanded[event.id];
+                      const displayDesc = isLong && !isExpanded ? desc.slice(0, WEEKLY_DESC_LIMIT).trimEnd() + "…" : desc;
+                      return (
+                        <div>
+                          <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: 0, maxWidth: 520, whiteSpace: "pre-line" }}>
+                            {displayDesc}
+                          </p>
+                          {isLong && (
+                            <button
+                              onClick={e => { e.stopPropagation(); setExpanded(prev => ({ ...prev, [event.id]: !isExpanded })); }}
+                              style={{
+                                background: "none", border: "none", padding: "4px 0 0", cursor: "pointer",
+                                fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 600,
+                                color: C.textMuted, letterSpacing: 0.5,
+                              }}
+                            >
+                              {isExpanded ? "Show less ↑" : "Show more ↓"}
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })()}
                     {recurrenceLabel(event) && (
                       <div style={{ fontSize: 12, color: C.textMuted, fontStyle: "italic", marginTop: 6, fontFamily: "'Libre Franklin', sans-serif" }}>
                         {recurrenceLabel(event)}
@@ -332,198 +358,343 @@ export function formatEventDate(dateStr) {
   } catch { return dateStr; }
 }
 
+// ============================================================
+// 🗓️  REUSABLE EVENT ROW — used across all time-horizon sections
+// ============================================================
+const EVENT_CAT_COLORS = { "Live Music": C.sunset, "Food & Social": "#8B5E3C", "Sports & Outdoors": C.sage, Community: C.lakeBlue, "Arts & Culture": "#7B6BA0", "Markets & Vendors": "#8B5E3C", Other: C.textMuted };
+
+function EventRow({ event, onEventClick, isLast, variant = "default" }) {
+  const color = EVENT_CAT_COLORS[event.category] || C.sage;
+  const dateLabel = formatEventDate(event.date);
+  const isHero = variant === "hero";
+
+  return (
+    <div
+      onClick={() => onEventClick(event)}
+      className="calendar-event-row"
+      style={{
+        display: "grid",
+        gridTemplateColumns: isHero ? "120px 1fr auto" : "110px 1fr auto",
+        gap: isHero ? "0 36px" : "0 32px",
+        alignItems: "center",
+        padding: isHero ? "28px 0" : "24px 0",
+        borderBottom: isLast ? "none" : `1px solid ${isHero ? "rgba(255,255,255,0.08)" : C.sand}`,
+        cursor: "pointer",
+        transition: "all 0.2s",
+        borderRadius: 4,
+      }}
+      onMouseEnter={e => { e.currentTarget.style.background = isHero ? "rgba(255,255,255,0.04)" : `${color}08`; e.currentTarget.style.paddingLeft = "12px"; e.currentTarget.style.paddingRight = "12px"; }}
+      onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.paddingLeft = "0"; e.currentTarget.style.paddingRight = "0"; }}
+    >
+      <div style={{
+        fontFamily: "'Caveat', cursive",
+        fontSize: isHero ? 26 : 22,
+        color: isHero ? C.sunsetLight : color,
+        lineHeight: 1.1,
+        userSelect: "none",
+      }}>
+        {dateLabel}
+      </div>
+
+      <div>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
+          <h3 style={{
+            fontFamily: "'Libre Baskerville', serif",
+            fontSize: isHero ? "clamp(18px, 2.5vw, 26px)" : "clamp(16px, 2vw, 22px)",
+            fontWeight: 400,
+            color: isHero ? C.cream : C.text,
+            margin: 0,
+            lineHeight: 1.3,
+          }}>
+            {event.name}
+          </h3>
+          {event.promoType && (!event.promoEnd || new Date(event.promoEnd + 'T23:59:59') >= new Date()) && (
+            <span style={{
+              fontFamily: "'Libre Franklin', sans-serif",
+              fontSize: 9, fontWeight: 700, letterSpacing: 1.5,
+              textTransform: "uppercase",
+              color: C.sage, background: `${C.sage}18`,
+              padding: "3px 10px", borderRadius: 10,
+              whiteSpace: "nowrap", flexShrink: 0,
+            }}>
+              Featured
+            </span>
+          )}
+        </div>
+        <div style={{ fontSize: 12, color: isHero ? "rgba(255,255,255,0.45)" : C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
+          {event.time && <span>{event.time}{event.timeEnd ? ` – ${event.timeEnd}` : ""}</span>}
+          {event.time && event.location && <span style={{ margin: "0 6px", opacity: 0.4 }}>·</span>}
+          {event.location && <span>{event.location}</span>}
+        </div>
+      </div>
+
+      <div className="calendar-cost-badge" style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
+        <span style={{
+          fontFamily: "'Libre Franklin', sans-serif",
+          fontSize: 11, fontWeight: 600, letterSpacing: 1,
+          color: event.cost === "Free" || event.cost === "Free to attend" || event.cost === "Free to watch" ? C.sage : C.sunset,
+          background: event.cost === "Free" || event.cost === "Free to attend" || event.cost === "Free to watch" ? `${C.sage}15` : `${C.sunset}15`,
+          padding: "5px 12px", borderRadius: 20,
+          textTransform: "uppercase",
+          whiteSpace: "nowrap",
+        }}>
+          {event.cost || "Free"}
+        </span>
+        {event.ticketsEnabled && (
+          <span style={{
+            fontFamily: "'Libre Franklin', sans-serif",
+            fontSize: 9, fontWeight: 700, letterSpacing: 1.5,
+            color: event.ticketCapacity > 0 && event.ticketsSold >= event.ticketCapacity ? "#ff6b6b" : C.sage,
+            textTransform: "uppercase", whiteSpace: "nowrap",
+          }}>
+            {event.ticketCapacity > 0 && event.ticketsSold >= event.ticketCapacity ? "Sold Out" : "Tickets Available"}
+          </span>
+        )}
+        {event.rsvpEnabled && event.rsvpCapacity > 0 && event.rsvpsCount >= event.rsvpCapacity ? (
+          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1.5, color: "#ff6b6b", textTransform: "uppercase", whiteSpace: "nowrap" }}>
+            Sold Out
+          </span>
+        ) : event.rsvpEnabled && event.rsvpCapacity > 0 && (event.rsvpCapacity - event.rsvpsCount) <= 5 ? (
+          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1.5, color: C.sunset, textTransform: "uppercase", whiteSpace: "nowrap" }}>
+            {event.rsvpCapacity - event.rsvpsCount} spot{event.rsvpCapacity - event.rsvpsCount === 1 ? "" : "s"} left
+          </span>
+        ) : event.attendance && !event.ticketsEnabled && (
+          <span style={{
+            fontFamily: "'Libre Franklin', sans-serif",
+            fontSize: 9, fontWeight: 700, letterSpacing: 1.5,
+            color: ATTENDANCE_COLORS[event.attendance] || C.sage,
+            textTransform: "uppercase", whiteSpace: "nowrap",
+          }}>
+            {ATTENDANCE_LABELS[event.attendance]}
+          </span>
+        )}
+        {event.updated && (
+          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1.5, color: C.sunsetLight, textTransform: "uppercase", whiteSpace: "nowrap" }}>
+            ↻ Details Updated
+          </span>
+        )}
+        {event.vendorRegEnabled && (
+          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1.5, color: "#8B5E3C", textTransform: "uppercase", whiteSpace: "nowrap" }}>
+            Vendors Welcome
+          </span>
+        )}
+        <EventShareBtn event={event} color={color} />
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// 📅  TIME-BUCKETED CALENDAR — This Week → This Month → Later
+// ============================================================
 function CalendarSection({ events, onEventClick, activeFilter, onFilterChange }) {
-  const eventCatColors = { "Live Music": C.sunset, "Food & Social": "#8B5E3C", "Sports & Outdoors": C.sage, Community: C.lakeBlue };
+  const [expandedMonths, setExpandedMonths] = useState({});
   const categories = ["All", ...new Set(events.map(e => e.category))];
   const filtered = activeFilter === "All" ? events : events.filter(e => e.category === activeFilter);
 
+  // Time boundaries
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const weekEnd = new Date(today);
+  weekEnd.setDate(today.getDate() + 7);
+  const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+
+  // Bucket events
+  const thisWeek = filtered.filter(e => {
+    const d = new Date(e.date + "T00:00:00");
+    return d >= today && d < weekEnd;
+  });
+  const thisMonth = filtered.filter(e => {
+    const d = new Date(e.date + "T00:00:00");
+    return d >= weekEnd && d <= monthEnd;
+  });
+  const later = filtered.filter(e => {
+    const d = new Date(e.date + "T00:00:00");
+    return d > monthEnd;
+  });
+
+  // Group "later" by month
+  const laterByMonth = useMemo(() => {
+    const grouped = {};
+    later.forEach(e => {
+      const d = new Date(e.date + "T00:00:00");
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+      if (!grouped[key]) grouped[key] = { label: d.toLocaleDateString("en-US", { month: "long" }), events: [] };
+      grouped[key].events.push(e);
+    });
+    return Object.entries(grouped).sort(([a], [b]) => a.localeCompare(b));
+  }, [later]);
+
+  const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const currentMonthName = monthNames[now.getMonth()];
+
+  // Find next upcoming event when this week is empty
+  const nextEvent = filtered.length > 0 ? filtered[0] : null;
+
   return (
-    <section style={{ background: C.cream, padding: "100px 24px" }}>
-      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-        <FadeIn>
-          <SectionLabel>Special Events · 2026</SectionLabel>
-          <SectionTitle>On the Calendar</SectionTitle>
-          <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.8, maxWidth: 480, margin: "0 0 32px 0" }}>
-            The big ones. Mark them down.
-          </p>
-        </FadeIn>
+    <>
+      {/* ─── THIS WEEK ─── */}
+      <section style={{ background: `linear-gradient(170deg, ${C.dusk} 0%, #1a2a20 100%)`, padding: "80px 24px" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+          <FadeIn>
+            <SectionLabel light>Right Now</SectionLabel>
+            <SectionTitle light>This Week</SectionTitle>
+          </FadeIn>
 
-        {/* Filter tabs */}
-        <FadeIn delay={100}>
-          <div style={{ display: "flex", gap: 8, marginBottom: 48, flexWrap: "wrap" }}>
-            {categories.map(cat => {
-              const isActive = activeFilter === cat;
-              const catColor = eventCatColors[cat] || C.sage;
-              return (
-                <button
-                  key={cat}
-                  onClick={() => onFilterChange(cat)}
-                  className="btn-animated"
-                  style={{
-                    fontFamily: "'Libre Franklin', sans-serif",
-                    fontSize: 12, fontWeight: 600, letterSpacing: 1,
-                    textTransform: "uppercase",
-                    padding: "8px 18px", borderRadius: 24,
-                    border: isActive ? "none" : `1.5px solid ${C.sand}`,
-                    background: isActive ? (cat === "All" ? C.dusk : catColor) : "transparent",
-                    color: isActive ? C.cream : C.textMuted,
-                    cursor: "pointer",
-                    transition: "all 0.2s",
-                  }}
-                >
-                  {cat}
-                </button>
-              );
-            })}
-          </div>
-        </FadeIn>
-
-        <div>
-          {filtered.map((event, i) => {
-            const color = eventCatColors[event.category] || C.sage;
-            const dateLabel = formatEventDate(event.date);
-            return (
-              <FadeIn key={event.id} delay={i * 50}>
-                <div
-                  onClick={() => onEventClick(event)}
-                  className="calendar-event-row"
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "110px 1fr auto",
-                    gap: "0 32px",
-                    alignItems: "center",
-                    padding: "24px 0",
-                    borderBottom: i < filtered.length - 1 ? `1px solid ${C.sand}` : "none",
-                    cursor: "pointer",
-                    transition: "all 0.2s",
-                    borderRadius: 4,
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.background = `${color}08`; e.currentTarget.style.paddingLeft = "12px"; e.currentTarget.style.paddingRight = "12px"; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.paddingLeft = "0"; e.currentTarget.style.paddingRight = "0"; }}
-                >
-                  {/* Date — compact format */}
-                  <div style={{
-                    fontFamily: "'Caveat', cursive",
-                    fontSize: 22,
-                    color,
-                    lineHeight: 1.1,
-                    userSelect: "none",
-                  }}>
-                    {dateLabel}
-                  </div>
-
-                  {/* Event info */}
-                  <div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
-                      <h3 style={{
-                        fontFamily: "'Libre Baskerville', serif",
-                        fontSize: "clamp(16px, 2vw, 22px)",
-                        fontWeight: 400,
-                        color: C.text,
-                        margin: 0,
-                        lineHeight: 1.3,
-                      }}>
-                        {event.name}
-                      </h3>
-                      {event.promoType && (!event.promoEnd || new Date(event.promoEnd + 'T23:59:59') >= new Date()) && (
-                        <span style={{
-                          fontFamily: "'Libre Franklin', sans-serif",
-                          fontSize: 9, fontWeight: 700, letterSpacing: 1.5,
-                          textTransform: "uppercase",
-                          color: C.sage, background: `${C.sage}18`,
-                          padding: "3px 10px", borderRadius: 10,
-                          whiteSpace: "nowrap", flexShrink: 0,
-                        }}>
-                          Featured
-                        </span>
-                      )}
-                    </div>
-                    <div style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
-                      {event.time && <span>{event.time}{event.timeEnd ? ` – ${event.timeEnd}` : ""}</span>}
-                      {event.time && event.location && <span style={{ margin: "0 6px", opacity: 0.4 }}>·</span>}
-                      {event.location && <span>{event.location}</span>}
-                    </div>
-                  </div>
-
-                  {/* Cost badge + tickets + attendance + updated */}
-                  <div className="calendar-cost-badge" style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
-                    <span style={{
+          {/* Filter tabs */}
+          <FadeIn delay={80}>
+            <div style={{ display: "flex", gap: 8, marginBottom: 40, flexWrap: "wrap" }}>
+              {categories.map(cat => {
+                const isActive = activeFilter === cat;
+                const catColor = EVENT_CAT_COLORS[cat] || C.sage;
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => onFilterChange(cat)}
+                    className="btn-animated"
+                    style={{
                       fontFamily: "'Libre Franklin', sans-serif",
-                      fontSize: 11, fontWeight: 600, letterSpacing: 1,
-                      color: event.cost === "Free" || event.cost === "Free to watch" ? C.sage : C.sunset,
-                      background: event.cost === "Free" || event.cost === "Free to watch" ? `${C.sage}15` : `${C.sunset}15`,
-                      padding: "5px 12px", borderRadius: 20,
+                      fontSize: 12, fontWeight: 600, letterSpacing: 1,
                       textTransform: "uppercase",
-                      whiteSpace: "nowrap",
-                    }}>
-                      {event.cost || "Free"}
-                    </span>
-                    {event.ticketsEnabled && (
-                      <span style={{
-                        fontFamily: "'Libre Franklin', sans-serif",
-                        fontSize: 9, fontWeight: 700, letterSpacing: 1.5,
-                        color: event.ticketCapacity > 0 && event.ticketsSold >= event.ticketCapacity ? "#ff6b6b" : C.sage,
-                        textTransform: "uppercase",
-                        whiteSpace: "nowrap",
-                      }}>
-                        {event.ticketCapacity > 0 && event.ticketsSold >= event.ticketCapacity ? "Sold Out" : "Tickets Available"}
-                      </span>
-                    )}
-                    {event.rsvpEnabled && event.rsvpCapacity > 0 && event.rsvpsCount >= event.rsvpCapacity ? (
-                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1.5, color: "#ff6b6b", textTransform: "uppercase", whiteSpace: "nowrap" }}>
-                        Sold Out
-                      </span>
-                    ) : event.rsvpEnabled && event.rsvpCapacity > 0 && (event.rsvpCapacity - event.rsvpsCount) <= 5 ? (
-                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1.5, color: C.sunset, textTransform: "uppercase", whiteSpace: "nowrap" }}>
-                        {event.rsvpCapacity - event.rsvpsCount} spot{event.rsvpCapacity - event.rsvpsCount === 1 ? "" : "s"} left
-                      </span>
-                    ) : event.attendance && !event.ticketsEnabled && (
-                      <span style={{
-                        fontFamily: "'Libre Franklin', sans-serif",
-                        fontSize: 9, fontWeight: 700, letterSpacing: 1.5,
-                        color: ATTENDANCE_COLORS[event.attendance] || C.sage,
-                        textTransform: "uppercase",
-                        whiteSpace: "nowrap",
-                      }}>
-                        {ATTENDANCE_LABELS[event.attendance]}
-                      </span>
-                    )}
-                    {event.updated && (
-                      <span style={{
-                        fontFamily: "'Libre Franklin', sans-serif",
-                        fontSize: 9, fontWeight: 700, letterSpacing: 1.5,
-                        color: C.sunsetLight,
-                        textTransform: "uppercase",
-                        whiteSpace: "nowrap",
-                      }}>
-                        ↻ Details Updated
-                      </span>
-                    )}
-                    {event.vendorRegEnabled && (
-                      <span style={{
-                        fontFamily: "'Libre Franklin', sans-serif",
-                        fontSize: 9, fontWeight: 700, letterSpacing: 1.5,
-                        color: "#8B5E3C",
-                        textTransform: "uppercase",
-                        whiteSpace: "nowrap",
-                      }}>
-                        Vendors Welcome
-                      </span>
-                    )}
-                    <EventShareBtn event={event} color={color} />
-                  </div>
-                </div>
-              </FadeIn>
-            );
-          })}
-          {filtered.length === 0 && (
-            <div style={{ textAlign: "center", padding: "60px 0", color: C.textMuted, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif" }}>
-              No events in this category yet. Check back soon!
+                      padding: "8px 18px", borderRadius: 24,
+                      border: isActive ? "none" : "1.5px solid rgba(255,255,255,0.15)",
+                      background: isActive ? (cat === "All" ? "rgba(255,255,255,0.12)" : catColor) : "transparent",
+                      color: isActive ? C.cream : "rgba(255,255,255,0.45)",
+                      cursor: "pointer",
+                      transition: "all 0.2s",
+                    }}
+                  >
+                    {cat}
+                  </button>
+                );
+              })}
             </div>
+          </FadeIn>
+
+          {thisWeek.length > 0 ? (
+            <div>
+              {thisWeek.map((event, i) => (
+                <FadeIn key={event.id} delay={i * 50}>
+                  <EventRow event={event} onEventClick={onEventClick} isLast={i === thisWeek.length - 1} variant="hero" />
+                </FadeIn>
+              ))}
+            </div>
+          ) : (
+            <FadeIn>
+              <div style={{ padding: "32px 0 16px", textAlign: "center" }}>
+                <p style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: "rgba(255,255,255,0.35)", margin: "0 0 8px 0" }}>
+                  Quiet week at the lake
+                </p>
+                {nextEvent && (
+                  <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.3)" }}>
+                    Next up: <strong style={{ color: C.sunsetLight }}>{nextEvent.name}</strong> — {formatEventDate(nextEvent.date)}
+                  </p>
+                )}
+              </div>
+            </FadeIn>
           )}
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/* ─── THIS MONTH (rest of month after this week) ─── */}
+      {thisMonth.length > 0 && (
+        <section style={{ background: C.cream, padding: "80px 24px" }}>
+          <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+            <FadeIn>
+              <SectionLabel>More in {currentMonthName}</SectionLabel>
+              <SectionTitle>Coming Up</SectionTitle>
+            </FadeIn>
+            <div>
+              {thisMonth.map((event, i) => (
+                <FadeIn key={event.id} delay={i * 40}>
+                  <EventRow event={event} onEventClick={onEventClick} isLast={i === thisMonth.length - 1} />
+                </FadeIn>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ─── LATER THIS YEAR — month-by-month accordion ─── */}
+      {laterByMonth.length > 0 && (
+        <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
+          <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+            <FadeIn>
+              <SectionLabel>Plan Ahead</SectionLabel>
+              <SectionTitle>Later This Year</SectionTitle>
+            </FadeIn>
+
+            <div style={{ marginTop: 32 }}>
+              {laterByMonth.map(([key, { label, events: monthEvents }]) => {
+                const isOpen = expandedMonths[key];
+                return (
+                  <div key={key} style={{ borderBottom: `1px solid ${C.sand}` }}>
+                    <button
+                      onClick={() => setExpandedMonths(prev => ({ ...prev, [key]: !prev[key] }))}
+                      style={{
+                        display: "flex", alignItems: "center", justifyContent: "space-between",
+                        width: "100%", padding: "24px 0", background: "none", border: "none",
+                        cursor: "pointer", transition: "all 0.2s",
+                      }}
+                      onMouseEnter={e => e.currentTarget.style.paddingLeft = "8px"}
+                      onMouseLeave={e => e.currentTarget.style.paddingLeft = "0"}
+                    >
+                      <div style={{ display: "flex", alignItems: "baseline", gap: 14 }}>
+                        <span style={{
+                          fontFamily: "'Libre Baskerville', serif",
+                          fontSize: "clamp(22px, 3vw, 32px)",
+                          fontWeight: 400,
+                          color: C.text,
+                        }}>
+                          {label}
+                        </span>
+                        <span style={{
+                          fontFamily: "'Libre Franklin', sans-serif",
+                          fontSize: 12, fontWeight: 600, letterSpacing: 1,
+                          color: C.textMuted, textTransform: "uppercase",
+                        }}>
+                          {monthEvents.length} event{monthEvents.length !== 1 ? "s" : ""}
+                        </span>
+                      </div>
+                      <span style={{
+                        fontFamily: "'Libre Franklin', sans-serif",
+                        fontSize: 18, color: C.textMuted,
+                        transform: isOpen ? "rotate(180deg)" : "none",
+                        transition: "transform 0.25s ease",
+                        lineHeight: 1,
+                      }}>
+                        ▾
+                      </span>
+                    </button>
+
+                    <div style={{
+                      maxHeight: isOpen ? `${monthEvents.length * 100}px` : "0",
+                      overflow: "hidden",
+                      transition: "max-height 0.35s ease",
+                    }}>
+                      <div style={{ paddingBottom: isOpen ? 16 : 0 }}>
+                        {monthEvents.map((event, i) => (
+                          <EventRow key={event.id} event={event} onEventClick={onEventClick} isLast={i === monthEvents.length - 1} />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Empty state — no events at all */}
+      {filtered.length === 0 && (
+        <section style={{ background: C.cream, padding: "80px 24px" }}>
+          <div style={{ maxWidth: 1100, margin: "0 auto", textAlign: "center", padding: "60px 0", color: C.textMuted, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif" }}>
+            No events in this category yet. Check back soon!
+          </div>
+        </section>
+      )}
+    </>
   );
 }
 

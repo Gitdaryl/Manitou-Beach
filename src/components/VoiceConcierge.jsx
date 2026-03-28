@@ -69,6 +69,74 @@ function VoiceConciergeInner() {
             window.location.href = path;
             return 'Navigating user to ' + path;
           },
+          // Look up events from the live calendar (Notion DB)
+          lookupEvents: async ({ query }) => {
+            try {
+              const url = query
+                ? `/api/concierge-events?q=${encodeURIComponent(query)}`
+                : '/api/concierge-events';
+              const res = await fetch(url);
+              const data = await res.json();
+              return JSON.stringify({
+                summary: data.summary,
+                upcoming: (data.upcoming || []).slice(0, 5).map(e => ({
+                  name: e.name,
+                  date: e.dateFriendly,
+                  time: e.time,
+                  location: e.location,
+                  cost: e.cost,
+                  ticketsEnabled: e.ticketsEnabled,
+                  ticketStatus: e.ticketStatus,
+                  ticketPrice: e.ticketPrice,
+                  ticketsRemaining: e.ticketsRemaining,
+                })),
+                recurring: (data.recurring || []).slice(0, 3).map(e => ({
+                  name: e.name,
+                  recurringDay: e.recurringDay,
+                  time: e.time,
+                  location: e.location,
+                })),
+                total: data.total,
+                matched: data.matched ? data.matched.slice(0, 3).map(e => ({
+                  name: e.name,
+                  date: e.dateFriendly,
+                  time: e.time,
+                  location: e.location,
+                  ticketsEnabled: e.ticketsEnabled,
+                  ticketStatus: e.ticketStatus,
+                  ticketPrice: e.ticketPrice,
+                })) : undefined,
+              });
+            } catch {
+              return JSON.stringify({ summary: "I couldn't pull up events right now. Click Events in the menu bar to see the calendar.", error: true });
+            }
+          },
+          // Look up businesses from the live directory (Notion DB)
+          lookupBusinesses: async ({ query, category }) => {
+            try {
+              const params = new URLSearchParams();
+              if (query) params.set('q', query);
+              if (category) params.set('category', category);
+              const url = `/api/concierge-businesses${params.toString() ? '?' + params : ''}`;
+              const res = await fetch(url);
+              const data = await res.json();
+              return JSON.stringify({
+                summary: data.summary,
+                businesses: (data.businesses || []).slice(0, 5).map(b => ({
+                  name: b.name,
+                  description: b.description,
+                  phone: b.phone,
+                  address: b.address,
+                  website: b.website,
+                  categories: b.categories,
+                })),
+                total: data.total,
+                categories: data.categories,
+              });
+            } catch {
+              return JSON.stringify({ summary: "I couldn't pull up the business directory right now. Click Home in the menu, then Local Businesses to browse.", error: true });
+            }
+          },
           // Get user's GPS location
           getUserLocation: async () => {
             try {

@@ -47,6 +47,16 @@ export default function YetiAdminPage() {
   const [dashLoading, setDashLoading] = useState(false);
   const [dashData, setDashData] = useState(null);
 
+  // ── Revenue Summary ────────────────────────────────────────────
+  const [revenueData, setRevenueData] = useState(null);
+  const [revenueLoading, setRevenueLoading] = useState(false);
+  const [pastDueExpanded, setPastDueExpanded] = useState(false);
+
+  // ── Attention Queue ────────────────────────────────────────────
+  const [attentionData, setAttentionData] = useState(null);
+  const [attentionLoading, setAttentionLoading] = useState(false);
+  const [attentionExpanded, setAttentionExpanded] = useState({});
+
   // ── Ad Slot Monitor ────────────────────────────────────────────
   const [adSlots, setAdSlots] = useState(null);
   const [adSlotsLoading, setAdSlotsLoading] = useState(false);
@@ -113,6 +123,51 @@ export default function YetiAdminPage() {
   const [nlGuestBio, setNlGuestBio] = useState(nlDraft.nlGuestBio || '');
   const [nlGuestContent, setNlGuestContent] = useState(nlDraft.nlGuestContent || '');
   const [nlCopyStatus, setNlCopyStatus] = useState('idle');
+  const [nlPreviewChecked, setNlPreviewChecked] = useState(false);
+  const [nlPreviewWidth, setNlPreviewWidth] = useState('desktop'); // desktop | mobile
+  const [nlStickyStatus, setNlStickyStatus] = useState('idle'); // idle | copied
+
+  // Draft archive helpers — auto-save current draft with date key, keep last 4
+  const NL_ARCHIVE_PREFIX = 'yeti_nl_archive_';
+  const saveNlArchive = () => {
+    if (!nlDate) return;
+    try {
+      const archiveKey = NL_ARCHIVE_PREFIX + nlDate;
+      const draft = { nlDate, nlSubject, nlNote, nlWeekendText, nlArticleId, nlAdId, nlWelcomeEnabled, nlWelcomeText, nlGuestEnabled, nlGuestName, nlGuestBio, nlGuestContent };
+      localStorage.setItem(archiveKey, JSON.stringify(draft));
+      // Prune to last 4
+      const keys = Object.keys(localStorage).filter(k => k.startsWith(NL_ARCHIVE_PREFIX)).sort().reverse();
+      keys.slice(4).forEach(k => localStorage.removeItem(k));
+    } catch {}
+  };
+  const getNlArchives = () => {
+    try {
+      return Object.keys(localStorage)
+        .filter(k => k.startsWith(NL_ARCHIVE_PREFIX))
+        .sort().reverse()
+        .map(k => {
+          const d = JSON.parse(localStorage.getItem(k) || '{}');
+          return { key: k, date: d.nlDate, label: d.nlDate ? new Date(d.nlDate + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : k };
+        });
+    } catch { return []; }
+  };
+  const loadNlArchive = (key) => {
+    try {
+      const d = JSON.parse(localStorage.getItem(key) || '{}');
+      if (d.nlDate) setNlDate(d.nlDate);
+      if (d.nlSubject !== undefined) setNlSubject(d.nlSubject);
+      if (d.nlNote !== undefined) setNlNote(d.nlNote);
+      if (d.nlWeekendText !== undefined) setNlWeekendText(d.nlWeekendText);
+      if (d.nlArticleId !== undefined) setNlArticleId(d.nlArticleId);
+      if (d.nlAdId !== undefined) setNlAdId(d.nlAdId);
+      if (d.nlWelcomeEnabled !== undefined) setNlWelcomeEnabled(d.nlWelcomeEnabled);
+      if (d.nlWelcomeText !== undefined) setNlWelcomeText(d.nlWelcomeText);
+      if (d.nlGuestEnabled !== undefined) setNlGuestEnabled(d.nlGuestEnabled);
+      if (d.nlGuestName !== undefined) setNlGuestName(d.nlGuestName);
+      if (d.nlGuestBio !== undefined) setNlGuestBio(d.nlGuestBio);
+      if (d.nlGuestContent !== undefined) setNlGuestContent(d.nlGuestContent);
+    } catch {}
+  };
 
   const handleOrgConnect = async () => {
     if (!orgForm.orgPageId || !orgForm.orgName) return;
@@ -518,7 +573,7 @@ export default function YetiAdminPage() {
     finally { setNlWelcomeLoading(false); }
   };
 
-  // Autosave draft to localStorage whenever any field changes
+  // Autosave draft to localStorage whenever any field changes; reset preview-checked flag
   useEffect(() => {
     try {
       localStorage.setItem(NL_DRAFT_KEY, JSON.stringify({
@@ -526,6 +581,7 @@ export default function YetiAdminPage() {
         nlWelcomeEnabled, nlWelcomeText, nlGuestEnabled, nlGuestName, nlGuestBio, nlGuestContent,
       }));
     } catch {}
+    setNlPreviewChecked(false);
   }, [nlDate, nlSubject, nlNote, nlWeekendText, nlArticleId, nlAdId, nlWelcomeEnabled, nlWelcomeText, nlGuestEnabled, nlGuestName, nlGuestBio, nlGuestContent]);
 
   const buildNlPreviewHtml = () => {
@@ -566,6 +622,24 @@ export default function YetiAdminPage() {
       ${nlNote ? `<div class="section"><p style="font-size:13px;color:#7a8a94;font-style:italic;margin:0">📝 Internal note: ${nlNote}</p></div>` : ''}
       <div class="footer"><p>The Manitou Dispatch · Manitou Beach, MI</p><p>You're receiving this because you subscribed.</p></div>
     </div></body></html>`;
+  };
+
+  const fetchRevenueSummary = async () => {
+    setRevenueLoading(true);
+    try {
+      const res = await adminFetch('/api/admin/revenue-summary');
+      if (res.ok) setRevenueData(await res.json());
+    } catch (err) { console.error('Revenue summary error:', err); }
+    finally { setRevenueLoading(false); }
+  };
+
+  const fetchAttentionQueue = async () => {
+    setAttentionLoading(true);
+    try {
+      const res = await adminFetch('/api/admin/attention-queue');
+      if (res.ok) setAttentionData(await res.json());
+    } catch (err) { console.error('Attention queue error:', err); }
+    finally { setAttentionLoading(false); }
   };
 
   const fetchDashboard = async () => {
@@ -730,7 +804,7 @@ export default function YetiAdminPage() {
     if (!authed) return;
     if (activeTab === 'newsletter') { fetchNlArticles(); fetchNlAds(); }
     if (activeTab === 'review') fetchDrafts();
-    if (activeTab === 'dashboard') { fetchDashboard(); fetchAdSlots(); }
+    if (activeTab === 'dashboard') { fetchDashboard(); fetchAdSlots(); fetchRevenueSummary(); fetchAttentionQueue(); }
     if (activeTab === 'promos') fetchPromos();
     if (activeTab === 'pois') fetchAdminPois();
     if (activeTab === 'ratings') fetchAdminRatings();
@@ -1000,6 +1074,186 @@ export default function YetiAdminPage() {
         {/* ── DASHBOARD TAB ── */}
         {activeTab === 'dashboard' && (
           <div>
+
+            {/* ── MONEY ROW ── */}
+            {revenueLoading ? (
+              <div style={{ background: '#fff', borderRadius: 12, padding: '20px 24px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', marginBottom: 16, textAlign: 'center', color: C.textMuted, fontSize: 13, fontFamily: 'Libre Franklin, sans-serif' }}>Loading revenue…</div>
+            ) : revenueData ? (
+              <div style={{ marginBottom: 16 }}>
+                <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.08em', color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif', marginBottom: 10, fontWeight: 700 }}>💰 Revenue</div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(148px, 1fr))', gap: 12 }}>
+                  {/* MRR */}
+                  <div style={{ background: '#fff', borderRadius: 12, padding: '18px 16px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', borderTop: `3px solid ${C.sage}` }}>
+                    <div style={{ fontSize: 22, marginBottom: 6 }}>💰</div>
+                    <div style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 26, fontWeight: 700, color: C.dusk, marginBottom: 2 }}>${revenueData.mrr.toLocaleString()}</div>
+                    <div style={{ fontSize: 11, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '0.05em', fontFamily: 'Libre Franklin, sans-serif' }}>MRR</div>
+                    <div style={{ fontSize: 12, color: C.textLight, marginTop: 4, fontFamily: 'Libre Franklin, sans-serif' }}>{revenueData.activeSubscriptions} active subs</div>
+                  </div>
+                  {/* By Tier */}
+                  <div style={{ background: '#fff', borderRadius: 12, padding: '18px 16px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', borderTop: `3px solid ${C.lakeBlue}` }}>
+                    <div style={{ fontSize: 22, marginBottom: 6 }}>📊</div>
+                    <div style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 18, fontWeight: 700, color: C.dusk, marginBottom: 2 }}>
+                      {revenueData.byTier.Basic} / {revenueData.byTier.Enhanced} / {revenueData.byTier.Featured}
+                    </div>
+                    <div style={{ fontSize: 11, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '0.05em', fontFamily: 'Libre Franklin, sans-serif' }}>By Tier</div>
+                    <div style={{ fontSize: 12, color: C.textLight, marginTop: 4, fontFamily: 'Libre Franklin, sans-serif' }}>Basic / Enhanced / Featured</div>
+                  </div>
+                  {/* Past Due */}
+                  <div
+                    onClick={() => revenueData.pastDue.length > 0 && setPastDueExpanded(e => !e)}
+                    style={{ background: '#fff', borderRadius: 12, padding: '18px 16px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', borderTop: `3px solid ${revenueData.pastDue.length > 0 ? '#c05a5a' : C.sage}`, cursor: revenueData.pastDue.length > 0 ? 'pointer' : 'default' }}>
+                    <div style={{ fontSize: 22, marginBottom: 6 }}>{revenueData.pastDue.length > 0 ? '⚠️' : '✅'}</div>
+                    <div style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 26, fontWeight: 700, color: revenueData.pastDue.length > 0 ? '#c05a5a' : C.sage, marginBottom: 2 }}>{revenueData.pastDue.length}</div>
+                    <div style={{ fontSize: 11, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '0.05em', fontFamily: 'Libre Franklin, sans-serif' }}>Past Due</div>
+                    {revenueData.pastDue.length > 0 && <div style={{ fontSize: 12, color: C.lakeBlue, marginTop: 4, fontFamily: 'Libre Franklin, sans-serif' }}>{pastDueExpanded ? 'hide ↑' : 'tap to expand ↓'}</div>}
+                  </div>
+                  {/* vs Last Month */}
+                  <div style={{ background: '#fff', borderRadius: 12, padding: '18px 16px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', borderTop: `3px solid ${revenueData.thisMonth >= revenueData.lastMonth ? C.sage : C.sunset}` }}>
+                    <div style={{ fontSize: 22, marginBottom: 6 }}>{revenueData.thisMonth >= revenueData.lastMonth ? '📈' : '📉'}</div>
+                    <div style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 22, fontWeight: 700, color: revenueData.thisMonth >= revenueData.lastMonth ? C.sage : C.sunset, marginBottom: 2 }}>
+                      {revenueData.thisMonth >= revenueData.lastMonth ? '+' : ''}{(revenueData.thisMonth - revenueData.lastMonth) < 0 ? '-' : ''}&nbsp;${Math.abs(revenueData.thisMonth - revenueData.lastMonth)}
+                    </div>
+                    <div style={{ fontSize: 11, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '0.05em', fontFamily: 'Libre Franklin, sans-serif' }}>vs Last Month</div>
+                    <div style={{ fontSize: 12, color: C.textLight, marginTop: 4, fontFamily: 'Libre Franklin, sans-serif' }}>${revenueData.lastMonth} → ${revenueData.thisMonth}</div>
+                  </div>
+                </div>
+
+                {/* Past Due expansion */}
+                {pastDueExpanded && revenueData.pastDue.length > 0 && (
+                  <div style={{ background: '#fff5f5', border: '1px solid #f0b0b0', borderRadius: 10, padding: '14px 18px', marginTop: 10 }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#c05a5a', marginBottom: 10, fontFamily: 'Libre Franklin, sans-serif' }}>Past-Due Accounts</div>
+                    {revenueData.pastDue.map((item, i) => (
+                      <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0', borderBottom: i < revenueData.pastDue.length - 1 ? '1px solid #f0d0d0' : 'none', flexWrap: 'wrap' }}>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontWeight: 600, color: C.dusk, fontSize: 13, fontFamily: 'Libre Franklin, sans-serif' }}>{item.name}</div>
+                          <div style={{ fontSize: 12, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>${item.amount}/mo · {item.daysOverdue}d overdue</div>
+                        </div>
+                        {item.email && (
+                          <button
+                            onClick={() => navigator.clipboard.writeText(item.email)}
+                            style={{ padding: '4px 12px', fontSize: 11, fontWeight: 600, background: 'transparent', border: '1px solid #e0b0b0', borderRadius: 6, color: '#c05a5a', cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif', whiteSpace: 'nowrap' }}
+                          >Copy email</button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Wine season */}
+                {revenueData.wineSeason.partners > 0 && (
+                  <div style={{ marginTop: 10, background: '#fff', borderRadius: 10, padding: '12px 18px', boxShadow: '0 1px 8px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+                    <span style={{ fontSize: 18 }}>🍷</span>
+                    <div>
+                      <div style={{ fontWeight: 700, fontSize: 13, color: C.dusk, fontFamily: 'Libre Franklin, sans-serif' }}>Wine Trail Season</div>
+                      <div style={{ fontSize: 12, color: C.textLight, fontFamily: 'Libre Franklin, sans-serif' }}>{revenueData.wineSeason.partners} partners · ${revenueData.wineSeason.revenue.toLocaleString()} season revenue</div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : null}
+
+            {/* ── ATTENTION QUEUE ── */}
+            {attentionLoading ? (
+              <div style={{ background: '#fff', borderRadius: 12, padding: '16px 20px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', marginBottom: 16, textAlign: 'center', color: C.textMuted, fontSize: 13, fontFamily: 'Libre Franklin, sans-serif' }}>Checking platform health…</div>
+            ) : attentionData ? (() => {
+              const totalIssues = attentionData.pendingEvents + attentionData.pendingRatings + attentionData.incompleteBiz.length + attentionData.ghostTrucks.length + attentionData.stalledOnboarding;
+              const items = [
+                {
+                  key: 'events',
+                  count: attentionData.pendingEvents,
+                  label: count => count === 1 ? '1 Event pending' : `${count} Events pending`,
+                  onClick: () => window.open('https://notion.so', '_blank'),
+                  expandable: false,
+                },
+                {
+                  key: 'ratings',
+                  count: attentionData.pendingRatings,
+                  label: count => count === 1 ? '1 Rating to review' : `${count} Ratings to review`,
+                  onClick: () => { setActiveTab('ratings'); setRatingsFilter('Pending'); },
+                  expandable: false,
+                },
+                {
+                  key: 'incompleteBiz',
+                  count: attentionData.incompleteBiz.length,
+                  label: count => count === 1 ? '1 Incomplete listing' : `${count} Incomplete listings`,
+                  onClick: () => setAttentionExpanded(e => ({ ...e, incompleteBiz: !e.incompleteBiz })),
+                  expandable: true,
+                  detail: attentionData.incompleteBiz,
+                },
+                {
+                  key: 'ghostTrucks',
+                  count: attentionData.ghostTrucks.length,
+                  label: count => count === 1 ? '1 Ghost truck' : `${count} Ghost trucks`,
+                  onClick: () => setAttentionExpanded(e => ({ ...e, ghostTrucks: !e.ghostTrucks })),
+                  expandable: true,
+                  detail: attentionData.ghostTrucks,
+                },
+                {
+                  key: 'stalled',
+                  count: attentionData.stalledOnboarding,
+                  label: count => count === 0 ? 'Onboarding ✓' : `${count} Stalled onboarding`,
+                  onClick: null,
+                  expandable: false,
+                },
+              ];
+              return (
+                <div style={{ background: '#fff', borderRadius: 12, padding: '16px 20px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', marginBottom: 16 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: C.dusk, fontFamily: 'Libre Franklin, sans-serif' }}>🔔 Needs Attention</div>
+                    {totalIssues === 0 && <span style={{ fontSize: 12, color: C.sage, fontFamily: 'Libre Franklin, sans-serif', fontWeight: 600 }}>✓ All clear</span>}
+                  </div>
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                    {items.map(item => {
+                      const isOk = item.count === 0;
+                      return (
+                        <div key={item.key} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                          <button
+                            onClick={item.onClick || undefined}
+                            disabled={!item.onClick}
+                            style={{
+                              padding: '6px 14px', borderRadius: 20, fontSize: 12, fontWeight: 600,
+                              fontFamily: 'Libre Franklin, sans-serif',
+                              cursor: item.onClick ? 'pointer' : 'default',
+                              border: 'none',
+                              background: isOk ? '#d1fae5' : '#fef3c7',
+                              color: isOk ? '#065f46' : '#92400e',
+                            }}
+                          >{item.label(item.count)}</button>
+                          {/* Expanded detail for incompleteBiz */}
+                          {item.key === 'incompleteBiz' && attentionExpanded.incompleteBiz && item.detail?.length > 0 && (
+                            <div style={{ background: '#fffbf0', border: '1px solid #e8d090', borderRadius: 8, padding: '10px 14px', minWidth: 220 }}>
+                              {item.detail.map((biz, i) => (
+                                <div key={i} style={{ fontSize: 12, color: C.dusk, fontFamily: 'Libre Franklin, sans-serif', padding: '3px 0', borderBottom: i < item.detail.length - 1 ? `1px solid ${C.sand}` : 'none' }}>
+                                  <strong>{biz.name}</strong> <span style={{ color: C.textMuted }}>— missing {biz.missing.join(', ')}</span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          {/* Expanded detail for ghostTrucks */}
+                          {item.key === 'ghostTrucks' && attentionExpanded.ghostTrucks && item.detail?.length > 0 && (
+                            <div style={{ background: '#fffbf0', border: '1px solid #e8d090', borderRadius: 8, padding: '10px 14px', minWidth: 220 }}>
+                              {item.detail.map((truck, i) => (
+                                <div key={i} style={{ fontSize: 12, color: C.dusk, fontFamily: 'Libre Franklin, sans-serif', padding: '3px 0', borderBottom: i < item.detail.length - 1 ? `1px solid ${C.sand}` : 'none' }}>
+                                  <strong>{truck.name}</strong> <span style={{ color: C.textMuted }}>— last check-in: {truck.lastCheckIn || 'never'}</span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })() : null}
+
+            {/* ── EDITORIAL & TOOLS divider ── */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '8px 0 20px', opacity: 0.5 }}>
+              <div style={{ flex: 1, height: 1, background: C.sand }} />
+              <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif', whiteSpace: 'nowrap' }}>Editorial &amp; Tools</div>
+              <div style={{ flex: 1, height: 1, background: C.sand }} />
+            </div>
+
             {dashLoading ? (
               <div style={{ textAlign: 'center', padding: '60px 0', color: C.textMuted, fontSize: 14 }}>Loading metrics…</div>
             ) : dashData ? (
@@ -2116,14 +2370,29 @@ export default function YetiAdminPage() {
         {/* ── NEWSLETTER COMPOSER TAB ── */}
         {activeTab === 'newsletter' && (
           <div style={{ maxWidth: 800 }}>
-            <div style={{ marginBottom: 28 }}>
+            <div style={{ marginBottom: 20 }}>
               <h2 style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 22, color: C.dusk, margin: '0 0 6px' }}>Newsletter Composer</h2>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
                 <p style={{ fontSize: 13, color: C.textMuted, margin: 0 }}>Build each issue section-by-section, preview the HTML, then paste into beehiiv.</p>
                 <span style={{ fontSize: 11, color: C.sage, fontFamily: 'Libre Franklin, sans-serif' }}>✓ Draft autosaved</span>
+                {/* Draft archive dropdown */}
+                {(() => {
+                  const archives = getNlArchives();
+                  return archives.length > 0 ? (
+                    <select
+                      onChange={e => { if (e.target.value) { loadNlArchive(e.target.value); e.target.value = ''; } }}
+                      defaultValue=""
+                      style={{ fontSize: 11, color: C.textMuted, background: '#fff', border: `1px solid ${C.sand}`, borderRadius: 6, padding: '3px 8px', cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}
+                    >
+                      <option value="">Load previous…</option>
+                      {archives.map(a => <option key={a.key} value={a.key}>{a.label}</option>)}
+                    </select>
+                  ) : null;
+                })()}
                 <button
                   onClick={() => {
                     if (!window.confirm('Clear this draft and start fresh?')) return;
+                    saveNlArchive();
                     localStorage.removeItem(NL_DRAFT_KEY);
                     setNlDate(nlDefaultDate); setNlSubject(''); setNlNote(''); setNlWeekendText('');
                     setNlArticleId(''); setNlAdId(''); setNlWelcomeEnabled(false); setNlWelcomeText('');
@@ -2134,6 +2403,45 @@ export default function YetiAdminPage() {
                 >Clear draft</button>
               </div>
             </div>
+
+            {/* ── Issue Checklist ── */}
+            {(() => {
+              const selectedArticle = nlArticles.find(a => a.id === nlArticleId);
+              const checks = [
+                { label: nlDate ? `Date (${new Date(nlDate + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })})` : 'Date', ok: !!nlDate, warn: false },
+                { label: 'Subject line', ok: nlSubject.trim().length > 0, warn: false },
+                { label: 'Weekend events', ok: nlWeekendText.trim().length > 0, warn: false },
+                {
+                  label: selectedArticle
+                    ? (selectedArticle.blogSafe ? 'Article ✓' : 'Article ⚠ Draft')
+                    : 'Article',
+                  ok: !!nlArticleId && !!selectedArticle?.blogSafe,
+                  warn: !!nlArticleId && !selectedArticle?.blogSafe,
+                },
+                { label: nlAdId ? 'Ad slot ✓' : 'Ad slot (optional)', ok: !!nlAdId, warn: false, optional: true },
+                { label: nlPreviewChecked ? 'Preview ✓' : 'Preview checked', ok: nlPreviewChecked, warn: false },
+              ];
+              const allCoreOk = checks.filter(c => !c.optional).every(c => c.ok);
+              return (
+                <div style={{ background: allCoreOk ? '#f0fff4' : C.warmWhite, border: `1px solid ${allCoreOk ? '#c0e8c8' : C.sand}`, borderRadius: 10, padding: '12px 16px', marginBottom: 20 }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: allCoreOk ? '#065f46' : C.textMuted, fontFamily: 'Libre Franklin, sans-serif', marginBottom: 8 }}>
+                    📋 Issue Checklist {allCoreOk ? '— ready to send' : ''}
+                  </div>
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                    {checks.map((c, i) => (
+                      <span key={i} style={{
+                        fontSize: 12, fontFamily: 'Libre Franklin, sans-serif', fontWeight: 600,
+                        padding: '3px 10px', borderRadius: 20,
+                        background: c.ok ? '#d1fae5' : c.warn ? '#fef3c7' : c.optional ? '#f5f5f5' : '#fff3cd',
+                        color: c.ok ? '#065f46' : c.warn ? '#92400e' : c.optional ? '#999' : '#856404',
+                      }}>
+                        {c.ok ? '✅' : c.warn ? '⚠️' : '⬜'} {c.label}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* Section 1 — Issue Header */}
             <div style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 12, padding: 24, marginBottom: 16 }}>
@@ -2182,12 +2490,38 @@ export default function YetiAdminPage() {
                 disabled={nlWeekendLoading}
                 style={{ padding: '9px 18px', background: '#fff', color: C.lakeBlue, border: `1px solid ${C.lakeBlue}`, borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: nlWeekendLoading ? 'not-allowed' : 'pointer', marginBottom: 12, fontFamily: 'Libre Franklin, sans-serif' }}
               >{nlWeekendLoading ? 'Pulling events…' : '📅 Pull from Events'}</button>
-              <textarea
-                style={{ ...inputStyle, minHeight: 120, resize: 'vertical', lineHeight: 1.6 }}
-                placeholder={'☀️ Fri · Event Name — one line why to go\n☀️ Sat · ...'}
-                value={nlWeekendText}
-                onChange={e => setNlWeekendText(e.target.value)}
-              />
+              {/* Structured event rows */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 4 }}>
+                {(nlWeekendText ? nlWeekendText.split('\n') : []).map((line, idx, arr) => (
+                  <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <input
+                      style={{ ...inputStyle, flex: 1, marginBottom: 0 }}
+                      value={line}
+                      placeholder="☀️ Fri · Event Name — one line why to go"
+                      onChange={e => {
+                        const rows = arr.slice();
+                        rows[idx] = e.target.value;
+                        setNlWeekendText(rows.join('\n'));
+                      }}
+                    />
+                    <button
+                      onClick={() => {
+                        const rows = arr.filter((_, i) => i !== idx);
+                        setNlWeekendText(rows.join('\n'));
+                      }}
+                      style={{ flexShrink: 0, width: 28, height: 28, background: 'none', border: `1px solid ${C.sand}`, borderRadius: 6, cursor: 'pointer', color: C.textMuted, fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                      title="Remove event"
+                    >✕</button>
+                  </div>
+                ))}
+                {(!nlWeekendText || nlWeekendText.trim() === '') && (
+                  <p style={{ fontSize: 12, color: C.textMuted, margin: 0, fontStyle: 'italic' }}>No events yet — pull from Events or add manually below.</p>
+                )}
+                <button
+                  onClick={() => setNlWeekendText(prev => prev ? prev + '\n☀️ ' : '☀️ ')}
+                  style={{ alignSelf: 'flex-start', padding: '7px 14px', background: '#fff', border: `1px solid ${C.sand}`, borderRadius: 8, fontSize: 12, color: C.textLight, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif', marginTop: 4 }}
+                >+ Add event manually</button>
+              </div>
             </div>
 
             {/* Section 3 — Main Article */}
@@ -2223,8 +2557,18 @@ export default function YetiAdminPage() {
                         <button onClick={() => setActiveTab('review')} style={{ whiteSpace: 'nowrap', background: 'none', border: 'none', color: C.lakeBlue, fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}>Publish now →</button>
                       </div>
                     )}
-                    <div style={{ padding: '10px 14px', background: '#fff', border: `1px solid ${C.sand}`, borderRadius: 8, fontSize: 13, color: C.textLight, lineHeight: 1.6 }}>
-                      {a.excerpt || 'No excerpt'}
+                    {/* WYSIWYG article preview — styled like newsletter article-box */}
+                    <div style={{ marginTop: 4, border: '1px solid #ddd', borderRadius: 8, overflow: 'hidden', background: '#fff' }}>
+                      <div style={{ borderLeft: `4px solid ${C.lakeBlue}`, padding: '14px 16px' }}>
+                        {a.category && (
+                          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', color: C.lakeBlue, textTransform: 'uppercase', marginBottom: 6, fontFamily: 'Libre Franklin, sans-serif' }}>{a.category}</div>
+                        )}
+                        <div style={{ fontSize: 16, fontWeight: 700, color: '#222', lineHeight: 1.35, marginBottom: 8, fontFamily: 'Libre Baskerville, serif' }}>{a.title}</div>
+                        <div style={{ fontSize: 13, color: '#555', lineHeight: 1.65, fontFamily: 'Libre Franklin, sans-serif' }}>{a.excerpt || 'No excerpt available.'}</div>
+                        {a.notionUrl && (
+                          <a href={a.notionUrl} target="_blank" rel="noreferrer" style={{ display: 'inline-block', marginTop: 10, fontSize: 12, color: C.lakeBlue, fontFamily: 'Libre Franklin, sans-serif', textDecoration: 'none', fontWeight: 600 }}>Read full in Notion ↗</a>
+                        )}
+                      </div>
                     </div>
                   </div>
                 );
@@ -2325,8 +2669,20 @@ export default function YetiAdminPage() {
 
             {/* Preview Panel */}
             <div style={{ border: `2px solid ${C.dusk}`, borderRadius: 12, overflow: 'hidden' }}>
-              <div style={{ background: C.dusk, padding: '14px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <span style={{ color: '#fff', fontWeight: 700, fontSize: 14 }}>Preview</span>
+              <div style={{ background: C.dusk, padding: '14px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span style={{ color: '#fff', fontWeight: 700, fontSize: 14 }}>Preview</span>
+                  {/* Mobile/Desktop toggle */}
+                  <div style={{ display: 'flex', background: 'rgba(255,255,255,0.1)', borderRadius: 6, overflow: 'hidden' }}>
+                    {[{ id: 'desktop', label: '🖥 Desktop' }, { id: 'mobile', label: '📱 Mobile' }].map(w => (
+                      <button
+                        key={w.id}
+                        onClick={() => setNlPreviewWidth(w.id)}
+                        style={{ padding: '4px 12px', fontSize: 11, fontWeight: 700, border: 'none', cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif', background: nlPreviewWidth === w.id ? 'rgba(255,255,255,0.25)' : 'transparent', color: '#fff', transition: 'background 0.15s' }}
+                      >{w.label}</button>
+                    ))}
+                  </div>
+                </div>
                 <button
                   onClick={() => {
                     navigator.clipboard.writeText(buildNlPreviewHtml());
@@ -2336,13 +2692,46 @@ export default function YetiAdminPage() {
                   style={{ padding: '7px 16px', background: nlCopyStatus === 'copied' ? C.sage : C.sunset, color: '#fff', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}
                 >{nlCopyStatus === 'copied' ? '✓ Copied!' : '📋 Copy Preview HTML'}</button>
               </div>
-              <iframe
-                key={`${nlDate}-${nlSubject}-${nlArticleId}-${nlAdId}-${nlWeekendText}-${nlWelcomeEnabled}-${nlWelcomeText}-${nlGuestEnabled}-${nlGuestContent}`}
-                srcDoc={buildNlPreviewHtml()}
-                style={{ width: '100%', height: 700, border: 'none', display: 'block' }}
-                title="Newsletter Preview"
-              />
+              <div style={{ background: '#f0ece4', padding: nlPreviewWidth === 'mobile' ? '16px' : 0, display: 'flex', justifyContent: 'center' }}>
+                <iframe
+                  key={`${nlDate}-${nlSubject}-${nlArticleId}-${nlAdId}-${nlWeekendText}-${nlWelcomeEnabled}-${nlWelcomeText}-${nlGuestEnabled}-${nlGuestContent}`}
+                  srcDoc={buildNlPreviewHtml()}
+                  onLoad={() => setNlPreviewChecked(true)}
+                  style={{
+                    width: nlPreviewWidth === 'mobile' ? 375 : '100%',
+                    maxWidth: '100%',
+                    height: 700,
+                    border: nlPreviewWidth === 'mobile' ? '2px solid rgba(0,0,0,0.15)' : 'none',
+                    borderRadius: nlPreviewWidth === 'mobile' ? 12 : 0,
+                    display: 'block',
+                    transition: 'width 0.2s',
+                  }}
+                  title="Newsletter Preview"
+                />
+              </div>
             </div>
+
+            {/* Sticky action bar */}
+            {(nlSubject.trim() || nlArticleId || nlWeekendText.trim()) && (
+              <div style={{ position: 'sticky', bottom: 16, zIndex: 100, marginTop: 16, background: C.dusk, borderRadius: 12, padding: '14px 20px', display: 'flex', gap: 12, alignItems: 'center', boxShadow: '0 8px 32px rgba(0,0,0,0.25)' }}>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(buildNlPreviewHtml());
+                    setNlStickyStatus('copied');
+                    setTimeout(() => setNlStickyStatus('idle'), 5000);
+                  }}
+                  style={{ flex: 1, padding: '10px 0', background: nlStickyStatus === 'copied' ? C.sage : C.sunset, color: '#fff', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}
+                >
+                  {nlStickyStatus === 'copied' ? '✓ Copied — now paste in beehiiv' : '📋 Copy HTML to Clipboard'}
+                </button>
+                <a
+                  href="https://app.beehiiv.com"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ flex: 1, padding: '10px 0', background: 'rgba(255,255,255,0.12)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, fontSize: 13, fontWeight: 600, textDecoration: 'none', textAlign: 'center', fontFamily: 'Libre Franklin, sans-serif' }}
+                >🔗 Open beehiiv →</a>
+              </div>
+            )}
           </div>
         )}
 
