@@ -240,17 +240,22 @@ async function handlePost(req, res) {
       return res.status(500).json({ error: 'Check-in failed' });
     }
 
-    // Best-effort pin color update — separate call so it doesn't block check-in
+    // Pin color update — must await before response or Vercel kills the lambda
     if (pinColor) {
-      fetch(`https://api.notion.com/v1/pages/${page.id}`, {
-        method: 'PATCH',
-        headers: {
-          Authorization: `Bearer ${process.env.NOTION_TOKEN_BUSINESS}`,
-          'Content-Type': 'application/json',
-          'Notion-Version': '2022-06-28',
-        },
-        body: JSON.stringify({ properties: { 'Pin Color': { rich_text: [{ type: 'text', text: { content: pinColor.slice(0, 20) } }] } } }),
-      }).catch(err => console.error('Pin color update failed (non-blocking):', err.message));
+      try {
+        const pcRes = await fetch(`https://api.notion.com/v1/pages/${page.id}`, {
+          method: 'PATCH',
+          headers: {
+            Authorization: `Bearer ${process.env.NOTION_TOKEN_BUSINESS}`,
+            'Content-Type': 'application/json',
+            'Notion-Version': '2022-06-28',
+          },
+          body: JSON.stringify({ properties: { 'Pin Color': { rich_text: [{ type: 'text', text: { content: pinColor.slice(0, 20) } }] } } }),
+        });
+        if (!pcRes.ok) console.error('Pin color PATCH failed:', await pcRes.text());
+      } catch (err) {
+        console.error('Pin color update error:', err.message);
+      }
     }
 
     return res.status(200).json({ ok: true, name: page.properties['Name']?.title?.[0]?.text?.content || slug });
