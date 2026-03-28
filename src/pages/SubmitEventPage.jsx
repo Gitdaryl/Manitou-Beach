@@ -70,6 +70,7 @@ export default function SubmitEventPage() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [session, setSession] = useState(null); // active verified session
   const [guideOpen, setGuideOpen] = useState(false);
+  const [formStep, setFormStep] = useState(1); // 1 = basics, 2 = details, 3 = you & publish
 
   const [step, setStep]               = useState('form'); // 'form' | 'verify' | 'stripe_redirect' | 'done'
   const [verifyCode, setVerifyCode]   = useState('');
@@ -151,6 +152,7 @@ export default function SubmitEventPage() {
       email: f.email,
     }));
     setStep('form');
+    setFormStep(1);
     setActivatedData(null);
     setVerifyCode('');
     setSubmitError('');
@@ -398,7 +400,7 @@ export default function SubmitEventPage() {
           </div>
 
         ) : (
-          /* ── FORM ── */
+          /* ── FORM — STEP FLOW ── */
           <>
             <div style={{ marginBottom: 40 }}>
               <div className="submit-hero-row" style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 24 }}>
@@ -408,7 +410,7 @@ export default function SubmitEventPage() {
                       This is free. Always.
                     </div>
                     <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', lineHeight: 1.6 }}>
-                      No credit card. No catch. Fill it out, verify your phone number, and you're on the community calendar.
+                      No credit card. No catch. Three quick steps and you're on the community calendar.
                     </div>
                   </div>
                 </div>
@@ -460,41 +462,84 @@ export default function SubmitEventPage() {
               </button>
             )}
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+            {/* ── STEP PROGRESS BAR ── */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 0, marginBottom: 28, padding: '0 4px' }}>
+              {[
+                { num: 1, title: 'The Basics' },
+                { num: 2, title: 'The Fun Stuff' },
+                { num: 3, title: 'You & Publish' },
+              ].map((s, i) => {
+                const done = formStep > s.num;
+                const active = formStep === s.num;
+                return (
+                  <React.Fragment key={s.num}>
+                    {i > 0 && (
+                      <div style={{ flex: 1, height: 2, background: done ? '#7A8E72' : 'rgba(255,255,255,0.1)', margin: '0 -2px', transition: 'background 0.3s' }} />
+                    )}
+                    <div
+                      onClick={() => { if (done || active) setFormStep(s.num); }}
+                      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, cursor: done || active ? 'pointer' : 'default', minWidth: 80 }}
+                    >
+                      <div style={{
+                        width: 32, height: 32, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: 14, fontWeight: 700, fontFamily: "'Libre Franklin', sans-serif",
+                        background: done ? '#7A8E72' : active ? '#D4845A' : 'rgba(255,255,255,0.08)',
+                        color: done || active ? '#fff' : 'rgba(255,255,255,0.3)',
+                        border: active ? '2px solid rgba(212,132,90,0.5)' : done ? '2px solid #7A8E72' : '2px solid rgba(255,255,255,0.1)',
+                        transition: 'all 0.3s',
+                      }}>
+                        {done ? '✓' : s.num}
+                      </div>
+                      <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', color: active ? '#D4845A' : done ? '#7A8E72' : 'rgba(255,255,255,0.25)', transition: 'color 0.3s', textAlign: 'center' }}>
+                        {s.title}
+                      </span>
+                    </div>
+                  </React.Fragment>
+                );
+              })}
+            </div>
 
-              {/* One-time vs Recurring — like one-way / return on flight bookings */}
-              <div>
-                <p style={{ fontSize: 15, color: C.cream, margin: '0 0 14px', lineHeight: 1.5 }}>
-                  Awesome — you've got an event to share!
-                </p>
-                <div style={{ display: 'flex', gap: 0, borderRadius: 8, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.15)' }}>
-                  <button
-                    type="button"
-                    onClick={() => setForm(f => ({ ...f, recurring: 'None' }))}
-                    style={{ flex: 1, padding: '14px 16px', border: 'none', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 0.5, transition: 'all 0.15s', background: form.recurring === 'None' ? '#D4845A' : 'rgba(255,255,255,0.04)', color: form.recurring === 'None' ? '#fff' : 'rgba(255,255,255,0.45)' }}
-                  >
-                    One-time event
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setForm(f => ({ ...f, recurring: f.recurring === 'None' ? 'Weekly' : f.recurring }))}
-                    style={{ flex: 1, padding: '14px 16px', border: 'none', borderLeft: '1px solid rgba(255,255,255,0.15)', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 0.5, transition: 'all 0.15s', background: form.recurring !== 'None' ? '#D4845A' : 'rgba(255,255,255,0.04)', color: form.recurring !== 'None' ? '#fff' : 'rgba(255,255,255,0.45)' }}
-                  >
-                    Recurring event
-                  </button>
+            {/* ══════════════════════════════════════ */}
+            {/* STEP 1 — THE BASICS                   */}
+            {/* ══════════════════════════════════════ */}
+            {formStep === 1 && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 4 }}>
+                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#D4845A', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, flexShrink: 0 }}>1</div>
+                  <div>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: C.cream, fontFamily: "'Libre Franklin', sans-serif" }}>The Basics</div>
+                    <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>What's happening and when?</div>
+                  </div>
                 </div>
-              </div>
 
-              {/* Event Name */}
-              <div>
-                <label style={label}>Event Name *</label>
-                <input style={input} type="text" value={form.eventName} onChange={set('eventName')} placeholder="e.g. Corks & Kegs Wine Festival" />
-              </div>
+                {/* One-time vs Recurring */}
+                <div>
+                  <div style={{ display: 'flex', gap: 0, borderRadius: 8, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.15)' }}>
+                    <button
+                      type="button"
+                      onClick={() => setForm(f => ({ ...f, recurring: 'None' }))}
+                      style={{ flex: 1, padding: '14px 16px', border: 'none', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 0.5, transition: 'all 0.15s', background: form.recurring === 'None' ? '#D4845A' : 'rgba(255,255,255,0.04)', color: form.recurring === 'None' ? '#fff' : 'rgba(255,255,255,0.45)' }}
+                    >
+                      One-time event
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setForm(f => ({ ...f, recurring: f.recurring === 'None' ? 'Weekly' : f.recurring }))}
+                      style={{ flex: 1, padding: '14px 16px', border: 'none', borderLeft: '1px solid rgba(255,255,255,0.15)', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 0.5, transition: 'all 0.15s', background: form.recurring !== 'None' ? '#D4845A' : 'rgba(255,255,255,0.04)', color: form.recurring !== 'None' ? '#fff' : 'rgba(255,255,255,0.45)' }}
+                    >
+                      Recurring event
+                    </button>
+                  </div>
+                </div>
 
-              {/* Date section — adapts based on one-time vs recurring */}
-              {form.recurring === 'None' ? (
-                <>
-                  {/* One-time: Start Date + optional End Date for multi-day */}
+                {/* Event Name */}
+                <div>
+                  <label style={label}>Event Name *</label>
+                  <input style={input} type="text" value={form.eventName} onChange={set('eventName')} placeholder="e.g. Corks & Kegs Wine Festival" autoFocus />
+                </div>
+
+                {/* Date section */}
+                {form.recurring === 'None' ? (
                   <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                     <div>
                       <label style={label}>Date *</label>
@@ -505,10 +550,7 @@ export default function SubmitEventPage() {
                       <input style={input} type="date" value={form.dateEnd} onChange={set('dateEnd')} min={form.date || undefined} />
                     </div>
                   </div>
-                </>
-              ) : (
-                <>
-                  {/* Recurring: frequency, day, date range */}
+                ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                     <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                       <div>
@@ -541,194 +583,298 @@ export default function SubmitEventPage() {
                       e.g. Farmers market every Saturday, May 24 – Oct 11 → Weekly · Saturday
                     </p>
                   </div>
-                </>
-              )}
+                )}
 
-              {/* Times — shown for both */}
-              <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                <div>
-                  <label style={label}>Start Time</label>
-                  <input style={input} type="text" value={form.timeStart} onChange={set('timeStart')} placeholder="e.g. 10:00 AM" />
-                </div>
-                <div>
-                  <label style={label}>End Time</label>
-                  <input style={input} type="text" value={form.timeEnd} onChange={set('timeEnd')} placeholder="e.g. 4:00 PM" />
-                </div>
-              </div>
-
-              {/* Location */}
-              <div>
-                <label style={label}>Location / Venue</label>
-                <input style={input} type="text" value={form.location} onChange={set('location')} placeholder="e.g. Manitou Beach Park, Vineyard Ave" />
-              </div>
-
-              {/* Description */}
-              <div>
-                <label style={label}>Description</label>
-                <textarea
-                  value={form.description} onChange={set('description')}
-                  placeholder="Tell people what to expect — 2–4 sentences works great."
-                  rows={4}
-                  style={{ ...input, resize: 'vertical', lineHeight: 1.7 }}
-                />
-              </div>
-
-              {/* Event Type */}
-              <div>
-                <label style={label}>What kind of event is this? *</label>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  {EVENT_TYPES.map(et => (
-                    <label key={et.value} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, cursor: 'pointer', padding: '12px 16px', border: `1px solid ${form.eventType === et.value ? 'rgba(212,132,90,0.5)' : 'rgba(255,255,255,0.1)'}`, borderRadius: 8, background: form.eventType === et.value ? 'rgba(212,132,90,0.08)' : 'rgba(255,255,255,0.03)', transition: 'all 0.15s' }}>
-                      <input type="radio" name="eventType" value={et.value} checked={form.eventType === et.value} onChange={set('eventType')} style={{ marginTop: 3, accentColor: '#D4845A', flexShrink: 0 }} />
-                      <div>
-                        <div style={{ fontSize: 13, fontWeight: 600, color: C.cream, marginBottom: 2 }}>{et.label}</div>
-                        <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', lineHeight: 1.5 }}>{et.sub}</div>
-                      </div>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Conditional: Own ticketing URL */}
-              {form.eventType === 'own_ticketing' && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  <div>
-                    <label style={label}>Ticket Link *</label>
-                    <input style={input} type="text" value={form.eventUrl} onChange={set('eventUrl')} placeholder="e.g. eventbrite.com/your-event" />
-                  </div>
-                  <div style={{ background: 'rgba(122,142,114,0.1)', border: '1px solid rgba(122,142,114,0.25)', borderRadius: 8, padding: '12px 14px' }}>
-                    <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, margin: '0 0 6px' }}>
-                      <strong style={{ color: 'rgba(255,255,255,0.75)' }}>Don't have a ticketing system yet?</strong> We can handle it — buyers pay right on this site, money goes straight to your bank, and you skip the Eventbrite fees.
-                    </p>
-                    <button
-                      onClick={() => setTicketInfoOpen(true)}
-                      style={{ fontSize: 12, color: '#7A8E72', fontWeight: 700, background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", textAlign: 'left' }}
-                    >
-                      See what you and your attendees get →
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* Conditional: Platform ticketing */}
-              {form.eventType === 'platform_ticketing' && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                    <div>
-                      <label style={label}>Ticket Price ($)</label>
-                      <input style={input} type="number" min="0" step="0.01" value={form.ticketPrice} onChange={set('ticketPrice')} placeholder="25.00" />
-                    </div>
-                    <div>
-                      <label style={label}>Capacity <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>— optional</span></label>
-                      <input style={input} type="number" min="1" value={form.ticketCapacity} onChange={set('ticketCapacity')} placeholder="e.g. 200" />
-                    </div>
-                  </div>
-                  <div style={{ background: 'rgba(122,142,114,0.1)', border: '1px solid rgba(122,142,114,0.25)', borderRadius: 8, padding: '14px 16px' }}>
-                    <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, margin: '0 0 8px' }}>
-                      <strong style={{ color: 'rgba(255,255,255,0.75)' }}>What your 1.25% gets your attendees:</strong> automatic email & text reminders the day before and day of your event, plus instant notifications if anything changes — postponed, moved, cancelled. No extra cost, no extra work.
-                    </p>
-                    <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', lineHeight: 1.6, margin: '0 0 8px' }}>
-                      Stripe charges their standard processing fee (~2.9% + 30¢) on top — that's the same fee they charge everyone, including Eventbrite.
-                    </p>
-                    <button
-                      onClick={() => setTicketInfoOpen(true)}
-                      style={{ fontSize: 12, color: '#7A8E72', fontWeight: 700, background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", textAlign: 'left' }}
-                    >
-                      See how it works for you and your attendees →
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* Conditional: RSVP capacity */}
-              {(form.eventType === 'rsvp_appreciated' || form.eventType === 'rsvp_required') && (
-                <div>
-                  <label style={label}>RSVP Capacity <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>— leave blank for unlimited</span></label>
-                  <input style={input} type="number" min="1" value={form.rsvpCapacity} onChange={set('rsvpCapacity')} placeholder="e.g. 50" />
-                </div>
-              )}
-
-              {/* Conditional: Vendor market */}
-              {form.eventType === 'vendor_market' && (
+                {/* Times */}
                 <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                   <div>
-                    <label style={label}>Booth Fee ($)</label>
-                    <input style={input} type="number" min="0" step="0.01" value={form.vendorFee} onChange={set('vendorFee')} placeholder="20.00" />
+                    <label style={label}>Start Time</label>
+                    <input style={input} type="text" value={form.timeStart} onChange={set('timeStart')} placeholder="e.g. 10:00 AM" />
                   </div>
                   <div>
-                    <label style={label}>Vendor Spots <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>— optional</span></label>
-                    <input style={input} type="number" min="1" value={form.vendorCapacity} onChange={set('vendorCapacity')} placeholder="e.g. 30" />
+                    <label style={label}>End Time</label>
+                    <input style={input} type="text" value={form.timeEnd} onChange={set('timeEnd')} placeholder="e.g. 4:00 PM" />
                   </div>
                 </div>
-              )}
 
-              {/* Stripe info banner for money types */}
-              {needsStripe && (
-                <div style={{ background: 'rgba(212,132,90,0.1)', border: '1px solid rgba(212,132,90,0.25)', borderRadius: 10, padding: '14px 16px' }}>
-                  <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', lineHeight: 1.7, margin: 0 }}>
-                    After verifying your phone, we'll walk you through connecting your bank account (takes ~5 minutes). Money goes directly to you — our platform fee is just 1.25%.
-                  </p>
+                {/* Location */}
+                <div>
+                  <label style={label}>Location / Venue</label>
+                  <input style={input} type="text" value={form.location} onChange={set('location')} placeholder="e.g. Manitou Beach Park, Vineyard Ave" />
                 </div>
-              )}
 
-              {/* Cost */}
-              <div>
-                <label style={label}>Cost {form.eventType === 'free' ? '' : 'description '}<span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>— {form.eventType === 'free' ? 'leave blank if free' : 'shown on the event card'}</span></label>
-                <input style={input} type="text" value={form.cost} onChange={set('cost')} placeholder={form.eventType === 'free' ? 'e.g. "$5 at the door" — or leave blank for free' : 'e.g. "Free", "$10 at the door", "Tickets from $25"'} />
-              </div>
+                {submitError && formStep === 1 && <div style={{ fontSize: 13, color: '#e07070', fontWeight: 500 }}>{submitError}</div>}
 
-              {/* Image Upload */}
-              <div>
-                <label style={label}>Event Image / Logo <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>— optional</span></label>
-                <div
-                  onClick={() => document.getElementById('event-img-upload').click()}
-                  onDragOver={e => { e.preventDefault(); setImageDragOver(true); }}
-                  onDragLeave={() => setImageDragOver(false)}
-                  onDrop={e => { e.preventDefault(); setImageDragOver(false); const f = e.dataTransfer.files[0]; if (f) handleImageFile(f); }}
-                  style={{ border: `1.5px dashed ${imageDragOver ? 'rgba(212,132,90,0.6)' : 'rgba(255,255,255,0.15)'}`, borderRadius: 10, padding: imagePreview || form.imageUrl ? '12px' : '28px 20px', textAlign: 'center', cursor: 'pointer', transition: 'border-color 0.2s', background: imageDragOver ? 'rgba(212,132,90,0.06)' : 'rgba(255,255,255,0.03)' }}
-                  onMouseEnter={e => { if (!imageDragOver) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'; }}
-                  onMouseLeave={e => { if (!imageDragOver) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)'; }}
+                {/* Next → */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!form.eventName.trim()) { setSubmitError('Give your event a name so people know what it is.'); return; }
+                    if (!form.date) { setSubmitError('Pick a date — even a rough one works.'); return; }
+                    setSubmitError('');
+                    setFormStep(2);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  style={{ padding: '16px 24px', background: '#D4845A', color: '#fff', border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", transition: 'background 0.2s' }}
                 >
-                  {imageUploading ? (
-                    <span style={{ fontSize: 13, color: '#D4845A', fontFamily: "'Libre Franklin', sans-serif" }}>Uploading…</span>
-                  ) : imagePreview || form.imageUrl ? (
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
-                      <img src={imagePreview || form.imageUrl} alt="preview" style={{ maxHeight: 140, maxWidth: '100%', borderRadius: 8, objectFit: 'cover' }} />
-                      <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', fontFamily: "'Libre Franklin', sans-serif" }}>Click or drop to replace</span>
-                    </div>
-                  ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-                      <span style={{ fontSize: 28, opacity: 0.3 }}>📷</span>
-                      <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)', fontFamily: "'Libre Franklin', sans-serif" }}>Drop an image here or click to upload</span>
-                      <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.2)', fontFamily: "'Libre Franklin', sans-serif" }}>JPG, PNG, or WebP · Max 2 MB</span>
-                    </div>
-                  )}
-                  <input id="event-img-upload" type="file" accept="image/*" style={{ display: 'none' }} onChange={e => { if (e.target.files[0]) handleImageFile(e.target.files[0]); e.target.value = ''; }} />
-                </div>
-                {/* Fallback: paste a URL */}
-                {!imagePreview && !form.imageUrl && (
-                  <div style={{ marginTop: 8 }}>
-                    <input style={{ ...input, fontSize: 12 }} type="text" value={form.imageUrl} onChange={set('imageUrl')} placeholder="…or paste an image URL" />
+                  Next — Tell People More →
+                </button>
+              </div>
+            )}
+
+            {/* ══════════════════════════════════════ */}
+            {/* STEP 2 — THE FUN STUFF                */}
+            {/* ══════════════════════════════════════ */}
+            {formStep === 2 && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 4 }}>
+                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#D4845A', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, flexShrink: 0 }}>2</div>
+                  <div>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: C.cream, fontFamily: "'Libre Franklin', sans-serif" }}>The Fun Stuff</div>
+                    <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>Description, type, image — make it pop.</div>
                   </div>
-                )}
-                {(imagePreview || form.imageUrl) && (
+                </div>
+
+                {/* Quick recap of Step 1 */}
+                <div style={{ background: 'rgba(122,142,114,0.1)', border: '1px solid rgba(122,142,114,0.2)', borderRadius: 10, padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: C.cream }}>{form.eventName}</div>
+                    <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', marginTop: 2 }}>
+                      {form.date}{form.timeStart ? ` · ${form.timeStart}` : ''}{form.location ? ` · ${form.location}` : ''}
+                    </div>
+                  </div>
                   <button
                     type="button"
-                    onClick={(e) => { e.stopPropagation(); setImagePreview(''); setForm(f => ({ ...f, imageUrl: '' })); }}
-                    style={{ marginTop: 8, background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0 }}
+                    onClick={() => { setFormStep(1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                    style={{ background: 'none', border: 'none', color: '#D4845A', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: '4px 8px', flexShrink: 0 }}
                   >
-                    ✕ Remove image
+                    Edit
                   </button>
-                )}
-              </div>
+                </div>
 
-              {/* Organizer contact */}
-              <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 18 }}>
-                <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', margin: '0 0 14px' }}>Your contact info</p>
+                {/* Description */}
+                <div>
+                  <label style={label}>Description</label>
+                  <textarea
+                    value={form.description} onChange={set('description')}
+                    placeholder="Tell people what to expect — 2–4 sentences works great."
+                    rows={4}
+                    style={{ ...input, resize: 'vertical', lineHeight: 1.7 }}
+                    autoFocus
+                  />
+                </div>
+
+                {/* Event Type */}
+                <div>
+                  <label style={label}>What kind of event is this? *</label>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    {EVENT_TYPES.map(et => (
+                      <label key={et.value} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, cursor: 'pointer', padding: '12px 16px', border: `1px solid ${form.eventType === et.value ? 'rgba(212,132,90,0.5)' : 'rgba(255,255,255,0.1)'}`, borderRadius: 8, background: form.eventType === et.value ? 'rgba(212,132,90,0.08)' : 'rgba(255,255,255,0.03)', transition: 'all 0.15s' }}>
+                        <input type="radio" name="eventType" value={et.value} checked={form.eventType === et.value} onChange={set('eventType')} style={{ marginTop: 3, accentColor: '#D4845A', flexShrink: 0 }} />
+                        <div>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: C.cream, marginBottom: 2 }}>{et.label}</div>
+                          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', lineHeight: 1.5 }}>{et.sub}</div>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Conditional: Own ticketing URL */}
+                {form.eventType === 'own_ticketing' && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    <div>
+                      <label style={label}>Ticket Link *</label>
+                      <input style={input} type="text" value={form.eventUrl} onChange={set('eventUrl')} placeholder="e.g. eventbrite.com/your-event" />
+                    </div>
+                    <div style={{ background: 'rgba(122,142,114,0.1)', border: '1px solid rgba(122,142,114,0.25)', borderRadius: 8, padding: '12px 14px' }}>
+                      <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, margin: '0 0 6px' }}>
+                        <strong style={{ color: 'rgba(255,255,255,0.75)' }}>Don't have a ticketing system yet?</strong> We can handle it — buyers pay right on this site, money goes straight to your bank, and you skip the Eventbrite fees.
+                      </p>
+                      <button
+                        onClick={() => setTicketInfoOpen(true)}
+                        style={{ fontSize: 12, color: '#7A8E72', fontWeight: 700, background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", textAlign: 'left' }}
+                      >
+                        See what you and your attendees get →
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Conditional: Platform ticketing */}
+                {form.eventType === 'platform_ticketing' && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                      <div>
+                        <label style={label}>Ticket Price ($)</label>
+                        <input style={input} type="number" min="0" step="0.01" value={form.ticketPrice} onChange={set('ticketPrice')} placeholder="25.00" />
+                      </div>
+                      <div>
+                        <label style={label}>Capacity <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>— optional</span></label>
+                        <input style={input} type="number" min="1" value={form.ticketCapacity} onChange={set('ticketCapacity')} placeholder="e.g. 200" />
+                      </div>
+                    </div>
+                    <div style={{ background: 'rgba(122,142,114,0.1)', border: '1px solid rgba(122,142,114,0.25)', borderRadius: 8, padding: '14px 16px' }}>
+                      <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, margin: '0 0 8px' }}>
+                        <strong style={{ color: 'rgba(255,255,255,0.75)' }}>What your 1.25% gets your attendees:</strong> automatic email & text reminders the day before and day of your event, plus instant notifications if anything changes — postponed, moved, cancelled. No extra cost, no extra work.
+                      </p>
+                      <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', lineHeight: 1.6, margin: '0 0 8px' }}>
+                        Stripe charges their standard processing fee (~2.9% + 30¢) on top — that's the same fee they charge everyone, including Eventbrite.
+                      </p>
+                      <button
+                        onClick={() => setTicketInfoOpen(true)}
+                        style={{ fontSize: 12, color: '#7A8E72', fontWeight: 700, background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", textAlign: 'left' }}
+                      >
+                        See how it works for you and your attendees →
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Conditional: RSVP capacity */}
+                {(form.eventType === 'rsvp_appreciated' || form.eventType === 'rsvp_required') && (
+                  <div>
+                    <label style={label}>RSVP Capacity <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>— leave blank for unlimited</span></label>
+                    <input style={input} type="number" min="1" value={form.rsvpCapacity} onChange={set('rsvpCapacity')} placeholder="e.g. 50" />
+                  </div>
+                )}
+
+                {/* Conditional: Vendor market */}
+                {form.eventType === 'vendor_market' && (
+                  <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                    <div>
+                      <label style={label}>Booth Fee ($)</label>
+                      <input style={input} type="number" min="0" step="0.01" value={form.vendorFee} onChange={set('vendorFee')} placeholder="20.00" />
+                    </div>
+                    <div>
+                      <label style={label}>Vendor Spots <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>— optional</span></label>
+                      <input style={input} type="number" min="1" value={form.vendorCapacity} onChange={set('vendorCapacity')} placeholder="e.g. 30" />
+                    </div>
+                  </div>
+                )}
+
+                {/* Stripe info banner for money types */}
+                {needsStripe && (
+                  <div style={{ background: 'rgba(212,132,90,0.1)', border: '1px solid rgba(212,132,90,0.25)', borderRadius: 10, padding: '14px 16px' }}>
+                    <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', lineHeight: 1.7, margin: 0 }}>
+                      After verifying your phone, we'll walk you through connecting your bank account (takes ~5 minutes). Money goes directly to you — our platform fee is just 1.25%.
+                    </p>
+                  </div>
+                )}
+
+                {/* Cost */}
+                <div>
+                  <label style={label}>Cost {form.eventType === 'free' ? '' : 'description '}<span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>— {form.eventType === 'free' ? 'leave blank if free' : 'shown on the event card'}</span></label>
+                  <input style={input} type="text" value={form.cost} onChange={set('cost')} placeholder={form.eventType === 'free' ? 'e.g. "$5 at the door" — or leave blank for free' : 'e.g. "Free", "$10 at the door", "Tickets from $25"'} />
+                </div>
+
+                {/* Image Upload */}
+                <div>
+                  <label style={label}>Event Image / Logo <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>— optional</span></label>
+                  <div
+                    onClick={() => document.getElementById('event-img-upload').click()}
+                    onDragOver={e => { e.preventDefault(); setImageDragOver(true); }}
+                    onDragLeave={() => setImageDragOver(false)}
+                    onDrop={e => { e.preventDefault(); setImageDragOver(false); const f = e.dataTransfer.files[0]; if (f) handleImageFile(f); }}
+                    style={{ border: `1.5px dashed ${imageDragOver ? 'rgba(212,132,90,0.6)' : 'rgba(255,255,255,0.15)'}`, borderRadius: 10, padding: imagePreview || form.imageUrl ? '12px' : '28px 20px', textAlign: 'center', cursor: 'pointer', transition: 'border-color 0.2s', background: imageDragOver ? 'rgba(212,132,90,0.06)' : 'rgba(255,255,255,0.03)' }}
+                    onMouseEnter={e => { if (!imageDragOver) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'; }}
+                    onMouseLeave={e => { if (!imageDragOver) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)'; }}
+                  >
+                    {imageUploading ? (
+                      <span style={{ fontSize: 13, color: '#D4845A', fontFamily: "'Libre Franklin', sans-serif" }}>Uploading…</span>
+                    ) : imagePreview || form.imageUrl ? (
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+                        <img src={imagePreview || form.imageUrl} alt="preview" style={{ maxHeight: 140, maxWidth: '100%', borderRadius: 8, objectFit: 'cover' }} />
+                        <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', fontFamily: "'Libre Franklin', sans-serif" }}>Click or drop to replace</span>
+                      </div>
+                    ) : (
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+                        <span style={{ fontSize: 28, opacity: 0.3 }}>📷</span>
+                        <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)', fontFamily: "'Libre Franklin', sans-serif" }}>Drop an image here or click to upload</span>
+                        <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.2)', fontFamily: "'Libre Franklin', sans-serif" }}>JPG, PNG, or WebP · Max 2 MB</span>
+                      </div>
+                    )}
+                    <input id="event-img-upload" type="file" accept="image/*" style={{ display: 'none' }} onChange={e => { if (e.target.files[0]) handleImageFile(e.target.files[0]); e.target.value = ''; }} />
+                  </div>
+                  {!imagePreview && !form.imageUrl && (
+                    <div style={{ marginTop: 8 }}>
+                      <input style={{ ...input, fontSize: 12 }} type="text" value={form.imageUrl} onChange={set('imageUrl')} placeholder="…or paste an image URL" />
+                    </div>
+                  )}
+                  {(imagePreview || form.imageUrl) && (
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); setImagePreview(''); setForm(f => ({ ...f, imageUrl: '' })); }}
+                      style={{ marginTop: 8, background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0 }}
+                    >
+                      ✕ Remove image
+                    </button>
+                  )}
+                </div>
+
+                {submitError && formStep === 2 && <div style={{ fontSize: 13, color: '#e07070', fontWeight: 500 }}>{submitError}</div>}
+
+                {/* Navigation */}
+                <div style={{ display: 'flex', gap: 12 }}>
+                  <button
+                    type="button"
+                    onClick={() => { setFormStep(1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                    style={{ flex: 0, padding: '14px 20px', background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}
+                  >
+                    ← Back
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSubmitError('');
+                      setFormStep(3);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    style={{ flex: 1, padding: '16px 24px', background: '#D4845A', color: '#fff', border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", transition: 'background 0.2s' }}
+                  >
+                    Next — Almost Done! →
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* ══════════════════════════════════════ */}
+            {/* STEP 3 — YOU & PUBLISH                */}
+            {/* ══════════════════════════════════════ */}
+            {formStep === 3 && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 4 }}>
+                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#D4845A', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, flexShrink: 0 }}>3</div>
+                  <div>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: C.cream, fontFamily: "'Libre Franklin', sans-serif" }}>You & Publish</div>
+                    <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>Who's behind this event? Then you're done.</div>
+                  </div>
+                </div>
+
+                {/* Summary of Steps 1+2 */}
+                <div style={{ background: 'rgba(122,142,114,0.1)', border: '1px solid rgba(122,142,114,0.2)', borderRadius: 10, padding: '14px 16px' }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: C.cream, marginBottom: 4 }}>{form.eventName}</div>
+                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', lineHeight: 1.6 }}>
+                    {form.date}{form.dateEnd ? ` – ${form.dateEnd}` : ''}{form.timeStart ? ` · ${form.timeStart}` : ''}{form.timeEnd ? `–${form.timeEnd}` : ''}
+                    {form.location ? <><br />{form.location}</> : ''}
+                    {form.description ? <><br /><span style={{ color: 'rgba(255,255,255,0.3)' }}>{form.description.slice(0, 80)}{form.description.length > 80 ? '…' : ''}</span></> : ''}
+                  </div>
+                  <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+                    <button type="button" onClick={() => { setFormStep(1); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={{ background: 'none', border: 'none', color: '#D4845A', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0 }}>
+                      Edit basics
+                    </button>
+                    <span style={{ color: 'rgba(255,255,255,0.15)' }}>·</span>
+                    <button type="button" onClick={() => { setFormStep(2); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={{ background: 'none', border: 'none', color: '#D4845A', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0 }}>
+                      Edit details
+                    </button>
+                  </div>
+                </div>
+
+                {/* Organizer contact */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                   <div>
                     <label style={label}>Your Name / Organization</label>
-                    <input style={input} type="text" value={form.organizerName} onChange={set('organizerName')} placeholder="e.g. Irish Hills Wine Trail" />
+                    <input style={input} type="text" value={form.organizerName} onChange={set('organizerName')} placeholder="e.g. Irish Hills Wine Trail" autoFocus />
                   </div>
                   <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                     <div>
@@ -741,38 +887,47 @@ export default function SubmitEventPage() {
                     </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Hidden honeypot */}
-              <input type="text" name="_hp" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
+                {/* Hidden honeypot */}
+                <input type="text" name="_hp" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
 
-              {submitError && <div style={{ fontSize: 13, color: '#e07070', fontWeight: 500 }}>{submitError}</div>}
+                {submitError && <div style={{ fontSize: 13, color: '#e07070', fontWeight: 500 }}>{submitError}</div>}
 
-              {session && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', background: 'rgba(122,142,114,0.12)', border: '1px solid rgba(122,142,114,0.3)', borderRadius: 8 }}>
-                  <span style={{ color: '#7A8E72', fontSize: 14 }}>✓</span>
-                  <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)' }}>
-                    You're verified — just fill it out and hit publish!
-                  </span>
+                {session && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', background: 'rgba(122,142,114,0.12)', border: '1px solid rgba(122,142,114,0.3)', borderRadius: 8 }}>
+                    <span style={{ color: '#7A8E72', fontSize: 14 }}>✓</span>
+                    <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)' }}>
+                      You're verified — just fill it out and hit publish!
+                    </span>
+                  </div>
+                )}
+
+                {/* Navigation */}
+                <div style={{ display: 'flex', gap: 12 }}>
+                  <button
+                    type="button"
+                    onClick={() => { setFormStep(2); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                    style={{ flex: 0, padding: '14px 20px', background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}
+                  >
+                    ← Back
+                  </button>
+                  <button
+                    onClick={handleSubmit}
+                    disabled={loading}
+                    style={{ flex: 1, padding: '16px 24px', background: loading ? '#5C5248' : '#7A8E72', color: '#fff', border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: loading ? 'default' : 'pointer', fontFamily: "'Libre Franklin', sans-serif", transition: 'background 0.2s' }}
+                  >
+                    {loading
+                      ? (session ? 'Publishing…' : 'Sending code…')
+                      : (session ? 'Publish My Event!' : 'Submit & Verify →')}
+                  </button>
                 </div>
-              )}
-
-              <button
-                onClick={handleSubmit}
-                disabled={loading}
-                style={{ padding: '15px 24px', background: loading ? '#5C5248' : '#D4845A', color: '#fff', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', cursor: loading ? 'default' : 'pointer', fontFamily: "'Libre Franklin', sans-serif", transition: 'background 0.2s', marginTop: 4 }}
-              >
-                {loading
-                  ? (session ? 'Publishing…' : 'Sending verification code…')
-                  : (session ? 'Publish Event →' : 'Submit Event — Get Verified →')}
-              </button>
-              <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', textAlign: 'center', lineHeight: 1.7, margin: '4px 0 0' }}>
-                {session
-                  ? 'You\'re good to go — publish as many as you want.'
-                  : "We'll text you a quick code to make sure you're real. Takes 30 seconds."}
-              </p>
-
-            </div>
+                <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', textAlign: 'center', lineHeight: 1.7, margin: '0' }}>
+                  {session
+                    ? 'You\'re verified — this publishes instantly.'
+                    : "We'll text you a quick code to make sure you're real. Takes 30 seconds."}
+                </p>
+              </div>
+            )}
           </>
         )}
 
