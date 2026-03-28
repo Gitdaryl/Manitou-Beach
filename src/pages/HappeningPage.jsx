@@ -408,6 +408,18 @@ function EventRow({ event, onEventClick, isLast, variant = "default" }) {
           }}>
             {event.name}
           </h3>
+          {event._virtual && event.recurringDay && (
+            <span style={{
+              fontFamily: "'Libre Franklin', sans-serif",
+              fontSize: 9, fontWeight: 700, letterSpacing: 1.5,
+              textTransform: "uppercase",
+              color: C.lakeBlue, background: `${C.lakeBlue}15`,
+              padding: "3px 10px", borderRadius: 10,
+              whiteSpace: "nowrap", flexShrink: 0,
+            }}>
+              Every {event.recurringDay}
+            </span>
+          )}
           {event.promoType && (!event.promoEnd || new Date(event.promoEnd + 'T23:59:59') >= new Date()) && (
             <span style={{
               fontFamily: "'Libre Franklin', sans-serif",
@@ -487,16 +499,42 @@ function EventRow({ event, onEventClick, isLast, variant = "default" }) {
 // ============================================================
 // 📅  TIME-BUCKETED CALENDAR — This Week → This Month → Later
 // ============================================================
-function CalendarSection({ events, onEventClick, activeFilter, onFilterChange }) {
+function CalendarSection({ events, weeklyEvents = [], onEventClick, activeFilter, onFilterChange }) {
   const [expandedMonths, setExpandedMonths] = useState({});
-  const categories = ["All", ...new Set(events.map(e => e.category))];
-  const filtered = activeFilter === "All" ? events : events.filter(e => e.category === activeFilter);
 
   // Time boundaries
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const weekEnd = new Date(today);
   weekEnd.setDate(today.getDate() + 7);
+
+  // Generate virtual instances of recurring events for this week
+  const dayIndex = { Sunday: 0, Monday: 1, Tuesday: 2, Wednesday: 3, Thursday: 4, Friday: 5, Saturday: 6 };
+  const virtualThisWeek = useMemo(() => {
+    const instances = [];
+    weeklyEvents.forEach(re => {
+      const dow = dayIndex[re.recurringDay];
+      if (dow === undefined) return;
+      // Check if the recurring event is active (between start and end dates)
+      const start = re.date ? new Date(re.date + "T00:00:00") : null;
+      const end = re.dateEnd ? new Date(re.dateEnd + "T23:59:59") : null;
+      // Walk each day of the coming week and check if it matches
+      for (let d = new Date(today); d < weekEnd; d.setDate(d.getDate() + 1)) {
+        if (d.getDay() !== dow) continue;
+        if (start && d < start) continue;
+        if (end && d > end) continue;
+        const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+        instances.push({ ...re, id: `${re.id}-${dateStr}`, date: dateStr, _virtual: true });
+      }
+    });
+    return instances;
+  }, [weeklyEvents, today.getTime()]);
+
+  // Merge one-time + virtual recurring, then filter
+  const allEvents = useMemo(() => [...events, ...virtualThisWeek].sort((a, b) => a.date.localeCompare(b.date)), [events, virtualThisWeek]);
+  const categories = ["All", ...new Set(allEvents.map(e => e.category))];
+  const filtered = activeFilter === "All" ? allEvents : allEvents.filter(e => e.category === activeFilter);
+
   // Bucket events
   const thisWeek = filtered.filter(e => {
     const d = new Date(e.date + "T00:00:00");
@@ -934,7 +972,7 @@ export default function HappeningPage() {
       <HappeningHero />
       <PromoBanner page="Events" />
       <HeroTakeover event={heroTakeover} onEventClick={setLightboxEvent} />
-      <CalendarSection events={upcomingEvents} onEventClick={setLightboxEvent} activeFilter={activeFilter} onFilterChange={setActiveFilter} />
+      <CalendarSection events={upcomingEvents} weeklyEvents={weeklyEvents} onEventClick={setLightboxEvent} activeFilter={activeFilter} onFilterChange={setActiveFilter} />
       <WeeklyEventsSection events={weeklyEvents} onEventClick={setLightboxEvent} />
 
       {/* Promote upsell strip */}
