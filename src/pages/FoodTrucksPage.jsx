@@ -1468,13 +1468,16 @@ export default function FoodTrucksPage() {
         </div>
       </section>
 
-      {/* Magic Moment */}
+      {/* Love CTA — encourage engagement */}
       {liveTrucks.length > 0 && (
         <div style={{ background: C.warmWhite, padding: "0 24px 32px" }}>
-          <div style={{ maxWidth: 600, margin: "0 auto", background: `linear-gradient(135deg, ${C.sunset}12 0%, ${C.sunset}06 100%)`, border: `1px solid ${C.sunset}25`, borderRadius: 16, padding: "20px 24px", textAlign: "center" }}>
-            <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunset, marginBottom: 6 }}>Magic Moment</div>
-            <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: 0 }}>
-              Someone right now is scrolling this page, seeing a truck that's open <em>right here, right now</em> — and heading your way. That's the moment a map pin turns into a customer.
+          <div style={{ maxWidth: 600, margin: "0 auto", background: `linear-gradient(135deg, ${C.sunset}08 0%, ${C.cream} 100%)`, border: `1px solid ${C.sunset}20`, borderRadius: 16, padding: "22px 24px", textAlign: "center" }}>
+            <div style={{ fontSize: 28, marginBottom: 6 }}>❤️</div>
+            <p style={{ fontSize: 15, color: C.text, lineHeight: 1.7, margin: "0 0 4px", fontWeight: 500 }}>
+              Show some love to your favorites
+            </p>
+            <p style={{ fontSize: 13, color: C.textMuted, lineHeight: 1.6, margin: 0 }}>
+              Drop a heart and tell them what you had. The more love a truck gets, the higher they climb on the list.
             </p>
           </div>
         </div>
