@@ -333,12 +333,24 @@ export default function FoodTrucksPage() {
     }
   };
 
-  // Sync comingDateLocal and pinColor when checkinTruck first loads
+  // Sync comingDateLocal, pinColor, and detect "already live" on load
   useEffect(() => {
-    if (checkinTruck?.comingDate) setComingDateLocal(checkinTruck.comingDate);
-    if (checkinTruck?.pinColor) {
+    if (!checkinTruck) return;
+    if (checkinTruck.comingDate) setComingDateLocal(checkinTruck.comingDate);
+    if (checkinTruck.pinColor) {
       const pc = checkinTruck.pinColor;
       setCheckinPinColor(pc.startsWith('#') ? pc : LEGACY_COLORS[pc] || '#7A8E72');
+    }
+    // If truck is already live (e.g. page refresh), restore success state
+    if (checkinStatus === '' && isCheckinMode && isLive(checkinTruck)) {
+      setCheckinNote(checkinTruck.locationNote || '');
+      setCheckinSpecial(checkinTruck.todaysSpecial || '');
+      if (checkinTruck.lat && checkinTruck.lng) {
+        setCheckinLat(checkinTruck.lat);
+        setCheckinLng(checkinTruck.lng);
+      }
+      setCheckinStatus('success');
+      setCheckinMsg(`You're already live! Customers can see ${checkinTruck.name} on the locator.`);
     }
   }, [checkinTruck]);
 
