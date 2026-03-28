@@ -3,6 +3,7 @@ import { C } from '../data/config';
 import { Btn, ScrollProgress } from '../components/Shared';
 import { Navbar, Footer, GlobalStyles } from '../components/Layout';
 import yeti from '../data/errorMessages';
+import { celebrate } from '../data/celebrate';
 
 const subScrollTo = (id) => { window.location.href = '/#' + id; };
 
@@ -81,6 +82,7 @@ export default function VendorRegisterPage() {
       const data = await res.json();
       if (data.success) {
         setSuccess({ vendorId: data.vendorId, pdfUrl: data.pdfUrl, eventName: data.eventName });
+        celebrate();
       } else {
         setError(data.error || yeti.oops());
         setSubmitting(false);

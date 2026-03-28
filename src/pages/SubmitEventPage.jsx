@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Navbar, Footer } from '../components/Layout';
 import { C } from '../data/config';
 import yeti from '../data/errorMessages';
+import { celebrate } from '../data/celebrate';
 
 const EVENT_TYPES = [
   { value: 'free',              label: 'Just show up — no registration',       sub: "No sign-up needed. Leave the price blank if it's free, or add a door price below." },
@@ -183,6 +184,7 @@ export default function SubmitEventPage() {
       if (data.activated) {
         setActivatedData(data);
         setStep('done');
+        celebrate();
       } else if (data.needsVerification) {
         setStep('verify');
       }
@@ -236,6 +238,7 @@ export default function SubmitEventPage() {
       } else if (data.activated) {
         setActivatedData(data);
         setStep('done');
+        celebrate();
       }
     } catch {
       setVerifyError(yeti.oops());

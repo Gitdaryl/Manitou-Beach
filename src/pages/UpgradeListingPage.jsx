@@ -3,6 +3,7 @@ import { Btn, FadeIn, SectionLabel, SectionTitle } from '../components/Shared';
 import { C } from '../data/config';
 import { Footer, GlobalStyles, Navbar } from '../components/Layout';
 import yeti from '../data/errorMessages';
+import { celebrate } from '../data/celebrate';
 
 const TIERS = {
   enhanced: { label: 'Showcased',        price: 9,  annual: 108, description: 'Clickable website link, business description, expandable listing card.' },
@@ -103,6 +104,8 @@ export default function UpgradeListingPage() {
       setCheckoutLoading(false);
     }
   }
+
+  React.useEffect(() => { if (successParam) celebrate(); }, []);
 
   // ── Success state ──────────────────────────────────────────
   if (successParam) {

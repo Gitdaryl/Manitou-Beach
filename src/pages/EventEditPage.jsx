@@ -3,6 +3,7 @@ import { FadeIn, SectionTitle, SectionLabel, Btn } from '../components/Shared';
 import { C } from '../data/config';
 import { Footer, GlobalStyles, Navbar, compressImage } from '../components/Layout';
 import yeti from '../data/errorMessages';
+import { celebrate } from '../data/celebrate';
 
 const EVENT_CATEGORIES = ["Live Music", "Food & Social", "Sports & Outdoors", "Community", "Arts & Culture", "Markets & Vendors", "Other"];
 
@@ -92,6 +93,7 @@ export default function EventEditPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Update failed");
       setSubmitted(true);
+      celebrate();
     } catch (err) {
       setSubmitError(err.message || yeti.oops());
     } finally {

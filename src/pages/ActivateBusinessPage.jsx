@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { C } from '../data/config';
 import { GlobalStyles, Navbar, Footer } from '../components/Layout';
 import yeti from '../data/errorMessages';
+import { celebrate } from '../data/celebrate';
 
 const TIERS = {
   enhanced: { label: 'Showcased', price: 9, annual: 108 },
@@ -53,6 +54,8 @@ export default function ActivateBusinessPage() {
       setStatus('idle');
     }
   };
+
+  useEffect(() => { if (success) celebrate(); }, []);
 
   // ── Success state ──
   if (success) {

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Btn, FadeIn, SectionLabel } from '../components/Shared';
 import { C } from '../data/config';
 import { Footer, GlobalStyles, Navbar } from '../components/Layout';
+import { celebrate } from '../data/celebrate';
 import { WINERY_VENUES } from './WineriesPage';
 import yeti from '../data/errorMessages';
 
@@ -58,6 +59,7 @@ export default function RatePage() {
       });
       if (!res.ok) throw new Error('Failed');
       setSubmitted(true);
+      celebrate();
     } catch {
       setError(yeti.oops());
       setSubmitting(false);

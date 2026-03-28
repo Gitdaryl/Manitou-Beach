@@ -3,6 +3,7 @@ import { Btn, FadeIn, SectionLabel, SectionTitle } from '../components/Shared';
 import { C, LISTING_CATEGORIES } from '../data/config';
 import { Footer, GlobalStyles, Navbar, compressImage } from '../components/Layout';
 import yeti from '../data/errorMessages';
+import { celebrate } from '../data/celebrate';
 
 // ─── helpers ────────────────────────────────────────────────
 function inputStyle(focused) {
@@ -132,6 +133,7 @@ export default function UpdateListingPage() {
       const data = await res.json();
       if (!data.success) throw new Error(data.error || 'Update failed');
       setStep(3);
+      celebrate();
     } catch (err) {
       setSubmitError(err.message || yeti.oops());
     } finally {

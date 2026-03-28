@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { C } from '../data/config';
 import { GlobalStyles, Navbar, Footer } from '../components/Layout';
 import yeti from '../data/errorMessages';
+import { celebrate } from '../data/celebrate';
 
 export default function ActivateWineryPage() {
   const params = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
@@ -45,6 +46,8 @@ export default function ActivateWineryPage() {
       setStatus('idle');
     }
   };
+
+  useEffect(() => { if (joined) celebrate(); }, []);
 
   // ── Success state ──
   if (joined) {
