@@ -959,6 +959,34 @@ export default function FoodTrucksPage() {
                   Copy My Check-in Link
                 </button>
 
+                <button
+                  onClick={() => {
+                    if (!window.confirm("Pack up for the day? Your pin will be removed from the map.")) return;
+                    fetch("/api/food-trucks", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ slug: truckSlug, token: truckToken, action: "checkout" }),
+                    })
+                      .then(r => r.json())
+                      .then(d => {
+                        if (d.ok) {
+                          setCheckinStatus("success");
+                          setCheckinMsg("You're all packed up! Your pin has been removed from the map. See you next time! 👋");
+                        }
+                      })
+                      .catch(() => {});
+                  }}
+                  style={{
+                    width: "100%", padding: "13px", marginTop: 8,
+                    background: "transparent", color: C.sunset,
+                    border: `1.5px solid ${C.sunset}44`, borderRadius: 10,
+                    fontSize: 14, fontWeight: 600, cursor: "pointer",
+                    fontFamily: "'Libre Franklin', sans-serif", transition: "all 0.2s",
+                  }}
+                >
+                  Pack Up &amp; Go — I'm Done for Today
+                </button>
+
                 <div style={{ display: "flex", justifyContent: "center", gap: 24, marginTop: 24 }}>
                   <button
                     onClick={() => { setCheckinStatus(""); setCheckinMsg(""); setCheckinSpecial(""); setCheckinDeparture(""); setCheckinNote(""); setCheckinLat(null); setCheckinLng(null); setPinStatus(""); }}

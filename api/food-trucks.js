@@ -143,6 +143,32 @@ async function handlePost(req, res) {
       return res.status(403).json({ error: 'Invalid token' });
     }
 
+    // ── CHECKOUT — truck is done for the day, pull the pin ──
+    if (action === 'checkout') {
+      try {
+        const patchRes = await fetch(`https://api.notion.com/v1/pages/${page.id}`, {
+          method: 'PATCH',
+          headers: {
+            Authorization: `Bearer ${process.env.NOTION_TOKEN_BUSINESS}`,
+            'Content-Type': 'application/json',
+            'Notion-Version': '2022-06-28',
+          },
+          body: JSON.stringify({
+            properties: {
+              'Last Checkin': { date: null },
+              'Departure Time': { rich_text: [{ type: 'text', text: { content: '' } }] },
+              'Todays Special': { rich_text: [{ type: 'text', text: { content: '' } }] },
+              'Location Note': { rich_text: [{ type: 'text', text: { content: '' } }] },
+            },
+          }),
+        });
+        if (!patchRes.ok) console.error('Checkout PATCH failed:', await patchRes.text());
+      } catch (err) {
+        console.error('Checkout error:', err.message);
+      }
+      return res.status(200).json({ ok: true });
+    }
+
     // ── PIN COLOR UPDATE — quick patch just for pin color ──
     if (action === 'update-pin-color') {
       try {
