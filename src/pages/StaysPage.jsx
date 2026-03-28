@@ -274,13 +274,13 @@ const TIERS = [
   },
   { key: 'featured', name: 'Featured', price: '$25', priceSub: '/mo', color: C.sunset, accent: C.sunset, icon: '✦',
     headline: 'Front & Center',
-    tagline: 'Premium placement that makes Airbnb listings look like classified ads.',
+    tagline: 'Top placement, Staff Pick badge, and a listing that feels like a destination.',
     features: ['Everything in Listed', 'Top of directory placement', 'Staff Pick badge', 'Premium dark card design', 'Priority in search & map', 'Only 3 slots per type'],
     limited: true,
   },
 ];
 
-function ListYourPropertySection() {
+function ListYourPropertySection({ stays = [] }) {
   const [tier, setTier] = useState('free');
   const [form, setForm] = useState({ name: '', stayType: '', address: '', bookingUrl: '', email: '', description: '', phone: '', beds: '', guests: '', amenities: [], photoUrl: '', _hp: '' });
   const [status, setStatus] = useState(null);
@@ -291,6 +291,14 @@ function ListYourPropertySection() {
   const isFeatured = tier === 'featured';
   const isListed = tier === 'listed';
   const isPaid = isFeatured || isListed;
+
+  // Featured slot availability — 3 per stay type
+  const selectedType = form.stayType;
+  const featuredCountForType = selectedType
+    ? stays.filter(s => s.tier === 'featured' && s.stayType === selectedType).length
+    : 0;
+  const featuredFull = isFeatured && selectedType && featuredCountForType >= 3;
+  const featuredSlotsLeft = selectedType ? Math.max(0, 3 - featuredCountForType) : 3;
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
   const toggleAmenity = (a) => setForm(f => ({
@@ -410,11 +418,14 @@ function ListYourPropertySection() {
                   <div style={{
                     position: 'absolute', top: -1, left: '50%', transform: 'translateX(-50%)',
                     fontSize: 9, fontWeight: 800, letterSpacing: 1.5, textTransform: 'uppercase',
-                    color: '#fff', background: t.accent,
+                    color: '#fff',
+                    background: featuredSlotsLeft === 0 ? C.warmGray : t.accent,
                     padding: '3px 12px', borderRadius: '0 0 8px 8px',
                     fontFamily: "'Libre Franklin', sans-serif",
                   }}>
-                    3 Slots Left
+                    {selectedType
+                      ? featuredSlotsLeft === 0 ? 'Waitlist' : `${featuredSlotsLeft} Slot${featuredSlotsLeft !== 1 ? 's' : ''} Left`
+                      : '3 Per Type'}
                   </div>
                 )}
 
@@ -510,16 +521,16 @@ function ListYourPropertySection() {
                 color: C.sunset, background: `${C.sunset}15`, padding: '6px 18px', borderRadius: 20,
                 border: `1px solid ${C.sunset}25`, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 12,
               }}>
-                Premium Onboarding
+                Front & Center
               </div>
               <h3 style={{
                 fontFamily: "'Libre Baskerville', serif", fontSize: 24, color: C.cream,
                 fontWeight: 400, margin: '0 0 8px', lineHeight: 1.3,
               }}>
-                Make them forget about Airbnb
+                Your property deserves more attention
               </h3>
               <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', margin: 0, lineHeight: 1.6 }}>
-                Your listing will look like it belongs on a boutique travel site — not a spreadsheet.
+                The kind of listing guests bookmark, share with friends, and come back to every summer.
               </p>
             </div>
           )}
@@ -574,7 +585,7 @@ function ListYourPropertySection() {
                   value={form.name}
                   onChange={e => set('name', e.target.value)}
                   required
-                  placeholder={isFeatured ? 'Your property deserves a great name' : 'e.g. Lakeside Cottage'}
+                  placeholder="e.g. Lakeside Cottage"
                 />
               </div>
 
@@ -822,31 +833,100 @@ function ListYourPropertySection() {
                 </div>
               )}
 
-              {/* Submit */}
-              <div style={{ marginTop: isFeatured ? 12 : 8 }}>
-                <Btn
-                  type="submit"
-                  variant={isFeatured ? 'primary' : isPaid ? 'primary' : 'outlineDark'}
-                  style={{
-                    width: '100%',
-                    padding: isFeatured ? '18px 24px' : '14px 20px',
-                    fontSize: isFeatured ? 14 : 13,
-                    borderRadius: isFeatured ? 14 : 12,
-                    ...(isFeatured ? {
-                      background: `linear-gradient(135deg, ${C.sunset}, ${C.sunsetLight})`,
-                      boxShadow: `0 4px 20px ${C.sunset}40`,
-                    } : {}),
-                  }}
-                >
-                  {status === 'sending'
-                    ? 'Submitting...'
-                    : isFeatured
-                      ? 'Claim Your Spot — $25/mo'
-                      : isListed
-                        ? 'Submit Listing — $9/mo'
-                        : 'Submit Free Listing'}
-                </Btn>
-              </div>
+              {/* Submit / Waitlist */}
+              {featuredFull ? (
+                <div style={{
+                  marginTop: 12, padding: '28px 24px', borderRadius: 16,
+                  background: 'rgba(255,255,255,0.04)',
+                  border: `1px solid rgba(255,255,255,0.1)`,
+                  textAlign: 'center',
+                }}>
+                  <div style={{
+                    fontSize: 9, fontWeight: 800, letterSpacing: 2, textTransform: 'uppercase',
+                    color: C.sunset, marginBottom: 10, fontFamily: "'Libre Franklin', sans-serif",
+                  }}>
+                    All 3 {selectedType} Featured Spots Are Taken
+                  </div>
+                  <p style={{ fontSize: 14, color: C.cream, fontFamily: "'Libre Baskerville', serif", margin: '0 0 6px', fontWeight: 400 }}>
+                    Join the waitlist — you'll be first to know
+                  </p>
+                  <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', margin: '0 0 20px', lineHeight: 1.5 }}>
+                    When a Featured spot opens up, we'll text or email you before anyone else.
+                    Current Featured holders get first right of renewal — if they pass, you're next in line.
+                  </p>
+                  <div style={{ display: 'flex', gap: 10, maxWidth: 400, margin: '0 auto 16px' }}>
+                    <input
+                      style={{
+                        ...inputStyle, flex: 1, fontSize: 13, padding: '12px 14px',
+                        textAlign: 'center',
+                      }}
+                      value={form.email}
+                      onChange={e => set('email', e.target.value)}
+                      placeholder="Your email"
+                      type="email"
+                    />
+                    <input
+                      style={{
+                        ...inputStyle, flex: 1, fontSize: 13, padding: '12px 14px',
+                        textAlign: 'center',
+                      }}
+                      value={form.phone}
+                      onChange={e => set('phone', e.target.value)}
+                      placeholder="Phone for text"
+                    />
+                  </div>
+                  <Btn
+                    type="submit"
+                    variant="primary"
+                    style={{
+                      width: '100%', maxWidth: 400,
+                      padding: '16px 24px', fontSize: 13, borderRadius: 12,
+                      background: `linear-gradient(135deg, ${C.lakeBlue}, ${C.lakeDark})`,
+                      boxShadow: `0 4px 16px ${C.lakeBlue}30`,
+                    }}
+                  >
+                    {status === 'sending' ? 'Joining...' : 'Join the Waitlist'}
+                  </Btn>
+                  <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)', marginTop: 12, lineHeight: 1.5 }}>
+                    You can also submit as a $9 Listed property now and upgrade when a slot opens.
+                  </p>
+                </div>
+              ) : (
+                <div style={{ marginTop: isFeatured ? 12 : 8 }}>
+                  {/* Slot count hint for featured */}
+                  {isFeatured && selectedType && featuredSlotsLeft > 0 && featuredSlotsLeft <= 2 && (
+                    <p style={{
+                      fontSize: 12, color: C.sunset, textAlign: 'center',
+                      fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600,
+                      marginBottom: 10,
+                    }}>
+                      {featuredSlotsLeft === 1 ? 'Last spot' : `${featuredSlotsLeft} spots left`} for {selectedType}
+                    </p>
+                  )}
+                  <Btn
+                    type="submit"
+                    variant={isFeatured ? 'primary' : isPaid ? 'primary' : 'outlineDark'}
+                    style={{
+                      width: '100%',
+                      padding: isFeatured ? '18px 24px' : '14px 20px',
+                      fontSize: isFeatured ? 14 : 13,
+                      borderRadius: isFeatured ? 14 : 12,
+                      ...(isFeatured ? {
+                        background: `linear-gradient(135deg, ${C.sunset}, ${C.sunsetLight})`,
+                        boxShadow: `0 4px 20px ${C.sunset}40`,
+                      } : {}),
+                    }}
+                  >
+                    {status === 'sending'
+                      ? 'Submitting...'
+                      : isFeatured
+                        ? 'Claim Your Spot — $25/mo'
+                        : isListed
+                          ? 'Submit Listing — $9/mo'
+                          : 'Submit Free Listing'}
+                  </Btn>
+                </div>
+              )}
 
               {status === 'error' && (
                 <p style={{
@@ -954,7 +1034,7 @@ export default function StaysPage() {
       <WaveDivider />
       <StaysMapSection stays={stays} />
 
-      <ListYourPropertySection />
+      <ListYourPropertySection stays={stays} />
       <NewsletterInline />
       <PageSponsorBanner pageName="stays" />
       <Footer />
