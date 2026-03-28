@@ -30,7 +30,7 @@ async function geocodeAndStore(pageId, address) {
 export default async function handler(req, res) {
   // POST — submit a new stay listing
   if (req.method === 'POST') {
-    const { name, stayType, phone, email, website, bookingUrl, description, address, beds, guests, amenities, logoUrl, photoUrl, tier, _hp } = req.body;
+    const { name, stayType, phone, email, website, bookingUrl, description, address, beds, guests, amenities, logoUrl, photoUrl, photoUrl2, photoUrl3, tier, _hp } = req.body;
 
     if (_hp) return res.status(200).json({ success: true });
     if (!name) return res.status(400).json({ error: 'Property name is required' });
@@ -61,6 +61,8 @@ export default async function handler(req, res) {
             ...(amenityTags.length && { 'Amenities': { multi_select: amenityTags } }),
             ...(logoUrl && { 'Logo URL': { url: normalizeUrl(logoUrl) } }),
             ...(photoUrl && { 'Photo URL': { url: normalizeUrl(photoUrl) } }),
+            ...(photoUrl2 && { 'Photo URL 2': { url: normalizeUrl(photoUrl2) } }),
+            ...(photoUrl3 && { 'Photo URL 3': { url: normalizeUrl(photoUrl3) } }),
             ...(tier && { 'Requested Tier': { select: { name: tier } } }),
           },
         }),

@@ -282,7 +282,7 @@ const TIERS = [
 
 function ListYourPropertySection({ stays = [] }) {
   const [tier, setTier] = useState('free');
-  const [form, setForm] = useState({ name: '', stayType: '', address: '', bookingUrl: '', email: '', description: '', phone: '', beds: '', guests: '', amenities: [], photoUrl: '', _hp: '' });
+  const [form, setForm] = useState({ name: '', stayType: '', address: '', bookingUrl: '', email: '', description: '', phone: '', beds: '', guests: '', amenities: [], photoUrl: '', photoUrl2: '', photoUrl3: '', _hp: '' });
   const [status, setStatus] = useState(null);
   const [dragOver, setDragOver] = useState(false);
   const formRef = useRef(null);
@@ -499,6 +499,100 @@ function ListYourPropertySection({ stays = [] }) {
           ))}
         </div>
 
+        {/* ── Sample Listings — what each tier looks like ── */}
+        <div style={{ marginBottom: 32 }}>
+          <div style={{
+            fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase',
+            color: activeTier.accent, fontFamily: "'Libre Franklin', sans-serif",
+            textAlign: 'center', marginBottom: 14,
+          }}>
+            {tier === 'free' ? 'Your listing will look like this' : tier === 'listed' ? 'Your listing will look like this' : 'This is what guests see'}
+          </div>
+
+          {/* Free sample */}
+          {tier === 'free' && (
+            <div style={{
+              background: '#fff', border: `1px solid #e0dbd4`, borderRadius: 16,
+              padding: '24px 24px', position: 'relative', overflow: 'hidden',
+            }}>
+              <div style={{ position: 'absolute', top: 0, left: 0, width: 4, height: '100%', background: C.warmGray, borderRadius: '16px 0 0 16px' }} />
+              <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.text, margin: '0 0 4px' }}>
+                Lakeside Cottage
+              </h3>
+              <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.lakeBlue, background: `${C.lakeBlue}15`, padding: '3px 8px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>
+                Cottage
+              </span>
+              <p style={{ fontSize: 12, color: C.textMuted, marginTop: 10, marginBottom: 0, fontStyle: 'italic' }}>
+                No photo, no booking link, no amenities — just a name in the directory.
+              </p>
+            </div>
+          )}
+
+          {/* Listed ($9) sample */}
+          {tier === 'listed' && (
+            <div style={{
+              background: '#fff', border: `1px solid #e0dbd4`, borderRadius: 16,
+              padding: '28px 24px', display: 'flex', gap: 20, position: 'relative', overflow: 'hidden',
+              boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+            }}>
+              <div style={{ position: 'absolute', top: 0, left: 0, width: 4, height: '100%', background: C.lakeBlue, borderRadius: '16px 0 0 16px' }} />
+              <div style={{ width: 100, height: 100, borderRadius: 14, background: `linear-gradient(135deg, ${C.lakeBlue}20, ${C.sage}15)`, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 36 }}>
+                🏕
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 6, marginBottom: 4 }}>
+                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.text, margin: 0 }}>Pine Ridge Campsite</h3>
+                  <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: '#7A8E72', background: '#7A8E7215', padding: '3px 8px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>Camping</span>
+                </div>
+                <div style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 6 }}>🛏 2 beds · 👥 Sleeps 6</div>
+                <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: '0 0 10px' }}>
+                  Wooded sites with fire rings, just a short walk to the lake. Wake up to birdsong and coffee over the campfire.
+                </p>
+                <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', marginBottom: 10 }}>
+                  {['Waterfront', 'Fire Pit', 'Boat Launch'].map(a => (
+                    <span key={a} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 10, background: `${C.lakeBlue}10`, color: C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, border: `1px solid ${C.lakeBlue}20` }}>
+                      {AMENITY_ICONS[a]} {a}
+                    </span>
+                  ))}
+                </div>
+                <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif" }}>Book Now →</span>
+              </div>
+            </div>
+          )}
+
+          {/* Featured ($25) sample */}
+          {tier === 'featured' && (
+            <div style={{
+              background: C.dusk, border: `1px solid ${C.lakeDark}`, borderRadius: 16,
+              padding: '28px 24px', display: 'flex', gap: 20, position: 'relative', overflow: 'hidden',
+            }}>
+              <div style={{ position: 'absolute', top: 0, left: 0, width: 4, height: '100%', background: C.sunset, borderRadius: '16px 0 0 16px' }} />
+              <img src="/images/yeti/yeti-cabin.jpg" alt="" style={{ width: 120, height: 120, borderRadius: 14, objectFit: 'cover', flexShrink: 0, background: C.night }} />
+              <div style={{ flex: 1 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 6, marginBottom: 4 }}>
+                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.cream, margin: 0 }}>Yeti's Cozy Cabin</h3>
+                  <div style={{ display: 'flex', gap: 6 }}>
+                    <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.cream, background: C.sunset, padding: '3px 8px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>✦ Staff Pick</span>
+                    <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.cream, background: `${C.lakeBlue}40`, padding: '3px 8px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>Cottage</span>
+                  </div>
+                </div>
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontFamily: "'Libre Franklin', sans-serif", marginBottom: 6 }}>🛏 3 beds · 👥 Sleeps 8</div>
+                <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', lineHeight: 1.6, margin: '0 0 10px' }}>
+                  Lakefront cabin with a hot tub, fire pit, and the best sunset view on Devils Lake. The kind of place you never want to leave.
+                </p>
+                <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', marginBottom: 10 }}>
+                  {['Waterfront', 'Fire Pit', 'Dock', 'WiFi', 'Kitchen'].map(a => (
+                    <span key={a} style={{ fontSize: 10, padding: '3px 8px', borderRadius: 10, background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)', fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, border: '1px solid rgba(255,255,255,0.08)' }}>
+                      {AMENITY_ICONS[a]} {a}
+                    </span>
+                  ))}
+                </div>
+                <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: C.sunset, fontFamily: "'Libre Franklin', sans-serif" }}>Book Now →</span>
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* ── The Form ── */}
         <div ref={formRef} style={{
           background: formBg,
@@ -620,11 +714,13 @@ function ListYourPropertySection({ stays = [] }) {
               {/* ── Paid-tier fields ── */}
               {isPaid && (
                 <>
-                  {/* Photo Drop Zone */}
+                  {/* Photo Drop Zone(s) */}
                   <div>
                     <label style={labelStyle}>
-                      {isFeatured ? 'Hero Photo — this is the first thing guests see' : 'Property Photo'}
+                      {isFeatured ? 'Photos — 3 images to show off your property' : 'Property Photo'}
                     </label>
+
+                    {/* Hero photo drop zone */}
                     <div
                       onDragOver={e => { e.preventDefault(); setDragOver(true); }}
                       onDragLeave={() => setDragOver(false)}
@@ -655,7 +751,7 @@ function ListYourPropertySection({ stays = [] }) {
                         color: isFeatured ? C.cream : C.text,
                         fontFamily: "'Libre Franklin', sans-serif", marginBottom: 6,
                       }}>
-                        {isFeatured ? 'Drop your best photo here' : 'Drag a photo here'}
+                        {isFeatured ? 'Hero photo — the one that stops the scroll' : 'Drag a photo here'}
                       </div>
                       <div style={{
                         fontSize: 12,
@@ -675,13 +771,54 @@ function ListYourPropertySection({ stays = [] }) {
                         Or Choose File
                       </div>
                     </div>
-                    {/* Fallback URL input */}
                     <input
                       style={{ ...inputStyle, marginTop: 8, fontSize: 12, padding: '10px 14px' }}
                       value={form.photoUrl}
                       onChange={e => set('photoUrl', e.target.value)}
                       placeholder="Or paste an image URL"
                     />
+
+                    {/* Gallery photos 2 & 3 — Featured only */}
+                    {isFeatured && (
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 14 }}>
+                        {[
+                          { key: 'photoUrl2', label: 'Interior or living space', num: '2' },
+                          { key: 'photoUrl3', label: 'View, dock, or outdoor area', num: '3' },
+                        ].map(slot => (
+                          <div key={slot.key}>
+                            <div style={{
+                              borderRadius: 14,
+                              border: `2px dashed rgba(255,255,255,0.12)`,
+                              background: 'rgba(255,255,255,0.03)',
+                              padding: '28px 16px',
+                              textAlign: 'center',
+                              cursor: 'pointer',
+                              transition: 'all 0.2s',
+                            }}>
+                              <div style={{ fontSize: 28, marginBottom: 8, opacity: 0.6 }}>📷</div>
+                              <div style={{
+                                fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.5)',
+                                fontFamily: "'Libre Franklin', sans-serif", marginBottom: 4,
+                              }}>
+                                Photo {slot.num}
+                              </div>
+                              <div style={{
+                                fontSize: 11, color: 'rgba(255,255,255,0.3)',
+                                fontFamily: "'Libre Franklin', sans-serif",
+                              }}>
+                                {slot.label}
+                              </div>
+                            </div>
+                            <input
+                              style={{ ...inputStyle, marginTop: 6, fontSize: 11, padding: '8px 12px' }}
+                              value={form[slot.key]}
+                              onChange={e => set(slot.key, e.target.value)}
+                              placeholder="Paste image URL"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   {/* Address */}
