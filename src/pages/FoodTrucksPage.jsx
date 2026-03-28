@@ -13,10 +13,31 @@ function formatDeparture(dt) {
   return dt;
 }
 
+// Pin color palette — truck owners pick one at check-in
+const PIN_COLORS = [
+  { id: 'sage',      fill: '#7A8E72', stroke: '#5E7258', label: 'Sage' },
+  { id: 'red',       fill: '#C44D3F', stroke: '#9B3A2F', label: 'Red' },
+  { id: 'blue',      fill: '#4A7FB5', stroke: '#365D87', label: 'Blue' },
+  { id: 'orange',    fill: '#D4845A', stroke: '#B06A42', label: 'Orange' },
+  { id: 'purple',    fill: '#7B5EA7', stroke: '#5D4580', label: 'Purple' },
+  { id: 'teal',      fill: '#4A9E8E', stroke: '#367A6D', label: 'Teal' },
+  { id: 'gold',      fill: '#C4A035', stroke: '#9E7F28', label: 'Gold' },
+  { id: 'navy',      fill: '#3D5A6E', stroke: '#2B4050', label: 'Navy' },
+  { id: 'coral',     fill: '#E07060', stroke: '#B85A4C', label: 'Coral' },
+  { id: 'forest',    fill: '#4A6741', stroke: '#354D30', label: 'Forest' },
+  { id: 'charcoal',  fill: '#555555', stroke: '#3A3A3A', label: 'Charcoal' },
+  { id: 'berry',     fill: '#A3456A', stroke: '#7D3452', label: 'Berry' },
+];
+
+function getPinColor(colorId) {
+  return PIN_COLORS.find(c => c.id === colorId) || PIN_COLORS[0];
+}
+
 // Build a teardrop drop-pin SVG with floating name callout
-function makeMapPin(name, selected, G) {
+function makeMapPin(name, selected, G, colorId) {
   const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   const initial = name.charAt(0).toUpperCase();
+  const pc = getPinColor(colorId);
 
   // Pin geometry
   const pinR = 18; // pin head outer radius
@@ -46,13 +67,13 @@ function makeMapPin(name, selected, G) {
   const pCy = labelH + gap + pinCy;
   const pBottom = labelH + gap + pinH;
 
-  // Colors
-  const pinFill = selected ? '#5B7A52' : '#7A8E72';
-  const pinStroke = selected ? '#3F5A38' : '#5E7258';
+  // Colors — use truck's chosen color, darken on select
+  const pinFill = selected ? pc.stroke : pc.fill;
+  const pinStroke = pc.stroke;
   const innerFill = '#FFFFFF';
   const initialColor = pinFill;
-  const labelBg = selected ? '#5B7A52' : '#FAF6EF';
-  const labelStroke = selected ? '#3F5A38' : '#7A8E72';
+  const labelBg = selected ? pc.stroke : '#FAF6EF';
+  const labelStroke = selected ? pc.stroke : pc.fill;
   const labelText = selected ? '#FFFFFF' : '#3B3228';
 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${totalW}" height="${totalH}">
@@ -75,10 +96,11 @@ function makeMapPin(name, selected, G) {
 }
 
 // Upgrade a pin to show the truck's photo instead of an initial
-function upgradeMarkerWithPhoto(marker, photoUrl, name, selected, G) {
+function upgradeMarkerWithPhoto(marker, photoUrl, name, selected, G, colorId) {
   const img = new Image();
   img.crossOrigin = 'anonymous';
   img.onload = () => {
+    const pc = getPinColor(colorId);
     // Pin geometry (must match makeMapPin)
     const pinR = 18, circR = 13, pinTip = 14;
     const pinW = pinR * 2 + 4, pinH = pinR * 2 + pinTip + 4, pinCy = pinR + 2;
@@ -99,10 +121,10 @@ function upgradeMarkerWithPhoto(marker, photoUrl, name, selected, G) {
     const ctx = canvas.getContext('2d');
     ctx.scale(scale, scale);
 
-    const pinFill = selected ? '#5B7A52' : '#7A8E72';
-    const pinStroke = selected ? '#3F5A38' : '#5E7258';
-    const labelBg = selected ? '#5B7A52' : '#FAF6EF';
-    const labelStroke = selected ? '#3F5A38' : '#7A8E72';
+    const pinFill = selected ? pc.stroke : pc.fill;
+    const pinStroke = pc.stroke;
+    const labelBg = selected ? pc.stroke : '#FAF6EF';
+    const labelStroke = selected ? pc.stroke : pc.fill;
     const labelText = selected ? '#FFFFFF' : '#3B3228';
 
     // Shadow
@@ -231,6 +253,7 @@ export default function FoodTrucksPage() {
   const [checkinNote, setCheckinNote] = useState("");
   const [checkinSpecial, setCheckinSpecial] = useState("");
   const [checkinDeparture, setCheckinDeparture] = useState("");
+  const [checkinPinColor, setCheckinPinColor] = useState("sage");
   const [checkinStatus, setCheckinStatus] = useState("");
   const [checkinMsg, setCheckinMsg] = useState("");
 
@@ -297,9 +320,10 @@ export default function FoodTrucksPage() {
     }
   };
 
-  // Sync comingDateLocal when checkinTruck first loads
+  // Sync comingDateLocal and pinColor when checkinTruck first loads
   useEffect(() => {
     if (checkinTruck?.comingDate) setComingDateLocal(checkinTruck.comingDate);
+    if (checkinTruck?.pinColor) setCheckinPinColor(checkinTruck.pinColor);
   }, [checkinTruck]);
 
   // Fetch events accepting vendors (vendor mode)
@@ -445,7 +469,7 @@ export default function FoodTrucksPage() {
     if (!pts.length) return;
 
     const G = window.google.maps;
-    const makeIcon = (name, selected) => makeMapPin(name, selected, G);
+    const makeIcon = (name, selected, colorId) => makeMapPin(name, selected, G, colorId);
 
     if (!mapInstanceRef.current) {
       mapInstanceRef.current = new G.Map(mapDivRef.current, {
@@ -468,20 +492,18 @@ export default function FoodTrucksPage() {
 
     pts.forEach(truck => {
       if (isNearby(truck)) bounds.extend({ lat: truck.lat, lng: truck.lng });
-      const m = new G.Marker({ position: { lat: truck.lat, lng: truck.lng }, map: mapInstanceRef.current, icon: makeIcon(truck.name, false), title: truck.name });
+      const m = new G.Marker({ position: { lat: truck.lat, lng: truck.lng }, map: mapInstanceRef.current, icon: makeIcon(truck.name, false, truck.pinColor), title: truck.name });
       m.addListener('click', () => {
         setSelectedTruck(prev => prev?.id === truck.id ? null : truck);
         markersRef.current.forEach(mk => {
           const sel = mk.getTitle() === truck.name;
-          mk.setIcon(makeIcon(mk.getTitle(), sel));
-          // Re-upgrade photo pins after selection change
           const t = pts.find(p => p.name === mk.getTitle());
-          if (t?.photoUrl) upgradeMarkerWithPhoto(mk, t.photoUrl, t.name, sel, G);
+          mk.setIcon(makeIcon(mk.getTitle(), sel, t?.pinColor));
+          if (t?.photoUrl) upgradeMarkerWithPhoto(mk, t.photoUrl, t.name, sel, G, t?.pinColor);
         });
       });
       markersRef.current.push(m);
-      // Upgrade to photo pin if truck has a photo
-      if (truck.photoUrl) upgradeMarkerWithPhoto(m, truck.photoUrl, truck.name, false, G);
+      if (truck.photoUrl) upgradeMarkerWithPhoto(m, truck.photoUrl, truck.name, false, G, truck.pinColor);
     });
 
     // Fit bounds only to nearby trucks so far-away ones don't zoom out the map
@@ -531,6 +553,7 @@ export default function FoodTrucksPage() {
           lat, lng,
           note: checkinNote,
           todaysSpecial: checkinSpecial,
+          pinColor: checkinPinColor,
           departureTime: (() => {
             if (!checkinDeparture || checkinDeparture === 'after-dark') return checkinDeparture || '';
             const d = new Date(); d.setHours(parseInt(checkinDeparture), 0, 0, 0);
@@ -824,6 +847,38 @@ export default function FoodTrucksPage() {
                 </div>
               </div>
 
+              {/* Change Pin Color on the fly */}
+              <div style={{ marginBottom: 20 }}>
+                <label style={{ fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: C.textMuted, fontWeight: 600, display: "block", marginBottom: 8 }}>
+                  Change your pin color
+                </label>
+                <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                  {PIN_COLORS.map(c => (
+                    <button
+                      key={c.id}
+                      type="button"
+                      title={c.label}
+                      onClick={() => {
+                        setCheckinPinColor(c.id);
+                        fetch("/api/food-trucks", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ slug: truckSlug, token: truckToken, pinColor: c.id, action: 'update-pin-color' }),
+                        }).catch(() => {});
+                      }}
+                      style={{
+                        width: 28, height: 28, borderRadius: "50%",
+                        background: c.fill,
+                        border: checkinPinColor === c.id ? `3px solid ${C.text}` : `2px solid transparent`,
+                        cursor: "pointer",
+                        boxShadow: checkinPinColor === c.id ? `0 0 0 2px #FFFFFF, 0 0 8px ${c.fill}66` : 'none',
+                        transition: "all 0.15s",
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+
               {/* Map Preview */}
               {checkinLat && checkinLng && mapsKey && (
                 <div style={{ marginBottom: 20, borderRadius: 12, overflow: "hidden", border: `1px solid ${C.sand}` }}>
@@ -1008,6 +1063,28 @@ export default function FoodTrucksPage() {
                 placeholder="e.g. Half-price pulled pork, new brisket sandwich…"
                 style={inputStyle}
               />
+
+              <label style={labelStyle}>
+                Your Pin Color
+              </label>
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 16 }}>
+                {PIN_COLORS.map(c => (
+                  <button
+                    key={c.id}
+                    type="button"
+                    onClick={() => setCheckinPinColor(c.id)}
+                    title={c.label}
+                    style={{
+                      width: 32, height: 32, borderRadius: "50%",
+                      background: c.fill,
+                      border: checkinPinColor === c.id ? `3px solid ${C.text}` : `2px solid transparent`,
+                      cursor: "pointer",
+                      boxShadow: checkinPinColor === c.id ? `0 0 0 2px #FFFFFF, 0 0 8px ${c.fill}66` : 'none',
+                      transition: "all 0.15s",
+                    }}
+                  />
+                ))}
+              </div>
 
               <label style={labelStyle}>
                 Leaving around… <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>(optional)</span>
@@ -1251,7 +1328,7 @@ export default function FoodTrucksPage() {
                       </div>
                     </div>
                     <button
-                      onClick={() => { setSelectedTruck(null); const G = window.google.maps; const pts2 = (trucks || []).filter(t => isLive(t) && typeof t.lat === 'number'); markersRef.current.forEach(m => { m.setIcon(makeMapPin(m.getTitle(), false, G)); const t = pts2.find(p => p.name === m.getTitle()); if (t?.photoUrl) upgradeMarkerWithPhoto(m, t.photoUrl, t.name, false, G); }); }}
+                      onClick={() => { setSelectedTruck(null); const G = window.google.maps; const pts2 = (trucks || []).filter(t => isLive(t) && typeof t.lat === 'number'); markersRef.current.forEach(m => { const t = pts2.find(p => p.name === m.getTitle()); m.setIcon(makeMapPin(m.getTitle(), false, G, t?.pinColor)); if (t?.photoUrl) upgradeMarkerWithPhoto(m, t.photoUrl, t.name, false, G, t?.pinColor); }); }}
                       style={{ flexShrink: 0, width: 28, height: 28, borderRadius: '50%', background: C.sand, border: 'none', cursor: 'pointer', fontSize: 14, color: C.textMuted, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'sans-serif' }}
                     >×</button>
                   </div>

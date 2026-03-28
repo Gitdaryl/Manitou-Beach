@@ -77,6 +77,7 @@ async function handleGet(req, res) {
           comingDate: p['Coming Date']?.date?.start || null,
           comingEventId: p['Coming Event ID']?.rich_text?.[0]?.text?.content || null,
           comingEventName: p['Coming Event Name']?.rich_text?.[0]?.text?.content || null,
+          pinColor: p['Pin Color']?.rich_text?.[0]?.text?.content || '',
         };
       })
       .filter(Boolean)
@@ -95,7 +96,7 @@ async function handleGet(req, res) {
 
 async function handlePost(req, res) {
   try {
-    const { slug, token, action, comingDate, scheduleNote, lat, lng, note, todaysSpecial, departureTime } = req.body || {};
+    const { slug, token, action, comingDate, scheduleNote, lat, lng, note, todaysSpecial, departureTime, pinColor } = req.body || {};
 
     if (!slug || !token) {
       return res.status(400).json({ error: 'slug and token are required' });
@@ -142,6 +143,21 @@ async function handlePost(req, res) {
       return res.status(403).json({ error: 'Invalid token' });
     }
 
+    // ── PIN COLOR UPDATE — quick patch just for pin color ──
+    if (action === 'update-pin-color') {
+      const patchRes = await fetch(`https://api.notion.com/v1/pages/${page.id}`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${process.env.NOTION_TOKEN_BUSINESS}`,
+          'Content-Type': 'application/json',
+          'Notion-Version': '2022-06-28',
+        },
+        body: JSON.stringify({ properties: { 'Pin Color': { rich_text: [{ type: 'text', text: { content: (pinColor || '').slice(0, 20) } }] } } }),
+      });
+      if (!patchRes.ok) return res.status(500).json({ error: 'Pin color update failed' });
+      return res.status(200).json({ ok: true });
+    }
+
     // ── SCHEDULE ACTION — only patches Coming Date ──
     if (action === 'schedule') {
       const updateProps = {
@@ -172,6 +188,7 @@ async function handlePost(req, res) {
       'Location Note': { rich_text: [{ type: 'text', text: { content: note || '' } }] },
       'Todays Special': { rich_text: [{ type: 'text', text: { content: (todaysSpecial || '').slice(0, 200) } }] },
       'Departure Time': { rich_text: [{ type: 'text', text: { content: (departureTime || '').slice(0, 50) } }] },
+      'Pin Color': { rich_text: [{ type: 'text', text: { content: (pinColor || '').slice(0, 20) } }] },
     };
 
     if (typeof lat === 'number' && typeof lng === 'number') {
