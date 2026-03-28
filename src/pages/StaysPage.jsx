@@ -182,6 +182,7 @@ function StayCard({ stay, i }) {
   return (
     <FadeIn delay={i * 80} direction={i % 2 === 0 ? 'left' : 'right'}>
       <div
+        className="stay-card-row"
         style={{
           background: isFeatured ? C.dusk : '#fff',
           border: `1px solid ${isFeatured ? C.lakeDark : '#e0dbd4'}`,
@@ -210,12 +211,12 @@ function StayCard({ stay, i }) {
 
         {/* Logo */}
         {stay.logo && (
-          <img src={stay.logo} alt="" style={{ width: 120, height: 120, borderRadius: 16, objectFit: 'cover', flexShrink: 0, background: C.sand }} />
+          <img className="stay-card-logo" src={stay.logo} alt="" style={{ width: 120, height: 120, borderRadius: 16, objectFit: 'cover', flexShrink: 0, background: C.sand }} />
         )}
 
-        <div style={{ flex: 1 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
           {/* Header */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 8, marginBottom: 6 }}>
+          <div className="stay-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 8, marginBottom: 6 }}>
             <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: isFeatured ? C.cream : C.text, margin: 0 }}>
               {stay.name}
             </h3>
@@ -268,7 +269,7 @@ function StayCard({ stay, i }) {
           )}
 
           {/* Address, Phone & Email */}
-          <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', marginBottom: 12 }}>
+          <div className="stay-card-meta" style={{ display: 'flex', gap: 20, flexWrap: 'wrap', marginBottom: 12 }}>
             {stay.address && <span style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted }}>📍 {stay.address}</span>}
             {stay.phone && <a href={`tel:${stay.phone}`} onClick={e => e.stopPropagation()} style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted, textDecoration: 'none' }}>📞 {stay.phone}</a>}
             {stay.email && <a href={`mailto:${stay.email}?subject=Inquiry about ${encodeURIComponent(stay.name)}`} onClick={e => e.stopPropagation()} style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted, textDecoration: 'none' }}>✉️ {stay.email}</a>}
@@ -633,7 +634,7 @@ const TIERS = [
   { key: 'featured', name: 'Featured', price: '$25', priceSub: '/mo', color: C.sunset, accent: C.sunset, icon: '✦',
     headline: 'Front & Center',
     tagline: 'Top placement, Staff Pick badge, and a listing that feels like a destination.',
-    features: ['Everything in Listed', 'Top of directory placement', 'Staff Pick badge', 'Premium dark card design', 'Priority in search & map', 'Only 3 slots per type'],
+    features: ['Everything in Listed', 'Top of directory placement', 'Staff Pick badge', 'Premium dark card design', 'Priority in search & map', 'Featured in weekly newsletter', 'Social media spotlight post', 'Only 3 slots per type'],
     limited: true,
   },
 ];
@@ -741,13 +742,14 @@ function ListYourPropertySection({ stays = [] }) {
         </p>
 
         {/* ── Tier Selector Buttons ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 32 }}>
+        <div className="tier-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 32 }}>
           {TIERS.map(t => {
             const active = tier === t.key;
             return (
               <button
                 key={t.key}
                 type="button"
+                className={`tier-btn-inner${active ? ' active' : ''}`}
                 onClick={() => selectTier(t.key)}
                 style={{
                   position: 'relative',
@@ -902,15 +904,15 @@ function ListYourPropertySection({ stays = [] }) {
 
           {/* Listed ($9) sample — same cabin, full card with photo */}
           {tier === 'listed' && (
-            <div style={{
+            <div className="sample-card-row" style={{
               background: '#fff', border: `1px solid #e0dbd4`, borderRadius: 16,
               padding: '32px 28px', display: 'flex', gap: 24, alignItems: 'flex-start',
               position: 'relative', overflow: 'hidden',
               boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
             }}>
               <div style={{ position: 'absolute', top: 0, left: 0, width: 4, height: '100%', background: C.lakeBlue, borderRadius: '16px 0 0 16px' }} />
-              <img src="/images/yeti/yeti-cabin.jpg" alt="" style={{ width: 120, height: 120, borderRadius: 16, objectFit: 'cover', flexShrink: 0, background: C.sand }} />
-              <div style={{ flex: 1 }}>
+              <img className="sample-card-img" src="/images/yeti/yeti-cabin.jpg" alt="" style={{ width: 120, height: 120, borderRadius: 16, objectFit: 'cover', flexShrink: 0, background: C.sand }} />
+              <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 8, marginBottom: 6 }}>
                   <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.text, margin: 0 }}>Yeti's Cozy Cabin</h3>
                   <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.lakeBlue, background: `${C.lakeBlue}15`, padding: '4px 10px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>Cottage</span>
@@ -946,8 +948,9 @@ function ListYourPropertySection({ stays = [] }) {
                 <div style={{ position: 'absolute', top: 0, left: 0, width: 4, height: '100%', background: C.sunset, borderRadius: '16px 0 0 16px' }} />
 
                 {/* Card body */}
-                <div style={{ padding: '32px 28px', display: 'flex', gap: 24, alignItems: 'flex-start' }}>
+                <div className="sample-card-row" style={{ padding: '32px 28px', display: 'flex', gap: 24, alignItems: 'flex-start' }}>
                   <img
+                    className="sample-card-img"
                     src={samplePhotos[0]}
                     alt=""
                     onClick={() => setLightbox({ images: samplePhotos, startIndex: 0 })}
@@ -955,7 +958,7 @@ function ListYourPropertySection({ stays = [] }) {
                     onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.03)'}
                     onMouseLeave={e => e.currentTarget.style.transform = 'none'}
                   />
-                  <div style={{ flex: 1 }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 8, marginBottom: 6 }}>
                       <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.cream, margin: 0 }}>Yeti's Cozy Cabin</h3>
                       <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
@@ -983,7 +986,7 @@ function ListYourPropertySection({ stays = [] }) {
                 </div>
 
                 {/* Photo gallery strip — Featured perk */}
-                <div style={{
+                <div className="gallery-strip" style={{
                   display: 'flex', gap: 10, padding: '0 28px 24px',
                   borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 20,
                 }}>
@@ -1100,7 +1103,7 @@ function ListYourPropertySection({ stays = [] }) {
               </div>
 
               {/* Type + Phone — all tiers */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <div>
                   <label style={labelStyle}>Type</label>
                   <select
@@ -1196,7 +1199,7 @@ function ListYourPropertySection({ stays = [] }) {
 
                     {/* Gallery photos 2 & 3 — Featured only */}
                     {isFeatured && (
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 14 }}>
+                      <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 14 }}>
                         {[
                           { key: 'photoUrl2', label: 'Interior or living space', num: '2' },
                           { key: 'photoUrl3', label: 'View, dock, or outdoor area', num: '3' },
@@ -1254,7 +1257,7 @@ function ListYourPropertySection({ stays = [] }) {
                   </div>
 
                   {/* Beds + Guests */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                  <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                     <div>
                       <label style={labelStyle}>Bedrooms</label>
                       <input type="number" min="0" style={inputStyle} value={form.beds} onChange={e => set('beds', e.target.value)} placeholder="3" />
@@ -1338,10 +1341,10 @@ function ListYourPropertySection({ stays = [] }) {
                     When a Featured spot opens up, we'll text or email you before anyone else.
                     Current Featured holders get first right of renewal — if they pass, you're next in line.
                   </p>
-                  <div style={{ display: 'flex', gap: 10, maxWidth: 400, margin: '0 auto 16px' }}>
+                  <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, maxWidth: 400, margin: '0 auto 16px' }}>
                     <input
                       style={{
-                        ...inputStyle, flex: 1, fontSize: 13, padding: '12px 14px',
+                        ...inputStyle, fontSize: 13, padding: '12px 14px',
                         textAlign: 'center',
                       }}
                       value={form.email}
@@ -1351,7 +1354,7 @@ function ListYourPropertySection({ stays = [] }) {
                     />
                     <input
                       style={{
-                        ...inputStyle, flex: 1, fontSize: 13, padding: '12px 14px',
+                        ...inputStyle, fontSize: 13, padding: '12px 14px',
                         textAlign: 'center',
                       }}
                       value={form.phone}
@@ -1597,7 +1600,7 @@ function ManageListingSection() {
                   <input style={inputStyle} value={editForm.name} onChange={e => setField('name', e.target.value)} required />
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                   <div>
                     <label style={labelStyle}>Type</label>
                     <select style={inputStyle} value={editForm.stayType} onChange={e => setField('stayType', e.target.value)}>
@@ -1631,7 +1634,7 @@ function ManageListingSection() {
                   <input style={inputStyle} value={editForm.website} onChange={e => setField('website', e.target.value)} placeholder="https://..." />
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                   <div>
                     <label style={labelStyle}>Bedrooms</label>
                     <input type="number" min="0" style={inputStyle} value={editForm.beds} onChange={e => setField('beds', e.target.value)} />
@@ -1653,7 +1656,7 @@ function ManageListingSection() {
                 </div>
 
                 {(listing.tier === 'featured' || editForm.photoUrl2 || editForm.photoUrl3) && (
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                  <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                     <div>
                       <label style={labelStyle}>Photo 2</label>
                       <input style={inputStyle} value={editForm.photoUrl2} onChange={e => setField('photoUrl2', e.target.value)} placeholder="Paste image URL" />
@@ -1700,11 +1703,11 @@ function ManageListingSection() {
               </form>
             ) : (
               /* ── Listing Summary (read-only) ── */
-              <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start' }}>
+              <div className="manage-card-row" style={{ display: 'flex', gap: 20, alignItems: 'flex-start' }}>
                 {listing.photo && (
                   <img src={listing.photo} alt="" style={{ width: 80, height: 80, borderRadius: 12, objectFit: 'cover', flexShrink: 0, background: C.sand }} />
                 )}
-                <div style={{ flex: 1 }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8, marginBottom: 4 }}>
                     <h4 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.text, margin: 0 }}>
                       {listing.name}
@@ -1755,8 +1758,29 @@ export default function StaysPage() {
   const filtered = filter === 'All' ? stays : stays.filter(s => s.stayType === filter);
 
   return (
-    <>
+    <div style={{ overflowX: 'hidden' }}>
       <GlobalStyles />
+      <style>{`
+        @media (max-width: 600px) {
+          .stay-card-row { flex-direction: column !important; gap: 16px !important; }
+          .stay-card-row .stay-card-logo { width: 100% !important; height: 180px !important; border-radius: 12px !important; }
+          .sample-card-row { flex-direction: column !important; gap: 16px !important; }
+          .sample-card-row .sample-card-img { width: 100% !important; height: 180px !important; border-radius: 12px !important; }
+          .tier-grid { grid-template-columns: 1fr !important; gap: 10px !important; }
+          .form-grid-2 { grid-template-columns: 1fr !important; }
+          .manage-card-row { flex-direction: column !important; gap: 12px !important; }
+          .manage-card-row img { width: 100% !important; height: 160px !important; border-radius: 12px !important; }
+          .gallery-strip { gap: 6px !important; padding: 0 16px 16px !important; }
+          .gallery-strip img { height: 72px !important; border-radius: 8px !important; }
+          .filter-bar-inner { flex-direction: column !important; gap: 10px !important; }
+          .stay-card-header { flex-direction: column !important; align-items: flex-start !important; }
+          .stay-card-meta { flex-direction: column !important; gap: 6px !important; }
+        }
+        @media (max-width: 480px) {
+          .tier-btn-inner { padding: 20px 14px 16px !important; }
+          .tier-btn-inner.active { padding: 24px 16px 20px !important; }
+        }
+      `}</style>
       <PromoBanner />
       <Navbar />
       <StaysHero />
@@ -1768,7 +1792,7 @@ export default function StaysPage() {
         position: 'sticky', top: 0, zIndex: 100,
         borderBottom: `1px solid ${C.sand}`,
       }}>
-        <div style={{ maxWidth: 960, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+        <div className="filter-bar-inner" style={{ maxWidth: 960, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
           {/* Type filters */}
           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', flex: 1, justifyContent: 'center' }}>
             {STAY_TYPES.map(type => (
@@ -1864,6 +1888,6 @@ export default function StaysPage() {
       <NewsletterInline />
       <PageSponsorBanner pageName="stays" />
       <Footer />
-    </>
+    </div>
   );
 }

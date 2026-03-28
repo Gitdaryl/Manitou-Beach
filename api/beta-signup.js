@@ -179,7 +179,7 @@ export default async function handler(req, res) {
           `Hey ${firstName} — you're in! Welcome to the Manitou Beach beta.\n\n` +
           `Your personal access code: ${code}\n\n` +
           `This code is unique to you — please don't share it. Use it to enter the site each time you visit.\n\n` +
-          `Save this message. Site opens ${LAUNCH_DATE_DISPLAY} at manitoubeachmichigan.com\n\n` +
+          `You have exclusive early access starting right now. The site opens to the public ${LAUNCH_DATE_DISPLAY} at manitoubeachmichigan.com — you get a head start.\n\n` +
           `Reply STOP to opt out.`;
 
         await fetch(
