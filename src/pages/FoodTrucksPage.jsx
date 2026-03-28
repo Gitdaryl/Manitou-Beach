@@ -1296,10 +1296,10 @@ export default function FoodTrucksPage() {
                 <FadeIn key={truck.id} delay={i * 60}>
                   <div
                     ref={el => { if (truck.slug) truckCardRefs.current[truck.slug] = el; }}
-                    style={{ background: C.cream, borderRadius: 18, border: `1.5px solid ${C.sage}28`, overflow: "hidden", height: "100%", boxShadow: `0 2px 12px ${C.sage}12` }}
+                    style={{ background: "#FFFFFF", borderRadius: 18, border: `1px solid ${C.sand}`, overflow: "hidden", height: "100%", boxShadow: `0 4px 20px rgba(0,0,0,0.08)` }}
                   >
                     {/* Hero header — logo IS the brand */}
-                    <div style={{ background: `linear-gradient(160deg, ${C.warmWhite} 0%, ${C.sand}44 100%)`, padding: "28px 22px 18px", textAlign: "center", position: "relative" }}>
+                    <div style={{ background: `linear-gradient(160deg, ${C.cream} 0%, ${C.sand}55 100%)`, padding: "28px 22px 18px", textAlign: "center", position: "relative" }}>
                       {/* Live badge — top right */}
                       <div style={{ position: "absolute", top: 14, right: 16, display: "flex", alignItems: "center", gap: 5 }}>
                         <div style={{ width: 8, height: 8, borderRadius: "50%", background: C.sage, boxShadow: `0 0 6px ${C.sage}88` }} />
@@ -1339,7 +1339,7 @@ export default function FoodTrucksPage() {
                     <div style={{ padding: "16px 22px 20px" }}>
                       {/* Today's Special — prominent callout */}
                       {truck.todaysSpecial && (
-                        <div style={{ background: `linear-gradient(135deg, ${C.sunset}10 0%, ${C.sunset}06 100%)`, border: `1px solid ${C.sunset}25`, borderRadius: 12, padding: "11px 16px", marginBottom: 12, display: "flex", alignItems: "center", gap: 10 }}>
+                        <div style={{ background: `linear-gradient(135deg, ${C.sunset}18 0%, ${C.sunset}08 100%)`, border: `1.5px solid ${C.sunset}30`, borderRadius: 12, padding: "11px 16px", marginBottom: 12, display: "flex", alignItems: "center", gap: 10 }}>
                           <span style={{ fontSize: 18, lineHeight: 1 }}>⭐</span>
                           <span style={{ fontSize: 14, color: C.sunset, fontWeight: 600, lineHeight: 1.4 }}>{truck.todaysSpecial}</span>
                         </div>
@@ -1354,19 +1354,19 @@ export default function FoodTrucksPage() {
                       {/* Love Pills */}
                       {truck.slug && <LovePills slug={truck.slug} />}
                       {/* Action toolbar */}
-                      <div style={{ display: "flex", justifyContent: "center", gap: 6, flexWrap: "wrap", marginTop: 14, borderTop: `1px solid ${C.sand}`, paddingTop: 14 }}>
+                      <div style={{ display: "flex", justifyContent: "center", gap: 6, flexWrap: "wrap", marginTop: 14, borderTop: `1.5px solid ${C.sand}`, paddingTop: 14 }}>
                         {truck.phone && (
-                          <a href={`tel:${truck.phone}`} style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}10`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1px solid ${C.lakeBlue}20` }}>
+                          <a href={`tel:${truck.phone}`} style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}15`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1.5px solid ${C.lakeBlue}30` }}>
                             📱 Call
                           </a>
                         )}
                         {truck.lat && truck.lng && (
-                          <a href={`https://www.google.com/maps?q=${truck.lat},${truck.lng}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}10`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1px solid ${C.lakeBlue}20` }}>
+                          <a href={`https://www.google.com/maps?q=${truck.lat},${truck.lng}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}15`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1.5px solid ${C.lakeBlue}30` }}>
                             🗺️ Directions
                           </a>
                         )}
                         {truck.website && (
-                          <a href={truck.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}10`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1px solid ${C.lakeBlue}20` }}>
+                          <a href={truck.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}15`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1.5px solid ${C.lakeBlue}30` }}>
                             Website →
                           </a>
                         )}
@@ -1405,10 +1405,10 @@ export default function FoodTrucksPage() {
                     <FadeIn key={truck.id} delay={i * 60}>
                       <div
                         ref={el => { if (truck.slug) truckCardRefs.current[truck.slug] = el; }}
-                        style={{ background: C.cream, borderRadius: 18, border: `1.5px solid ${C.driftwood}30`, overflow: "hidden", height: "100%", boxShadow: `0 2px 12px ${C.driftwood}10`, opacity: 0.85 }}
+                        style={{ background: "#FFFFFF", borderRadius: 18, border: `1px solid ${C.sand}`, overflow: "hidden", height: "100%", boxShadow: `0 4px 20px rgba(0,0,0,0.06)`, opacity: 0.8 }}
                       >
                         {/* Hero header */}
-                        <div style={{ background: `linear-gradient(160deg, ${C.warmWhite} 0%, ${C.sand}33 100%)`, padding: "24px 22px 18px", textAlign: "center", position: "relative" }}>
+                        <div style={{ background: `linear-gradient(160deg, ${C.cream} 0%, ${C.sand}44 100%)`, padding: "24px 22px 18px", textAlign: "center", position: "relative" }}>
                           <div style={{ position: "absolute", top: 14, right: 16, display: "flex", alignItems: "center", gap: 5 }}>
                             <div style={{ width: 7, height: 7, borderRadius: "50%", background: C.driftwood }} />
                             <span style={{ fontSize: 11, color: C.driftwood, fontWeight: 600 }}>{timeAgo(truck.lastCheckin)}</span>
@@ -1432,21 +1432,21 @@ export default function FoodTrucksPage() {
                         </div>
                         <div style={{ padding: "14px 22px 18px" }}>
                           {truck.todaysSpecial && (
-                            <div style={{ background: `linear-gradient(135deg, ${C.sunset}10 0%, ${C.sunset}06 100%)`, border: `1px solid ${C.sunset}25`, borderRadius: 12, padding: "11px 16px", marginBottom: 12, display: "flex", alignItems: "center", gap: 10 }}>
+                            <div style={{ background: `linear-gradient(135deg, ${C.sunset}18 0%, ${C.sunset}08 100%)`, border: `1.5px solid ${C.sunset}30`, borderRadius: 12, padding: "11px 16px", marginBottom: 12, display: "flex", alignItems: "center", gap: 10 }}>
                               <span style={{ fontSize: 18, lineHeight: 1 }}>⭐</span>
                               <span style={{ fontSize: 14, color: C.sunset, fontWeight: 600 }}>{truck.todaysSpecial}</span>
                             </div>
                           )}
                           {truck.description && <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: "0 0 12px", textAlign: "center" }}>{truck.description}</p>}
                           {truck.slug && <LovePills slug={truck.slug} />}
-                          <div style={{ display: "flex", justifyContent: "center", gap: 6, flexWrap: "wrap", marginTop: 14, borderTop: `1px solid ${C.sand}`, paddingTop: 14 }}>
+                          <div style={{ display: "flex", justifyContent: "center", gap: 6, flexWrap: "wrap", marginTop: 14, borderTop: `1.5px solid ${C.sand}`, paddingTop: 14 }}>
                             {truck.lat && truck.lng && (
-                              <a href={`https://www.google.com/maps?q=${truck.lat},${truck.lng}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}10`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1px solid ${C.lakeBlue}20` }}>
+                              <a href={`https://www.google.com/maps?q=${truck.lat},${truck.lng}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}15`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1.5px solid ${C.lakeBlue}30` }}>
                                 🗺️ Directions
                               </a>
                             )}
                             {truck.phone && (
-                              <a href={`tel:${truck.phone}`} style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}10`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1px solid ${C.lakeBlue}20` }}>
+                              <a href={`tel:${truck.phone}`} style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}15`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1.5px solid ${C.lakeBlue}30` }}>
                                 📱 Call
                               </a>
                             )}
@@ -1538,7 +1538,7 @@ export default function FoodTrucksPage() {
                   <FadeIn key={truck.id} delay={i * 40}>
                     <div
                       ref={el => { if (truck.slug) truckCardRefs.current[truck.slug] = el; }}
-                      style={{ background: C.warmWhite, borderRadius: 18, border: `1.5px solid ${C.sand}`, overflow: "hidden", boxShadow: `0 2px 10px ${C.driftwood}10` }}
+                      style={{ background: "#FFFFFF", borderRadius: 18, border: `1px solid ${C.sand}`, overflow: "hidden", boxShadow: `0 4px 16px rgba(0,0,0,0.07)` }}
                     >
                       {/* Hero header */}
                       <div style={{ background: `linear-gradient(160deg, ${C.cream} 0%, ${C.sand}33 100%)`, padding: "24px 20px 16px", textAlign: "center", position: "relative" }}>
@@ -1582,7 +1582,7 @@ export default function FoodTrucksPage() {
                         {/* Actions */}
                         <div style={{ display: "flex", justifyContent: "center", gap: 6, flexWrap: "wrap", marginTop: 12, borderTop: `1px solid ${C.sand}`, paddingTop: 12 }}>
                           {truck.phone && (
-                            <a href={`tel:${truck.phone}`} style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}10`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1px solid ${C.lakeBlue}20` }}>
+                            <a href={`tel:${truck.phone}`} style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}15`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1.5px solid ${C.lakeBlue}30` }}>
                               📱 {truck.phone}
                             </a>
                           )}
