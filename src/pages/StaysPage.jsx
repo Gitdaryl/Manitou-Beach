@@ -296,18 +296,22 @@ function StayCard({ stay, i }) {
   );
 }
 
-// ── Map Section ─────────────────────────────────────────────
-function StaysMapSection({ stays }) {
+// ── Zillow-Style Map View ────────────────────────────────────
+function StaysMapView({ stays, filter }) {
   const [mapReady, setMapReady] = useState(false);
   const [mapError, setMapError] = useState(null);
+  const [activeStay, setActiveStay] = useState(null);
   const mapDivRef = useRef(null);
   const mapObjRef = useRef(null);
   const googleRef = useRef(null);
-  const markersRef = useRef([]);
+  const markersRef = useRef({});
   const infoWindowRef = useRef(null);
+  const cardRefs = useRef({});
 
-  const mapStays = stays.filter(s => s.lat && s.lng);
+  const filtered = filter === 'All' ? stays : stays.filter(s => s.stayType === filter);
+  const mapStays = filtered.filter(s => s.lat && s.lng);
 
+  // Init map
   useEffect(() => {
     const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
     if (!apiKey) { setMapError('Map API key not configured.'); return; }
@@ -322,7 +326,7 @@ function StaysMapSection({ stays }) {
           zoom: 13,
           mapTypeControl: false,
           streetViewControl: false,
-          fullscreenControl: true,
+          fullscreenControl: false,
           zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_BOTTOM },
           styles: DISCOVER_MAP_STYLES,
         });
@@ -333,50 +337,282 @@ function StaysMapSection({ stays }) {
     return () => { active = false; };
   }, []);
 
+  // Place markers
   useEffect(() => {
     if (!mapReady || !googleRef.current || !mapObjRef.current) return;
-    markersRef.current.forEach(m => m.setMap(null));
-    markersRef.current = [];
+    // Clear old markers
+    Object.values(markersRef.current).forEach(m => m.setMap(null));
+    markersRef.current = {};
+
     mapStays.forEach(stay => {
       const color = TYPE_COLORS[stay.stayType] || C.lakeBlue;
+      const isFeatured = stay.tier === 'featured';
       const marker = new googleRef.current.maps.Marker({
         position: { lat: stay.lat, lng: stay.lng },
         map: mapObjRef.current,
         title: stay.name,
         icon: {
           path: googleRef.current.maps.SymbolPath.CIRCLE,
-          fillColor: color, fillOpacity: 1, strokeColor: '#fff', strokeWeight: 2, scale: 8,
+          fillColor: color, fillOpacity: 1,
+          strokeColor: isFeatured ? C.sunset : '#fff',
+          strokeWeight: isFeatured ? 3 : 2,
+          scale: isFeatured ? 11 : 8,
         },
+        zIndex: isFeatured ? 10 : 1,
       });
-      marker.addListener('click', () => {
-        const bookLink = stay.bookingUrl || stay.website;
-        infoWindowRef.current.setContent(`
-          <div style="font-family:'Libre Franklin',sans-serif;padding:4px;max-width:220px">
-            <strong style="font-size:14px">${stay.name}</strong><br>
-            <span style="font-size:11px;color:#666">${stay.stayType || ''}</span>
-            ${stay.beds ? `<br><span style="font-size:11px">🛏 ${stay.beds} beds · 👥 ${stay.guests || '?'} guests</span>` : ''}
-            ${bookLink ? `<br><a href="${bookLink}" target="_blank" style="font-size:12px;color:${C.sunset};font-weight:700;text-decoration:none">${stay.bookingUrl ? 'Book Now →' : 'Website →'}</a>` : stay.email ? `<br><a href="mailto:${stay.email}?subject=Inquiry about ${encodeURIComponent(stay.name)}" style="font-size:12px;color:${C.sunset};font-weight:700;text-decoration:none">Send Inquiry →</a>` : stay.phone ? `<br><a href="tel:${stay.phone}" style="font-size:12px;color:${C.sunset};font-weight:700;text-decoration:none">Call →</a>` : ''}
-          </div>
-        `);
-        infoWindowRef.current.open(mapObjRef.current, marker);
-      });
-      markersRef.current.push(marker);
-    });
-  }, [mapReady, mapStays.length]);
 
-  if (!mapStays.length) return null;
+      marker.addListener('click', () => {
+        setActiveStay(stay.id);
+        openInfoWindow(stay, marker);
+        // Scroll card into view
+        cardRefs.current[stay.id]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+
+      markersRef.current[stay.id] = marker;
+    });
+
+    // Fit bounds if we have multiple markers
+    if (mapStays.length > 1) {
+      const bounds = new googleRef.current.maps.LatLngBounds();
+      mapStays.forEach(s => bounds.extend({ lat: s.lat, lng: s.lng }));
+      mapObjRef.current.fitBounds(bounds, { top: 40, bottom: 40, left: 40, right: 40 });
+    }
+  }, [mapReady, mapStays.length, filter]);
+
+  const openInfoWindow = (stay, marker) => {
+    if (!infoWindowRef.current) return;
+    const accent = TYPE_COLORS[stay.stayType] || C.lakeBlue;
+    const isFeatured = stay.tier === 'featured';
+    const bookLink = stay.bookingUrl || stay.website;
+    const cta = bookLink
+      ? `<a href="${bookLink}" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:${isFeatured ? C.sunset : accent};text-decoration:none;font-family:'Libre Franklin',sans-serif">${stay.bookingUrl ? 'Book Now →' : 'Visit Website →'}</a>`
+      : stay.email
+        ? `<a href="mailto:${stay.email}?subject=Inquiry about ${encodeURIComponent(stay.name)}" style="display:inline-block;margin-top:8px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:${accent};text-decoration:none;font-family:'Libre Franklin',sans-serif">Send Inquiry →</a>`
+        : stay.phone
+          ? `<a href="tel:${stay.phone}" style="display:inline-block;margin-top:8px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:${accent};text-decoration:none;font-family:'Libre Franklin',sans-serif">Call →</a>`
+          : '';
+
+    infoWindowRef.current.setContent(`
+      <div style="font-family:'Libre Franklin',sans-serif;padding:8px 4px;max-width:280px;min-width:200px">
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          ${stay.logo ? `<img src="${stay.logo}" style="width:56px;height:56px;border-radius:10px;object-fit:cover;flex-shrink:0" />` : ''}
+          <div style="flex:1">
+            <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:4px">
+              ${isFeatured ? `<span style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#fff;background:${C.sunset};padding:2px 7px;border-radius:10px">✦ Staff Pick</span>` : ''}
+              ${stay.stayType ? `<span style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:${accent};background:${accent}15;padding:2px 7px;border-radius:10px">${stay.stayType}</span>` : ''}
+            </div>
+            <strong style="font-size:15px;font-family:'Libre Baskerville',serif;font-weight:400;color:#2C3E50">${stay.name}</strong>
+            ${stay.beds || stay.guests ? `<div style="font-size:11px;color:#999;margin-top:3px">${stay.beds ? `🛏 ${stay.beds} bed${stay.beds !== 1 ? 's' : ''}` : ''}${stay.beds && stay.guests ? ' · ' : ''}${stay.guests ? `👥 Sleeps ${stay.guests}` : ''}</div>` : ''}
+          </div>
+        </div>
+        ${stay.description ? `<p style="font-size:12px;color:#666;line-height:1.5;margin:8px 0 0;max-height:48px;overflow:hidden">${stay.description.length > 120 ? stay.description.slice(0, 120) + '...' : stay.description}</p>` : ''}
+        ${stay.amenities && stay.amenities.length ? `<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:8px">${stay.amenities.slice(0, 4).map(a => `<span style="font-size:10px;padding:2px 7px;border-radius:8px;background:${accent}10;color:${accent};font-weight:600">${AMENITY_ICONS[a] || '·'} ${a}</span>`).join('')}</div>` : ''}
+        ${cta}
+      </div>
+    `);
+    infoWindowRef.current.open(mapObjRef.current, marker);
+  };
+
+  const handleCardClick = (stay) => {
+    setActiveStay(stay.id);
+    const marker = markersRef.current[stay.id];
+    if (marker && mapObjRef.current) {
+      mapObjRef.current.panTo(marker.getPosition());
+      mapObjRef.current.setZoom(Math.max(mapObjRef.current.getZoom(), 14));
+      openInfoWindow(stay, marker);
+    }
+  };
+
+  const handleCardHover = (stayId, hovering) => {
+    const marker = markersRef.current[stayId];
+    if (!marker || !googleRef.current) return;
+    const stay = stays.find(s => s.id === stayId);
+    const color = TYPE_COLORS[stay?.stayType] || C.lakeBlue;
+    marker.setIcon({
+      path: googleRef.current.maps.SymbolPath.CIRCLE,
+      fillColor: hovering ? C.sunset : color,
+      fillOpacity: 1,
+      strokeColor: hovering ? '#fff' : (stay?.tier === 'featured' ? C.sunset : '#fff'),
+      strokeWeight: hovering ? 3 : (stay?.tier === 'featured' ? 3 : 2),
+      scale: hovering ? 13 : (stay?.tier === 'featured' ? 11 : 8),
+    });
+    if (hovering) marker.setZIndex(100);
+    else marker.setZIndex(stay?.tier === 'featured' ? 10 : 1);
+  };
 
   return (
-    <section style={{ padding: '80px 24px', background: C.cream }}>
-      <div style={{ maxWidth: 960, margin: '0 auto' }}>
-        <SectionLabel>Find Your Spot</SectionLabel>
-        <SectionTitle>Where to Stay</SectionTitle>
+    <section style={{
+      display: 'flex', height: 'calc(100vh - 120px)',
+      background: C.cream, overflow: 'hidden',
+    }}>
+      {/* Map — left side */}
+      <div style={{ flex: '0 0 60%', position: 'relative' }}>
         {mapError ? (
-          <p style={{ color: C.textMuted, textAlign: 'center' }}>{mapError}</p>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+            <p style={{ color: C.textMuted }}>{mapError}</p>
+          </div>
         ) : (
-          <div ref={mapDivRef} style={{ width: '100%', height: 420, borderRadius: 16, overflow: 'hidden', border: `1px solid ${C.sand}`, marginTop: 24 }} />
+          <div ref={mapDivRef} style={{ width: '100%', height: '100%' }} />
         )}
       </div>
+
+      {/* Cards — right side, scrollable */}
+      <div style={{
+        flex: '0 0 40%', overflowY: 'auto', padding: '20px 20px 20px 16px',
+        background: C.cream,
+        borderLeft: `1px solid ${C.sand}`,
+      }}>
+        <div style={{
+          fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase',
+          color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif",
+          marginBottom: 14, paddingLeft: 4,
+        }}>
+          {filtered.length} {filtered.length === 1 ? 'property' : 'properties'}{filter !== 'All' ? ` · ${filter}` : ''}
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {filtered.map(stay => {
+            const accent = TYPE_COLORS[stay.stayType] || C.lakeBlue;
+            const isFeatured = stay.tier === 'featured';
+            const isActive = activeStay === stay.id;
+            const hasLocation = stay.lat && stay.lng;
+
+            return (
+              <div
+                key={stay.id}
+                ref={el => cardRefs.current[stay.id] = el}
+                onClick={() => hasLocation && handleCardClick(stay)}
+                onMouseEnter={() => hasLocation && handleCardHover(stay.id, true)}
+                onMouseLeave={() => hasLocation && handleCardHover(stay.id, false)}
+                style={{
+                  background: isFeatured ? C.dusk : '#fff',
+                  border: isActive
+                    ? `2px solid ${isFeatured ? C.sunset : accent}`
+                    : `1px solid ${isFeatured ? C.lakeDark : '#e0dbd4'}`,
+                  borderRadius: 14,
+                  padding: '20px 18px',
+                  display: 'flex', gap: 16, alignItems: 'flex-start',
+                  position: 'relative', overflow: 'hidden',
+                  cursor: hasLocation ? 'pointer' : 'default',
+                  transition: 'all 0.2s',
+                  boxShadow: isActive ? `0 4px 20px ${accent}20` : '0 1px 6px rgba(0,0,0,0.04)',
+                }}
+              >
+                {/* Left accent */}
+                <div style={{ position: 'absolute', top: 0, left: 0, width: 3, height: '100%', background: accent, borderRadius: '14px 0 0 14px' }} />
+
+                {/* Logo */}
+                {stay.logo && (
+                  <img src={stay.logo} alt="" style={{ width: 72, height: 72, borderRadius: 12, objectFit: 'cover', flexShrink: 0, background: C.sand }} />
+                )}
+
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  {/* Header */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 6, marginBottom: 4 }}>
+                    <h3 style={{
+                      fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400,
+                      color: isFeatured ? C.cream : C.text, margin: 0,
+                      whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                    }}>
+                      {stay.name}
+                    </h3>
+                    <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
+                      {isFeatured && (
+                        <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', color: C.cream, background: C.sunset, padding: '2px 7px', borderRadius: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
+                          ✦ Staff Pick
+                        </span>
+                      )}
+                      {stay.stayType && (
+                        <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', color: isFeatured ? C.cream : accent, background: isFeatured ? `${accent}40` : `${accent}15`, padding: '2px 7px', borderRadius: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
+                          {stay.stayType}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Beds & guests */}
+                  {(stay.beds || stay.guests) && (
+                    <div style={{ fontSize: 11, color: isFeatured ? 'rgba(255,255,255,0.45)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 4 }}>
+                      {stay.beds && <span>🛏 {stay.beds} bed{stay.beds !== 1 ? 's' : ''}</span>}
+                      {stay.beds && stay.guests && <span> · </span>}
+                      {stay.guests && <span>👥 {stay.guests}</span>}
+                    </div>
+                  )}
+
+                  {/* Description snippet */}
+                  {stay.description && (
+                    <p style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.55)' : C.textLight, lineHeight: 1.5, margin: '0 0 8px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                      {stay.description}
+                    </p>
+                  )}
+
+                  {/* Amenities — compact */}
+                  {stay.amenities && stay.amenities.length > 0 && (
+                    <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginBottom: 8 }}>
+                      {stay.amenities.slice(0, 3).map(a => (
+                        <span key={a} style={{
+                          fontSize: 10, padding: '2px 7px', borderRadius: 8,
+                          background: isFeatured ? 'rgba(255,255,255,0.08)' : `${accent}08`,
+                          color: isFeatured ? 'rgba(255,255,255,0.5)' : accent,
+                          fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600,
+                        }}>
+                          {AMENITY_ICONS[a] || '·'} {a}
+                        </span>
+                      ))}
+                      {stay.amenities.length > 3 && (
+                        <span style={{ fontSize: 10, color: isFeatured ? 'rgba(255,255,255,0.3)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
+                          +{stay.amenities.length - 3}
+                        </span>
+                      )}
+                    </div>
+                  )}
+
+                  {/* CTA */}
+                  {(() => {
+                    const ctaColor = isFeatured ? C.sunset : accent;
+                    const ctaStyle = { fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: ctaColor, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" };
+                    if (stay.bookingUrl) return <a href={stay.bookingUrl} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={ctaStyle}>Book Now →</a>;
+                    if (stay.website) return <a href={stay.website} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={ctaStyle}>Website →</a>;
+                    if (stay.email) return <a href={`mailto:${stay.email}?subject=Inquiry about ${encodeURIComponent(stay.name)}`} onClick={e => e.stopPropagation()} style={ctaStyle}>Inquire →</a>;
+                    if (stay.phone) return <a href={`tel:${stay.phone}`} onClick={e => e.stopPropagation()} style={ctaStyle}>Call →</a>;
+                    return null;
+                  })()}
+                </div>
+              </div>
+            );
+          })}
+
+          {filtered.length === 0 && (
+            <div style={{ textAlign: 'center', padding: 40 }}>
+              <div style={{ fontSize: 36, marginBottom: 8 }}>🏕</div>
+              <p style={{ color: C.textMuted, fontSize: 13 }}>
+                {filter === 'All' ? 'No stays listed yet.' : `No ${filter} listings yet.`}
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Responsive: stack on mobile */}
+      <style>{`
+        @media (max-width: 768px) {
+          section[style*="calc(100vh"] {
+            flex-direction: column !important;
+            height: auto !important;
+          }
+          section[style*="calc(100vh"] > div:first-child {
+            flex: none !important;
+            height: 50vh !important;
+          }
+          section[style*="calc(100vh"] > div:last-child {
+            flex: none !important;
+            height: auto !important;
+            max-height: 50vh !important;
+            border-left: none !important;
+            border-top: 1px solid ${C.sand} !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }
@@ -1505,6 +1741,7 @@ export default function StaysPage() {
   const [stays, setStays] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('All');
+  const [view, setView] = useState('list'); // 'list' | 'map'
 
   useEffect(() => {
     fetch('/api/stays')
@@ -1522,55 +1759,94 @@ export default function StaysPage() {
       <Navbar />
       <StaysHero />
 
-      {/* Category Filter */}
+      {/* Category Filter + View Toggle */}
       <section style={{
-        padding: '20px 24px',
+        padding: '16px 24px',
         background: C.cream,
         position: 'sticky', top: 0, zIndex: 100,
         borderBottom: `1px solid ${C.sand}`,
       }}>
-        <div style={{ maxWidth: 960, margin: '0 auto', display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
-          {STAY_TYPES.map(type => (
+        <div style={{ maxWidth: 960, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+          {/* Type filters */}
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', flex: 1, justifyContent: 'center' }}>
+            {STAY_TYPES.map(type => (
+              <button
+                key={type}
+                onClick={() => setFilter(type)}
+                style={{
+                  fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600,
+                  letterSpacing: 1, textTransform: 'uppercase',
+                  padding: '7px 14px', borderRadius: 20, cursor: 'pointer',
+                  border: `1.5px solid ${filter === type ? C.lakeBlue : C.sand}`,
+                  background: filter === type ? C.lakeBlue : 'transparent',
+                  color: filter === type ? C.cream : C.textMuted,
+                  transition: 'all 0.2s',
+                }}
+              >
+                {type}
+              </button>
+            ))}
+          </div>
+
+          {/* View toggle */}
+          <div style={{
+            display: 'flex', borderRadius: 10, overflow: 'hidden',
+            border: `1.5px solid ${C.sand}`, flexShrink: 0,
+          }}>
             <button
-              key={type}
-              onClick={() => setFilter(type)}
+              onClick={() => setView('list')}
               style={{
                 fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600,
-                letterSpacing: 1, textTransform: 'uppercase',
-                padding: '8px 16px', borderRadius: 20, cursor: 'pointer',
-                border: `1.5px solid ${filter === type ? C.lakeBlue : C.sand}`,
-                background: filter === type ? C.lakeBlue : 'transparent',
-                color: filter === type ? C.cream : C.textMuted,
-                transition: 'all 0.2s',
+                padding: '7px 14px', cursor: 'pointer', border: 'none',
+                background: view === 'list' ? C.lakeBlue : 'transparent',
+                color: view === 'list' ? C.cream : C.textMuted,
+                transition: 'all 0.2s', letterSpacing: 0.5,
               }}
             >
-              {type}
+              List
             </button>
-          ))}
+            <button
+              onClick={() => setView('map')}
+              style={{
+                fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600,
+                padding: '7px 14px', cursor: 'pointer', border: 'none',
+                borderLeft: `1px solid ${C.sand}`,
+                background: view === 'map' ? C.lakeBlue : 'transparent',
+                color: view === 'map' ? C.cream : C.textMuted,
+                transition: 'all 0.2s', letterSpacing: 0.5,
+              }}
+            >
+              Map
+            </button>
+          </div>
         </div>
       </section>
 
-      {/* Listings */}
-      <section style={{ padding: '60px 24px 80px', background: C.cream }}>
-        <div style={{ maxWidth: 800, margin: '0 auto' }}>
-          {loading ? (
-            <p style={{ textAlign: 'center', color: C.textMuted, fontSize: 14 }}>Loading stays...</p>
-          ) : filtered.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: 60 }}>
-              <div style={{ fontSize: 48, marginBottom: 12 }}>🏕</div>
-              <p style={{ color: C.textMuted, fontSize: 15 }}>
-                {filter === 'All' ? 'No stays listed yet — be the first!' : `No ${filter} listings yet.`}
-              </p>
-            </div>
-          ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-              {filtered.map((stay, i) => (
-                <StayCard key={stay.id} stay={stay} i={i} />
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
+      {/* Listings — list or map view */}
+      {view === 'map' ? (
+        <StaysMapView stays={stays} filter={filter} />
+      ) : (
+        <section style={{ padding: '60px 24px 80px', background: C.cream }}>
+          <div style={{ maxWidth: 800, margin: '0 auto' }}>
+            {loading ? (
+              <p style={{ textAlign: 'center', color: C.textMuted, fontSize: 14 }}>Loading stays...</p>
+            ) : filtered.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: 60 }}>
+                <div style={{ fontSize: 48, marginBottom: 12 }}>🏕</div>
+                <p style={{ color: C.textMuted, fontSize: 15 }}>
+                  {filter === 'All' ? 'No stays listed yet — be the first!' : `No ${filter} listings yet.`}
+                </p>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+                {filtered.map((stay, i) => (
+                  <StayCard key={stay.id} stay={stay} i={i} />
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* Seasonal banner */}
       <section style={{ padding: '40px 24px', background: `linear-gradient(135deg, ${C.sunset}15, ${C.lakeBlue}10)`, textAlign: 'center' }}>
@@ -1580,7 +1856,6 @@ export default function StaysPage() {
       </section>
 
       <WaveDivider />
-      <StaysMapSection stays={stays} />
 
       <ListYourPropertySection stays={stays} />
       <ManageListingSection />
