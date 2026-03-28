@@ -145,16 +145,20 @@ async function handlePost(req, res) {
 
     // ── PIN COLOR UPDATE — quick patch just for pin color ──
     if (action === 'update-pin-color') {
-      const patchRes = await fetch(`https://api.notion.com/v1/pages/${page.id}`, {
-        method: 'PATCH',
-        headers: {
-          Authorization: `Bearer ${process.env.NOTION_TOKEN_BUSINESS}`,
-          'Content-Type': 'application/json',
-          'Notion-Version': '2022-06-28',
-        },
-        body: JSON.stringify({ properties: { 'Pin Color': { rich_text: [{ type: 'text', text: { content: (pinColor || '').slice(0, 20) } }] } } }),
-      });
-      if (!patchRes.ok) return res.status(500).json({ error: 'Pin color update failed' });
+      try {
+        const patchRes = await fetch(`https://api.notion.com/v1/pages/${page.id}`, {
+          method: 'PATCH',
+          headers: {
+            Authorization: `Bearer ${process.env.NOTION_TOKEN_BUSINESS}`,
+            'Content-Type': 'application/json',
+            'Notion-Version': '2022-06-28',
+          },
+          body: JSON.stringify({ properties: { 'Pin Color': { rich_text: [{ type: 'text', text: { content: (pinColor || '').slice(0, 20) } }] } } }),
+        });
+        if (!patchRes.ok) console.error('Pin color PATCH failed:', await patchRes.text());
+      } catch (err) {
+        console.error('Pin color update error:', err.message);
+      }
       return res.status(200).json({ ok: true });
     }
 
@@ -188,7 +192,6 @@ async function handlePost(req, res) {
       'Location Note': { rich_text: [{ type: 'text', text: { content: note || '' } }] },
       'Todays Special': { rich_text: [{ type: 'text', text: { content: (todaysSpecial || '').slice(0, 200) } }] },
       'Departure Time': { rich_text: [{ type: 'text', text: { content: (departureTime || '').slice(0, 50) } }] },
-      'Pin Color': { rich_text: [{ type: 'text', text: { content: (pinColor || '').slice(0, 20) } }] },
     };
 
     if (typeof lat === 'number' && typeof lng === 'number') {
@@ -209,6 +212,19 @@ async function handlePost(req, res) {
     if (!patchRes.ok) {
       console.error('Food Trucks PATCH failed:', await patchRes.text());
       return res.status(500).json({ error: 'Check-in failed' });
+    }
+
+    // Best-effort pin color update — separate call so it doesn't block check-in
+    if (pinColor) {
+      fetch(`https://api.notion.com/v1/pages/${page.id}`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${process.env.NOTION_TOKEN_BUSINESS}`,
+          'Content-Type': 'application/json',
+          'Notion-Version': '2022-06-28',
+        },
+        body: JSON.stringify({ properties: { 'Pin Color': { rich_text: [{ type: 'text', text: { content: pinColor.slice(0, 20) } }] } } }),
+      }).catch(err => console.error('Pin color update failed (non-blocking):', err.message));
     }
 
     return res.status(200).json({ ok: true, name: page.properties['Name']?.title?.[0]?.text?.content || slug });
