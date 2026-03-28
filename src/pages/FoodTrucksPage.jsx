@@ -1010,12 +1010,28 @@ export default function FoodTrucksPage() {
               <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.text, margin: "0 0 4px", textAlign: "center" }}>
                 Let your customers know you're here
               </h2>
-              <p style={{ fontSize: 13, color: C.textMuted, textAlign: "center", margin: "0 0 24px" }}>
-                Drop your pin and go live on the locator.
+              <p style={{ fontSize: 13, color: C.textMuted, textAlign: "center", margin: "0 0 24px", lineHeight: 1.5 }}>
+                Three quick steps and you're live on the map.
               </p>
 
-              {/* ── DROP PIN — primary action, front and center ── */}
-              <div style={{ marginBottom: 20 }}>
+              {/* ═══ STEP 1 — Drop Your Pin ═══ */}
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+                  <div style={{
+                    width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
+                    background: pinStatus === 'pinned' ? C.sage : C.lakeBlue,
+                    color: '#fff', fontSize: 14, fontWeight: 800,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontFamily: "'Libre Franklin', sans-serif",
+                  }}>{pinStatus === 'pinned' ? '✓' : '1'}</div>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: C.text }}>Drop your pin</div>
+                    <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.4 }}>
+                      {pinStatus === 'pinned' ? 'Got it! Your location is on the map.' : 'Tap the button so customers can find you.'}
+                    </div>
+                  </div>
+                </div>
+
                 {pinStatus !== 'pinned' ? (
                   <button
                     onClick={handleDropPin}
@@ -1037,11 +1053,10 @@ export default function FoodTrucksPage() {
                   >
                     {pinStatus === 'loading' ? '⏳  Getting your location…' :
                      pinStatus === 'denied' ? '📍  Location denied — type your spot below' :
-                     '📍  Drop My Pin'}
+                     '📍  Tap Here to Drop My Pin'}
                   </button>
                 ) : (
                   <div style={{ animation: 'fadeSlideUp 0.35s ease' }}>
-                    {/* Magic moment — pin bounce + map reveal */}
                     <div style={{
                       display: 'flex', alignItems: 'center', gap: 12,
                       background: `${C.sage}12`, border: `1.5px solid ${C.sage}50`,
@@ -1051,13 +1066,12 @@ export default function FoodTrucksPage() {
                       <span style={{ fontSize: 28, lineHeight: 1, animation: 'pinDrop 0.55s cubic-bezier(.36,.07,.19,.97) both' }}>
                         📍
                       </span>
-                      <div>
+                      <div style={{ flex: 1 }}>
                         <div style={{ fontSize: 14, fontWeight: 700, color: C.sage }}>Your spot is locked in!</div>
-                        <div style={{ fontSize: 12, color: C.textMuted }}>Customers will see your exact location on the map.</div>
                       </div>
                       <button
                         onClick={handleDropPin}
-                        style={{ marginLeft: 'auto', fontSize: 12, color: C.textMuted, background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'underline', padding: 0, flexShrink: 0 }}
+                        style={{ fontSize: 12, color: C.textMuted, background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'underline', padding: 0, flexShrink: 0 }}
                       >
                         Re-drop
                       </button>
@@ -1073,131 +1087,156 @@ export default function FoodTrucksPage() {
                     )}
                   </div>
                 )}
-                {pinStatus === '' && (
-                  <p style={{ fontSize: 11, color: C.textMuted, textAlign: 'center', margin: '8px 0 0', lineHeight: 1.5 }}>
-                    Tap to mark your exact spot on the map — no typing needed.
-                  </p>
-                )}
               </div>
 
-              {/* ── LOCATION NOTE — optional, clearly secondary ── */}
-              <label style={labelStyle}>
-                {pinStatus === 'pinned' ? 'Add a note to help people find you' : 'Where are you today?'}{' '}
-                <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>(optional)</span>
-              </label>
-
-              {/* Saved location pills */}
-              {savedLocations.length > 0 && (
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 10 }}>
-                  {savedLocations.map(loc => (
-                    <button
-                      key={loc}
-                      onClick={() => setCheckinNote(loc)}
-                      style={{
-                        padding: '5px 12px', borderRadius: 20,
-                        background: checkinNote === loc ? `${C.sage}20` : C.warmWhite,
-                        border: `1px solid ${checkinNote === loc ? C.sage : C.sand}`,
-                        fontSize: 12, color: checkinNote === loc ? C.sage : C.textLight,
-                        fontWeight: checkinNote === loc ? 600 : 400,
-                        cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif",
-                        transition: 'all 0.15s',
-                      }}
-                    >
-                      {loc}
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              <input
-                type="text"
-                value={checkinNote}
-                onChange={e => setCheckinNote(e.target.value)}
-                placeholder={savedLocations.length > 0 ? "Or type a new location…" : "e.g. Near the boat launch, by the park pavilion…"}
-                style={{ ...inputStyle, marginBottom: pinStatus === 'pinned' ? 0 : 16 }}
-              />
-
-              <label style={labelStyle}>
-                Today's Special <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>(optional)</span>
-              </label>
-              <input
-                type="text"
-                value={checkinSpecial}
-                onChange={e => setCheckinSpecial(e.target.value)}
-                placeholder="e.g. Half-price pulled pork, new brisket sandwich…"
-                style={inputStyle}
-              />
-
-              <label style={labelStyle}>
-                Your Pin Color
-              </label>
-              <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center", marginBottom: 16 }}>
-                {PIN_PRESETS.map(hex => (
-                  <button
-                    key={hex}
-                    type="button"
-                    onClick={() => setCheckinPinColor(hex)}
-                    style={{
-                      width: 30, height: 30, borderRadius: "50%",
-                      background: hex,
-                      border: checkinPinColor === hex ? `3px solid ${C.text}` : `2px solid transparent`,
-                      cursor: "pointer",
-                      boxShadow: checkinPinColor === hex ? `0 0 0 2px #FFFFFF, 0 0 8px ${hex}66` : 'none',
-                      transition: "all 0.15s",
-                    }}
-                  />
-                ))}
-                {/* Custom color picker */}
-                <label style={{ position: "relative", width: 30, height: 30, cursor: "pointer" }}>
-                  <input
-                    type="color"
-                    value={checkinPinColor}
-                    onChange={e => setCheckinPinColor(e.target.value)}
-                    style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0, cursor: "pointer" }}
-                  />
+              {/* ═══ STEP 2 — Add the Details ═══ */}
+              <div style={{ marginBottom: 24, opacity: pinStatus === 'pinned' || pinStatus === 'denied' ? 1 : 0.5, transition: 'opacity 0.3s' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
                   <div style={{
-                    width: 30, height: 30, borderRadius: "50%",
-                    background: `conic-gradient(red, yellow, lime, aqua, blue, magenta, red)`,
-                    border: !PIN_PRESETS.includes(checkinPinColor) ? `3px solid ${C.text}` : `2px solid ${C.sand}`,
-                    boxShadow: !PIN_PRESETS.includes(checkinPinColor) ? `0 0 0 2px #FFFFFF, 0 0 8px ${checkinPinColor}66` : 'none',
-                  }} />
+                    width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
+                    background: C.sand, color: C.text, fontSize: 14, fontWeight: 800,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontFamily: "'Libre Franklin', sans-serif",
+                  }}>2</div>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: C.text }}>Add the details</div>
+                    <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.4 }}>All optional — fill in what you want customers to see.</div>
+                  </div>
+                </div>
+
+                <label style={labelStyle}>
+                  {pinStatus === 'pinned' ? 'Describe your spot' : 'Where are you today?'}{' '}
+                  <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>(optional)</span>
                 </label>
+
+                {savedLocations.length > 0 && (
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 10 }}>
+                    {savedLocations.map(loc => (
+                      <button
+                        key={loc}
+                        onClick={() => setCheckinNote(loc)}
+                        style={{
+                          padding: '5px 12px', borderRadius: 20,
+                          background: checkinNote === loc ? `${C.sage}20` : C.warmWhite,
+                          border: `1px solid ${checkinNote === loc ? C.sage : C.sand}`,
+                          fontSize: 12, color: checkinNote === loc ? C.sage : C.textLight,
+                          fontWeight: checkinNote === loc ? 600 : 400,
+                          cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif",
+                          transition: 'all 0.15s',
+                        }}
+                      >
+                        {loc}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                <input
+                  type="text"
+                  value={checkinNote}
+                  onChange={e => setCheckinNote(e.target.value)}
+                  placeholder={savedLocations.length > 0 ? "Or type a new location…" : "e.g. Near the boat launch, by the park pavilion…"}
+                  style={inputStyle}
+                />
+
+                <label style={labelStyle}>
+                  Today's Special <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>(optional)</span>
+                </label>
+                <input
+                  type="text"
+                  value={checkinSpecial}
+                  onChange={e => setCheckinSpecial(e.target.value)}
+                  placeholder="e.g. Half-price pulled pork, new brisket sandwich…"
+                  style={inputStyle}
+                />
+
+                <label style={labelStyle}>
+                  Your Map Pin Color <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>(pick one so you stand out)</span>
+                </label>
+                <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center", marginBottom: 16 }}>
+                  {PIN_PRESETS.map(hex => (
+                    <button
+                      key={hex}
+                      type="button"
+                      onClick={() => setCheckinPinColor(hex)}
+                      style={{
+                        width: 30, height: 30, borderRadius: "50%",
+                        background: hex,
+                        border: checkinPinColor === hex ? `3px solid ${C.text}` : `2px solid transparent`,
+                        cursor: "pointer",
+                        boxShadow: checkinPinColor === hex ? `0 0 0 2px #FFFFFF, 0 0 8px ${hex}66` : 'none',
+                        transition: "all 0.15s",
+                      }}
+                    />
+                  ))}
+                  <label style={{ position: "relative", width: 30, height: 30, cursor: "pointer" }}>
+                    <input
+                      type="color"
+                      value={checkinPinColor}
+                      onChange={e => setCheckinPinColor(e.target.value)}
+                      style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0, cursor: "pointer" }}
+                    />
+                    <div style={{
+                      width: 30, height: 30, borderRadius: "50%",
+                      background: `conic-gradient(red, yellow, lime, aqua, blue, magenta, red)`,
+                      border: !PIN_PRESETS.includes(checkinPinColor) ? `3px solid ${C.text}` : `2px solid ${C.sand}`,
+                      boxShadow: !PIN_PRESETS.includes(checkinPinColor) ? `0 0 0 2px #FFFFFF, 0 0 8px ${checkinPinColor}66` : 'none',
+                    }} />
+                  </label>
+                </div>
+
+                <label style={labelStyle}>
+                  Leaving around… <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>(optional)</span>
+                </label>
+                <select
+                  value={checkinDeparture}
+                  onChange={e => setCheckinDeparture(e.target.value)}
+                  style={{ ...inputStyle, marginBottom: 0, appearance: 'none', backgroundImage: 'none' }}
+                >
+                  <option value="">— not sure</option>
+                  {['10','11','12','13','14','15','16','17','18','19','20','21','22'].map(h => {
+                    const d = new Date(); d.setHours(parseInt(h), 0, 0, 0);
+                    return <option key={h} value={h}>{d.toLocaleTimeString('en-US', { hour: 'numeric', hour12: true })}</option>;
+                  })}
+                  <option value="after-dark">After dark</option>
+                </select>
               </div>
 
-              <label style={labelStyle}>
-                Leaving around… <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>(optional)</span>
-              </label>
-              <select
-                value={checkinDeparture}
-                onChange={e => setCheckinDeparture(e.target.value)}
-                style={{ ...inputStyle, marginBottom: 8, appearance: 'none', backgroundImage: 'none' }}
-              >
-                <option value="">— not sure</option>
-                {['10','11','12','13','14','15','16','17','18','19','20','21','22'].map(h => {
-                  const d = new Date(); d.setHours(parseInt(h), 0, 0, 0);
-                  return <option key={h} value={h}>{d.toLocaleTimeString('en-US', { hour: 'numeric', hour12: true })}</option>;
-                })}
-                <option value="after-dark">After dark</option>
-              </select>
+              {/* ═══ STEP 3 — Go Live ═══ */}
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+                  <div style={{
+                    width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
+                    background: C.sage, color: '#fff', fontSize: 14, fontWeight: 800,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontFamily: "'Libre Franklin', sans-serif",
+                  }}>3</div>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: C.text }}>Go live!</div>
+                    <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.4 }}>Hit the button and you're on the map. That's it.</div>
+                  </div>
+                </div>
 
-              {checkinStatus === "error" && (
-                <div style={{ marginBottom: 12, fontSize: 13, color: "#c05a5a", fontWeight: 500 }}>{checkinMsg}</div>
-              )}
-              <button
-                onClick={handleCheckin}
-                disabled={checkinStatus === "loading"}
-                style={{
-                  marginTop: 8, width: "100%", padding: "14px",
-                  background: checkinStatus === "loading" ? C.sand : C.sage,
-                  color: C.cream, border: "none", borderRadius: 10,
-                  fontSize: 15, fontWeight: 700,
-                  cursor: checkinStatus === "loading" ? "default" : "pointer",
-                  transition: "background 0.2s",
-                  fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5,
-                }}
-              >
-                {checkinStatus === "loading" ? "Checking in…" : "Check In — Go Live 📍"}
-              </button>
+                {checkinStatus === "error" && (
+                  <div style={{ marginBottom: 12, fontSize: 13, color: "#c05a5a", fontWeight: 500 }}>{checkinMsg}</div>
+                )}
+                <button
+                  onClick={handleCheckin}
+                  disabled={checkinStatus === "loading"}
+                  style={{
+                    width: "100%", padding: "16px",
+                    background: checkinStatus === "loading" ? C.sand : C.sage,
+                    color: C.cream, border: "none", borderRadius: 12,
+                    fontSize: 17, fontWeight: 700,
+                    cursor: checkinStatus === "loading" ? "default" : "pointer",
+                    transition: "background 0.2s",
+                    fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5,
+                    boxShadow: checkinStatus === "loading" ? 'none' : `0 4px 18px ${C.sage}55`,
+                  }}
+                >
+                  {checkinStatus === "loading" ? "Checking in…" : "Go Live — I'm Open for Business!"}
+                </button>
+              </div>
             </div>
           )}
 
