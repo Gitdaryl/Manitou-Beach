@@ -702,46 +702,77 @@ function ListYourPropertySection({ stays = [] }) {
             </div>
           )}
 
-          {/* Featured ($25) sample — matches real StayCard layout exactly */}
-          {tier === 'featured' && (
-            <div style={{
-              background: C.dusk, border: `1px solid ${C.lakeDark}`, borderRadius: 16,
-              padding: '32px 28px', display: 'flex', gap: 24, alignItems: 'flex-start',
-              position: 'relative', overflow: 'hidden',
-            }}>
-              <div style={{ position: 'absolute', top: 0, left: 0, width: 4, height: '100%', background: C.sunset, borderRadius: '16px 0 0 16px' }} />
-              <img
-                src="/images/yeti/yeti-cabin.jpg"
-                alt=""
-                style={{ width: 120, height: 120, borderRadius: 16, objectFit: 'cover', flexShrink: 0, background: C.night }}
-              />
-              <div style={{ flex: 1 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 8, marginBottom: 6 }}>
-                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.cream, margin: 0 }}>Yeti's Cozy Cabin</h3>
-                  <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-                    <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.cream, background: C.sunset, padding: '4px 10px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>✦ Staff Pick</span>
-                    <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.cream, background: `${C.lakeBlue}40`, padding: '4px 10px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>Cottage</span>
+          {/* Featured ($25) sample — StayCard layout + photo gallery */}
+          {tier === 'featured' && (() => {
+            const samplePhotos = ['/images/yeti/yeti-cabin.jpg', '/images/yeti/yeti-cabin-2.jpg', '/images/yeti/yeti-cabin-3.jpg'];
+            return (
+              <div style={{
+                background: C.dusk, border: `1px solid ${C.lakeDark}`, borderRadius: 16,
+                position: 'relative', overflow: 'hidden',
+              }}>
+                <div style={{ position: 'absolute', top: 0, left: 0, width: 4, height: '100%', background: C.sunset, borderRadius: '16px 0 0 16px' }} />
+
+                {/* Card body — matches StayCard */}
+                <div style={{ padding: '32px 28px', display: 'flex', gap: 24, alignItems: 'flex-start' }}>
+                  <img
+                    src={samplePhotos[0]}
+                    alt=""
+                    onClick={() => setLightbox({ images: samplePhotos, startIndex: 0 })}
+                    style={{ width: 120, height: 120, borderRadius: 16, objectFit: 'cover', flexShrink: 0, background: C.night, cursor: 'pointer', transition: 'transform 0.2s' }}
+                    onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.03)'}
+                    onMouseLeave={e => e.currentTarget.style.transform = 'none'}
+                  />
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 8, marginBottom: 6 }}>
+                      <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.cream, margin: 0 }}>Yeti's Cozy Cabin</h3>
+                      <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+                        <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.cream, background: C.sunset, padding: '4px 10px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>✦ Staff Pick</span>
+                        <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.cream, background: `${C.lakeBlue}40`, padding: '4px 10px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>Cottage</span>
+                      </div>
+                    </div>
+                    <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontFamily: "'Libre Franklin', sans-serif", marginBottom: 8 }}>🛏 3 beds · 👥 Sleeps 8</div>
+                    <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)', lineHeight: 1.7, margin: '0 0 14px' }}>
+                      Lakefront cabin with a hot tub, fire pit, and the best sunset view on Devils Lake. The kind of place you never want to leave.
+                    </p>
+                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 14 }}>
+                      {['Waterfront', 'Fire Pit', 'Dock', 'WiFi', 'Kitchen'].map(a => (
+                        <span key={a} style={{ fontSize: 11, padding: '4px 10px', borderRadius: 12, background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)', fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, border: '1px solid rgba(255,255,255,0.08)' }}>
+                          {AMENITY_ICONS[a]} {a}
+                        </span>
+                      ))}
+                    </div>
+                    <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', marginBottom: 12 }}>
+                      <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>📍 7832 Devils Lake Hwy</span>
+                      <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>📞 (517) 555-0199</span>
+                    </div>
+                    <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: C.sunset, fontFamily: "'Libre Franklin', sans-serif" }}>Book Now →</span>
                   </div>
                 </div>
-                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontFamily: "'Libre Franklin', sans-serif", marginBottom: 8 }}>🛏 3 beds · 👥 Sleeps 8</div>
-                <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)', lineHeight: 1.7, margin: '0 0 14px' }}>
-                  Lakefront cabin with a hot tub, fire pit, and the best sunset view on Devils Lake. The kind of place you never want to leave.
-                </p>
-                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 14 }}>
-                  {['Waterfront', 'Fire Pit', 'Dock', 'WiFi', 'Kitchen'].map(a => (
-                    <span key={a} style={{ fontSize: 11, padding: '4px 10px', borderRadius: 12, background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)', fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, border: '1px solid rgba(255,255,255,0.08)' }}>
-                      {AMENITY_ICONS[a]} {a}
-                    </span>
+
+                {/* Photo gallery strip — Featured perk */}
+                <div style={{
+                  display: 'flex', gap: 10, padding: '0 28px 24px',
+                  borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 20,
+                }}>
+                  {samplePhotos.map((src, i) => (
+                    <img
+                      key={i}
+                      src={src}
+                      alt=""
+                      onClick={() => setLightbox({ images: samplePhotos, startIndex: i })}
+                      style={{
+                        flex: 1, height: 100, borderRadius: 12, objectFit: 'cover',
+                        cursor: 'pointer', transition: 'transform 0.2s, box-shadow 0.2s',
+                        background: C.night,
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.03)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.4)'; }}
+                      onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none'; }}
+                    />
                   ))}
                 </div>
-                <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', marginBottom: 12 }}>
-                  <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>📍 7832 Devils Lake Hwy</span>
-                  <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>📞 (517) 555-0199</span>
-                </div>
-                <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: C.sunset, fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'none' }}>Book Now →</span>
               </div>
-            </div>
-          )}
+            );
+          })()}
         </div>
 
         {/* ── The Form ── */}
