@@ -722,7 +722,7 @@ export default function FoodTrucksPage() {
           </div>
         ) : sortedItems.length === 0 ? (
           <button
-            onClick={(e) => { setLoveInput({ slug, text: '' }); setTimeout(() => e.target.closest('[data-love-wrap]')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80); }}
+            onClick={(e) => { const card = e.target.closest('[data-love-wrap]'); setLoveInput({ slug, text: '' }); if (card) setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80); }}
             style={{
               display: "inline-flex", alignItems: "center", gap: 5,
               padding: "6px 14px", borderRadius: 20,
@@ -736,7 +736,7 @@ export default function FoodTrucksPage() {
           </button>
         ) : (
           <button
-            onClick={(e) => { setLoveInput({ slug, text: '' }); setTimeout(() => e.target.closest('[data-love-wrap]')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80); }}
+            onClick={(e) => { const card = e.target.closest('[data-love-wrap]'); setLoveInput({ slug, text: '' }); if (card) setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80); }}
             style={{ fontSize: 11, color: C.textMuted, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", textDecoration: "underline" }}
           >
             + Love something else
