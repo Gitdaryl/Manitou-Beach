@@ -656,17 +656,6 @@ export default function FoodTrucksPage() {
   const maxLoves = allTrucks.reduce((m, t) => Math.max(m, loveCount(t.slug)), 0);
   const isMostLoved = (slug) => maxLoves >= 3 && loveCount(slug) === maxLoves;
 
-  // Stable ref for love input — survives re-renders since it's on the parent
-  const loveInputRef = React.useRef(null);
-
-  const submitLove = (slug) => {
-    const val = loveInputRef.current?.value?.trim().toLowerCase();
-    if (!val) return;
-    loveInputRef.current.value = '';
-    handleLove(slug, val);
-    setLoveInput({ slug: '', text: '' });
-  };
-
   // Love pills renderer (shared between live + directory cards)
   const LovePills = ({ slug }) => {
     const truckLoves = loves[slug];
@@ -706,20 +695,30 @@ export default function FoodTrucksPage() {
           </div>
         )}
         {showInput ? (
-          <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+          <div data-love-input={slug} style={{ display: "flex", gap: 6, alignItems: "center" }}>
             <input
-              ref={loveInputRef}
               type="text"
               inputMode="text"
               enterKeyHint="send"
               defaultValue=""
-              onKeyDown={e => { if (e.key === 'Enter' || e.keyCode === 13) { e.preventDefault(); submitLove(slug); } if (e.key === 'Escape') setLoveInput({ slug: '', text: '' }); }}
+              onKeyDown={e => {
+                if (e.key === 'Enter' || e.keyCode === 13) {
+                  e.preventDefault();
+                  const val = e.target.value.trim().toLowerCase();
+                  if (val) { e.target.value = ''; handleLove(slug, val); setLoveInput({ slug: '', text: '' }); }
+                }
+                if (e.key === 'Escape') setLoveInput({ slug: '', text: '' });
+              }}
               placeholder="What did you love?"
               maxLength={50}
               style={{ flex: 1, padding: "5px 10px", borderRadius: 8, border: `1px solid ${C.sand}`, fontSize: 16, fontFamily: "'Libre Franklin', sans-serif", color: C.text, outline: "none", background: C.warmWhite }}
             />
             <button
-              onClick={() => submitLove(slug)}
+              onClick={e => {
+                const input = e.target.closest('[data-love-input]')?.querySelector('input');
+                const val = (input?.value || '').trim().toLowerCase();
+                if (val) { input.value = ''; handleLove(slug, val); setLoveInput({ slug: '', text: '' }); }
+              }}
               style={{ padding: "5px 12px", borderRadius: 8, background: C.sunset, color: C.cream, border: "none", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif" }}
             >
               ❤️
