@@ -139,8 +139,9 @@ async function handlePost(req, res) {
     });
 
     if (!createRes.ok) {
-      console.error('Food Truck Loves POST create failed:', await createRes.text());
-      return res.status(500).json({ error: 'Failed to save love' });
+      const errText = await createRes.text();
+      console.error('Food Truck Loves POST create failed:', errText);
+      return res.status(500).json({ error: 'Failed to save love', debug: errText });
     }
 
     return res.status(200).json({ ok: true });
