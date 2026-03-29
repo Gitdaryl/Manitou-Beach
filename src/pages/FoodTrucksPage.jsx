@@ -695,17 +695,18 @@ export default function FoodTrucksPage() {
           </div>
         )}
         {showInput ? (
-          <div data-love-input={slug} style={{ display: "flex", gap: 6, alignItems: "center" }}>
+          <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
             <input
               type="text"
               inputMode="text"
               enterKeyHint="send"
-              defaultValue=""
+              value={loveInput.text}
+              onChange={e => setLoveInput({ slug, text: e.target.value })}
               onKeyDown={e => {
                 if (e.key === 'Enter' || e.keyCode === 13) {
                   e.preventDefault();
-                  const val = e.target.value.trim().toLowerCase();
-                  if (val) { e.target.value = ''; handleLove(slug, val); setLoveInput({ slug: '', text: '' }); }
+                  const val = loveInput.text.trim().toLowerCase();
+                  if (val) { handleLove(slug, val); setLoveInput({ slug: '', text: '' }); }
                 }
                 if (e.key === 'Escape') setLoveInput({ slug: '', text: '' });
               }}
@@ -714,10 +715,9 @@ export default function FoodTrucksPage() {
               style={{ flex: 1, padding: "5px 10px", borderRadius: 8, border: `1px solid ${C.sand}`, fontSize: 16, fontFamily: "'Libre Franklin', sans-serif", color: C.text, outline: "none", background: C.warmWhite }}
             />
             <button
-              onClick={e => {
-                const input = e.target.closest('[data-love-input]')?.querySelector('input');
-                const val = (input?.value || '').trim().toLowerCase();
-                if (val) { input.value = ''; handleLove(slug, val); setLoveInput({ slug: '', text: '' }); }
+              onClick={() => {
+                const val = loveInput.text.trim().toLowerCase();
+                if (val) { handleLove(slug, val); setLoveInput({ slug: '', text: '' }); }
               }}
               style={{ padding: "5px 12px", borderRadius: 8, background: C.sunset, color: C.cream, border: "none", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif" }}
             >
