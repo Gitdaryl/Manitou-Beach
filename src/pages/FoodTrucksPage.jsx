@@ -695,41 +695,40 @@ export default function FoodTrucksPage() {
           </div>
         )}
         {showInput ? (
-          <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+          <form
+            onSubmit={e => {
+              e.preventDefault();
+              const val = loveInput.text.trim().toLowerCase();
+              if (val) { handleLove(slug, val); setLoveInput({ slug: '', text: '' }); }
+            }}
+            style={{ display: "flex", gap: 6, alignItems: "center" }}
+          >
             <input
               type="text"
               inputMode="text"
               enterKeyHint="send"
+              autoComplete="off"
               value={loveInput.text}
               onChange={e => setLoveInput({ slug, text: e.target.value })}
-              onKeyDown={e => {
-                if (e.key === 'Enter' || e.keyCode === 13) {
-                  e.preventDefault();
-                  const val = loveInput.text.trim().toLowerCase();
-                  if (val) { handleLove(slug, val); setLoveInput({ slug: '', text: '' }); }
-                }
-                if (e.key === 'Escape') setLoveInput({ slug: '', text: '' });
-              }}
+              onKeyDown={e => { if (e.key === 'Escape') setLoveInput({ slug: '', text: '' }); }}
               placeholder="What did you love?"
               maxLength={50}
               style={{ flex: 1, padding: "5px 10px", borderRadius: 8, border: `1px solid ${C.sand}`, fontSize: 16, fontFamily: "'Libre Franklin', sans-serif", color: C.text, outline: "none", background: C.warmWhite }}
             />
             <button
-              onClick={() => {
-                const val = loveInput.text.trim().toLowerCase();
-                if (val) { handleLove(slug, val); setLoveInput({ slug: '', text: '' }); }
-              }}
+              type="submit"
               style={{ padding: "5px 12px", borderRadius: 8, background: C.sunset, color: C.cream, border: "none", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif" }}
             >
               ❤️
             </button>
             <button
+              type="button"
               onClick={() => setLoveInput({ slug: '', text: '' })}
               style={{ padding: "5px 8px", borderRadius: 8, background: "transparent", color: C.textMuted, border: `1px solid ${C.sand}`, fontSize: 12, cursor: "pointer" }}
             >
               ✕
             </button>
-          </div>
+          </form>
         ) : sortedItems.length === 0 ? (
           <button
             onClick={(e) => { const card = e.target.closest('[data-love-wrap]'); setLoveInput({ slug, text: '' }); if (card) setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80); }}
