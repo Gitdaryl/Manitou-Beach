@@ -101,14 +101,21 @@ export default async function handler(req, res) {
 
     const raw = response.content[0]?.text || '[]';
 
-    // Parse the JSON — handle markdown code fences if Claude wraps it
+    // Parse the JSON — handle markdown code fences and any surrounding text
     let events;
     try {
-      const cleaned = raw.replace(/^```json?\s*/i, '').replace(/\s*```$/i, '').trim();
+      // Strip code fences
+      let cleaned = raw.replace(/```json?\s*/gi, '').replace(/```/g, '').trim();
+      // If there's text before the array, find the first [
+      const arrStart = cleaned.indexOf('[');
+      const arrEnd = cleaned.lastIndexOf(']');
+      if (arrStart !== -1 && arrEnd !== -1) {
+        cleaned = cleaned.slice(arrStart, arrEnd + 1);
+      }
       events = JSON.parse(cleaned);
     } catch (parseErr) {
-      console.error('extract-events: Failed to parse Claude response:', raw);
-      return res.status(500).json({ error: 'Could not parse events from the content. Try a clearer image or paste the text instead.' });
+      console.error('extract-events: Failed to parse Claude response:', raw.slice(0, 500));
+      return res.status(500).json({ error: 'Could not parse events from the content. Try a clearer image or paste the text instead.', debug: raw.slice(0, 300) });
     }
 
     if (!Array.isArray(events) || events.length === 0) {
