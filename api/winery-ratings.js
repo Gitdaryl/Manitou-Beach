@@ -11,12 +11,31 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'POST') {
-    const { venue, rating, service, atmosphere, value, wineTried, note, firstName, sessionId } = req.body || {};
+    const { venue, rating, wineRatings, service, atmosphere, experience, value, wineTried, note, firstName, sessionId } = req.body || {};
 
-    if (!venue || !rating || !wineTried) {
-      return res.status(400).json({ error: 'venue, rating, and wineTried are required' });
+    // Support both new format (wineRatings array) and legacy (single rating + wineTried string)
+    const hasNewFormat = Array.isArray(wineRatings) && wineRatings.length > 0;
+    const validWineRatings = hasNewFormat
+      ? wineRatings.filter(w => w.name?.trim() && w.rating >= 1 && w.rating <= 5)
+      : [];
+
+    // Compute the overall pour score: average of per-wine ratings, or legacy single rating
+    const overallRating = hasNewFormat
+      ? Math.round((validWineRatings.reduce((s, w) => s + w.rating, 0) / validWineRatings.length) * 10) / 10
+      : Number(rating);
+
+    // Build wineTried string: "name:rating · name:rating" for new format, or legacy plain string
+    const wineTriedStr = hasNewFormat
+      ? validWineRatings.map(w => `${w.name.trim()}:${w.rating}`).join(' · ')
+      : String(wineTried || '').trim();
+
+    if (!venue || (!hasNewFormat && !rating) || (!hasNewFormat && !wineTried)) {
+      return res.status(400).json({ error: 'venue and wine ratings are required' });
     }
-    if (rating < 1 || rating > 5) {
+    if (hasNewFormat && validWineRatings.length === 0) {
+      return res.status(400).json({ error: 'At least one wine with a valid rating (1-5) is required' });
+    }
+    if (!hasNewFormat && (rating < 1 || rating > 5)) {
       return res.status(400).json({ error: 'Rating must be 1–5' });
     }
 
@@ -25,8 +44,8 @@ export default async function handler(req, res) {
     const props = {
       'Name':      { title:     [{ text: { content: `${venue} — ${today}` } }] },
       'Venue':     { select:    { name: venue } },
-      'Rating':    { number:    Number(rating) },
-      'WineTried': { rich_text: [{ text: { content: String(wineTried).slice(0, 2000) } }] },
+      'Rating':    { number:    overallRating },
+      'WineTried': { rich_text: [{ text: { content: wineTriedStr.slice(0, 2000) } }] },
       'Note':      { rich_text: [{ text: { content: String(note || '').slice(0, 2000) } }] },
       // Quote stores the visitor's first name so comments can be attributed on site
       'Quote':     { rich_text: [{ text: { content: String(firstName || '').slice(0, 100) } }] },
@@ -36,7 +55,9 @@ export default async function handler(req, res) {
     };
     if (service    && service    >= 1 && service    <= 5) props['Service']    = { number: Number(service) };
     if (atmosphere && atmosphere >= 1 && atmosphere <= 5) props['Atmosphere'] = { number: Number(atmosphere) };
-    if (value      && value      >= 1 && value      <= 5) props['Value']      = { number: Number(value) };
+    // New: Experience replaces Value — but accept either for backward compat
+    const exp = experience || value;
+    if (exp && exp >= 1 && exp <= 5) props['Experience'] = { number: Number(exp) };
 
     const response = await fetch('https://api.notion.com/v1/pages', {
       method: 'POST',
@@ -54,9 +75,11 @@ export default async function handler(req, res) {
     }
 
     // ── Auto-register unknown wines ────────────────────────────────────────
-    // If the wine typed doesn't match anything in the registry, add it as
-    // inactive (Active: false) so admin can review and categorise it.
-    if (WINES_DB_ID && wineTried.trim()) {
+    const wineNames = hasNewFormat
+      ? validWineRatings.map(w => w.name.trim())
+      : (wineTried || '').trim() ? [wineTried.trim()] : [];
+
+    if (WINES_DB_ID && wineNames.length > 0) {
       try {
         const winesRes = await fetch(
           `https://api.notion.com/v1/databases/${WINES_DB_ID}/query`,
@@ -80,32 +103,35 @@ export default async function handler(req, res) {
             (p.properties['Name']?.title?.[0]?.text?.content || '').toLowerCase()
           );
 
-          const inputLC = wineTried.trim().toLowerCase();
-          const alreadyKnown = existingNames.some(n =>
-            n.includes(inputLC) || inputLC.includes(n)
-          );
+          for (const wineName of wineNames) {
+            const inputLC = wineName.toLowerCase();
+            const alreadyKnown = existingNames.some(n =>
+              n.includes(inputLC) || inputLC.includes(n)
+            );
 
-          if (!alreadyKnown) {
-            // Add as inactive — admin reviews before it goes live on the leaderboard
-            await fetch('https://api.notion.com/v1/pages', {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${TOKEN}`,
-                'Content-Type': 'application/json',
-                'Notion-Version': '2022-06-28',
-              },
-              body: JSON.stringify({
-                parent: { database_id: WINES_DB_ID },
-                properties: {
-                  'Name':      { title:     [{ text: { content: wineTried.trim().slice(0, 200) } }] },
-                  'Venue':     { select:    { name: venue } },
-                  'Category':  { select:    { name: 'Unknown' } },
-                  'Full Name': { rich_text: [{ text: { content: `${venue} · ${wineTried.trim()}`.slice(0, 200) } }] },
-                  'Active':    { checkbox: false },
-                  'Season':    { select:    { name: '2026' } },
+            if (!alreadyKnown) {
+              // Add as inactive — admin reviews before it goes live on the leaderboard
+              await fetch('https://api.notion.com/v1/pages', {
+                method: 'POST',
+                headers: {
+                  'Authorization': `Bearer ${TOKEN}`,
+                  'Content-Type': 'application/json',
+                  'Notion-Version': '2022-06-28',
                 },
-              }),
-            });
+                body: JSON.stringify({
+                  parent: { database_id: WINES_DB_ID },
+                  properties: {
+                    'Name':      { title:     [{ text: { content: wineName.slice(0, 200) } }] },
+                    'Venue':     { select:    { name: venue } },
+                    'Category':  { select:    { name: 'Unknown' } },
+                    'Full Name': { rich_text: [{ text: { content: `${venue} · ${wineName}`.slice(0, 200) } }] },
+                    'Active':    { checkbox: false },
+                    'Season':    { select:    { name: '2026' } },
+                  },
+                }),
+              });
+              existingNames.push(inputLC); // prevent double-add within same submission
+            }
           }
         }
       } catch (err) {
@@ -154,7 +180,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ ratings: {} });
     }
 
-    // ── Aggregate by venue: { avg, count, service_avg, atmosphere_avg, value_avg, comments } ──
+    // ── Aggregate by venue ──────────────────────────────────────────────────
     const agg = {};
     const commentsByVenue = {};
 
@@ -164,16 +190,17 @@ export default async function handler(req, res) {
       const rating = p['Rating']?.number;
       if (!venue || !rating) continue;
 
-      if (!agg[venue]) agg[venue] = { total: 0, count: 0, svcTotal: 0, svcCount: 0, atmTotal: 0, atmCount: 0, valTotal: 0, valCount: 0 };
+      if (!agg[venue]) agg[venue] = { total: 0, count: 0, svcTotal: 0, svcCount: 0, atmTotal: 0, atmCount: 0, expTotal: 0, expCount: 0 };
       agg[venue].total += rating;
       agg[venue].count += 1;
 
       const svc = p['Service']?.number;
       const atm = p['Atmosphere']?.number;
-      const val = p['Value']?.number;
+      // Accept both Experience (new) and Value (legacy) — prefer Experience
+      const exp = p['Experience']?.number || p['Value']?.number;
       if (svc) { agg[venue].svcTotal += svc; agg[venue].svcCount += 1; }
       if (atm) { agg[venue].atmTotal += atm; agg[venue].atmCount += 1; }
-      if (val) { agg[venue].valTotal += val; agg[venue].valCount += 1; }
+      if (exp) { agg[venue].expTotal += exp; agg[venue].expCount += 1; }
 
       // Collect comments (Quote = firstName, Note = comment body)
       const note = p['Note']?.rich_text?.[0]?.text?.content?.trim() || '';
@@ -190,17 +217,19 @@ export default async function handler(req, res) {
     const rnd = (t, c) => c > 0 ? Math.round((t / c) * 10) / 10 : null;
     for (const [venue, d] of Object.entries(agg)) {
       ratings[venue] = {
-        avg:            rnd(d.total, d.count),
-        count:          d.count,
-        service_avg:    rnd(d.svcTotal, d.svcCount),
-        atmosphere_avg: rnd(d.atmTotal, d.atmCount),
-        value_avg:      rnd(d.valTotal, d.valCount),
+        avg:             rnd(d.total, d.count),
+        count:           d.count,
+        service_avg:     rnd(d.svcTotal, d.svcCount),
+        atmosphere_avg:  rnd(d.atmTotal, d.atmCount),
+        experience_avg:  rnd(d.expTotal, d.expCount),
         // Most recent 3 comments (results already sorted descending by date)
-        comments:       (commentsByVenue[venue] || []).slice(0, 3),
+        comments:        (commentsByVenue[venue] || []).slice(0, 3),
       };
     }
 
     // ── Wine-level aggregation ──────────────────────────────────────────────
+    // New format: WineTried stores "name:rating · name:rating"
+    // Legacy format: WineTried stores "name · name" (no per-wine rating)
     let wineRankings = [];
     if (WINES_DB_ID && allResults.length > 0) {
       try {
@@ -230,25 +259,61 @@ export default async function handler(req, res) {
             fullName: p.properties['Full Name']?.rich_text?.[0]?.text?.content || '',
           })).filter(w => w.name);
 
-          // Count mentions — case-insensitive substring match in WineTried
-          const wineCounts = {};
+          // Aggregate per-wine: count + average rating
+          const wineStats = {}; // { id: { total, count } }
           for (const page of allResults) {
             const wineTried = page.properties['WineTried']?.rich_text?.[0]?.text?.content || '';
+            const overallRating = page.properties['Rating']?.number;
             if (!wineTried) continue;
-            const parts = wineTried.split('·').map(s => s.trim().toLowerCase());
-            for (const wine of registry) {
-              const nameLC = wine.name.toLowerCase();
-              if (parts.some(p => p.includes(nameLC) || nameLC.includes(p))) {
-                if (!wineCounts[wine.id]) wineCounts[wine.id] = 0;
-                wineCounts[wine.id]++;
+
+            const parts = wineTried.split('·').map(s => s.trim());
+            for (const part of parts) {
+              // New format: "Wine Name:4" — extract name and per-wine rating
+              const colonIdx = part.lastIndexOf(':');
+              let partName, partRating;
+              if (colonIdx > 0) {
+                const maybeRating = Number(part.slice(colonIdx + 1));
+                if (maybeRating >= 1 && maybeRating <= 5) {
+                  partName = part.slice(0, colonIdx).trim().toLowerCase();
+                  partRating = maybeRating;
+                } else {
+                  partName = part.toLowerCase();
+                  partRating = overallRating; // legacy fallback
+                }
+              } else {
+                partName = part.toLowerCase();
+                partRating = overallRating; // legacy: use overall rating
+              }
+
+              if (!partName) continue;
+
+              for (const wine of registry) {
+                const nameLC = wine.name.toLowerCase();
+                if (partName.includes(nameLC) || nameLC.includes(partName)) {
+                  if (!wineStats[wine.id]) wineStats[wine.id] = { total: 0, count: 0 };
+                  wineStats[wine.id].total += partRating;
+                  wineStats[wine.id].count += 1;
+                  break; // one match per part
+                }
               }
             }
           }
 
           wineRankings = registry
-            .map(w => ({ ...w, count: wineCounts[w.id] || 0 }))
+            .map(w => {
+              const s = wineStats[w.id];
+              return {
+                ...w,
+                count: s ? s.count : 0,
+                avg: s ? Math.round((s.total / s.count) * 10) / 10 : null,
+              };
+            })
             .filter(w => w.count > 0)
-            .sort((a, b) => b.count - a.count);
+            .sort((a, b) => {
+              // Primary sort: average rating descending. Tiebreak: count descending.
+              if (b.avg !== a.avg) return b.avg - a.avg;
+              return b.count - a.count;
+            });
         }
       } catch (err) {
         console.error('Wine rankings aggregation error:', err.message);

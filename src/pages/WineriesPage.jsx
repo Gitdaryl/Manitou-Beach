@@ -494,13 +494,31 @@ function StarRow({ label, required, value, onChange }) {
   );
 }
 
+function InlineStarPicker({ value, onChange }) {
+  const [hover, setHover] = useState(0);
+  const isMobile = useIsMobile();
+  return (
+    <div style={{ display: 'flex', gap: isMobile ? 4 : 2 }}>
+      {[1,2,3,4,5].map(s => (
+        <button
+          key={s}
+          type="button"
+          onClick={() => onChange(s === value ? 0 : s)}
+          onMouseEnter={() => setHover(s)}
+          onMouseLeave={() => setHover(0)}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: isMobile ? 24 : 20, padding: isMobile ? '6px 4px' : '1px 2px', minWidth: isMobile ? 38 : 'auto', minHeight: isMobile ? 38 : 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center', color: s <= (hover || value) ? C.sunset : C.sand, transition: 'color 0.1s' }}
+        >★</button>
+      ))}
+    </div>
+  );
+}
+
 function WineReviewModal({ venue, accent, onSuccess, onClose }) {
   const isMobile = useIsMobile();
-  const [rating, setRating] = useState(0);
+  const [wines, setWines] = useState([{ name: '', rating: 0 }]);
   const [service, setService] = useState(0);
   const [atmosphere, setAtmosphere] = useState(0);
-  const [value, setValue] = useState(0);
-  const [wineTried, setWineTried] = useState('');
+  const [experience, setExperience] = useState(0);
   const [note, setNote] = useState('');
   const [firstName, setFirstName] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -514,21 +532,29 @@ function WineReviewModal({ venue, accent, onSuccess, onClose }) {
       .catch(() => {});
   }, []);
 
+  const addWine = () => { if (wines.length < 6) setWines(w => [...w, { name: '', rating: 0 }]); };
+  const updateWineName = (i, v) => setWines(w => w.map((x, idx) => idx === i ? { ...x, name: v } : x));
+  const updateWineRating = (i, v) => setWines(w => w.map((x, idx) => idx === i ? { ...x, rating: v } : x));
+  const removeWine = (i) => { if (wines.length > 1) setWines(w => w.filter((_, idx) => idx !== i)); };
+
   const handleSubmit = async () => {
-    if (!rating) { setError('Please rate the wine quality.'); return; }
-    if (!wineTried.trim()) { setError('Please tell us what you tried.'); return; }
+    const filledWines = wines.filter(w => w.name.trim());
+    if (filledWines.length === 0) { setError('Please tell us what you tried.'); return; }
+    const unrated = filledWines.filter(w => !w.rating);
+    if (unrated.length > 0) { setError(`Rate each pour — ${unrated[0].name.trim()} needs stars.`); return; }
     setSubmitting(true);
     setError('');
     try {
+      const wineRatings = filledWines.map(w => ({ name: w.name.trim(), rating: w.rating }));
       const res = await fetch('/api/winery-ratings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          venue, rating,
+          venue,
+          wineRatings,
           service:    service    || undefined,
           atmosphere: atmosphere || undefined,
-          value:      value      || undefined,
-          wineTried: wineTried.trim(),
+          experience: experience || undefined,
           note: note.trim(),
           firstName: firstName.trim() || undefined,
           sessionId: getWineSessionId(),
@@ -577,41 +603,52 @@ function WineReviewModal({ venue, accent, onSuccess, onClose }) {
           <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 19, fontWeight: 400, color: C.text, marginBottom: 4 }}>Log Your Visit</div>
           <div style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 24 }}>{venue}</div>
 
-          <div style={{ marginBottom: 20, padding: '16px 16px 6px', background: C.cream, borderRadius: 12, border: `1px solid ${C.sand}` }}>
-            <StarRow label="Wine Quality" required value={rating}     onChange={setRating} />
-            <StarRow label="Service"      required={false} value={service}     onChange={setService} />
-            <StarRow label="Atmosphere"   required={false} value={atmosphere}  onChange={setAtmosphere} />
-            <StarRow label="Value"        required={false} value={value}       onChange={setValue} />
-          </div>
-
-          <div style={{ marginBottom: 16 }}>
+          {/* Per-wine ratings */}
+          <div style={{ marginBottom: 20 }}>
             <label style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, display: 'block', marginBottom: 8 }}>What did you try? *</label>
-            <input
-              type="text"
-              list="wine-suggestions"
-              value={wineTried}
-              onChange={e => setWineTried(e.target.value)}
-              placeholder="The dry rosé, Cabernet Franc, 2023 Riesling..."
-              style={{ width: '100%', padding: '10px 14px', borderRadius: 10, border: `1.5px solid ${C.sand}`, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.text, background: C.cream, outline: 'none', boxSizing: 'border-box' }}
-            />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {wines.map((w, i) => (
+                <div key={i} style={{ background: C.cream, borderRadius: 10, padding: '10px 12px', border: `1px solid ${C.sand}` }}>
+                  <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: w.name.trim() ? 6 : 0 }}>
+                    <input
+                      type="text"
+                      list="wine-suggestions"
+                      value={w.name}
+                      onChange={e => updateWineName(i, e.target.value)}
+                      placeholder={i === 0 ? "e.g. Pinot Gris, IPA, dry rosé..." : "Another pour..."}
+                      style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: `1.5px solid ${C.sand}`, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.text, background: '#fff', outline: 'none', boxSizing: 'border-box', flex: 1 }}
+                    />
+                    {wines.length > 1 && (
+                      <button type="button" onClick={() => removeWine(i)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 18, color: C.textMuted, padding: '0 4px', lineHeight: 1 }}>×</button>
+                    )}
+                  </div>
+                  {w.name.trim() && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, color: C.textMuted, textTransform: 'uppercase', letterSpacing: 0.5 }}>The pour</span>
+                      <InlineStarPicker value={w.rating} onChange={r => updateWineRating(i, r)} />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
             <datalist id="wine-suggestions">
               {wineList.map(w => (
                 <option key={w.id} value={w.fullName || w.name}>{w.name} — {w.venue}</option>
               ))}
             </datalist>
-            {(() => {
-              const match = wineList.find(w =>
-                (w.fullName || w.name).toLowerCase() === wineTried.trim().toLowerCase()
-              );
-              if (!match || !match.category) return null;
-              const catColors = { Red: '#8B3A3A', White: '#7A8E72', Sweet: '#C9A84C', 'Rosé': '#D4845A', 'Fruit & Specialty': '#5B7E95' };
-              const bg = catColors[match.category] || C.sage;
-              return (
-                <span style={{ display: 'inline-block', marginTop: 6, padding: '2px 10px', borderRadius: 20, background: bg, color: '#fff', fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 0.5 }}>
-                  {match.category}
-                </span>
-              );
-            })()}
+            {wines.length < 6 && (
+              <button type="button" onClick={addWine} style={{ marginTop: 8, background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, color: C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, padding: 0 }}>
+                + Add another pour
+              </button>
+            )}
+          </div>
+
+          {/* Venue-level ratings */}
+          <div style={{ marginBottom: 20, padding: '16px 16px 6px', background: C.cream, borderRadius: 12, border: `1px solid ${C.sand}` }}>
+            <div style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 10 }}>About the stop</div>
+            <StarRow label="The People"  required={false} value={service}     onChange={setService} />
+            <StarRow label="The Vibe"    required={false} value={atmosphere}  onChange={setAtmosphere} />
+            <StarRow label="The Visit"   required={false} value={experience}  onChange={setExperience} />
           </div>
 
           <div style={{ marginBottom: 16 }}>
@@ -979,10 +1016,10 @@ function WineriesScorecardSection() {
           {venuesWithRatings.map((v, i) => {
             const r = ratings[v.name];
             const dims = [
-              { label: 'Wine Quality', val: r.avg },
-              { label: 'Service', val: r.service_avg },
-              { label: 'Atmosphere', val: r.atmosphere_avg },
-              { label: 'Value', val: r.value_avg },
+              { label: 'The Pour', val: r.avg },
+              { label: 'The People', val: r.service_avg },
+              { label: 'The Vibe', val: r.atmosphere_avg },
+              { label: 'The Visit', val: r.experience_avg },
             ].filter(d => d.val != null);
             return (
               <FadeIn key={v.name} delay={i * 60}>
@@ -1204,12 +1241,14 @@ function WineScoreboardSection() {
   const MEDAL = ['#C9A84C', '#A8A8A8', '#C07B40'];
 
   const WINE_CATS = [
-    { id: 'all',               label: 'All Wines',          color: C.sunset },
+    { id: 'all',               label: 'All Pours',          color: C.sunset },
     { id: 'Red',               label: 'Red',                color: '#B84040' },
     { id: 'White',             label: 'White',              color: '#C9A84C' },
     { id: 'Sweet',             label: 'Sweet',              color: '#D4845A' },
     { id: 'Rosé',              label: 'Rosé',               color: '#C97B9A' },
     { id: 'Fruit & Specialty', label: 'Fruit & Specialty',  color: C.sage },
+    { id: 'Cider',             label: 'Cider',              color: '#8B7D3C' },
+    { id: 'Craft Brew',        label: 'Craft Brew',         color: '#6B5B3C' },
   ];
 
   const catColor = (cat) => WINE_CATS.find(c => c.id === cat)?.color || C.sunset;
@@ -1217,17 +1256,17 @@ function WineScoreboardSection() {
   const filteredWines = activeWineCat === 'all'
     ? wineRankings
     : wineRankings.filter(w => w.category === activeWineCat);
-  const topWines = filteredWines.slice(0, activeWineCat === 'all' ? 8 : 3);
-  const maxWineCount = topWines[0]?.count || 1;
+  const topWines = filteredWines.slice(0, activeWineCat === 'all' ? 8 : 5);
+  const maxWineAvg = topWines[0]?.avg || 5;
 
   const tickerItems = wineRankings.length > 0
-    ? wineRankings.slice(0, 12).map(w => `${w.fullName || w.name}  ·  ${w.venue}  ·  ${w.count} ${w.count === 1 ? 'vote' : 'votes'}`)
+    ? wineRankings.slice(0, 12).map(w => `${w.fullName || w.name}  ·  ${w.venue}  ·  ${w.avg ? w.avg.toFixed(1) + '★' : w.count + (w.count === 1 ? ' vote' : ' votes')}`)
     : venueData.flatMap(v => {
         const items = [];
         const s = (n) => '★'.repeat(Math.round(n)) + '☆'.repeat(5 - Math.round(n));
-        if (v.r.avg)            items.push(`${v.name}  ·  Wine Quality  ·  ${s(v.r.avg)}`);
-        if (v.r.service_avg)    items.push(`${v.name}  ·  Hospitality  ·  ${s(v.r.service_avg)}`);
-        if (v.r.atmosphere_avg) items.push(`${v.name}  ·  Atmosphere  ·  ${s(v.r.atmosphere_avg)}`);
+        if (v.r.avg)            items.push(`${v.name}  ·  The Pour  ·  ${s(v.r.avg)}`);
+        if (v.r.service_avg)    items.push(`${v.name}  ·  The People  ·  ${s(v.r.service_avg)}`);
+        if (v.r.atmosphere_avg) items.push(`${v.name}  ·  The Vibe  ·  ${s(v.r.atmosphere_avg)}`);
         return items;
       });
 
@@ -1260,8 +1299,8 @@ function WineScoreboardSection() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 48 }} className="scoreboard-explainer-grid">
             {[
               { n: '1', label: 'Stamp a stop', body: 'Visit any tasting room on the trail and stamp it in your passport.' },
-              { n: '2', label: 'Rate what you tried', body: 'Name the wine and leave a star rating. Takes 30 seconds.' },
-              { n: '3', label: 'Move the board', body: 'Every review is a vote. Top wines rise. Awards follow at season end.' },
+              { n: '2', label: 'Rate what you tried', body: 'Name each pour and give it stars. Wine, cider, ale — it all counts.' },
+              { n: '3', label: 'Move the board', body: 'Every rating is a vote. The best pours rise. Awards follow at season end.' },
             ].map(step => (
               <div key={step.n} style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 12, padding: '20px 20px 18px', border: '1px solid rgba(255,255,255,0.07)' }}>
                 <div style={{ fontFamily: "'Caveat', cursive", fontSize: 32, color: C.sunset, lineHeight: 1, marginBottom: 8 }}>{step.n}</div>
@@ -1314,10 +1353,10 @@ function WineScoreboardSection() {
             {wineRankings.length === 0 ? (
               <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: 14, padding: '36px 24px', border: '1px solid rgba(255,255,255,0.07)', textAlign: 'center' }}>
                 <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.3)', fontFamily: "'Libre Baskerville', serif", marginBottom: 8 }}>
-                  Wine Rankings — Coming This Season
+                  Rankings — Coming This Season
                 </div>
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.18)', fontFamily: "'Libre Franklin', sans-serif" }}>
-                  Rate wines as you visit the trail — the leaderboard builds from your reviews.
+                  Rate what you try as you visit the trail — the leaderboard builds from your reviews.
                 </div>
               </div>
             ) : topWines.length === 0 ? (
@@ -1327,7 +1366,7 @@ function WineScoreboardSection() {
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {topWines.map((wine, i) => {
-                  const pct = Math.max(8, (wine.count / maxWineCount) * 82 + 18);
+                  const pct = Math.max(8, ((wine.avg || 0) / maxWineAvg) * 82 + 18);
                   const color = catColor(wine.category);
                   return (
                     <div key={wine.id || wine.name} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -1382,11 +1421,11 @@ function WineScoreboardSection() {
                         )}
                       </div>
                       <div style={{
-                        width: 32, textAlign: 'right', flexShrink: 0,
+                        width: 40, textAlign: 'right', flexShrink: 0,
                         fontSize: 13, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif",
                         color: i === 0 ? '#C9A84C' : 'rgba(255,255,255,0.25)',
                       }}>
-                        {wine.count}
+                        {wine.avg ? wine.avg.toFixed(1) : '—'}
                       </div>
                     </div>
                   );
@@ -1395,22 +1434,22 @@ function WineScoreboardSection() {
             )}
 
             <div style={{ marginTop: 10, fontSize: 11, color: 'rgba(255,255,255,0.18)', fontFamily: "'Libre Franklin', sans-serif" }}>
-              Updated as reviews are published · wines are nominated by visitors.
+              Ranked by average rating · updated as reviews are published.
             </div>
           </div>
         </FadeIn>
 
-        {/* Tasting Room Scores — service + atmosphere by venue */}
-        {venueData.some(v => v.r?.service_avg || v.r?.atmosphere_avg) && (
+        {/* Venue Scores — the people, the vibe, the visit */}
+        {venueData.some(v => v.r?.service_avg || v.r?.atmosphere_avg || v.r?.experience_avg) && (
           <FadeIn>
             <div style={{ marginBottom: 40 }}>
               <div style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)', marginBottom: 18 }}>
-                Tasting Room Scores
+                Venue Scores
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {venueData
-                  .filter(v => v.r?.service_avg || v.r?.atmosphere_avg)
-                  .sort((a, b) => ((b.r?.service_avg || 0) + (b.r?.atmosphere_avg || 0)) - ((a.r?.service_avg || 0) + (a.r?.atmosphere_avg || 0)))
+                  .filter(v => v.r?.service_avg || v.r?.atmosphere_avg || v.r?.experience_avg)
+                  .sort((a, b) => ((b.r?.service_avg || 0) + (b.r?.atmosphere_avg || 0) + (b.r?.experience_avg || 0)) - ((a.r?.service_avg || 0) + (a.r?.atmosphere_avg || 0) + (a.r?.experience_avg || 0)))
                   .map(v => {
                     const s = (n) => '★'.repeat(Math.round(n)) + '☆'.repeat(5 - Math.round(n));
                     return (
@@ -1424,16 +1463,23 @@ function WineScoreboardSection() {
                         </div>
                         {v.r?.service_avg > 0 && (
                           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                            <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 0.8, textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)' }}>Hospitality</span>
+                            <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 0.8, textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)' }}>The People</span>
                             <span style={{ color: C.sunset, fontSize: 12 }}>{s(v.r.service_avg)}</span>
                             <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', fontFamily: "'Libre Franklin', sans-serif" }}>{v.r.service_avg.toFixed(1)}</span>
                           </div>
                         )}
                         {v.r?.atmosphere_avg > 0 && (
                           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                            <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 0.8, textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)' }}>Atmosphere</span>
+                            <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 0.8, textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)' }}>The Vibe</span>
                             <span style={{ color: C.sunset, fontSize: 12 }}>{s(v.r.atmosphere_avg)}</span>
                             <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', fontFamily: "'Libre Franklin', sans-serif" }}>{v.r.atmosphere_avg.toFixed(1)}</span>
+                          </div>
+                        )}
+                        {v.r?.experience_avg > 0 && (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                            <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 0.8, textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)' }}>The Visit</span>
+                            <span style={{ color: C.sunset, fontSize: 12 }}>{s(v.r.experience_avg)}</span>
+                            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', fontFamily: "'Libre Franklin', sans-serif" }}>{v.r.experience_avg.toFixed(1)}</span>
                           </div>
                         )}
                       </div>
@@ -1457,7 +1503,7 @@ function WineScoreboardSection() {
 const WINE_PASSPORT_HOW = [
   { icon: '/images/icons/plan-map-icon.png',    title: 'Plan your stops',     desc: 'Eight venues across the Village and the Trail. One afternoon or a full day.' },
   { icon: '/images/icons/passport-icon.png',    title: 'Grab a passport card', desc: 'Pick one up at any tasting room counter. Grid on the back — one square per stop.' },
-  { icon: '/images/icons/wine-rating.png',      title: 'Taste & scan',         desc: 'Scan the QR, pick your wine, leave a star rating. Takes 30 seconds.' },
+  { icon: '/images/icons/wine-rating.png',      title: 'Taste & scan',         desc: 'Scan the QR, name your pour, leave a star rating. Takes 30 seconds.' },
   { icon: '/images/icons/stamp-offer-icon.png', title: 'Stamp + 10% off',      desc: 'Staff signs your card square. Each stamp earns 10% off a bottle — buy before you leave.' },
   { icon: '/images/icons/trophy-icon.png',      title: 'Live standings',       desc: 'Ratings post live as they come in. Scores go dark for the final 30 days — winners revealed at an October awards ceremony.' },
 ];
@@ -1508,7 +1554,7 @@ function WineAwardCeremonySection() {
           <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16, padding: '28px 32px', maxWidth: 560, margin: '0 auto 40px', textAlign: 'left' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               {[
-                { icon: '/images/icons/wine-rating.png',      text: 'Visitors rate what they tried at each stop — wine quality, service, atmosphere. Scores go live instantly.' },
+                { icon: '/images/icons/wine-rating.png',      text: 'Visitors rate each pour they tried — plus the people, the vibe, and the overall visit. Scores go live instantly.' },
                 { icon: '/images/icons/leaderboard-icon.png', text: 'Rankings build all season. Every rating is a vote. The leaderboard updates in real time.' },
                 { icon: '/images/icons/sealed-icon.png',       text: 'Scores go dark in the final 30 days. Nobody knows the winners — until the ceremony.' },
                 { icon: '/images/icons/trophy-icon.png',       text: 'At the awards night (location TBA), winners receive a custom framed certificate to hang on their wall.' },

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Btn, FadeIn, SectionLabel } from '../components/Shared';
 import { C } from '../data/config';
 import { Footer, GlobalStyles, Navbar } from '../components/Layout';
@@ -8,6 +8,69 @@ import yeti from '../data/errorMessages';
 
 const RATE_VENUES = (WINERY_VENUES || []).filter(v => v.section !== 'extended').map(v => v.name);
 
+function getWineSessionId() {
+  try {
+    const KEY = "mb-wine-session";
+    let id = localStorage.getItem(KEY);
+    if (!id) { id = Math.random().toString(36).slice(2, 10); localStorage.setItem(KEY, id); }
+    return id;
+  } catch { return "anon"; }
+}
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 600);
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < 600);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
+  return isMobile;
+}
+
+function StarRow({ label, required, value, onChange }) {
+  const [hover, setHover] = useState(0);
+  const isMobile = useIsMobile();
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 8 : 12, marginBottom: isMobile ? 14 : 10 }}>
+      <div style={{ width: isMobile ? 80 : 110, fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 0.6, textTransform: 'uppercase', color: C.textMuted, flexShrink: 0, lineHeight: 1.3 }}>
+        {label}{required && <span style={{ color: C.sunset }}> *</span>}
+      </div>
+      <div style={{ display: 'flex', gap: isMobile ? 4 : 2 }}>
+        {[1,2,3,4,5].map(s => (
+          <button
+            key={s}
+            type="button"
+            onClick={() => onChange(s === value ? 0 : s)}
+            onMouseEnter={() => setHover(s)}
+            onMouseLeave={() => setHover(0)}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: isMobile ? 28 : 24, padding: isMobile ? '8px 6px' : '1px 2px', minWidth: isMobile ? 44 : 'auto', minHeight: isMobile ? 44 : 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center', color: s <= (hover || value) ? C.sunset : C.sand, transition: 'color 0.1s' }}
+          >★</button>
+        ))}
+      </div>
+      {!required && value === 0 && !isMobile && <span style={{ fontSize: 11, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>optional</span>}
+    </div>
+  );
+}
+
+function InlineStarPicker({ value, onChange }) {
+  const [hover, setHover] = useState(0);
+  const isMobile = useIsMobile();
+  return (
+    <div style={{ display: 'flex', gap: isMobile ? 4 : 2 }}>
+      {[1,2,3,4,5].map(s => (
+        <button
+          key={s}
+          type="button"
+          onClick={() => onChange(s === value ? 0 : s)}
+          onMouseEnter={() => setHover(s)}
+          onMouseLeave={() => setHover(0)}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: isMobile ? 24 : 20, padding: isMobile ? '6px 4px' : '1px 2px', minWidth: isMobile ? 38 : 'auto', minHeight: isMobile ? 38 : 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center', color: s <= (hover || value) ? C.sunset : C.sand, transition: 'color 0.1s' }}
+        >★</button>
+      ))}
+    </div>
+  );
+}
+
 export default function RatePage() {
   const subScrollTo = (id) => { window.location.href = "/#" + id; };
 
@@ -16,11 +79,11 @@ export default function RatePage() {
   const preVenue = params.get('venue') || '';
 
   const [venue, setVenue] = useState(preVenue);
-  const [wines, setWines] = useState(['', '', '']);
-  const [rating, setRating] = useState(0);
+  // Each wine: { name, rating }
+  const [wines, setWines] = useState([{ name: '', rating: 0 }, { name: '', rating: 0 }, { name: '', rating: 0 }]);
   const [service, setService] = useState(0);
   const [atmosphere, setAtmosphere] = useState(0);
-  const [rateValue, setRateValue] = useState(0);
+  const [experience, setExperience] = useState(0);
   const [note, setNote] = useState('');
   const [quote, setQuote] = useState('');
   const [visitorName, setVisitorName] = useState('');
@@ -28,32 +91,35 @@ export default function RatePage() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
 
-  const addWine = () => { if (wines.length < 6) setWines(w => [...w, '']); };
-  const updateWine = (i, v) => setWines(w => w.map((x, idx) => idx === i ? v : x));
+  const addWine = () => { if (wines.length < 6) setWines(w => [...w, { name: '', rating: 0 }]); };
+  const updateWineName = (i, v) => setWines(w => w.map((x, idx) => idx === i ? { ...x, name: v } : x));
+  const updateWineRating = (i, v) => setWines(w => w.map((x, idx) => idx === i ? { ...x, rating: v } : x));
   const removeWine = (i) => { if (wines.length > 1) setWines(w => w.filter((_, idx) => idx !== i)); };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!venue) { setError('Please select a venue.'); return; }
-    if (!rating) { setError('Wine Quality rating is required.'); return; }
-    const filledWines = wines.map(w => w.trim()).filter(Boolean);
-    if (filledWines.length === 0) { setError('Please tell us at least one wine or pour you tried.'); return; }
+    const filledWines = wines.filter(w => w.name.trim());
+    if (filledWines.length === 0) { setError('Please tell us at least one pour you tried.'); return; }
+    const unrated = filledWines.filter(w => !w.rating);
+    if (unrated.length > 0) { setError(`Rate each pour — ${unrated[0].name.trim()} needs stars.`); return; }
     setSubmitting(true);
     setError('');
     try {
-      const wineTried = filledWines.join(' · ');
+      const wineRatings = filledWines.map(w => ({ name: w.name.trim(), rating: w.rating }));
       const noteText = [note.trim(), visitorName.trim() ? `— ${visitorName.trim()}` : ''].filter(Boolean).join(' ');
       const res = await fetch('/api/winery-ratings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          venue, rating,
+          venue,
+          wineRatings,
           service:    service    || undefined,
           atmosphere: atmosphere || undefined,
-          value:      rateValue  || undefined,
-          wineTried,
+          experience: experience || undefined,
           note: noteText,
           quote: quote.trim() || undefined,
+          firstName: visitorName.trim() || undefined,
           sessionId: getWineSessionId(),
         }),
       });
@@ -88,7 +154,7 @@ export default function RatePage() {
         textAlign: 'center',
       }}>
         <FadeIn>
-          <SectionLabel light>Manitou Beach Wine Trail</SectionLabel>
+          <SectionLabel light>Manitou Beach Tasting Trail</SectionLabel>
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(32px, 5vw, 56px)', fontWeight: 400, color: C.cream, lineHeight: 1.1, margin: '0 0 16px 0' }}>
             Rate Your Visit
           </h1>
@@ -107,11 +173,11 @@ export default function RatePage() {
                 <div style={{ fontSize: 48, marginBottom: 16 }}>🍷</div>
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, color: C.dusk, marginBottom: 12 }}>Thank you!</div>
                 <p style={{ color: C.textLight, fontSize: 15, lineHeight: 1.7, marginBottom: 28 }}>
-                  Your review has been submitted. We curate every entry before publishing — your score will appear on the trail page soon.
+                  Your review has been submitted. We curate every entry before publishing — your scores will appear on the trail page soon.
                 </p>
                 <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-                  <Btn href="/wineries" variant="primary">See the Wine Trail →</Btn>
-                  <Btn href="/rate" variant="outline" onClick={() => { setSubmitted(false); setVenue(''); setWines(['','','']); setRating(0); setService(0); setAtmosphere(0); setRateValue(0); setNote(''); setQuote(''); setVisitorName(''); }}>Rate Another Venue</Btn>
+                  <Btn href="/wineries" variant="primary">See the Trail →</Btn>
+                  <Btn href="/rate" variant="outline" onClick={() => { setSubmitted(false); setVenue(''); setWines([{ name: '', rating: 0 }, { name: '', rating: 0 }, { name: '', rating: 0 }]); setService(0); setAtmosphere(0); setExperience(0); setNote(''); setQuote(''); setVisitorName(''); }}>Rate Another Venue</Btn>
                 </div>
               </div>
             </FadeIn>
@@ -132,38 +198,52 @@ export default function RatePage() {
                   </select>
                 </div>
 
-                {/* Wines tried */}
+                {/* What did you try — each pour gets its own stars */}
                 <div style={{ marginBottom: 24 }}>
                   <label style={labelStyle}>What did you try? *</label>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  <p style={{ fontSize: 13, color: C.textMuted, lineHeight: 1.6, margin: '0 0 14px 0', fontFamily: "'Libre Franklin', sans-serif" }}>
+                    Name each pour and rate it — wine, cider, ale, whatever you had.
+                  </p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                     {wines.map((w, i) => (
-                      <div key={i} style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                        <input
-                          type="text"
-                          value={w}
-                          onChange={e => updateWine(i, e.target.value)}
-                          placeholder={i === 0 ? "e.g. 2023 Riesling, dry rosé, Cab Franc flight..." : "Another pour..."}
-                          style={{ ...fieldStyle, flex: 1 }}
-                        />
-                        {wines.length > 1 && (
-                          <button type="button" onClick={() => removeWine(i)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 18, color: C.textMuted, padding: '0 4px', lineHeight: 1 }}>×</button>
+                      <div key={i} style={{ background: C.warmWhite, borderRadius: 12, padding: '12px 14px', border: `1px solid ${C.sand}` }}>
+                        <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 6 }}>
+                          <input
+                            type="text"
+                            value={w.name}
+                            onChange={e => updateWineName(i, e.target.value)}
+                            placeholder={i === 0 ? "e.g. Pinot Gris, dry rosé, Hefeweizen..." : "Another pour..."}
+                            style={{ ...fieldStyle, flex: 1, padding: '9px 12px', fontSize: 14 }}
+                          />
+                          {wines.length > 1 && (
+                            <button type="button" onClick={() => removeWine(i)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 18, color: C.textMuted, padding: '0 4px', lineHeight: 1 }}>×</button>
+                          )}
+                        </div>
+                        {w.name.trim() && (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <span style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, color: C.textMuted, textTransform: 'uppercase', letterSpacing: 0.5 }}>The pour</span>
+                            <InlineStarPicker value={w.rating} onChange={r => updateWineRating(i, r)} />
+                            {!w.rating && <span style={{ fontSize: 11, color: C.sunset, fontFamily: "'Libre Franklin', sans-serif" }}>required</span>}
+                          </div>
                         )}
                       </div>
                     ))}
                   </div>
                   {wines.length < 6 && (
                     <button type="button" onClick={addWine} style={{ marginTop: 10, background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, padding: 0, display: 'flex', alignItems: 'center', gap: 6 }}>
-                      + Add another wine or pour
+                      + Add another pour
                     </button>
                   )}
                 </div>
 
-                {/* Star ratings */}
+                {/* Venue-level ratings */}
                 <div style={{ marginBottom: 24, padding: '20px 20px 10px', background: C.warmWhite, borderRadius: 14, border: `1px solid ${C.sand}` }}>
-                  <StarRow label="Wine Quality" required value={rating}        onChange={setRating} />
-                  <StarRow label="Service"      required={false} value={service}     onChange={setService} />
-                  <StarRow label="Atmosphere"   required={false} value={atmosphere}  onChange={setAtmosphere} />
-                  <StarRow label="Value"        required={false} value={rateValue}   onChange={setRateValue} />
+                  <div style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 14 }}>
+                    About the stop
+                  </div>
+                  <StarRow label="The People"  required={false} value={service}     onChange={setService} />
+                  <StarRow label="The Vibe"    required={false} value={atmosphere}  onChange={setAtmosphere} />
+                  <StarRow label="The Visit"   required={false} value={experience}  onChange={setExperience} />
                 </div>
 
                 {/* Shareable quote */}

@@ -1953,7 +1953,7 @@ export default function YetiAdminPage() {
                     <select value={wineForm.category} onChange={e => setWineForm(f => ({ ...f, category: e.target.value }))}
                       style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: `1.5px solid ${C.sand}`, fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, color: C.text, boxSizing: 'border-box', background: '#fff' }}>
                       <option value="">— Select —</option>
-                      {['Red','White','Sweet','Rosé','Fruit & Specialty'].map(c => (
+                      {['Red','White','Sweet','Rosé','Fruit & Specialty','Cider','Craft Brew'].map(c => (
                         <option key={c} value={c}>{c}</option>
                       ))}
                     </select>
@@ -1993,8 +1993,8 @@ export default function YetiAdminPage() {
                           <div style={{ flex: 1 }}>
                             <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, color: C.dusk }}>{wine.name}</span>
                             <span style={{ marginLeft: 10, fontSize: 11, fontFamily: 'Libre Franklin, sans-serif', fontWeight: 700, padding: '2px 8px', borderRadius: 12,
-                              background: wine.category === 'Red' ? '#f9e0e0' : wine.category === 'White' ? '#fdf6dc' : wine.category === 'Sweet' ? '#fce8f4' : wine.category === 'Rosé' ? '#fce8e8' : '#e8f5e9',
-                              color: wine.category === 'Red' ? '#922' : wine.category === 'White' ? '#876' : wine.category === 'Sweet' ? '#925' : wine.category === 'Rosé' ? '#944' : '#2a6',
+                              background: { Red: '#f9e0e0', White: '#fdf6dc', Sweet: '#fce8f4', 'Rosé': '#fce8e8', 'Fruit & Specialty': '#e8f5e9', Cider: '#f5f0dc', 'Craft Brew': '#f0ece4' }[wine.category] || '#e8f5e9',
+                              color: { Red: '#922', White: '#876', Sweet: '#925', 'Rosé': '#944', 'Fruit & Specialty': '#2a6', Cider: '#6a5b20', 'Craft Brew': '#4a3f2a' }[wine.category] || '#2a6',
                             }}>{wine.category}</span>
                           </div>
                           <button

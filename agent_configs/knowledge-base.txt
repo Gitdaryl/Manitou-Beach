@@ -234,8 +234,8 @@ THE TRAIL (day trips from Manitou Beach):
 WINE PARTNER PROGRAM:
 Wineries can join the trail and get listed at /wine-partner.
 
-WINE RATINGS:
-Visitors can rate wines on the site at /rate. Ratings help other visitors discover what's good.
+RATINGS:
+Visitors rate each pour they try at /rate — wine, cider, ale, whatever they had. Each pour gets its own star rating. Visitors also rate the venue on three dimensions: The People (hospitality), The Vibe (atmosphere), and The Visit (overall experience). Per-pour ratings feed the drink awards (Best Red, Best White, etc.) and venue ratings feed the venue awards (Best Tasting Room Experience, Outstanding Customer Hospitality, Best Atmosphere).
 
 
 ========================================
@@ -766,10 +766,10 @@ The Wine Trail is a season-long program running May 22 through October 31, 2026.
 Here's what you get as a wine trail partner:
 
 Your venue on the interactive trail map at /wineries, visible to every visitor planning their trip.
-A live public scorecard with community ratings across Wine Quality, Service, Atmosphere, and Value.
-100 printed 4x6 passport cards delivered to your counter plus a display insert. When a customer visits, they scan the QR code on the card, pick their wine, and leave a star rating. You sign their card square — that's the stamp. They earn 10% off a bottle right then and there, but only if they buy before they leave.
-Ratings go live immediately and update in real time on the wine trail page. Every rating is a vote.
-At the end of the season, the top-rated venues receive a custom framed certificate award. There are 7 awards: Best Red Wine, Best White Wine, Best Sweet Wine, Best Fruit or Specialty Wine, Best Tasting Room Experience, Outstanding Customer Hospitality, and Best Atmosphere. These are 100% people's choice — voted on by real visitors.
+A live public scorecard with community ratings across four dimensions: The Pour (per-drink star ratings), The People (hospitality), The Vibe (atmosphere), and The Visit (overall experience).
+100 printed 4x6 passport cards delivered to your counter plus a display insert. When a customer visits, they scan the QR code on the card, name each pour they tried, and give each one a star rating. You sign their card square — that's the stamp. They earn 10% off a bottle right then and there, but only if they buy before they leave.
+Ratings go live immediately and update in real time on the trail page. Per-pour ratings determine the drink awards (Best Red Wine, Best White Wine, etc.) and venue ratings determine the venue awards (Best Tasting Room Experience, Outstanding Customer Hospitality, Best Atmosphere).
+At the end of the season, the top-rated pours and venues receive a custom framed certificate award. There are 9 awards — 6 drink awards: Best Red Wine, Best White Wine, Best Sweet Wine, Best Fruit or Specialty Wine, Best Hard Cider, Best Craft Ale or Brew — and 3 venue awards: Best Tasting Room Experience, Outstanding Customer Hospitality, Best Atmosphere. These are 100% people's choice — voted on by real visitors who rated each pour individually.
 Scores go dark in the final 30 days of the season so nobody knows the winners until the awards ceremony.
 Full venue listing on the site year-round.
 
