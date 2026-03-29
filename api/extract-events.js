@@ -36,7 +36,17 @@ IMPORTANT RULES:
 - If you see "tonight", "tomorrow", "this Saturday" etc., try to infer the date but if you can't, use "unknown".
 - For time, convert to 24h format (e.g. "7pm" → "19:00").
 - Return a JSON array of event objects. Nothing else — no markdown, no explanation.
-- If you cannot extract any events, return an empty array: []`;
+- If you cannot extract any events, return an empty array: []
+
+TRIBUTE BAND LABELING (for bar/venue entertainment schedules):
+- When the source material is a bar, venue, or entertainment schedule (chalkboard, poster, social media post listing bands on specific nights), apply these rules:
+- Bands marked with an asterisk (*) or explicitly noted as original acts should be treated as original — use their name as-is.
+- All other bands on the schedule are likely tribute acts. For these, format the eventName as: "[Band Name] — [Original Artist] Tribute"
+  Examples: "Kashmir — Led Zeppelin Tribute", "Rumours — Fleetwood Mac Tribute", "One — Metallica Tribute"
+- If the band name IS a famous original artist name (e.g. just "Led Zeppelin" on a bar board with no asterisk), it's almost certainly a tribute — label it: "Led Zeppelin Tribute"
+- If the band name is clearly a tribute band name (e.g. "Get The Led Out", "Kashmir", "Rumours"), label as: "[Name] — [Original Artist] Tribute"
+- If you genuinely cannot tell whether a band is a tribute or original (ambiguous name, no clear context), leave the name as-is — do not guess.
+- Do NOT apply tribute labeling to community events, festivals, markets, or non-entertainment-venue sources — only bar/venue band schedules.`;
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
