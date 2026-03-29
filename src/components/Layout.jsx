@@ -6,6 +6,7 @@ import yeti from '../data/errorMessages';
 export function GlobalStyles() {
   return (
     <style>{`
+      html, body { overflow-x: hidden; max-width: 100vw; }
       @keyframes slideUp {
         0% { transform: translateY(100%); opacity: 0; }
         100% { transform: translateY(0); opacity: 1; }
@@ -180,7 +181,7 @@ export function GlobalStyles() {
         .card-tilt { transition: none !important; }
         * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
       }
-      @media (max-width: 960px) {
+      @media (max-width: 1080px) {
         .nav-desktop { display: none !important; }
         .nav-hamburger { display: flex !important; }
         .mobile-col-1 { grid-template-columns: 1fr !important; }
@@ -1943,8 +1944,8 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
               )}
             </div>
             <div style={{ marginLeft: 8, display: "flex", gap: 8 }}>
-              <Btn href="/business" variant="primary" small style={{ minWidth: 152, textAlign: "center", whiteSpace: "nowrap" }}>List Your Business</Btn>
-              <Btn href="/submit-event" variant="sunset" small style={{ minWidth: 152, textAlign: "center", whiteSpace: "nowrap" }}>List Your Event</Btn>
+              <Btn href="/business" variant="primary" small style={{ minWidth: 130, textAlign: "center", fontSize: 12, padding: "8px 12px" }}>List Your Business</Btn>
+              <Btn href="/submit-event" variant="sunset" small style={{ minWidth: 130, textAlign: "center", fontSize: 12, padding: "8px 12px" }}>List Your Event</Btn>
             </div>
           </div>
 
@@ -2081,8 +2082,8 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
           Gallery ↗
         </a>
         <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 10, alignItems: "center" }}>
-          <Btn href="/business" variant="primary" style={{ width: 200, textAlign: "center", whiteSpace: "nowrap" }}>List Your Business</Btn>
-          <Btn href="/submit-event" variant="sunset" style={{ width: 200, textAlign: "center", whiteSpace: "nowrap" }}>List Your Event</Btn>
+          <Btn href="/business" variant="primary" style={{ width: 200, textAlign: "center" }}>List Your Business</Btn>
+          <Btn href="/submit-event" variant="sunset" style={{ width: 200, textAlign: "center" }}>List Your Event</Btn>
         </div>
       </div>
 

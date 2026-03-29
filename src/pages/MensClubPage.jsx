@@ -72,7 +72,6 @@ function MensClubHero() {
       backgroundImage: "url(/images/mens-club-hero.jpg)",
       backgroundSize: "cover",
       backgroundPosition: "center",
-      backgroundAttachment: "fixed",
       backgroundColor: C.night,
       padding: "180px 24px 140px",
       position: "relative", overflow: "hidden", textAlign: "center",

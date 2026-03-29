@@ -16,7 +16,6 @@ function VillageHero() {
       backgroundImage: "url(/images/explore-lighthouse.jpg)",
       backgroundSize: "cover",
       backgroundPosition: "center 40%",
-      backgroundAttachment: "fixed",
       backgroundColor: C.dusk,
       padding: "180px 24px 140px",
       position: "relative",
