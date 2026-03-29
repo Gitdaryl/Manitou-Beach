@@ -220,6 +220,47 @@ export default function YetiAdminPage() {
   const [catSyncResult, setCatSyncResult] = useState(null);
   const [catPreview, setCatPreview] = useState(null); // live preview from /api/categories
 
+  // ── Quick Events tab ─────────────────────────────────────────
+  const [qeBizName, setQeBizName] = useState('');
+  const [qeBizEmail, setQeBizEmail] = useState('');
+  const [qeBizPhone, setQeBizPhone] = useState('');
+  const [qeText, setQeText] = useState('');
+  const [qeImagePreview, setQeImagePreview] = useState(null);
+  const [qeImageData, setQeImageData] = useState(null);
+  const [qeImageType, setQeImageType] = useState(null);
+  const [qeDragOver, setQeDragOver] = useState(false);
+  const [qeLoading, setQeLoading] = useState(false);
+  const [qeResult, setQeResult] = useState(null);
+  const [qeError, setQeError] = useState('');
+  const qeFileRef = useRef();
+
+  function qeHandleFile(file) {
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { setQeError('Image is too large — keep it under 5 MB.'); return; }
+    if (!file.type.startsWith('image/')) { setQeError('That doesn\'t look like an image. Try a JPG, PNG, or screenshot.'); return; }
+    setQeError('');
+    setQeImageType(file.type);
+    const reader = new FileReader();
+    reader.onload = (e) => { setQeImagePreview(e.target.result); setQeImageData(e.target.result.split(',')[1]); };
+    reader.readAsDataURL(file);
+  }
+  function qeClearImage() { setQeImagePreview(null); setQeImageData(null); setQeImageType(null); if (qeFileRef.current) qeFileRef.current.value = ''; }
+
+  async function qeSubmit() {
+    if (!qeBizName.trim()) { setQeError('Which business is this for? Type their name above.'); return; }
+    if (!qeImageData && !qeText.trim()) { setQeError('Upload a photo or paste some text — we need something to work with.'); return; }
+    setQeLoading(true); setQeError(''); setQeResult(null);
+    try {
+      const body = { businessName: qeBizName.trim(), businessEmail: qeBizEmail.trim() || undefined, businessPhone: qeBizPhone.trim() || undefined };
+      if (qeImageData) { body.imageData = qeImageData; body.imageType = qeImageType; } else { body.text = qeText.trim(); }
+      const res = await fetch('/api/extract-events', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-admin-token': authToken }, body: JSON.stringify(body) });
+      const data = await res.json();
+      if (!res.ok) { setQeError(data.error || 'Something went wrong.'); return; }
+      setQeResult(data);
+      if (data.count > 0) { setQeText(''); qeClearImage(); }
+    } catch { setQeError('Network error — check your connection and try again.'); } finally { setQeLoading(false); }
+  }
+
   const loadCatPreview = async () => {
     try {
       const r = await fetch('/api/categories');
@@ -1055,7 +1096,7 @@ export default function YetiAdminPage() {
 
         {/* Tabs */}
         <div style={{ display: 'flex', gap: 8, marginBottom: 32, flexWrap: 'wrap' }}>
-          {[{ id: 'write', label: '✍️  Write' }, { id: 'newsletter', label: '📰  Newsletter' }, { id: 'review', label: '📋  Review Queue' }, { id: 'dashboard', label: '📊  Dashboard' }, { id: 'advertisers', label: '🤝  Advertisers' }, { id: 'promos', label: '🎟️  Promos' }, { id: 'pois', label: '📍  Community POIs' }, { id: 'ratings', label: '🍷  Winery Ratings' }, { id: 'wines', label: '🍾  Wines Registry' }, { id: 'vendors', label: '🏪  Vendors' }, { id: 'orgs', label: '🏛️  Orgs' }, { id: 'incentives', label: '🎁  Incentives' }, { id: 'categories', label: '🗂️  Categories' }].map(tab => (
+          {[{ id: 'write', label: '✍️  Write' }, { id: 'newsletter', label: '📰  Newsletter' }, { id: 'review', label: '📋  Review Queue' }, { id: 'dashboard', label: '📊  Dashboard' }, { id: 'advertisers', label: '🤝  Advertisers' }, { id: 'promos', label: '🎟️  Promos' }, { id: 'pois', label: '📍  Community POIs' }, { id: 'ratings', label: '🍷  Winery Ratings' }, { id: 'wines', label: '🍾  Wines Registry' }, { id: 'vendors', label: '🏪  Vendors' }, { id: 'orgs', label: '🏛️  Orgs' }, { id: 'incentives', label: '🎁  Incentives' }, { id: 'categories', label: '🗂️  Categories' }, { id: 'quickevents', label: '📸  Quick Events' }].map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
@@ -3103,6 +3144,97 @@ export default function YetiAdminPage() {
                 <div style={{ marginTop: 12, fontSize: 13, color: '#c05a5a', fontFamily: 'Libre Franklin, sans-serif' }}>Error: {catSyncResult.error}</div>
               )}
             </div>
+          </div>
+        )}
+
+        {/* ── QUICK EVENTS TAB ── */}
+        {activeTab === 'quickevents' && (
+          <div style={{ maxWidth: 600 }}>
+            <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: C.textMuted, marginBottom: 8 }}>Quick Events</div>
+            <p style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: '0 0 28px' }}>
+              Photo of a chalkboard, screenshot of a Facebook post, picture of a flyer — drop it here and AI extracts the events into calendar listings.
+            </p>
+
+            {/* Business Info */}
+            <div style={{ marginBottom: 20 }}>
+              <label style={{ display: 'block', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6, fontFamily: 'Libre Franklin, sans-serif' }}>Business name *</label>
+              <input type="text" placeholder="e.g. Devils Lake Bar & Grill" value={qeBizName} onChange={e => setQeBizName(e.target.value)} style={{ width: '100%', boxSizing: 'border-box', padding: '11px 14px', border: `1px solid ${C.sand}`, borderRadius: 8, fontFamily: 'Libre Franklin, sans-serif', fontSize: 14, outline: 'none' }} />
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 24 }}>
+              <div>
+                <label style={{ display: 'block', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6, fontFamily: 'Libre Franklin, sans-serif' }}>Email (optional)</label>
+                <input type="email" placeholder="their@email.com" value={qeBizEmail} onChange={e => setQeBizEmail(e.target.value)} style={{ width: '100%', boxSizing: 'border-box', padding: '11px 14px', border: `1px solid ${C.sand}`, borderRadius: 8, fontFamily: 'Libre Franklin, sans-serif', fontSize: 14, outline: 'none' }} />
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6, fontFamily: 'Libre Franklin, sans-serif' }}>Phone (optional)</label>
+                <input type="tel" placeholder="(517) 555-1234" value={qeBizPhone} onChange={e => setQeBizPhone(e.target.value)} style={{ width: '100%', boxSizing: 'border-box', padding: '11px 14px', border: `1px solid ${C.sand}`, borderRadius: 8, fontFamily: 'Libre Franklin, sans-serif', fontSize: 14, outline: 'none' }} />
+              </div>
+            </div>
+
+            {/* Upload zone */}
+            {!qeImagePreview ? (
+              <div
+                onDragOver={e => { e.preventDefault(); setQeDragOver(true); }}
+                onDragLeave={() => setQeDragOver(false)}
+                onDrop={e => { e.preventDefault(); setQeDragOver(false); qeHandleFile(e.dataTransfer?.files?.[0]); }}
+                onClick={() => qeFileRef.current?.click()}
+                style={{ border: `2px dashed ${qeDragOver ? C.sage : C.sand}`, borderRadius: 14, padding: '40px 24px', textAlign: 'center', cursor: 'pointer', transition: 'all 0.2s', background: qeDragOver ? 'rgba(122,142,114,0.06)' : '#fafafa', marginBottom: 16 }}
+              >
+                <div style={{ fontSize: 40, marginBottom: 8, opacity: 0.5 }}>📸</div>
+                <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 14, fontWeight: 600, color: C.dusk, marginBottom: 4 }}>Drop a photo here or tap to upload</div>
+                <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 12, color: C.textMuted }}>Chalkboard, Facebook screenshot, printed flyer — anything works</div>
+                <input ref={qeFileRef} type="file" accept="image/*" capture="environment" onChange={e => qeHandleFile(e.target.files?.[0])} style={{ display: 'none' }} />
+              </div>
+            ) : (
+              <div style={{ position: 'relative', marginBottom: 16, borderRadius: 14, overflow: 'hidden', border: `1px solid ${C.sand}` }}>
+                <img src={qeImagePreview} alt="Uploaded" style={{ width: '100%', display: 'block', borderRadius: 14 }} />
+                <button onClick={qeClearImage} style={{ position: 'absolute', top: 10, right: 10, background: 'rgba(0,0,0,0.6)', color: '#fff', border: 'none', borderRadius: '50%', width: 32, height: 32, cursor: 'pointer', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
+                <div style={{ position: 'absolute', bottom: 10, left: 10, background: 'rgba(0,0,0,0.6)', color: C.sage, padding: '5px 12px', borderRadius: 16, fontSize: 11, fontWeight: 600, fontFamily: 'Libre Franklin, sans-serif' }}>Ready to extract</div>
+              </div>
+            )}
+
+            {/* Or text */}
+            <div style={{ textAlign: 'center', margin: '4px 0 14px' }}>
+              <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>or paste text</span>
+            </div>
+            <textarea
+              placeholder={"Paste their event list, Facebook post, email...\n\nExample:\nLive music every Thursday 7pm\nWing night Wednesdays $0.75 wings"}
+              value={qeText} onChange={e => setQeText(e.target.value)} disabled={!!qeImageData}
+              style={{ width: '100%', boxSizing: 'border-box', padding: '11px 14px', border: `1px solid ${C.sand}`, borderRadius: 8, fontFamily: 'Libre Franklin, sans-serif', fontSize: 14, outline: 'none', minHeight: 120, resize: 'vertical', lineHeight: 1.6, opacity: qeImageData ? 0.3 : 1 }}
+            />
+            {qeImageData && <div style={{ fontSize: 12, color: C.textMuted, marginTop: 4, fontFamily: 'Libre Franklin, sans-serif' }}>Image uploaded — clear it to paste text instead</div>}
+
+            {/* Error */}
+            {qeError && (
+              <div style={{ marginTop: 16, padding: '12px 16px', borderRadius: 8, background: '#fef2f2', border: '1px solid #fca5a5', color: '#dc2626', fontSize: 13, fontFamily: 'Libre Franklin, sans-serif', lineHeight: 1.5 }}>{qeError}</div>
+            )}
+
+            {/* Submit */}
+            <button
+              onClick={qeSubmit} disabled={qeLoading || (!qeImageData && !qeText.trim())}
+              style={{ width: '100%', marginTop: 20, padding: '14px 24px', borderRadius: 10, border: 'none', cursor: qeLoading ? 'wait' : 'pointer', background: qeLoading ? C.textMuted : ((qeImageData || qeText.trim()) ? C.dusk : C.sand), color: (qeImageData || qeText.trim()) ? '#fff' : C.textMuted, fontFamily: 'Libre Franklin, sans-serif', fontSize: 15, fontWeight: 700, letterSpacing: 0.5, transition: 'all 0.3s' }}
+            >
+              {qeLoading ? 'Reading events...' : 'Extract & Add to Calendar'}
+            </button>
+            {qeLoading && <div style={{ textAlign: 'center', marginTop: 12, fontSize: 13, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>Claude is reading the content and pulling out every event...</div>}
+
+            {/* Result */}
+            {qeResult && (
+              <div style={{ marginTop: 24, padding: 20, borderRadius: 12, background: qeResult.count > 0 ? '#f0fdf4' : '#fafafa', border: `1px solid ${qeResult.count > 0 ? '#bbf7d0' : C.sand}` }}>
+                <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: qeResult.count > 0 ? C.sage : C.textMuted, marginBottom: 10, fontFamily: 'Libre Franklin, sans-serif' }}>
+                  {qeResult.count > 0 ? `${qeResult.count} event${qeResult.count === 1 ? '' : 's'} extracted` : 'No events found'}
+                </div>
+                {qeResult.events?.map((name, i) => (
+                  <div key={i} style={{ padding: '8px 12px', marginBottom: 4, borderRadius: 6, background: '#fff', border: `1px solid ${C.sand}`, fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, color: C.dusk, display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{ color: C.sage }}>✓</span> {name}
+                  </div>
+                ))}
+                {qeResult.count > 0 && <div style={{ marginTop: 10, fontSize: 12, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>These are in your review queue as Pending. Open Notion to publish them.</div>}
+                {qeResult.errors?.length > 0 && <div style={{ marginTop: 10, fontSize: 12, color: '#dc2626', fontFamily: 'Libre Franklin, sans-serif' }}>Failed to save: {qeResult.errors.join(', ')}</div>}
+              </div>
+            )}
+
+            {qeResult?.count > 0 && <div style={{ textAlign: 'center', marginTop: 20, fontSize: 13, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>Got another one? Drop the next photo or paste above.</div>}
           </div>
         )}
 

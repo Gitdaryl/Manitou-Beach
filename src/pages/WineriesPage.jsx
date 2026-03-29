@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
+import formatPhone from '../utils/formatPhone';
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 600);
@@ -799,7 +800,7 @@ function WineryCard({ v, i, isStamped, onStamp, venueRating, wineRankings, autoO
 
           <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
             {v.address && v.address !== "Manitou Beach Village" && <span style={{ fontSize: 12, color: C.textMuted }}>📍 {v.address}</span>}
-            {v.phone && <span style={{ fontSize: 12, color: C.textMuted }}>📞 {v.phone}</span>}
+            {v.phone && <span style={{ fontSize: 12, color: C.textMuted }}>📞 {formatPhone(v.phone)}</span>}
             {v.hours && <span style={{ fontSize: 12, color: C.textMuted }}>🕐 {v.hours}</span>}
           </div>
           {v.highlight && (

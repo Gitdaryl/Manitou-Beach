@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Btn, PageSponsorBanner, WaveDivider } from '../components/Shared';
 import { C } from '../data/config';
 import { Footer, Navbar, GlobalStyles } from '../components/Layout';
+import formatPhone from '../utils/formatPhone';
 import { DISCOVER_MAP_CENTER, DISCOVER_CATS, DISCOVER_DYNAMIC_CAT_ICONS, DISCOVER_POIS, DISCOVER_MAP_STYLES, createDiscoverPin, buildDiscoverInfoWindow } from '../data/discover';
 
 // Renders a PNG icon (when path starts with /) or falls back to emoji/text
@@ -150,7 +151,7 @@ export default function DiscoverPage() {
         <div style="font-size:13px;font-weight:700;color:#2D3B45;margin-bottom:3px">${biz.name}</div>
         <div style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#D4845A;font-weight:700;margin-bottom:6px">${biz.category}</div>
         ${biz.address ? `<div style="font-size:11px;color:#666;margin-bottom:4px">${biz.address}</div>` : ''}
-        ${biz.phone ? `<a href="tel:${biz.phone.replace(/\D/g,'')}" style="display:block;font-size:12px;font-weight:600;color:#7A8E72;margin-bottom:8px;text-decoration:none">${biz.phone}</a>` : ''}
+        ${biz.phone ? `<a href="tel:${biz.phone.replace(/\D/g,'')}" style="display:block;font-size:12px;font-weight:600;color:#7A8E72;margin-bottom:8px;text-decoration:none">${formatPhone(biz.phone)}</a>` : ''}
         <div style="display:flex;gap:10px;flex-wrap:wrap">
           ${biz.website ? `<a href="${biz.website}" target="_blank" style="font-size:12px;font-weight:700;color:#D4845A;text-decoration:none">Website →</a>` : ''}
         </div>
@@ -341,7 +342,7 @@ export default function DiscoverPage() {
                     {poi.address && <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.text, marginBottom: 3 }}>{poi.address}</div>}
                     {poi.note && <div style={{ fontFamily: "'Caveat', cursive", fontSize: 14, color: C.textMuted, marginBottom: 8, fontStyle: 'italic' }}>{poi.note}</div>}
                     <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginTop: 8 }}>
-                      {poi.phone && <a href={`tel:${poi.phone.replace(/\D/g, '')}`} style={{ fontSize: 12, fontWeight: 600, color: C.sage, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>{poi.phone}</a>}
+                      {poi.phone && <a href={`tel:${poi.phone.replace(/\D/g, '')}`} style={{ fontSize: 12, fontWeight: 600, color: C.sage, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>{formatPhone(poi.phone)}</a>}
                       <a href={dir} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, fontWeight: 600, color: C.lakeBlue, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>Get Directions →</a>
                       {poi.website && <a href={poi.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, fontWeight: 600, color: C.sunset, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>Website →</a>}
                       {poi.href && <a href={poi.href} style={{ fontSize: 12, fontWeight: 600, color: C.sunset, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>Learn More →</a>}
@@ -372,7 +373,7 @@ export default function DiscoverPage() {
                     </div>
                     {biz.tagline && <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted, lineHeight: 1.4, marginBottom: 8 }}>{biz.tagline}</div>}
                     <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                      {biz.phone && <a href={`tel:${biz.phone}`} style={{ fontSize: biz.emergency ? 14 : 12, fontWeight: 700, color: biz.emergency ? '#c05a5a' : C.sage, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>{biz.phone}</a>}
+                      {biz.phone && <a href={`tel:${biz.phone}`} style={{ fontSize: biz.emergency ? 14 : 12, fontWeight: 700, color: biz.emergency ? '#c05a5a' : C.sage, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>{formatPhone(biz.phone)}</a>}
                       {biz.website && <a href={biz.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, fontWeight: 600, color: C.lakeBlue, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>Visit →</a>}
                     </div>
                   </div>

@@ -5,6 +5,7 @@ import { ShareBar, CategoryPill, SectionLabel, SectionTitle, FadeIn, ScrollProgr
 import { GlobalStyles, PromoBanner, NewsletterInline, HollyYetiSection, EventLightbox, Footer, Navbar, ContactModal } from '../components/Layout';
 import { DispatchPreviewSection } from './DispatchPage';
 import yeti from '../data/errorMessages';
+import formatPhone from '../utils/formatPhone';
 
 // ============================================================
 // 🏠  HOME PAGE — EventTicker, Hero, FeaturedEventsStrip,
@@ -1161,7 +1162,7 @@ function FeaturedBusinessCard({ business }) {
       {/* Footer: phone + visit */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 6, position: "relative", zIndex: 1 }}>
         {business.phone && (
-          <a href={`tel:${business.phone}`} style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif" }}>{business.phone}</a>
+          <a href={`tel:${business.phone}`} style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif" }}>{formatPhone(business.phone)}</a>
         )}
         {business.website && (
           <a href={business.website} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color, textDecoration: "none" }}>Visit →</a>
@@ -1208,7 +1209,7 @@ function PremiumBanner({ business }) {
           </a>
         )}
         {business.phone && (
-          <a href={`tel:${business.phone}`} style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", textDecoration: "none" }}>{business.phone}</a>
+          <a href={`tel:${business.phone}`} style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", textDecoration: "none" }}>{formatPhone(business.phone)}</a>
         )}
       </div>
     </div>
@@ -1255,7 +1256,7 @@ function EnhancedBusinessRow({ business }) {
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
             <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: C.text, fontWeight: 400 }}>{business.name}</span>
             {business.phone && (
-              <span style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", whiteSpace: "nowrap" }}>{business.phone}</span>
+              <span style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", whiteSpace: "nowrap" }}>{formatPhone(business.phone)}</span>
             )}
           </div>
           {business.address && (
@@ -1336,7 +1337,7 @@ function BusinessRow({ business }) {
           </span>
           {business.phone && (
             <span style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", whiteSpace: "nowrap" }}>
-              {business.phone}
+              {formatPhone(business.phone)}
             </span>
           )}
         </div>

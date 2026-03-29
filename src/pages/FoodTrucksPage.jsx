@@ -3,6 +3,7 @@ import { Btn, FadeIn, PageSponsorBanner, ScrollProgress, SectionLabel, SectionTi
 import { C, GEO } from '../data/config';
 import { Footer, GlobalStyles, Navbar, NewsletterInline } from '../components/Layout';
 import yeti from '../data/errorMessages';
+import formatPhone from '../utils/formatPhone';
 import { celebrate } from '../data/celebrate';
 
 // Format departure time for display — always today, so just show local time
@@ -1902,7 +1903,7 @@ export default function FoodTrucksPage() {
                         <div style={{ display: "flex", justifyContent: "center", gap: 6, flexWrap: "wrap", marginTop: 12, borderTop: `1px solid ${C.sand}`, paddingTop: 12 }}>
                           {truck.phone && (
                             <a href={`tel:${truck.phone}`} style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}15`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1.5px solid ${C.lakeBlue}30` }}>
-                              📱 {truck.phone}
+                              📱 {formatPhone(truck.phone)}
                             </a>
                           )}
                           {truck.tier === 'featured' && truck.website && (

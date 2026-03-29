@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { C } from '../data/config';
 import { GlobalStyles } from '../components/Layout';
 import yeti from '../data/errorMessages';
+import formatPhone from '../utils/formatPhone';
 
 function exportCSV(vendors, eventName) {
   const headers = ['Vendor ID', 'Business Name', 'Contact', 'Email', 'Phone', 'Booth Type', 'Notes', 'Status', 'Registered At'];
@@ -182,7 +183,7 @@ export default function VendorPortalPage() {
                   {(v.email || v.phone) && (
                     <div style={{ fontSize: 13, color: '#5C5248', marginBottom: 14, lineHeight: 1.6 }}>
                       {v.email && <div>{v.email}</div>}
-                      {v.phone && <div>{v.phone}</div>}
+                      {v.phone && <div>{formatPhone(v.phone)}</div>}
                     </div>
                   )}
                   <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
@@ -260,7 +261,7 @@ export default function VendorPortalPage() {
                       <td style={{ padding: '12px 16px' }}>
                         <div style={{ color: '#3A3028' }}>{v.contactName}</div>
                         <div style={{ fontSize: 11, color: '#8C806E', marginTop: 2 }}>{v.email}</div>
-                        {v.phone && <div style={{ fontSize: 11, color: '#8C806E' }}>{v.phone}</div>}
+                        {v.phone && <div style={{ fontSize: 11, color: '#8C806E' }}>{formatPhone(v.phone)}</div>}
                       </td>
                       <td style={{ padding: '12px 16px', color: '#5C5248' }}>{v.boothType}</td>
                       <td style={{ padding: '12px 16px', color: '#8C806E', whiteSpace: 'nowrap', fontSize: 12 }}>

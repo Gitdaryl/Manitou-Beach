@@ -7,6 +7,7 @@
 // 📢  AD SLOTS — Dispatch blog advertising
 // ============================================================
 import { useState, useEffect } from 'react';
+import formatPhone from '../utils/formatPhone';
 
 export function useDispatchAds(page) {
   const [slots, setSlots] = useState({});
@@ -150,7 +151,7 @@ export function buildDiscoverInfoWindow(poi) {
     <div style="font-size:13px;font-weight:700;color:#2D3B45;margin-bottom:3px">${poi.name}</div>
     <div style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:${color};font-weight:700;margin-bottom:6px">${poi.sub}</div>
     ${poi.address ? `<div style="font-size:11px;color:#666;margin-bottom:4px">${poi.address}</div>` : ''}
-    ${poi.phone ? `<a href="tel:${poi.phone.replace(/\D/g, '')}" style="display:block;font-size:12px;font-weight:600;color:#7A8E72;margin-bottom:4px;text-decoration:none">${poi.phone}</a>` : ''}
+    ${poi.phone ? `<a href="tel:${poi.phone.replace(/\D/g, '')}" style="display:block;font-size:12px;font-weight:600;color:#7A8E72;margin-bottom:4px;text-decoration:none">${formatPhone(poi.phone)}</a>` : ''}
     ${poi.note ? `<div style="font-size:11px;color:#999;margin-bottom:8px;font-style:italic">${poi.note}</div>` : ''}
     <div style="display:flex;gap:10px;flex-wrap:wrap">
       <a href="${dir}" target="_blank" style="font-size:12px;font-weight:700;color:#5B7E95;text-decoration:none">Get Directions →</a>

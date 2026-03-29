@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivider, PageSponsorBanner, DiagonalDivider, Btn } from '../components/Shared';
 import { Footer, GlobalStyles, Navbar, NewsletterInline, PromoBanner } from '../components/Layout';
 import { C, VILLAGE_BUSINESSES, CAT_COLORS } from '../data/config';
+import formatPhone from '../utils/formatPhone';
 import SMSOptInWidget from '../components/SMSOptInWidget';
 
 // ============================================================
@@ -109,7 +110,7 @@ function VillageMapSection() {
                       )}
                       {biz.phone && (
                         <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)" }}>
-                          📞 {biz.phone}
+                          📞 {formatPhone(biz.phone)}
                         </div>
                       )}
                     </div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FadeIn, SectionTitle, SectionLabel, Btn, ShareBar, WaveDivider, ScrollProgress, PageSponsorBanner } from '../components/Shared';
 import { C } from '../data/config';
 import { Footer, GlobalStyles, Navbar } from '../components/Layout';
+import formatPhone from '../utils/formatPhone';
 
 // ============================================================
 // 🌙  NIGHTLIFE PAGE
@@ -449,7 +450,7 @@ function VenueCard({ venue }) {
                 href={`tel:${venue.phone.replace(/\D/g, '')}`}
                 style={{ color: "inherit", textDecoration: "none" }}
               >
-                {venue.phone}
+                {formatPhone(venue.phone)}
               </a>
             </div>
           )}

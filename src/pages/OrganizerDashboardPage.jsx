@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { C } from '../data/config';
 import { GlobalStyles } from '../components/Layout';
 import yeti from '../data/errorMessages';
+import formatPhone from '../utils/formatPhone';
 
 // ── Default theme: Manitou Beach ──────────────────────────────────────────────
 // Pass a different theme prop to reskin for Yetickets or any future community.
@@ -379,7 +380,7 @@ export default function OrganizerDashboardPage({ theme: themeProp }) {
                         </td>
                         <td style={{ padding: '12px 16px' }}>
                           <div style={{ color: T.textSecondary }}>{b.email}</div>
-                          {b.phone && <div style={{ fontSize: 12, color: T.textMuted, marginTop: 1 }}>{b.phone}</div>}
+                          {b.phone && <div style={{ fontSize: 12, color: T.textMuted, marginTop: 1 }}>{formatPhone(b.phone)}</div>}
                         </td>
                         <td style={{ padding: '12px 16px', fontWeight: 600, color: T.text }}>{b.quantity}</td>
                         <td style={{ padding: '12px 16px', color: T.textMuted, whiteSpace: 'nowrap', fontSize: 12 }}>
@@ -412,7 +413,7 @@ export default function OrganizerDashboardPage({ theme: themeProp }) {
                     </div>
                     <div style={{ fontSize: 13, color: T.textSecondary, lineHeight: 1.6 }}>
                       {b.email && <div>{b.email}</div>}
-                      {b.phone && <div>{b.phone}</div>}
+                      {b.phone && <div>{formatPhone(b.phone)}</div>}
                       <div style={{ color: T.textMuted, fontSize: 12, marginTop: 4 }}>
                         {b.quantity > 1 ? `${b.quantity} tickets` : '1 ticket'} · {fmtDate(b.purchasedAt)}
                       </div>
