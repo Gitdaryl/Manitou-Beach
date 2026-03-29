@@ -656,6 +656,17 @@ export default function FoodTrucksPage() {
   const maxLoves = allTrucks.reduce((m, t) => Math.max(m, loveCount(t.slug)), 0);
   const isMostLoved = (slug) => maxLoves >= 3 && loveCount(slug) === maxLoves;
 
+  // Stable ref for love input — survives re-renders since it's on the parent
+  const loveInputRef = React.useRef(null);
+
+  const submitLove = (slug) => {
+    const val = loveInputRef.current?.value?.trim().toLowerCase();
+    if (!val) return;
+    loveInputRef.current.value = '';
+    handleLove(slug, val);
+    setLoveInput({ slug: '', text: '' });
+  };
+
   // Love pills renderer (shared between live + directory cards)
   const LovePills = ({ slug }) => {
     const truckLoves = loves[slug];
@@ -695,14 +706,13 @@ export default function FoodTrucksPage() {
           </div>
         )}
         {showInput ? (
-          <form onSubmit={e => { e.preventDefault(); const input = e.target.querySelector('input'); const val = (input?.value || '').trim().toLowerCase(); if (val) { handleLove(slug, val); setLoveInput({ slug: '', text: '' }); } }} style={{ display: "flex", gap: 6, alignItems: "center" }}>
+          <form onSubmit={e => { e.preventDefault(); submitLove(slug); }} style={{ display: "flex", gap: 6, alignItems: "center" }}>
             <input
-              ref={el => { if (el && !loveInput.text && window.innerWidth > 768) el.focus(); }}
+              ref={loveInputRef}
               type="text"
               inputMode="text"
               enterKeyHint="send"
-              value={loveInput.text}
-              onChange={e => setLoveInput({ slug, text: e.target.value })}
+              defaultValue=""
               onKeyDown={e => { if (e.key === 'Escape') setLoveInput({ slug: '', text: '' }); }}
               placeholder="What did you love?"
               maxLength={50}
