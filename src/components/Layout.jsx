@@ -12,8 +12,7 @@ export function GlobalStyles() {
         100% { transform: translateY(0); opacity: 1; }
       }
       @media (max-width: 768px) {
-        .ft-hero-video { display: none !important; }
-        .ft-hero-section { background-image: url('/images/foodtruck_hero.jpg') !important; background-size: cover !important; background-position: center !important; padding-top: 80px !important; padding-bottom: 60px !important; }
+        .ft-hero-section { padding-top: 80px !important; padding-bottom: 60px !important; }
         .ft-how-grid { grid-template-columns: 1fr !important; }
         .ft-pricing-paid { transform: none !important; }
       }
@@ -191,6 +190,12 @@ export function GlobalStyles() {
         .wineries-itinerary-grid { grid-template-columns: 1fr !important; }
         .listing-demo-grid { grid-template-columns: 1fr !important; }
       }
+      @media (max-width: 768px) {
+        .calendar-event-row {
+          grid-template-columns: 90px 1fr auto !important;
+          gap: 0 16px !important;
+        }
+      }
       @media (max-width: 640px) {
         .mobile-col-1 { grid-template-columns: 1fr !important; }
         .event-form-grid { grid-template-columns: 1fr !important; }
@@ -209,7 +214,9 @@ export function GlobalStyles() {
         }
         .calendar-event-row {
           grid-template-columns: 1fr !important;
-          gap: 8px !important;
+          gap: 6px !important;
+          padding-left: 0 !important;
+          padding-right: 0 !important;
         }
         .calendar-event-row .calendar-cost-badge {
           flex-direction: row !important;
@@ -217,6 +224,7 @@ export function GlobalStyles() {
           justify-content: flex-start !important;
           gap: 8px !important;
           flex-wrap: wrap !important;
+          padding-top: 4px !important;
         }
         .living-here-grid { grid-template-columns: 1fr !important; }
         .mens-club-stats { grid-template-columns: repeat(2, 1fr) !important; }

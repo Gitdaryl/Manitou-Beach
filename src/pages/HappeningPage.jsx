@@ -162,7 +162,7 @@ function WeeklyEventsSection({ events, onEventClick }) {
                     fontFamily: "'Caveat', cursive",
                     fontSize: 32,
                     color,
-                    lineHeight: 1,
+                    lineHeight: 1.3,
                     paddingTop: 4,
                     userSelect: "none",
                   }}>
@@ -374,8 +374,8 @@ function EventRow({ event, onEventClick, isLast, variant = "default" }) {
       className="calendar-event-row"
       style={{
         display: "grid",
-        gridTemplateColumns: isHero ? "120px 1fr auto" : "110px 1fr auto",
-        gap: isHero ? "0 36px" : "0 32px",
+        gridTemplateColumns: isHero ? "130px 1fr auto" : "120px 1fr auto",
+        gap: isHero ? "0 28px" : "0 24px",
         alignItems: "center",
         padding: isHero ? "28px 0" : "24px 0",
         borderBottom: isLast ? "none" : `1px solid ${isHero ? "rgba(255,255,255,0.08)" : C.sand}`,
@@ -390,8 +390,11 @@ function EventRow({ event, onEventClick, isLast, variant = "default" }) {
         fontFamily: "'Caveat', cursive",
         fontSize: isHero ? 26 : 22,
         color: isHero ? C.sunsetLight : color,
-        lineHeight: 1.1,
+        lineHeight: 1.4,
         userSelect: "none",
+        whiteSpace: "nowrap",
+        position: "relative",
+        zIndex: 1,
       }}>
         {dateLabel}
       </div>
