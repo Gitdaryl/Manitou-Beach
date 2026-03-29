@@ -702,13 +702,13 @@ export default function FoodTrucksPage() {
               inputMode="text"
               value={loveInput.text}
               onChange={e => setLoveInput({ slug, text: e.target.value })}
-              onKeyDown={e => { if (e.key === 'Enter') handleLoveCustom(slug); if (e.key === 'Escape') setLoveInput({ slug: '', text: '' }); }}
+              onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); const val = e.target.value.trim().toLowerCase(); if (val) { setLoveInput({ slug: '', text: '' }); handleLove(slug, val); } } if (e.key === 'Escape') setLoveInput({ slug: '', text: '' }); }}
               placeholder="What did you love?"
               maxLength={50}
               style={{ flex: 1, padding: "5px 10px", borderRadius: 8, border: `1px solid ${C.sand}`, fontSize: 16, fontFamily: "'Libre Franklin', sans-serif", color: C.text, outline: "none", background: C.warmWhite }}
             />
             <button
-              onClick={() => handleLoveCustom(slug)}
+              onClick={(e) => { const input = e.target.closest('div')?.querySelector('input'); const val = (input?.value || '').trim().toLowerCase(); if (val) { setLoveInput({ slug: '', text: '' }); handleLove(slug, val); } }}
               style={{ padding: "5px 12px", borderRadius: 8, background: C.sunset, color: C.cream, border: "none", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif" }}
             >
               ❤️
