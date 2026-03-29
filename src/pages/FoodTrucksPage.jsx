@@ -662,9 +662,19 @@ export default function FoodTrucksPage() {
     const items = truckLoves?.items || {};
     const sortedItems = Object.entries(items).sort((a, b) => b[1] - a[1]).slice(0, 5);
     const showInput = loveInput.slug === slug;
+    const loveRef = React.useRef(null);
+
+    // Scroll card into view when input opens (prevents jump-to-next-card feel)
+    React.useEffect(() => {
+      if (showInput && loveRef.current) {
+        requestAnimationFrame(() => {
+          loveRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+      }
+    }, [showInput]);
 
     return (
-      <div style={{ marginBottom: 10 }}>
+      <div ref={loveRef} style={{ marginBottom: 10 }}>
         {sortedItems.length > 0 && (
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 6 }}>
             {sortedItems.map(([item, count]) => {
@@ -697,14 +707,15 @@ export default function FoodTrucksPage() {
         {showInput ? (
           <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
             <input
-              autoFocus
+              ref={el => { if (el && !loveInput.text && window.innerWidth > 768) el.focus(); }}
               type="text"
+              inputMode="text"
               value={loveInput.text}
               onChange={e => setLoveInput({ slug, text: e.target.value })}
               onKeyDown={e => { if (e.key === 'Enter') handleLoveCustom(slug); if (e.key === 'Escape') setLoveInput({ slug: '', text: '' }); }}
               placeholder="What did you love?"
               maxLength={50}
-              style={{ flex: 1, padding: "5px 10px", borderRadius: 8, border: `1px solid ${C.sand}`, fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", color: C.text, outline: "none", background: C.warmWhite }}
+              style={{ flex: 1, padding: "5px 10px", borderRadius: 8, border: `1px solid ${C.sand}`, fontSize: 16, fontFamily: "'Libre Franklin', sans-serif", color: C.text, outline: "none", background: C.warmWhite }}
             />
             <button
               onClick={() => handleLoveCustom(slug)}
@@ -1564,7 +1575,7 @@ export default function FoodTrucksPage() {
               </p>
             </div>
           ) : (
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 20 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 20, alignItems: "start" }}>
               {sortedLiveTrucks.map((truck, i) => (
                 <FadeIn key={truck.id} delay={i * 60}>
                   <div
@@ -1669,7 +1680,7 @@ export default function FoodTrucksPage() {
                   <span style={{ fontSize: 12, color: C.textMuted, fontStyle: "italic" }}>farther out</span>
                 </div>
               </FadeIn>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 20 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 20, alignItems: "start" }}>
                 {sortedTravelingTrucks.map((truck, i) => {
                   const dist = typeof truck.lat === 'number' && typeof truck.lng === 'number'
                     ? Math.round(milesFrom(GEO.centerLat, GEO.centerLng, truck.lat, truck.lng))
@@ -1804,7 +1815,7 @@ export default function FoodTrucksPage() {
                 <SectionTitle>Sorted by Most Loved</SectionTitle>
               </div>
             </FadeIn>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 20 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 20, alignItems: "start" }}>
               {sortedAllTrucks.map((truck, i) => {
                 const live = isLive(truck);
                 return (
