@@ -443,12 +443,25 @@ export default function FoodTrucksPage() {
     });
 
     try {
-      await fetch('/api/food-truck-loves', {
+      const resp = await fetch('/api/food-truck-loves', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ slug, item, sessionId }),
       });
-    } catch { /* optimistic update stands */ }
+      if (!resp.ok) {
+        // Rollback optimistic update so user can retry
+        const rolledBack = { ...newLovedItems };
+        delete rolledBack[key];
+        setLovedItems(rolledBack);
+        localStorage.setItem('mb-truck-loves', JSON.stringify(rolledBack));
+      }
+    } catch {
+      // Rollback on network failure too
+      const rolledBack = { ...newLovedItems };
+      delete rolledBack[key];
+      setLovedItems(rolledBack);
+      localStorage.setItem('mb-truck-loves', JSON.stringify(rolledBack));
+    }
   };
 
   const handleLoveCustom = async (slug) => {
@@ -473,7 +486,29 @@ export default function FoodTrucksPage() {
 
     fetch("/api/food-truck-loves")
       .then(r => r.json())
-      .then(d => setLoves(d.loves || {}))
+      .then(d => {
+        const serverLoves = d.loves || {};
+        setLoves(serverLoves);
+        // Reconcile stale localStorage — purge loves that never made it to the server
+        try {
+          const stored = JSON.parse(localStorage.getItem('mb-truck-loves') || '{}');
+          const cleaned = {};
+          let changed = false;
+          for (const key of Object.keys(stored)) {
+            const [slug, ...rest] = key.split(':');
+            const item = rest.join(':');
+            if (serverLoves[slug]?.items?.[item]) {
+              cleaned[key] = true;
+            } else {
+              changed = true; // drop this stale entry
+            }
+          }
+          if (changed) {
+            setLovedItems(cleaned);
+            localStorage.setItem('mb-truck-loves', JSON.stringify(cleaned));
+          }
+        } catch { /* ignore parse errors */ }
+      })
       .catch(() => {});
   }, []);
 
@@ -717,6 +752,7 @@ export default function FoodTrucksPage() {
             />
             <button
               type="submit"
+              onPointerDown={e => { e.preventDefault(); e.target.closest('form')?.requestSubmit(); }}
               style={{ padding: "5px 12px", borderRadius: 8, background: C.sunset, color: C.cream, border: "none", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif" }}
             >
               ❤️
