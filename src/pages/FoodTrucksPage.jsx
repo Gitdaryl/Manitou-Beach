@@ -1626,7 +1626,7 @@ export default function FoodTrucksPage() {
                       )}
                       {truck.description && <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: "0 0 12px", textAlign: "center" }}>{truck.description}</p>}
                       {/* Love Pills */}
-                      {truck.slug && <LovePills slug={truck.slug} />}
+                      {truck.slug && LovePills({ slug: truck.slug })}
                       {/* Action toolbar */}
                       <div style={{ display: "flex", justifyContent: "center", gap: 6, flexWrap: "wrap", marginTop: 14, borderTop: `1.5px solid ${C.sand}`, paddingTop: 14 }}>
                         {truck.phone && (
@@ -1712,7 +1712,7 @@ export default function FoodTrucksPage() {
                             </div>
                           )}
                           {truck.description && <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: "0 0 12px", textAlign: "center" }}>{truck.description}</p>}
-                          {truck.slug && <LovePills slug={truck.slug} />}
+                          {truck.slug && LovePills({ slug: truck.slug })}
                           <div style={{ display: "flex", justifyContent: "center", gap: 6, flexWrap: "wrap", marginTop: 14, borderTop: `1.5px solid ${C.sand}`, paddingTop: 14 }}>
                             {truck.lat && truck.lng && (
                               <a href={`https://www.google.com/maps?q=${truck.lat},${truck.lng}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}15`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1.5px solid ${C.lakeBlue}30` }}>
@@ -1852,7 +1852,7 @@ export default function FoodTrucksPage() {
                         {truck.scheduleNote && (
                           <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 8, lineHeight: 1.5 }}>📅 {truck.scheduleNote}</div>
                         )}
-                        {truck.slug && <LovePills slug={truck.slug} />}
+                        {truck.slug && LovePills({ slug: truck.slug })}
                         {/* Actions */}
                         <div style={{ display: "flex", justifyContent: "center", gap: 6, flexWrap: "wrap", marginTop: 12, borderTop: `1px solid ${C.sand}`, paddingTop: 12 }}>
                           {truck.phone && (
