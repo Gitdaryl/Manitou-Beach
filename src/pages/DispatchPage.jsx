@@ -445,7 +445,7 @@ export function DispatchPreviewSection() {
   );
 }
 
-function SponsorStrip({ index = 0 }) {
+export function SponsorStrip({ index = 0 }) {
   return null; // Sponsor strips handled inline by dispatch ads
 }
 

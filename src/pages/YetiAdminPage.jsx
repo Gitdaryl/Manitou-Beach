@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { C, DISPATCH_CARD_SPONSORS, DISPATCH_CATEGORIES, USA250_PUBLIC } from '../data/config';
 import { Footer, GlobalStyles } from '../components/Layout';
-import { DispatchArticleContent } from './DispatchPage';
+import { DispatchArticleContent, SponsorStrip } from './DispatchPage';
 
 export default function YetiAdminPage() {
   // ── Auth ──────────────────────────────────────────────────────
