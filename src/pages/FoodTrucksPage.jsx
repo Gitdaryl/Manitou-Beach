@@ -662,19 +662,9 @@ export default function FoodTrucksPage() {
     const items = truckLoves?.items || {};
     const sortedItems = Object.entries(items).sort((a, b) => b[1] - a[1]).slice(0, 5);
     const showInput = loveInput.slug === slug;
-    const loveRef = React.useRef(null);
-
-    // Scroll card into view when input opens (prevents jump-to-next-card feel)
-    React.useEffect(() => {
-      if (showInput && loveRef.current) {
-        requestAnimationFrame(() => {
-          loveRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        });
-      }
-    }, [showInput]);
 
     return (
-      <div ref={loveRef} style={{ marginBottom: 10 }}>
+      <div data-love-wrap style={{ marginBottom: 10 }}>
         {sortedItems.length > 0 && (
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 6 }}>
             {sortedItems.map(([item, count]) => {
@@ -732,7 +722,7 @@ export default function FoodTrucksPage() {
           </div>
         ) : sortedItems.length === 0 ? (
           <button
-            onClick={() => setLoveInput({ slug, text: '' })}
+            onClick={(e) => { setLoveInput({ slug, text: '' }); setTimeout(() => e.target.closest('[data-love-wrap]')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80); }}
             style={{
               display: "inline-flex", alignItems: "center", gap: 5,
               padding: "6px 14px", borderRadius: 20,
@@ -746,7 +736,7 @@ export default function FoodTrucksPage() {
           </button>
         ) : (
           <button
-            onClick={() => setLoveInput({ slug, text: '' })}
+            onClick={(e) => { setLoveInput({ slug, text: '' }); setTimeout(() => e.target.closest('[data-love-wrap]')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80); }}
             style={{ fontSize: 11, color: C.textMuted, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", textDecoration: "underline" }}
           >
             + Love something else
