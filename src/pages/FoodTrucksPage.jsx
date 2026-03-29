@@ -695,7 +695,7 @@ export default function FoodTrucksPage() {
           </div>
         )}
         {showInput ? (
-          <form onSubmit={e => { e.preventDefault(); const input = e.target.querySelector('input'); const val = (input?.value || '').trim().toLowerCase(); if (val) { setLoveInput({ slug: '', text: '' }); handleLove(slug, val); } }} style={{ display: "flex", gap: 6, alignItems: "center" }}>
+          <form onSubmit={e => { e.preventDefault(); const input = e.target.querySelector('input'); const val = (input?.value || '').trim().toLowerCase(); if (val) { handleLove(slug, val); setLoveInput({ slug: '', text: '' }); } }} style={{ display: "flex", gap: 6, alignItems: "center" }}>
             <input
               ref={el => { if (el && !loveInput.text && window.innerWidth > 768) el.focus(); }}
               type="text"
