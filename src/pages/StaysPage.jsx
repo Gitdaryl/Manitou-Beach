@@ -1635,7 +1635,7 @@ function ListYourPropertySection({ stays = [] }) {
                   >
                     {status === 'sending'
                       ? 'Sending verification code...'
-                      : 'Get on the Map — Free →'}
+                      : 'Get on the Map →'}
                   </Btn>
                 </div>
               )}
