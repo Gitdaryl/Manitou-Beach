@@ -80,6 +80,11 @@ export default function FoodTruckPartnerPage() {
 
   const handleImageSelect = async (file) => {
     if (!file || !file.type.startsWith('image/')) return;
+    if (file.size > 1.4 * 1024 * 1024) {
+      setSubmitError('Photo is too large — please use one under 1.5 MB.');
+      return;
+    }
+    setSubmitError('');
     setImagePreview(URL.createObjectURL(file));
     setImageUploading(true);
     setImageUrl('');

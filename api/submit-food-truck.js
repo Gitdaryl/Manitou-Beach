@@ -55,8 +55,14 @@ export default async function handler(req, res) {
   const notionToken = process.env.NOTION_TOKEN_BUSINESS;
   const dbId = process.env.NOTION_DB_FOOD_TRUCKS;
 
+  // Sanitize website — only set as URL if it looks like a real URL
+  const rawWebsite = (website || '').trim();
+  const looksLikeUrl = rawWebsite && /^https?:\/\/|^[a-z0-9-]+\.[a-z]{2,}/i.test(rawWebsite) && !/\s/.test(rawWebsite);
+  const cleanWebsite = looksLikeUrl ? (rawWebsite.startsWith('http') ? rawWebsite : `https://${rawWebsite}`) : '';
+
   // Build Description with contact info + image URL fallback
   const descParts = [`Contact Email: ${email.trim()}`];
+  if (rawWebsite && !cleanWebsite) descParts.push(`Website/Social: ${rawWebsite}`);
   if (imageUrl?.trim()) descParts.push(`Image URL: ${imageUrl.trim()}`);
   const descText = descParts.join('\n');
 
@@ -81,7 +87,7 @@ export default async function handler(req, res) {
       if (isBeta) properties['Beta Expires'] = { date: { start: '2026-05-10' } };
       if (cuisine?.trim()) properties['Cuisine'] = { select: { name: cuisine.trim() } };
       if (digits) properties['Phone'] = { phone_number: digits };
-      if (website?.trim()) properties['Website'] = { url: website.trim().startsWith('http') ? website.trim() : `https://${website.trim()}` };
+      if (cleanWebsite) properties['Website'] = { url: cleanWebsite };
       if (imageUrl?.trim()) properties['Photo URL'] = { url: imageUrl.trim() };
 
       const notionRes = await fetch('https://api.notion.com/v1/pages', {
@@ -119,7 +125,7 @@ export default async function handler(req, res) {
     };
     if (cuisine?.trim()) properties['Cuisine'] = { select: { name: cuisine.trim() } };
     if (digits) properties['Phone'] = { phone_number: digits };
-    if (website?.trim()) properties['Website'] = { url: website.trim().startsWith('http') ? website.trim() : `https://${website.trim()}` };
+    if (cleanWebsite) properties['Website'] = { url: cleanWebsite };
     if (imageUrl?.trim()) properties['Photo URL'] = { url: imageUrl.trim() };
 
     const notionRes = await fetch('https://api.notion.com/v1/pages', {
