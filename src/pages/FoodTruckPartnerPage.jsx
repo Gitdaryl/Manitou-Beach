@@ -67,6 +67,7 @@ export default function FoodTruckPartnerPage() {
   const [imageUrl, setImageUrl] = useState('');
   const [imagePreview, setImagePreview] = useState('');
   const [imageUploading, setImageUploading] = useState(false);
+  const [imageError, setImageError] = useState('');
   const [loading, setLoading] = useState(false);
   const [submitError, setSubmitError] = useState('');
 
@@ -78,32 +79,53 @@ export default function FoodTruckPartnerPage() {
   const [activationData, setActivationData] = useState(null); // { slug, checkinUrl, truckName }
   const [resending, setResending] = useState(false);
 
+  const compressImage = (file, maxWidth = 1200, quality = 0.8) => new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const scale = Math.min(1, maxWidth / img.width);
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(blob => resolve(blob || file), 'image/jpeg', quality);
+    };
+    img.onerror = () => resolve(file);
+    img.src = URL.createObjectURL(file);
+  });
+
   const handleImageSelect = async (file) => {
     if (!file || !file.type.startsWith('image/')) return;
-    if (file.size > 1.4 * 1024 * 1024) {
-      setSubmitError('Photo is too large — please use one under 1.5 MB.');
-      return;
-    }
-    setSubmitError('');
+    setImageError('');
     setImagePreview(URL.createObjectURL(file));
     setImageUploading(true);
     setImageUrl('');
     try {
+      // Compress if over 1.4 MB
+      const processed = file.size > 1.4 * 1024 * 1024 ? await compressImage(file) : file;
       const base64 = await new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = e => resolve(e.target.result.split(',')[1]);
         reader.onerror = reject;
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(processed);
       });
       const res = await fetch('/api/upload-image', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filename: file.name, contentType: file.type, data: base64, folder: 'food-trucks' }),
+        body: JSON.stringify({ filename: file.name, contentType: 'image/jpeg', data: base64, folder: 'food-trucks' }),
       });
       const data = await res.json();
-      if (data.url) setImageUrl(data.url);
-    } catch { /* image is optional — silent fail */ }
+      if (data.url) { setImageUrl(data.url); setImageError(''); }
+      else setImageError('Upload failed — you can skip the photo and add it later.');
+    } catch {
+      setImageError('Upload failed — you can skip the photo and add it later.');
+    }
     finally { setImageUploading(false); }
+  };
+
+  const clearImage = () => {
+    setImagePreview('');
+    setImageUrl('');
+    setImageError('');
   };
 
   const handleSubmit = async () => {
@@ -615,9 +637,18 @@ export default function FoodTruckPartnerPage() {
                       {imagePreview ? (
                         <>
                           <img src={imagePreview} alt="" style={{ width: 64, height: 64, objectFit: "cover", borderRadius: 8, border: "1px solid rgba(255,255,255,0.15)" }} />
-                          <span style={{ fontSize: 12, color: imageUrl ? C.sage : "rgba(255,255,255,0.4)" }}>
-                            {imageUploading ? "Uploading…" : imageUrl ? "✓ Photo uploaded" : "Upload failed — tap to retry"}
+                          <span style={{ fontSize: 12, color: imageUrl ? C.sage : imageError ? "#e07070" : "rgba(255,255,255,0.4)" }}>
+                            {imageUploading ? "Uploading…" : imageUrl ? "✓ Photo uploaded" : imageError || "Upload failed — tap to retry"}
                           </span>
+                          {!imageUploading && !imageUrl && (
+                            <button
+                              type="button"
+                              onClick={e => { e.stopPropagation(); clearImage(); }}
+                              style={{ background: "none", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 6, padding: "6px 14px", fontSize: 11, color: "rgba(255,255,255,0.5)", cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", marginTop: 4 }}
+                            >
+                              Skip photo — add it later
+                            </button>
+                          )}
                         </>
                       ) : (
                         <>
@@ -625,7 +656,7 @@ export default function FoodTruckPartnerPage() {
                           <span style={{ fontSize: 13, color: "rgba(255,255,255,0.35)" }}>
                             {imageUploading ? "Uploading…" : "Drop a photo here, or tap to upload"}
                           </span>
-                          <span style={{ fontSize: 11, color: "rgba(255,255,255,0.2)" }}>JPG, PNG — max 2MB</span>
+                          <span style={{ fontSize: 11, color: "rgba(255,255,255,0.2)" }}>JPG, PNG — any size, we'll resize it</span>
                         </>
                       )}
                     </div>
