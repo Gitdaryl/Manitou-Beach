@@ -164,8 +164,11 @@ function StaysHero() {
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(30px, 5vw, 56px)', fontWeight: 400, color: C.cream, margin: '20px 0 24px', lineHeight: 1.15 }}>
             Your property. On the map.<br /><em>Where lake visitors are already looking.</em>
           </h1>
-          <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.5)', maxWidth: 540, margin: '0 auto 20px', lineHeight: 1.85 }}>
-            Cottages, cabins, Airbnbs, and camping — all in one place. Visitors browse the map, see your photos, and book directly with you. No middleman fees.
+          <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.5)', maxWidth: 540, margin: '0 auto 12px', lineHeight: 1.85 }}>
+            Cottages, cabins, Airbnbs, and camping — all in one place. Visitors browse the map, see your photos, and click through to book on your site. We're not a booking platform — we just send guests your way.
+          </p>
+          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)', maxWidth: 480, margin: '0 auto 20px', lineHeight: 1.7, fontStyle: 'italic' }}>
+            Your Airbnb link, your VRBO page, your own website — wherever you take bookings, that's where we send them.
           </p>
           <div style={{ display: 'inline-block', background: 'rgba(91,126,149,0.15)', border: '1px solid rgba(91,126,149,0.3)', borderRadius: 12, padding: '12px 24px', marginBottom: 28 }}>
             <span style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: C.sunsetLight }}>Founding properties get everything free through May 10</span>
@@ -903,12 +906,12 @@ function ListYourPropertySection({ stays = [] }) {
                   {t.name}
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 2, marginBottom: active ? 10 : 6 }}>
-                  {t.betaPrice !== undefined && t.betaPrice !== null ? (
-                    <>
+                {t.betaPrice !== undefined && t.betaPrice !== null ? (
+                  <>
+                    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 2, marginBottom: 2 }}>
                       <span style={{
                         fontFamily: "'Libre Baskerville', serif",
-                        fontSize: active ? 32 : 24,
+                        fontSize: active ? 36 : 28,
                         color: active && t.key === 'featured' ? C.cream : C.text,
                         fontWeight: 400, transition: 'all 0.3s',
                       }}>
@@ -920,32 +923,42 @@ function ListYourPropertySection({ stays = [] }) {
                       }}>
                         thru May 10
                       </span>
-                      <span style={{
-                        fontSize: 11, color: active && t.key === 'featured' ? 'rgba(255,255,255,0.25)' : C.textMuted,
-                        fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'line-through', marginLeft: 6,
-                      }}>
-                        {t.price}{t.priceSub}
-                      </span>
-                    </>
-                  ) : (
-                    <>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 4, marginBottom: active ? 10 : 6 }}>
                       <span style={{
                         fontFamily: "'Libre Baskerville', serif",
-                        fontSize: active ? 32 : 24,
-                        color: active && t.key === 'featured' ? C.cream : C.text,
+                        fontSize: active ? 22 : 18,
+                        color: active && t.key === 'featured' ? 'rgba(255,255,255,0.6)' : C.text,
                         fontWeight: 400, transition: 'all 0.3s',
                       }}>
-                        {t.price}
+                        then {t.price}
                       </span>
                       <span style={{
-                        fontSize: 12, color: active && t.key === 'featured' ? 'rgba(255,255,255,0.4)' : C.textMuted,
+                        fontSize: 13, color: active && t.key === 'featured' ? 'rgba(255,255,255,0.35)' : C.textMuted,
                         fontFamily: "'Libre Franklin', sans-serif",
                       }}>
                         {t.priceSub}
                       </span>
-                    </>
-                  )}
-                </div>
+                    </div>
+                  </>
+                ) : (
+                  <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 2, marginBottom: active ? 10 : 6 }}>
+                    <span style={{
+                      fontFamily: "'Libre Baskerville', serif",
+                      fontSize: active ? 36 : 28,
+                      color: active && t.key === 'featured' ? C.cream : C.text,
+                      fontWeight: 400, transition: 'all 0.3s',
+                    }}>
+                      {t.price}
+                    </span>
+                    <span style={{
+                      fontSize: 13, color: active && t.key === 'featured' ? 'rgba(255,255,255,0.4)' : C.textMuted,
+                      fontFamily: "'Libre Franklin', sans-serif",
+                    }}>
+                      {t.priceSub}
+                    </span>
+                  </div>
+                )}
 
                 {active && (
                   <div style={{ animation: 'fadeSlideIn 0.3s ease' }}>
@@ -1203,8 +1216,11 @@ function ListYourPropertySection({ stays = [] }) {
               <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: C.sunset, marginBottom: 20 }}>
                 You're a founding property — welcome aboard.
               </div>
-              <p style={{ fontSize: 14, color: isFeatured ? 'rgba(255,255,255,0.5)' : C.textLight, lineHeight: 1.8, margin: '0 0 28px', maxWidth: 440, marginLeft: 'auto', marginRight: 'auto' }}>
-                Your listing is live on the stays page. Visitors can find you on the map, see your details, and book directly with you. Check your texts for a confirmation.
+              <p style={{ fontSize: 14, color: isFeatured ? 'rgba(255,255,255,0.5)' : C.textLight, lineHeight: 1.8, margin: '0 0 16px', maxWidth: 480, marginLeft: 'auto', marginRight: 'auto' }}>
+                Your listing is live on the stays page. Visitors can find you on the map, see your details, and click through to book with you directly. Check your texts for a confirmation.
+              </p>
+              <p style={{ fontSize: 13, color: isFeatured ? 'rgba(255,255,255,0.35)' : C.textMuted, lineHeight: 1.7, margin: '0 0 28px', maxWidth: 460, marginLeft: 'auto', marginRight: 'auto' }}>
+                Before May 10 we'll send you details about keeping your listing live — month to month, no contract, cancel anytime. Founding properties get first pick on Featured slots.
               </p>
               <a href="/stays" style={{
                 display: 'inline-block', padding: '14px 32px', background: C.lakeBlue, color: C.cream, borderRadius: 28,
@@ -1460,6 +1476,9 @@ function ListYourPropertySection({ stays = [] }) {
                         : 'Booking URL (Airbnb, VRBO, or your site)'}
                     </label>
                     <input style={inputStyle} value={form.bookingUrl} onChange={e => set('bookingUrl', e.target.value)} placeholder="https://airbnb.com/rooms/..." />
+                    <p style={{ fontSize: 11, color: isFeatured ? 'rgba(255,255,255,0.25)' : C.textMuted, margin: '6px 0 0', lineHeight: 1.5 }}>
+                      We link visitors straight to your booking page — we never handle reservations or take a cut.
+                    </p>
                   </div>
 
                   {/* Beds + Guests */}
@@ -2094,6 +2113,66 @@ export default function StaysPage() {
 
       <ListYourPropertySection stays={stays} />
       <ManageListingSection />
+
+      {/* ── FAQ ── */}
+      <section style={{ padding: '80px 24px', background: C.warmWhite }}>
+        <div style={{ maxWidth: 640, margin: '0 auto' }}>
+          <SectionLabel>Common Questions</SectionLabel>
+          <SectionTitle>How It Works</SectionTitle>
+          {[
+            {
+              q: 'Is this a booking site?',
+              a: "No — we're not Airbnb or VRBO. We don't handle reservations or take a cut of your bookings. Your listing links directly to wherever you take bookings — your Airbnb page, your VRBO listing, your own website, or just your phone number and email. We send guests your way. That's it.",
+            },
+            {
+              q: "What happens after May 10?",
+              a: "Before May 10, we'll send you an email and a text with details about keeping your listing live. You pick a tier — $9/month for a full listing with photos, map pin, and booking link, or $25/month for Featured placement with a Staff Pick badge. No obligation. If you don't want to continue, your listing simply moves to a free directory entry.",
+            },
+            {
+              q: 'Is there a contract?',
+              a: "No. Everything is month to month. Cancel anytime — no fees, no penalties, no awkward phone calls. If you cancel, your listing downgrades to a free directory entry (name and type only).",
+            },
+            {
+              q: "What about the Featured tier — only 3 per type?",
+              a: "Featured slots are first come, first served — 3 per property type (Cottage, Airbnb, etc.). Founding properties who sign up during the beta get first pick when paid tiers open. If all slots are taken, you'll be added to a waitlist and notified the moment one opens up.",
+            },
+            {
+              q: "What do visitors actually see?",
+              a: "Visitors come to the Stays page and see a map of all listed properties plus cards with your photos, description, amenity tags, and a direct link to book on your site. Featured listings appear first with a Staff Pick badge and premium card design.",
+            },
+            {
+              q: "Can I update my listing after I submit it?",
+              a: "Absolutely. Scroll up to the \"Manage Your Listing\" section, enter the email you used when you signed up, and you can edit everything — photos, description, amenities, booking link, all of it.",
+            },
+          ].map((faq, i) => (
+            <FadeIn key={i} delay={i * 60}>
+              <div style={{
+                marginBottom: 20,
+                padding: '24px 28px',
+                background: '#fff',
+                borderRadius: 14,
+                border: `1px solid ${C.sand}`,
+                boxShadow: '0 1px 6px rgba(0,0,0,0.03)',
+              }}>
+                <h4 style={{
+                  fontFamily: "'Libre Baskerville', serif",
+                  fontSize: 16, fontWeight: 400, color: C.text,
+                  margin: '0 0 10px',
+                }}>
+                  {faq.q}
+                </h4>
+                <p style={{
+                  fontSize: 14, color: C.textLight, lineHeight: 1.75,
+                  margin: 0,
+                }}>
+                  {faq.a}
+                </p>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </section>
+
       <NewsletterInline />
       <PageSponsorBanner pageName="stays" />
       <Footer />
