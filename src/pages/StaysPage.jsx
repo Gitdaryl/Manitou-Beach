@@ -146,30 +146,41 @@ function PhotoLightbox({ images, startIndex = 0, onClose }) {
 
 // ── Hero ────────────────────────────────────────────────────
 function StaysHero() {
+  const scrollToList = () => {
+    document.getElementById('list-property')?.scrollIntoView({ behavior: 'smooth' });
+  };
   return (
     <section style={{
-      background: `linear-gradient(180deg, ${C.night} 0%, ${C.dusk} 100%)`,
-      padding: '180px 24px 140px',
+      background: `linear-gradient(160deg, ${C.dusk} 0%, ${C.night} 50%, ${C.dusk} 100%)`,
+      padding: '160px 24px 110px',
       position: 'relative',
       overflow: 'hidden',
       textAlign: 'center',
     }}>
-      <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 80%, rgba(91,126,149,0.15) 0%, transparent 60%)' }} />
-      <div style={{ position: 'relative', zIndex: 1, maxWidth: 720, margin: '0 auto' }}>
-        <div style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 4, textTransform: 'uppercase', color: C.sunset, marginBottom: 16 }}>
-          Manitou Beach · Devils Lake · Round Lake
+      <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 55% 45%, rgba(91,126,149,0.2) 0%, transparent 60%)', pointerEvents: 'none' }} />
+      <FadeIn>
+        <div style={{ position: 'relative', zIndex: 1, maxWidth: 720, margin: '0 auto' }}>
+          <SectionLabel light>Manitou Beach · Stays & Rentals</SectionLabel>
+          <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(30px, 5vw, 56px)', fontWeight: 400, color: C.cream, margin: '20px 0 24px', lineHeight: 1.15 }}>
+            Your property. On the map.<br /><em>Where lake visitors are already looking.</em>
+          </h1>
+          <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.5)', maxWidth: 540, margin: '0 auto 20px', lineHeight: 1.85 }}>
+            Cottages, cabins, Airbnbs, and camping — all in one place. Visitors browse the map, see your photos, and book directly with you. No middleman fees.
+          </p>
+          <div style={{ display: 'inline-block', background: 'rgba(91,126,149,0.15)', border: '1px solid rgba(91,126,149,0.3)', borderRadius: 12, padding: '12px 24px', marginBottom: 28 }}>
+            <span style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: C.sunsetLight }}>Founding properties get everything free through May 10</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+            <Btn onClick={scrollToList} variant="sunset" style={{ whiteSpace: 'nowrap' }}>
+              Get on the Map — Free During Beta →
+            </Btn>
+            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
+              <a href="/" style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'none' }}>← Back to Home</a>
+              <ShareBar />
+            </div>
+          </div>
         </div>
-        <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(36px, 6vw, 56px)', fontWeight: 400, color: C.cream, margin: '0 0 20px', lineHeight: 1.15 }}>
-          Stay at the Lake
-        </h1>
-        <p style={{ fontSize: 17, color: 'rgba(255,255,255,0.6)', lineHeight: 1.7, maxWidth: 560, margin: '0 auto 28px' }}>
-          Cottages, cabins & camping on Devils Lake and Round Lake. Find your perfect spot — then book directly with the host.
-        </p>
-        <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Btn href="/" variant="outlineLight" small>← Back to Home</Btn>
-          <ShareBar />
-        </div>
-      </div>
+      </FadeIn>
     </section>
   );
 }
@@ -621,17 +632,17 @@ function StaysMapView({ stays, filter }) {
 // ── List Your Property Form ─────────────────────────────────
 
 const TIERS = [
-  { key: 'free', name: 'Directory', price: '$0', priceSub: 'forever', color: C.textMuted, accent: C.warmGray, icon: '📋',
+  { key: 'free', name: 'Directory', price: '$0', priceSub: 'forever', betaPrice: null, color: C.textMuted, accent: C.warmGray, icon: '📋',
     headline: 'Get Found',
     tagline: 'Your name in the directory so visitors know you exist.',
     features: ['Name & property type', 'Basic text listing', 'Visible in directory search'],
   },
-  { key: 'listed', name: 'Listed', price: '$9', priceSub: '/mo', color: C.lakeBlue, accent: C.lakeBlue, icon: '📸',
+  { key: 'listed', name: 'Listed', price: '$9', priceSub: '/mo', betaPrice: '$0', color: C.lakeBlue, accent: C.lakeBlue, icon: '📸',
     headline: 'Stand Out',
     tagline: 'Photos, map pin, and a booking link — everything a guest needs to say yes.',
     features: ['Beautiful photo gallery', 'Map pin with address', 'Booking URL or inquiry button', 'Amenity badges', 'Full listing card'],
   },
-  { key: 'featured', name: 'Featured', price: '$25', priceSub: '/mo', color: C.sunset, accent: C.sunset, icon: '✦',
+  { key: 'featured', name: 'Featured', price: '$25', priceSub: '/mo', betaPrice: '$0', color: C.sunset, accent: C.sunset, icon: '✦',
     headline: 'Front & Center',
     tagline: 'Top placement, Staff Pick badge, and a listing that feels like a destination.',
     features: ['Everything in Listed', 'Top of directory placement', 'Staff Pick badge', 'Premium dark card design', 'Priority in search & map', 'Featured in weekly newsletter', 'Social media spotlight post', 'Only 3 slots per type'],
@@ -640,12 +651,19 @@ const TIERS = [
 ];
 
 function ListYourPropertySection({ stays = [] }) {
-  const [tier, setTier] = useState('free');
+  const [tier, setTier] = useState('listed'); // default to Listed during beta
   const [form, setForm] = useState({ name: '', stayType: '', address: '', bookingUrl: '', email: '', description: '', phone: '', beds: '', guests: '', amenities: [], photoUrl: '', photoUrl2: '', photoUrl3: '', _hp: '' });
   const [status, setStatus] = useState(null);
   const [dragOver, setDragOver] = useState(false);
   const [lightbox, setLightbox] = useState(null);
   const formRef = useRef(null);
+
+  // SMS verification flow states
+  const [step, setStep] = useState('form'); // 'form' | 'verify' | 'activated'
+  const [verifyCode, setVerifyCode] = useState('');
+  const [verifyLoading, setVerifyLoading] = useState(false);
+  const [verifyError, setVerifyError] = useState('');
+  const [resending, setResending] = useState(false);
 
   const activeTier = TIERS.find(t => t.key === tier);
   const isFeatured = tier === 'featured';
@@ -672,17 +690,86 @@ function ListYourPropertySection({ stays = [] }) {
 
   const submit = async (e) => {
     e.preventDefault();
-    if (!form.name.trim()) return;
+    if (!form.name.trim()) { setStatus('error_name'); return; }
+    if (!form.email.trim() || !form.email.includes('@')) { setStatus('error_email'); return; }
+    const phoneDigits = (form.phone || '').replace(/\D/g, '');
+    if (phoneDigits.length < 10) { setStatus('error_phone'); return; }
     setStatus('sending');
     try {
-      const res = await fetch('/api/stays', {
+      const res = await fetch('/api/submit-stay', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, tier }),
+        body: JSON.stringify({ ...form, tier, _hp: form._hp }),
       });
-      if (res.ok) setStatus('success');
-      else setStatus('error');
+      const data = await res.json();
+      if (data.needsVerification) {
+        setStep('verify');
+        setStatus(null);
+      } else if (data.error) {
+        setStatus('error');
+      } else {
+        setStatus('error');
+      }
     } catch { setStatus('error'); }
+  };
+
+  const handleVerify = async () => {
+    if (verifyCode.trim().length !== 6) {
+      setVerifyError('Enter the 6-digit code from your text message.');
+      return;
+    }
+    setVerifyLoading(true);
+    setVerifyError('');
+    try {
+      const res = await fetch('/api/verify-stay', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: form.phone, code: verifyCode.trim(), tier }),
+      });
+      const data = await res.json();
+      if (data.error) {
+        setVerifyError(data.error);
+      } else if (data.activated) {
+        setStep('activated');
+      } else if (data.needsPayment) {
+        // Post-beta paid tier — redirect to Stripe
+        const checkoutRes = await fetch('/api/create-checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            tier: tier === 'featured' ? 'stays_featured' : 'stays_listed',
+            businessName: form.name,
+            email: form.email,
+            priceInCents: tier === 'featured' ? 2500 : 900,
+            mode: 'subscription',
+          }),
+        });
+        const checkoutData = await checkoutRes.json();
+        if (checkoutData.url) {
+          window.location.href = checkoutData.url;
+        } else {
+          setVerifyError(checkoutData.error || yeti.payment());
+        }
+      }
+    } catch {
+      setVerifyError(yeti.network());
+    } finally {
+      setVerifyLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    setResending(true);
+    try {
+      await fetch('/api/verify-stay', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: form.phone, resend: true }),
+      });
+    } catch { /* silent */ }
+    finally {
+      setTimeout(() => setResending(false), 3000);
+    }
   };
 
   const baseInputStyle = {
@@ -735,11 +822,19 @@ function ListYourPropertySection({ stays = [] }) {
     )}
     <section id="list-property" style={{ padding: '80px 24px', background: C.warmWhite }}>
       <div style={{ maxWidth: 720, margin: '0 auto' }}>
-        <SectionLabel>Property Owners</SectionLabel>
-        <SectionTitle>List Your Property</SectionTitle>
-        <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.7, textAlign: 'center', marginBottom: 36 }}>
-          Own a rental, cottage, or campground? Pick your tier — the form adapts to match.
+        <SectionLabel>Get Listed</SectionLabel>
+        <SectionTitle>Get Your Property on the Map</SectionTitle>
+        <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.7, textAlign: 'center', marginBottom: 16 }}>
+          Own a rental, cottage, or campground? List it here and visitors find you on the map, see your photos, and book directly.
         </p>
+
+        {/* Founding offer badge */}
+        <div style={{ textAlign: 'center', marginBottom: 32 }}>
+          <div style={{ display: 'inline-block', background: `${C.sunset}10`, border: `1px solid ${C.sunset}25`, borderRadius: 12, padding: '12px 24px' }}>
+            <div style={{ fontFamily: "'Caveat', cursive", fontSize: 17, color: C.sunset, marginBottom: 2 }}>Founding Property — Free through May 10</div>
+            <div style={{ fontSize: 11, color: C.textMuted }}>Full Listed experience. No credit card. No catch.</div>
+          </div>
+        </div>
 
         {/* ── Tier Selector Buttons ── */}
         <div className="tier-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 32 }}>
@@ -809,20 +904,47 @@ function ListYourPropertySection({ stays = [] }) {
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 2, marginBottom: active ? 10 : 6 }}>
-                  <span style={{
-                    fontFamily: "'Libre Baskerville', serif",
-                    fontSize: active ? 32 : 24,
-                    color: active && t.key === 'featured' ? C.cream : C.text,
-                    fontWeight: 400, transition: 'all 0.3s',
-                  }}>
-                    {t.price}
-                  </span>
-                  <span style={{
-                    fontSize: 12, color: active && t.key === 'featured' ? 'rgba(255,255,255,0.4)' : C.textMuted,
-                    fontFamily: "'Libre Franklin', sans-serif",
-                  }}>
-                    {t.priceSub}
-                  </span>
+                  {t.betaPrice !== undefined && t.betaPrice !== null ? (
+                    <>
+                      <span style={{
+                        fontFamily: "'Libre Baskerville', serif",
+                        fontSize: active ? 32 : 24,
+                        color: active && t.key === 'featured' ? C.cream : C.text,
+                        fontWeight: 400, transition: 'all 0.3s',
+                      }}>
+                        {t.betaPrice}
+                      </span>
+                      <span style={{
+                        fontSize: 12, color: active && t.key === 'featured' ? 'rgba(255,255,255,0.4)' : C.textMuted,
+                        fontFamily: "'Libre Franklin', sans-serif",
+                      }}>
+                        thru May 10
+                      </span>
+                      <span style={{
+                        fontSize: 11, color: active && t.key === 'featured' ? 'rgba(255,255,255,0.25)' : C.textMuted,
+                        fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'line-through', marginLeft: 6,
+                      }}>
+                        {t.price}{t.priceSub}
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <span style={{
+                        fontFamily: "'Libre Baskerville', serif",
+                        fontSize: active ? 32 : 24,
+                        color: active && t.key === 'featured' ? C.cream : C.text,
+                        fontWeight: 400, transition: 'all 0.3s',
+                      }}>
+                        {t.price}
+                      </span>
+                      <span style={{
+                        fontSize: 12, color: active && t.key === 'featured' ? 'rgba(255,255,255,0.4)' : C.textMuted,
+                        fontFamily: "'Libre Franklin', sans-serif",
+                      }}>
+                        {t.priceSub}
+                      </span>
+                    </>
+                  )}
                 </div>
 
                 {active && (
@@ -1063,26 +1185,110 @@ function ListYourPropertySection({ stays = [] }) {
             </div>
           )}
 
-          {status === 'success' ? (
+          {step === 'activated' ? (
+            /* ── ACTIVATED SUCCESS ── */
             <div style={{
               textAlign: 'center', padding: 48,
               background: isFeatured ? 'rgba(255,255,255,0.04)' : C.cream,
               borderRadius: 16,
               border: `1px solid ${isFeatured ? 'rgba(255,255,255,0.08)' : `${C.sage}30`}`,
             }}>
-              <div style={{ fontSize: 56, marginBottom: 16 }}>🏡</div>
+              <div style={{ fontSize: 56, marginBottom: 16, animation: 'staysPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)' }}>🏡</div>
               <h3 style={{
                 fontFamily: "'Libre Baskerville', serif", fontSize: 24,
                 color: isFeatured ? C.cream : C.text, marginBottom: 10, fontWeight: 400,
               }}>
-                {isFeatured ? 'Welcome to the front page.' : 'Submitted!'}
+                {form.name || 'Your property'} is on the map!
               </h3>
-              <p style={{ fontSize: 14, color: isFeatured ? 'rgba(255,255,255,0.5)' : C.textLight, lineHeight: 1.6 }}>
-                {isFeatured
-                  ? "We're building your premium listing now. You'll hear from us within 24 hours."
-                  : "We'll review and get your listing live soon."}
+              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: C.sunset, marginBottom: 20 }}>
+                You're a founding property — welcome aboard.
+              </div>
+              <p style={{ fontSize: 14, color: isFeatured ? 'rgba(255,255,255,0.5)' : C.textLight, lineHeight: 1.8, margin: '0 0 28px', maxWidth: 440, marginLeft: 'auto', marginRight: 'auto' }}>
+                Your listing is live on the stays page. Visitors can find you on the map, see your details, and book directly with you. Check your texts for a confirmation.
               </p>
+              <a href="/stays" style={{
+                display: 'inline-block', padding: '14px 32px', background: C.lakeBlue, color: C.cream, borderRadius: 28,
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5,
+                textTransform: 'uppercase', textDecoration: 'none',
+              }}>
+                See Your Listing →
+              </a>
+              <style>{`@keyframes staysPop { 0% { transform: scale(0); } 60% { transform: scale(1.2); } 100% { transform: scale(1); } }`}</style>
             </div>
+
+          ) : step === 'verify' ? (
+            /* ── VERIFICATION CODE ENTRY ── */
+            <div style={{
+              textAlign: 'center', padding: '44px 28px',
+              background: isFeatured ? 'rgba(255,255,255,0.04)' : C.cream,
+              borderRadius: 16,
+              border: `1px solid ${isFeatured ? 'rgba(255,255,255,0.1)' : `${C.sage}20`}`,
+            }}>
+              <div style={{ fontSize: 40, marginBottom: 16 }}>📱</div>
+              <h3 style={{
+                fontFamily: "'Libre Baskerville', serif", fontSize: 22,
+                color: isFeatured ? C.cream : C.text, fontWeight: 400, margin: '0 0 8px',
+              }}>
+                Check your texts
+              </h3>
+              <p style={{ fontSize: 14, color: isFeatured ? 'rgba(255,255,255,0.5)' : C.textLight, lineHeight: 1.8, margin: '0 0 28px' }}>
+                We sent a 6-digit code to <strong style={{ color: isFeatured ? C.sunsetLight : C.text }}>{form.phone}</strong>
+              </p>
+              <div style={{ maxWidth: 240, margin: '0 auto 20px' }}>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={6}
+                  value={verifyCode}
+                  onChange={e => setVerifyCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  placeholder="000000"
+                  autoFocus
+                  style={{
+                    width: '100%', boxSizing: 'border-box', padding: '16px 20px',
+                    border: `2px solid ${verifyError ? '#e07070' : (isFeatured ? 'rgba(255,255,255,0.2)' : C.sand)}`,
+                    borderRadius: 12,
+                    background: isFeatured ? 'rgba(255,255,255,0.06)' : C.warmWhite,
+                    color: isFeatured ? C.cream : C.text,
+                    fontFamily: "'Libre Franklin', sans-serif", fontSize: 28, fontWeight: 700,
+                    textAlign: 'center', letterSpacing: 8, outline: 'none',
+                    transition: 'border-color 0.2s',
+                  }}
+                  onFocus={e => { if (!verifyError) e.currentTarget.style.borderColor = C.lakeBlue; }}
+                  onBlur={e => { if (!verifyError) e.currentTarget.style.borderColor = isFeatured ? 'rgba(255,255,255,0.2)' : C.sand; }}
+                />
+              </div>
+              {verifyError && (
+                <div style={{ fontSize: 13, color: '#e07070', fontWeight: 500, marginBottom: 16 }}>{verifyError}</div>
+              )}
+              <button
+                onClick={handleVerify}
+                disabled={verifyLoading || verifyCode.length !== 6}
+                style={{
+                  padding: '14px 36px',
+                  background: verifyLoading ? C.sand : C.lakeBlue,
+                  color: C.cream, border: 'none', borderRadius: 28, fontSize: 13, fontWeight: 700,
+                  letterSpacing: 1.5, textTransform: 'uppercase', cursor: verifyLoading ? 'default' : 'pointer',
+                  fontFamily: "'Libre Franklin', sans-serif", transition: 'background 0.2s',
+                  opacity: verifyCode.length !== 6 ? 0.5 : 1,
+                }}
+              >
+                {verifyLoading ? 'Verifying...' : 'Verify & Get Listed →'}
+              </button>
+              <div style={{ marginTop: 20 }}>
+                <button
+                  onClick={handleResend}
+                  disabled={resending}
+                  style={{
+                    background: 'none', border: 'none', fontFamily: "'Libre Franklin', sans-serif",
+                    fontSize: 12, color: resending ? C.sage : C.textMuted,
+                    cursor: resending ? 'default' : 'pointer', padding: '6px 12px',
+                  }}
+                >
+                  {resending ? '✓ Code re-sent' : "Didn't get it? Resend code"}
+                </button>
+              </div>
+            </div>
+
           ) : (
             <form onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: isFeatured ? 20 : 16 }}>
               <div style={{ display: 'none' }}><input value={form._hp} onChange={e => set('_hp', e.target.value)} tabIndex={-1} autoComplete="off" /></div>
@@ -1119,14 +1325,14 @@ function ListYourPropertySection({ stays = [] }) {
                   </select>
                 </div>
                 <div>
-                  <label style={labelStyle}>Phone</label>
+                  <label style={labelStyle}>Phone * <span style={{ fontWeight: 400, letterSpacing: 0 }}>— for verification</span></label>
                   <input style={inputStyle} value={form.phone} onChange={e => set('phone', e.target.value)} placeholder="(555) 123-4567" />
                 </div>
               </div>
 
               {/* Email — all tiers */}
               <div>
-                <label style={labelStyle}>Email {isPaid ? '' : '(for inquiries)'}</label>
+                <label style={labelStyle}>Email *</label>
                 <input type="email" style={inputStyle} value={form.email} onChange={e => set('email', e.target.value)} placeholder="you@example.com" />
               </div>
 
@@ -1390,6 +1596,10 @@ function ListYourPropertySection({ stays = [] }) {
                       {featuredSlotsLeft === 1 ? 'Last spot' : `${featuredSlotsLeft} spots left`} for {selectedType}
                     </p>
                   )}
+                  {/* Validation hints */}
+                  {status === 'error_name' && <p style={{ fontSize: 13, color: '#c0392b', textAlign: 'center', margin: '0 0 8px' }}>Property name is required.</p>}
+                  {status === 'error_email' && <p style={{ fontSize: 13, color: '#c0392b', textAlign: 'center', margin: '0 0 8px' }}>A valid email address is required.</p>}
+                  {status === 'error_phone' && <p style={{ fontSize: 13, color: '#c0392b', textAlign: 'center', margin: '0 0 8px' }}>A valid phone number is required — we'll text you a verification code.</p>}
                   <Btn
                     type="submit"
                     variant={isFeatured ? 'primary' : isPaid ? 'primary' : 'outlineDark'}
@@ -1405,16 +1615,15 @@ function ListYourPropertySection({ stays = [] }) {
                     }}
                   >
                     {status === 'sending'
-                      ? 'Submitting...'
-                      : isFeatured
-                        ? 'Claim Your Spot — $25/mo'
-                        : isListed
-                          ? 'Submit Listing — $9/mo'
-                          : 'Submit Free Listing'}
+                      ? 'Sending verification code...'
+                      : 'Get on the Map — Free →'}
                   </Btn>
                 </div>
               )}
 
+              <p style={{ fontSize: 11, color: isFeatured ? 'rgba(255,255,255,0.25)' : C.textMuted, textAlign: 'center', lineHeight: 1.7, margin: '4px 0 0' }}>
+                We'll text a verification code to your phone. Once verified, your listing goes live.
+              </p>
               {status === 'error' && (
                 <p style={{
                   color: isFeatured ? '#E8A87C' : '#c0392b',
