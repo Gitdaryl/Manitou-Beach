@@ -208,7 +208,7 @@ export const VILLAGE_BUSINESSES = [
     featured: false,
     logo: "/images/foundation-logo.png",
     website: "https://www.foundationlenawee.com/",
-    phone: "(517) 266-8888",
+    phone: "(517) 252-5523",
   },
   {
     id: 26,
