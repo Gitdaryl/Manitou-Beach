@@ -247,12 +247,15 @@ function FireworksHero() {
           @keyframes fw-colon-pulse { 0%,100%{opacity:1} 50%{opacity:0.15} }
           .fw-countdown {
             display: flex;
-            gap: clamp(4px, 1.5vw, 16px);
+            gap: clamp(8px, 2vw, 20px);
             justify-content: center;
             flex-wrap: nowrap;
-            align-items: center;
+            align-items: stretch;
             margin-bottom: 56px;
             width: 100%;
+            max-width: 720px;
+            margin-left: auto;
+            margin-right: auto;
           }
           .fw-card {
             text-align: center;
@@ -260,15 +263,18 @@ function FireworksHero() {
             backdrop-filter: blur(12px);
             border: 1px solid rgba(201,168,76,0.25);
             border-radius: 16px;
-            padding: clamp(10px,2vw,28px) clamp(8px,2vw,32px);
+            padding: clamp(16px,2.5vw,32px) clamp(12px,2.5vw,36px);
             box-shadow: 0 0 32px rgba(201,168,76,0.09), inset 0 1px 0 rgba(255,255,255,0.08);
             flex: 1;
             min-width: 0;
-            max-width: 130px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
           }
           .fw-num {
             font-family: 'Libre Baskerville', serif;
-            font-size: clamp(32px, 6.5vw, 88px);
+            font-size: clamp(36px, 6vw, 80px);
             font-weight: 700;
             color: #C9A84C;
             line-height: 1;
@@ -277,21 +283,22 @@ function FireworksHero() {
             text-shadow: 0 0 40px rgba(201,168,76,0.33);
           }
           .fw-unit {
-            font-size: clamp(7px, 1vw, 9px);
+            font-size: clamp(8px, 1.1vw, 11px);
             letter-spacing: 4px;
             text-transform: uppercase;
-            color: rgba(255,255,255,0.4);
-            margin-top: 8px;
+            color: rgba(255,255,255,0.45);
+            margin-top: 10px;
             font-weight: 700;
             font-family: 'Libre Franklin', sans-serif;
           }
           .fw-colon {
-            font-size: clamp(18px, 3.5vw, 52px);
+            font-size: clamp(24px, 4vw, 56px);
             color: #C9A84C;
             font-family: 'Libre Baskerville', serif;
             line-height: 1;
-            opacity: 0.5;
-            padding-bottom: clamp(14px, 2.5vw, 28px);
+            opacity: 0.4;
+            align-self: center;
+            margin-top: -16px;
             animation: fw-colon-pulse 1s steps(1) infinite;
             flex-shrink: 0;
           }
