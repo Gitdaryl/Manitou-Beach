@@ -108,7 +108,7 @@ export default async function handler(req, res) {
       // Send welcome SMS with check-in link
       await sendSMS(
         digits,
-        `Manitou Beach Food Trucks\n\n${truckName.trim()} is live! 🎉\n\nHere's your personal check-in link:\n${checkinUrl}\n\nOpen it each time you head to Manitou Beach. Save it to your home screen for quick access.`
+        `Manitou Beach Food Trucks\n\n${truckName.trim()} is live! 🎉\n\nHere's your personal check-in link:\n${checkinUrl}\n\nOpen it each time you head to Manitou Beach. Save it to your home screen for quick access.\n\nTip: Save this number as "Manitou Beach" in your contacts so you can always find your check-in link!`
       );
 
       return res.status(200).json({ ok: true, activated: true, slug, checkinUrl, truckName: truckName.trim() });

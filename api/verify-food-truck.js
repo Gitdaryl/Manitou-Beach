@@ -179,7 +179,7 @@ export default async function handler(req, res) {
         ? `\n\nYou're a founding food truck — everything is free through May 10. After that, it's $9/month to stay live on the map.`
         : '';
       await sendSMS(inputDigits,
-        `Manitou Beach Food Trucks\n\n${truckName} is live! 🎉\n\nHere's your personal check-in link:\n${checkinUrl}\n\nOpen it each time you head to Manitou Beach. Drop your pin, add today's special, and go live on the map.${betaNote}\n\nSave this to your home screen for quick access.`
+        `Manitou Beach Food Trucks\n\n${truckName} is live! 🎉\n\nHere's your personal check-in link:\n${checkinUrl}\n\nOpen it each time you head to Manitou Beach. Drop your pin, add today's special, and go live on the map.${betaNote}\n\nSave this to your home screen for quick access.\n\nTip: Save this number as "Manitou Beach" in your contacts so you can always find your check-in link!`
       );
 
       return res.status(200).json({
