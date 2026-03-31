@@ -115,7 +115,7 @@ const OG_MAP = {
   '/stays': {
     title: 'Lakefront Stays — Manitou Beach',
     description: 'Vacation rentals, cottages, and lakefront stays on Devils Lake in the Michigan Irish Hills.',
-    image: null, // NEEDS IMAGE — lakefront cottage or rental
+    image: '/images/og/og-stays.jpg',
   },
   '/promote': {
     title: 'Promote Your Business — Manitou Beach',
@@ -130,12 +130,12 @@ const OG_MAP = {
   '/founding': {
     title: 'Founding Member — Manitou Beach',
     description: 'Join as a founding member and help shape the future of the Manitou Beach community platform.',
-    image: null, // NEEDS IMAGE — community/founding themed
+    image: '/images/og/og-founding.jpg',
   },
   '/ticket-services': {
     title: 'Ticket Services — Manitou Beach',
     description: 'Community event ticketing powered by Yetickets — simple, affordable tickets for Devils Lake events.',
-    image: null, // NEEDS IMAGE — event/ticket themed
+    image: '/images/og/og-tickets.jpg',
   },
   '/wine-partner': {
     title: 'Wine Trail Partner — Manitou Beach',
@@ -155,12 +155,12 @@ const OG_MAP = {
   '/check-in': {
     title: 'Check In — Manitou Beach',
     description: 'Check in to Devils Lake — let the community know you\'re here!',
-    image: null, // NEEDS IMAGE — welcome/check-in themed
+    image: '/images/og/og-checkin.jpg',
   },
   '/launch': {
     title: 'Coming Soon — Manitou Beach',
     description: 'Manitou Beach is launching soon — the community platform for Devils Lake, Michigan.',
-    image: null, // NEEDS IMAGE — launch/countdown themed
+    image: '/images/og/og-launch.jpg',
   },
 
   // ── Internal / form pages — title + description only, default image ──
