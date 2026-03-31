@@ -750,7 +750,7 @@ export default function LaunchPage() {
       position: 'fixed', inset: 0, height: '100vh',
       overflow: 'hidden', background: C.night,
       display: 'flex', flexDirection: 'column',
-      alignItems: 'center', justifyContent: 'center',
+      alignItems: 'center', justifyContent: 'safe center',
     }}>
       <GlobalStyles />
 
@@ -783,7 +783,7 @@ export default function LaunchPage() {
       <div style={{
         position: 'relative', zIndex: 2,
         width: '100%', maxWidth: 640,
-        maxHeight: '100vh', overflowY: 'auto',
+        maxHeight: '100dvh', overflowY: 'auto',
         display: 'flex', flexDirection: 'column',
         alignItems: 'center',
         padding: '80px 24px 60px',
