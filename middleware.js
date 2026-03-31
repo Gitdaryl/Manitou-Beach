@@ -35,12 +35,12 @@ const OG_MAP = {
   '/village': {
     title: 'Manitou Beach Village',
     description: 'The charming village of Manitou Beach on the shores of Devils Lake, Michigan.',
-    image: null, // NEEDS IMAGE — village street or storefronts
+    image: '/images/og/village-og.jpg',
   },
   '/nightlife': {
     title: 'Nightlife — Manitou Beach',
     description: 'Bars, live music, and evening fun around Devils Lake in the Michigan Irish Hills.',
-    image: '/images/explore-nightlife.jpg',
+    image: '/images/og/nightlife-og.jpg',
   },
   '/business': {
     title: 'Business Directory — Manitou Beach',
@@ -55,12 +55,12 @@ const OG_MAP = {
   '/mens-club': {
     title: "Men's Club — Manitou Beach",
     description: 'The Manitou Beach Men\'s Club — community events, Tip-Up, Firecracker 7K, and more since 1946.',
-    image: '/images/mens-club-hero.jpg',
+    image: '/images/og/mensclub-og.jpg',
   },
   '/ladies-club': {
     title: "Ladies Club — Manitou Beach",
     description: 'The Manitou Beach Ladies Club — Summer Festival, community service, and lakeside camaraderie.',
-    image: '/images/ladies-club/summerfest-yeti.jpg',
+    image: '/images/og/ladiesclub-og.jpg',
   },
   '/historical-society': {
     title: 'Historical Society — Manitou Beach',
@@ -70,12 +70,12 @@ const OG_MAP = {
   '/fishing': {
     title: 'Fishing Devils Lake — Manitou Beach',
     description: 'Bass, walleye, pike, and panfish — your guide to fishing Devils Lake in the Michigan Irish Hills.',
-    image: '/images/explore-fishing.jpg',
+    image: '/images/og/fishing-og.jpg',
   },
   '/wineries': {
     title: 'Wine Trail — Manitou Beach',
     description: 'Explore the Irish Hills wine trail — local wineries, tastings, and vineyard tours near Devils Lake.',
-    image: '/images/Explore-wineries.jpg',
+    image: '/images/og/winetrail-og.jpg',
   },
   '/devils-lake': {
     title: 'Devils Lake — Manitou Beach, Michigan',
@@ -90,7 +90,7 @@ const OG_MAP = {
   '/food-trucks': {
     title: 'Food Trucks — Manitou Beach',
     description: 'Street eats and mobile kitchens serving the Devils Lake community and local events.',
-    image: '/images/foodtruck_hero.jpg',
+    image: '/images/og/foodtrucks-og.jpg',
   },
   '/discover': {
     title: 'Discover — Manitou Beach',
@@ -100,12 +100,12 @@ const OG_MAP = {
   '/fireworks': {
     title: 'USA250 Fireworks — Devils Lake',
     description: 'America\'s 250th birthday celebration on the shores of Devils Lake, Manitou Beach.',
-    image: '/images/fireworks/devilslake-fireworks-1.jpg',
+    image: '/images/og/fireworks-og.jpg',
   },
   '/usa250': {
     title: 'USA250 Fireworks — Devils Lake',
     description: 'America\'s 250th birthday celebration on the shores of Devils Lake, Manitou Beach.',
-    image: '/images/fireworks/devilslake-fireworks-1.jpg',
+    image: '/images/og/fireworks-og.jpg',
   },
   '/holly-yeti': {
     title: 'Holly & Yeti — Foundation Realty at Devils Lake',
@@ -115,7 +115,7 @@ const OG_MAP = {
   '/stays': {
     title: 'Lakefront Stays — Manitou Beach',
     description: 'Vacation rentals, cottages, and lakefront stays on Devils Lake in the Michigan Irish Hills.',
-    image: '/images/og/og-stays.jpg',
+    image: '/images/og/stays-og.jpg',
   },
   '/promote': {
     title: 'Promote Your Business — Manitou Beach',
@@ -130,22 +130,22 @@ const OG_MAP = {
   '/founding': {
     title: 'Founding Member — Manitou Beach',
     description: 'Join as a founding member and help shape the future of the Manitou Beach community platform.',
-    image: '/images/og/og-founding.jpg',
+    image: '/images/og/founding-og.jpg',
   },
   '/ticket-services': {
     title: 'Ticket Services — Manitou Beach',
     description: 'Community event ticketing powered by Yetickets — simple, affordable tickets for Devils Lake events.',
-    image: '/images/og/og-tickets.jpg',
+    image: '/images/og/tickets-og.jpg',
   },
   '/wine-partner': {
     title: 'Wine Trail Partner — Manitou Beach',
     description: 'Join the Irish Hills wine trail on Manitou Beach — reach lake visitors and wine lovers.',
-    image: null, // NEEDS IMAGE — winery partnership themed
+    image: '/images/og/winetrail-og.jpg',
   },
   '/food-truck-partner': {
     title: 'Food Truck Partner — Manitou Beach',
     description: 'Bring your food truck to Devils Lake events — join the Manitou Beach food truck network.',
-    image: null, // NEEDS IMAGE — food truck themed
+    image: '/images/og/foodtrucks-og.jpg',
   },
   '/partner-intake': {
     title: 'Become a Partner — Manitou Beach',
@@ -155,7 +155,7 @@ const OG_MAP = {
   '/check-in': {
     title: 'Check In — Manitou Beach',
     description: 'Check in to Devils Lake — let the community know you\'re here!',
-    image: '/images/og/og-checkin.jpg',
+    image: '/images/og/check-in-og.jpg',
   },
   '/launch': {
     title: 'Coming Soon — Manitou Beach',
