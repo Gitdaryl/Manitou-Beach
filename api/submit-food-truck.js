@@ -43,6 +43,9 @@ export default async function handler(req, res) {
   // Honeypot — bots fill hidden fields, humans don't
   if (_hp) return res.status(200).json({ ok: true, needsVerification: true });
 
+  // Notion select options choke on commas — replace with middots
+  const cleanCuisine = (cuisine || '').trim().replace(/,\s*/g, ' · ') || '';
+
   if (!truckName?.trim() || !email?.trim() || !email.includes('@')) {
     return res.status(400).json({ error: 'Truck name and valid email are required.' });
   }
@@ -85,7 +88,7 @@ export default async function handler(req, res) {
         'Checkin Token': { rich_text: [{ text: { content: checkinToken } }] },
       };
       if (isBeta) properties['Beta Expires'] = { date: { start: '2026-05-10' } };
-      if (cuisine?.trim()) properties['Cuisine'] = { select: { name: cuisine.trim() } };
+      if (cleanCuisine) properties['Cuisine'] = { select: { name: cleanCuisine } };
       if (digits) properties['Phone'] = { phone_number: digits };
       if (cleanWebsite) properties['Website'] = { url: cleanWebsite };
       if (imageUrl?.trim()) properties['Photo URL'] = { url: imageUrl.trim() };
@@ -123,7 +126,7 @@ export default async function handler(req, res) {
       'Description':       { rich_text: [{ text: { content: descText } }] },
       'Verification Code': { rich_text: [{ text: { content: code } }] },
     };
-    if (cuisine?.trim()) properties['Cuisine'] = { select: { name: cuisine.trim() } };
+    if (cleanCuisine) properties['Cuisine'] = { select: { name: cleanCuisine } };
     if (digits) properties['Phone'] = { phone_number: digits };
     if (cleanWebsite) properties['Website'] = { url: cleanWebsite };
     if (imageUrl?.trim()) properties['Photo URL'] = { url: imageUrl.trim() };
