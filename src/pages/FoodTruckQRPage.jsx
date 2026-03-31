@@ -149,7 +149,7 @@ export default function FoodTruckQRPage() {
             color: C.textLight,
             letterSpacing: '0.04em',
           }}>
-            manitou-beach.vercel.app/food-trucks
+            manitoubeachmichigan.com/food-trucks
           </p>
         </div>
       </div>
