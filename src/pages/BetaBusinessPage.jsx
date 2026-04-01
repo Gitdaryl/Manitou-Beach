@@ -318,16 +318,121 @@ function FoodTruckRedirect({ onBack }) {
   );
 }
 
+function StaysRedirect({ onBack }) {
+  const [show, setShow] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setShow(true), 80); return () => clearTimeout(t); }, []);
+
+  return (
+    <div style={{
+      maxWidth: 480, margin: '0 auto', textAlign: 'center',
+      opacity: show ? 1 : 0, transform: show ? 'translateY(0)' : 'translateY(16px)',
+      transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+    }}>
+      <div style={{
+        background: `linear-gradient(135deg, ${C.dusk} 0%, ${C.night} 100%)`,
+        borderRadius: 20, padding: '52px 36px 44px', position: 'relative', overflow: 'hidden',
+        boxShadow: '0 16px 48px rgba(0,0,0,0.18)',
+      }}>
+        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 30%, rgba(99,171,184,0.2) 0%, transparent 65%)', pointerEvents: 'none' }} />
+        <div style={{
+          fontSize: 56, marginBottom: 20, lineHeight: 1,
+          animation: 'staysBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both',
+        }}>
+          🏡
+        </div>
+        <div style={{
+          fontFamily: "'Caveat', cursive", fontSize: 22, color: C.lakeBlueLight || C.sunsetLight,
+          marginBottom: 8, fontWeight: 600,
+        }}>
+          Wait — we've got something made for you
+        </div>
+        <h3 style={{
+          fontFamily: "'Libre Baskerville', serif", fontSize: 26, color: C.cream,
+          fontWeight: 400, margin: '0 0 16px', lineHeight: 1.3,
+        }}>
+          Rentals & Airbnbs get their own<br /><em style={{ color: C.lakeBlueLight || C.sunsetLight }}>dedicated listings page.</em>
+        </h3>
+        <p style={{
+          fontFamily: "'Libre Franklin', sans-serif", fontSize: 14,
+          color: 'rgba(255,255,255,0.55)', lineHeight: 1.85, margin: '0 0 12px', maxWidth: 380, marginLeft: 'auto', marginRight: 'auto',
+        }}>
+          Instead of a generic business listing, your stay gets its own spotlight — right where lake visitors go looking for a place to sleep.
+        </p>
+        <div style={{
+          display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'center',
+          marginTop: 28,
+        }}>
+          <div style={{
+            display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, width: '100%', maxWidth: 340,
+            fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", color: 'rgba(255,255,255,0.45)',
+            textAlign: 'left',
+          }}>
+            {[
+              ['🌊', 'Listed on the Stays page'],
+              ['📸', 'Photo, description & link'],
+              ['🗓️', 'Shown to active lake visitors'],
+              ['⭐', 'Reviews & highlights'],
+            ].map(([icon, text]) => (
+              <div key={text} style={{ display: 'flex', alignItems: 'flex-start', gap: 6, padding: '4px 0' }}>
+                <span style={{ fontSize: 14, flexShrink: 0 }}>{icon}</span>
+                <span style={{ fontSize: 12, lineHeight: 1.5 }}>{text}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <a
+          href="/stays"
+          style={{
+            display: 'inline-block', marginTop: 28, padding: '15px 36px',
+            background: C.lakeBlue, color: C.cream, borderRadius: 28,
+            fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700,
+            letterSpacing: 1.5, textTransform: 'uppercase', textDecoration: 'none',
+            boxShadow: '0 4px 20px rgba(99,171,184,0.4)',
+            transition: 'transform 0.15s, box-shadow 0.15s',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.04)'; e.currentTarget.style.boxShadow = '0 6px 28px rgba(99,171,184,0.5)'; }}
+          onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(99,171,184,0.4)'; }}
+        >
+          Take Me There →
+        </a>
+        <div style={{ marginTop: 16 }}>
+          <button
+            onClick={onBack}
+            style={{
+              background: 'none', border: 'none', fontFamily: "'Libre Franklin', sans-serif",
+              fontSize: 12, color: 'rgba(255,255,255,0.3)', cursor: 'pointer',
+              padding: '6px 12px', letterSpacing: 0.5,
+            }}
+          >
+            No thanks, I want a regular business listing
+          </button>
+        </div>
+      </div>
+      <style>{`
+        @keyframes staysBounce {
+          0% { opacity: 0; transform: scale(0.3) rotate(-12deg); }
+          60% { opacity: 1; transform: scale(1.15) rotate(4deg); }
+          100% { opacity: 1; transform: scale(1) rotate(0deg); }
+        }
+      `}</style>
+    </div>
+  );
+}
+
 function CheckoutForm({ tier, onBack, onSuccess }) {
   const [form, setForm] = useState({ businessName: '', category: '', email: '' });
   const [status, setStatus] = useState('idle'); // idle | submitting | error
   const [error, setError] = useState('');
   const [showFoodTruckRedirect, setShowFoodTruckRedirect] = useState(false);
+  const [showStaysRedirect, setShowStaysRedirect] = useState(false);
 
   const set = (k, v) => {
     setForm(f => ({ ...f, [k]: v }));
     if (k === 'category' && v === 'Food Truck') {
       setShowFoodTruckRedirect(true);
+    }
+    if (k === 'category' && v === 'Stays & Rentals') {
+      setShowStaysRedirect(true);
     }
   };
 
@@ -391,6 +496,10 @@ function CheckoutForm({ tier, onBack, onSuccess }) {
 
   if (showFoodTruckRedirect) {
     return <FoodTruckRedirect onBack={() => { setShowFoodTruckRedirect(false); set('category', ''); }} />;
+  }
+
+  if (showStaysRedirect) {
+    return <StaysRedirect onBack={() => { setShowStaysRedirect(false); set('category', ''); }} />;
   }
 
   return (

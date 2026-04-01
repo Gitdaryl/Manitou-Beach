@@ -237,7 +237,7 @@ export default function DiscoverPage() {
           {allCats.map(cat => {
             const active = activeCategory === cat.id;
             return (
-              <button key={cat.id} data-chip-active={active || undefined} onClick={() => setActiveCategory(cat.id)} style={{
+              <button key={cat.id} data-chip-active={active || undefined} onClick={() => cat.id === 'stays' ? window.location.href = '/stays' : setActiveCategory(cat.id)} style={{
                 flexShrink: 0, background: active ? cat.color : '#fff', color: active ? '#fff' : C.text,
                 border: `1.5px solid ${active ? cat.color : C.sand}`, borderRadius: 24, padding: '6px 14px',
                 fontSize: 13, fontWeight: active ? 700 : 500, fontFamily: "'Libre Franklin', sans-serif",
