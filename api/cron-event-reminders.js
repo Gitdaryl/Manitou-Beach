@@ -155,7 +155,7 @@ async function sendRsvpReminders({ event, isToday, resend, siteUrl }) {
     if (resend && rsvp.email) {
       try {
         await resend.emails.send({
-          from: 'Manitou Beach <events@yetigroove.com>',
+          from: 'Manitou Beach <events@manitoubeachmichigan.com>',
           to: rsvp.email,
           subject: isToday
             ? `Happening today — ${event.name}`
@@ -251,7 +251,7 @@ async function sendTicketBuyerReminders({ event, isToday, resend, siteUrl }) {
           ? `You have ${buyer.quantity} tickets — don't forget to bring everyone!`
           : `Your ticket is ready — just show your confirmation at the door.`;
         await resend.emails.send({
-          from: 'Manitou Beach <events@yetigroove.com>',
+          from: 'Manitou Beach <events@manitoubeachmichigan.com>',
           to: buyer.email,
           subject: isToday
             ? `Happening today — ${event.name}`

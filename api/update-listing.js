@@ -1,3 +1,6 @@
+import { Resend } from 'resend';
+import { sendSMS, normalizePhone } from './lib/twilio.js';
+
 const NOTION_HEADERS = {
   'Authorization': `Bearer ${process.env.NOTION_TOKEN_BUSINESS}`,
   'Content-Type': 'application/json',
@@ -100,6 +103,43 @@ export default async function handler(req, res) {
         const err = await notionRes.json();
         console.error('Notion error creating update request:', err);
         return res.status(500).json({ success: false, error: 'Failed to submit update' });
+      }
+
+      const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
+
+      // Receipt email to business owner
+      if (process.env.RESEND_API_KEY) {
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        resend.emails.send({
+          from: 'Manitou Beach <events@manitoubeachmichigan.com>',
+          to: email.trim().toLowerCase(),
+          subject: `Update request received — ${name.trim()}`,
+          html: `
+            <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; color: #3B3228; background: #FAF6EF; padding: 40px 32px; border-radius: 8px;">
+              <p style="font-size: 26px; font-weight: bold; margin: 0 0 8px; color: #1A2830;">Got it.</p>
+              <p style="font-size: 15px; color: #6B5F52; margin: 0 0 24px; line-height: 1.7;">
+                We received your update request for <strong>${name.trim()}</strong>.
+                We'll review it and have your changes showing within 24 hours.
+                We'll send you a note when it's live.
+              </p>
+              <p style="font-size: 13px; color: #8A7E6E; margin: 0 0 6px; line-height: 1.7;">
+                Need to make another change or fix something? Visit
+                <a href="${siteUrl}/update-listing" style="color: #4A7A5A;">manitoubeachmichigan.com/update-listing</a>
+                anytime.
+              </p>
+              <hr style="border: none; border-top: 1px solid #E8DFD0; margin: 28px 0 16px;">
+              <p style="font-size: 11px; color: #9A8E7E; margin: 0;">Manitou Beach · Devils Lake, Michigan · manitoubeachmichigan.com</p>
+            </div>
+          `,
+        }).catch((err) => console.error('update-listing receipt email failed:', err));
+      }
+
+      // Admin SMS alert
+      if (process.env.DARYL_PHONE) {
+        sendSMS(
+          normalizePhone(process.env.DARYL_PHONE),
+          `📝 MB update request: ${name.trim()} — review in Notion`
+        ).catch((err) => console.error('update-listing admin SMS failed:', err));
       }
 
       return res.status(200).json({ success: true });

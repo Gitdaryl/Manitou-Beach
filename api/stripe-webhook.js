@@ -522,7 +522,7 @@ export default async function handler(req, res) {
             const tierLabel = tierId.charAt(0).toUpperCase() + tierId.slice(1);
             const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
             resend.emails.send({
-              from: 'Manitou Beach <events@yetigroove.com>',
+              from: 'Manitou Beach <events@manitoubeachmichigan.com>',
               to: customerEmail,
               subject: `You're on the map — ${businessName} is a Manitou Beach founding business`,
               html: `
@@ -598,7 +598,7 @@ export default async function handler(req, res) {
 
             const isUpgrade = metadata.upgrade === 'true';
             resend.emails.send({
-              from: 'Manitou Beach <events@yetigroove.com>',
+              from: 'Manitou Beach <events@manitoubeachmichigan.com>',
               to: customerEmail,
               subject: isUpgrade
                 ? `Your listing just got an upgrade — ${businessName} is now ${tierLabel}`
@@ -685,7 +685,7 @@ export default async function handler(req, res) {
           const resend = new Resend(process.env.RESEND_API_KEY);
           const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
           resend.emails.send({
-            from: 'Manitou Beach <events@yetigroove.com>',
+            from: 'Manitou Beach <events@manitoubeachmichigan.com>',
             to: customerEmail,
             subject: `${businessName} is now Featured on Manitou Beach`,
             html: `
@@ -804,7 +804,7 @@ export default async function handler(req, res) {
             : null;
 
           await resend.emails.send({
-            from: 'Manitou Beach <events@yetigroove.com>',
+            from: 'Manitou Beach <events@manitoubeachmichigan.com>',
             to: buyerEmail,
             subject: `Your promotion for "${eventName}" is live!`,
             html: `
@@ -878,12 +878,12 @@ export default async function handler(req, res) {
             const resend = new Resend(process.env.RESEND_API_KEY);
             const eventDateLine = [metadata.eventDate, metadata.eventTime].filter(Boolean).join(' · ');
             await resend.emails.send({
-              from: 'Yetickets <tickets@yetigroove.com>',
+              from: 'Yetickets <tickets@manitoubeachmichigan.com>',
               to: buyerEmail,
               subject: `Your ticket for ${metadata.eventName || 'the event'} — ${ticketId}`,
               html: `
                 <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#FAF6EF;">
-                  <img src="${(process.env.SITE_URL || 'https://manitoubeach.yetigroove.com')}/images/yeti/yetickets_sign.png" alt="Yetickets" style="width:200px;margin-bottom:24px;" />
+                  <img src="${(process.env.SITE_URL || 'https://manitoubeachmichigan.com')}/images/yeti/yetickets_sign.png" alt="Yetickets" style="width:200px;margin-bottom:24px;" />
                   <h1 style="color:#1A2830;font-size:22px;margin:0 0 8px;">You're in! 🎉</h1>
                   <p style="color:#5C5248;font-size:15px;margin:0 0 24px;">
                     Here's your ticket for <strong>${metadata.eventName || 'the event'}</strong>.
@@ -906,7 +906,7 @@ export default async function handler(req, res) {
 
                   <p style="color:#8C806E;font-size:13px;line-height:1.6;">
                     Show this ticket (printed or on your phone) at the door. The QR code will be scanned for entry.<br/><br/>
-                    Lost your ticket? Reply to this email or visit <a href="${process.env.SITE_URL || 'https://manitoubeach.yetigroove.com'}" style="color:#5B7D8E;">manitoubeachmichigan.com</a> to retrieve it.
+                    Lost your ticket? Reply to this email or visit <a href="${process.env.SITE_URL || 'https://manitoubeachmichigan.com'}" style="color:#5B7D8E;">manitoubeachmichigan.com</a> to retrieve it.
                   </p>
                 </div>
               `,
@@ -945,7 +945,7 @@ export default async function handler(req, res) {
           // Gratitude email → sponsor
           if (sponsorEmail) {
             await resend.emails.send({
-              from: 'Yetickets <tickets@yetigroove.com>',
+              from: 'Yetickets <tickets@manitoubeachmichigan.com>',
               to: sponsorEmail,
               subject: `You're making it happen — ${orgName} thanks you!`,
               html: `
@@ -974,7 +974,7 @@ export default async function handler(req, res) {
 
                   <p style="color:#8C806E;font-size:12px;line-height:1.7;margin:0;">
                     Confirmation ID: <strong style="color:#1A2830;">${sponsorId}</strong><br />
-                    Powered by Yetickets · <a href="${process.env.SITE_URL || 'https://manitoubeach.yetigroove.com'}" style="color:#5B7D8E;">manitoubeachmichigan.com</a>
+                    Powered by Yetickets · <a href="${process.env.SITE_URL || 'https://manitoubeachmichigan.com'}" style="color:#5B7D8E;">manitoubeachmichigan.com</a>
                   </p>
                 </div>
               `,
@@ -984,7 +984,7 @@ export default async function handler(req, res) {
           // Notification → org contact
           if (orgContactEmail) {
             await resend.emails.send({
-              from: 'Yetickets <tickets@yetigroove.com>',
+              from: 'Yetickets <tickets@manitoubeachmichigan.com>',
               to: orgContactEmail,
               subject: `New sponsorship: ${sponsorName} — ${tierLevel} (${amountFmt})`,
               html: `

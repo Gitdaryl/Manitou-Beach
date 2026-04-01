@@ -65,7 +65,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true, sent: false });
     }
 
-    const checkinUrl = `${process.env.SITE_URL || 'https://manitoubeach.yetigroove.com'}/food-trucks?truck=${encodeURIComponent(slug)}&token=${encodeURIComponent(token)}`;
+    const checkinUrl = `${process.env.SITE_URL || 'https://manitoubeachmichigan.com'}/food-trucks?truck=${encodeURIComponent(slug)}&token=${encodeURIComponent(token)}`;
 
     const ok = await sendSMSFull(
       `+1${inputDigits}`,

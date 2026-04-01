@@ -216,7 +216,7 @@ export default async function handler(req, res) {
     }
 
     // 7. Notify organizer of new application (best-effort)
-    const siteUrl = process.env.SITE_URL || 'https://manitoubeach.yetigroove.com';
+    const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
     const portalUrl = event.vendorPortalToken
       ? `${siteUrl}/vendor-portal?token=${event.vendorPortalToken}&event=${eventId}`
       : null;
@@ -237,7 +237,7 @@ export default async function handler(req, res) {
       const resend = new Resend(process.env.RESEND_API_KEY);
       const orgName = event.organizerName || event.name;
       resend.emails.send({
-        from: `Manitou Beach <tickets@yetigroove.com>`,
+        from: `Manitou Beach <tickets@manitoubeachmichigan.com>`,
         to: event.organizerEmail,
         subject: `New vendor application: ${truckName} → ${event.name}`,
         html: `

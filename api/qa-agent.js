@@ -268,7 +268,7 @@ async function sendCheckinLinkEmail(truck) {
   const resend = new Resend(process.env.RESEND_API_KEY);
 
   await resend.emails.send({
-    from: 'Manitou Beach <hello@yetigroove.com>',
+    from: 'Manitou Beach <hello@manitoubeachmichigan.com>',
     to: truck.email,
     subject: `🚚 You're approved — here's your Manitou Beach check-in link`,
     html: `

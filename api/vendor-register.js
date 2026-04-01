@@ -248,7 +248,7 @@ export default async function handler(req, res) {
 
       try {
         await resend.emails.send({
-          from: `${orgName} <tickets@yetigroove.com>`,
+          from: `${orgName} <tickets@manitoubeachmichigan.com>`,
           to: email,
           subject: `Vendor registration confirmed — ${event.name} (${vendorId})`,
           html: `
@@ -290,7 +290,7 @@ export default async function handler(req, res) {
             : `${currentCount} vendor${currentCount !== 1 ? 's' : ''} registered.`;
 
           await resend.emails.send({
-            from: 'Yetickets <tickets@yetigroove.com>',
+            from: 'Yetickets <tickets@manitoubeachmichigan.com>',
             to: event.organizerEmail,
             subject: `New vendor registered: ${vendorName} — ${event.name}`,
             html: `
@@ -305,7 +305,7 @@ export default async function handler(req, res) {
                   <p style="margin:0;color:#1A2830;font-size:14px;">${boothType || 'General'}</p>
                 </div>
                 <p style="color:#4A7A5A;font-size:15px;font-weight:600;margin:0 0 24px;">${capacityLine}</p>
-                ${event.vendorPortalToken ? `<p style="color:#5C5248;font-size:13px;">View all vendors: <a href="${process.env.SITE_URL || 'https://manitoubeach.yetigroove.com'}/vendor-portal?token=${event.vendorPortalToken}&event=${eventId}" style="color:#5B7D8E;">Open Vendor Portal →</a></p>` : ''}
+                ${event.vendorPortalToken ? `<p style="color:#5C5248;font-size:13px;">View all vendors: <a href="${process.env.SITE_URL || 'https://manitoubeachmichigan.com'}/vendor-portal?token=${event.vendorPortalToken}&event=${eventId}" style="color:#5B7D8E;">Open Vendor Portal →</a></p>` : ''}
               </div>
             `,
           });

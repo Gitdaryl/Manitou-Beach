@@ -138,7 +138,7 @@ export default async function handler(req, res) {
       const baseUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
       const resend = new Resend(process.env.RESEND_API_KEY);
       resend.emails.send({
-        from: 'Manitou Beach <events@yetigroove.com>',
+        from: 'Manitou Beach <events@manitoubeachmichigan.com>',
         to: emailClean,
         subject: `You're in, ${firstName} — your free Manitou Beach listing is waiting`,
         html: `

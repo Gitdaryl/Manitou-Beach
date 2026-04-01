@@ -45,7 +45,7 @@ export default async function handler(req, res) {
     const resolvedOrgName = orgName || page.properties['Name']?.title?.[0]?.plain_text || 'the organisation';
 
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-    const siteUrl = process.env.SITE_URL || 'https://manitoubeach.yetigroove.com';
+    const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
     const returnTo = returnPath || '/';
     const sponsorId = generateSponsorId();
 

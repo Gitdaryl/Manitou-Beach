@@ -253,7 +253,7 @@ async function sendOrganizerWelcomeEmail({ eventName, email, editToken, organize
   const firstName = (organizerName || '').split(' ')[0] || 'Hey';
 
   await resend.emails.send({
-    from: 'Manitou Beach Events <tickets@yetigroove.com>',
+    from: 'Manitou Beach Events <tickets@manitoubeachmichigan.com>',
     to: email,
     subject: `${eventName} is live on the community calendar!`,
     html: `

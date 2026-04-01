@@ -267,7 +267,7 @@ export default async function handler(req, res) {
 }
 
 async function notifyAdmin({ eventName, email, eventType, organizerName, modFlags = [], held = false }) {
-  const adminEmail = process.env.ADMIN_EMAIL || 'daryl@yetigroove.com';
+  const adminEmail = process.env.ADMIN_EMAIL || 'daryl@manitoubeachmichigan.com';
   const darylPhone = process.env.DARYL_PHONE;
   const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
 
@@ -307,7 +307,7 @@ async function notifyAdmin({ eventName, email, eventType, organizerName, modFlag
       : '';
 
     resend.emails.send({
-      from: 'Manitou Beach <tickets@yetigroove.com>',
+      from: 'Manitou Beach <tickets@manitoubeachmichigan.com>',
       to: adminEmail,
       subject: held ? `🚩 Event held for review: ${eventName}` : `New event published: ${eventName}`,
       html: `
@@ -339,7 +339,7 @@ async function sendOrganizerWelcomeEmail({ eventName, email, editUrl, siteUrl, o
   const firstName = (organizerName || '').split(' ')[0] || 'Hey';
 
   await resend.emails.send({
-    from: 'Manitou Beach Events <tickets@yetigroove.com>',
+    from: 'Manitou Beach Events <tickets@manitoubeachmichigan.com>',
     to: email,
     subject: `${eventName} is live on the community calendar!`,
     html: `

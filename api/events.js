@@ -112,14 +112,14 @@ export default async function handler(req, res) {
       }
       // Send confirmation email (best-effort — never block the response)
       if (email && process.env.RESEND_API_KEY) {
-        const siteUrl = process.env.SITE_URL || 'https://manitoubeach.yetigroove.com';
+        const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
         const editLink = `${siteUrl}/events/edit?token=${editToken}`;
         const dateDisplay = date ? new Date(date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) : '';
         const timeDisplay = [time, timeEnd].filter(Boolean).join(' – ');
         try {
           const resend = new Resend(process.env.RESEND_API_KEY);
           await resend.emails.send({
-            from: 'Manitou Beach <events@yetigroove.com>',
+            from: 'Manitou Beach <events@manitoubeachmichigan.com>',
             to: email,
             subject: `"${name}" is live on Manitou Beach!`,
             html: `

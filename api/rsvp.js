@@ -97,7 +97,7 @@ export default async function handler(req, res) {
     // Confirmation to attendee
     try {
       await resend.emails.send({
-        from: 'Manitou Beach <events@yetigroove.com>',
+        from: 'Manitou Beach <events@manitoubeachmichigan.com>',
         to: email,
         subject: `You're registered for "${eventName}"`,
         html: `
@@ -115,7 +115,7 @@ export default async function handler(req, res) {
               We'll send you a reminder the day before. See you there!
             </p>
             <p style="margin-top:24px;color:#8C806E;font-size:12px;">
-              <a href="${process.env.SITE_URL || 'https://manitoubeach.yetigroove.com'}/events" style="color:#5B7D8E;">Browse more events →</a>
+              <a href="${process.env.SITE_URL || 'https://manitoubeachmichigan.com'}/events" style="color:#5B7D8E;">Browse more events →</a>
             </p>
           </div>
         `,
@@ -128,7 +128,7 @@ export default async function handler(req, res) {
     if (organizerEmail) {
       try {
         await resend.emails.send({
-          from: 'Manitou Beach <events@yetigroove.com>',
+          from: 'Manitou Beach <events@manitoubeachmichigan.com>',
           to: organizerEmail,
           subject: `New RSVP for "${eventName}"`,
           html: `

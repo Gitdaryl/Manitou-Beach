@@ -81,7 +81,7 @@ export default async function handler(req, res) {
     const resend = new Resend(process.env.RESEND_API_KEY);
     await resend.emails.send({
       from: 'Manitou Beach <hello@manitou-beach.com>',
-      to: process.env.ADMIN_EMAIL || 'daryl@yetigroove.com',
+      to: process.env.ADMIN_EMAIL || 'daryl@manitoubeachmichigan.com',
       subject: `⚠️ Local Guide category sync — ${lines.length} item${lines.length !== 1 ? 's' : ''} need attention`,
       html: `
         <div style="font-family:sans-serif;max-width:540px;line-height:1.6">

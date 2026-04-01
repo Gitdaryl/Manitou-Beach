@@ -37,7 +37,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true, reserved: true });
     } catch (err) {
       console.error('wine-partner-signup reserve error:', err.message);
-      return res.status(500).json({ error: 'Could not save reservation. Please email admin@yetigroove.com.' });
+      return res.status(500).json({ error: 'Could not save reservation. Please email hello@manitoubeachmichigan.com.' });
     }
   }
 
@@ -69,7 +69,7 @@ export default async function handler(req, res) {
   }
 
   if (!process.env.STRIPE_SECRET_KEY) {
-    return res.status(500).json({ error: 'Payment system not configured. Please email admin@yetigroove.com.' });
+    return res.status(500).json({ error: 'Payment system not configured. Please email hello@manitoubeachmichigan.com.' });
   }
 
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -106,6 +106,6 @@ export default async function handler(req, res) {
     return res.status(200).json({ url: session.url });
   } catch (err) {
     console.error('wine-partner-signup Stripe error:', err.message);
-    return res.status(500).json({ error: 'Something went wrong. Please try again or email admin@yetigroove.com.' });
+    return res.status(500).json({ error: 'Something went wrong. Please try again or email hello@manitoubeachmichigan.com.' });
   }
 }

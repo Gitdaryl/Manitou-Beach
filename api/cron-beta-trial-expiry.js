@@ -65,7 +65,7 @@ export default async function handler(req, res) {
         try {
           const resend = new Resend(process.env.RESEND_API_KEY);
           await resend.emails.send({
-            from: 'Manitou Beach <events@yetigroove.com>',
+            from: 'Manitou Beach <events@manitoubeachmichigan.com>',
             to: email,
             subject: `Your free beta listing ends May 10 — ${name}`,
             html: `

@@ -146,8 +146,8 @@ export default async function handler(req, res) {
       if (!category || category === 'Other') {
         tasks.push(
           resend.emails.send({
-            from: 'Manitou Beach <hello@yetigroove.com>',
-            to: process.env.ADMIN_EMAIL || 'daryl@yetigroove.com',
+            from: 'Manitou Beach <hello@manitoubeachmichigan.com>',
+            to: process.env.ADMIN_EMAIL || 'daryl@manitoubeachmichigan.com',
             subject: `⚠️ Uncategorized business listing — "${name}"`,
             html: `
               <div style="font-family:sans-serif;max-width:480px">
@@ -166,8 +166,8 @@ export default async function handler(req, res) {
       if (email) {
         tasks.push(
           resend.emails.send({
-            from: 'Manitou Beach <hello@yetigroove.com>',
-            reply_to: 'hello@yetigroove.com',
+            from: 'Manitou Beach <hello@manitoubeachmichigan.com>',
+            reply_to: 'hello@manitoubeachmichigan.com',
             to: email,
             subject: `Confirm your listing — ${name}`,
             html: `

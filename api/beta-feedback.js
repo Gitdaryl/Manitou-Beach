@@ -54,9 +54,9 @@ export default async function handler(req, res) {
     // ── Email Daryl (fire-and-forget) ──────────────────────────────────────
     if (process.env.RESEND_API_KEY) {
       const resend = new Resend(process.env.RESEND_API_KEY);
-      const adminEmail = process.env.ADMIN_EMAIL || 'daryl@yetigroove.com';
+      const adminEmail = process.env.ADMIN_EMAIL || 'daryl@manitoubeachmichigan.com';
       resend.emails.send({
-        from: 'Manitou Beach Beta <events@yetigroove.com>',
+        from: 'Manitou Beach Beta <events@manitoubeachmichigan.com>',
         to: adminEmail,
         subject: `[Beta ${typeClean}] ${pageClean}`,
         html: `

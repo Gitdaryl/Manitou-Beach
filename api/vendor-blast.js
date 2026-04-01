@@ -104,7 +104,7 @@ export default async function handler(req, res) {
     for (const emailAddr of recipients) {
       try {
         await resend.emails.send({
-          from: `${organizerName} <tickets@yetigroove.com>`,
+          from: `${organizerName} <tickets@manitoubeachmichigan.com>`,
           to: emailAddr,
           subject,
           html: `

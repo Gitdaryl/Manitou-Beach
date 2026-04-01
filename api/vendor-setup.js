@@ -26,7 +26,7 @@ export default async function handler(req, res) {
     // Generate portal token
     const portalToken = generatePortalToken();
 
-    const siteUrl = process.env.SITE_URL || 'https://manitoubeach.yetigroove.com';
+    const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
     const registrationUrl = `${siteUrl}/vendor-register?event=${eventId}`;
     const portalUrl = `${siteUrl}/vendor-portal?token=${portalToken}&event=${eventId}`;
 
@@ -64,7 +64,7 @@ export default async function handler(req, res) {
     if (process.env.RESEND_API_KEY) {
       const resend = new Resend(process.env.RESEND_API_KEY);
       await resend.emails.send({
-        from: 'Yetickets <tickets@yetigroove.com>',
+        from: 'Yetickets <tickets@manitoubeachmichigan.com>',
         to: organizerEmail,
         subject: `Vendor registration is live — ${eventName}`,
         html: `
