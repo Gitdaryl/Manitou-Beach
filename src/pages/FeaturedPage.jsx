@@ -442,9 +442,7 @@ export default function FeaturedPage() {
                     <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 36, color: C.cream, fontWeight: 700 }}>${tier.price}</span>
                     <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 14, fontFamily: "'Libre Franklin', sans-serif" }}>/mo</span>
                   </div>
-                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.sunsetLight, marginBottom: 16, letterSpacing: 0.3 }}>
-                    Limited spots per category
-                  </div>
+
                   <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px 0", flexGrow: 1, display: "flex", flexDirection: "column", gap: 9 }}>
                     {tier.features.map(f => (
                       <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 9 }}>
