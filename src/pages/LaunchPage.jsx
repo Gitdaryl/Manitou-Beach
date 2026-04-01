@@ -764,31 +764,26 @@ export default function LaunchPage() {
   }, []);
 
   return (
-    <div style={{
-      position: 'fixed', inset: 0, height: '100vh',
-      overflow: 'hidden', background: C.night,
-      display: 'flex', flexDirection: 'column',
-      alignItems: 'center', justifyContent: 'safe center',
-    }}>
+    <div style={{ minHeight: '100vh', background: C.night }}>
       <GlobalStyles />
 
-      {/* Video background */}
+      {/* Video background — fixed so it stays put while content scrolls */}
       <video ref={videoRef} autoPlay loop muted playsInline style={{
-        position: 'absolute', inset: 0, width: '100%', height: '100%',
+        position: 'fixed', inset: 0, width: '100%', height: '100%',
         objectFit: 'cover', zIndex: 0, opacity: 0.6,
       }}>
         <source src="/videos/hero-default.mp4" type="video/mp4" />
       </video>
 
-      {/* Dark overlay */}
+      {/* Dark overlay — fixed */}
       <div style={{
-        position: 'absolute', inset: 0,
+        position: 'fixed', inset: 0,
         background: 'linear-gradient(170deg, rgba(26,40,48,0.88) 0%, rgba(26,40,48,0.65) 50%, rgba(26,40,48,0.92) 100%)',
         zIndex: 1,
       }} />
 
       {/* Wordmark */}
-      <div style={{ position: 'absolute', top: 28, left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 2 }}>
+      <div style={{ position: 'fixed', top: 28, left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 3 }}>
         <span style={{
           fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700,
           letterSpacing: 4, textTransform: 'uppercase', color: 'rgba(255,255,255,0.45)',
@@ -797,20 +792,18 @@ export default function LaunchPage() {
         </span>
       </div>
 
-      {/* Scrollable main content — needed after success state gets tall */}
+      {/* Main content — scrolls naturally with the page */}
       <div style={{
         position: 'relative', zIndex: 2,
         width: '100%', maxWidth: 640,
-        maxHeight: '100dvh', overflowY: 'auto',
+        margin: '0 auto',
         display: 'flex', flexDirection: 'column',
         alignItems: 'center',
         padding: '80px 24px 60px',
         gap: 'clamp(16px, 2.5vh, 28px)',
         textAlign: 'center',
         animation: 'slideUp 0.8s ease both',
-        scrollbarWidth: 'none',
       }}>
-        <style>{`div::-webkit-scrollbar { display: none; }`}</style>
 
         {/* Label */}
         <p style={{
@@ -863,7 +856,7 @@ export default function LaunchPage() {
       </div>
 
       {/* Privacy */}
-      <div style={{ position: 'absolute', bottom: 20, left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 2 }}>
+      <div style={{ display: 'flex', justifyContent: 'center', zIndex: 2, paddingBottom: 20 }}>
         <a href="/privacy" style={{
           fontFamily: "'Libre Franklin', sans-serif", fontSize: 10,
           letterSpacing: 1.5, textTransform: 'uppercase',
