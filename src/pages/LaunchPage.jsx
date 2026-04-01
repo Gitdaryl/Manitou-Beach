@@ -39,15 +39,14 @@ function CountdownStrip({ parts }) {
   return (
     <div style={{ display: 'flex', gap: 'clamp(6px, 2.5vw, 32px)', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
       {units.map(({ value, label }, i) => (
-        <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 'clamp(6px, 2.5vw, 32px)' }}>
-          <div style={{ textAlign: 'center' }}>
+        <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 'clamp(6px, 2.5vw, 32px)', minWidth: 0 }}>
+          <div style={{ textAlign: 'center', minWidth: 0 }}>
             <div style={{
               fontFamily: "'Libre Baskerville', serif",
               fontSize: 'clamp(32px, 9vw, 84px)',
               fontWeight: 400,
               color: C.cream,
               lineHeight: 1,
-              minWidth: '2ch',
               letterSpacing: '-0.02em',
             }}>
               {String(value).padStart(2, '0')}
