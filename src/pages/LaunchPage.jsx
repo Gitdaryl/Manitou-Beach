@@ -37,13 +37,13 @@ function CountdownStrip({ parts }) {
     { value: parts.seconds, label: 'Secs' },
   ];
   return (
-    <div style={{ display: 'flex', gap: 'clamp(12px, 3vw, 32px)', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ display: 'flex', gap: 'clamp(6px, 2.5vw, 32px)', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
       {units.map(({ value, label }, i) => (
-        <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 'clamp(12px, 3vw, 32px)' }}>
+        <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 'clamp(6px, 2.5vw, 32px)' }}>
           <div style={{ textAlign: 'center' }}>
             <div style={{
               fontFamily: "'Libre Baskerville', serif",
-              fontSize: 'clamp(44px, 8vw, 84px)',
+              fontSize: 'clamp(32px, 9vw, 84px)',
               fontWeight: 400,
               color: C.cream,
               lineHeight: 1,
@@ -54,7 +54,7 @@ function CountdownStrip({ parts }) {
             </div>
             <div style={{
               fontFamily: "'Libre Franklin', sans-serif",
-              fontSize: 10,
+              fontSize: 'clamp(8px, 2vw, 10px)',
               letterSpacing: 3,
               textTransform: 'uppercase',
               color: 'rgba(255,255,255,0.35)',
@@ -66,7 +66,7 @@ function CountdownStrip({ parts }) {
           {i < 3 && (
             <div style={{
               fontFamily: "'Libre Baskerville', serif",
-              fontSize: 'clamp(28px, 5vw, 52px)',
+              fontSize: 'clamp(20px, 4vw, 52px)',
               color: 'rgba(255,255,255,0.2)',
               lineHeight: 1,
               marginBottom: 16,
