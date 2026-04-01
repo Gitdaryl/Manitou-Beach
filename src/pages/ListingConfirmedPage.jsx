@@ -61,6 +61,16 @@ export default function ListingConfirmedPage() {
             ))}
           </div>
 
+          {/* Email notice */}
+          <div style={{ marginBottom: 24 }}>
+            <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.45)', margin: '0 0 6px', lineHeight: 1.6 }}>
+              We sent a confirmation to your email from <strong style={{ color: 'rgba(255,255,255,0.6)' }}>events@manitoubeachmichigan.com</strong>.
+            </p>
+            <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.35)', margin: 0, lineHeight: 1.6 }}>
+              Don't see it? Check your spam or junk folder. Adding us to your contacts keeps future emails out of there.
+            </p>
+          </div>
+
           {/* Accuracy prompt */}
           <div style={{ marginBottom: 20 }}>
             <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: 'rgba(255,255,255,0.5)', margin: '0 0 16px' }}>
