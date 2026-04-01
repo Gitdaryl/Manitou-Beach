@@ -441,9 +441,26 @@ function SignupForm({ remaining, onSpotsUpdate }) {
             fontSize: 11, color: 'rgba(255,255,255,0.35)',
             margin: '12px 0 0', letterSpacing: 0.5,
           }}>
-            Screenshot this — you'll enter it on April 10
+            Save this — enter it on this page anytime to access the site
           </p>
         </div>
+
+        {/* Enter the site now CTA */}
+        <button
+          onClick={() => window.location.replace('/')}
+          className="btn-animated"
+          style={{
+            width: '100%', padding: '15px 24px',
+            background: C.sunset, color: C.cream,
+            border: 'none', borderRadius: 4,
+            fontFamily: "'Libre Franklin', sans-serif",
+            fontWeight: 700, fontSize: 14,
+            letterSpacing: 2, textTransform: 'uppercase',
+            cursor: 'pointer',
+          }}
+        >
+          Enter the Site Now →
+        </button>
 
         {/* Business-specific OR community messaging */}
         {result.is_business ? (
@@ -662,14 +679,16 @@ function CodeEntryForm() {
         <button
           onClick={() => setOpen(true)}
           style={{
-            background: 'none', border: 'none', cursor: 'pointer', padding: '8px 0',
+            background: 'rgba(255,255,255,0.07)',
+            border: '1px solid rgba(255,255,255,0.18)',
+            borderRadius: 24, cursor: 'pointer',
+            padding: '10px 22px',
             fontFamily: "'Libre Franklin', sans-serif",
-            fontSize: 11, fontWeight: 700, letterSpacing: 2,
-            textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)',
-            textDecoration: 'underline',
+            fontSize: 12, fontWeight: 700, letterSpacing: 1.5,
+            textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)',
           }}
         >
-          Already have a code?
+          Already have a code? Enter here →
         </button>
       ) : (
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
