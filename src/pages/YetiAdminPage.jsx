@@ -14,6 +14,14 @@ export default function YetiAdminPage() {
   // ── Tabs ──────────────────────────────────────────────────────
   const [activeTab, setActiveTab] = useState('write'); // write | review | dashboard
 
+  // ── Social tab ────────────────────────────────────────────────
+  const [socialMessage, setSocialMessage] = useState('');
+  const [socialImageUrl, setSocialImageUrl] = useState('');
+  const [socialPlatforms, setSocialPlatforms] = useState(['facebook', 'instagram']);
+  const [socialStatus, setSocialStatus] = useState('idle'); // idle | posting | success | error
+  const [socialResult, setSocialResult] = useState(null);
+  const [socialError, setSocialError] = useState('');
+
   // ── Write tab ─────────────────────────────────────────────────
   const [topic, setTopic] = useState('');
   const [category, setCategory] = useState('Lake Life');
@@ -1096,7 +1104,7 @@ export default function YetiAdminPage() {
 
         {/* Tabs */}
         <div style={{ display: 'flex', gap: 8, marginBottom: 32, flexWrap: 'wrap' }}>
-          {[{ id: 'write', label: '✍️  Write' }, { id: 'newsletter', label: '📰  Newsletter' }, { id: 'review', label: '📋  Review Queue' }, { id: 'dashboard', label: '📊  Dashboard' }, { id: 'advertisers', label: '🤝  Advertisers' }, { id: 'promos', label: '🎟️  Promos' }, { id: 'pois', label: '📍  Community POIs' }, { id: 'ratings', label: '🍷  Winery Ratings' }, { id: 'wines', label: '🍾  Wines Registry' }, { id: 'vendors', label: '🏪  Vendors' }, { id: 'orgs', label: '🏛️  Orgs' }, { id: 'incentives', label: '🎁  Incentives' }, { id: 'categories', label: '🗂️  Categories' }, { id: 'quickevents', label: '📸  Quick Events' }].map(tab => (
+          {[{ id: 'write', label: '✍️  Write' }, { id: 'newsletter', label: '📰  Newsletter' }, { id: 'review', label: '📋  Review Queue' }, { id: 'dashboard', label: '📊  Dashboard' }, { id: 'advertisers', label: '🤝  Advertisers' }, { id: 'promos', label: '🎟️  Promos' }, { id: 'pois', label: '📍  Community POIs' }, { id: 'ratings', label: '🍷  Winery Ratings' }, { id: 'wines', label: '🍾  Wines Registry' }, { id: 'vendors', label: '🏪  Vendors' }, { id: 'orgs', label: '🏛️  Orgs' }, { id: 'incentives', label: '🎁  Incentives' }, { id: 'categories', label: '🗂️  Categories' }, { id: 'quickevents', label: '📸  Quick Events' }, { id: 'social', label: '📣  Social' }].map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
@@ -3235,6 +3243,103 @@ export default function YetiAdminPage() {
             )}
 
             {qeResult?.count > 0 && <div style={{ textAlign: 'center', marginTop: 20, fontSize: 13, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>Got another one? Drop the next photo or paste above.</div>}
+          </div>
+        )}
+
+        {activeTab === 'social' && (
+          <div style={{ maxWidth: 560 }}>
+            <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: C.textMuted, marginBottom: 8 }}>Post to Social Media</div>
+            <p style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: '0 0 28px' }}>
+              Post directly to the Manitou Beach Michigan Facebook Page and Instagram. Image URL required for Instagram.
+            </p>
+
+            {/* Platforms */}
+            <div style={{ marginBottom: 20 }}>
+              <label style={{ display: 'block', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 10, fontFamily: 'Libre Franklin, sans-serif' }}>Platforms</label>
+              <div style={{ display: 'flex', gap: 12 }}>
+                {['facebook', 'instagram'].map(p => (
+                  <label key={p} style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif', fontSize: 14, color: C.dusk }}>
+                    <input
+                      type="checkbox"
+                      checked={socialPlatforms.includes(p)}
+                      onChange={e => setSocialPlatforms(prev => e.target.checked ? [...prev, p] : prev.filter(x => x !== p))}
+                      style={{ width: 16, height: 16, accentColor: C.sage }}
+                    />
+                    {p === 'facebook' ? '📘 Facebook' : '📸 Instagram'}
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Message */}
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ display: 'block', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6, fontFamily: 'Libre Franklin, sans-serif' }}>Message *</label>
+              <textarea
+                value={socialMessage}
+                onChange={e => setSocialMessage(e.target.value)}
+                placeholder="What's happening at Manitou Beach?"
+                rows={5}
+                style={{ width: '100%', boxSizing: 'border-box', padding: '11px 14px', border: `1px solid ${C.sand}`, borderRadius: 8, fontFamily: 'Libre Franklin, sans-serif', fontSize: 14, outline: 'none', resize: 'vertical', lineHeight: 1.6 }}
+              />
+              <div style={{ textAlign: 'right', fontSize: 11, color: socialMessage.length > 2200 ? '#dc2626' : C.textMuted, fontFamily: 'Libre Franklin, sans-serif', marginTop: 4 }}>{socialMessage.length} chars</div>
+            </div>
+
+            {/* Image URL */}
+            <div style={{ marginBottom: 24 }}>
+              <label style={{ display: 'block', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6, fontFamily: 'Libre Franklin, sans-serif' }}>Image URL <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(required for Instagram)</span></label>
+              <input
+                type="url"
+                value={socialImageUrl}
+                onChange={e => setSocialImageUrl(e.target.value)}
+                placeholder="https://..."
+                style={{ width: '100%', boxSizing: 'border-box', padding: '11px 14px', border: `1px solid ${C.sand}`, borderRadius: 8, fontFamily: 'Libre Franklin, sans-serif', fontSize: 14, outline: 'none' }}
+              />
+            </div>
+
+            {/* Error */}
+            {socialError && (
+              <div style={{ marginBottom: 16, padding: '12px 16px', borderRadius: 8, background: '#fef2f2', border: '1px solid #fca5a5', color: '#dc2626', fontSize: 13, fontFamily: 'Libre Franklin, sans-serif', lineHeight: 1.5 }}>{socialError}</div>
+            )}
+
+            {/* Submit */}
+            <button
+              disabled={socialStatus === 'posting' || !socialMessage.trim() || socialPlatforms.length === 0}
+              onClick={async () => {
+                setSocialStatus('posting');
+                setSocialError('');
+                setSocialResult(null);
+                try {
+                  const res = await fetch('/api/social-post', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: authToken, message: socialMessage, imageUrl: socialImageUrl || undefined, platforms: socialPlatforms }),
+                  });
+                  const data = await res.json();
+                  if (!data.success && !data.results) throw new Error(JSON.stringify(data.errors || data.error));
+                  setSocialResult(data);
+                  setSocialStatus('success');
+                  if (data.igAccountId) setSocialError(`Save this IG Account ID to Vercel: ${data.igAccountId}`);
+                } catch (err) {
+                  setSocialError(err.message);
+                  setSocialStatus('error');
+                }
+              }}
+              style={{ width: '100%', padding: '14px 24px', borderRadius: 10, border: 'none', cursor: socialStatus === 'posting' ? 'wait' : 'pointer', background: socialStatus === 'posting' ? C.textMuted : C.dusk, color: '#fff', fontFamily: 'Libre Franklin, sans-serif', fontSize: 15, fontWeight: 700, letterSpacing: 0.5, transition: 'all 0.3s' }}
+            >
+              {socialStatus === 'posting' ? 'Posting...' : '📣 Post Now'}
+            </button>
+
+            {/* Result */}
+            {socialResult && (
+              <div style={{ marginTop: 20, padding: 20, borderRadius: 12, background: '#f0fdf4', border: '1px solid #bbf7d0' }}>
+                <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.sage, marginBottom: 10, fontFamily: 'Libre Franklin, sans-serif' }}>Posted successfully</div>
+                {socialResult.results?.facebook && <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, color: C.dusk, marginBottom: 4 }}>📘 Facebook — ID: {socialResult.results.facebook.id}</div>}
+                {socialResult.results?.instagram && <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, color: C.dusk }}>📸 Instagram — ID: {socialResult.results.instagram.id}</div>}
+                {socialResult.errors && Object.entries(socialResult.errors).map(([platform, err]) => (
+                  <div key={platform} style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, color: '#dc2626', marginTop: 6 }}>⚠️ {platform}: {err}</div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
