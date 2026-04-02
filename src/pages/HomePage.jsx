@@ -1111,14 +1111,19 @@ function BusinessDirectory() {
 
 // Featured business — compact dark card, designed for 3-per-row grid layout
 function FeaturedBusinessCard({ business }) {
+  const [expanded, setExpanded] = useState(false);
   const color = CAT_COLORS[business.category] || C.sage;
   const tilt = useCardTilt(3);
+  const descIsLong = (business.description || '').length > 120;
+  const hasExtra = business.email || business.address;
+  const expandable = descIsLong || hasExtra;
   return (
     <div
       ref={tilt.ref}
       onMouseEnter={tilt.onMouseEnter}
       onMouseMove={tilt.onMouseMove}
       onMouseLeave={tilt.onMouseLeave}
+      onClick={() => expandable && setExpanded(e => !e)}
       className="card-tilt featured-card-glow featured-card-pulse"
       style={{
         background: `linear-gradient(145deg, ${C.dusk} 0%, ${C.night} 100%)`,
@@ -1126,6 +1131,7 @@ function FeaturedBusinessCard({ business }) {
         border: "1px solid rgba(255,255,255,0.07)",
         position: "relative", overflow: "hidden",
         display: "flex", flexDirection: "column", gap: 10,
+        cursor: expandable ? "pointer" : "default",
       }}
     >
       {/* Shimmer overlay */}
@@ -1134,7 +1140,7 @@ function FeaturedBusinessCard({ business }) {
         background: `linear-gradient(110deg, transparent 30%, ${C.sunset}08 50%, transparent 70%)`,
         backgroundSize: "200% 100%", animation: "shimmer 4s ease-in-out infinite",
       }} />
-      {/* Header: logo + name + badge */}
+      {/* Header: logo + name */}
       <div style={{ display: "flex", gap: 12, alignItems: "center", position: "relative", zIndex: 1 }}>
         <div style={{
           width: 44, height: 44, borderRadius: 8, flexShrink: 0, overflow: "hidden",
@@ -1155,17 +1161,43 @@ function FeaturedBusinessCard({ business }) {
       </div>
       {/* Description */}
       {business.description && (
-        <p style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", lineHeight: 1.6, margin: 0, flex: 1, position: "relative", zIndex: 1, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+        <p style={{
+          fontSize: 12, color: "rgba(255,255,255,0.5)", lineHeight: 1.6, margin: 0, flex: 1,
+          position: "relative", zIndex: 1,
+          ...(expanded ? {} : { display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }),
+        }}>
           {business.description}
         </p>
       )}
-      {/* Footer: phone + visit */}
+      {/* Expanded extras: address + email */}
+      <div style={{ maxHeight: expanded ? 120 : 0, overflow: "hidden", transition: "max-height 0.35s ease-out", position: "relative", zIndex: 1 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 6, paddingTop: 2 }}>
+          {business.address && (
+            <div style={{ fontSize: 11, color: "rgba(255,255,255,0.28)", fontFamily: "'Libre Franklin', sans-serif", fontStyle: "italic" }}>
+              {business.address}
+            </div>
+          )}
+          {business.email && (
+            <a href={`mailto:${business.email}`} onClick={e => e.stopPropagation()} style={{ fontSize: 12, color, textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif" }}>
+              {business.email}
+            </a>
+          )}
+        </div>
+      </div>
+      {/* Footer: phone + visit + toggle */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 6, position: "relative", zIndex: 1 }}>
-        {business.phone && (
-          <a href={`tel:${business.phone}`} style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif" }}>{formatPhone(business.phone)}</a>
-        )}
-        {business.website && (
-          <a href={business.website} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color, textDecoration: "none" }}>Visit →</a>
+        <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
+          {business.phone && (
+            <a href={`tel:${business.phone}`} onClick={e => e.stopPropagation()} style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif" }}>{formatPhone(business.phone)}</a>
+          )}
+          {business.website && (
+            <a href={business.website} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color, textDecoration: "none" }}>Visit →</a>
+          )}
+        </div>
+        {expandable && (
+          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.3)", whiteSpace: "nowrap" }}>
+            {expanded ? "Less ↑" : "More ↓"}
+          </span>
         )}
       </div>
     </div>
