@@ -18,7 +18,7 @@ export default function DiscoverPage() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [businesses, setBusinesses] = useState([]);
   const [dynamicCats, setDynamicCats] = useState([]); // categories from Notion not in DISCOVER_CATS
-  const [communityPois, setCommunityPois] = useState(null); // null = loading, [] = loaded (empty or not)
+  const [communityPois, setCommunityPois] = useState(null); // null = loading, {pois,suppressed} = loaded
   const [mapReady, setMapReady] = useState(false);
   const [mapError, setMapError] = useState(null);
   const mapDivRef = useRef(null);
@@ -35,8 +35,8 @@ export default function DiscoverPage() {
     // Community POIs from Notion — merged with hardcoded fallbacks
     fetch('/api/community-pois')
       .then(r => r.json())
-      .then(d => setCommunityPois(d.pois || []))
-      .catch(() => setCommunityPois([])); // fall back to hardcoded on error
+      .then(d => setCommunityPois({ pois: d.pois || [], suppressed: d.suppressed || [] }))
+      .catch(() => setCommunityPois({ pois: [], suppressed: [] })); // fall back to hardcoded on error
     // Dynamic categories — Notion categories not yet in DISCOVER_CATS get auto-pills
     fetch('/api/categories')
       .then(r => r.json())
@@ -94,13 +94,16 @@ export default function DiscoverPage() {
   // communityPois === null means still loading — show hardcoded pins immediately
   const mergedPois = communityPois === null
     ? DISCOVER_POIS
-    : communityPois.length > 0
-      ? (() => {
-          const notionNames = new Set(communityPois.map(p => p.name.toLowerCase()));
-          const extras = DISCOVER_POIS.filter(p => !notionNames.has(p.name.toLowerCase()));
-          return [...communityPois, ...extras];
-        })()
-      : DISCOVER_POIS; // API returned nothing — full hardcoded fallback
+    : (() => {
+        const { pois: notionPois, suppressed } = communityPois;
+        const suppressedSet = new Set(suppressed); // Hidden in Notion — never show from hardcoded
+        const notionNames = new Set(notionPois.map(p => p.name.toLowerCase()));
+        const extras = DISCOVER_POIS.filter(p => {
+          const lower = p.name.toLowerCase();
+          return !notionNames.has(lower) && !suppressedSet.has(lower);
+        });
+        return notionPois.length > 0 ? [...notionPois, ...extras] : extras;
+      })();
 
   // Update markers when category, map readiness, or POI data changes
   useEffect(() => {

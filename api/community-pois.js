@@ -13,6 +13,28 @@ export default async function handler(req, res) {
     let allResults = [];
     let cursor = undefined;
 
+    // Also fetch Hidden POI names so the frontend can suppress hardcoded fallbacks
+    const hiddenRes = await fetch(
+      `https://api.notion.com/v1/databases/${process.env.NOTION_DB_POIS}/query`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.NOTION_TOKEN_POIS}`,
+          'Content-Type': 'application/json',
+          'Notion-Version': '2022-06-28',
+        },
+        body: JSON.stringify({
+          filter: { property: 'Status', select: { equals: 'Hidden' } },
+          page_size: 100,
+        }),
+      }
+    );
+    const hiddenData = hiddenRes.ok ? await hiddenRes.json() : { results: [] };
+    const suppressed = (hiddenData.results || [])
+      .map(p => p.properties?.['Name']?.title?.[0]?.text?.content || '')
+      .filter(Boolean)
+      .map(n => n.toLowerCase());
+
     // Paginate through all Active POIs
     do {
       const body = {
@@ -69,7 +91,7 @@ export default async function handler(req, res) {
       })
       .filter(Boolean);
 
-    return res.status(200).json({ pois });
+    return res.status(200).json({ pois, suppressed });
   } catch (err) {
     console.error('Community POIs API error:', err.message);
     return res.status(200).json({ pois: [] });
