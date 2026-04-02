@@ -548,7 +548,7 @@ export default async function handler(req, res) {
                   </p>
                   <p style="font-size: 13px; color: #8A7E6E; margin: 0 0 6px; line-height: 1.7;">
                     Need to update your info, add a logo, or change your tagline? <a href="${siteUrl}/update-listing" style="color: #4A7A5A;">Edit your listing anytime →</a><br>
-                    Want to upgrade, downgrade, or cancel? Just reply to this email and we'll handle it right away.
+                    Want to upgrade, downgrade, or cancel? <a href="${siteUrl}/manage-billing" style="color: #4A7A5A;">Manage your billing anytime →</a>
                   </p>
                   <hr style="border: none; border-top: 1px solid #E8DFD0; margin: 28px 0 16px;">
                   <p style="font-size: 11px; color: #9A8E7E; margin: 0;">Manitou Beach · Devils Lake, Michigan · manitoubeachmichigan.com</p>
@@ -626,7 +626,7 @@ export default async function handler(req, res) {
                   </p>
                   <p style="font-size: 13px; color: #8A7E6E; margin: 0 0 6px; line-height: 1.7;">
                     Need to update your info or add a logo? <a href="${siteUrl}/update-listing" style="color: #4A7A5A;">Edit your listing anytime →</a><br>
-                    Want to upgrade, downgrade, or cancel? Just reply to this email and we'll take care of it.
+                    Want to upgrade, downgrade, or cancel? <a href="${siteUrl}/manage-billing" style="color: #4A7A5A;">Manage your billing anytime →</a>
                   </p>
                   <hr style="border: none; border-top: 1px solid #E8DFD0; margin: 28px 0 16px;">
                   <p style="font-size: 11px; color: #9A8E7E; margin: 0;">Manitou Beach · Devils Lake, Michigan · manitoubeachmichigan.com</p>
@@ -653,7 +653,7 @@ export default async function handler(req, res) {
                   </p>
                   <p style="font-size: 13px; color: #8A7E6E; margin: 0 0 6px; line-height: 1.7;">
                     Need to update your info or add a logo? <a href="${siteUrl}/update-listing" style="color: #4A7A5A;">Edit your listing anytime →</a><br>
-                    Want to upgrade, downgrade, or cancel? <a href="${siteUrl}/upgrade-listing" style="color: #4A7A5A;">Change your plan anytime →</a> or just reply to this email.
+                    Want to upgrade, downgrade, or cancel? <a href="${siteUrl}/manage-billing" style="color: #4A7A5A;">Manage your billing anytime →</a>
                   </p>
                   <hr style="border: none; border-top: 1px solid #E8DFD0; margin: 28px 0 16px;">
                   <p style="font-size: 11px; color: #9A8E7E; margin: 0;">Manitou Beach · Devils Lake, Michigan · manitoubeachmichigan.com</p>
