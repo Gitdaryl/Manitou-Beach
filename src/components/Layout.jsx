@@ -60,6 +60,13 @@ export function GlobalStyles() {
         0% { background-position: -200% center; }
         100% { background-position: 200% center; }
       }
+      @keyframes seasonFade {
+        0% { opacity: 0; transform: translateY(10px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+      .season-card-fade {
+        animation: seasonFade 0.4s ease forwards;
+      }
       @keyframes kenBurnsBg {
         0%   { transform: scale(1)    translate(0, 0); }
         100% { transform: scale(1.18) translate(-1.5%, -0.8%); }

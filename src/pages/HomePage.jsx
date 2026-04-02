@@ -65,6 +65,68 @@ function EventTicker() {
 }
 
 // ============================================================
+// 🌤️  WEATHER WIDGET — live Devils Lake conditions
+// Uses Open-Meteo (free, no API key, CORS-friendly)
+// ============================================================
+function WeatherWidget() {
+  const [weather, setWeather] = useState(null);
+  useEffect(() => {
+    fetch("https://api.open-meteo.com/v1/forecast?latitude=41.97&longitude=-84.00&current=temperature_2m,weather_code&temperature_unit=fahrenheit")
+      .then(r => r.json())
+      .then(d => {
+        const code = d.current?.weather_code ?? 0;
+        const temp = Math.round(d.current?.temperature_2m ?? 0);
+        setWeather({ temp, code });
+      })
+      .catch(() => {});
+  }, []);
+
+  if (!weather) return null;
+
+  const icon = (() => {
+    const c = weather.code;
+    if (c === 0) return "☀️";
+    if (c <= 2) return "⛅";
+    if (c === 3) return "☁️";
+    if (c <= 48) return "🌫️";
+    if (c <= 57) return "🌦️";
+    if (c <= 67) return "🌧️";
+    if (c <= 77) return "❄️";
+    if (c <= 82) return "🌦️";
+    return "⛈️";
+  })();
+
+  const label = (() => {
+    const c = weather.code;
+    if (c === 0) return "Clear";
+    if (c <= 2) return "Partly Cloudy";
+    if (c === 3) return "Overcast";
+    if (c <= 48) return "Foggy";
+    if (c <= 57) return "Drizzle";
+    if (c <= 67) return "Rain";
+    if (c <= 77) return "Snow";
+    if (c <= 82) return "Showers";
+    return "Storms";
+  })();
+
+  return (
+    <div style={{
+      display: "inline-flex", alignItems: "center", gap: 8,
+      background: "rgba(255,255,255,0.10)",
+      backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
+      border: "1px solid rgba(255,255,255,0.15)",
+      borderRadius: 20, padding: "7px 14px",
+      fontFamily: "'Libre Franklin', sans-serif",
+    }}>
+      <span style={{ fontSize: 15, lineHeight: 1 }}>{icon}</span>
+      <span style={{ fontSize: 14, fontWeight: 700, color: C.cream }}>{weather.temp}°F</span>
+      <span style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", letterSpacing: 0.3 }}>{label}</span>
+      <span style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", letterSpacing: 0.5 }}>· Devils Lake right now</span>
+    </div>
+  );
+}
+
+// ============================================================
 // 🏠  HERO SECTION
 // ============================================================
 function Hero({ scrollTo }) {
@@ -170,8 +232,8 @@ function Hero({ scrollTo }) {
         })()}
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(170deg, rgba(26,40,48,0.75) 0%, rgba(26,40,48,0.5) 50%, rgba(26,40,48,0.85) 100%)", zIndex: 1 }} />
 
-        {/* Coming Up / Sponsored badge — top right */}
-        <div style={{ position: "absolute", top: 100, right: 48, zIndex: 2 }}>
+        {/* Coming Up / Sponsored badge + weather — top right */}
+        <div style={{ position: "absolute", top: 100, right: 48, zIndex: 2, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 10 }}>
           <div style={{
             display: "inline-block",
             background: isSponsored ? `${C.sage}22` : `${C.sunset}22`,
@@ -182,6 +244,7 @@ function Hero({ scrollTo }) {
           }}>
             {isSponsored ? "Sponsored" : "Coming Up"}
           </div>
+          <WeatherWidget />
         </div>
 
         <div style={{ position: "relative", zIndex: 2, maxWidth: 960, margin: "0 auto", padding: "120px 48px 100px" }}>
@@ -305,6 +368,7 @@ function Hero({ scrollTo }) {
       <div style={{ position: "absolute", top: "60%", right: "8%", width: 60, height: 60, borderRadius: "50%", border: `1px solid ${C.sage}15`, zIndex: 2, animation: "float-slow 10s ease-in-out infinite 1s", pointerEvents: "none" }} />
       <div style={{ position: "relative", zIndex: 3, maxWidth: 960, margin: "0 auto", padding: "160px 48px 120px", transform: `translateY(${scrollY * 0.08}px)` }}>
         <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? "none" : "translateY(24px)", transition: "all 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94)" }}>
+          <div style={{ marginBottom: 20 }}><WeatherWidget /></div>
           <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 24, animation: loaded ? "tracking-in 0.8s ease forwards" : "none" }}>
             Welcome to
           </div>
@@ -602,6 +666,191 @@ function ExploreCard({ place, large = false, delay = 0 }) {
         </div>
       </div>
     </FadeIn>
+  );
+}
+
+// ============================================================
+// 🍂  BY THE SEASON — Spring / Summer / Fall / Winter switcher
+// ============================================================
+const SEASONS = [
+  {
+    key: "spring",
+    label: "Spring",
+    emoji: "🌱",
+    dates: "Apr – May",
+    headline: "The Lake Wakes Up",
+    tagline: "Ice-out is basically a local holiday. The walleye are biting, the patios are back open, and the first bonfire of the year is always somebody's best night of the year.",
+    accent: C.sage,
+    bg: `linear-gradient(135deg, ${C.sage}14 0%, ${C.lakeBlue}10 100%)`,
+    things: [
+      { icon: "🎣", label: "Walleye & Perch Season Opens", href: "/fishing" },
+      { icon: "⛵", label: "Boat Launch Opens Up", href: "/devils-lake" },
+      { icon: "🌸", label: "Farmers Markets Return", href: "/events" },
+      { icon: "🍻", label: "Patios Are Back, Baby", href: "/village" },
+    ],
+  },
+  {
+    key: "summer",
+    label: "Summer",
+    emoji: "☀️",
+    dates: "Jun – Aug",
+    headline: "Peak Lake Season",
+    tagline: "600+ slips full, food trucks rolling, live music every weekend, and the kind of sunshine that makes 5pm feel like noon. This is what it's all about.",
+    accent: C.sunset,
+    bg: `linear-gradient(135deg, ${C.sunset}12 0%, ${C.lakeBlue}12 100%)`,
+    things: [
+      { icon: "🎵", label: "Live Music Every Weekend", href: "/events" },
+      { icon: "🚤", label: "600+ Boats on Devils Lake", href: "/devils-lake" },
+      { icon: "🍕", label: "Food Trucks at the Marina", href: "/food-trucks" },
+      { icon: "🍷", label: "Irish Hills Wine Trail", href: "/wineries" },
+    ],
+  },
+  {
+    key: "fall",
+    label: "Fall",
+    emoji: "🍂",
+    dates: "Sep – Oct",
+    headline: "The Best-Kept Secret Season",
+    tagline: "The tourists pack up and leave. The lake turns gold and burgundy. The bass go absolutely stupid. Locals call it their favorite time of year — and they're not wrong.",
+    accent: C.driftwood,
+    bg: `linear-gradient(135deg, ${C.driftwood}16 0%, ${C.sunset}10 100%)`,
+    things: [
+      { icon: "🎨", label: "Fall Color Drive", href: "/discover" },
+      { icon: "🎣", label: "Bass & Muskie Season", href: "/fishing" },
+      { icon: "🍎", label: "Apple Orchards & Cider", href: "/events" },
+      { icon: "🏡", label: "Cottage Season Wind-Down", href: "/stays" },
+    ],
+  },
+  {
+    key: "winter",
+    label: "Winter",
+    emoji: "❄️",
+    dates: "Nov – Mar",
+    headline: "The Diehards Stay",
+    tagline: "Ice fishing shanties dot the lake like a little frozen village. Nobody's fighting for a parking spot. The bar is warm, the fire is going, and you're probably going to like it here.",
+    accent: C.lakeBlue,
+    bg: `linear-gradient(135deg, ${C.lakeBlue}15 0%, ${C.dusk}20 100%)`,
+    things: [
+      { icon: "🧊", label: "Ice Fishing on Devils Lake", href: "/fishing" },
+      { icon: "🏒", label: "Hockey on Round Lake", href: "/round-lake" },
+      { icon: "🌲", label: "Cross-Country Trails", href: "/discover" },
+      { icon: "🍺", label: "Cozy Nights in the Village", href: "/nightlife" },
+    ],
+  },
+];
+
+function getCurrentSeason() {
+  const m = new Date().getMonth();
+  if (m >= 2 && m <= 4) return "spring";
+  if (m >= 5 && m <= 7) return "summer";
+  if (m >= 8 && m <= 9) return "fall";
+  return "winter";
+}
+
+function ByTheSeasonSection() {
+  const [active, setActive] = useState(getCurrentSeason());
+  const season = SEASONS.find(s => s.key === active);
+
+  return (
+    <section style={{ background: C.warmWhite, padding: "100px 24px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <FadeIn>
+          <SectionLabel>Plan Your Visit</SectionLabel>
+          <SectionTitle>By the Season</SectionTitle>
+          <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.8, maxWidth: 480, margin: "0 0 44px 0" }}>
+            Manitou Beach has a different personality every season. Spoiler: they're all great.
+          </p>
+        </FadeIn>
+
+        {/* Season tabs */}
+        <div style={{ display: "flex", gap: 8, marginBottom: 44, flexWrap: "wrap" }}>
+          {SEASONS.map(s => {
+            const isActive = active === s.key;
+            return (
+              <button
+                key={s.key}
+                onClick={() => setActive(s.key)}
+                style={{
+                  display: "inline-flex", alignItems: "center", gap: 8,
+                  padding: "10px 22px", borderRadius: 30,
+                  border: isActive ? "none" : `1px solid ${C.sand}`,
+                  background: isActive ? s.accent : "transparent",
+                  color: isActive ? "#fff" : C.textLight,
+                  fontFamily: "'Libre Franklin', sans-serif",
+                  fontSize: 14, fontWeight: isActive ? 700 : 500,
+                  cursor: "pointer", transition: "all 0.25s ease",
+                  boxShadow: isActive ? `0 4px 18px ${s.accent}45` : "none",
+                }}
+              >
+                <span style={{ fontSize: 16 }}>{s.emoji}</span>
+                {s.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Season card */}
+        <div
+          key={active}
+          className="mobile-col-1 season-card-fade"
+          style={{
+            background: season.bg,
+            border: `1px solid ${season.accent}22`,
+            borderRadius: 20, padding: "clamp(28px, 5vw, 52px)",
+            display: "grid", gridTemplateColumns: "1fr 1fr",
+            gap: "clamp(28px, 5vw, 52px)", alignItems: "start",
+          }}
+        >
+          {/* Left — copy */}
+          <div>
+            <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: season.accent, marginBottom: 10, letterSpacing: 0.3 }}>
+              {season.dates}
+            </div>
+            <h3 style={{
+              fontFamily: "'Libre Baskerville', serif",
+              fontSize: "clamp(26px, 4vw, 44px)",
+              color: C.text, margin: "0 0 18px 0",
+              fontWeight: 400, lineHeight: 1.1,
+            }}>
+              {season.headline}
+            </h3>
+            <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.85, margin: "0 0 32px 0" }}>
+              {season.tagline}
+            </p>
+            <Btn href="/events" variant="outline" small>See What's Coming →</Btn>
+          </div>
+
+          {/* Right — things to do cards */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {season.things.map((thing, i) => (
+              <a
+                key={i}
+                href={thing.href}
+                style={{
+                  display: "flex", alignItems: "center", gap: 14,
+                  textDecoration: "none",
+                  background: "rgba(255,255,255,0.72)",
+                  border: "1px solid rgba(255,255,255,0.9)",
+                  borderRadius: 12, padding: "14px 18px",
+                  transition: "all 0.2s ease",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.95)"; e.currentTarget.style.transform = "translateX(5px)"; }}
+                onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.72)"; e.currentTarget.style.transform = "translateX(0)"; }}
+              >
+                <span style={{ fontSize: 26, flexShrink: 0, lineHeight: 1 }}>{thing.icon}</span>
+                <span style={{
+                  fontFamily: "'Libre Franklin', sans-serif",
+                  fontSize: 14, fontWeight: 500, color: C.text, flex: 1,
+                }}>
+                  {thing.label}
+                </span>
+                <span style={{ fontSize: 16, color: season.accent, flexShrink: 0 }}>→</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -1866,6 +2115,7 @@ function HomePage() {
       <PromoBanner page="Home" />
       <WaveDivider topColor={C.dusk} bottomColor={C.cream} />
       <ExploreSection />
+      <ByTheSeasonSection />
       <DispatchPreviewSection />
       <NewsletterInline />
       <BusinessDirectory />
