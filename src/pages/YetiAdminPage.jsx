@@ -17,7 +17,7 @@ export default function YetiAdminPage() {
   // ── Social tab ────────────────────────────────────────────────
   const [socialMessage, setSocialMessage] = useState('');
   const [socialImageUrl, setSocialImageUrl] = useState('');
-  const [socialPlatforms, setSocialPlatforms] = useState(['facebook', 'instagram']);
+  const [socialPlatforms, setSocialPlatforms] = useState(['facebook']);
   const [socialStatus, setSocialStatus] = useState('idle'); // idle | posting | success | error
   const [socialResult, setSocialResult] = useState(null);
   const [socialError, setSocialError] = useState('');
@@ -3256,18 +3256,15 @@ export default function YetiAdminPage() {
             {/* Platforms */}
             <div style={{ marginBottom: 20 }}>
               <label style={{ display: 'block', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 10, fontFamily: 'Libre Franklin, sans-serif' }}>Platforms</label>
-              <div style={{ display: 'flex', gap: 12 }}>
-                {['facebook', 'instagram'].map(p => (
-                  <label key={p} style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif', fontSize: 14, color: C.dusk }}>
-                    <input
-                      type="checkbox"
-                      checked={socialPlatforms.includes(p)}
-                      onChange={e => setSocialPlatforms(prev => e.target.checked ? [...prev, p] : prev.filter(x => x !== p))}
-                      style={{ width: 16, height: 16, accentColor: C.sage }}
-                    />
-                    {p === 'facebook' ? '📘 Facebook' : '📸 Instagram'}
-                  </label>
-                ))}
+              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif', fontSize: 14, color: C.dusk }}>
+                  <input type="checkbox" checked={socialPlatforms.includes('facebook')} onChange={e => setSocialPlatforms(prev => e.target.checked ? [...prev, 'facebook'] : prev.filter(x => x !== 'facebook'))} style={{ width: 16, height: 16, accentColor: C.sage }} />
+                  📘 Facebook
+                </label>
+                <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'not-allowed', fontFamily: 'Libre Franklin, sans-serif', fontSize: 14, color: C.textMuted, opacity: 0.5 }} title="Instagram setup pending">
+                  <input type="checkbox" disabled checked={false} style={{ width: 16, height: 16 }} />
+                  📸 Instagram <span style={{ fontSize: 11, marginLeft: 2 }}>(coming soon)</span>
+                </label>
               </div>
             </div>
 
@@ -3315,9 +3312,10 @@ export default function YetiAdminPage() {
                     body: JSON.stringify({ token: authToken, message: socialMessage, imageUrl: socialImageUrl || undefined, platforms: socialPlatforms }),
                   });
                   const data = await res.json();
-                  if (!data.success && !data.results) throw new Error(JSON.stringify(data.errors || data.error));
                   setSocialResult(data);
-                  setSocialStatus('success');
+                  const anySuccess = data.results && Object.keys(data.results).filter(k => k !== 'igAccountId').length > 0;
+                  setSocialStatus(anySuccess ? 'success' : 'error');
+                  if (!anySuccess) setSocialError(JSON.stringify(data.errors || data.error || 'Unknown error'));
                   if (data.igAccountId) setSocialError(`Save this IG Account ID to Vercel: ${data.igAccountId}`);
                 } catch (err) {
                   setSocialError(err.message);
