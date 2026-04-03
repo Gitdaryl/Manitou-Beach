@@ -227,7 +227,7 @@ function WineriesHero() {
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(170deg, rgba(10,18,24,0.75) 0%, rgba(10,18,24,0.45) 50%, rgba(10,18,24,0.88) 100%)" }} />
       <div style={{ maxWidth: 960, margin: "0 auto", position: "relative", zIndex: 1 }}>
         <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? "none" : "translateY(24px)", transition: "all 0.9s ease" }}>
-          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 28 }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "var(--page-eyebrow)", marginBottom: 28 }}>
             Wine · Beer · Cider · Irish Hills · Manitou Beach Village
           </div>
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(48px, 9vw, 110px)", fontWeight: 400, color: C.cream, lineHeight: 0.95, margin: "0 0 20px 0" }}>
@@ -246,7 +246,7 @@ function WineriesHero() {
 
 function WineriesVillageCallout() {
   return (
-    <section style={{ background: C.night, padding: "80px 24px" }}>
+    <section style={{ background: "var(--page-bg-from)", padding: "80px 24px" }}>
       <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
         <FadeIn>
           <SectionLabel light>Opening Spring 2026</SectionLabel>
@@ -1141,7 +1141,7 @@ const WINERY_ITINERARIES = [
 
 function WineriesItinerarySection() {
   return (
-    <section style={{ background: C.night, padding: "64px 24px" }}>
+    <section style={{ background: "var(--page-bg-from)", padding: "64px 24px" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
         <FadeIn>
           <SectionLabel light>How to Do It</SectionLabel>
@@ -1517,7 +1517,7 @@ const WINERY_AWARD_CATEGORIES = [
 
 function WineriesHowItWorksSection() {
   return (
-    <section style={{ background: C.night, padding: '52px 24px' }}>
+    <section style={{ background: "var(--page-bg-from)", padding: '52px 24px' }}>
       <div style={{ maxWidth: 1000, margin: '0 auto' }}>
         <FadeIn>
           <SectionLabel light>The Wine Passport</SectionLabel>
@@ -1541,7 +1541,7 @@ function WineriesHowItWorksSection() {
 
 function WineAwardCeremonySection() {
   return (
-    <section style={{ background: C.night, padding: '52px 24px' }}>
+    <section style={{ background: "var(--page-bg-from)", padding: '52px 24px' }}>
       <div style={{ maxWidth: 760, margin: '0 auto', textAlign: 'center' }}>
         <FadeIn>
           <SectionLabel light>Annual Awards · May – October</SectionLabel>

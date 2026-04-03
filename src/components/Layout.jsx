@@ -52,7 +52,7 @@ export function GlobalStyles() {
         --page-accent-light: #e8f4fd;
         --page-accent-muted: rgba(122,142,114,0.2);
         --page-hero-text:    #7ecdf5;
-        --page-eyebrow:      #c4a86a;
+        --page-eyebrow:      #7A8E72;
       }
       /* ── Per-page themes ──────────────────────────────────────────── */
       [data-theme="home"] {

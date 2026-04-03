@@ -77,7 +77,7 @@ export function SectionLabel({ children, light = false, style: styleProp = {} })
       fontSize: 11,
       letterSpacing: 5,
       textTransform: "uppercase",
-      color: light ? "rgba(255,255,255,0.5)" : C.sage,
+      color: light ? "rgba(255,255,255,0.5)" : "var(--page-eyebrow)",
       marginBottom: 14,
       fontWeight: 600,
       ...styleProp,
