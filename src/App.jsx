@@ -90,6 +90,31 @@ class SafeVoice extends Component {
   render() { return this.state.err ? null : this.props.children; }
 }
 
+// Catches stale-chunk 404s after a redeploy and forces a one-time hard reload.
+// Without this, any lazy page that 404s shows a permanent blank with no feedback.
+class ChunkErrorBoundary extends Component {
+  state = { dead: false };
+  static getDerivedStateFromError(err) {
+    const isChunk =
+      err?.name === 'ChunkLoadError' ||
+      /dynamically imported module|Failed to fetch/i.test(err?.message ?? '');
+    if (isChunk) {
+      try {
+        if (!sessionStorage.getItem('_chunk_reloaded')) {
+          sessionStorage.setItem('_chunk_reloaded', '1');
+          window.location.reload();
+          return { dead: false }; // stay blank briefly while reload fires
+        }
+      } catch {}
+    }
+    return { dead: true };
+  }
+  render() {
+    if (this.state.dead) return null; // silent fail — better than a crash screen
+    return this.props.children;
+  }
+}
+
 // ============================================================
 // 📑  PROJECT STRUCTURE (post-extraction)
 // ============================================================
@@ -126,8 +151,11 @@ export { DISPATCH_CARD_SPONSORS, DISPATCH_CATEGORIES } from './data/config';
 export default function App() {
   return (
     <BrowserRouter>
-      <Suspense fallback={null}>
-        <Routes>
+      {/* Page routes get their own Suspense so VoiceConcierge / BetaFeedbackStrip
+          can't block the main content from appearing while they download. */}
+      <ChunkErrorBoundary>
+        <Suspense fallback={null}>
+          <Routes>
           <Route path="/claim-promo" element={<ClaimPromoView />} />
           <Route path="/redeem-promo" element={<RedeemPromoView />} />
           <Route path="/launch" element={<LaunchPage />} />
@@ -186,9 +214,13 @@ export default function App() {
           <Route path="/activate-winery" element={<ActivateWineryPage />} />
           <Route path="/quick-events" element={<QuickEventsPage />} />
         </Routes>
-        <SafeVoice><VoiceConcierge /></SafeVoice>
-        <BetaFeedbackStrip />
-      </Suspense>
+        </Suspense>
+      </ChunkErrorBoundary>
+      {/* These load independently — they must NOT block page content */}
+      <SafeVoice>
+        <Suspense fallback={null}><VoiceConcierge /></Suspense>
+      </SafeVoice>
+      <Suspense fallback={null}><BetaFeedbackStrip /></Suspense>
     </BrowserRouter>
   );
 }
