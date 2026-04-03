@@ -6,6 +6,104 @@ import yeti from '../data/errorMessages';
 export function GlobalStyles() {
   return (
     <style>{`
+      /* ── Page theme primitives ────────────────────────────────────── */
+      :root {
+        /* Blues */
+        --color-lake-900: #071828;
+        --color-lake-800: #0d2a45;
+        --color-lake-700: #1a3a55;
+        --color-lake-600: #1a5a8a;
+        --color-lake-500: #2a7db5;
+        --color-lake-300: #7ecdf5;
+        --color-lake-100: #e8f4fd;
+        /* Sand */
+        --color-sand-900: #6b4a1a;
+        --color-sand-700: #c4a86a;
+        --color-sand-400: #f5e6c8;
+        --color-sand-100: #fdf6ec;
+        /* Warm */
+        --color-warm-700: #b84a25;
+        --color-warm-500: #e8734a;
+        --color-warm-100: #fdf0ea;
+        /* Wine */
+        --color-wine-900: #2a0a1a;
+        --color-wine-700: #6b1f3a;
+        --color-wine-500: #9b3a5a;
+        --color-wine-300: #c97a9a;
+        --color-wine-100: #f5e8ee;
+        /* Forest */
+        --color-forest-900: #0a1f0a;
+        --color-forest-700: #1f4a1f;
+        --color-forest-500: #2d6a2d;
+        --color-forest-300: #7ab87a;
+        --color-forest-100: #eaf3ea;
+        /* Amber */
+        --color-amber-700: #b86a10;
+        --color-amber-500: #e89a30;
+        --color-amber-300: #f5c870;
+        --color-amber-100: #fdf5e0;
+        /* Lavender */
+        --color-lavender-700: #4a3a8a;
+        --color-lavender-500: #7a6ab5;
+        --color-lavender-300: #b0a8d8;
+        --color-lavender-100: #f0eef8;
+        /* Default semantic tokens — fallback when no data-theme is set */
+        --page-accent:       #5B7E95;
+        --page-accent-light: #e8f4fd;
+        --page-accent-muted: rgba(122,142,114,0.2);
+        --page-hero-text:    #7ecdf5;
+        --page-eyebrow:      #c4a86a;
+      }
+      /* ── Per-page themes ──────────────────────────────────────────── */
+      [data-theme="home"] {
+        --page-accent:       var(--color-lake-500);
+        --page-accent-light: var(--color-lake-100);
+        --page-accent-muted: rgba(42,125,181,0.22);
+        --page-hero-text:    var(--color-lake-300);
+        --page-eyebrow:      var(--color-sand-700);
+      }
+      [data-theme="village"] {
+        --page-accent:       var(--color-sand-700);
+        --page-accent-light: var(--color-sand-100);
+        --page-accent-muted: rgba(196,168,106,0.28);
+        --page-hero-text:    var(--color-lake-800);
+        --page-eyebrow:      var(--color-lake-600);
+      }
+      [data-theme="wine"] {
+        --page-accent:       var(--color-wine-500);
+        --page-accent-light: var(--color-wine-100);
+        --page-accent-muted: rgba(155,58,90,0.28);
+        --page-hero-text:    var(--color-wine-300);
+        --page-eyebrow:      var(--color-sand-700);
+      }
+      [data-theme="food-trucks"] {
+        --page-accent:       var(--color-amber-500);
+        --page-accent-light: var(--color-amber-100);
+        --page-accent-muted: rgba(232,154,48,0.25);
+        --page-hero-text:    var(--color-amber-300);
+        --page-eyebrow:      var(--color-amber-500);
+      }
+      [data-theme="fishing"] {
+        --page-accent:       var(--color-forest-500);
+        --page-accent-light: var(--color-forest-100);
+        --page-accent-muted: rgba(45,106,45,0.25);
+        --page-hero-text:    var(--color-forest-300);
+        --page-eyebrow:      var(--color-sand-700);
+      }
+      [data-theme="events"] {
+        --page-accent:       var(--color-lake-300);
+        --page-accent-light: var(--color-lake-100);
+        --page-accent-muted: rgba(126,205,245,0.22);
+        --page-hero-text:    var(--color-lake-300);
+        --page-eyebrow:      var(--color-sand-700);
+      }
+      [data-theme="stays"] {
+        --page-accent:       var(--color-lavender-500);
+        --page-accent-light: var(--color-lavender-100);
+        --page-accent-muted: rgba(122,106,181,0.25);
+        --page-hero-text:    var(--color-lavender-300);
+        --page-eyebrow:      var(--color-sand-700);
+      }
       html, body { overflow-x: hidden; max-width: 100vw; }
       @keyframes slideUp {
         0% { transform: translateY(100%); opacity: 0; }
@@ -1781,7 +1879,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
         background: solid ? "rgba(250,246,239,0.55)" : "transparent",
         backdropFilter: solid ? "blur(20px) saturate(160%)" : "none",
         WebkitBackdropFilter: solid ? "blur(20px) saturate(160%)" : "none",
-        borderBottom: solid ? `1px solid rgba(122,142,114,0.2)` : "none",
+        borderBottom: solid ? `1px solid var(--page-accent-muted, rgba(122,142,114,0.2))` : "none",
         transition: "all 0.35s ease",
       }}>
         <div style={{ maxWidth: 1180, margin: "0 auto", padding: "0 28px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>

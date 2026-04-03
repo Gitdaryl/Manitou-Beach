@@ -56,6 +56,9 @@ const SubmitEventPage = lazy(() => import('./pages/SubmitEventPage'));
 const EventConfirmedPage = lazy(() => import('./pages/EventConfirmedPage'));
 const QuickEventsPage = lazy(() => import('./pages/QuickEventsPage'));
 
+import { PageThemeProvider } from './context/PageThemeContext';
+export { PageThemeProvider, usePageTheme } from './context/PageThemeContext';
+
 // ── Beta gate — redirects / to /launch until LAUNCH_DATE
 //   ⚙️  Update LAUNCH_DATE when you have a firm date (must match LaunchPage.jsx)
 const LAUNCH_DATE = new Date('2026-05-01T16:00:00Z'); // 12:00pm ET May 1
@@ -130,12 +133,12 @@ export default function App() {
           <Route path="/claim-promo" element={<ClaimPromoView />} />
           <Route path="/redeem-promo" element={<RedeemPromoView />} />
           <Route path="/launch" element={<LaunchPage />} />
-          <Route path="/" element={<BetaGate><HomePage /></BetaGate>} />
-          <Route path="/events" element={<HappeningPage />} />
+          <Route path="/" element={<PageThemeProvider theme="home"><BetaGate><HomePage /></BetaGate></PageThemeProvider>} />
+          <Route path="/events" element={<PageThemeProvider theme="events"><HappeningPage /></PageThemeProvider>} />
           <Route path="/events/edit" element={<EventEditPage />} />
-          <Route path="/happening" element={<HappeningPage />} />
+          <Route path="/happening" element={<PageThemeProvider theme="events"><HappeningPage /></PageThemeProvider>} />
           <Route path="/round-lake" element={<RoundLakePage />} />
-          <Route path="/village" element={<VillagePage />} />
+          <Route path="/village" element={<PageThemeProvider theme="village"><VillagePage /></PageThemeProvider>} />
           <Route path="/nightlife" element={<NightlifePage />} />
           <Route path="/business" element={<FeaturedPage />} />
           <Route path="/featured" element={<FeaturedPage />} />
@@ -148,8 +151,8 @@ export default function App() {
           <Route path="/mens-club" element={<MensClubPage />} />
           <Route path="/ladies-club" element={<LadiesClubPage />} />
           <Route path="/historical-society" element={<HistoricalSocietyPage />} />
-          <Route path="/fishing" element={<FishingPage />} />
-          <Route path="/wineries" element={<WineriesPage />} />
+          <Route path="/fishing" element={<PageThemeProvider theme="fishing"><FishingPage /></PageThemeProvider>} />
+          <Route path="/wineries" element={<PageThemeProvider theme="wine"><WineriesPage /></PageThemeProvider>} />
           <Route path="/devils-lake" element={<DevilsLakePage />} />
           <Route path="/promote" element={<PromotePage />} />
           <Route path="/event" element={<Navigate to="/submit-event" replace />} />
@@ -162,14 +165,14 @@ export default function App() {
           <Route path="/yeti-admin" element={<YetiAdminPage />} />
           <Route path="/claim/:slug" element={<ClaimPage />} />
           <Route path="/discover" element={<DiscoverPage />} />
-          <Route path="/food-trucks" element={<FoodTrucksPage />} />
+          <Route path="/food-trucks" element={<PageThemeProvider theme="food-trucks"><FoodTrucksPage /></PageThemeProvider>} />
           <Route path="/food-trucks/qr/:slug" element={<FoodTruckQRPage />} />
           <Route path="/build" element={<BuildPage />} />
           <Route path="/rate" element={<RatePage />} />
-          <Route path="/wine-partner" element={<WinePartnerPage />} />
-          <Route path="/food-truck-partner" element={<FoodTruckPartnerPage />} />
+          <Route path="/wine-partner" element={<PageThemeProvider theme="wine"><WinePartnerPage /></PageThemeProvider>} />
+          <Route path="/food-truck-partner" element={<PageThemeProvider theme="food-trucks"><FoodTruckPartnerPage /></PageThemeProvider>} />
           <Route path="/founding" element={<FoundingPage />} />
-          <Route path="/stays" element={<StaysPage />} />
+          <Route path="/stays" element={<PageThemeProvider theme="stays"><StaysPage /></PageThemeProvider>} />
           <Route path="/holly-yeti" element={<HollyYetiPage />} />
           <Route path="/check-in" element={<CheckInPage />} />
           <Route path="/ticket-services" element={<TicketServicesPage />} />
