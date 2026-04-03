@@ -17,7 +17,7 @@ export default function YetiAdminPage() {
   // ── Social tab ────────────────────────────────────────────────
   const [socialMessage, setSocialMessage] = useState('');
   const [socialImageUrl, setSocialImageUrl] = useState('');
-  const [socialPlatforms, setSocialPlatforms] = useState(['facebook']);
+  const [socialPlatforms, setSocialPlatforms] = useState(['facebook', 'instagram']);
   const [socialStatus, setSocialStatus] = useState('idle'); // idle | posting | success | error
   const [socialResult, setSocialResult] = useState(null);
   const [socialError, setSocialError] = useState('');
@@ -3261,9 +3261,9 @@ export default function YetiAdminPage() {
                   <input type="checkbox" checked={socialPlatforms.includes('facebook')} onChange={e => setSocialPlatforms(prev => e.target.checked ? [...prev, 'facebook'] : prev.filter(x => x !== 'facebook'))} style={{ width: 16, height: 16, accentColor: C.sage }} />
                   📘 Facebook
                 </label>
-                <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'not-allowed', fontFamily: 'Libre Franklin, sans-serif', fontSize: 14, color: C.textMuted, opacity: 0.5 }} title="Instagram setup pending">
-                  <input type="checkbox" disabled checked={false} style={{ width: 16, height: 16 }} />
-                  📸 Instagram <span style={{ fontSize: 11, marginLeft: 2 }}>(coming soon)</span>
+                <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif', fontSize: 14, color: C.dusk }}>
+                  <input type="checkbox" checked={socialPlatforms.includes('instagram')} onChange={e => setSocialPlatforms(prev => e.target.checked ? [...prev, 'instagram'] : prev.filter(x => x !== 'instagram'))} style={{ width: 16, height: 16, accentColor: C.sage }} />
+                  📸 Instagram
                 </label>
               </div>
             </div>
