@@ -246,7 +246,7 @@ function WineriesHero() {
 
 function WineriesVillageCallout() {
   return (
-    <section style={{ background: "var(--page-bg-from)", padding: "80px 24px" }}>
+    <section style={{ background: C.night, padding: "80px 24px" }}>
       <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
         <FadeIn>
           <SectionLabel light>Opening Spring 2026</SectionLabel>
@@ -1141,7 +1141,7 @@ const WINERY_ITINERARIES = [
 
 function WineriesItinerarySection() {
   return (
-    <section style={{ background: "var(--page-bg-from)", padding: "64px 24px" }}>
+    <section style={{ background: C.night, padding: "64px 24px" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
         <FadeIn>
           <SectionLabel light>How to Do It</SectionLabel>
@@ -1517,7 +1517,7 @@ const WINERY_AWARD_CATEGORIES = [
 
 function WineriesHowItWorksSection() {
   return (
-    <section style={{ background: "var(--page-bg-from)", padding: '52px 24px' }}>
+    <section style={{ background: C.night, padding: '52px 24px' }}>
       <div style={{ maxWidth: 1000, margin: '0 auto' }}>
         <FadeIn>
           <SectionLabel light>The Wine Passport</SectionLabel>
@@ -1541,7 +1541,7 @@ function WineriesHowItWorksSection() {
 
 function WineAwardCeremonySection() {
   return (
-    <section style={{ background: "var(--page-bg-from)", padding: '52px 24px' }}>
+    <section style={{ background: C.night, padding: '52px 24px' }}>
       <div style={{ maxWidth: 760, margin: '0 auto', textAlign: 'center' }}>
         <FadeIn>
           <SectionLabel light>Annual Awards · May – October</SectionLabel>
