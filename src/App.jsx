@@ -1,5 +1,6 @@
 import { lazy, Suspense, Component } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { PageThemeProvider } from './context/PageThemeContext';
 
 // Eager — first paint
 import HomePage from './pages/HomePage';
@@ -55,9 +56,6 @@ const ListingConfirmedPage = lazy(() => import('./pages/ListingConfirmedPage'));
 const SubmitEventPage = lazy(() => import('./pages/SubmitEventPage'));
 const EventConfirmedPage = lazy(() => import('./pages/EventConfirmedPage'));
 const QuickEventsPage = lazy(() => import('./pages/QuickEventsPage'));
-
-import { PageThemeProvider } from './context/PageThemeContext';
-export { PageThemeProvider, usePageTheme } from './context/PageThemeContext';
 
 // ── Beta gate — redirects / to /launch until LAUNCH_DATE
 //   ⚙️  Update LAUNCH_DATE when you have a firm date (must match LaunchPage.jsx)
