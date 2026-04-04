@@ -813,10 +813,10 @@ function LadiesClubGetInvolved() {
       icon: "💙",
       label: "Join the Club",
       desc: "Open to women in the lakes community. Meet great people, give back, and be part of something that matters.",
-      action: "Coming Soon",
-      href: null,
+      action: "Join for $15/year",
+      href: "/ladies-club/join",
       accent: C.sunset,
-      disabled: true,
+      badge: "Open",
     },
   ];
 
