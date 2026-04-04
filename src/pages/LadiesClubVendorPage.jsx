@@ -177,8 +177,8 @@ export default function LadiesClubVendorPage() {
       <Navbar />
 
       {/* Back nav */}
-      <div style={{ background: C.night, borderBottom: '1px solid rgba(255,255,255,0.06)', padding: '12px 24px' }}>
-        <a href="/ladies-club" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.45)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+      <div style={{ background: '#0d1f2d', borderBottom: '1px solid rgba(255,255,255,0.14)', padding: '11px 24px' }}>
+        <a href="/ladies-club" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.75)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6, letterSpacing: 0.2 }}>
           ← Ladies Club
         </a>
       </div>

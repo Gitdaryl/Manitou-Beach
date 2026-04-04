@@ -463,7 +463,7 @@ export function CommunityDonationForm({ orgName, orgPageId, tiers, accentColor, 
     <div style={{ maxWidth: 700, margin: '0 auto' }}>
       {/* Tier picker */}
       {tiers && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 10, marginBottom: 24 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: 10, marginBottom: 24 }}>
           {tiers.map((tier) => {
             const active = selectedTier?.level === tier.level;
             return (
