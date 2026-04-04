@@ -177,8 +177,8 @@ export default function LadiesClubVendorPage() {
       <Navbar />
 
       {/* Hero */}
-      <section style={{ background: C.night, padding: '100px 24px 60px', textAlign: 'center', position: 'relative' }}>
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(170deg, rgba(10,18,24,0.9) 0%, rgba(20,35,45,0.85) 100%)', pointerEvents: 'none' }} />
+      <section style={{ background: 'linear-gradient(160deg, #0d1f35 0%, #1a1228 40%, #2c1a0e 100%)', padding: '100px 24px 60px', textAlign: 'center', position: 'relative' }}>
+        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 0%, rgba(200,90,30,0.18) 0%, transparent 65%)', pointerEvents: 'none' }} />
         {/* Back arrow — inside hero, top-left */}
         <a href="/ladies-club" style={{ position: 'absolute', top: 76, left: 24, zIndex: 10, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,0.8)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6, letterSpacing: 0.2, background: 'rgba(255,255,255,0.08)', padding: '7px 14px', borderRadius: 20, border: '1px solid rgba(255,255,255,0.15)' }}>
           ← Ladies Club
