@@ -176,18 +176,15 @@ export default function LadiesClubVendorPage() {
       <GlobalStyles />
       <Navbar />
 
-      {/* Back nav */}
-      <div style={{ background: '#0d1f2d', borderBottom: '1px solid rgba(255,255,255,0.14)', padding: '11px 24px' }}>
-        <a href="/ladies-club" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.75)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6, letterSpacing: 0.2 }}>
+      {/* Hero */}
+      <section style={{ background: C.night, padding: '100px 24px 60px', textAlign: 'center', position: 'relative' }}>
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(170deg, rgba(10,18,24,0.9) 0%, rgba(20,35,45,0.85) 100%)' }} />
+        {/* Back arrow — inside hero, top-left */}
+        <a href="/ladies-club" style={{ position: 'absolute', top: 20, left: 24, zIndex: 2, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,0.8)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6, letterSpacing: 0.2, background: 'rgba(255,255,255,0.08)', padding: '7px 14px', borderRadius: 20, border: '1px solid rgba(255,255,255,0.15)' }}>
           ← Ladies Club
         </a>
-      </div>
-
-      {/* Hero */}
-      <section style={{ background: C.night, padding: '80px 24px 60px', textAlign: 'center', position: 'relative' }}>
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(170deg, rgba(10,18,24,0.9) 0%, rgba(20,35,45,0.85) 100%)' }} />
         <div style={{ position: 'relative', zIndex: 1, maxWidth: 640, margin: '0 auto' }}>
-          <img src="/images/ladies-club/summer-festival.png" alt="Devils Lake Summer Festival" style={{ width: 80, height: 80, objectFit: 'contain', marginBottom: 20 }} />
+          <img src="/images/ladies-club/summer-festival.png" alt="Devils Lake Summer Festival" style={{ width: 160, height: 160, objectFit: 'contain', marginBottom: 20 }} />
           <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: C.sunsetLight, marginBottom: 10 }}>
             Devils Lake Summerfest 2026
           </div>
