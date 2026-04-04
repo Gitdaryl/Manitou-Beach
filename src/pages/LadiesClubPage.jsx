@@ -163,7 +163,7 @@ function LadiesClubEventsSection() {
     { label: "Children's Area", desc: "Bounce items, face painting, Lucky Ducky, balloons, and fun for all ages" },
     { label: "Crafts & Vendors", desc: "Local makers, artisan goods, handmade creations, and the Farmer's Craft Market" },
     { label: "Food & Drinks", desc: "Shaved ice, acai bowls, possible craft beer and wine — something for everyone" },
-    { label: "Flower Sale", desc: "Fresh blooms and plants available while supplies last" },
+    { label: "Raffle Baskets", desc: "6-8 items to bid on" },
   ];
 
   const tiers = [
@@ -668,7 +668,7 @@ function LadiesClubSponsorsSection() {
             <SectionLabel>Thank You</SectionLabel>
             <SectionTitle center>Our 2026 Sponsors</SectionTitle>
             <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, maxWidth: 480, margin: "0 auto" }}>
-              The Summer Festival is made possible by the generous support of our community sponsors.
+              Projects are made possible by the generous support of our community sponsors.
             </p>
           </div>
         </FadeIn>
@@ -831,7 +831,7 @@ function LadiesClubSponsorForm() {
             <SectionLabel>Support the Festival</SectionLabel>
             <SectionTitle center>Become a Sponsor</SectionTitle>
             <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 520, margin: "0 auto" }}>
-              Your sponsorship helps bring the Devils Lake Summer Festival to life — a full day of food, music, crafts, and community for everyone on the lake.
+              Join us in supporting the Land and Lake Ladies Club! Your sponsorship helps support the community projects this group sponsors.
             </p>
           </div>
         </FadeIn>
