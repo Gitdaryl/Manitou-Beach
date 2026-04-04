@@ -176,8 +176,15 @@ export default function LadiesClubVendorPage() {
       <GlobalStyles />
       <Navbar />
 
+      {/* Back nav */}
+      <div style={{ background: C.night, borderBottom: '1px solid rgba(255,255,255,0.06)', padding: '12px 24px' }}>
+        <a href="/ladies-club" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.45)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          ← Ladies Club
+        </a>
+      </div>
+
       {/* Hero */}
-      <section style={{ background: C.night, padding: '120px 24px 80px', textAlign: 'center', position: 'relative' }}>
+      <section style={{ background: C.night, padding: '80px 24px 60px', textAlign: 'center', position: 'relative' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(170deg, rgba(10,18,24,0.9) 0%, rgba(20,35,45,0.85) 100%)' }} />
         <div style={{ position: 'relative', zIndex: 1, maxWidth: 640, margin: '0 auto' }}>
           <img src="/images/ladies-club/summer-festival.png" alt="Devils Lake Summer Festival" style={{ width: 80, height: 80, objectFit: 'contain', marginBottom: 20 }} />

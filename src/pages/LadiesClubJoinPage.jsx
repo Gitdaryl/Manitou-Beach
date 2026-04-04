@@ -151,8 +151,15 @@ export default function LadiesClubJoinPage() {
       <GlobalStyles />
       <Navbar />
 
+      {/* Back nav */}
+      <div style={{ background: C.night, borderBottom: '1px solid rgba(255,255,255,0.06)', padding: '12px 24px' }}>
+        <a href="/ladies-club" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.45)', textDecoration: 'none', letterSpacing: 0.3 }}>
+          ← Ladies Club
+        </a>
+      </div>
+
       {/* Hero */}
-      <section style={{ background: C.night, padding: '120px 24px 80px', textAlign: 'center', position: 'relative' }}>
+      <section style={{ background: C.night, padding: '80px 24px 60px', textAlign: 'center', position: 'relative' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(170deg, rgba(10,18,24,0.9) 0%, rgba(20,35,45,0.85) 100%)' }} />
         <div style={{ position: 'relative', zIndex: 1, maxWidth: 600, margin: '0 auto' }}>
           <img src="/images/landlake-club-logo.png" alt="LLLC" style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: '50%', marginBottom: 20, border: '2px solid rgba(255,255,255,0.15)' }} />
@@ -168,13 +175,19 @@ export default function LadiesClubJoinPage() {
         </div>
       </section>
 
-      {/* What you get strip */}
-      <div style={{ background: C.cream, borderBottom: `1px solid ${C.sand}`, padding: '20px 24px' }}>
-        <div style={{ maxWidth: 680, margin: '0 auto', display: 'flex', gap: 28, flexWrap: 'wrap', justifyContent: 'center' }}>
-          {['Meet new friends', 'Give back to the community', 'Be part of exciting events', 'Make a difference locally'].map(item => (
-            <div key={item} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ color: C.sage, fontSize: 14 }}>✓</span>
-              <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.text }}>{item}</span>
+      {/* Maslow needs — 4 cards */}
+      <div style={{ background: C.warmWhite, borderBottom: `1px solid ${C.sand}`, padding: '40px 24px' }}>
+        <div style={{ maxWidth: 860, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16 }}>
+          {[
+            { icon: '🤝', label: 'Belonging', copy: "Walk into any LLLC event and you already know half the room. Real friendships built around a real lake." },
+            { icon: '🌱', label: 'Purpose', copy: "Every bake sale, every clean-up, every fundraiser — you're the reason this community keeps getting better." },
+            { icon: '✨', label: 'Recognition', copy: 'Your name on the roster. Your ideas on the agenda. Your face in the photos. You show up, you get seen.' },
+            { icon: '🏡', label: 'Legacy', copy: "Decades from now, someone will be grateful this club existed. You're the one who kept it going." },
+          ].map(({ icon, label, copy }) => (
+            <div key={label} style={{ background: '#fff', border: `1.5px solid ${C.sand}`, borderRadius: 12, padding: '22px 20px' }}>
+              <div style={{ fontSize: 26, marginBottom: 10 }}>{icon}</div>
+              <p style={{ margin: '0 0 6px', fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted }}>{label}</p>
+              <p style={{ margin: 0, fontSize: 13, color: C.textLight, lineHeight: 1.65 }}>{copy}</p>
             </div>
           ))}
         </div>
