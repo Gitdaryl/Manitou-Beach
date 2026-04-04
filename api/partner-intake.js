@@ -1,3 +1,5 @@
+import Stripe from 'stripe';
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
@@ -19,8 +21,10 @@ export default async function handler(req, res) {
   }
 
   const servicesLabel = Array.isArray(services) ? services.join(', ') : (services || '');
+  const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
 
   try {
+    // 1. Save intake record to Notion
     const notionRes = await fetch('https://api.notion.com/v1/pages', {
       method: 'POST',
       headers: {
@@ -51,13 +55,55 @@ export default async function handler(req, res) {
       }),
     });
 
-    const data = await notionRes.json();
+    const notionData = await notionRes.json();
     if (!notionRes.ok) {
-      console.error('Notion partner-intake error:', JSON.stringify(data));
+      console.error('Notion partner-intake error:', JSON.stringify(notionData));
       return res.status(500).json({ error: 'Failed to save. Please try again.' });
     }
 
-    return res.status(200).json({ ok: true });
+    const notionPageId = notionData.id;
+
+    // 2. Create Stripe Express account
+    if (!process.env.STRIPE_SECRET_KEY) {
+      // Stripe not configured — fall back to manual follow-up
+      return res.status(200).json({ ok: true });
+    }
+
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+    const account = await stripe.accounts.create({
+      type: 'express',
+      capabilities: { card_payments: { requested: true }, transfers: { requested: true } },
+      email: email.trim(),
+      metadata: { orgName: orgName.trim(), notionPageId },
+    });
+
+    // 3. Save Stripe Account ID back to Notion record
+    await fetch(`https://api.notion.com/v1/pages/${notionPageId}`, {
+      method: 'PATCH',
+      headers: {
+        'Authorization': `Bearer ${process.env.NOTION_TOKEN_EVENTS}`,
+        'Content-Type': 'application/json',
+        'Notion-Version': '2022-06-28',
+      },
+      body: JSON.stringify({
+        properties: {
+          'Stripe Account ID': { rich_text: [{ text: { content: account.id } }] },
+          'Status':            { select: { name: 'Stripe Pending' } },
+        },
+      }),
+    });
+
+    // 4. Create onboarding link — partner goes straight to Stripe's bank + ID form
+    const accountLink = await stripe.accountLinks.create({
+      account: account.id,
+      type: 'account_onboarding',
+      refresh_url: `${siteUrl}/api/stripe-connect-refresh?acct=${account.id}`,
+      return_url:  `${siteUrl}/api/stripe-connect-return?acct=${account.id}`,
+    });
+
+    return res.status(200).json({ ok: true, onboardingUrl: accountLink.url });
+
   } catch (err) {
     console.error('partner-intake error:', err.message);
     return res.status(500).json({ error: 'Something went wrong. Please try again.' });

@@ -21,12 +21,12 @@ export default async function handler(req, res) {
     const isComplete = account.charges_enabled && account.details_submitted;
 
     if (isComplete) {
-      // Update Notion: mark onboarding complete + status Active
+      // Update Notion: mark onboarding complete + status Active (searches both DBs)
       await updatePartnerInNotion(acct, true);
-      return res.redirect('/ticket-services?onboarded=1');
+      return res.redirect('/partner-intake?onboarded=1');
     } else {
       // Onboarding not finished — let them retry
-      return res.redirect(`/ticket-services?refresh=1&acct=${acct}`);
+      return res.redirect(`/api/stripe-connect-refresh?acct=${acct}`);
     }
   } catch (err) {
     console.error('stripe-connect-return error:', err.message);
@@ -35,45 +35,50 @@ export default async function handler(req, res) {
 }
 
 async function updatePartnerInNotion(stripeAccountId, complete) {
-  try {
-    // Find the partner record by Stripe Account ID
-    const searchRes = await fetch(`https://api.notion.com/v1/databases/${process.env.NOTION_DB_TICKET_PARTNERS}/query`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.NOTION_TOKEN_EVENTS}`,
-        'Content-Type': 'application/json',
-        'Notion-Version': '2022-06-28',
-      },
-      body: JSON.stringify({
-        filter: {
-          property: 'Stripe Account ID',
-          rich_text: { equals: stripeAccountId },
-        },
-      }),
-    });
+  // Search both the Ticket Partners DB and the Partner Intake DB
+  const dbs = [
+    { dbId: process.env.NOTION_DB_TICKET_PARTNERS, token: process.env.NOTION_TOKEN_EVENTS },
+    { dbId: process.env.NOTION_DB_PARTNER_INTAKE,  token: process.env.NOTION_TOKEN_EVENTS },
+  ].filter(d => d.dbId);
 
-    const data = await searchRes.json();
-    if (!data.results || data.results.length === 0) {
-      console.error('Partner not found in Notion for:', stripeAccountId);
-      return;
+  for (const { dbId, token } of dbs) {
+    try {
+      const searchRes = await fetch(`https://api.notion.com/v1/databases/${dbId}/query`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Notion-Version': '2022-06-28',
+        },
+        body: JSON.stringify({
+          filter: { property: 'Stripe Account ID', rich_text: { equals: stripeAccountId } },
+        }),
+      });
+
+      const data = await searchRes.json();
+      if (!data.results || data.results.length === 0) continue;
+
+      const pageId = data.results[0].id;
+      await fetch(`https://api.notion.com/v1/pages/${pageId}`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Notion-Version': '2022-06-28',
+        },
+        body: JSON.stringify({
+          properties: {
+            'Onboarding Complete': { checkbox: complete },
+            'Status': { select: { name: complete ? 'Active' : 'Pending' } },
+          },
+        }),
+      });
+
+      return; // Found and updated — stop searching
+    } catch (err) {
+      console.error(`updatePartnerInNotion error (db ${dbId}):`, err.message);
     }
-
-    const pageId = data.results[0].id;
-    await fetch(`https://api.notion.com/v1/pages/${pageId}`, {
-      method: 'PATCH',
-      headers: {
-        'Authorization': `Bearer ${process.env.NOTION_TOKEN_EVENTS}`,
-        'Content-Type': 'application/json',
-        'Notion-Version': '2022-06-28',
-      },
-      body: JSON.stringify({
-        properties: {
-          'Onboarding Complete': { checkbox: complete },
-          'Status': { select: { name: complete ? 'Active' : 'Pending' } },
-        },
-      }),
-    });
-  } catch (err) {
-    console.error('updatePartnerInNotion error:', err.message);
   }
+
+  console.error('Partner not found in any Notion DB for:', stripeAccountId);
 }

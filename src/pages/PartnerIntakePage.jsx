@@ -45,7 +45,8 @@ function CheckPill({ label, checked, onChange }) {
 
 export default function PartnerIntakePage() {
   const scrollTo = (id) => { window.location.href = '/#' + id; };
-  const [submitted, setSubmitted] = useState(false);
+  const params = new URLSearchParams(window.location.search);
+  const [submitted, setSubmitted] = useState(params.get('onboarded') === '1');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
@@ -90,6 +91,12 @@ export default function PartnerIntakePage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed');
+      if (data.onboardingUrl) {
+        // Redirect straight to Stripe — they'll bank + ID verify, then return here
+        window.location.href = data.onboardingUrl;
+        return;
+      }
+      // Fallback: Stripe not configured, show manual follow-up
       setSubmitted(true);
     } catch (err) {
       setError(err.message || yeti.oops());
@@ -115,10 +122,10 @@ export default function PartnerIntakePage() {
                 <path d="M6 16l7 7 13-13" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
-            <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, margin: '0 0 12px' }}>You're on the list.</h1>
+            <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, margin: '0 0 12px' }}>You're all set!</h1>
             <p style={{ color: C.textMuted, fontSize: 15, lineHeight: 1.7, margin: '0 0 28px' }}>
-              Daryl will review your details and reach out within a day or two to get you set up.
-              Once your bank account is connected, your first event goes live.
+              Your bank account is connected and you're ready to sell tickets and collect sponsorships.
+              Reach out to Daryl any time to get your first event live.
             </p>
             <a href="/ticket-services" style={{ fontSize: 14, color: C.lakeBlue, textDecoration: 'none', fontWeight: 600 }}>
               ← Back to Ticket Services
