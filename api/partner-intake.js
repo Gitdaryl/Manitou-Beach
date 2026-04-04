@@ -4,7 +4,7 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const {
-    orgName, orgType, is501c3,
+    orgName, orgType,
     contactName, email, phone,
     services, // array: ['tickets', 'sponsorships']
     eventNames, typicalAttendance, ticketPriceRange, eventFrequency,
@@ -37,7 +37,6 @@ export default async function handler(req, res) {
         properties: {
           'Org Name':           { title: [{ text: { content: orgName.trim() } }] },
           'Org Type':           { select: { name: orgType || 'Other' } },
-          'Is 501(c)(3)':       { checkbox: !!is501c3 },
           'Contact Name':       { rich_text: [{ text: { content: contactName.trim() } }] },
           'Email':              { email: email.trim() },
           'Phone':              { phone_number: (phone || '').trim() || null },

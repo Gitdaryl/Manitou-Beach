@@ -51,7 +51,7 @@ export default function PartnerIntakePage() {
   const [error, setError] = useState('');
 
   const [form, setForm] = useState({
-    orgName: '', orgType: '', is501c3: false,
+    orgName: '', orgType: '',
     contactName: '', email: '', phone: '',
     wantsTickets: false, wantsSponsorships: false,
     eventNames: '', typicalAttendance: '', ticketPriceRange: '', eventFrequency: '',
@@ -80,7 +80,7 @@ export default function PartnerIntakePage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          orgName: form.orgName, orgType: form.orgType, is501c3: form.is501c3,
+          orgName: form.orgName, orgType: form.orgType,
           contactName: form.contactName, email: form.email, phone: form.phone,
           services,
           eventNames: form.eventNames, typicalAttendance: form.typicalAttendance,
@@ -184,13 +184,6 @@ export default function PartnerIntakePage() {
                 </select>
               </Field>
             </div>
-            <Field label="Is your organization a registered 501(c)(3)?">
-              <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', fontSize: 14, color: C.text }}>
-                <input type="checkbox" checked={form.is501c3} onChange={set('is501c3')} style={{ width: 16, height: 16 }} />
-                Yes — we're a tax-exempt nonprofit
-              </label>
-            </Field>
-
             {/* Contact */}
             <div style={SECTION_TITLE}>Your Contact Info</div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
@@ -272,11 +265,11 @@ export default function PartnerIntakePage() {
                 cursor: submitting ? 'default' : 'pointer', transition: 'background 0.2s',
               }}
             >
-              {submitting ? 'Submitting...' : 'Submit — Daryl Will Be In Touch →'}
+              {submitting ? 'Setting up your account...' : 'Continue to Bank Setup →'}
             </button>
 
             <p style={{ marginTop: 14, fontSize: 12, color: C.textMuted, textAlign: 'center', lineHeight: 1.6 }}>
-              No payment required to submit. Bank setup happens in a separate step after Daryl reviews your details.
+              You'll be taken to Stripe to connect your bank account. Watch for a confirmation email from Stripe — check spam or junk if you don't see it.
             </p>
           </form>
         </FadeIn>
