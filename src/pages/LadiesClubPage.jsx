@@ -790,33 +790,100 @@ function LadiesClubSponsorForm() {
 }
 
 function LadiesClubGetInvolved() {
+  const cards = [
+    {
+      icon: "🏆",
+      label: "Become a Sponsor",
+      desc: "Support the Summer Festival and get your business in front of the whole community. Five tiers starting at $25.",
+      action: "View Sponsorship",
+      href: "#ladies-sponsor-form",
+      onClick: (e) => { e.preventDefault(); document.querySelector('[data-section="ladies-sponsor-form"]')?.scrollIntoView({ behavior: 'smooth' }); },
+      accent: "#b08d57",
+    },
+    {
+      icon: "🎨",
+      label: "Vendor / Artist Booth",
+      desc: "Artists, crafters, food trucks, and community vendors — apply for a booth at the 2026 Devils Lake Summerfest.",
+      action: "Apply Now",
+      href: "/ladies-club/vendor",
+      accent: C.sage,
+      badge: "Open",
+    },
+    {
+      icon: "💙",
+      label: "Join the Club",
+      desc: "Open to women in the lakes community. Meet great people, give back, and be part of something that matters.",
+      action: "Coming Soon",
+      href: null,
+      accent: C.sunset,
+      disabled: true,
+    },
+  ];
+
   return (
-    <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
-      <div style={{ maxWidth: 600, margin: "0 auto", textAlign: "center" }}>
+    <section style={{ background: C.night, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 900, margin: "0 auto" }}>
         <FadeIn>
-          <SectionLabel>Get Involved</SectionLabel>
-          <SectionTitle center>Connect with the Club</SectionTitle>
-          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, marginBottom: 32 }}>
-            Interested in the Summer Festival, community events, or membership? Reach out — the lakes community is always welcoming new faces.
-          </p>
-          <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-            <a href="mailto:michele.henson0003@gmail.com" className="btn-animated" style={{
-              display: "inline-flex", alignItems: "center", gap: 8,
-              padding: "14px 32px", borderRadius: 8,
-              background: C.sunset, color: C.cream,
-              fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
-            }}>
-              Send us a message
-            </a>
-            <a href="/devils-lake" className="btn-animated" style={{
-              display: "inline-flex", alignItems: "center", gap: 8,
-              padding: "14px 32px", borderRadius: 8,
-              background: "transparent", border: `1.5px solid ${C.sand}`, color: C.text,
-              fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
-            }}>
-              Back to Devils Lake
-            </a>
+          <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <SectionLabel style={{ color: "rgba(255,255,255,0.45)" }}>Get Involved</SectionLabel>
+            <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 36px)", fontWeight: 400, color: C.cream, margin: "8px 0 12px" }}>
+              Three Ways to Be Part of It
+            </h2>
+            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.5)", lineHeight: 1.7, maxWidth: 440, margin: "0 auto" }}>
+              Whether you're a business, an artist, or just someone who loves this community — there's a place for you.
+            </p>
           </div>
+        </FadeIn>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 16 }}>
+          {cards.map((card, i) => (
+            <FadeIn key={i} delay={i * 80}>
+              <div style={{
+                background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)",
+                borderRadius: 16, padding: "28px 24px", height: "100%", boxSizing: "border-box",
+                display: "flex", flexDirection: "column",
+              }}>
+                <div style={{ fontSize: 28, marginBottom: 14 }}>{card.icon}</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                  <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, color: C.cream, fontWeight: 400 }}>{card.label}</span>
+                  {card.badge && (
+                    <span style={{ background: C.sage, color: "#fff", fontSize: 10, fontWeight: 700, letterSpacing: 0.5, padding: "2px 8px", borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif", textTransform: "uppercase" }}>{card.badge}</span>
+                  )}
+                </div>
+                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.55)", lineHeight: 1.65, flex: 1, margin: "0 0 20px" }}>{card.desc}</p>
+                {card.disabled ? (
+                  <span style={{ display: "inline-block", padding: "10px 20px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.15)", fontSize: 13, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textAlign: "center" }}>
+                    {card.action}
+                  </span>
+                ) : (
+                  <a
+                    href={card.href}
+                    onClick={card.onClick}
+                    style={{
+                      display: "inline-block", padding: "11px 20px", borderRadius: 8,
+                      background: card.accent, color: "#fff",
+                      fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700,
+                      textDecoration: "none", textAlign: "center", letterSpacing: 0.3,
+                      transition: "opacity 0.2s",
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.opacity = "0.88"}
+                    onMouseLeave={e => e.currentTarget.style.opacity = "1"}
+                  >
+                    {card.action}
+                  </a>
+                )}
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+
+        <FadeIn delay={300}>
+          <p style={{ textAlign: "center", fontSize: 13, color: "rgba(255,255,255,0.35)", marginTop: 40 }}>
+            Questions? Email{" "}
+            <a href="mailto:Michele.henson0003@gmail.com" style={{ color: "rgba(255,255,255,0.55)" }}>Michele.henson0003@gmail.com</a>
+            {" "}or visit our{" "}
+            <a href="https://www.facebook.com/groups/LandAndLakeLadiesClub" target="_blank" rel="noopener noreferrer" style={{ color: "rgba(255,255,255,0.55)" }}>Facebook page</a>.
+          </p>
         </FadeIn>
       </div>
     </section>
