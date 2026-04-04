@@ -126,7 +126,7 @@ async function generateVendorReceipt({ vendorId, vendorName, contactName, boothT
   // Background
   page.drawRectangle({ x: 0, y: 0, width: 612, height: 360, color: cream });
 
-  // Header bar — organizer branded
+  // Header bar - organizer branded
   page.drawRectangle({ x: 0, y: 300, width: 612, height: 60, color: dark });
   const orgDisplay = (organizerName || 'Event Organizer').toUpperCase();
   const orgSize = orgDisplay.length > 28 ? 13 : 16;
@@ -250,7 +250,7 @@ export default async function handler(req, res) {
         await resend.emails.send({
           from: `${orgName} <tickets@manitoubeachmichigan.com>`,
           to: email,
-          subject: `Vendor registration confirmed — ${event.name} (${vendorId})`,
+          subject: `Vendor registration confirmed - ${event.name} (${vendorId})`,
           html: `
             <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#FAF6EF;">
               <h1 style="color:#1A2830;font-size:22px;margin:0 0 8px;">You're registered!</h1>
@@ -292,7 +292,7 @@ export default async function handler(req, res) {
           await resend.emails.send({
             from: 'Yetickets <tickets@manitoubeachmichigan.com>',
             to: event.organizerEmail,
-            subject: `New vendor registered: ${vendorName} — ${event.name}`,
+            subject: `New vendor registered: ${vendorName} - ${event.name}`,
             html: `
               <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#FAF6EF;">
                 <h2 style="color:#1A2830;font-size:18px;margin:0 0 16px;">New vendor registration</h2>
@@ -300,7 +300,7 @@ export default async function handler(req, res) {
                   <p style="margin:0 0 4px;color:#8C806E;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Business</p>
                   <p style="margin:0 0 12px;color:#1A2830;font-size:16px;font-weight:600;">${vendorName}</p>
                   <p style="margin:0 0 4px;color:#8C806E;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Contact</p>
-                  <p style="margin:0 0 12px;color:#1A2830;font-size:14px;">${contactName} — ${email}${phone ? ` · ${phone}` : ''}</p>
+                  <p style="margin:0 0 12px;color:#1A2830;font-size:14px;">${contactName} - ${email}${phone ? ` · ${phone}` : ''}</p>
                   <p style="margin:0 0 4px;color:#8C806E;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Booth / Category</p>
                   <p style="margin:0;color:#1A2830;font-size:14px;">${boothType || 'General'}</p>
                 </div>

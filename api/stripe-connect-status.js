@@ -1,4 +1,4 @@
-// Admin endpoint — checks whether a community org's Stripe Express account
+// Admin endpoint - checks whether a community org's Stripe Express account
 // is fully onboarded and ready to accept payments.
 import Stripe from 'stripe';
 

@@ -1,4 +1,4 @@
-// Nightly cron — downgrade expired one-time featured listings back to "Listed Free"
+// Nightly cron - downgrade expired one-time featured listings back to "Listed Free"
 // and clear the Featured Expires date so they don't get re-processed.
 
 export default async function handler(req, res) {

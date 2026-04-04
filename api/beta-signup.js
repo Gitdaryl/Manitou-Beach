@@ -1,6 +1,6 @@
 // /api/beta-signup.js
-// GET  — returns { remaining } spots count
-// POST { name, phone, email, is_business } — saves beta tester, returns access code on screen
+// GET  - returns { remaining } spots count
+// POST { name, phone, email, is_business } - saves beta tester, returns access code on screen
 import { Resend } from 'resend';
 import { normalizePhone } from './lib/twilio.js';
 
@@ -13,7 +13,7 @@ const NOTION_HEADERS = {
 };
 
 function generateCode() {
-  // MB + 4 random chars — excludes confusable chars (0, O, I, 1)
+  // MB + 4 random chars - excludes confusable chars (0, O, I, 1)
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let code = 'MB';
   for (let i = 0; i < 4; i++) {
@@ -58,7 +58,7 @@ export default async function handler(req, res) {
   try {
     const { name, phone, email, is_business, _hp } = req.body || {};
 
-    // Honeypot — bots fill this, humans don't
+    // Honeypot - bots fill this, humans don't
     if (_hp) {
       return res.status(200).json({ success: true, code: 'MBTEST', remaining_codes: max });
     }
@@ -81,7 +81,7 @@ export default async function handler(req, res) {
     if (count >= max) {
       return res.status(200).json({
         success: false,
-        error: 'Beta access is full. Join us on launch day — May 1.',
+        error: 'Beta access is full. Join us on launch day - May 1.',
       });
     }
 
@@ -109,7 +109,7 @@ export default async function handler(req, res) {
     if (!notionRes.ok) {
       const err = await notionRes.text();
       console.error('beta-signup Notion error:', err);
-      return res.status(500).json({ error: 'Failed to save — please try again' });
+      return res.status(500).json({ error: 'Failed to save - please try again' });
     }
 
     // ── Beehiiv auto-subscribe (fire-and-forget) ───────────────────────────
@@ -140,14 +140,14 @@ export default async function handler(req, res) {
       resend.emails.send({
         from: 'Manitou Beach <events@manitoubeachmichigan.com>',
         to: emailClean,
-        subject: `You're in, ${firstName} — your free Manitou Beach listing is waiting`,
+        subject: `You're in, ${firstName} - your free Manitou Beach listing is waiting`,
         html: `
           <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; color: #3B3228; background: #FAF6EF; padding: 40px 32px; border-radius: 8px;">
             <p style="font-size: 22px; font-weight: bold; margin: 0 0 6px; color: #1A2830;">Welcome to Manitou Beach, ${firstName}.</p>
-            <p style="font-size: 15px; color: #6B5F52; margin: 0 0 24px; line-height: 1.7;">You're one of the first businesses on a platform built for this community — for the people who love Devils Lake and come back every summer.</p>
+            <p style="font-size: 15px; color: #6B5F52; margin: 0 0 24px; line-height: 1.7;">You're one of the first businesses on a platform built for this community - for the people who love Devils Lake and come back every summer.</p>
             <p style="font-size: 15px; margin: 0 0 8px;">Your beta code: <strong style="font-size: 20px; letter-spacing: 3px; color: #1A2830;">${code}</strong></p>
-            <p style="font-size: 13px; color: #8A7E6E; margin: 0 0 28px;">Screenshot it — you'll enter it when the site opens April 10.</p>
-            <p style="font-size: 15px; margin: 0 0 16px; line-height: 1.7;">As a founding business, your listing is <strong>completely free through May 10</strong>. Add your card now — you won't be charged a cent until after the site launches.</p>
+            <p style="font-size: 13px; color: #8A7E6E; margin: 0 0 28px;">Screenshot it - you'll enter it when the site opens April 10.</p>
+            <p style="font-size: 15px; margin: 0 0 16px; line-height: 1.7;">As a founding business, your listing is <strong>completely free through May 10</strong>. Add your card now - you won't be charged a cent until after the site launches.</p>
             <p style="margin: 28px 0;">
               <a href="${baseUrl}/beta-business" style="background: #D4845A; color: #FAF6EF; text-decoration: none; padding: 15px 30px; border-radius: 4px; font-family: sans-serif; font-weight: bold; font-size: 14px; letter-spacing: 1px; display: inline-block;">
                 Choose My Listing Tier →
@@ -155,9 +155,9 @@ export default async function handler(req, res) {
             </p>
             <div style="background: #fff; border-radius: 6px; padding: 20px 24px; margin-bottom: 24px; border: 1px solid #E8DFD0;">
               <p style="margin: 0 0 10px; font-size: 12px; color: #8A7E6E; text-transform: uppercase; letter-spacing: 1px; font-family: sans-serif;">Three tiers. All free until May 10.</p>
-              <p style="margin: 0 0 6px; font-size: 14px;"><strong>Enhanced</strong> <span style="color: #8A7E6E;">— $9/mo</span> · Link, description, expandable card</p>
-              <p style="margin: 0 0 6px; font-size: 14px;"><strong>Featured</strong> <span style="color: #8A7E6E;">— $23/mo</span> · Spotlight card, logo, priority placement (3 slots)</p>
-              <p style="margin: 0; font-size: 14px;"><strong>Premium</strong> <span style="color: #8A7E6E;">— $43/mo</span> · Full-width banner, top of page (1 slot)</p>
+              <p style="margin: 0 0 6px; font-size: 14px;"><strong>Enhanced</strong> <span style="color: #8A7E6E;">- $9/mo</span> · Link, description, expandable card</p>
+              <p style="margin: 0 0 6px; font-size: 14px;"><strong>Featured</strong> <span style="color: #8A7E6E;">- $23/mo</span> · Spotlight card, logo, priority placement (3 slots)</p>
+              <p style="margin: 0; font-size: 14px;"><strong>Premium</strong> <span style="color: #8A7E6E;">- $43/mo</span> · Full-width banner, top of page (1 slot)</p>
             </div>
             <p style="font-size: 13px; color: #8A7E6E; margin: 0 0 6px;">Questions? Reply here or DM us on Facebook. We'll get back to you fast.</p>
             <hr style="border: none; border-top: 1px solid #E8DFD0; margin: 28px 0 16px;">
@@ -167,7 +167,7 @@ export default async function handler(req, res) {
       }).catch(() => {});
     }
 
-    // ── SMS via Twilio (guarded — soft-fail if A2P not live) ───────────────
+    // ── SMS via Twilio (guarded - soft-fail if A2P not live) ───────────────
     const twilioReady =
       process.env.TWILIO_ACCOUNT_SID &&
       process.env.TWILIO_AUTH_TOKEN &&
@@ -176,10 +176,10 @@ export default async function handler(req, res) {
     if (twilioReady) {
       try {
         const smsBody =
-          `Hey ${firstName} — you're in! Welcome to the Manitou Beach beta.\n\n` +
+          `Hey ${firstName} - you're in! Welcome to the Manitou Beach beta.\n\n` +
           `Your personal access code: ${code}\n\n` +
-          `This code is unique to you — please don't share it. Use it to enter the site each time you visit.\n\n` +
-          `You have exclusive early access starting right now. The site opens to the public ${LAUNCH_DATE_DISPLAY} at manitoubeachmichigan.com — you get a head start.\n\n` +
+          `This code is unique to you - please don't share it. Use it to enter the site each time you visit.\n\n` +
+          `You have exclusive early access starting right now. The site opens to the public ${LAUNCH_DATE_DISPLAY} at manitoubeachmichigan.com - you get a head start.\n\n` +
           `Reply STOP to opt out.`;
 
         await fetch(
@@ -209,6 +209,6 @@ export default async function handler(req, res) {
     return res.status(200).json({ success: true, code, remaining_codes, spot_number, is_business: !!is_business });
   } catch (err) {
     console.error('beta-signup error:', err.message);
-    return res.status(500).json({ error: 'Server error — please try again' });
+    return res.status(500).json({ error: 'Server error - please try again' });
   }
 }

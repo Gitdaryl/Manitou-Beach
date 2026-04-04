@@ -1,5 +1,5 @@
 // /api/qa-agent.js
-// QA Agent — evaluates pending food truck registrations via Claude
+// QA Agent - evaluates pending food truck registrations via Claude
 // Runs on cron every 30 min, or trigger manually via POST /api/qa-agent
 //
 // Notion Status flow:  Pending → Active (approved) | Rejected | Flagged
@@ -33,7 +33,7 @@ export default async function handler(req, res) {
       } catch (err) {
         console.error(`Claude eval failed for ${truck.name}:`, err.message);
         decision = 'FLAG';
-        reason = 'Evaluation error — manual review needed';
+        reason = 'Evaluation error - manual review needed';
       }
 
       await updateTruckStatus(truck.pageId, decision, reason);
@@ -43,7 +43,7 @@ export default async function handler(req, res) {
           try {
             await sendCheckinLink(truck);
           } catch (smsErr) {
-            console.error(`SMS failed for ${truck.name} — trying email fallback:`, smsErr.message);
+            console.error(`SMS failed for ${truck.name} - trying email fallback:`, smsErr.message);
             try {
               await sendCheckinLinkEmail(truck);
             } catch (emailErr) {
@@ -51,7 +51,7 @@ export default async function handler(req, res) {
             }
           }
         } else if (truck.email) {
-          // No phone on file — go straight to email
+          // No phone on file - go straight to email
           try {
             await sendCheckinLinkEmail(truck);
           } catch (err) {
@@ -62,7 +62,7 @@ export default async function handler(req, res) {
 
       const bucket = decision === 'APPROVE' ? 'approved' : decision === 'REJECT' ? 'rejected' : 'flagged';
       results[bucket].push({ name: truck.name, reason });
-      console.log(`QA: ${decision} — ${truck.name} — ${reason}`);
+      console.log(`QA: ${decision} - ${truck.name} - ${reason}`);
     }
 
     await sendSummary(results);
@@ -132,11 +132,11 @@ Submission:
 - Website: "${truck.website || '(none)'}"
 
 Evaluation rules:
-APPROVE — Name looks like a real food truck business. Cuisine is set. Phone is present. Slug is present. Check-in token is present. No red flags.
-REJECT  — Name is gibberish, spam, profanity, or clearly a test/fake (e.g. "asdfgh", "fuck you", "fake truck"). Description contains hostile or inappropriate content.
-FLAG    — Any required field is missing (phone, slug, or token). Name is unusual but not clearly fake. Something seems off but you're not certain. When in doubt, flag.
+APPROVE - Name looks like a real food truck business. Cuisine is set. Phone is present. Slug is present. Check-in token is present. No red flags.
+REJECT  - Name is gibberish, spam, profanity, or clearly a test/fake (e.g. "asdfgh", "fuck you", "fake truck"). Description contains hostile or inappropriate content.
+FLAG    - Any required field is missing (phone, slug, or token). Name is unusual but not clearly fake. Something seems off but you're not certain. When in doubt, flag.
 
-Important: "test-truck" and similar test entries should be FLAGGED, not approved or rejected — they may be legitimate platform tests.
+Important: "test-truck" and similar test entries should be FLAGGED, not approved or rejected - they may be legitimate platform tests.
 
 Respond with valid JSON only, no other text:
 {"decision": "APPROVE", "reason": "one short sentence explaining the decision"}`;
@@ -179,7 +179,7 @@ Respond with valid JSON only, no other text:
       } catch { /* fall through */ }
     }
     console.error('Failed to parse Claude response:', text);
-    return { decision: 'FLAG', reason: 'Could not parse AI evaluation — manual review needed' };
+    return { decision: 'FLAG', reason: 'Could not parse AI evaluation - manual review needed' };
   }
 }
 
@@ -227,7 +227,7 @@ async function sendCheckinLink(truck) {
     `Your personal check-in link:`,
     checkinUrl,
     ``,
-    `Tap it every time you head out — it puts your live pin on the map in seconds.`,
+    `Tap it every time you head out - it puts your live pin on the map in seconds.`,
     `Questions? Reply or text Daryl at ${process.env.DARYL_PHONE}.`,
   ].join('\n');
 
@@ -261,7 +261,7 @@ async function sendCheckinLink(truck) {
 
 async function sendCheckinLinkEmail(truck) {
   if (!truck.email || !process.env.RESEND_API_KEY) {
-    throw new Error('No email address or RESEND_API_KEY — cannot send fallback email');
+    throw new Error('No email address or RESEND_API_KEY - cannot send fallback email');
   }
 
   const checkinUrl = buildCheckinUrl(truck);
@@ -270,7 +270,7 @@ async function sendCheckinLinkEmail(truck) {
   await resend.emails.send({
     from: 'Manitou Beach <hello@manitoubeachmichigan.com>',
     to: truck.email,
-    subject: `🚚 You're approved — here's your Manitou Beach check-in link`,
+    subject: `🚚 You're approved - here's your Manitou Beach check-in link`,
     html: `
       <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#FAF6EF;">
         <h1 style="color:#1A2830;font-size:22px;margin:0 0 8px;">Welcome to Manitou Beach, ${truck.name}!</h1>
@@ -279,11 +279,11 @@ async function sendCheckinLinkEmail(truck) {
         </p>
         <div style="background:#fff;border-radius:12px;padding:20px 24px;margin-bottom:24px;border:1px solid #E8E0D5;">
           <p style="margin:0 0 4px;color:#8C806E;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Your personal check-in link</p>
-          <p style="margin:0 0 16px;color:#3B3228;font-size:14px;line-height:1.6;">Tap this every time you head out — it puts your live pin on the map in seconds.</p>
+          <p style="margin:0 0 16px;color:#3B3228;font-size:14px;line-height:1.6;">Tap this every time you head out - it puts your live pin on the map in seconds.</p>
           <a href="${checkinUrl}" style="display:inline-block;background:#1A2830;color:#FAF6EF;text-decoration:none;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;">
             Open My Check-In Link →
           </a>
-          <p style="margin:12px 0 0;color:#8C806E;font-size:11px;">Bookmark this link — it's unique to your truck.</p>
+          <p style="margin:12px 0 0;color:#8C806E;font-size:11px;">Bookmark this link - it's unique to your truck.</p>
         </div>
         <p style="color:#8C806E;font-size:13px;">Questions? Reply to this email or text Daryl at ${process.env.DARYL_PHONE || 'the number on file'}.</p>
       </div>
@@ -297,7 +297,7 @@ async function sendCheckinLinkEmail(truck) {
 
 async function sendSummary(results) {
   const darylPhone = process.env.DARYL_PHONE;
-  if (!darylPhone) { console.warn('DARYL_PHONE not set — skipping SMS summary'); return; }
+  if (!darylPhone) { console.warn('DARYL_PHONE not set - skipping SMS summary'); return; }
 
   const total = results.approved.length + results.rejected.length + results.flagged.length;
   if (total === 0) return;

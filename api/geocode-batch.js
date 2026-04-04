@@ -9,7 +9,7 @@ async function geocodeAddress(address) {
   if (!res.ok) return null;
   const results = await res.json();
   if (!results.length) return null;
-  // Reject natural water features — Nominatim sometimes matches road addresses to the lake itself
+  // Reject natural water features - Nominatim sometimes matches road addresses to the lake itself
   if (results[0].class === 'natural' || results[0].type === 'water') return null;
   const lat = parseFloat(results[0].lat);
   const lng = parseFloat(results[0].lon);
@@ -53,14 +53,14 @@ export default async function handler(req, res) {
       const hasLat = p['Lat']?.number != null;
       const hasLng = p['Lng']?.number != null;
 
-      if (!address) { skipped++; details.push({ name, result: 'skipped — no address' }); continue; }
-      if (hasLat && hasLng) { skipped++; details.push({ name, result: 'skipped — already geocoded' }); continue; }
+      if (!address) { skipped++; details.push({ name, result: 'skipped - no address' }); continue; }
+      if (hasLat && hasLng) { skipped++; details.push({ name, result: 'skipped - already geocoded' }); continue; }
 
       // Rate limit: Nominatim asks for max 1 req/sec
       await new Promise(r => setTimeout(r, 1100));
 
       const coords = await geocodeAddress(address).catch(() => null);
-      if (!coords) { failed++; details.push({ name, result: 'failed — no result' }); continue; }
+      if (!coords) { failed++; details.push({ name, result: 'failed - no result' }); continue; }
 
       const patchRes = await fetch(`https://api.notion.com/v1/pages/${page.id}`, {
         method: 'PATCH',
@@ -82,7 +82,7 @@ export default async function handler(req, res) {
         details.push({ name, result: `geocoded → ${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)} (${coords.osmClass}/${coords.osmType})` });
       } else {
         failed++;
-        details.push({ name, result: 'failed — Notion patch error' });
+        details.push({ name, result: 'failed - Notion patch error' });
       }
     }
 

@@ -1,6 +1,6 @@
 // /api/food-trucks.js
-// GET  — returns all Active food trucks (with last check-in time)
-// POST — truck checks in; verifies slug + token, then updates Notion record
+// GET  - returns all Active food trucks (with last check-in time)
+// POST - truck checks in; verifies slug + token, then updates Notion record
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
@@ -143,7 +143,7 @@ async function handlePost(req, res) {
       return res.status(403).json({ error: 'Invalid token' });
     }
 
-    // ── CHECKOUT — truck is done for the day, pull the pin ──
+    // ── CHECKOUT - truck is done for the day, pull the pin ──
     if (action === 'checkout') {
       try {
         const patchRes = await fetch(`https://api.notion.com/v1/pages/${page.id}`, {
@@ -169,7 +169,7 @@ async function handlePost(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // ── PIN COLOR UPDATE — quick patch just for pin color ──
+    // ── PIN COLOR UPDATE - quick patch just for pin color ──
     if (action === 'update-pin-color') {
       try {
         const patchRes = await fetch(`https://api.notion.com/v1/pages/${page.id}`, {
@@ -188,7 +188,7 @@ async function handlePost(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // ── SCHEDULE ACTION — only patches Coming Date ──
+    // ── SCHEDULE ACTION - only patches Coming Date ──
     if (action === 'schedule') {
       const updateProps = {
         'Coming Date': comingDate ? { date: { start: comingDate } } : { date: null },
@@ -240,7 +240,7 @@ async function handlePost(req, res) {
       return res.status(500).json({ error: 'Check-in failed' });
     }
 
-    // Pin color update — must await before response or Vercel kills the lambda
+    // Pin color update - must await before response or Vercel kills the lambda
     if (pinColor) {
       try {
         const pcRes = await fetch(`https://api.notion.com/v1/pages/${page.id}`, {

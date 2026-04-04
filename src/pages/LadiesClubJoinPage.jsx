@@ -5,7 +5,7 @@ import { SectionLabel, SectionTitle, FadeIn } from '../components/Shared';
 import { C } from '../data/config';
 
 // ============================================================
-// 💙  LLLC MEMBERSHIP — /ladies-club/join
+// 💙  LLLC MEMBERSHIP - /ladies-club/join
 // ============================================================
 
 const INPUT = {
@@ -154,7 +154,7 @@ export default function LadiesClubJoinPage() {
       {/* Hero */}
       <section style={{ background: 'linear-gradient(160deg, #0a1a2e 0%, #0d2233 45%, #0e1f1a 100%)', padding: '100px 24px 60px', textAlign: 'center', position: 'relative' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 0%, rgba(40,140,130,0.15) 0%, transparent 65%)', pointerEvents: 'none' }} />
-        {/* Back arrow — inside hero, top-left */}
+        {/* Back arrow - inside hero, top-left */}
         <a href="/ladies-club" style={{ position: 'absolute', top: 76, left: 24, zIndex: 10, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,0.8)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6, letterSpacing: 0.2, background: 'rgba(255,255,255,0.08)', padding: '7px 14px', borderRadius: 20, border: '1px solid rgba(255,255,255,0.15)' }}>
           ← Ladies Club
         </a>
@@ -167,17 +167,17 @@ export default function LadiesClubJoinPage() {
             Join the Land & Lake<br />Ladies Club
           </h1>
           <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, maxWidth: 440, margin: '0 auto' }}>
-            Open enrollment — no special skills needed, just a willingness to help. $15/year, auto-renews annually.
+            Open enrollment - no special skills needed, just a willingness to help. $15/year, auto-renews annually.
           </p>
         </div>
       </section>
 
-      {/* Maslow needs — 4 cards */}
+      {/* Maslow needs - 4 cards */}
       <div style={{ background: C.warmWhite, borderBottom: `1px solid ${C.sand}`, padding: '40px 24px' }}>
         <div style={{ maxWidth: 860, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16 }}>
           {[
             { icon: '🤝', label: 'Belonging', copy: "Walk into any LLLC event and you already know half the room. Real friendships built around a real lake." },
-            { icon: '🌱', label: 'Purpose', copy: "Every bake sale, every clean-up, every fundraiser — you're the reason this community keeps getting better." },
+            { icon: '🌱', label: 'Purpose', copy: "Every bake sale, every clean-up, every fundraiser - you're the reason this community keeps getting better." },
             { icon: '✨', label: 'Recognition', copy: 'Your name on the roster. Your ideas on the agenda. Your face in the photos. You show up, you get seen.' },
             { icon: '🏡', label: 'Legacy', copy: "Decades from now, someone will be grateful this club existed. You're the one who kept it going." },
           ].map(({ icon, label, copy }) => (
@@ -197,7 +197,7 @@ export default function LadiesClubJoinPage() {
             <SectionLabel>Membership</SectionLabel>
             <SectionTitle>Join for $15/year</SectionTitle>
             <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, marginBottom: 40 }}>
-              Fill out the form below and you'll be taken to a secure checkout. Your membership renews automatically each year — cancel anytime.
+              Fill out the form below and you'll be taken to a secure checkout. Your membership renews automatically each year - cancel anytime.
             </p>
           </FadeIn>
 
@@ -252,7 +252,7 @@ export default function LadiesClubJoinPage() {
                 {submitting ? 'Redirecting to checkout…' : 'Join for $15/year →'}
               </button>
               <p style={{ textAlign: 'center', fontSize: 12, color: C.textMuted, marginTop: 12, lineHeight: 1.5 }}>
-                Secure payment via Stripe. Renews annually — cancel anytime from your receipt email.
+                Secure payment via Stripe. Renews annually - cancel anytime from your receipt email.
               </p>
             </FadeIn>
           </form>

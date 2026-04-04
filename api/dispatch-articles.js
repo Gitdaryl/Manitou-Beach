@@ -32,7 +32,7 @@ function parseBlocks(blocks) {
     flushList();
     if (type === 'paragraph') {
       const text = richTextToString(block.paragraph?.rich_text);
-      if (text && text.trim().startsWith('[[NL:')) continue; // newsletter-only — strip from blog
+      if (text && text.trim().startsWith('[[NL:')) continue; // newsletter-only - strip from blog
       if (text) content.push({ type: 'p', text });
     } else if (type === 'heading_1') {
       content.push({ type: 'h1', text: richTextToString(block.heading_1?.rich_text) });
@@ -59,7 +59,7 @@ function parseBlocks(blocks) {
 export default async function handler(req, res) {
   const slug = req.query?.slug;
 
-  // If slug provided — return single article with full content
+  // If slug provided - return single article with full content
   if (slug) {
     res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate');
     try {
@@ -127,7 +127,7 @@ export default async function handler(req, res) {
     }
   }
 
-  // No slug — return public article list (Blog Safe only)
+  // No slug - return public article list (Blog Safe only)
   res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate');
   try {
     const response = await fetch(

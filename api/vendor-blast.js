@@ -70,7 +70,7 @@ export default async function handler(req, res) {
         const digits = normalizePhone(phone);
         if (digits.length !== 10) continue;
         try {
-          const ok = await sendSMS(digits, `${organizerName}\n\n${message.trim()}\n\n— ${eventName}`);
+          const ok = await sendSMS(digits, `${organizerName}\n\n${message.trim()}\n\n- ${eventName}`);
           if (ok) sent++;
           else errors.push({ phone, error: 'Send failed' });
         } catch (e) {
@@ -109,7 +109,7 @@ export default async function handler(req, res) {
           subject,
           html: `
             <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#FAF6EF;">
-              <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#8C806E;margin-bottom:8px;">${organizerName} — Vendor Update</div>
+              <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#8C806E;margin-bottom:8px;">${organizerName} - Vendor Update</div>
               <h2 style="color:#1A2830;font-size:20px;margin:0 0 20px;">${subject}</h2>
               <div style="font-size:15px;color:#3A3028;line-height:1.7;white-space:pre-line;">${messageHtml}</div>
               <div style="margin-top:32px;padding-top:20px;border-top:1px solid #E8E0D5;">

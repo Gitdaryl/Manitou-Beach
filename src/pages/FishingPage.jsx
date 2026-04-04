@@ -12,10 +12,10 @@ export const DEVILS_LAKE_FISH = [
     latin: "Micropterus salmoides",
     image: "/images/fish/largemouth-bass.jpg",
     accentColor: C.sage,
-    desc: "The king of Devils Lake. Ambush predators that hang tight to structure — docks, fallen timber, weed edges. Aggressive fighters that will have you coming back every weekend.",
+    desc: "The king of Devils Lake. Ambush predators that hang tight to structure - docks, fallen timber, weed edges. Aggressive fighters that will have you coming back every weekend.",
     bait: ["Plastic worms (Texas rig)", "Jigs with crawfish trailer", "Topwater frogs over weeds", "Spinnerbaits", "Crankbaits in early spring"],
     tackle: "Medium-heavy rod, 12–17 lb fluorocarbon or braid",
-    bestTime: "Dawn & dusk — especially the first two hours after sunrise",
+    bestTime: "Dawn & dusk - especially the first two hours after sunrise",
     bestSeason: "Late May through October. Peak: June–July spawn",
     dnrNote: "Healthy, naturally reproducing population. Catch-and-release helps maintain trophy size fish.",
   },
@@ -29,26 +29,26 @@ export const DEVILS_LAKE_FISH = [
     tackle: "Medium rod, 8–12 lb fluorocarbon",
     bestTime: "Morning and late afternoon",
     bestSeason: "Spring (pre-spawn) and Fall. Cooler water brings them shallower.",
-    dnrNote: "Prefers cooler, clearer water — more common near rocky areas on the north shore.",
+    dnrNote: "Prefers cooler, clearer water - more common near rocky areas on the north shore.",
   },
   {
     name: "Bluegill",
     latin: "Lepomis macrochirus",
     image: "/images/fish/bluegill.jpg",
     accentColor: C.lakeBlue,
-    desc: "The ultimate family fish and the best eating in the lake. Devils Lake has excellent bluegill numbers — beds are visible from shore in 2–4 feet of water during the June spawn. Great for kids and beginners.",
+    desc: "The ultimate family fish and the best eating in the lake. Devils Lake has excellent bluegill numbers - beds are visible from shore in 2–4 feet of water during the June spawn. Great for kids and beginners.",
     bait: ["Small worms on #8 hook", "Crickets", "Small jigs (1/32 oz)", "Wax worms", "Bread balls"],
     tackle: "Light rod, 4–6 lb monofilament, small bobber",
     bestTime: "Midday during spawn (June). Early morning rest of season.",
     bestSeason: "Year-round. Spawn (late May–June) is easiest. Ice fishing produces well in winter.",
-    dnrNote: "Averaged 7\" in DNR surveys — 70% legal size. One of the healthiest panfish populations in the region.",
+    dnrNote: "Averaged 7\" in DNR surveys - 70% legal size. One of the healthiest panfish populations in the region.",
   },
   {
     name: "Northern Pike",
     latin: "Esox lucius",
     image: "/images/fish/northern-pike.jpg",
     accentColor: C.sunset,
-    desc: "The Tip-Up Festival star. Aggressive ambush predators with a mouth full of teeth — use a wire leader. Through the ice in February they're at their most accessible. Summer pike hit big lures and live bait near weed beds.",
+    desc: "The Tip-Up Festival star. Aggressive ambush predators with a mouth full of teeth - use a wire leader. Through the ice in February they're at their most accessible. Summer pike hit big lures and live bait near weed beds.",
     bait: ["Large swimbaits", "Live suckers or shiners (ice fishing)", "Tip-ups with sucker minnow", "Big spinnerbaits", "Johnson Silver Minnow over weeds"],
     tackle: "Medium-heavy to heavy rod, 20–30 lb braid, steel or titanium wire leader",
     bestTime: "Early morning and overcast days",
@@ -60,7 +60,7 @@ export const DEVILS_LAKE_FISH = [
     latin: "Pomoxis nigromaculatus",
     image: "/images/fish/black-crappie.jpg",
     accentColor: C.lakeDark,
-    desc: "Light flaky meat that fries up beautifully. Crappie school up in spring near submerged structure — brush piles, dock pilings, and fallen trees. Patient fishing pays off.",
+    desc: "Light flaky meat that fries up beautifully. Crappie school up in spring near submerged structure - brush piles, dock pilings, and fallen trees. Patient fishing pays off.",
     bait: ["Small tube jigs (1/16–1/8 oz)", "Crappie jigs with marabou", "Small minnows under bobber", "Tiny swimbaits", "Wax worms"],
     tackle: "Ultralight rod, 4–6 lb monofilament, sensitive bobber",
     bestTime: "Early morning and late afternoon. Dusk in summer.",
@@ -75,16 +75,16 @@ export const DEVILS_LAKE_FISH = [
     desc: "Michigan's favorite panfish. Yellow perch school in large numbers and tend to be where you find one, you find a hundred. Sweet, firm white meat. A Devils Lake winter staple through the ice.",
     bait: ["Small jigs tipped with wax worm", "Live minnows", "Perch rigs with small hooks", "Gulp minnow tails", "Emerald shiners"],
     tackle: "Ultralight to light rod, 4–6 lb monofilament",
-    bestTime: "Morning bite is strongest. Schools move — follow the action.",
+    bestTime: "Morning bite is strongest. Schools move - follow the action.",
     bestSeason: "Year-round. Excellent ice fishing through winter. Fall schools near deep structure.",
-    dnrNote: "Averaged 9\"+ in DNR surveys — above state average. Strong naturally reproducing population.",
+    dnrNote: "Averaged 9\"+ in DNR surveys - above state average. Strong naturally reproducing population.",
   },
   {
     name: "Pumpkinseed Sunfish",
     latin: "Lepomis gibbosus",
     image: "/images/fish/pumpkinseed.jpg",
     accentColor: "#E8A030",
-    desc: "One of the most colorful freshwater fish in Michigan — orange and blue markings that look almost tropical. Abundant near weed beds and shoreline structure. A favorite for kids and great on ultralight tackle.",
+    desc: "One of the most colorful freshwater fish in Michigan - orange and blue markings that look almost tropical. Abundant near weed beds and shoreline structure. A favorite for kids and great on ultralight tackle.",
     bait: ["Small worms", "Wax worms", "Tiny jigs", "Crickets", "Small meal worms"],
     tackle: "Ultralight rod, 4 lb line, small hook and bobber",
     bestTime: "Midday near shallow weed beds",
@@ -96,10 +96,10 @@ export const DEVILS_LAKE_FISH = [
     latin: "Ameiurus nebulosus",
     image: "/images/fish/brown-bullhead.jpg",
     accentColor: C.warmGray,
-    desc: "Michigan's classic catfish. Whiskers, no scales, and a fighter at the end of the line. Night fishing for bullheads on warm summer evenings is a Manitou Beach tradition — cast and wait.",
+    desc: "Michigan's classic catfish. Whiskers, no scales, and a fighter at the end of the line. Night fishing for bullheads on warm summer evenings is a Manitou Beach tradition - cast and wait.",
     bait: ["Night crawlers", "Chicken liver", "Stink bait", "Dough balls", "Cut bait"],
     tackle: "Medium rod, 8–10 lb monofilament, bottom rig with 1–2 oz sinker",
-    bestTime: "After dark — night fishing is most productive May through August",
+    bestTime: "After dark - night fishing is most productive May through August",
     bestSeason: "Late spring through summer. Warm water triggers feeding.",
     dnrNote: "Bottom feeders. Best near muddy substrates and deep holes. A classic after-dark target.",
   },
@@ -127,7 +127,7 @@ const FISHING_SEASONS = [
   {
     season: "Ice Fishing",
     icon: "❄️",
-    desc: "February means Tip-Up Festival — the crown jewel of Manitou Beach winters. Northern pike, walleye, bluegill, crappie, and perch through the ice on both lakes.",
+    desc: "February means Tip-Up Festival - the crown jewel of Manitou Beach winters. Northern pike, walleye, bluegill, crappie, and perch through the ice on both lakes.",
     tip: "6–8 inches of clear ice typically by mid-January. Check DNR ice conditions before venturing out.",
   },
 ];
@@ -157,13 +157,13 @@ function FishingHero() {
             Fishing<br />Devils Lake
           </h1>
           <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: "clamp(14px, 1.6vw, 17px)", color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 520, margin: "0 0 32px 0" }}>
-            Two lakes. Twelve months of catching. Bass, pike, walleye, perch, and bluegill — plus one of Michigan's longest-running ice fishing festivals.
+            Two lakes. Twelve months of catching. Bass, pike, walleye, perch, and bluegill - plus one of Michigan's longest-running ice fishing festivals.
           </p>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
             <Btn href="https://www.michigan.gov/dnr/managing-resources/fisheries" variant="sunset">Michigan DNR Fishing Info ↗</Btn>
             <Btn href="/" variant="outlineLight" small>← Back to Home</Btn>
           </div>
-          <ShareBar title="Fishing Manitou Beach — Devils Lake & Round Lake" />
+          <ShareBar title="Fishing Manitou Beach - Devils Lake & Round Lake" />
         </div>
       </div>
     </section>
@@ -261,7 +261,7 @@ function FishingSpeciesSection() {
                     boxShadow: isOpen ? `0 8px 32px rgba(0,0,0,0.08)` : "none",
                   }}
                 >
-                  {/* Card header — always visible */}
+                  {/* Card header - always visible */}
                   <div
                     onClick={() => setOpenFish(isOpen ? null : i)}
                     className="fish-card-header"
@@ -346,7 +346,7 @@ function FishingSpeciesSection() {
 }
 
 function FishingCharterSection() {
-  // Placeholder charter/supplier cards — replace with real partners
+  // Placeholder charter/supplier cards - replace with real partners
   const charters = [
     {
       name: "Your Charter Here",
@@ -467,13 +467,13 @@ function FishingEventsSection() {
       when: "First full weekend of February",
       since: "Est. 1950s",
       accent: C.lakeBlue,
-      desc: "One of Michigan's longest-running winter festivals — 73+ consecutive years on frozen Devils Lake. Ice fishing tip-up contests, snowmobile racing, outhouse races, hovercraft rides, a poker run, and the legendary benefit auction. Draws thousands to Manitou Beach every February.",
+      desc: "One of Michigan's longest-running winter festivals - 73+ consecutive years on frozen Devils Lake. Ice fishing tip-up contests, snowmobile racing, outhouse races, hovercraft rides, a poker run, and the legendary benefit auction. Draws thousands to Manitou Beach every February.",
       link: "/mens-club",
-      linkLabel: "Men's Club — Event Organizers",
+      linkLabel: "Men's Club - Event Organizers",
     },
     {
       name: "Bass Fishing Tournament",
-      when: "Summer — exact date TBA",
+      when: "Summer - exact date TBA",
       since: "Annual",
       accent: C.sage,
       desc: "An annual bass tournament on Devils Lake drawing competitive anglers from across the region. Largemouth and smallmouth bass. Check with the Devils Lake Yacht Club or Men's Club for the current year's schedule and registration details.",
@@ -489,7 +489,7 @@ function FishingEventsSection() {
           <SectionLabel>On the Calendar</SectionLabel>
           <SectionTitle>Fishing Events</SectionTitle>
           <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 580, margin: "0 0 48px 0" }}>
-            Devils Lake hosts two signature fishing events each year — one in the heart of winter, one in the heat of summer.
+            Devils Lake hosts two signature fishing events each year - one in the heart of winter, one in the heat of summer.
           </p>
         </FadeIn>
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
@@ -528,10 +528,10 @@ function FishingTipUpCallout() {
           <SectionLabel light>Annual Tradition</SectionLabel>
           <SectionTitle light>Tip-Up Festival</SectionTitle>
           <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 560, margin: "0 auto 32px" }}>
-            First weekend of February. 73+ years of ice fishing on frozen Devils Lake — plus snowmobile racing, outhouse races, hovercraft rides, a poker run, and the legendary benefit auction. One of the longest-running winter festivals in Michigan.
+            First weekend of February. 73+ years of ice fishing on frozen Devils Lake - plus snowmobile racing, outhouse races, hovercraft rides, a poker run, and the legendary benefit auction. One of the longest-running winter festivals in Michigan.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-            <Btn href="/mens-club" variant="sunset">Men's Club — Event Organizers</Btn>
+            <Btn href="/mens-club" variant="sunset">Men's Club - Event Organizers</Btn>
             <Btn href="/events" variant="outlineLight" small>See All Events →</Btn>
           </div>
         </FadeIn>

@@ -35,13 +35,13 @@ function HappeningHero() {
       position: "relative",
       overflow: "hidden",
     }}>
-      {/* Dark overlay — preserves text readability */}
+      {/* Dark overlay - preserves text readability */}
       <div style={{
         position: "absolute", inset: 0,
         background: "linear-gradient(170deg, rgba(10,18,24,0.72) 0%, rgba(10,18,24,0.50) 50%, rgba(10,18,24,0.82) 100%)",
       }} />
 
-      {/* Decorative oversized year — pure design element */}
+      {/* Decorative oversized year - pure design element */}
       <div style={{
         position: "absolute",
         right: -10,
@@ -87,7 +87,7 @@ function HappeningHero() {
 }
 
 // ============================================================
-// 📅  /happening — WEEKLY RECURRING EVENTS
+// 📅  /happening - WEEKLY RECURRING EVENTS
 // ============================================================
 const WEEKLY_DESC_LIMIT = 180;
 
@@ -95,7 +95,7 @@ function WeeklyEventsSection({ events, onEventClick }) {
   const [expanded, setExpanded] = useState({});
   const eventCatColors = { "Live Music": C.sunset, "Food & Social": "#8B5E3C", "Sports & Outdoors": C.sage, Community: C.lakeBlue };
 
-  // Map full day name to short label — handles Notion "Recurring Day" select values
+  // Map full day name to short label - handles Notion "Recurring Day" select values
   const dayShort = (event) => {
     const day = event.recurringDay || "";
     const shorts = { Monday: "MON", Tuesday: "TUE", Wednesday: "WED", Thursday: "THU", Friday: "FRI", Saturday: "SAT", Sunday: "SUN" };
@@ -245,7 +245,7 @@ function WeeklyEventsSection({ events, onEventClick }) {
 }
 
 // ============================================================
-// 🔗 COMPACT SHARE BUTTON — for individual event rows
+// 🔗 COMPACT SHARE BUTTON - for individual event rows
 // ============================================================
 function EventShareBtn({ event, color }) {
   const [open, setOpen] = useState(false);
@@ -254,7 +254,7 @@ function EventShareBtn({ event, color }) {
 
   const siteUrl = typeof window !== "undefined" ? window.location.origin : "";
   const shareUrl = `${siteUrl}/happening`;
-  const shareText = `${event.name}${event.date ? ` — ${formatEventDate(event.date)}` : ""} at Manitou Beach`;
+  const shareText = `${event.name}${event.date ? ` - ${formatEventDate(event.date)}` : ""} at Manitou Beach`;
 
   useEffect(() => {
     if (!open) return;
@@ -346,7 +346,7 @@ function EventShareBtn({ event, color }) {
 }
 
 // ============================================================
-// 📅  /happening — SPECIAL / ONE-OFF EVENTS
+// 📅  /happening - SPECIAL / ONE-OFF EVENTS
 // ============================================================
 export function formatEventDate(dateStr) {
   if (!dateStr || dateStr.includes("TBA")) return dateStr || "";
@@ -358,8 +358,27 @@ export function formatEventDate(dateStr) {
   } catch { return dateStr; }
 }
 
+// Parse freeform time strings ("7pm", "7:30 PM", "11am", "noon", "19:00") → minutes since midnight
+function parseTimeMins(str) {
+  if (!str) return null;
+  const s = str.trim().toLowerCase();
+  if (s === 'noon') return 720;
+  if (s === 'midnight') return 0;
+  // Handle legacy combined "start – end" strings - extract end portion
+  const rangeSep = s.indexOf(' – ');
+  if (rangeSep !== -1) return parseTimeMins(s.slice(rangeSep + 3));
+  const m = s.match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm)?$/);
+  if (!m) return null;
+  let h = parseInt(m[1], 10);
+  const min = m[2] ? parseInt(m[2], 10) : 0;
+  const period = m[3];
+  if (period === 'pm' && h < 12) h += 12;
+  if (period === 'am' && h === 12) h = 0;
+  return h * 60 + min;
+}
+
 // ============================================================
-// 🗓️  REUSABLE EVENT ROW — used across all time-horizon sections
+// 🗓️  REUSABLE EVENT ROW - used across all time-horizon sections
 // ============================================================
 const EVENT_CAT_COLORS = { "Live Music": C.sunset, "Food & Social": "#8B5E3C", "Sports & Outdoors": C.sage, Community: C.lakeBlue, "Arts & Culture": "#7B6BA0", "Markets & Vendors": "#8B5E3C", Other: C.textMuted };
 
@@ -500,7 +519,7 @@ function EventRow({ event, onEventClick, isLast, variant = "default" }) {
 }
 
 // ============================================================
-// 📅  TIME-BUCKETED CALENDAR — This Week → This Month → Later
+// 📅  TIME-BUCKETED CALENDAR - This Week → This Month → Later
 // ============================================================
 function CalendarSection({ events, weeklyEvents = [], onEventClick, activeFilter, onFilterChange }) {
   const [expandedMonths, setExpandedMonths] = useState({});
@@ -533,8 +552,30 @@ function CalendarSection({ events, weeklyEvents = [], onEventClick, activeFilter
     return instances;
   }, [weeklyEvents, today.getTime()]);
 
-  // Merge one-time + virtual recurring, then filter
-  const allEvents = useMemo(() => [...events, ...virtualThisWeek].sort((a, b) => a.date.localeCompare(b.date)), [events, virtualThisWeek]);
+  // Today's string (YYYY-MM-DD) and current minutes for same-day time filtering
+  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+  const nowMins = now.getHours() * 60 + now.getMinutes();
+
+  // Merge one-time + virtual recurring; drop ended same-day events; sort by date then start time
+  const allEvents = useMemo(() => [...events, ...virtualThisWeek]
+    .filter(e => {
+      if (e.date !== todayStr) return true;       // not today - keep
+      if (!e.timeEnd) return true;                // no end time - keep all day
+      const endMins = parseTimeMins(e.timeEnd);
+      return endMins === null || endMins > nowMins; // keep if end time hasn't passed
+    })
+    .sort((a, b) => {
+      const dateCmp = a.date.localeCompare(b.date);
+      if (dateCmp !== 0) return dateCmp;
+      // Same date - sort by start time ascending
+      const aMin = parseTimeMins(a.time);
+      const bMin = parseTimeMins(b.time);
+      if (aMin === null && bMin === null) return 0;
+      if (aMin === null) return 1;  // no time goes last within the day
+      if (bMin === null) return -1;
+      return aMin - bMin;
+    }),
+  [events, virtualThisWeek]);
   const categories = ["All", ...new Set(allEvents.map(e => e.category))];
   const filtered = activeFilter === "All" ? allEvents : allEvents.filter(e => e.category === activeFilter);
 
@@ -619,7 +660,7 @@ function CalendarSection({ events, weeklyEvents = [], onEventClick, activeFilter
                 </p>
                 {nextEvent && (
                   <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.3)" }}>
-                    Next up: <strong style={{ color: C.sunsetLight }}>{nextEvent.name}</strong> — {formatEventDate(nextEvent.date)}
+                    Next up: <strong style={{ color: C.sunsetLight }}>{nextEvent.name}</strong> - {formatEventDate(nextEvent.date)}
                   </p>
                 )}
               </div>
@@ -628,7 +669,7 @@ function CalendarSection({ events, weeklyEvents = [], onEventClick, activeFilter
         </div>
       </section>
 
-      {/* ─── COMING UP — month-by-month accordion ─── */}
+      {/* ─── COMING UP - month-by-month accordion ─── */}
       {laterByMonth.length > 0 && (
         <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
           <div style={{ maxWidth: 1100, margin: "0 auto" }}>
@@ -699,7 +740,7 @@ function CalendarSection({ events, weeklyEvents = [], onEventClick, activeFilter
         </section>
       )}
 
-      {/* Empty state — no events at all */}
+      {/* Empty state - no events at all */}
       {filtered.length === 0 && (
         <section style={{ background: C.cream, padding: "80px 24px" }}>
           <div style={{ maxWidth: 1100, margin: "0 auto", textAlign: "center", padding: "60px 0", color: C.textMuted, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif" }}>
@@ -712,7 +753,7 @@ function CalendarSection({ events, weeklyEvents = [], onEventClick, activeFilter
 }
 
 // ============================================================
-// 🎬  /happening — VIDEO SECTION
+// 🎬  /happening - VIDEO SECTION
 // ============================================================
 function VideoMeta({ video }) {
   return (
@@ -812,13 +853,13 @@ function VideoSection() {
 }
 
 // ============================================================
-// 📅  SUBMIT EVENT CTA — redirects to /submit-event
+// 📅  SUBMIT EVENT CTA - redirects to /submit-event
 // ============================================================
 
 export function HappeningSubmitCTA({ simple = false }) {
   if (simple) {
     return (
-      <section style={{ background: C.night, padding: "72px 24px", textAlign: "center" }}>
+      <section id="submit-event" style={{ background: C.night, padding: "72px 24px", textAlign: "center" }}>
         <FadeIn>
           <img src="/images/yeti/yeti-clapper.png" alt="Yeti with clapperboard" style={{ width: 'clamp(120px, 22vw, 200px)', height: 'auto', marginBottom: 20, filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.3))' }} />
           <SectionLabel light>Get Involved</SectionLabel>
@@ -826,7 +867,7 @@ export function HappeningSubmitCTA({ simple = false }) {
             Got something good happening?
           </h3>
           <p style={{ fontSize: 15, color: "rgba(255,255,255,0.4)", margin: "0 0 32px 0", lineHeight: 1.75 }}>
-            Quick text code, fill in the fun stuff, and you're on the calendar. It's free — always.
+            Quick text code, fill in the fun stuff, and you're on the calendar. It's free - always.
           </p>
           <Btn href="/submit-event" variant="sunset">List Your Event Free →</Btn>
         </FadeIn>
@@ -844,7 +885,7 @@ export function HappeningSubmitCTA({ simple = false }) {
             Got something good happening?
           </h3>
           <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", margin: "0 0 44px 0", lineHeight: 1.8 }}>
-            Tell the whole lake about it. Fill in the details, verify your number,<br />and you're on the calendar. It's free — always.
+            Tell the whole lake about it. Fill in the details, verify your number,<br />and you're on the calendar. It's free - always.
           </p>
           <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap", marginBottom: 44 }}>
             {[
@@ -873,7 +914,7 @@ export function HappeningSubmitCTA({ simple = false }) {
 // 🗺️  EXPLORE
 
 // ============================================================
-// HERO TAKEOVER — full-width featured event from promotions API
+// HERO TAKEOVER - full-width featured event from promotions API
 // ============================================================
 function HeroTakeover({ event, onEventClick }) {
   if (!event) return null;
@@ -989,7 +1030,7 @@ export default function HappeningPage() {
               Homepage · Newsletter · Featured Banners
             </div>
             <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.4)", marginTop: 4 }}>
-              Founding sponsor rates available now — limited spots
+              Founding sponsor rates available now - limited spots
             </div>
           </div>
           <Btn href="/promote" variant="sunset">See Packages →</Btn>

@@ -5,7 +5,7 @@
 // 3. After beta, free tier: activates immediately
 // 4. After beta, paid tier: sets verified, returns needsPayment for Stripe
 //
-// Also handles resend: POST { phone, resend: true } — re-sends the code
+// Also handles resend: POST { phone, resend: true } - re-sends the code
 
 import { sendSMS, normalizePhone } from './lib/twilio.js';
 
@@ -81,7 +81,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Incorrect code. Please check your text messages and try again.' });
     }
 
-    // Code matches — determine activation path
+    // Code matches - determine activation path
     const isPaid = tier === 'listed' || tier === 'featured';
     const BETA_END = new Date('2026-05-10T00:00:00');
     const isBeta = new Date() < BETA_END;
@@ -99,10 +99,10 @@ export default async function handler(req, res) {
       updateProps['Status'] = { status: { name: 'Listed Enhanced' } };
       updateProps['Featured Expires'] = { date: { start: '2026-05-10' } };
     } else if (!isPaid) {
-      // Post-beta free tier — basic directory listing
+      // Post-beta free tier - basic directory listing
       updateProps['Status'] = { status: { name: 'Listed Enhanced' } };
     } else {
-      // Post-beta paid tier — verified but needs Stripe payment to go live
+      // Post-beta paid tier - verified but needs Stripe payment to go live
       updateProps['Status'] = { status: { name: 'New' } };
       // Stays in "New" until Stripe webhook confirms payment, then manually promoted
     }
@@ -126,7 +126,7 @@ export default async function handler(req, res) {
       // Send confirmation SMS
       const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
       await sendSMS(inputDigits,
-        `Manitou Beach Stays\n\n${stayName} is listed! 🏡\n\nYour property is now live at ${siteUrl}/stays — visitors can find you and click through to book on your site.\n\nBefore May 10 we'll reach out about keeping your listing live. Month to month, no contract, cancel anytime. Founding properties get first pick on Featured slots.\n\nWelcome aboard!`
+        `Manitou Beach Stays\n\n${stayName} is listed! 🏡\n\nYour property is now live at ${siteUrl}/stays - visitors can find you and click through to book on your site.\n\nBefore May 10 we'll reach out about keeping your listing live. Month to month, no contract, cancel anytime. Founding properties get first pick on Featured slots.\n\nWelcome aboard!`
       );
 
       return res.status(200).json({
@@ -137,7 +137,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // Post-beta paid tier — verified but needs Stripe payment
+    // Post-beta paid tier - verified but needs Stripe payment
     return res.status(200).json({
       ok: true,
       verified: true,

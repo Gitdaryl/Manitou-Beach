@@ -29,11 +29,11 @@ function normalizeUrl(url) {
 }
 
 export default async function handler(req, res) {
-  // POST — submit a new event
+  // POST - submit a new event
   if (req.method === 'POST') {
     const { name, category, email, phone, description, date, time, timeEnd, location, eventUrl, imageUrl, cost, recurring, recurringDay, attendance, rsvpCapacity, _hp } = req.body;
 
-    // Honeypot — bots fill hidden fields, humans don't
+    // Honeypot - bots fill hidden fields, humans don't
     if (_hp) return res.status(200).json({ success: true });
 
     if (!name || !email) {
@@ -110,7 +110,7 @@ export default async function handler(req, res) {
           });
         }
       }
-      // Send confirmation email (best-effort — never block the response)
+      // Send confirmation email (best-effort - never block the response)
       if (email && process.env.RESEND_API_KEY) {
         const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
         const editLink = `${siteUrl}/events/edit?token=${editToken}`;
@@ -137,7 +137,7 @@ export default async function handler(req, res) {
                   <a href="${editLink}" style="display:inline-block;background:#1A2830;color:#FAF6EF;text-decoration:none;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;">
                     Edit My Event
                   </a>
-                  <p style="margin:12px 0 0;color:#8C806E;font-size:11px;">Keep this email — it contains your private edit link.</p>
+                  <p style="margin:12px 0 0;color:#8C806E;font-size:11px;">Keep this email - it contains your private edit link.</p>
                 </div>
                 <div style="background:#FFF8F0;border-radius:12px;padding:20px 24px;border:1px solid #F0E4D0;">
                   <p style="margin:0 0 8px;color:#D4845A;font-size:12px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Want more visibility?</p>
@@ -161,7 +161,7 @@ export default async function handler(req, res) {
     }
   }
 
-  // GET — fetch approved/published events
+  // GET - fetch approved/published events
   res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate');
   try {
     const queryBody = {
@@ -200,7 +200,13 @@ export default async function handler(req, res) {
           dateEnd: notionDateEnd || parsedEnd,
           category: p['Category']?.rich_text?.[0]?.text?.content || 'Community',
           description: p['Description']?.rich_text?.[0]?.text?.content || '',
-          time: p['Time']?.rich_text?.[0]?.text?.content || '',
+          time: (() => {
+            // Prefer dedicated 'Time' field (admin-entered); fall back to start portion of 'Time End'
+            const notionTime = p['Time']?.rich_text?.[0]?.text?.content || '';
+            if (notionTime) return notionTime;
+            const raw = p['Time End']?.rich_text?.[0]?.text?.content || '';
+            return raw.includes(' – ') ? raw.split(' – ')[0].trim() : raw;
+          })(),
           location: p['Location']?.rich_text?.[0]?.text?.content || '',
           imageUrl: normalizeUrl(p['Image URL']?.url || null),
           email: p['Email']?.email || '',
@@ -208,7 +214,11 @@ export default async function handler(req, res) {
           cost: p['Cost']?.rich_text?.[0]?.text?.content || null,
           recurring: recurringVal,
           recurringDay: p['Recurring Day']?.select?.name || null,
-          timeEnd: p['Time End']?.rich_text?.[0]?.text?.content || null,
+          timeEnd: (() => {
+            const raw = p['Time End']?.rich_text?.[0]?.text?.content || null;
+            if (!raw) return null;
+            return raw.includes(' – ') ? raw.split(' – ')[1].trim() : null;
+          })(),
           attendance: p['Attendance']?.select?.name || null,
           updated: p['Updated']?.checkbox || false,
           rsvpEnabled: p['RSVP Enabled']?.checkbox || false,

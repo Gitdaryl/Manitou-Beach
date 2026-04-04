@@ -7,7 +7,7 @@ import { C, USA250_VIDEO_URL } from "../data/config";
 // 🎆  DEVILS & ROUND LAKE FIREWORKS PAGE (/fireworks)
 // ============================================================
 
-// Patriotic accent palette — blends with the site's warm cream theming
+// Patriotic accent palette - blends with the site's warm cream theming
 const FW = {
   gold: "#C9A84C",
   goldLight: "#E8C97A",
@@ -69,7 +69,7 @@ const FIREWORKS_SPONSOR_TIERS = [
   },
 ];
 
-// Named sponsors — populate as confirmed
+// Named sponsors - populate as confirmed
 // Format: { name: "Business Name", tier: "presenting" | "gold" | "silver" | "community" }
 const FIREWORKS_SPONSORS = [
   // { name: "Example Business", tier: "presenting" },
@@ -111,7 +111,7 @@ function FireworksHero() {
       overflow: "hidden",
       background: `linear-gradient(160deg, ${FW.navy} 0%, #0A1218 40%, #16091e 100%)`,
     }}>
-      {/* Loop video — drop file at /images/fireworks/fireworks-loop.mp4 */}
+      {/* Loop video - drop file at /images/fireworks/fireworks-loop.mp4 */}
       {USA250_VIDEO_URL && (
         <video autoPlay muted loop playsInline
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }}
@@ -127,7 +127,7 @@ function FireworksHero() {
         }} />
       )}
 
-      {/* Sparkle field — visible when no video */}
+      {/* Sparkle field - visible when no video */}
       {!USA250_VIDEO_URL && (
         <>
           <style>{`
@@ -242,7 +242,7 @@ function FireworksHero() {
           Friday, July 3rd · 10:00 PM · America's 250th Anniversary
         </div>
 
-        {/* Countdown — Glass Cards */}
+        {/* Countdown - Glass Cards */}
         <style>{`
           @keyframes fw-colon-pulse { 0%,100%{opacity:1} 50%{opacity:0.15} }
           .fw-countdown {
@@ -332,7 +332,7 @@ function FireworksHero() {
           }}>
             Help Light the Sky →
           </a>
-          <ShareBar title="Devils &amp; Round Lake Fireworks 2026 — Manitou Beach, July 3rd" />
+          <ShareBar title="Devils &amp; Round Lake Fireworks 2026 - Manitou Beach, July 3rd" />
         </div>
       </div>
 
@@ -358,10 +358,10 @@ function FireworksStorySection() {
             <SectionLabel>The Origin</SectionLabel>
             <SectionTitle>A Legacy in the Sky</SectionTitle>
             <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.9, marginBottom: 18 }}>
-              Years ago, Mike Clark looked out over Devils and Round Lake and decided this place deserved something worth gathering for. He wasn't thinking about a single show — he was thinking about a tradition. A summer night that families would plan around, that kids would grow up remembering, that neighbors would watch from their docks year after year.
+              Years ago, Mike Clark looked out over Devils and Round Lake and decided this place deserved something worth gathering for. He wasn't thinking about a single show - he was thinking about a tradition. A summer night that families would plan around, that kids would grow up remembering, that neighbors would watch from their docks year after year.
             </p>
             <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.9, marginBottom: 18 }}>
-              Mike was the original — the OG — but even the boldest visions need a crew. He called on fellow lifetime "Lakers," people who knew these waters and these summer nights like their own backyard. Together, they built something that's been growing ever since.
+              Mike was the original - the OG - but even the boldest visions need a crew. He called on fellow lifetime "Lakers," people who knew these waters and these summer nights like their own backyard. Together, they built something that's been growing ever since.
             </p>
             <p style={{ fontSize: 15, color: C.textMuted, lineHeight: 1.85 }}>
               What began as a vision became a tradition. What became a tradition is now, in 2026, something legendary.
@@ -432,10 +432,10 @@ function FireworksStorySection() {
 
 function Fireworks2026Section() {
   const stats = [
-    { number: "17",     label: "Launch Barges",  detail: "Positioned across both lakes — every shoreline is the best seat in the house" },
+    { number: "17",     label: "Launch Barges",  detail: "Positioned across both lakes - every shoreline is the best seat in the house" },
     { number: "2,500+", label: "Shells",          detail: "Each one a tribute to 250 years of American freedom" },
     { number: "2",      label: "Lakes",           detail: "Devils and Round Lake, covered from every dock" },
-    { number: "250",    label: "Years",           detail: "America's semiquincentennial — the biggest Fourth of our lifetime" },
+    { number: "250",    label: "Years",           detail: "America's semiquincentennial - the biggest Fourth of our lifetime" },
   ];
 
   return (
@@ -454,7 +454,7 @@ function Fireworks2026Section() {
             <SectionLabel light>This Year</SectionLabel>
             <SectionTitle center light>2026: Bigger Than Ever Before</SectionTitle>
             <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.85, maxWidth: 600, margin: "0 auto" }}>
-              In honor of America's 250th, the committee is honoring it properly. At dawn on July 3rd, the crew heads out on the water to position 17 launch barges across both lakes — so no matter where you're watching from, you've got a front-row view.
+              In honor of America's 250th, the committee is honoring it properly. At dawn on July 3rd, the crew heads out on the water to position 17 launch barges across both lakes - so no matter where you're watching from, you've got a front-row view.
             </p>
           </div>
         </FadeIn>
@@ -512,10 +512,10 @@ function Fireworks2026Section() {
               And there's something new this year.
             </div>
             <p style={{ fontSize: 16, color: "rgba(255,255,255,0.62)", lineHeight: 1.9, margin: "0 0 20px 0", maxWidth: 700 }}>
-              When the sky ignites on July 3rd, 2,500 shells will go up in waves of color, thunder, and light. Reflections across the water. Cheers from every dock. And when you think the show is winding down — there's something new in the program. Something the committee is keeping close to the vest. Something worthy of 250 years.
+              When the sky ignites on July 3rd, 2,500 shells will go up in waves of color, thunder, and light. Reflections across the water. Cheers from every dock. And when you think the show is winding down - there's something new in the program. Something the committee is keeping close to the vest. Something worthy of 250 years.
             </p>
             <p style={{ fontSize: 14, color: "rgba(255,255,255,0.38)", lineHeight: 1.85, margin: 0, maxWidth: 680 }}>
-              This is early mornings loading barges. Volunteers giving their time. Neighbors becoming friends. A community pulling together to create something worth remembering — not just a show, but a night.
+              This is early mornings loading barges. Volunteers giving their time. Neighbors becoming friends. A community pulling together to create something worth remembering - not just a show, but a night.
             </p>
           </div>
         </FadeIn>
@@ -575,7 +575,7 @@ function GalleryTile({ src, alt }) {
 }
 
 function FireworksGallerySection() {
-  // Images resolve from /images/fireworks/ — placeholders show until photos are added
+  // Images resolve from /images/fireworks/ - placeholders show until photos are added
   const images = [
     "/images/fireworks/devilslake-fireworks-1.jpg",
     "/images/fireworks/devilslake-fireworks-2.jpg",
@@ -625,12 +625,12 @@ function FireworksSponsorTiersSection() {
             <SectionLabel light>Support the Tradition</SectionLabel>
             <SectionTitle center light>Become a Sponsor</SectionTitle>
             <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.85, maxWidth: 580, margin: "0 auto" }}>
-              The Devils &amp; Round Lake Fireworks are 100% community funded. Every dollar goes directly into the sky — into bigger shells, brighter colors, and a show worthy of this lake and this milestone. No overhead, no shortcuts. Just neighbors making something unforgettable happen together.
+              The Devils &amp; Round Lake Fireworks are 100% community funded. Every dollar goes directly into the sky - into bigger shells, brighter colors, and a show worthy of this lake and this milestone. No overhead, no shortcuts. Just neighbors making something unforgettable happen together.
             </p>
           </div>
         </FadeIn>
 
-        {/* Presenting — full width featured */}
+        {/* Presenting - full width featured */}
         {FIREWORKS_SPONSOR_TIERS.slice(0, 1).map(tier => (
           <FadeIn key={tier.level} delay={100}>
             <div style={{
@@ -775,7 +775,7 @@ function FireworksSponsorsSection() {
             <SectionLabel>Thank You</SectionLabel>
             <SectionTitle center>Our 2026 Sponsors</SectionTitle>
             <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, maxWidth: 500, margin: "0 auto" }}>
-              The Devils &amp; Round Lake Fireworks exist because this community shows up — year after year — to make it happen.
+              The Devils &amp; Round Lake Fireworks exist because this community shows up - year after year - to make it happen.
             </p>
           </div>
         </FadeIn>
@@ -836,7 +836,7 @@ function FireworksDonationSection() {
             <SectionLabel>Community Funded</SectionLabel>
             <SectionTitle center>Help Light Up the Sky</SectionTitle>
             <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 560, margin: "0 auto" }}>
-              Every dollar donated goes directly into the show — into bigger shells, brighter colors, and a night worthy of this lake and this country's 250th. If this tradition has ever meant something to you, here's your chance to be part of making 2026 the biggest show yet.
+              Every dollar donated goes directly into the show - into bigger shells, brighter colors, and a night worthy of this lake and this country's 250th. If this tradition has ever meant something to you, here's your chance to be part of making 2026 the biggest show yet.
             </p>
           </div>
         </FadeIn>
@@ -845,7 +845,7 @@ function FireworksDonationSection() {
           tiers={FIREWORKS_SPONSOR_TIERS}
           accentColor={FW.gold}
           logoTiers={["Presenting Sponsor", "Gold Sponsor", "Silver Sponsor"]}
-          note="The committee will follow up within 2 business days to confirm your contribution. Every dollar goes directly to the show — 100% community funded."
+          note="The committee will follow up within 2 business days to confirm your contribution. Every dollar goes directly to the show - 100% community funded."
         />
       </div>
     </section>
@@ -862,7 +862,7 @@ function FireworksGetInvolved() {
           <SectionLabel>Stay Connected</SectionLabel>
           <SectionTitle center>Questions? Want to Help?</SectionTitle>
           <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, marginBottom: 36 }}>
-            Whether you're interested in sponsoring, volunteering, or just want updates on the show — follow the Manitou Beach Dispatch. Every milestone, every announcement, every behind-the-scenes detail lands there first.
+            Whether you're interested in sponsoring, volunteering, or just want updates on the show - follow the Manitou Beach Dispatch. Every milestone, every announcement, every behind-the-scenes detail lands there first.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
             <a href="/#newsletter" className="btn-animated" style={{

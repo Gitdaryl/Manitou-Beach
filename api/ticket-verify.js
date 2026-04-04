@@ -1,5 +1,5 @@
 // GET /api/ticket-verify?id=MB-XXXXXX
-// Check-in verification — scanned by volunteers at the door
+// Check-in verification - scanned by volunteers at the door
 // Returns: { status: 'valid'|'used'|'invalid', ticket?, usedAt? }
 
 export default async function handler(req, res) {
@@ -65,7 +65,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ status: 'invalid', reason: 'refunded', ticketId });
     }
 
-    // Valid — mark as used
+    // Valid - mark as used
     const now = new Date().toISOString();
     await fetch(`https://api.notion.com/v1/pages/${ticket.id}`, {
       method: 'PATCH',

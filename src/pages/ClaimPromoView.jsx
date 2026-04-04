@@ -4,7 +4,7 @@ import { Btn, C } from "../components/Shared";
 import yeti from '../data/errorMessages';
 
 // ============================================================
-// 📱  SUBSCRIBER CLAIM VIEW — get code, show QR, auto-detect redemption
+// 📱  SUBSCRIBER CLAIM VIEW - get code, show QR, auto-detect redemption
 // ============================================================
 export default function ClaimPromoView() {
   const [email, setEmail] = useState("");
@@ -22,7 +22,7 @@ export default function ClaimPromoView() {
     if (params.get("name"))  setName(decodeURIComponent(params.get("name")));
   }, []);
 
-  // Poll every 3s once we have a code — auto-trigger thank you when barista approves
+  // Poll every 3s once we have a code - auto-trigger thank you when barista approves
   useEffect(() => {
     if (!code) return;
     pollRef.current = setInterval(async () => {
@@ -77,7 +77,7 @@ export default function ClaimPromoView() {
             Enjoy it, {firstName}!
           </h2>
           <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.7, marginBottom: 32 }}>
-            Code approved. Small businesses run on reputation — if you loved the cookie, a quick Google review means the world to Shay and Gordo at Blackbird.
+            Code approved. Small businesses run on reputation - if you loved the cookie, a quick Google review means the world to Shay and Gordo at Blackbird.
           </p>
           <a
             href={reviewUrl || "https://maps.google.com/?q=Blackbird+Cafe+Manitou+Beach"}
@@ -98,7 +98,7 @@ export default function ClaimPromoView() {
     );
   }
 
-  // ── Code in hand — show QR ────────────────────────────────────
+  // ── Code in hand - show QR ────────────────────────────────────
   if (code) {
     const redeemUrl = `${window.location.origin}/redeem-promo?code=${code}`;
     const firstName = name.split(" ")[0] || "";

@@ -69,7 +69,7 @@ export default function PartnerIntakePage() {
       return;
     }
     if (!form.wantsTickets && !form.wantsSponsorships) {
-      setError('Please select at least one service — tickets, sponsorships, or both.');
+      setError('Please select at least one service - tickets, sponsorships, or both.');
       return;
     }
     setSubmitting(true);
@@ -92,7 +92,7 @@ export default function PartnerIntakePage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed');
       if (data.onboardingUrl) {
-        // Redirect straight to Stripe — they'll bank + ID verify, then return here
+        // Redirect straight to Stripe - they'll bank + ID verify, then return here
         window.location.href = data.onboardingUrl;
         return;
       }
@@ -224,7 +224,7 @@ export default function PartnerIntakePage() {
               </Field>
             </div>
 
-            {/* Sponsorships — only show if selected */}
+            {/* Sponsorships - only show if selected */}
             {form.wantsSponsorships && (
               <>
                 <div style={SECTION_TITLE}>Sponsorship Details</div>
@@ -269,7 +269,7 @@ export default function PartnerIntakePage() {
             </button>
 
             <p style={{ marginTop: 14, fontSize: 12, color: C.textMuted, textAlign: 'center', lineHeight: 1.6 }}>
-              You'll be taken to Stripe to connect your bank account. Watch for a confirmation email from Stripe — check spam or junk if you don't see it.
+              You'll be taken to Stripe to connect your bank account. Watch for a confirmation email from Stripe - check spam or junk if you don't see it.
             </p>
           </form>
         </FadeIn>

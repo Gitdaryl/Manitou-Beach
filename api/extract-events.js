@@ -1,9 +1,9 @@
 // /api/extract-events.js
-// "Magic Upload" — accepts an image (photo of chalkboard, screenshot of FB post, flyer)
+// "Magic Upload" - accepts an image (photo of chalkboard, screenshot of FB post, flyer)
 // or pasted text, uses Claude to extract structured event data, and creates
 // Pending records in the Events Notion database for Daryl to review & publish.
 //
-// No SMS verification required — this is a concierge intake, not self-serve.
+// No SMS verification required - this is a concierge intake, not self-serve.
 // Events land as "Pending" so Daryl approves before they go live.
 
 import Anthropic from '@anthropic-ai/sdk';
@@ -17,17 +17,17 @@ const EXTRACTION_PROMPT = `You are an event data extractor for a community calen
 
 Extract ALL events from the provided content. For each event, return a JSON object with these fields:
 
-- eventName (string, required) — the name/title of the event
+- eventName (string, required) - the name/title of the event
 - date (string, YYYY-MM-DD format if possible, or "unknown" if not clear)
 - dateEnd (string, YYYY-MM-DD if multi-day, otherwise null)
 - timeStart (string, HH:MM in 24h format, or null)
 - timeEnd (string, HH:MM in 24h format, or null)
-- location (string, or null) — venue name and/or address
-- description (string) — a short natural description of the event
-- cost (string, or null) — e.g. "$5", "Free", "$10 cover"
-- recurring (string) — one of: "None", "Weekly", "Monthly", "Annual"
-- recurringDay (string or null) — day of week if recurring (e.g. "Thursday")
-- category (string) — best fit from: ${EVENT_CATEGORIES.join(', ')}
+- location (string, or null) - venue name and/or address
+- description (string) - a short natural description of the event
+- cost (string, or null) - e.g. "$5", "Free", "$10 cover"
+- recurring (string) - one of: "None", "Weekly", "Monthly", "Annual"
+- recurringDay (string or null) - day of week if recurring (e.g. "Thursday")
+- category (string) - best fit from: ${EVENT_CATEGORIES.join(', ')}
 
 IMPORTANT RULES:
 - Extract EVERY event you can find, even partial ones.
@@ -35,18 +35,18 @@ IMPORTANT RULES:
 - If the year isn't specified, assume 2026.
 - If you see "tonight", "tomorrow", "this Saturday" etc., try to infer the date but if you can't, use "unknown".
 - For time, convert to 24h format (e.g. "7pm" → "19:00").
-- Return a JSON array of event objects. Nothing else — no markdown, no explanation.
+- Return a JSON array of event objects. Nothing else - no markdown, no explanation.
 - If you cannot extract any events, return an empty array: []
 
 TRIBUTE BAND LABELING (for bar/venue entertainment schedules):
 - When the source material is a bar, venue, or entertainment schedule (chalkboard, poster, social media post listing bands on specific nights), apply these rules:
-- Bands marked with an asterisk (*) or explicitly noted as original acts should be treated as original — use their name as-is.
-- All other bands on the schedule are likely tribute acts. For these, format the eventName as: "[Band Name] — [Original Artist] Tribute"
-  Examples: "Kashmir — Led Zeppelin Tribute", "Rumours — Fleetwood Mac Tribute", "One — Metallica Tribute"
-- If the band name IS a famous original artist name (e.g. just "Led Zeppelin" on a bar board with no asterisk), it's almost certainly a tribute — label it: "Led Zeppelin Tribute"
-- If the band name is clearly a tribute band name (e.g. "Get The Led Out", "Kashmir", "Rumours"), label as: "[Name] — [Original Artist] Tribute"
-- If you genuinely cannot tell whether a band is a tribute or original (ambiguous name, no clear context), leave the name as-is — do not guess.
-- Do NOT apply tribute labeling to community events, festivals, markets, or non-entertainment-venue sources — only bar/venue band schedules.`;
+- Bands marked with an asterisk (*) or explicitly noted as original acts should be treated as original - use their name as-is.
+- All other bands on the schedule are likely tribute acts. For these, format the eventName as: "[Band Name] - [Original Artist] Tribute"
+  Examples: "Kashmir - Led Zeppelin Tribute", "Rumours - Fleetwood Mac Tribute", "One - Metallica Tribute"
+- If the band name IS a famous original artist name (e.g. just "Led Zeppelin" on a bar board with no asterisk), it's almost certainly a tribute - label it: "Led Zeppelin Tribute"
+- If the band name is clearly a tribute band name (e.g. "Get The Led Out", "Kashmir", "Rumours"), label as: "[Name] - [Original Artist] Tribute"
+- If you genuinely cannot tell whether a band is a tribute or original (ambiguous name, no clear context), leave the name as-is - do not guess.
+- Do NOT apply tribute labeling to community events, festivals, markets, or non-entertainment-venue sources - only bar/venue band schedules.`;
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
@@ -57,7 +57,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Please upload an image or paste some text.' });
   }
 
-  // Admin-only for now — Daryl is the one running this intake
+  // Admin-only for now - Daryl is the one running this intake
   const adminToken = req.headers['x-admin-token'];
   if (adminToken !== process.env.ADMIN_SECRET) {
     return res.status(401).json({ error: 'Not authorized.' });
@@ -101,7 +101,7 @@ export default async function handler(req, res) {
 
     const raw = response.content[0]?.text || '[]';
 
-    // Parse the JSON — handle markdown code fences and any surrounding text
+    // Parse the JSON - handle markdown code fences and any surrounding text
     let events;
     try {
       // Strip code fences
@@ -153,7 +153,7 @@ export default async function handler(req, res) {
         properties['Location'] = { rich_text: [{ text: { content: evt.location.slice(0, 200) } }] };
       }
 
-      // Description — include business attribution
+      // Description - include business attribution
       const descParts = [];
       if (evt.description) descParts.push(evt.description);
       if (businessName) descParts.push(`Submitted by: ${businessName}`);
@@ -179,7 +179,7 @@ export default async function handler(req, res) {
         properties['Category'] = { select: { name: evt.category } };
       }
 
-      // Attendance — default to just_show_up
+      // Attendance - default to just_show_up
       properties['Attendance'] = { select: { name: 'just_show_up' } };
 
       // Business contact info

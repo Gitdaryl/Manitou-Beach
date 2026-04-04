@@ -36,7 +36,7 @@ function parseBlocks(blocks) {
 }
 
 export default async function handler(req, res) {
-  // Auth check — all methods
+  // Auth check - all methods
   const token = req.headers['x-admin-token'];
   if (!token || token !== process.env.ADMIN_SECRET) {
     return res.status(401).json({ error: 'Unauthorized' });
@@ -48,7 +48,7 @@ export default async function handler(req, res) {
     'Notion-Version': '2022-06-28',
   };
 
-  // GET ?id=<notionId> — single article with full content blocks (for preview of drafts)
+  // GET ?id=<notionId> - single article with full content blocks (for preview of drafts)
   if (req.method === 'GET' && req.query?.id) {
     try {
       const [pageRes, blocksRes] = await Promise.all([
@@ -83,12 +83,12 @@ export default async function handler(req, res) {
     }
   }
 
-  // POST — publish / edit / unpublish
+  // POST - publish / edit / unpublish
   if (req.method === 'POST') {
     const { action, notionId } = req.body || {};
     if (!notionId) return res.status(400).json({ error: 'notionId required' });
 
-    // action=publish (default — sets Blog Safe + Status + date)
+    // action=publish (default - sets Blog Safe + Status + date)
     if (!action || action === 'publish') {
       const today = new Date().toISOString().split('T')[0];
       try {
@@ -98,7 +98,7 @@ export default async function handler(req, res) {
         const existingDate = page.properties['Published Date']?.date?.start;
         const properties = { 'Blog Safe': { checkbox: true }, 'Status': { select: { name: 'Published' } } };
         if (!existingDate) properties['Published Date'] = { date: { start: today } };
-        // Auto-fetch Unsplash cover if none set — one-time at publish, non-fatal
+        // Auto-fetch Unsplash cover if none set - one-time at publish, non-fatal
         const existingCover = page.properties['Cover Image URL']?.url;
         if (!existingCover && process.env.UNSPLASH_ACCESS_KEY) {
           const title = page.properties['Title']?.title?.[0]?.plain_text || '';
@@ -119,7 +119,7 @@ export default async function handler(req, res) {
       }
     }
 
-    // action=edit — patch title, excerpt, editor's note
+    // action=edit - patch title, excerpt, editor's note
     if (action === 'edit') {
       const { title, excerpt, editorNote } = req.body;
       try {
@@ -137,7 +137,7 @@ export default async function handler(req, res) {
       }
     }
 
-    // action=unpublish — reverts to draft
+    // action=unpublish - reverts to draft
     if (action === 'unpublish') {
       try {
         const patchRes = await fetch(`https://api.notion.com/v1/pages/${notionId}`, {
@@ -154,7 +154,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Unknown action' });
   }
 
-  // GET (no query) — all articles list for admin
+  // GET (no query) - all articles list for admin
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
 
   try {

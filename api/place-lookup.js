@@ -1,4 +1,4 @@
-// Admin-only — look up a Google Place ID and return the Google review URL
+// Admin-only - look up a Google Place ID and return the Google review URL
 // Requires GOOGLE_PLACES_API_KEY env var (same key as VITE_GOOGLE_MAPS_API_KEY often works)
 // POST { businessName, city }
 

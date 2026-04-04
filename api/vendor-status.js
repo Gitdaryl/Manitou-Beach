@@ -103,13 +103,13 @@ export default async function handler(req, res) {
 
         let smsBody;
         if (status === 'Confirmed') {
-          const parts = [`Great news — you're confirmed for ${eventName}!`];
+          const parts = [`Great news - you're confirmed for ${eventName}!`];
           if (dateLine) parts.push(dateLine);
           if (eventLocation) parts.push(eventLocation);
-          parts.push('See you there! — Manitou Beach');
+          parts.push('See you there! - Manitou Beach');
           smsBody = parts.join('\n');
         } else {
-          smsBody = `Hey — thanks for your interest in ${eventName}! This one's full, but we'd love to have you at a future event. We'll keep you in the loop. — Manitou Beach`;
+          smsBody = `Hey - thanks for your interest in ${eventName}! This one's full, but we'd love to have you at a future event. We'll keep you in the loop. - Manitou Beach`;
         }
 
         sendSMS(digits, smsBody).catch(() => {});
@@ -160,7 +160,7 @@ async function handleFoodTruckFields(slug, status, eventId, eventName, eventDate
         patchProps['Coming Date'] = { date: { start: eventDate } };
       }
     } else {
-      // Rejected — clear Coming Event fields only if they match this event
+      // Rejected - clear Coming Event fields only if they match this event
       const currentEventId = truck.properties['Coming Event ID']?.rich_text?.[0]?.text?.content || '';
       if (currentEventId !== eventId) return; // different event, don't clear
       patchProps = {

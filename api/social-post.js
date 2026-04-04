@@ -4,7 +4,7 @@
 //   token,           // ADMIN_SECRET
 //   message,         // text content for the post
 //   imageUrl?,       // publicly accessible image URL (optional)
-//   platforms?,      // array: ['facebook', 'instagram'] — defaults to both
+//   platforms?,      // array: ['facebook', 'instagram'] - defaults to both
 // }
 // Returns: { facebook?: { id }, instagram?: { id }, igAccountId? }
 
@@ -74,7 +74,7 @@ export default async function handler(req, res) {
         igAccountId = igLookupData?.instagram_business_account?.id;
 
         if (!igAccountId) {
-          throw new Error('Instagram Business Account not found — ensure IG is linked to the FB Page');
+          throw new Error('Instagram Business Account not found - ensure IG is linked to the FB Page');
         }
 
         // Surface the ID so it can be saved to env

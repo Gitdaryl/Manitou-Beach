@@ -40,7 +40,7 @@ export const WINERY_VENUES = [
     hostedBrands: [
       {
         name: "Cherry Creek Cellars",
-        description: "Small-batch wines made just down the road in Brooklyn. Approachable reds and whites from a winery that feels like a well-kept local secret — because it is.",
+        description: "Small-batch wines made just down the road in Brooklyn. Approachable reds and whites from a winery that feels like a well-kept local secret - because it is.",
       },
     ],
   },
@@ -48,7 +48,7 @@ export const WINERY_VENUES = [
     section: "village",
     name: "Ang & Co",
     type: "Lifestyle Shop · Satellite Tasting Room",
-    tagline: "Dirty sodas, custom apparel, curated gifts — and now a rotating pour from two of Northern Michigan's finest wine producers.",
+    tagline: "Dirty sodas, custom apparel, curated gifts - and now a rotating pour from two of Northern Michigan's finest wine producers.",
     address: "141 N. Lakeview Blvd., Manitou Beach",
     phone: "(517) 547-6030",
     website: "https://www.angandco.net",
@@ -65,7 +65,7 @@ export const WINERY_VENUES = [
       },
       {
         name: "Chateau Fontaine",
-        description: "One of Michigan's most decorated estate wineries. Their Pinot Gris alone is worth the trip — and Ang & Co is the only place to taste it without driving to Traverse City.",
+        description: "One of Michigan's most decorated estate wineries. Their Pinot Gris alone is worth the trip - and Ang & Co is the only place to taste it without driving to Traverse City.",
       },
     ],
   },
@@ -86,7 +86,7 @@ export const WINERY_VENUES = [
     hostedBrands: [
       {
         name: "Amoritas Vineyard",
-        description: "Details dropping as we get closer to May — check back soon for the story behind this pour.",
+        description: "Details dropping as we get closer to May - check back soon for the story behind this pour.",
       },
     ],
   },
@@ -94,7 +94,7 @@ export const WINERY_VENUES = [
     section: "village",
     name: "Devils Lake View Living",
     type: "Home & Lifestyle · Satellite Tasting Room",
-    tagline: "High-end fashion, curated home goods, and the iconic lighthouse replica out front — with a pour from Brenman Family Winery that turns browsing into an occasion.",
+    tagline: "High-end fashion, curated home goods, and the iconic lighthouse replica out front - with a pour from Brenman Family Winery that turns browsing into an occasion.",
     address: "200 Devils Lake Hwy, Manitou Beach",
     phone: "(517) 252-5287",
     website: "https://devilslakeviewliving.com",
@@ -107,7 +107,7 @@ export const WINERY_VENUES = [
     hostedBrands: [
       {
         name: "Brenman Family Winery",
-        description: "A family winery with a story worth telling. Details dropping closer to May — this one's worth the wait.",
+        description: "A family winery with a story worth telling. Details dropping closer to May - this one's worth the wait.",
       },
     ],
   },
@@ -123,8 +123,8 @@ export const WINERY_VENUES = [
     website: null,
     logo: "/images/meckleys-logo.png",
     accent: "#B35A1A",
-    hours: "Wed–Sat 9am–6pm (seasonal — call ahead)",
-    highlight: "The ideal first stop — palate fresh, appetite building",
+    hours: "Wed–Sat 9am–6pm (seasonal - call ahead)",
+    highlight: "The ideal first stop - palate fresh, appetite building",
     distance: "~16 min from Manitou Beach",
     lat: 42.0589177, lng: -84.4059253,
   },
@@ -132,14 +132,14 @@ export const WINERY_VENUES = [
     section: "trail",
     name: "Cherry Creek Cellars",
     type: "Small-Batch Winery",
-    tagline: "Brooklyn's neighborhood winery — small-batch Michigan wines in a laid-back tasting room that feels exactly like it should.",
+    tagline: "Brooklyn's neighborhood winery - small-batch Michigan wines in a laid-back tasting room that feels exactly like it should.",
     address: "11500 Silver Lake Hwy, Brooklyn",
     phone: "(517) 592-4848",
     website: "https://cherrycreekwine.com",
     logo: "/images/cherry_creek_logo.png",
     accent: C.sage,
     hours: "Mon–Sat 11am–6pm · Sun Noon–6pm",
-    highlight: "Also poured at Faust House in the Village — opening soon",
+    highlight: "Also poured at Faust House in the Village - opening soon",
     distance: "~13 min from Manitou Beach",
     lat: 42.0505, lng: -84.3012,
   },
@@ -170,7 +170,7 @@ export const WINERY_VENUES = [
     accent: C.lakeBlue,
     openingDate: "Spring 2026",
     hours: "Check website for current hours",
-    highlight: "Wines + ciders + flower farm — a full afternoon stop",
+    highlight: "Wines + ciders + flower farm - a full afternoon stop",
     distance: "~6 min from Manitou Beach",
     lat: 41.9170, lng: -84.3115,
     photos: [
@@ -205,7 +205,7 @@ export const WINERY_VENUES = [
     website: null,
     logo: null,
     accent: "#4A2040",
-    highlight: "Regional gem — best paired with a longer itinerary",
+    highlight: "Regional gem - best paired with a longer itinerary",
     distance: "~45 min from Manitou Beach",
   },
 ];
@@ -234,10 +234,10 @@ function WineriesHero() {
             Wineries &<br />Breweries Trail
           </h1>
           <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: "clamp(14px, 1.6vw, 17px)", color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 520, margin: "0 0 32px 0" }}>
-            Michigan wine country meets lake country. From lakeside tasting rooms in the Village to full winery and brewery destinations in the Irish Hills — sip your way through wine, craft beer, and hard cider on one of the state's most scenic trails.
+            Michigan wine country meets lake country. From lakeside tasting rooms in the Village to full winery and brewery destinations in the Irish Hills - sip your way through wine, craft beer, and hard cider on one of the state's most scenic trails.
           </p>
           <Btn href="/" variant="outlineLight" small>← Back to Home</Btn>
-          <ShareBar title="Irish Hills Wineries & Breweries Trail — Manitou Beach" />
+          <ShareBar title="Irish Hills Wineries & Breweries Trail - Manitou Beach" />
         </div>
       </div>
     </section>
@@ -255,7 +255,7 @@ function WineriesVillageCallout() {
             Four Manitou Beach Village shops are opening their doors as satellite tasting rooms for Michigan wineries. Walk the boulevard. Pop into a gallery. Pick up something for the cottage. Stay for a glass.
           </p>
           <p style={{ fontSize: 15, color: "rgba(255,255,255,0.35)", lineHeight: 1.8, maxWidth: 560, margin: "0 auto 32px", fontStyle: "italic" }}>
-            Cherry Creek Cellars · French Road Cellars · Chateau Fontaine · Amoritas Vineyard · Brenman Family Winery — all in the Village, all within steps of the lake.
+            Cherry Creek Cellars · French Road Cellars · Chateau Fontaine · Amoritas Vineyard · Brenman Family Winery - all in the Village, all within steps of the lake.
           </p>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
             <Btn href="/village" variant="sunset">Explore the Village</Btn>
@@ -293,7 +293,7 @@ function WineTrailNotifySection() {
               maxWidth: 460,
               margin: '0 auto',
             }}>
-              The Village tasting rooms are finishing up their final licensing approvals. Drop your number and we'll text you the moment the first pour is ready — no spam, just the good news.
+              The Village tasting rooms are finishing up their final licensing approvals. Drop your number and we'll text you the moment the first pour is ready - no spam, just the good news.
             </p>
           </div>
           <SMSOptInWidget
@@ -309,7 +309,7 @@ function WineTrailNotifySection() {
             marginTop: 20,
             marginBottom: 0,
           }}>
-            Four shops hosting five Michigan wineries — all within steps of the lake.
+            Four shops hosting five Michigan wineries - all within steps of the lake.
           </p>
         </FadeIn>
       </div>
@@ -367,7 +367,7 @@ function WinePassportWidget({ stamped, villageVenues, trailVenues }) {
   const [shared, setShared] = useState(false);
 
   const handleShare = async () => {
-    const text = "I completed the Manitou Beach Wine Trail — all 8 stops across the Irish Hills. 🍷";
+    const text = "I completed the Manitou Beach Wine Trail - all 8 stops across the Irish Hills. 🍷";
     const url = "https://manitoubeach.app/wineries";
     if (navigator.share) {
       try { await navigator.share({ title: "Manitou Beach Wine Trail", text, url }); } catch {}
@@ -402,16 +402,16 @@ function WinePassportWidget({ stamped, villageVenues, trailVenues }) {
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
           <div>
             <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: allComplete ? C.cream : C.text, marginBottom: 4 }}>
-              {allComplete ? "Trail Complete — Well Done." : "Your Digital Trail Tracker"}
+              {allComplete ? "Trail Complete - Well Done." : "Your Digital Trail Tracker"}
             </div>
             <div style={{ fontSize: 13, color: allComplete ? "rgba(255,255,255,0.5)" : C.textLight, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.65, marginBottom: 4 }}>
               {allComplete
-                ? "You've visited every stop on the Manitou Beach Wine Trail. Show this screen at any participating venue — they'll know what it means."
-                : "Track your stops online as you go. Visit a tasting room, hit '+ Stamp My Visit', rate your pour. Eight stops — Village walkabout + the full trail loop."}
+                ? "You've visited every stop on the Manitou Beach Wine Trail. Show this screen at any participating venue - they'll know what it means."
+                : "Track your stops online as you go. Visit a tasting room, hit '+ Stamp My Visit', rate your pour. Eight stops - Village walkabout + the full trail loop."}
             </div>
             {!allComplete && (
               <div style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 16 }}>
-                Pick up a physical passport card at any tasting room counter — staff signs your card square and you earn 10% off a bottle.{" "}
+                Pick up a physical passport card at any tasting room counter - staff signs your card square and you earn 10% off a bottle.{" "}
                 <span style={{ fontStyle: "italic" }}>Complete all eight and you've done something worth talking about.</span>
               </div>
             )}
@@ -541,7 +541,7 @@ function WineReviewModal({ venue, accent, onSuccess, onClose }) {
     const filledWines = wines.filter(w => w.name.trim());
     if (filledWines.length === 0) { setError('Please tell us what you tried.'); return; }
     const unrated = filledWines.filter(w => !w.rating);
-    if (unrated.length > 0) { setError(`Rate each pour — ${unrated[0].name.trim()} needs stars.`); return; }
+    if (unrated.length > 0) { setError(`Rate each pour - ${unrated[0].name.trim()} needs stars.`); return; }
     setSubmitting(true);
     setError('');
     try {
@@ -633,7 +633,7 @@ function WineReviewModal({ venue, accent, onSuccess, onClose }) {
             </div>
             <datalist id="wine-suggestions">
               {wineList.map(w => (
-                <option key={w.id} value={w.fullName || w.name}>{w.name} — {w.venue}</option>
+                <option key={w.id} value={w.fullName || w.name}>{w.name} - {w.venue}</option>
               ))}
             </datalist>
             {wines.length < 6 && (
@@ -653,7 +653,7 @@ function WineReviewModal({ venue, accent, onSuccess, onClose }) {
 
           <div style={{ marginBottom: 16 }}>
             <label style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, display: 'block', marginBottom: 8 }}>
-              Leave a comment? <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional — shows on site)</span>
+              Leave a comment? <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional - shows on site)</span>
             </label>
             <textarea
               value={note}
@@ -818,7 +818,7 @@ function WineryCard({ v, i, isStamped, onStamp, venueRating, wineRankings, autoO
                     "{c.note}"
                   </div>
                   <div style={{ marginTop: 6, fontSize: 11, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
-                    {c.firstName ? `— ${c.firstName}` : '— Trail visitor'}
+                    {c.firstName ? `- ${c.firstName}` : '- Trail visitor'}
                     {c.wineTried && <span style={{ color: v.accent, marginLeft: 6 }}>· {c.wineTried}</span>}
                   </div>
                 </div>
@@ -989,7 +989,7 @@ function WineriesScorecardSection() {
 
   const rnd = n => n != null ? n.toFixed(1) : null;
   const StarDisplay = ({ value, max = 5 }) => {
-    if (!value) return <span style={{ color: C.textMuted, fontSize: 12 }}>—</span>;
+    if (!value) return <span style={{ color: C.textMuted, fontSize: 12 }}>-</span>;
     const full = Math.round(value);
     return (
       <span style={{ color: C.sunset, fontSize: 13, letterSpacing: 1 }}>
@@ -1044,7 +1044,7 @@ function WineriesScorecardSection() {
 
         <div style={{ marginTop: 32, textAlign: 'center' }}>
           <p style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.7 }}>
-            Reviews are curated before publishing — every score is real, every reviewer was there.
+            Reviews are curated before publishing - every score is real, every reviewer was there.
           </p>
         </div>
       </div>
@@ -1071,7 +1071,7 @@ function WineriesVenueSection() {
           <SectionLabel>In the Village</SectionLabel>
           <SectionTitle>Village Tasting Rooms</SectionTitle>
           <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 580, margin: "0 0 48px 0" }}>
-            Four Village shops are opening their doors as satellite tasting rooms. Walk the boulevard — each stop is a new pour, a new story, all within steps of the lake.
+            Four Village shops are opening their doors as satellite tasting rooms. Walk the boulevard - each stop is a new pour, a new story, all within steps of the lake.
           </p>
         </FadeIn>
         <div style={{ display: "flex", flexDirection: "column", gap: 24, marginBottom: 80 }}>
@@ -1101,13 +1101,13 @@ const WINERY_ITINERARIES = [
     duration: "2–3 Hours",
     badge: "Opening Soon",
     accent: C.sunset,
-    intro: "Four tasting rooms, one boulevard, zero driving. Walk the Village loop — start anywhere, end at the lake.",
+    intro: "Four tasting rooms, one boulevard, zero driving. Walk the Village loop - start anywhere, end at the lake.",
     stops: [
-      { time: "11am", stop: "Faust House Scrap n Craft", note: "Cherry Creek pour — browse the shelves, stay for a glass" },
-      { time: "11:30am", stop: "Ang & Co", note: "French Road Cellars + Chateau Fontaine — most variety in one stop" },
-      { time: "Noon", stop: "Boathouse Art Gallery", note: "Amoritas Vineyard — gallery browse and a pour" },
-      { time: "12:30pm", stop: "Devils Lake View Living", note: "Brenman Family Winery — fashion, home goods, lighthouse out front" },
-      { time: "1pm", stop: "Lunch at Blackbird Cafe or Two Lakes Tavern", note: "Lakeside dining — you've earned it" },
+      { time: "11am", stop: "Faust House Scrap n Craft", note: "Cherry Creek pour - browse the shelves, stay for a glass" },
+      { time: "11:30am", stop: "Ang & Co", note: "French Road Cellars + Chateau Fontaine - most variety in one stop" },
+      { time: "Noon", stop: "Boathouse Art Gallery", note: "Amoritas Vineyard - gallery browse and a pour" },
+      { time: "12:30pm", stop: "Devils Lake View Living", note: "Brenman Family Winery - fashion, home goods, lighthouse out front" },
+      { time: "1pm", stop: "Lunch at Blackbird Cafe or Two Lakes Tavern", note: "Lakeside dining - you've earned it" },
     ],
   },
   {
@@ -1117,10 +1117,10 @@ const WINERY_ITINERARIES = [
     accent: C.lakeBlue,
     intro: "One loop, four stops, a fruit farm to start. Leave by 10, back lakeside before dark with excellent stories.",
     stops: [
-      { time: "10am", stop: "Meckleys Flavor Fruit Farm", note: "Fresh-picked fruit — reset the palate before the first pour" },
+      { time: "10am", stop: "Meckleys Flavor Fruit Farm", note: "Fresh-picked fruit - reset the palate before the first pour" },
       { time: "11:30am", stop: "Cherry Creek Cellars", note: "Small-batch Michigan wines in Brooklyn's laid-back tasting room" },
-      { time: "1pm", stop: "Chateau Aeronautique", note: "Lunch + live music — all-weather biergarten, aviation-themed" },
-      { time: "3:30pm", stop: "Gypsy Blue Vineyards", note: "Wines, ciders, flower farm — the most scenic stop on the loop" },
+      { time: "1pm", stop: "Chateau Aeronautique", note: "Lunch + live music - all-weather biergarten, aviation-themed" },
+      { time: "3:30pm", stop: "Gypsy Blue Vineyards", note: "Wines, ciders, flower farm - the most scenic stop on the loop" },
     ],
   },
   {
@@ -1130,11 +1130,11 @@ const WINERY_ITINERARIES = [
     accent: C.sage,
     intro: "All eight stops across two days. Village Saturday morning, trail Saturday afternoon and evening, Sunday wine country. The version you talk about all winter.",
     stops: [
-      { time: "Sat AM", stop: "Village Tasting Rooms", note: "Walk all four stops — two hours, zero driving" },
-      { time: "Sat Noon", stop: "Cherry Creek Cellars", note: "Lunch stop in Brooklyn — small-batch wines, laid-back room" },
-      { time: "Sat Eve", stop: "Chateau Aeronautique", note: "Evening entertainment — live tribute bands, all-weather biergarten" },
-      { time: "Sun Brunch", stop: "Meckleys Flavor Fruit Farm", note: "Brunch at the farm — fresh fruit, jams, the perfect wake-up" },
-      { time: "Sun PM", stop: "Gypsy Blue Vineyards", note: "Flower farm, ciders, wines — the most scenic finish on the trail" },
+      { time: "Sat AM", stop: "Village Tasting Rooms", note: "Walk all four stops - two hours, zero driving" },
+      { time: "Sat Noon", stop: "Cherry Creek Cellars", note: "Lunch stop in Brooklyn - small-batch wines, laid-back room" },
+      { time: "Sat Eve", stop: "Chateau Aeronautique", note: "Evening entertainment - live tribute bands, all-weather biergarten" },
+      { time: "Sun Brunch", stop: "Meckleys Flavor Fruit Farm", note: "Brunch at the farm - fresh fruit, jams, the perfect wake-up" },
+      { time: "Sun PM", stop: "Gypsy Blue Vineyards", note: "Flower farm, ciders, wines - the most scenic finish on the trail" },
     ],
   },
 ];
@@ -1147,7 +1147,7 @@ function WineriesItinerarySection() {
           <SectionLabel light>How to Do It</SectionLabel>
           <SectionTitle light>Three Ways to Run the Trail</SectionTitle>
           <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 520, margin: "0 0 52px 0" }}>
-            Pick your pace. Two hours or two days — the trail works either way.
+            Pick your pace. Two hours or two days - the trail works either way.
           </p>
         </FadeIn>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }} className="wineries-itinerary-grid">
@@ -1222,7 +1222,7 @@ function WineScoreboardSection() {
 
   useEffect(() => { setDisplayCount(totalReviews); }, [totalReviews]);
 
-  // Decorative tick — illusion of live movement, no API call
+  // Decorative tick - illusion of live movement, no API call
   useEffect(() => {
     if (totalReviews === 0) return;
     const interval = setInterval(() => {
@@ -1294,12 +1294,12 @@ function WineScoreboardSection() {
           </div>
         </FadeIn>
 
-        {/* How it works — slim explainer */}
+        {/* How it works - slim explainer */}
         <FadeIn delay={100}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 48 }} className="scoreboard-explainer-grid">
             {[
               { n: '1', label: 'Stamp a stop', body: 'Visit any tasting room on the trail and stamp it in your passport.' },
-              { n: '2', label: 'Rate what you tried', body: 'Name each pour and give it stars. Wine, cider, ale — it all counts.' },
+              { n: '2', label: 'Rate what you tried', body: 'Name each pour and give it stars. Wine, cider, ale - it all counts.' },
               { n: '3', label: 'Move the board', body: 'Every rating is a vote. The best pours rise. Awards follow at season end.' },
             ].map(step => (
               <div key={step.n} style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 12, padding: '20px 20px 18px', border: '1px solid rgba(255,255,255,0.07)' }}>
@@ -1333,7 +1333,7 @@ function WineScoreboardSection() {
           </div>
         )}
 
-        {/* Wine leaderboard — category tabs + ranked list */}
+        {/* Wine leaderboard - category tabs + ranked list */}
         <FadeIn>
           <div style={{ marginBottom: 64 }}>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 24 }}>
@@ -1353,10 +1353,10 @@ function WineScoreboardSection() {
             {wineRankings.length === 0 ? (
               <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: 14, padding: '36px 24px', border: '1px solid rgba(255,255,255,0.07)', textAlign: 'center' }}>
                 <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.3)', fontFamily: "'Libre Baskerville', serif", marginBottom: 8 }}>
-                  Rankings — Coming This Season
+                  Rankings - Coming This Season
                 </div>
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.18)', fontFamily: "'Libre Franklin', sans-serif" }}>
-                  Rate what you try as you visit the trail — the leaderboard builds from your reviews.
+                  Rate what you try as you visit the trail - the leaderboard builds from your reviews.
                 </div>
               </div>
             ) : topWines.length === 0 ? (
@@ -1425,7 +1425,7 @@ function WineScoreboardSection() {
                         fontSize: 13, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif",
                         color: i === 0 ? '#C9A84C' : 'rgba(255,255,255,0.25)',
                       }}>
-                        {wine.avg ? wine.avg.toFixed(1) : '—'}
+                        {wine.avg ? wine.avg.toFixed(1) : '-'}
                       </div>
                     </div>
                   );
@@ -1439,7 +1439,7 @@ function WineScoreboardSection() {
           </div>
         </FadeIn>
 
-        {/* Venue Scores — the people, the vibe, the visit */}
+        {/* Venue Scores - the people, the vibe, the visit */}
         {venueData.some(v => v.r?.service_avg || v.r?.atmosphere_avg || v.r?.experience_avg) && (
           <FadeIn>
             <div style={{ marginBottom: 40 }}>
@@ -1502,10 +1502,10 @@ function WineScoreboardSection() {
 
 const WINE_PASSPORT_HOW = [
   { icon: '/images/icons/plan-map-icon.png',    title: 'Plan your stops',     desc: 'Eight venues across the Village and the Trail. One afternoon or a full day.' },
-  { icon: '/images/icons/passport-icon.png',    title: 'Grab a passport card', desc: 'Pick one up at any tasting room counter. Grid on the back — one square per stop.' },
+  { icon: '/images/icons/passport-icon.png',    title: 'Grab a passport card', desc: 'Pick one up at any tasting room counter. Grid on the back - one square per stop.' },
   { icon: '/images/icons/wine-rating.png',      title: 'Taste & scan',         desc: 'Scan the QR, name your pour, leave a star rating. Takes 30 seconds.' },
-  { icon: '/images/icons/stamp-offer-icon.png', title: 'Stamp + 10% off',      desc: 'Staff signs your card square. Each stamp earns 10% off a bottle — buy before you leave.' },
-  { icon: '/images/icons/trophy-icon.png',      title: 'Live standings',       desc: 'Ratings post live as they come in. Scores go dark for the final 30 days — winners revealed at an October awards ceremony.' },
+  { icon: '/images/icons/stamp-offer-icon.png', title: 'Stamp + 10% off',      desc: 'Staff signs your card square. Each stamp earns 10% off a bottle - buy before you leave.' },
+  { icon: '/images/icons/trophy-icon.png',      title: 'Live standings',       desc: 'Ratings post live as they come in. Scores go dark for the final 30 days - winners revealed at an October awards ceremony.' },
 ];
 
 const WINERY_AWARD_CATEGORIES = [
@@ -1554,11 +1554,11 @@ function WineAwardCeremonySection() {
           <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16, padding: '28px 32px', maxWidth: 560, margin: '0 auto 40px', textAlign: 'left' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               {[
-                { icon: '/images/icons/wine-rating.png',      text: 'Visitors rate each pour they tried — plus the people, the vibe, and the overall visit. Scores go live instantly.' },
+                { icon: '/images/icons/wine-rating.png',      text: 'Visitors rate each pour they tried - plus the people, the vibe, and the overall visit. Scores go live instantly.' },
                 { icon: '/images/icons/leaderboard-icon.png', text: 'Rankings build all season. Every rating is a vote. The leaderboard updates in real time.' },
-                { icon: '/images/icons/sealed-icon.png',       text: 'Scores go dark in the final 30 days. Nobody knows the winners — until the ceremony.' },
+                { icon: '/images/icons/sealed-icon.png',       text: 'Scores go dark in the final 30 days. Nobody knows the winners - until the ceremony.' },
                 { icon: '/images/icons/trophy-icon.png',       text: 'At the awards night (location TBA), winners receive a custom framed certificate to hang on their wall.' },
-                { icon: '/images/icons/events-icon.png',       text: 'This is an annual event — May to October, every year. The trail grows. The awards grow with it.' },
+                { icon: '/images/icons/events-icon.png',       text: 'This is an annual event - May to October, every year. The trail grows. The awards grow with it.' },
               ].map((row, i) => (
                 <div key={i} style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
                   <img src={row.icon} alt="" style={{ width: 40, height: 40, objectFit: 'contain', flexShrink: 0, marginTop: 1, opacity: 0.88 }} />
@@ -1588,14 +1588,14 @@ function WineAwardCeremonySection() {
               <div style={{ fontFamily: "'Caveat', cursive", fontSize: 19, color: C.sunsetLight }}>A note from The Yeti</div>
             </div>
             <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', lineHeight: 1.85, margin: 0, fontFamily: "'Libre Franklin', sans-serif" }}>
-              "100% peoples choice. Voted on by every real person who sat at their counter and tried something. The certificates look great on a wall — and I plan to be at the ceremony, which should tell you something."
+              "100% peoples choice. Voted on by every real person who sat at their counter and tried something. The certificates look great on a wall - and I plan to be at the ceremony, which should tell you something."
             </p>
           </div>
 
-          {/* Newsletter — constrained so it doesn't blow out */}
+          {/* Newsletter - constrained so it doesn't blow out */}
           <div style={{ maxWidth: 540, margin: '0 auto' }}>
             <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)', marginBottom: 16, fontFamily: "'Libre Franklin', sans-serif" }}>
-              Get notified when awards are announced — join the Dispatch:
+              Get notified when awards are announced - join the Dispatch:
             </p>
             <NewsletterInline />
           </div>

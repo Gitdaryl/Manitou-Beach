@@ -5,14 +5,14 @@ export default async function handler(req, res) {
 
   const { venueName, contactName, email, phone, note, reserveOnly, _hp } = req.body || {};
 
-  // Honeypot — bots fill hidden fields, humans don't
+  // Honeypot - bots fill hidden fields, humans don't
   if (_hp) return res.status(200).json({ ok: true });
 
   if (!venueName || !contactName || !email || !email.includes('@')) {
     return res.status(400).json({ error: 'Venue name, your name, and a valid email are required.' });
   }
 
-  // Reserve-only path — skip Stripe, save to Notion with Status=Reserved
+  // Reserve-only path - skip Stripe, save to Notion with Status=Reserved
   if (reserveOnly === true) {
     try {
       await fetch('https://api.notion.com/v1/pages', {
@@ -28,7 +28,7 @@ export default async function handler(req, res) {
             'Name':         { title: [{ text: { content: contactName } }] },
             'Business':     { rich_text: [{ text: { content: venueName } }] },
             'Email':        { email },
-            'Notes':        { rich_text: [{ text: { content: 'Wine Trail Reserve — 2026 Season (not yet paid)' } }] },
+            'Notes':        { rich_text: [{ text: { content: 'Wine Trail Reserve - 2026 Season (not yet paid)' } }] },
             'Submitted At': { date: { start: new Date().toISOString() } },
             'Status':       { select: { name: 'Reserved' } },
           },
@@ -43,7 +43,7 @@ export default async function handler(req, res) {
 
   // Record in Notion
   try {
-    const notesText = ['Wine Trail Partner Signup — 2026 Season', note || ''].filter(Boolean).join('\n');
+    const notesText = ['Wine Trail Partner Signup - 2026 Season', note || ''].filter(Boolean).join('\n');
     await fetch('https://api.notion.com/v1/pages', {
       method: 'POST',
       headers: {
@@ -87,8 +87,8 @@ export default async function handler(req, res) {
         price_data: {
           currency: 'usd',
           product_data: {
-            name: 'Manitou Beach Wine Trail Partner — 2026 Season',
-            description: `May 22 – October 31, 2026. Includes trail map pin, community scorecard, passport gamification, verified reviews, 100 stamp cards, counter display, QR setup, and season-end award plaque. — ${venueName}`,
+            name: 'Manitou Beach Wine Trail Partner - 2026 Season',
+            description: `May 22 – October 31, 2026. Includes trail map pin, community scorecard, passport gamification, verified reviews, 100 stamp cards, counter display, QR setup, and season-end award plaque. - ${venueName}`,
           },
           unit_amount: 27900,
         },

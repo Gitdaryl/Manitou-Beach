@@ -47,7 +47,7 @@ export function GlobalStyles() {
         --color-lavender-500: #7a6ab5;
         --color-lavender-300: #b0a8d8;
         --color-lavender-100: #f0eef8;
-        /* Default semantic tokens — fallback when no data-theme is set */
+        /* Default semantic tokens - fallback when no data-theme is set */
         --page-accent:       #5B7E95;
         --page-accent-light: #e8f4fd;
         --page-accent-muted: rgba(122,142,114,0.2);
@@ -286,8 +286,6 @@ export function GlobalStyles() {
         * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
       }
       @media (max-width: 1080px) {
-        .nav-desktop { display: none !important; }
-        .nav-hamburger { display: flex !important; }
         .mobile-col-1 { grid-template-columns: 1fr !important; }
         .living-here-grid { grid-template-columns: 1fr !important; }
         .village-roots-grid { grid-template-columns: 1fr !important; }
@@ -366,14 +364,14 @@ export function GlobalStyles() {
 }
 
 // ============================================================
-// ✏️  CONFIGURABLE CONTENT — manage hero events via Notion
+// ✏️  CONFIGURABLE CONTENT - manage hero events via Notion
 // ============================================================
 
 
 
 
 // ============================================================
-// 📢  PROMO BANNER — reusable, fetches active page banners
+// 📢  PROMO BANNER - reusable, fetches active page banners
 // ============================================================
 export function PromoBanner({ page }) {
   const [banner, setBanner] = useState(null);
@@ -452,7 +450,7 @@ function SubscribeModal({ alreadySubscribed, onClose }) {
   useEffect(() => {
     const onKey = (e) => { if (e.key === 'Escape') onClose(); };
     document.addEventListener('keydown', onKey);
-    // Entrance animation — slight delay for modal to render, then content slides in
+    // Entrance animation - slight delay for modal to render, then content slides in
     const t = setTimeout(() => setShowContent(true), 80);
     // Confetti burst for new subscribers
     if (!alreadySubscribed) {
@@ -525,7 +523,7 @@ function SubscribeModal({ alreadySubscribed, onClose }) {
               You're already one of us!
             </h3>
             <p style={{ color: C.textLight, fontSize: 16, lineHeight: 1.6, margin: '0 0 32px' }}>
-              You're part of the Manitou Beach community. Watch your inbox — the next Dispatch is coming soon.
+              You're part of the Manitou Beach community. Watch your inbox - the next Dispatch is coming soon.
             </p>
           </>
         ) : (
@@ -656,7 +654,7 @@ export function NewsletterInline() {
         </div>
         <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, lineHeight: 1.55 }}>
           <strong style={{ color: C.text }}>Free newsletter delivered to your email inbox.</strong><br />
-          Events, local businesses &amp; community news — every week. No cost, ever.{subCount ? ` Join ${subCount.toLocaleString()}+ neighbors already subscribed.` : ''}
+          Events, local businesses &amp; community news - every week. No cost, ever.{subCount ? ` Join ${subCount.toLocaleString()}+ neighbors already subscribed.` : ''}
         </div>
       </div>
       <div>
@@ -732,7 +730,7 @@ export function EventTimeline({ stripPin = null }) {
   const now = new Date();
   const cutoff = new Date(now.getFullYear(), now.getMonth() + 3, now.getDate());
 
-  // 100% Notion-driven — no hardcoded events
+  // 100% Notion-driven - no hardcoded events
   let allEvents = notionEvents
     .filter(e => { const d = new Date(e.date + "T00:00:00"); return d >= now && d <= cutoff; })
     .sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -764,7 +762,7 @@ export function EventTimeline({ stripPin = null }) {
           <SectionLabel light>Coming Up</SectionLabel>
           <SectionTitle light>Next 3 Months</SectionTitle>
           <p style={{ fontSize: 14, color: "rgba(255,255,255,0.35)", lineHeight: 1.7, maxWidth: 480, marginBottom: 48 }}>
-            What's on around the lakes — updated as events are confirmed.
+            What's on around the lakes - updated as events are confirmed.
           </p>
         </FadeIn>
 
@@ -772,7 +770,7 @@ export function EventTimeline({ stripPin = null }) {
           <FadeIn delay={100}>
             <div style={{ padding: "48px 32px", background: "rgba(255,255,255,0.03)", borderRadius: 16, border: "1px solid rgba(255,255,255,0.06)", textAlign: "center" }}>
               <div style={{ fontSize: 13, color: "rgba(255,255,255,0.25)", fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.7 }}>
-                No events confirmed for the next 3 months yet.<br />Check back soon — the lake never stays quiet for long.
+                No events confirmed for the next 3 months yet.<br />Check back soon - the lake never stays quiet for long.
               </div>
             </div>
           </FadeIn>
@@ -871,8 +869,8 @@ export function HollyYetiSection() {
 
   const videoId = videoSpotlight ? getYouTubeId(videoSpotlight.videoUrl) : '6Kjt2pNsdH0';
   const videoLabel = videoSpotlight
-    ? `${videoSpotlight.name} — Sponsored Content`
-    : 'Devils Lake Tip-Up Wrap Up — Holly & The Yeti';
+    ? `${videoSpotlight.name} - Sponsored Content`
+    : 'Devils Lake Tip-Up Wrap Up - Holly & The Yeti';
 
   return (
     <section id="holly" style={{
@@ -896,7 +894,7 @@ export function HollyYetiSection() {
           gap: 32,
         }}>
 
-          {/* TOP LEFT — Text (frosted glass panel) */}
+          {/* TOP LEFT - Text (frosted glass panel) */}
           <FadeIn direction="left">
             <div style={{
               background: "rgba(255,255,255,0.07)",
@@ -923,7 +921,7 @@ export function HollyYetiSection() {
                 A local realtor with straight-shooter expertise and an Australian-accented community cryptid with a flair for comedy walk into a podcast...
               </p>
               <p style={{ fontSize: 15, color: "rgba(255,255,255,0.62)", lineHeight: 1.85, marginBottom: 32 }}>
-                Holly Griewahn brings the real estate knowledge and market insight. Daryl — AKA The Yeti — brings the AI-generated videos, the unexpected camera angles, and the community stories that make Manitou Beach feel like the place it actually is.
+                Holly Griewahn brings the real estate knowledge and market insight. Daryl - AKA The Yeti - brings the AI-generated videos, the unexpected camera angles, and the community stories that make Manitou Beach feel like the place it actually is.
               </p>
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
                 <Btn href="https://www.youtube.com/@HollyandtheYetipodcast" variant="sunset" target="_blank" rel="noopener noreferrer">Watch on YouTube</Btn>
@@ -933,7 +931,7 @@ export function HollyYetiSection() {
             </div>
           </FadeIn>
 
-          {/* TOP RIGHT — Portrait */}
+          {/* TOP RIGHT - Portrait */}
           <FadeIn delay={80} direction="right">
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", height: "100%" }}>
               <img
@@ -947,7 +945,7 @@ export function HollyYetiSection() {
             </div>
           </FadeIn>
 
-          {/* BOTTOM LEFT — YouTube video (supports Sponsored Video Spotlight promo) */}
+          {/* BOTTOM LEFT - YouTube video (supports Sponsored Video Spotlight promo) */}
           <FadeIn delay={160} direction="left">
             <div>
               <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: videoSpotlight ? C.sunsetLight : "rgba(255,255,255,0.25)", marginBottom: 12 }}>
@@ -973,7 +971,7 @@ export function HollyYetiSection() {
             </div>
           </FadeIn>
 
-          {/* BOTTOM RIGHT — Social cards (frosted glass) */}
+          {/* BOTTOM RIGHT - Social cards (frosted glass) */}
           <FadeIn delay={200} direction="right">
             <div>
               <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: 16 }}>
@@ -1136,7 +1134,7 @@ export function SubmitSection() {
           <SectionLabel>Join the Directory</SectionLabel>
           <SectionTitle>Your Neighbors Are Looking for You</SectionTitle>
           <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.75, marginBottom: 36 }}>
-            Every local business belongs here. List for free in 60 seconds — upgrade anytime for more visibility.
+            Every local business belongs here. List for free in 60 seconds - upgrade anytime for more visibility.
           </p>
 
           {submitted ? (
@@ -1181,7 +1179,7 @@ export function SubmitSection() {
                 animation: "pulse-glow 2s ease-in-out infinite",
               }}>✓</div>
               <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream, marginBottom: 8, fontWeight: 400 }}>
-                Check your phone — one tap and you're live.
+                Check your phone - one tap and you're live.
               </div>
               <p style={{ fontSize: 14, color: C.sunsetLight, margin: "0 0 20px 0", fontFamily: "'Libre Franklin', sans-serif", fontStyle: "italic" }}>
                 We texted you a confirmation link. Takes two seconds.
@@ -1196,7 +1194,7 @@ export function SubmitSection() {
                   We sent a text to {form.phone || "your phone"}
                 </p>
                 <p style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", margin: 0, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.6 }}>
-                  Can't find it? Check your email — we sent the confirm link there too.
+                  Can't find it? Check your email - we sent the confirm link there too.
                 </p>
               </div>
 
@@ -1206,9 +1204,9 @@ export function SubmitSection() {
                   What happens next
                 </p>
                 {[
-                  "Tap the confirmation link in your text — your listing goes live instantly",
+                  "Tap the confirmation link in your text - your listing goes live instantly",
                   "You'll appear in the Local Guide and on the Discover map",
-                  "We're actively growing our audience — we want people finding you",
+                  "We're actively growing our audience - we want people finding you",
                 ].map((step, i) => (
                   <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", marginBottom: 10 }}>
                     <span style={{
@@ -1241,7 +1239,7 @@ export function SubmitSection() {
                   ))}
                 </ul>
                 <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginTop: 12, marginBottom: 0, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.5 }}>
-                  No pressure — it's always here when you want it.{" "}
+                  No pressure - it's always here when you want it.{" "}
                   <a href="/business#pricing" style={{ color: C.sunsetLight, textDecoration: "underline" }}>See pricing →</a>
                 </p>
               </div>
@@ -1296,11 +1294,11 @@ export function SubmitSection() {
                       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
                         <img src="/images/icons/food-truck-icon.png" alt="Food truck" style={{ width: 44, height: 44, objectFit: 'contain', flexShrink: 0 }} />
                         <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, color: '#F5F0E8', fontWeight: 400, lineHeight: 1.3 }}>
-                          Hold on — you qualify for something better
+                          Hold on - you qualify for something better
                         </div>
                       </div>
                       <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.65)', lineHeight: 1.7, margin: '0 0 18px', fontFamily: "'Libre Franklin', sans-serif" }}>
-                        Manitou Beach has a whole special section just for food trucks — way more than a basic listing. You get your own personal page you tap when you're parked and open. Anyone following your truck gets a text message the moment you're there. Takes about two minutes to finish.
+                        Manitou Beach has a whole special section just for food trucks - way more than a basic listing. You get your own personal page you tap when you're parked and open. Anyone following your truck gets a text message the moment you're there. Takes about two minutes to finish.
                       </p>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
                         <button
@@ -1367,14 +1365,14 @@ export function SubmitSection() {
                       onFocus={e => e.target.style.borderColor = C.sage}
                       onBlur={e => e.target.style.borderColor = C.sand}
                     >
-                      <option value="Free">Free — $0 · Name, category & phone</option>
-                      <option value="Enhanced">Enhanced — $9/mo · + Website link & description</option>
-                      <option value="Featured">Featured — $25/mo · + Spotlight card & logo</option>
-                      <option value="Premium">Premium — $49/mo · + Full banner & top placement</option>
+                      <option value="Free">Free - $0 · Name, category & phone</option>
+                      <option value="Enhanced">Enhanced - $9/mo · + Website link & description</option>
+                      <option value="Featured">Featured - $25/mo · + Spotlight card & logo</option>
+                      <option value="Premium">Premium - $49/mo · + Full banner & top placement</option>
                     </select>
                   </div>
 
-                  {/* Duration — only for paid tiers */}
+                  {/* Duration - only for paid tiers */}
                   {form.tier !== "Free" && (
                     <div>
                       <select
@@ -1401,7 +1399,7 @@ export function SubmitSection() {
                     </div>
                   )}
 
-                  {/* Logo upload — drag & drop, compressed, Vercel Blob */}
+                  {/* Logo upload - drag & drop, compressed, Vercel Blob */}
                   <div>
                     <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 600, color: C.textLight, marginBottom: 8, letterSpacing: 0.5 }}>
                       Logo (optional · displayed on Featured & Premium tiers)
@@ -1469,7 +1467,7 @@ export function SubmitSection() {
                       style={{ marginTop: 2, accentColor: C.sage }}
                     />
                     <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.text, lineHeight: 1.5 }}>
-                      Keep me in the loop — weekly events, business spotlights & lake life delivered free
+                      Keep me in the loop - weekly events, business spotlights & lake life delivered free
                     </div>
                   </label>
               </>
@@ -1500,7 +1498,7 @@ export function SubmitSection() {
                 {submitting ? "Sending…" : "Submit Business"}
               </button>
 
-              {/* Honeypot — hidden from humans, bots fill it automatically */}
+              {/* Honeypot - hidden from humans, bots fill it automatically */}
               <input aria-hidden="true" tabIndex={-1} autoComplete="off" value={form._hp} onChange={e => setForm(f => ({ ...f, _hp: e.target.value }))} style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0, pointerEvents: "none" }} />
 
               {submitError && (
@@ -1562,7 +1560,7 @@ export function FooterNewsletterModal({ onClose }) {
       <div onClick={e => e.stopPropagation()} style={{ background: C.dusk, borderRadius: 16, padding: "40px 36px", maxWidth: 440, width: "100%", border: "1px solid rgba(255,255,255,0.08)", position: "relative" }}>
         <button onClick={onClose} style={{ position: "absolute", top: 16, right: 16, background: "none", border: "none", color: "rgba(255,255,255,0.4)", fontSize: 20, cursor: "pointer", lineHeight: 1 }}>×</button>
         <div style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.sage, marginBottom: 6 }}>The Manitou Beach Dispatch</div>
-        <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.7, margin: "0 0 24px 0" }}>Weekly events, local businesses, and community news — straight to your inbox. Free.</p>
+        <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.7, margin: "0 0 24px 0" }}>Weekly events, local businesses, and community news - straight to your inbox. Free.</p>
         {done ? (
           <div style={{ textAlign: "center", padding: "16px 0" }}>
             <div style={{ fontSize: 28, marginBottom: 10 }}>✓</div>
@@ -1619,7 +1617,7 @@ export function ContactModal({ onClose, defaultCategory = 'General Question' }) 
       <div onClick={e => e.stopPropagation()} style={{ background: C.dusk, borderRadius: 16, padding: '40px 36px', maxWidth: 480, width: '100%', border: '1px solid rgba(255,255,255,0.08)', position: 'relative', maxHeight: '90vh', overflowY: 'auto' }}>
         <button onClick={onClose} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', fontSize: 20, cursor: 'pointer', lineHeight: 1 }}>×</button>
         <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.cream, marginBottom: 4 }}>Contact Us</div>
-        <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.7, margin: '0 0 24px 0' }}>Send us a message — we read every one.</p>
+        <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.7, margin: '0 0 24px 0' }}>Send us a message - we read every one.</p>
         {done ? (
           <div style={{ textAlign: 'center', padding: '16px 0' }}>
             <div style={{ fontSize: 28, marginBottom: 10 }}>✓</div>
@@ -1873,6 +1871,12 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
 
   return (
     <>
+      <style>{`
+        @media (max-width: 1080px) {
+          .nav-desktop { display: none !important; }
+          .nav-hamburger { display: flex !important; }
+        }
+      `}</style>
       <nav style={{
         position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000,
         padding: solid ? "10px 0" : "18px 0",
@@ -1921,6 +1925,13 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
                   borderRadius: 10, border: `1px solid ${C.sand}`, boxShadow: "0 12px 36px rgba(0,0,0,0.12)",
                   padding: "8px 0", minWidth: 180, zIndex: 1001,
                 }}>
+                  <a href="/" onClick={() => setHomeOpen(false)} style={{
+                    display: "block", padding: "10px 18px", fontSize: 13, color: C.text, fontWeight: 600,
+                    textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif", transition: "background 0.15s",
+                    borderBottom: `1px solid ${C.sand}`, marginBottom: 4,
+                  }} onMouseEnter={e => e.currentTarget.style.background = `${C.sage}10`} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                    Home
+                  </a>
                   {[
                     { id: "explore",    label: "Explore" },
                     { id: "businesses", label: "Local Businesses" },
@@ -2062,7 +2073,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
             </div>
           </div>
 
-          {/* Hamburger button — mobile only */}
+          {/* Hamburger button - mobile only */}
           <button
             onClick={() => setMenuOpen(o => !o)}
             className="nav-hamburger"
@@ -2118,7 +2129,15 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
         transform: menuOpen ? "translateX(0)" : "translateX(100%)",
         transition: "transform 0.35s ease",
       }}>
-        {/* Events — mobile top level */}
+        {/* Home */}
+        <button onClick={() => { setMenuOpen(false); window.location.href = "/"; }} style={{
+          background: "none", border: "none", fontFamily: "'Libre Baskerville', serif",
+          fontSize: 24, fontWeight: 400, color: C.text, cursor: "pointer", padding: "12px 32px", letterSpacing: 0.5,
+        }}>
+          Home
+        </button>
+
+        {/* Events - mobile top level */}
         <button onClick={() => { setMenuOpen(false); handleNavClick("happening"); }} style={{
           background: "none", border: "none", fontFamily: "'Libre Baskerville', serif",
           fontSize: 24, fontWeight: 400, color: C.text, cursor: "pointer", padding: "12px 32px", letterSpacing: 0.5,
@@ -2143,22 +2162,6 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
         }}>
           Stays
         </button>
-
-        {/* Home sub-sections */}
-        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.textMuted, marginTop: 8, fontFamily: "'Libre Franklin', sans-serif" }}>On This Page</div>
-        {[
-          { id: "explore",    label: "Explore" },
-          { id: "businesses", label: "Local Businesses" },
-          { id: "living",     label: "Living Here" },
-          { id: "about",      label: "About" },
-        ].map(({ id, label }) => (
-          <button key={id} onClick={() => handleNavClick(id)} style={{
-            background: "none", border: "none", fontFamily: "'Libre Baskerville', serif",
-            fontSize: 20, fontWeight: 400, color: C.textLight, cursor: "pointer", padding: "8px 32px", letterSpacing: 0.5,
-          }}>
-            {label}
-          </button>
-        ))}
 
         {/* Community sub-links */}
         <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.textMuted, marginTop: 8, fontFamily: "'Libre Franklin', sans-serif" }}>Community</div>
@@ -2206,7 +2209,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
 }
 
 // ============================================================
-// 📅  /happening — FULL PAGE
+// 📅  /happening - FULL PAGE
 // ============================================================
 export function EventLightbox({ event, onClose }) {
   const [ticketForm, setTicketForm] = React.useState({ buyerName: '', email: '', phone: '', quantity: 1 });
@@ -2286,7 +2289,7 @@ export function EventLightbox({ event, onClose }) {
         }),
       });
       const data = await res.json();
-      if (res.status === 409) { setRsvpError('Dang — it just filled up! You can hop on the waitlist below though.'); return; }
+      if (res.status === 409) { setRsvpError('Dang - it just filled up! You can hop on the waitlist below though.'); return; }
       if (!res.ok) throw new Error(data.error || yeti.oops());
       setRsvpSubmitted(true);
     } catch (err) {
@@ -2388,7 +2391,7 @@ export function EventLightbox({ event, onClose }) {
 
         <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color, marginBottom: 16 }}>
           {dateDisplay}
-          {!isRecurring && event.dateEnd && ` — ${new Date(event.dateEnd + "T00:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric" })}`}
+          {!isRecurring && event.dateEnd && ` - ${new Date(event.dateEnd + "T00:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric" })}`}
         </div>
 
         {(event.time || event.location || event.attendance) && (
@@ -2421,10 +2424,10 @@ export function EventLightbox({ event, onClose }) {
           {event.description?.replace(/\.?\s*Runs until:?\s*\d{4}-\d{2}-\d{2}\.?/i, "").trim()}
         </p>
 
-        {/* RSVP section — full in-app form (paid feature) OR dead-end fix (free) */}
+        {/* RSVP section - full in-app form (paid feature) OR dead-end fix (free) */}
         {RSVP_ATTENDANCE_TYPES.includes(event.attendance) && !event.ticketsEnabled && (
           <div style={{ marginBottom: 20 }}>
-            {/* Spots-left pill — only show when ≤5 remain and not yet sold out */}
+            {/* Spots-left pill - only show when ≤5 remain and not yet sold out */}
             {!rsvpSoldOut && rsvpSpotsLeft !== null && rsvpSpotsLeft <= 5 && (
               <div style={{ display: "inline-flex", alignItems: "center", gap: 5, background: "rgba(255,107,107,0.12)", border: "1px solid rgba(255,107,107,0.3)", borderRadius: 20, padding: "4px 12px", marginBottom: 12, fontSize: 12, fontWeight: 700, color: rsvpSpotsLeft <= 2 ? "#ff6b6b" : C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1 }}>
                 🔴 {rsvpSpotsLeft} spot{rsvpSpotsLeft === 1 ? "" : "s"} left
@@ -2443,7 +2446,7 @@ export function EventLightbox({ event, onClose }) {
                       <div style={{ fontSize: 28 }}>🎟️</div>
                       <div>
                         <div style={{ fontSize: 14, fontWeight: 700, color: "#ff6b6b", fontFamily: "'Libre Franklin', sans-serif", marginBottom: 2 }}>This event is full</div>
-                        <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", fontFamily: "'Libre Franklin', sans-serif" }}>Join the waitlist — we'll notify you if a spot opens up.</div>
+                        <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", fontFamily: "'Libre Franklin', sans-serif" }}>Join the waitlist - we'll notify you if a spot opens up.</div>
                       </div>
                     </div>
                     <form onSubmit={handleWaitlist} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -2468,7 +2471,7 @@ export function EventLightbox({ event, onClose }) {
               ) : (
                 <form onSubmit={handleRsvp} style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "20px" }}>
                   <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.lakeBlue, marginBottom: 14, fontFamily: "'Libre Franklin', sans-serif" }}>
-                    RSVP — It's Free
+                    RSVP - It's Free
                   </div>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10 }}>
                     {[
@@ -2494,7 +2497,7 @@ export function EventLightbox({ event, onClose }) {
                 </form>
               )
             ) : (
-              /* Dead-end fix — route to eventUrl / email / contact */
+              /* Dead-end fix - route to eventUrl / email / contact */
               <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
                 {event.eventUrl ? (
                   <a href={event.eventUrl} target="_blank" rel="noopener noreferrer"
@@ -2543,7 +2546,7 @@ export function EventLightbox({ event, onClose }) {
                     transition: "all 0.2s",
                   }}
                 >
-                  Get Tickets — ${event.ticketPrice}
+                  Get Tickets - ${event.ticketPrice}
                 </button>
                 {ticketsRemaining !== null && ticketsRemaining <= 20 && (
                   <span style={{ fontSize: 12, color: C.sunsetLight, marginLeft: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
@@ -2554,7 +2557,7 @@ export function EventLightbox({ event, onClose }) {
             ) : (
               <form onSubmit={handleTicketPurchase} style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "20px" }}>
                 <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 14, fontFamily: "'Libre Franklin', sans-serif" }}>
-                  Ticket Details — ${event.ticketPrice}/ticket
+                  Ticket Details - ${event.ticketPrice}/ticket
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10 }}>
                   <input
@@ -2646,7 +2649,7 @@ export function EventLightbox({ event, onClose }) {
 
         {/* Share this event */}
         <ShareBar
-          title={`${event.name}${event.date ? ` — ${(() => { try { return new Date(event.date + "T00:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric" }); } catch { return event.date; } })()}` : ""} at Manitou Beach`}
+          title={`${event.name}${event.date ? ` - ${(() => { try { return new Date(event.date + "T00:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric" }); } catch { return event.date; } })()}` : ""} at Manitou Beach`}
           url={typeof window !== "undefined" ? `${window.location.origin}/happening` : "/happening"}
         />
       </div>
@@ -2658,7 +2661,7 @@ export function EventLightbox({ event, onClose }) {
 
 
 // ============================================================
-// ⭐  FEATURED BUSINESS — SALES PAGE + STRIPE CHECKOUT
+// ⭐  FEATURED BUSINESS - SALES PAGE + STRIPE CHECKOUT
 
 
 
@@ -2670,29 +2673,29 @@ const PROMOTE_PACKAGES = [
     desc: "Your event in the calendar with a photo and a ticket button.",
     plain: "Instead of just a line of text like the free listings, yours shows up with a photo and a big 'Get Tickets' button. Stands out." },
   { id: "hero_7d",         label: "Hero Feature",           detail: "7 Days",             price: "$75",  fullPrice: "$149", diagramType: "hero",
-    desc: "The first thing anyone sees when they visit the site — full screen, your event, for 7 days.",
+    desc: "The first thing anyone sees when they visit the site - full screen, your event, for 7 days.",
     plain: "Picture the front page of a newspaper. That's your event, full size, the moment anyone opens the website. Every visitor sees it first, for a whole week." },
   { id: "hero_30d",        label: "Hero Feature",           detail: "30 Days",            price: "$249", fullPrice: "$499", diagramType: "hero",
     desc: "Own the front of the site for a full month.",
-    plain: "Same front-page treatment as the 7-day option — just for a whole month. Great for building buzz leading up to a big event." },
+    plain: "Same front-page treatment as the 7-day option - just for a whole month. Great for building buzz leading up to a big event." },
   { id: "newsletter",      label: "Newsletter Feature",     detail: "1 Issue",            price: "$39",  fullPrice: "$79",  diagramType: "newsletter",
-    desc: "Top spot in the next Manitou Beach Dispatch email — before anyone scrolls.",
+    desc: "Top spot in the next Manitou Beach Dispatch email - before anyone scrolls.",
     plain: "A big beautiful announcement at the very top of our weekly email. The whole community sees it in their inbox before they read anything else." },
   { id: "banner_1p",       label: "Page Feature Banner",    detail: "1 Page · 30 Days",  price: "$29",  fullPrice: "$59",  diagramType: "banner",
     desc: "A wide banner for your event sitting in the middle of whichever page your crowd visits most.",
-    plain: "Like a billboard, but on the website. Pick the page where your people hang out — Fishing, Wineries, Devils Lake — and your banner is right there for 30 days." },
+    plain: "Like a billboard, but on the website. Pick the page where your people hang out - Fishing, Wineries, Devils Lake - and your banner is right there for 30 days." },
   { id: "banner_3p",       label: "Page Feature Banner",    detail: "3 Pages · 30 Days", price: "$69",  fullPrice: "$129", diagramType: "banner3",
     desc: "Same billboard treatment, but on three different pages at once.",
-    plain: "Cover more ground — your banner shows up on three pages across the site. Catch people wherever they're browsing." },
+    plain: "Cover more ground - your banner shows up on three pages across the site. Catch people wherever they're browsing." },
   { id: "strip_pin",       label: "Featured Strip Pin",     detail: "30 Days",            price: "$19",  fullPrice: "$39",  diagramType: "strip",
-    desc: "First spot in the 'Coming Up' list on the homepage — right below the big banner.",
+    desc: "First spot in the 'Coming Up' list on the homepage - right below the big banner.",
     plain: "There's a scrolling list of upcoming events near the top of the home page. Your event goes first on that list for 30 days. Hard to scroll past." },
   { id: "holly_yeti",      label: "Holly & Yeti Spotlight", detail: "30 Days",            price: "$179", fullPrice: "$350", diagramType: "video",
     desc: "Holly and The Yeti make a short video about your event or business. Lives on the site for 30 days.",
     plain: "We come out, shoot a short video, and it lives on the website for a month. We share it on social too. It's the kind of thing people actually watch." },
   { id: "spotlight",       label: "Full Launch Bundle",     detail: "Best Value",         price: "$149", fullPrice: "$299", diagramType: "bundle",
     desc: "Front page of the site for 7 days + top of the newsletter + featured calendar listing. All three at once.",
-    plain: "The whole shebang. Front page of the website, top of the email, featured in the calendar. Maximum coverage — and you save $55 doing it this way.", badge: "Best Value" },
+    plain: "The whole shebang. Front page of the website, top of the email, featured in the calendar. Maximum coverage - and you save $55 doing it this way.", badge: "Best Value" },
 ];
 
 
@@ -2705,23 +2708,23 @@ const ADVERTISE_PACKAGES = [
     desc: "Your brand, product, or event mentioned with a link in the next Dispatch email.",
     plain: "One or two sentences about you, with a link, in front of everyone who reads the weekly email. Simple and effective." },
   { id: "newsletter",         label: "Newsletter Feature",   detail: "1 Issue",            price: "$39",  fullPrice: "$79",  diagramType: "newsletter",
-    desc: "A full dedicated section at the top of the next Manitou Beach Dispatch — before anyone scrolls.",
+    desc: "A full dedicated section at the top of the next Manitou Beach Dispatch - before anyone scrolls.",
     plain: "Your business or event gets its own section at the very top of the email. Image, copy, link. The whole community sees it before anything else." },
   { id: "banner_1p",          label: "Page Banner",          detail: "1 Page · 30 Days",  price: "$29",  fullPrice: "$59",  diagramType: "banner",
     desc: "A full-width banner for your brand on whichever page your customers visit most.",
-    plain: "Like renting a billboard, but on the website. Pick the page — Fishing, Wineries, Devils Lake — and your banner sits right there for 30 days." },
+    plain: "Like renting a billboard, but on the website. Pick the page - Fishing, Wineries, Devils Lake - and your banner sits right there for 30 days." },
   { id: "banner_3p",          label: "Page Banner",          detail: "3 Pages · 30 Days", price: "$69",  fullPrice: "$129", diagramType: "banner3",
-    desc: "Same banner treatment across three pages at once — maximum coverage for 30 days.",
-    plain: "Three pages, one price. Catch people wherever they're browsing — whether they're checking fishing conditions, planning a winery visit, or reading about the lake." },
+    desc: "Same banner treatment across three pages at once - maximum coverage for 30 days.",
+    plain: "Three pages, one price. Catch people wherever they're browsing - whether they're checking fishing conditions, planning a winery visit, or reading about the lake." },
   { id: "holly_yeti",         label: "Holly & Yeti Feature", detail: "Video · 30 Days",   price: "$179", fullPrice: "$350", diagramType: "video",
     desc: "Holly and The Yeti create a short video about your business. Lives on the site for 30 days and shared on social.",
-    plain: "We come out, tell your story on camera, and put it on the website for a month. Real people, real place — the kind of thing the community actually watches." },
+    plain: "We come out, tell your story on camera, and put it on the website for a month. Real people, real place - the kind of thing the community actually watches." },
 ];
 
 
 
 // ============================================================
-// 📰  THE MANITOU DISPATCH — BLOG / NEWSLETTER ARCHIVE
+// 📰  THE MANITOU DISPATCH - BLOG / NEWSLETTER ARCHIVE
 // ============================================================
 
 export const CATEGORY_COLORS = {
@@ -2742,11 +2745,11 @@ export const CATEGORY_COLORS = {
 };
 
 // ============================================================
-// 📢  AD SLOTS — Dispatch blog advertising
+// 📢  AD SLOTS - Dispatch blog advertising
 // ============================================================
 
 // ============================================================
-// 🧪  BETA FEEDBACK STRIP — visible to beta testers until April 10
+// 🧪  BETA FEEDBACK STRIP - visible to beta testers until April 10
 // ============================================================
 
 const BETA_CODE_RE = /^MB[A-Z0-9]{4}$/;
@@ -2960,7 +2963,7 @@ export function BetaFeedbackStrip() {
                 </div>
 
                 <div style={{ marginBottom: 18 }}>
-                  <label style={labelStyle}>Your Email (optional — for follow-up)</label>
+                  <label style={labelStyle}>Your Email (optional - for follow-up)</label>
                   <input
                     type="email"
                     value={form.email}

@@ -8,7 +8,7 @@ import yeti from '../data/errorMessages';
 import formatPhone from '../utils/formatPhone';
 
 // ============================================================
-// 🏠  HOME PAGE — EventTicker, Hero, FeaturedEventsStrip,
+// 🏠  HOME PAGE - EventTicker, Hero, FeaturedEventsStrip,
 //      SubscribeModal, NewsletterBar, HappeningSection,
 //      ExploreSection, PricingSection, BusinessDirectory,
 //      LivingSection, AboutSection, LiveFoodTruckStrip
@@ -65,7 +65,7 @@ function EventTicker() {
 }
 
 // ============================================================
-// 🌤️  WEATHER WIDGET — live Devils Lake conditions
+// 🌤️  WEATHER WIDGET - live Devils Lake conditions
 // Uses Open-Meteo (free, no API key, CORS-friendly)
 // ============================================================
 function WeatherWidget() {
@@ -130,7 +130,7 @@ function WeatherWidget() {
 // 🏠  HERO SECTION
 // ============================================================
 function Hero({ scrollTo }) {
-  // All hooks at top — fixes React rules-of-hooks violation from previous pattern
+  // All hooks at top - fixes React rules-of-hooks violation from previous pattern
   const [loaded, setLoaded] = useState(false);
   const [heroEvents, setHeroEvents] = useState([]);
   const [heroTakeover, setHeroTakeover] = useState([]);
@@ -196,7 +196,7 @@ function Hero({ scrollTo }) {
   const heroEvent = displayEvents[heroIndex] || null;
   if (heroReady && heroEvent) {
     // heroImageUrl = high-res image for full-screen bg (add "Hero Image URL" column in Notion)
-    // imageUrl = small event image — shown as a contained card, never stretched
+    // imageUrl = small event image - shown as a contained card, never stretched
     const bgStyle = heroEvent.heroImageUrl
       ? {}
       : { background: `linear-gradient(135deg, ${C.night} 0%, ${C.lakeDark} 50%, ${C.dusk} 100%)` };
@@ -232,7 +232,7 @@ function Hero({ scrollTo }) {
         })()}
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(170deg, rgba(26,40,48,0.75) 0%, rgba(26,40,48,0.5) 50%, rgba(26,40,48,0.85) 100%)", zIndex: 1 }} />
 
-        {/* Coming Up / Sponsored badge + weather — top right */}
+        {/* Coming Up / Sponsored badge + weather - top right */}
         <div style={{ position: "absolute", top: 100, right: 48, zIndex: 2, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 10 }}>
           <div style={{
             display: "inline-block",
@@ -260,7 +260,7 @@ function Hero({ scrollTo }) {
               {heroEvent.time && ` · ${heroEvent.time}`}
             </div>
 
-            {/* Event image/video — wide, contained, below the date */}
+            {/* Event image/video - wide, contained, below the date */}
             {heroEvent.imageUrl && (() => {
               const isVideo = /\.(mp4|webm|mov|m4v)/i.test(heroEvent.imageUrl);
               const mediaStyle = {
@@ -294,7 +294,7 @@ function Hero({ scrollTo }) {
               </p>
             )}
 
-            {/* CTA button — event-specific (Get Tickets / Learn More etc.) */}
+            {/* CTA button - event-specific (Get Tickets / Learn More etc.) */}
             {heroEvent.eventUrl && (
               <div style={{ marginBottom: 16 }}>
                 <a
@@ -314,7 +314,7 @@ function Hero({ scrollTo }) {
               </div>
             )}
 
-            {/* Site nav buttons — below, visually separated from event CTA */}
+            {/* Site nav buttons - below, visually separated from event CTA */}
             <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginTop: heroEvent.eventUrl ? 4 : 0 }}>
               <Btn href="/events" variant="sunset">See All Events</Btn>
               <Btn onClick={() => scrollTo("businesses")} variant="outlineLight">Explore the Community</Btn>
@@ -322,7 +322,7 @@ function Hero({ scrollTo }) {
           </div>
         </div>
 
-        {/* Rotation dots — only if multiple events */}
+        {/* Rotation dots - only if multiple events */}
         {displayEvents.length > 1 && (
           <div style={{
             position: "absolute", bottom: 48, left: "50%", transform: "translateX(-50%)",
@@ -385,7 +385,7 @@ function Hero({ scrollTo }) {
             <Btn onClick={() => scrollTo("businesses")} variant="primary">Explore Businesses</Btn>
             <Btn onClick={() => scrollTo("happening")} variant="outlineLight">Events</Btn>
           </div>
-          <ShareBar title="Manitou Beach — Irish Hills, Michigan" />
+          <ShareBar title="Manitou Beach - Irish Hills, Michigan" />
         </div>
       </div>
       {scrollIndicator}
@@ -499,7 +499,7 @@ function HappeningSection() {
       backgroundAttachment: "fixed",
       backgroundColor: C.dusk, /* fallback until image is added */
     }}>
-      {/* Dark overlay — adjust opacity for photo intensity */}
+      {/* Dark overlay - adjust opacity for photo intensity */}
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg, rgba(18,28,35,0.88) 0%, rgba(30,45,54,0.82) 100%)", zIndex: 0 }} />
       <div style={{ position: "relative", zIndex: 1, maxWidth: 1100, margin: "0 auto" }}>
         <FadeIn>
@@ -512,7 +512,7 @@ function HappeningSection() {
           </div>
         </FadeIn>
 
-        {/* Timeline preview — 3 events */}
+        {/* Timeline preview - 3 events */}
         <div style={{ position: "relative", marginBottom: 52 }}>
           <div style={{
             position: "absolute", left: 200, top: 0, bottom: 0,
@@ -520,7 +520,7 @@ function HappeningSection() {
           }} />
           {preview.length === 0 ? (
             <div style={{ padding: "32px 0", fontSize: 14, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif" }}>
-              Adding events soon — check back!
+              Adding events soon - check back!
             </div>
           ) : preview.map((event, i) => {
             const color = categoryColors[event.category] || C.sage;
@@ -594,7 +594,7 @@ function HappeningSection() {
 }
 
 // ============================================================
-// 📅  /happening — PAGE HERO
+// 📅  /happening - PAGE HERO
 // ============================================================
 function ExploreCard({ place, large = false, delay = 0 }) {
   const tilt = useCardTilt(5);
@@ -689,7 +689,7 @@ function ExploreSection() {
             Explore Manitou Beach
           </h2>
           <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.8, marginBottom: 48, maxWidth: 560 }}>
-            Sitting on the shores of Devils Lake in the Michigan Irish Hills — there's more to explore here than the name implies.
+            Sitting on the shores of Devils Lake in the Michigan Irish Hills - there's more to explore here than the name implies.
           </p>
         </FadeIn>
 
@@ -774,7 +774,7 @@ function PricingSection() {
             </p>
           </div>
 
-          {/* Free tier — compact row */}
+          {/* Free tier - compact row */}
           <div style={{ marginBottom: 16 }}>
             <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "18px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
               <div style={{ display: "flex", gap: 28, alignItems: "center", flexWrap: "wrap" }}>
@@ -838,7 +838,7 @@ function PricingSection() {
                 <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: C.lakeBlue, marginBottom: 8 }}>Newsletter Add-On</div>
                 <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.cream, margin: "0 0 10px 0" }}>Reach the inbox, not just the directory</h3>
                 <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 14, lineHeight: 1.75, margin: 0 }}>
-                  The Manitou Dispatch lands directly in the inboxes of people already invested in this community. Event organizers know they can't get 2,000 engaged local eyes in a single drop — your business can.
+                  The Manitou Dispatch lands directly in the inboxes of people already invested in this community. Event organizers know they can't get 2,000 engaged local eyes in a single drop - your business can.
                 </p>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 10, minWidth: 210 }}>
@@ -880,7 +880,7 @@ function PricingSection() {
             </h3>
             <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 13, margin: "0 0 20px 0" }}>Monthly subscription · Cancel or pause anytime</p>
 
-            {/* What's included — tier feature summary */}
+            {/* What's included - tier feature summary */}
             <div style={{ background: "rgba(255,255,255,0.04)", borderRadius: 10, padding: "14px 16px", marginBottom: 20, border: "1px solid rgba(255,255,255,0.06)" }}>
               <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 10 }}>What you get</div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
@@ -892,13 +892,13 @@ function PricingSection() {
               </div>
             </div>
 
-            {/* Contract terms — clear and upfront */}
+            {/* Contract terms - clear and upfront */}
             <div style={{ background: `${modal.color}0A`, borderRadius: 10, padding: "14px 16px", marginBottom: 22, border: `1px solid ${modal.color}15` }}>
               <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 10 }}>How it works</div>
               {[
-                { icon: "↻", text: "Billed monthly — no long-term contract" },
+                { icon: "↻", text: "Billed monthly - no long-term contract" },
                 { icon: "⚡", text: `Your $${modal.price}/mo rate is locked while subscribed` },
-                { icon: "✕", text: "Cancel anytime — listing reverts to Free tier" },
+                { icon: "✕", text: "Cancel anytime - listing reverts to Free tier" },
                 { icon: "↩", text: "Re-subscribe later at whatever the current rate is" },
               ].map(item => (
                 <div key={item.text} style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 7, fontSize: 12, color: "rgba(255,255,255,0.5)", fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.45 }}>
@@ -1005,7 +1005,7 @@ function BusinessDirectory() {
     featuredByCategory[b.category].push(b);
   });
 
-  // ALL businesses also appear as rows within their category (additive — paid tiers get both card + row)
+  // ALL businesses also appear as rows within their category (additive - paid tiers get both card + row)
   // Free → compact row | Enhanced/Featured/Premium → expanded EnhancedBusinessRow
   const grouped = {};
   filtered.forEach(b => {
@@ -1081,7 +1081,7 @@ function BusinessDirectory() {
           </div>
         </FadeIn>
 
-        {/* Premium Partners — full-width banner rows, stacked before categories */}
+        {/* Premium Partners - full-width banner rows, stacked before categories */}
         {premiumBusinesses.length > 0 && (
           <FadeIn delay={100}>
             <div style={{ marginBottom: 56 }}>
@@ -1096,7 +1096,7 @@ function BusinessDirectory() {
           </FadeIn>
         )}
 
-        {/* Directory — category sections: featured cards on top, then all businesses as rows */}
+        {/* Directory - category sections: featured cards on top, then all businesses as rows */}
         {allCategories.map((category, i) => {
           const catFeatured = featuredByCategory[category] || [];
           const catAll = grouped[category] || [];
@@ -1112,13 +1112,13 @@ function BusinessDirectory() {
                     {catAll.length}
                   </div>
                 </div>
-                {/* Featured spotlight cards — 3 per row, wraps to new rows as needed */}
+                {/* Featured spotlight cards - 3 per row, wraps to new rows as needed */}
                 {catFeatured.length > 0 && (
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 14, marginBottom: 14 }}>
                     {catFeatured.map(b => <FeaturedBusinessCard key={`card-${b.id}`} business={b} />)}
                   </div>
                 )}
-                {/* All businesses as rows — Enhanced/Featured/Premium get expanded view */}
+                {/* All businesses as rows - Enhanced/Featured/Premium get expanded view */}
                 {catAll.map(b =>
                   (b.tier === 'enhanced' || b.tier === 'featured' || b.tier === 'premium' || b.featured)
                     ? <EnhancedBusinessRow key={`row-${b.id}`} business={b} />
@@ -1173,7 +1173,7 @@ function BusinessDirectory() {
   );
 }
 
-// Featured business — compact dark card, designed for 3-per-row grid layout
+// Featured business - compact dark card, designed for 3-per-row grid layout
 function FeaturedBusinessCard({ business }) {
   const [expanded, setExpanded] = useState(false);
   const color = CAT_COLORS[business.category] || C.sage;
@@ -1268,7 +1268,7 @@ function FeaturedBusinessCard({ business }) {
   );
 }
 
-// Premium partner — full-width dark banner (stacked at top of directory)
+// Premium partner - full-width dark banner (stacked at top of directory)
 function PremiumBanner({ business }) {
   const color = CAT_COLORS[business.category] || C.sage;
   return (
@@ -1312,7 +1312,7 @@ function PremiumBanner({ business }) {
   );
 }
 
-// Enhanced business row — visually distinct from Free row with persistent border, tint, and icon badge
+// Enhanced business row - visually distinct from Free row with persistent border, tint, and icon badge
 function EnhancedBusinessRow({ business }) {
   const [expanded, setExpanded] = useState(false);
   const color = CAT_COLORS[business.category] || C.sage;
@@ -1322,7 +1322,7 @@ function EnhancedBusinessRow({ business }) {
 
   return (
     <div style={{ borderBottom: `1px solid ${C.sand}` }}>
-      {/* Collapsed header — persistent left border + tint to distinguish from free listings */}
+      {/* Collapsed header - persistent left border + tint to distinguish from free listings */}
       <div
         onClick={() => setExpanded(e => !e)}
         style={{
@@ -1342,7 +1342,7 @@ function EnhancedBusinessRow({ business }) {
         onMouseEnter={e => { e.currentTarget.style.borderLeftColor = color; e.currentTarget.style.background = `${color}12`; }}
         onMouseLeave={e => { e.currentTarget.style.borderLeftColor = `${color}55`; e.currentTarget.style.background = `${color}06`; }}
       >
-        {/* Category dot — all enhanced+ tiers get the pulse */}
+        {/* Category dot - all enhanced+ tiers get the pulse */}
         <div
           className="listing-dot-pulse"
           style={{ width: 8, height: 8, borderRadius: "50%", background: dotColor, flexShrink: 0 }}
@@ -1365,7 +1365,7 @@ function EnhancedBusinessRow({ business }) {
         </span>
       </div>
 
-      {/* Expanded detail panel — animated ease-out */}
+      {/* Expanded detail panel - animated ease-out */}
       <div style={{ maxHeight: expanded ? "400px" : 0, overflow: "hidden", transition: "max-height 0.5s ease-out" }}>
         <div style={{
           padding: "14px 10px 16px 27px",
@@ -1401,7 +1401,7 @@ function EnhancedBusinessRow({ business }) {
   );
 }
 
-// Regular business — compact list row
+// Regular business - compact list row
 function BusinessRow({ business }) {
   const color = CAT_COLORS[business.category] || C.sage;
   return (
@@ -1444,7 +1444,7 @@ function BusinessRow({ business }) {
         )}
       </div>
 
-      {/* Free tier — no website link. Upgrade to Enhanced+ to unlock. */}
+      {/* Free tier - no website link. Upgrade to Enhanced+ to unlock. */}
       <a href="#listing-tiers" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 600, letterSpacing: 1, color: C.driftwood, textDecoration: "none", whiteSpace: "nowrap", opacity: 0.65 }}>
         Upgrade →
       </a>
@@ -1459,11 +1459,11 @@ function LivingSection() {
           <SectionLabel>Relocate & Stay</SectionLabel>
           <SectionTitle>Your Lake Life Starts Here</SectionTitle>
           <p style={{ fontSize: 16, color: C.textLight, maxWidth: 560, margin: "0 0 56px 0", lineHeight: 1.75 }}>
-            Whether you're planning a weekend escape or imagining a new forever address — Manitou Beach has a way of making visitors into neighbors.
+            Whether you're planning a weekend escape or imagining a new forever address - Manitou Beach has a way of making visitors into neighbors.
           </p>
         </FadeIn>
 
-        {/* Block A — "Picture Yourself Here" hero */}
+        {/* Block A - "Picture Yourself Here" hero */}
         <FadeIn direction="scale">
           <div style={{
             background: `linear-gradient(135deg, ${C.dusk} 0%, ${C.lakeDark} 100%)`,
@@ -1510,7 +1510,7 @@ function LivingSection() {
           </div>
         </FadeIn>
 
-        {/* Block B — Short-Term Rentals */}
+        {/* Block B - Short-Term Rentals */}
         <div className="mobile-col-1" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 28, marginBottom: 28, alignItems: "center" }}>
           <FadeIn direction="left">
             <div style={{ padding: "8px 0" }}>
@@ -1518,7 +1518,7 @@ function LivingSection() {
                 Short-Term Rentals
               </h3>
               <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, margin: "0 0 20px 0" }}>
-                Lakefront cottages, village apartments, and the kind of view that makes you forget what day it is. Whether you're here for a weekend or a whole season — we'll help you find your spot.
+                Lakefront cottages, village apartments, and the kind of view that makes you forget what day it is. Whether you're here for a weekend or a whole season - we'll help you find your spot.
               </p>
               <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
                 <Btn href="/stays" variant="outline" small>Browse Stays →</Btn>
@@ -1544,7 +1544,7 @@ function LivingSection() {
           </FadeIn>
         </div>
 
-        {/* Block C — Year-Round Life (mirrored) */}
+        {/* Block C - Year-Round Life (mirrored) */}
         <div className="mobile-col-1" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 28, marginBottom: 28, alignItems: "center" }}>
           <FadeIn direction="left">
             <div style={{
@@ -1575,7 +1575,7 @@ function LivingSection() {
           </FadeIn>
         </div>
 
-        {/* Block D — Lake Access Magazine (co-branded dark strip) */}
+        {/* Block D - Lake Access Magazine (co-branded dark strip) */}
         <FadeIn>
           <div style={{
             background: `linear-gradient(135deg, ${C.dusk} 0%, ${C.lakeDark} 50%, ${C.dusk} 100%)`,
@@ -1657,10 +1657,10 @@ function AboutSection() {
             <SectionLabel>The Story</SectionLabel>
             <SectionTitle>About This Platform</SectionTitle>
             <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.85, marginBottom: 20 }}>
-              Devils Lake sits in the heart of Michigan's Irish Hills — 1,330 acres of water, 600+ boat slips, and a community that's been coming back every summer since the 1870s. Locals call it "the party lake," and anyone who's spent a Saturday at the Yacht Club knows why.
+              Devils Lake sits in the heart of Michigan's Irish Hills - 1,330 acres of water, 600+ boat slips, and a community that's been coming back every summer since the 1870s. Locals call it "the party lake," and anyone who's spent a Saturday at the Yacht Club knows why.
             </p>
             <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.85, marginBottom: 20 }}>
-              This platform is that home. A directory of local businesses, a calendar for what's actually happening this week, and The Manitou Dispatch — a newsletter keeping the lake connected year-round. Built by people who live here, for everyone who loves this place.
+              This platform is that home. A directory of local businesses, a calendar for what's actually happening this week, and The Manitou Dispatch - a newsletter keeping the lake connected year-round. Built by people who live here, for everyone who loves this place.
             </p>
 
             {/* Handwritten quote */}
@@ -1671,7 +1671,7 @@ function AboutSection() {
             </div>
 
             <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.85, marginBottom: 32 }}>
-              (And yes — we're fully aware the name "Manitou Beach" is an ironic masterpiece given that there's no actual beach. We've all made peace with it.)
+              (And yes - we're fully aware the name "Manitou Beach" is an ironic masterpiece given that there's no actual beach. We've all made peace with it.)
             </p>
 
             {/* Community stats */}
@@ -1787,7 +1787,7 @@ function AboutSection() {
                   Message Sent
                 </h3>
                 <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.7 }}>
-                  Thanks for reaching out — we'll get back to you soon.
+                  Thanks for reaching out - we'll get back to you soon.
                 </p>
               </div>
             ) : (

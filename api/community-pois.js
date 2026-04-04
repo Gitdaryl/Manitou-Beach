@@ -1,4 +1,4 @@
-// Community POIs — public, visitor-facing locations that will never advertise
+// Community POIs - public, visitor-facing locations that will never advertise
 // (hospitals, schools, boat launches, pharmacies, etc.)
 // Separate from the paid Businesses DB.
 

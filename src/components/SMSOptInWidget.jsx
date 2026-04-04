@@ -2,14 +2,14 @@ import { useState } from 'react';
 import { C } from '../data/config';
 import yeti from '../data/errorMessages';
 
-// Reusable SMS opt-in widget — drop into any page
+// Reusable SMS opt-in widget - drop into any page
 // Props:
-//   type      — 'general' | 'event' | 'deals' | 'welcome'  (default: 'general')
-//   source    — page slug for tracking (e.g. 'happening', 'village')
-//   heading   — optional override headline
-//   subtext   — optional override description
-//   compact   — if true, renders single-line inline style
-//   style     — optional container style override
+//   type      - 'general' | 'event' | 'deals' | 'welcome'  (default: 'general')
+//   source    - page slug for tracking (e.g. 'happening', 'village')
+//   heading   - optional override headline
+//   subtext   - optional override description
+//   compact   - if true, renders single-line inline style
+//   style     - optional container style override
 
 export default function SMSOptInWidget({
   type = 'general',
@@ -33,7 +33,7 @@ export default function SMSOptInWidget({
   };
 
   const defaultSubtext = {
-    general:      "What's happening at Manitou Beach — straight to your phone.",
+    general:      "What's happening at Manitou Beach - straight to your phone.",
     event:        'Get a reminder before events you care about.',
     deals:        'Time-sensitive specials from local businesses.',
     welcome:      "One text with this weekend's highlights when you arrive.",
@@ -180,7 +180,7 @@ export default function SMSOptInWidget({
           {status === 'submitting' ? 'Subscribing...' : 'Subscribe'}
         </button>
 
-        {/* Consent checkbox — always below the input row */}
+        {/* Consent checkbox - always below the input row */}
         <div style={{
           display: 'flex', gap: 10, alignItems: 'flex-start',
           ...(compact ? { flexBasis: '100%', order: 3 } : {}),

@@ -114,7 +114,7 @@ export default function VendorRegisterPage() {
       <GlobalStyles />
       <ScrollProgress />
 
-      {/* Organizer Hero — their brand, not ours */}
+      {/* Organizer Hero - their brand, not ours */}
       <section style={{
         background: event.organizerLogoUrl
           ? `linear-gradient(to bottom, rgba(15,22,28,0.55) 0%, rgba(15,22,28,0.2) 60%, ${C.cream} 100%)`
@@ -261,7 +261,7 @@ export default function VendorRegisterPage() {
                     <input
                       value={form.boothType}
                       onChange={e => setForm(f => ({ ...f, boothType: e.target.value }))}
-                      placeholder="e.g. Handmade jewelry, Food — BBQ, Photography"
+                      placeholder="e.g. Handmade jewelry, Food - BBQ, Photography"
                       style={{ width: '100%', padding: '11px 13px', borderRadius: 8, border: `1px solid ${C.sand}`, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", boxSizing: 'border-box', background: C.cream, color: C.text, outline: 'none' }}
                     />
                   </div>
@@ -293,7 +293,7 @@ export default function VendorRegisterPage() {
                       fontFamily: "'Libre Franklin', sans-serif", transition: 'background 0.2s', width: '100%',
                     }}
                   >
-                    {submitting ? 'Registering…' : event.vendorFee > 0 ? `Reserve & Pay — $${event.vendorFee} →` : 'Register My Spot →'}
+                    {submitting ? 'Registering…' : event.vendorFee > 0 ? `Reserve & Pay - $${event.vendorFee} →` : 'Register My Spot →'}
                   </button>
 
                   <p style={{ fontSize: 12, color: C.textMuted, textAlign: 'center', lineHeight: 1.6, margin: 0 }}>

@@ -30,7 +30,7 @@ const MB_THEME = {
 
 function fmt$(n) { return '$' + n.toFixed(2); }
 function fmtDate(iso) {
-  if (!iso) return '—';
+  if (!iso) return '-';
   return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 function fmtTime(iso) {
@@ -204,7 +204,7 @@ export default function OrganizerDashboardPage({ theme: themeProp }) {
 
           {/* Value text */}
           <text x={CX} y={CY + 30} textAnchor="middle" fill="#fff" fontSize="28" fontWeight="700" fontFamily={theme.fontBody}>
-            {hasData ? value : '—'}
+            {hasData ? value : '-'}
           </text>
           <text x={CX} y={CY + 46} textAnchor="middle" fill="rgba(255,255,255,0.35)" fontSize="12" fontFamily={theme.fontBody}>
             {hasData ? `${pct}%` : ''}
@@ -257,7 +257,7 @@ export default function OrganizerDashboardPage({ theme: themeProp }) {
           <div style={{ fontFamily: T.fontHeading, fontSize: 'clamp(22px, 3.5vw, 32px)', color: '#fff', marginBottom: 4 }}>{eventName}</div>
           {eventDate && <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', marginBottom: 24 }}>{fmtDate(eventDate)}</div>}
 
-          {/* Gauge grid — 2×2 on desktop, stacked on mobile */}
+          {/* Gauge grid - 2×2 on desktop, stacked on mobile */}
           <div className="dashboard-gauge-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
             <DashboardGauge
               label="Tickets Sold"

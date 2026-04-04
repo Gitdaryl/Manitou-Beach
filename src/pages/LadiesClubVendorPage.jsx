@@ -5,7 +5,7 @@ import { SectionLabel, SectionTitle, FadeIn } from '../components/Shared';
 import { C } from '../data/config';
 
 // ============================================================
-// 🎨  LLLC VENDOR / ARTIST APPLICATION — /ladies-club/vendor
+// 🎨  LLLC VENDOR / ARTIST APPLICATION - /ladies-club/vendor
 // ============================================================
 
 const VENDOR_TYPES = [
@@ -13,12 +13,12 @@ const VENDOR_TYPES = [
   { value: 'Crafter', label: 'Crafter', icon: '✂️', desc: 'Handmade goods, jewelry, ceramics, textiles, and craft items' },
   { value: 'Food Truck', label: 'Food Truck', icon: '🚚', desc: 'Food trucks and mobile food vendors' },
   { value: 'Community Vendor', label: 'Community Vendor', icon: '🏘️', desc: 'Nonprofits, clubs, community organizations, and services' },
-  { value: 'Other', label: 'Other', icon: '✦', desc: 'Something that doesn\'t fit the above — describe in your bio' },
+  { value: 'Other', label: 'Other', icon: '✦', desc: 'Something that doesn\'t fit the above - describe in your bio' },
 ];
 
 const BOOTH_SIZES = [
-  { value: '10x10 — $25', label: '10 × 10 ft', price: '$25' },
-  { value: '20x10 — $40', label: '20 × 10 ft', price: '$40' },
+  { value: '10x10 - $25', label: '10 × 10 ft', price: '$25' },
+  { value: '20x10 - $40', label: '20 × 10 ft', price: '$40' },
 ];
 
 const INPUT = {
@@ -83,13 +83,13 @@ function SuccessScreen({ appId, vendorType, contactName }) {
           <p style={{ margin: '0 0 4px', fontSize: 11, color: C.textMuted, letterSpacing: 1, textTransform: 'uppercase', fontFamily: "'Libre Franklin', sans-serif" }}>Application ID</p>
           <p style={{ margin: '0 0 20px', fontSize: 26, fontWeight: 700, color: C.text, letterSpacing: 2, fontFamily: "'Libre Franklin', sans-serif" }}>{appId}</p>
           <p style={{ margin: 0, fontSize: 13, color: C.textLight, lineHeight: 1.6 }}>
-            A confirmation email is on its way to you. Keep your application ID handy — reference it in any follow-up.
+            A confirmation email is on its way to you. Keep your application ID handy - reference it in any follow-up.
           </p>
         </div>
 
         {needsPhotos && (
           <div style={{ background: '#FFF8EE', border: `1.5px solid #E8D8B0`, borderRadius: 12, padding: '18px 22px', marginBottom: 24, textAlign: 'left' }}>
-            <p style={{ margin: '0 0 8px', fontSize: 13, fontWeight: 700, color: '#7a5c1e', fontFamily: "'Libre Franklin', sans-serif" }}>📸 One more step — send your photos</p>
+            <p style={{ margin: '0 0 8px', fontSize: 13, fontWeight: 700, color: '#7a5c1e', fontFamily: "'Libre Franklin', sans-serif" }}>📸 One more step - send your photos</p>
             <p style={{ margin: 0, fontSize: 13, color: '#5a4010', lineHeight: 1.6 }}>
               Email a minimum of <strong>4 photos of your artwork</strong> to{' '}
               <a href="mailto:1GypsyHeart66@gmail.com" style={{ color: '#b08d57' }}>1GypsyHeart66@gmail.com</a>{' '}
@@ -179,7 +179,7 @@ export default function LadiesClubVendorPage() {
       {/* Hero */}
       <section style={{ background: 'linear-gradient(160deg, #0d1f35 0%, #1a1228 40%, #2c1a0e 100%)', padding: '100px 24px 60px', textAlign: 'center', position: 'relative' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 0%, rgba(200,90,30,0.18) 0%, transparent 65%)', pointerEvents: 'none' }} />
-        {/* Back arrow — inside hero, top-left */}
+        {/* Back arrow - inside hero, top-left */}
         <a href="/ladies-club" style={{ position: 'absolute', top: 76, left: 24, zIndex: 10, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,0.8)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6, letterSpacing: 0.2, background: 'rgba(255,255,255,0.08)', padding: '7px 14px', borderRadius: 20, border: '1px solid rgba(255,255,255,0.15)' }}>
           ← Ladies Club
         </a>
@@ -255,7 +255,7 @@ export default function LadiesClubVendorPage() {
 
             {vendorType && (
               <>
-                {/* Booth size — artists & crafters only */}
+                {/* Booth size - artists & crafters only */}
                 {isArtOrCraft && (
                   <FadeIn>
                     <Field label="Booth Size" required hint="Located on N. Lakeview Blvd. Payment due within 2 weeks of acceptance.">

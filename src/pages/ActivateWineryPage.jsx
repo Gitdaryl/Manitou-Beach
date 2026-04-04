@@ -19,7 +19,7 @@ export default function ActivateWineryPage() {
     e.preventDefault();
     if (!contactName.trim()) { setError('Your name is required.'); return; }
     if (!email.trim() || !email.includes('@')) { setError('A valid email is required.'); return; }
-    if (!venueName) { setError('Missing venue name — check your link.'); return; }
+    if (!venueName) { setError('Missing venue name - check your link.'); return; }
     setError('');
     setStatus('submitting');
     try {
@@ -209,7 +209,7 @@ export default function ActivateWineryPage() {
               cursor: status === 'submitting' ? 'not-allowed' : 'pointer',
             }}
           >
-            {status === 'submitting' ? 'Redirecting to checkout...' : 'Join the 2026 Trail — $279'}
+            {status === 'submitting' ? 'Redirecting to checkout...' : 'Join the 2026 Trail - $279'}
           </button>
 
           <p style={{

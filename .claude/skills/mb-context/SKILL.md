@@ -1,9 +1,9 @@
 ---
 name: mb-context
-description: Load full Manitou Beach project context before writing any code. Use ONLY when the user explicitly asks to add, fix, edit, build, or change something in the codebase — i.e. when about to touch App.jsx, an API file, or any project file. Do NOT trigger for questions, strategy discussions, planning conversations, or general mentions of the project name.
+description: Load full Manitou Beach project context before writing any code. Use ONLY when the user explicitly asks to add, fix, edit, build, or change something in the codebase - i.e. when about to touch App.jsx, an API file, or any project file. Do NOT trigger for questions, strategy discussions, planning conversations, or general mentions of the project name.
 ---
 
-# Manitou Beach — Project Context
+# Manitou Beach - Project Context
 
 ## What This Is
 
@@ -22,7 +22,7 @@ Owner: Daryl Young | Agency: Yeti Groove Media
 
 ---
 
-## Design Tokens (C object — use these, never raw hex)
+## Design Tokens (C object - use these, never raw hex)
 
 ```js
 C.cream      = '#FAF6EF'   // page background
@@ -48,7 +48,7 @@ Fonts: Libre Baskerville (serif headings), Libre Franklin (sans body), Caveat (c
 
 ## Architecture Rules
 
-- `src/App.jsx` is intentionally monolithic — one file, always
+- `src/App.jsx` is intentionally monolithic - one file, always
 - Inline CSS-in-JS throughout (no CSS modules, no Tailwind)
 - `GlobalStyles` component at top has a `<style>` tag for media queries / CSS classes
 - All responsive overrides go in GlobalStyles, not inline
@@ -56,11 +56,11 @@ Fonts: Libre Baskerville (serif headings), Libre Franklin (sans body), Caveat (c
 
 ---
 
-## Reusable Components (already in App.jsx — use these)
+## Reusable Components (already in App.jsx - use these)
 
 | Component | Use for |
 |---|---|
-| `<Btn href variant small target rel style>` | All buttons — variants: primary, outline, dark, outlineLight, sunset |
+| `<Btn href variant small target rel style>` | All buttons - variants: primary, outline, dark, outlineLight, sunset |
 | `<FadeIn delay direction>` | Scroll-in animations |
 | `<SectionLabel light>` | Small uppercase label above headings |
 | `<SectionTitle center>` | Section h2 headings |
@@ -98,7 +98,7 @@ Fonts: Libre Baskerville (serif headings), Libre Franklin (sans body), Caveat (c
 - Enhanced $9 · Featured $23 · Premium $43/mo (base)
 - Formula: `price = base + max(0, subCount - 100) * 0.01`
 - First 100 subscribers: founding rate flat
-- Sub #101+: rises $0.01/subscriber — grandfathered forever at sign-up price
+- Sub #101+: rises $0.01/subscriber - grandfathered forever at sign-up price
 - `GRACE = 100` | `SPOTS_LEFT` / `SPOTS_TOTAL` constants at top of file
 
 **Newsletter add-ons:** Mention $29/issue · Feature $75/issue · Monthly Sponsor $199/mo
@@ -109,11 +109,11 @@ Fonts: Libre Baskerville (serif headings), Libre Franklin (sans body), Caveat (c
 
 ## Key Data Structures
 
-- `VILLAGE_BUSINESSES` — hardcoded array for Walk the Village section (not Notion-driven)
-- `PAID_TIERS` — dynamic array built from subscriber count (subscriber-based pricing)
-- `PROMOTE_PACKAGES` — event promotion tiers
-- `FEATURED_TIERS` — simplified waitlist tiers (Enhanced/Featured/Premium)
-- `CAT_COLORS` — category → accent color map
+- `VILLAGE_BUSINESSES` - hardcoded array for Walk the Village section (not Notion-driven)
+- `PAID_TIERS` - dynamic array built from subscriber count (subscriber-based pricing)
+- `PROMOTE_PACKAGES` - event promotion tiers
+- `FEATURED_TIERS` - simplified waitlist tiers (Enhanced/Featured/Premium)
+- `CAT_COLORS` - category → accent color map
 
 ---
 
@@ -142,7 +142,7 @@ Fonts: Libre Baskerville (serif headings), Libre Franklin (sans body), Caveat (c
 - Transparent (not solid): all text **white** (`rgba(255,255,255,0.7)`)
 - On scroll (solid): frosted glass `rgba(250,246,239,0.55)` + `blur(20px)`
 - On scroll text: logo → `C.dusk`, nav links → `C.text`
-- Pattern for color: `solid ? C.text : "rgba(255,255,255,0.7)"` — never hardcode one state
+- Pattern for color: `solid ? C.text : "rgba(255,255,255,0.7)"` - never hardcode one state
 - Desktop CTAs: "List Your Business" (primary/sage) + "List Your Event" (sunset)
 - Mobile CTAs: same, stacked vertically
 
@@ -151,14 +151,14 @@ Fonts: Libre Baskerville (serif headings), Libre Franklin (sans body), Caveat (c
 ## Images (public/images/)
 
 Key images to know:
-- `dispatch-header-web.jpg` — Dispatch page hero + article fallback
-- `holly_yeti.png` — portrait cutout (HollyYetiSection, maxWidth 280px)
-- `DL-boat.jpg` — parallax break on DevilsLakePage
-- `mens-club-hero.jpg` — MensClubPage parallax hero
-- `corks-kegs-logo.png` — Corks & Kegs winery logo
-- `mens-club/` — 13 gallery photos
-- `fish/` — 8 fish species JPGs
-- `yeti/` — 20 Yeti images
+- `dispatch-header-web.jpg` - Dispatch page hero + article fallback
+- `holly_yeti.png` - portrait cutout (HollyYetiSection, maxWidth 280px)
+- `DL-boat.jpg` - parallax break on DevilsLakePage
+- `mens-club-hero.jpg` - MensClubPage parallax hero
+- `corks-kegs-logo.png` - Corks & Kegs winery logo
+- `mens-club/` - 13 gallery photos
+- `fish/` - 8 fish species JPGs
+- `yeti/` - 20 Yeti images
 
 ---
 
@@ -166,21 +166,21 @@ Key images to know:
 
 - **Devils Lake**: 1,330 acres, 65 ft deep, warm-water, public launch at Manitou Rd, 600+ boat slips
 - **Round Lake**: 515 acres, 67 ft deep, glacial kettle lake, cold-water, ~918 ft elevation
-- Do NOT use 925 acres / 70 ft for Round Lake — those are wrong for Lenawee County
+- Do NOT use 925 acres / 70 ft for Round Lake - those are wrong for Lenawee County
 
 ---
 
 ## Daryl's Pricing Instinct Warning
 
-Daryl underprices by instinct (poverty background). When his gut says "too high" — trust market data. The platform is worth $40–60K at market rate. See `pricing-strategy.md` in memory for full context.
+Daryl underprices by instinct (poverty background). When his gut says "too high" - trust market data. The platform is worth $40–60K at market rate. See `pricing-strategy.md` in memory for full context.
 
 ---
 
 ## Before Writing Any Code
 
-1. The file is `src/App.jsx` — read the relevant section before editing
+1. The file is `src/App.jsx` - read the relevant section before editing
 2. Use `C.` tokens, never raw hex
 3. Add CSS classes to GlobalStyles for responsive behaviour, not inline
 4. Btn component accepts: `href variant small target rel style` props
-5. Run `npm run build` mentally — check for JSX syntax errors before saving
+5. Run `npm run build` mentally - check for JSX syntax errors before saving
 6. Always check for `SPOTS_LEFT === 0` (waitlist mode) when touching FeaturedPage

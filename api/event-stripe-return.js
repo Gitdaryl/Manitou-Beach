@@ -35,7 +35,7 @@ export default async function handler(req, res) {
     const isComplete = account.charges_enabled && account.details_submitted;
 
     if (!isComplete) {
-      // Onboarding not finished — regenerate link and send back
+      // Onboarding not finished - regenerate link and send back
       const params = new URLSearchParams({ acct, eventPageId, eventType: eventType || 'free' });
       return res.redirect(`${baseUrl}/api/event-stripe-refresh?${params}`);
     }

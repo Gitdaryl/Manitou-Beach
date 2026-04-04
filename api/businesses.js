@@ -44,7 +44,7 @@ async function geocodeAndStore(pageId, address) {
   if (!geoRes.ok) return;
   const results = await geoRes.json();
   if (!results.length) return;
-  // Reject natural water features — Nominatim sometimes matches "Devils Lake Hwy" to the lake itself
+  // Reject natural water features - Nominatim sometimes matches "Devils Lake Hwy" to the lake itself
   if (results[0].class === 'natural' || results[0].type === 'water') return;
   const lat = parseFloat(results[0].lat);
   const lng = parseFloat(results[0].lon);
@@ -61,11 +61,11 @@ async function geocodeAndStore(pageId, address) {
 }
 
 export default async function handler(req, res) {
-  // POST — submit a new business listing
+  // POST - submit a new business listing
   if (req.method === 'POST') {
     const { name, category, phone, website, email, description, address, newsletter, tier, duration, logoUrl, _hp } = req.body;
 
-    // Honeypot — bots fill hidden fields, humans don't
+    // Honeypot - bots fill hidden fields, humans don't
     if (_hp) return res.status(200).json({ success: true });
 
     if (!name) {
@@ -125,14 +125,14 @@ export default async function handler(req, res) {
         geocodeAndStore(newPage.id, address).catch(() => {});
       }
 
-      // Build confirmation URL — used in both SMS and email
+      // Build confirmation URL - used in both SMS and email
       const siteUrl = process.env.SITE_URL || `https://manitou-beach.vercel.app`;
       const confirmToken = makeConfirmToken(newPage.id);
       const confirmUrl = `${siteUrl}/api/confirm-listing?id=${newPage.id}&token=${confirmToken}`;
 
       const tasks = [];
 
-      // SMS confirmation (primary — highest open rate, now that A2P is approved)
+      // SMS confirmation (primary - highest open rate, now that A2P is approved)
       if (phone && phone.trim()) {
         tasks.push(
           sendSMS(normalizePhone(phone), `Manitou Beach: Tap to confirm your listing for ${name} and go live instantly.\n${confirmUrl}`)
@@ -148,7 +148,7 @@ export default async function handler(req, res) {
           resend.emails.send({
             from: 'Manitou Beach <hello@manitoubeachmichigan.com>',
             to: process.env.ADMIN_EMAIL || 'daryl@manitoubeachmichigan.com',
-            subject: `⚠️ Uncategorized business listing — "${name}"`,
+            subject: `⚠️ Uncategorized business listing - "${name}"`,
             html: `
               <div style="font-family:sans-serif;max-width:480px">
                 <h2 style="color:#2D3B45">Uncategorized Business Listing</h2>
@@ -169,12 +169,12 @@ export default async function handler(req, res) {
             from: 'Manitou Beach <hello@manitoubeachmichigan.com>',
             reply_to: 'hello@manitoubeachmichigan.com',
             to: email,
-            subject: `Confirm your listing — ${name}`,
+            subject: `Confirm your listing - ${name}`,
             html: `
               <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#FAF6EF;">
                 <h1 style="color:#1A2830;font-size:22px;margin:0 0 8px;">One tap and you're live</h1>
                 <p style="color:#5C5248;font-size:15px;margin:0 0 24px;line-height:1.6;">
-                  We've got your info for <strong>${name}</strong>. Hit the button below to confirm it's you — your listing goes live instantly.
+                  We've got your info for <strong>${name}</strong>. Hit the button below to confirm it's you - your listing goes live instantly.
                 </p>
                 <div style="text-align:center;margin:0 0 28px;">
                   <a href="${confirmUrl}" style="display:inline-block;background:#2D6A4F;color:#fff;text-decoration:none;padding:16px 36px;border-radius:10px;font-size:17px;font-weight:700;letter-spacing:0.3px;">
@@ -195,7 +195,7 @@ export default async function handler(req, res) {
                   Need to fix something first? <a href="${siteUrl}/update-listing" style="color:#2D6A4F;">Update your info →</a>
                 </p>
                 <p style="color:#8C806E;font-size:13px;line-height:1.6;margin:0;">
-                  Any questions — just reply to this email.
+                  Any questions - just reply to this email.
                 </p>
               </div>
             `,
@@ -213,7 +213,7 @@ export default async function handler(req, res) {
     }
   }
 
-  // GET — slot availability counts (lightweight, no business details exposed)
+  // GET - slot availability counts (lightweight, no business details exposed)
   if (req.query.slots === 'true') {
     const CAPS = { premium: 1, featured: 3 }; // Enhanced = unlimited
     try {
@@ -253,8 +253,8 @@ export default async function handler(req, res) {
     }
   }
 
-  // GET — fetch listed businesses
-  // no-store: coordinates update frequently (geocoding) — stale CDN data caused random pin behavior
+  // GET - fetch listed businesses
+  // no-store: coordinates update frequently (geocoding) - stale CDN data caused random pin behavior
   res.setHeader('Cache-Control', 'no-store');
   try {
     const queryBody = {

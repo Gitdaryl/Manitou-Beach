@@ -9,7 +9,7 @@ function generateAppId() {
 
 async function createNotionRecord(data) {
   const dbId = process.env.NOTION_DB_LLLC_VENDORS;
-  if (!dbId) { console.warn('NOTION_DB_LLLC_VENDORS not set — skipping Notion'); return; }
+  if (!dbId) { console.warn('NOTION_DB_LLLC_VENDORS not set - skipping Notion'); return; }
 
   const res = await fetch('https://api.notion.com/v1/pages', {
     method: 'POST',
@@ -86,7 +86,7 @@ export default async function handler(req, res) {
         await resend.emails.send({
           from: 'Devils Lake Summer Festival <tickets@manitoubeachmichigan.com>',
           to: email,
-          subject: `Application received — Devils Lake Summerfest 2026 (${appId})`,
+          subject: `Application received - Devils Lake Summerfest 2026 (${appId})`,
           html: `
             <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#FAF6EF;">
               <img src="${SITE_URL}/images/ladies-club/summer-festival.png" alt="Devils Lake Summer Festival" style="width:80px;height:80px;object-fit:contain;margin-bottom:20px;display:block;" />
@@ -119,7 +119,7 @@ export default async function handler(req, res) {
         await resend.emails.send({
           from: 'LLLC Applications <tickets@manitoubeachmichigan.com>',
           to: ORGANIZER_EMAIL,
-          subject: `New vendor application: ${contactName}${businessName ? ` — ${businessName}` : ''} (${appId})`,
+          subject: `New vendor application: ${contactName}${businessName ? ` - ${businessName}` : ''} (${appId})`,
           html: `
             <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#FAF6EF;">
               <h2 style="color:#1A2830;font-size:18px;margin:0 0 16px;">New Summerfest vendor application</h2>

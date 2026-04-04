@@ -35,7 +35,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Build Notion filter — active subscribers, optionally filtered by type/slug
+    // Build Notion filter - active subscribers, optionally filtered by type/slug
     const filterConditions = [
       { property: 'Active', checkbox: { equals: true } },
     ];

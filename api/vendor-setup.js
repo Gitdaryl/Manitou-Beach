@@ -1,4 +1,4 @@
-// Admin endpoint — activates vendor registration for an event:
+// Admin endpoint - activates vendor registration for an event:
 // generates portal token, patches Notion, emails organizer their two ready-to-use URLs
 import { Resend } from 'resend';
 
@@ -66,12 +66,12 @@ export default async function handler(req, res) {
       await resend.emails.send({
         from: 'Yetickets <tickets@manitoubeachmichigan.com>',
         to: organizerEmail,
-        subject: `Vendor registration is live — ${eventName}`,
+        subject: `Vendor registration is live - ${eventName}`,
         html: `
           <div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:32px 24px;background:#FAF6EF;">
             <h1 style="color:#1A2830;font-size:22px;margin:0 0 8px;">Your vendor registration is live!</h1>
             <p style="color:#5C5248;font-size:15px;margin:0 0 32px;">
-              Here are your two links for <strong>${eventName}</strong>. Keep the portal link private — it's your organizer access.
+              Here are your two links for <strong>${eventName}</strong>. Keep the portal link private - it's your organizer access.
             </p>
 
             <div style="background:#fff;border-radius:12px;padding:24px;margin-bottom:20px;border:1px solid #E8E0D5;">
@@ -96,7 +96,7 @@ export default async function handler(req, res) {
                 <li>Every time a vendor registers, you'll get an email notification with their details</li>
                 <li>Vendors receive a PDF receipt immediately after registering</li>
                 <li>Use your portal to see the full list, send updates, and download a CSV</li>
-                <li>You can email all vendors at once from the portal — great for parking instructions, load-in times, and last-minute changes</li>
+                <li>You can email all vendors at once from the portal - great for parking instructions, load-in times, and last-minute changes</li>
               </ul>
             </div>
 

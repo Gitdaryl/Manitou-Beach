@@ -34,7 +34,7 @@ export default function QuickEventsPage() {
   function handleFile(file) {
     if (!file) return;
     if (file.size > 5 * 1024 * 1024) {
-      setError('Image is too large — keep it under 5 MB.');
+      setError('Image is too large - keep it under 5 MB.');
       return;
     }
     if (!file.type.startsWith('image/')) {
@@ -74,7 +74,7 @@ export default function QuickEventsPage() {
       return;
     }
     if (!imageData && !text.trim()) {
-      setError('Upload a photo or paste some text — we need something to work with.');
+      setError('Upload a photo or paste some text - we need something to work with.');
       return;
     }
     if (!adminKey.trim()) {
@@ -128,7 +128,7 @@ export default function QuickEventsPage() {
         clearImage();
       }
     } catch (err) {
-      setError('Network error — check your connection and try again.');
+      setError('Network error - check your connection and try again.');
     } finally {
       setLoading(false);
     }
@@ -162,7 +162,7 @@ export default function QuickEventsPage() {
               fontFamily: "'Libre Franklin', sans-serif", fontSize: 15,
               color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, maxWidth: 440, margin: '0 auto',
             }}>
-              Photo of a chalkboard, screenshot of a Facebook post, picture of a flyer —
+              Photo of a chalkboard, screenshot of a Facebook post, picture of a flyer -
               send it over and we'll turn it into beautiful calendar listings.
             </p>
           </div>
@@ -245,7 +245,7 @@ export default function QuickEventsPage() {
                 fontFamily: "'Libre Franklin', sans-serif", fontSize: 13,
                 color: 'rgba(255,255,255,0.4)', lineHeight: 1.6,
               }}>
-                Chalkboard, Facebook screenshot, printed flyer, whiteboard — anything works
+                Chalkboard, Facebook screenshot, printed flyer, whiteboard - anything works
               </div>
               <input
                 ref={fileRef}
@@ -300,7 +300,7 @@ export default function QuickEventsPage() {
 
           {/* Text Paste Area */}
           <textarea
-            placeholder={"Paste their event list, Facebook post, email — whatever you've got...\n\nExample:\nLive music every Thursday 7pm\nWing night Wednesdays $0.75 wings\nKaraoke Saturday 9pm-close"}
+            placeholder={"Paste their event list, Facebook post, email - whatever you've got...\n\nExample:\nLive music every Thursday 7pm\nWing night Wednesdays $0.75 wings\nKaraoke Saturday 9pm-close"}
             value={text}
             onChange={e => setText(e.target.value)}
             disabled={!!imageData}
@@ -317,7 +317,7 @@ export default function QuickEventsPage() {
               fontSize: 12, color: 'rgba(255,255,255,0.3)', marginTop: 6,
               fontFamily: "'Libre Franklin', sans-serif",
             }}>
-              Image uploaded — clear it to paste text instead
+              Image uploaded - clear it to paste text instead
             </div>
           )}
 

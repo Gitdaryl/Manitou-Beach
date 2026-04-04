@@ -19,7 +19,7 @@ export default async function handler(req, res) {
   }
 
   const price = PRICES[term];
-  if (!price) return res.status(400).json({ error: 'Invalid term — must be monthly or annual' });
+  if (!price) return res.status(400).json({ error: 'Invalid term - must be monthly or annual' });
 
   if (!process.env.STRIPE_SECRET_KEY) {
     return res.status(500).json({ error: 'Payment system not configured.' });
@@ -47,10 +47,10 @@ export default async function handler(req, res) {
           currency: 'usd',
           product_data: {
             name: isBeta
-              ? `Page Sponsorship — ${pageName} · Beta Founding Sponsor`
-              : `Page Sponsorship — ${pageName}`,
+              ? `Page Sponsorship - ${pageName} · Beta Founding Sponsor`
+              : `Page Sponsorship - ${pageName}`,
             description: isBeta
-              ? `${term === 'annual' ? '13 months (1 free beta month included)' : 'First month free — beta founding sponsor'} · ${price.label}`
+              ? `${term === 'annual' ? '13 months (1 free beta month included)' : 'First month free - beta founding sponsor'} · ${price.label}`
               : `Exclusive sponsor placement · ${pageName} · ${price.label}`,
           },
           unit_amount: price.amount,

@@ -145,7 +145,7 @@ function VoiceConciergeInner() {
               );
               return JSON.stringify({ lat: pos.coords.latitude, lng: pos.coords.longitude });
             } catch {
-              return JSON.stringify({ error: 'Location unavailable — user denied or not supported' });
+              return JSON.stringify({ error: 'Location unavailable - user denied or not supported' });
             }
           },
         },
@@ -171,7 +171,7 @@ function VoiceConciergeInner() {
 
   return (
     <>
-      {/* ── Card Tray — slides up when agent surfaces info ── */}
+      {/* ── Card Tray - slides up when agent surfaces info ── */}
       {trayOpen && hasCards && (
         <div ref={trayRef} style={{
           position: 'fixed', bottom: 92, right: 24, zIndex: 9997,
@@ -266,7 +266,7 @@ function VoiceConciergeInner() {
         </div>
       )}
 
-      {/* ── Status pill — shows during active call ── */}
+      {/* ── Status pill - shows during active call ── */}
       {(isActive || isConnecting) && (
         <div style={{
           position: 'fixed', bottom: 88, right: 24, zIndex: 9996,

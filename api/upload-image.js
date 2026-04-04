@@ -13,7 +13,7 @@ export default async function handler(req, res) {
 
   const { action = 'upload' } = req.body || {};
 
-  // action=apply — update a Notion article's Cover Image URL (no file upload)
+  // action=apply - update a Notion article's Cover Image URL (no file upload)
   // Admin-only: requires x-admin-token header matching ADMIN_TOKEN env var
   if (action === 'apply') {
     const adminToken = req.headers['x-admin-token'];
@@ -62,7 +62,7 @@ export default async function handler(req, res) {
     }
   }
 
-  // action=upload (default) — upload file to Vercel Blob
+  // action=upload (default) - upload file to Vercel Blob
   try {
     const { filename, contentType, data, folder = 'events' } = req.body;
     if (!data || !filename) {

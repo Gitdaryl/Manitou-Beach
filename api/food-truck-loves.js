@@ -1,6 +1,6 @@
 // /api/food-truck-loves.js
-// GET  — returns aggregated love counts per truck slug
-// POST — submit a love for a specific item on a truck
+// GET  - returns aggregated love counts per truck slug
+// POST - submit a love for a specific item on a truck
 //
 // Pattern follows api/winery-ratings.js
 
@@ -116,7 +116,7 @@ async function handlePost(req, res) {
     const truckName = normalizedSlug; // fallback; slug is readable enough
 
     const dateStr = new Date().toISOString().slice(0, 10);
-    const titleText = `${truckName} — ${normalizedItem} — ${dateStr}`;
+    const titleText = `${truckName} - ${normalizedItem} - ${dateStr}`;
 
     const createRes = await fetch('https://api.notion.com/v1/pages', {
       method: 'POST',

@@ -109,7 +109,7 @@ function mapEvent(page) {
 
 function buildVoiceSummary(events, weeklyEvents) {
   if (events.length === 0 && weeklyEvents.length === 0) {
-    return "I don't see any upcoming events on the calendar right now. Click Events in the menu bar to check — new ones get added all the time.";
+    return "I don't see any upcoming events on the calendar right now. Click Events in the menu bar to check - new ones get added all the time.";
   }
 
   const parts = [];
@@ -122,16 +122,16 @@ function buildVoiceSummary(events, weeklyEvents) {
       if (e.time) line += ` at ${e.time}`;
       if (e.location) line += `, at ${e.location}`;
       if (e.ticketsEnabled && e.ticketStatus === 'available') {
-        line += e.ticketPrice ? ` — tickets are ${e.ticketPrice} dollars` : ' — tickets available';
+        line += e.ticketPrice ? ` - tickets are ${e.ticketPrice} dollars` : ' - tickets available';
         if (e.ticketsRemaining !== null && e.ticketsRemaining <= 20) line += ` and only ${e.ticketsRemaining} left`;
       } else if (e.ticketStatus === 'sold_out') {
-        line += ' — sold out';
+        line += ' - sold out';
       } else if (e.ticketStatus === 'almost_sold_out') {
-        line += ` — almost sold out, only ${e.ticketsRemaining} tickets left`;
+        line += ` - almost sold out, only ${e.ticketsRemaining} tickets left`;
       } else if (e.cost && e.cost !== 'Free') {
-        line += ` — ${e.cost}`;
+        line += ` - ${e.cost}`;
       } else {
-        line += ' — free';
+        line += ' - free';
       }
       parts.push(line + '.');
     });
@@ -181,7 +181,7 @@ export default async function handler(req, res) {
 
     const summary = buildVoiceSummary(upcoming, weekly);
 
-    // Optional search query — the concierge can ask for a specific event
+    // Optional search query - the concierge can ask for a specific event
     const q = (req.query.q || '').toLowerCase().trim();
     let matched = null;
     if (q) {

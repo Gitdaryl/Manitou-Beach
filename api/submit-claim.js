@@ -5,7 +5,7 @@ export default async function handler(req, res) {
 
   const body = req.body || {};
 
-  // If notionId is present — this is a rating/feedback update
+  // If notionId is present - this is a rating/feedback update
   if (body.notionId) {
     const { notionId, rating, feedback, googleClicked } = body;
 
@@ -42,7 +42,7 @@ export default async function handler(req, res) {
     }
   }
 
-  // No notionId — this is a new claim submission
+  // No notionId - this is a new claim submission
   const { slug, name, email } = body;
 
   if (!slug || !name || !email || !email.includes('@')) {

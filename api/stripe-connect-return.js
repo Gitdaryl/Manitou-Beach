@@ -26,7 +26,7 @@ export default async function handler(req, res) {
       await updatePartnerInNotion(acct, true);
       return res.redirect('/partner-intake?onboarded=1');
     } else {
-      // Onboarding not finished — let them retry
+      // Onboarding not finished - let them retry
       return res.redirect(`/api/stripe-connect-refresh?acct=${acct}`);
     }
   } catch (err) {
@@ -92,7 +92,7 @@ async function updatePartnerInNotion(stripeAccountId, complete) {
         await sendWelcomeEmail({ orgName, contactName, email, pageUrl });
       }
 
-      return; // Found and updated — stop searching
+      return; // Found and updated - stop searching
     } catch (err) {
       console.error(`updatePartnerInNotion error (db ${dbId}):`, err.message);
     }
@@ -115,10 +115,10 @@ async function sendWelcomeEmail({ orgName, contactName, email, pageUrl }) {
           View Your Sponsor Page →
         </a>
       </div>
-      <p style="margin:0 0 16px;">Share that link with potential sponsors — they'll find a sign-up form right on the page. Just tell them to scroll down to the sponsorship section and fill it out. Easy as that.</p>
+      <p style="margin:0 0 16px;">Share that link with potential sponsors - they'll find a sign-up form right on the page. Just tell them to scroll down to the sponsorship section and fill it out. Easy as that.</p>
     `
     : `
-      <p style="margin:0 0 16px;">Your community page on Manitou Beach Michigan will be live soon — Daryl will send you the link to share with your sponsors. In the meantime, start warming up those conversations!</p>
+      <p style="margin:0 0 16px;">Your community page on Manitou Beach Michigan will be live soon - Daryl will send you the link to share with your sponsors. In the meantime, start warming up those conversations!</p>
     `;
 
   const html = `
@@ -133,7 +133,7 @@ async function sendWelcomeEmail({ orgName, contactName, email, pageUrl }) {
 
         <p style="margin:0 0 16px;">
           <strong>${orgName || 'Your organization'}</strong> is officially set up on Yetickets.
-          Your bank account is connected and you're ready to accept sponsorship payments —
+          Your bank account is connected and you're ready to accept sponsorship payments -
           funds will deposit directly to your account, minus a small processing fee.
         </p>
 
@@ -148,14 +148,14 @@ async function sendWelcomeEmail({ orgName, contactName, email, pageUrl }) {
 
         <div style="background:#faf6ef;border-radius:8px;padding:16px 20px;margin:24px 0;border-left:3px solid #5B7E95;">
           <p style="margin:0;font-size:13px;color:#6B5D52;">
-            <strong>Questions?</strong> Reach out to Daryl directly —
+            <strong>Questions?</strong> Reach out to Daryl directly -
             <a href="mailto:daryl@yetigroove.com" style="color:#5B7E95;">daryl@yetigroove.com</a>.
             He'll get you sorted.
           </p>
         </div>
 
         <p style="margin:24px 0 0;font-size:13px;color:#9B8E85;">
-          — Daryl &amp; The Yeti<br>
+          - Daryl &amp; The Yeti<br>
           <a href="${siteUrl}" style="color:#5B7E95;text-decoration:none;">Manitou Beach Michigan</a>
         </p>
       </div>
@@ -172,7 +172,7 @@ async function sendWelcomeEmail({ orgName, contactName, email, pageUrl }) {
       body: JSON.stringify({
         from: 'Yetickets <tickets@manitoubeachmichigan.com>',
         to: email,
-        subject: `You're connected — ${orgName || 'your account'} is ready to accept sponsorships`,
+        subject: `You're connected - ${orgName || 'your account'} is ready to accept sponsorships`,
         html,
       }),
     });

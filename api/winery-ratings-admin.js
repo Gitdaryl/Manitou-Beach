@@ -1,4 +1,4 @@
-// Winery Ratings Admin — list all ratings, update status
+// Winery Ratings Admin - list all ratings, update status
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
 
@@ -20,7 +20,7 @@ export default async function handler(req, res) {
     'Notion-Version': '2022-06-28',
   };
 
-  // GET — list all ratings (all statuses), newest first
+  // GET - list all ratings (all statuses), newest first
   if (req.method === 'GET') {
     let allResults = [];
     let cursor = undefined;
@@ -66,7 +66,7 @@ export default async function handler(req, res) {
     return res.status(200).json({ ratings });
   }
 
-  // PATCH — update status of a rating
+  // PATCH - update status of a rating
   if (req.method === 'PATCH') {
     const { id, status } = req.body || {};
     if (!id || !['Pending', 'Published', 'Flagged'].includes(status)) {

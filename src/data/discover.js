@@ -1,10 +1,10 @@
 // ============================================================
-// 🗺️  DISCOVER PAGE — MAP-FIRST COMMUNITY GUIDE
+// 🗺️  DISCOVER PAGE - MAP-FIRST COMMUNITY GUIDE
 // ============================================================
 // Shared constants for Discover, Wineries, and any future map pages.
 
 // ============================================================
-// 📢  AD SLOTS — Dispatch blog advertising
+// 📢  AD SLOTS - Dispatch blog advertising
 // ============================================================
 import { useState, useEffect } from 'react';
 import formatPhone from '../utils/formatPhone';
@@ -26,30 +26,30 @@ export function pickAd(slotAds) {
 }
 
 // ============================================================
-// 🎤  VOICE CONCIERGE — Site Knowledge Base
+// 🎤  VOICE CONCIERGE - Site Knowledge Base
 // ============================================================
 
 export const SITE_KNOWLEDGE = `
 ABOUT MANITOU BEACH & DEVILS LAKE:
-Manitou Beach, Michigan sits on Devils Lake in the Irish Hills — locals call it "the party lake." Devils Lake is 1,330 acres with 600+ boat slips. The community has been coming back every summer since the 1870s. This platform is the community's digital home: business directory, events calendar, and newsletter.
+Manitou Beach, Michigan sits on Devils Lake in the Irish Hills - locals call it "the party lake." Devils Lake is 1,330 acres with 600+ boat slips. The community has been coming back every summer since the 1870s. This platform is the community's digital home: business directory, events calendar, and newsletter.
 
 ROUND LAKE:
-515 acres, 67 feet deep — the quieter side of lake life. Connected to Devils Lake by a shallow channel at Cherry Point. A glacial kettle lake carved ~10,000 BC. No bars or marinas — just homes, families, and serious fishing. Same zip code (49253) and township (Rollin) as Devils Lake.
+515 acres, 67 feet deep - the quieter side of lake life. Connected to Devils Lake by a shallow channel at Cherry Point. A glacial kettle lake carved ~10,000 BC. No bars or marinas - just homes, families, and serious fishing. Same zip code (49253) and township (Rollin) as Devils Lake.
 
 THE VILLAGE:
-A walkable strip on Devils Lake Highway and Lakeview Boulevard with boutique shops, a from-scratch cafe, satellite wine tasting rooms, and an iconic lighthouse replica. Open mostly Thursday–Sunday. Starting May 2026, village shops become satellite tasting rooms for Michigan wineries — Ang & Co pours Chateau Fontaine, Faust House pours Cherry Creek Cellars.
+A walkable strip on Devils Lake Highway and Lakeview Boulevard with boutique shops, a from-scratch cafe, satellite wine tasting rooms, and an iconic lighthouse replica. Open mostly Thursday–Sunday. Starting May 2026, village shops become satellite tasting rooms for Michigan wineries - Ang & Co pours Chateau Fontaine, Faust House pours Cherry Creek Cellars.
 
 FISHING:
 Eight warm-water species: Largemouth Bass (aggressive, near docks/weed edges), Bluegill (excellent numbers, great for families), Northern Pike (Tip-Up Festival star, through ice in winter), Yellow Perch (averaged 9"+ in DNR surveys, a winter staple), Black Crappie, Smallmouth Bass, Walleye (Round Lake), Pumpkinseed Sunfish. Spring bass spawn in shallows. Winter ice fishing on frozen Devils Lake is a major tradition.
 
 WINERIES:
-Cherry Creek Cellars — small-batch Michigan wines, 11500 Silver Lake Hwy, Brooklyn MI 49230, 20 min from Manitou Beach. Gypsy Blue Vineyards — new vineyard in the Irish Hills. Village tasting rooms: Ang & Co (141 N. Lakeview Blvd) and Faust House Scrap n Craft (140 N. Lakeview Blvd).
+Cherry Creek Cellars - small-batch Michigan wines, 11500 Silver Lake Hwy, Brooklyn MI 49230, 20 min from Manitou Beach. Gypsy Blue Vineyards - new vineyard in the Irish Hills. Village tasting rooms: Ang & Co (141 N. Lakeview Blvd) and Faust House Scrap n Craft (140 N. Lakeview Blvd).
 
 MEN'S CLUB (Devils and Round Lake Men's Club):
 501(c)(3) nonprofit running the Tip-Up Festival (70+ year ice fishing festival on frozen Devils Lake, held in February) and the Fourth of July Firecracker 7K run starting at 3171 Round Lake Hwy. Raises funds for scholarships, Toys for Tots, Shop with a Cop, and Christmas gift baskets for families in need.
 
-HISTORICAL SOCIETY (MBHRS — Manitou Beach Historic Renovation Society):
-Restoring and revitalizing the village. Home of the Boat House Art Gallery — largest nonprofit gallery in Lenawee County, 50+ Michigan artists, at 138 N. Lakeview Blvd. Annual events: Devils Lake Festival of the Arts (100 artist booths, live music, food trucks) and Village Car Shows. Located at 762 Manitou Road, Manitou Beach MI 49253.
+HISTORICAL SOCIETY (MBHRS - Manitou Beach Historic Renovation Society):
+Restoring and revitalizing the village. Home of the Boat House Art Gallery - largest nonprofit gallery in Lenawee County, 50+ Michigan artists, at 138 N. Lakeview Blvd. Annual events: Devils Lake Festival of the Arts (100 artist booths, live music, food trucks) and Village Car Shows. Located at 762 Manitou Road, Manitou Beach MI 49253.
 
 HISTORY:
 Pre-1830: Potawatomi and Ojibwa people camped along the shores. 1870s: Grand hotels, dance pavilion, bathhouses, and two railroad stations made Devils Lake a top Michigan summer destination. 1888: Manitou Beach officially platted. 1920s–40s: Yacht Club established. 1950s: Tip-Up Festival launched. Today: boating, fishing, festivals, and a tight-knit lake community.

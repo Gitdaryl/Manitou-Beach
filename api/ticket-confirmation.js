@@ -19,7 +19,7 @@ export default async function handler(req, res) {
     const paymentIntentId = session.payment_intent;
     const buyerEmail = session.customer_email || session.customer_details?.email || '';
 
-    // Ticket ID is pre-generated at checkout time — available immediately
+    // Ticket ID is pre-generated at checkout time - available immediately
     let ticketId = metadata.ticketId || null;
     let pdfUrl = null;
 

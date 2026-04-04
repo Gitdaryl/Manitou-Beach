@@ -40,10 +40,10 @@ export default async function handler(req, res) {
 
   const { truckName, cuisine, email, phone, website, imageUrl, tier, skipVerification, _hp } = req.body || {};
 
-  // Honeypot — bots fill hidden fields, humans don't
+  // Honeypot - bots fill hidden fields, humans don't
   if (_hp) return res.status(200).json({ ok: true, needsVerification: true });
 
-  // Notion select options choke on commas — replace with middots
+  // Notion select options choke on commas - replace with middots
   const cleanCuisine = (cuisine || '').trim().replace(/,\s*/g, ' · ') || '';
 
   if (!truckName?.trim() || !email?.trim() || !email.includes('@')) {
@@ -58,7 +58,7 @@ export default async function handler(req, res) {
   const notionToken = process.env.NOTION_TOKEN_BUSINESS;
   const dbId = process.env.NOTION_DB_FOOD_TRUCKS;
 
-  // Sanitize website — only set as URL if it looks like a real URL
+  // Sanitize website - only set as URL if it looks like a real URL
   const rawWebsite = (website || '').trim();
   const looksLikeUrl = rawWebsite && /^https?:\/\/|^[a-z0-9-]+\.[a-z]{2,}/i.test(rawWebsite) && !/\s/.test(rawWebsite);
   const cleanWebsite = looksLikeUrl ? (rawWebsite.startsWith('http') ? rawWebsite : `https://${rawWebsite}`) : '';
@@ -74,7 +74,7 @@ export default async function handler(req, res) {
 
   try {
     if (skipVerification) {
-      // Phone already verified — activate immediately
+      // Phone already verified - activate immediately
       const existingSlugs = await queryActiveSlugs(notionToken, dbId);
       const slug = dedupeSlug(slugify(truckName), existingSlugs);
       const checkinToken = crypto.randomBytes(16).toString('hex');
@@ -117,7 +117,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true, activated: true, slug, checkinUrl, truckName: truckName.trim() });
     }
 
-    // Normal flow — create Pending Verification record, send code via SMS
+    // Normal flow - create Pending Verification record, send code via SMS
     const code = generateCode();
     const properties = {
       'Name':              { title: [{ text: { content: truckName.trim() } }] },

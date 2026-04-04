@@ -30,7 +30,7 @@ function HYHero() {
           Holly & The Yeti
         </h1>
         <p style={{ fontSize: 18, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, maxWidth: 520, margin: '0 auto 28px', fontFamily: "'Libre Franklin', sans-serif" }}>
-          A realtor. A cryptid. A podcast.<br />Sometimes he appears as Daryl — most people still call him Yeti.
+          A realtor. A cryptid. A podcast.<br />Sometimes he appears as Daryl - most people still call him Yeti.
         </p>
 
         {/* Social links */}
@@ -64,7 +64,7 @@ function MeetTheHosts() {
       role: 'Real Estate Expert · Co-Host',
       image: '/images/holly_logo.jpg',
       accent: C.sunset,
-      bio: "Holly knows every street, every lake lot, and every neighbor's dog by name. A straight-shooting realtor with Foundation Realty who's been selling lakefront dreams for decades — and the voice of reason when The Yeti gets too creative.",
+      bio: "Holly knows every street, every lake lot, and every neighbor's dog by name. A straight-shooting realtor with Foundation Realty who's been selling lakefront dreams for decades - and the voice of reason when The Yeti gets too creative.",
       traits: ['Lakefront Expert', 'Community Builder', 'Voice of Reason'],
     },
     {

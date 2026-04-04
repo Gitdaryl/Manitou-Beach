@@ -4,16 +4,16 @@ import { C } from '../data/config';
 import { Footer, GlobalStyles, Navbar, NewsletterInline } from '../components/Layout';
 
 const FOUNDING_TIERS = [
-  { name: "Showcased",        price: 9,  perks: ["Business listing on Manitou Beach", "Map pin on /discover", "Category placement", "Contact info + description", "Link to your website", "Upgrade to Highlighted or Front and Center at founding rates — any time"] },
-  { name: "Highlighted",      price: 25, highlight: true, perks: ["Everything in Showcased", "Priority placement in category", "Logo displayed on listing", "Newsletter mention eligibility", "Highlighted card styling", "Upgrade to Front and Center at founding rates — any time"] },
+  { name: "Showcased",        price: 9,  perks: ["Business listing on Manitou Beach", "Map pin on /discover", "Category placement", "Contact info + description", "Link to your website", "Upgrade to Highlighted or Front and Center at founding rates - any time"] },
+  { name: "Highlighted",      price: 25, highlight: true, perks: ["Everything in Showcased", "Priority placement in category", "Logo displayed on listing", "Newsletter mention eligibility", "Highlighted card styling", "Upgrade to Front and Center at founding rates - any time"] },
   { name: "Front and Center", price: 49, perks: ["Everything in Highlighted", "Top of category, always", "Monthly newsletter feature eligible", "First call for sponsorship spots", "Founding badge on listing"] },
 ];
 
 const FOUNDING_PERKS = [
   { icon: "🏅", label: "Founding 30 Badge", copy: "A permanent badge on your listing. Everyone who visits the directory sees you were here from the start." },
-  { icon: "🔑", label: "First Access", copy: "New features, new pages, new tools — you get them before anyone else. No waiting list, no rollout phases." },
-  { icon: "📖", label: "Named in History", copy: "Your business is permanently listed in the 'Businesses That Built This Community' section. That's not a perk — it's a legacy." },
-  { icon: "📣", label: "Direct Line", copy: "Questions, ideas, feedback — you talk directly to the person building this, not a support inbox. That never goes away." },
+  { icon: "🔑", label: "First Access", copy: "New features, new pages, new tools - you get them before anyone else. No waiting list, no rollout phases." },
+  { icon: "📖", label: "Named in History", copy: "Your business is permanently listed in the 'Businesses That Built This Community' section. That's not a perk - it's a legacy." },
+  { icon: "📣", label: "Direct Line", copy: "Questions, ideas, feedback - you talk directly to the person building this, not a support inbox. That never goes away." },
 ];
 
 function FoundingListingDemo() {
@@ -28,7 +28,7 @@ function FoundingListingDemo() {
       <div style={{ maxWidth: 960, margin: "0 auto" }}>
         <FadeIn>
           <SectionLabel style={{ textAlign: "center", display: "block" }}>What You're Getting</SectionLabel>
-          <SectionTitle center>Free listing vs. Enhanced — live.</SectionTitle>
+          <SectionTitle center>Free listing vs. Enhanced - live.</SectionTitle>
           <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 540, margin: "0 auto 52px", textAlign: "center" }}>
             This is the actual directory. Watch what happens when you upgrade.
           </p>
@@ -84,7 +84,7 @@ function FoundingListingDemo() {
                   <div style={{ width: 48, height: 48, borderRadius: 8, background: `${accentColor}15`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 20 }}>🏠</div>
                   <div>
                     <div style={{ fontSize: 13, color: C.textLight, lineHeight: 1.75, marginBottom: 10, fontFamily: "'Libre Franklin', sans-serif" }}>
-                      Everything you need for the lake house — lumber, hardware, seasonal supplies. Family owned since 1987.
+                      Everything you need for the lake house - lumber, hardware, seasonal supplies. Family owned since 1987.
                     </div>
                     <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
                       <span style={{ fontSize: 11, fontWeight: 700, color: accentColor, letterSpacing: 0.5, fontFamily: "'Libre Franklin', sans-serif", textTransform: "uppercase" }}>Visit Website →</span>
@@ -125,7 +125,7 @@ export default function FoundingPage() {
 
       {/* Private context strip */}
       <div style={{ background: C.night, borderBottom: "1px solid rgba(255,255,255,0.07)", padding: "9px 24px", display: "flex", alignItems: "center", justifyContent: "center", gap: 28, flexWrap: "wrap" }}>
-        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif" }}>This page isn't public — you're seeing it because someone sent it to you.</span>
+        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif" }}>This page isn't public - you're seeing it because someone sent it to you.</span>
         <a href="/business" style={{ fontSize: 12, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>See the Public Listing Page →</a>
         <a href="/" style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", fontFamily: "'Libre Franklin', sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Visit Homepage →</a>
       </div>
@@ -143,7 +143,7 @@ export default function FoundingPage() {
             Be one of the first.<br />That matters here.
           </h1>
           <p style={{ fontSize: 16, color: "rgba(255,255,255,0.5)", maxWidth: 520, margin: "0 auto 16px", lineHeight: 1.85 }}>
-            The first businesses to join Manitou Beach aren't just getting a listing — they're helping build the community hub that everyone else will rely on. Founding members get recognized for that, permanently.
+            The first businesses to join Manitou Beach aren't just getting a listing - they're helping build the community hub that everyone else will rely on. Founding members get recognized for that, permanently.
           </p>
           <Btn href="/business" variant="sunset" style={{ whiteSpace: "nowrap" }}>
             See Listing Options →
@@ -165,7 +165,7 @@ export default function FoundingPage() {
             <SectionLabel style={{ textAlign: "center", display: "block" }}>Why Founding Matters</SectionLabel>
             <SectionTitle center>You helped build this place.</SectionTitle>
             <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 580, margin: "0 auto 40px", textAlign: "center" }}>
-              Founding businesses aren't just early adopters — they're the ones who showed up before there was a crowd. That means something here, and it always will.
+              Founding businesses aren't just early adopters - they're the ones who showed up before there was a crowd. That means something here, and it always will.
             </p>
           </FadeIn>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 20 }}>
@@ -191,12 +191,12 @@ export default function FoundingPage() {
             <SectionLabel style={{ textAlign: "center", display: "block" }}>Your Audience</SectionLabel>
             <SectionTitle center>Real people, already looking.</SectionTitle>
             <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 580, margin: "0 auto 40px", textAlign: "center" }}>
-              Manitou Beach reaches lake homeowners, seasonal visitors, and locals through the community directory, weekly newsletter, and event calendar. These aren't random clicks — they're your neighbors and their guests.
+              Manitou Beach reaches lake homeowners, seasonal visitors, and locals through the community directory, weekly newsletter, and event calendar. These aren't random clicks - they're your neighbors and their guests.
             </p>
           </FadeIn>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16 }}>
             {[
-              { icon: "📰", label: "Weekly newsletter", copy: "Events, food trucks, wine trail news, business spotlights, and community updates — delivered to inboxes every week." },
+              { icon: "📰", label: "Weekly newsletter", copy: "Events, food trucks, wine trail news, business spotlights, and community updates - delivered to inboxes every week." },
               { icon: "👥", label: "Who's reading", copy: "Lake homeowners, seasonal visitors, local residents, boaters, and anyone who follows the Irish Hills community." },
               { icon: "📍", label: "Why it matters", copy: "As the list grows, your listing reaches more of those readers. The rate rises to reflect that." },
               { icon: "🔒", label: "Your rate is locked", copy: "Your rate is locked the day you join. New subscribers don't affect your bill." },
@@ -289,7 +289,7 @@ export default function FoundingPage() {
               </p>
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 {[
-                  { icon: "🔒", text: "Upgrade to any higher tier at your founding rate — whenever you want, for as long as you're listed" },
+                  { icon: "🔒", text: "Upgrade to any higher tier at your founding rate - whenever you want, for as long as you're listed" },
                   { icon: "📅", text: "Useful for seasonal peaks: Tip-Up Festival, July 4th, Memorial Day, summer opening weekend" },
                   { icon: "⚡", text: "Founding rate access closes once early spots fill. No exceptions." },
                 ].map((item, i) => (
@@ -320,7 +320,7 @@ export default function FoundingPage() {
               Join The Manitou Dispatch.
             </h2>
             <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 480, margin: "0 auto 32px" }}>
-              The community newsletter for Devils Lake and Manitou Beach. Events, local news, food truck locations, wine trail updates, and what's on the water — sent to people who live here or love it here.
+              The community newsletter for Devils Lake and Manitou Beach. Events, local news, food truck locations, wine trail updates, and what's on the water - sent to people who live here or love it here.
             </p>
           </FadeIn>
           <NewsletterInline />

@@ -7,13 +7,38 @@ import { celebrate } from '../data/celebrate';
 
 const EVENT_CATEGORIES = ["Live Music", "Food & Social", "Sports & Outdoors", "Community", "Arts & Culture", "Markets & Vendors", "Other"];
 
+// Convert "7:00 PM" / "7pm" / "noon" → "19:00" for type="time" inputs
+function parseTimeToHHMM(str) {
+  if (!str) return '';
+  const s = str.trim().toLowerCase();
+  if (s === 'noon') return '12:00';
+  if (s === 'midnight') return '00:00';
+  const m = s.match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm)?$/);
+  if (!m) return '';
+  let h = parseInt(m[1], 10);
+  const min = m[2] ? parseInt(m[2], 10) : 0;
+  if (m[3] === 'pm' && h < 12) h += 12;
+  if (m[3] === 'am' && h === 12) h = 0;
+  return `${String(h).padStart(2, '0')}:${String(min).padStart(2, '0')}`;
+}
+
+// Convert "19:00" (HH:MM from type="time") → "7:00 PM" for storage
+function formatTime12h(hhmm) {
+  if (!hhmm) return '';
+  const [h, m] = hhmm.split(':').map(Number);
+  if (isNaN(h) || isNaN(m)) return hhmm;
+  const period = h >= 12 ? 'PM' : 'AM';
+  const h12 = h % 12 || 12;
+  return `${h12}:${String(m).padStart(2, '0')} ${period}`;
+}
+
 const ATTENDANCE_OPTIONS = [
-  { value: "", label: "— Select attendance type (optional)" },
-  { value: "just_show_up", label: "Just Show Up — open to all, no registration needed" },
-  { value: "rsvp_appreciated", label: "RSVP Appreciated — please let us know, but not required" },
-  { value: "rsvp_required", label: "RSVP Required — must register to attend" },
-  { value: "limited_spots", label: "Limited Spots — finite capacity, act quickly" },
-  { value: "registration_required", label: "Registration Required — formal signup needed" },
+  { value: "", label: "- Select attendance type (optional)" },
+  { value: "just_show_up", label: "Just Show Up - open to all, no registration needed" },
+  { value: "rsvp_appreciated", label: "RSVP Appreciated - please let us know, but not required" },
+  { value: "rsvp_required", label: "RSVP Required - must register to attend" },
+  { value: "limited_spots", label: "Limited Spots - finite capacity, act quickly" },
+  { value: "registration_required", label: "Registration Required - formal signup needed" },
 ];
 
 export default function EventEditPage() {
@@ -48,8 +73,8 @@ export default function EventEditPage() {
           setForm({
             name: data.name || "",
             date: data.date || "",
-            time: data.time || "",
-            timeEnd: data.timeEnd || "",
+            time: parseTimeToHHMM(data.time || ""),
+            timeEnd: parseTimeToHHMM(data.timeEnd || ""),
             location: data.location || "",
             description: data.description || "",
             cost: data.cost || "",
@@ -83,7 +108,7 @@ export default function EventEditPage() {
         const upData = await up.json();
         if (up.ok) imageUrl = upData.url;
       }
-      const body = { token, ...form };
+      const body = { token, ...form, time: formatTime12h(form.time), timeEnd: formatTime12h(form.timeEnd) };
       if (imageUrl) body.imageUrl = imageUrl;
       const res = await fetch("/api/event-edit", {
         method: "POST",
@@ -120,7 +145,7 @@ export default function EventEditPage() {
                 <div style={{ fontSize: 48, marginBottom: 16 }}>🔍</div>
                 <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, fontWeight: 400, color: C.cream, margin: "0 0 12px 0" }}>Hmm, can't find that one</h2>
                 <p style={{ fontSize: 15, color: "rgba(255,255,255,0.4)", lineHeight: 1.75, margin: "0 0 32px 0" }}>
-                  This link might be old or mistyped. Check your texts for the right one — we sent it when you submitted.
+                  This link might be old or mistyped. Check your texts for the right one - we sent it when you submitted.
                 </p>
                 <Btn href="/events" variant="outlineLight">Back to Events</Btn>
               </div>
@@ -156,7 +181,7 @@ export default function EventEditPage() {
                 <SectionLabel light>Edit Event</SectionLabel>
                 <SectionTitle light>{form.name}</SectionTitle>
                 <p style={{ fontSize: 15, color: "rgba(255,255,255,0.4)", lineHeight: 1.75, margin: "0 0 48px 0" }}>
-                  Change whatever you need — it goes live right away.
+                  Change whatever you need - it goes live right away.
                 </p>
               </FadeIn>
 
@@ -170,11 +195,11 @@ export default function EventEditPage() {
                     <div />
                     <div>
                       <label style={labelStyle}>Start Time</label>
-                      <input value={form.time} onChange={e => set("time", e.target.value)} placeholder="e.g. 7:00 PM" style={inputStyle} />
+                      <input type="time" value={form.time} onChange={e => set("time", e.target.value)} style={inputStyle} />
                     </div>
                     <div>
                       <label style={labelStyle}>End Time <span style={{ opacity: 0.5, fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>(optional)</span></label>
-                      <input value={form.timeEnd} onChange={e => set("timeEnd", e.target.value)} placeholder="e.g. 10:00 PM" style={inputStyle} />
+                      <input type="time" value={form.timeEnd} onChange={e => set("timeEnd", e.target.value)} style={inputStyle} />
                     </div>
                     <div>
                       <label style={labelStyle}>Location</label>

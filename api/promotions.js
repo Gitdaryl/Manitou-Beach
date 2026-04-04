@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-  // Cache for 5 minutes — promos are time-sensitive
+  // Cache for 5 minutes - promos are time-sensitive
   res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate');
 
   try {
@@ -41,7 +41,7 @@ export default async function handler(req, res) {
 
     const promos = data.results
       .filter(page => {
-        // Also check Promo Start if set — don't show before start date
+        // Also check Promo Start if set - don't show before start date
         const startStr = page.properties['Promo Start']?.date?.start;
         if (startStr) {
           const start = new Date(startStr + 'T00:00:00');

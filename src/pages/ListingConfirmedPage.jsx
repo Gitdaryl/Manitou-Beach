@@ -40,7 +40,7 @@ export default function ListingConfirmedPage() {
               A few things worth knowing
             </p>
             {[
-              { title: 'You can update your info anytime', body: 'Change your phone, address, description, or logo at any time — just visit the update listing page.' },
+              { title: 'You can update your info anytime', body: 'Change your phone, address, description, or logo at any time - just visit the update listing page.' },
               { title: 'Your listing gets better with a description', body: 'If you didn\'t add one yet, a 2–3 sentence description makes a big difference for people deciding to reach out.' },
               { title: 'We\'re actively growing the audience', body: 'We promote the directory to visitors and locals. More people finding the site means more people finding you.' },
             ].map(({ title, body }, i) => (
@@ -74,7 +74,7 @@ export default function ListingConfirmedPage() {
           {/* Accuracy prompt */}
           <div style={{ marginBottom: 20 }}>
             <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: 'rgba(255,255,255,0.5)', margin: '0 0 16px' }}>
-              Does your listing look right? If anything needs fixing — name, phone, address — update it now.
+              Does your listing look right? If anything needs fixing - name, phone, address - update it now.
             </p>
           </div>
 

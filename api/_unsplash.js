@@ -18,7 +18,7 @@ export async function searchUnsplash(query) {
   const photo = data.results?.[0];
   if (!photo) return null;
 
-  // Trigger download event — required by Unsplash API guidelines
+  // Trigger download event - required by Unsplash API guidelines
   fetch(photo.links.download_location, {
     headers: { Authorization: `Client-ID ${accessKey}` },
   }).catch(() => {});

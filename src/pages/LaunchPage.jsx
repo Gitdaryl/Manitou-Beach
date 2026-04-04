@@ -104,7 +104,7 @@ function BetaFullMessage() {
         The yeti ate all 30 spots.
       </p>
       <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, margin: '0 0 8px 0' }}>
-        Beta access is full — every last one, gone like hot cookies at Blackbird.
+        Beta access is full - every last one, gone like hot cookies at Blackbird.
       </p>
       <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.35)', lineHeight: 1.7, margin: '0 0 24px 0' }}>
         But the gates open to everyone on April 10 at noon.<br />
@@ -136,7 +136,7 @@ function SpotsCounter({ remaining }) {
   );
 }
 
-// ── AnimatedCode — characters reveal one by one ────────────────────────────────
+// ── AnimatedCode - characters reveal one by one ────────────────────────────────
 function AnimatedCode({ code }) {
   return (
     <div style={{ display: 'flex', justifyContent: 'center', gap: 'clamp(4px, 1.5vw, 10px)', flexWrap: 'nowrap' }}>
@@ -168,7 +168,7 @@ function AnimatedCode({ code }) {
   );
 }
 
-// ── SitePreviewPeek — teaser pills of what's inside ───────────────────────────
+// ── SitePreviewPeek - teaser pills of what's inside ───────────────────────────
 function SitePreviewPeek() {
   const items = [
     { icon: '📅', label: 'Local Events' },
@@ -223,7 +223,7 @@ function SitePreviewPeek() {
 function WhatsNextTimeline({ isBusiness }) {
   const steps = [
     { dot: C.sage,      text: 'Your spot is locked in. Screenshot your code.' },
-    { dot: C.lakeBlue,  text: isBusiness ? 'Check your email — activate your free listing.' : 'April 10 at noon — the gates open.' },
+    { dot: C.lakeBlue,  text: isBusiness ? 'Check your email - activate your free listing.' : 'April 10 at noon - the gates open.' },
     { dot: C.sunsetLight, text: isBusiness ? 'Your listing goes live to thousands of visitors.' : 'Redeem your free cookie at Blackbird Cafe.' },
   ];
   return (
@@ -272,7 +272,7 @@ function WhatsNextTimeline({ isBusiness }) {
 function ShareButtons() {
   const calUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('Manitou Beach Launches!')}&dates=20260410T160000Z/20260410T170000Z&details=${encodeURIComponent('My beta access opens! manitoubeachmichigan.com')}&location=${encodeURIComponent('manitoubeachmichigan.com')}`;
   const fbUrl  = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(SITE_URL)}`;
-  const smsUrl = `sms:?&body=${encodeURIComponent('I just got early beta access to the new Manitou Beach community platform — pretty cool! Only a few spots left if you want one: ' + SITE_URL)}`;
+  const smsUrl = `sms:?&body=${encodeURIComponent('I just got early beta access to the new Manitou Beach community platform - pretty cool! Only a few spots left if you want one: ' + SITE_URL)}`;
 
   const btnBase = {
     display: 'inline-flex',
@@ -441,7 +441,7 @@ function SignupForm({ remaining, onSpotsUpdate }) {
             fontSize: 11, color: 'rgba(255,255,255,0.35)',
             margin: '12px 0 0', letterSpacing: 0.5,
           }}>
-            Save this — enter it on this page anytime to access the site
+            Save this - enter it on this page anytime to access the site
           </p>
         </div>
 
@@ -474,7 +474,7 @@ function SignupForm({ remaining, onSpotsUpdate }) {
               fontSize: 13, color: 'rgba(255,255,255,0.6)', margin: 0, lineHeight: 1.65,
             }}>
               <span style={{ color: C.sunsetLight, fontWeight: 700 }}>Check your email</span>
-              {' '}— we sent a link to activate your{' '}
+              {' '}- we sent a link to activate your{' '}
               <span style={{ color: C.cream, fontWeight: 600 }}>free listing</span>.
               {' '}No charge until May 10. You're a founding business on Manitou Beach.
             </p>
@@ -488,7 +488,7 @@ function SignupForm({ remaining, onSpotsUpdate }) {
             <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.55)', margin: '0 0 6px', lineHeight: 1.5 }}>
               <span style={{ fontSize: 16 }}>🎁</span>{' '}
               <span style={{ color: C.sunsetLight, fontWeight: 700 }}>Free cookie from Blackbird Cafe</span>
-              {' '}— claim it on the site when it opens April 10.
+              {' '}- claim it on the site when it opens April 10.
             </p>
             <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: 'rgba(255,255,255,0.3)', margin: 0 }}>
               Your welcome gift from the Manitou Beach community.
@@ -576,7 +576,7 @@ function SignupForm({ remaining, onSpotsUpdate }) {
           fontFamily: "'Libre Franklin', sans-serif",
           fontSize: 11, color: 'rgba(255,255,255,0.5)', lineHeight: 1.4,
         }}>
-          Every beta tester gets a <span style={{ color: C.sunsetLight, fontWeight: 700 }}>free cookie from Blackbird Cafe</span> — claim it on site.
+          Every beta tester gets a <span style={{ color: C.sunsetLight, fontWeight: 700 }}>free cookie from Blackbird Cafe</span> - claim it on site.
         </span>
       </div>
 
@@ -588,7 +588,7 @@ function SignupForm({ remaining, onSpotsUpdate }) {
             style={{ accentColor: C.sunset, width: 16, height: 16, flexShrink: 0, cursor: 'pointer', marginTop: 1 }}
           />
           <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: 'rgba(255,255,255,0.45)', lineHeight: 1.4 }}>
-            I own or manage a local business —{' '}
+            I own or manage a local business -{' '}
             <span style={{ color: C.sunsetLight }}>get a free listing through May 10</span>
           </span>
         </label>
@@ -629,7 +629,7 @@ function SignupForm({ remaining, onSpotsUpdate }) {
   );
 }
 
-// ── CodeEntryForm — for returning testers on a new device ──────────────────────
+// ── CodeEntryForm - for returning testers on a new device ──────────────────────
 function CodeEntryForm() {
   const [open, setOpen] = useState(false);
   const [code, setCode] = useState('');
@@ -640,7 +640,7 @@ function CodeEntryForm() {
     e.preventDefault();
     const clean = code.trim().toUpperCase();
     if (!/^MB[A-Z0-9]{4}$/.test(clean)) {
-      setErrorMsg('Codes start with MB followed by 4 characters — e.g. MB7X2K.');
+      setErrorMsg('Codes start with MB followed by 4 characters - e.g. MB7X2K.');
       return;
     }
     setStatus('checking');
@@ -661,7 +661,7 @@ function CodeEntryForm() {
         setStatus('idle');
       }
     } catch {
-      setErrorMsg("Couldn't reach the server — try again in a moment.");
+      setErrorMsg("Couldn't reach the server - try again in a moment.");
       setStatus('idle');
     }
   };
@@ -721,7 +721,7 @@ function CodeEntryForm() {
               color: C.sage, fontSize: 14, margin: 0,
               fontFamily: "'Libre Franklin', sans-serif",
             }}>
-              ✓ Code accepted — heading in...
+              ✓ Code accepted - heading in...
             </p>
           ) : (
             <button
@@ -767,7 +767,7 @@ export default function LaunchPage() {
     <div style={{ minHeight: '100vh', background: C.night }}>
       <GlobalStyles />
 
-      {/* Video background — fixed so it stays put while content scrolls */}
+      {/* Video background - fixed so it stays put while content scrolls */}
       <video ref={videoRef} autoPlay loop muted playsInline style={{
         position: 'fixed', inset: 0, width: '100%', height: '100%',
         objectFit: 'cover', zIndex: 0, opacity: 0.6,
@@ -775,7 +775,7 @@ export default function LaunchPage() {
         <source src="/videos/hero-default.mp4" type="video/mp4" />
       </video>
 
-      {/* Dark overlay — fixed */}
+      {/* Dark overlay - fixed */}
       <div style={{
         position: 'fixed', inset: 0,
         background: 'linear-gradient(170deg, rgba(26,40,48,0.88) 0%, rgba(26,40,48,0.65) 50%, rgba(26,40,48,0.92) 100%)',
@@ -792,7 +792,7 @@ export default function LaunchPage() {
         </span>
       </div>
 
-      {/* Main content — scrolls naturally with the page */}
+      {/* Main content - scrolls naturally with the page */}
       <div style={{
         position: 'relative', zIndex: 2,
         width: '100%', maxWidth: 640,
@@ -846,7 +846,7 @@ export default function LaunchPage() {
           <SignupForm remaining={remaining} onSpotsUpdate={setRemaining} />
         )}
 
-        {/* Returning tester on a new device — always visible pre-launch */}
+        {/* Returning tester on a new device - always visible pre-launch */}
         {!parts.launched && (
           <>
             <div style={{ width: 40, height: 1, background: 'rgba(255,255,255,0.1)' }} />

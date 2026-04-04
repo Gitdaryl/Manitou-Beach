@@ -16,17 +16,17 @@ function getParams() {
 
 const TIPS = {
   platform_ticketing: [
-    { title: 'People can buy tickets right now', body: 'Your event is live on What\'s Happening — anyone browsing can grab tickets. Money goes straight to your bank.' },
-    { title: 'Need to change something?', body: 'We texted you an edit link. Tap it anytime to update the details — no hoops.' },
-    { title: 'Want the whole lake to know?', body: 'Homepage hero, newsletter shoutout, featured banners — there are some fun ways to pack the house.' },
+    { title: 'People can buy tickets right now', body: 'Your event is live on What\'s Happening - anyone browsing can grab tickets. Money goes straight to your bank.' },
+    { title: 'Need to change something?', body: 'We texted you an edit link. Tap it anytime to update the details - no hoops.' },
+    { title: 'Want the whole lake to know?', body: 'Homepage hero, newsletter shoutout, featured banners - there are some fun ways to pack the house.' },
   ],
   vendor_market: [
     { title: 'Vendors can sign up and pay now', body: 'Share your vendor portal link and they handle everything themselves. Money lands in your account minus a tiny 1.25% fee.' },
-    { title: 'Check your texts for your portal link', body: 'That\'s your command center — see who\'s registered, send updates, all that good stuff.' },
-    { title: 'Need to tweak the details?', body: 'We sent you an edit link by text too. Change the date, location, whatever — anytime.' },
+    { title: 'Check your texts for your portal link', body: 'That\'s your command center - see who\'s registered, send updates, all that good stuff.' },
+    { title: 'Need to tweak the details?', body: 'We sent you an edit link by text too. Change the date, location, whatever - anytime.' },
   ],
   default: [
-    { title: 'It\'s live — people can see it right now', body: 'Head over to What\'s Happening and you\'ll see your event on the calendar.' },
+    { title: 'It\'s live - people can see it right now', body: 'Head over to What\'s Happening and you\'ll see your event on the calendar.' },
     { title: 'Want to change something later?', body: 'We texted you an edit link. Tap it whenever you need to update anything.' },
     { title: 'Want the whole lake to know?', body: 'A newsletter shoutout or homepage feature gets your event in front of everyone around the lake.' },
   ],
@@ -64,11 +64,11 @@ export default function EventConfirmedPage() {
           </div>
 
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, color: C.cream, fontWeight: 400, margin: '0 0 12px' }}>
-            {isVendor ? 'You\'re all set — vendors can start signing up!' : isTicketing ? 'Tickets are live — let\'s sell some!' : 'Your event is on the calendar!'}
+            {isVendor ? 'You\'re all set - vendors can start signing up!' : isTicketing ? 'Tickets are live - let\'s sell some!' : 'Your event is on the calendar!'}
           </h1>
           <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.sunsetLight, fontStyle: 'italic', margin: '0 0 36px', lineHeight: 1.6 }}>
             {isVendor
-              ? 'Check your texts — we sent you a link to your organizer portal.'
+              ? 'Check your texts - we sent you a link to your organizer portal.'
               : isTicketing
                 ? 'People can buy tickets right now. We texted you an edit link too.'
                 : 'It\'s showing on What\'s Happening right now. Nice work!'}

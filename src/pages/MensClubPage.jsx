@@ -19,25 +19,25 @@ const MENS_CLUB_EVENTS = [
   {
     title: "Tip-Up Festival",
     date: "First weekend of February",
-    desc: "The crown jewel — 70+ years of ice fishing, snowmobile racing, outhouse races, hovercraft rides, poker runs, and the benefit auction. Held on frozen Devils Lake, it's the longest-running winter festival in the Irish Hills.",
+    desc: "The crown jewel - 70+ years of ice fishing, snowmobile racing, outhouse races, hovercraft rides, poker runs, and the benefit auction. Held on frozen Devils Lake, it's the longest-running winter festival in the Irish Hills.",
     image: "/images/mens-club/tip-up-1.jpg",
   },
   {
     title: "Firecracker 7K Run/Walk",
-    date: "July 4th — 8:00 AM",
+    date: "July 4th - 8:00 AM",
     desc: "A Fourth of July tradition starting at 3171 Round Lake Hwy. Choose the 7K run/walk or 1-mile family fun run. Proceeds fund the Devils Lake fireworks display.",
     image: "/images/mens-club/firecracker-7k.jpg",
   },
   {
     title: "Golf Outing",
-    date: "Annual — Summer",
+    date: "Annual - Summer",
     desc: "A community golf outing that brings together members, local businesses, and supporters. All proceeds benefit the club's charitable programs.",
     image: "/images/mens-club/golf.jpg",
   },
   {
     title: "Benefit Auction & Raffle",
     date: "During Tip-Up Festival",
-    desc: "The auction is the club's biggest fundraiser — local businesses and community members donate items. Proceeds support laptops for students, Toys for Tots, Shop with a Cop, and food pantries.",
+    desc: "The auction is the club's biggest fundraiser - local businesses and community members donate items. Proceeds support laptops for students, Toys for Tots, Shop with a Cop, and food pantries.",
     image: "/images/mens-club/auction.jpg",
   },
   {
@@ -105,7 +105,7 @@ function MensClubHero() {
           }}>
             View Events
           </a>
-          <ShareBar title="Devils & Round Lake Men's Club — Manitou Beach" />
+          <ShareBar title="Devils & Round Lake Men's Club - Manitou Beach" />
         </div>
       </div>
     </section>
@@ -160,7 +160,7 @@ function MensClubMissionSection() {
                 The Devils and Round Lake Men's Club is a 501(c)(3) nonprofit dedicated to improving life in the Manitou Beach community. Through annual events like the legendary Tip-Up Festival and the Fourth of July Firecracker 7K, the club raises funds that go directly back to the people who need it most.
               </p>
               <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, margin: 0 }}>
-                From buying laptops for college-bound students to donating thousands in toys through Toys for Tots, partnering with law enforcement for Shop with a Cop, and delivering Christmas gift baskets to families in need — the Men's Club is the backbone of Manitou Beach's charitable community.
+                From buying laptops for college-bound students to donating thousands in toys through Toys for Tots, partnering with law enforcement for Shop with a Cop, and delivering Christmas gift baskets to families in need - the Men's Club is the backbone of Manitou Beach's charitable community.
               </p>
             </div>
           </FadeIn>
@@ -225,7 +225,7 @@ function MensClubEventsSection() {
 }
 
 function MensClubGallerySection() {
-  // Gallery photos — add image paths here as they become available
+  // Gallery photos - add image paths here as they become available
   const galleryPhotos = [
     { src: "/images/mens-club/tip-up-1.jpg", caption: "Tip-Up Festival" },
     { src: "/images/mens-club/tip-up-2.jpg", caption: "Tip-Up Festival" },
@@ -313,7 +313,7 @@ function MensClubGetInvolved() {
           <SectionLabel>Get Involved</SectionLabel>
           <SectionTitle center>Join the Club</SectionTitle>
           <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, marginBottom: 32 }}>
-            Whether you want to volunteer at Tip-Up, help with the fireworks, or just meet good people who care about this community — the Men's Club is always looking for new members.
+            Whether you want to volunteer at Tip-Up, help with the fireworks, or just meet good people who care about this community - the Men's Club is always looking for new members.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
             <a href="https://www.facebook.com/profile.php?id=100064837808733" target="_blank" rel="noopener noreferrer" className="btn-animated" style={{

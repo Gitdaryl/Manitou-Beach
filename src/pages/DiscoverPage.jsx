@@ -32,12 +32,12 @@ export default function DiscoverPage() {
       .then(r => r.json())
       .then(d => setBusinesses([...(d.free || []), ...(d.enhanced || []), ...(d.featured || []), ...(d.premium || [])]))
       .catch(() => {});
-    // Community POIs from Notion — merged with hardcoded fallbacks
+    // Community POIs from Notion - merged with hardcoded fallbacks
     fetch('/api/community-pois')
       .then(r => r.json())
       .then(d => setCommunityPois({ pois: d.pois || [], suppressed: d.suppressed || [] }))
       .catch(() => setCommunityPois({ pois: [], suppressed: [] })); // fall back to hardcoded on error
-    // Dynamic categories — Notion categories not yet in DISCOVER_CATS get auto-pills
+    // Dynamic categories - Notion categories not yet in DISCOVER_CATS get auto-pills
     fetch('/api/categories')
       .then(r => r.json())
       .then(d => {
@@ -91,12 +91,12 @@ export default function DiscoverPage() {
   }, []);
 
   // Merge Notion community POIs with hardcoded fallbacks (dedup by name)
-  // communityPois === null means still loading — show hardcoded pins immediately
+  // communityPois === null means still loading - show hardcoded pins immediately
   const mergedPois = communityPois === null
     ? DISCOVER_POIS
     : (() => {
         const { pois: notionPois, suppressed } = communityPois;
-        const suppressedSet = new Set(suppressed); // Hidden in Notion — never show from hardcoded
+        const suppressedSet = new Set(suppressed); // Hidden in Notion - never show from hardcoded
         const notionNames = new Set(notionPois.map(p => p.name.toLowerCase()));
         const extras = DISCOVER_POIS.filter(p => {
           const lower = p.name.toLowerCase();
@@ -114,7 +114,7 @@ export default function DiscoverPage() {
     markersRef.current = [];
     const activeCatObj = [...DISCOVER_CATS, ...dynamicCats].find(c => c.id === activeCategory) || DISCOVER_CATS[0];
 
-    // Paid Notion businesses with valid coords — these take precedence over hardcoded POIs
+    // Paid Notion businesses with valid coords - these take precedence over hardcoded POIs
     const bizPins = businesses.filter(b =>
       b.tier !== 'free' && b.lat && b.lng &&
       (activeCategory === 'all' || b.categories?.includes(activeCatObj.notionKey))
@@ -169,7 +169,7 @@ export default function DiscoverPage() {
 
     const allPinned = [...pois, ...bizPins];
     if (activeCategory === 'all') {
-      // Lock "All" view to the lake — fitBounds would zoom way out to cover distant POIs
+      // Lock "All" view to the lake - fitBounds would zoom way out to cover distant POIs
       map.panTo(DISCOVER_MAP_CENTER);
       map.setZoom(12);
     } else if (allPinned.length > 1) {
@@ -229,7 +229,7 @@ export default function DiscoverPage() {
             Discover Manitou Beach
           </h1>
           <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: 'rgba(255,255,255,0.6)', margin: 0 }}>
-            Food, healthcare, schools, water access, wineries, community — all in one place.
+            Food, healthcare, schools, water access, wineries, community - all in one place.
           </p>
         </div>
       </div>
@@ -313,13 +313,13 @@ export default function DiscoverPage() {
             >
               <span style={{ fontSize: 20, flexShrink: 0 }}>🔥</span>
               <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.text, lineHeight: 1.5 }}>
-                <strong style={{ color: C.sunset }}>Looking for food trucks?</strong> They have their own live locator — see who's here right now, where they're parked, and what they're serving. <span style={{ color: C.sunset, fontWeight: 600 }}>Open the locator →</span>
+                <strong style={{ color: C.sunset }}>Looking for food trucks?</strong> They have their own live locator - see who's here right now, where they're parked, and what they're serving. <span style={{ color: C.sunset, fontWeight: 600 }}>Open the locator →</span>
               </span>
             </a>
           )}
           {activeCategory === 'healthcare' && (
             <div style={{ background: '#c05a5a10', border: '1px solid #c05a5a28', borderRadius: 8, padding: '6px 14px', fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: '#c05a5a', lineHeight: 1.45, maxWidth: 500 }}>
-              <strong>Tip:</strong> Always call your insurance first — network coverage varies by plan. Use the number on your card or your insurer's provider finder.
+              <strong>Tip:</strong> Always call your insurance first - network coverage varies by plan. Use the number on your card or your insurer's provider finder.
             </div>
           )}
         </div>
@@ -397,7 +397,7 @@ export default function DiscoverPage() {
             <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.textMuted, maxWidth: 380, margin: '0 auto 24px' }}>
               Own a {activeCat.label.toLowerCase()} business near Manitou Beach? This is where locals and visitors look.
             </p>
-            <Btn href="/business" variant="primary" small>Get Listed — from $9/mo</Btn>
+            <Btn href="/business" variant="primary" small>Get Listed - from $9/mo</Btn>
           </div>
         )}
       </div>
@@ -432,7 +432,7 @@ export default function DiscoverPage() {
           <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 4, textTransform: 'uppercase', color: 'rgba(255,255,255,0.28)', marginBottom: 10 }}>Location</div>
           <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 400, color: C.cream, margin: '0 0 10px 0' }}>Closer than you think.</h2>
           <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: 'rgba(255,255,255,0.48)', margin: '0 0 40px 0', maxWidth: 480 }}>
-            You're not in the middle of nowhere. You're in the middle of everything that matters — just far enough from the noise.
+            You're not in the middle of nowhere. You're in the middle of everything that matters - just far enough from the noise.
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 12, overflow: 'hidden' }}>
             {DRIVE_TIMES.map((row, i) => (

@@ -2,7 +2,7 @@ import { lazy, Suspense, Component } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { PageThemeProvider } from './context/PageThemeContext';
 
-// Eager — first paint
+// Eager - first paint
 import HomePage from './pages/HomePage';
 
 // Lazy-loaded pages
@@ -59,19 +59,19 @@ const SubmitEventPage = lazy(() => import('./pages/SubmitEventPage'));
 const EventConfirmedPage = lazy(() => import('./pages/EventConfirmedPage'));
 const QuickEventsPage = lazy(() => import('./pages/QuickEventsPage'));
 
-// ── Beta gate — redirects / to /launch until LAUNCH_DATE
+// ── Beta gate - redirects / to /launch until LAUNCH_DATE
 //   ⚙️  Update LAUNCH_DATE when you have a firm date (must match LaunchPage.jsx)
 const LAUNCH_DATE = new Date('2026-05-01T16:00:00Z'); // 12:00pm ET May 1
 
 function BetaGate({ children }) {
-  // Gate only activates on the production domain — Vercel preview URLs bypass it entirely
+  // Gate only activates on the production domain - Vercel preview URLs bypass it entirely
   if (typeof window !== 'undefined' && window.location.hostname !== 'manitoubeachmichigan.com') return children;
   if (Date.now() >= LAUNCH_DATE.getTime()) return children;
   try {
-    // Beta testers — unique access code issued at signup
+    // Beta testers - unique access code issued at signup
     const code = localStorage.getItem('mb_beta_code');
     if (code && /^MB[A-Z0-9]{4}$/.test(code)) return children;
-    // Food truck operators — backstage crew access after partner registration
+    // Food truck operators - backstage crew access after partner registration
     const ftSlug = localStorage.getItem('mb_ft_slug');
     if (ftSlug) return children;
   } catch {} // Safari private mode throws on localStorage
@@ -112,7 +112,7 @@ class ChunkErrorBoundary extends Component {
     return { dead: true };
   }
   render() {
-    if (this.state.dead) return null; // silent fail — better than a crash screen
+    if (this.state.dead) return null; // silent fail - better than a crash screen
     return this.props.children;
   }
 }
@@ -123,9 +123,9 @@ class ChunkErrorBoundary extends Component {
 // App.jsx is now the router + shared config/exports.
 // All pages live in src/pages/, shared components in src/components/.
 //
-// src/data/config.js     — Design tokens (C), sponsors, nav, village data, videos
-// src/components/Shared.jsx — ShareBar, SectionLabel, SectionTitle, FadeIn, Btn, etc.
-// src/components/Layout.jsx — GlobalStyles, PromoBanner, Newsletter, Footer, Navbar, etc.
+// src/data/config.js     - Design tokens (C), sponsors, nav, village data, videos
+// src/components/Shared.jsx - ShareBar, SectionLabel, SectionTitle, FadeIn, Btn, etc.
+// src/components/Layout.jsx - GlobalStyles, PromoBanner, Newsletter, Footer, Navbar, etc.
 //
 // This file contains:
 //   - Re-exports from Layout/config/discover (backward compat)
@@ -220,7 +220,7 @@ export default function App() {
         </Routes>
         </Suspense>
       </ChunkErrorBoundary>
-      {/* These load independently — they must NOT block page content */}
+      {/* These load independently - they must NOT block page content */}
       <SafeVoice>
         <Suspense fallback={null}><VoiceConcierge /></Suspense>
       </SafeVoice>

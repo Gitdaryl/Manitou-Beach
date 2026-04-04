@@ -21,15 +21,15 @@ export default function SMSOptInPage() {
           Stay in the loop
         </h1>
         <p style={S.p}>
-          Get text alerts for community events, local deals, and weekend highlights — straight to your phone. No spam, just what's happening at Manitou Beach.
+          Get text alerts for community events, local deals, and weekend highlights - straight to your phone. No spam, just what's happening at Manitou Beach.
         </p>
 
         <h2 style={S.h2}>What you'll receive</h2>
         <ul style={{ paddingLeft: 20, margin: '0 0 28px' }}>
           {[
-            'Event reminders — Friday Fish Fry, festivals, live music',
-            'Business deals — time-sensitive specials from Village shops',
-            'Welcome messages — highlights when you arrive for the weekend',
+            'Event reminders - Friday Fish Fry, festivals, live music',
+            'Business deals - time-sensitive specials from Village shops',
+            'Welcome messages - highlights when you arrive for the weekend',
           ].map((item, i) => (
             <li key={i} style={{ ...S.p, margin: '0 0 6px' }}>{item}</li>
           ))}
@@ -45,7 +45,7 @@ export default function SMSOptInPage() {
         <h2 style={S.h2}>Frequently asked questions</h2>
 
         {[
-          { q: 'How many texts will I get?', a: 'It varies by week — typically a few per week during summer season when events are active. Much quieter off-season.' },
+          { q: 'How many texts will I get?', a: 'It varies by week - typically a few per week during summer season when events are active. Much quieter off-season.' },
           { q: 'Can I choose what I get alerts for?', a: "Right now it's a single subscription. Preference controls (events only, deals only, etc.) are coming soon." },
           { q: 'How do I unsubscribe?', a: "Reply STOP to any message and you'll be removed immediately. You'll get one confirmation text, then nothing more." },
           { q: 'Who sends the messages?', a: 'Manitou Beach, operated by Yeti Groove Media LLC. Messages are sent via Twilio.' },

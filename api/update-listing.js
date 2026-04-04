@@ -30,7 +30,7 @@ async function findByNameAndEmail(name, email) {
 }
 
 export default async function handler(req, res) {
-  // GET — verify identity and return current listing details
+  // GET - verify identity and return current listing details
   if (req.method === 'GET') {
     const { name, email } = req.query;
     if (!name || !email) return res.status(400).json({ found: false, error: 'Name and email are required' });
@@ -58,13 +58,13 @@ export default async function handler(req, res) {
     }
   }
 
-  // POST — submit an update request
+  // POST - submit an update request
   if (req.method === 'POST') {
     const { name, email, phone, website, address, description, logoUrl, category } = req.body;
     if (!name || !email) return res.status(400).json({ success: false, error: 'Name and email are required' });
 
     try {
-      // Re-verify email matches Notion record (security — prevent updating someone else's listing)
+      // Re-verify email matches Notion record (security - prevent updating someone else's listing)
       const existing = await findByNameAndEmail(name.trim(), email.trim().toLowerCase());
       if (!existing) return res.status(403).json({ success: false, error: 'Could not verify your listing. Check the name and email match your original submission.' });
 
@@ -113,7 +113,7 @@ export default async function handler(req, res) {
         resend.emails.send({
           from: 'Manitou Beach <events@manitoubeachmichigan.com>',
           to: email.trim().toLowerCase(),
-          subject: `Update request received — ${name.trim()}`,
+          subject: `Update request received - ${name.trim()}`,
           html: `
             <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; color: #3B3228; background: #FAF6EF; padding: 40px 32px; border-radius: 8px;">
               <p style="font-size: 26px; font-weight: bold; margin: 0 0 8px; color: #1A2830;">Got it.</p>
@@ -138,7 +138,7 @@ export default async function handler(req, res) {
       if (process.env.DARYL_PHONE) {
         sendSMS(
           normalizePhone(process.env.DARYL_PHONE),
-          `📝 MB update request: ${name.trim()} — review in Notion`
+          `📝 MB update request: ${name.trim()} - review in Notion`
         ).catch((err) => console.error('update-listing admin SMS failed:', err));
       }
 

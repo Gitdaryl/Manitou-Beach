@@ -1,4 +1,4 @@
-// Incentive Contracts — subscriber promo vendor agreements
+// Incentive Contracts - subscriber promo vendor agreements
 // GET:   list all contracts
 // POST:  create a new contract
 // PATCH: update status or review URL
@@ -16,7 +16,7 @@ export default async function handler(req, res) {
 
   const DB = process.env.NOTION_DB_INCENTIVE_CONTRACTS;
   if (!DB) {
-    // Return empty state so the UI renders — surface the config gap clearly
+    // Return empty state so the UI renders - surface the config gap clearly
     if (req.method === 'GET') return res.status(200).json({ contracts: [], unconfigured: true });
     return res.status(500).json({ error: 'NOTION_DB_INCENTIVE_CONTRACTS env var not configured. Create the Notion DB and add the env var to Vercel.' });
   }

@@ -102,12 +102,12 @@ export default function RatePage() {
     const filledWines = wines.filter(w => w.name.trim());
     if (filledWines.length === 0) { setError('Please tell us at least one pour you tried.'); return; }
     const unrated = filledWines.filter(w => !w.rating);
-    if (unrated.length > 0) { setError(`Rate each pour — ${unrated[0].name.trim()} needs stars.`); return; }
+    if (unrated.length > 0) { setError(`Rate each pour - ${unrated[0].name.trim()} needs stars.`); return; }
     setSubmitting(true);
     setError('');
     try {
       const wineRatings = filledWines.map(w => ({ name: w.name.trim(), rating: w.rating }));
-      const noteText = [note.trim(), visitorName.trim() ? `— ${visitorName.trim()}` : ''].filter(Boolean).join(' ');
+      const noteText = [note.trim(), visitorName.trim() ? `- ${visitorName.trim()}` : ''].filter(Boolean).join(' ');
       const res = await fetch('/api/winery-ratings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -173,7 +173,7 @@ export default function RatePage() {
                 <div style={{ fontSize: 48, marginBottom: 16 }}>🍷</div>
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, color: C.dusk, marginBottom: 12 }}>Thank you!</div>
                 <p style={{ color: C.textLight, fontSize: 15, lineHeight: 1.7, marginBottom: 28 }}>
-                  Your review has been submitted. We curate every entry before publishing — your scores will appear on the trail page soon.
+                  Your review has been submitted. We curate every entry before publishing - your scores will appear on the trail page soon.
                 </p>
                 <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
                   <Btn href="/wineries" variant="primary">See the Trail →</Btn>
@@ -193,16 +193,16 @@ export default function RatePage() {
                     onChange={e => setVenue(e.target.value)}
                     style={{ ...fieldStyle, cursor: 'pointer', appearance: 'none', backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239B8E85' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E\")", backgroundRepeat: 'no-repeat', backgroundPosition: 'right 14px center', paddingRight: 38 }}
                   >
-                    <option value="">— Select a venue —</option>
+                    <option value="">- Select a venue -</option>
                     {RATE_VENUES.map(v => <option key={v} value={v}>{v}</option>)}
                   </select>
                 </div>
 
-                {/* What did you try — each pour gets its own stars */}
+                {/* What did you try - each pour gets its own stars */}
                 <div style={{ marginBottom: 24 }}>
                   <label style={labelStyle}>What did you try? *</label>
                   <p style={{ fontSize: 13, color: C.textMuted, lineHeight: 1.6, margin: '0 0 14px 0', fontFamily: "'Libre Franklin', sans-serif" }}>
-                    Name each pour and rate it — wine, cider, ale, whatever you had.
+                    Name each pour and rate it - wine, cider, ale, whatever you had.
                   </p>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                     {wines.map((w, i) => (
@@ -248,7 +248,7 @@ export default function RatePage() {
 
                 {/* Shareable quote */}
                 <div style={{ marginBottom: 20 }}>
-                  <label style={labelStyle}>Your highlight <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional — may appear on the site)</span></label>
+                  <label style={labelStyle}>Your highlight <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional - may appear on the site)</span></label>
                   <textarea
                     value={quote}
                     onChange={e => setQuote(e.target.value)}
@@ -263,11 +263,11 @@ export default function RatePage() {
 
                 {/* Private note */}
                 <div style={{ marginBottom: 20 }}>
-                  <label style={labelStyle}>Private note <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional — not published)</span></label>
+                  <label style={labelStyle}>Private note <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional - not published)</span></label>
                   <textarea
                     value={note}
                     onChange={e => setNote(e.target.value)}
-                    placeholder="Anything that doesn't need to be public — feedback, suggestions..."
+                    placeholder="Anything that doesn't need to be public - feedback, suggestions..."
                     rows={2}
                     style={{ ...fieldStyle, resize: 'none' }}
                   />
@@ -275,12 +275,12 @@ export default function RatePage() {
 
                 {/* Name (private) */}
                 <div style={{ marginBottom: 32 }}>
-                  <label style={labelStyle}>Your name <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(private — not published)</span></label>
+                  <label style={labelStyle}>Your name <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(private - not published)</span></label>
                   <input
                     type="text"
                     value={visitorName}
                     onChange={e => setVisitorName(e.target.value)}
-                    placeholder="Helps us spot patterns — never shown publicly"
+                    placeholder="Helps us spot patterns - never shown publicly"
                     style={fieldStyle}
                   />
                 </div>

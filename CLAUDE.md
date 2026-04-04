@@ -1,4 +1,4 @@
-# Manitou Beach — Claude Rules
+# Manitou Beach - Claude Rules
 
 See also: [Global Rules](../CLAUDE.md)
 
@@ -14,7 +14,7 @@ All other pages in this project use the standard Layout component and are not af
 
 ## Project Essentials
 
-- Production URL: `https://manitoubeachmichigan.com` — always use `SITE_URL` env var, never hardcode
-- `manitoubeach.com` is NOT a valid URL — never use it
-- Pricing is LOCKED: $9 / $25 / $49 — do not change without explicit instruction
-- All copy must be warm, upbeat, conversational — "Would my 70-year-old neighbor smile?" test
+- Production URL: `https://manitoubeachmichigan.com` - always use `SITE_URL` env var, never hardcode
+- `manitoubeach.com` is NOT a valid URL - never use it
+- Pricing is LOCKED: $9 / $25 / $49 - do not change without explicit instruction
+- All copy must be warm, upbeat, conversational - "Would my 70-year-old neighbor smile?" test

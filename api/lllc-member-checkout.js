@@ -30,7 +30,7 @@ export default async function handler(req, res) {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: 'Land & Lake Ladies Club — Annual Membership',
+              name: 'Land & Lake Ladies Club - Annual Membership',
               description: 'Membership renews automatically each year. Cancel anytime.',
             },
             unit_amount: 1500, // $15.00

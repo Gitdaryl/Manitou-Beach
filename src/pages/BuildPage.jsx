@@ -120,7 +120,7 @@ export default function BuildPage() {
 
       <WaveDivider topColor={C.night} bottomColor={C.cream} />
 
-      {/* ── 3. PAIN POINTS — recognition before solution ── */}
+      {/* ── 3. PAIN POINTS - recognition before solution ── */}
       <section style={{ background: C.cream, padding: "80px 24px 60px" }}>
         <div style={{ maxWidth: 780, margin: "0 auto" }}>
           <FadeIn>
@@ -132,11 +132,11 @@ export default function BuildPage() {
           <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
             {[
               "Someone searched for what you do, found your competitor, and went there. You never knew they'd tried.",
-              "A customer wanted to book with you but couldn't find your hours or how to reach you — so they didn't.",
+              "A customer wanted to book with you but couldn't find your hours or how to reach you - so they didn't.",
               "You've heard you should 'be on Google' but have no idea what that actually means or where to start.",
               "Your regulars love you. Getting new people through the door? That's a different story.",
               "People drive past your place every summer and still don't know what you do or that you're open.",
-              "You suspect people are leaving reviews somewhere — but you've never seen them and have no idea how to ask for more.",
+              "You suspect people are leaving reviews somewhere - but you've never seen them and have no idea how to ask for more.",
             ].map((point, i) => (
               <FadeIn key={i} delay={i * 50}>
                 <div style={{ display: "flex", alignItems: "flex-start", gap: 16, padding: "18px 0", borderBottom: `1px solid ${C.sand}` }}>
@@ -148,13 +148,13 @@ export default function BuildPage() {
           </div>
           <FadeIn delay={340}>
             <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, margin: "36px 0 0", textAlign: "center" }}>
-              None of this is your fault — it's just not your job to know this stuff. It is ours.
+              None of this is your fault - it's just not your job to know this stuff. It is ours.
             </p>
           </FadeIn>
         </div>
       </section>
 
-      {/* ── 4. OUTCOMES — what actually changes ── */}
+      {/* ── 4. OUTCOMES - what actually changes ── */}
       <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
           <FadeIn>
@@ -171,7 +171,7 @@ export default function BuildPage() {
               },
               {
                 headline: "You look like you mean business",
-                body: "First impressions happen before anyone walks in. A clean, clear online presence tells people you're the real deal — professional, open, and worth their time.",
+                body: "First impressions happen before anyone walks in. A clean, clear online presence tells people you're the real deal - professional, open, and worth their time.",
               },
               {
                 headline: "More calls. More bookings. Fewer no-shows.",
@@ -207,10 +207,10 @@ export default function BuildPage() {
               Not an agency.<br />Just Daryl.
             </h2>
             <p style={{ fontSize: 15, color: "rgba(255,255,255,0.55)", lineHeight: 1.8, margin: "0 0 18px" }}>
-              Filmmaker. Storyteller. The person who built this community platform you're reading right now. Daryl builds every site personally — because he knows what Manitou Beach businesses actually need, and it's usually not what they think.
+              Filmmaker. Storyteller. The person who built this community platform you're reading right now. Daryl builds every site personally - because he knows what Manitou Beach businesses actually need, and it's usually not what they think.
             </p>
             <p style={{ fontSize: 15, color: "rgba(255,255,255,0.55)", lineHeight: 1.8, margin: "0 0 24px" }}>
-              Most sites run around <strong style={{ color: C.sunsetLight }}>$97/month</strong>. Some are simpler, some more involved — we work that out in the first conversation. No quote until he knows what you actually need.
+              Most sites run around <strong style={{ color: C.sunsetLight }}>$97/month</strong>. Some are simpler, some more involved - we work that out in the first conversation. No quote until he knows what you actually need.
             </p>
             <a
               href="#get-started"
@@ -242,9 +242,9 @@ export default function BuildPage() {
             {submitted ? (
               <div style={{ background: C.cream, borderRadius: 16, border: "1px solid rgba(122,142,114,0.3)", padding: "48px 36px", textAlign: "center" }}>
                 <div style={{ width: 52, height: 52, borderRadius: "50%", background: "rgba(122,142,114,0.15)", border: `2px solid ${C.sage}`, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", fontSize: 22 }}>✓</div>
-                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, color: C.text, marginBottom: 12 }}>Got it — Daryl will be in touch.</div>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, color: C.text, marginBottom: 12 }}>Got it - Daryl will be in touch.</div>
                 <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.75, maxWidth: 360, margin: "0 auto" }}>
-                  Expect to hear back within 24 hours. In the meantime, The Dispatch goes out every week with what's happening in Manitou Beach — it's free.
+                  Expect to hear back within 24 hours. In the meantime, The Dispatch goes out every week with what's happening in Manitou Beach - it's free.
                 </p>
                 <a
                   href="/dispatch"

@@ -78,7 +78,7 @@ export default function ManageBillingPage() {
               <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.75, marginBottom: 40 }}>
                 {returned
                   ? "You're back. Everything looks good on our end."
-                  : 'Upgrade, downgrade, or cancel your subscription — all in one place. Enter your business name and email to get started.'}
+                  : 'Upgrade, downgrade, or cancel your subscription - all in one place. Enter your business name and email to get started.'}
               </p>
 
               {returned ? (

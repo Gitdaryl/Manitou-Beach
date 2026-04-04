@@ -25,7 +25,7 @@ export default function TicketSuccessPage() {
     const sessionId = params.get('session_id');
     if (!sessionId) { setError('No session found.'); setLoading(false); return; }
 
-    // Poll for ticket — webhook may take a few seconds to fire
+    // Poll for ticket - webhook may take a few seconds to fire
     let attempts = 0;
     const maxAttempts = 10;
 
@@ -48,7 +48,7 @@ export default function TicketSuccessPage() {
         if (attempts < maxAttempts) {
           setTimeout(poll, 2000);
         } else {
-          setError('Could not load ticket details. Check your email — your ticket was sent there.');
+          setError('Could not load ticket details. Check your email - your ticket was sent there.');
           setLoading(false);
         }
       }
@@ -129,13 +129,13 @@ export default function TicketSuccessPage() {
                 textAlign: 'left',
                 boxShadow: '0 4px 24px rgba(26,40,48,0.08)',
               }}>
-                {/* Ticket ID — most prominent */}
+                {/* Ticket ID - most prominent */}
                 <div style={{ textAlign: 'center', paddingBottom: 20, marginBottom: 20, borderBottom: `1px dashed ${C.warmGray}50` }}>
                   <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>
                     Ticket ID
                   </div>
                   <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 30, fontWeight: 700, letterSpacing: 4, color: C.text }}>
-                    {ticket.ticketId || '—'}
+                    {ticket.ticketId || '-'}
                   </div>
                 </div>
 
@@ -156,7 +156,7 @@ export default function TicketSuccessPage() {
                 ))}
               </div>
 
-              {/* Download button — shows immediately, links to PDF once ready */}
+              {/* Download button - shows immediately, links to PDF once ready */}
               {ticket.pdfUrl ? (
                 <a
                   href={ticket.pdfUrl}
@@ -208,7 +208,7 @@ export default function TicketSuccessPage() {
               }}>
                 📧 A confirmation email with your ticket has been sent to{' '}
                 <strong>{ticket.email}</strong>.{' '}
-                Check your inbox — and your spam folder if you don't see it within a few minutes.
+                Check your inbox - and your spam folder if you don't see it within a few minutes.
               </div>
 
               {/* Instructions for old folks */}

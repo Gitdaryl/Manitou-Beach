@@ -42,7 +42,7 @@ export default function TermsPage() {
         <h2 style={S.h2}>SMS notifications</h2>
         <p style={S.p}><strong>Program name:</strong> Manitou Beach SMS Alerts, operated by Yeti Groove Media LLC.</p>
         <p style={S.p}><strong>How to opt in:</strong> You must explicitly opt in by submitting your mobile phone number through an opt-in form on this Site and checking the consent checkbox. Opting in is entirely voluntary.</p>
-        <p style={S.p}><strong>Message types:</strong> Community event reminders, food truck check-in alerts, local business flash deals, and welcome messages. These are informational notifications only — not marketing from third parties.</p>
+        <p style={S.p}><strong>Message types:</strong> Community event reminders, food truck check-in alerts, local business flash deals, and welcome messages. These are informational notifications only - not marketing from third parties.</p>
         <p style={S.p}><strong>Message frequency:</strong> Varies. You may receive up to a few messages per week depending on community activity and your subscription preferences.</p>
         <p style={S.p}><strong>Message &amp; data rates:</strong> Message and data rates may apply depending on your mobile carrier plan.</p>
         <p style={S.p}><strong>How to opt out:</strong> Reply <strong>STOP</strong> to any message at any time. You will receive one confirmation message and no further texts will be sent.</p>
@@ -58,7 +58,7 @@ export default function TermsPage() {
         <p style={S.p}>To report a copyright claim, contact <a href="mailto:admin@yetigroove.com" style={{ color: C.sage }}>admin@yetigroove.com</a> with "DMCA" in the subject line.</p>
 
         <h2 style={S.h2}>Disclaimer &amp; limitation of liability</h2>
-        <p style={S.p}>The Site is provided "as is." We make no warranties about the accuracy, completeness, or reliability of directory listings. Business information is submitted by third parties — always verify directly with a business before visiting or transacting.</p>
+        <p style={S.p}>The Site is provided "as is." We make no warranties about the accuracy, completeness, or reliability of directory listings. Business information is submitted by third parties - always verify directly with a business before visiting or transacting.</p>
         <p style={S.p}>To the fullest extent permitted by law, Yeti Groove Media LLC is not liable for any indirect, incidental, or consequential damages arising from your use of the Site.</p>
 
         <h2 style={S.h2}>Governing law</h2>

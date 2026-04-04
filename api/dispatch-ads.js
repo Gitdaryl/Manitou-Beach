@@ -5,7 +5,7 @@ function normalizeUrl(url) {
   return /^https?:\/\//i.test(u) ? u : 'https://' + u;
 }
 
-// Dispatch Ad Slots — serves active ads from NOTION_DB_DISPATCH_PROMOTIONS
+// Dispatch Ad Slots - serves active ads from NOTION_DB_DISPATCH_PROMOTIONS
 // Public: GET ?page=dispatch-listing|dispatch-article|home  → active ads grouped by slot
 // Admin:  GET ?admin=true (X-Admin-Token required)          → all promos (active + inactive)
 
@@ -43,7 +43,7 @@ export default async function handler(req, res) {
     'Notion-Version': '2022-06-28',
   };
 
-  // ── Admin view — all promos regardless of active/date ──────────
+  // ── Admin view - all promos regardless of active/date ──────────
   const isAdmin = req.query?.admin === 'true';
   if (isAdmin) {
     const token = req.headers['x-admin-token'];
@@ -71,7 +71,7 @@ export default async function handler(req, res) {
     }
   }
 
-  // ── Public view — active ads for blog slots ─────────────────────
+  // ── Public view - active ads for blog slots ─────────────────────
   res.setHeader('Cache-Control', 's-maxage=120, stale-while-revalidate');
   const page = req.query?.page || 'all';
 

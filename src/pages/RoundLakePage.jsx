@@ -14,25 +14,25 @@ const ROUND_LAKE_STATS = [
 ];
 
 const ROUND_LAKE_FISH = [
-  { name: "Largemouth Bass", image: "/images/fish/largemouth-bass.jpg", note: "Healthy population — best early morning before boat traffic" },
+  { name: "Largemouth Bass", image: "/images/fish/largemouth-bass.jpg", note: "Healthy population - best early morning before boat traffic" },
   { name: "Smallmouth Bass", image: "/images/fish/smallmouth-bass.jpg", note: "Rocky structure near shore" },
-  { name: "Bluegill", image: "/images/fish/bluegill.jpg", note: "Excellent numbers — averaged 7\" in DNR surveys, 70% legal size" },
-  { name: "Northern Pike", image: "/images/fish/northern-pike.jpg", note: "Tip Up Festival favorite — ice fishing in February" },
-  { name: "Walleye", image: "/images/fish/walleye.jpg", note: "DNR stocked — trolling at 10–15 ft depths in summer" },
+  { name: "Bluegill", image: "/images/fish/bluegill.jpg", note: "Excellent numbers - averaged 7\" in DNR surveys, 70% legal size" },
+  { name: "Northern Pike", image: "/images/fish/northern-pike.jpg", note: "Tip Up Festival favorite - ice fishing in February" },
+  { name: "Walleye", image: "/images/fish/walleye.jpg", note: "DNR stocked - trolling at 10–15 ft depths in summer" },
   { name: "Black Crappie", image: "/images/fish/black-crappie.jpg", note: "Good catches, especially through the ice" },
-  { name: "Yellow Perch", image: "/images/fish/yellow-perch.jpg", note: "Averaged 9\"+ in surveys — above state average" },
+  { name: "Yellow Perch", image: "/images/fish/yellow-perch.jpg", note: "Averaged 9\"+ in surveys - above state average" },
   { name: "Pumpkinseed Sunfish", image: "/images/fish/pumpkinseed.jpg", note: "Abundant near weed beds" },
 ];
 
 const ROUND_LAKE_TIMELINE = [
-  { year: "~10,000 BC", event: "Wisconsin Glaciation carves Round Lake — a kettle lake formed where the Erie and Saginaw ice lobes met, part of the Irish Hills interlobate moraine." },
+  { year: "~10,000 BC", event: "Wisconsin Glaciation carves Round Lake - a kettle lake formed where the Erie and Saginaw ice lobes met, part of the Irish Hills interlobate moraine." },
   { year: "Pre-1830", event: "Potawatomi and Ojibwa tribes camp along the north and east shores of Round Lake during summers for fishing and gathering. Chief Metwa's people establish council grounds at nearby Devils Lake." },
-  { year: "1833", event: "First European settlers arrive — Orson Green and the Beal family secure land in Rollin Township." },
+  { year: "1833", event: "First European settlers arrive - Orson Green and the Beal family secure land in Rollin Township." },
   { year: "1870s", event: "Resort era begins. Hotels spring up, railroad stations bring tourists, and steam launches offer tours through the channel connecting Round Lake and Devils Lake." },
   { year: "1888", event: "Manitou Beach officially founded. Land subdivided and sold for cottage construction around both lakes." },
-  { year: "1950s", event: "The Devils and Round Lake Tip Up Festival launches — an ice fishing and winter celebration that continues 73+ years later." },
+  { year: "1950s", event: "The Devils and Round Lake Tip Up Festival launches - an ice fishing and winter celebration that continues 73+ years later." },
   { year: "1961–1992", event: "Michigan DNR stocks Round Lake system with tiger muskellunge, walleye, and redear sunfish to enhance the fishery." },
-  { year: "Today", event: "Round Lake remains the quieter side of lake life — a residential retreat with clear water, excellent fishing, and deep roots in the Manitou Beach community." },
+  { year: "Today", event: "Round Lake remains the quieter side of lake life - a residential retreat with clear water, excellent fishing, and deep roots in the Manitou Beach community." },
 ];
 
 function RoundLakeHero() {
@@ -55,7 +55,7 @@ function RoundLakeHero() {
         background: "linear-gradient(170deg, rgba(10,18,24,0.72) 0%, rgba(10,18,24,0.45) 50%, rgba(10,18,24,0.82) 100%)",
       }} />
 
-      {/* Decorative "515" — the lake's acreage */}
+      {/* Decorative "515" - the lake's acreage */}
       <div style={{
         position: "absolute", right: -10, top: "50%", transform: "translateY(-50%)",
         fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(140px, 22vw, 320px)",
@@ -81,10 +81,10 @@ function RoundLakeHero() {
             fontFamily: "'Libre Franklin', sans-serif", fontSize: "clamp(14px, 1.6vw, 17px)",
             color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 480, margin: "0 0 28px 0",
           }}>
-            515 acres of clear water, 67 feet deep. The quieter side of lake life — connected to Devils Lake by a shallow channel and to the Manitou Beach community by everything else.
+            515 acres of clear water, 67 feet deep. The quieter side of lake life - connected to Devils Lake by a shallow channel and to the Manitou Beach community by everything else.
           </p>
           <Btn href="/" variant="outlineLight" small>← Back to Home</Btn>
-          <ShareBar title="Round Lake — Manitou Beach, Michigan" />
+          <ShareBar title="Round Lake - Manitou Beach, Michigan" />
         </div>
       </div>
     </section>
@@ -118,7 +118,7 @@ function RoundLakeStatsSection() {
         </div>
         <FadeIn delay={400}>
           <p style={{ fontSize: 16, color: "rgba(255,255,255,0.75)", lineHeight: 1.8, marginTop: 32, maxWidth: 600, fontFamily: "'Libre Franklin', sans-serif" }}>
-            Round Lake is a glacial kettle lake carved during the Wisconsin Glaciation when the Erie and Saginaw ice lobes collided to form the Irish Hills interlobate moraine — one of over 50 kettle lakes in the region. Connected to Devils Lake via a shallow channel at Cherry Point.
+            Round Lake is a glacial kettle lake carved during the Wisconsin Glaciation when the Erie and Saginaw ice lobes collided to form the Irish Hills interlobate moraine - one of over 50 kettle lakes in the region. Connected to Devils Lake via a shallow channel at Cherry Point.
           </p>
         </FadeIn>
       </div>
@@ -134,7 +134,7 @@ function RoundLakeHistorySection() {
           <SectionLabel>Through the Years</SectionLabel>
           <SectionTitle>A History Shaped by Water</SectionTitle>
           <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.8, maxWidth: 560, margin: "0 0 60px 0" }}>
-            Long before the cottages and the boat docks, this land belonged to the Potawatomi. The lake's story starts with ice — and continues with the people who never wanted to leave.
+            Long before the cottages and the boat docks, this land belonged to the Potawatomi. The lake's story starts with ice - and continues with the people who never wanted to leave.
           </p>
         </FadeIn>
 
@@ -176,7 +176,7 @@ function RoundLakeFishingSection() {
           <SectionLabel>On the Line</SectionLabel>
           <SectionTitle>Fishing Round Lake</SectionTitle>
           <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.8, maxWidth: 560, margin: "0 0 20px 0" }}>
-            Clear water, healthy populations, and fish growth rates that exceed state averages. Round Lake is a serious fishery — whether you're casting from shore or dropping a line through the ice.
+            Clear water, healthy populations, and fish growth rates that exceed state averages. Round Lake is a serious fishery - whether you're casting from shore or dropping a line through the ice.
           </p>
         </FadeIn>
 
@@ -249,9 +249,9 @@ function RoundLakeCommunitySection() {
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 20 }}>
           {[
-            { title: "Part of Manitou Beach", desc: "Same post office (49253), same schools (Onsted Community), same township (Rollin). Round Lake and Devils Lake share a census-designated place — officially Manitou Beach-Devils Lake." },
-            { title: "Connected by Water", desc: "A shallow channel at Cherry Point links Round Lake to Devils Lake. Too shallow for boats today — but during the resort era, steam launches navigated it carrying tourists between the lakes." },
-            { title: "Year-Round & Seasonal", desc: "A mix of full-time residents and seasonal cottage owners. The area is transitioning — more year-round families every year, part of Manitou Beach's evolution from summer resort to permanent community." },
+            { title: "Part of Manitou Beach", desc: "Same post office (49253), same schools (Onsted Community), same township (Rollin). Round Lake and Devils Lake share a census-designated place - officially Manitou Beach-Devils Lake." },
+            { title: "Connected by Water", desc: "A shallow channel at Cherry Point links Round Lake to Devils Lake. Too shallow for boats today - but during the resort era, steam launches navigated it carrying tourists between the lakes." },
+            { title: "Year-Round & Seasonal", desc: "A mix of full-time residents and seasonal cottage owners. The area is transitioning - more year-round families every year, part of Manitou Beach's evolution from summer resort to permanent community." },
           ].map((item, i) => (
             <FadeIn key={i} delay={i * 80} direction={i % 2 === 0 ? "left" : "right"}>
               <div style={{

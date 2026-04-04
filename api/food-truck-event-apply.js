@@ -173,7 +173,7 @@ export default async function handler(req, res) {
 
     // 5. Create Vendor Registration record
     const vendorId = generateVendorId();
-    const boothType = truckCuisine ? `Food Truck — ${truckCuisine}` : 'Food Truck';
+    const boothType = truckCuisine ? `Food Truck - ${truckCuisine}` : 'Food Truck';
 
     const createRes = await fetch('https://api.notion.com/v1/pages', {
       method: 'POST',
@@ -204,13 +204,13 @@ export default async function handler(req, res) {
     }
 
     // 6. Send "pending review" SMS to truck (best-effort)
-    // Coming Event fields are NOT set here — they're set on organizer approval via vendor-status.js
+    // Coming Event fields are NOT set here - they're set on organizer approval via vendor-status.js
     if (truckPhone) {
       const digits = normalizePhone(truckPhone);
       if (digits.length === 10) {
         sendSMS(
           digits,
-          `Applied to ${event.name}! The organizer will review your application and you'll get a text when confirmed. — Manitou Beach`
+          `Applied to ${event.name}! The organizer will review your application and you'll get a text when confirmed. - Manitou Beach`
         ).catch(() => {});
       }
     }
@@ -226,8 +226,8 @@ export default async function handler(req, res) {
       const orgDigits = normalizePhone(event.organizerPhone);
       if (orgDigits.length === 10) {
         const sms = portalUrl
-          ? `${truckName} wants to join ${event.name} — review in your vendor portal:\n${portalUrl}`
-          : `${truckName} wants to join ${event.name} — check your vendor portal to review.`;
+          ? `${truckName} wants to join ${event.name} - review in your vendor portal:\n${portalUrl}`
+          : `${truckName} wants to join ${event.name} - check your vendor portal to review.`;
         sendSMS(orgDigits, sms).catch(() => {});
       }
     }
@@ -245,7 +245,7 @@ export default async function handler(req, res) {
             <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#8C806E;margin-bottom:8px;">Vendor Application</div>
             <h2 style="color:#1A2830;font-size:20px;margin:0 0 16px;">${truckName} wants to join ${event.name}</h2>
             <div style="font-size:15px;color:#3A3028;line-height:1.7;">
-              <strong>Booth type:</strong> ${truckCuisine ? `Food Truck — ${truckCuisine}` : 'Food Truck'}<br/>
+              <strong>Booth type:</strong> ${truckCuisine ? `Food Truck - ${truckCuisine}` : 'Food Truck'}<br/>
               ${truckEmail ? `<strong>Email:</strong> ${truckEmail}<br/>` : ''}
               ${truckPhone ? `<strong>Phone:</strong> ${truckPhone}<br/>` : ''}
             </div>

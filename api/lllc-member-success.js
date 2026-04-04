@@ -3,7 +3,7 @@ import { Resend } from 'resend';
 
 // Called by the success page after Stripe redirects back.
 // Verifies the session, creates a Notion record, and sends emails.
-// Safe to call multiple times — Notion write is idempotent on app ID.
+// Safe to call multiple times - Notion write is idempotent on app ID.
 
 function generateMemberId() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -83,7 +83,7 @@ export default async function handler(req, res) {
               <img src="${SITE_URL}/images/landlake-club-logo.png" alt="LLLC" style="width:64px;height:64px;object-fit:contain;margin-bottom:20px;display:block;border-radius:50%;" />
               <h1 style="color:#1A2830;font-size:22px;margin:0 0 8px;">Welcome to the club, ${name}!</h1>
               <p style="color:#5C5248;font-size:15px;margin:0 0 24px;line-height:1.6;">
-                You're officially a member of the <strong>Land & Lake Ladies Club</strong> — where community comes together.
+                You're officially a member of the <strong>Land & Lake Ladies Club</strong> - where community comes together.
                 Your $15 annual membership will renew automatically each year. You can manage or cancel your membership anytime
                 through the link in your Stripe receipt email.
               </p>
@@ -113,7 +113,7 @@ export default async function handler(req, res) {
           subject: `New LLLC member: ${name} (${memberId})`,
           html: `
             <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#FAF6EF;">
-              <h2 style="color:#1A2830;font-size:18px;margin:0 0 16px;">New LLLC membership — $15/year</h2>
+              <h2 style="color:#1A2830;font-size:18px;margin:0 0 16px;">New LLLC membership - $15/year</h2>
               <div style="background:#fff;border-radius:12px;padding:20px 24px;margin-bottom:20px;border:1px solid #E8E0D5;">
                 <p style="margin:0 0 4px;color:#8C806E;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Member ID</p>
                 <p style="margin:0 0 14px;color:#1A2830;font-size:18px;font-weight:700;letter-spacing:1px;">${memberId}</p>

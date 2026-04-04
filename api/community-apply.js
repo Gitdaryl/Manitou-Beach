@@ -8,7 +8,7 @@ import { Resend } from 'resend';
 // Body: { community, org, type, contactName, email, ...fields }
 // ============================================================
 
-// Org routing config — add one entry per org/type combo when onboarding new partners
+// Org routing config - add one entry per org/type combo when onboarding new partners
 const ORG_CONFIG = {
   'LLLC-Vendor': {
     organizerEmail: '1GypsyHeart66@gmail.com',
@@ -40,7 +40,7 @@ function generateAppId(org) {
 async function saveToNotion({ appId, community, org, type, contactName, businessName, email,
   businessPhone, cellPhone, address, facebookUrl, website, bio, boothSize }) {
   const dbId = process.env.NOTION_DB_COMMUNITY_APPS;
-  if (!dbId) { console.warn('NOTION_DB_COMMUNITY_APPS not set — skipping Notion'); return; }
+  if (!dbId) { console.warn('NOTION_DB_COMMUNITY_APPS not set - skipping Notion'); return; }
 
   const res = await fetch('https://api.notion.com/v1/pages', {
     method: 'POST',
@@ -106,7 +106,7 @@ export default async function handler(req, res) {
 
       const photoBlock = needsPhotos
         ? `<div style="background:#FFF8EE;border:1px solid #E8D8B0;border-radius:8px;padding:14px 18px;margin:0 0 20px;">
-            <p style="margin:0 0 4px;font-weight:700;color:#7a5c1e;font-size:13px;">📸 Next step — send your photos</p>
+            <p style="margin:0 0 4px;font-weight:700;color:#7a5c1e;font-size:13px;">📸 Next step - send your photos</p>
             <p style="margin:0;color:#5a4010;font-size:13px;line-height:1.6;">
               Email at least 4 photos of your artwork to
               <a href="mailto:${config.photoEmail}" style="color:#b08d57;">${config.photoEmail}</a>
@@ -128,7 +128,7 @@ export default async function handler(req, res) {
         await resend.emails.send({
           from: `${config.eventLabel || org} <tickets@manitoubeachmichigan.com>`,
           to: email,
-          subject: `Application received — ${config.eventLabel || org} (${appId})`,
+          subject: `Application received - ${config.eventLabel || org} (${appId})`,
           html: `
             <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#FAF6EF;">
               <h1 style="color:#1A2830;font-size:22px;margin:0 0 8px;">Application received!</h1>
@@ -158,7 +158,7 @@ export default async function handler(req, res) {
           await resend.emails.send({
             from: 'Community Applications <tickets@manitoubeachmichigan.com>',
             to: config.organizerEmail,
-            subject: `New ${type} application: ${contactName}${businessName ? ` — ${businessName}` : ''} (${appId})`,
+            subject: `New ${type} application: ${contactName}${businessName ? ` - ${businessName}` : ''} (${appId})`,
             html: `
               <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#FAF6EF;">
                 <h2 style="color:#1A2830;font-size:18px;margin:0 0 4px;">New ${type} application</h2>

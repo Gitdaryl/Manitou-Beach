@@ -225,12 +225,12 @@ export default function ClaimPage() {
               ))}
             </div>
 
-            {/* Low rating — private feedback */}
+            {/* Low rating - private feedback */}
             {rating > 0 && rating <= 3 && (
               <div style={{ background: '#fff', borderRadius: 12, padding: 24, boxShadow: '0 2px 12px rgba(0,0,0,0.07)', textAlign: 'left' }}>
                 <p style={{ color: C.dusk, fontWeight: 600, marginBottom: 4, fontSize: 15 }}>Sorry to hear that.</p>
                 <p style={{ color: C.textLight, fontSize: 13, marginBottom: 14, lineHeight: 1.5 }}>
-                  Tell {biz.name} directly — they want to make it right.
+                  Tell {biz.name} directly - they want to make it right.
                 </p>
                 <textarea
                   style={{ ...inputStyle, fontSize: 14, minHeight: 80, resize: 'vertical' }}
@@ -245,7 +245,7 @@ export default function ClaimPage() {
               </div>
             )}
 
-            {/* High rating — Yelp Review */}
+            {/* High rating - Yelp Review */}
             {rating >= 4 && (
               <div style={{ background: '#fff', borderRadius: 12, padding: 24, boxShadow: '0 2px 12px rgba(0,0,0,0.07)' }}>
                 <p style={{ color: C.dusk, fontWeight: 700, marginBottom: 6, fontSize: 17 }}>Love it! 🙌</p>

@@ -58,7 +58,7 @@ export default async function handler(req, res) {
         ],
       })
         .then(data => { results.pendingEvents = data.results?.length || 0; })
-        .catch(() => {}) // non-fatal — leave at 0
+        .catch(() => {}) // non-fatal - leave at 0
     );
   }
 
@@ -110,7 +110,7 @@ export default async function handler(req, res) {
     );
   }
 
-  // 4. Ghost trucks — active but never checked in, or last check-in > 30 days ago
+  // 4. Ghost trucks - active but never checked in, or last check-in > 30 days ago
   if (tokenBiz && dbTrucks) {
     queries.push(
       notionQuery(tokenBiz, dbTrucks, {

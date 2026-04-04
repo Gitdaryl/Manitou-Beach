@@ -6,12 +6,16 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "video:studio": "remotion studio src/videos/index.js",
+    "video:render": "remotion render src/videos/index.js EventPromo out/event-promo.mp4"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
     "@elevenlabs/react": "^1.0.0",
     "@googlemaps/js-api-loader": "^1.16.10",
+    "@remotion/cli": "^4.0.441",
+    "@remotion/player": "^4.0.441",
     "@vercel/blob": "^2.3.0",
     "bwip-js": "^4.8.0",
     "html5-qrcode": "^2.3.8",
@@ -21,8 +25,10 @@
     "react-dom": "^18.2.0",
     "react-qr-code": "^2.0.18",
     "react-router-dom": "^7.13.0",
+    "remotion": "^4.0.441",
     "resend": "^6.9.4",
-    "stripe": "^20.3.1"
+    "stripe": "^20.3.1",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.0",

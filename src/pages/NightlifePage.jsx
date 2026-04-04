@@ -84,7 +84,7 @@ function NightlifeHero() {
           <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
             <Btn href="/" variant="outlineLight">← Back to Home</Btn>
           </div>
-          <ShareBar title="Nightlife near Devils Lake — Manitou Beach, Michigan" />
+          <ShareBar title="Nightlife near Devils Lake - Manitou Beach, Michigan" />
         </div>
       </div>
     </section>
@@ -614,7 +614,7 @@ function NightlifeCTA() {
           fontSize: 15, color: "rgba(255,255,255,0.4)",
           margin: "0 0 32px 0", lineHeight: 1.75,
         }}>
-          The list is a work in progress — add your bar, restaurant, or brewery for free.
+          The list is a work in progress - add your bar, restaurant, or brewery for free.
         </p>
         <Btn href="/business" variant="sunset">Add Your Venue →</Btn>
       </FadeIn>

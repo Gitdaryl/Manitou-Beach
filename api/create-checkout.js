@@ -3,19 +3,19 @@ import Stripe from 'stripe';
 // One-time payment tiers (used by /featured page)
 const TIERS = {
   featured_30: {
-    name: 'Starter — Featured Listing 30 Days',
+    name: 'Starter - Featured Listing 30 Days',
     price: 2900,
     days: 30,
     description: 'Dark premium card, priority placement, click-to-call & directions for 30 days.',
   },
   featured_90: {
-    name: 'Season Pass — Featured Listing 90 Days',
+    name: 'Season Pass - Featured Listing 90 Days',
     price: 7900,
     days: 90,
-    description: 'Featured listing for 90 days. Best value — includes newsletter feature.',
+    description: 'Featured listing for 90 days. Best value - includes newsletter feature.',
   },
   featured_video_30: {
-    name: 'Spotlight — Featured + Video 30 Days',
+    name: 'Spotlight - Featured + Video 30 Days',
     price: 14900,
     days: 30,
     description: 'Premium featured listing with Holly & Yeti video spotlight for 30 days.',
@@ -23,31 +23,31 @@ const TIERS = {
 };
 
 // Monthly recurring subscription tiers (used by business directory pricing section)
-// Prices computed server-side from subscriber count — never trust client-sent prices
+// Prices computed server-side from subscriber count - never trust client-sent prices
 const LISTING_TIERS = {
   enhanced: {
-    name: 'Enhanced Listing — Manitou Beach Directory',
+    name: 'Enhanced Listing - Manitou Beach Directory',
     description: 'Clickable website link, business description, expandable listing card.',
     basePrice: 9,
   },
   featured: {
-    name: 'Featured Listing — Manitou Beach Directory',
+    name: 'Featured Listing - Manitou Beach Directory',
     description: 'Spotlight card, logo display, above standard listings.',
     basePrice: 25,
   },
   premium: {
-    name: 'Premium Listing — Manitou Beach Directory',
+    name: 'Premium Listing - Manitou Beach Directory',
     description: 'Full-width banner, large logo, top-of-directory placement, email contact button.',
     basePrice: 49,
   },
   food_truck_founding: {
-    name: 'Founding Food Truck — Manitou Beach Food Truck Locator',
+    name: 'Founding Food Truck - Manitou Beach Food Truck Locator',
     description: 'Live map pin, personal check-in URL, newsletter shoutout, Featured badge, priority placement.',
     basePrice: 9,
   },
 };
 
-// Fixed pricing — no dynamic escalator
+// Fixed pricing - no dynamic escalator
 function computePriceCents(basePrice) {
   return Math.round(basePrice * 100);
 }
@@ -77,7 +77,7 @@ export default async function handler(req, res) {
   // Beta trial end: May 10 2026 at midnight UTC
   const BETA_TRIAL_END = Math.floor(new Date('2026-05-10T00:00:00Z').getTime() / 1000);
 
-  // Monthly subscription — business directory listing tiers
+  // Monthly subscription - business directory listing tiers
   if (checkoutMode === 'subscription') {
     const plan = LISTING_TIERS[tier];
     if (!plan) {
@@ -100,10 +100,10 @@ export default async function handler(req, res) {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: isBeta ? `${plan.name} — Beta Founder` : plan.name,
+              name: isBeta ? `${plan.name} - Beta Founder` : plan.name,
               description: isBeta
-                ? `${plan.description} — ${businessName} · Free through May 10, then ${priceLabel}`
-                : `${plan.description} — ${businessName}`,
+                ? `${plan.description} - ${businessName} · Free through May 10, then ${priceLabel}`
+                : `${plan.description} - ${businessName}`,
             },
             unit_amount: unitAmount,
             recurring: { interval },
@@ -138,7 +138,7 @@ export default async function handler(req, res) {
     }
   }
 
-  // One-time payment — featured listing (/featured page)
+  // One-time payment - featured listing (/featured page)
   const plan = TIERS[tier];
   if (!plan) {
     return res.status(400).json({ error: 'Invalid tier' });
@@ -155,7 +155,7 @@ export default async function handler(req, res) {
             currency: 'usd',
             product_data: {
               name: plan.name,
-              description: `${plan.description} — ${businessName}`,
+              description: `${plan.description} - ${businessName}`,
             },
             unit_amount: plan.price,
           },

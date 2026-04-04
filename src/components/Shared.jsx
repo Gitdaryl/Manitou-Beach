@@ -10,7 +10,7 @@ export { C };
 export function ShareBar({ url, title }) {
   const [copied, setCopied] = useState(false);
   const shareUrl = url || (typeof window !== "undefined" ? window.location.href : "");
-  const shareTitle = title || "Manitou Beach — Irish Hills, Michigan";
+  const shareTitle = title || "Manitou Beach - Irish Hills, Michigan";
 
   const handleNativeShare = async () => {
     if (navigator.share) {
@@ -155,7 +155,7 @@ export function ScrollProgress() {
   return <div className="scroll-progress-bar" style={{ width: `${progress}%` }} />;
 }
 
-// 3D card tilt hook — brochure lift effect
+// 3D card tilt hook - brochure lift effect
 export function useCardTilt(maxDeg = 6) {
   const ref = useRef(null);
   const onMouseEnter = useCallback(() => {
@@ -201,7 +201,7 @@ export function WaveDivider({ topColor, bottomColor, flip = false, height = 80 }
 }
 
 // ============================================================
-// 💛  PAGE SPONSOR BANNER — appears above Footer on eligible pages
+// 💛  PAGE SPONSOR BANNER - appears above Footer on eligible pages
 // ============================================================
 export function PageSponsorBanner({ pageName }) {
   // Start with config.js fallback (instant, no flash), then upgrade from Notion if active sponsor found
@@ -247,7 +247,7 @@ export function PageSponsorBanner({ pageName }) {
                 letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none",
                 boxShadow: "0 8px 36px rgba(212,132,90,0.40)",
               }}>
-                Own This Space — $97/mo
+                Own This Space - $97/mo
               </a>
             </>
           )}
@@ -384,7 +384,7 @@ export function CommunityDonationForm({ orgName, orgPageId, tiers, accentColor, 
     if (!amount || amount < 1) { setError('Please select a sponsorship level or enter an amount.'); return; }
     setError('');
 
-    // If org is connected to Stripe — go to payment
+    // If org is connected to Stripe - go to payment
     if (orgPageId) {
       setCheckoutLoading(true);
       try {
@@ -514,7 +514,7 @@ export function CommunityDonationForm({ orgName, orgPageId, tiers, accentColor, 
         </div>
       )}
 
-      {/* Logo upload — shown for qualifying tiers */}
+      {/* Logo upload - shown for qualifying tiers */}
       {showLogoUpload && (
         <div style={{ marginBottom: 20 }}>
           <label style={labelStyle}>Your Logo <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional)</span></label>
@@ -553,7 +553,7 @@ export function CommunityDonationForm({ orgName, orgPageId, tiers, accentColor, 
                   </p>
                 </>
               )}
-              {logoUploadStatus === 'error' && <p style={{ margin: '6px 0 0', color: '#c0392b', fontSize: 12 }}>Upload failed — try again</p>}
+              {logoUploadStatus === 'error' && <p style={{ margin: '6px 0 0', color: '#c0392b', fontSize: 12 }}>Upload failed - try again</p>}
             </div>
           )}
         </div>
@@ -584,7 +584,7 @@ export function CommunityDonationForm({ orgName, orgPageId, tiers, accentColor, 
         <div>
           <label style={labelStyle}>Message or Questions</label>
           <textarea rows={3} value={form.message} onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
-            placeholder="Optional — any questions, notes, or special requests"
+            placeholder="Optional - any questions, notes, or special requests"
             style={{ ...inputStyle, resize: 'vertical' }} />
         </div>
         {error && <p style={{ fontSize: 13, color: '#c0392b', margin: 0, fontFamily: "'Libre Franklin', sans-serif" }}>{error}</p>}

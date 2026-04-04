@@ -6,7 +6,7 @@
 // and the frontend then calls event-stripe-onboard.js to create the Express account.
 //
 // Session flow: if a valid sessionToken is provided (issued by verify-event.js),
-// the event is published immediately without SMS — lets reps log multiple events in one sitting.
+// the event is published immediately without SMS - lets reps log multiple events in one sitting.
 
 import crypto from 'crypto';
 import { sendSMS, normalizePhone } from './lib/twilio.js';
@@ -78,21 +78,21 @@ export default async function handler(req, res) {
     recurring,          // 'Annual' | 'Weekly' | 'Monthly' | 'None'
     recurringDay,       // 'Monday' … 'Sunday'
     recurringEndDate,   // last date in the recurring series (stored in description metadata)
-    sessionToken,       // HMAC token from a prior verify — skip SMS if valid
+    sessionToken,       // HMAC token from a prior verify - skip SMS if valid
     _hp,                // honeypot
   } = req.body || {};
 
   const digits = normalizePhone(phone);
   const hasValidSession = validateSessionToken(digits, sessionToken);
 
-  // Honeypot — bots fill hidden fields, humans don't
+  // Honeypot - bots fill hidden fields, humans don't
   if (_hp) return res.status(200).json({ ok: true, needsVerification: true });
 
   if (!eventName?.trim()) return res.status(400).json({ error: 'Event name is required.' });
   if (!email?.trim() || !email.includes('@')) return res.status(400).json({ error: 'A valid email is required.' });
   if (!date) return res.status(400).json({ error: 'Event date is required.' });
 
-  if (digits.length < 10) return res.status(400).json({ error: 'A valid phone number is required — we\'ll text you a verification code.' });
+  if (digits.length < 10) return res.status(400).json({ error: 'A valid phone number is required - we\'ll text you a verification code.' });
 
   const notionToken = process.env.NOTION_TOKEN_EVENTS;
   const dbId = process.env.NOTION_DB_EVENTS;
@@ -204,7 +204,7 @@ export default async function handler(req, res) {
       }
     }
 
-    // Session path — already verified, moderation decides status
+    // Session path - already verified, moderation decides status
     if (hasValidSession) {
       // Notify admin if flagged (best-effort)
       if (modCheck.flags.length > 0 && process.env.DARYL_PHONE) {
@@ -212,7 +212,7 @@ export default async function handler(req, res) {
         const prefix = modCheck.shouldHold ? '🚩 EVENT HELD:' : '⚠️ Flagged (live):';
         sms(process.env.DARYL_PHONE, `${prefix}\n${eventName.trim()}\n${organizerName || email}\nFlags: ${modCheck.flags.join('; ')}`).catch(() => {});
       }
-      // Send welcome email to organizer (session path — no SMS edit link sent)
+      // Send welcome email to organizer (session path - no SMS edit link sent)
       if (editToken && email) {
         sendOrganizerWelcomeEmail({
           eventName: eventName.trim(),
@@ -221,7 +221,7 @@ export default async function handler(req, res) {
           organizerName: organizerName?.trim(),
         }).catch(() => {});
       }
-      // Return activated=true either way — user doesn't know about the hold
+      // Return activated=true either way - user doesn't know about the hold
       return res.status(200).json({ ok: true, activated: true, eventName: eventName.trim(), editToken });
     }
 
@@ -264,31 +264,31 @@ async function sendOrganizerWelcomeEmail({ eventName, email, editToken, organize
         </div>
         <div style="padding:28px 28px 20px;">
           <p style="font-size:15px;color:#3A3028;line-height:1.8;margin:0 0 24px;">
-            ${firstName} — your event is on the community calendar and people can see it right now. Nice work.
+            ${firstName} - your event is on the community calendar and people can see it right now. Nice work.
           </p>
           <a href="${happeningUrl}" style="display:block;padding:16px 20px;background:#7A8E72;color:#fff;text-decoration:none;border-radius:10px;margin-bottom:14px;">
             <div style="font-size:14px;font-weight:700;margin-bottom:2px;">See your event on the calendar →</div>
-            <div style="font-size:12px;color:rgba(255,255,255,0.7);">Check how it looks — make sure everything reads right.</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.7);">Check how it looks - make sure everything reads right.</div>
           </a>
           <a href="${editUrl}" style="display:block;padding:16px 20px;background:#F5EDE3;color:#3A3028;text-decoration:none;border-radius:10px;border:1px solid #E8DDD0;margin-bottom:14px;">
             <div style="font-size:14px;font-weight:700;margin-bottom:2px;">Need to change something?</div>
-            <div style="font-size:12px;color:#8C806E;line-height:1.5;">Tap here to edit your event anytime — no login needed. Bookmark this link.</div>
+            <div style="font-size:12px;color:#8C806E;line-height:1.5;">Tap here to edit your event anytime - no login needed. Bookmark this link.</div>
           </a>
           <div style="border-top:1px solid #E8DDD0;margin:24px 0 20px;"></div>
-          <p style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#8C806E;margin:0 0 12px;">Get the word out — free</p>
+          <p style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#8C806E;margin:0 0 12px;">Get the word out - free</p>
           <a href="${fbShareUrl}" style="display:block;padding:14px 20px;background:#4267B2;color:#fff;text-decoration:none;border-radius:10px;margin-bottom:12px;text-align:center;">
             <div style="font-size:14px;font-weight:700;">Share on Facebook</div>
             <div style="font-size:12px;color:rgba(255,255,255,0.7);margin-top:2px;">The more people who know, the better the turnout.</div>
           </a>
           <p style="font-size:13px;color:#8C806E;line-height:1.7;margin:16px 0 0;">
-            Copy this link and post it anywhere — text it to friends, drop it in a group chat, pin it on Nextdoor:<br/>
+            Copy this link and post it anywhere - text it to friends, drop it in a group chat, pin it on Nextdoor:<br/>
             <a href="${happeningUrl}" style="color:#D4845A;font-weight:600;text-decoration:none;">${happeningUrl}</a>
           </p>
           <div style="border-top:1px solid #E8DDD0;margin:24px 0 20px;"></div>
           <p style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#8C806E;margin:0 0 12px;">Want even more eyeballs?</p>
           <a href="${promoteUrl}" style="display:block;padding:16px 20px;background:#FAF6EF;border:1.5px solid #D4845A;color:#3A3028;text-decoration:none;border-radius:10px;">
             <div style="font-size:14px;font-weight:700;color:#D4845A;margin-bottom:4px;">Promotion packages from $9</div>
-            <div style="font-size:13px;color:#8C806E;line-height:1.6;">Homepage feature, newsletter spotlight, social boost — over 4,000 locals see these every week.</div>
+            <div style="font-size:13px;color:#8C806E;line-height:1.6;">Homepage feature, newsletter spotlight, social boost - over 4,000 locals see these every week.</div>
           </a>
         </div>
         <div style="padding:20px 28px;background:#F0EAE0;text-align:center;">

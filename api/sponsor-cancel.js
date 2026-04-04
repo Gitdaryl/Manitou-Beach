@@ -48,7 +48,7 @@ async function notifyFirstWaitlistEntry(notionToken, pageId, pageLabel, siteUrl)
           <p style="color:#5C5248;font-size:15px;margin:0 0 24px;line-height:1.7;">
             The <strong>${pageLabel}</strong> page sponsorship on Manitou Beach just opened up.
             ${bizName ? `We had you on the list for <strong>${bizName}</strong>.` : ''}
-            You're first in line — spots go fast.
+            You're first in line - spots go fast.
           </p>
           <a href="${siteUrl}/business#page-sponsorship" style="display:inline-block;background:#1A2830;color:#fff;text-decoration:none;padding:14px 28px;border-radius:8px;font-size:15px;font-weight:600;margin-bottom:28px;">
             Claim the ${pageLabel} Page →
@@ -99,7 +99,7 @@ export default async function handler(req, res) {
     const pgId      = p['Page ID']?.select?.name;
     const status    = p['Status']?.select?.name;
 
-    // Idempotent — already cancelled
+    // Idempotent - already cancelled
     if (status === 'cancelled' || status === 'expired') {
       return res.status(200).send(successPage(bizName, pageLabel, true));
     }
@@ -110,7 +110,7 @@ export default async function handler(req, res) {
         const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
         await stripe.subscriptions.cancel(subId);
       } catch (stripeErr) {
-        // Subscription may already be cancelled — proceed anyway
+        // Subscription may already be cancelled - proceed anyway
         console.warn('Stripe cancel warning:', stripeErr.message);
       }
     }

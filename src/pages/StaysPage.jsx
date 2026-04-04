@@ -165,17 +165,17 @@ function StaysHero() {
             Your property. On the map.<br /><em>Where lake visitors are already looking.</em>
           </h1>
           <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.5)', maxWidth: 540, margin: '0 auto 12px', lineHeight: 1.85 }}>
-            Cottages, cabins, Airbnbs, and camping — all in one place. Visitors browse the map, see your photos, and click through to book on your site. We're not a booking platform — we just send guests your way.
+            Cottages, cabins, Airbnbs, and camping - all in one place. Visitors browse the map, see your photos, and click through to book on your site. We're not a booking platform - we just send guests your way.
           </p>
           <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)', maxWidth: 480, margin: '0 auto 20px', lineHeight: 1.7, fontStyle: 'italic' }}>
-            Your Airbnb link, your VRBO page, your own website — wherever you take bookings, that's where we send them.
+            Your Airbnb link, your VRBO page, your own website - wherever you take bookings, that's where we send them.
           </p>
           <div style={{ display: 'inline-block', background: 'rgba(91,126,149,0.15)', border: '1px solid rgba(91,126,149,0.3)', borderRadius: 12, padding: '12px 24px', marginBottom: 28 }}>
             <span style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: C.sunsetLight }}>Founding properties get everything free through May 10</span>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
             <Btn onClick={scrollToList} variant="sunset" style={{ whiteSpace: 'nowrap' }}>
-              Get on the Map — Free During Beta →
+              Get on the Map - Free During Beta →
             </Btn>
             <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
               <a href="/" style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'none' }}>← Back to Home</a>
@@ -460,7 +460,7 @@ function StaysMapView({ stays, filter }) {
       display: 'flex', height: 'calc(100vh - 120px)',
       background: C.cream, overflow: 'hidden',
     }}>
-      {/* Map — left side */}
+      {/* Map - left side */}
       <div style={{ flex: '0 0 60%', position: 'relative' }}>
         {mapError ? (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
@@ -471,7 +471,7 @@ function StaysMapView({ stays, filter }) {
         )}
       </div>
 
-      {/* Cards — right side, scrollable */}
+      {/* Cards - right side, scrollable */}
       <div style={{
         flex: '0 0 40%', overflowY: 'auto', padding: '20px 20px 20px 16px',
         background: C.cream,
@@ -561,7 +561,7 @@ function StaysMapView({ stays, filter }) {
                     </p>
                   )}
 
-                  {/* Amenities — compact */}
+                  {/* Amenities - compact */}
                   {stay.amenities && stay.amenities.length > 0 && (
                     <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginBottom: 8 }}>
                       {stay.amenities.slice(0, 3).map(a => (
@@ -642,7 +642,7 @@ const TIERS = [
   },
   { key: 'listed', name: 'Listed', price: '$9', priceSub: '/mo', betaPrice: '$0', color: C.lakeBlue, accent: C.lakeBlue, icon: '📸',
     headline: 'Stand Out',
-    tagline: 'Photos, map pin, and a booking link — everything a guest needs to say yes.',
+    tagline: 'Photos, map pin, and a booking link - everything a guest needs to say yes.',
     features: ['Beautiful photo gallery', 'Map pin with address', 'Booking URL or inquiry button', 'Amenity badges', 'Full listing card'],
   },
   { key: 'featured', name: 'Featured', price: '$25', priceSub: '/mo', betaPrice: '$0', color: C.sunset, accent: C.sunset, icon: '✦',
@@ -673,7 +673,7 @@ function ListYourPropertySection({ stays = [] }) {
   const isListed = tier === 'listed';
   const isPaid = isFeatured || isListed;
 
-  // Featured slot availability — 3 per stay type
+  // Featured slot availability - 3 per stay type
   const selectedType = form.stayType;
   const featuredCountForType = selectedType
     ? stays.filter(s => s.tier === 'featured' && s.stayType === selectedType).length
@@ -735,7 +735,7 @@ function ListYourPropertySection({ stays = [] }) {
       } else if (data.activated) {
         setStep('activated');
       } else if (data.needsPayment) {
-        // Post-beta paid tier — redirect to Stripe
+        // Post-beta paid tier - redirect to Stripe
         const checkoutRes = await fetch('/api/create-checkout', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -834,7 +834,7 @@ function ListYourPropertySection({ stays = [] }) {
         {/* Founding offer badge */}
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <div style={{ display: 'inline-block', background: `${C.sunset}10`, border: `1px solid ${C.sunset}25`, borderRadius: 12, padding: '12px 24px' }}>
-            <div style={{ fontFamily: "'Caveat', cursive", fontSize: 17, color: C.sunset, marginBottom: 2 }}>Founding Property — Free through May 10</div>
+            <div style={{ fontFamily: "'Caveat', cursive", fontSize: 17, color: C.sunset, marginBottom: 2 }}>Founding Property - Free through May 10</div>
             <div style={{ fontSize: 11, color: C.textMuted }}>Full Listed experience. No credit card. No catch.</div>
           </div>
         </div>
@@ -1002,7 +1002,7 @@ function ListYourPropertySection({ stays = [] }) {
           ))}
         </div>
 
-        {/* ── Sample Listings — same property, three tiers ── */}
+        {/* ── Sample Listings - same property, three tiers ── */}
         <div key={tier} style={{ marginBottom: 32, animation: 'sampleFadeIn 0.35s ease' }}>
           <div style={{
             fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase',
@@ -1012,7 +1012,7 @@ function ListYourPropertySection({ stays = [] }) {
             Your listing will look like this
           </div>
 
-          {/* Free sample — same cabin, bare minimum */}
+          {/* Free sample - same cabin, bare minimum */}
           {tier === 'free' && (
             <div style={{
               background: '#fff', border: `1px solid #e0dbd4`, borderRadius: 16,
@@ -1031,13 +1031,13 @@ function ListYourPropertySection({ stays = [] }) {
                   </span>
                 </div>
                 <p style={{ fontSize: 12, color: C.textMuted, marginTop: 6, marginBottom: 0, fontStyle: 'italic', lineHeight: 1.6 }}>
-                  That's it. Name and type only — no photo, no description, no booking link. Guests see you exist, but have nothing to go on.
+                  That's it. Name and type only - no photo, no description, no booking link. Guests see you exist, but have nothing to go on.
                 </p>
               </div>
             </div>
           )}
 
-          {/* Listed ($9) sample — same cabin, full card with photo */}
+          {/* Listed ($9) sample - same cabin, full card with photo */}
           {tier === 'listed' && (
             <div className="sample-card-row" style={{
               background: '#fff', border: `1px solid #e0dbd4`, borderRadius: 16,
@@ -1072,7 +1072,7 @@ function ListYourPropertySection({ stays = [] }) {
             </div>
           )}
 
-          {/* Featured ($25) sample — same cabin, premium treatment */}
+          {/* Featured ($25) sample - same cabin, premium treatment */}
           {tier === 'featured' && (() => {
             const samplePhotos = ['/images/yeti/yeti-cabin.jpg', '/images/yeti/yeti-cabin-2.jpg', '/images/yeti/yeti-cabin-3.jpg'];
             return (
@@ -1120,7 +1120,7 @@ function ListYourPropertySection({ stays = [] }) {
                   </div>
                 </div>
 
-                {/* Photo gallery strip — Featured perk */}
+                {/* Photo gallery strip - Featured perk */}
                 <div className="gallery-strip" style={{
                   display: 'flex', gap: 10, padding: '0 28px 24px',
                   borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 20,
@@ -1193,7 +1193,7 @@ function ListYourPropertySection({ stays = [] }) {
                 Build Your Listing
               </h3>
               <p style={{ fontSize: 13, color: C.textLight, margin: 0 }}>
-                Photos, details, and a direct booking link — guests get everything they need.
+                Photos, details, and a direct booking link - guests get everything they need.
               </p>
             </div>
           )}
@@ -1214,13 +1214,13 @@ function ListYourPropertySection({ stays = [] }) {
                 {form.name || 'Your property'} is on the map!
               </h3>
               <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: C.sunset, marginBottom: 20 }}>
-                You're a founding property — welcome aboard.
+                You're a founding property - welcome aboard.
               </div>
               <p style={{ fontSize: 14, color: isFeatured ? 'rgba(255,255,255,0.5)' : C.textLight, lineHeight: 1.8, margin: '0 0 16px', maxWidth: 480, marginLeft: 'auto', marginRight: 'auto' }}>
                 Your listing is live on the stays page. Visitors can find you on the map, see your details, and click through to book with you directly. Check your texts for a confirmation.
               </p>
               <p style={{ fontSize: 13, color: isFeatured ? 'rgba(255,255,255,0.35)' : C.textMuted, lineHeight: 1.7, margin: '0 0 28px', maxWidth: 460, marginLeft: 'auto', marginRight: 'auto' }}>
-                Before May 10 we'll send you details about keeping your listing live — month to month, no contract, cancel anytime. Founding properties get first pick on Featured slots.
+                Before May 10 we'll send you details about keeping your listing live - month to month, no contract, cancel anytime. Founding properties get first pick on Featured slots.
               </p>
               <a href="/stays" style={{
                 display: 'inline-block', padding: '14px 32px', background: C.lakeBlue, color: C.cream, borderRadius: 28,
@@ -1309,7 +1309,7 @@ function ListYourPropertySection({ stays = [] }) {
             <form onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: isFeatured ? 20 : 16 }}>
               <div style={{ display: 'none' }}><input value={form._hp} onChange={e => set('_hp', e.target.value)} tabIndex={-1} autoComplete="off" /></div>
 
-              {/* Property Name — all tiers */}
+              {/* Property Name - all tiers */}
               <div>
                 <label style={labelStyle}>Property Name *</label>
                 <input
@@ -1324,7 +1324,7 @@ function ListYourPropertySection({ stays = [] }) {
                 />
               </div>
 
-              {/* Type + Phone — all tiers */}
+              {/* Type + Phone - all tiers */}
               <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <div>
                   <label style={labelStyle}>Type</label>
@@ -1341,12 +1341,12 @@ function ListYourPropertySection({ stays = [] }) {
                   </select>
                 </div>
                 <div>
-                  <label style={labelStyle}>Phone * <span style={{ fontWeight: 400, letterSpacing: 0 }}>— for verification</span></label>
+                  <label style={labelStyle}>Phone * <span style={{ fontWeight: 400, letterSpacing: 0 }}>- for verification</span></label>
                   <input style={inputStyle} value={form.phone} onChange={e => set('phone', e.target.value)} placeholder="(555) 123-4567" />
                 </div>
               </div>
 
-              {/* Email — all tiers */}
+              {/* Email - all tiers */}
               <div>
                 <label style={labelStyle}>Email *</label>
                 <input type="email" style={inputStyle} value={form.email} onChange={e => set('email', e.target.value)} placeholder="you@example.com" />
@@ -1358,7 +1358,7 @@ function ListYourPropertySection({ stays = [] }) {
                   {/* Photo Drop Zone(s) */}
                   <div>
                     <label style={labelStyle}>
-                      {isFeatured ? 'Photos — 3 images to show off your property' : 'Property Photo'}
+                      {isFeatured ? 'Photos - 3 images to show off your property' : 'Property Photo'}
                     </label>
 
                     {/* Hero photo drop zone */}
@@ -1392,7 +1392,7 @@ function ListYourPropertySection({ stays = [] }) {
                         color: isFeatured ? C.cream : C.text,
                         fontFamily: "'Libre Franklin', sans-serif", marginBottom: 6,
                       }}>
-                        {isFeatured ? 'Hero photo — the one that stops the scroll' : 'Drag a photo here'}
+                        {isFeatured ? 'Hero photo - the one that stops the scroll' : 'Drag a photo here'}
                       </div>
                       <div style={{
                         fontSize: 12,
@@ -1419,7 +1419,7 @@ function ListYourPropertySection({ stays = [] }) {
                       placeholder="Or paste an image URL"
                     />
 
-                    {/* Gallery photos 2 & 3 — Featured only */}
+                    {/* Gallery photos 2 & 3 - Featured only */}
                     {isFeatured && (
                       <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 14 }}>
                         {[
@@ -1472,12 +1472,12 @@ function ListYourPropertySection({ stays = [] }) {
                   <div>
                     <label style={labelStyle}>
                       {isFeatured
-                        ? 'Booking URL — where guests go to book (Airbnb, VRBO, your own site)'
+                        ? 'Booking URL - where guests go to book (Airbnb, VRBO, your own site)'
                         : 'Booking URL (Airbnb, VRBO, or your site)'}
                     </label>
                     <input style={inputStyle} value={form.bookingUrl} onChange={e => set('bookingUrl', e.target.value)} placeholder="https://airbnb.com/rooms/..." />
                     <p style={{ fontSize: 11, color: isFeatured ? 'rgba(255,255,255,0.25)' : C.textMuted, margin: '6px 0 0', lineHeight: 1.5 }}>
-                      We link visitors straight to your booking page — we never handle reservations or take a cut.
+                      We link visitors straight to your booking page - we never handle reservations or take a cut.
                     </p>
                   </div>
 
@@ -1496,7 +1496,7 @@ function ListYourPropertySection({ stays = [] }) {
                   {/* Description */}
                   <div>
                     <label style={labelStyle}>
-                      {isFeatured ? 'Description — sell the experience, not just the specs' : 'Description'}
+                      {isFeatured ? 'Description - sell the experience, not just the specs' : 'Description'}
                     </label>
                     <textarea
                       style={{
@@ -1560,11 +1560,11 @@ function ListYourPropertySection({ stays = [] }) {
                     All 3 {selectedType} Featured Spots Are Taken
                   </div>
                   <p style={{ fontSize: 14, color: C.cream, fontFamily: "'Libre Baskerville', serif", margin: '0 0 6px', fontWeight: 400 }}>
-                    Join the waitlist — you'll be first to know
+                    Join the waitlist - you'll be first to know
                   </p>
                   <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', margin: '0 0 20px', lineHeight: 1.5 }}>
                     When a Featured spot opens up, we'll text or email you before anyone else.
-                    Current Featured holders get first right of renewal — if they pass, you're next in line.
+                    Current Featured holders get first right of renewal - if they pass, you're next in line.
                   </p>
                   <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, maxWidth: 400, margin: '0 auto 16px' }}>
                     <input
@@ -1618,7 +1618,7 @@ function ListYourPropertySection({ stays = [] }) {
                   {/* Validation hints */}
                   {status === 'error_name' && <p style={{ fontSize: 13, color: '#c0392b', textAlign: 'center', margin: '0 0 8px' }}>Property name is required.</p>}
                   {status === 'error_email' && <p style={{ fontSize: 13, color: '#c0392b', textAlign: 'center', margin: '0 0 8px' }}>A valid email address is required.</p>}
-                  {status === 'error_phone' && <p style={{ fontSize: 13, color: '#c0392b', textAlign: 'center', margin: '0 0 8px' }}>A valid phone number is required — we'll text you a verification code.</p>}
+                  {status === 'error_phone' && <p style={{ fontSize: 13, color: '#c0392b', textAlign: 'center', margin: '0 0 8px' }}>A valid phone number is required - we'll text you a verification code.</p>}
                   <Btn
                     type="submit"
                     variant={isFeatured ? 'primary' : isPaid ? 'primary' : 'outlineDark'}
@@ -2076,7 +2076,7 @@ export default function StaysPage() {
         </div>
       </section>
 
-      {/* Listings — list or map view */}
+      {/* Listings - list or map view */}
       {view === 'map' ? (
         <StaysMapView stays={stays} filter={filter} />
       ) : (
@@ -2088,7 +2088,7 @@ export default function StaysPage() {
               <div style={{ textAlign: 'center', padding: 60 }}>
                 <div style={{ fontSize: 48, marginBottom: 12 }}>🏕</div>
                 <p style={{ color: C.textMuted, fontSize: 15 }}>
-                  {filter === 'All' ? 'No stays listed yet — be the first!' : `No ${filter} listings yet.`}
+                  {filter === 'All' ? 'No stays listed yet - be the first!' : `No ${filter} listings yet.`}
                 </p>
               </div>
             ) : (
@@ -2122,19 +2122,19 @@ export default function StaysPage() {
           {[
             {
               q: 'Is this a booking site?',
-              a: "No — we're not Airbnb or VRBO. We don't handle reservations or take a cut of your bookings. Your listing links directly to wherever you take bookings — your Airbnb page, your VRBO listing, your own website, or just your phone number and email. We send guests your way. That's it.",
+              a: "No - we're not Airbnb or VRBO. We don't handle reservations or take a cut of your bookings. Your listing links directly to wherever you take bookings - your Airbnb page, your VRBO listing, your own website, or just your phone number and email. We send guests your way. That's it.",
             },
             {
               q: "What happens after May 10?",
-              a: "Before May 10, we'll send you an email and a text with details about keeping your listing live. You pick a tier — $9/month for a full listing with photos, map pin, and booking link, or $25/month for Featured placement with a Staff Pick badge. No obligation. If you don't want to continue, your listing simply moves to a free directory entry.",
+              a: "Before May 10, we'll send you an email and a text with details about keeping your listing live. You pick a tier - $9/month for a full listing with photos, map pin, and booking link, or $25/month for Featured placement with a Staff Pick badge. No obligation. If you don't want to continue, your listing simply moves to a free directory entry.",
             },
             {
               q: 'Is there a contract?',
-              a: "No. Everything is month to month. Cancel anytime — no fees, no penalties, no awkward phone calls. If you cancel, your listing downgrades to a free directory entry (name and type only).",
+              a: "No. Everything is month to month. Cancel anytime - no fees, no penalties, no awkward phone calls. If you cancel, your listing downgrades to a free directory entry (name and type only).",
             },
             {
-              q: "What about the Featured tier — only 3 per type?",
-              a: "Featured slots are first come, first served — 3 per property type (Cottage, Airbnb, etc.). Founding properties who sign up during the beta get first pick when paid tiers open. If all slots are taken, you'll be added to a waitlist and notified the moment one opens up.",
+              q: "What about the Featured tier - only 3 per type?",
+              a: "Featured slots are first come, first served - 3 per property type (Cottage, Airbnb, etc.). Founding properties who sign up during the beta get first pick when paid tiers open. If all slots are taken, you'll be added to a waitlist and notified the moment one opens up.",
             },
             {
               q: "What do visitors actually see?",
@@ -2142,7 +2142,7 @@ export default function StaysPage() {
             },
             {
               q: "Can I update my listing after I submit it?",
-              a: "Absolutely. Scroll up to the \"Manage Your Listing\" section, enter the email you used when you signed up, and you can edit everything — photos, description, amenities, booking link, all of it.",
+              a: "Absolutely. Scroll up to the \"Manage Your Listing\" section, enter the email you used when you signed up, and you can edit everything - photos, description, amenities, booking link, all of it.",
             },
           ].map((faq, i) => (
             <FadeIn key={i} delay={i * 60}>

@@ -21,7 +21,7 @@ export default {
   },
 
   // ── Design tokens ─────────────────────────────────────────
-  // Primary palette — imported by src/data/config.js as C
+  // Primary palette - imported by src/data/config.js as C
   colors: {
     cream: '#FAF6EF',
     warmWhite: '#F5F0E8',
@@ -62,7 +62,7 @@ export default {
 
   // ── Feature flags ─────────────────────────────────────────
   features: {
-    voiceWidget: false,      // Voice concierge (ElevenLabs — pending)
+    voiceWidget: false,      // Voice concierge (ElevenLabs - pending)
     dispatch: true,          // Community newspaper
     foodTrucks: true,        // Food truck locator
     wineries: true,          // Wine trail & ratings

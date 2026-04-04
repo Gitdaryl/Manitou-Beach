@@ -1,4 +1,4 @@
-// Vercel Cron — runs daily at 9am UTC
+// Vercel Cron - runs daily at 9am UTC
 // Finds page sponsors expiring in exactly 5 days, sends renewal reminder email.
 // vercel.json: { "path": "/api/cron-sponsor-expiry", "schedule": "0 9 * * *" }
 
@@ -62,7 +62,7 @@ export default async function handler(req, res) {
 
         if (!email) continue;
 
-        // Generate HMAC cancel token (no DB storage needed — verified on the fly)
+        // Generate HMAC cancel token (no DB storage needed - verified on the fly)
         const cancelToken = createHmac('sha256', secret).update(recordId).digest('hex');
         const cancelUrl   = `${siteUrl}/api/sponsor-cancel?id=${recordId}&token=${cancelToken}`;
         const renewUrl    = `${siteUrl}/business#page-sponsorship`;
@@ -85,16 +85,16 @@ export default async function handler(req, res) {
                   <strong style="color:#D4845A;">${expiryFmt}</strong>.
                 </p>
                 <p style="color:#5C5248;font-size:15px;margin:0 0 32px;line-height:1.7;">
-                  Renew to keep your banner running — or let us know you're done and we'll offer the spot to the next person on the waitlist.
+                  Renew to keep your banner running - or let us know you're done and we'll offer the spot to the next person on the waitlist.
                 </p>
 
                 <div style="margin-bottom:36px;">
                   <a href="${renewUrl}" style="display:inline-block;background:#1A2830;color:#fff;text-decoration:none;padding:14px 28px;border-radius:8px;font-size:15px;font-weight:600;margin-bottom:20px;">
-                    Renew Now — ${amountFmt} →
+                    Renew Now - ${amountFmt} →
                   </a>
                   <br/>
                   <a href="${cancelUrl}" style="display:inline-block;color:#8C806E;text-decoration:none;font-size:13px;border-bottom:1px solid #C8BCAE;padding-bottom:1px;">
-                    No thanks — cancel my sponsorship
+                    No thanks - cancel my sponsorship
                   </a>
                 </div>
 

@@ -1,5 +1,5 @@
 // /api/beta-validate.js
-// POST { code } — checks a beta code against the Notion Beta Testers DB
+// POST { code } - checks a beta code against the Notion Beta Testers DB
 // Returns { valid: true, name? } or { valid: false }
 
 const NOTION_HEADERS = {
@@ -46,7 +46,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ valid: false });
   } catch {
-    // Fail safe — don't permanently block someone if Notion is down
+    // Fail safe - don't permanently block someone if Notion is down
     return res.status(200).json({ valid: false });
   }
 }

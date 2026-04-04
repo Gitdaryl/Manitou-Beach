@@ -6,7 +6,7 @@ import { C } from '../data/config';
 // ============================================================
 // 🌿  LAND & LAKE LADIES CLUB PAGE (/ladies-club)
 // ============================================================
-// LADIES_CLUB_EVENTS removed — content now inline in LadiesClubEventsSection
+// LADIES_CLUB_EVENTS removed - content now inline in LadiesClubEventsSection
 
 function useCountdown(targetISO) {
   const [timeLeft, setTimeLeft] = useState(() => Math.max(0, new Date(targetISO) - new Date()));
@@ -57,7 +57,7 @@ function LadiesClubHero() {
             Land & Lake<br />Ladies Club
           </h1>
           <p style={{ fontSize: "clamp(14px, 1.5vw, 17px)", color: "rgba(255,255,255,0.5)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto 48px" }}>
-            A nonprofit civic organization serving Devils Lake, Round Lake, Addison, and Manitou Beach — bringing women together to strengthen our community through events, fundraising, and good old-fashioned neighborly love.
+            A nonprofit civic organization serving Devils Lake, Round Lake, Addison, and Manitou Beach - bringing women together to strengthen our community through events, fundraising, and good old-fashioned neighborly love.
           </p>
 
           {/* Countdown */}
@@ -95,7 +95,7 @@ function LadiesClubHero() {
             }}>
               Events & Activities
             </a>
-            <ShareBar title="Land & Lake Ladies Club — Manitou Beach" />
+            <ShareBar title="Land & Lake Ladies Club - Manitou Beach" />
           </div>
         </div>
       </div>
@@ -105,14 +105,14 @@ function LadiesClubHero() {
 
 function LadiesClubMissionSection() {
   const initiatives = [
-    { title: "Summer Festival", desc: "Our signature annual event — a full day of live music, fine arts, crafts, food, and family fun for the whole lakes community." },
+    { title: "Summer Festival", desc: "Our signature annual event - a full day of live music, fine arts, crafts, food, and family fun for the whole lakes community." },
     { title: "Veterans Luncheon", desc: "Hosting a lunch to honor and celebrate the local veterans who've served our country." },
-    { title: "Angel Tree", desc: "Making the holidays merry for local families — gifts and giving organized with community support." },
+    { title: "Angel Tree", desc: "Making the holidays merry for local families - gifts and giving organized with community support." },
     { title: "Senior Scholarships", desc: "Scholarships awarded to graduating seniors from the local area each year." },
     { title: "Adopt a Family / Senior", desc: "Assistance programs to support families and seniors in need throughout the year." },
     { title: "Holiday Food Baskets", desc: "Holiday giving baskets assembled and distributed in partnership with the Addison Kiwanis." },
     { title: "Farmers & Crafters Market", desc: "Partnering with Kathy Reed to support local vendors at the Manitou Beach market." },
-    { title: "4th of July Run", desc: "Water and popsicles along the Firecracker Run route — keeping runners cool and smiling." },
+    { title: "4th of July Run", desc: "Water and popsicles along the Firecracker Run route - keeping runners cool and smiling." },
   ];
 
   const partners = ["Men's Club", "Chamber of Commerce", "Addison Kiwanis", "Lake Preservation League", "Devils & Round Lakes Organizations"];
@@ -127,7 +127,7 @@ function LadiesClubMissionSection() {
             The Land & Lake Ladies Club (LLLC) is a 501(c)(4) nonprofit civic organization open to women in the Devils Lake, Round Lake, Addison, and Manitou Beach communities. Members come together to build friendships, welcome new residents, and make a real difference right where they live.
           </p>
           <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 680, margin: "0 0 12px 0" }}>
-            Every dollar raised goes back into our community — supporting local schools and teachers, youth programs, student art camps, fireworks, and families and seniors in need. No special skills needed, just a willingness to help.
+            Every dollar raised goes back into our community - supporting local schools and teachers, youth programs, student art camps, fireworks, and families and seniors in need. No special skills needed, just a willingness to help.
           </p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 12px", maxWidth: 680, marginBottom: 48 }}>
             <span style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginRight: 4 }}>Partners:</span>
@@ -162,7 +162,7 @@ function LadiesClubEventsSection() {
     { label: "Fine Arts Section", desc: "A dozen or more outdoor artist booths featuring local talent and original work" },
     { label: "Children's Area", desc: "Bounce items, face painting, Lucky Ducky, balloons, and fun for all ages" },
     { label: "Crafts & Vendors", desc: "Local makers, artisan goods, handmade creations, and the Farmer's Craft Market" },
-    { label: "Food & Drinks", desc: "Shaved ice, acai bowls, possible craft beer and wine — something for everyone" },
+    { label: "Food & Drinks", desc: "Shaved ice, acai bowls, possible craft beer and wine - something for everyone" },
     { label: "Raffle Baskets", desc: "6-8 items to bid on" },
   ];
 
@@ -232,7 +232,7 @@ function LadiesClubEventsSection() {
             <SectionLabel light>Signature Event</SectionLabel>
             <SectionTitle center light>Summer Festival 2026</SectionTitle>
             <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, maxWidth: 520, margin: "0 auto" }}>
-              The Land & Lake Ladies Club presents a lively day of food, music, crafts, art, and community — right in the heart of Manitou Beach Village.
+              The Land & Lake Ladies Club presents a lively day of food, music, crafts, art, and community - right in the heart of Manitou Beach Village.
             </p>
           </div>
         </FadeIn>
@@ -303,7 +303,7 @@ function LadiesClubEventsSection() {
           </div>
         </FadeIn>
 
-        {/* What to Expect — 3 per row, larger text */}
+        {/* What to Expect - 3 per row, larger text */}
         <FadeIn delay={150}>
           <div style={{ marginBottom: 20, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.3)" }}>
             What to Expect
@@ -324,7 +324,7 @@ function LadiesClubEventsSection() {
         <FadeIn delay={200}>
           <img
             src="/images/ladies-club/summerfest-map.jpg"
-            alt="Summer Festival 2026 Map — Manitou Beach Village"
+            alt="Summer Festival 2026 Map - Manitou Beach Village"
             style={{ width: "100%", borderRadius: 14, marginBottom: 56, display: "block", border: "1px solid rgba(255,255,255,0.08)" }}
             onError={(e) => { e.target.style.display = "none"; }}
           />
@@ -344,7 +344,7 @@ function LadiesClubEventsSection() {
         </FadeIn>
 
         {/* Tier cards */}
-        {/* Platinum — full width featured */}
+        {/* Platinum - full width featured */}
         {tiers.slice(0, 1).map(tier => (
           <FadeIn key={tier.level} delay={240}>
             <div style={{
@@ -466,7 +466,7 @@ function LadiesClubGallerySection() {
             <SectionLabel>Memories</SectionLabel>
             <SectionTitle center>Festival Gallery</SectionTitle>
             <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, maxWidth: 400, margin: "0 auto" }}>
-              A look at the community coming together — Summer Festival moments from the lakes.
+              A look at the community coming together - Summer Festival moments from the lakes.
             </p>
           </div>
         </FadeIn>
@@ -576,7 +576,7 @@ function LadiesClubSponsorsSection() {
     </div>
   );
 
-  // Tile used for Platinum and Gold — shows logo or fallback name card
+  // Tile used for Platinum and Gold - shows logo or fallback name card
   const LogoTile = ({ name, logo, url, platinum }) => {
     const [hovered, setHovered] = React.useState(false);
     const inner = (
@@ -673,7 +673,7 @@ function LadiesClubSponsorsSection() {
           </div>
         </FadeIn>
 
-        {/* Platinum — 3 per row, large, premium feel */}
+        {/* Platinum - 3 per row, large, premium feel */}
         <FadeIn>
           <TierHeader label="Platinum Sponsors" color="#b08d57" />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 20 }}>
@@ -681,7 +681,7 @@ function LadiesClubSponsorsSection() {
           </div>
         </FadeIn>
 
-        {/* Gold — smaller, clear step down */}
+        {/* Gold - smaller, clear step down */}
         <FadeIn>
           <TierHeader label="Gold Sponsors" color="#c9a227" />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: 12 }}>
@@ -689,7 +689,7 @@ function LadiesClubSponsorsSection() {
           </div>
         </FadeIn>
 
-        {/* Silver — name chips, clearly smaller */}
+        {/* Silver - name chips, clearly smaller */}
         <FadeIn>
           <TierHeader label="Silver Sponsors" color="#8a9ba8" />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: 8 }}>
@@ -697,7 +697,7 @@ function LadiesClubSponsorsSection() {
           </div>
         </FadeIn>
 
-        {/* Bronze — name chips */}
+        {/* Bronze - name chips */}
         <FadeIn>
           <TierHeader label="Bronze Sponsors" color="#a0522d" />
           <div style={{ display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "center" }}>
@@ -757,7 +757,7 @@ function MensClubSponsorsSection() {
           </div>
         </FadeIn>
 
-        {/* Platinum — 3 across */}
+        {/* Platinum - 3 across */}
         <FadeIn>
           <TierHeader label="Platinum Sponsors" color="#b08d57" />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
@@ -765,7 +765,7 @@ function MensClubSponsorsSection() {
           </div>
         </FadeIn>
 
-        {/* Gold — 4 across */}
+        {/* Gold - 4 across */}
         <FadeIn>
           <TierHeader label="Gold Sponsors" color="#c9a227" />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14 }}>
@@ -773,7 +773,7 @@ function MensClubSponsorsSection() {
           </div>
         </FadeIn>
 
-        {/* Silver — 5 across */}
+        {/* Silver - 5 across */}
         <FadeIn>
           <TierHeader label="Silver Sponsors" color="#8a9ba8" />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 12 }}>
@@ -781,7 +781,7 @@ function MensClubSponsorsSection() {
           </div>
         </FadeIn>
 
-        {/* Bronze — 6 across */}
+        {/* Bronze - 6 across */}
         <FadeIn>
           <TierHeader label="Bronze Sponsors" color="#a0522d" />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 10 }}>
@@ -789,7 +789,7 @@ function MensClubSponsorsSection() {
           </div>
         </FadeIn>
 
-        {/* Friends — text list */}
+        {/* Friends - text list */}
         <FadeIn>
           <TierHeader label="Friends of the Club" color={C.sage} />
           <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 24px", justifyContent: "center", padding: "4px 0 8px" }}>
@@ -862,7 +862,7 @@ function LadiesClubGetInvolved() {
     {
       icon: "🎨",
       label: "Vendor / Artist Booth",
-      desc: "Artists, crafters, food trucks, and community vendors — apply for a booth at the 2026 Devils Lake Summerfest.",
+      desc: "Artists, crafters, food trucks, and community vendors - apply for a booth at the 2026 Devils Lake Summerfest.",
       action: "Apply Now",
       href: "/ladies-club/vendor",
       accent: C.sage,
@@ -889,7 +889,7 @@ function LadiesClubGetInvolved() {
               Three Ways to Be Part of It
             </h2>
             <p style={{ fontSize: 15, color: "rgba(255,255,255,0.5)", lineHeight: 1.7, maxWidth: 440, margin: "0 auto" }}>
-              Whether you're a business, an artist, or just someone who loves this community — there's a place for you.
+              Whether you're a business, an artist, or just someone who loves this community - there's a place for you.
             </p>
           </div>
         </FadeIn>

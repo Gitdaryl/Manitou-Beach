@@ -1,5 +1,5 @@
 // /api/slot-availability.js
-// GET — returns live Featured and Premium slot counts from Notion
+// GET - returns live Featured and Premium slot counts from Notion
 // Used by BetaBusinessPage to show real-time slot availability
 
 const NOTION_HEADERS = {
@@ -28,7 +28,7 @@ async function countByStatus(dbId, status) {
   }
 }
 
-// Simple in-process cache — prevents hammering Notion on every page load
+// Simple in-process cache - prevents hammering Notion on every page load
 let cache = null;
 let cacheTime = 0;
 const CACHE_TTL_MS = 60_000; // 60 seconds

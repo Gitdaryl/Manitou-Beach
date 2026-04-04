@@ -6,7 +6,7 @@ import yeti from '../data/errorMessages';
 import formatPhone from '../utils/formatPhone';
 import { celebrate } from '../data/celebrate';
 
-// Format departure time for display — always today, so just show local time
+// Format departure time for display - always today, so just show local time
 function formatDeparture(dt) {
   if (!dt) return '';
   if (dt === 'after-dark') return 'after dark';
@@ -15,7 +15,7 @@ function formatDeparture(dt) {
   return dt;
 }
 
-// Quick-pick preset colors (shown as swatches) — stored as hex
+// Quick-pick preset colors (shown as swatches) - stored as hex
 const PIN_PRESETS = [
   '#C44D3F', '#E07060', '#D4845A', '#C4A035',
   '#7A8E72', '#4A6741', '#4A9E8E', '#4A7FB5',
@@ -81,7 +81,7 @@ function makeMapPin(name, selected, G, colorId) {
   const pCy = labelH + gap + pinCy;
   const pBottom = labelH + gap + pinH;
 
-  // Colors — use truck's chosen color, darken on select
+  // Colors - use truck's chosen color, darken on select
   const pinFill = selected ? pc.stroke : pc.fill;
   const pinStroke = pc.stroke;
   const innerFill = '#FFFFFF';
@@ -286,7 +286,7 @@ export default function FoodTrucksPage() {
   const markersRef = useRef([]);
   const truckCardRefs = useRef({});
 
-  // Location history — per-truck, stored in localStorage
+  // Location history - per-truck, stored in localStorage
   const locsKey = `mb-truck-locs-${truckSlug}`;
   const [savedLocations, setSavedLocations] = useState(() => {
     try { return JSON.parse(localStorage.getItem(locsKey) || '[]'); } catch { return []; }
@@ -322,7 +322,7 @@ export default function FoodTrucksPage() {
 
   // Share truck
   const shareTruck = (truck) => {
-    const loc = truck.locationNote ? ` — ${truck.locationNote}` : '';
+    const loc = truck.locationNote ? ` - ${truck.locationNote}` : '';
     const text = `${truck.name} is here today${loc}. Meet you there! 🚚`;
     const url = 'https://manitou-beach.vercel.app/food-trucks';
     if (navigator.share) {
@@ -490,7 +490,7 @@ export default function FoodTrucksPage() {
       .then(d => {
         const serverLoves = d.loves || {};
         setLoves(serverLoves);
-        // Reconcile stale localStorage — purge loves that never made it to the server
+        // Reconcile stale localStorage - purge loves that never made it to the server
         try {
           const stored = JSON.parse(localStorage.getItem('mb-truck-loves') || '{}');
           const cleaned = {};
@@ -589,7 +589,7 @@ export default function FoodTrucksPage() {
     }, 600);
   }, [trucks, truckSlug, isCheckinMode]);
 
-  // Drop pin handler — vendor taps this to capture GPS before submitting
+  // Drop pin handler - vendor taps this to capture GPS before submitting
   const handleDropPin = () => {
     if (!navigator.geolocation) { setPinStatus('denied'); return; }
     setPinStatus('loading');
@@ -604,7 +604,7 @@ export default function FoodTrucksPage() {
     );
   };
 
-  // Check-in handler — uses pre-pinned coords if available, skips geo request
+  // Check-in handler - uses pre-pinned coords if available, skips geo request
   const handleCheckin = () => {
     setCheckinStatus("loading");
     const doPost = (lat, lng) => {
@@ -684,7 +684,7 @@ export default function FoodTrucksPage() {
   );
   const allTrucks = trucks || [];
 
-  // Popularity sort — by total love count (desc)
+  // Popularity sort - by total love count (desc)
   const loveCount = (slug) => loves[slug]?.total || 0;
   const sortedLiveTrucks = [...nearbyLiveTrucks].sort((a, b) => loveCount(b.slug) - loveCount(a.slug));
   const sortedTravelingTrucks = [...travelingLiveTrucks].sort((a, b) => loveCount(b.slug) - loveCount(a.slug));
@@ -842,7 +842,7 @@ export default function FoodTrucksPage() {
       `}</style>
         <div style={{ flex: 1, maxWidth: 480, width: "100%", margin: "0 auto", padding: "clamp(24px, 6vw, 48px) 24px 32px" }}>
 
-          {/* Vendor Header — always visible */}
+          {/* Vendor Header - always visible */}
           <div style={{ textAlign: "center", marginBottom: 32 }}>
             <p style={{ margin: "0 0 12px", fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: C.sage, fontWeight: 600 }}>
               Manitou Beach · Food Truck Check-in
@@ -1045,7 +1045,7 @@ export default function FoodTrucksPage() {
                     fontFamily: "'Libre Franklin', sans-serif", transition: "all 0.2s",
                   }}
                 >
-                  Pack Up &amp; Go — I'm Done for Today
+                  Pack Up &amp; Go - I'm Done for Today
                 </button>
 
                 <div style={{ display: "flex", justifyContent: "center", gap: 24, marginTop: 24 }}>
@@ -1075,7 +1075,7 @@ export default function FoodTrucksPage() {
                 Three quick steps and you're live on the map.
               </p>
 
-              {/* ═══ STEP 1 — Drop Your Pin ═══ */}
+              {/* ═══ STEP 1 - Drop Your Pin ═══ */}
               <div style={{ marginBottom: 24 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
                   <div style={{
@@ -1113,7 +1113,7 @@ export default function FoodTrucksPage() {
                     }}
                   >
                     {pinStatus === 'loading' ? '⏳  Getting your location…' :
-                     pinStatus === 'denied' ? '📍  Location denied — type your spot below' :
+                     pinStatus === 'denied' ? '📍  Location denied - type your spot below' :
                      '📍  Tap Here to Drop My Pin'}
                   </button>
                 ) : (
@@ -1150,7 +1150,7 @@ export default function FoodTrucksPage() {
                 )}
               </div>
 
-              {/* ═══ STEP 2 — Add the Details ═══ */}
+              {/* ═══ STEP 2 - Add the Details ═══ */}
               <div style={{ marginBottom: 24, opacity: pinStatus === 'pinned' || pinStatus === 'denied' ? 1 : 0.5, transition: 'opacity 0.3s' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
                   <div style={{
@@ -1161,7 +1161,7 @@ export default function FoodTrucksPage() {
                   }}>2</div>
                   <div>
                     <div style={{ fontSize: 14, fontWeight: 700, color: C.text }}>Add the details</div>
-                    <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.4 }}>All optional — fill in what you want customers to see.</div>
+                    <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.4 }}>All optional - fill in what you want customers to see.</div>
                   </div>
                 </div>
 
@@ -1254,7 +1254,7 @@ export default function FoodTrucksPage() {
                   onChange={e => setCheckinDeparture(e.target.value)}
                   style={{ ...inputStyle, marginBottom: 0, appearance: 'none', backgroundImage: 'none' }}
                 >
-                  <option value="">— not sure</option>
+                  <option value="">- not sure</option>
                   {['10','11','12','13','14','15','16','17','18','19','20','21','22'].map(h => {
                     const d = new Date(); d.setHours(parseInt(h), 0, 0, 0);
                     return <option key={h} value={h}>{d.toLocaleTimeString('en-US', { hour: 'numeric', hour12: true })}</option>;
@@ -1263,7 +1263,7 @@ export default function FoodTrucksPage() {
                 </select>
               </div>
 
-              {/* ═══ STEP 3 — Go Live ═══ */}
+              {/* ═══ STEP 3 - Go Live ═══ */}
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
                   <div style={{
@@ -1295,13 +1295,13 @@ export default function FoodTrucksPage() {
                     boxShadow: checkinStatus === "loading" ? 'none' : `0 4px 18px ${C.sage}55`,
                   }}
                 >
-                  {checkinStatus === "loading" ? "Checking in…" : "Go Live — I'm Open for Business!"}
+                  {checkinStatus === "loading" ? "Checking in…" : "Go Live - I'm Open for Business!"}
                 </button>
               </div>
             </div>
           )}
 
-          {/* ── COMING RUNS — self-serve schedule (always visible once truck loads) ── */}
+          {/* ── COMING RUNS - self-serve schedule (always visible once truck loads) ── */}
           {trucks !== null && checkinTruck && (
             <div style={{ marginTop: 24 }}>
               <div style={{ background: "#fff", borderRadius: 16, border: `1px solid ${C.sand}`, padding: "24px", boxShadow: "0 4px 20px rgba(0,0,0,0.04)" }}>
@@ -1309,7 +1309,7 @@ export default function FoodTrucksPage() {
                   📅 Coming Runs
                 </h3>
                 <p style={{ fontSize: 12, color: C.textMuted, margin: "0 0 16px", lineHeight: 1.5 }}>
-                  Let customers know when you're planning a run before you arrive — they'll see it on the locator.
+                  Let customers know when you're planning a run before you arrive - they'll see it on the locator.
                 </p>
 
                 {/* Apply to an event */}
@@ -1327,7 +1327,7 @@ export default function FoodTrucksPage() {
                         <option value="">Pick your next event…</option>
                         {vendorEvents.map(ev => (
                           <option key={ev.id} value={ev.id}>
-                            {ev.name}{ev.date ? ` — ${new Date(ev.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}` : ''}
+                            {ev.name}{ev.date ? ` - ${new Date(ev.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}` : ''}
                           </option>
                         ))}
                       </select>
@@ -1346,7 +1346,7 @@ export default function FoodTrucksPage() {
                       </button>
                     </div>
                     {applyStatus === 'applied' && <p style={{ fontSize: 12, color: C.sage, fontWeight: 600, margin: "8px 0 0", wordBreak: "break-word" }}>You're on the lineup for {applyEventName}! The organizer will be in touch with details.</p>}
-                    {applyStatus === 'duplicate' && <p style={{ fontSize: 12, color: C.lakeBlue, margin: "8px 0 0", wordBreak: "break-word" }}>You're already on the list for {applyEventName} — you're all set!</p>}
+                    {applyStatus === 'duplicate' && <p style={{ fontSize: 12, color: C.lakeBlue, margin: "8px 0 0", wordBreak: "break-word" }}>You're already on the list for {applyEventName} - you're all set!</p>}
                     {applyStatus === 'error' && <p style={{ fontSize: 12, color: "#c05a5a", margin: "8px 0 0" }}>{yeti.oops()}</p>}
                   </div>
                 )}
@@ -1354,7 +1354,7 @@ export default function FoodTrucksPage() {
                 {comingDateLocal && new Date(comingDateLocal) > new Date() && (
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: `${C.lakeBlue}10`, border: `1px solid ${C.lakeBlue}30`, borderRadius: 8, padding: "10px 14px", marginBottom: 14 }}>
                     <span style={{ fontSize: 13, color: C.lakeBlue, fontWeight: 600 }}>
-                      📅 {formatComingDate(comingDateLocal)} — showing on the locator
+                      📅 {formatComingDate(comingDateLocal)} - showing on the locator
                     </span>
                     <button
                       onClick={handleClearSchedule}
@@ -1425,7 +1425,7 @@ export default function FoodTrucksPage() {
 
       {/* Hero */}
       <section className="ft-hero-section" style={{ position: "relative", overflow: "hidden", padding: "120px 24px 80px", textAlign: "center" }}>
-        {/* Video background — desktop only (hidden on mobile via CSS class) */}
+        {/* Video background - desktop only (hidden on mobile via CSS class) */}
         <video
           className="ft-hero-video"
           autoPlay
@@ -1438,7 +1438,7 @@ export default function FoodTrucksPage() {
         >
           <source src="https://dmg0joh3jdjfmu8k.public.blob.vercel-storage.com/foodtruck_webloop.mp4" type="video/mp4" />
         </video>
-        {/* Overlay — darkens video for text legibility */}
+        {/* Overlay - darkens video for text legibility */}
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg, rgba(10,18,24,0.72) 0%, rgba(45,59,69,0.65) 60%, rgba(10,18,24,0.55) 100%)", zIndex: 1 }} />
         <div style={{ maxWidth: 640, margin: "0 auto", position: "relative", zIndex: 2 }}>
           <FadeIn>
@@ -1460,11 +1460,11 @@ export default function FoodTrucksPage() {
         </div>
       </section>
 
-      {/* Partner quick-recovery strip — visible right below hero */}
+      {/* Partner quick-recovery strip - visible right below hero */}
       <div style={{ background: "rgba(10,18,24,0.85)", borderBottom: `1px solid rgba(255,255,255,0.06)`, padding: "14px 24px", textAlign: "center" }}>
         <div style={{ maxWidth: 520, margin: "0 auto", display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center", gap: 10 }}>
           {smsStatus === 'sent' ? (
-            <p style={{ fontSize: 13, color: C.sage, fontWeight: 600, margin: 0 }}>Check your texts — your check-in link is on its way.</p>
+            <p style={{ fontSize: 13, color: C.sage, fontWeight: 600, margin: 0 }}>Check your texts - your check-in link is on its way.</p>
           ) : (
             <>
               <span style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", whiteSpace: "nowrap" }}>Already a partner?</span>
@@ -1527,7 +1527,7 @@ export default function FoodTrucksPage() {
 
       <WaveDivider topColor={C.night} bottomColor={mapsKey && liveTrucksWithCoords.length > 0 ? C.dusk : C.warmWhite} />
 
-      {/* Live Map — only when trucks have coordinates */}
+      {/* Live Map - only when trucks have coordinates */}
       {mapsKey && liveTrucksWithCoords.length > 0 && (
         <section style={{ background: C.dusk, padding: "16px 24px 48px" }}>
           <div style={{ maxWidth: 1000, margin: "0 auto" }}>
@@ -1536,7 +1536,7 @@ export default function FoodTrucksPage() {
               {/* Map canvas */}
               <div ref={mapDivRef} style={{ width: '100%', height: 340 }} />
 
-              {/* Selected truck card — slides up from bottom of map */}
+              {/* Selected truck card - slides up from bottom of map */}
               {selectedTruck && (
                 <div
                   style={{
@@ -1607,7 +1607,7 @@ export default function FoodTrucksPage() {
             <div style={{ textAlign: "center", padding: "48px 24px", background: C.cream, borderRadius: 14, border: `1px solid ${C.sand}` }}>
               <div style={{ fontSize: 36, marginBottom: 12 }}>🌤️</div>
               <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.7, maxWidth: 360, margin: "0 auto" }}>
-                No food trucks are checked in right now. Check back later — they update throughout the day.
+                No food trucks are checked in right now. Check back later - they update throughout the day.
               </p>
             </div>
           ) : (
@@ -1618,20 +1618,20 @@ export default function FoodTrucksPage() {
                     ref={el => { if (truck.slug) truckCardRefs.current[truck.slug] = el; }}
                     style={{ background: "#FFFFFF", borderRadius: 18, border: `1px solid ${C.sand}`, overflow: "hidden", height: "100%", boxShadow: `0 4px 20px rgba(0,0,0,0.08)` }}
                   >
-                    {/* Hero header — logo IS the brand */}
+                    {/* Hero header - logo IS the brand */}
                     <div style={{ background: `linear-gradient(160deg, ${C.cream} 0%, ${C.sand}55 100%)`, padding: "28px 22px 18px", textAlign: "center", position: "relative" }}>
-                      {/* Live badge — top right */}
+                      {/* Live badge - top right */}
                       <div style={{ position: "absolute", top: 14, right: 16, display: "flex", alignItems: "center", gap: 5 }}>
                         <div style={{ width: 8, height: 8, borderRadius: "50%", background: C.sage, boxShadow: `0 0 6px ${C.sage}88` }} />
                         <span style={{ fontSize: 11, color: C.sage, fontWeight: 700, letterSpacing: 0.3 }}>{timeAgo(truck.lastCheckin)}</span>
                       </div>
-                      {/* Most Loved badge — top left */}
+                      {/* Most Loved badge - top left */}
                       {isMostLoved(truck.slug) && (
                         <div style={{ position: "absolute", top: 14, left: 16 }}>
                           <span style={{ fontSize: 10, fontWeight: 700, color: C.sunset, background: `${C.sunset}15`, border: `1px solid ${C.sunset}30`, padding: "3px 9px", borderRadius: 10, letterSpacing: 0.5 }}>Most Loved ❤️</span>
                         </div>
                       )}
-                      {/* Logo — big and proud, this is their identity */}
+                      {/* Logo - big and proud, this is their identity */}
                       {truck.photoUrl ? (
                         <div style={{ width: 160, height: 160, borderRadius: 24, background: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", overflow: "hidden", boxShadow: `0 4px 20px ${C.driftwood}30`, border: `3px solid #FFFFFF` }}>
                           <img src={truck.photoUrl} alt={truck.name} style={{ width: "100%", height: "100%", objectFit: "contain", padding: 6 }} />
@@ -1643,7 +1643,7 @@ export default function FoodTrucksPage() {
                       )}
                       {/* Name */}
                       <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.text, margin: "0 0 6px", lineHeight: 1.3 }}>{truck.name}</h3>
-                      {/* Meta line — cuisine + location on one line */}
+                      {/* Meta line - cuisine + location on one line */}
                       <div style={{ fontSize: 13, color: C.textLight, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, flexWrap: "wrap" }}>
                         {truck.cuisine && <span>{truck.cuisine}</span>}
                         {truck.cuisine && truck.locationNote && <span style={{ color: C.driftwood }}>·</span>}
@@ -1657,7 +1657,7 @@ export default function FoodTrucksPage() {
 
                     {/* Card body */}
                     <div style={{ padding: "16px 22px 20px" }}>
-                      {/* Today's Special — prominent callout */}
+                      {/* Today's Special - prominent callout */}
                       {truck.todaysSpecial && (
                         <div style={{ background: `linear-gradient(135deg, ${C.sunset}18 0%, ${C.sunset}08 100%)`, border: `1.5px solid ${C.sunset}30`, borderRadius: 12, padding: "11px 16px", marginBottom: 12, display: "flex", alignItems: "center", gap: 10 }}>
                           <span style={{ fontSize: 18, lineHeight: 1 }}>⭐</span>
@@ -1704,7 +1704,7 @@ export default function FoodTrucksPage() {
             </div>
           )}
 
-          {/* Also Serving Today — live trucks outside the map radius */}
+          {/* Also Serving Today - live trucks outside the map radius */}
           {sortedTravelingTrucks.length > 0 && (
             <>
               <FadeIn>
@@ -1788,7 +1788,7 @@ export default function FoodTrucksPage() {
         </div>
       </section>
 
-      {/* Love CTA — encourage engagement */}
+      {/* Love CTA - encourage engagement */}
       {liveTrucks.length > 0 && (
         <div style={{ background: C.warmWhite, padding: "0 24px 32px" }}>
           <div style={{ maxWidth: 600, margin: "0 auto", background: `linear-gradient(135deg, ${C.sunset}08 0%, ${C.cream} 100%)`, border: `1px solid ${C.sunset}20`, borderRadius: 16, padding: "22px 24px", textAlign: "center" }}>
@@ -1862,7 +1862,7 @@ export default function FoodTrucksPage() {
                     >
                       {/* Hero header */}
                       <div style={{ background: `linear-gradient(160deg, ${C.cream} 0%, ${C.sand}33 100%)`, padding: "24px 20px 16px", textAlign: "center", position: "relative" }}>
-                        {/* Badges — top corners */}
+                        {/* Badges - top corners */}
                         {live && (
                           <div style={{ position: "absolute", top: 12, left: 14 }}>
                             <span style={{ fontSize: 10, fontWeight: 700, color: C.sage, background: `${C.sage}15`, padding: "3px 9px", borderRadius: 10, letterSpacing: 0.5, textTransform: "uppercase" }}>Open</span>
@@ -1929,7 +1929,7 @@ export default function FoodTrucksPage() {
             <div style={{ marginBottom: 16 }}><img src="/images/icons/food-truck-icon.png" alt="" style={{ width: 120, height: 120, objectFit: "contain" }} /></div>
             <SectionLabel light>Are You a Food Truck?</SectionLabel>
             <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 3.5vw, 32px)", fontWeight: 400, color: C.cream, margin: "16px 0 16px" }}>
-              Get on the Map — $9/month
+              Get on the Map - $9/month
             </h2>
             <p style={{ fontSize: 14, color: "rgba(255,255,255,0.55)", lineHeight: 1.75, marginBottom: 16 }}>
               Live map pin, personal check-in URL, Today's Special badge, and your name in front of hundreds of Manitou Beach followers.
@@ -1950,7 +1950,7 @@ export default function FoodTrucksPage() {
                 Already a member? Text your check-in link to your phone.
               </p>
               {smsStatus === 'sent' ? (
-                <p style={{ fontSize: 14, color: C.sage, fontWeight: 600 }}>✓ Check your texts — link is on its way.</p>
+                <p style={{ fontSize: 14, color: C.sage, fontWeight: 600 }}>✓ Check your texts - link is on its way.</p>
               ) : (
                 <div style={{ display: "flex", gap: 8, maxWidth: 340, margin: "0 auto" }}>
                   <input
@@ -1978,7 +1978,7 @@ export default function FoodTrucksPage() {
                       })
                         .then(r => r.json())
                         .then(() => setSmsStatus('sent'))
-                        .catch(() => setSmsStatus('sent')); // always show sent — don't leak whether registered
+                        .catch(() => setSmsStatus('sent')); // always show sent - don't leak whether registered
                     }}
                     disabled={smsStatus === 'loading'}
                     style={{

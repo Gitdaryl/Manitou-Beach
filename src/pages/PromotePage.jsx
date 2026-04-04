@@ -11,7 +11,7 @@ const ADVERTISE_PACKAGES = [
     desc: "Your business, product, or event mentioned with a link in the next Dispatch email.",
     plain: "One or two sentences about you, with a link, in front of everyone who reads the weekly email. Simple and effective." },
   { id: "newsletter",         label: "Newsletter Feature",   detail: "1 Issue",            price: "$39",  fullPrice: "$79",  diagramType: "newsletter",
-    desc: "A full dedicated section at the top of the next Manitou Beach Dispatch — before anyone scrolls.",
+    desc: "A full dedicated section at the top of the next Manitou Beach Dispatch - before anyone scrolls.",
     plain: "Your business or event gets its own section at the very top of the email. Image, copy, link. The whole community sees it before anything else." },
   { id: "newsletter_4pack",   label: "Newsletter 4-Pack",    detail: "4 Issues",           price: "$129", fullPrice: "$239", diagramType: "newsletter",
     desc: "Your business featured in 4 consecutive Dispatch issues.",
@@ -21,13 +21,13 @@ const ADVERTISE_PACKAGES = [
     plain: "Own the newsletter slot all season. Eight issues, first right of renewal at same rate.", badge: "Best Value" },
   { id: "banner_1p",          label: "Page Banner",          detail: "1 Page · 30 Days",  price: "$29",  fullPrice: "$59",  diagramType: "banner",
     desc: "A full-width banner for your brand on whichever page your customers visit most.",
-    plain: "Like renting a billboard, but on the website. Pick the page — Fishing, Wineries, Devils Lake — and your banner sits right there for 30 days." },
+    plain: "Like renting a billboard, but on the website. Pick the page - Fishing, Wineries, Devils Lake - and your banner sits right there for 30 days." },
   { id: "banner_3p",          label: "Page Banner",          detail: "3 Pages · 30 Days", price: "$69",  fullPrice: "$129", diagramType: "banner3",
-    desc: "Same banner treatment across three pages at once — maximum coverage for 30 days.",
-    plain: "Three pages, one price. Catch people wherever they're browsing — whether they're checking fishing conditions, planning a winery visit, or reading about the lake." },
+    desc: "Same banner treatment across three pages at once - maximum coverage for 30 days.",
+    plain: "Three pages, one price. Catch people wherever they're browsing - whether they're checking fishing conditions, planning a winery visit, or reading about the lake." },
   { id: "holly_yeti",         label: "Holly & Yeti Feature", detail: "Video · 30 Days",   price: "$179", fullPrice: "$350", diagramType: "video",
     desc: "Holly and The Yeti create a short video about your business. Lives on the site for 30 days and shared on social.",
-    plain: "We come out, tell your story on camera, and put it on the website for a month. Real people, real place — the kind of thing the community actually watches." },
+    plain: "We come out, tell your story on camera, and put it on the website for a month. Real people, real place - the kind of thing the community actually watches." },
 ];
 
 const PROMOTE_PACKAGES = [
@@ -35,29 +35,29 @@ const PROMOTE_PACKAGES = [
     desc: "Your event in the calendar with a photo and a ticket button.",
     plain: "Instead of just a line of text like the free listings, yours shows up with a photo and a big 'Get Tickets' button. Stands out." },
   { id: "hero_7d",         label: "Hero Feature",           detail: "7 Days",             price: "$75",  fullPrice: "$149", diagramType: "hero",
-    desc: "The first thing anyone sees when they visit the site — full screen, your event, for 7 days.",
+    desc: "The first thing anyone sees when they visit the site - full screen, your event, for 7 days.",
     plain: "Picture the front page of a newspaper. That's your event, full size, the moment anyone opens the website. Every visitor sees it first, for a whole week." },
   { id: "hero_30d",        label: "Hero Feature",           detail: "30 Days",            price: "$249", fullPrice: "$499", diagramType: "hero",
     desc: "Own the front of the site for a full month.",
-    plain: "Same front-page treatment as the 7-day option — just for a whole month. Great for building buzz leading up to a big event." },
+    plain: "Same front-page treatment as the 7-day option - just for a whole month. Great for building buzz leading up to a big event." },
   { id: "newsletter",      label: "Newsletter Feature",     detail: "1 Issue",            price: "$39",  fullPrice: "$79",  diagramType: "newsletter",
-    desc: "Top spot in the next Manitou Beach Dispatch email — before anyone scrolls.",
+    desc: "Top spot in the next Manitou Beach Dispatch email - before anyone scrolls.",
     plain: "A big beautiful announcement at the very top of our weekly email. The whole community sees it in their inbox before they read anything else." },
   { id: "banner_1p",       label: "Page Feature Banner",    detail: "1 Page · 30 Days",  price: "$29",  fullPrice: "$59",  diagramType: "banner",
     desc: "A wide banner for your event sitting in the middle of whichever page your crowd visits most.",
-    plain: "Like a billboard, but on the website. Pick the page where your people hang out — Fishing, Wineries, Devils Lake — and your banner is right there for 30 days." },
+    plain: "Like a billboard, but on the website. Pick the page where your people hang out - Fishing, Wineries, Devils Lake - and your banner is right there for 30 days." },
   { id: "banner_3p",       label: "Page Feature Banner",    detail: "3 Pages · 30 Days", price: "$69",  fullPrice: "$129", diagramType: "banner3",
     desc: "Same billboard treatment, but on three different pages at once.",
-    plain: "Cover more ground — your banner shows up on three pages across the site. Catch people wherever they're browsing." },
+    plain: "Cover more ground - your banner shows up on three pages across the site. Catch people wherever they're browsing." },
   { id: "strip_pin",       label: "Featured Strip Pin",     detail: "30 Days",            price: "$19",  fullPrice: "$39",  diagramType: "strip",
-    desc: "First spot in the 'Coming Up' list on the homepage — right below the big banner.",
+    desc: "First spot in the 'Coming Up' list on the homepage - right below the big banner.",
     plain: "There's a scrolling list of upcoming events near the top of the home page. Your event goes first on that list for 30 days. Hard to scroll past." },
   { id: "holly_yeti",      label: "Holly & Yeti Spotlight", detail: "30 Days",            price: "$179", fullPrice: "$350", diagramType: "video",
     desc: "Holly and The Yeti make a short video about your event or business. Lives on the site for 30 days.",
     plain: "We come out, shoot a short video, and it lives on the website for a month. We share it on social too. It's the kind of thing people actually watch." },
   { id: "spotlight",       label: "Full Launch Bundle",     detail: "Best Value",         price: "$149", fullPrice: "$299", diagramType: "bundle",
     desc: "Front page of the site for 7 days + top of the newsletter + featured calendar listing. All three at once.",
-    plain: "The whole shebang. Front page of the website, top of the email, featured in the calendar. Maximum coverage — and you save $55 doing it this way.", badge: "Best Value" },
+    plain: "The whole shebang. Front page of the website, top of the email, featured in the calendar. Maximum coverage - and you save $55 doing it this way.", badge: "Best Value" },
   { id: "rsvp_collection", label: "RSVP Collection",        detail: "Per Event",          price: "$9",   fullPrice: "$19",  diagramType: "calendar",
     desc: "In-app RSVP form, organizer notifications, and email reminders the day before and day of.",
     plain: "Visitors register right on the site. You get notified for each RSVP. Everyone gets a reminder email the day before and day of your event. SMS reminders coming soon." },
@@ -70,11 +70,11 @@ function PlacementDiagram({ type, dark = false }) {
   const muted = dark ? "rgba(255,255,255,0.09)" : "rgba(45,59,69,0.09)";
   const base = { borderRadius: 6, overflow: "hidden", marginBottom: 14, border: `1px solid ${line}`, background: bg, padding: "8px 10px", position: "relative" };
   if (type === "free") return (<div style={base}><div style={{ height: 8, borderRadius: 3, background: muted, marginBottom: 5, width: "55%" }} />{[1,2,3].map(i => (<div key={i} style={{ height: 8, borderRadius: 3, background: muted, marginBottom: 3, opacity: i === 1 ? 1 : 0.6 }} />))}<div style={{ fontSize: 7, color: dark ? "rgba(255,255,255,0.35)" : "rgba(45,59,69,0.4)", fontFamily: "'Libre Franklin',sans-serif", marginTop: 3, letterSpacing: 0.5 }}>Text-only listing in the calendar</div></div>);
-  if (type === "hero") return (<div style={base}><div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 5 }}><div style={{ width: 6, height: 6, borderRadius: "50%", background: muted }} /><div style={{ flex: 1, height: 4, borderRadius: 2, background: muted }} /><div style={{ width: 20, height: 4, borderRadius: 2, background: muted }} /><div style={{ width: 16, height: 4, borderRadius: 2, background: muted }} /></div><div style={{ height: 38, borderRadius: 4, background: hl, display: "flex", alignItems: "center", justifyContent: "center" }}><span style={{ fontSize: 8, fontFamily: "'Libre Franklin',sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.9)" }}>Your Event — Full Screen</span></div><div style={{ display: "flex", gap: 4, marginTop: 5 }}>{[1,2,3].map(i => <div key={i} style={{ flex: 1, height: 10, borderRadius: 3, background: muted }} />)}</div></div>);
+  if (type === "hero") return (<div style={base}><div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 5 }}><div style={{ width: 6, height: 6, borderRadius: "50%", background: muted }} /><div style={{ flex: 1, height: 4, borderRadius: 2, background: muted }} /><div style={{ width: 20, height: 4, borderRadius: 2, background: muted }} /><div style={{ width: 16, height: 4, borderRadius: 2, background: muted }} /></div><div style={{ height: 38, borderRadius: 4, background: hl, display: "flex", alignItems: "center", justifyContent: "center" }}><span style={{ fontSize: 8, fontFamily: "'Libre Franklin',sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.9)" }}>Your Event - Full Screen</span></div><div style={{ display: "flex", gap: 4, marginTop: 5 }}>{[1,2,3].map(i => <div key={i} style={{ flex: 1, height: 10, borderRadius: 3, background: muted }} />)}</div></div>);
   if (type === "calendar") return (<div style={base}><div style={{ height: 8, borderRadius: 3, background: muted, marginBottom: 5, width: "60%" }} /><div style={{ borderRadius: 4, border: `1.5px solid ${hl}`, background: `${hl}20`, padding: "4px 6px", marginBottom: 3, display: "flex", alignItems: "center", gap: 5 }}><div style={{ width: 20, height: 14, borderRadius: 2, background: hl, flexShrink: 0 }} /><div style={{ flex: 1 }}><div style={{ height: 4, borderRadius: 2, background: "rgba(255,255,255,0.5)", marginBottom: 2 }} /><div style={{ height: 3, borderRadius: 2, background: muted, width: "70%" }} /></div><div style={{ fontSize: 7, fontFamily: "'Libre Franklin',sans-serif", fontWeight: 700, color: hl, whiteSpace: "nowrap", letterSpacing: 0.5 }}>GET TICKETS</div></div>{[1,2].map(i => <div key={i} style={{ height: 10, borderRadius: 3, background: muted, marginBottom: 3 }} />)}</div>);
   if (type === "newsletter_sm") return (<div style={base}><div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 5 }}><div style={{ fontSize: 12 }}>✉️</div><div style={{ flex: 1, height: 4, borderRadius: 2, background: muted }} /></div>{[1,2].map(i => <div key={i} style={{ height: 4, borderRadius: 2, background: muted, marginBottom: 3, width: "100%" }} />)}<div style={{ display: "flex", alignItems: "center", gap: 6, padding: "3px 5px", borderRadius: 3, background: `${hl}30`, border: `1px solid ${hl}60`, marginBottom: 3 }}><div style={{ width: 6, height: 6, borderRadius: "50%", background: hl, flexShrink: 0 }} /><div style={{ flex: 1, height: 3, borderRadius: 2, background: hl, opacity: 0.7 }} /><div style={{ fontSize: 6, color: dark ? "rgba(255,255,255,0.5)" : "rgba(45,59,69,0.5)", fontFamily: "'Libre Franklin',sans-serif", whiteSpace: "nowrap" }}>↗</div></div>{[1,2].map(i => <div key={i} style={{ height: 4, borderRadius: 2, background: muted, marginBottom: 3, width: i === 2 ? "65%" : "100%" }} />)}<div style={{ fontSize: 7, color: dark ? "rgba(255,255,255,0.35)" : "rgba(45,59,69,0.4)", fontFamily: "'Libre Franklin',sans-serif", letterSpacing: 0.5 }}>Brand mention with link in email body</div></div>);
-  if (type === "newsletter") return (<div style={base}><div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 5 }}><div style={{ fontSize: 12 }}>✉️</div><div style={{ flex: 1, height: 4, borderRadius: 2, background: muted }} /></div><div style={{ borderRadius: 3, background: hl, padding: "4px 6px", marginBottom: 4, textAlign: "center" }}><span style={{ fontSize: 7, fontFamily: "'Libre Franklin',sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "#fff" }}>Your Brand — Top of Email</span></div>{[1,2,3].map(i => <div key={i} style={{ height: 4, borderRadius: 2, background: muted, marginBottom: 3, width: i === 3 ? "55%" : "100%" }} />)}</div>);
-  if (type === "banner" || type === "banner3") return (<div style={base}><div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 4 }}><div style={{ width: 6, height: 6, borderRadius: "50%", background: muted }} /><div style={{ flex: 1, height: 3, borderRadius: 2, background: muted }} /></div>{[1,2].map(i => <div key={i} style={{ height: 5, borderRadius: 2, background: muted, marginBottom: 3 }} />)}<div style={{ height: 14, borderRadius: 3, background: hl, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 3, position: "relative" }}><span style={{ fontSize: 7, fontFamily: "'Libre Franklin',sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "#fff" }}>{type === "banner3" ? "Your Banner — 3 Pages" : "Your Banner Placement"}</span></div>{[1,2].map(i => <div key={i} style={{ height: 5, borderRadius: 2, background: muted, marginBottom: 3 }} />)}{type === "banner3" && (<div style={{ display: "flex", gap: 3 }}>{["Page 1","Page 2","Page 3"].map(p => (<div key={p} style={{ flex: 1, height: 8, borderRadius: 2, background: `${hl}40`, display: "flex", alignItems: "center", justifyContent: "center" }}><span style={{ fontSize: 6, color: "rgba(255,255,255,0.6)", fontFamily: "'Libre Franklin',sans-serif" }}>{p}</span></div>))}</div>)}</div>);
+  if (type === "newsletter") return (<div style={base}><div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 5 }}><div style={{ fontSize: 12 }}>✉️</div><div style={{ flex: 1, height: 4, borderRadius: 2, background: muted }} /></div><div style={{ borderRadius: 3, background: hl, padding: "4px 6px", marginBottom: 4, textAlign: "center" }}><span style={{ fontSize: 7, fontFamily: "'Libre Franklin',sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "#fff" }}>Your Brand - Top of Email</span></div>{[1,2,3].map(i => <div key={i} style={{ height: 4, borderRadius: 2, background: muted, marginBottom: 3, width: i === 3 ? "55%" : "100%" }} />)}</div>);
+  if (type === "banner" || type === "banner3") return (<div style={base}><div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 4 }}><div style={{ width: 6, height: 6, borderRadius: "50%", background: muted }} /><div style={{ flex: 1, height: 3, borderRadius: 2, background: muted }} /></div>{[1,2].map(i => <div key={i} style={{ height: 5, borderRadius: 2, background: muted, marginBottom: 3 }} />)}<div style={{ height: 14, borderRadius: 3, background: hl, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 3, position: "relative" }}><span style={{ fontSize: 7, fontFamily: "'Libre Franklin',sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "#fff" }}>{type === "banner3" ? "Your Banner - 3 Pages" : "Your Banner Placement"}</span></div>{[1,2].map(i => <div key={i} style={{ height: 5, borderRadius: 2, background: muted, marginBottom: 3 }} />)}{type === "banner3" && (<div style={{ display: "flex", gap: 3 }}>{["Page 1","Page 2","Page 3"].map(p => (<div key={p} style={{ flex: 1, height: 8, borderRadius: 2, background: `${hl}40`, display: "flex", alignItems: "center", justifyContent: "center" }}><span style={{ fontSize: 6, color: "rgba(255,255,255,0.6)", fontFamily: "'Libre Franklin',sans-serif" }}>{p}</span></div>))}</div>)}</div>);
   if (type === "strip") return (<div style={base}><div style={{ height: 24, borderRadius: 4, background: muted, marginBottom: 5, display: "flex", alignItems: "center", justifyContent: "center" }}><span style={{ fontSize: 7, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin',sans-serif" }}>Hero Area</span></div><div style={{ display: "flex", gap: 4, overflow: "hidden" }}><div style={{ flexShrink: 0, width: 44, height: 28, borderRadius: 4, background: hl, border: `1.5px solid rgba(255,255,255,0.3)`, display: "flex", alignItems: "center", justifyContent: "center" }}><span style={{ fontSize: 6, fontFamily: "'Libre Franklin',sans-serif", fontWeight: 700, color: "#fff", textAlign: "center", lineHeight: 1.2 }}>YOUR<br/>EVENT</span></div>{[1,2,3].map(i => <div key={i} style={{ flexShrink: 0, width: 44, height: 28, borderRadius: 4, background: muted }} />)}</div><div style={{ fontSize: 7, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin',sans-serif", marginTop: 3, letterSpacing: 0.5 }}>First in the Coming Up strip</div></div>);
   if (type === "video") return (<div style={base}><div style={{ height: 44, borderRadius: 4, background: `linear-gradient(135deg,rgba(10,18,24,0.9),rgba(45,59,69,0.9))`, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, border: `1px solid ${hl}60` }}><div style={{ width: 20, height: 20, borderRadius: "50%", background: hl, display: "flex", alignItems: "center", justifyContent: "center" }}><span style={{ fontSize: 8, marginLeft: 2 }}>▶</span></div><div><div style={{ fontSize: 7, fontFamily: "'Libre Franklin',sans-serif", fontWeight: 700, color: "#fff", letterSpacing: 0.5 }}>Holly & The Yeti</div><div style={{ fontSize: 6, color: "rgba(255,255,255,0.5)", fontFamily: "'Libre Franklin',sans-serif" }}>feature your event</div></div></div></div>);
   if (type === "bundle") return (<div style={base}><div style={{ height: 14, borderRadius: 3, background: hl, display: "flex", alignItems: "center", paddingLeft: 6, marginBottom: 3 }}><span style={{ fontSize: 6, fontFamily: "'Libre Franklin',sans-serif", fontWeight: 700, color: "#fff", letterSpacing: 0.5, textTransform: "uppercase" }}>Front Page</span></div><div style={{ display: "flex", gap: 3, marginBottom: 3 }}><div style={{ flex: 1, height: 8, borderRadius: 2, background: `${hl}80`, display: "flex", alignItems: "center", justifyContent: "center" }}><span style={{ fontSize: 6, color: "#fff", fontFamily: "'Libre Franklin',sans-serif" }}>✉️ Newsletter</span></div><div style={{ flex: 1, height: 8, borderRadius: 2, background: `${hl}60`, display: "flex", alignItems: "center", justifyContent: "center" }}><span style={{ fontSize: 6, color: "#fff", fontFamily: "'Libre Franklin',sans-serif" }}>📅 Calendar</span></div></div><div style={{ fontSize: 7, color: "rgba(255,255,255,0.4)", fontFamily: "'Libre Franklin',sans-serif", textAlign: "center", letterSpacing: 0.5 }}>All three placements at once</div></div>);
@@ -165,7 +165,7 @@ export function AdvertisePage() {
           Put your business in front of<br/>the people who spend their summers here.
         </h1>
         <p style={{ fontSize: 16, color: "rgba(255,255,255,0.5)", lineHeight: 1.8, maxWidth: 540, margin: "0 auto" }}>
-          Manitou Beach isn't a passing-through crowd. These are lake residents, seasonal visitors, and local loyalists — a tight community that buys local and pays attention.
+          Manitou Beach isn't a passing-through crowd. These are lake residents, seasonal visitors, and local loyalists - a tight community that buys local and pays attention.
         </p>
       </section>
 
@@ -181,7 +181,7 @@ export function AdvertisePage() {
       )}
       {isCancelled && (
         <div style={{ background: "#2a1a1a", padding: "24px 24px", textAlign: "center" }}>
-          <div style={{ fontSize: 15, color: "rgba(255,255,255,0.5)" }}>No worries — checkout was cancelled. Your info is still here whenever you're ready.</div>
+          <div style={{ fontSize: 15, color: "rgba(255,255,255,0.5)" }}>No worries - checkout was cancelled. Your info is still here whenever you're ready.</div>
         </div>
       )}
 
@@ -191,8 +191,8 @@ export function AdvertisePage() {
           <SectionLabel style={{ textAlign: "center", display: "block" }}>Who This Is For</SectionLabel>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 20, marginTop: 20 }}>
             {[
-              { icon: "🏪", title: "Local Businesses", body: "You're already in the directory. Now put your brand in front of the community beyond search results — in their inbox, on the pages they actually visit." },
-              { icon: "🗺️", title: "Regional Brands", body: "Reach a highly-engaged audience of lake homeowners, cottage visitors, and outdoor recreation buyers. No agency required — just pick a spot and we'll handle the rest." },
+              { icon: "🏪", title: "Local Businesses", body: "You're already in the directory. Now put your brand in front of the community beyond search results - in their inbox, on the pages they actually visit." },
+              { icon: "🗺️", title: "Regional Brands", body: "Reach a highly-engaged audience of lake homeowners, cottage visitors, and outdoor recreation buyers. No agency required - just pick a spot and we'll handle the rest." },
               { icon: "📣", title: "Event Organizers", body: "Running a market, festival, or fundraiser? Page banners and newsletter features put your event in front of the right crowd before the date." },
             ].map(({ icon, title, body }) => (
               <div key={title} style={{ background: C.cream, borderRadius: 12, padding: "24px 20px", border: `1px solid ${C.sand}` }}>
@@ -211,7 +211,7 @@ export function AdvertisePage() {
           <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginBottom: 8 }}>
             <SectionTitle style={{ margin: 0 }}>Ad Placements</SectionTitle>
             <div style={{ background: `${C.sunset}18`, border: `1px solid ${C.sunset}40`, borderRadius: 20, padding: "6px 16px", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunset, fontFamily: "'Libre Franklin', sans-serif" }}>
-              Founding Rates — Limited Time
+              Founding Rates - Limited Time
             </div>
           </div>
           <p style={{ fontSize: 14, color: C.textMuted, marginBottom: 36, fontFamily: "'Libre Franklin', sans-serif" }}>
@@ -236,7 +236,7 @@ export function AdvertisePage() {
                 </p>
               ) : (
                 <p style={{ margin: 0, fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
-                  Rate increase in effect — thank you for advertising with the Dispatch.
+                  Rate increase in effect - thank you for advertising with the Dispatch.
                 </p>
               )}
             </div>
@@ -290,7 +290,7 @@ export function AdvertisePage() {
             Own a page. Be the only brand on it.
           </h2>
           <p style={{ fontSize: 15, color: "rgba(255,255,255,0.5)", lineHeight: 1.8, maxWidth: 560, margin: "0 auto 28px" }}>
-            Ten pages. One exclusive sponsor per page. Your logo, tagline, and link — the only ad on that page for the full term. A bait shop on the Fishing page. A winery on the Wineries page. A real estate office on the Devils Lake page.
+            Ten pages. One exclusive sponsor per page. Your logo, tagline, and link - the only ad on that page for the full term. A bait shop on the Fishing page. A winery on the Wineries page. A real estate office on the Devils Lake page.
           </p>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 20, flexWrap: "wrap", marginBottom: 28 }}>
             <div style={{ textAlign: "center" }}>
@@ -329,7 +329,7 @@ export function AdvertisePage() {
             <SectionTitle>Get Started</SectionTitle>
             <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, margin: "0 0 36px 0" }}>
               You've selected <strong style={{ color: C.text }}>{selectedPkg?.label}</strong>
-              {selectedPkg && ` — ${selectedPkg.price}`}. Fill in your details and we'll have your placement live within 24 hours.
+              {selectedPkg && ` - ${selectedPkg.price}`}. Fill in your details and we'll have your placement live within 24 hours.
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               <div>
@@ -378,7 +378,7 @@ export function AdvertisePage() {
               <div>
                 <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.textMuted, marginBottom: 6 }}>Notes (optional)</label>
                 <textarea
-                  placeholder="Anything you'd like us to know — URL to include, preferred timing, etc."
+                  placeholder="Anything you'd like us to know - URL to include, preferred timing, etc."
                   value={form.notes}
                   onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
                   rows={3}
@@ -387,7 +387,7 @@ export function AdvertisePage() {
               </div>
               {error && <div style={{ color: "#c0392b", fontSize: 13, fontFamily: "'Libre Franklin', sans-serif" }}>{error}</div>}
               <Btn onClick={handleSubmit} variant="primary" style={{ width: "100%", textAlign: "center", opacity: loading ? 0.6 : 1 }}>
-                {loading ? "Redirecting to checkout…" : `Continue to Payment — ${selectedPkg?.price}`}
+                {loading ? "Redirecting to checkout…" : `Continue to Payment - ${selectedPkg?.price}`}
               </Btn>
               <div style={{ fontSize: 12, color: C.textMuted, textAlign: "center", fontFamily: "'Libre Franklin', sans-serif" }}>
                 Secure payment via Stripe · Your placement goes live within 24 hours
@@ -510,10 +510,10 @@ export default function PromotePage() {
           Give your event the spotlight.
         </h1>
         <p style={{ fontSize: 16, color: "rgba(255,255,255,0.5)", lineHeight: 1.8, maxWidth: 560, margin: "0 auto 24px" }}>
-          Already listed on the calendar? These paid promotion packages put your event front and center — homepage features, newsletter spots, page banners, and more.
+          Already listed on the calendar? These paid promotion packages put your event front and center - homepage features, newsletter spots, page banners, and more.
         </p>
         <a href="/submit-event" style={{ fontSize: 15, color: C.sunsetLight, textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif", borderBottom: "1px solid rgba(255,255,255,0.2)", paddingBottom: 2 }}>
-          Just want to list your event for free? Go here — takes 2 minutes →
+          Just want to list your event for free? Go here - takes 2 minutes →
         </a>
       </section>
 
@@ -529,11 +529,11 @@ export default function PromotePage() {
       )}
       {isCancelled && (
         <div style={{ background: "#2a1a1a", padding: "24px 24px", textAlign: "center" }}>
-          <div style={{ fontSize: 15, color: "rgba(255,255,255,0.5)" }}>All good — nothing was charged. Your details are saved whenever you want to try again.</div>
+          <div style={{ fontSize: 15, color: "rgba(255,255,255,0.5)" }}>All good - nothing was charged. Your details are saved whenever you want to try again.</div>
         </div>
       )}
 
-      {/* Free listing nudge — clear separation from paid options */}
+      {/* Free listing nudge - clear separation from paid options */}
       <section style={{ background: C.warmWhite, padding: "28px 24px", textAlign: "center", borderBottom: `1px solid ${C.sand}` }}>
         <p style={{ fontSize: 15, color: C.textMuted, margin: 0, fontFamily: "'Libre Franklin', sans-serif" }}>
           Listing your event on the calendar is <strong style={{ color: C.text }}>always free</strong>.{" "}
@@ -550,7 +550,7 @@ export default function PromotePage() {
           <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginBottom: 8 }}>
             <SectionTitle style={{ margin: 0 }}>Promotion Packages</SectionTitle>
             <div style={{ background: `${C.sunset}18`, border: `1px solid ${C.sunset}40`, borderRadius: 20, padding: "6px 16px", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunset, fontFamily: "'Libre Franklin', sans-serif" }}>
-              Founding Sponsor Rates — Limited Time
+              Founding Sponsor Rates - Limited Time
             </div>
           </div>
           <p style={{ fontSize: 14, color: C.textMuted, marginBottom: 40, fontFamily: "'Libre Franklin', sans-serif" }}>
@@ -610,7 +610,7 @@ export default function PromotePage() {
           <div style={{ maxWidth: 580, margin: "0 auto" }}>
             <SectionTitle>Boost Your Event's Visibility</SectionTitle>
             <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, margin: "0 0 40px 0" }}>
-              Choose a paid promotion package above to get your event in front of more people — homepage hero, newsletter feature, page banners, and more. Select your package, fill in your details, and you'll be taken to a secure Stripe checkout. Your promotion goes live within 24 hours of payment.
+              Choose a paid promotion package above to get your event in front of more people - homepage hero, newsletter feature, page banners, and more. Select your package, fill in your details, and you'll be taken to a secure Stripe checkout. Your promotion goes live within 24 hours of payment.
             </p>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
@@ -619,7 +619,7 @@ export default function PromotePage() {
                 <input
                   value={form.eventName}
                   onChange={e => setForm(f => ({ ...f, eventName: e.target.value }))}
-                  placeholder="e.g. Cherry Creek Cellars — Grape Stomp"
+                  placeholder="e.g. Cherry Creek Cellars - Grape Stomp"
                   style={{ width: "100%", padding: "12px 14px", borderRadius: 8, border: `1px solid ${C.sand}`, fontSize: 15, fontFamily: "'Libre Franklin', sans-serif", boxSizing: "border-box", background: C.warmWhite, color: C.text, outline: "none" }}
                 />
               </div>
@@ -643,7 +643,7 @@ export default function PromotePage() {
                   style={{ width: "100%", padding: "12px 14px", borderRadius: 8, border: `1px solid ${C.sand}`, fontSize: 15, fontFamily: "'Libre Franklin', sans-serif", boxSizing: "border-box", background: C.warmWhite, color: C.text, outline: "none" }}
                 >
                   {PROMOTE_PACKAGES.map(pkg => (
-                    <option key={pkg.id} value={pkg.id}>{pkg.label} — {pkg.detail} — {pkg.price}</option>
+                    <option key={pkg.id} value={pkg.id}>{pkg.label} - {pkg.detail} - {pkg.price}</option>
                   ))}
                 </select>
                 {selectedPkg && (
@@ -704,7 +704,7 @@ export default function PromotePage() {
                   width: "100%",
                 }}
               >
-                {loading ? "Redirecting to Checkout…" : `Purchase — ${selectedPkg?.price || ""}`}
+                {loading ? "Redirecting to Checkout…" : `Purchase - ${selectedPkg?.price || ""}`}
               </button>
 
               <p style={{ fontSize: 12, color: C.textMuted, textAlign: "center", lineHeight: 1.6, margin: 0 }}>
@@ -715,12 +715,12 @@ export default function PromotePage() {
         </section>
       )}
 
-      {/* Amplify nudge — for businesses / recurring advertisers */}
+      {/* Amplify nudge - for businesses / recurring advertisers */}
       <section style={{ background: C.warmWhite, padding: "40px 24px", borderTop: `1px solid ${C.sand}` }}>
         <div style={{ maxWidth: 780, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}>
           <div>
             <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.text, marginBottom: 6 }}>Running a business, not just an event?</div>
-            <div style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6 }}>Ongoing ad placements — newsletter sponsorships, page banners, and video features — are on the advertising page.</div>
+            <div style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6 }}>Ongoing ad placements - newsletter sponsorships, page banners, and video features - are on the advertising page.</div>
           </div>
           <Btn href="/advertise" variant="outline" small style={{ whiteSpace: "nowrap", flexShrink: 0 }}>Explore Ad Placements →</Btn>
         </div>

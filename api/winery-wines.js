@@ -1,4 +1,4 @@
-// Wines Registry — GET active wines for autocomplete on /rate
+// Wines Registry - GET active wines for autocomplete on /rate
 // Admin: GET with X-Admin-Token returns all; POST creates; PATCH toggles Active
 export default async function handler(req, res) {
   const TOKEN = process.env.NOTION_TOKEN_BUSINESS;
@@ -70,7 +70,7 @@ export default async function handler(req, res) {
     }
   }
 
-  // ── POST — create wine (admin only) ──────────────────────────────────────
+  // ── POST - create wine (admin only) ──────────────────────────────────────
   if (req.method === 'POST') {
     if (!isAdmin) return res.status(401).json({ error: 'Unauthorized' });
 
@@ -116,7 +116,7 @@ export default async function handler(req, res) {
     }
   }
 
-  // ── PATCH — toggle Active (admin only) ───────────────────────────────────
+  // ── PATCH - toggle Active (admin only) ───────────────────────────────────
   if (req.method === 'PATCH') {
     if (!isAdmin) return res.status(401).json({ error: 'Unauthorized' });
 

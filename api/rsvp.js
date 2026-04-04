@@ -15,7 +15,7 @@ export default async function handler(req, res) {
   if (!name || !email) return res.status(400).json({ error: 'Name and email are required' });
   if (!eventId) return res.status(400).json({ error: 'Event ID required' });
 
-  // 0. Capacity check — block if event is full
+  // 0. Capacity check - block if event is full
   let currentRsvpCount = 0;
   try {
     const eventPage = await fetch(`https://api.notion.com/v1/pages/${eventId}`, { headers: NOTION_HEADERS });
@@ -29,7 +29,7 @@ export default async function handler(req, res) {
     }
   } catch (err) {
     console.error('RSVP capacity check error:', err.message);
-    // Continue — don't block on capacity check failure
+    // Continue - don't block on capacity check failure
   }
 
   // 1. Write RSVP to Notion
@@ -80,7 +80,7 @@ export default async function handler(req, res) {
       if (dateLine) parts.push(dateLine);
       if (eventTime) parts.push(eventTime);
       if (eventLocation) parts.push(eventLocation);
-      parts.push("We'll text you a reminder before the event. — Manitou Beach");
+      parts.push("We'll text you a reminder before the event. - Manitou Beach");
       sendSMS(digits, parts.join('\n')).catch(() => {});
     }
   }

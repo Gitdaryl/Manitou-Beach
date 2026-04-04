@@ -6,31 +6,31 @@ import { Footer, GlobalStyles, Navbar } from '../components/Layout';
 import yeti from '../data/errorMessages';
 
 const TRUCK_HOW = [
-  { step: "01", title: "Sign up — 2 minutes flat", copy: "Truck name, cuisine, phone, photo. Pick your tier. Verify your phone with a quick text code — and your personal check-in link arrives instantly. No app, no login, no waiting." },
+  { step: "01", title: "Sign up - 2 minutes flat", copy: "Truck name, cuisine, phone, photo. Pick your tier. Verify your phone with a quick text code - and your personal check-in link arrives instantly. No app, no login, no waiting." },
   { step: "02", title: "Tap your link every time you head out", copy: "Pulling into Manitou Beach? Open your link. Drop a location note ('near the boat launch'), add today's special, set your estimated departure. Tap 'I'm Here.' Your map pin goes live in seconds." },
-  { step: "03", title: "Locals find you right now", copy: "Anyone checking the locator sees your Live Now badge, today's special, and how long you'll be around. Not a static ad — a real-time signal that turns browsers into customers." },
+  { step: "03", title: "Locals find you right now", copy: "Anyone checking the locator sees your Live Now badge, today's special, and how long you'll be around. Not a static ad - a real-time signal that turns browsers into customers." },
   { step: "04", title: "Pre-announce a run before you leave home", copy: "Planning to be there Saturday? Set your Coming Date and customers see 'Coming This Saturday' in the locator before you even hitch up. You show up to a crowd instead of building one." },
 ];
 const TRUCK_AUDIENCE = [
-  { icon: "🏖️", label: "Lake crowd", copy: "Manitou Beach draws thousands of summer visitors — boaters, swimmers, families. They're hungry and they're looking." },
+  { icon: "🏖️", label: "Lake crowd", copy: "Manitou Beach draws thousands of summer visitors - boaters, swimmers, families. They're hungry and they're looking." },
   { icon: "🍷", label: "Wine trail visitors", copy: "The Irish Hills wine trail runs through here. Day-trippers who've been tasting since noon are your best customers." },
   { icon: "🏡", label: "Lake homeowners", copy: "300+ waterfront properties and seasonal rentals nearby. People who've been here all week and want something different for lunch." },
   { icon: "📅", label: "Event weekends", copy: "Tournaments, festivals, car shows, open-air concerts. High-traffic weekends where a well-placed truck cleans up." },
 ];
 const TRUCK_GETS = [
-  { icon: "📍", title: "Live map pin", copy: "Your truck appears on the locator the moment you check in — 'Live Now' badge, location, what you serve. Off when you're not here." },
+  { icon: "📍", title: "Live map pin", copy: "Your truck appears on the locator the moment you check in - 'Live Now' badge, location, what you serve. Off when you're not here." },
   { icon: "🔗", title: "Personal check-in URL", copy: "A private link that's yours forever. Open from your phone, fill in two fields, tap one button. On the map in under a minute." },
   { icon: "⭐", title: "Today's Special badge", copy: "Running a lunch deal or testing a new item? Add it on check-in. It shows as a highlighted badge on your live card." },
   { icon: "📅", title: "Coming Soon pre-announce", copy: "Planning a Saturday run? Set your date and customers see 'Coming This Saturday' in the locator before you arrive." },
-  { icon: "❤️", title: "Customer hearts + dish ratings", copy: "Customers heart your truck and tag what they loved — 'the ribs', 'fish tacos'. Every heart builds your love count on the locator." },
-  { icon: "🏆", title: "Most Loved ranking", copy: "The locator sorts by love count. The truck with the most hearts and dish ratings rises to the top — more visibility, more customers." },
+  { icon: "❤️", title: "Customer hearts + dish ratings", copy: "Customers heart your truck and tag what they loved - 'the ribs', 'fish tacos'. Every heart builds your love count on the locator." },
+  { icon: "🏆", title: "Most Loved ranking", copy: "The locator sorts by love count. The truck with the most hearts and dish ratings rises to the top - more visibility, more customers." },
   { icon: "📰", title: "Newsletter shoutout", copy: "When you're checked in on send days, hundreds of readers who follow Manitou Beach see your name." },
   { icon: "📋", title: "Directory listing year-round", copy: "Your name, cuisine, and contact info stay visible in the All Trucks list even when you're not checked in." },
 ];
 const TRUCK_PAID_ITEMS = [
   { icon: "📍", label: "Live map pin", sub: "Goes live the moment you check in. Off when you leave." },
-  { icon: "🔗", label: "Personal check-in URL", sub: "Your private link. Open from your phone. No app, no login — ever." },
-  { icon: "⭐", label: "Today's Special badge", sub: "Add a special on check-in — it highlights on your live card." },
+  { icon: "🔗", label: "Personal check-in URL", sub: "Your private link. Open from your phone. No app, no login - ever." },
+  { icon: "⭐", label: "Today's Special badge", sub: "Add a special on check-in - it highlights on your live card." },
   { icon: "📅", label: "Coming Soon pre-announce", sub: "Set a future date. Customers see 'Coming This Saturday' before you arrive." },
   { icon: "❤️", label: "Customer hearts + dish ratings", sub: "Customers heart your truck and tag what they loved. Every heart counts." },
   { icon: "🏆", label: "Most Loved ranking", sub: "More hearts = higher on the locator. The ranking is public and competitive." },
@@ -115,9 +115,9 @@ export default function FoodTruckPartnerPage() {
       });
       const data = await res.json();
       if (data.url) { setImageUrl(data.url); setImageError(''); }
-      else setImageError('Upload failed — you can skip the photo and add it later.');
+      else setImageError('Upload failed - you can skip the photo and add it later.');
     } catch {
-      setImageError('Upload failed — you can skip the photo and add it later.');
+      setImageError('Upload failed - you can skip the photo and add it later.');
     }
     finally { setImageUploading(false); }
   };
@@ -135,7 +135,7 @@ export default function FoodTruckPartnerPage() {
     }
     const phoneDigits = (form.phone || '').replace(/\D/g, '');
     if (phoneDigits.length < 10) {
-      setSubmitError('A valid phone number is required — we\'ll text you a verification code.');
+      setSubmitError('A valid phone number is required - we\'ll text you a verification code.');
       return;
     }
     setLoading(true);
@@ -195,12 +195,12 @@ export default function FoodTruckPartnerPage() {
       }
 
       if (data.activated) {
-        // Free tier — they're live
+        // Free tier - they're live
         try { localStorage.setItem('mb_ft_slug', data.slug); } catch {}
         setActivationData({ slug: data.slug, checkinUrl: data.checkinUrl, truckName: data.truckName });
         setStep('activated');
       } else if (data.needsPayment) {
-        // Paid tier — verified, now redirect to Stripe
+        // Paid tier - verified, now redirect to Stripe
         setStep('redirecting');
         const checkoutRes = await fetch('/api/create-checkout', {
           method: 'POST',
@@ -248,7 +248,7 @@ export default function FoodTruckPartnerPage() {
 
       {/* Partner context strip */}
       <div style={{ background: C.night, borderBottom: "1px solid rgba(255,255,255,0.07)", padding: "9px 24px", display: "flex", alignItems: "center", justifyContent: "center", gap: 28, flexWrap: "wrap" }}>
-        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif" }}>This page isn't public — you're seeing it because someone sent it to you.</span>
+        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif" }}>This page isn't public - you're seeing it because someone sent it to you.</span>
         <a href="/food-trucks" style={{ fontSize: 12, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>See the Locator →</a>
         <a href="/" style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", fontFamily: "'Libre Franklin', sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Visit Homepage →</a>
       </div>
@@ -264,7 +264,7 @@ export default function FoodTruckPartnerPage() {
             Your truck. Live on the map.<br /><em>Every time you're nearby.</em>
           </h1>
           <p style={{ fontSize: 16, color: "rgba(255,255,255,0.5)", maxWidth: 520, margin: "0 auto 20px", lineHeight: 1.85 }}>
-            Live on the map the moment you check in — customers heart your truck, rate their favourite dishes, and push you to the top of the Most Loved rankings.
+            Live on the map the moment you check in - customers heart your truck, rate their favourite dishes, and push you to the top of the Most Loved rankings.
           </p>
           <div style={{ marginBottom: 20 }}>
             <img src="/images/yeti/yeti-celebrates.png" alt="The Yeti" style={{ width: 200, height: 200, objectFit: "contain" }} />
@@ -274,7 +274,7 @@ export default function FoodTruckPartnerPage() {
           </div>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
             <Btn onClick={() => scrollToSignup('paid')} variant="sunset" style={{ whiteSpace: "nowrap" }}>
-              Get on the Map — Free During Beta →
+              Get on the Map - Free During Beta →
             </Btn>
           </div>
         </FadeIn>
@@ -372,7 +372,7 @@ export default function FoodTruckPartnerPage() {
               A customer walks up and says:<br /><em style={{ color: C.sunsetLight }}>"I saw you on the map and came straight here."</em>
             </p>
             <p style={{ fontSize: 14, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, margin: 0 }}>
-              That's the moment your truck becomes a destination, not an accident. Everything we built is designed to create more of those moments — for you and for the hungry people at the lake.
+              That's the moment your truck becomes a destination, not an accident. Everything we built is designed to create more of those moments - for you and for the hungry people at the lake.
             </p>
           </FadeIn>
         </div>
@@ -387,7 +387,7 @@ export default function FoodTruckPartnerPage() {
             <SectionLabel style={{ textAlign: "center", display: "block" }}>Beta Launch</SectionLabel>
             <SectionTitle center>Founding trucks get everything.</SectionTitle>
             <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 560, margin: "0 auto 48px", textAlign: "center" }}>
-              Sign up now and get the full Featured experience — live map pin, customer hearts, Most Loved rankings, newsletter mentions — completely free through May 10. After that, it's $9/month to stay live on the map.
+              Sign up now and get the full Featured experience - live map pin, customer hearts, Most Loved rankings, newsletter mentions - completely free through May 10. After that, it's $9/month to stay live on the map.
             </p>
           </FadeIn>
 
@@ -447,7 +447,7 @@ export default function FoodTruckPartnerPage() {
               Your truck. Live on the map.<br /><em style={{ color: C.sunsetLight }}>Free through May 10.</em>
             </h2>
             <p style={{ fontSize: 14, color: "rgba(255,255,255,0.42)", lineHeight: 1.85, marginBottom: 32, textAlign: "center" }}>
-              Founding trucks get the full Featured experience — live map pin, customer hearts, Most Loved rankings — completely free. No card required.
+              Founding trucks get the full Featured experience - live map pin, customer hearts, Most Loved rankings - completely free. No card required.
             </p>
 
             {step === 'activated' ? (
@@ -458,7 +458,7 @@ export default function FoodTruckPartnerPage() {
                   {activationData?.truckName || 'Your truck'} is live!
                 </h3>
                 <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: C.sunsetLight, marginBottom: 20 }}>
-                  You're a founding truck — check your texts for your personal check-in link.
+                  You're a founding truck - check your texts for your personal check-in link.
                 </div>
                 <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.8, margin: "0 0 28px", maxWidth: 400, marginLeft: "auto", marginRight: "auto" }}>
                   Open that link every time you head to Manitou Beach. Drop your pin, add today's special, and you're live on the map in seconds.
@@ -540,7 +540,7 @@ export default function FoodTruckPartnerPage() {
               <div style={{ textAlign: "center", padding: "48px 24px", background: "rgba(255,255,255,0.04)", borderRadius: 16, border: "1px solid rgba(255,255,255,0.1)" }}>
                 <div style={{ fontSize: 40, marginBottom: 16 }}>✓</div>
                 <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream, fontWeight: 400, margin: "0 0 12px" }}>
-                  Phone verified — heading to checkout
+                  Phone verified - heading to checkout
                 </h3>
                 <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.8 }}>
                   Redirecting to Stripe…
@@ -551,7 +551,7 @@ export default function FoodTruckPartnerPage() {
               <>
                 {/* ── BETA BADGE ── */}
                 <div style={{ textAlign: "center", marginBottom: 24, padding: "14px 20px", background: "rgba(212,132,90,0.12)", border: "1px solid rgba(212,132,90,0.25)", borderRadius: 12 }}>
-                  <div style={{ fontFamily: "'Caveat', cursive", fontSize: 17, color: C.sunsetLight, marginBottom: 2 }}>Founding Truck — Free through May 10</div>
+                  <div style={{ fontFamily: "'Caveat', cursive", fontSize: 17, color: C.sunsetLight, marginBottom: 2 }}>Founding Truck - Free through May 10</div>
                   <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)" }}>Full Featured experience. No credit card. No catch.</div>
                 </div>
 
@@ -589,7 +589,7 @@ export default function FoodTruckPartnerPage() {
                       />
                     </div>
                     <div>
-                      <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 6 }}>Phone * <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>— for verification</span></label>
+                      <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 6 }}>Phone * <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>- for verification</span></label>
                       <input
                         type="tel"
                         value={form.phone}
@@ -613,7 +613,7 @@ export default function FoodTruckPartnerPage() {
                   {/* ── IMAGE DROPPER ── */}
                   <div>
                     <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 6 }}>
-                      Truck Photo or Logo <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>— optional</span>
+                      Truck Photo or Logo <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>- optional</span>
                     </label>
                     <div
                       onClick={() => !imageUploading && document.getElementById('truck-image-input')?.click()}
@@ -638,7 +638,7 @@ export default function FoodTruckPartnerPage() {
                         <>
                           <img src={imagePreview} alt="" style={{ width: 64, height: 64, objectFit: "cover", borderRadius: 8, border: "1px solid rgba(255,255,255,0.15)" }} />
                           <span style={{ fontSize: 12, color: imageUrl ? C.sage : imageError ? "#e07070" : "rgba(255,255,255,0.4)" }}>
-                            {imageUploading ? "Uploading…" : imageUrl ? "✓ Photo uploaded" : imageError || "Upload failed — tap to retry"}
+                            {imageUploading ? "Uploading…" : imageUrl ? "✓ Photo uploaded" : imageError || "Upload failed - tap to retry"}
                           </span>
                           {!imageUploading && !imageUrl && (
                             <button
@@ -646,7 +646,7 @@ export default function FoodTruckPartnerPage() {
                               onClick={e => { e.stopPropagation(); clearImage(); }}
                               style={{ background: "none", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 6, padding: "6px 14px", fontSize: 11, color: "rgba(255,255,255,0.5)", cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", marginTop: 4 }}
                             >
-                              Skip photo — add it later
+                              Skip photo - add it later
                             </button>
                           )}
                         </>
@@ -656,7 +656,7 @@ export default function FoodTruckPartnerPage() {
                           <span style={{ fontSize: 13, color: "rgba(255,255,255,0.35)" }}>
                             {imageUploading ? "Uploading…" : "Drop a photo here, or tap to upload"}
                           </span>
-                          <span style={{ fontSize: 11, color: "rgba(255,255,255,0.2)" }}>JPG, PNG — any size, we'll resize it</span>
+                          <span style={{ fontSize: 11, color: "rgba(255,255,255,0.2)" }}>JPG, PNG - any size, we'll resize it</span>
                         </>
                       )}
                     </div>
@@ -690,7 +690,7 @@ export default function FoodTruckPartnerPage() {
                   >
                     {loading
                       ? "Sending verification code…"
-                      : "Get on the Map — Free →"
+                      : "Get on the Map - Free →"
                     }
                   </button>
                   <p style={{ fontSize: 11, color: "rgba(255,255,255,0.25)", textAlign: "center", lineHeight: 1.7, margin: "2px 0 0" }}>

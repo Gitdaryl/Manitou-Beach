@@ -242,7 +242,7 @@ function FoodTruckRedirect({ onBack }) {
           fontFamily: "'Caveat', cursive", fontSize: 22, color: C.sunsetLight,
           marginBottom: 8, fontWeight: 600,
         }}>
-          Wait — we've got something special for you
+          Wait - we've got something special for you
         </div>
         <h3 style={{
           fontFamily: "'Libre Baskerville', serif", fontSize: 26, color: C.cream,
@@ -344,7 +344,7 @@ function StaysRedirect({ onBack }) {
           fontFamily: "'Caveat', cursive", fontSize: 22, color: C.lakeBlueLight || C.sunsetLight,
           marginBottom: 8, fontWeight: 600,
         }}>
-          Wait — we've got something made for you
+          Wait - we've got something made for you
         </div>
         <h3 style={{
           fontFamily: "'Libre Baskerville', serif", fontSize: 26, color: C.cream,
@@ -356,7 +356,7 @@ function StaysRedirect({ onBack }) {
           fontFamily: "'Libre Franklin', sans-serif", fontSize: 14,
           color: 'rgba(255,255,255,0.55)', lineHeight: 1.85, margin: '0 0 12px', maxWidth: 380, marginLeft: 'auto', marginRight: 'auto',
         }}>
-          Instead of a generic business listing, your stay gets its own spotlight — right where lake visitors go looking for a place to sleep.
+          Instead of a generic business listing, your stay gets its own spotlight - right where lake visitors go looking for a place to sleep.
         </p>
         <div style={{
           display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'center',
@@ -669,7 +669,7 @@ export default function BetaBusinessPage() {
             {businessName ? `${decodeURIComponent(businessName)} is now on Manitou Beach.` : 'Your listing is live.'}
           </p>
           <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.textLight, maxWidth: 400, lineHeight: 1.7, margin: '0 0 32px' }}>
-            Your listing will be live when the site launches on April 10. You won't be charged anything until May 10 — check your email for confirmation.
+            Your listing will be live when the site launches on April 10. You won't be charged anything until May 10 - check your email for confirmation.
           </p>
           <a
             href="/"
@@ -751,7 +751,7 @@ export default function BetaBusinessPage() {
             color: C.sunsetLight,
             margin: '0 0 12px',
           }}>
-            Founding Business — Get Listed Before We Open
+            Founding Business - Get Listed Before We Open
           </p>
           <h1 style={{
             fontFamily: "'Libre Baskerville', serif",
@@ -771,7 +771,7 @@ export default function BetaBusinessPage() {
             margin: '0 auto 24px',
             lineHeight: 1.7,
           }}>
-            This is where Manitou Beach lives online. This summer, it's where lake visitors will find you.<br/><br/>Choose your tier and add your card. We won't charge anything until May 10 —
+            This is where Manitou Beach lives online. This summer, it's where lake visitors will find you.<br/><br/>Choose your tier and add your card. We won't charge anything until May 10 -
             that's your entire founding period free. Cancel before then and you owe nothing.
           </p>
 
@@ -822,7 +822,7 @@ export default function BetaBusinessPage() {
           textAlign: 'center',
           lineHeight: 1.7,
         }}>
-          All listings are monthly subscriptions — cancel anytime, no contracts.
+          All listings are monthly subscriptions - cancel anytime, no contracts.
           Founding members keep this pricing for as long as they remain subscribed.
           Questions? <a href="mailto:events@yetigroove.com" style={{ color: C.lakeBlue }}>Email us</a> or DM on Facebook.
         </p>

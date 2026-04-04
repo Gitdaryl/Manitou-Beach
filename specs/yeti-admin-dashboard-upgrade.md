@@ -1,4 +1,4 @@
-# Yeti Admin Dashboard Upgrade — Sonnet Build Spec
+# Yeti Admin Dashboard Upgrade - Sonnet Build Spec
 
 **Date:** 2026-03-27
 **Builder:** Sonnet
@@ -13,11 +13,11 @@ The current Dashboard tab shows only editorial metrics (subscriber count, publis
 
 ### What to build: A "Morning Glance" dashboard
 
-Replace the current Dashboard tab content with a reorganized layout. Keep all existing tools — just add the missing operational panels above them.
+Replace the current Dashboard tab content with a reorganized layout. Keep all existing tools - just add the missing operational panels above them.
 
 ---
 
-### 1A. Money Row (new — top of dashboard)
+### 1A. Money Row (new - top of dashboard)
 
 **Data source:** New API endpoint `/api/admin/revenue-summary`
 
@@ -43,9 +43,9 @@ This endpoint calls the Stripe API (`stripe.subscriptions.list`) and returns:
 - Use `stripe.subscriptions.list({ status: 'past_due', limit: 100 })` for past-due
 - Parse `metadata.tier` or price amount to determine tier ($9 = Basic, $25 = Enhanced, $49 = Featured)
 - Wine season revenue: look for one-time payments of $279 (wine partner)
-- Cache for 5 minutes (use a simple in-memory cache variable with timestamp) — Stripe rate limits matter
+- Cache for 5 minutes (use a simple in-memory cache variable with timestamp) - Stripe rate limits matter
 
-**UI — 4 KPI cards in a row (same grid style as existing editorial cards):**
+**UI - 4 KPI cards in a row (same grid style as existing editorial cards):**
 
 | Card | Value | Icon | Color | Subtitle |
 |------|-------|------|-------|----------|
@@ -58,7 +58,7 @@ This endpoint calls the Stripe API (`stripe.subscriptions.list`) and returns:
 
 ---
 
-### 1B. Attention Queue (new — below money row)
+### 1B. Attention Queue (new - below money row)
 
 **Data source:** New API endpoint `/api/admin/attention-queue`
 
@@ -76,13 +76,13 @@ This endpoint queries multiple Notion databases and returns:
 
 **How each count is derived:**
 
-- `pendingEvents`: Query Events DB where `Status = "Pending Review"` — count
-- `pendingRatings`: Query Winery Ratings DB where `Status = "Pending"` — count (you already have this in the ratings tab, just reuse the query)
-- `incompleteBiz`: Query Business DB where `Logo` is empty OR `Description` is empty AND `Status = "Active"` — count
-- `ghostTrucks`: Query Food Truck DB where `Status = "Active"` AND `Last Check-In` is empty or older than 30 days — count
-- `stalledOnboarding`: Query Business DB where `Stripe Connect Account ID` exists AND `Stripe Connect Status != "complete"` — count (0 is fine, just show it)
+- `pendingEvents`: Query Events DB where `Status = "Pending Review"` - count
+- `pendingRatings`: Query Winery Ratings DB where `Status = "Pending"` - count (you already have this in the ratings tab, just reuse the query)
+- `incompleteBiz`: Query Business DB where `Logo` is empty OR `Description` is empty AND `Status = "Active"` - count
+- `ghostTrucks`: Query Food Truck DB where `Status = "Active"` AND `Last Check-In` is empty or older than 30 days - count
+- `stalledOnboarding`: Query Business DB where `Stripe Connect Account ID` exists AND `Stripe Connect Status != "complete"` - count (0 is fine, just show it)
 
-**UI — Single horizontal strip with colored badges:**
+**UI - Single horizontal strip with colored badges:**
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
@@ -105,13 +105,13 @@ Each badge is a clickable pill:
 
 ---
 
-### 1C. Existing Dashboard Content — Keep as-is, move below
+### 1C. Existing Dashboard Content - Keep as-is, move below
 
 Everything currently in the Dashboard tab stays but moves below the new panels:
 
 1. Money Row (new)
 2. Attention Queue (new)
-3. Editorial metrics (existing 4-card grid — subscribers, published, drafts, last published)
+3. Editorial metrics (existing 4-card grid - subscribers, published, drafts, last published)
 4. Most Recent Article (existing)
 5. beehiiv note (existing)
 6. Refresh button (existing)
@@ -126,7 +126,7 @@ Add a thin horizontal divider between the new operational panels and the existin
 ### 1D. Loading States
 
 When the dashboard tab loads, fire three parallel fetches:
-1. `fetchDashboard()` (existing — editorial metrics)
+1. `fetchDashboard()` (existing - editorial metrics)
 2. `fetchRevenueSummary()` (new)
 3. `fetchAttentionQueue()` (new)
 4. `fetchAdSlots()` (existing)
@@ -141,7 +141,7 @@ After reading the full newsletter tab implementation, here are the friction poin
 
 ---
 
-### 2A. Issue Checklist (new — top of newsletter tab)
+### 2A. Issue Checklist (new - top of newsletter tab)
 
 **Problem:** There's no way to see at a glance whether the newsletter is ready to send. Daryl has to mentally check each section.
 
@@ -163,9 +163,9 @@ After reading the full newsletter tab implementation, here are the friction poin
 - Weekend events: `nlWeekendText.trim().length > 0` → green
 - Article selected: `nlArticleId` is truthy → green. If selected but draft (not blogSafe), show amber with "⚠️ Draft"
 - Ad slot: `nlAdId` is truthy → green. If empty, show as gray (optional, not blocking)
-- Preview checked: new state `nlPreviewChecked` — set to true when user scrolls the preview iframe into view or clicks the preview panel header. Resets when any content changes.
+- Preview checked: new state `nlPreviewChecked` - set to true when user scrolls the preview iframe into view or clicks the preview panel header. Resets when any content changes.
 
-This is purely informational — no blocking behavior.
+This is purely informational - no blocking behavior.
 
 ---
 
@@ -182,14 +182,14 @@ This is purely informational — no blocking behavior.
 └──────────────────────────────────────────────────────────────┘
 ```
 
-Style: fixed to bottom of the newsletter section (not the viewport — just visually prominent). Background: C.dusk. Two buttons side by side.
+Style: fixed to bottom of the newsletter section (not the viewport - just visually prominent). Background: C.dusk. Two buttons side by side.
 
 "Copy HTML" does what the existing button does (`buildNlPreviewHtml()` → clipboard).
 "Open beehiiv" opens `https://app.beehiiv.com` in a new tab.
 
-2. After copying, the button changes to "✓ Copied — now paste in beehiiv" for 5 seconds.
+2. After copying, the button changes to "✓ Copied - now paste in beehiiv" for 5 seconds.
 
-3. Keep the existing copy button in the preview panel header too — don't remove it.
+3. Keep the existing copy button in the preview panel header too - don't remove it.
 
 ---
 
@@ -203,7 +203,7 @@ Style: fixed to bottom of the newsletter section (not the viewport — just visu
 ┌─ Article Preview ────────────────────────────────────────────┐
 │  ▎ LAKE LIFE                                                 │
 │  ▎ Why Devils Lake Bluegill Are the Best in Michigan         │
-│  ▎ The DNR numbers don't lie — and neither do the old-timers │
+│  ▎ The DNR numbers don't lie - and neither do the old-timers │
 │  ▎ who've been pulling slabs off these beds since the '60s.  │
 │                                                              │
 │  [Read full in Notion ↗]                                     │
@@ -214,7 +214,7 @@ This already partially exists (the excerpt box) but style it to match the newsle
 
 ---
 
-### 2D. Weekend Events — Edit After Pull
+### 2D. Weekend Events - Edit After Pull
 
 **Problem:** The "Pull from Events" button generates bullet text, but it dumps raw AI text into a textarea. If one event is wrong or missing, you have to manually edit freeform text.
 
@@ -222,10 +222,10 @@ This already partially exists (the excerpt box) but style it to match the newsle
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│  ☀️ Fri · Trivia at Two Lakes — 7pm                    [✕]  │
-│  ☀️ Sat · Festival of the Arts — all day               [✕]  │
-│  ☀️ Sat · Live Music at Chateau Aero — 6pm             [✕]  │
-│  ☀️ Sun · Farmers Market — 9am                         [✕]  │
+│  ☀️ Fri · Trivia at Two Lakes - 7pm                    [✕]  │
+│  ☀️ Sat · Festival of the Arts - all day               [✕]  │
+│  ☀️ Sat · Live Music at Chateau Aero - 6pm             [✕]  │
+│  ☀️ Sun · Farmers Market - 9am                         [✕]  │
 │                                                              │
 │  [+ Add event manually]                                      │
 └──────────────────────────────────────────────────────────────┘
@@ -249,11 +249,11 @@ Before clearing, auto-save the current draft to localStorage with a key like `ye
 
 Add a dropdown: `[Load previous: Apr 3 | Mar 27 | Mar 20 | Mar 13]`
 
-Selecting one loads that draft's fields into the form. This is purely localStorage — no API calls.
+Selecting one loads that draft's fields into the form. This is purely localStorage - no API calls.
 
 ---
 
-### 2F. Newsletter Preview — Mobile Width Toggle
+### 2F. Newsletter Preview - Mobile Width Toggle
 
 **Problem:** The newsletter preview iframe renders at full width, but most readers will see it on mobile. No way to check mobile rendering.
 
@@ -328,7 +328,7 @@ Items 1-4 are high value. Items 5-6 are nice-to-have if time allows.
 
 ## What This Does NOT Include
 
-- Vercel Analytics integration (requires Vercel API key setup — separate task)
-- Advertiser-facing analytics (social proof dashboard for selling ads — Phase 2, needs traffic first)
-- Stripe webhook for real-time payment alerts (overkill for now — polling on tab load is fine)
-- Breaking YetiAdminPage into sub-components (the file is 2652 lines but it works — refactor is a separate task if wanted)
+- Vercel Analytics integration (requires Vercel API key setup - separate task)
+- Advertiser-facing analytics (social proof dashboard for selling ads - Phase 2, needs traffic first)
+- Stripe webhook for real-time payment alerts (overkill for now - polling on tab load is fine)
+- Breaking YetiAdminPage into sub-components (the file is 2652 lines but it works - refactor is a separate task if wanted)

@@ -44,7 +44,7 @@ function CheckInPage() {
         else navigator.vibrate([100, 50, 100, 50, 100]);
       }
     } catch {
-      setError('Network error — check your connection');
+      setError('Network error - check your connection');
     } finally {
       setLoading(false);
     }
@@ -129,7 +129,7 @@ function CheckInPage() {
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.night, color: C.cream, minHeight: '100vh' }}>
       <GlobalStyles />
 
-      {/* Minimal header — no navbar needed for volunteers */}
+      {/* Minimal header - no navbar needed for volunteers */}
       <div style={{ padding: '20px 24px 16px', borderBottom: `1px solid ${C.dusk}`, textAlign: 'center' }}>
         <img src="/images/yeti/yetickets_sign.png" alt="Yetickets" style={{ height: 72, maxWidth: 320, objectFit: 'contain', display: 'block', margin: '0 auto 10px' }} />
         <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream }}>
@@ -174,7 +174,7 @@ function CheckInPage() {
                 : '#ff5050',
               marginBottom: 20,
             }}>
-              {result.status === 'valid' ? 'VALID — ADMIT'
+              {result.status === 'valid' ? 'VALID - ADMIT'
                 : result.status === 'used' ? 'ALREADY USED'
                 : 'INVALID'}
             </div>

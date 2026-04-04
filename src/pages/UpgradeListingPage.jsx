@@ -131,10 +131,10 @@ export default function UpgradeListingPage() {
                   <strong>{decodeURIComponent(returnedBiz)}</strong> is now {tierLabel} on Manitou Beach.
                 </p>
                 <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: '0 0 8px', fontFamily: "'Libre Franklin', sans-serif" }}>
-                  Check your email for confirmation. Your previous subscription will be cancelled automatically — nothing extra to do.
+                  Check your email for confirmation. Your previous subscription will be cancelled automatically - nothing extra to do.
                 </p>
                 <p style={{ fontSize: 13, color: C.textMuted, lineHeight: 1.6, margin: '0 0 36px', fontFamily: "'Libre Franklin', sans-serif" }}>
-                  Email is from <strong>events@manitoubeachmichigan.com</strong> — add it to your contacts so future emails don't end up in spam.
+                  Email is from <strong>events@manitoubeachmichigan.com</strong> - add it to your contacts so future emails don't end up in spam.
                 </p>
                 <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
                   <Btn href="/business" variant="primary">See all local businesses</Btn>
@@ -193,7 +193,7 @@ export default function UpgradeListingPage() {
                   <div style={{ display: 'flex', marginBottom: 24, borderRadius: 8, overflow: 'hidden', border: `1px solid ${C.sand}` }}>
                     {[
                       { key: 'month', label: 'Monthly' },
-                      { key: 'year', label: 'Annual — pay once' },
+                      { key: 'year', label: 'Annual - pay once' },
                     ].map(opt => (
                       <button
                         key={opt.key}

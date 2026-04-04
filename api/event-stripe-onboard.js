@@ -47,7 +47,7 @@ export default async function handler(req, res) {
 
     if (!patchRes.ok) {
       console.error('event-stripe-onboard Notion patch failed:', await patchRes.text());
-      // Non-fatal — proceed with onboarding, Stripe account exists
+      // Non-fatal - proceed with onboarding, Stripe account exists
     }
 
     // Build return and refresh URLs carrying the event context

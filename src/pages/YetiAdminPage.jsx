@@ -135,7 +135,7 @@ export default function YetiAdminPage() {
   const [nlPreviewWidth, setNlPreviewWidth] = useState('desktop'); // desktop | mobile
   const [nlStickyStatus, setNlStickyStatus] = useState('idle'); // idle | copied
 
-  // Draft archive helpers — auto-save current draft with date key, keep last 4
+  // Draft archive helpers - auto-save current draft with date key, keep last 4
   const NL_ARCHIVE_PREFIX = 'yeti_nl_archive_';
   const saveNlArchive = () => {
     if (!nlDate) return;
@@ -244,7 +244,7 @@ export default function YetiAdminPage() {
 
   function qeHandleFile(file) {
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) { setQeError('Image is too large — keep it under 5 MB.'); return; }
+    if (file.size > 5 * 1024 * 1024) { setQeError('Image is too large - keep it under 5 MB.'); return; }
     if (!file.type.startsWith('image/')) { setQeError('That doesn\'t look like an image. Try a JPG, PNG, or screenshot.'); return; }
     setQeError('');
     setQeImageType(file.type);
@@ -256,7 +256,7 @@ export default function YetiAdminPage() {
 
   async function qeSubmit() {
     if (!qeBizName.trim()) { setQeError('Which business is this for? Type their name above.'); return; }
-    if (!qeImageData && !qeText.trim()) { setQeError('Upload a photo or paste some text — we need something to work with.'); return; }
+    if (!qeImageData && !qeText.trim()) { setQeError('Upload a photo or paste some text - we need something to work with.'); return; }
     setQeLoading(true); setQeError(''); setQeResult(null);
     try {
       const body = { businessName: qeBizName.trim(), businessEmail: qeBizEmail.trim() || undefined, businessPhone: qeBizPhone.trim() || undefined };
@@ -266,7 +266,7 @@ export default function YetiAdminPage() {
       if (!res.ok) { setQeError(data.error || 'Something went wrong.'); return; }
       setQeResult(data);
       if (data.count > 0) { setQeText(''); qeClearImage(); }
-    } catch { setQeError('Network error — check your connection and try again.'); } finally { setQeLoading(false); }
+    } catch { setQeError('Network error - check your connection and try again.'); } finally { setQeLoading(false); }
   }
 
   const loadCatPreview = async () => {
@@ -524,11 +524,11 @@ export default function YetiAdminPage() {
       const res = await fetch('/api/admin-articles', {
         headers: { 'X-Admin-Token': loginPassword.trim() },
       });
-      if (res.status === 401) { setLoginError('Wrong password — try again.'); setLoginLoading(false); return; }
+      if (res.status === 401) { setLoginError('Wrong password - try again.'); setLoginLoading(false); return; }
       sessionStorage.setItem('yeti_admin_token', loginPassword.trim());
       setAuthToken(loginPassword.trim());
       setAuthed(true);
-    } catch { setLoginError('Connection error — try again.'); }
+    } catch { setLoginError('Connection error - try again.'); }
     finally { setLoginLoading(false); }
   };
 
@@ -667,7 +667,7 @@ export default function YetiAdminPage() {
       ${nlWeekendText ? `<div class="section"><h2>5 Things This Weekend</h2>${nlWeekendText.split('\n').filter(Boolean).map(b => `<div class="bullet">${b}</div>`).join('')}</div>` : ''}
       ${ad ? `<div class="section"><h2>From Our Sponsors</h2><div class="ad-box"><div class="bar"></div><div class="biz">${ad.businessName || ad.business || ''}</div><div class="offer">${ad.offerText || ad.offer || ''}</div>${ad.link ? `<a class="cta" href="${ad.link}">Learn More →</a>` : ''}</div></div>` : `<div class="section"><h2>From Our Sponsors</h2><div class="ad-box"><div class="bar"></div><div class="biz">Your Business Here</div><div class="offer">Reach thousands of Manitou Beach visitors and locals every week.</div><a class="cta" href="/featured">Get Featured →</a></div></div>`}
       ${nlWelcomeEnabled && nlWelcomeText ? `<div class="section"><h2>Welcome to the Beach 👋</h2><p style="font-size:14px;color:#3a4a54;line-height:1.7;margin:0">${nlWelcomeText}</p></div>` : ''}
-      ${nlGuestEnabled && nlGuestContent ? `<div class="section"><h2>Guest Corner</h2><p style="font-size:12px;font-weight:700;color:#4a7c8a;margin:0 0 10px">${nlGuestName}${nlGuestBio ? ' — ' + nlGuestBio : ''}</p><p style="font-size:14px;color:#3a4a54;line-height:1.7;margin:0">${nlGuestContent}</p></div>` : ''}
+      ${nlGuestEnabled && nlGuestContent ? `<div class="section"><h2>Guest Corner</h2><p style="font-size:12px;font-weight:700;color:#4a7c8a;margin:0 0 10px">${nlGuestName}${nlGuestBio ? ' - ' + nlGuestBio : ''}</p><p style="font-size:14px;color:#3a4a54;line-height:1.7;margin:0">${nlGuestContent}</p></div>` : ''}
       ${nlNote ? `<div class="section"><p style="font-size:13px;color:#7a8a94;font-style:italic;margin:0">📝 Internal note: ${nlNote}</p></div>` : ''}
       <div class="footer"><p>The Manitou Dispatch · Manitou Beach, MI</p><p>You're receiving this because you subscribed.</p></div>
     </div></body></html>`;
@@ -862,7 +862,7 @@ export default function YetiAdminPage() {
     if (activeTab === 'categories') loadCatPreview();
   }, [activeTab, authed]);
 
-  // Preview file locally before uploading — no network call yet
+  // Preview file locally before uploading - no network call yet
   const handleFileSelect = (file) => {
     if (!file || !file.type.startsWith('image/')) return;
     const reader = new FileReader();
@@ -1058,7 +1058,7 @@ export default function YetiAdminPage() {
                   disabled={saveStatus === 'saving' || !editFields.title?.trim()}
                   style={{ alignSelf: 'flex-start', padding: '11px 24px', background: saveStatus === 'saved' ? C.sage : C.lakeBlue, color: '#fff', border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: (saveStatus === 'saving' || !editFields.title?.trim()) ? 'not-allowed' : 'pointer', fontFamily: 'Libre Franklin, sans-serif', opacity: !editFields.title?.trim() ? 0.5 : 1 }}
                 >
-                  {saveStatus === 'saving' ? 'Saving…' : saveStatus === 'saved' ? '✓ Saved' : saveStatus === 'error' ? 'Save failed — retry' : 'Save Changes'}
+                  {saveStatus === 'saving' ? 'Saving…' : saveStatus === 'saved' ? '✓ Saved' : saveStatus === 'error' ? 'Save failed - retry' : 'Save Changes'}
                 </button>
               </div>
             )}
@@ -1273,7 +1273,7 @@ export default function YetiAdminPage() {
                             <div style={{ background: '#fffbf0', border: '1px solid #e8d090', borderRadius: 8, padding: '10px 14px', minWidth: 220 }}>
                               {item.detail.map((biz, i) => (
                                 <div key={i} style={{ fontSize: 12, color: C.dusk, fontFamily: 'Libre Franklin, sans-serif', padding: '3px 0', borderBottom: i < item.detail.length - 1 ? `1px solid ${C.sand}` : 'none' }}>
-                                  <strong>{biz.name}</strong> <span style={{ color: C.textMuted }}>— missing {biz.missing.join(', ')}</span>
+                                  <strong>{biz.name}</strong> <span style={{ color: C.textMuted }}>- missing {biz.missing.join(', ')}</span>
                                 </div>
                               ))}
                             </div>
@@ -1283,7 +1283,7 @@ export default function YetiAdminPage() {
                             <div style={{ background: '#fffbf0', border: '1px solid #e8d090', borderRadius: 8, padding: '10px 14px', minWidth: 220 }}>
                               {item.detail.map((truck, i) => (
                                 <div key={i} style={{ fontSize: 12, color: C.dusk, fontFamily: 'Libre Franklin, sans-serif', padding: '3px 0', borderBottom: i < item.detail.length - 1 ? `1px solid ${C.sand}` : 'none' }}>
-                                  <strong>{truck.name}</strong> <span style={{ color: C.textMuted }}>— last check-in: {truck.lastCheckIn || 'never'}</span>
+                                  <strong>{truck.name}</strong> <span style={{ color: C.textMuted }}>- last check-in: {truck.lastCheckIn || 'never'}</span>
                                 </div>
                               ))}
                             </div>
@@ -1312,7 +1312,7 @@ export default function YetiAdminPage() {
                     { label: 'Subscribers', value: dashData.subCount.toLocaleString(), icon: '📬', color: C.lakeBlue },
                     { label: 'Published', value: dashData.published, icon: '✅', color: C.sage },
                     { label: 'In Draft', value: dashData.drafts, icon: '✏️', color: C.sunset },
-                    { label: 'Last Published', value: dashData.lastPublished?.publishedDate || '—', icon: '🗓', color: C.dusk, small: true },
+                    { label: 'Last Published', value: dashData.lastPublished?.publishedDate || '-', icon: '🗓', color: C.dusk, small: true },
                   ].map(stat => (
                     <div key={stat.label} style={{ background: '#fff', borderRadius: 12, padding: '20px 18px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', borderTop: `3px solid ${stat.color}` }}>
                       <div style={{ fontSize: 22, marginBottom: 8 }}>{stat.icon}</div>
@@ -1346,7 +1346,7 @@ export default function YetiAdminPage() {
             <div style={{ background: '#fff', borderRadius: 12, padding: '20px 24px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', marginTop: 20 }}>
               <div style={{ fontSize: 13, fontWeight: 700, color: C.dusk, marginBottom: 4, fontFamily: 'Libre Franklin, sans-serif' }}>📍 Geocode Businesses</div>
               <p style={{ fontSize: 13, color: C.textLight, margin: '0 0 14px', lineHeight: 1.5, fontFamily: 'Libre Franklin, sans-serif' }}>
-                Scans all Notion business entries with an address but no lat/lng, and auto-fills their coordinates. Safe to re-run — already-geocoded entries are skipped.
+                Scans all Notion business entries with an address but no lat/lng, and auto-fills their coordinates. Safe to re-run - already-geocoded entries are skipped.
               </p>
               <button
                 onClick={runBatchGeocode}
@@ -1358,13 +1358,13 @@ export default function YetiAdminPage() {
               {geoResult && geoStatus === 'done' && (
                 <div style={{ marginTop: 14 }}>
                   <div style={{ fontSize: 13, color: C.sage, fontWeight: 700, marginBottom: 8, fontFamily: 'Libre Franklin, sans-serif' }}>
-                    ✅ Done — {geoResult.updated} updated · {geoResult.skipped} skipped · {geoResult.failed} failed
+                    ✅ Done - {geoResult.updated} updated · {geoResult.skipped} skipped · {geoResult.failed} failed
                   </div>
                   {geoResult.details?.length > 0 && (
                     <div style={{ maxHeight: 200, overflowY: 'auto', background: C.cream, borderRadius: 8, padding: '10px 14px' }}>
                       {geoResult.details.map((d, i) => (
                         <div key={i} style={{ fontSize: 12, color: C.textLight, fontFamily: 'Libre Franklin, sans-serif', padding: '3px 0', borderBottom: `1px solid ${C.sand}` }}>
-                          <strong>{d.name}</strong> — {d.result}
+                          <strong>{d.name}</strong> - {d.result}
                         </div>
                       ))}
                     </div>
@@ -1381,7 +1381,7 @@ export default function YetiAdminPage() {
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
                 <div style={{ fontSize: 13, fontWeight: 700, color: C.dusk, fontFamily: 'Libre Franklin, sans-serif' }}>🇺🇸 USA250 Page</div>
                 <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', padding: '3px 10px', borderRadius: 20, background: USA250_PUBLIC ? '#d1fae5' : '#fef3c7', color: USA250_PUBLIC ? '#065f46' : '#92400e', fontFamily: 'Libre Franklin, sans-serif' }}>
-                  {USA250_PUBLIC ? 'LIVE' : 'DRAFT — not public'}
+                  {USA250_PUBLIC ? 'LIVE' : 'DRAFT - not public'}
                 </span>
               </div>
               <p style={{ fontSize: 12, color: C.textLight, margin: '0 0 14px', lineHeight: 1.6, fontFamily: 'Libre Franklin, sans-serif' }}>
@@ -1447,7 +1447,7 @@ export default function YetiAdminPage() {
                 </div>
               ) : !adSlotsLoading ? (
                 <div style={{ fontSize: 13, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>
-                  No paid listings yet — all categories open.
+                  No paid listings yet - all categories open.
                 </div>
               ) : null}
             </div>
@@ -1541,7 +1541,7 @@ export default function YetiAdminPage() {
             {/* Card Sponsors */}
             <div style={{ background: '#fff', borderRadius: 12, padding: 28, boxShadow: '0 2px 16px rgba(0,0,0,0.06)' }}>
               <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 19, color: C.dusk, marginBottom: 4 }}>Card Sponsors</div>
-              <div style={{ fontSize: 13, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif', marginBottom: 20 }}>Showing on every Dispatch card — homepage + /dispatch listing</div>
+              <div style={{ fontSize: 13, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif', marginBottom: 20 }}>Showing on every Dispatch card - homepage + /dispatch listing</div>
 
               {DISPATCH_CARD_SPONSORS.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '32px 20px', background: C.warmWhite, borderRadius: 10 }}>
@@ -1564,7 +1564,7 @@ export default function YetiAdminPage() {
                           <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontWeight: 700, fontSize: 15, color: C.dusk, marginBottom: 3 }}>{sponsor.name}</div>
                           {sponsor.offerText && <div style={{ fontSize: 13, color: C.textLight, fontFamily: 'Libre Franklin, sans-serif', marginBottom: 4 }}>{sponsor.offerText}</div>}
                           <div style={{ fontSize: 11, color: sponsor.logo ? C.sage : C.sunset, fontFamily: 'monospace', fontWeight: 600 }}>
-                            {sponsor.logo ? `logo: ${sponsor.logo}` : 'logo: null — drop a PNG into /public/images/ and set the path'}
+                            {sponsor.logo ? `logo: ${sponsor.logo}` : 'logo: null - drop a PNG into /public/images/ and set the path'}
                           </div>
                         </div>
                         <span style={{ background: `${C.sage}20`, color: C.sage, borderRadius: 20, padding: '3px 12px', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', fontFamily: 'Libre Franklin, sans-serif', letterSpacing: 0.5, flexShrink: 0 }}>Slot {i + 1}</span>
@@ -1591,15 +1591,15 @@ export default function YetiAdminPage() {
             {/* Newsletter Ad SOP */}
             <div style={{ background: '#fff', borderRadius: 12, padding: 28, boxShadow: '0 2px 16px rgba(0,0,0,0.06)' }}>
               <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 19, color: C.dusk, marginBottom: 4 }}>Newsletter Ad Rules</div>
-              <div style={{ fontSize: 13, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif', marginBottom: 20 }}>SOP — follow every issue, no exceptions</div>
+              <div style={{ fontSize: 13, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif', marginBottom: 20 }}>SOP - follow every issue, no exceptions</div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))', gap: 12 }}>
                 {[
-                  { icon: '2️⃣', label: 'Max ads per issue', value: '2 total — never more' },
+                  { icon: '2️⃣', label: 'Max ads per issue', value: '2 total - never more' },
                   { icon: '⭐', label: 'Primary sponsor slot', value: 'Mid-newsletter, after main article' },
-                  { icon: '🏠', label: 'House ad slot', value: 'Footer — promote /featured or events' },
+                  { icon: '🏠', label: 'House ad slot', value: 'Footer - promote /featured or events' },
                   { icon: '📅', label: 'Best send time', value: 'Tue or Thu · 8–9am EST' },
                   { icon: '📝', label: 'Contract minimum', value: '30 days (1 issue cycle)' },
-                  { icon: '💎', label: 'Sweet spot contract', value: '3 months — better results' },
+                  { icon: '💎', label: 'Sweet spot contract', value: '3 months - better results' },
                   { icon: '🔄', label: 'Renewal window', value: 'Contact 1 week before expiry' },
                   { icon: '🎯', label: 'Conflict resolution', value: '2 advertisers want offer slot → one gets next issue' },
                 ].map(item => (
@@ -1619,7 +1619,7 @@ export default function YetiAdminPage() {
               <div style={{ border: `1px solid ${C.sand}`, borderRadius: 10, overflow: 'hidden' }}>
                 {[
                   { section: '🌊 THIS WEEKEND ON THE LAKE', desc: '2–3 bullet events Fri–Sun. Pull from your Notion events DB or notes.', accent: C.lakeBlue },
-                  { section: '📰 FROM THE DESK', desc: 'The Yeti\'s main piece — 250–350 words. AI-generated + edited by you. One story, told well.', accent: C.sage },
+                  { section: '📰 FROM THE DESK', desc: 'The Yeti\'s main piece - 250–350 words. AI-generated + edited by you. One story, told well.', accent: C.sage },
                   { section: '🏘️ COMMUNITY CORNER', desc: '1–2 items: local biz spotlight, historical fact, neighbor news. You write 2–3 sentences.', accent: C.sunset },
                   { section: '━━ SPONSORED BY [Business] ━━', desc: 'Logo + offer text + claim link. ONE sponsor max. Clear, honest, not pushy.', accent: '#b8860b', isAd: true },
                   { section: '📅 UPCOMING EVENTS', desc: '3–5 events. Date · Time · Location. Pull from events DB. No editorializing needed.', accent: C.lakeBlue },
@@ -1661,7 +1661,7 @@ export default function YetiAdminPage() {
               <div style={{ textAlign: 'center', padding: '48px 24px', background: '#fff', borderRadius: 12, boxShadow: '0 2px 16px rgba(0,0,0,0.06)' }}>
                 <div style={{ fontSize: 32, marginBottom: 12 }}>🎟️</div>
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.dusk, marginBottom: 8 }}>No promotions yet</div>
-                <div style={{ fontSize: 13, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>Add your first promotion in Notion — it'll appear here with copy-ready newsletter blocks.</div>
+                <div style={{ fontSize: 13, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>Add your first promotion in Notion - it'll appear here with copy-ready newsletter blocks.</div>
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -1669,9 +1669,9 @@ export default function YetiAdminPage() {
                   const claimUrl = promo.claimSlug ? `https://manitou-beach.vercel.app/claim/${promo.claimSlug}` : null;
                   const expiryStr = promo.expiry ? new Date(promo.expiry + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : null;
 
-                  // Newsletter block text — copy-paste ready for beehiiv
+                  // Newsletter block text - copy-paste ready for beehiiv
                   const newsletterBlock = [
-                    `🎟️ READER EXCLUSIVE — ${promo.name}`,
+                    `🎟️ READER EXCLUSIVE - ${promo.name}`,
                     promo.offerText || '',
                     promo.couponCode ? `Use code: ${promo.couponCode}` : '',
                     claimUrl ? `Claim here → ${claimUrl}` : promo.linkUrl ? `Learn more → ${promo.linkUrl}` : '',
@@ -1721,7 +1721,7 @@ export default function YetiAdminPage() {
                       {/* Newsletter block */}
                       <div style={{ background: `${C.night}08`, borderRadius: 8, padding: '12px 14px', border: `1px dashed ${C.sand}` }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                          <span style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: 1, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>Newsletter block — paste into beehiiv</span>
+                          <span style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: 1, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>Newsletter block - paste into beehiiv</span>
                           <button
                             onClick={() => copyToClipboard(newsletterBlock, `nl-${promo.id}`)}
                             style={{ background: copiedId === `nl-${promo.id}` ? C.sage : C.sunset, color: '#fff', border: 'none', borderRadius: 6, padding: '5px 14px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}
@@ -1746,7 +1746,7 @@ export default function YetiAdminPage() {
               <div>
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.dusk, marginBottom: 4 }}>Community POIs</div>
                 <div style={{ fontSize: 13, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>
-                  Notion-managed visitor info pins on /discover — hospitals, schools, launches, wineries, etc.
+                  Notion-managed visitor info pins on /discover - hospitals, schools, launches, wineries, etc.
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 10 }}>
@@ -1804,7 +1804,7 @@ export default function YetiAdminPage() {
                   </div>
                   {adminPois.length === 0 ? (
                     <div style={{ padding: '32px 20px', textAlign: 'center', color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif', fontSize: 14 }}>
-                      No Active POIs found. Check the Notion DB — set Status to Active to show pins.
+                      No Active POIs found. Check the Notion DB - set Status to Active to show pins.
                     </div>
                   ) : (
                     adminPois.map((poi, i) => (
@@ -1840,7 +1840,7 @@ export default function YetiAdminPage() {
               <div>
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.dusk, marginBottom: 4 }}>Winery Ratings</div>
                 <div style={{ fontSize: 13, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>
-                  Curate submitted reviews — approve to publish, flag to hide.
+                  Curate submitted reviews - approve to publish, flag to hide.
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 8 }}>
@@ -1884,7 +1884,7 @@ export default function YetiAdminPage() {
               return (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                   {filtered.map(r => {
-                    const stars = n => n ? '★'.repeat(n) + '☆'.repeat(5 - n) : '—';
+                    const stars = n => n ? '★'.repeat(n) + '☆'.repeat(5 - n) : '-';
                     const statusColor = r.status === 'Published' ? C.sage : r.status === 'Flagged' ? '#c0392b' : C.driftwood;
                     const updating = ratingsUpdating[r.id];
                     return (
@@ -1991,7 +1991,7 @@ export default function YetiAdminPage() {
                     <div style={{ fontSize: 11, fontWeight: 700, color: C.textMuted, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6, fontFamily: 'Libre Franklin, sans-serif' }}>Venue *</div>
                     <select value={wineForm.venue} onChange={e => setWineForm(f => ({ ...f, venue: e.target.value }))}
                       style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: `1.5px solid ${C.sand}`, fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, color: C.text, boxSizing: 'border-box', background: '#fff' }}>
-                      <option value="">— Select —</option>
+                      <option value="">- Select -</option>
                       {['Cherry Creek Cellars','Chateau Aeronautique','Gypsy Blue Vineyards','Meckleys Flavor Fruit Farm','Faust House Scrap n Craft','Ang & Co','Boathouse Art Gallery','Devils Lake View Living'].map(v => (
                         <option key={v} value={v}>{v}</option>
                       ))}
@@ -2001,7 +2001,7 @@ export default function YetiAdminPage() {
                     <div style={{ fontSize: 11, fontWeight: 700, color: C.textMuted, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6, fontFamily: 'Libre Franklin, sans-serif' }}>Category *</div>
                     <select value={wineForm.category} onChange={e => setWineForm(f => ({ ...f, category: e.target.value }))}
                       style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: `1.5px solid ${C.sand}`, fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, color: C.text, boxSizing: 'border-box', background: '#fff' }}>
-                      <option value="">— Select —</option>
+                      <option value="">- Select -</option>
                       {['Red','White','Sweet','Rosé','Fruit & Specialty','Cider','Craft Brew'].map(c => (
                         <option key={c} value={c}>{c}</option>
                       ))}
@@ -2029,7 +2029,7 @@ export default function YetiAdminPage() {
             ) : adminWines === null ? (
               <div style={{ textAlign: 'center', padding: '40px 0', color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>Click Refresh to load wines.</div>
             ) : adminWines.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '40px 0', color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif', fontSize: 14 }}>No wines yet — add the first one above.</div>
+              <div style={{ textAlign: 'center', padding: '40px 0', color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif', fontSize: 14 }}>No wines yet - add the first one above.</div>
             ) : (
               <div>
                 {/* Group by venue */}
@@ -2203,7 +2203,7 @@ export default function YetiAdminPage() {
                 {result.coverNote && <p style={{ margin: '0 0 10px', color: C.textLight, fontStyle: 'italic', lineHeight: 1.5 }}>{result.coverNote}</p>}
                 {!result.coverImageApplied && applyStatus !== 'applied' && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-                    <span style={{ color: C.textMuted }}>Image not in folder yet — create it, drop it in <code>public/images/yeti/</code> and push, then:</span>
+                    <span style={{ color: C.textMuted }}>Image not in folder yet - create it, drop it in <code>public/images/yeti/</code> and push, then:</span>
                     <button
                       onClick={handleApplyImage}
                       disabled={applyStatus === 'applying'}
@@ -2216,10 +2216,10 @@ export default function YetiAdminPage() {
               </div>
             )}
 
-            {/* Own photo upload — preview-first flow */}
+            {/* Own photo upload - preview-first flow */}
             {result.notionId && uploadStatus !== 'done' && (
               <div style={{ marginTop: 12 }}>
-                <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 8, textAlign: 'center' }}>— or use your own photo —</div>
+                <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 8, textAlign: 'center' }}>- or use your own photo -</div>
 
                 {photoPreview ? (
                   /* ── Step 2: Preview + confirm ── */
@@ -2242,8 +2242,8 @@ export default function YetiAdminPage() {
                         <div style={{ marginBottom: 10, fontSize: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
                           <span style={{ color: C.textMuted }}>{w} × {h}px</span>
                           {isIdeal && <span style={{ color: C.sage, marginLeft: 8 }}>✓ Great size</span>}
-                          {isPortrait && <span style={{ color: C.sunset, marginLeft: 8 }}>⚠️ Portrait — will be cropped to landscape. Rotate in Photos first for best results.</span>}
-                          {!isPortrait && isTooSmall && <span style={{ color: C.driftwood, marginLeft: 8 }}>⚠️ Small — may look blurry at full width. Try 1200×630px or larger.</span>}
+                          {isPortrait && <span style={{ color: C.sunset, marginLeft: 8 }}>⚠️ Portrait - will be cropped to landscape. Rotate in Photos first for best results.</span>}
+                          {!isPortrait && isTooSmall && <span style={{ color: C.driftwood, marginLeft: 8 }}>⚠️ Small - may look blurry at full width. Try 1200×630px or larger.</span>}
                         </div>
                       );
                     })()}
@@ -2264,7 +2264,7 @@ export default function YetiAdminPage() {
                         Choose Different
                       </button>
                     </div>
-                    {uploadStatus === 'error' && <p style={{ margin: '8px 0 0', color: C.sunset, fontSize: 12 }}>Upload failed — try again</p>}
+                    {uploadStatus === 'error' && <p style={{ margin: '8px 0 0', color: C.sunset, fontSize: 12 }}>Upload failed - try again</p>}
                   </div>
                 ) : (
                   /* ── Step 1: Drop zone ── */
@@ -2328,7 +2328,7 @@ export default function YetiAdminPage() {
             <div style={{ marginBottom: 24 }}>
               <div style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 22, color: C.text, marginBottom: 6 }}>Vendor Registration Setup</div>
               <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: 0 }}>
-                Fill in the event details below and click Activate. The system will enable vendor registration, generate a secure portal token, patch Notion, and email the organizer their two ready-to-share URLs — all in one click.
+                Fill in the event details below and click Activate. The system will enable vendor registration, generate a secure portal token, patch Notion, and email the organizer their two ready-to-share URLs - all in one click.
               </p>
             </div>
 
@@ -2336,7 +2336,7 @@ export default function YetiAdminPage() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
 
                 <div>
-                  <label style={labelStyle}>Notion Event Page ID * <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0, fontSize: 11, color: C.textMuted }}>(from Notion URL — the long hex string)</span></label>
+                  <label style={labelStyle}>Notion Event Page ID * <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0, fontSize: 11, color: C.textMuted }}>(from Notion URL - the long hex string)</span></label>
                   <input style={inputStyle} placeholder="e.g. 3288c729eb5981149a2ffeaa3c9dbda6" value={vendorForm.eventId} onChange={e => setVendorForm(f => ({ ...f, eventId: e.target.value.replace(/-/g, '').trim() }))} />
                 </div>
 
@@ -2384,7 +2384,7 @@ export default function YetiAdminPage() {
 
             {vendorSetupStatus === 'success' && vendorSetupResult && (
               <div style={{ background: '#f0fff4', border: '1px solid #90d0a0', borderRadius: 12, padding: 24 }}>
-                <div style={{ fontWeight: 700, color: '#1a5c2a', marginBottom: 16, fontSize: 15 }}>✓ Vendor registration activated — organizer emailed</div>
+                <div style={{ fontWeight: 700, color: '#1a5c2a', marginBottom: 16, fontSize: 15 }}>✓ Vendor registration activated - organizer emailed</div>
 
                 <div style={{ marginBottom: 14 }}>
                   <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: '#5c8a6a', marginBottom: 6 }}>Share with vendors</div>
@@ -2403,7 +2403,7 @@ export default function YetiAdminPage() {
                 </div>
 
                 <p style={{ fontSize: 12, color: '#5c8a6a', margin: 0, lineHeight: 1.6 }}>
-                  Portal token: <code style={{ background: '#fff', padding: '2px 6px', borderRadius: 4, fontSize: 12 }}>{vendorSetupResult.portalToken}</code> — also saved to Notion.
+                  Portal token: <code style={{ background: '#fff', padding: '2px 6px', borderRadius: 4, fontSize: 12 }}>{vendorSetupResult.portalToken}</code> - also saved to Notion.
                 </p>
               </div>
             )}
@@ -2474,7 +2474,7 @@ export default function YetiAdminPage() {
               return (
                 <div style={{ background: allCoreOk ? '#f0fff4' : C.warmWhite, border: `1px solid ${allCoreOk ? '#c0e8c8' : C.sand}`, borderRadius: 10, padding: '12px 16px', marginBottom: 20 }}>
                   <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: allCoreOk ? '#065f46' : C.textMuted, fontFamily: 'Libre Franklin, sans-serif', marginBottom: 8 }}>
-                    📋 Issue Checklist {allCoreOk ? '— ready to send' : ''}
+                    📋 Issue Checklist {allCoreOk ? '- ready to send' : ''}
                   </div>
                   <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                     {checks.map((c, i) => (
@@ -2492,7 +2492,7 @@ export default function YetiAdminPage() {
               );
             })()}
 
-            {/* Section 1 — Issue Header */}
+            {/* Section 1 - Issue Header */}
             <div style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 12, padding: 24, marginBottom: 16 }}>
               <div style={{ fontWeight: 700, color: C.dusk, fontSize: 14, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span style={{ background: C.dusk, color: '#fff', borderRadius: '50%', width: 22, height: 22, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 11 }}>1</span>
@@ -2528,7 +2528,7 @@ export default function YetiAdminPage() {
               </div>
             </div>
 
-            {/* Section 2 — 5 Things This Weekend */}
+            {/* Section 2 - 5 Things This Weekend */}
             <div style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 12, padding: 24, marginBottom: 16 }}>
               <div style={{ fontWeight: 700, color: C.dusk, fontSize: 14, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span style={{ background: C.dusk, color: '#fff', borderRadius: '50%', width: 22, height: 22, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 11 }}>2</span>
@@ -2546,7 +2546,7 @@ export default function YetiAdminPage() {
                     <input
                       style={{ ...inputStyle, flex: 1, marginBottom: 0 }}
                       value={line}
-                      placeholder="☀️ Fri · Event Name — one line why to go"
+                      placeholder="☀️ Fri · Event Name - one line why to go"
                       onChange={e => {
                         const rows = arr.slice();
                         rows[idx] = e.target.value;
@@ -2564,7 +2564,7 @@ export default function YetiAdminPage() {
                   </div>
                 ))}
                 {(!nlWeekendText || nlWeekendText.trim() === '') && (
-                  <p style={{ fontSize: 12, color: C.textMuted, margin: 0, fontStyle: 'italic' }}>No events yet — pull from Events or add manually below.</p>
+                  <p style={{ fontSize: 12, color: C.textMuted, margin: 0, fontStyle: 'italic' }}>No events yet - pull from Events or add manually below.</p>
                 )}
                 <button
                   onClick={() => setNlWeekendText(prev => prev ? prev + '\n☀️ ' : '☀️ ')}
@@ -2573,7 +2573,7 @@ export default function YetiAdminPage() {
               </div>
             </div>
 
-            {/* Section 3 — Main Article */}
+            {/* Section 3 - Main Article */}
             <div style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 12, padding: 24, marginBottom: 16 }}>
               <div style={{ fontWeight: 700, color: C.dusk, fontSize: 14, marginBottom: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -2590,7 +2590,7 @@ export default function YetiAdminPage() {
                   value={nlArticleId}
                   onChange={e => setNlArticleId(e.target.value)}
                 >
-                  <option value="">— Select an article —</option>
+                  <option value="">- Select an article -</option>
                   {nlArticles.map(a => (
                     <option key={a.id} value={a.id}>{a.title} {a.category ? `[${a.category}]` : ''} {a.blogSafe ? '✅' : '📝'}</option>
                   ))}
@@ -2602,11 +2602,11 @@ export default function YetiAdminPage() {
                   <div style={{ marginTop: 10 }}>
                     {!a.blogSafe && (
                       <div style={{ padding: '8px 14px', background: '#fff8e0', border: '1px solid #e8d080', borderRadius: 8, fontSize: 12, color: '#806010', marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-                        <span>⚠️ This article is still a Draft — it won't be on the blog when the newsletter goes out.</span>
+                        <span>⚠️ This article is still a Draft - it won't be on the blog when the newsletter goes out.</span>
                         <button onClick={() => setActiveTab('review')} style={{ whiteSpace: 'nowrap', background: 'none', border: 'none', color: C.lakeBlue, fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}>Publish now →</button>
                       </div>
                     )}
-                    {/* WYSIWYG article preview — styled like newsletter article-box */}
+                    {/* WYSIWYG article preview - styled like newsletter article-box */}
                     <div style={{ marginTop: 4, border: '1px solid #ddd', borderRadius: 8, overflow: 'hidden', background: '#fff' }}>
                       <div style={{ borderLeft: `4px solid ${C.lakeBlue}`, padding: '14px 16px' }}>
                         {a.category && (
@@ -2624,7 +2624,7 @@ export default function YetiAdminPage() {
               })()}
             </div>
 
-            {/* Section 4 — Ad Slot */}
+            {/* Section 4 - Ad Slot */}
             <div style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 12, padding: 24, marginBottom: 16 }}>
               <div style={{ fontWeight: 700, color: C.dusk, fontSize: 14, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span style={{ background: C.dusk, color: '#fff', borderRadius: '50%', width: 22, height: 22, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 11 }}>4</span>
@@ -2634,9 +2634,9 @@ export default function YetiAdminPage() {
                 <p style={{ fontSize: 13, color: C.textMuted }}>Loading ads…</p>
               ) : (
                 <select style={inputStyle} value={nlAdId} onChange={e => setNlAdId(e.target.value)}>
-                  <option value="">— House ad (default: /featured) —</option>
+                  <option value="">- House ad (default: /featured) -</option>
                   {nlAds.map(a => (
-                    <option key={a.id} value={a.id}>{a.businessName || a.business || a.title} — {a.offerText || a.offer || ''}</option>
+                    <option key={a.id} value={a.id}>{a.businessName || a.business || a.title} - {a.offerText || a.offer || ''}</option>
                   ))}
                 </select>
               )}
@@ -2652,7 +2652,7 @@ export default function YetiAdminPage() {
               })()}
             </div>
 
-            {/* Section 5 — Welcome New Businesses */}
+            {/* Section 5 - Welcome New Businesses */}
             <div style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 12, padding: 24, marginBottom: 16 }}>
               <div style={{ fontWeight: 700, color: C.dusk, fontSize: 14, marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -2682,7 +2682,7 @@ export default function YetiAdminPage() {
               {!nlWelcomeEnabled && <p style={{ fontSize: 13, color: C.textMuted, margin: 0 }}>Toggle on to include a welcome for new Featured businesses (added in last 14 days).</p>}
             </div>
 
-            {/* Section 6 — Guest Contributor */}
+            {/* Section 6 - Guest Contributor */}
             <div style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 12, padding: 24, marginBottom: 24 }}>
               <div style={{ fontWeight: 700, color: C.dusk, fontSize: 14, marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -2771,7 +2771,7 @@ export default function YetiAdminPage() {
                   }}
                   style={{ flex: 1, padding: '10px 0', background: nlStickyStatus === 'copied' ? C.sage : C.sunset, color: '#fff', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}
                 >
-                  {nlStickyStatus === 'copied' ? '✓ Copied — now paste in beehiiv' : '📋 Copy HTML to Clipboard'}
+                  {nlStickyStatus === 'copied' ? '✓ Copied - now paste in beehiiv' : '📋 Copy HTML to Clipboard'}
                 </button>
                 <a
                   href="https://app.beehiiv.com"
@@ -2790,7 +2790,7 @@ export default function YetiAdminPage() {
             <div style={{ marginBottom: 24 }}>
               <h2 style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 20, color: C.dusk, margin: '0 0 6px' }}>Community Org Stripe Connect</h2>
               <p style={{ fontSize: 13, color: C.textMuted, margin: 0, lineHeight: 1.6 }}>
-                Connect a community org's bank account via Stripe Express. Once connected, their sponsorship form accepts online payments — funds go directly to their bank, Yetickets keeps 1.25%.
+                Connect a community org's bank account via Stripe Express. Once connected, their sponsorship form accepts online payments - funds go directly to their bank, Yetickets keeps 1.25%.
               </p>
             </div>
 
@@ -2846,14 +2846,14 @@ export default function YetiAdminPage() {
               <div style={{ background: '#f0fff4', border: '1px solid #90d0a0', borderRadius: 12, padding: 24, marginBottom: 16 }}>
                 <div style={{ fontWeight: 700, color: '#1a5c2a', marginBottom: 12, fontSize: 15 }}>✓ Stripe Express account created</div>
                 <p style={{ fontSize: 13, color: '#3a5c40', margin: '0 0 12px', lineHeight: 1.6 }}>
-                  Send this link to the org. They'll complete Stripe's hosted onboarding (5 min) — bank details, ID verification. Once done, their sponsorship form accepts payments.
+                  Send this link to the org. They'll complete Stripe's hosted onboarding (5 min) - bank details, ID verification. Once done, their sponsorship form accepts payments.
                 </p>
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 8 }}>
                   <code style={{ flex: 1, background: '#fff', border: '1px solid #c0e0c8', borderRadius: 6, padding: '8px 12px', fontSize: 12, color: '#1A2830', wordBreak: 'break-all' }}>{orgConnectResult.onboardingUrl}</code>
                   <button onClick={() => navigator.clipboard.writeText(orgConnectResult.onboardingUrl)} style={{ padding: '8px 14px', borderRadius: 6, border: '1px solid #c0e0c8', background: '#fff', fontSize: 12, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif', whiteSpace: 'nowrap' }}>Copy</button>
                 </div>
                 <p style={{ fontSize: 11, color: '#5c8a6a', margin: 0 }}>
-                  Account ID: <code style={{ background: '#fff', padding: '2px 6px', borderRadius: 4, fontSize: 11 }}>{orgConnectResult.accountId}</code> — saved to Notion.
+                  Account ID: <code style={{ background: '#fff', padding: '2px 6px', borderRadius: 4, fontSize: 11 }}>{orgConnectResult.accountId}</code> - saved to Notion.
                 </p>
                 <p style={{ fontSize: 12, color: '#5c8a6a', margin: '12px 0 0', lineHeight: 1.6 }}>
                   Then add <code style={{ background: '#fff', padding: '2px 6px', borderRadius: 4, fontSize: 11 }}>orgPageId="{orgForm.orgPageId}"</code> to the{' '}
@@ -2865,7 +2865,7 @@ export default function YetiAdminPage() {
             {orgCheckStatus === 'done' && orgCheckResult && (
               <div style={{ background: orgCheckResult.connected ? '#f0fff4' : '#fff8e0', border: `1px solid ${orgCheckResult.connected ? '#90d0a0' : '#e0d090'}`, borderRadius: 12, padding: 20 }}>
                 <div style={{ fontWeight: 700, color: orgCheckResult.connected ? '#1a5c2a' : '#7a6010', marginBottom: 8, fontSize: 14 }}>
-                  {orgCheckResult.connected ? '✓ Account active — ready for payments' : '⏳ Onboarding not yet complete'}
+                  {orgCheckResult.connected ? '✓ Account active - ready for payments' : '⏳ Onboarding not yet complete'}
                 </div>
                 <p style={{ fontSize: 12, color: orgCheckResult.connected ? '#3a5c40' : '#6a5010', margin: 0, lineHeight: 1.7 }}>
                   Account ID: <code style={{ background: 'rgba(255,255,255,0.7)', padding: '2px 6px', borderRadius: 4, fontSize: 11 }}>{orgCheckResult.accountId}</code><br />
@@ -2889,14 +2889,14 @@ export default function YetiAdminPage() {
             <div style={{ marginBottom: 28 }}>
               <h2 style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 22, color: C.dusk, margin: '0 0 6px' }}>Subscriber Incentive Contracts</h2>
               <p style={{ fontSize: 13, color: C.textMuted, margin: 0, lineHeight: 1.6 }}>
-                Vendor partnerships that power subscriber welcome gifts — cookies, discounts, free tastings. Each contract links a vendor to a newsletter episode run and tracks their Google review URL.
+                Vendor partnerships that power subscriber welcome gifts - cookies, discounts, free tastings. Each contract links a vendor to a newsletter episode run and tracks their Google review URL.
               </p>
             </div>
 
             {/* Tier reference cards */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 28 }}>
               {[
-                { tier: 'Single Drop', episodes: '1 issue', price: '$49', desc: 'One-shot welcome gift — test the waters' },
+                { tier: 'Single Drop', episodes: '1 issue', price: '$49', desc: 'One-shot welcome gift - test the waters' },
                 { tier: '4-Episode', episodes: '4 issues', price: '$149', desc: 'One month of subscriber welcome drops' },
                 { tier: 'Season Run', episodes: '12 issues', price: '$399', desc: 'Full season · best ROI for the vendor', badge: 'Best Value' },
               ].map(t => (
@@ -2941,13 +2941,13 @@ export default function YetiAdminPage() {
                   </div>
                   {placeLookupStatus === 'found' && placeLookupResult && (
                     <div style={{ marginTop: 8, padding: '8px 12px', background: '#f0fff4', border: '1px solid #90d0a0', borderRadius: 8, fontSize: 12, color: '#1a5c2a' }}>
-                      ✓ <strong>{placeLookupResult.name}</strong> — {placeLookupResult.formattedAddress}<br />
+                      ✓ <strong>{placeLookupResult.name}</strong> - {placeLookupResult.formattedAddress}<br />
                       Place ID: <code style={{ background: '#fff', padding: '1px 5px', borderRadius: 3 }}>{placeLookupResult.placeId}</code>
                     </div>
                   )}
                   {(placeLookupStatus === 'notfound' || placeLookupStatus === 'error') && placeLookupResult?.error && (
                     <div style={{ marginTop: 8, padding: '8px 12px', background: '#fff8e0', border: '1px solid #e0d090', borderRadius: 8, fontSize: 12, color: '#7a5c00' }}>
-                      ⚠️ {placeLookupResult.error} — you can still enter the Review URL manually below.
+                      ⚠️ {placeLookupResult.error} - you can still enter the Review URL manually below.
                     </div>
                   )}
                 </div>
@@ -2960,16 +2960,16 @@ export default function YetiAdminPage() {
                   <div>
                     <label style={labelStyle}>Contract Tier *</label>
                     <select style={inputStyle} value={contractForm.tier} onChange={e => setContractForm(f => ({ ...f, tier: e.target.value }))}>
-                      <option value="Single Drop">Single Drop — 1 issue · $49</option>
-                      <option value="4-Episode">4-Episode — 4 issues · $149</option>
-                      <option value="Season Run">Season Run — 12 issues · $399</option>
+                      <option value="Single Drop">Single Drop - 1 issue · $49</option>
+                      <option value="4-Episode">4-Episode - 4 issues · $149</option>
+                      <option value="Season Run">Season Run - 12 issues · $399</option>
                     </select>
                   </div>
                 </div>
 
                 <div>
                   <label style={labelStyle}>Offer Text</label>
-                  <input style={inputStyle} placeholder="e.g. Free cookie with any purchase — show this screen to your barista" value={contractForm.offerText} onChange={e => setContractForm(f => ({ ...f, offerText: e.target.value }))} />
+                  <input style={inputStyle} placeholder="e.g. Free cookie with any purchase - show this screen to your barista" value={contractForm.offerText} onChange={e => setContractForm(f => ({ ...f, offerText: e.target.value }))} />
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
@@ -2998,7 +2998,7 @@ export default function YetiAdminPage() {
                     fontFamily: 'Libre Franklin, sans-serif', transition: 'background 0.2s',
                   }}
                 >
-                  {contractFormStatus === 'saving' ? 'Saving…' : contractFormStatus === 'saved' ? '✓ Contract saved' : contractFormStatus === 'error' ? 'Save failed — retry' : 'Save Contract →'}
+                  {contractFormStatus === 'saving' ? 'Saving…' : contractFormStatus === 'saved' ? '✓ Contract saved' : contractFormStatus === 'error' ? 'Save failed - retry' : 'Save Contract →'}
                 </button>
                 {contractFormStatus === 'error' && contractFormError && (
                   <p style={{ margin: 0, fontSize: 12, color: C.sunset }}>{contractFormError}</p>
@@ -3022,7 +3022,7 @@ export default function YetiAdminPage() {
                 <div style={{ textAlign: 'center', padding: '40px 0', color: C.textMuted, fontSize: 13 }}>Loading contracts…</div>
               ) : contracts.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '40px 0', color: C.textMuted, fontSize: 13, background: C.warmWhite, borderRadius: 10, border: `1px dashed ${C.sand}` }}>
-                  No contracts yet — add one above.
+                  No contracts yet - add one above.
                 </div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -3089,7 +3089,7 @@ export default function YetiAdminPage() {
         {/* ── Categories ── */}
         {activeTab === 'categories' && (
           <div>
-            <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: C.textMuted, marginBottom: 20 }}>Local Guide — Category Monitor</div>
+            <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: C.textMuted, marginBottom: 20 }}>Local Guide - Category Monitor</div>
 
             {/* Live preview */}
             <div style={{ background: '#fff', border: `1px solid ${C.sand}`, borderRadius: 12, padding: 24, marginBottom: 20 }}>
@@ -3112,7 +3112,7 @@ export default function YetiAdminPage() {
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, background: '#fff8e0', border: '1px solid #e0d090', borderRadius: 8, padding: '12px 16px', marginBottom: 12, fontFamily: 'Libre Franklin, sans-serif', fontSize: 13 }}>
                   <span>⚠️</span>
                   <div>
-                    <strong>"Other"</strong> is in use — a business is uncategorized. Open Notion, find it, and assign a proper category name.
+                    <strong>"Other"</strong> is in use - a business is uncategorized. Open Notion, find it, and assign a proper category name.
                   </div>
                 </div>
               )}
@@ -3121,7 +3121,7 @@ export default function YetiAdminPage() {
                 <div key={cat} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, background: '#f0f4ff', border: '1px solid #c0cdf0', borderRadius: 8, padding: '12px 16px', marginBottom: 10, fontFamily: 'Libre Franklin, sans-serif', fontSize: 13 }}>
                   <span>🗂️</span>
                   <div>
-                    <strong>"{cat}"</strong> — new category detected. Showing on Local Guide with a placeholder icon.
+                    <strong>"{cat}"</strong> - new category detected. Showing on Local Guide with a placeholder icon.
                     <div style={{ marginTop: 4, color: C.textMuted, fontSize: 12 }}>
                       To add a real icon: drop <code style={{ background: '#e8edf8', padding: '1px 5px', borderRadius: 3 }}>/images/icons/{cat.toLowerCase().replace(/\s+/g, '-')}-icon-dark.png</code> into the repo, then add it to <code style={{ background: '#e8edf8', padding: '1px 5px', borderRadius: 3 }}>discover.js → DISCOVER_DYNAMIC_CAT_ICONS</code>.
                     </div>
@@ -3145,7 +3145,7 @@ export default function YetiAdminPage() {
               </button>
               {catSyncStatus === 'done' && catSyncResult && (
                 <div style={{ marginTop: 12, fontSize: 13, color: catSyncResult.emailSent ? C.sage : C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>
-                  {catSyncResult.emailSent ? `✓ Report sent — ${(catSyncResult.unknown?.length || 0) + (catSyncResult.hasOther ? 1 : 0)} item(s) flagged.` : `✓ ${catSyncResult.message}`}
+                  {catSyncResult.emailSent ? `✓ Report sent - ${(catSyncResult.unknown?.length || 0) + (catSyncResult.hasOther ? 1 : 0)} item(s) flagged.` : `✓ ${catSyncResult.message}`}
                 </div>
               )}
               {catSyncStatus === 'error' && catSyncResult?.error && (
@@ -3160,7 +3160,7 @@ export default function YetiAdminPage() {
           <div style={{ maxWidth: 600 }}>
             <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: C.textMuted, marginBottom: 8 }}>Quick Events</div>
             <p style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: '0 0 28px' }}>
-              Photo of a chalkboard, screenshot of a Facebook post, picture of a flyer — drop it here and AI extracts the events into calendar listings.
+              Photo of a chalkboard, screenshot of a Facebook post, picture of a flyer - drop it here and AI extracts the events into calendar listings.
             </p>
 
             {/* Business Info */}
@@ -3190,7 +3190,7 @@ export default function YetiAdminPage() {
               >
                 <div style={{ fontSize: 40, marginBottom: 8, opacity: 0.5 }}>📸</div>
                 <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 14, fontWeight: 600, color: C.dusk, marginBottom: 4 }}>Drop a photo here or tap to upload</div>
-                <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 12, color: C.textMuted }}>Chalkboard, Facebook screenshot, printed flyer — anything works</div>
+                <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 12, color: C.textMuted }}>Chalkboard, Facebook screenshot, printed flyer - anything works</div>
                 <input ref={qeFileRef} type="file" accept="image/*" capture="environment" onChange={e => qeHandleFile(e.target.files?.[0])} style={{ display: 'none' }} />
               </div>
             ) : (
@@ -3210,7 +3210,7 @@ export default function YetiAdminPage() {
               value={qeText} onChange={e => setQeText(e.target.value)} disabled={!!qeImageData}
               style={{ width: '100%', boxSizing: 'border-box', padding: '11px 14px', border: `1px solid ${C.sand}`, borderRadius: 8, fontFamily: 'Libre Franklin, sans-serif', fontSize: 14, outline: 'none', minHeight: 120, resize: 'vertical', lineHeight: 1.6, opacity: qeImageData ? 0.3 : 1 }}
             />
-            {qeImageData && <div style={{ fontSize: 12, color: C.textMuted, marginTop: 4, fontFamily: 'Libre Franklin, sans-serif' }}>Image uploaded — clear it to paste text instead</div>}
+            {qeImageData && <div style={{ fontSize: 12, color: C.textMuted, marginTop: 4, fontFamily: 'Libre Franklin, sans-serif' }}>Image uploaded - clear it to paste text instead</div>}
 
             {/* Error */}
             {qeError && (
@@ -3331,8 +3331,8 @@ export default function YetiAdminPage() {
             {socialResult && (
               <div style={{ marginTop: 20, padding: 20, borderRadius: 12, background: '#f0fdf4', border: '1px solid #bbf7d0' }}>
                 <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.sage, marginBottom: 10, fontFamily: 'Libre Franklin, sans-serif' }}>Posted successfully</div>
-                {socialResult.results?.facebook && <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, color: C.dusk, marginBottom: 4 }}>📘 Facebook — ID: {socialResult.results.facebook.id}</div>}
-                {socialResult.results?.instagram && <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, color: C.dusk }}>📸 Instagram — ID: {socialResult.results.instagram.id}</div>}
+                {socialResult.results?.facebook && <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, color: C.dusk, marginBottom: 4 }}>📘 Facebook - ID: {socialResult.results.facebook.id}</div>}
+                {socialResult.results?.instagram && <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, color: C.dusk }}>📸 Instagram - ID: {socialResult.results.instagram.id}</div>}
                 {socialResult.errors && Object.entries(socialResult.errors).map(([platform, err]) => (
                   <div key={platform} style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, color: '#dc2626', marginTop: 6 }}>⚠️ {platform}: {err}</div>
                 ))}

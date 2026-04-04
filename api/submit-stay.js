@@ -22,7 +22,7 @@ export default async function handler(req, res) {
     website, description, beds, guests, amenities, photoUrl, tier, _hp
   } = req.body || {};
 
-  // Honeypot — bots fill hidden fields, humans don't
+  // Honeypot - bots fill hidden fields, humans don't
   if (_hp) return res.status(200).json({ ok: true, needsVerification: true });
 
   if (!name?.trim()) {
@@ -42,7 +42,7 @@ export default async function handler(req, res) {
 
   const code = generateCode();
 
-  // Build Notion properties — only set optional fields if they have values
+  // Build Notion properties - only set optional fields if they have values
   const properties = {
     'Name':              { title: [{ text: { content: name.trim() } }] },
     'Status':            { status: { name: 'New' } },

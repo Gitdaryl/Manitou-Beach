@@ -33,7 +33,7 @@ async function findEventByToken(token) {
 }
 
 export default async function handler(req, res) {
-  // GET — fetch event data by token
+  // GET - fetch event data by token
   if (req.method === 'GET') {
     const { token } = req.query;
     if (!token) return res.status(400).json({ error: 'Token required' });
@@ -70,7 +70,7 @@ export default async function handler(req, res) {
     }
   }
 
-  // POST — update event fields by token
+  // POST - update event fields by token
   if (req.method === 'POST') {
     const { token, time, timeEnd, location, description, cost, eventUrl, imageUrl, attendance, date } = req.body;
     if (!token) return res.status(400).json({ error: 'Token required' });

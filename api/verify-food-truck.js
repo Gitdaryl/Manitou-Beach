@@ -5,7 +5,7 @@
 // 3. Free tier: sets Active immediately, SMS's check-in link
 // 4. Paid tier: sets "Verified" (activated after Stripe payment), returns redirectToStripe
 //
-// Also handles resend: POST { phone, resend: true } — re-sends the code
+// Also handles resend: POST { phone, resend: true } - re-sends the code
 
 import crypto from 'crypto';
 import { sendSMS, normalizePhone } from './lib/twilio.js';
@@ -126,7 +126,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Incorrect code. Please check your text messages and try again.' });
     }
 
-    // Code matches — generate slug + token
+    // Code matches - generate slug + token
     const existingSlugs = await queryAllSlugs(notionToken, dbId);
     const baseSlug = slugify(truckName);
     const slug = dedupeSlug(baseSlug, existingSlugs);
@@ -174,9 +174,9 @@ export default async function handler(req, res) {
     const checkinUrl = `${siteUrl}/food-trucks?truck=${encodeURIComponent(slug)}&token=${encodeURIComponent(checkinToken)}`;
 
     if (activateNow) {
-      // Active immediately — send check-in link
+      // Active immediately - send check-in link
       const betaNote = isBeta && isPaid
-        ? `\n\nYou're a founding food truck — everything is free through May 10. After that, it's $9/month to stay live on the map.`
+        ? `\n\nYou're a founding food truck - everything is free through May 10. After that, it's $9/month to stay live on the map.`
         : '';
       await sendSMS(inputDigits,
         `Manitou Beach Food Trucks\n\n${truckName} is live! 🎉\n\nHere's your personal check-in link:\n${checkinUrl}\n\nOpen it each time you head to Manitou Beach. Drop your pin, add today's special, and go live on the map.${betaNote}\n\nSave this to your home screen for quick access.\n\nTip: Save this number as "Manitou Beach" in your contacts so you can always find your check-in link!`
@@ -192,7 +192,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // Post-beta paid tier — verified but needs Stripe payment to activate
+    // Post-beta paid tier - verified but needs Stripe payment to activate
     return res.status(200).json({
       ok: true,
       verified: true,

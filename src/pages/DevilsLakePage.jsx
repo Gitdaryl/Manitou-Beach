@@ -17,22 +17,22 @@ const DEVILS_LAKE_STATS = [
 ];
 
 const DEVILS_LAKE_TIMELINE = [
-  { year: "Pre-1830", event: "Potawatomi people have long gathered along these shores. The lake's name traces to a tragic legend — the daughter of Chief Orrinika and her lover vanished in a mysterious fog, leading the lake to be known as the home of an evil spirit. Early settlers and traders interpreted these stories through their own lens, and \"Devils Lake\" was born. A rock formation on the east shore, known as the \"Devil's Chair,\" added to the mystique. The name endures — though the place itself is anything but cursed." },
+  { year: "Pre-1830", event: "Potawatomi people have long gathered along these shores. The lake's name traces to a tragic legend - the daughter of Chief Orrinika and her lover vanished in a mysterious fog, leading the lake to be known as the home of an evil spirit. Early settlers and traders interpreted these stories through their own lens, and \"Devils Lake\" was born. A rock formation on the east shore, known as the \"Devil's Chair,\" added to the mystique. The name endures - though the place itself is anything but cursed." },
   { year: "1870s", event: "The resort era begins. Grand hotels, a dance pavilion, bathhouses, and two railroad stations transform Devils Lake into one of Michigan's most popular summer destinations." },
   { year: "1888", event: "Manitou Beach officially platted. Lots sold for cottage construction. A steam launch connects Devils Lake to Round Lake through the dredged channel." },
   { year: "1920s–40s", event: "The Yacht Club is established, formalizing the sailing and boating culture that had grown organically on the lake for decades." },
-  { year: "1950s", event: "The Tip-Up Festival launches — an ice fishing celebration on frozen Devils Lake that grows into one of Michigan's longest-running winter festivals (73+ years and counting)." },
-  { year: "Today", event: "Devils Lake remains the social heart of Manitou Beach — summer boating, the Firecracker 7K on the Fourth, weekly sailboat races, and a community that lives for the water." },
+  { year: "1950s", event: "The Tip-Up Festival launches - an ice fishing celebration on frozen Devils Lake that grows into one of Michigan's longest-running winter festivals (73+ years and counting)." },
+  { year: "Today", event: "Devils Lake remains the social heart of Manitou Beach - summer boating, the Firecracker 7K on the Fourth, weekly sailboat races, and a community that lives for the water." },
 ];
 
 const DEVILS_LAKE_COMMUNITY = [
   { icon: "⛵", title: "Devils Lake Yacht Club", desc: "Sailing, regattas, and the Friday Fish Fry. The Yacht Club has been the social hub of Devils Lake since the 1940s.", href: "https://www.devilslakeyachtclub.com" },
   { icon: "🚤", title: "Public Boat Launch", desc: "Paved public ramp on Devils Lake Rd at the Manitou Beach Marina. Easy access for powerboats, pontoons, kayaks, and canoes.", href: "https://maps.app.goo.gl/3fHSzJaoyJEK4HkS9" },
-  { icon: "🏘️", title: "Manitou Beach Village", desc: "Walk from the lake to boutique shops, a cafe, satellite wine tasting rooms, and the iconic lighthouse — all within five minutes.", href: "/village" },
-  { icon: "🏒", title: "Devils & Round Lake Mens Club", desc: "The civic backbone of the lakes community — organizing the Tip-Up Festival, Firecracker 7K, Shop with a Cop, and year-round events since the 1940s.", href: "/mens-club" },
-  { icon: "🌿", title: "Land & Lake Ladies Club", desc: "A community of women dedicated to the lakes, the land, and the social fabric of Manitou Beach — hosting events, fundraisers, and the beloved Summer Festival.", href: "/ladies-club" },
-  { icon: "🎆", title: "Devils & Round Lake Fireworks", desc: "The annual July 4th fireworks tradition — 100% community funded, lighting up both lakes every summer. 2026 marks America's 250th with the biggest show yet.", href: "/fireworks" },
-  { icon: "🏛️", title: "Historic Renovation Society", desc: "Restoring the Village, cultivating the arts, and conserving the land and water — MBHRS is the steward of Manitou Beach's past, present, and future.", href: "/historical-society" },
+  { icon: "🏘️", title: "Manitou Beach Village", desc: "Walk from the lake to boutique shops, a cafe, satellite wine tasting rooms, and the iconic lighthouse - all within five minutes.", href: "/village" },
+  { icon: "🏒", title: "Devils & Round Lake Mens Club", desc: "The civic backbone of the lakes community - organizing the Tip-Up Festival, Firecracker 7K, Shop with a Cop, and year-round events since the 1940s.", href: "/mens-club" },
+  { icon: "🌿", title: "Land & Lake Ladies Club", desc: "A community of women dedicated to the lakes, the land, and the social fabric of Manitou Beach - hosting events, fundraisers, and the beloved Summer Festival.", href: "/ladies-club" },
+  { icon: "🎆", title: "Devils & Round Lake Fireworks", desc: "The annual July 4th fireworks tradition - 100% community funded, lighting up both lakes every summer. 2026 marks America's 250th with the biggest show yet.", href: "/fireworks" },
+  { icon: "🏛️", title: "Historic Renovation Society", desc: "Restoring the Village, cultivating the arts, and conserving the land and water - MBHRS is the steward of Manitou Beach's past, present, and future.", href: "/historical-society" },
 ];
 
 function DevilsLakeHero() {
@@ -66,10 +66,9 @@ function DevilsLakeHero() {
             1,330 acres of warm water, 600+ boat slips, and a community that has been coming back every summer since the 1870s. Devils Lake is the beating heart of Manitou Beach.
           </p>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-            <Btn href="/#holly" variant="sunset">Talk to Holly — Find a Home</Btn>
             <Btn href="/" variant="outlineLight" small>← Back to Home</Btn>
           </div>
-          <ShareBar title="Devils Lake — Manitou Beach, Michigan" />
+          <ShareBar title="Devils Lake - Manitou Beach, Michigan" />
         </div>
       </div>
     </section>
@@ -112,10 +111,10 @@ function DevilsLakeHistorySection() {
           <SectionLabel>Deep Roots</SectionLabel>
           <SectionTitle>A Lake With a Story</SectionTitle>
           <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 560, margin: "0 0 16px 0" }}>
-            Devils Lake has been drawing people in for over 150 years. From railroad-era grand hotels to the annual Tip-Up Festival on the ice — the history runs deep.
+            Devils Lake has been drawing people in for over 150 years. From railroad-era grand hotels to the annual Tip-Up Festival on the ice - the history runs deep.
           </p>
           <p style={{ fontSize: 13, color: C.textMuted, lineHeight: 1.7, maxWidth: 560, margin: "0 0 48px 0", fontStyle: "italic" }}>
-            Some say Manitow. Some say Manitaw. Some say Manitoo. However you say it — you know the place.
+            Some say Manitow. Some say Manitaw. Some say Manitoo. However you say it - you know the place.
           </p>
         </FadeIn>
         <div style={{ position: "relative" }}>
@@ -147,7 +146,7 @@ function DevilsLakeFishingSection() {
           <SectionLabel>On the Line</SectionLabel>
           <SectionTitle>Fishing Devils Lake</SectionTitle>
           <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 560, margin: "0 0 20px 0" }}>
-            A warm-water fishery with healthy bass, bluegill, pike, and perch. Year-round access — summer dock fishing and the legendary February Tip-Up Festival on the ice.
+            A warm-water fishery with healthy bass, bluegill, pike, and perch. Year-round access - summer dock fishing and the legendary February Tip-Up Festival on the ice.
           </p>
         </FadeIn>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 16, marginTop: 48 }}>
@@ -174,7 +173,7 @@ function DevilsLakeFishingSection() {
             <Btn href="/fishing" variant="outline">Full Species Guide + Bait Tips →</Btn>
           </div>
         </FadeIn>
-        {/* Next Event Banner — update title/date/location/href to change */}
+        {/* Next Event Banner - update title/date/location/href to change */}
         {(() => {
           const nextEvent = {
             label: "Coming Up",
@@ -224,7 +223,7 @@ function DevilsLakeCommunitySection() {
           <SectionLabel light>Life on the Lake</SectionLabel>
           <SectionTitle light>The Community</SectionTitle>
           <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 540, margin: "0 0 56px 0" }}>
-            Devils Lake isn't just a place to visit — it's a community. Generations of families have built their summers, and often their lives, around this water.
+            Devils Lake isn't just a place to visit - it's a community. Generations of families have built their summers, and often their lives, around this water.
           </p>
         </FadeIn>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 20 }}>
@@ -266,9 +265,8 @@ function DevilsLakeCommunitySection() {
               Ready to call Devils Lake home?
             </h3>
             <p style={{ fontSize: 14, color: "rgba(255,255,255,0.35)", lineHeight: 1.7, maxWidth: 480, margin: "0 auto 24px" }}>
-              Holly Griewahn at Foundation Realty knows this lake like the back of her hand. Lakefront, cottage, or year-round — she's your person.
+              Holly Griewahn at Foundation Realty knows this lake like the back of her hand. Lakefront, cottage, or year-round - she's your person.
             </p>
-            <Btn href="/#holly" variant="sunset">Talk to Holly</Btn>
           </div>
         </FadeIn>
       </div>

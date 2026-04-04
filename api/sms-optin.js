@@ -56,7 +56,7 @@ export default async function handler(req, res) {
       if (isActive) {
         return res.status(200).json({ success: true, already_subscribed: true });
       }
-      // Re-activate — update existing record
+      // Re-activate - update existing record
       await fetch(`https://api.notion.com/v1/pages/${existing.id}`, {
         method: 'PATCH',
         headers: NOTION_HEADERS,

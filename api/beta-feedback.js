@@ -1,5 +1,5 @@
 // /api/beta-feedback.js
-// POST { page, type, description, email } — saves beta feedback to Notion + emails Daryl
+// POST { page, type, description, email } - saves beta feedback to Notion + emails Daryl
 import { Resend } from 'resend';
 
 const NOTION_HEADERS = {
@@ -76,6 +76,6 @@ export default async function handler(req, res) {
     return res.status(200).json({ success: true });
   } catch (err) {
     console.error('beta-feedback error:', err.message);
-    return res.status(500).json({ error: 'Server error — please try again' });
+    return res.status(500).json({ error: 'Server error - please try again' });
   }
 }

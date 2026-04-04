@@ -58,7 +58,7 @@ export default async function handler(req, res) {
               <p style="font-size: 26px; font-weight: bold; margin: 0 0 8px; color: #1A2830;">You're live.</p>
               <p style="font-size: 15px; color: #6B5F52; margin: 0 0 24px; line-height: 1.7;">
                 <strong>${businessName}</strong> is showing in the Manitou Beach Local Guide right now.
-                Every visitor heading to Devils Lake this summer will find you here — no charge, no contracts.
+                Every visitor heading to Devils Lake this summer will find you here - no charge, no contracts.
               </p>
               <p style="margin: 0 0 28px;">
                 <a href="${siteUrl}/discover" style="background: #1A2830; color: #FAF6EF; text-decoration: none; padding: 15px 30px; border-radius: 4px; font-family: sans-serif; font-weight: bold; font-size: 14px; letter-spacing: 1px; display: inline-block;">
@@ -83,7 +83,7 @@ export default async function handler(req, res) {
     }
   } catch (err) {
     console.error('confirm-listing email fetch failed:', err);
-    // Non-fatal — still redirect
+    // Non-fatal - still redirect
   }
 
   return res.redirect(302, `${siteUrl}/listing-confirmed`);

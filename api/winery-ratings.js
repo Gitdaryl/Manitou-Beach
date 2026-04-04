@@ -1,4 +1,4 @@
-// Winery Ratings — POST to submit a tasting review, GET to fetch aggregates by venue + wine rankings
+// Winery Ratings - POST to submit a tasting review, GET to fetch aggregates by venue + wine rankings
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
 
@@ -42,7 +42,7 @@ export default async function handler(req, res) {
     const today = new Date().toISOString().split('T')[0];
 
     const props = {
-      'Name':      { title:     [{ text: { content: `${venue} — ${today}` } }] },
+      'Name':      { title:     [{ text: { content: `${venue} - ${today}` } }] },
       'Venue':     { select:    { name: venue } },
       'Rating':    { number:    overallRating },
       'WineTried': { rich_text: [{ text: { content: wineTriedStr.slice(0, 2000) } }] },
@@ -55,7 +55,7 @@ export default async function handler(req, res) {
     };
     if (service    && service    >= 1 && service    <= 5) props['Service']    = { number: Number(service) };
     if (atmosphere && atmosphere >= 1 && atmosphere <= 5) props['Atmosphere'] = { number: Number(atmosphere) };
-    // New: Experience replaces Value — but accept either for backward compat
+    // New: Experience replaces Value - but accept either for backward compat
     const exp = experience || value;
     if (exp && exp >= 1 && exp <= 5) props['Experience'] = { number: Number(exp) };
 
@@ -110,7 +110,7 @@ export default async function handler(req, res) {
             );
 
             if (!alreadyKnown) {
-              // Add as inactive — admin reviews before it goes live on the leaderboard
+              // Add as inactive - admin reviews before it goes live on the leaderboard
               await fetch('https://api.notion.com/v1/pages', {
                 method: 'POST',
                 headers: {
@@ -135,7 +135,7 @@ export default async function handler(req, res) {
           }
         }
       } catch (err) {
-        // Non-fatal — the rating was already saved successfully
+        // Non-fatal - the rating was already saved successfully
         console.error('Auto-wine-register error:', err.message);
       }
     }
@@ -196,7 +196,7 @@ export default async function handler(req, res) {
 
       const svc = p['Service']?.number;
       const atm = p['Atmosphere']?.number;
-      // Accept both Experience (new) and Value (legacy) — prefer Experience
+      // Accept both Experience (new) and Value (legacy) - prefer Experience
       const exp = p['Experience']?.number || p['Value']?.number;
       if (svc) { agg[venue].svcTotal += svc; agg[venue].svcCount += 1; }
       if (atm) { agg[venue].atmTotal += atm; agg[venue].atmCount += 1; }
@@ -268,7 +268,7 @@ export default async function handler(req, res) {
 
             const parts = wineTried.split('·').map(s => s.trim());
             for (const part of parts) {
-              // New format: "Wine Name:4" — extract name and per-wine rating
+              // New format: "Wine Name:4" - extract name and per-wine rating
               const colonIdx = part.lastIndexOf(':');
               let partName, partRating;
               if (colonIdx > 0) {
@@ -317,7 +317,7 @@ export default async function handler(req, res) {
         }
       } catch (err) {
         console.error('Wine rankings aggregation error:', err.message);
-        // non-fatal — return empty rankings
+        // non-fatal - return empty rankings
       }
     }
 

@@ -1,5 +1,5 @@
 // /api/send-checkin-link.js
-// POST { phone } — looks up truck by phone in Notion, texts check-in URL via Twilio
+// POST { phone } - looks up truck by phone in Notion, texts check-in URL via Twilio
 // Used by vendors who forgot their check-in link
 
 import { sendSMSFull, normalizePhone } from './lib/twilio.js';

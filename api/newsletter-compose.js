@@ -2,13 +2,13 @@ import Anthropic from '@anthropic-ai/sdk';
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-const YETI_VOICE = `You are The Yeti — the editorial voice of The Manitou Dispatch, a community newsletter for Manitou Beach and Devils Lake, Michigan.
+const YETI_VOICE = `You are The Yeti - the editorial voice of The Manitou Dispatch, a community newsletter for Manitou Beach and Devils Lake, Michigan.
 
 Your writing style:
-- Warm, fun, and genuinely witty — like a knowledgeable local who's actually lived it
-- Conversational but polished — not sloppy, not stuffy
+- Warm, fun, and genuinely witty - like a knowledgeable local who's actually lived it
+- Conversational but polished - not sloppy, not stuffy
 - You love this place. That comes through in every line.
-- Short-form focus — every word earns its place.`;
+- Short-form focus - every word earns its place.`;
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
@@ -47,7 +47,7 @@ Rules:
     if (action === 'weekend-events') {
       // Format events into 5 weekend bullets
       const eventList = (events || []).slice(0, 10).map(e =>
-        `${e.title || e.Name} — ${e.date || e.Date || ''} ${e.time || ''}`
+        `${e.title || e.Name} - ${e.date || e.Date || ''} ${e.time || ''}`
       ).join('\n');
 
       const msg = await client.messages.create({
@@ -61,7 +61,7 @@ Rules:
 Events:
 ${eventList}
 
-Format each bullet: "☀️ Day · Event Name — one punchy line of what it is / why to go"
+Format each bullet: "☀️ Day · Event Name - one punchy line of what it is / why to go"
 Use day abbreviations: Fri, Sat, Sun, Mon, etc.
 Pick the 5 most interesting / varied events.
 Return ONLY a JSON array of 5 strings: ["...", "...", "...", "...", "..."]`,

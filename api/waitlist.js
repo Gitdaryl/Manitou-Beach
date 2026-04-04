@@ -5,7 +5,7 @@ export default async function handler(req, res) {
 
   const { name, email, businessName, tier, _hp } = req.body || {};
 
-  // Honeypot — bots fill hidden fields, humans don't
+  // Honeypot - bots fill hidden fields, humans don't
   if (_hp) return res.status(200).json({ success: true });
 
   if (!name || !email || !email.includes('@') || !businessName) {

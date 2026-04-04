@@ -1,12 +1,12 @@
-# Sonnet Task List — Manitou Beach
+# Sonnet Task List - Manitou Beach
 
 ## Project Context
 - **Stack**: React 18 + Vite, Vercel serverless functions, Notion as CMS
-- **Key file**: `src/App.jsx` — monolithic single file (~4,700 lines), all components/styles/logic
-- **API endpoints**: `/api/` directory — submit-business.js, submit-event.js, create-checkout.js, events.js, upload-image.js
+- **Key file**: `src/App.jsx` - monolithic single file (~4,700 lines), all components/styles/logic
+- **API endpoints**: `/api/` directory - submit-business.js, submit-event.js, create-checkout.js, events.js, upload-image.js
 - **Deployed**: Vercel, GitHub repo at Gitdaryl/Manitou-Beach
 - **Run**: `npm run dev` | **Build**: `npm run build`
-- **Important**: App.jsx is intentionally monolithic — don't refactor into multiple files
+- **Important**: App.jsx is intentionally monolithic - don't refactor into multiple files
 
 ---
 
@@ -18,7 +18,7 @@ The homepage hero should dynamically swap to promote upcoming key events, pulled
 **How it works:**
 - Notion database: "Manitou Beach Hero Events"
 - Env vars already set: `NOTION_TOKEN_HERO`, `NOTION_DB_HERO`
-- Columns in Notion: `Event Name` (title), `Date` (date), `Tagline` (rich_text), checkbox column (likely "Active" — toggle to make it live), `Hero Image URL` (url), `Hero Video URL` (url)
+- Columns in Notion: `Event Name` (title), `Date` (date), `Tagline` (rich_text), checkbox column (likely "Active" - toggle to make it live), `Hero Image URL` (url), `Hero Video URL` (url)
 
 **Logic:**
 1. Create new API endpoint: `api/hero-event.js`
@@ -47,21 +47,21 @@ The event submission form (`/api/submit-event.js`) returns "something went wrong
 
 **Env vars are confirmed set** in Vercel: `NOTION_TOKEN_EVENTS` and `NOTION_DB_EVENTS`.
 
-**Most likely cause**: Notion database schema mismatch. The API sends these property names — they must match EXACTLY (case-sensitive) in the Notion events database:
-- `Event Name` — Title type
-- `Category` — Rich text
-- `Email` — Email type
-- `Phone` — Phone number type
-- `Description` — Rich text
-- `Time` — Rich text
-- `Location` — Rich text
-- `Event Date` — Date type
-- `Event URL` — URL type (**newly added — probably missing from Notion**)
-- `Image URL` — URL type (**may also be missing**)
+**Most likely cause**: Notion database schema mismatch. The API sends these property names - they must match EXACTLY (case-sensitive) in the Notion events database:
+- `Event Name` - Title type
+- `Category` - Rich text
+- `Email` - Email type
+- `Phone` - Phone number type
+- `Description` - Rich text
+- `Time` - Rich text
+- `Location` - Rich text
+- `Event Date` - Date type
+- `Event URL` - URL type (**newly added - probably missing from Notion**)
+- `Image URL` - URL type (**may also be missing**)
 
 **Fix approach:**
-1. Add better error logging — return Notion's actual error message to help debug
-2. Make `Event URL` and `Image URL` properties optional/resilient — if Notion rejects them, retry without those fields
+1. Add better error logging - return Notion's actual error message to help debug
+2. Make `Event URL` and `Image URL` properties optional/resilient - if Notion rejects them, retry without those fields
 3. Tell the user which Notion columns to add if missing
 
 **Also**: Does the `upload-image.js` endpoint work? It needs `BLOB_READ_WRITE_TOKEN` env var for @vercel/blob (confirmed set in Vercel).
@@ -101,8 +101,8 @@ Link from the Wineries explore card on homepage.
 ## Task 4: Blog / Dispatch Section
 **Priority: MEDIUM**
 
-Build "The Manitou Beach Dispatch" — a simple blog section.
-- Image exists: `public/images/dispatch-header.jpg` — use as the blog header
+Build "The Manitou Beach Dispatch" - a simple blog section.
+- Image exists: `public/images/dispatch-header.jpg` - use as the blog header
 - Initially can be static content (hardcoded blog posts in App.jsx)
 - Later: fetch from a Notion database (similar pattern to events.js)
 - Route: `/dispatch` or section on homepage
@@ -131,12 +131,12 @@ The "Living Here" section has cards for Buying a Home, Local Schools, Community 
 
 ---
 
-## Task 7: Events Page Filters — FREE / Family-Friendly
+## Task 7: Events Page Filters - FREE / Family-Friendly
 **Priority: LOW**
 
 The `/happening` page CalendarSection has filter tabs (All, Live Music, Food & Social, etc.)
-- Add "Free" filter — show events where cost is "Free" or "$0"
-- Add "Family" filter — need a way to tag events as family-friendly
+- Add "Free" filter - show events where cost is "Free" or "$0"
+- Add "Family" filter - need a way to tag events as family-friendly
 - Cost data is in each event's `cost` field
 
 ---
@@ -147,7 +147,7 @@ The `/happening` page CalendarSection has filter tabs (All, Live Music, Food & S
 Add a polaroid-style photo gallery to the Round Lake page (`/round-lake`).
 - Slightly rotated photos with white borders and captions
 - Can be a simple CSS-only approach (transform: rotate, white padding, box-shadow)
-- User will provide photos — check `public/images/` for any round-lake-gallery-* images
+- User will provide photos - check `public/images/` for any round-lake-gallery-* images
 
 ---
 
@@ -166,7 +166,7 @@ The RoundLakeFishingSection in the Round Lake page shows 8 fish species with emo
 Scrape Google Maps / Yelp for Manitou Beach area businesses and pre-populate the directory.
 - Add "Claim this listing" button on unclaimed business cards
 - Claimed = verified owner, can edit details
-- This is a bigger feature — discuss approach with user first
+- This is a bigger feature - discuss approach with user first
 
 ---
 
@@ -186,15 +186,15 @@ When starting, run `ls public/images/` and `ls public/images/mens-club/ 2>/dev/n
 
 ## Env Vars in Vercel (ALL CONFIRMED SET)
 All of these are already configured in Vercel:
-- `STRIPE_SECRET_KEY` — for featured listing checkout (added 14h ago)
-- `BLOB_READ_WRITE_TOKEN` — for Vercel Blob image uploads (added 2d ago)
-- `NOTION_TOKEN_HERO` — for hero event swap feature (added 3d ago)
-- `NOTION_DB_HERO` — hero events database ID (added 3d ago)
-- `NOTION_TOKEN_BUSINESS` — for business submissions (added 3d ago)
-- `NOTION_TOKEN_EVENTS` — for event submissions (added 3d ago)
-- `NOTION_DB_BUSINESS` — business database ID (added 3d ago)
-- `NOTION_DB_EVENTS` — events database ID (added 3d ago)
-- `SITE_URL` — **NOT YET SET** — needs to be added once custom domain is connected
+- `STRIPE_SECRET_KEY` - for featured listing checkout (added 14h ago)
+- `BLOB_READ_WRITE_TOKEN` - for Vercel Blob image uploads (added 2d ago)
+- `NOTION_TOKEN_HERO` - for hero event swap feature (added 3d ago)
+- `NOTION_DB_HERO` - hero events database ID (added 3d ago)
+- `NOTION_TOKEN_BUSINESS` - for business submissions (added 3d ago)
+- `NOTION_TOKEN_EVENTS` - for event submissions (added 3d ago)
+- `NOTION_DB_BUSINESS` - business database ID (added 3d ago)
+- `NOTION_DB_EVENTS` - events database ID (added 3d ago)
+- `SITE_URL` - **NOT YET SET** - needs to be added once custom domain is connected
 
 ---
 

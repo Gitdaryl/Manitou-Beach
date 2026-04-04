@@ -10,7 +10,7 @@ const MBHRS_PROGRAMS = [
   {
     image: "/images/historical/art-gallery.jpg",
     title: "Boat House Art Gallery",
-    desc: "The largest nonprofit art gallery in Lenawee County, featuring work from over 50 artists. Located at 138 N. Lakeview Blvd — curating fine art from Michigan's Irish Hills community.",
+    desc: "The largest nonprofit art gallery in Lenawee County, featuring work from over 50 artists. Located at 138 N. Lakeview Blvd - curating fine art from Michigan's Irish Hills community.",
     address: "138 North Lakeview Boulevard, Manitou Beach, MI 49253",
     phone: "(517) 224-1984",
     email: "mbboathouseartgallery@gmail.com",
@@ -18,8 +18,8 @@ const MBHRS_PROGRAMS = [
   {
     image: "/images/historical/art-festival.jpg",
     title: "Devils Lake Festival of the Arts",
-    desc: "An annual summer art festival in the Village — 50 fine artists, 50 crafters, children's activities, live music, and food trucks. Free shuttle buses run all day between parking lots.",
-    date: "Annual — Summer (10 AM – 6 PM)",
+    desc: "An annual summer art festival in the Village - 50 fine artists, 50 crafters, children's activities, live music, and food trucks. Free shuttle buses run all day between parking lots.",
+    date: "Annual - Summer (10 AM – 6 PM)",
     link: "https://www.facebook.com/ManitouBeachBoathouseArtGallery/",
   },
   {
@@ -54,10 +54,10 @@ const MBHRS_PROGRAMS = [
 const MBHRS_TIMELINE = [
   { year: "Origins", title: "A Village Built by Visitors", desc: "Manitou Beach emerged as a resort destination in the late 1800s, attracting visitors from across Michigan and beyond. Grand hotels, pavilions, and a thriving commercial district defined the village." },
   { year: "Decline", title: "The Quiet Years", desc: "As highways bypassed the village and resort culture shifted, Manitou Beach's commercial center fell into disrepair. Many historic buildings sat empty or deteriorated." },
-  { year: "Revival", title: "MBHRS Is Founded", desc: "The Manitou Beach Historic Renovation Society was established to reverse decades of decline — investing in the future by preserving the past. The mission: restore, renovate, and revitalize the village." },
-  { year: "Gallery", title: "The Boat House Opens", desc: "MBHRS transforms a lakeside building into the Boat House Art Gallery — now the largest nonprofit gallery in Lenawee County, showcasing 50+ Michigan artists." },
+  { year: "Revival", title: "MBHRS Is Founded", desc: "The Manitou Beach Historic Renovation Society was established to reverse decades of decline - investing in the future by preserving the past. The mission: restore, renovate, and revitalize the village." },
+  { year: "Gallery", title: "The Boat House Opens", desc: "MBHRS transforms a lakeside building into the Boat House Art Gallery - now the largest nonprofit gallery in Lenawee County, showcasing 50+ Michigan artists." },
   { year: "Festival", title: "Festival of the Arts", desc: "The Devils Lake Festival of the Arts debuts, filling the Village with 100 artist booths, live music, food, and thousands of visitors. It becomes an annual tradition." },
-  { year: "Today", title: "A Cultural Anchor", desc: "MBHRS continues its mission — the Lock archway greets visitors, the gallery thrives, car shows bring energy, and conservation projects protect the land and water." },
+  { year: "Today", title: "A Cultural Anchor", desc: "MBHRS continues its mission - the Lock archway greets visitors, the gallery thrives, car shows bring energy, and conservation projects protect the land and water." },
 ];
 
 function HistoricalSocietyHero() {
@@ -84,7 +84,7 @@ function HistoricalSocietyHero() {
           Manitou Beach Historic<br />Renovation Society
         </h1>
         <p style={{ fontSize: "clamp(14px, 1.5vw, 17px)", color: "rgba(255,255,255,0.45)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto 32px" }}>
-          Restoring the Village, cultivating the arts, conserving the land and water — MBHRS is the steward of Manitou Beach's past, present, and future.
+          Restoring the Village, cultivating the arts, conserving the land and water - MBHRS is the steward of Manitou Beach's past, present, and future.
         </p>
         <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
           <a href="#mbhrs-programs" className="btn-animated" style={{
@@ -300,7 +300,7 @@ function MBHRSSupportSection() {
             </ul>
           </div>
           <p style={{ fontSize: 12, color: C.textMuted }}>
-            MBHRS — 762 Manitou Road, Manitou Beach, MI 49253
+            MBHRS - 762 Manitou Road, Manitou Beach, MI 49253
           </p>
         </FadeIn>
       </div>
@@ -324,7 +324,7 @@ function MBHRSSponsorForm() {
             <SectionLabel>Support Preservation</SectionLabel>
             <SectionTitle center>Become a Sponsor</SectionTitle>
             <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 520, margin: "0 auto" }}>
-              Your sponsorship preserves Manitou Beach history, supports the Boat House Art Gallery, and funds the Festival of the Arts — keeping our cultural heritage alive for the next generation.
+              Your sponsorship preserves Manitou Beach history, supports the Boat House Art Gallery, and funds the Festival of the Arts - keeping our cultural heritage alive for the next generation.
             </p>
           </div>
         </FadeIn>

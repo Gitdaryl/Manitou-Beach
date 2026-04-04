@@ -8,7 +8,7 @@ import yeti from '../data/errorMessages';
 
 
 // ============================================================
-// Ad slot renderer — picks a random ad from the slot array
+// Ad slot renderer - picks a random ad from the slot array
 // ============================================================
 export function AdSlot({ ads, variant }) {
   const ad = pickAd(ads);
@@ -53,7 +53,7 @@ export function AdSlot({ ads, variant }) {
 }
 
 // ============================================================
-// Article content renderer — renders parsed Notion blocks
+// Article content renderer - renders parsed Notion blocks
 // ============================================================
 export function DispatchArticleContent({ content }) {
   if (!content || !content.length) return null;
@@ -150,13 +150,13 @@ export function DispatchArticlePage() {
   useEffect(() => {
     if (!article) return;
     const prevTitle = document.title;
-    document.title = `${article.title} — The Manitou Dispatch`;
+    document.title = `${article.title} - The Manitou Dispatch`;
     const setMeta = (attr, name, content) => {
       let el = document.querySelector(`meta[${attr}="${name}"]`);
       if (!el) { el = document.createElement('meta'); el.setAttribute(attr, name); document.head.appendChild(el); }
       el.setAttribute('content', content);
     };
-    setMeta('property', 'og:title', `${article.title} — The Manitou Dispatch`);
+    setMeta('property', 'og:title', `${article.title} - The Manitou Dispatch`);
     setMeta('property', 'og:description', article.excerpt || 'Lake life, local news, and a little Yeti wisdom from Manitou Beach.');
     setMeta('property', 'og:type', 'article');
     if (article.coverImage) setMeta('property', 'og:image', article.coverImage);
@@ -179,7 +179,7 @@ export function DispatchArticlePage() {
           <div style={{ textAlign: 'center', padding: '80px 20px', color: C.sage }}>Loading…</div>
         ) : !article ? (
           <div style={{ textAlign: 'center', padding: '80px 20px' }}>
-            <p style={{ marginBottom: 20, color: '#888' }}>Can't find that article — it may have been moved or unpublished.</p>
+            <p style={{ marginBottom: 20, color: '#888' }}>Can't find that article - it may have been moved or unpublished.</p>
             <button onClick={() => navigate('/dispatch')} style={{ background: C.sage, color: '#fff', border: 'none', borderRadius: 8, padding: '10px 24px', cursor: 'pointer', fontSize: 15 }}>← Back to Dispatch</button>
           </div>
         ) : (
@@ -197,7 +197,7 @@ export function DispatchArticlePage() {
               </div>
             )}
 
-            {/* Leaderboard ad — below hero, above article */}
+            {/* Leaderboard ad - below hero, above article */}
             <AdSlot ads={adSlots['leaderboard']} variant="leaderboard" />
 
             <div style={{ maxWidth: 760, margin: '0 auto', padding: '40px 24px 80px' }}>
@@ -232,7 +232,7 @@ export function DispatchArticlePage() {
                 </p>
               )}
 
-              {/* Article content — split at block 4 for mid-article ad injection */}
+              {/* Article content - split at block 4 for mid-article ad injection */}
               {(() => {
                 const content = article.content || [];
                 const splitAt = Math.min(4, Math.floor(content.length / 2));
@@ -275,7 +275,7 @@ export function DispatchArticlePage() {
                 </div>
               </div>
 
-              {/* Footer-strip ad — between sign-off and subscribe form */}
+              {/* Footer-strip ad - between sign-off and subscribe form */}
               <AdSlot ads={adSlots['footer-strip']} variant="footer-strip" />
 
               {/* More from The Dispatch */}
@@ -320,7 +320,7 @@ export function DispatchArticlePage() {
                 ) : subStatus === 'exists' ? (
                   <div>
                     <div style={{ fontSize: 36, marginBottom: 10 }}>👋</div>
-                    <p style={{ color: C.warmWhite, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif" }}>You're already on the list — next issue incoming!</p>
+                    <p style={{ color: C.warmWhite, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif" }}>You're already on the list - next issue incoming!</p>
                     <a href="/dispatch" style={{ display: 'inline-block', marginTop: 16, fontSize: 14, color: C.lakeBlue, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'none' }}>← Back to The Dispatch</a>
                   </div>
                 ) : (
@@ -500,7 +500,7 @@ export default function DispatchPage() {
 
       <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
 
-      {/* Listing banner ad — below hero wave, above article grid */}
+      {/* Listing banner ad - below hero wave, above article grid */}
       <AdSlot ads={adSlots['listing-banner']} variant="listing-banner" />
 
       {/* Articles Grid */}
@@ -510,7 +510,7 @@ export default function DispatchPage() {
         ) : fetchError ? (
           <div style={{ textAlign: 'center', padding: '60px 20px' }}>
             <p style={{ fontFamily: "'Caveat', cursive", fontSize: 26, color: C.sunset, marginBottom: 8 }}>Something went sideways.</p>
-            <p style={{ color: '#888', fontSize: 15 }}>Couldn't load the articles right now — try refreshing in a moment.</p>
+            <p style={{ color: '#888', fontSize: 15 }}>Couldn't load the articles right now - try refreshing in a moment.</p>
           </div>
         ) : articles.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '60px 20px' }}>

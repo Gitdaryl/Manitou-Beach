@@ -5,17 +5,17 @@ import { Footer, GlobalStyles, Navbar } from '../components/Layout';
 import yeti from '../data/errorMessages';
 
 const WINE_PARTNER_HOW = [
-  { step: "01", title: "A customer visits your tasting room", copy: "They enjoy a pour, browse your space, connect with what you offer. That experience is already happening — we just give them a way to capture it." },
-  { step: "02", title: "You hand them a 4×6 passport card", copy: "One side has the trail map and QR code. The other is a 2×4 grid — one square per stop on the trail. They keep this card for the whole season." },
-  { step: "03", title: "They scan, rate, and you stamp", copy: "They scan the QR, pick their wine from the dropdown (or add a new one), leave a star rating. You sign their card square — that's the stamp. They earn 10% off a bottle, right now, while they're there. Leave without buying? Offer expires." },
-  { step: "04", title: "Ratings go live — and build all season", copy: "Every rating is a vote. Your scores update in real time on the Manitou Beach wine trail page, visible to every visitor planning their trip. Your fans become your marketing." },
+  { step: "01", title: "A customer visits your tasting room", copy: "They enjoy a pour, browse your space, connect with what you offer. That experience is already happening - we just give them a way to capture it." },
+  { step: "02", title: "You hand them a 4×6 passport card", copy: "One side has the trail map and QR code. The other is a 2×4 grid - one square per stop on the trail. They keep this card for the whole season." },
+  { step: "03", title: "They scan, rate, and you stamp", copy: "They scan the QR, pick their wine from the dropdown (or add a new one), leave a star rating. You sign their card square - that's the stamp. They earn 10% off a bottle, right now, while they're there. Leave without buying? Offer expires." },
+  { step: "04", title: "Ratings go live - and build all season", copy: "Every rating is a vote. Your scores update in real time on the Manitou Beach wine trail page, visible to every visitor planning their trip. Your fans become your marketing." },
 ];
 const WINE_PARTNER_GETS = [
-  { icon: "📊", title: "Live Public Scorecard", copy: "Real-time community ratings across Wine Quality, Service, Atmosphere, and Value. Visitors research the trail before they drive — your scores are what they see first." },
-  { icon: "🃏", title: "Passport Cards — Delivered", copy: "100 printed 4×6 passport cards for your counter plus a display insert. Yeti Groove handles design, print, and delivery. Refills available when you run out." },
-  { icon: "🏆", title: "Framed Certificate Award", copy: "Top-rated venues in each category receive a custom framed certificate to hang on your wall — something to be proud of and post about. Scores go dark in the final 30 days, so nobody knows until the ceremony." },
-  { icon: "👥", title: "Community Visibility", copy: "Your venue on the Manitou Beach wine trail — seen by the region's most engaged local audience: visitors planning trips, seasonal residents, and year-round locals." },
-  { icon: "💰", title: "Built-In Bottle Sales", copy: "Every stamp earns the customer 10% off a bottle — but only if they buy before they leave. If they walk out, the offer expires. The card physically drives in-store purchases." },
+  { icon: "📊", title: "Live Public Scorecard", copy: "Real-time community ratings across Wine Quality, Service, Atmosphere, and Value. Visitors research the trail before they drive - your scores are what they see first." },
+  { icon: "🃏", title: "Passport Cards - Delivered", copy: "100 printed 4×6 passport cards for your counter plus a display insert. Yeti Groove handles design, print, and delivery. Refills available when you run out." },
+  { icon: "🏆", title: "Framed Certificate Award", copy: "Top-rated venues in each category receive a custom framed certificate to hang on your wall - something to be proud of and post about. Scores go dark in the final 30 days, so nobody knows until the ceremony." },
+  { icon: "👥", title: "Community Visibility", copy: "Your venue on the Manitou Beach wine trail - seen by the region's most engaged local audience: visitors planning trips, seasonal residents, and year-round locals." },
+  { icon: "💰", title: "Built-In Bottle Sales", copy: "Every stamp earns the customer 10% off a bottle - but only if they buy before they leave. If they walk out, the offer expires. The card physically drives in-store purchases." },
 ];
 const WINE_PARTNER_AWARDS = [
   "Best Red Wine",
@@ -119,10 +119,10 @@ function WinePartnerSignupSection() {
             cursor: submitting ? 'default' : 'pointer', opacity: submitting ? 0.7 : 1, transition: 'opacity 0.2s',
           }}
         >
-          {submitting ? 'One moment...' : 'Join the 2026 Trail — $279 →'}
+          {submitting ? 'One moment...' : 'Join the 2026 Trail - $279 →'}
         </button>
         <p style={{ marginTop: 14, fontSize: 12, color: 'rgba(255,255,255,0.25)', textAlign: 'center', lineHeight: 1.6, fontFamily: "'Libre Franklin', sans-serif" }}>
-          Secure Stripe checkout. One-time charge for the full 2026 season — no subscription.
+          Secure Stripe checkout. One-time charge for the full 2026 season - no subscription.
         </p>
       </form>
     </FadeIn>
@@ -185,7 +185,7 @@ function WinePartnerReserveSection() {
         </button>
       ) : (
         <div style={{ padding: '24px', background: 'rgba(255,255,255,0.04)', borderRadius: 14, border: '1px solid rgba(255,255,255,0.10)', marginTop: 4 }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)', marginBottom: 16, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.3 }}>Hold My Spot — No payment yet</div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)', marginBottom: 16, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.3 }}>Hold My Spot - No payment yet</div>
           <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12, marginBottom: 12 }}>
             <div><label style={labelStyle}>Venue Name</label><input style={fieldStyle} placeholder="Your tasting room" value={venueName} onChange={e => setVenueName(e.target.value)} /></div>
             <div><label style={labelStyle}>Your Name</label><input style={fieldStyle} placeholder="First + last" value={contactName} onChange={e => setContactName(e.target.value)} /></div>
@@ -217,7 +217,7 @@ export default function WinePartnerPage() {
 
       {/* Partner context strip */}
       <div style={{ background: C.night, borderBottom: "1px solid rgba(255,255,255,0.07)", padding: "9px 24px", display: "flex", alignItems: "center", justifyContent: "center", gap: 28, flexWrap: "wrap" }}>
-        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif" }}>This page isn't public — you're seeing it because someone sent it to you.</span>
+        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif" }}>This page isn't public - you're seeing it because someone sent it to you.</span>
         <a href="/wineries" style={{ fontSize: 12, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>See the Wine Trail →</a>
         <a href="/" style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", fontFamily: "'Libre Franklin', sans-serif", textDecoration: "none", whiteSpace: "nowrap" }}>Visit Homepage →</a>
       </div>
@@ -233,7 +233,7 @@ export default function WinePartnerPage() {
             Your tasting room.<br />Rated. Recognized.<br /><em>Celebrated.</em>
           </h1>
           <p style={{ fontSize: 16, color: "rgba(255,255,255,0.5)", maxWidth: 520, margin: "0 auto 40px", lineHeight: 1.85 }}>
-            Manitou Beach visitors are already discovering your tasting room. Now they have a way to tell the community what they found — and at the end of the season, the best venues get recognized for it.
+            Manitou Beach visitors are already discovering your tasting room. Now they have a way to tell the community what they found - and at the end of the season, the best venues get recognized for it.
           </p>
           <Btn href="#signup" variant="sunset" style={{ whiteSpace: "nowrap" }}>
             Join the Trail →
@@ -313,7 +313,7 @@ export default function WinePartnerPage() {
               7 awards up for grabs
             </p>
             <p style={{ fontSize: 15, color: "rgba(255,255,255,0.48)", lineHeight: 1.85, maxWidth: 520, margin: "0 auto 36px" }}>
-              100% people's choice — voted on by every visitor who stamps your stop on the trail.
+              100% people's choice - voted on by every visitor who stamps your stop on the trail.
             </p>
           </FadeIn>
 
@@ -323,12 +323,12 @@ export default function WinePartnerPage() {
               <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.2, textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 16 }}>How it works</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                 {[
-                  { icon: '🃏', text: 'A visitor gets a 4×6 passport card at your counter — grid on the back, one square per stop on the trail.' },
+                  { icon: '🃏', text: 'A visitor gets a 4×6 passport card at your counter - grid on the back, one square per stop on the trail.' },
                   { icon: '⭐', text: 'They scan the QR code, pick their wine from the dropdown (or add a new one), and leave a star rating. Takes 30 seconds.' },
-                  { icon: '✍️', text: 'You sign their card square. That\'s the stamp. They earn 10% off a bottle right now, on the spot — expires if they leave.' },
-                  { icon: '📊', text: 'Ratings go live immediately. Season Standings update in real time — every vote moves the board.' },
+                  { icon: '✍️', text: 'You sign their card square. That\'s the stamp. They earn 10% off a bottle right now, on the spot - expires if they leave.' },
+                  { icon: '📊', text: 'Ratings go live immediately. Season Standings update in real time - every vote moves the board.' },
                   { icon: '🌑', text: 'Scores go dark in the final 30 days. Nobody knows the winners until the awards ceremony.' },
-                  { icon: '🏆', text: 'Winners receive a custom framed certificate — designed to hang on the wall. A 100% people\'s choice award.' },
+                  { icon: '🏆', text: 'Winners receive a custom framed certificate - designed to hang on the wall. A 100% people\'s choice award.' },
                 ].map((row, i) => (
                   <div key={i} style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
                     <span style={{ fontSize: 18, flexShrink: 0, marginTop: 1 }}>{row.icon}</span>
@@ -356,7 +356,7 @@ export default function WinePartnerPage() {
                 <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunsetLight }}>A note from The Yeti</div>
               </div>
               <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.85, margin: 0 }}>
-                "These awards aren't handed down by some panel of snobs in a back room. They're earned by the people actually sitting at your counter — real patrons, honest opinions, publicly on record. That's what makes them worth hanging on your wall. I'll also be at the ceremony, which should tell you everything."
+                "These awards aren't handed down by some panel of snobs in a back room. They're earned by the people actually sitting at your counter - real patrons, honest opinions, publicly on record. That's what makes them worth hanging on your wall. I'll also be at the ceremony, which should tell you everything."
               </p>
             </div>
           </FadeIn>
@@ -384,12 +384,12 @@ export default function WinePartnerPage() {
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 10 }}>
                 {[
                   { icon: "📍", text: "Your venue on the interactive trail map" },
-                  { icon: "📊", text: "Live community scorecard — Wine Quality, Service, Atmosphere, Value" },
-                  { icon: "🎟️", text: "Stamp trail — guests collect a stamp at each stop and come back to finish the full trail" },
+                  { icon: "📊", text: "Live community scorecard - Wine Quality, Service, Atmosphere, Value" },
+                  { icon: "🎟️", text: "Stamp trail - guests collect a stamp at each stop and come back to finish the full trail" },
                   { icon: "⭐", text: "Verified public reviews, curated before publishing" },
                   { icon: "🃏", text: "100 printed 4×6 passport cards + counter display insert" },
                   { icon: "📬", text: "QR code setup, cards delivered to your door" },
-                  { icon: "🏆", text: "Season-end framed certificate award — designed, printed, and delivered" },
+                  { icon: "🏆", text: "Season-end framed certificate award - designed, printed, and delivered" },
                   { icon: "🌐", text: "Full venue listing on Manitou Beach year-round" },
                 ].map((item, i) => (
                   <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: "10px 0", borderBottom: i < 7 ? "1px solid rgba(255,255,255,0.06)" : "none" }}>

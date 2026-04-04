@@ -159,7 +159,7 @@ export default function VendorPortalPage() {
 
       <div style={{ maxWidth: 1000, margin: '0 auto', padding: '32px 24px' }}>
 
-        {/* Pending applications — card layout for mobile-friendliness */}
+        {/* Pending applications - card layout for mobile-friendliness */}
         {pending.length > 0 && (
           <div style={{ background: '#fff', borderRadius: 12, border: '2px solid #D4845A', marginBottom: 28, overflow: 'hidden' }}>
             <div style={{ padding: '20px 24px', borderBottom: '1px solid #E8E0D5', background: 'rgba(212,132,90,0.06)' }}>
@@ -265,7 +265,7 @@ export default function VendorPortalPage() {
                       </td>
                       <td style={{ padding: '12px 16px', color: '#5C5248' }}>{v.boothType}</td>
                       <td style={{ padding: '12px 16px', color: '#8C806E', whiteSpace: 'nowrap', fontSize: 12 }}>
-                        {v.registeredAt ? new Date(v.registeredAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'}
+                        {v.registeredAt ? new Date(v.registeredAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '-'}
                       </td>
                       <td style={{ padding: '12px 16px' }}>
                         <span style={{ fontFamily: 'monospace', fontSize: 11, color: '#8C806E', background: '#FAF6EF', padding: '2px 6px', borderRadius: 4 }}>{v.vendorId}</span>
@@ -278,7 +278,7 @@ export default function VendorPortalPage() {
           )}
         </div>
 
-        {/* Rejected vendors — collapsible record */}
+        {/* Rejected vendors - collapsible record */}
         {rejected.length > 0 && (
           <div style={{ background: '#fff', borderRadius: 12, border: '1px solid #E8E0D5', marginBottom: 28, overflow: 'hidden' }}>
             <button
@@ -375,7 +375,7 @@ export default function VendorPortalPage() {
                   background: '#F0EBE4', color: '#8C806E', border: '1px solid #E8E0D5',
                 }}
               >
-                SMS Blast — Coming Soon
+                SMS Blast - Coming Soon
               </button>
             </div>
             <p style={{ fontSize: 11, color: '#8C806E', margin: 0 }}>SMS blast available after A2P registration approval.</p>

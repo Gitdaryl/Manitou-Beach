@@ -20,7 +20,7 @@ const getRawBody = async (req) => {
   return Buffer.concat(chunks);
 };
 
-// Shared helper — update a Notion page property by querying business name
+// Shared helper - update a Notion page property by querying business name
 async function updateNotionBusiness(businessName, properties) {
   const searchRes = await fetch(`https://api.notion.com/v1/databases/${process.env.NOTION_DB_BUSINESS}/query`, {
     method: 'POST',
@@ -95,7 +95,7 @@ async function notifyFirstWaitlistEntry(notionToken, pageId, pageLabel) {
             <p style="color:#5C5248;font-size:15px;margin:0 0 24px;line-height:1.7;">
               The <strong>${pageLabel}</strong> page sponsorship on Manitou Beach just opened up.
               ${bizName ? `We saved your spot for <strong>${bizName}</strong>.` : ''}
-              You're first in line — but spots go fast.
+              You're first in line - but spots go fast.
             </p>
             <a href="${siteUrl}/business#page-sponsorship" style="display:inline-block;background:#1A2830;color:#fff;text-decoration:none;padding:14px 28px;border-radius:8px;font-size:15px;font-weight:600;margin-bottom:28px;">
               Claim the ${pageLabel} Page →
@@ -335,7 +335,7 @@ async function incrementSoldCount(eventId, additionalQty) {
     }),
   });
 
-  // First sale — send organizer a notification with their sales page link
+  // First sale - send organizer a notification with their sales page link
   if (currentSold === 0) {
     try {
       const phone = p['Phone']?.phone_number || '';
@@ -407,7 +407,7 @@ export default async function handler(req, res) {
     const session = event.data.object;
     const metadata = session.metadata || {};
 
-    // 0. Food Truck founding subscription — activate in FOOD_TRUCKS db, not BUSINESS
+    // 0. Food Truck founding subscription - activate in FOOD_TRUCKS db, not BUSINESS
     if (metadata.tier === 'food_truck_founding' && metadata.businessName) {
       const truckName = metadata.businessName;
       try {
@@ -524,12 +524,12 @@ export default async function handler(req, res) {
             resend.emails.send({
               from: 'Manitou Beach <events@manitoubeachmichigan.com>',
               to: customerEmail,
-              subject: `You're on the map — ${businessName} is a Manitou Beach founding business`,
+              subject: `You're on the map - ${businessName} is a Manitou Beach founding business`,
               html: `
                 <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; color: #3B3228; background: #FAF6EF; padding: 40px 32px; border-radius: 8px;">
                   <p style="font-size: 26px; font-weight: bold; margin: 0 0 8px; color: #1A2830;">You're on the map.</p>
                   <p style="font-size: 15px; color: #6B5F52; margin: 0 0 24px; line-height: 1.7;">
-                    <strong>${businessName}</strong> is now a founding business on Manitou Beach — the community platform for Devils Lake, Michigan.
+                    <strong>${businessName}</strong> is now a founding business on Manitou Beach - the community platform for Devils Lake, Michigan.
                     When the site opens on <strong>April 10</strong>, every visitor heading to the lake this summer will find you here.
                   </p>
                   <div style="background: #fff; border-radius: 6px; padding: 20px 24px; margin-bottom: 28px; border: 1px solid #E8DFD0;">
@@ -537,7 +537,7 @@ export default async function handler(req, res) {
                     <p style="margin: 0 0 4px; font-size: 18px; font-weight: bold; color: #1A2830;">${businessName}</p>
                     <p style="margin: 0 0 12px; font-size: 14px; color: #D4845A; font-weight: bold;">${tierLabel} Founding Business</p>
                     <p style="margin: 0; font-size: 13px; color: #8A7E6E; line-height: 1.6;">
-                      Free through <strong style="color: #3B3228;">May 10</strong> — no charge until then.<br>
+                      Free through <strong style="color: #3B3228;">May 10</strong> - no charge until then.<br>
                       We'll send you a reminder 5 days before billing starts.
                     </p>
                   </div>
@@ -580,7 +580,7 @@ export default async function handler(req, res) {
               for (const sub of subs.data) {
                 if (sub.id !== session.subscription) {
                   await stripe.subscriptions.cancel(sub.id);
-                  console.log(`Cancelled old subscription ${sub.id} on upgrade — ${businessName}`);
+                  console.log(`Cancelled old subscription ${sub.id} on upgrade - ${businessName}`);
                 }
               }
             } catch (err) {
@@ -602,21 +602,21 @@ export default async function handler(req, res) {
               from: 'Manitou Beach <events@manitoubeachmichigan.com>',
               to: customerEmail,
               subject: isUpgrade
-                ? `Your listing just got an upgrade — ${businessName} is now ${tierLabel}`
-                : `Welcome to Manitou Beach — ${businessName} is listed`,
+                ? `Your listing just got an upgrade - ${businessName} is now ${tierLabel}`
+                : `Welcome to Manitou Beach - ${businessName} is listed`,
               html: isUpgrade ? `
                 <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; color: #3B3228; background: #FAF6EF; padding: 40px 32px; border-radius: 8px;">
                   <p style="font-size: 26px; font-weight: bold; margin: 0 0 8px; color: #1A2830;">You're moving up.</p>
                   <p style="font-size: 15px; color: #6B5F52; margin: 0 0 24px; line-height: 1.7;">
                     <strong>${businessName}</strong> has been upgraded to <strong>${tierLabel}</strong> on Manitou Beach.
-                    Your previous subscription has been cancelled — nothing else you need to do.
+                    Your previous subscription has been cancelled - nothing else you need to do.
                   </p>
                   <div style="background: #fff; border-radius: 6px; padding: 20px 24px; margin-bottom: 28px; border: 1px solid #E8DFD0;">
                     <p style="margin: 0 0 8px; font-size: 12px; color: #8A7E6E; text-transform: uppercase; letter-spacing: 1px; font-family: sans-serif;">Your listing</p>
                     <p style="margin: 0 0 4px; font-size: 18px; font-weight: bold; color: #1A2830;">${businessName}</p>
                     <p style="margin: 0 0 4px; font-size: 14px; color: #D4845A; font-weight: bold;">${tierLabel} · ${amount}</p>
                     <p style="margin: 0; font-size: 13px; color: #8A7E6E; line-height: 1.6;">
-                      Cancel anytime — no contracts, no hassle.
+                      Cancel anytime - no contracts, no hassle.
                     </p>
                   </div>
                   <p style="margin: 0 0 28px;">
@@ -635,7 +635,7 @@ export default async function handler(req, res) {
                 <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; color: #3B3228; background: #FAF6EF; padding: 40px 32px; border-radius: 8px;">
                   <p style="font-size: 26px; font-weight: bold; margin: 0 0 8px; color: #1A2830;">You're on the map.</p>
                   <p style="font-size: 15px; color: #6B5F52; margin: 0 0 24px; line-height: 1.7;">
-                    <strong>${businessName}</strong> is now listed on Manitou Beach — the community hub for Devils Lake, Michigan.
+                    <strong>${businessName}</strong> is now listed on Manitou Beach - the community hub for Devils Lake, Michigan.
                     Visitors heading to the lake will find you right here.
                   </p>
                   <div style="background: #fff; border-radius: 6px; padding: 20px 24px; margin-bottom: 28px; border: 1px solid #E8DFD0;">
@@ -643,7 +643,7 @@ export default async function handler(req, res) {
                     <p style="margin: 0 0 4px; font-size: 18px; font-weight: bold; color: #1A2830;">${businessName}</p>
                     <p style="margin: 0 0 4px; font-size: 14px; color: #D4845A; font-weight: bold;">${tierLabel} · ${amount}</p>
                     <p style="margin: 0; font-size: 13px; color: #8A7E6E; line-height: 1.6;">
-                      Cancel anytime — no contracts, no hassle.
+                      Cancel anytime - no contracts, no hassle.
                     </p>
                   </div>
                   <p style="margin: 0 0 28px;">
@@ -738,8 +738,8 @@ export default async function handler(req, res) {
         `Amount: $${(session.amount_total / 100).toFixed(2)}`,
       ].filter(Boolean).join('\n');
 
-      await logPurchaseToNotion(`Promo: ${eventName} — ${tier}`, details);
-      console.log(`Promo purchase recorded: ${eventName} — ${tier}`);
+      await logPurchaseToNotion(`Promo: ${eventName} - ${tier}`, details);
+      console.log(`Promo purchase recorded: ${eventName} - ${tier}`);
 
       // Update the actual event record in Notion with promo fields
       if (eventPageId) {
@@ -883,7 +883,7 @@ export default async function handler(req, res) {
             await resend.emails.send({
               from: 'Yetickets <tickets@manitoubeachmichigan.com>',
               to: buyerEmail,
-              subject: `Your ticket for ${metadata.eventName || 'the event'} — ${ticketId}`,
+              subject: `Your ticket for ${metadata.eventName || 'the event'} - ${ticketId}`,
               html: `
                 <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#FAF6EF;">
                   <img src="${(process.env.SITE_URL || 'https://manitoubeachmichigan.com')}/images/yeti/yetickets_sign.png" alt="Yetickets" style="width:200px;margin-bottom:24px;" />
@@ -921,7 +921,7 @@ export default async function handler(req, res) {
         }
         // TODO: Send confirmation SMS (after A2P approval)
 
-        console.log(`Ticket sold: ${ticketId} — ${metadata.eventName} x${quantity} for ${metadata.buyerName}${metadata.ticketPartner ? ` (Partner: ${metadata.ticketPartner})` : ''} — PDF: ${pdfUrl}`);
+        console.log(`Ticket sold: ${ticketId} - ${metadata.eventName} x${quantity} for ${metadata.buyerName}${metadata.ticketPartner ? ` (Partner: ${metadata.ticketPartner})` : ''} - PDF: ${pdfUrl}`);
       } catch (err) {
         console.error('Ticket fulfillment error:', err);
       }
@@ -950,12 +950,12 @@ export default async function handler(req, res) {
             await resend.emails.send({
               from: 'Yetickets <tickets@manitoubeachmichigan.com>',
               to: sponsorEmail,
-              subject: `You're making it happen — ${orgName} thanks you!`,
+              subject: `You're making it happen - ${orgName} thanks you!`,
               html: `
                 <div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:40px 24px;background:#FAF6EF;">
                   <h1 style="color:#1A2830;font-size:26px;font-weight:700;margin:0 0 6px;">You're making it happen.</h1>
                   <p style="color:#5C5248;font-size:15px;margin:0 0 32px;line-height:1.7;">
-                    Your <strong>${tierLevel}</strong> sponsorship of <strong>${orgName}</strong> is confirmed —
+                    Your <strong>${tierLevel}</strong> sponsorship of <strong>${orgName}</strong> is confirmed -
                     and it means more than you might think.
                     Every dollar from sponsors like you is what turns a good idea into something the whole community gets to experience.
                   </p>
@@ -989,7 +989,7 @@ export default async function handler(req, res) {
             await resend.emails.send({
               from: 'Yetickets <tickets@manitoubeachmichigan.com>',
               to: orgContactEmail,
-              subject: `New sponsorship: ${sponsorName} — ${tierLevel} (${amountFmt})`,
+              subject: `New sponsorship: ${sponsorName} - ${tierLevel} (${amountFmt})`,
               html: `
                 <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#FAF6EF;">
                   <h2 style="color:#1A2830;font-size:20px;margin:0 0 16px;">New sponsorship received 🎉</h2>
@@ -1012,7 +1012,7 @@ export default async function handler(req, res) {
           }
         }
 
-        console.log(`Sponsor payment: ${sponsorId} — ${sponsorName} → ${tierLevel} @ ${amount} for ${orgName} — PDF: ${pdfUrl}`);
+        console.log(`Sponsor payment: ${sponsorId} - ${sponsorName} → ${tierLevel} @ ${amount} for ${orgName} - PDF: ${pdfUrl}`);
       } catch (err) {
         console.error('Sponsor payment fulfillment error:', err);
       }
@@ -1022,7 +1022,7 @@ export default async function handler(req, res) {
     if (metadata.venueName) {
       const { venueName, contactName, phone, note } = metadata;
       const details = [
-        `Wine Trail Partner — 2026 Season`,
+        `Wine Trail Partner - 2026 Season`,
         `Venue: ${venueName}`,
         `Contact: ${contactName}`,
         phone ? `Phone: ${phone}` : null,
@@ -1031,7 +1031,7 @@ export default async function handler(req, res) {
         `Amount: $${(session.amount_total / 100).toFixed(2)}`,
       ].filter(Boolean).join('\n');
 
-      await logPurchaseToNotion(`Wine Partner: ${venueName} — PAID`, details);
+      await logPurchaseToNotion(`Wine Partner: ${venueName} - PAID`, details);
       console.log(`Wine partner payment recorded: ${venueName}`);
     }
 
@@ -1084,7 +1084,7 @@ export default async function handler(req, res) {
           await resend.emails.send({
             from: 'Manitou Beach <hello@manitou-beach.com>',
             to: sponsorEmail,
-            subject: `You own the ${metadata.pageName} page — confirmed`,
+            subject: `You own the ${metadata.pageName} page - confirmed`,
             html: `
               <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:40px 24px;background:#FAF6EF;">
                 <h1 style="color:#1A2830;font-size:24px;font-weight:700;margin:0 0 8px;">You're live.</h1>
@@ -1117,9 +1117,9 @@ export default async function handler(req, res) {
             subject: `New page sponsor: ${metadata.businessName} → ${metadata.pageName}`,
             html: `<div style="font-family:sans-serif;padding:24px;"><h2>New Page Sponsor</h2>
               <p><strong>Business:</strong> ${metadata.businessName}</p>
-              <p><strong>Contact:</strong> ${metadata.name || '—'}</p>
-              <p><strong>Email:</strong> ${session.customer_email || session.customer_details?.email || '—'}</p>
-              <p><strong>Phone:</strong> ${metadata.phone || '—'}</p>
+              <p><strong>Contact:</strong> ${metadata.name || '-'}</p>
+              <p><strong>Email:</strong> ${session.customer_email || session.customer_details?.email || '-'}</p>
+              <p><strong>Phone:</strong> ${metadata.phone || '-'}</p>
               <p><strong>Page:</strong> ${metadata.pageName}</p>
               <p><strong>Term:</strong> ${amountFmt}</p>
               <p><strong>Expires:</strong> ${expiryDate}</p>
@@ -1155,7 +1155,7 @@ export default async function handler(req, res) {
       }
     }
 
-    // Page sponsorship subscription cancelled/lapsed — mark expired and notify waitlist
+    // Page sponsorship subscription cancelled/lapsed - mark expired and notify waitlist
     if (metadata.type === 'page_sponsorship') {
       try {
         const token = process.env.NOTION_TOKEN_PAGE_SPONSORS || process.env.NOTION_TOKEN_BUSINESS;
@@ -1182,7 +1182,7 @@ export default async function handler(req, res) {
 
             // Notify first waitlist entry
             await notifyFirstWaitlistEntry(token, pgId, pgLabel);
-            console.log(`Page sponsorship lapsed: ${pgLabel} — waitlist notified`);
+            console.log(`Page sponsorship lapsed: ${pgLabel} - waitlist notified`);
           }
         }
       } catch (err) {

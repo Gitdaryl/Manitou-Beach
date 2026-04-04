@@ -18,7 +18,7 @@ export default function PrivacyPage() {
         <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(30px, 5vw, 46px)', fontWeight: 400, color: C.dusk, margin: '0 0 8px' }}>Privacy Policy</h1>
         <p style={{ ...S.p, color: C.textMuted, fontSize: 13, marginBottom: 40 }}>Effective date: March 2026 &nbsp;·&nbsp; Yeti Groove Media LLC</p>
 
-        <p style={S.p}>This Privacy Policy explains how Yeti Groove Media LLC ("we", "us", "our") collects, uses, and protects information submitted through the Manitou Beach community platform at manitoubeachmichigan.com ("the Site"). We keep it plain — no legalese.</p>
+        <p style={S.p}>This Privacy Policy explains how Yeti Groove Media LLC ("we", "us", "our") collects, uses, and protects information submitted through the Manitou Beach community platform at manitoubeachmichigan.com ("the Site"). We keep it plain - no legalese.</p>
 
         <h2 style={S.h2}>What we collect</h2>
         <p style={S.p}><strong>Newsletter sign-ups:</strong> Your email address. Delivered through beehiiv. You can unsubscribe at any time using the link in any email.</p>
@@ -45,19 +45,19 @@ export default function PrivacyPage() {
         <p style={S.p}>The Site uses the following third-party services, each with their own privacy practices:</p>
         <ul style={{ paddingLeft: 20, margin: '0 0 14px' }}>
           {[
-            'Notion — business and event data storage',
-            'beehiiv — newsletter delivery and subscriber management',
-            'Stripe — payment processing for paid listings',
-            'Twilio — SMS delivery for community notifications (phone numbers are transmitted to Twilio solely for message delivery and are not shared with other parties)',
-            'Google Maps — interactive map on the Discover page (may set cookies)',
-            'Vercel — hosting and serverless functions',
-            'OpenStreetMap / Nominatim — address geocoding (no personal data sent)',
+            'Notion - business and event data storage',
+            'beehiiv - newsletter delivery and subscriber management',
+            'Stripe - payment processing for paid listings',
+            'Twilio - SMS delivery for community notifications (phone numbers are transmitted to Twilio solely for message delivery and are not shared with other parties)',
+            'Google Maps - interactive map on the Discover page (may set cookies)',
+            'Vercel - hosting and serverless functions',
+            'OpenStreetMap / Nominatim - address geocoding (no personal data sent)',
           ].map((item, i) => <li key={i} style={S.li}>{item}</li>)}
         </ul>
 
         <h2 style={S.h2}>Cookies &amp; browser storage</h2>
         <p style={S.p}><strong>What we don't use:</strong> We have no advertising cookies, no analytics tracking cookies, no Facebook Pixel, no Google Analytics, and no third-party tracking of any kind. We do not follow you across other websites.</p>
-        <p style={S.p}><strong>What we do use:</strong> We use your browser's <em>local storage</em> (not cookies) for purely functional features — things like remembering your saved food truck favorites, wine trail preferences, and offer claim codes between visits. This data never leaves your device and is not accessible to us or any third party.</p>
+        <p style={S.p}><strong>What we do use:</strong> We use your browser's <em>local storage</em> (not cookies) for purely functional features - things like remembering your saved food truck favorites, wine trail preferences, and offer claim codes between visits. This data never leaves your device and is not accessible to us or any third party.</p>
         <p style={S.p}><strong>Third-party storage:</strong> Google Maps (used on our Discover, Stays, and Food Trucks pages) may store data in your browser to function. Google Fonts loads typefaces from Google's servers, which may log your request. Stripe sets session cookies during payment flows. None of these are used for advertising or cross-site tracking on our behalf.</p>
         <p style={S.p}>If you'd like to clear any locally stored data, you can do so through your browser's settings at any time.</p>
 

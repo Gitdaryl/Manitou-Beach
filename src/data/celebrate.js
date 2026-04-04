@@ -1,4 +1,4 @@
-// celebrate.js — shared celebration effects (confetti, haptic, etc.)
+// celebrate.js - shared celebration effects (confetti, haptic, etc.)
 
 const CONFETTI_COLORS = [
   '#C44D3F', '#E07060', '#D4845A', '#C4A035', '#7A8E72',

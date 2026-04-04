@@ -41,7 +41,7 @@ export default async function handler(req, res) {
     const ticketsSoldCount = p['Tickets Sold']?.number || 0;
     const ticketPartner = p['Ticket Partner']?.rich_text?.[0]?.plain_text || '';
 
-    // 2. Fetch all tickets for this event (paginated — Notion caps at 100 per request)
+    // 2. Fetch all tickets for this event (paginated - Notion caps at 100 per request)
     let allTickets = [];
     let hasMore = true;
     let startCursor = undefined;

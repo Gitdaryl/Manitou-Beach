@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
 // ============================================================
-// ✏️  CONFIGURABLE CONTENT — Swap these weekly
+// ✏️  CONFIGURABLE CONTENT - Swap these weekly
 // ============================================================
 
 /**
@@ -92,7 +92,7 @@ const BUSINESSES = [
   },
   {
     id: 3,
-    name: "Holly Griewahn — Foundation Realty",
+    name: "Holly Griewahn - Foundation Realty",
     category: "Real Estate",
     description: "Your lakeside real estate expert. Buyer and seller specialist for the Manitou Beach and Devils Lake area.",
     featured: true,
@@ -488,7 +488,7 @@ function NewsletterBar() {
           The Manitou Beach Dispatch
         </h3>
         <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", margin: "0 0 28px 0", lineHeight: 1.7 }}>
-          Weekly events, featured businesses, and community news. No spam — just lake life.
+          Weekly events, featured businesses, and community news. No spam - just lake life.
         </p>
         {submitted ? (
           <div style={{
@@ -549,7 +549,7 @@ function HappeningSection() {
           <SectionLabel>Events & News</SectionLabel>
           <SectionTitle>What's Happening</SectionTitle>
           <p style={{ fontSize: 16, color: C.textLight, maxWidth: 480, margin: "0 0 56px 0", lineHeight: 1.75 }}>
-            From boat parades to farmers markets — everything going on at Manitou Beach and Devils Lake.
+            From boat parades to farmers markets - everything going on at Manitou Beach and Devils Lake.
           </p>
         </FadeIn>
 
@@ -614,7 +614,7 @@ function ExploreSection() {
     { icon: "🏠", name: "Lighthouse Replica", desc: "The village's beloved icon. Photogenic and completely landlocked." },
     { icon: "🌿", name: "Irish Hills", desc: "Rolling hills, hidden trails, and enough nature to justify the drive." },
     { icon: "🍺", name: "Lake Town Nightlife", desc: "Year-round bars and restaurants with a dock-side state of mind." },
-    { icon: "🎣", name: "Fishing", desc: "Bass, pike, bluegill — and the occasional tall tale about the one that got away." },
+    { icon: "🎣", name: "Fishing", desc: "Bass, pike, bluegill - and the occasional tall tale about the one that got away." },
     { icon: "🏡", name: "Cottage Country", desc: "Weekend rentals, seasonal getaways, and the forever-home dream." },
   ];
 
@@ -627,7 +627,7 @@ function ExploreSection() {
               <SectionLabel>The Area</SectionLabel>
               <SectionTitle>Explore Manitou Beach</SectionTitle>
               <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.8, marginBottom: 32 }}>
-                Sitting on the shores of Devils Lake in the Michigan Irish Hills — there's more to explore here than the name implies. (Yes, we're aware there's no beach. We've all made peace with it.)
+                Sitting on the shores of Devils Lake in the Michigan Irish Hills - there's more to explore here than the name implies. (Yes, we're aware there's no beach. We've all made peace with it.)
               </p>
               <Btn onClick={() => {}} variant="dark">Get Directions</Btn>
             </div>
@@ -956,7 +956,7 @@ function LivingSection() {
           <SectionLabel>Relocate & Stay</SectionLabel>
           <SectionTitle>Living Here</SectionTitle>
           <p style={{ fontSize: 16, color: C.textLight, maxWidth: 500, margin: "0 0 56px 0", lineHeight: 1.75 }}>
-            Whether you're visiting for a weekend or ready to make the lake your permanent address — here's what you need to know.
+            Whether you're visiting for a weekend or ready to make the lake your permanent address - here's what you need to know.
           </p>
         </FadeIn>
 
@@ -1142,7 +1142,7 @@ function SubmitSection() {
                   {input("email", "Your Email", "email")}
                   {input("phone", "Phone (optional)", "tel")}
                   <textarea
-                    placeholder="Event description — date, time, location, and what people can expect"
+                    placeholder="Event description - date, time, location, and what people can expect"
                     value={form.description}
                     onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
                     rows={5}
@@ -1211,13 +1211,13 @@ function AboutSection() {
             <SectionLabel>The Story</SectionLabel>
             <SectionTitle>About This Platform</SectionTitle>
             <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.85, marginBottom: 20 }}>
-              Manitou Beach, Michigan sits on Devils Lake in the Irish Hills. Locals call it "the party lake" — and anyone who's spent a summer here knows why. But for all the personality, the community didn't have a central digital home.
+              Manitou Beach, Michigan sits on Devils Lake in the Irish Hills. Locals call it "the party lake" - and anyone who's spent a summer here knows why. But for all the personality, the community didn't have a central digital home.
             </p>
             <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.85, marginBottom: 20 }}>
-              This platform is that home. A directory for local businesses, a calendar for community events, and a newsletter that keeps the lake life going year-round — built by people who actually live here.
+              This platform is that home. A directory for local businesses, a calendar for community events, and a newsletter that keeps the lake life going year-round - built by people who actually live here.
             </p>
             <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.85, marginBottom: 36 }}>
-              (And yes — we're fully aware the name "Manitou Beach" is an ironic masterpiece given that there's no actual beach. We've all made peace with it.)
+              (And yes - we're fully aware the name "Manitou Beach" is an ironic masterpiece given that there's no actual beach. We've all made peace with it.)
             </p>
             <Btn onClick={() => {}} variant="dark">Get in Touch</Btn>
           </FadeIn>

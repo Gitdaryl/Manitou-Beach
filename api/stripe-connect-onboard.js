@@ -1,4 +1,4 @@
-// Admin endpoint — creates a Stripe Express account for a community org
+// Admin endpoint - creates a Stripe Express account for a community org
 // and returns an onboarding link. Account ID is saved to Notion Business DB.
 import Stripe from 'stripe';
 

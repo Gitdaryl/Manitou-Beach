@@ -11,7 +11,7 @@ Scaffold a new sub-page inside `src/App.jsx` following the exact patterns of exi
 
 1. Ask (or infer from context): what is the page name / route / purpose?
 2. Read the nearest similar existing page in App.jsx for reference (e.g. VillagePage for community pages, DispatchPage for content pages)
-3. Check the bottom of App.jsx for the router — you'll need to add the new route there
+3. Check the bottom of App.jsx for the router - you'll need to add the new route there
 
 ## Page component structure
 
@@ -57,7 +57,7 @@ function [Name]Page() {
 
 ## Rules to follow
 
-- Use `C.` design tokens always — never raw hex values
+- Use `C.` design tokens always - never raw hex values
 - Wrap all content in `<FadeIn>` for scroll animations
 - Use `<SectionLabel>` + `<SectionTitle>` for section headings
 - Use `<WaveDivider>` or `<DiagonalDivider>` between sections with contrasting backgrounds

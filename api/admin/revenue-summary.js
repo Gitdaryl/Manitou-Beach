@@ -64,7 +64,7 @@ export default async function handler(req, res) {
       return { name, email, amount: Math.round(amount / 100), daysOverdue };
     });
 
-    // This month vs last month — use active sub MRR as proxy (no historical needed)
+    // This month vs last month - use active sub MRR as proxy (no historical needed)
     // Get charges from last 60 days to compute monthly comparison
     const now = Math.floor(Date.now() / 1000);
     const thirtyDaysAgo = now - 30 * 86400;

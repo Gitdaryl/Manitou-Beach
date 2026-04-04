@@ -17,7 +17,7 @@ export const C = {
   textMuted:   "#9A8E7E",
 };
 
-// Community geo-center + map radius (miles) — used for food truck map bounds
+// Community geo-center + map radius (miles) - used for food truck map bounds
 // Change these values per community when duplicating for Yetickets
 export const GEO = {
   centerLat: 42.0081,
@@ -26,7 +26,7 @@ export const GEO = {
 };
 
 // ============================================================
-// 💛  PAGE SPONSORS — update to activate; null = show placeholder
+// 💛  PAGE SPONSORS - update to activate; null = show placeholder
 // ============================================================
 export const PAGE_SPONSORS = {
   home:                 null,
@@ -49,10 +49,10 @@ export const PAGE_SPONSORS = {
 
 // ============================================================
 // 🧭  NAV SECTIONS
-// USA250 — set true to make the page publicly visible + add to Community nav
+// USA250 - set true to make the page publicly visible + add to Community nav
 export const USA250_PUBLIC = true;
 
-// Slot caps per tier per category — Enhanced has no cap
+// Slot caps per tier per category - Enhanced has no cap
 export const SLOT_CAPS = { premium: 1, featured: 3 };
 export const LISTING_CATEGORIES = [
   "Food & Drink", "Food Truck", "Stays & Rentals", "Breweries & Wineries",
@@ -76,7 +76,7 @@ export const SECTIONS = [
 // ============================================================
 // 📋  BUSINESS DIRECTORY DATA
 // ============================================================
-// Village page editorial listings — hardcoded for the Walk the Village section only.
+// Village page editorial listings - hardcoded for the Walk the Village section only.
 // BusinessDirectory is 100% Notion-driven and does NOT use this array.
 export const VILLAGE_BUSINESSES = [
   {
@@ -142,7 +142,7 @@ export const VILLAGE_BUSINESSES = [
     id: 20,
     name: "Michigan Gypsy",
     category: "Shopping & Gifts",
-    description: "A gift boutique with personality — unique finds, local goods, and the kind of shop you stumble into and don't want to leave. Right in the village.",
+    description: "A gift boutique with personality - unique finds, local goods, and the kind of shop you stumble into and don't want to leave. Right in the village.",
     address: "136 North Lakeview Blvd., Manitou Beach",
     village: true,
     featured: false,
@@ -154,7 +154,7 @@ export const VILLAGE_BUSINESSES = [
     id: 21,
     name: "Blackbird Cafe",
     category: "Food & Drink",
-    description: "Everything handmade — including the coffee syrups. A from-scratch cafe in Manitou Beach village with pastries, specialty drinks, and a loyal following.",
+    description: "Everything handmade - including the coffee syrups. A from-scratch cafe in Manitou Beach village with pastries, specialty drinks, and a loyal following.",
     address: "135 Devils Lake Hwy, Manitou Beach",
     village: true,
     featured: false,
@@ -202,7 +202,7 @@ export const VILLAGE_BUSINESSES = [
     id: 25,
     name: "Foundation Realty",
     category: "Real Estate",
-    description: "Serving the Manitou Beach community with lakefront and residential real estate. Holly Griewahn — 30+ years of local expertise in the Irish Hills.",
+    description: "Serving the Manitou Beach community with lakefront and residential real estate. Holly Griewahn - 30+ years of local expertise in the Irish Hills.",
     address: "100 Walnut St, Manitou Beach",
     village: true,
     featured: false,
@@ -226,7 +226,7 @@ export const VILLAGE_BUSINESSES = [
     id: 28,
     name: "Boathouse Art Gallery",
     category: "Arts & Culture",
-    description: "The largest nonprofit art gallery in Lenawee County — 50+ Michigan artists under one roof at the historic boathouse on the lake. Annual home of the Devils Lake Festival of the Arts.",
+    description: "The largest nonprofit art gallery in Lenawee County - 50+ Michigan artists under one roof at the historic boathouse on the lake. Annual home of the Devils Lake Festival of the Arts.",
     address: "138 N. Lakeview Blvd., Manitou Beach",
     village: true,
     featured: false,
@@ -290,7 +290,7 @@ export const DISPATCH_CARD_SPONSORS = [
 export const DISPATCH_CATEGORIES = ['Lake Life', 'Community', 'Events', 'Real Estate', 'Food & Drink', 'History', 'Recreation', 'Seasonal Tips', "Holly's Corner", 'Advertorial'];
 
 // ============================================================
-// Events are 100% Notion-driven — no hardcoded data here.
+// Events are 100% Notion-driven - no hardcoded data here.
 // Add events in Notion with Status = "Approved" or "Published" to appear on site.
 
 // ============================================================
@@ -300,7 +300,7 @@ export const VIDEOS = [
   {
     id: 1,
     title: "Party on Devils Lake",
-    desc: "Life on the water at Manitou Beach — the boats, the people, and everything that makes this lake special.",
+    desc: "Life on the water at Manitou Beach - the boats, the people, and everything that makes this lake special.",
     youtubeId: "3MCb5X4bj9s",
     date: "2025",
     category: "Community",
@@ -316,7 +316,7 @@ export const VIDEOS = [
   {
     id: 3,
     title: "July 4th on Devils Lake",
-    desc: "Independence Day celebrations on the lake — fireworks, boats, and the full Manitou Beach summer experience.",
+    desc: "Independence Day celebrations on the lake - fireworks, boats, and the full Manitou Beach summer experience.",
     youtubeId: "3MCb5X4bj9s",
     date: "July 4, 2025",
     category: "Community",
@@ -324,7 +324,7 @@ export const VIDEOS = [
   {
     id: 4,
     title: "Devils Lake Tip-Up Festival 2025",
-    desc: "The annual Tip-Up Town ice fishing festival in full swing — one of Michigan's beloved winter traditions.",
+    desc: "The annual Tip-Up Town ice fishing festival in full swing - one of Michigan's beloved winter traditions.",
     youtubeId: "uqEtu9GlBHk",
     date: "Winter 2025",
     category: "Events",
@@ -340,7 +340,7 @@ export const VIDEOS = [
   {
     id: 6,
     title: "Cruisin' Till the Sun Goes Down",
-    desc: "A golden hour cruise on Devils Lake — the perfect way to end a summer day on the water.",
+    desc: "A golden hour cruise on Devils Lake - the perfect way to end a summer day on the water.",
     youtubeId: "bfPKmB57ltY",
     date: "Summer 2025",
     category: "Community",

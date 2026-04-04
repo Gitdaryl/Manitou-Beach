@@ -52,7 +52,7 @@ export default function UpdateListingPage() {
   const [verifyLoading, setVerifyLoading] = useState(false);
   const [verifyError, setVerifyError] = useState('');
 
-  // Step 2 state — pre-filled from Notion response
+  // Step 2 state - pre-filled from Notion response
   const [business, setBusiness] = useState(null);
   const [form, setForm] = useState({ phone: '', website: '', address: '', description: '', category: '' });
   const [logoFile, setLogoFile] = useState(null);
@@ -158,7 +158,7 @@ export default function UpdateListingPage() {
               <SectionLabel>Your Business</SectionLabel>
               <SectionTitle>Need to change something?</SectionTitle>
               <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.75, marginBottom: 40 }}>
-                No problem at all — happens to everyone. Just type in your business name and the email address you used when you signed up, and we'll bring up your info right away.
+                No problem at all - happens to everyone. Just type in your business name and the email address you used when you signed up, and we'll bring up your info right away.
               </p>
 
               {/* ── Step 1: verify ───────────────────────── */}
@@ -184,12 +184,12 @@ export default function UpdateListingPage() {
                     <img src="/images/icons/food-truck-icon.png" alt="Food truck" style={{ width: 52, height: 52, objectFit: 'contain', flexShrink: 0 }} />
                     <div>
                       <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 19, color: '#F5F0E8', fontWeight: 400, lineHeight: 1.3 }}>
-                        Hey — you've got a dedicated truck page!
+                        Hey - you've got a dedicated truck page!
                       </div>
                     </div>
                   </div>
                   <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.65)', lineHeight: 1.7, margin: '0 0 20px', fontFamily: "'Libre Franklin', sans-serif" }}>
-                    Food trucks on Manitou Beach get way more than a basic listing — your own check-in page, live map pin, and text alerts to anyone following your truck. That's where you'll want to make your updates.
+                    Food trucks on Manitou Beach get way more than a basic listing - your own check-in page, live map pin, and text alerts to anyone following your truck. That's where you'll want to make your updates.
                   </p>
                   <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
                     <button
@@ -211,7 +211,7 @@ export default function UpdateListingPage() {
                       background: 'none', border: 'none', fontSize: 13, color: 'rgba(255,255,255,0.4)',
                       cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0,
                     }}>
-                      No thanks — just update the basic listing
+                      No thanks - just update the basic listing
                     </button>
                   </div>
                 </div>
@@ -245,7 +245,7 @@ export default function UpdateListingPage() {
                           {logoPreview ? 'Change logo' : 'Upload logo'}
                         </button>
                         <p style={{ fontSize: 12, color: C.textMuted, margin: '6px 0 0', fontFamily: "'Libre Franklin', sans-serif" }}>
-                          Any photo works — we'll handle the rest
+                          Any photo works - we'll handle the rest
                         </p>
                       </div>
                     </div>
@@ -262,7 +262,7 @@ export default function UpdateListingPage() {
                     />
                   </div>
 
-                  {/* Food Truck nudge — shown if user changes category to Food Truck mid-form */}
+                  {/* Food Truck nudge - shown if user changes category to Food Truck mid-form */}
                   {form.category === 'Food Truck' && (
                     <div style={{ background: `linear-gradient(135deg, #1A2830 0%, #2D4A3E 100%)`, borderRadius: 12, padding: '20px 18px', border: '1px solid rgba(255,255,255,0.08)' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
@@ -272,7 +272,7 @@ export default function UpdateListingPage() {
                         </div>
                       </div>
                       <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', lineHeight: 1.6, margin: '0 0 14px', fontFamily: "'Libre Franklin', sans-serif" }}>
-                        Live map pin, check-in alerts, follower notifications — way more than a basic listing.
+                        Live map pin, check-in alerts, follower notifications - way more than a basic listing.
                       </p>
                       <div style={{ display: 'flex', gap: 14, alignItems: 'center', flexWrap: 'wrap' }}>
                         <button
@@ -346,13 +346,13 @@ export default function UpdateListingPage() {
                     margin: '0 auto 20px', fontSize: 22, color: C.sage,
                   }}>✓</div>
                   <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream, marginBottom: 10, fontWeight: 400 }}>
-                    Got it — thank you!
+                    Got it - thank you!
                   </div>
                   <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', lineHeight: 1.7, margin: '0 0 12px', fontFamily: "'Libre Franklin', sans-serif" }}>
-                    We'll take a look and have your changes showing within 24 hours. We really appreciate you keeping things up to date — it makes a big difference for people trying to find you.
+                    We'll take a look and have your changes showing within 24 hours. We really appreciate you keeping things up to date - it makes a big difference for people trying to find you.
                   </p>
                   <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', lineHeight: 1.6, margin: '0 0 28px', fontFamily: "'Libre Franklin', sans-serif" }}>
-                    We sent a receipt to your email from <strong style={{ color: 'rgba(255,255,255,0.55)' }}>events@manitoubeachmichigan.com</strong> — check spam if you don't see it.
+                    We sent a receipt to your email from <strong style={{ color: 'rgba(255,255,255,0.55)' }}>events@manitoubeachmichigan.com</strong> - check spam if you don't see it.
                   </p>
                   <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
                     <Btn href="/business" variant="outline" style={{ borderColor: 'rgba(255,255,255,0.3)', color: 'rgba(255,255,255,0.7)' }}>

@@ -1,7 +1,7 @@
-# Manitou Beach Michigan — Community Platform
+# Manitou Beach Michigan - Community Platform
 ### Holly & The Yeti · Devils Lake
 
-A React-based community website for Manitou Beach, Michigan. Business directory, events calendar, newsletter signup, and submission forms — all in a single file.
+A React-based community website for Manitou Beach, Michigan. Business directory, events calendar, newsletter signup, and submission forms - all in a single file.
 
 ---
 
@@ -9,7 +9,7 @@ A React-based community website for Manitou Beach, Michigan. Business directory,
 
 | File | Purpose |
 |------|---------|
-| `manitou-beach-platform.jsx` | The entire platform — one React component file |
+| `manitou-beach-platform.jsx` | The entire platform - one React component file |
 
 ---
 
@@ -21,9 +21,9 @@ Everything you need to change week-to-week lives at the **very top of the file**
 ```js
 const HERO_MODE = "event"; // "default" | "event" | "video"
 ```
-- `"default"` — Standard branding hero with lake background
-- `"event"` — Features your FEATURED_EVENT content in the hero
-- `"video"` — Video background (paste URL into HERO_VIDEO_URL)
+- `"default"` - Standard branding hero with lake background
+- `"event"` - Features your FEATURED_EVENT content in the hero
+- `"video"` - Video background (paste URL into HERO_VIDEO_URL)
 
 ### 2. Update the Featured Event
 ```js
@@ -72,7 +72,7 @@ Find the `BUSINESSES` array near the top of the file. Each business looks like t
 
 **To mark as featured:** Change `featured: false` to `featured: true`.
 
-**Categories used:** Food & Drink · Boating & Water · Real Estate · Film & Video · Sports & Recreation — add any category you want; the filter tabs generate automatically.
+**Categories used:** Food & Drink · Boating & Water · Real Estate · Film & Video · Sports & Recreation - add any category you want; the filter tabs generate automatically.
 
 ---
 
@@ -106,19 +106,19 @@ In the `NewsletterBar` component, replace the `console.log` line:
 // Get this from: beehiiv Dashboard → Grow → Embeds → Embed Form
 window.location.href = "https://embeds.beehiiv.com/YOUR_FORM_ID";
 ```
-Or use beehiiv's embed code directly in an `<iframe>` — either works.
+Or use beehiiv's embed code directly in an `<iframe>` - either works.
 
 ### Submission Forms (Tally.so)
 In the `SubmitSection` component, the form `onSubmit` handler has a `TODO`. You have two options:
 
-**Option A — Keep the React form, post to Tally:**
+**Option A - Keep the React form, post to Tally:**
 ```js
 // Add to your form element:
 action="https://tally.so/r/YOUR_FORM_ID"
 method="POST"
 ```
 
-**Option B — Replace with Tally embed:**
+**Option B - Replace with Tally embed:**
 ```jsx
 // Replace the entire form with:
 <iframe
@@ -142,7 +142,7 @@ This is a React `.jsx` file. To use it on Framer:
 4. Framer will render it as a full-page component
 5. Set it as your main page component
 
-**Note:** Framer handles Google Fonts automatically — the `<link>` tag at the top of the app will work in Framer's environment.
+**Note:** Framer handles Google Fonts automatically - the `<link>` tag at the top of the app will work in Framer's environment.
 
 Alternatively, this file works in any React app (Vite, Create React App, Next.js).
 

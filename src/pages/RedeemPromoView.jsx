@@ -3,7 +3,7 @@ import { C } from "../components/Shared";
 import yeti from '../data/errorMessages';
 
 // ============================================================
-// ☕️  BARISTA REDEEM VIEW — single-use, shows subscriber name
+// ☕️  BARISTA REDEEM VIEW - single-use, shows subscriber name
 // ============================================================
 export default function RedeemPromoView() {
   const { useState, useEffect } = React;
@@ -85,7 +85,7 @@ export default function RedeemPromoView() {
     </div>
   );
 
-  // Valid — show to barista
+  // Valid - show to barista
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: C.night, padding: 24 }}>
       <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center", gap: 12 }}>

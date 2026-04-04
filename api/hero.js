@@ -5,7 +5,7 @@ export default async function handler(req, res) {
   res.setHeader('Cache-Control', 's-maxage=600, stale-while-revalidate');
 
   try {
-    // Consolidated into NOTION_DB_EVENTS — uses Hero Feature checkbox
+    // Consolidated into NOTION_DB_EVENTS - uses Hero Feature checkbox
     const response = await fetch(
       `https://api.notion.com/v1/databases/${process.env.NOTION_DB_EVENTS}/query`,
       {
@@ -59,7 +59,7 @@ export default async function handler(req, res) {
           date: p['Event date']?.date?.start || '',
           tagline: p['Tagline']?.rich_text?.[0]?.text?.content || '',
           heroImageUrl: p['Hero Image URL']?.url || null,  // High-res background image
-          imageUrl: p['Image URL']?.url || null,           // Small event image — shown inline below date
+          imageUrl: p['Image URL']?.url || null,           // Small event image - shown inline below date
           eventUrl: p['Event URL']?.url || null,
           ctaLabel: p['CTA Label']?.select?.name || null,  // e.g. "Get Tickets", "Learn More"
           time: p['Time']?.rich_text?.[0]?.text?.content || '',

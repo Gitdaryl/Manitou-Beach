@@ -158,8 +158,8 @@ async function sendRsvpReminders({ event, isToday, resend, siteUrl }) {
           from: 'Manitou Beach <events@manitoubeachmichigan.com>',
           to: rsvp.email,
           subject: isToday
-            ? `Happening today — ${event.name}`
-            : `Reminder — ${event.name} is tomorrow`,
+            ? `Happening today - ${event.name}`
+            : `Reminder - ${event.name} is tomorrow`,
           html: reminderEmailHtml({ name: rsvp.name, eventName: event.name, label, timeDisplay, location: event.location, siteUrl }),
         });
         emailsSent++;
@@ -172,11 +172,11 @@ async function sendRsvpReminders({ event, isToday, resend, siteUrl }) {
       const digits = normalizePhone(rsvp.phone);
       if (digits.length === 10) {
         const parts = [isToday
-          ? `Happening today — ${event.name}!`
+          ? `Happening today - ${event.name}!`
           : `Reminder: ${event.name} is tomorrow!`];
         if (timeDisplay) parts.push(timeDisplay);
         if (event.location) parts.push(event.location);
-        parts.push('— Manitou Beach');
+        parts.push('- Manitou Beach');
         const ok = await sendSMS(digits, parts.join('\n')).catch(() => false);
         if (ok) smsSent++;
       }
@@ -248,14 +248,14 @@ async function sendTicketBuyerReminders({ event, isToday, resend, siteUrl }) {
     if (resend && buyer.email) {
       try {
         const ticketNote = buyer.quantity > 1
-          ? `You have ${buyer.quantity} tickets — don't forget to bring everyone!`
-          : `Your ticket is ready — just show your confirmation at the door.`;
+          ? `You have ${buyer.quantity} tickets - don't forget to bring everyone!`
+          : `Your ticket is ready - just show your confirmation at the door.`;
         await resend.emails.send({
           from: 'Manitou Beach <events@manitoubeachmichigan.com>',
           to: buyer.email,
           subject: isToday
-            ? `Happening today — ${event.name}`
-            : `Reminder — ${event.name} is tomorrow`,
+            ? `Happening today - ${event.name}`
+            : `Reminder - ${event.name} is tomorrow`,
           html: reminderEmailHtml({
             name: buyer.name, eventName: event.name, label, timeDisplay,
             location: event.location, siteUrl, ticketNote,
@@ -272,12 +272,12 @@ async function sendTicketBuyerReminders({ event, isToday, resend, siteUrl }) {
       const digits = normalizePhone(buyer.phone);
       if (digits.length === 10) {
         const parts = [isToday
-          ? `Happening today — ${event.name}!`
+          ? `Happening today - ${event.name}!`
           : `Reminder: ${event.name} is tomorrow!`];
         if (timeDisplay) parts.push(timeDisplay);
         if (event.location) parts.push(event.location);
         parts.push('Show your ticket confirmation at the door.');
-        parts.push('— Manitou Beach');
+        parts.push('- Manitou Beach');
         const ok = await sendSMS(digits, parts.join('\n')).catch(() => false);
         if (ok) smsSent++;
       }
@@ -304,7 +304,7 @@ async function sendOrganizerMorningOf({ event, siteUrl }) {
     `Volunteer check-in scanner:`,
     checkInUrl,
     '',
-    '— Manitou Beach Events',
+    '- Manitou Beach Events',
   ];
 
   await sendSMS(digits, parts.join('\n')).catch(err =>
@@ -321,7 +321,7 @@ function reminderEmailHtml({ name, eventName, label, timeDisplay, location, site
         ${isToday ? '🎉 Happening today!' : '⏰ Reminder for tomorrow'}
       </h1>
       <p style="color:#5C5248;font-size:15px;margin:0 0 24px;line-height:1.7;">
-        ${name ? `Hi ${name} — ` : ''}don't forget, <strong>${eventName}</strong> is ${label}!
+        ${name ? `Hi ${name} - ` : ''}don't forget, <strong>${eventName}</strong> is ${label}!
       </p>
       <div style="background:#fff;border-radius:12px;padding:20px 24px;margin-bottom:24px;border:1px solid #E8E0D5;">
         ${timeDisplay ? `<p style="margin:0 0 6px;color:#3B3228;font-size:14px;">🕐 ${timeDisplay}</p>` : ''}

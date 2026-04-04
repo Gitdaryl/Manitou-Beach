@@ -64,7 +64,7 @@ export default async function handler(req, res) {
 
     // 2. Create Stripe Express account
     if (!process.env.STRIPE_SECRET_KEY) {
-      // Stripe not configured — fall back to manual follow-up
+      // Stripe not configured - fall back to manual follow-up
       return res.status(200).json({ ok: true });
     }
 
@@ -93,7 +93,7 @@ export default async function handler(req, res) {
       }),
     });
 
-    // 4. Create onboarding link — partner goes straight to Stripe's bank + ID form
+    // 4. Create onboarding link - partner goes straight to Stripe's bank + ID form
     const accountLink = await stripe.accountLinks.create({
       account: account.id,
       type: 'account_onboarding',

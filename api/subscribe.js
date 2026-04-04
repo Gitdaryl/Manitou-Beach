@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-  // GET — return live subscriber count for milestone display
+  // GET - return live subscriber count for milestone display
   if (req.method === 'GET') {
     try {
       const response = await fetch(

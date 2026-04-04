@@ -1,5 +1,5 @@
 // Shared Twilio SMS utility
-// All SMS sending goes through here — no more inline duplicates
+// All SMS sending goes through here - no more inline duplicates
 
 /**
  * Strip a phone string to its last 10 digits.
@@ -44,11 +44,11 @@ export async function sendSMSFull(toE164, body) {
     );
     if (!res.ok) {
       const err = await res.text();
-      console.error(`twilio.js: SMS to ${toE164} failed — ${res.status}`, err);
+      console.error(`twilio.js: SMS to ${toE164} failed - ${res.status}`, err);
     }
     return res.ok;
   } catch (e) {
-    console.error(`twilio.js: SMS to ${toE164} error —`, e.message);
+    console.error(`twilio.js: SMS to ${toE164} error -`, e.message);
     return false;
   }
 }

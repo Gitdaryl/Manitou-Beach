@@ -59,7 +59,7 @@ function mapBusiness(page) {
   const status = p['Status']?.status?.name || '';
   const tier = tierFromStatus(status);
 
-  // Categories — try multi_select first, fall back to select
+  // Categories - try multi_select first, fall back to select
   let categories = [];
   if (p['Categories']?.multi_select?.length) {
     categories = p['Categories'].multi_select.map(c => c.name);
@@ -110,7 +110,7 @@ function buildVoiceSummary(businesses, query, category) {
     if (b.description) {
       // Truncate description to first sentence for voice
       const firstSentence = b.description.split(/[.!?]/)[0];
-      if (firstSentence && firstSentence.length < 100) line += ` — ${firstSentence}`;
+      if (firstSentence && firstSentence.length < 100) line += ` - ${firstSentence}`;
     }
     if (b.phone) line += `. Phone: ${b.phone}`;
     parts.push(line + '.');

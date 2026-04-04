@@ -46,7 +46,7 @@ function VillageHero() {
             A walkable strip of boutique shops, a from-scratch cafe, satellite wine tasting rooms, and the iconic lighthouse replica. This is where Manitou Beach comes to life on foot.
           </p>
           <Btn href="/" variant="outlineLight" small>← Back to Home</Btn>
-          <ShareBar title="Manitou Beach Village — Shops, Wine & the Lighthouse" />
+          <ShareBar title="Manitou Beach Village - Shops, Wine & the Lighthouse" />
         </div>
       </div>
     </section>
@@ -65,7 +65,7 @@ function VillageMapSection() {
           </p>
         </FadeIn>
 
-        {/* Village business cards — staggered layout */}
+        {/* Village business cards - staggered layout */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 20 }}>
           {VILLAGE_BUSINESSES.map((biz, i) => {
             const color = CAT_COLORS[biz.category] || C.sage;
@@ -156,7 +156,7 @@ function VillageHistorySection() {
             <div style={{ background: C.warmWhite, borderRadius: 14, padding: "32px 28px", border: `1px solid ${C.sand}` }}>
               <div style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.sunset, marginBottom: 10 }}>The Revival</div>
               <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: 0 }}>
-                After decades of quiet, the village is finding its rhythm again. Independent shop owners — many of them locals who grew up on the lake — are filling storefronts with boutiques, cafes, and creative businesses. The lighthouse replica stands as a reminder: this place was always meant to draw people in.
+                After decades of quiet, the village is finding its rhythm again. Independent shop owners - many of them locals who grew up on the lake - are filling storefronts with boutiques, cafes, and creative businesses. The lighthouse replica stands as a reminder: this place was always meant to draw people in.
               </p>
             </div>
           </FadeIn>
@@ -164,7 +164,7 @@ function VillageHistorySection() {
             <div style={{ background: C.warmWhite, borderRadius: 14, padding: "32px 28px", border: `1px solid ${C.sand}` }}>
               <div style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.lakeBlue, marginBottom: 10 }}>The Lighthouse</div>
               <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: 0 }}>
-                Yes, it's landlocked. No, it never guided ships. But the lighthouse replica at Devils Lake View Living has become the most photographed landmark in Manitou Beach — a beacon for the village and a symbol of a community that builds things worth looking at.
+                Yes, it's landlocked. No, it never guided ships. But the lighthouse replica at Devils Lake View Living has become the most photographed landmark in Manitou Beach - a beacon for the village and a symbol of a community that builds things worth looking at.
               </p>
             </div>
           </FadeIn>
@@ -172,7 +172,7 @@ function VillageHistorySection() {
             <div style={{ background: C.warmWhite, borderRadius: 14, padding: "32px 28px", border: `1px solid ${C.sand}` }}>
               <div style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: "#8B5E3C", marginBottom: 10 }}>Wine Country Meets Lake Country</div>
               <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: 0 }}>
-                Starting May 2026, village shops become satellite tasting rooms for Michigan wineries. Ang & Co pours Chateau Fontaine from Leelanau Peninsula. Faust House represents Cherry Creek Cellars from Brooklyn. A new chapter for the village — and a reason to visit every weekend.
+                Starting May 2026, village shops become satellite tasting rooms for Michigan wineries. Ang & Co pours Chateau Fontaine from Leelanau Peninsula. Faust House represents Cherry Creek Cellars from Brooklyn. A new chapter for the village - and a reason to visit every weekend.
               </p>
             </div>
           </FadeIn>
@@ -196,7 +196,7 @@ function VillageVisitCTA() {
             Come See It for Yourself
           </h2>
           <p style={{ fontSize: 15, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, margin: "0 0 32px 0" }}>
-            The village is on Devils Lake Highway and Lakeview Boulevard in Manitou Beach. Most shops are open Thursday through Sunday — but check individual hours before making the trip.
+            The village is on Devils Lake Highway and Lakeview Boulevard in Manitou Beach. Most shops are open Thursday through Sunday - but check individual hours before making the trip.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
             <Btn onClick={() => window.open("https://maps.google.com/?q=Devils+Lake+Hwy+Manitou+Beach+MI+49253", "_blank")} variant="sunset">Get Directions</Btn>
@@ -231,7 +231,7 @@ export default function VillagePage() {
           type="deals"
           source="village"
           heading="Get deal alerts"
-          subtext="Time-sensitive specials from Village shops and restaurants — straight to your phone."
+          subtext="Time-sensitive specials from Village shops and restaurants - straight to your phone."
         />
       </div>
 

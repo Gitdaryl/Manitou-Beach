@@ -1,6 +1,6 @@
 // /api/verify-event.js
-// POST { phone, code } — verifies SMS code, publishes event, sets Edit Token.
-// POST { phone, resend: true } — resends stored code.
+// POST { phone, code } - verifies SMS code, publishes event, sets Edit Token.
+// POST { phone, resend: true } - resends stored code.
 //
 // For platform_ticketing and vendor_market types, returns needsStripe: true.
 // The frontend then calls /api/event-stripe-onboard to create the Stripe Express account.
@@ -13,7 +13,7 @@ function generateToken() {
   return crypto.randomBytes(16).toString('hex');
 }
 
-// HMAC session token — valid for the current 8-hour window.
+// HMAC session token - valid for the current 8-hour window.
 // Lets a rep verify once and submit multiple events without re-verifying.
 function generateSessionToken(normalizedPhone) {
   const window = Math.floor(Date.now() / (8 * 60 * 60 * 1000));
@@ -81,7 +81,7 @@ function moderateEvent(page) {
   const spamHits = spamWords.filter(w => combined.includes(w));
   if (spamHits.length > 0) flags.push(`Spam keywords: ${spamHits.join(', ')}`);
 
-  // 5. Gibberish detector — high consonant-to-vowel ratio in name
+  // 5. Gibberish detector - high consonant-to-vowel ratio in name
   const letters = name.replace(/[^a-zA-Z]/g, '').toLowerCase();
   if (letters.length > 6) {
     const vowels = (letters.match(/[aeiou]/g) || []).length;
@@ -117,7 +117,7 @@ export default async function handler(req, res) {
   try {
     const pendingEvents = await queryPendingEvents(notionToken, dbId);
 
-    // Handle duplicate submissions — find all Pending records for this phone
+    // Handle duplicate submissions - find all Pending records for this phone
     const phoneMatches = pendingEvents.filter(page => {
       const stored = page.properties['Phone']?.phone_number || '';
       return normalizePhone(stored) === inputDigits;
@@ -200,14 +200,14 @@ export default async function handler(req, res) {
     const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
     const sessionToken = generateSessionToken(inputDigits);
 
-    // Notify admin — different urgency based on moderation result
+    // Notify admin - different urgency based on moderation result
     if (modResult.severity === 'hold') {
       notifyAdmin({
         eventName, email, eventType, organizerName,
         modFlags: modResult.flags,
         held: true,
       }).catch(() => {});
-      // Still return success to the user — don't reveal the hold
+      // Still return success to the user - don't reveal the hold
       // They get their session token so they can submit more (those get moderated too)
       return res.status(200).json({
         ok: true,
@@ -219,14 +219,14 @@ export default async function handler(req, res) {
       });
     }
 
-    // warn or clean — publish and notify admin
+    // warn or clean - publish and notify admin
     notifyAdmin({
       eventName, email, eventType, organizerName,
       modFlags: modResult.flags,
       held: false,
     }).catch(() => {});
 
-    // Types requiring Stripe Express onboarding — don't send welcome SMS yet,
+    // Types requiring Stripe Express onboarding - don't send welcome SMS yet,
     // that happens in event-stripe-return.js after onboarding completes.
     if (eventType === 'platform_ticketing' || eventType === 'vendor_market') {
       return res.status(200).json({
@@ -242,7 +242,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // Simple types — send welcome SMS and done
+    // Simple types - send welcome SMS and done
     const editUrl = `${siteUrl}/events/edit?token=${editToken}`;
     await sendSMS(inputDigits,
       `Manitou Beach Events\n\n${eventName} is live! 🎉\n\nEdit your event anytime:\n${editUrl}`
@@ -278,10 +278,10 @@ async function notifyAdmin({ eventName, email, eventType, organizerName, modFlag
 
   const flagText = modFlags.length > 0 ? `\n⚠️ Flags: ${modFlags.join('; ')}` : '';
 
-  // SMS — urgent tone for held events
+  // SMS - urgent tone for held events
   if (darylPhone) {
     if (held) {
-      sendSMS(darylPhone, `🚩 EVENT HELD FOR REVIEW:\n${eventName}\n${organizerName || email} · ${typeLabel}${flagText}\n\nNot live — check Notion to approve or reject.`).catch(() => {});
+      sendSMS(darylPhone, `🚩 EVENT HELD FOR REVIEW:\n${eventName}\n${organizerName || email} · ${typeLabel}${flagText}\n\nNot live - check Notion to approve or reject.`).catch(() => {});
     } else if (modFlags.length > 0) {
       sendSMS(darylPhone, `New event live (with flag):\n${eventName}\n${organizerName || email} · ${typeLabel}${flagText}\n${siteUrl}/happening`).catch(() => {});
     } else {
@@ -295,7 +295,7 @@ async function notifyAdmin({ eventName, email, eventType, organizerName, modFlag
     const statusBadge = held
       ? '<span style="display:inline-block;background:#ff6b6b;color:#fff;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:1px;">HELD FOR REVIEW</span>'
       : modFlags.length > 0
-        ? '<span style="display:inline-block;background:#D4845A;color:#fff;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:1px;">FLAGGED — LIVE</span>'
+        ? '<span style="display:inline-block;background:#D4845A;color:#fff;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:1px;">FLAGGED - LIVE</span>'
         : '<span style="display:inline-block;background:#7A8E72;color:#fff;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:1px;">AUTO-APPROVED</span>';
 
     const flagsHtml = modFlags.length > 0
@@ -354,24 +354,24 @@ async function sendOrganizerWelcomeEmail({ eventName, email, editUrl, siteUrl, o
 
         <div style="padding:28px 28px 20px;">
           <p style="font-size:15px;color:#3A3028;line-height:1.8;margin:0 0 24px;">
-            ${firstName} — your event is on the community calendar and people can see it right now. Nice work.
+            ${firstName} - your event is on the community calendar and people can see it right now. Nice work.
           </p>
 
           <!-- See it live -->
           <a href="${happeningUrl}" style="display:block;padding:16px 20px;background:#7A8E72;color:#fff;text-decoration:none;border-radius:10px;margin-bottom:14px;">
             <div style="font-size:14px;font-weight:700;margin-bottom:2px;">See your event on the calendar →</div>
-            <div style="font-size:12px;color:rgba(255,255,255,0.7);">Check how it looks — make sure everything reads right.</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.7);">Check how it looks - make sure everything reads right.</div>
           </a>
 
           <!-- Edit link -->
           <a href="${editUrl}" style="display:block;padding:16px 20px;background:#F5EDE3;color:#3A3028;text-decoration:none;border-radius:10px;border:1px solid #E8DDD0;margin-bottom:14px;">
             <div style="font-size:14px;font-weight:700;margin-bottom:2px;">Need to change something?</div>
-            <div style="font-size:12px;color:#8C806E;line-height:1.5;">Tap here to edit your event anytime — no login needed. Bookmark this link.</div>
+            <div style="font-size:12px;color:#8C806E;line-height:1.5;">Tap here to edit your event anytime - no login needed. Bookmark this link.</div>
           </a>
 
           <!-- Share divider -->
           <div style="border-top:1px solid #E8DDD0;margin:24px 0 20px;"></div>
-          <p style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#8C806E;margin:0 0 12px;">Get the word out — free</p>
+          <p style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#8C806E;margin:0 0 12px;">Get the word out - free</p>
 
           <!-- Facebook share -->
           <a href="${fbShareUrl}" style="display:block;padding:14px 20px;background:#4267B2;color:#fff;text-decoration:none;border-radius:10px;margin-bottom:12px;text-align:center;">
@@ -380,7 +380,7 @@ async function sendOrganizerWelcomeEmail({ eventName, email, editUrl, siteUrl, o
           </a>
 
           <p style="font-size:13px;color:#8C806E;line-height:1.7;margin:16px 0 0;">
-            Copy this link and post it anywhere — text it to friends, drop it in a group chat, pin it on Nextdoor:<br/>
+            Copy this link and post it anywhere - text it to friends, drop it in a group chat, pin it on Nextdoor:<br/>
             <a href="${happeningUrl}" style="color:#D4845A;font-weight:600;text-decoration:none;">${happeningUrl}</a>
           </p>
 
@@ -390,7 +390,7 @@ async function sendOrganizerWelcomeEmail({ eventName, email, editUrl, siteUrl, o
           <a href="${promoteUrl}" style="display:block;padding:16px 20px;background:#FAF6EF;border:1.5px solid #D4845A;color:#3A3028;text-decoration:none;border-radius:10px;">
             <div style="font-size:14px;font-weight:700;color:#D4845A;margin-bottom:4px;">Promotion packages from $9</div>
             <div style="font-size:13px;color:#8C806E;line-height:1.6;">
-              Homepage feature, newsletter spotlight, social boost — over 4,000 locals see these every week. Choose what fits your event.
+              Homepage feature, newsletter spotlight, social boost - over 4,000 locals see these every week. Choose what fits your event.
             </div>
           </a>
         </div>

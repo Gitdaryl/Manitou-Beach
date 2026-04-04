@@ -26,7 +26,7 @@ export default function ActivateBusinessPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email.trim() || !email.includes('@')) { setError('A valid email is required.'); return; }
-    if (!businessName) { setError('Missing business name — check your link.'); return; }
+    if (!businessName) { setError('Missing business name - check your link.'); return; }
     setError('');
     setStatus('submitting');
     try {
@@ -75,7 +75,7 @@ export default function ActivateBusinessPage() {
             {decodeURIComponent(returnedBiz)} is activated.
           </p>
           <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.textLight, maxWidth: 420, lineHeight: 1.7, margin: '0 0 32px' }}>
-            Check your email for a confirmation from us. You can cancel or manage your listing anytime — just reply to the email.
+            Check your email for a confirmation from us. You can cancel or manage your listing anytime - just reply to the email.
           </p>
           <a href="/" style={{
             display: 'inline-block', background: C.sunset, color: C.cream,
@@ -131,7 +131,7 @@ export default function ActivateBusinessPage() {
             fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.textLight,
             lineHeight: 1.7, maxWidth: 400, margin: '0 auto',
           }}>
-            Your listing is already live. Add your payment info to keep it going — totally free until May 10.
+            Your listing is already live. Add your payment info to keep it going - totally free until May 10.
           </p>
         </div>
 
@@ -142,7 +142,7 @@ export default function ActivateBusinessPage() {
         }}>
           {[
             { key: 'month', label: `$${tier.price}/mo`, sub: 'Monthly' },
-            { key: 'year', label: `$${tier.annual}/yr`, sub: 'Annual — pay once' },
+            { key: 'year', label: `$${tier.annual}/yr`, sub: 'Annual - pay once' },
           ].map(opt => (
             <button
               key={opt.key}

@@ -1,6 +1,6 @@
 import { Resend } from 'resend';
 
-// Notion category values already mapped in DISCOVER_CATS — no alert needed for these
+// Notion category values already mapped in DISCOVER_CATS - no alert needed for these
 const KNOWN_NOTION_KEYS = new Set([
   'Food & Drink',
   'Stays & Rentals',
@@ -66,12 +66,12 @@ export default async function handler(req, res) {
     // Build email body
     const lines = [];
     if (hasOther) {
-      lines.push('• <strong>"Other"</strong> is still in use — at least one listed business has no category. Open Notion, find it, and assign a proper category or create a new one.');
+      lines.push('• <strong>"Other"</strong> is still in use - at least one listed business has no category. Open Notion, find it, and assign a proper category or create a new one.');
     }
     unknown.forEach(u => {
       const slug = u.toLowerCase().replace(/\s+/g, '-');
       lines.push(
-        `• <strong>"${u}"</strong> — new category detected on the Local Guide. ` +
+        `• <strong>"${u}"</strong> - new category detected on the Local Guide. ` +
         `A pill is showing with a placeholder icon. ` +
         `To wire up a real icon: create <code>/images/icons/${slug}-icon-dark.png</code> and add an entry to ` +
         `<code>discover.js → DISCOVER_DYNAMIC_CAT_ICONS</code>.`
@@ -82,10 +82,10 @@ export default async function handler(req, res) {
     await resend.emails.send({
       from: 'Manitou Beach <hello@manitou-beach.com>',
       to: process.env.ADMIN_EMAIL || 'daryl@manitoubeachmichigan.com',
-      subject: `⚠️ Local Guide category sync — ${lines.length} item${lines.length !== 1 ? 's' : ''} need attention`,
+      subject: `⚠️ Local Guide category sync - ${lines.length} item${lines.length !== 1 ? 's' : ''} need attention`,
       html: `
         <div style="font-family:sans-serif;max-width:540px;line-height:1.6">
-          <h2 style="color:#2D3B45">Local Guide — Category Sync Report</h2>
+          <h2 style="color:#2D3B45">Local Guide - Category Sync Report</h2>
           <p>The following items were detected during your category sync:</p>
           <ul style="padding-left:20px">${lines.map(l => `<li style="margin-bottom:12px">${l}</li>`).join('')}</ul>
           <p style="color:#888;font-size:13px;border-top:1px solid #eee;padding-top:12px">Triggered manually from YetiAdmin → Categories tab.</p>

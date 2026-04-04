@@ -1,7 +1,7 @@
 // /src/pages/FoodTruckQRPage.jsx
 // Printable QR code page for food truck operators
 // Route: /food-trucks/qr/:slug
-// No navbar/footer — designed for window/counter printing
+// No navbar/footer - designed for window/counter printing
 
 import { useParams } from 'react-router-dom';
 import QRCode from 'react-qr-code';
@@ -34,7 +34,7 @@ export default function FoodTruckQRPage() {
         }
       `}</style>
 
-      {/* Print button — hidden on print */}
+      {/* Print button - hidden on print */}
       <div className="no-print" style={{
         position: 'fixed', top: 16, right: 16, zIndex: 10,
       }}>
@@ -135,7 +135,7 @@ export default function FoodTruckQRPage() {
             lineHeight: 1.5,
           }}>
             Scan to find {truckName} on the Manitou Beach<br />
-            Locator. Heart us &amp; rate your dish — every love<br />
+            Locator. Heart us &amp; rate your dish - every love<br />
             helps us rise in the Most Loved rankings.
           </p>
 

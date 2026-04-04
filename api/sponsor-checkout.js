@@ -1,4 +1,4 @@
-// Public endpoint — creates a Stripe checkout session for a community org
+// Public endpoint - creates a Stripe checkout session for a community org
 // sponsorship. Routes payment to the org's Stripe Express account with
 // 1.25% platform fee retained by Yetickets.
 import Stripe from 'stripe';
@@ -60,7 +60,7 @@ export default async function handler(req, res) {
         price_data: {
           currency: 'usd',
           product_data: {
-            name: `${tierLevel} — ${resolvedOrgName}`,
+            name: `${tierLevel} - ${resolvedOrgName}`,
             description: perks?.join(' · ') || `${tierLevel} sponsorship`,
           },
           unit_amount: amountCents,

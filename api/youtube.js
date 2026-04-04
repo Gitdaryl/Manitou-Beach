@@ -1,4 +1,4 @@
-// YouTube Data API v3 proxy — fetches latest videos from Holly & The Yeti channel
+// YouTube Data API v3 proxy - fetches latest videos from Holly & The Yeti channel
 // Falls back to hardcoded video list if API key is missing or request fails
 
 const CHANNEL_ID = 'UCnjEuUEFlrsNzkWDyLkarcA';

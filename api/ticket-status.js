@@ -1,5 +1,5 @@
 // GET /api/ticket-status?event=NOTION_PAGE_ID
-// Public endpoint — returns ticket availability for an event
+// Public endpoint - returns ticket availability for an event
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {

@@ -44,7 +44,7 @@ async function findByNameAndEmail(name, email) {
 }
 
 export default async function handler(req, res) {
-  // GET — verify ownership, return current tier
+  // GET - verify ownership, return current tier
   if (req.method === 'GET') {
     const { name, email } = req.query;
     if (!name || !email) return res.status(400).json({ found: false, error: 'Name and email are required' });
@@ -70,7 +70,7 @@ export default async function handler(req, res) {
     }
   }
 
-  // POST — create Stripe checkout session for upgrade
+  // POST - create Stripe checkout session for upgrade
   if (req.method === 'POST') {
     const { businessName, email, currentTier, newTier, billingInterval } = req.body;
     if (!businessName || !email || !newTier) return res.status(400).json({ error: 'Missing required fields' });
@@ -103,7 +103,7 @@ export default async function handler(req, res) {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: `${tierData.label} Listing — Manitou Beach Directory`,
+              name: `${tierData.label} Listing - Manitou Beach Directory`,
               description: `${businessName} · Upgrade to ${tierData.label} · ${priceLabel}`,
             },
             unit_amount: unitAmount,

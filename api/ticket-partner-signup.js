@@ -1,6 +1,6 @@
 import Stripe from 'stripe';
 
-// In-memory rate limit store — max 3 Stripe account creations per IP per hour
+// In-memory rate limit store - max 3 Stripe account creations per IP per hour
 // Resets per serverless instance but still meaningfully deters bot bursts
 const _rl = new Map();
 function checkRateLimit(ip) {
@@ -19,7 +19,7 @@ export default async function handler(req, res) {
 
   const { orgName, contactName, email, phone, notes, _hp } = req.body || {};
 
-  // Honeypot — bots fill hidden fields, humans don't
+  // Honeypot - bots fill hidden fields, humans don't
   if (_hp) return res.status(200).json({ ok: true, onboardingUrl: null });
 
   // Rate limit by IP

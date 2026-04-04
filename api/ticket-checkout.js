@@ -67,7 +67,7 @@ export default async function handler(req, res) {
     const eventLocation = p['Location']?.rich_text?.[0]?.text?.content || '';
     const ticketPartner = p['Ticket Partner']?.rich_text?.[0]?.text?.content || '';
 
-    // Require a connected Stripe Express account — no account, no tickets
+    // Require a connected Stripe Express account - no account, no tickets
     if (!ticketPartner) {
       return res.status(400).json({ error: 'Ticket sales not configured for this event. Contact the organizer.' });
     }
@@ -113,7 +113,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // Compute price in cents (server-side — never trust client-sent prices)
+    // Compute price in cents (server-side - never trust client-sent prices)
     const unitAmountCents = Math.round(priceRaw * 100);
 
     const baseUrl = process.env.SITE_URL
@@ -157,7 +157,7 @@ export default async function handler(req, res) {
       cancel_url: `${baseUrl}/happening`,
     };
 
-    // Always route through Express Connect — platform fee to Daryl, rest to organizer
+    // Always route through Express Connect - platform fee to Daryl, rest to organizer
     const totalCents = unitAmountCents * qty;
     const applicationFee = Math.round(totalCents * PLATFORM_FEE_PERCENT);
     sessionParams.payment_intent_data = {

@@ -28,7 +28,7 @@ async function geocodeAndStore(pageId, address) {
 }
 
 export default async function handler(req, res) {
-  // PATCH — update an existing listing
+  // PATCH - update an existing listing
   if (req.method === 'PATCH') {
     const { pageId, name, stayType, phone, email, website, bookingUrl, description, address, beds, guests, amenities, photoUrl, photoUrl2, photoUrl3 } = req.body;
     if (!pageId) return res.status(400).json({ error: 'pageId is required' });
@@ -81,7 +81,7 @@ export default async function handler(req, res) {
     }
   }
 
-  // POST — submit a new stay listing
+  // POST - submit a new stay listing
   if (req.method === 'POST') {
     const { name, stayType, phone, email, website, bookingUrl, description, address, beds, guests, amenities, logoUrl, photoUrl, photoUrl2, photoUrl3, tier, _hp } = req.body;
 
@@ -139,7 +139,7 @@ export default async function handler(req, res) {
     }
   }
 
-  // GET — fetch listed stays (or owner lookup via ?manage=email)
+  // GET - fetch listed stays (or owner lookup via ?manage=email)
   const manageEmail = req.query?.manage;
   res.setHeader('Cache-Control', 'no-store');
   try {
@@ -177,7 +177,7 @@ export default async function handler(req, res) {
       const featuredExpires = p['Featured Expires']?.date?.start || null;
       const status = p['Status']?.status?.name || '';
 
-      // Skip entries still in "New" status (unapproved submissions) — unless owner is managing
+      // Skip entries still in "New" status (unapproved submissions) - unless owner is managing
       if (status === 'New' && !manageEmail) return;
 
       const expired = status === 'Listed Featured' && featuredExpires && featuredExpires < today;

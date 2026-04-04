@@ -1,6 +1,6 @@
 /**
  * Format a phone number string for display: 1234567890 → 123-456-7890
- * Handles any input format — strips non-digits first, then formats.
+ * Handles any input format - strips non-digits first, then formats.
  * Returns the original string if it doesn't contain exactly 10 or 11 digits.
  */
 export default function formatPhone(phone) {

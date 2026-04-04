@@ -1,4 +1,4 @@
-// Nightly cron — clear expired event promotions.
+// Nightly cron - clear expired event promotions.
 // Resets Promo Type, Hero Feature, and Promo End on events past their promo window.
 
 export default async function handler(req, res) {
