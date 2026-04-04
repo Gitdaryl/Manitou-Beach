@@ -140,10 +140,17 @@ export default function LadiesClubVendorPage() {
     setError('');
 
     try {
-      const res = await fetch('/api/lllc-vendor-apply', {
+      const res = await fetch('/api/community-apply', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ vendorType, boothSize: form.boothSize || undefined, ...form }),
+        body: JSON.stringify({
+          community: 'Devils Lake',
+          org: 'LLLC',
+          type: 'Vendor',
+          vendorType,
+          boothSize: form.boothSize || undefined,
+          ...form,
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Submission failed');
