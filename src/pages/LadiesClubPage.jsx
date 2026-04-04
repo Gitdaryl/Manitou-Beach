@@ -49,7 +49,7 @@ function LadiesClubHero() {
       {/* Content */}
       <div style={{ width: "100%", padding: "160px 24px 120px", position: "relative", zIndex: 2, opacity: loaded ? 1 : 0, transform: loaded ? "translateY(0)" : "translateY(20px)", transition: "all 0.9s ease" }}>
         <div style={{ maxWidth: 800, margin: "0 auto" }}>
-          <img src="/images/landlake-club-logo.png" alt="Land & Lake Ladies Club" style={{ width: 96, height: 96, borderRadius: "50%", objectFit: "cover", marginBottom: 20, border: "3px solid rgba(255,255,255,0.18)", boxShadow: "0 4px 24px rgba(0,0,0,0.4)" }} />
+          <img src="/images/landlake-club-logo.png" alt="Land & Lake Ladies Club" style={{ width: 192, height: 192, borderRadius: "50%", objectFit: "cover", marginBottom: 20, border: "3px solid rgba(255,255,255,0.18)", boxShadow: "0 4px 24px rgba(0,0,0,0.4)" }} />
           <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunsetLight, marginBottom: 12 }}>
             Where Community Comes Together
           </div>
