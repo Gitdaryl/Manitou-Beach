@@ -323,7 +323,7 @@ function LadiesClubEventsSection() {
         {/* Festival Map */}
         <FadeIn delay={200}>
           <img
-            src="/images/ladies-club/summerfest-map.png"
+            src="/images/ladies-club/summerfest-map.jpg"
             alt="Summer Festival 2026 Map — Manitou Beach Village"
             style={{ width: "100%", borderRadius: 14, marginBottom: 56, display: "block", border: "1px solid rgba(255,255,255,0.08)" }}
             onError={(e) => { e.target.style.display = "none"; }}
@@ -456,7 +456,7 @@ function LadiesClubEventsSection() {
 
 function LadiesClubGallerySection() {
   const [lightbox, setLightbox] = useState(null);
-  const photos = Array.from({ length: 15 }, (_, i) => `/images/ladies-club/summerfest/LLLC-${i + 1}.jpg`);
+  const photos = Array.from({ length: 16 }, (_, i) => `/images/ladies-club/summerfest/summerfest-${i + 1}.jpg`);
 
   return (
     <section style={{ background: C.cream, padding: "80px 24px" }}>
@@ -958,8 +958,8 @@ export default function LadiesClubPage() {
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
       <LadiesClubHero />
       <LadiesClubMissionSection />
-      <LadiesClubEventsSection />
       <LadiesClubSponsorsSection />
+      <LadiesClubEventsSection />
       <LadiesClubGallerySection />
       <LadiesClubSponsorForm />
       <LadiesClubGetInvolved />
