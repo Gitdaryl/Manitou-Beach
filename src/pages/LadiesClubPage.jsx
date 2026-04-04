@@ -456,7 +456,7 @@ function LadiesClubEventsSection() {
 
 function LadiesClubGallerySection() {
   const [lightbox, setLightbox] = useState(null);
-  const photos = Array.from({ length: 16 }, (_, i) => `/images/ladies-club/summerfest/summerfest-${i + 1}.jpg`);
+  const photos = Array.from({ length: 22 }, (_, i) => `/images/ladies-club/summerfest/summerfest-${i + 1}.jpg`);
 
   return (
     <section style={{ background: C.cream, padding: "80px 24px" }}>
