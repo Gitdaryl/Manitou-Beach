@@ -543,7 +543,7 @@ const DEFAULT_PLATINUM = [
   { name: "Land To Lakes",            logo: "/images/ladies-club/sponsors/landtolakes-logo.jpg",  url: "https://landtolakes.com" },
 ];
 const DEFAULT_GOLD = [
-  { name: "Edison Builders",         logo: null },
+  { name: "Edison Builders",         logo: "/images/ladies-club/sponsors/edison-logo.jpg" },
   { name: "Henson Family",           logo: null },
   { name: "Kerentoff Family",        logo: null },
   { name: "Mark Riggle Real Estate", logo: "/images/ladies-club/sponsors/riggle-logo.jpg" },
