@@ -311,7 +311,7 @@ export function Btn({ children, onClick, href, variant = "primary", small = fals
 // Used on org pages (Men's Club, Ladies Club, Historical, Fireworks)
 // No platform branding. Uses 1.25% fee structure.
 // ============================================================
-export function CommunityDonationForm({ orgName, orgPageId, tiers, accentColor, darkBg = false, note, hideFee, logoTiers = [] }) {
+export function CommunityDonationForm({ orgName, orgPageId, submitEndpoint, tiers, accentColor, darkBg = false, note, hideFee, logoTiers = [] }) {
   // Detect return from Stripe checkout (?sponsor_success=1)
   const urlParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
   const returnedName = urlParams?.get('name') || '';
@@ -412,7 +412,35 @@ export function CommunityDonationForm({ orgName, orgPageId, tiers, accentColor, 
       return;
     }
 
-    // Application-only fallback (no Stripe connected)
+    // Submit to endpoint if provided (e.g. LLLC sponsor application → Notion)
+    if (submitEndpoint) {
+      setCheckoutLoading(true);
+      try {
+        const res = await fetch(submitEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sponsorName: form.org || form.name,
+            contactName: form.name,
+            email: form.email,
+            phone: form.phone || '',
+            tier: selectedTier?.level || '',
+            message: form.message || '',
+            logoUrl: logoUrl || null,
+            websiteUrl: null,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Submission failed');
+        setSubmitted(true);
+      } catch (err) {
+        setError(err.message || 'That didn\'t go through. Try again?');
+        setCheckoutLoading(false);
+      }
+      return;
+    }
+
+    // Application-only fallback (no Stripe, no endpoint)
     setSubmitted(true);
   };
 

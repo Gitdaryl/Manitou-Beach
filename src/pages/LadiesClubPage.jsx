@@ -533,40 +533,46 @@ function LadiesClubGallerySection() {
   );
 }
 
+// Hardcoded fallback sponsors — used when Notion fetch fails or has no active sponsors
+const DEFAULT_PLATINUM = [
+  { name: "Adrian Steel",             logo: "/images/ladies-club/sponsors/adrian-logo.jpg",      url: "https://adriansteel.com" },
+  { name: "Dave & Jose",              logo: null,                                                  url: null },
+  { name: "Decker and Sons Insurance",logo: "/images/ladies-club/sponsors/decker-logo.jpg",      url: "https://deckerandsonsinsurance.com" },
+  { name: "Foundation Realty",        logo: "/images/ladies-club/sponsors/foundation-logo.jpg",   url: "https://foundationlenawee.com" },
+  { name: "Lakeside Construction",    logo: "/images/ladies-club/sponsors/lakeside-logo.jpg",     url: null },
+  { name: "Land To Lakes",            logo: "/images/ladies-club/sponsors/landtolakes-logo.jpg",  url: "https://landtolakes.com" },
+];
+const DEFAULT_GOLD = [
+  { name: "Edison Builders",         logo: null },
+  { name: "Henson Family",           logo: null },
+  { name: "Kerentoff Family",        logo: null },
+  { name: "Mark Riggle Real Estate", logo: "/images/ladies-club/sponsors/riggle-logo.jpg" },
+  { name: "North Shore Pontoon",     logo: "/images/ladies-club/sponsors/northshore-logo.jpg" },
+  { name: "Sterling Market",         logo: "/images/ladies-club/sponsors/sterling-logo.jpg" },
+];
+const DEFAULT_SILVER = [
+  { name: "FN Cuthbert Company" }, { name: "Boot Jack Tavern" }, { name: "Devil's Lake Golf Course" },
+  { name: "Manitou Beach Glass Factory" }, { name: "Papa's Place" }, { name: "Redwood Tree Service" },
+  { name: "Trends Salon and Spa" }, { name: "Two Lakes Tavern" }, { name: "Devil's Lake View Living" },
+];
+const DEFAULT_BRONZE  = [{ name: "Glamour Auto Shop" }];
+const DEFAULT_FRIENDS = [{ name: "Freddie Freeze" }];
+
 function LadiesClubSponsorsSection() {
-  const PLATINUM = [
-    { name: "Adrian Steel",             logo: "/images/ladies-club/sponsors/adrian-logo.jpg",      url: "https://adriansteel.com" },
-    { name: "Dave & Jose",              logo: null,                                                  url: null },
-    { name: "Decker and Sons Insurance",logo: "/images/ladies-club/sponsors/decker-logo.jpg",      url: "https://deckerandsonsinsurance.com" },
-    { name: "Foundation Realty",        logo: "/images/ladies-club/sponsors/foundation-logo.jpg",   url: "https://foundationlenawee.com" },
-    { name: "Lakeside Construction",    logo: "/images/ladies-club/sponsors/lakeside-logo.jpg",     url: null },
-    { name: "Land To Lakes",            logo: "/images/ladies-club/sponsors/landtolakes-logo.jpg",  url: "https://landtolakes.com" },
-  ];
+  const [sponsors, setSponsors] = React.useState(null); // null = use defaults
 
-  const GOLD = [
-    { name: "Edison Builders",         logo: null },
-    { name: "Henson Family",           logo: null },
-    { name: "Kerentoff Family",        logo: null },
-    { name: "Mark Riggle Real Estate", logo: "/images/ladies-club/sponsors/riggle-logo.jpg" },
-    { name: "North Shore Pontoon",     logo: "/images/ladies-club/sponsors/northshore-logo.jpg" },
-    { name: "Sterling Market",         logo: "/images/ladies-club/sponsors/sterling-logo.jpg" },
-  ];
+  React.useEffect(() => {
+    fetch('/api/lllc-sponsors')
+      .then(r => r.json())
+      .then(data => { if (data.sponsors) setSponsors(data.sponsors); })
+      .catch(() => {}); // silent fallback to hardcoded
+  }, []);
 
-  const SILVER = [
-    "FN Cuthbert Company",
-    "Boot Jack Tavern",
-    "Devil's Lake Golf Course",
-    "Manitou Beach Glass Factory",
-    "Papa's Place",
-    "Redwood Tree Service",
-    "Trends Salon and Spa",
-    "Two Lakes Tavern",
-    "Devil's Lake View Living",
-  ];
-
-  const BRONZE = ["Glamour Auto Shop"];
-
-  const FRIENDS = ["Freddie Freeze"];
+  const PLATINUM = sponsors?.platinum?.length ? sponsors.platinum : DEFAULT_PLATINUM;
+  const GOLD     = sponsors?.gold?.length     ? sponsors.gold     : DEFAULT_GOLD;
+  const SILVER   = sponsors?.silver?.length   ? sponsors.silver   : DEFAULT_SILVER;
+  const BRONZE   = sponsors?.bronze?.length   ? sponsors.bronze   : DEFAULT_BRONZE;
+  const FRIENDS  = sponsors?.friends?.length  ? sponsors.friends  : DEFAULT_FRIENDS;
 
   const TierHeader = ({ label, color }) => (
     <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 20, marginTop: 44 }}>
@@ -693,7 +699,7 @@ function LadiesClubSponsorsSection() {
         <FadeIn>
           <TierHeader label="Silver Sponsors" color="#8a9ba8" />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: 8 }}>
-            {SILVER.map(name => <NameChip key={name} name={name} />)}
+            {SILVER.map(s => <NameChip key={s.name} name={s.name} />)}
           </div>
         </FadeIn>
 
@@ -701,7 +707,7 @@ function LadiesClubSponsorsSection() {
         <FadeIn>
           <TierHeader label="Bronze Sponsors" color="#a0522d" />
           <div style={{ display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "center" }}>
-            {BRONZE.map(name => <NameChip key={name} name={name} />)}
+            {BRONZE.map(s => <NameChip key={s.name} name={s.name} />)}
           </div>
         </FadeIn>
 
@@ -709,10 +715,10 @@ function LadiesClubSponsorsSection() {
         <FadeIn>
           <TierHeader label="Friends & Family of LLLC" color={C.sage} />
           <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 20px", justifyContent: "center", padding: "4px 0 8px" }}>
-            {FRIENDS.map(name => (
-              <div key={name} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            {FRIENDS.map(s => (
+              <div key={s.name} style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <img src="/images/landlake-club-logo.png" alt="LLLC" style={{ width: 16, height: 16, objectFit: "contain", opacity: 0.6 }} />
-                <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted }}>{name}</span>
+                <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted }}>{s.name}</span>
               </div>
             ))}
           </div>
@@ -837,6 +843,7 @@ function LadiesClubSponsorForm() {
         </FadeIn>
         <CommunityDonationForm
           orgName="Land & Lake Ladies Club"
+          submitEndpoint="/api/lllc-sponsor-submit"
           tiers={LADIES_SPONSOR_TIERS}
           accentColor={C.sunset}
           hideFee
