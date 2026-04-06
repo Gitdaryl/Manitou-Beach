@@ -214,6 +214,68 @@ export default function LadiesClubVendorPage() {
         </div>
       </div>
 
+      {/* Guidelines */}
+      <section style={{ background: C.warmWhite, padding: '56px 24px 0' }}>
+        <div style={{ maxWidth: 680, margin: '0 auto' }}>
+
+          {/* Vision intro */}
+          <div style={{ marginBottom: 40 }}>
+            <SectionLabel>About the Event</SectionLabel>
+            <SectionTitle style={{ marginBottom: 16 }}>Devil's Lake Summer Festival 2026</SectionTitle>
+            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, margin: 0 }}>
+              LLLC is proud to announce Summer Festival 2026. Our vision is to collaborate with local businesses and community members to create a day filled with food, drinks, music, crafts, kids' activities, and entertainment for all ages.
+            </p>
+          </div>
+
+          {/* What's new */}
+          <div style={{ background: 'linear-gradient(135deg, #EBF5EE 0%, #F0F7F2 100%)', border: `1.5px solid ${C.sage}22`, borderRadius: 14, padding: '24px 28px', marginBottom: 36 }}>
+            <p style={{ margin: '0 0 14px', fontSize: 12, fontWeight: 700, color: C.sage, letterSpacing: 1, textTransform: 'uppercase', fontFamily: "'Libre Franklin', sans-serif" }}>New in 2026</p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+              {[
+                { icon: '🎨', text: 'Fine Arts Section' },
+                { icon: '🎪', text: 'Expanded activities for kids & adults' },
+                { icon: '🎶', text: 'Continuous live music' },
+              ].map(({ icon, text }) => (
+                <div key={text} style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#fff', borderRadius: 8, padding: '10px 14px', fontSize: 13, fontWeight: 600, color: C.text, fontFamily: "'Libre Franklin', sans-serif" }}>
+                  <span style={{ fontSize: 18 }}>{icon}</span> {text}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Vendor rules */}
+          <div style={{ marginBottom: 48 }}>
+            <p style={{ margin: '0 0 16px', fontSize: 12, fontWeight: 700, color: C.textMuted, letterSpacing: 1, textTransform: 'uppercase', fontFamily: "'Libre Franklin', sans-serif" }}>Vendor Guidelines</p>
+            <div style={{ display: 'grid', gap: 10 }}>
+              {[
+                { icon: '🪑', text: 'Vendors supply their own tables, chairs, signage, and display materials. Many bring battery-operated or fairy lights to highlight displays.' },
+                { icon: '🚗', text: 'Vendor parking is off-site. Details will be included in your confirmation email.' },
+                { icon: '🚫', text: 'No smoking or alcoholic beverages in the Crafter\'s Market.' },
+                { icon: '🐾', text: 'Pets must be on a leash and under their owner\'s control.' },
+                { icon: '🚻', text: 'Porta-potties will be on site.' },
+                { icon: '🧹', text: 'Vendors are responsible for keeping their area clean.' },
+                { icon: '📋', text: 'Set-up time details will be sent closer to the event date.' },
+              ].map(({ icon, text }) => (
+                <div key={text} style={{ display: 'flex', gap: 12, alignItems: 'flex-start', background: '#fff', border: `1px solid ${C.sand}`, borderRadius: 10, padding: '12px 16px' }}>
+                  <span style={{ fontSize: 18, flexShrink: 0, marginTop: 1 }}>{icon}</span>
+                  <p style={{ margin: 0, fontSize: 13, color: C.textLight, lineHeight: 1.6, fontFamily: "'Libre Franklin', sans-serif" }}>{text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* LLLC about */}
+          <div style={{ background: C.cream, border: `1px solid ${C.sand}`, borderRadius: 12, padding: '20px 24px', marginBottom: 8 }}>
+            <p style={{ margin: '0 0 6px', fontSize: 11, fontWeight: 700, color: C.textMuted, letterSpacing: 1, textTransform: 'uppercase', fontFamily: "'Libre Franklin', sans-serif" }}>About LLLC</p>
+            <p style={{ margin: 0, fontSize: 13, color: C.textLight, lineHeight: 1.7 }}>
+              The Devil's Lake Summer Festival Crafter's Market is a community service sponsored by the Land & Lake Ladies Club, Inc., a 501(c)(4) civic organization dedicated to improving our local community socially, physically, culturally, and educationally - with a special emphasis on family-friendly projects. All proceeds go to publicity and supplies for the Crafter's Market, and charitable community projects.
+            </p>
+          </div>
+
+          <div style={{ height: 1, background: C.sand, margin: '48px 0 0' }} />
+        </div>
+      </section>
+
       {/* Form */}
       <section style={{ background: C.warmWhite, padding: '64px 24px 100px' }}>
         <div style={{ maxWidth: 680, margin: '0 auto' }}>
