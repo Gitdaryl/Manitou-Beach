@@ -541,6 +541,9 @@ const DEFAULT_PLATINUM = [
   { name: "Foundation Realty",        logo: "/images/ladies-club/sponsors/foundation-logo.jpg",   url: "https://foundationlenawee.com" },
   { name: "Lakeside Construction",    logo: "/images/ladies-club/sponsors/lakeside-logo.jpg",     url: null },
   { name: "Land To Lakes",            logo: "/images/ladies-club/sponsors/landtolakes-logo.jpg",  url: "https://landtolakes.com" },
+  { name: "Manitou Beach Marina",     logo: "/images/ladies-club/sponsors/marina_logo.png",       url: null },
+  { name: "Devils Lake Yacht Club",   logo: "/images/ladies-club/sponsors/yacht_club_logo.png",   url: "https://www.devilslakeyachtclub.com/" },
+  { name: "Devils Lake Water Sports", logo: "/images/ladies-club/sponsors/dl_watersports_logo.png", url: "https://dlwatersports.com/" },
 ];
 const DEFAULT_GOLD = [
   { name: "Edison Builders",         logo: "/images/ladies-club/sponsors/edison-logo.jpg" },
@@ -554,9 +557,10 @@ const DEFAULT_SILVER = [
   { name: "FN Cuthbert Company" }, { name: "Boot Jack Tavern" }, { name: "Devil's Lake Golf Course" },
   { name: "Manitou Beach Glass Factory" }, { name: "Papa's Place" }, { name: "Redwood Tree Service" },
   { name: "Trends Salon and Spa" }, { name: "Two Lakes Tavern" }, { name: "Devil's Lake View Living" },
+  { name: "Luigi's Pizza" },
 ];
 const DEFAULT_BRONZE  = [{ name: "Glamour Auto Shop" }];
-const DEFAULT_FRIENDS = [{ name: "Freddie Freeze" }];
+const DEFAULT_FRIENDS = [{ name: "Freddie Freeze" }, { name: "Benny D's on 223" }, { name: "Trillium House" }];
 
 function LadiesClubSponsorsSection() {
   const [sponsors, setSponsors] = React.useState(null); // null = use defaults
