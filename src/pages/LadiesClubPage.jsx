@@ -541,7 +541,7 @@ const DEFAULT_PLATINUM = [
   { name: "Foundation Realty",        logo: "/images/ladies-club/sponsors/foundation-logo.jpg",   url: "https://foundationlenawee.com" },
   { name: "Lakeside Construction",    logo: "/images/ladies-club/sponsors/lakeside-logo.jpg",     url: null },
   { name: "Land To Lakes",            logo: "/images/ladies-club/sponsors/landtolakes-logo.jpg",  url: "https://landtolakes.com" },
-  { name: "Manitou Beach Marina",     logo: "/images/ladies-club/sponsors/marina_logo.png",       url: null },
+  { name: "Manitou Beach Marina",     logo: "/images/ladies-club/sponsors/marina_logo.png",       url: "https://manitoubeachmarina.com/" },
   { name: "Devils Lake Yacht Club",   logo: "/images/ladies-club/sponsors/yacht_club_logo.png",   url: "https://www.devilslakeyachtclub.com/" },
   { name: "Devils Lake Water Sports", logo: "/images/ladies-club/sponsors/dl_watersports_logo.png", url: "https://dlwatersports.com/" },
 ];
@@ -587,7 +587,7 @@ function LadiesClubSponsorsSection() {
   );
 
   // Tile used for Platinum and Gold - shows logo or fallback name card
-  const LogoTile = ({ name, logo, url, platinum }) => {
+  const LogoTile = ({ name, logo, url, platinum, tierColor = "#c9a227" }) => {
     const [hovered, setHovered] = React.useState(false);
     const inner = (
       <div
@@ -595,10 +595,8 @@ function LadiesClubSponsorsSection() {
         onMouseLeave={() => setHovered(false)}
         style={{
           background: "#fff",
-          border: platinum
-            ? `2px solid ${hovered ? "#b08d57" : "#dfc98a"}`
-            : `1.5px solid ${hovered ? "#c9a227" : "#e8e0d5"}`,
-          borderTop: platinum ? `4px solid ${hovered ? "#b08d57" : "#c9a227"}` : undefined,
+          border: `${platinum ? 2 : 1.5}px solid ${hovered ? tierColor : "#e8e0d5"}`,
+          borderTop: `4px solid ${tierColor}`,
           borderRadius: platinum ? 14 : 10,
           height: platinum ? 200 : 130,
           display: "flex",
@@ -609,9 +607,9 @@ function LadiesClubSponsorsSection() {
           gap: 10,
           cursor: url ? "pointer" : "default",
           transform: hovered ? "translateY(-4px)" : "translateY(0)",
-          boxShadow: platinum
-            ? hovered ? "0 12px 32px rgba(176,141,87,0.22)" : "0 2px 10px rgba(176,141,87,0.10)"
-            : hovered ? "0 6px 18px rgba(0,0,0,0.10)" : "0 1px 4px rgba(0,0,0,0.05)",
+          boxShadow: hovered
+            ? `0 ${platinum ? 12 : 6}px ${platinum ? 32 : 18}px rgba(0,0,0,0.10)`
+            : `0 ${platinum ? 2 : 1}px ${platinum ? 10 : 4}px rgba(0,0,0,0.05)`,
           transition: "all 0.22s ease",
           position: "relative",
           overflow: "hidden",
@@ -636,7 +634,7 @@ function LadiesClubSponsorsSection() {
         {url && platinum && (
           <span style={{
             fontSize: 10,
-            color: hovered ? "#b08d57" : "#b0a090",
+            color: hovered ? tierColor : "#b0a090",
             fontFamily: "'Libre Franklin', sans-serif",
             letterSpacing: 0.6,
             textTransform: "uppercase",
@@ -656,10 +654,11 @@ function LadiesClubSponsorsSection() {
   };
 
   // Name-only chip for Silver / Bronze
-  const NameChip = ({ name }) => (
+  const NameChip = ({ name, tierColor = "#8a9ba8" }) => (
     <div style={{
       background: "#fff",
       border: "1px solid #e8e0d5",
+      borderTop: `3px solid ${tierColor}`,
       borderRadius: 8,
       padding: "10px 18px",
       fontFamily: "'Libre Franklin', sans-serif",
@@ -687,7 +686,7 @@ function LadiesClubSponsorsSection() {
         <FadeIn>
           <TierHeader label="Platinum Sponsors" color="#b08d57" />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 20 }}>
-            {PLATINUM.map(s => <LogoTile key={s.name} {...s} platinum />)}
+            {PLATINUM.map(s => <LogoTile key={s.name} {...s} platinum tierColor="#b08d57" />)}
           </div>
         </FadeIn>
 
@@ -695,7 +694,7 @@ function LadiesClubSponsorsSection() {
         <FadeIn>
           <TierHeader label="Gold Sponsors" color="#c9a227" />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: 12 }}>
-            {GOLD.map(s => <LogoTile key={s.name} {...s} />)}
+            {GOLD.map(s => <LogoTile key={s.name} {...s} tierColor="#c9a227" />)}
           </div>
         </FadeIn>
 
@@ -703,7 +702,7 @@ function LadiesClubSponsorsSection() {
         <FadeIn>
           <TierHeader label="Silver Sponsors" color="#8a9ba8" />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: 8 }}>
-            {SILVER.map(s => <NameChip key={s.name} name={s.name} />)}
+            {SILVER.map(s => <NameChip key={s.name} name={s.name} tierColor="#8a9ba8" />)}
           </div>
         </FadeIn>
 
@@ -711,7 +710,7 @@ function LadiesClubSponsorsSection() {
         <FadeIn>
           <TierHeader label="Bronze Sponsors" color="#a0522d" />
           <div style={{ display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "center" }}>
-            {BRONZE.map(s => <NameChip key={s.name} name={s.name} />)}
+            {BRONZE.map(s => <NameChip key={s.name} name={s.name} tierColor="#a0522d" />)}
           </div>
         </FadeIn>
 
