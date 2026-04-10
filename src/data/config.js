@@ -284,6 +284,7 @@ export const DISPATCH_CARD_SPONSORS = [
     name: 'Blackbird Cafe & Baking Co.',
     logo: '/images/blackbird-logo.png',
     offerText: 'Free cookie for new subscribers',
+    smallPrint: 'First 20 people only. Expires May 31.',
   },
 ];
 

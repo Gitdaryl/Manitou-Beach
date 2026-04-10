@@ -490,8 +490,11 @@ function SignupForm({ remaining, onSpotsUpdate }) {
               <span style={{ color: C.sunsetLight, fontWeight: 700 }}>Free cookie from Blackbird Cafe</span>
               {' '}- claim it on the site when it opens May 1.
             </p>
-            <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: 'rgba(255,255,255,0.3)', margin: 0 }}>
+            <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: 'rgba(255,255,255,0.3)', margin: '0 0 4px' }}>
               Your welcome gift from the Manitou Beach community.
+            </p>
+            <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, color: 'rgba(255,255,255,0.25)', margin: 0 }}>
+              First 20 people only. Expires May 31.
             </p>
           </div>
         )}
@@ -576,7 +579,7 @@ function SignupForm({ remaining, onSpotsUpdate }) {
           fontFamily: "'Libre Franklin', sans-serif",
           fontSize: 11, color: 'rgba(255,255,255,0.5)', lineHeight: 1.4,
         }}>
-          Every beta tester gets a <span style={{ color: C.sunsetLight, fontWeight: 700 }}>free cookie from Blackbird Cafe</span> - claim it on site.
+          Every beta tester gets a <span style={{ color: C.sunsetLight, fontWeight: 700 }}>free cookie from Blackbird Cafe</span> - claim it on site. First 20 people only, expires May 31.
         </span>
       </div>
 

@@ -548,6 +548,9 @@ function SubscribeModal({ alreadySubscribed, onClose }) {
               <p style={{ color: C.textLight, fontSize: 14, lineHeight: 1.6, margin: '0 0 16px' }}>
                 Step 2: Show this secret code at <strong>Blackbird Cafe</strong> this weekend for a welcome cookie on us.
               </p>
+              <p style={{ color: C.textMuted, fontSize: 11, lineHeight: 1.4, margin: '0 0 16px' }}>
+                First 20 people only. Expires May 31.
+              </p>
               <div style={{
                 fontFamily: "'Courier New', monospace", fontSize: 22, fontWeight: 700,
                 letterSpacing: 4, color: C.sunset, background: '#fff', padding: '12px 24px',
@@ -706,6 +709,7 @@ export function NewsletterInline() {
             <span style={{ textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, fontSize: 9 }}>Sponsored by </span>
             <span style={{ fontWeight: 600, color: C.text }}>{DISPATCH_CARD_SPONSORS[0].name}</span>
             {DISPATCH_CARD_SPONSORS[0].offerText && <span> · {DISPATCH_CARD_SPONSORS[0].offerText}</span>}
+            {DISPATCH_CARD_SPONSORS[0].smallPrint && <div style={{ fontSize: 10, color: C.textMuted, marginTop: 2 }}>{DISPATCH_CARD_SPONSORS[0].smallPrint}</div>}
           </div>
         </div>
       )}
