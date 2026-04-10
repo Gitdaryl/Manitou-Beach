@@ -106,7 +106,6 @@ export default async function handler(req, res) {
             'Address': { rich_text: [{ text: { content: address || '' } }] },
             ...(normalizedLogoUrl && { 'Logo URL': { url: normalizedLogoUrl } }),
             ...(tier && { 'Requested Tier': { select: { name: tier } } }),
-            ...(duration && { 'Requested Duration': { number: parseInt(duration, 10) } }),
             ...((newsletter === true || newsletter === 'true') && { 'Newsletter': { checkbox: true } }),
           },
         }),

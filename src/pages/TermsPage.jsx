@@ -57,9 +57,16 @@ export default function TermsPage() {
         <p style={S.p}>Editorial content, design, and original photography on this Site are owned by Yeti Groove Media LLC. By submitting a logo or photo, you grant us a non-exclusive license to display it on the Site in connection with your listing.</p>
         <p style={S.p}>To report a copyright claim, contact <a href="mailto:admin@yetigroove.com" style={{ color: C.sage }}>admin@yetigroove.com</a> with "DMCA" in the subject line.</p>
 
+        <h2 style={S.h2}>Advertising, promotions &amp; third-party offers</h2>
+        <p style={S.p}>Businesses and event organizers may purchase advertising placements, promotional features, or sponsored content on the Site. These placements display information, offers, and promotions as provided by the advertiser.</p>
+        <p style={S.p}><strong>Advertiser responsibility:</strong> Each advertiser is solely responsible for the accuracy of their submitted content and for honoring any offers, discounts, giveaways, or promotions they choose to run. This includes, but is not limited to, free items, coupons, limited-time deals, and any conditional offers tied to purchases.</p>
+        <p style={S.p}><strong>No platform liability:</strong> Yeti Groove Media LLC does not guarantee, endorse, or assume any responsibility for third-party offers displayed on the Site. We do not control inventory, availability, pricing, or fulfillment of advertiser promotions. Any disputes regarding a promotion are strictly between the advertising business and the customer.</p>
+        <p style={S.p}><strong>Offer terms:</strong> Advertisers are required to clearly define the terms of any promotion they run, including quantity limits, expiration dates, and qualifying conditions. The platform reserves the right to require that offer limitations be stated in all promotional materials.</p>
+        <p style={S.p}><strong>Removal:</strong> We reserve the right to remove or modify any advertising content at our sole discretion, including promotions we believe to be misleading, unfulfillable, or harmful to the community.</p>
+
         <h2 style={S.h2}>Disclaimer &amp; limitation of liability</h2>
-        <p style={S.p}>The Site is provided "as is." We make no warranties about the accuracy, completeness, or reliability of directory listings. Business information is submitted by third parties - always verify directly with a business before visiting or transacting.</p>
-        <p style={S.p}>To the fullest extent permitted by law, Yeti Groove Media LLC is not liable for any indirect, incidental, or consequential damages arising from your use of the Site.</p>
+        <p style={S.p}>The Site is provided "as is." We make no warranties about the accuracy, completeness, or reliability of directory listings or advertiser promotions. Business information and promotional offers are submitted by third parties - always verify directly with a business before visiting or transacting.</p>
+        <p style={S.p}>To the fullest extent permitted by law, Yeti Groove Media LLC is not liable for any indirect, incidental, or consequential damages arising from your use of the Site, including but not limited to losses arising from reliance on advertiser promotions or offers.</p>
 
         <h2 style={S.h2}>Governing law</h2>
         <p style={S.p}>These Terms are governed by the laws of the State of Michigan. Any disputes shall be resolved in the courts of Lenawee County, Michigan.</p>

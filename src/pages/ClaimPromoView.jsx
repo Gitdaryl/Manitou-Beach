@@ -122,8 +122,11 @@ export default function ClaimPromoView() {
           <div style={{ fontFamily: "'Courier New', monospace", fontSize: 26, fontWeight: 700, letterSpacing: 4, color: C.dusk, marginBottom: 8 }}>
             {code}
           </div>
-          <div style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 28 }}>
+          <div style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 6 }}>
             One use only · tied to your email
+          </div>
+          <div style={{ fontSize: 11, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 28 }}>
+            First 20 people only. Expires May 31.
           </div>
 
           <div style={{ padding: "12px 16px", background: `${C.sage}15`, border: `1px solid ${C.sage}30`, borderRadius: 10, fontSize: 13, color: C.textLight, lineHeight: 1.5 }}>
@@ -177,6 +180,9 @@ export default function ClaimPromoView() {
 
         <p style={{ fontSize: 12, color: C.textMuted, marginTop: 20, lineHeight: 1.5, fontFamily: "'Libre Franklin', sans-serif" }}>
           One code per email address · Valid at Blackbird Cafe & Baking Company, Manitou Beach
+        </p>
+        <p style={{ fontSize: 11, color: C.textMuted, marginTop: 8, lineHeight: 1.4, fontFamily: "'Libre Franklin', sans-serif" }}>
+          First 20 people only. Expires May 31.
         </p>
       </div>
     </div>

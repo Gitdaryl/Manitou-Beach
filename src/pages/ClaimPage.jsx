@@ -167,6 +167,9 @@ export default function ClaimPage() {
               <p style={{ textAlign: 'center', fontSize: 11, color: C.textMuted, marginTop: 12, lineHeight: 1.5 }}>
                 One per person · Manitou Dispatch subscribers only
               </p>
+              <p style={{ textAlign: 'center', fontSize: 11, color: C.textMuted, marginTop: 6, lineHeight: 1.4 }}>
+                First 20 people only. Expires May 31.
+              </p>
             </div>
           </div>
         )}
@@ -183,6 +186,7 @@ export default function ClaimPage() {
               <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.45)', marginBottom: 8 }}>Claim Code</div>
               <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 36, color: '#fff', letterSpacing: '0.1em', fontWeight: 700 }}>{claimCode}</div>
               <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginTop: 8 }}>{biz.offerText} · one use</div>
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 4 }}>First 20 people only. Expires May 31.</div>
             </div>
             <div style={{ margin: '0 auto 20px', padding: '16px 20px', background: '#fdf9f3', border: `1px solid ${C.sand}`, borderRadius: 12, display: 'inline-block' }}>
               <QRCode value={window.location.href} size={160} />

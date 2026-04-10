@@ -107,7 +107,7 @@ function BetaFullMessage() {
         Beta access is full - every last one, gone like hot cookies at Blackbird.
       </p>
       <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.35)', lineHeight: 1.7, margin: '0 0 24px 0' }}>
-        But the gates open to everyone on April 10 at noon.<br />
+        But the gates open to everyone on May 1 at noon.<br />
         See you on the lake.
       </p>
     </div>
@@ -190,7 +190,7 @@ function SitePreviewPeek() {
         margin: '0 0 10px',
         textAlign: 'center',
       }}>
-        What you'll find on April 10
+        What you'll find on May 1
       </p>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center' }}>
         {items.map(({ icon, label }) => (
@@ -223,7 +223,7 @@ function SitePreviewPeek() {
 function WhatsNextTimeline({ isBusiness }) {
   const steps = [
     { dot: C.sage,      text: 'Your spot is locked in. Screenshot your code.' },
-    { dot: C.lakeBlue,  text: isBusiness ? 'Check your email - activate your free listing.' : 'April 10 at noon - the gates open.' },
+    { dot: C.lakeBlue,  text: isBusiness ? 'Check your email - activate your free listing.' : 'May 1 at noon - the gates open.' },
     { dot: C.sunsetLight, text: isBusiness ? 'Your listing goes live to thousands of visitors.' : 'Redeem your free cookie at Blackbird Cafe.' },
   ];
   return (
@@ -270,7 +270,7 @@ function WhatsNextTimeline({ isBusiness }) {
 
 // ── ShareButtons ──────────────────────────────────────────────────────────────
 function ShareButtons() {
-  const calUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('Manitou Beach Launches!')}&dates=20260410T160000Z/20260410T170000Z&details=${encodeURIComponent('My beta access opens! manitoubeachmichigan.com')}&location=${encodeURIComponent('manitoubeachmichigan.com')}`;
+  const calUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('Manitou Beach Launches!')}&dates=20260501T160000Z/20260501T170000Z&details=${encodeURIComponent('The site goes live! manitoubeachmichigan.com')}&location=${encodeURIComponent('manitoubeachmichigan.com')}`;
   const fbUrl  = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(SITE_URL)}`;
   const smsUrl = `sms:?&body=${encodeURIComponent('I just got early beta access to the new Manitou Beach community platform - pretty cool! Only a few spots left if you want one: ' + SITE_URL)}`;
 
@@ -306,7 +306,7 @@ function ShareButtons() {
           color: 'rgba(255,255,255,0.7)',
           border: '1px solid rgba(255,255,255,0.15)',
         }}>
-          📅 Add April 10 to Calendar
+          📅 Add May 1 to Calendar
         </a>
         <a href={fbUrl} target="_blank" rel="noopener noreferrer" style={{
           ...btnBase,
@@ -340,7 +340,7 @@ function SignupForm({ remaining, onSpotsUpdate }) {
 
   const validate = () => {
     if (!form.name.trim()) { setError('Your name is required.'); return false; }
-    if (form.phone.replace(/\D/g, '').length !== 10) { setError('Enter a valid 10-digit phone number.'); return false; }
+    if (![10, 11].includes(form.phone.replace(/\D/g, '').length)) { setError('Enter a valid 10-digit phone number.'); return false; }
     const e = form.email.trim().toLowerCase();
     if (!e || !e.includes('@')) { setError('A valid email address is required.'); return false; }
     return true;
@@ -488,7 +488,7 @@ function SignupForm({ remaining, onSpotsUpdate }) {
             <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.55)', margin: '0 0 6px', lineHeight: 1.5 }}>
               <span style={{ fontSize: 16 }}>🎁</span>{' '}
               <span style={{ color: C.sunsetLight, fontWeight: 700 }}>Free cookie from Blackbird Cafe</span>
-              {' '}- claim it on the site when it opens April 10.
+              {' '}- claim it on the site when it opens May 1.
             </p>
             <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: 'rgba(255,255,255,0.3)', margin: 0 }}>
               Your welcome gift from the Manitou Beach community.

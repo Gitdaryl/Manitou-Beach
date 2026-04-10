@@ -302,6 +302,7 @@ export function GlobalStyles() {
       @media (max-width: 640px) {
         .mobile-col-1 { grid-template-columns: 1fr !important; }
         .event-form-grid { grid-template-columns: 1fr !important; }
+        .offer-form-grid { grid-template-columns: 1fr !important; }
         .holly-grid { grid-template-columns: 1fr !important; }
         .weekly-event-row {
           grid-template-columns: 1fr !important;
@@ -611,11 +612,12 @@ export function NewsletterInline() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed');
       // Fire-and-forget SMS opt-in if phone provided
-      if (wantSMS && phone.replace(/\D/g, '').length === 10) {
+      const phoneDigits = phone.replace(/\D/g, '').slice(-10);
+      if (wantSMS && phoneDigits.length === 10) {
         fetch('/api/sms-optin', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ phone: phone.replace(/\D/g, ''), type: 'welcome', source: 'newsletter-inline' }),
+          body: JSON.stringify({ phone: phoneDigits, type: 'welcome', source: 'newsletter-inline' }),
         }).catch(() => {});
       }
       setAlreadySubscribed(data.alreadySubscribed);
@@ -1062,7 +1064,7 @@ export function SubmitSection() {
   const [logoFile, setLogoFile] = useState(null);
   const [logoPreview, setLogoPreview] = useState(null);
   const [isLogoDragging, setIsLogoDragging] = useState(false);
-  const [form, setForm] = useState({ name: "", category: "", phone: "", address: "", website: "", email: "", description: "", logoUrl: "", newsletter: true, _hp: "" });
+  const [form, setForm] = useState({ name: "", category: "", phone: "", address: "", website: "", email: "", description: "", logoUrl: "", newsletter: true, tier: "Free", duration: "1", _hp: "" });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -1099,6 +1101,12 @@ export function SubmitSection() {
     }
   };
 
+  const formatPhone = (raw) => {
+    const d = raw.replace(/\D/g, '').slice(-10);
+    if (d.length === 10) return `(${d.slice(0,3)}) ${d.slice(3,6)}-${d.slice(6)}`;
+    return raw;
+  };
+
   const input = (field, placeholder, type = "text", required = false) => (
     <input
       type={type}
@@ -1123,7 +1131,10 @@ export function SubmitSection() {
         transition: "border-color 0.2s",
       }}
       onFocus={e => e.target.style.borderColor = C.sage}
-      onBlur={e => e.target.style.borderColor = C.sand}
+      onBlur={e => {
+        e.target.style.borderColor = C.sand;
+        if (field === 'phone' && form.phone) setForm(f => ({ ...f, phone: formatPhone(f.phone) }));
+      }}
     />
   );
 
@@ -1394,7 +1405,7 @@ export function SubmitSection() {
                         ))}
                       </select>
                       <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, marginTop: 6, paddingLeft: 2 }}>
-                        Total: ${({ Free: 0, Enhanced: 9, Featured: 25, Premium: 49 }[form.tier] * parseInt(form.duration)).toLocaleString()} · We'll confirm and invoice before going live
+                        Total: ${(({ Free: 0, Enhanced: 9, Featured: 25, Premium: 49 }[form.tier] || 0) * (parseInt(form.duration) || 1)).toLocaleString()} · We'll confirm and invoice before going live
                       </div>
                     </div>
                   )}
@@ -1544,11 +1555,12 @@ export function FooterNewsletterModal({ onClose }) {
       const res = await fetch("/api/subscribe", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed");
-      if (wantSMS && phone.replace(/\D/g, '').length === 10) {
+      const smsDigits = phone.replace(/\D/g, '').slice(-10);
+      if (wantSMS && smsDigits.length === 10) {
         fetch('/api/sms-optin', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ phone: phone.replace(/\D/g, ''), type: 'welcome', source: 'newsletter-footer-modal' }),
+          body: JSON.stringify({ phone: smsDigits, type: 'welcome', source: 'newsletter-footer-modal' }),
         }).catch(() => {});
       }
       setDone(true);
