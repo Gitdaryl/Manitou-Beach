@@ -8,6 +8,19 @@ function generateCode() {
   return String(Math.floor(100000 + Math.random() * 900000));
 }
 
+async function geocode(address) {
+  if (!address?.trim()) return null;
+  try {
+    const q = encodeURIComponent(address.trim() + ', Michigan');
+    const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1`, {
+      headers: { 'User-Agent': 'ManitouBeachStays/1.0' },
+    });
+    const data = await res.json();
+    if (data?.[0]) return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+  } catch { /* silent - coordinates are optional */ }
+  return null;
+}
+
 function normalizeUrl(url) {
   if (!url || !url.trim()) return url;
   const u = url.trim();
@@ -75,6 +88,12 @@ export default async function handler(req, res) {
 
   if (amenities && Array.isArray(amenities) && amenities.length > 0) {
     properties['Amenities'] = { multi_select: amenities.map(a => ({ name: a.trim() })) };
+  }
+
+  const coords = await geocode(address);
+  if (coords) {
+    properties['Lat'] = { number: coords.lat };
+    properties['Lng'] = { number: coords.lng };
   }
 
   try {

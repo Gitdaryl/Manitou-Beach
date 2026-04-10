@@ -316,6 +316,7 @@ function StaysMapView({ stays, filter }) {
   const [mapReady, setMapReady] = useState(false);
   const [mapError, setMapError] = useState(null);
   const [activeStay, setActiveStay] = useState(null);
+  const [visibleIds, setVisibleIds] = useState(null); // null = show all (before map loads)
   const mapDivRef = useRef(null);
   const mapObjRef = useRef(null);
   const googleRef = useRef(null);
@@ -346,6 +347,15 @@ function StaysMapView({ stays, filter }) {
           styles: DISCOVER_MAP_STYLES,
         });
         infoWindowRef.current = new google.maps.InfoWindow();
+        mapObjRef.current.addListener('idle', () => {
+          const bounds = mapObjRef.current.getBounds();
+          if (!bounds) return;
+          const ids = new Set();
+          Object.entries(markersRef.current).forEach(([id, m]) => {
+            if (bounds.contains(m.getPosition())) ids.add(id);
+          });
+          setVisibleIds(ids);
+        });
         setMapReady(true);
       }).catch(() => { if (active) setMapError('Map failed to load.'); });
     }).catch(() => { if (active) setMapError('Map loader error.'); });
@@ -362,16 +372,19 @@ function StaysMapView({ stays, filter }) {
     mapStays.forEach(stay => {
       const color = TYPE_COLORS[stay.stayType] || C.lakeBlue;
       const isFeatured = stay.tier === 'featured';
+      const pinPath = 'M12 0C5.4 0 0 5.4 0 12c0 9 12 24 12 24s12-15 12-24C24 5.4 18.6 0 12 0zm0 16.2c-2.3 0-4.2-1.9-4.2-4.2S9.7 7.8 12 7.8s4.2 1.9 4.2 4.2-1.9 4.2-4.2 4.2z';
       const marker = new googleRef.current.maps.Marker({
         position: { lat: stay.lat, lng: stay.lng },
         map: mapObjRef.current,
         title: stay.name,
         icon: {
-          path: googleRef.current.maps.SymbolPath.CIRCLE,
-          fillColor: color, fillOpacity: 1,
-          strokeColor: isFeatured ? C.sunset : '#fff',
-          strokeWeight: isFeatured ? 3 : 2,
-          scale: isFeatured ? 11 : 8,
+          path: pinPath,
+          fillColor: isFeatured ? C.sunset : '#D93025',
+          fillOpacity: 1,
+          strokeColor: '#fff',
+          strokeWeight: 1.5,
+          scale: isFeatured ? 1.6 : 1.3,
+          anchor: new googleRef.current.maps.Point(12, 36),
         },
         zIndex: isFeatured ? 10 : 1,
       });
@@ -443,13 +456,16 @@ function StaysMapView({ stays, filter }) {
     if (!marker || !googleRef.current) return;
     const stay = stays.find(s => s.id === stayId);
     const color = TYPE_COLORS[stay?.stayType] || C.lakeBlue;
+    const pinPath = 'M12 0C5.4 0 0 5.4 0 12c0 9 12 24 12 24s12-15 12-24C24 5.4 18.6 0 12 0zm0 16.2c-2.3 0-4.2-1.9-4.2-4.2S9.7 7.8 12 7.8s4.2 1.9 4.2 4.2-1.9 4.2-4.2 4.2z';
+    const isFeatured = stay?.tier === 'featured';
     marker.setIcon({
-      path: googleRef.current.maps.SymbolPath.CIRCLE,
-      fillColor: hovering ? C.sunset : color,
+      path: pinPath,
+      fillColor: hovering ? C.sunset : (isFeatured ? C.sunset : '#D93025'),
       fillOpacity: 1,
-      strokeColor: hovering ? '#fff' : (stay?.tier === 'featured' ? C.sunset : '#fff'),
-      strokeWeight: hovering ? 3 : (stay?.tier === 'featured' ? 3 : 2),
-      scale: hovering ? 13 : (stay?.tier === 'featured' ? 11 : 8),
+      strokeColor: '#fff',
+      strokeWeight: hovering ? 2.5 : 1.5,
+      scale: hovering ? 1.8 : (isFeatured ? 1.6 : 1.3),
+      anchor: new googleRef.current.maps.Point(12, 36),
     });
     if (hovering) marker.setZIndex(100);
     else marker.setZIndex(stay?.tier === 'featured' ? 10 : 1);
@@ -482,11 +498,14 @@ function StaysMapView({ stays, filter }) {
           color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif",
           marginBottom: 14, paddingLeft: 4,
         }}>
-          {filtered.length} {filtered.length === 1 ? 'property' : 'properties'}{filter !== 'All' ? ` · ${filter}` : ''}
+          {(() => {
+            const cardStays = visibleIds ? filtered.filter(s => visibleIds.has(s.id) || !(s.lat && s.lng)) : filtered;
+            return cardStays.length;
+          })()} {filter !== 'All' ? `· ${filter} ` : ''}{visibleIds ? 'in this area' : (filtered.length === 1 ? 'property' : 'properties')}
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-          {filtered.map(stay => {
+          {(visibleIds ? filtered.filter(s => visibleIds.has(s.id) || !(s.lat && s.lng)) : filtered).map(stay => {
             const accent = TYPE_COLORS[stay.stayType] || C.lakeBlue;
             const isFeatured = stay.tier === 'featured';
             const isActive = activeStay === stay.id;
