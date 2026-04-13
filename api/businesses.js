@@ -259,11 +259,16 @@ export default async function handler(req, res) {
     const queryBody = {
       ...(req.query.all !== 'true' && {
         filter: {
-          or: [
-            { property: 'Status', status: { equals: 'Listed Free' } },
-            { property: 'Status', status: { equals: 'Listed Enhanced' } },
-            { property: 'Status', status: { equals: 'Listed Featured' } },
-            { property: 'Status', status: { equals: 'Listed Premium' } },
+          and: [
+            {
+              or: [
+                { property: 'Status', status: { equals: 'Listed Free' } },
+                { property: 'Status', status: { equals: 'Listed Enhanced' } },
+                { property: 'Status', status: { equals: 'Listed Featured' } },
+                { property: 'Status', status: { equals: 'Listed Premium' } },
+              ],
+            },
+            { property: 'Category', select: { does_not_equal: 'Stays & Rentals' } },
           ],
         },
       }),

@@ -318,7 +318,7 @@ function FoodTruckRedirect({ onBack }) {
   );
 }
 
-function StaysRedirect({ onBack }) {
+function StaysRedirect({ onBack, name = '', email = '' }) {
   const [show, setShow] = useState(false);
   useEffect(() => { const t = setTimeout(() => setShow(true), 80); return () => clearTimeout(t); }, []);
 
@@ -381,7 +381,7 @@ function StaysRedirect({ onBack }) {
           </div>
         </div>
         <a
-          href="/stays"
+          href={`/stays#list-property${name || email ? '?' + new URLSearchParams({ ...(name && { name }), ...(email && { email }) }).toString() : ''}`}
           style={{
             display: 'inline-block', marginTop: 28, padding: '15px 36px',
             background: C.lakeBlue, color: C.cream, borderRadius: 28,
@@ -499,7 +499,7 @@ function CheckoutForm({ tier, onBack, onSuccess }) {
   }
 
   if (showStaysRedirect) {
-    return <StaysRedirect onBack={() => { setShowStaysRedirect(false); set('category', ''); }} />;
+    return <StaysRedirect name={form.businessName} email={form.email} onBack={() => { setShowStaysRedirect(false); set('category', ''); }} />;
   }
 
   return (

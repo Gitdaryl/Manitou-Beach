@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivider, PageSponsorBanner, DiagonalDivider, Btn } from '../components/Shared';
 import { Footer, GlobalStyles, Navbar, NewsletterInline, PromoBanner } from '../components/Layout';
-import { C, VILLAGE_BUSINESSES, CAT_COLORS } from '../data/config';
+import { C, CAT_COLORS } from '../data/config';
 import formatPhone from '../utils/formatPhone';
 import SMSOptInWidget from '../components/SMSOptInWidget';
 
@@ -54,6 +54,16 @@ function VillageHero() {
 }
 
 function VillageMapSection() {
+  const [businesses, setBusinesses] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/village-businesses')
+      .then(r => r.ok ? r.json() : Promise.reject(r.status))
+      .then(data => { setBusinesses(data); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, []);
+
   return (
     <section style={{ background: C.night, padding: "80px 24px" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
@@ -65,9 +75,15 @@ function VillageMapSection() {
           </p>
         </FadeIn>
 
+        {loading && (
+          <div style={{ textAlign: "center", padding: "40px 0", color: "rgba(255,255,255,0.3)", fontSize: 14 }}>
+            Loading village businesses...
+          </div>
+        )}
+
         {/* Village business cards - staggered layout */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 20 }}>
-          {VILLAGE_BUSINESSES.map((biz, i) => {
+          {businesses.map((biz, i) => {
             const color = CAT_COLORS[biz.category] || C.sage;
             return (
               <FadeIn key={biz.id} delay={i * 80} direction={i % 2 === 0 ? "left" : "right"}>
