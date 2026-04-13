@@ -1,6 +1,7 @@
 import React, {  } from 'react';
 import { C } from '../data/config';
 import { Footer, Navbar } from '../components/Layout';
+import SEOHead from '../components/SEOHead';
 
 // ============================================================
 export default function TermsPage() {
@@ -12,6 +13,7 @@ export default function TermsPage() {
   };
   return (
     <div style={{ background: C.cream, minHeight: '100vh' }}>
+      <SEOHead title="Terms of Service" description="Terms of service for Manitou Beach Michigan community platform." path="/terms" />
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
       <div style={{ maxWidth: 760, margin: '0 auto', padding: '120px 28px 80px' }}>
         <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 4, textTransform: 'uppercase', color: C.sage, marginBottom: 12 }}>Legal</div>

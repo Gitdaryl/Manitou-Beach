@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /yeti-admin
+Disallow: /claim-promo
+Disallow: /redeem-promo
+Disallow: /build
+Disallow: /quick-events
+Disallow: /organizer-dashboard
+
+Sitemap: https://manitoubeachmichigan.com/sitemap.xml

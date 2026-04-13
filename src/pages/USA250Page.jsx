@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Footer, GlobalStyles, Navbar, NewsletterInline } from "../components/Layout";
 import { FadeIn, SectionLabel, SectionTitle, ScrollProgress, WaveDivider, DiagonalDivider, ShareBar, CommunityDonationForm } from "../components/Shared";
 import { C, USA250_VIDEO_URL } from "../data/config";
+import SEOHead from '../components/SEOHead';
 
 // ============================================================
 // 🎆  DEVILS & ROUND LAKE FIREWORKS PAGE (/fireworks)
@@ -897,6 +898,15 @@ export default function USA250Page() {
 
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+      <SEOHead
+        title="July 4th Fireworks"
+        description="Devils Lake fireworks and Fourth of July celebrations at Manitou Beach, Michigan. The biggest show in the Irish Hills."
+        path="/fireworks"
+        breadcrumbs={[
+          { name: 'Home', path: '/' },
+          { name: 'Fireworks', path: '/fireworks' },
+        ]}
+      />
       <GlobalStyles />
       <ScrollProgress />
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />

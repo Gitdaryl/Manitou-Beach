@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivider, PageSponsorBanner, DiagonalDivider, Btn } from '../components/Shared';
 import { Footer, GlobalStyles, Navbar, NewsletterInline, PromoBanner } from '../components/Layout';
 import { C } from '../data/config';
+import SEOHead from '../components/SEOHead';
 
 // ============================================================
 // 🌊  ROUND LAKE PAGE
@@ -335,6 +336,15 @@ export default function RoundLakePage() {
 
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+<SEOHead
+        title="Round Lake"
+        description="Round Lake, Michigan - a quiet, spring-fed gem near Devils Lake. Swimming, kayaking, and nature in the Irish Hills."
+        path="/round-lake"
+        breadcrumbs={[
+          { name: 'Home', path: '/' },
+          { name: 'Round Lake', path: '/round-lake' },
+        ]}
+      />
 <GlobalStyles />
       <ScrollProgress />
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />

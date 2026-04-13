@@ -3,6 +3,7 @@ import { FadeIn, SectionTitle, SectionLabel, Btn, ShareBar, WaveDivider, PageSpo
 import { C, PAGE_SPONSORS, VIDEOS } from '../data/config';
 import { Footer, GlobalStyles, PromoBanner, EventLightbox, EventTimeline, Navbar, compressImage } from '../components/Layout';
 import SMSOptInWidget from '../components/SMSOptInWidget';
+import SEOHead, { buildEventSchema } from '../components/SEOHead';
 
 const ATTENDANCE_LABELS = {
   just_show_up: "Just Show Up",
@@ -861,7 +862,7 @@ export function HappeningSubmitCTA({ simple = false }) {
     return (
       <section id="submit-event" style={{ background: C.night, padding: "72px 24px", textAlign: "center" }}>
         <FadeIn>
-          <img src="/images/yeti/yeti-clapper.png" alt="Yeti with clapperboard" style={{ width: 'clamp(120px, 22vw, 200px)', height: 'auto', marginBottom: 20, filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.3))' }} />
+          <img src="/images/yeti/yeti-clapper.png" alt="Yeti with clapperboard" width="200" height="200" loading="lazy" style={{ width: 'clamp(120px, 22vw, 200px)', height: 'auto', marginBottom: 20, filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.3))' }} />
           <SectionLabel light>Get Involved</SectionLabel>
           <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 38px)", fontWeight: 400, color: C.cream, margin: "0 0 12px 0" }}>
             Got something good happening?
@@ -879,7 +880,7 @@ export function HappeningSubmitCTA({ simple = false }) {
     <section id="submit-event" style={{ background: C.night, padding: "80px 24px" }}>
       <div style={{ maxWidth: 680, margin: "0 auto", textAlign: "center" }}>
         <FadeIn>
-          <img src="/images/yeti/yeti-clapper.png" alt="Yeti with clapperboard" style={{ width: 'clamp(140px, 25vw, 220px)', height: 'auto', marginBottom: 20, filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.3))' }} />
+          <img src="/images/yeti/yeti-clapper.png" alt="Yeti with clapperboard" width="220" height="220" loading="lazy" style={{ width: 'clamp(140px, 25vw, 220px)', height: 'auto', marginBottom: 20, filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.3))' }} />
           <SectionLabel light>Get Involved</SectionLabel>
           <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 40px)", fontWeight: 400, color: C.cream, margin: "0 0 16px 0" }}>
             Got something good happening?
@@ -1008,8 +1009,24 @@ export default function HappeningPage() {
       .catch(() => {});
   }, []);
 
+  // Build Event schema for all upcoming events (Google rich results)
+  const eventSchemas = useMemo(() =>
+    upcomingEvents.slice(0, 50).map(buildEventSchema).filter(Boolean),
+    [upcomingEvents]
+  );
+
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+<SEOHead
+        title="Events & Live Music"
+        description="Live music, festivals, and community events at Devils Lake in Michigan's Irish Hills. See what's happening this week in Manitou Beach."
+        path="/events"
+        schema={eventSchemas}
+        breadcrumbs={[
+          { name: 'Home', path: '/' },
+          { name: 'Events', path: '/events' },
+        ]}
+      />
 <GlobalStyles />
       <ScrollProgress />
       <Navbar activeSection="happening" scrollTo={subScrollTo} isSubPage={true} />

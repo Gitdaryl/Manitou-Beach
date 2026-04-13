@@ -13,6 +13,7 @@ function useIsMobile() {
 }
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivider, PageSponsorBanner, DiagonalDivider, Btn } from '../components/Shared';
 import { Footer, GlobalStyles, Navbar, NewsletterInline, PromoBanner } from '../components/Layout';
+import SEOHead from '../components/SEOHead';
 import SMSOptInWidget from '../components/SMSOptInWidget';
 import { C } from '../data/config';
 import { DISCOVER_MAP_STYLES, createDiscoverPin } from '../data/discover';
@@ -1609,6 +1610,15 @@ export default function WineriesPage() {
   const subScrollTo = (id) => { window.location.href = "/#" + id; };
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+<SEOHead
+        title="Wineries & Breweries"
+        description="Irish Hills wine trail, wineries, and breweries near Devils Lake, Michigan. Tastings, live music, and weekend events at Manitou Beach."
+        path="/wineries"
+        breadcrumbs={[
+          { name: 'Home', path: '/' },
+          { name: 'Wineries', path: '/wineries' },
+        ]}
+      />
 <GlobalStyles />
       <ScrollProgress />
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />

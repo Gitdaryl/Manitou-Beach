@@ -1905,7 +1905,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
         <div style={{ maxWidth: 1180, margin: "0 auto", padding: "0 28px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           {/* Logo */}
           <div style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 10 }} onClick={() => handleNavClick("home")}>
-            <img src="/images/manitou_beach_icon.png" alt="Manitou Beach" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", opacity: solid ? 1 : 0.85, transition: "opacity 0.35s" }} />
+            <img src="/images/manitou_beach_icon.png" alt="Manitou Beach" width="32" height="32" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", opacity: solid ? 1 : 0.85, transition: "opacity 0.35s" }} />
             <div>
               <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 700, color: solid ? C.dusk : C.cream, transition: "color 0.35s" }}>
                 Manitou Beach
@@ -2026,7 +2026,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
               onMouseEnter={e => { e.currentTarget.style.color = solid ? C.dusk : C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
               onMouseLeave={e => { e.currentTarget.style.color = solid ? C.text : "rgba(255,255,255,0.7)"; e.currentTarget.style.background = "transparent"; }}
             >
-              Stays
+              Stays & Rentals
             </button>
 
             {/* Community dropdown */}
@@ -2176,7 +2176,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
           background: "none", border: "none", fontFamily: "'Libre Baskerville', serif",
           fontSize: 24, fontWeight: 400, color: C.text, cursor: "pointer", padding: "12px 32px", letterSpacing: 0.5,
         }}>
-          Stays
+          Stays & Rentals
         </button>
 
         {/* Community sub-links */}
@@ -2374,7 +2374,7 @@ export function EventLightbox({ event, onClose }) {
         >×</button>
 
         {event.imageUrl && (
-          <img src={event.imageUrl} alt={event.name} style={{ display: "block", maxWidth: "100%", maxHeight: 220, width: "auto", margin: "0 auto 20px", objectFit: "contain", borderRadius: 10 }} />
+          <img src={event.imageUrl} alt={event.name} loading="lazy" style={{ display: "block", maxWidth: "100%", maxHeight: 220, width: "auto", margin: "0 auto 20px", objectFit: "contain", borderRadius: 10 }} />
         )}
 
         <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 10, flexWrap: "wrap" }}>

@@ -3,6 +3,7 @@ import { FadeIn, SectionTitle, SectionLabel, Btn, ShareBar, WaveDivider, ScrollP
 import { C } from '../data/config';
 import { Footer, GlobalStyles, Navbar } from '../components/Layout';
 import formatPhone from '../utils/formatPhone';
+import SEOHead from '../components/SEOHead';
 
 // ============================================================
 // 🌙  NIGHTLIFE PAGE
@@ -667,6 +668,15 @@ export default function NightlifePage() {
 
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.night, color: C.cream, overflowX: "hidden" }}>
+      <SEOHead
+        title="Nightlife & Bars"
+        description="Bars, live music, and nightlife near Devils Lake, Michigan. Trivia nights, karaoke, and weekend bands at Manitou Beach."
+        path="/nightlife"
+        breadcrumbs={[
+          { name: 'Home', path: '/' },
+          { name: 'Nightlife', path: '/nightlife' },
+        ]}
+      />
       <GlobalStyles />
       <ScrollProgress />
       <Navbar activeSection="nightlife" scrollTo={subScrollTo} isSubPage={true} />

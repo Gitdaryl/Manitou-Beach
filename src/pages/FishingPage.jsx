@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivider, PageSponsorBanner, Btn } from '../components/Shared';
 import { Footer, GlobalStyles, Navbar, NewsletterInline, PromoBanner } from '../components/Layout';
 import { C } from '../data/config';
+import SEOHead from '../components/SEOHead';
 
 // ============================================================
 // 🎣  FISHING PAGE (/fishing)
@@ -544,6 +545,15 @@ export default function FishingPage() {
   const subScrollTo = (id) => { window.location.href = "/#" + id; };
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+<SEOHead
+        title="Fishing"
+        description="Fishing on Devils Lake and Round Lake, Michigan. Bass, bluegill, pike, walleye - species guide, tips, and regulations for the Irish Hills."
+        path="/fishing"
+        breadcrumbs={[
+          { name: 'Home', path: '/' },
+          { name: 'Fishing', path: '/fishing' },
+        ]}
+      />
 <GlobalStyles />
       <ScrollProgress />
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />

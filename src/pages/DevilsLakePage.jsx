@@ -4,6 +4,7 @@ import { Footer, GlobalStyles, Navbar, NewsletterInline, PromoBanner } from '../
 import { C } from '../data/config';
 import { DEVILS_LAKE_FISH } from './FishingPage';
 import { LakesPreservationBanner } from './RoundLakePage';
+import SEOHead from '../components/SEOHead';
 
 // ============================================================
 // 🏖️  DEVILS LAKE PAGE (/devils-lake)
@@ -278,6 +279,15 @@ export default function DevilsLakePage() {
   const subScrollTo = (id) => { window.location.href = "/#" + id; };
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+<SEOHead
+        title="Devils Lake"
+        description="Devils Lake, Michigan - swimming, boating, fishing, and lake life in the Irish Hills. The heart of Manitou Beach since 1873."
+        path="/devils-lake"
+        breadcrumbs={[
+          { name: 'Home', path: '/' },
+          { name: 'Devils Lake', path: '/devils-lake' },
+        ]}
+      />
 <GlobalStyles />
       <ScrollProgress />
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />

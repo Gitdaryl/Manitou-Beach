@@ -1,0 +1,35 @@
+# Manitou Beach - Devils Lake, Michigan
+
+> Community platform for Manitou Beach and Devils Lake, Michigan in the Irish Hills region.
+
+## What This Site Is
+
+Manitou Beach Michigan is the local community hub for Devils Lake, Michigan. It provides:
+
+- **Events calendar**: Live music, festivals, community events, and weekly happenings around Devils Lake and the Michigan Irish Hills
+- **Business directory**: Local businesses, restaurants, bars, and shops in the Manitou Beach area
+- **Food truck locator**: Find food trucks currently serving near Devils Lake
+- **Winery & brewery guide**: Irish Hills wine trail, tasting rooms, and live music at local wineries
+- **Lakefront stays**: Vacation rentals and lodging on Devils Lake
+- **Community organizations**: Men's Club, Land & Lake Ladies Club, Historical Society
+- **Lake guides**: Devils Lake, Round Lake, fishing, fireworks, and seasonal activities
+- **Local news**: The Manitou Dispatch - community blog and updates
+
+## Location
+
+Manitou Beach is a small lakeside village on Devils Lake in Lenawee County, Michigan, about 75 miles southwest of Detroit in the Irish Hills region. The area is a popular summer destination for lake activities, live music, and wine tasting.
+
+## Key URLs
+
+- Events: /events
+- Business directory: /business
+- Food trucks: /food-trucks
+- Wineries: /wineries
+- Stays: /stays
+- Devils Lake: /devils-lake
+- Community news: /dispatch
+
+## Contact
+
+Website: https://manitoubeachmichigan.com
+Operated by: Yeti Groove Media LLC

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { C } from '../data/config';
 import { GlobalStyles } from '../components/Layout';
 import yeti from '../data/errorMessages';
+import SEOHead from '../components/SEOHead';
 
 const LAUNCH_DATE = new Date('2026-05-01T16:00:00Z');
 const SITE_URL = 'https://manitoubeachmichigan.com';
@@ -768,6 +769,12 @@ export default function LaunchPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: C.night }}>
+      <SEOHead
+        title="Coming Soon"
+        description="Manitou Beach is launching soon - the community platform for Devils Lake, Michigan."
+        path="/launch"
+        noindex
+      />
       <GlobalStyles />
 
       {/* Video background - fixed so it stays put while content scrolls */}

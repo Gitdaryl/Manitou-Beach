@@ -1,6 +1,7 @@
 import { Composition } from "remotion";
 import { EventPromo } from "./templates/EventPromo.jsx";
 import { StaysPromo } from "./templates/StaysPromo.jsx";
+import { GetListedPromo } from "./templates/GetListedPromo.jsx";
 
 export const RemotionRoot = () => {
   return (
@@ -30,6 +31,17 @@ export const RemotionRoot = () => {
         height={1080}
         defaultProps={{
           screenshotSrc: null,
+        }}
+      />
+      <Composition
+        id="GetListedPromo"
+        component={GetListedPromo}
+        durationInFrames={210}
+        fps={30}
+        width={2160}
+        height={3840}
+        defaultProps={{
+          voiceoverSrc: null,
         }}
       />
     </>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, WaveDivider, PageSponsorBanner, Btn } from '../components/Shared';
 import { Footer, GlobalStyles, Navbar, NewsletterInline, PromoBanner } from '../components/Layout';
 import { C } from '../data/config';
+import SEOHead from '../components/SEOHead';
 
 const HOLLY_CORNER_COLOR = '#C06FA0';
 
@@ -331,6 +332,15 @@ function HollysCorner() {
 export default function HollyYetiPage() {
   return (
     <>
+      <SEOHead
+        title="Holly & The Yeti"
+        description="Meet Holly and The Yeti - your hosts for everything Manitou Beach. Videos, stories, and adventures from Devils Lake, Michigan."
+        path="/holly-yeti"
+        breadcrumbs={[
+          { name: 'Home', path: '/' },
+          { name: 'Holly & The Yeti', path: '/holly-yeti' },
+        ]}
+      />
       <GlobalStyles />
       <PromoBanner />
       <Navbar />

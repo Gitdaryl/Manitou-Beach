@@ -6,6 +6,7 @@ import { GlobalStyles, PromoBanner, NewsletterInline, HollyYetiSection, EventLig
 import { DispatchPreviewSection } from './DispatchPage';
 import yeti from '../data/errorMessages';
 import formatPhone from '../utils/formatPhone';
+import SEOHead from '../components/SEOHead';
 
 // ============================================================
 // 🏠  HOME PAGE - EventTicker, Hero, FeaturedEventsStrip,
@@ -1918,6 +1919,51 @@ function HomePage() {
 
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+<SEOHead
+        title="Community Hub"
+        description="Manitou Beach is the heart of Devils Lake, Michigan. Business directory, local events, food trucks, wineries, lake life, and community news in the Irish Hills."
+        path="/"
+        breadcrumbs={[{ name: 'Home', path: '/' }]}
+        schema={[
+          {
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            name: 'Manitou Beach',
+            url: 'https://manitoubeachmichigan.com',
+            description: 'Community platform for Manitou Beach and Devils Lake, Michigan - events, businesses, food trucks, wineries, and lake life in the Irish Hills.',
+            potentialAction: {
+              '@type': 'SearchAction',
+              target: 'https://manitoubeachmichigan.com/?q={search_term_string}',
+              'query-input': 'required name=search_term_string',
+            },
+          },
+          {
+            '@context': 'https://schema.org',
+            '@type': 'LocalBusiness',
+            name: 'Manitou Beach Community Platform',
+            url: 'https://manitoubeachmichigan.com',
+            description: 'Community hub for Devils Lake, Michigan - local events, business directory, food trucks, wineries, and vacation stays in the Irish Hills.',
+            address: {
+              '@type': 'PostalAddress',
+              addressLocality: 'Manitou Beach',
+              addressRegion: 'MI',
+              postalCode: '49253',
+              addressCountry: 'US',
+            },
+            geo: {
+              '@type': 'GeoCoordinates',
+              latitude: 41.9728,
+              longitude: -84.2861,
+            },
+            areaServed: {
+              '@type': 'GeoCircle',
+              geoMidpoint: { '@type': 'GeoCoordinates', latitude: 41.9728, longitude: -84.2861 },
+              geoRadius: '25000',
+            },
+            sameAs: [],
+          },
+        ]}
+      />
 <GlobalStyles />
       <ScrollProgress />
       <Navbar activeSection={activeSection} scrollTo={scrollTo} />

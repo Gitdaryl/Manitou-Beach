@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Btn, ScrollProgress, SectionLabel, SectionTitle, WaveDivider } from '../components/Shared';
 import { C } from '../data/config';
 import { Footer, Navbar, GlobalStyles, NewsletterInline, HollyYetiSection, ContactModal } from '../components/Layout';
+import SEOHead from '../components/SEOHead';
 import yeti from '../data/errorMessages';
 
 const PROMO_PAGES = ["Home", "Events", "Village", "Devils Lake", "Wineries", "Fishing", "Round Lake"];
@@ -149,6 +150,15 @@ export function AdvertisePage() {
 
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+<SEOHead
+        title="Advertise"
+        description="Advertise your business to the Manitou Beach and Devils Lake, Michigan community. Newsletter mentions, banner ads, and page sponsorships."
+        path="/advertise"
+        breadcrumbs={[
+          { name: 'Home', path: '/' },
+          { name: 'Advertise', path: '/advertise' },
+        ]}
+      />
 <GlobalStyles />
       {showContact && <ContactModal onClose={() => setShowContact(false)} defaultCategory="Sponsorship Inquiry" />}
       <ScrollProgress />
@@ -495,6 +505,15 @@ export default function PromotePage() {
 
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+<SEOHead
+        title="Promote Your Event"
+        description="Promote your event or business to the Manitou Beach and Devils Lake, Michigan community. Newsletter features, homepage banners, and more."
+        path="/promote"
+        breadcrumbs={[
+          { name: 'Home', path: '/' },
+          { name: 'Promote', path: '/promote' },
+        ]}
+      />
 <GlobalStyles />
       <ScrollProgress />
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />

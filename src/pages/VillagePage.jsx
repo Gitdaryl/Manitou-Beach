@@ -4,6 +4,7 @@ import { Footer, GlobalStyles, Navbar, NewsletterInline, PromoBanner } from '../
 import { C, CAT_COLORS } from '../data/config';
 import formatPhone from '../utils/formatPhone';
 import SMSOptInWidget from '../components/SMSOptInWidget';
+import SEOHead from '../components/SEOHead';
 
 // ============================================================
 // 🏘️  MANITOU BEACH VILLAGE PAGE
@@ -229,6 +230,15 @@ export default function VillagePage() {
 
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+<SEOHead
+        title="The Village"
+        description="Manitou Beach village guide - restaurants, shops, bars, and things to do in the village on Devils Lake, Michigan."
+        path="/village"
+        breadcrumbs={[
+          { name: 'Home', path: '/' },
+          { name: 'The Village', path: '/village' },
+        ]}
+      />
 <GlobalStyles />
       <ScrollProgress />
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />

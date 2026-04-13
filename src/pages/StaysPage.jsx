@@ -4,6 +4,7 @@ import { Footer, GlobalStyles, Navbar, NewsletterInline, PromoBanner } from '../
 import { C } from '../data/config';
 import { DISCOVER_MAP_STYLES } from '../data/discover';
 import yeti from '../data/errorMessages';
+import SEOHead from '../components/SEOHead';
 
 const STAY_TYPES = ['All', 'Cottage', 'Airbnb', 'Tiny Home', 'Camping', 'Glamping', 'Inn/B&B', 'Hotel', 'Spare Room'];
 
@@ -1954,6 +1955,15 @@ export default function StaysPage() {
 
   return (
     <div style={{ overflowX: 'hidden' }}>
+      <SEOHead
+        title="Lakefront Stays & Vacation Rentals"
+        description="Book lakefront stays on Devils Lake, Michigan. Cottages, Airbnbs, tiny homes, camping, and lodging in the heart of the Irish Hills."
+        path="/stays"
+        breadcrumbs={[
+          { name: 'Home', path: '/' },
+          { name: 'Stays', path: '/stays' },
+        ]}
+      />
       <GlobalStyles />
       <style>{`
         @media (max-width: 600px) {

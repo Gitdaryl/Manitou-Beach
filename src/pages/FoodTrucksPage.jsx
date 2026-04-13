@@ -5,6 +5,7 @@ import { Footer, GlobalStyles, Navbar, NewsletterInline } from '../components/La
 import yeti from '../data/errorMessages';
 import formatPhone from '../utils/formatPhone';
 import { celebrate } from '../data/celebrate';
+import SEOHead from '../components/SEOHead';
 
 // Format departure time for display - always today, so just show local time
 function formatDeparture(dt) {
@@ -1419,6 +1420,15 @@ export default function FoodTrucksPage() {
   // ─── PUBLIC PAGE ──────────────────────────────────────────
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+      <SEOHead
+        title="Food Trucks"
+        description="Find food trucks near Devils Lake, Michigan. See who's serving in Manitou Beach this week, menus, locations, and schedules."
+        path="/food-trucks"
+        breadcrumbs={[
+          { name: 'Home', path: '/' },
+          { name: 'Food Trucks', path: '/food-trucks' },
+        ]}
+      />
       <GlobalStyles />
       <ScrollProgress />
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />

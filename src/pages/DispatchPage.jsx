@@ -4,6 +4,7 @@ import { FadeIn, PageSponsorBanner, ScrollProgress, SectionLabel, SectionTitle, 
 import { C, DISPATCH_CARD_SPONSORS, DISPATCH_CATEGORIES } from '../data/config';
 import { Footer, Navbar, GlobalStyles, NewsletterInline, CATEGORY_COLORS } from '../components/Layout';
 import { useDispatchAds, pickAd } from '../data/discover';
+import SEOHead from '../components/SEOHead';
 import yeti from '../data/errorMessages';
 
 
@@ -472,6 +473,15 @@ export default function DispatchPage() {
 
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: 'hidden' }}>
+<SEOHead
+        title="The Manitou Dispatch"
+        description="Community news, stories, and updates from Manitou Beach and Devils Lake, Michigan. The local blog for the Irish Hills."
+        path="/dispatch"
+        breadcrumbs={[
+          { name: 'Home', path: '/' },
+          { name: 'Dispatch', path: '/dispatch' },
+        ]}
+      />
 <GlobalStyles />
       <ScrollProgress />
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />

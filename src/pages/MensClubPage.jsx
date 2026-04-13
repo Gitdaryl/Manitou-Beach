@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivider, DiagonalDivider, CommunityDonationForm } from '../components/Shared';
 import { Footer, GlobalStyles, Navbar, NewsletterInline } from '../components/Layout';
 import { C } from '../data/config';
+import SEOHead from '../components/SEOHead';
 
 // ============================================================
 // 🏛️  MEN'S CLUB PAGE (/mens-club)
@@ -347,6 +348,15 @@ export default function MensClubPage() {
 
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+<SEOHead
+        title="Men's Club"
+        description="Devils Lake Men's Club - community organization serving Manitou Beach, Michigan. Events, membership, and local projects."
+        path="/mens-club"
+        breadcrumbs={[
+          { name: 'Home', path: '/' },
+          { name: "Men's Club", path: '/mens-club' },
+        ]}
+      />
 <GlobalStyles />
       <ScrollProgress />
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />

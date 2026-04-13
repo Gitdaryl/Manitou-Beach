@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivider, PageSponsorBanner, DiagonalDivider, CommunityDonationForm } from '../components/Shared';
 import { Footer, GlobalStyles, Navbar, NewsletterInline } from '../components/Layout';
 import { C } from '../data/config';
+import SEOHead from '../components/SEOHead';
 
 // ============================================================
 // 🏛️  HISTORICAL SOCIETY PAGE (/historical-society)
@@ -344,6 +345,15 @@ export default function HistoricalSocietyPage() {
 
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+<SEOHead
+        title="Historical Society"
+        description="Manitou Beach Historical & Research Society - preserving the history of Devils Lake and the Irish Hills since the 1800s."
+        path="/historical-society"
+        breadcrumbs={[
+          { name: 'Home', path: '/' },
+          { name: 'Historical Society', path: '/historical-society' },
+        ]}
+      />
 <GlobalStyles />
       <ScrollProgress />
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />

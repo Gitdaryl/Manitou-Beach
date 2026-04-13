@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, CommunityDonationForm } from '../components/Shared';
 import { Footer, GlobalStyles, Navbar, NewsletterInline, ContactModal } from '../components/Layout';
 import { C } from '../data/config';
+import SEOHead from '../components/SEOHead';
 
 // ============================================================
 // 🌿  LAND & LAKE LADIES CLUB PAGE (/ladies-club)
@@ -963,6 +964,15 @@ export default function LadiesClubPage() {
   const subScrollTo = (id) => { window.location.href = "/#" + id; };
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+<SEOHead
+        title="Land & Lake Ladies Club"
+        description="Land & Lake Ladies Club - women's civic organization in Manitou Beach, Michigan. Summer Festival, community events, and membership."
+        path="/ladies-club"
+        breadcrumbs={[
+          { name: 'Home', path: '/' },
+          { name: 'Ladies Club', path: '/ladies-club' },
+        ]}
+      />
 <GlobalStyles />
       <ScrollProgress />
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />

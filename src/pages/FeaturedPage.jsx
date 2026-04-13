@@ -3,6 +3,7 @@ import { Btn, FadeIn, ScrollProgress, SectionLabel, SectionTitle } from '../comp
 import { C, LISTING_CATEGORIES, PAGE_SPONSORS, SLOT_CAPS } from '../data/config';
 import { BASE_PRICES } from '../data/pricing';
 import { Footer, GlobalStyles, Navbar, SubmitSection } from '../components/Layout';
+import SEOHead from '../components/SEOHead';
 import yeti from '../data/errorMessages';
 
 // ============================================================
@@ -233,6 +234,15 @@ export default function FeaturedPage() {
 
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+<SEOHead
+        title="Business Directory"
+        description="Local businesses, restaurants, shops, and services in Manitou Beach and Devils Lake, Michigan. Free listings and featured upgrades."
+        path="/business"
+        breadcrumbs={[
+          { name: 'Home', path: '/' },
+          { name: 'Businesses', path: '/business' },
+        ]}
+      />
 <GlobalStyles />
       <ScrollProgress />
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
