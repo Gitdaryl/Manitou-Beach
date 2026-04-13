@@ -5,7 +5,7 @@ import { C } from '../data/config';
 import { DISCOVER_MAP_STYLES } from '../data/discover';
 import yeti from '../data/errorMessages';
 
-const STAY_TYPES = ['All', 'Cottage', 'Airbnb', 'Tiny Home', 'Camping', 'Inn/B&B'];
+const STAY_TYPES = ['All', 'Cottage', 'Airbnb', 'Tiny Home', 'Camping', 'Glamping', 'Inn/B&B', 'Hotel', 'Spare Room'];
 
 const TYPE_COLORS = {
   'Cottage':  C.lakeBlue,
@@ -13,11 +13,15 @@ const TYPE_COLORS = {
   'Tiny Home': C.sage,
   'Camping':  '#7A8E72',
   'Inn/B&B':  '#8B5E3C',
+  'Glamping':  '#9B8856',
+  'Hotel':    '#6B5B8D',
+  'Spare Room': '#A0856E',
 };
 
 const AMENITY_ICONS = {
   Waterfront: '🌊', 'Pet Friendly': '🐾', WiFi: '📶', AC: '❄️',
   'Fire Pit': '🔥', Dock: '⚓', 'Boat Launch': '🚤', Kitchen: '🍳', Grill: '♨️',
+  'Non-Smoking': '🚭', Parking: '🅿️',
 };
 
 const AMENITY_OPTIONS = Object.keys(AMENITY_ICONS);
@@ -312,7 +316,7 @@ function StayCard({ stay, i }) {
 }
 
 // ── Zillow-Style Map View ────────────────────────────────────
-function StaysMapView({ stays, filter }) {
+function StaysMapView({ stays, filtered }) {
   const [mapReady, setMapReady] = useState(false);
   const [mapError, setMapError] = useState(null);
   const [activeStay, setActiveStay] = useState(null);
@@ -324,7 +328,6 @@ function StaysMapView({ stays, filter }) {
   const infoWindowRef = useRef(null);
   const cardRefs = useRef({});
 
-  const filtered = filter === 'All' ? stays : stays.filter(s => s.stayType === filter);
   const mapStays = filtered.filter(s => s.lat && s.lng);
 
   // Init map
@@ -405,7 +408,7 @@ function StaysMapView({ stays, filter }) {
       mapStays.forEach(s => bounds.extend({ lat: s.lat, lng: s.lng }));
       mapObjRef.current.fitBounds(bounds, { top: 40, bottom: 40, left: 40, right: 40 });
     }
-  }, [mapReady, mapStays.length, filter]);
+  }, [mapReady, mapStays.length, filtered.length]);
 
   const openInfoWindow = (stay, marker) => {
     if (!infoWindowRef.current) return;
@@ -501,7 +504,7 @@ function StaysMapView({ stays, filter }) {
           {(() => {
             const cardStays = visibleIds ? filtered.filter(s => visibleIds.has(s.id) || !(s.lat && s.lng)) : filtered;
             return cardStays.length;
-          })()} {filter !== 'All' ? `· ${filter} ` : ''}{visibleIds ? 'in this area' : (filtered.length === 1 ? 'property' : 'properties')}
+          })()} {visibleIds ? 'in this area' : (filtered.length === 1 ? 'property' : 'properties')}
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -620,7 +623,7 @@ function StaysMapView({ stays, filter }) {
             <div style={{ textAlign: 'center', padding: 40 }}>
               <div style={{ fontSize: 36, marginBottom: 8 }}>🏕</div>
               <p style={{ color: C.textMuted, fontSize: 13 }}>
-                {filter === 'All' ? 'No stays listed yet.' : `No ${filter} listings yet.`}
+                No properties match your filters.
               </p>
             </div>
           )}
@@ -667,14 +670,25 @@ const TIERS = [
   { key: 'featured', name: 'Featured', price: '$25', priceSub: '/mo', betaPrice: '$0', color: C.sunset, accent: C.sunset, icon: '✦',
     headline: 'Front & Center',
     tagline: 'Top placement, Staff Pick badge, and a listing that feels like a destination.',
-    features: ['Everything in Listed', 'Top of directory placement', 'Staff Pick badge', 'Premium dark card design', 'Priority in search & map', 'Featured in weekly newsletter', 'Social media spotlight post', 'Only 3 slots per type'],
-    limited: true,
+    features: ['Everything in Listed', 'Top of directory placement', 'Staff Pick badge', 'Premium dark card design', 'Priority in search & map', 'Featured in weekly newsletter', 'Social media spotlight post'],
   },
 ];
 
 function ListYourPropertySection({ stays = [] }) {
   const [tier, setTier] = useState('listed'); // default to Listed during beta
-  const [form, setForm] = useState({ name: '', stayType: '', address: '', bookingUrl: '', email: '', description: '', phone: '', beds: '', guests: '', amenities: [], photoUrl: '', photoUrl2: '', photoUrl3: '', _hp: '' });
+
+  // Pre-fill from query params if arriving from /business redirect
+  const prefill = (() => {
+    try {
+      const hash = window.location.hash; // e.g. #list-property?name=Foo&email=bar
+      const qIndex = hash.indexOf('?');
+      if (qIndex === -1) return {};
+      const p = new URLSearchParams(hash.slice(qIndex + 1));
+      return { name: p.get('name') || '', email: p.get('email') || '' };
+    } catch { return {}; }
+  })();
+
+  const [form, setForm] = useState({ name: prefill.name, stayType: '', address: '', bookingUrl: '', email: prefill.email, description: '', phone: '', beds: '', guests: '', amenities: [], photoUrl: '', photoUrl2: '', photoUrl3: '', _hp: '' });
   const [status, setStatus] = useState(null);
   const [dragOver, setDragOver] = useState(false);
   const [lightbox, setLightbox] = useState(null);
@@ -692,13 +706,7 @@ function ListYourPropertySection({ stays = [] }) {
   const isListed = tier === 'listed';
   const isPaid = isFeatured || isListed;
 
-  // Featured slot availability - 3 per stay type
   const selectedType = form.stayType;
-  const featuredCountForType = selectedType
-    ? stays.filter(s => s.tier === 'featured' && s.stayType === selectedType).length
-    : 0;
-  const featuredFull = isFeatured && selectedType && featuredCountForType >= 3;
-  const featuredSlotsLeft = selectedType ? Math.max(0, 3 - featuredCountForType) : 3;
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
   const toggleAmenity = (a) => setForm(f => ({
@@ -898,21 +906,6 @@ function ListYourPropertySection({ stays = [] }) {
                   }} />
                 )}
 
-                {/* Limited badge */}
-                {t.limited && (
-                  <div style={{
-                    position: 'absolute', top: -1, left: '50%', transform: 'translateX(-50%)',
-                    fontSize: 9, fontWeight: 800, letterSpacing: 1.5, textTransform: 'uppercase',
-                    color: '#fff',
-                    background: featuredSlotsLeft === 0 ? C.warmGray : t.accent,
-                    padding: '3px 12px', borderRadius: '0 0 8px 8px',
-                    fontFamily: "'Libre Franklin', sans-serif",
-                  }}>
-                    {selectedType
-                      ? featuredSlotsLeft === 0 ? 'Waitlist' : `${featuredSlotsLeft} Slot${featuredSlotsLeft !== 1 ? 's' : ''} Left`
-                      : '3 Per Type'}
-                  </div>
-                )}
 
                 <div style={{ fontSize: 28, marginBottom: 8, filter: active ? 'none' : 'grayscale(0.3)' }}>{t.icon}</div>
 
@@ -1239,7 +1232,7 @@ function ListYourPropertySection({ stays = [] }) {
                 Your listing is live on the stays page. Visitors can find you on the map, see your details, and click through to book with you directly. Check your texts for a confirmation.
               </p>
               <p style={{ fontSize: 13, color: isFeatured ? 'rgba(255,255,255,0.35)' : C.textMuted, lineHeight: 1.7, margin: '0 0 28px', maxWidth: 460, marginLeft: 'auto', marginRight: 'auto' }}>
-                Before May 10 we'll send you details about keeping your listing live - month to month, no contract, cancel anytime. Founding properties get first pick on Featured slots.
+                Before May 10 we'll send you details about keeping your listing live - month to month, no contract, cancel anytime.
               </p>
               <a href="/stays" style={{
                 display: 'inline-block', padding: '14px 32px', background: C.lakeBlue, color: C.cream, borderRadius: 28,
@@ -1565,75 +1558,8 @@ function ListYourPropertySection({ stays = [] }) {
               )}
 
               {/* Submit / Waitlist */}
-              {featuredFull ? (
-                <div style={{
-                  marginTop: 12, padding: '28px 24px', borderRadius: 16,
-                  background: 'rgba(255,255,255,0.04)',
-                  border: `1px solid rgba(255,255,255,0.1)`,
-                  textAlign: 'center',
-                }}>
-                  <div style={{
-                    fontSize: 9, fontWeight: 800, letterSpacing: 2, textTransform: 'uppercase',
-                    color: C.sunset, marginBottom: 10, fontFamily: "'Libre Franklin', sans-serif",
-                  }}>
-                    All 3 {selectedType} Featured Spots Are Taken
-                  </div>
-                  <p style={{ fontSize: 14, color: C.cream, fontFamily: "'Libre Baskerville', serif", margin: '0 0 6px', fontWeight: 400 }}>
-                    Join the waitlist - you'll be first to know
-                  </p>
-                  <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', margin: '0 0 20px', lineHeight: 1.5 }}>
-                    When a Featured spot opens up, we'll text or email you before anyone else.
-                    Current Featured holders get first right of renewal - if they pass, you're next in line.
-                  </p>
-                  <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, maxWidth: 400, margin: '0 auto 16px' }}>
-                    <input
-                      style={{
-                        ...inputStyle, fontSize: 13, padding: '12px 14px',
-                        textAlign: 'center',
-                      }}
-                      value={form.email}
-                      onChange={e => set('email', e.target.value)}
-                      placeholder="Your email"
-                      type="email"
-                    />
-                    <input
-                      style={{
-                        ...inputStyle, fontSize: 13, padding: '12px 14px',
-                        textAlign: 'center',
-                      }}
-                      value={form.phone}
-                      onChange={e => set('phone', e.target.value)}
-                      placeholder="Phone for text"
-                    />
-                  </div>
-                  <Btn
-                    type="submit"
-                    variant="primary"
-                    style={{
-                      width: '100%', maxWidth: 400,
-                      padding: '16px 24px', fontSize: 13, borderRadius: 12,
-                      background: `linear-gradient(135deg, ${C.lakeBlue}, ${C.lakeDark})`,
-                      boxShadow: `0 4px 16px ${C.lakeBlue}30`,
-                    }}
-                  >
-                    {status === 'sending' ? 'Joining...' : 'Join the Waitlist'}
-                  </Btn>
-                  <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)', marginTop: 12, lineHeight: 1.5 }}>
-                    You can also submit as a $9 Listed property now and upgrade when a slot opens.
-                  </p>
-                </div>
-              ) : (
+
                 <div style={{ marginTop: isFeatured ? 12 : 8 }}>
-                  {/* Slot count hint for featured */}
-                  {isFeatured && selectedType && featuredSlotsLeft > 0 && featuredSlotsLeft <= 2 && (
-                    <p style={{
-                      fontSize: 12, color: C.sunset, textAlign: 'center',
-                      fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600,
-                      marginBottom: 10,
-                    }}>
-                      {featuredSlotsLeft === 1 ? 'Last spot' : `${featuredSlotsLeft} spots left`} for {selectedType}
-                    </p>
-                  )}
                   {/* Validation hints */}
                   {status === 'error_name' && <p style={{ fontSize: 13, color: '#c0392b', textAlign: 'center', margin: '0 0 8px' }}>Property name is required.</p>}
                   {status === 'error_email' && <p style={{ fontSize: 13, color: '#c0392b', textAlign: 'center', margin: '0 0 8px' }}>A valid email address is required.</p>}
@@ -1657,7 +1583,6 @@ function ListYourPropertySection({ stays = [] }) {
                       : 'Get on the Map →'}
                   </Btn>
                 </div>
-              )}
 
               <p style={{ fontSize: 11, color: isFeatured ? 'rgba(255,255,255,0.25)' : C.textMuted, textAlign: 'center', lineHeight: 1.7, margin: '4px 0 0' }}>
                 We'll text a verification code to your phone. Once verified, your listing goes live.
@@ -1994,6 +1919,23 @@ export default function StaysPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('All');
   const [view, setView] = useState('list'); // 'list' | 'map'
+  const [minBeds, setMinBeds] = useState('');
+  const [minGuests, setMinGuests] = useState('');
+  const [selectedAmenities, setSelectedAmenities] = useState([]);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+
+  const hasActiveFilters = minBeds || minGuests || selectedAmenities.length > 0;
+
+  const toggleAmenity = (a) => setSelectedAmenities(prev =>
+    prev.includes(a) ? prev.filter(x => x !== a) : [...prev, a]
+  );
+
+  const clearFilters = () => {
+    setFilter('All');
+    setMinBeds('');
+    setMinGuests('');
+    setSelectedAmenities([]);
+  };
 
   useEffect(() => {
     fetch('/api/stays')
@@ -2002,7 +1944,13 @@ export default function StaysPage() {
       .catch(() => setLoading(false));
   }, []);
 
-  const filtered = filter === 'All' ? stays : stays.filter(s => s.stayType === filter);
+  const filtered = stays.filter(s => {
+    if (filter !== 'All' && s.stayType !== filter) return false;
+    if (minBeds && (s.beds || 0) < parseInt(minBeds, 10)) return false;
+    if (minGuests && (s.guests || 0) < parseInt(minGuests, 10)) return false;
+    if (selectedAmenities.length > 0 && !selectedAmenities.every(a => (s.amenities || []).includes(a))) return false;
+    return true;
+  });
 
   return (
     <div style={{ overflowX: 'hidden' }}>
@@ -2020,6 +1968,7 @@ export default function StaysPage() {
           .gallery-strip { gap: 6px !important; padding: 0 16px 16px !important; }
           .gallery-strip img { height: 72px !important; border-radius: 8px !important; }
           .filter-bar-inner { flex-direction: column !important; gap: 10px !important; }
+          .stays-filter-panel { flex-direction: column !important; gap: 16px !important; }
           .stay-card-header { flex-direction: column !important; align-items: flex-start !important; }
           .stay-card-meta { flex-direction: column !important; gap: 6px !important; }
         }
@@ -2061,43 +2010,168 @@ export default function StaysPage() {
             ))}
           </div>
 
-          {/* View toggle */}
-          <div style={{
-            display: 'flex', borderRadius: 10, overflow: 'hidden',
-            border: `1.5px solid ${C.sand}`, flexShrink: 0,
-          }}>
+          {/* Filter toggle + View toggle */}
+          <div style={{ display: 'flex', gap: 8, flexShrink: 0, alignItems: 'center' }}>
             <button
-              onClick={() => setView('list')}
+              onClick={() => setFiltersOpen(p => !p)}
               style={{
-                fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600,
-                padding: '7px 14px', cursor: 'pointer', border: 'none',
-                background: view === 'list' ? C.lakeBlue : 'transparent',
-                color: view === 'list' ? C.cream : C.textMuted,
-                transition: 'all 0.2s', letterSpacing: 0.5,
+                fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700,
+                letterSpacing: 1, textTransform: 'uppercase',
+                padding: '7px 14px', borderRadius: 20, cursor: 'pointer',
+                border: `1.5px solid ${hasActiveFilters ? C.sunset : C.sand}`,
+                background: filtersOpen ? (hasActiveFilters ? C.sunset : C.lakeBlue) : 'transparent',
+                color: filtersOpen ? C.cream : (hasActiveFilters ? C.sunset : C.textMuted),
+                transition: 'all 0.2s',
+                position: 'relative',
               }}
             >
-              List
+              {filtersOpen ? '✕ Filters' : '⚙ Filters'}
+              {hasActiveFilters && !filtersOpen && (
+                <span style={{
+                  position: 'absolute', top: -4, right: -4,
+                  width: 8, height: 8, borderRadius: '50%',
+                  background: C.sunset,
+                }} />
+              )}
             </button>
-            <button
-              onClick={() => setView('map')}
-              style={{
-                fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600,
-                padding: '7px 14px', cursor: 'pointer', border: 'none',
-                borderLeft: `1px solid ${C.sand}`,
-                background: view === 'map' ? C.lakeBlue : 'transparent',
-                color: view === 'map' ? C.cream : C.textMuted,
-                transition: 'all 0.2s', letterSpacing: 0.5,
-              }}
-            >
-              Map
-            </button>
+
+            <div style={{
+              display: 'flex', borderRadius: 10, overflow: 'hidden',
+              border: `1.5px solid ${C.sand}`, flexShrink: 0,
+            }}>
+              <button
+                onClick={() => setView('list')}
+                style={{
+                  fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600,
+                  padding: '7px 14px', cursor: 'pointer', border: 'none',
+                  background: view === 'list' ? C.lakeBlue : 'transparent',
+                  color: view === 'list' ? C.cream : C.textMuted,
+                  transition: 'all 0.2s', letterSpacing: 0.5,
+                }}
+              >
+                List
+              </button>
+              <button
+                onClick={() => setView('map')}
+                style={{
+                  fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600,
+                  padding: '7px 14px', cursor: 'pointer', border: 'none',
+                  borderLeft: `1px solid ${C.sand}`,
+                  background: view === 'map' ? C.lakeBlue : 'transparent',
+                  color: view === 'map' ? C.cream : C.textMuted,
+                  transition: 'all 0.2s', letterSpacing: 0.5,
+                }}
+              >
+                Map
+              </button>
+            </div>
           </div>
         </div>
+
+        {/* Expandable filter panel */}
+        {filtersOpen && (
+          <div style={{
+            maxWidth: 960, margin: '12px auto 0', padding: '16px 20px',
+            background: '#fff', borderRadius: 14,
+            border: `1px solid ${C.sand}`,
+            boxShadow: '0 2px 12px rgba(0,0,0,0.04)',
+          }}>
+            <div className="stays-filter-panel" style={{ display: 'flex', gap: 24, flexWrap: 'wrap', alignItems: 'flex-start' }}>
+              {/* Beds & Guests */}
+              <div style={{ display: 'flex', gap: 12 }}>
+                <div>
+                  <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", display: 'block', marginBottom: 6 }}>
+                    Min Beds
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="50"
+                    placeholder="Any"
+                    value={minBeds}
+                    onChange={e => setMinBeds(e.target.value)}
+                    style={{
+                      width: 72, padding: '8px 10px', borderRadius: 10,
+                      border: `1.5px solid ${minBeds ? C.lakeBlue : C.sand}`,
+                      fontFamily: "'Libre Franklin', sans-serif", fontSize: 13,
+                      color: C.text, outline: 'none',
+                      transition: 'border-color 0.2s',
+                    }}
+                  />
+                </div>
+                <div>
+                  <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", display: 'block', marginBottom: 6 }}>
+                    Min Guests
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="100"
+                    placeholder="Any"
+                    value={minGuests}
+                    onChange={e => setMinGuests(e.target.value)}
+                    style={{
+                      width: 72, padding: '8px 10px', borderRadius: 10,
+                      border: `1.5px solid ${minGuests ? C.lakeBlue : C.sand}`,
+                      fontFamily: "'Libre Franklin', sans-serif", fontSize: 13,
+                      color: C.text, outline: 'none',
+                      transition: 'border-color 0.2s',
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Amenity toggles */}
+              <div style={{ flex: 1, minWidth: 200 }}>
+                <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", display: 'block', marginBottom: 6 }}>
+                  Amenities
+                </label>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  {AMENITY_OPTIONS.map(a => {
+                    const active = selectedAmenities.includes(a);
+                    return (
+                      <button
+                        key={a}
+                        onClick={() => toggleAmenity(a)}
+                        style={{
+                          fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600,
+                          padding: '5px 12px', borderRadius: 16, cursor: 'pointer',
+                          border: `1.5px solid ${active ? C.lakeBlue : C.sand}`,
+                          background: active ? C.lakeBlue : 'transparent',
+                          color: active ? C.cream : C.textMuted,
+                          transition: 'all 0.2s',
+                        }}
+                      >
+                        {AMENITY_ICONS[a]} {a}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* Clear all */}
+            {hasActiveFilters && (
+              <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${C.sand}` }}>
+                <button
+                  onClick={clearFilters}
+                  style={{
+                    fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600,
+                    color: C.sunset, background: 'none', border: 'none',
+                    cursor: 'pointer', padding: 0, textDecoration: 'underline',
+                  }}
+                >
+                  Clear all filters
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </section>
 
       {/* Listings - list or map view */}
       {view === 'map' ? (
-        <StaysMapView stays={stays} filter={filter} />
+        <StaysMapView stays={stays} filtered={filtered} />
       ) : (
         <section style={{ padding: '60px 24px 80px', background: C.cream }}>
           <div style={{ maxWidth: 800, margin: '0 auto' }}>
@@ -2106,9 +2180,24 @@ export default function StaysPage() {
             ) : filtered.length === 0 ? (
               <div style={{ textAlign: 'center', padding: 60 }}>
                 <div style={{ fontSize: 48, marginBottom: 12 }}>🏕</div>
-                <p style={{ color: C.textMuted, fontSize: 15 }}>
-                  {filter === 'All' ? 'No stays listed yet - be the first!' : `No ${filter} listings yet.`}
+                <p style={{ color: C.textMuted, fontSize: 15, marginBottom: hasActiveFilters ? 12 : 0 }}>
+                  {hasActiveFilters
+                    ? 'No properties match those filters. Try loosening your search.'
+                    : filter === 'All' ? 'No stays listed yet - be the first!' : `No ${filter} listings yet.`
+                  }
                 </p>
+                {hasActiveFilters && (
+                  <button
+                    onClick={clearFilters}
+                    style={{
+                      fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600,
+                      color: C.cream, background: C.sunset, border: 'none',
+                      padding: '8px 20px', borderRadius: 20, cursor: 'pointer',
+                    }}
+                  >
+                    Clear Filters
+                  </button>
+                )}
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
@@ -2150,10 +2239,6 @@ export default function StaysPage() {
             {
               q: 'Is there a contract?',
               a: "No. Everything is month to month. Cancel anytime - no fees, no penalties, no awkward phone calls. If you cancel, your listing downgrades to a free directory entry (name and type only).",
-            },
-            {
-              q: "What about the Featured tier - only 3 per type?",
-              a: "Featured slots are first come, first served - 3 per property type (Cottage, Airbnb, etc.). Founding properties who sign up during the beta get first pick when paid tiers open. If all slots are taken, you'll be added to a waitlist and notified the moment one opens up.",
             },
             {
               q: "What do visitors actually see?",
