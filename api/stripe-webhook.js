@@ -86,7 +86,7 @@ async function notifyFirstWaitlistEntry(notionToken, pageId, pageLabel) {
       const { Resend } = await import('resend');
       const resend = new Resend(process.env.RESEND_API_KEY);
       await resend.emails.send({
-        from: 'Manitou Beach <hello@manitou-beach.com>',
+        from: 'Manitou Beach <events@manitoubeachmichigan.com>',
         to: email,
         subject: `The ${pageLabel} sponsorship spot just opened`,
         html: `
@@ -1082,7 +1082,7 @@ export default async function handler(req, res) {
           const expiryFmt = new Date(expiryDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
           const amountFmt = metadata.term === 'annual' ? '$970/year' : '$97/month';
           await resend.emails.send({
-            from: 'Manitou Beach <hello@manitou-beach.com>',
+            from: 'Manitou Beach <events@manitoubeachmichigan.com>',
             to: sponsorEmail,
             subject: `You own the ${metadata.pageName} page - confirmed`,
             html: `
@@ -1112,8 +1112,8 @@ export default async function handler(req, res) {
           const resend = new Resend(process.env.RESEND_API_KEY);
           const amountFmt = metadata.term === 'annual' ? '$970/year' : '$97/month';
           await resend.emails.send({
-            from: 'Manitou Beach <hello@manitou-beach.com>',
-            to: 'hello@manitou-beach.com',
+            from: 'Manitou Beach <events@manitoubeachmichigan.com>',
+            to: 'events@manitoubeachmichigan.com',
             subject: `New page sponsor: ${metadata.businessName} → ${metadata.pageName}`,
             html: `<div style="font-family:sans-serif;padding:24px;"><h2>New Page Sponsor</h2>
               <p><strong>Business:</strong> ${metadata.businessName}</p>
