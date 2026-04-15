@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import QRCode from 'react-qr-code';
 import { C } from '../data/config';
 import yeti from '../data/errorMessages';
 
@@ -11,6 +10,8 @@ const CLAIM_BUSINESSES = {
     descLine: 'A welcome gift from The Manitou Dispatch',
     emoji: '☕',
     accentColor: '#D4845A',
+    capLabel: 'First 20 people only',
+    expiresLabel: 'Expires May 31',
     reviewUrl: 'https://www.yelp.com/writeareview/biz/BV2J5pWMspuXAU78MeQo_A?return_url=%2Fbiz%2FBV2J5pWMspuXAU78MeQo_A&review_origin=biz-details-war-button',
   },
 };
@@ -28,6 +29,9 @@ export default function ClaimPage() {
   const [claimCode, setClaimCode] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [resendMode, setResendMode] = useState(false);
+  const [resendSent, setResendSent] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   // Restore previous claim from localStorage (so code survives tab close)
   useEffect(() => {
@@ -66,6 +70,32 @@ export default function ClaimPage() {
       setClaimCode(data.claimCode);
       localStorage.setItem(`claim_${slug}`, JSON.stringify({ notionId: data.notionId, claimCode: data.claimCode, name: name.trim() }));
       setStep('confirm');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleResend = async () => {
+    if (!email.trim()) return;
+    setSubmitting(true);
+    setError('');
+    try {
+      const res = await fetch('/api/submit-claim', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'resend', slug, email: email.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Couldn't resend");
+      // Restore their session so they can reopen the claim screen too
+      if (data.notionId && data.claimCode) {
+        setNotionId(data.notionId);
+        setClaimCode(data.claimCode);
+        localStorage.setItem(`claim_${slug}`, JSON.stringify({ notionId: data.notionId, claimCode: data.claimCode, name: name.trim() }));
+      }
+      setResendSent(true);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -168,8 +198,46 @@ export default function ClaimPage() {
                 One per person · Manitou Dispatch subscribers only
               </p>
               <p style={{ textAlign: 'center', fontSize: 11, color: C.textMuted, marginTop: 6, lineHeight: 1.4 }}>
-                First 20 people only. Expires May 31.
+                {biz.capLabel}. {biz.expiresLabel}.
               </p>
+            </div>
+            <div style={{ textAlign: 'center', marginTop: 20 }}>
+              {!resendMode && !resendSent && (
+                <button
+                  type="button"
+                  onClick={() => { setResendMode(true); setError(''); }}
+                  style={{ background: 'none', border: 'none', color: C.lakeBlue, fontSize: 13, textDecoration: 'underline', cursor: 'pointer', fontFamily: 'inherit' }}
+                >Already claimed? Email me my code →</button>
+              )}
+              {resendMode && !resendSent && (
+                <div style={{ background: '#fff', borderRadius: 12, padding: 20, boxShadow: '0 2px 12px rgba(0,0,0,0.07)', textAlign: 'left' }}>
+                  <p style={{ margin: '0 0 10px', fontSize: 14, color: C.dusk, fontWeight: 600 }}>Enter the email you used to claim:</p>
+                  <input
+                    style={inputStyle}
+                    placeholder="you@example.com"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    type="email"
+                    inputMode="email"
+                    autoComplete="email"
+                  />
+                  {error && <p style={{ color: C.sunset, fontSize: 13, margin: '10px 0 0' }}>{error}</p>}
+                  <button
+                    onClick={handleResend}
+                    disabled={submitting || !email.trim()}
+                    style={{
+                      marginTop: 12, width: '100%', padding: '12px', borderRadius: 8, border: 'none',
+                      background: submitting || !email.trim() ? C.driftwood : C.dusk,
+                      color: '#fff', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
+                    }}
+                  >{submitting ? 'Sending…' : 'Email my code'}</button>
+                </div>
+              )}
+              {resendSent && (
+                <p style={{ color: C.sage, fontSize: 14, fontWeight: 600 }}>
+                  ✓ Sent. Check your inbox (and spam folder just in case).
+                </p>
+              )}
             </div>
           </div>
         )}
@@ -181,16 +249,24 @@ export default function ClaimPage() {
             <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, color: C.dusk, margin: '0 0 8px' }}>
               You're all set, {name.split(' ')[0]}!
             </h1>
-            <p style={{ color: C.textLight, fontSize: 15, marginBottom: 28 }}>Show this screen to your barista at {biz.name}</p>
-            <div style={{ background: C.dusk, borderRadius: 14, padding: '24px 32px', marginBottom: 28, display: 'inline-block', minWidth: 220 }}>
+            <p style={{ color: C.textLight, fontSize: 15, marginBottom: 8 }}>Show this screen (or the email we just sent) to your barista at {biz.name}.</p>
+            <p style={{ color: C.textMuted, fontSize: 13, marginBottom: 24 }}>📧 Check your inbox — we emailed a copy of your code so you don't lose it.</p>
+            <div style={{ background: C.dusk, borderRadius: 14, padding: '24px 32px', marginBottom: 16, display: 'inline-block', minWidth: 240 }}>
               <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.45)', marginBottom: 8 }}>Claim Code</div>
-              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 36, color: '#fff', letterSpacing: '0.1em', fontWeight: 700 }}>{claimCode}</div>
+              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 42, color: '#fff', letterSpacing: '0.1em', fontWeight: 700 }}>{claimCode}</div>
               <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginTop: 8 }}>{biz.offerText} · one use</div>
-              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 4 }}>First 20 people only. Expires May 31.</div>
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 4 }}>{biz.capLabel}. {biz.expiresLabel}.</div>
             </div>
-            <div style={{ margin: '0 auto 20px', padding: '16px 20px', background: '#fdf9f3', border: `1px solid ${C.sand}`, borderRadius: 12, display: 'inline-block' }}>
-              <QRCode value={window.location.href} size={160} />
-              <p style={{ margin: '10px 0 0', fontSize: 12, color: C.textMuted, textAlign: 'center', fontFamily: 'Libre Franklin, sans-serif' }}>Barista: scan to see full screen →</p>
+            <div style={{ marginBottom: 24 }}>
+              <button
+                type="button"
+                onClick={() => {
+                  try { navigator.clipboard?.writeText(claimCode); } catch {}
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 1500);
+                }}
+                style={{ background: 'none', border: `1px solid ${C.sand}`, color: C.dusk, borderRadius: 999, padding: '8px 16px', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
+              >{copied ? '✓ Copied' : 'Copy code'}</button>
             </div>
             <div style={{ background: '#fff', borderRadius: 12, padding: 24, boxShadow: '0 2px 12px rgba(0,0,0,0.07)' }}>
               <p style={{ margin: '0 0 16px', color: C.text, fontSize: 15, lineHeight: 1.5 }}>
