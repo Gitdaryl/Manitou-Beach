@@ -23,13 +23,16 @@ function generateCode(prefix = 'BB') {
 }
 
 async function sendClaimEmail({ email, name, slug, claimCode }) {
-  if (!process.env.RESEND_API_KEY) return;
+  if (!process.env.RESEND_API_KEY) {
+    console.error('[claim-email] RESEND_API_KEY missing');
+    return { ok: false, reason: 'no_api_key' };
+  }
   const biz = BIZ[slug];
-  if (!biz) return;
+  if (!biz) return { ok: false, reason: 'no_biz' };
   const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
   const resend = new Resend(process.env.RESEND_API_KEY);
   try {
-    await resend.emails.send({
+    const result = await resend.emails.send({
       from: 'The Manitou Dispatch <events@manitoubeachmichigan.com>',
       to: email,
       subject: `Your ${biz.offerText} code for ${biz.name}`,
@@ -55,8 +58,15 @@ async function sendClaimEmail({ email, name, slug, claimCode }) {
         </div>
       `,
     });
+    if (result?.error) {
+      console.error('[claim-email] Resend returned error:', JSON.stringify(result.error));
+      return { ok: false, reason: 'resend_error', detail: result.error };
+    }
+    console.log('[claim-email] sent to', email, 'id:', result?.data?.id);
+    return { ok: true, id: result?.data?.id };
   } catch (err) {
-    console.error('sendClaimEmail failed:', err.message);
+    console.error('[claim-email] threw:', err.message, err.stack);
+    return { ok: false, reason: 'exception', detail: err.message };
   }
 }
 
@@ -221,8 +231,8 @@ export default async function handler(req, res) {
     const existing = await queryByEmailOffer(cleanEmail, biz.offer);
     if (existing.results && existing.results.length > 0) {
       const row = parseRow(existing.results[0]);
-      sendClaimEmail({ email: cleanEmail, name, slug, claimCode: row.code }).catch(() => {});
-      return res.status(200).json({ notionId: row.id, claimCode: row.code, reused: true });
+      const emailResult = await sendClaimEmail({ email: cleanEmail, name, slug, claimCode: row.code });
+      return res.status(200).json({ notionId: row.id, claimCode: row.code, reused: true, emailResult });
     }
 
     // Enforce cap
@@ -266,10 +276,9 @@ export default async function handler(req, res) {
 
     const page = await notionRes.json();
 
-    // Send email (non-blocking)
-    sendClaimEmail({ email: cleanEmail, name, slug, claimCode }).catch(() => {});
+    const emailResult = await sendClaimEmail({ email: cleanEmail, name, slug, claimCode });
 
-    return res.status(200).json({ notionId: page.id, claimCode });
+    return res.status(200).json({ notionId: page.id, claimCode, emailResult });
   } catch (err) {
     console.error('submit-claim error:', err.message);
     return res.status(500).json({ error: err.message });
