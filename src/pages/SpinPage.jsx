@@ -11,7 +11,8 @@ const FLAPPER_BOUNCE = 0.0015;
 const MIN_RELEASE_SPEED = 0.18;
 const MAX_RELEASE_SPEED = 0.7;
 
-const SPIN_COLORS = ['#4ecdc4', '#f39c12', '#2ecc71'];
+// Deliberately avoid colors that could match common prize segment colors
+const SPIN_COLORS = ['#4ecdc4', '#f39c12', '#9b59b6'];
 
 // Build equal-size segment angles from a flat list
 function buildSegments(prizes) {
@@ -67,6 +68,9 @@ export default function SpinPage() {
     lastTickSegment: -1,
     hasSpun: false,
     spinDone: false,
+    // Stability tracking - require 3 consecutive frames on same segment before firing result
+    stableSegment: -1,
+    stableCount: 0,
   });
   const confettiStateRef = useRef([]);
   const phaseRef = useRef('idle');
@@ -322,15 +326,21 @@ export default function SpinPage() {
   }, []);
 
   // ── POINTER SEGMENT ──
+  // Uses nearest-midpoint so floating point can never land on a boundary and pick the wrong segment
   const getSegAtPointer = useCallback(() => {
     const segs = segmentsRef.current;
     if (!segs.length) return 0;
     let a = (-Math.PI / 2 - phys.current.rotation) % (Math.PI * 2);
     if (a < 0) a += Math.PI * 2;
+    let best = 0;
+    let bestDist = Infinity;
     for (let i = 0; i < segs.length; i++) {
-      if (a >= segs[i].startAngle && a < segs[i].endAngle) return i;
+      const mid = segs[i].startAngle + segs[i].sweep / 2;
+      let d = Math.abs(a - mid);
+      if (d > Math.PI) d = Math.PI * 2 - d; // handle wrap-around
+      if (d < bestDist) { bestDist = d; best = i; }
     }
-    return 0;
+    return best;
   }, []);
 
   // ── FORCE FIELD (nudge away from tomorrow) ──
@@ -358,11 +368,16 @@ export default function SpinPage() {
     if (!seg) return;
 
     if (seg.type === 'spin-again') {
+      // Full reset - every phys field back to start-of-session state
       phys.current.isSpinning = false;
+      phys.current.isDragging = false;
       phys.current.hasSpun = false;
+      phys.current.spinDone = false;
       phys.current.angularVelocity = 0;
       phys.current.dragVelocities = [];
       phys.current.lastTickSegment = -1;
+      phys.current.stableSegment = -1;
+      phys.current.stableCount = 0;
       playSpinAgain();
       setHint('Bonus spin! Give it another flick');
       setHintVisible(true);
@@ -414,9 +429,26 @@ export default function SpinPage() {
 
         if (Math.abs(p.angularVelocity) < MIN_VELOCITY && !p.spinDone) {
           p.angularVelocity = 0;
-          p.isSpinning = false;
-          p.spinDone = true;
-          handleResult(getSegAtPointer());
+          // Require 3 consecutive frames on the same segment before firing result.
+          // This eliminates false positives when the wheel dies right on a boundary.
+          const seg = getSegAtPointer();
+          if (seg === p.stableSegment) {
+            p.stableCount++;
+          } else {
+            p.stableSegment = seg;
+            p.stableCount = 1;
+          }
+          if (p.stableCount >= 3) {
+            p.isSpinning = false;
+            p.spinDone = true;
+            p.stableCount = 0;
+            p.stableSegment = -1;
+            handleResult(seg);
+          }
+        } else {
+          // Reset stability tracking while still moving
+          p.stableSegment = -1;
+          p.stableCount = 0;
         }
       }
 
@@ -699,9 +731,13 @@ export default function SpinPage() {
           />
         </div>
 
-        {/* Hint */}
+        {/* Hint / status line */}
         {hintVisible && !blockedToday && phase === 'idle' && segments.length > 0 && (
-          <p style={{ marginTop: 8, fontSize: '0.9rem', opacity: 0.5, textAlign: 'center' }}>
+          <p style={{
+            marginTop: 8, fontSize: '0.9rem', textAlign: 'center',
+            color: hint.startsWith('Bonus') ? '#4ecdc4' : 'rgba(255,255,255,0.5)',
+            fontWeight: hint.startsWith('Bonus') ? 600 : 400,
+          }}>
             {hint}
           </p>
         )}
@@ -709,13 +745,6 @@ export default function SpinPage() {
         {blockedToday && phase === 'idle' && (
           <p style={{ marginTop: 12, fontSize: '0.9rem', opacity: 0.6, textAlign: 'center' }}>
             You already spun today - come back tomorrow for another shot!
-          </p>
-        )}
-
-        {/* Spin Again message */}
-        {phase === 'idle' && hint.startsWith('Bonus') && (
-          <p style={{ marginTop: 8, fontSize: '0.9rem', opacity: 0.7, textAlign: 'center', color: '#4ecdc4' }}>
-            {hint}
           </p>
         )}
 
