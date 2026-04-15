@@ -31,9 +31,10 @@ export default async function handler(req, res) {
       const rawColor = p['Deal Color']?.rich_text?.[0]?.text?.content || '';
       const color = /^#[0-9A-Fa-f]{6}$/.test(rawColor) ? rawColor : '#3498db';
       const slotCount = Math.min(Math.max(p['Slot Count']?.number || 1, 1), 3);
+      const logoUrl = p['Logo URL']?.url || '';
       if (!name || !dealLabel) continue;
       for (let i = 0; i < slotCount; i++) {
-        prize.push({ label: dealLabel, sponsor: name, color, type: 'prize', sponsorId: page.id });
+        prize.push({ label: dealLabel, sponsor: name, color, type: 'prize', sponsorId: page.id, logoUrl });
       }
     }
 

@@ -85,6 +85,7 @@ export default function SpinPage() {
   const rafRef = useRef(null);
   const audioCtxRef = useRef(null);
   const segmentsRef = useRef([]);
+  const logosRef = useRef({});
   const phys = useRef({
     rotation: 0,
     angularVelocity: 0,
@@ -125,6 +126,16 @@ export default function SpinPage() {
 
     setBlockedToday(hasSpunTodayCheck());
   }, []);
+
+  // Pre-load sponsor logos so they're ready when drawWheel runs
+  useEffect(() => {
+    segments.forEach(seg => {
+      if (!seg.logoUrl || logosRef.current[seg.logoUrl]) return;
+      const img = new Image();
+      img.src = seg.logoUrl;
+      logosRef.current[seg.logoUrl] = img;
+    });
+  }, [segments]);
 
   // ── AUDIO ──
   const initAudio = useCallback(() => {
@@ -262,7 +273,7 @@ export default function SpinPage() {
       ctx.fillStyle = 'rgba(255,255,255,0.6)';
       ctx.fill();
 
-      // Label text - single line along the radial axis, auto-scaled to fit
+      // Label text + optional circular logo near rim
       ctx.save();
       const mid = seg.startAngle + seg.sweep / 2;
       ctx.rotate(mid);
@@ -270,14 +281,19 @@ export default function SpinPage() {
       ctx.shadowColor = 'rgba(0,0,0,0.55)';
       ctx.shadowBlur = 4;
 
-      // Available radial length for text (from hub edge outward)
-      const textEnd = RADIUS - 20;
-      const textStart = RADIUS * 0.3; // don't crowd the hub
-      const maxTextWidth = textEnd - textStart;
-
-      // Determine style
       const isSpin = seg.type === 'spin-again';
       const isTmr = seg.type === 'tomorrow';
+
+      // Logo lookup - prize segments only
+      const logoImg = !isSpin && !isTmr && seg.logoUrl ? logosRef.current[seg.logoUrl] : null;
+      const logoReady = !!(logoImg && logoImg.complete && logoImg.naturalWidth > 0);
+      const logoR = 16;
+      const logoX = RADIUS * 0.78;
+
+      // Text zone shrinks to make room for logo badge; full zone when no logo
+      const textEnd = logoReady ? logoX - logoR - 8 : RADIUS - 20;
+      const textStart = RADIUS * 0.3;
+      const maxTextWidth = textEnd - textStart;
 
       // Scale font down until the label fits in one line
       let fs = 15;
@@ -300,20 +316,35 @@ export default function SpinPage() {
         ctx.fillStyle = '#fff';
       }
 
-      // Draw label centered vertically on the wedge midline
       ctx.fillText(seg.label, textEnd, fs * 0.35);
       ctx.shadowBlur = 0;
 
-      // Sponsor name - smaller, slightly below, only on prize segments
-      if (seg.sponsor && !isSpin && !isTmr) {
+      // Sponsor name - only when no logo is loaded (logo identifies the sponsor instead)
+      if (seg.sponsor && !isSpin && !isTmr && !logoReady) {
         let sf = Math.max(8, fs - 4);
         ctx.font = `${sf}px 'Segoe UI', system-ui, sans-serif`;
         ctx.fillStyle = 'rgba(255,255,255,0.5)';
-        // Only show if it fits without crowding
         if (ctx.measureText(seg.sponsor).width <= maxTextWidth) {
           ctx.fillText(seg.sponsor, textEnd, fs * 0.35 + sf + 2);
         }
       }
+
+      // Circular logo badge near the rim
+      if (logoReady) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(logoX, 0, logoR, 0, Math.PI * 2);
+        ctx.clip();
+        ctx.drawImage(logoImg, logoX - logoR, -logoR, logoR * 2, logoR * 2);
+        ctx.restore();
+        // White ring around the logo
+        ctx.beginPath();
+        ctx.arc(logoX, 0, logoR, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+
       ctx.restore();
     }
 
