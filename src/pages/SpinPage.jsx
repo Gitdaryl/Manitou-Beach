@@ -8,8 +8,8 @@ const FRICTION_SLOW = 0.988;
 const FRICTION_CRAWL = 0.982;
 const MIN_VELOCITY = 0.0006;
 const FLAPPER_BOUNCE = 0.0015;
-const MIN_RELEASE_SPEED = 0.18;
-const MAX_RELEASE_SPEED = 0.7;
+const MIN_RELEASE_SPEED = 0.05;  // low floor - a gentle flick gives a slow spin
+const MAX_RELEASE_SPEED = 1.4;  // high ceiling - a hard flick gives a noticeably faster spin
 
 // Deliberately avoid colors that could match common prize segment colors
 const SPIN_COLORS = ['#4ecdc4', '#f39c12', '#9b59b6'];
