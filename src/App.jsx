@@ -19,6 +19,7 @@ const FoodTruckQRPage = lazy(() => import('./pages/FoodTruckQRPage'));
 const DiscoverPage = lazy(() => import('./pages/DiscoverPage'));
 const ClaimPage = lazy(() => import('./pages/ClaimPage'));
 const MerchantRedeemPage = lazy(() => import('./pages/MerchantRedeemPage'));
+const OfferReportPage = lazy(() => import('./pages/OfferReportPage'));
 const YetiAdminPage = lazy(() => import('./pages/YetiAdminPage'));
 const DispatchPage = lazy(() => import('./pages/DispatchPage'));
 const PromotePage = lazy(() => import('./pages/PromotePage'));
@@ -198,6 +199,7 @@ export default function App() {
           <Route path="/yeti-admin" element={<YetiAdminPage />} />
           <Route path="/claim/:slug" element={<ClaimPage />} />
           <Route path="/redeem/:slug" element={<MerchantRedeemPage />} />
+          <Route path="/offer-report/:slug" element={<OfferReportPage />} />
           <Route path="/discover" element={<DiscoverPage />} />
           <Route path="/food-trucks" element={<FoodTrucksPage />} />
           <Route path="/food-trucks/qr/:slug" element={<FoodTruckQRPage />} />
