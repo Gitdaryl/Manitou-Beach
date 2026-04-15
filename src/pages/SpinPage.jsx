@@ -228,52 +228,57 @@ export default function SpinPage() {
       ctx.fillStyle = 'rgba(255,255,255,0.6)';
       ctx.fill();
 
-      // Label text
+      // Label text - single line along the radial axis, auto-scaled to fit
       ctx.save();
       const mid = seg.startAngle + seg.sweep / 2;
       ctx.rotate(mid);
       ctx.textAlign = 'right';
-      ctx.shadowColor = 'rgba(0,0,0,0.5)';
-      ctx.shadowBlur = 3;
+      ctx.shadowColor = 'rgba(0,0,0,0.55)';
+      ctx.shadowBlur = 4;
 
-      const fontSize = Math.min(13, Math.max(10, seg.sweep * 28));
+      // Available radial length for text (from hub edge outward)
+      const textEnd = RADIUS - 20;
+      const textStart = RADIUS * 0.3; // don't crowd the hub
+      const maxTextWidth = textEnd - textStart;
 
-      if (seg.type === 'spin-again') {
+      // Determine style
+      const isSpin = seg.type === 'spin-again';
+      const isTmr = seg.type === 'tomorrow';
+
+      // Scale font down until the label fits in one line
+      let fs = 15;
+      const weight = isSpin ? 'bold' : isTmr ? '400' : 'bold';
+      const setFont = (size) => {
+        ctx.font = `${weight} ${size}px 'Segoe UI', system-ui, sans-serif`;
+      };
+      setFont(fs);
+      while (ctx.measureText(seg.label).width > maxTextWidth && fs > 8) {
+        fs--;
+        setFont(fs);
+      }
+
+      if (isSpin) {
         ctx.fillStyle = '#1a1a2e';
-        ctx.font = `bold ${fontSize + 1}px 'Segoe UI', system-ui, sans-serif`;
         ctx.shadowColor = 'rgba(255,255,255,0.3)';
-      } else if (seg.type === 'tomorrow') {
+      } else if (isTmr) {
         ctx.fillStyle = 'rgba(255,255,255,0.4)';
-        ctx.font = `${fontSize}px 'Segoe UI', system-ui, sans-serif`;
       } else {
         ctx.fillStyle = '#fff';
-        ctx.font = `bold ${fontSize}px 'Segoe UI', system-ui, sans-serif`;
       }
 
-      // Word wrap
-      const words = seg.label.split(' ');
-      const lines = [];
-      let current = '';
-      for (const word of words) {
-        const test = current ? `${current} ${word}` : word;
-        if (ctx.measureText(test).width > RADIUS * 0.42) {
-          if (current) lines.push(current);
-          current = word;
-        } else current = test;
-      }
-      if (current) lines.push(current);
-
-      const lh = fontSize + 2;
-      const startY = -(lines.length * lh) / 2 + fontSize / 2;
-      for (let l = 0; l < lines.length; l++) {
-        ctx.fillText(lines[l], RADIUS - 22, startY + l * lh);
-      }
-
+      // Draw label centered vertically on the wedge midline
+      ctx.fillText(seg.label, textEnd, fs * 0.35);
       ctx.shadowBlur = 0;
-      if (seg.sponsor) {
-        ctx.font = `${Math.max(8, fontSize - 3)}px 'Segoe UI', system-ui, sans-serif`;
-        ctx.fillStyle = 'rgba(255,255,255,0.55)';
-        ctx.fillText(seg.sponsor, RADIUS - 22, startY + lines.length * lh + 2);
+
+      // Sponsor name - smaller, slightly below, only on prize segments
+      if (seg.sponsor && !isSpin && !isTmr) {
+        let sf = Math.max(8, fs - 4);
+        ctx.font = `${sf}px 'Segoe UI', system-ui, sans-serif`;
+        ctx.fillStyle = 'rgba(255,255,255,0.5)';
+        // Only show if it fits without crowding
+        if (ctx.measureText(seg.sponsor).width <= maxTextWidth) {
+          ctx.fillText(seg.sponsor, textEnd, fs * 0.35 + sf + 2);
+        }
       }
       ctx.restore();
     }
