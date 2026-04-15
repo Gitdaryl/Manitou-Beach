@@ -273,11 +273,15 @@ export default function SpinPage() {
       ctx.fillStyle = 'rgba(255,255,255,0.6)';
       ctx.fill();
 
-      // Label text + optional circular logo near rim
+      // Label text + optional logo.
+      // Rotated +π/2 from radial so text is HORIZONTAL at the winning position (12 o'clock).
+      // Radial text would require tilting your head to read the winning segment.
+      // In this frame: x = tangential, -y = radially outward (toward rim).
       ctx.save();
       const mid = seg.startAngle + seg.sweep / 2;
-      ctx.rotate(mid);
-      ctx.textAlign = 'right';
+      ctx.rotate(mid + Math.PI / 2);
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
       ctx.shadowColor = 'rgba(0,0,0,0.55)';
       ctx.shadowBlur = 4;
 
@@ -288,21 +292,20 @@ export default function SpinPage() {
       const logoImg = !isSpin && !isTmr && seg.logoUrl ? logosRef.current[seg.logoUrl] : null;
       const logoReady = !!(logoImg && logoImg.complete && logoImg.naturalWidth > 0);
       const logoR = 16;
-      const logoX = RADIUS * 0.78;
+      const logoRadial = -(RADIUS * 0.80); // near rim
 
-      // Text zone shrinks to make room for logo badge; full zone when no logo
-      const textEnd = logoReady ? logoX - logoR - 8 : RADIUS - 20;
-      const textStart = RADIUS * 0.3;
-      const maxTextWidth = textEnd - textStart;
+      // Text sits inward of the logo (or centered if no logo)
+      const textRadial = logoReady ? -(RADIUS * 0.50) : -(RADIUS * 0.62);
+      // Available tangential chord at the text radius
+      const maxTextWidth = 2 * Math.abs(textRadial) * Math.sin(seg.sweep / 2) * 0.82;
 
-      // Scale font down until the label fits in one line
-      let fs = 15;
+      let fs = 14;
       const weight = isSpin ? 'bold' : isTmr ? '400' : 'bold';
       const setFont = (size) => {
         ctx.font = `${weight} ${size}px 'Segoe UI', system-ui, sans-serif`;
       };
       setFont(fs);
-      while (ctx.measureText(seg.label).width > maxTextWidth && fs > 8) {
+      while (ctx.measureText(seg.label).width > maxTextWidth && fs > 7) {
         fs--;
         setFont(fs);
       }
@@ -316,16 +319,16 @@ export default function SpinPage() {
         ctx.fillStyle = '#fff';
       }
 
-      ctx.fillText(seg.label, textEnd, fs * 0.35);
+      ctx.fillText(seg.label, 0, textRadial);
       ctx.shadowBlur = 0;
 
-      // Sponsor name - only when no logo is loaded (logo identifies the sponsor instead)
+      // Sponsor name sub-label (only when no logo)
       if (seg.sponsor && !isSpin && !isTmr && !logoReady) {
-        let sf = Math.max(8, fs - 4);
+        let sf = Math.max(7, fs - 3);
         ctx.font = `${sf}px 'Segoe UI', system-ui, sans-serif`;
         ctx.fillStyle = 'rgba(255,255,255,0.5)';
         if (ctx.measureText(seg.sponsor).width <= maxTextWidth) {
-          ctx.fillText(seg.sponsor, textEnd, fs * 0.35 + sf + 2);
+          ctx.fillText(seg.sponsor, 0, textRadial + fs + 3);
         }
       }
 
@@ -333,13 +336,12 @@ export default function SpinPage() {
       if (logoReady) {
         ctx.save();
         ctx.beginPath();
-        ctx.arc(logoX, 0, logoR, 0, Math.PI * 2);
+        ctx.arc(0, logoRadial, logoR, 0, Math.PI * 2);
         ctx.clip();
-        ctx.drawImage(logoImg, logoX - logoR, -logoR, logoR * 2, logoR * 2);
+        ctx.drawImage(logoImg, -logoR, logoRadial - logoR, logoR * 2, logoR * 2);
         ctx.restore();
-        // White ring around the logo
         ctx.beginPath();
-        ctx.arc(logoX, 0, logoR, 0, Math.PI * 2);
+        ctx.arc(0, logoRadial, logoR, 0, Math.PI * 2);
         ctx.strokeStyle = 'rgba(255,255,255,0.7)';
         ctx.lineWidth = 1.5;
         ctx.stroke();
