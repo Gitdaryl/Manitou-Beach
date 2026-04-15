@@ -250,7 +250,8 @@ export default function ClaimPage() {
               You're all set, {name.split(' ')[0]}!
             </h1>
             <p style={{ color: C.textLight, fontSize: 15, marginBottom: 8 }}>Show this screen (or the email we just sent) to your barista at {biz.name}.</p>
-            <p style={{ color: C.textMuted, fontSize: 13, marginBottom: 24 }}>📧 Check your inbox — we emailed a copy of your code so you don't lose it.</p>
+            <p style={{ color: C.textMuted, fontSize: 13, marginBottom: 6 }}>📧 We emailed a copy of your code so you don't lose it.</p>
+            <p style={{ color: C.textMuted, fontSize: 12, marginBottom: 24, fontStyle: 'italic' }}>Don't see it in a minute? Peek in your spam / junk folder and mark it "Not junk" — we're a new sender so some inboxes filter us out of caution.</p>
             <div style={{ background: C.dusk, borderRadius: 14, padding: '24px 32px', marginBottom: 16, display: 'inline-block', minWidth: 240 }}>
               <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.45)', marginBottom: 8 }}>Claim Code</div>
               <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 42, color: '#fff', letterSpacing: '0.1em', fontWeight: 700 }}>{claimCode}</div>
