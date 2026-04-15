@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { C } from '../data/config';
 
 const MERCHANTS = {
@@ -13,6 +13,7 @@ const MERCHANTS = {
 
 export default function MerchantRedeemPage() {
   const { slug } = useParams();
+  const [searchParams] = useSearchParams();
   const biz = MERCHANTS[slug];
 
   const [code, setCode] = useState('');
@@ -21,6 +22,7 @@ export default function MerchantRedeemPage() {
   const [redeeming, setRedeeming] = useState(false);
   const [error, setError] = useState('');
   const [done, setDone] = useState(false);
+  const autoRan = useRef(false);
 
   if (!biz) return (
     <div style={{ minHeight: '100vh', background: C.cream, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
@@ -32,9 +34,8 @@ export default function MerchantRedeemPage() {
     setCode(''); setLookup(null); setDone(false); setError('');
   };
 
-  const handleLookup = async (e) => {
-    e?.preventDefault?.();
-    const clean = code.trim().toUpperCase();
+  const runLookup = async (raw) => {
+    const clean = (raw || '').trim().toUpperCase();
     if (clean.length < 4) return;
     setLooking(true);
     setError('');
@@ -50,6 +51,22 @@ export default function MerchantRedeemPage() {
       setLooking(false);
     }
   };
+
+  const handleLookup = async (e) => {
+    e?.preventDefault?.();
+    runLookup(code);
+  };
+
+  useEffect(() => {
+    if (autoRan.current) return;
+    const prefill = searchParams.get('code');
+    if (prefill && biz) {
+      autoRan.current = true;
+      const clean = prefill.trim().toUpperCase();
+      setCode(clean);
+      runLookup(clean);
+    }
+  }, [searchParams, biz]);
 
   const handleRedeem = async () => {
     if (!lookup) return;

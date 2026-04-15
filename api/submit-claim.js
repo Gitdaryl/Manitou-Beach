@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import QRCode from 'qrcode';
 
 // slug <-> Offer name in the Promo Claims Notion DB
 const BIZ = {
@@ -31,6 +32,13 @@ async function sendClaimEmail({ email, name, slug, claimCode }) {
   if (!biz) return { ok: false, reason: 'no_biz' };
   const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
   const resend = new Resend(process.env.RESEND_API_KEY);
+  const redeemUrl = `${siteUrl}/redeem/${slug}?code=${encodeURIComponent(claimCode)}`;
+  let qrDataUrl = null;
+  try {
+    qrDataUrl = await QRCode.toDataURL(redeemUrl, { width: 300, margin: 1 });
+  } catch (err) {
+    console.error('[claim-email] QR generation failed:', err.message);
+  }
   try {
     const result = await resend.emails.send({
       from: 'The Manitou Dispatch <events@manitoubeachmichigan.com>',
@@ -48,7 +56,13 @@ async function sendClaimEmail({ email, name, slug, claimCode }) {
           <div style="background:#1A2830;border-radius:14px;padding:28px 24px;text-align:center;margin-bottom:24px;">
             <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.5);margin-bottom:10px;">Claim Code</div>
             <div style="font-family:Georgia,serif;font-size:38px;color:#fff;letter-spacing:0.1em;font-weight:700;">${claimCode}</div>
-            <div style="font-size:13px;color:rgba(255,255,255,0.55);margin-top:10px;">${biz.offerText} · one use</div>
+            ${qrDataUrl ? `
+              <div style="background:#fff;display:inline-block;padding:10px;border-radius:10px;margin-top:16px;">
+                <img src="${qrDataUrl}" alt="Claim QR code" width="160" height="160" style="display:block;" />
+              </div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:10px;">Show this QR to your barista, or read them the code above</div>
+            ` : ''}
+            <div style="font-size:13px;color:rgba(255,255,255,0.55);margin-top:14px;">${biz.offerText} · one use</div>
           </div>
           <p style="color:#5C5248;font-size:14px;line-height:1.6;text-align:center;margin:0 0 20px;">
             Save this email so you've always got your code on hand. ${biz.expiresLabel}.

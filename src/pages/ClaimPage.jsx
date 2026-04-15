@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import QRCode from 'react-qr-code';
 import { C } from '../data/config';
 import yeti from '../data/errorMessages';
 
@@ -255,7 +256,15 @@ export default function ClaimPage() {
             <div style={{ background: C.dusk, borderRadius: 14, padding: '24px 32px', marginBottom: 16, display: 'inline-block', minWidth: 240 }}>
               <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.45)', marginBottom: 8 }}>Claim Code</div>
               <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 42, color: '#fff', letterSpacing: '0.1em', fontWeight: 700 }}>{claimCode}</div>
-              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginTop: 8 }}>{biz.offerText} · one use</div>
+              <div style={{ background: '#fff', padding: 12, borderRadius: 10, display: 'inline-block', marginTop: 16 }}>
+                <QRCode
+                  value={`${typeof window !== 'undefined' ? window.location.origin : 'https://manitoubeachmichigan.com'}/redeem/${slug}?code=${claimCode}`}
+                  size={140}
+                  level="M"
+                />
+              </div>
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', marginTop: 10 }}>Barista can scan this to redeem</div>
+              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginTop: 14 }}>{biz.offerText} · one use</div>
               <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 4 }}>{biz.capLabel}. {biz.expiresLabel}.</div>
             </div>
             <div style={{ marginBottom: 24 }}>
