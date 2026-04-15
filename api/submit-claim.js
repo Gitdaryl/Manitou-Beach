@@ -35,7 +35,9 @@ async function sendClaimEmail({ email, name, slug, claimCode }) {
     const result = await resend.emails.send({
       from: 'The Manitou Dispatch <events@manitoubeachmichigan.com>',
       to: email,
-      subject: `Your ${biz.offerText} code for ${biz.name}`,
+      reply_to: 'hello@manitoubeachmichigan.com',
+      subject: `Your code for ${biz.name}: ${claimCode}`,
+      text: `Hi${name ? ' ' + name.split(' ')[0] : ''},\n\nYou're all set. Show this code to your barista at ${biz.name}:\n\n${claimCode}\n\nGood for one ${biz.offerText}. ${biz.expiresLabel}.\n\nClaim page: ${siteUrl}/claim/${slug}\n\n- The Manitou Dispatch\nManitou Beach, Michigan`,
       html: `
         <div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:32px 24px;background:#FAF6EF;">
           <div style="text-align:center;margin-bottom:24px;">
