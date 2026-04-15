@@ -30,7 +30,7 @@ async function sendClaimEmail({ email, name, slug, claimCode }) {
   const resend = new Resend(process.env.RESEND_API_KEY);
   try {
     await resend.emails.send({
-      from: 'The Manitou Dispatch <hello@manitoubeachmichigan.com>',
+      from: 'The Manitou Dispatch <events@manitoubeachmichigan.com>',
       to: email,
       subject: `Your ${biz.offerText} code for ${biz.name}`,
       html: `
@@ -156,7 +156,7 @@ export default async function handler(req, res) {
           if (recipients.length) {
             const resend = new Resend(process.env.RESEND_API_KEY);
             await resend.emails.send({
-              from: 'The Manitou Dispatch <hello@manitoubeachmichigan.com>',
+              from: 'The Manitou Dispatch <events@manitoubeachmichigan.com>',
               to: recipients,
               subject: `Heads up: ${rating}-star feedback from ${bizEntry?.name || 'a customer'}`,
               html: `
