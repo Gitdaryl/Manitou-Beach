@@ -344,10 +344,14 @@ export default function SpinPage() {
   }, []);
 
   // ── FORCE FIELD (nudge away from tomorrow) ──
+  // Activates well before the wheel crawls to a stop so the boost is always a tiny
+  // fraction of current speed - looks like the wheel just had enough momentum to escape,
+  // not like something pushed it.
   const applyForceField = useCallback(() => {
     const p = phys.current;
     const speed = Math.abs(p.angularVelocity);
-    if (speed > 0.008 || speed < MIN_VELOCITY) return;
+    // Wide window: catch it while still at natural deceleration speed (was 0.008)
+    if (speed > 0.06 || speed < MIN_VELOCITY) return;
     const segs = segmentsRef.current;
     const idx = getSegAtPointer();
     if (!segs[idx] || segs[idx].type !== 'tomorrow') return;
@@ -355,10 +359,14 @@ export default function SpinPage() {
     if (a < 0) a += Math.PI * 2;
     const seg = segs[idx];
     const progress = (a - seg.startAngle) / seg.sweep;
-    if (progress < 0.85) {
-      const sign = p.angularVelocity >= 0 ? 1 : -1;
-      p.angularVelocity += sign * 0.002;
-    }
+    if (progress >= 0.85) return; // deep into segment - let it land, force field did its job
+    const sign = p.angularVelocity >= 0 ? 1 : -1;
+    // Proportional boost: always ~15% of current speed, never a flat jump.
+    // At v=0.04 → +0.006 (imperceptible). At v=0.003 → +0.0005 (barely felt).
+    // Fires every frame on tomorrow, so it gently sustains momentum through the wedge
+    // rather than shoving it out in one visible lurch.
+    const boost = Math.max(speed * 0.15, 0.0004);
+    p.angularVelocity += sign * boost;
   }, [getSegAtPointer]);
 
   // ── HANDLE RESULT ──
