@@ -14,6 +14,34 @@ const MAX_RELEASE_SPEED = 0.7;
 // Deliberately avoid colors that could match common prize segment colors
 const SPIN_COLORS = ['#4ecdc4', '#f39c12', '#9b59b6'];
 
+// Pure segment lookup by rotation value (no React hooks)
+function getSegForRotation(rotation, segs) {
+  if (!segs.length) return 0;
+  let a = (-Math.PI / 2 - rotation) % (Math.PI * 2);
+  if (a < 0) a += Math.PI * 2;
+  let best = 0, bestDist = Infinity;
+  for (let i = 0; i < segs.length; i++) {
+    const mid = segs[i].startAngle + segs[i].sweep / 2;
+    let d = Math.abs(a - mid);
+    if (d > Math.PI) d = Math.PI * 2 - d;
+    if (d < bestDist) { bestDist = d; best = i; }
+  }
+  return best;
+}
+
+// Simulate deceleration to predict final landing segment
+function predictLanding(rotation, velocity, segs) {
+  let rot = rotation;
+  let vel = velocity;
+  let guard = 1000; // well above max real frames (~530 at MAX_RELEASE_SPEED)
+  while (Math.abs(vel) > MIN_VELOCITY && guard-- > 0) {
+    rot += vel;
+    const spd = Math.abs(vel);
+    vel *= spd > 0.06 ? FRICTION : spd > 0.02 ? FRICTION_SLOW : FRICTION_CRAWL;
+  }
+  return getSegForRotation(rot, segs);
+}
+
 // Build equal-size segment angles from a flat list
 function buildSegments(prizes) {
   const count = prizes.length;
@@ -71,6 +99,8 @@ export default function SpinPage() {
     // Stability tracking - require 3 consecutive frames on same segment before firing result
     stableSegment: -1,
     stableCount: 0,
+    // Predictive steering - fires once per spin, corrects trajectory before crawl phase
+    forceFieldFired: false,
   });
   const confettiStateRef = useRef([]);
   const phaseRef = useRef('idle');
@@ -343,32 +373,6 @@ export default function SpinPage() {
     return best;
   }, []);
 
-  // ── FORCE FIELD (nudge away from tomorrow) ──
-  // Activates well before the wheel crawls to a stop so the boost is always a tiny
-  // fraction of current speed - looks like the wheel just had enough momentum to escape,
-  // not like something pushed it.
-  const applyForceField = useCallback(() => {
-    const p = phys.current;
-    const speed = Math.abs(p.angularVelocity);
-    // Wide window: catch it while still at natural deceleration speed (was 0.008)
-    if (speed > 0.06 || speed < MIN_VELOCITY) return;
-    const segs = segmentsRef.current;
-    const idx = getSegAtPointer();
-    if (!segs[idx] || segs[idx].type !== 'tomorrow') return;
-    let a = (-Math.PI / 2 - p.rotation) % (Math.PI * 2);
-    if (a < 0) a += Math.PI * 2;
-    const seg = segs[idx];
-    const progress = (a - seg.startAngle) / seg.sweep;
-    if (progress >= 0.85) return; // deep into segment - let it land, force field did its job
-    const sign = p.angularVelocity >= 0 ? 1 : -1;
-    // Proportional boost: always ~15% of current speed, never a flat jump.
-    // At v=0.04 → +0.006 (imperceptible). At v=0.003 → +0.0005 (barely felt).
-    // Fires every frame on tomorrow, so it gently sustains momentum through the wedge
-    // rather than shoving it out in one visible lurch.
-    const boost = Math.max(speed * 0.15, 0.0004);
-    p.angularVelocity += sign * boost;
-  }, [getSegAtPointer]);
-
   // ── HANDLE RESULT ──
   const handleResult = useCallback((idx) => {
     const segs = segmentsRef.current;
@@ -386,6 +390,7 @@ export default function SpinPage() {
       phys.current.lastTickSegment = -1;
       phys.current.stableSegment = -1;
       phys.current.stableCount = 0;
+      phys.current.forceFieldFired = false;
       playSpinAgain();
       setHint('Bonus spin! Give it another flick');
       setHintVisible(true);
@@ -433,7 +438,25 @@ export default function SpinPage() {
           else if (p.angularVelocity < 0) p.angularVelocity += FLAPPER_BOUNCE;
         }
 
-        applyForceField();
+        // ── PREDICTIVE STEERING (once per spin, at medium speed) ──
+        // Fires while the wheel is still spinning fast - a tiny rotation offset at
+        // high speed is invisible. Never touches velocity at crawl speed, so there's
+        // no visible push/lurch near the end.
+        if (!p.forceFieldFired) {
+          const spd = Math.abs(p.angularVelocity);
+          if (spd > 0.05 && spd < 0.4) {
+            const segs = segmentsRef.current;
+            const predicted = predictLanding(p.rotation, p.angularVelocity, segs);
+            if (segs[predicted]?.type === 'tomorrow') {
+              p.forceFieldFired = true;
+              // Shift rotation by 65% of one segment in direction of travel.
+              // This moves the predicted landing point past "tomorrow" regardless of where
+              // within the segment it would have landed. At these speeds the nudge is invisible.
+              const nudge = (segs[0]?.sweep ?? (Math.PI * 2 / 8)) * 0.65;
+              p.rotation += p.angularVelocity > 0 ? nudge : -nudge;
+            }
+          }
+        }
 
         if (Math.abs(p.angularVelocity) < MIN_VELOCITY && !p.spinDone) {
           p.angularVelocity = 0;
@@ -469,7 +492,7 @@ export default function SpinPage() {
       running = false;
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [drawWheel, drawConfetti, getSegAtPointer, applyForceField, handleResult, playTick]);
+  }, [drawWheel, drawConfetti, getSegAtPointer, handleResult, playTick]);
 
   // ── CANVAS RESIZE ──
   useEffect(() => {
@@ -509,6 +532,7 @@ export default function SpinPage() {
       initAudio();
       p.isDragging = true;
       p.spinDone = false;
+      p.forceFieldFired = false;
       const { clientX, clientY } = e.touches ? e.touches[0] : e;
       p.lastAngle = getAngle(clientX, clientY);
       p.lastTime = performance.now();
