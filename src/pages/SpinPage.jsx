@@ -79,6 +79,7 @@ export default function SpinPage() {
   const [claimCode, setClaimCode] = useState('');
   const [blockedToday, setBlockedToday] = useState(false);
   const [confettiPieces, setConfettiPieces] = useState([]);
+  const [whlSize, setWhlSize] = useState(() => Math.min(420, typeof window !== 'undefined' ? window.innerWidth - 40 : 380));
 
   const canvasRef = useRef(null);
   const confettiRef = useRef(null);
@@ -536,6 +537,7 @@ export default function SpinPage() {
       const size = Math.min(420, window.innerWidth - 40);
       canvas.width = size; canvas.height = size;
       canvas.style.width = size + 'px'; canvas.style.height = size + 'px';
+      setWhlSize(size);
       if (confCanvas) {
         confCanvas.width = window.innerWidth;
         confCanvas.height = window.innerHeight;
@@ -783,7 +785,7 @@ export default function SpinPage() {
         </p>
 
         {/* Wheel */}
-        <div style={{ position: 'relative', width: 380, height: 380, margin: '0 auto' }}>
+        <div style={{ position: 'relative', width: whlSize, height: whlSize, margin: '0 auto' }}>
           <div style={S.pointer} />
           <canvas
             ref={canvasRef}
