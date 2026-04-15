@@ -1,9 +1,6 @@
 // Barista-facing redemption against the Promo Claims Notion DB.
 // Looks up by Promo Code (title) + slug, marks Redeemed + Status.
-
-const SLUG_TO_OFFER = {
-  cafe: 'Blackbird Cookie',
-};
+import { getOffer } from '../src/data/offers.js';
 
 const DB_ID = process.env.NOTION_DB_PROMO_CLAIMS;
 const NOTION_TOKEN = process.env.NOTION_TOKEN_BUSINESS;
@@ -48,11 +45,11 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     const code = (req.query.code || '').toString().trim().toUpperCase();
     const slug = (req.query.slug || '').toString().trim();
-    const offer = SLUG_TO_OFFER[slug];
+    const offer = getOffer(slug);
     if (!code || !offer) return res.status(400).json({ error: 'code and slug required' });
 
     try {
-      const data = await queryByCodeOffer(code, offer);
+      const data = await queryByCodeOffer(code, offer.notionOfferName);
       if (!data.results || data.results.length === 0) {
         return res.status(404).json({ error: 'Code not found. Double-check the characters.' });
       }
@@ -66,7 +63,7 @@ export default async function handler(req, res) {
   // --- POST (mark redeemed) ---
   if (req.method === 'POST') {
     const { notionId, code, slug } = req.body || {};
-    const offer = SLUG_TO_OFFER[slug];
+    const offer = getOffer(slug);
     if (!offer || (!notionId && !code)) {
       return res.status(400).json({ error: 'slug + (notionId or code) required' });
     }
@@ -76,7 +73,7 @@ export default async function handler(req, res) {
       let row = null;
 
       if (!pageId) {
-        const data = await queryByCodeOffer(code.toUpperCase(), offer);
+        const data = await queryByCodeOffer(code.toUpperCase(), offer.notionOfferName);
         if (!data.results || data.results.length === 0) {
           return res.status(404).json({ error: 'Code not found' });
         }

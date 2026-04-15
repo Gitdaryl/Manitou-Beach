@@ -3,23 +3,16 @@ import { useParams } from 'react-router-dom';
 import QRCode from 'react-qr-code';
 import { C } from '../data/config';
 import yeti from '../data/errorMessages';
+import { getOffer } from '../data/offers';
 
-const CLAIM_BUSINESSES = {
-  cafe: {
-    name: 'Blackbird Cafe & Baking Company',
-    offerText: 'free cookie',
-    descLine: 'A welcome gift from The Manitou Dispatch',
-    emoji: '☕',
-    accentColor: '#D4845A',
-    capLabel: 'First 20 people only',
-    expiresLabel: 'Expires May 31',
-    reviewUrl: 'https://www.yelp.com/writeareview/biz/BV2J5pWMspuXAU78MeQo_A?return_url=%2Fbiz%2FBV2J5pWMspuXAU78MeQo_A&review_origin=biz-details-war-button',
-  },
-};
+// ClaimPage reads offer config from src/data/offers.js — single source of
+// truth shared with the redemption page and both API routes. To add or
+// swap an offer, edit that file.
 
 export default function ClaimPage() {
   const { slug } = useParams();
-  const biz = CLAIM_BUSINESSES[slug];
+  const offer = getOffer(slug);
+  const biz = offer ? { ...offer, name: offer.merchantName, accentColor: offer.accent } : null;
 
   const [step, setStep] = useState('form'); // form | confirm | rate | done
   const [name, setName] = useState('');
@@ -151,6 +144,26 @@ export default function ClaimPage() {
   if (!biz) return (
     <div style={{ minHeight: '100vh', background: C.cream, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
       <p style={{ color: C.textLight }}>Hmm, can't find that offer. It may have already been claimed!</p>
+    </div>
+  );
+
+  if (biz.status === 'ended') return (
+    <div style={{ minHeight: '100vh', background: C.cream, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20, textAlign: 'center' }}>
+      <div>
+        <div style={{ fontSize: 42, marginBottom: 10 }}>{biz.emoji}</div>
+        <h1 style={{ color: C.dusk, fontSize: 22, margin: '0 0 8px', fontFamily: "'Libre Baskerville', serif" }}>This offer has wrapped up</h1>
+        <p style={{ color: C.textLight, fontSize: 15, margin: 0 }}>Thanks for the interest — keep an eye on The Manitou Dispatch for what's next.</p>
+      </div>
+    </div>
+  );
+
+  if (biz.status === 'paused') return (
+    <div style={{ minHeight: '100vh', background: C.cream, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20, textAlign: 'center' }}>
+      <div>
+        <div style={{ fontSize: 42, marginBottom: 10 }}>{biz.emoji}</div>
+        <h1 style={{ color: C.dusk, fontSize: 22, margin: '0 0 8px', fontFamily: "'Libre Baskerville', serif" }}>Back in a bit</h1>
+        <p style={{ color: C.textLight, fontSize: 15, margin: 0 }}>This offer is paused for a moment. Check back soon.</p>
+      </div>
     </div>
   );
 

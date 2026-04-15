@@ -1,19 +1,6 @@
 import { Resend } from 'resend';
 import QRCode from 'qrcode';
-
-// slug <-> Offer name in the Promo Claims Notion DB
-const BIZ = {
-  cafe: {
-    offer: 'Blackbird Cookie',
-    name: 'Blackbird Cafe & Baking Company',
-    offerText: 'free cookie',
-    emoji: '🍪',
-    accent: '#D4845A',
-    cap: 20,
-    expiresLabel: 'Expires May 31',
-    ownerEmails: ['admin@yetigroove.com'], // swap for Blackbird owner email when shared
-  },
-};
+import { getOffer, getOfferByNotionName } from '../src/data/offers.js';
 
 const DB_ID = process.env.NOTION_DB_PROMO_CLAIMS;
 const NOTION_TOKEN = process.env.NOTION_TOKEN_BUSINESS;
@@ -28,8 +15,8 @@ async function sendClaimEmail({ email, name, slug, claimCode }) {
     console.error('[claim-email] RESEND_API_KEY missing');
     return { ok: false, reason: 'no_api_key' };
   }
-  const biz = BIZ[slug];
-  if (!biz) return { ok: false, reason: 'no_biz' };
+  const offer = getOffer(slug);
+  if (!offer) return { ok: false, reason: 'no_offer' };
   const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
   const resend = new Resend(process.env.RESEND_API_KEY);
   const redeemUrl = `${siteUrl}/redeem/${slug}?code=${encodeURIComponent(claimCode)}`;
@@ -44,14 +31,14 @@ async function sendClaimEmail({ email, name, slug, claimCode }) {
       from: 'The Manitou Dispatch <events@manitoubeachmichigan.com>',
       to: email,
       reply_to: 'hello@manitoubeachmichigan.com',
-      subject: `Your code for ${biz.name}: ${claimCode}`,
-      text: `Hi${name ? ' ' + name.split(' ')[0] : ''},\n\nYou're all set. Show this code to your barista at ${biz.name}:\n\n${claimCode}\n\nGood for one ${biz.offerText}. ${biz.expiresLabel}.\n\nClaim page: ${siteUrl}/claim/${slug}\n\n- The Manitou Dispatch\nManitou Beach, Michigan`,
+      subject: `Your code for ${offer.merchantName}: ${claimCode}`,
+      text: `Hi${name ? ' ' + name.split(' ')[0] : ''},\n\nYou're all set. Show this code to your barista at ${offer.merchantName}:\n\n${claimCode}\n\nGood for one ${offer.offerText}. ${offer.expiresLabel}.\n\nClaim page: ${siteUrl}/claim/${slug}\n\n- The Manitou Dispatch\nManitou Beach, Michigan`,
       html: `
         <div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:32px 24px;background:#FAF6EF;">
           <div style="text-align:center;margin-bottom:24px;">
-            <div style="font-size:42px;margin-bottom:8px;">${biz.emoji}</div>
+            <div style="font-size:42px;margin-bottom:8px;">${offer.emoji}</div>
             <h1 style="color:#1A2830;font-size:22px;margin:0 0 6px;">You're all set${name ? ', ' + name.split(' ')[0] : ''}!</h1>
-            <p style="color:#5C5248;font-size:15px;margin:0;">Show this email (or the code) to your barista at ${biz.name}.</p>
+            <p style="color:#5C5248;font-size:15px;margin:0;">Show this email (or the code) to your barista at ${offer.merchantName}.</p>
           </div>
           <div style="background:#1A2830;border-radius:14px;padding:28px 24px;text-align:center;margin-bottom:24px;">
             <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.5);margin-bottom:10px;">Claim Code</div>
@@ -62,13 +49,13 @@ async function sendClaimEmail({ email, name, slug, claimCode }) {
               </div>
               <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:10px;">Show this QR to your barista, or read them the code above</div>
             ` : ''}
-            <div style="font-size:13px;color:rgba(255,255,255,0.55);margin-top:14px;">${biz.offerText} · one use</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.55);margin-top:14px;">${offer.offerText} · one use</div>
           </div>
           <p style="color:#5C5248;font-size:14px;line-height:1.6;text-align:center;margin:0 0 20px;">
-            Save this email so you've always got your code on hand. ${biz.expiresLabel}.
+            Save this email so you've always got your code on hand. ${offer.expiresLabel}.
           </p>
           <p style="text-align:center;margin:0;">
-            <a href="${siteUrl}/claim/${slug}" style="color:${biz.accent};font-size:14px;text-decoration:none;">Open your claim page →</a>
+            <a href="${siteUrl}/claim/${slug}" style="color:${offer.accent};font-size:14px;text-decoration:none;">Open your claim page →</a>
           </p>
           <p style="margin-top:32px;color:#8C806E;font-size:12px;text-align:center;">The Manitou Dispatch · Manitou Beach, Michigan</p>
         </div>
@@ -86,7 +73,7 @@ async function sendClaimEmail({ email, name, slug, claimCode }) {
   }
 }
 
-async function queryByEmailOffer(email, offer) {
+async function queryByEmailOffer(email, notionOfferName) {
   const res = await fetch(`https://api.notion.com/v1/databases/${DB_ID}/query`, {
     method: 'POST',
     headers: {
@@ -98,7 +85,7 @@ async function queryByEmailOffer(email, offer) {
       filter: {
         and: [
           { property: 'Email', email: { equals: email } },
-          { property: 'Offer', select: { equals: offer } },
+          { property: 'Offer', select: { equals: notionOfferName } },
         ],
       },
       page_size: 1,
@@ -108,7 +95,7 @@ async function queryByEmailOffer(email, offer) {
   return res.json();
 }
 
-async function countByOffer(offer) {
+async function countByOffer(notionOfferName) {
   const res = await fetch(`https://api.notion.com/v1/databases/${DB_ID}/query`, {
     method: 'POST',
     headers: {
@@ -117,7 +104,7 @@ async function countByOffer(offer) {
       'Notion-Version': '2022-06-28',
     },
     body: JSON.stringify({
-      filter: { property: 'Offer', select: { equals: offer } },
+      filter: { property: 'Offer', select: { equals: notionOfferName } },
       page_size: 100,
     }),
   });
@@ -171,27 +158,27 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: 'Failed to record rating' });
       }
 
-      // Low-rating alert to vendor (best-effort)
+      // Low-rating alert to merchant (best-effort)
       if (rating && rating <= 3 && feedback && process.env.RESEND_API_KEY) {
         try {
           const page = await notionRes.json();
-          const offer = page?.properties?.Offer?.select?.name;
+          const notionOfferName = page?.properties?.Offer?.select?.name;
           const customerName = page?.properties?.Name?.rich_text?.[0]?.text?.content || 'A customer';
-          const bizEntry = Object.values(BIZ).find(b => b.offer === offer);
-          const recipients = bizEntry?.ownerEmails || [];
+          const offer = getOfferByNotionName(notionOfferName);
+          const recipients = offer?.ownerEmails || [];
           if (recipients.length) {
             const resend = new Resend(process.env.RESEND_API_KEY);
             await resend.emails.send({
               from: 'The Manitou Dispatch <events@manitoubeachmichigan.com>',
               to: recipients,
-              subject: `Heads up: ${rating}-star feedback from ${bizEntry?.name || 'a customer'}`,
+              subject: `Heads up: ${rating}-star feedback from ${offer?.merchantName || 'a customer'}`,
               html: `
                 <div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:28px 20px;">
                   <h2 style="color:#1A2830;margin:0 0 8px;">Private feedback came in</h2>
                   <p style="color:#5C5248;margin:0 0 18px;font-size:15px;">
                     ${customerName} rated their visit <strong>${rating} star${rating === 1 ? '' : 's'}</strong> and left this note:
                   </p>
-                  <blockquote style="margin:0;padding:16px 20px;background:#FAF6EF;border-left:3px solid #D4845A;color:#3B3228;font-size:15px;line-height:1.5;">
+                  <blockquote style="margin:0;padding:16px 20px;background:#FAF6EF;border-left:3px solid ${offer?.accent || '#D4845A'};color:#3B3228;font-size:15px;line-height:1.5;">
                     ${feedback.replace(/[<>]/g, c => ({ '<': '&lt;', '>': '&gt;' }[c]))}
                   </blockquote>
                   <p style="color:#8C806E;font-size:13px;margin-top:20px;">
@@ -216,12 +203,12 @@ export default async function handler(req, res) {
   // --- Resend existing code to email ---
   if (body.action === 'resend') {
     const { slug, email } = body;
-    const biz = BIZ[slug];
-    if (!biz || !email || !email.includes('@')) {
+    const offer = getOffer(slug);
+    if (!offer || !email || !email.includes('@')) {
       return res.status(400).json({ error: 'slug and valid email required' });
     }
     try {
-      const data = await queryByEmailOffer(email.toLowerCase().trim(), biz.offer);
+      const data = await queryByEmailOffer(email.toLowerCase().trim(), offer.notionOfferName);
       if (!data.results || data.results.length === 0) {
         return res.status(404).json({ error: "We couldn't find a claim for that email. Try claiming again." });
       }
@@ -236,15 +223,18 @@ export default async function handler(req, res) {
 
   // --- New claim ---
   const { slug, name, email } = body;
-  const biz = BIZ[slug];
-  if (!biz || !name || !email || !email.includes('@')) {
+  const offer = getOffer(slug);
+  if (!offer || !name || !email || !email.includes('@')) {
     return res.status(400).json({ error: 'slug, name, and valid email required' });
+  }
+  if (offer.status !== 'active') {
+    return res.status(409).json({ error: 'This offer is no longer available.', ended: true });
   }
   const cleanEmail = email.toLowerCase().trim();
 
   try {
     // Reuse existing claim if this email already claimed
-    const existing = await queryByEmailOffer(cleanEmail, biz.offer);
+    const existing = await queryByEmailOffer(cleanEmail, offer.notionOfferName);
     if (existing.results && existing.results.length > 0) {
       const row = parseRow(existing.results[0]);
       const emailResult = await sendClaimEmail({ email: cleanEmail, name, slug, claimCode: row.code });
@@ -252,17 +242,17 @@ export default async function handler(req, res) {
     }
 
     // Enforce cap
-    if (biz.cap) {
-      const count = await countByOffer(biz.offer);
-      if (count >= biz.cap) {
+    if (offer.cap) {
+      const count = await countByOffer(offer.notionOfferName);
+      if (count >= offer.cap) {
         return res.status(409).json({
-          error: `All ${biz.cap} spots are claimed. Thanks for your interest!`,
+          error: `All ${offer.cap} spots are claimed. Thanks for your interest!`,
           soldOut: true,
         });
       }
     }
 
-    const claimCode = generateCode('BB');
+    const claimCode = generateCode(offer.codePrefix || 'MB');
 
     const notionRes = await fetch('https://api.notion.com/v1/pages', {
       method: 'POST',
@@ -277,7 +267,7 @@ export default async function handler(req, res) {
           'Promo Code': { title: [{ text: { content: claimCode } }] },
           'Name':       { rich_text: [{ text: { content: name } }] },
           'Email':      { email: cleanEmail },
-          'Offer':      { select: { name: biz.offer } },
+          'Offer':      { select: { name: offer.notionOfferName } },
           'Status':     { select: { name: 'Unclaimed' } },
           'Claimed At': { date: { start: new Date().toISOString() } },
         },

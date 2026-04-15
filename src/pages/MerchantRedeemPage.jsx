@@ -1,20 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { C } from '../data/config';
-
-const MERCHANTS = {
-  cafe: {
-    name: 'Blackbird Cafe & Baking Company',
-    offerText: 'free cookie',
-    emoji: '☕',
-    accent: '#D4845A',
-  },
-};
+import { getOffer } from '../data/offers';
 
 export default function MerchantRedeemPage() {
   const { slug } = useParams();
   const [searchParams] = useSearchParams();
-  const biz = MERCHANTS[slug];
+  const offer = getOffer(slug);
+  const biz = offer ? { ...offer, name: offer.merchantName } : null;
 
   const [code, setCode] = useState('');
   const [lookup, setLookup] = useState(null);
