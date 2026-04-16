@@ -52,6 +52,8 @@ export default async function handler(req, res) {
           heroPhoto: p['Hero Photo URL']?.url || '',
           hours: p['Hours']?.rich_text?.[0]?.text?.content || '',
           category: p['Category']?.select?.name || '',
+          socialInstagram: p['Instagram URL']?.url || '',
+          socialFacebook: p['Facebook URL']?.url || '',
         },
       });
     } catch (err) {
@@ -62,7 +64,7 @@ export default async function handler(req, res) {
 
   // POST - submit an update request
   if (req.method === 'POST') {
-    const { name, email, phone, website, address, description, logoUrl, heroPhotoUrl, hoursJson, category } = req.body;
+    const { name, email, phone, website, address, description, logoUrl, heroPhotoUrl, hoursJson, category, socialInstagram, socialFacebook } = req.body;
     if (!name || !email) return res.status(400).json({ success: false, error: 'Name and email are required' });
 
     try {
@@ -105,6 +107,8 @@ export default async function handler(req, res) {
             ...(normalizedHero && { 'Hero Photo URL': { url: normalizedHero } }),
             ...(hoursJson && { 'Hours': { rich_text: [{ text: { content: hoursJson } }] } }),
             ...(category && { 'Category': { select: { name: category } } }),
+            ...(socialInstagram && { 'Instagram URL': { url: socialInstagram } }),
+            ...(socialFacebook && { 'Facebook URL': { url: socialFacebook } }),
           },
         }),
       });

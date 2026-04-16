@@ -68,6 +68,8 @@ export default async function handler(req, res) {
     hours,       // JSON string: { Mon: "9am-5pm", Tue: "9am-5pm", ... }
     heroPhotoUrl,
     googlePlaceId,
+    socialInstagram,
+    socialFacebook,
   } = req.body || {};
 
   if (!slug || !claimToken) {
@@ -111,6 +113,8 @@ export default async function handler(req, res) {
     if (hours !== undefined)         properties['Hours']           = { rich_text: [{ text: { content: hours || '' } }] };
     if (normalizedHero)              properties['Hero Photo URL']  = { url: normalizedHero };
     if (googlePlaceId !== undefined) properties['Google Place ID'] = { rich_text: [{ text: { content: googlePlaceId || '' } }] };
+    if (socialInstagram !== undefined) properties['Instagram URL'] = { url: socialInstagram || null };
+    if (socialFacebook !== undefined)  properties['Facebook URL']  = { url: socialFacebook || null };
 
     if (Object.keys(properties).length === 0) {
       return res.status(400).json({ error: 'No fields to update.' });

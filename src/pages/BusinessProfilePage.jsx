@@ -103,6 +103,8 @@ export default function BusinessProfilePage() {
               website: biz.website || '',
               address: biz.address || '',
               googlePlaceId: biz.googlePlaceId || '',
+              socialInstagram: biz.socialInstagram || '',
+              socialFacebook: biz.socialFacebook || '',
             });
             setEditHours(biz.hours || {});
             if (biz.heroPhoto) setHeroPreview(biz.heroPhoto);
@@ -846,6 +848,46 @@ export default function BusinessProfilePage() {
                       </a>
                     </ContactDetail>
                   )}
+                  {/* Social links */}
+                  {(business.socialInstagram || business.socialFacebook) && (
+                    <div style={{ display: 'flex', gap: 10, paddingTop: 4 }}>
+                      {business.socialInstagram && (
+                        <a href={business.socialInstagram.startsWith('http') ? business.socialInstagram : `https://instagram.com/${business.socialInstagram.replace(/^@/, '')}`}
+                          target="_blank" rel="noopener noreferrer"
+                          style={{
+                            display: 'flex', alignItems: 'center', gap: 7,
+                            background: C.warmWhite, borderRadius: 8, padding: '9px 14px',
+                            border: `1.5px solid ${C.sand}`, textDecoration: 'none',
+                            fontSize: 13, fontWeight: 600, color: C.text, flex: 1,
+                          }}>
+                          {/* Instagram icon */}
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C13584" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                            <circle cx="12" cy="12" r="4"/>
+                            <circle cx="17.5" cy="6.5" r="0.5" fill="#C13584" stroke="none"/>
+                          </svg>
+                          Instagram
+                        </a>
+                      )}
+                      {business.socialFacebook && (
+                        <a href={business.socialFacebook.startsWith('http') ? business.socialFacebook : `https://facebook.com/${business.socialFacebook}`}
+                          target="_blank" rel="noopener noreferrer"
+                          style={{
+                            display: 'flex', alignItems: 'center', gap: 7,
+                            background: C.warmWhite, borderRadius: 8, padding: '9px 14px',
+                            border: `1.5px solid ${C.sand}`, textDecoration: 'none',
+                            fontSize: 13, fontWeight: 600, color: C.text, flex: 1,
+                          }}>
+                          {/* Facebook icon */}
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="#1877F2">
+                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                          </svg>
+                          Facebook
+                        </a>
+                      )}
+                    </div>
+                  )}
+
                   {/* Map CTA */}
                   {business.lat && business.lng && (
                     <a
@@ -1193,6 +1235,20 @@ export default function BusinessProfilePage() {
                     <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>Address</div>
                     <input type="text" className="bp-input" placeholder="Street address"
                       value={editForm.address || ''} onChange={e => setEditForm(f => ({ ...f, address: e.target.value }))} />
+                  </div>
+
+                  {/* Social links */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                    <div>
+                      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>Instagram</div>
+                      <input type="text" className="bp-input" placeholder="@handle or full URL"
+                        value={editForm.socialInstagram || ''} onChange={e => setEditForm(f => ({ ...f, socialInstagram: e.target.value }))} />
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>Facebook</div>
+                      <input type="text" className="bp-input" placeholder="Page URL or name"
+                        value={editForm.socialFacebook || ''} onChange={e => setEditForm(f => ({ ...f, socialFacebook: e.target.value }))} />
+                    </div>
                   </div>
 
                   {/* Hours */}

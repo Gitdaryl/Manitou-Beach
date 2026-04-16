@@ -310,6 +310,8 @@ export default async function handler(req, res) {
         hours: (() => { try { return JSON.parse(p['Hours']?.rich_text?.[0]?.text?.content || ''); } catch { return null; } })(),
         heroPhoto: normalizeUrl(p['Hero Photo URL']?.url || null),
         googlePlaceId: p['Google Place ID']?.rich_text?.[0]?.text?.content || null,
+        socialInstagram: p['Instagram URL']?.url || null,
+        socialFacebook: p['Facebook URL']?.url || null,
       };
       if (!business.name) return;
 

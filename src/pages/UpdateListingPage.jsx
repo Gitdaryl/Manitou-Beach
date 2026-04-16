@@ -56,7 +56,7 @@ export default function UpdateListingPage() {
 
   // Step 2 state - pre-filled from Notion response
   const [business, setBusiness] = useState(null);
-  const [form, setForm] = useState({ phone: '', website: '', address: '', description: '', category: '' });
+  const [form, setForm] = useState({ phone: '', website: '', address: '', description: '', category: '', socialInstagram: '', socialFacebook: '' });
   const [hours, setHours] = useState({});
   const [logoFile, setLogoFile] = useState(null);
   const [logoPreview, setLogoPreview] = useState(null);
@@ -85,6 +85,8 @@ export default function UpdateListingPage() {
           address: data.business.address || '',
           description: data.business.description || '',
           category: data.business.category || '',
+          socialInstagram: data.business.socialInstagram || '',
+          socialFacebook: data.business.socialFacebook || '',
         });
         if (data.business.hours) { try { setHours(JSON.parse(data.business.hours)); } catch {} }
         if (data.business.logo) setLogoPreview(data.business.logo);
@@ -168,6 +170,8 @@ export default function UpdateListingPage() {
           heroPhotoUrl,
           hoursJson,
           category: form.category || null,
+          socialInstagram: form.socialInstagram || null,
+          socialFacebook: form.socialFacebook || null,
         }),
       });
       const data = await res.json();
@@ -364,6 +368,16 @@ export default function UpdateListingPage() {
                   <Field label="Website" value={form.website} onChange={v => setForm(f => ({ ...f, website: v }))} placeholder="Your website address (if you have one)" />
                   <Field label="Address" value={form.address} onChange={v => setForm(f => ({ ...f, address: v }))} />
                   <Field label="Description" value={form.description} onChange={v => setForm(f => ({ ...f, description: v }))} multiline placeholder="Brief description (2–3 sentences)" />
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                    <div>
+                      <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>Instagram</p>
+                      <Field label="Instagram" value={form.socialInstagram} onChange={v => setForm(f => ({ ...f, socialInstagram: v }))} placeholder="@handle or URL" />
+                    </div>
+                    <div>
+                      <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>Facebook</p>
+                      <Field label="Facebook" value={form.socialFacebook} onChange={v => setForm(f => ({ ...f, socialFacebook: v }))} placeholder="Page URL or name" />
+                    </div>
+                  </div>
 
                   {/* Hours */}
                   <div>
