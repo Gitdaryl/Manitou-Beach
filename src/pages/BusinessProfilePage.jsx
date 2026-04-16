@@ -819,8 +819,33 @@ export default function BusinessProfilePage() {
                         Google reviews ready to connect
                       </div>
                       <p style={{ margin: '0 0 12px', fontSize: 13, color: C.textLight, lineHeight: 1.6 }}>
-                        Your plan includes live Google reviews. We just need your Google Place ID to switch it on - email us at hello@manitoubeachmichigan.com and we'll get it sorted.
+                        Your plan includes live Google reviews. Add your Google Place ID in your profile settings and they'll appear automatically.
                       </p>
+                      {claimToken ? (
+                        <button
+                          onClick={() => setEditOpen(true)}
+                          style={{
+                            fontSize: 12, fontWeight: 700, color: C.sage, background: 'none',
+                            border: 'none', padding: 0, cursor: 'pointer',
+                            fontFamily: "'Libre Franklin', sans-serif",
+                            display: 'inline-flex', alignItems: 'center', gap: 4,
+                          }}
+                        >
+                          Add it now in Edit Listing →
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => { setClaimOpen(true); setClaimStep('phone'); setClaimError(''); }}
+                          style={{
+                            fontSize: 12, fontWeight: 700, color: C.sage, background: 'none',
+                            border: 'none', padding: 0, cursor: 'pointer',
+                            fontFamily: "'Libre Franklin', sans-serif",
+                            display: 'inline-flex', alignItems: 'center', gap: 4,
+                          }}
+                        >
+                          Claim your listing to add it →
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1390,6 +1415,25 @@ export default function BusinessProfilePage() {
                         value={editForm.socialFacebook || ''} onChange={e => setEditForm(f => ({ ...f, socialFacebook: e.target.value }))} />
                     </div>
                   </div>
+
+                  {/* Google Place ID - featured/premium only */}
+                  {['featured', 'premium'].includes(business.tier) && (
+                    <div>
+                      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>Google Place ID</div>
+                      <input type="text" className="bp-input"
+                        placeholder="ChIJ..."
+                        value={editForm.googlePlaceId || ''}
+                        onChange={e => setEditForm(f => ({ ...f, googlePlaceId: e.target.value }))}
+                      />
+                      <p style={{ fontSize: 11, color: C.textMuted, margin: '5px 0 0', lineHeight: 1.5 }}>
+                        Find yours at{' '}
+                        <a href="https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder" target="_blank" rel="noopener noreferrer" style={{ color: C.lakeBlue }}>
+                          Google's Place ID Finder
+                        </a>
+                        {' '}- search your business name and copy the ID.
+                      </p>
+                    </div>
+                  )}
 
                   {/* Hours */}
                   <div>
