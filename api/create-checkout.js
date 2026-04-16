@@ -125,7 +125,7 @@ export default async function handler(req, res) {
         },
         success_url: tier === 'food_truck_founding'
           ? `${baseUrl}/food-trucks?listed=true&truck=${encodeURIComponent(businessName)}`
-          : `${baseUrl}/businesses/${toSlug(businessName)}?setup=true`,
+          : `${baseUrl}/business/${toSlug(businessName)}?setup=true`,
         cancel_url: tier === 'food_truck_founding'
           ? `${baseUrl}/food-truck-partner#food-truck-signup`
           : `${baseUrl}/business`,
