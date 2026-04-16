@@ -34,6 +34,7 @@
     { "path": "/api/cron-sponsor-expiry",    "schedule": "0 9 * * *" },
     { "path": "/api/cron-beta-trial-expiry", "schedule": "0 10 * * *" },
     { "path": "/api/cron-expire-promotions", "schedule": "0 7 * * *" },
-    { "path": "/api/cron-review-digest",    "schedule": "0 13 * * *" }
+    { "path": "/api/cron-review-digest",    "schedule": "0 13 * * *" },
+    { "path": "/api/cron-site-audit",      "schedule": "0 9 1 * *" }
   ]
 }
