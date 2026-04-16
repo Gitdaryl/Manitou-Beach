@@ -65,6 +65,8 @@ const CreateOfferPage = lazy(() => import('./pages/CreateOfferPage'));
 const SpinPage = lazy(() => import('./pages/SpinPage'));
 const PrizeRedeemPage = lazy(() => import('./pages/PrizeRedeemPage'));
 const SponsorStatsPage = lazy(() => import('./pages/SponsorStatsPage'));
+const BusinessProfilePage = lazy(() => import('./pages/BusinessProfilePage'));
+const FoodTruckProfilePage = lazy(() => import('./pages/FoodTruckProfilePage'));
 
 // ── Beta gate - redirects / to /launch until LAUNCH_DATE
 //   ⚙️  Update LAUNCH_DATE when you have a firm date (must match LaunchPage.jsx)
@@ -176,6 +178,7 @@ export default function App() {
           <Route path="/village" element={<VillagePage />} />
           <Route path="/nightlife" element={<NightlifePage />} />
           <Route path="/business" element={<FeaturedPage />} />
+          <Route path="/business/:slug" element={<BusinessProfilePage />} />
           <Route path="/featured" element={<FeaturedPage />} />
           <Route path="/update-listing" element={<UpdateListingPage />} />
           <Route path="/upgrade-listing" element={<UpgradeListingPage />} />
@@ -206,6 +209,7 @@ export default function App() {
           <Route path="/discover" element={<DiscoverPage />} />
           <Route path="/food-trucks" element={<FoodTrucksPage />} />
           <Route path="/food-trucks/qr/:slug" element={<FoodTruckQRPage />} />
+          <Route path="/food-trucks/:slug" element={<FoodTruckProfilePage />} />
           <Route path="/build" element={<BuildPage />} />
           <Route path="/rate" element={<RatePage />} />
           <Route path="/wine-partner" element={<WinePartnerPage />} />

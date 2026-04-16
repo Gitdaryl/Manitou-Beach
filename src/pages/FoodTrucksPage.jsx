@@ -1706,6 +1706,11 @@ export default function FoodTrucksPage() {
                         >
                           {sharedId === truck.id ? '✓ Copied' : '↗ Tell a friend'}
                         </button>
+                        {truck.slug && (
+                          <a href={`/food-trucks/${truck.slug}`} style={{ fontSize: 12, color: C.textMuted, textDecoration: "none", fontWeight: 500, background: `${C.sand}80`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1px solid ${C.sand}` }}>
+                            View Profile →
+                          </a>
+                        )}
                       </div>
                     </div>
                   </div>

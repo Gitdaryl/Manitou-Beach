@@ -21,6 +21,10 @@
   <url><loc>https://manitoubeachmichigan.com/mens-club</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://manitoubeachmichigan.com/ladies-club</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
 
+  <!-- Listing profiles (individual business/food truck pages - generated from Notion) -->
+  <!-- Dynamic profile URLs follow pattern: /business/:slug, /food-trucks/:slug -->
+  <!-- Add individual listing URLs here as businesses are confirmed live -->
+
   <!-- Content / blog -->
   <url><loc>https://manitoubeachmichigan.com/dispatch</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://manitoubeachmichigan.com/holly-yeti</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>

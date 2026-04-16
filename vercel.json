@@ -1,4 +1,11 @@
 {
+  "redirects": [
+    {
+      "source": "https://www.manitoubeachmichigan.com/(.*)",
+      "destination": "https://manitoubeachmichigan.com/$1",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",

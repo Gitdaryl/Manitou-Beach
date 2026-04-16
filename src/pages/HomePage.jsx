@@ -6,6 +6,7 @@ import { GlobalStyles, PromoBanner, NewsletterInline, HollyYetiSection, EventLig
 import { DispatchPreviewSection } from './DispatchPage';
 import yeti from '../data/errorMessages';
 import formatPhone from '../utils/formatPhone';
+import { toSlug } from '../utils/slugify';
 import SEOHead from '../components/SEOHead';
 
 // ============================================================
@@ -1258,6 +1259,7 @@ function FeaturedBusinessCard({ business }) {
           {business.website && (
             <a href={business.website} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color, textDecoration: "none" }}>Visit →</a>
           )}
+          <a href={`/business/${toSlug(business.name)}`} onClick={e => e.stopPropagation()} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: 0.5, color: "rgba(255,255,255,0.35)", textDecoration: "none" }}>Profile →</a>
         </div>
         {expandable && (
           <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.3)", whiteSpace: "nowrap" }}>
@@ -1308,6 +1310,7 @@ function PremiumBanner({ business }) {
         {business.phone && (
           <a href={`tel:${business.phone}`} style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", textDecoration: "none" }}>{formatPhone(business.phone)}</a>
         )}
+        <a href={`/business/${toSlug(business.name)}`} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.35)", textDecoration: "none" }}>View Profile →</a>
       </div>
     </div>
   );
@@ -1393,6 +1396,7 @@ function EnhancedBusinessRow({ business }) {
                 {business.email && (
                   <a href={`mailto:${business.email}`} onClick={e => e.stopPropagation()} style={{ fontSize: 12, color: C.textMuted, textDecoration: "none" }}>{business.email}</a>
                 )}
+                <a href={`/business/${toSlug(business.name)}`} onClick={e => e.stopPropagation()} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, textDecoration: "none", opacity: 0.7 }}>View Profile →</a>
               </div>
             </div>
           </div>
@@ -1429,9 +1433,9 @@ function BusinessRow({ business }) {
       {/* Name + phone + address */}
       <div style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 16, flexWrap: "wrap" }}>
-          <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: C.text, fontWeight: 400 }}>
+          <a href={`/business/${toSlug(business.name)}`} style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: C.text, fontWeight: 400, textDecoration: "none" }}>
             {business.name}
-          </span>
+          </a>
           {business.phone && (
             <span style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", whiteSpace: "nowrap" }}>
               {formatPhone(business.phone)}
