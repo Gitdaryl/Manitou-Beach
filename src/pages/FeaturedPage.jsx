@@ -31,7 +31,7 @@ export default function FeaturedPage() {
   const centsFor = (base) => Math.round(base * 100);
   const [slotCounts, setSlotCounts] = useState(null);
   const [modal, setModal] = useState(null);
-  const [form, setForm] = useState({ businessName: '', email: '', duration: 3, category: '' });
+  const [form, setForm] = useState({ businessName: '', email: '', phone: '', duration: 3, category: '' });
   const [loading, setLoading] = useState(false);
   const [checkoutError, setCheckoutError] = useState('');
   const [status, setStatus] = useState(null);
@@ -176,17 +176,17 @@ export default function FeaturedPage() {
     {
       id: 'enhanced', name: 'Showcased', color: C.lakeBlue, badge: null,
       price: priceFor(9), priceInCents: centsFor(9),
-      features: ['Everything in Free', 'Clickable website link', 'Business description', 'Expandable listing card', 'Category search placement', 'Pin on Discover map'],
+      features: ['Your own profile page at manitoubeachmichigan.com', 'Description, hours, and photos', 'Call button + quote request form', 'Listed in the business directory', 'Pin on the Discover map'],
     },
     {
       id: 'featured', name: 'Highlighted', color: C.sage, badge: 'Most Popular',
       price: priceFor(25), priceInCents: centsFor(25),
-      features: ['Everything in Showcased', 'Spotlight card placement', 'Logo or photo display', 'Above standard listings', 'Email contact button'],
+      features: ['Everything in Showcased', 'Google Reviews shown on your profile', 'Featured badge + spotlight card', 'Above standard listings in your category'],
     },
     {
       id: 'premium', name: 'Front and Center', color: C.sunsetLight, badge: 'Best Visibility',
       price: priceFor(49), priceInCents: centsFor(49),
-      features: ['Everything in Featured', 'Full-width banner placement', 'Large logo (110×110)', 'Top-of-directory position', 'Cross-page placements'],
+      features: ['Everything in Featured', 'Top of your category, always', 'Full-width banner in directory', 'Newsletter mention when live', 'Cross-page placements'],
     },
   ];
 
@@ -197,7 +197,7 @@ export default function FeaturedPage() {
       const res = await fetch('/api/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tier: modal.tierId, businessName: form.businessName, email: form.email, priceInCents: modal.priceInCents, mode: 'subscription', duration: form.duration, category: form.category }),
+        body: JSON.stringify({ tier: modal.tierId, businessName: form.businessName, email: form.email, phone: form.phone, priceInCents: modal.priceInCents, mode: 'subscription', duration: form.duration, category: form.category }),
       });
       const data = await res.json();
       if (data.url) { window.location.href = data.url; }
@@ -264,6 +264,51 @@ export default function FeaturedPage() {
               : "This is where Manitou Beach looks first. Make sure you're here when they do."}
           </p>
         </FadeIn>
+      </section>
+
+      {/* Maslow recognition hooks */}
+      <section style={{ background: C.cream, padding: '52px 24px' }}>
+        <div style={{ maxWidth: 900, margin: '0 auto' }}>
+          <FadeIn>
+            <p style={{ textAlign: 'center', fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: C.textMuted, marginBottom: 32 }}>
+              Sound familiar?
+            </p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20 }}>
+              {[
+                {
+                  q: '"My only page is Facebook."',
+                  a: "That works, until it doesn't. One algorithm change buries your post and your Friday night goes quiet. Your MB listing is always on, always searchable - no algorithm in the way.",
+                },
+                {
+                  q: '"I have a website. Nobody visits it."',
+                  a: "A website with no traffic is a business card in a drawer. Put yourself where lake visitors are already looking - on their phones, right now, searching for exactly what you do.",
+                },
+                {
+                  q: '"Do I even need a website?"',
+                  a: "Maybe not. A Manitou Beach profile gives you a real URL, a call button, your hours, and your photos. Everything a visitor needs to choose you. Without the overhead.",
+                },
+              ].map(({ q, a }) => (
+                <div key={q} style={{
+                  background: C.warmWhite, borderRadius: 14,
+                  padding: '24px 22px', border: `1px solid ${C.sand}`,
+                }}>
+                  <div style={{
+                    fontFamily: "'Libre Baskerville', serif", fontSize: 16,
+                    color: C.dusk, marginBottom: 12, fontStyle: 'italic', lineHeight: 1.4,
+                  }}>
+                    {q}
+                  </div>
+                  <p style={{
+                    fontFamily: "'Libre Franklin', sans-serif", fontSize: 13,
+                    color: C.textLight, lineHeight: 1.7, margin: 0,
+                  }}>
+                    {a}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </FadeIn>
+        </div>
       </section>
 
       {/* Category Slot Availability Band - shows Premium + Featured tier availability */}
@@ -462,7 +507,7 @@ export default function FeaturedPage() {
                     ))}
                   </ul>
                   <button
-                    onClick={() => { setModal({ tierId: tier.id, tierName: tier.name, price: tier.price, priceInCents: tier.priceInCents, color: tier.color }); setForm({ businessName: '', email: '', duration: 3, category: '' }); setCheckoutError(''); }}
+                    onClick={() => { setModal({ tierId: tier.id, tierName: tier.name, price: tier.price, priceInCents: tier.priceInCents, color: tier.color }); setForm({ businessName: '', email: '', phone: '', duration: 3, category: '' }); setCheckoutError(''); }}
                     style={{ display: "block", width: "100%", padding: "11px 0", borderRadius: 8, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: "pointer", border: "none", background: tier.id === "premium" ? C.sunset : "transparent", color: tier.id === "premium" ? C.cream : tier.color, outline: tier.id === "premium" ? "none" : `1.5px solid ${tier.color}55`, transition: "all 0.22s" }}
                   >
                     Get Started
@@ -968,6 +1013,18 @@ export default function FeaturedPage() {
                 onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
                 style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}
               />
+              <div>
+                <input
+                  placeholder="Phone number"
+                  type="tel"
+                  value={form.phone}
+                  onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
+                  style={{ width: "100%", padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none", boxSizing: "border-box" }}
+                />
+                <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.28)", margin: "6px 0 0", letterSpacing: 0.3 }}>
+                  Used to verify your listing so you can edit it yourself
+                </p>
+              </div>
               <div>
                 <select
                   value={form.category}

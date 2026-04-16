@@ -1,5 +1,9 @@
 import Stripe from 'stripe';
 
+function toSlug(str) {
+  return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
 // One-time payment tiers (used by /featured page)
 const TIERS = {
   featured_30: {
@@ -64,7 +68,7 @@ export default async function handler(req, res) {
 
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-  const { tier, businessName, email, mode: checkoutMode, duration, isBeta, billingInterval } = req.body;
+  const { tier, businessName, email, phone, mode: checkoutMode, duration, isBeta, billingInterval } = req.body;
 
   if (!tier || !businessName || !email) {
     return res.status(400).json({ error: 'Missing required fields' });
@@ -115,19 +119,16 @@ export default async function handler(req, res) {
           tier,
           type: 'listing',
           billingInterval: interval,
+          ...(phone && { phone }),
           ...(duration && { duration: String(duration) + ' months' }),
           ...(isBeta && { beta: 'true' }),
         },
-        success_url: isBeta
-          ? `${baseUrl}/beta-business?success=true&business=${encodeURIComponent(businessName)}`
-          : tier === 'food_truck_founding'
-            ? `${baseUrl}/food-trucks?listed=true&truck=${encodeURIComponent(businessName)}`
-            : `${baseUrl}/activate?success=true&business=${encodeURIComponent(businessName)}`,
-        cancel_url: isBeta
-          ? `${baseUrl}/beta-business`
-          : tier === 'food_truck_founding'
-            ? `${baseUrl}/food-truck-partner#food-truck-signup`
-            : `${baseUrl}/activate?business=${encodeURIComponent(businessName)}&tier=${tier}`,
+        success_url: tier === 'food_truck_founding'
+          ? `${baseUrl}/food-trucks?listed=true&truck=${encodeURIComponent(businessName)}`
+          : `${baseUrl}/businesses/${toSlug(businessName)}?setup=true`,
+        cancel_url: tier === 'food_truck_founding'
+          ? `${baseUrl}/food-truck-partner#food-truck-signup`
+          : `${baseUrl}/business`,
         ...(isBeta && { subscription_data: { trial_end: BETA_TRIAL_END } }),
       };
       const session = await stripe.checkout.sessions.create(sessionParams);

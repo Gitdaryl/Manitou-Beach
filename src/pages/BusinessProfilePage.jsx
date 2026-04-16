@@ -37,6 +37,9 @@ export default function BusinessProfilePage() {
   const [quoteForm, setQuoteForm] = useState({ name: '', phone: '', message: '' });
   const [quoteSent, setQuoteSent] = useState(false);
 
+  // ── Setup mode (fresh signup redirect) ──────────────────────────────────
+  const [setupMode, setSetupMode] = useState(false);
+
   // ── Claim flow ──────────────────────────────────────────────────────────
   const [claimToken, setClaimToken] = useState(null);
   const [claimOpen, setClaimOpen] = useState(false);
@@ -62,40 +65,65 @@ export default function BusinessProfilePage() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    // Check for stored claim token
     const stored = localStorage.getItem(`mb-claim-${slug}`);
     if (stored) setClaimToken(stored);
 
-    fetch('/api/businesses')
-      .then(r => r.json())
-      .then(data => {
-        const all = [
-          ...(data.premium || []), ...(data.featured || []),
-          ...(data.enhanced || []), ...(data.free || []),
-        ];
-        const biz = all.find(b => toSlug(b.name) === slug) || null;
-        setBusiness(biz);
-        // Fetch Google reviews if the listing has a Place ID
-        if (biz?.googlePlaceId) {
-          fetch(`/api/google-places?placeId=${encodeURIComponent(biz.googlePlaceId)}`)
-            .then(r => r.ok ? r.json() : null)
-            .then(d => { if (d?.rating) setGoogleData(d); })
-            .catch(() => {});
-        }
-        if (biz) {
-          setEditForm({
-            description: biz.description || '',
-            phone: biz.phone || '',
-            website: biz.website || '',
-            address: biz.address || '',
-            googlePlaceId: biz.googlePlaceId || '',
-          });
-          setEditHours(biz.hours || {});
-          if (biz.heroPhoto) setHeroPreview(biz.heroPhoto);
-        }
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
+    // Detect setup mode (fresh signup redirect from Stripe)
+    const params = new URLSearchParams(window.location.search);
+    const isSetup = params.get('setup') === 'true';
+    if (isSetup) {
+      setSetupMode(true);
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+
+    let cancelled = false;
+    let attempts = 0;
+
+    const loadBusiness = () => {
+      fetch('/api/businesses')
+        .then(r => r.json())
+        .then(data => {
+          if (cancelled) return;
+          const all = [
+            ...(data.premium || []), ...(data.featured || []),
+            ...(data.enhanced || []), ...(data.free || []),
+          ];
+          const biz = all.find(b => toSlug(b.name) === slug) || null;
+          if (biz) {
+            setBusiness(biz);
+            if (biz.googlePlaceId) {
+              fetch(`/api/google-places?placeId=${encodeURIComponent(biz.googlePlaceId)}`)
+                .then(r => r.ok ? r.json() : null)
+                .then(d => { if (d?.rating) setGoogleData(d); })
+                .catch(() => {});
+            }
+            setEditForm({
+              description: biz.description || '',
+              phone: biz.phone || '',
+              website: biz.website || '',
+              address: biz.address || '',
+              googlePlaceId: biz.googlePlaceId || '',
+            });
+            setEditHours(biz.hours || {});
+            if (biz.heroPhoto) setHeroPreview(biz.heroPhoto);
+            setLoading(false);
+            // In setup mode, auto-open the claim modal after the page settles
+            if (isSetup && !localStorage.getItem(`mb-claim-${slug}`)) {
+              setTimeout(() => setClaimOpen(true), 900);
+            }
+          } else if (isSetup && attempts < 8) {
+            // Webhook may not have fired yet - retry every 2s for up to 16s
+            attempts++;
+            setTimeout(loadBusiness, 2000);
+          } else {
+            setLoading(false);
+          }
+        })
+        .catch(() => { if (!cancelled) setLoading(false); });
+    };
+
+    loadBusiness();
+    return () => { cancelled = true; };
   }, [slug]);
 
   // Show sticky action bar after scrolling past hero
@@ -408,7 +436,14 @@ export default function BusinessProfilePage() {
         <div style={{ paddingTop: 100, textAlign: 'center' }}>
           <div style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
             <div style={{ width: 48, height: 48, borderRadius: '50%', border: `3px solid ${C.sand}`, borderTopColor: C.sage, animation: 'spin 0.8s linear infinite' }} />
-            <span style={{ fontSize: 14, color: C.textMuted }}>Loading…</span>
+            <span style={{ fontSize: 14, color: C.textMuted }}>
+              {setupMode ? 'Setting up your profile...' : 'Loading…'}
+            </span>
+            {setupMode && (
+              <span style={{ fontSize: 12, color: C.textMuted, maxWidth: 280, lineHeight: 1.6 }}>
+                This takes a few seconds the first time.
+              </span>
+            )}
           </div>
           <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         </div>
@@ -436,6 +471,48 @@ export default function BusinessProfilePage() {
       {/* ── PROFILE ── */}
       {!loading && business && (
         <>
+          {/* Setup welcome banner - shown after fresh signup */}
+          {setupMode && !claimToken && (
+            <div style={{
+              background: C.sage, padding: '14px 20px',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              gap: 12, flexWrap: 'wrap',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{ fontSize: 18 }}>🎉</span>
+                <div>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700, color: '#fff' }}>
+                    Your profile is live!
+                  </span>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.8)', marginLeft: 8 }}>
+                    Verify your number to start editing it.
+                  </span>
+                </div>
+              </div>
+              <button
+                onClick={() => { setClaimOpen(true); setClaimStep('phone'); setClaimError(''); }}
+                style={{
+                  background: '#fff', color: C.sageDark, border: 'none', borderRadius: 8,
+                  padding: '8px 18px', cursor: 'pointer', fontSize: 13, fontWeight: 700,
+                  fontFamily: "'Libre Franklin', sans-serif", flexShrink: 0,
+                }}
+              >
+                Verify my number
+              </button>
+            </div>
+          )}
+          {setupMode && claimToken && (
+            <div style={{
+              background: C.sageDark, padding: '12px 20px',
+              display: 'flex', alignItems: 'center', gap: 10,
+            }}>
+              <span style={{ fontSize: 16 }}>✓</span>
+              <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, color: '#fff' }}>
+                You're all set. Use the Edit button below to update your profile anytime.
+              </span>
+            </div>
+          )}
+
           {/* Hero */}
           <div style={{ position: 'relative', paddingTop: 64, background: C.dusk }}>
             {(business.heroPhoto || business.logo) ? (
