@@ -107,6 +107,7 @@ export default function BusinessProfilePage() {
               socialFacebook: biz.socialFacebook || '',
               tagline: biz.tagline || '',
               accentColor: biz.accentColor || '',
+              emergency: biz.emergency || false,
             });
             setEditHours(biz.hours || {});
             if (biz.heroPhoto) setHeroPreview(biz.heroPhoto);
@@ -612,6 +613,20 @@ export default function BusinessProfilePage() {
                   }}>
                     {business.tagline}
                   </p>
+                )}
+
+                {/* Emergency badge */}
+                {business.emergency && (
+                  <div style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 6,
+                    background: '#FFF3F0', border: '1.5px solid #F5C6BB',
+                    borderRadius: 20, padding: '4px 12px', marginBottom: 8,
+                    fontSize: 12, fontWeight: 700, color: '#C0392B',
+                    letterSpacing: 0.3,
+                  }}>
+                    <span style={{ fontSize: 13 }}>🔴</span>
+                    After-hours emergency service available
+                  </div>
                 )}
 
                 {/* Location + service area */}
@@ -1230,6 +1245,28 @@ export default function BusinessProfilePage() {
                     />
                     <p style={{ fontSize: 11, color: C.textMuted, margin: '5px 0 0' }}>Shows under your business name on your profile</p>
                   </div>
+
+                  {/* Emergency availability - service categories only */}
+                  {['Home Services', 'Electrician', 'Contractor', 'Service', 'Auto', 'Plumber', 'HVAC'].includes(business.category) && (
+                    <label style={{
+                      display: 'flex', alignItems: 'center', gap: 14,
+                      background: editForm.emergency ? '#FFF3F0' : C.warmWhite,
+                      border: `1.5px solid ${editForm.emergency ? '#F5C6BB' : C.sand}`,
+                      borderRadius: 10, padding: '14px 16px', cursor: 'pointer',
+                      transition: 'background 0.15s, border-color 0.15s',
+                    }}>
+                      <input
+                        type="checkbox"
+                        checked={!!editForm.emergency}
+                        onChange={e => setEditForm(f => ({ ...f, emergency: e.target.checked }))}
+                        style={{ width: 18, height: 18, accentColor: '#C0392B', cursor: 'pointer', flexShrink: 0 }}
+                      />
+                      <div>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: C.dusk }}>Available for after-hours emergencies</div>
+                        <div style={{ fontSize: 12, color: C.textMuted, marginTop: 2 }}>Shows a badge on your profile so customers know they can call in a pinch</div>
+                      </div>
+                    </label>
+                  )}
 
                   {/* Accent colour */}
                   <div>
