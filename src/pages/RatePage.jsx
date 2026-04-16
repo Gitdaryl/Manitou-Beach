@@ -3,7 +3,7 @@ import { Btn, FadeIn, SectionLabel } from '../components/Shared';
 import { C } from '../data/config';
 import { Footer, GlobalStyles, Navbar } from '../components/Layout';
 import { celebrate } from '../data/celebrate';
-import { WINERY_VENUES } from './WineriesPage';
+import { WINERY_VENUES } from '../data/wineries';
 import yeti from '../data/errorMessages';
 
 const RATE_VENUES = (WINERY_VENUES || []).filter(v => v.section !== 'extended').map(v => v.name);

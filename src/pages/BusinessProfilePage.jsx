@@ -46,6 +46,9 @@ export default function BusinessProfilePage() {
   const [claimLoading, setClaimLoading] = useState(false);
   const [claimError, setClaimError] = useState('');
 
+  // ── Google reviews ──────────────────────────────────────────────────────
+  const [googleData, setGoogleData] = useState(null);
+
   // ── Edit mode ───────────────────────────────────────────────────────────
   const [editOpen, setEditOpen] = useState(false);
   const [editForm, setEditForm] = useState({});
@@ -72,6 +75,13 @@ export default function BusinessProfilePage() {
         ];
         const biz = all.find(b => toSlug(b.name) === slug) || null;
         setBusiness(biz);
+        // Fetch Google reviews if the listing has a Place ID
+        if (biz?.googlePlaceId) {
+          fetch(`/api/google-places?placeId=${encodeURIComponent(biz.googlePlaceId)}`)
+            .then(r => r.ok ? r.json() : null)
+            .then(d => { if (d?.rating) setGoogleData(d); })
+            .catch(() => {});
+        }
         if (biz) {
           setEditForm({
             description: biz.description || '',
@@ -630,7 +640,7 @@ export default function BusinessProfilePage() {
               )}
 
               {/* ── Google Reviews teaser ── */}
-              {business.googleRating ? (
+              {googleData ? (
                 <div className="bp-section-card">
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
                     <div className="bp-section-label" style={{ marginBottom: 0 }}>Reviews</div>
@@ -648,28 +658,28 @@ export default function BusinessProfilePage() {
                   {/* Star rating */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
                     <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 36, fontWeight: 700, color: C.dusk, lineHeight: 1 }}>
-                      {business.googleRating}
+                      {googleData.rating}
                     </span>
                     <div>
                       <div style={{ display: 'flex', gap: 2, marginBottom: 4 }}>
                         {[1,2,3,4,5].map(i => (
                           <svg key={i} width="16" height="16" viewBox="0 0 24 24"
-                            fill={i <= Math.round(business.googleRating) ? '#FBBF24' : C.sand}>
+                            fill={i <= Math.round(googleData.rating) ? '#FBBF24' : C.sand}>
                             <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                           </svg>
                         ))}
                       </div>
                       <div style={{ fontSize: 12, color: C.textMuted }}>
-                        {business.googleReviewCount ? `${business.googleReviewCount} reviews` : 'on Google'}
+                        {googleData.reviewCount ? `${googleData.reviewCount} reviews` : 'on Google'}
                       </div>
                     </div>
                   </div>
                   {/* Review snippets */}
-                  {business.googleReviews?.slice(0, 2).map((r, i) => (
+                  {googleData.reviews?.slice(0, 2).map((r, i) => (
                     <div key={i} className="bp-review-card" style={{ marginBottom: i < 1 ? 8 : 0 }}>
                       "{r.text}"
                       <div style={{ marginTop: 6, fontSize: 11, fontStyle: 'normal', color: C.textMuted, fontWeight: 600 }}>
-                        — {r.author}
+                        - {r.author}
                       </div>
                     </div>
                   ))}

@@ -67,6 +67,7 @@ const PrizeRedeemPage = lazy(() => import('./pages/PrizeRedeemPage'));
 const SponsorStatsPage = lazy(() => import('./pages/SponsorStatsPage'));
 const BusinessProfilePage = lazy(() => import('./pages/BusinessProfilePage'));
 const FoodTruckProfilePage = lazy(() => import('./pages/FoodTruckProfilePage'));
+const WineryProfilePage = lazy(() => import('./pages/WineryProfilePage'));
 
 // ── Beta gate - redirects / to /launch until LAUNCH_DATE
 //   ⚙️  Update LAUNCH_DATE when you have a firm date (must match LaunchPage.jsx)
@@ -193,6 +194,7 @@ export default function App() {
           <Route path="/historical-society" element={<HistoricalSocietyPage />} />
           <Route path="/fishing" element={<FishingPage />} />
           <Route path="/wineries" element={<WineriesPage />} />
+          <Route path="/wineries/:slug" element={<WineryProfilePage />} />
           <Route path="/devils-lake" element={<DevilsLakePage />} />
           <Route path="/promote" element={<PromotePage />} />
           <Route path="/event" element={<Navigate to="/submit-event" replace />} />
