@@ -5,6 +5,8 @@ import { Footer, GlobalStyles, Navbar, compressImage } from '../components/Layou
 import yeti from '../data/errorMessages';
 import { celebrate } from '../data/celebrate';
 
+const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
 // ─── helpers ────────────────────────────────────────────────
 function inputStyle(focused) {
   return {
@@ -55,11 +57,15 @@ export default function UpdateListingPage() {
   // Step 2 state - pre-filled from Notion response
   const [business, setBusiness] = useState(null);
   const [form, setForm] = useState({ phone: '', website: '', address: '', description: '', category: '' });
+  const [hours, setHours] = useState({});
   const [logoFile, setLogoFile] = useState(null);
   const [logoPreview, setLogoPreview] = useState(null);
+  const [heroFile, setHeroFile] = useState(null);
+  const [heroPreview, setHeroPreview] = useState(null);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const fileRef = useRef();
+  const heroRef = useRef();
 
   // ── Step 1: verify identity ──────────────────────────────
   async function handleVerify(e) {
@@ -80,7 +86,9 @@ export default function UpdateListingPage() {
           description: data.business.description || '',
           category: data.business.category || '',
         });
+        if (data.business.hours) { try { setHours(JSON.parse(data.business.hours)); } catch {} }
         if (data.business.logo) setLogoPreview(data.business.logo);
+        if (data.business.heroPhoto) setHeroPreview(data.business.heroPhoto);
         // If they're already a food truck, show the redirect prompt first
         if (data.business.category === 'Food Truck') {
           setStep('food_truck');
@@ -106,6 +114,15 @@ export default function UpdateListingPage() {
     setLogoPreview(`data:image/jpeg;base64,${base64}`);
   }
 
+  // ── Step 2: hero photo selection ─────────────────────────
+  async function handleHeroChange(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setHeroFile(file);
+    const { base64 } = await compressImage(file, 1400, 0.85);
+    setHeroPreview(`data:image/jpeg;base64,${base64}`);
+  }
+
   // ── Step 2: submit update ────────────────────────────────
   async function handleSubmit(e) {
     e.preventDefault();
@@ -125,6 +142,21 @@ export default function UpdateListingPage() {
         logoUrl = uploadData.url;
       }
 
+      let heroPhotoUrl = null;
+      if (heroFile) {
+        const { base64, filename } = await compressImage(heroFile, 1400, 0.85);
+        const uploadRes = await fetch('/api/upload-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ data: base64, filename: `hero-${filename}`, contentType: 'image/jpeg', folder: 'business-photos' }),
+        });
+        const uploadData = await uploadRes.json();
+        if (!uploadRes.ok) throw new Error(uploadData.error || 'Hero photo upload failed');
+        heroPhotoUrl = uploadData.url;
+      }
+
+      const hoursJson = Object.keys(hours).length ? JSON.stringify(hours) : null;
+
       const res = await fetch('/api/update-listing', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -133,6 +165,8 @@ export default function UpdateListingPage() {
           email: business.email,
           ...form,
           logoUrl,
+          heroPhotoUrl,
+          hoursJson,
           category: form.category || null,
         }),
       });
@@ -251,6 +285,31 @@ export default function UpdateListingPage() {
                     </div>
                   </div>
 
+                  {/* Hero photo */}
+                  <div>
+                    <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>
+                      Hero Photo (appears at top of your profile page)
+                    </p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+                      {heroPreview && (
+                        <img src={heroPreview} alt="Hero preview" style={{ width: 96, height: 60, objectFit: 'cover', borderRadius: 8, border: `1px solid ${C.sand}` }} />
+                      )}
+                      <div>
+                        <input ref={heroRef} type="file" accept="image/*" capture="environment" onChange={handleHeroChange} style={{ display: 'none' }} />
+                        <button type="button" onClick={() => heroRef.current?.click()} style={{
+                          fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600,
+                          padding: '8px 16px', borderRadius: 4, border: `1.5px solid ${C.sage}`,
+                          background: 'transparent', color: C.sage, cursor: 'pointer',
+                        }}>
+                          {heroPreview ? 'Change hero photo' : 'Upload hero photo'}
+                        </button>
+                        <p style={{ fontSize: 12, color: C.textMuted, margin: '6px 0 0', fontFamily: "'Libre Franklin', sans-serif" }}>
+                          Wide photo works best - storefront, interior, landscape
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Category */}
                   <div>
                     <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>
@@ -305,6 +364,30 @@ export default function UpdateListingPage() {
                   <Field label="Website" value={form.website} onChange={v => setForm(f => ({ ...f, website: v }))} placeholder="Your website address (if you have one)" />
                   <Field label="Address" value={form.address} onChange={v => setForm(f => ({ ...f, address: v }))} />
                   <Field label="Description" value={form.description} onChange={v => setForm(f => ({ ...f, description: v }))} multiline placeholder="Brief description (2–3 sentences)" />
+
+                  {/* Hours */}
+                  <div>
+                    <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>
+                      Hours
+                    </p>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8 }}>
+                      {DAYS.map(day => (
+                        <div key={day}>
+                          <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, margin: '0 0 4px', fontFamily: "'Libre Franklin', sans-serif" }}>{day}</p>
+                          <input
+                            type="text"
+                            placeholder="9am-5pm"
+                            value={hours[day] || ''}
+                            onChange={e => setHours(h => ({ ...h, [day]: e.target.value }))}
+                            style={{ ...inputStyle(false), fontSize: 13, padding: '8px 10px' }}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                    <p style={{ fontSize: 12, color: C.textMuted, margin: '6px 0 0', fontFamily: "'Libre Franklin', sans-serif" }}>
+                      Leave blank for Closed
+                    </p>
+                  </div>
                   </>}
 
                   {form.category !== 'Food Truck' && (

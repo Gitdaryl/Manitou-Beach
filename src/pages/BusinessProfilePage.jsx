@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { C } from '../data/config';
-import { Footer, Navbar, GlobalStyles } from '../components/Layout';
+import { Footer, Navbar, GlobalStyles, compressImage } from '../components/Layout';
 import { FadeIn, Btn } from '../components/Shared';
 import SEOHead from '../components/SEOHead';
 import { toSlug } from '../utils/slugify';
+
+const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 // ─── Schema type map ────────────────────────────────────────────────────────
 const SCHEMA_TYPES = {
@@ -25,9 +27,6 @@ const CAT_COLORS = {
   'Electrician': C.lakeBlue, 'Contractor': '#8B7355', 'Beauty': '#C06FA0',
 };
 
-// ─── Day labels ─────────────────────────────────────────────────────────────
-const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
 export default function BusinessProfilePage() {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -38,8 +37,32 @@ export default function BusinessProfilePage() {
   const [quoteForm, setQuoteForm] = useState({ name: '', phone: '', message: '' });
   const [quoteSent, setQuoteSent] = useState(false);
 
+  // ── Claim flow ──────────────────────────────────────────────────────────
+  const [claimToken, setClaimToken] = useState(null);
+  const [claimOpen, setClaimOpen] = useState(false);
+  const [claimStep, setClaimStep] = useState('phone'); // 'phone' | 'code'
+  const [claimPhone, setClaimPhone] = useState('');
+  const [claimCode, setClaimCode] = useState('');
+  const [claimLoading, setClaimLoading] = useState(false);
+  const [claimError, setClaimError] = useState('');
+
+  // ── Edit mode ───────────────────────────────────────────────────────────
+  const [editOpen, setEditOpen] = useState(false);
+  const [editForm, setEditForm] = useState({});
+  const [editHours, setEditHours] = useState({});
+  const [heroFile, setHeroFile] = useState(null);
+  const [heroPreview, setHeroPreview] = useState(null);
+  const [editLoading, setEditLoading] = useState(false);
+  const [editError, setEditError] = useState('');
+  const [editSaved, setEditSaved] = useState(false);
+  const heroFileRef = useRef();
+
   useEffect(() => {
     window.scrollTo(0, 0);
+    // Check for stored claim token
+    const stored = localStorage.getItem(`mb-claim-${slug}`);
+    if (stored) setClaimToken(stored);
+
     fetch('/api/businesses')
       .then(r => r.json())
       .then(data => {
@@ -47,7 +70,19 @@ export default function BusinessProfilePage() {
           ...(data.premium || []), ...(data.featured || []),
           ...(data.enhanced || []), ...(data.free || []),
         ];
-        setBusiness(all.find(b => toSlug(b.name) === slug) || null);
+        const biz = all.find(b => toSlug(b.name) === slug) || null;
+        setBusiness(biz);
+        if (biz) {
+          setEditForm({
+            description: biz.description || '',
+            phone: biz.phone || '',
+            website: biz.website || '',
+            address: biz.address || '',
+            googlePlaceId: biz.googlePlaceId || '',
+          });
+          setEditHours(biz.hours || {});
+          if (biz.heroPhoto) setHeroPreview(biz.heroPhoto);
+        }
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -59,6 +94,108 @@ export default function BusinessProfilePage() {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  // ── Claim handlers ──────────────────────────────────────────────────────
+  const handleClaimPhone = async e => {
+    e.preventDefault();
+    if (!claimPhone.trim()) return;
+    setClaimLoading(true);
+    setClaimError('');
+    try {
+      const res = await fetch('/api/claim-listing', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slug, phone: claimPhone.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) throw new Error(data.error || 'Could not send code');
+      setClaimStep('code');
+    } catch (err) {
+      setClaimError(err.message);
+    } finally {
+      setClaimLoading(false);
+    }
+  };
+
+  const handleClaimCode = async e => {
+    e.preventDefault();
+    if (!claimCode.trim()) return;
+    setClaimLoading(true);
+    setClaimError('');
+    try {
+      const res = await fetch('/api/verify-claim', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slug, phone: claimPhone.trim(), code: claimCode.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) throw new Error(data.error || 'Invalid code');
+      localStorage.setItem(`mb-claim-${slug}`, data.claimToken);
+      setClaimToken(data.claimToken);
+      setClaimOpen(false);
+      setClaimStep('phone');
+      setClaimCode('');
+      setEditOpen(true);
+    } catch (err) {
+      setClaimError(err.message);
+    } finally {
+      setClaimLoading(false);
+    }
+  };
+
+  // ── Edit handlers ────────────────────────────────────────────────────────
+  const handleHeroChange = async e => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setHeroFile(file);
+    const { base64 } = await compressImage(file, 1400, 0.85);
+    setHeroPreview(`data:image/jpeg;base64,${base64}`);
+  };
+
+  const handleEditSave = async e => {
+    e.preventDefault();
+    setEditLoading(true);
+    setEditError('');
+    try {
+      let heroPhotoUrl = business?.heroPhoto || null;
+      if (heroFile) {
+        const { base64, filename } = await compressImage(heroFile, 1400, 0.85);
+        const uploadRes = await fetch('/api/upload-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ data: base64, filename: `hero-${filename}`, contentType: 'image/jpeg', folder: 'business-photos' }),
+        });
+        const uploadData = await uploadRes.json();
+        if (!uploadRes.ok) throw new Error(uploadData.error || 'Photo upload failed');
+        heroPhotoUrl = uploadData.url;
+      }
+      const res = await fetch('/api/self-edit-listing', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          slug,
+          claimToken,
+          ...editForm,
+          hours: Object.keys(editHours).length ? JSON.stringify(editHours) : undefined,
+          heroPhotoUrl,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) throw new Error(data.error || 'Save failed');
+      setEditSaved(true);
+      setEditOpen(false);
+      // Refresh business data
+      const refresh = await fetch('/api/businesses').then(r => r.json());
+      const all = [...(refresh.premium || []), ...(refresh.featured || []), ...(refresh.enhanced || []), ...(refresh.free || [])];
+      const updated = all.find(b => toSlug(b.name) === slug);
+      if (updated) setBusiness(updated);
+      setTimeout(() => setEditSaved(false), 4000);
+    } catch (err) {
+      setEditError(err.message);
+    } finally {
+      setEditLoading(false);
+    }
+  };
 
   const handleQuote = async e => {
     e.preventDefault();
@@ -194,6 +331,44 @@ export default function BusinessProfilePage() {
           transition: border-color 0.15s;
         }
         .bp-input:focus { border-color: ${C.lakeBlue}; background: #fff; }
+
+        .bp-claim-overlay {
+          position: fixed; inset: 0; z-index: 300;
+          background: rgba(10,18,24,0.65); backdrop-filter: blur(4px);
+          display: flex; align-items: flex-end; justify-content: center;
+        }
+        @media (min-width: 640px) { .bp-claim-overlay { align-items: center; } }
+
+        .bp-claim-sheet {
+          background: #fff; width: 100%; max-width: 480px;
+          border-radius: 20px 20px 0 0; padding: 28px 24px 44px;
+          animation: slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        @media (min-width: 640px) {
+          .bp-claim-sheet { border-radius: 20px; margin: 0 16px; padding: 32px; }
+        }
+
+        .bp-edit-overlay {
+          position: fixed; inset: 0; z-index: 300;
+          background: rgba(10,18,24,0.72); backdrop-filter: blur(4px);
+          display: flex; align-items: flex-end; justify-content: center;
+          overflow-y: auto;
+        }
+        @media (min-width: 640px) { .bp-edit-overlay { align-items: center; } }
+
+        .bp-edit-sheet {
+          background: #fff; width: 100%; max-width: 560px;
+          border-radius: 20px 20px 0 0; padding: 28px 24px 52px;
+          animation: slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1);
+          margin-top: auto;
+        }
+        @media (min-width: 640px) {
+          .bp-edit-sheet { border-radius: 20px; margin: 24px 16px; padding: 32px; }
+        }
+
+        .bp-hours-editor { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        @media (min-width: 440px) { .bp-hours-editor { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 600px) { .bp-hours-editor { grid-template-columns: repeat(4, 1fr); } }
       `}</style>
 
       {business && (
@@ -249,9 +424,9 @@ export default function BusinessProfilePage() {
         <>
           {/* Hero */}
           <div style={{ position: 'relative', paddingTop: 64, background: C.dusk }}>
-            {business.logo ? (
+            {(business.heroPhoto || business.logo) ? (
               <img
-                src={business.logo}
+                src={business.heroPhoto || business.logo}
                 alt={`${business.name} - ${business.category} in Manitou Beach, Michigan`}
                 className="bp-hero-img"
                 style={{ objectPosition: 'center top' }}
@@ -630,20 +805,49 @@ export default function BusinessProfilePage() {
                 </div>
               </div>
 
-              {/* ── Upgrade nudge (free/enhanced only) ── */}
-              {(business.tier === 'free' || business.tier === 'enhanced') && (
+              {/* ── Owner panel: edit button (when claimed) or claim nudge ── */}
+              {claimToken ? (
                 <div style={{
-                  borderRadius: 14, background: `${accent}10`,
-                  border: `1.5px dashed ${accent}50`,
-                  padding: '20px 22px',
+                  borderRadius: 14, background: `${C.sage}12`,
+                  border: `1.5px solid ${C.sage}40`, padding: '18px 20px',
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
                 }}>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: C.dusk, marginBottom: 6 }}>
-                    Own this business?
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: C.sageDark }}>Your listing</div>
+                    <div style={{ fontSize: 12, color: C.textMuted, marginTop: 2 }}>Changes go live right away</div>
                   </div>
-                  <p style={{ margin: '0 0 14px', fontSize: 13, color: C.textLight, lineHeight: 1.65 }}>
-                    Add your logo, hours, description, and more. Starting at $9/mo - no website needed.
+                  <button
+                    onClick={() => setEditOpen(true)}
+                    style={{
+                      background: C.sage, color: '#fff', border: 'none', borderRadius: 10,
+                      padding: '10px 20px', cursor: 'pointer', fontSize: 14, fontWeight: 700,
+                      fontFamily: "'Libre Franklin', sans-serif", flexShrink: 0,
+                    }}
+                  >
+                    Edit listing
+                  </button>
+                </div>
+              ) : (
+                <div style={{
+                  borderRadius: 14, background: `${accent}08`,
+                  border: `1.5px dashed ${accent}40`, padding: '18px 20px',
+                }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: C.dusk, marginBottom: 4 }}>
+                    Is this your business?
+                  </div>
+                  <p style={{ margin: '0 0 12px', fontSize: 13, color: C.textLight, lineHeight: 1.6 }}>
+                    Verify your phone number to update hours, photos, and details yourself.
                   </p>
-                  <Btn href="/business" variant="primary" small>Upgrade This Listing</Btn>
+                  <button
+                    onClick={() => { setClaimOpen(true); setClaimStep('phone'); setClaimError(''); }}
+                    style={{
+                      background: accent, color: '#fff', border: 'none', borderRadius: 8,
+                      padding: '10px 18px', cursor: 'pointer', fontSize: 13, fontWeight: 700,
+                      fontFamily: "'Libre Franklin', sans-serif",
+                    }}
+                  >
+                    Claim This Listing
+                  </button>
                 </div>
               )}
 
@@ -733,6 +937,208 @@ export default function BusinessProfilePage() {
               animation: 'fadeInUp 0.3s ease-out',
             }}>
               ✓ Quote request sent
+            </div>
+          )}
+
+          {/* Edit saved toast */}
+          {editSaved && (
+            <div style={{
+              position: 'fixed', bottom: 80, left: '50%', transform: 'translateX(-50%)',
+              background: C.sageDark, color: '#fff', borderRadius: 30, padding: '12px 24px',
+              fontSize: 14, fontWeight: 600, zIndex: 400, whiteSpace: 'nowrap',
+              boxShadow: '0 4px 24px rgba(0,0,0,0.3)',
+            }}>
+              ✓ Listing updated
+            </div>
+          )}
+
+          {/* ── Claim modal ── */}
+          {claimOpen && (
+            <div className="bp-claim-overlay" onClick={e => { if (e.target === e.currentTarget) setClaimOpen(false); }}>
+              <div className="bp-claim-sheet">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
+                  <div>
+                    <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 700, color: C.dusk }}>
+                      {claimStep === 'phone' ? 'Claim This Listing' : 'Enter your code'}
+                    </div>
+                    <div style={{ fontSize: 13, color: C.textMuted, marginTop: 3 }}>
+                      {claimStep === 'phone'
+                        ? 'Enter the phone number on file for this business'
+                        : `We sent a 6-digit code to ${claimPhone}`}
+                    </div>
+                  </div>
+                  <button onClick={() => setClaimOpen(false)}
+                    style={{ background: C.warmWhite, border: 'none', borderRadius: '50%', width: 32, height: 32, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, color: C.textMuted }}>
+                    ×
+                  </button>
+                </div>
+
+                {claimStep === 'phone' && (
+                  <form onSubmit={handleClaimPhone} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                    <input
+                      type="tel" required autoFocus
+                      placeholder="Your phone number"
+                      value={claimPhone}
+                      onChange={e => setClaimPhone(e.target.value)}
+                      className="bp-input"
+                    />
+                    {claimError && (
+                      <p style={{ margin: 0, fontSize: 13, color: '#C0392B', background: '#FDF0F0', border: '1px solid #F5C6C6', borderRadius: 6, padding: '10px 14px' }}>{claimError}</p>
+                    )}
+                    <button type="submit" disabled={claimLoading} style={{
+                      background: accent, color: '#fff', border: 'none', borderRadius: 10,
+                      padding: '14px', fontSize: 15, fontWeight: 700, cursor: 'pointer',
+                      fontFamily: "'Libre Franklin', sans-serif", opacity: claimLoading ? 0.7 : 1,
+                    }}>
+                      {claimLoading ? 'Sending code...' : 'Send verification code'}
+                    </button>
+                    <p style={{ margin: 0, fontSize: 11, color: C.textMuted, textAlign: 'center' }}>
+                      We send a code to the phone number we have on file for this business.
+                    </p>
+                  </form>
+                )}
+
+                {claimStep === 'code' && (
+                  <form onSubmit={handleClaimCode} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                    <input
+                      type="text" inputMode="numeric" pattern="[0-9]*" maxLength={6}
+                      required autoFocus
+                      placeholder="6-digit code"
+                      value={claimCode}
+                      onChange={e => setClaimCode(e.target.value.replace(/\D/g, ''))}
+                      className="bp-input"
+                      style={{ fontSize: 24, letterSpacing: 8, textAlign: 'center' }}
+                    />
+                    {claimError && (
+                      <p style={{ margin: 0, fontSize: 13, color: '#C0392B', background: '#FDF0F0', border: '1px solid #F5C6C6', borderRadius: 6, padding: '10px 14px' }}>{claimError}</p>
+                    )}
+                    <button type="submit" disabled={claimLoading} style={{
+                      background: C.sage, color: '#fff', border: 'none', borderRadius: 10,
+                      padding: '14px', fontSize: 15, fontWeight: 700, cursor: 'pointer',
+                      fontFamily: "'Libre Franklin', sans-serif", opacity: claimLoading ? 0.7 : 1,
+                    }}>
+                      {claimLoading ? 'Verifying...' : 'Verify and unlock editing'}
+                    </button>
+                    <button type="button" onClick={() => { setClaimStep('phone'); setClaimError(''); setClaimCode(''); }}
+                      style={{ background: 'none', border: 'none', fontSize: 13, color: C.textMuted, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}>
+                      Use a different number
+                    </button>
+                  </form>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* ── Edit panel ── */}
+          {editOpen && (
+            <div className="bp-edit-overlay" onClick={e => { if (e.target === e.currentTarget) setEditOpen(false); }}>
+              <div className="bp-edit-sheet">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 22 }}>
+                  <div>
+                    <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 700, color: C.dusk }}>
+                      Edit Listing
+                    </div>
+                    <div style={{ fontSize: 13, color: C.textMuted, marginTop: 3 }}>{business.name}</div>
+                  </div>
+                  <button onClick={() => setEditOpen(false)}
+                    style={{ background: C.warmWhite, border: 'none', borderRadius: '50%', width: 32, height: 32, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, color: C.textMuted }}>
+                    ×
+                  </button>
+                </div>
+
+                <form onSubmit={handleEditSave} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+                  {/* Hero photo */}
+                  <div>
+                    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 8 }}>Hero Photo</div>
+                    <div style={{ display: 'flex', gap: 14, alignItems: 'center', flexWrap: 'wrap' }}>
+                      {heroPreview && (
+                        <img src={heroPreview} alt="Hero preview" style={{ width: 80, height: 52, objectFit: 'cover', borderRadius: 8, border: `1px solid ${C.sand}` }} />
+                      )}
+                      <div>
+                        <input ref={heroFileRef} type="file" accept="image/*" capture="environment" onChange={handleHeroChange} style={{ display: 'none' }} />
+                        <button type="button" onClick={() => heroFileRef.current?.click()} style={{
+                          fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600,
+                          padding: '8px 16px', borderRadius: 6, border: `1.5px solid ${C.sage}`,
+                          background: 'transparent', color: C.sage, cursor: 'pointer',
+                        }}>
+                          {heroPreview ? 'Change photo' : 'Upload photo'}
+                        </button>
+                        <p style={{ fontSize: 11, color: C.textMuted, margin: '5px 0 0', fontFamily: "'Libre Franklin', sans-serif" }}>
+                          Snap one from your phone or pick from your library
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Description */}
+                  <div>
+                    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>Description</div>
+                    <textarea
+                      className="bp-input" rows={3}
+                      placeholder="Brief description of your business (2-3 sentences)"
+                      value={editForm.description || ''}
+                      onChange={e => setEditForm(f => ({ ...f, description: e.target.value }))}
+                      style={{ resize: 'vertical', minHeight: 72 }}
+                    />
+                  </div>
+
+                  {/* Phone + Website side by side on wide screens */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                    <div>
+                      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>Phone</div>
+                      <input type="tel" className="bp-input" placeholder="Phone number"
+                        value={editForm.phone || ''} onChange={e => setEditForm(f => ({ ...f, phone: e.target.value }))} />
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>Website</div>
+                      <input type="text" className="bp-input" placeholder="yoursite.com"
+                        value={editForm.website || ''} onChange={e => setEditForm(f => ({ ...f, website: e.target.value }))} />
+                    </div>
+                  </div>
+
+                  {/* Address */}
+                  <div>
+                    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>Address</div>
+                    <input type="text" className="bp-input" placeholder="Street address"
+                      value={editForm.address || ''} onChange={e => setEditForm(f => ({ ...f, address: e.target.value }))} />
+                  </div>
+
+                  {/* Hours */}
+                  <div>
+                    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 10 }}>Hours</div>
+                    <div className="bp-hours-editor">
+                      {DAYS.map(day => (
+                        <div key={day}>
+                          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase', color: C.textMuted, marginBottom: 4 }}>{day}</div>
+                          <input
+                            type="text"
+                            className="bp-input"
+                            placeholder="e.g. 9am-5pm"
+                            value={editHours[day] || ''}
+                            onChange={e => setEditHours(h => ({ ...h, [day]: e.target.value }))}
+                            style={{ fontSize: 12, padding: '8px 10px' }}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                    <p style={{ fontSize: 11, color: C.textMuted, margin: '6px 0 0' }}>Leave blank for Closed</p>
+                  </div>
+
+                  {editError && (
+                    <p style={{ margin: 0, fontSize: 13, color: '#C0392B', background: '#FDF0F0', border: '1px solid #F5C6C6', borderRadius: 6, padding: '10px 14px' }}>{editError}</p>
+                  )}
+
+                  <button type="submit" disabled={editLoading} style={{
+                    background: C.sage, color: '#fff', border: 'none', borderRadius: 10,
+                    padding: '15px', fontSize: 15, fontWeight: 700, cursor: 'pointer',
+                    fontFamily: "'Libre Franklin', sans-serif", marginTop: 4,
+                    opacity: editLoading ? 0.7 : 1,
+                  }}>
+                    {editLoading ? 'Saving...' : 'Save changes'}
+                  </button>
+                </form>
+              </div>
             </div>
           )}
 

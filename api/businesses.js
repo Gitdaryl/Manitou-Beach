@@ -307,6 +307,9 @@ export default async function handler(req, res) {
         lat: p['Lat']?.number ?? null,
         lng: p['Lng']?.number ?? null,
         emergency: p['Emergency']?.checkbox ?? false,
+        hours: (() => { try { return JSON.parse(p['Hours']?.rich_text?.[0]?.text?.content || ''); } catch { return null; } })(),
+        heroPhoto: normalizeUrl(p['Hero Photo URL']?.url || null),
+        googlePlaceId: p['Google Place ID']?.rich_text?.[0]?.text?.content || null,
       };
       if (!business.name) return;
 

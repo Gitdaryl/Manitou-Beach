@@ -49,6 +49,8 @@ export default async function handler(req, res) {
           address: p['Address']?.rich_text?.[0]?.text?.content || '',
           description: p['Description']?.rich_text?.[0]?.text?.content || '',
           logo: p['Logo URL']?.url || '',
+          heroPhoto: p['Hero Photo URL']?.url || '',
+          hours: p['Hours']?.rich_text?.[0]?.text?.content || '',
           category: p['Category']?.select?.name || '',
         },
       });
@@ -60,7 +62,7 @@ export default async function handler(req, res) {
 
   // POST - submit an update request
   if (req.method === 'POST') {
-    const { name, email, phone, website, address, description, logoUrl, category } = req.body;
+    const { name, email, phone, website, address, description, logoUrl, heroPhotoUrl, hoursJson, category } = req.body;
     if (!name || !email) return res.status(400).json({ success: false, error: 'Name and email are required' });
 
     try {
@@ -80,6 +82,12 @@ export default async function handler(req, res) {
         normalizedLogo = /^https?:\/\//i.test(u) ? u : 'https://' + u;
       }
 
+      let normalizedHero = null;
+      if (heroPhotoUrl && heroPhotoUrl.trim()) {
+        const u = heroPhotoUrl.trim();
+        normalizedHero = /^https?:\/\//i.test(u) ? u : 'https://' + u;
+      }
+
       const notionRes = await fetch('https://api.notion.com/v1/pages', {
         method: 'POST',
         headers: NOTION_HEADERS,
@@ -94,6 +102,8 @@ export default async function handler(req, res) {
             ...(address && { 'Address': { rich_text: [{ text: { content: address } }] } }),
             ...(description && { 'Description': { rich_text: [{ text: { content: description } }] } }),
             ...(normalizedLogo && { 'Logo URL': { url: normalizedLogo } }),
+            ...(normalizedHero && { 'Hero Photo URL': { url: normalizedHero } }),
+            ...(hoursJson && { 'Hours': { rich_text: [{ text: { content: hoursJson } }] } }),
             ...(category && { 'Category': { select: { name: category } } }),
           },
         }),
