@@ -21,10 +21,11 @@
     <meta name="twitter:description" content="Business directory, local events, lake life, and community news on Devils Lake in the Michigan Irish Hills." />
     <meta name="twitter:image" content="https://manitoubeachmichigan.com/images/og-image.jpg" />
 
-    <!-- Google Fonts (loaded once, used across all pages) -->
+    <!-- Google Fonts (async - preconnect prevents DNS delay, media trick avoids render-blocking) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet" /></noscript>
     <style>
       *, *::before, *::after { box-sizing: border-box; }
       html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; }

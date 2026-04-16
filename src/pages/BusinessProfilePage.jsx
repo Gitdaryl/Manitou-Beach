@@ -523,6 +523,8 @@ export default function BusinessProfilePage() {
                 alt={`${business.name} - ${business.category} in Manitou Beach, Michigan`}
                 className="bp-hero-img"
                 style={{ objectPosition: 'center top' }}
+                fetchpriority="high"
+                loading="eager"
               />
             ) : (
               // Branded gradient hero when no photo
