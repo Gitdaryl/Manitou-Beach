@@ -290,7 +290,7 @@ export default function BusinessProfilePage() {
           position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
           background: rgba(250,246,239,0.92); backdrop-filter: blur(16px);
           border-top: 1px solid ${C.sand};
-          padding: 12px 16px 18px; display: flex; gap: 10px;
+          padding: 12px 16px calc(18px + env(safe-area-inset-bottom, 0px)); display: flex; gap: 10px;
           transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
           box-shadow: 0 -8px 32px rgba(0,0,0,0.1);
         }
@@ -312,11 +312,12 @@ export default function BusinessProfilePage() {
         }
         .bp-quote-sheet {
           background: #fff; width: 100%; max-width: 520px;
-          border-radius: 20px 20px 0 0; padding: 28px 24px 40px;
+          border-radius: 20px 20px 0 0; padding: 28px 24px calc(40px + env(safe-area-inset-bottom, 0px));
           animation: slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1);
+          overflow-y: auto; max-height: 90dvh;
         }
         @media (min-width: 640px) {
-          .bp-quote-sheet { border-radius: 20px; margin: 0 16px; padding: 32px; }
+          .bp-quote-sheet { border-radius: 20px; margin: 0 16px; padding: 32px; max-height: none; }
         }
         @keyframes slideUp {
           from { transform: translateY(40px); opacity: 0; }
@@ -341,29 +342,32 @@ export default function BusinessProfilePage() {
 
         .bp-claim-sheet {
           background: #fff; width: 100%; max-width: 480px;
-          border-radius: 20px 20px 0 0; padding: 28px 24px 44px;
+          border-radius: 20px 20px 0 0; padding: 28px 24px calc(44px + env(safe-area-inset-bottom, 0px));
           animation: slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1);
+          overflow-y: auto; max-height: 90dvh;
         }
         @media (min-width: 640px) {
-          .bp-claim-sheet { border-radius: 20px; margin: 0 16px; padding: 32px; }
+          .bp-claim-sheet { border-radius: 20px; margin: 0 16px; padding: 32px; max-height: none; }
         }
 
         .bp-edit-overlay {
           position: fixed; inset: 0; z-index: 300;
           background: rgba(10,18,24,0.72); backdrop-filter: blur(4px);
           display: flex; align-items: flex-end; justify-content: center;
-          overflow-y: auto;
         }
         @media (min-width: 640px) { .bp-edit-overlay { align-items: center; } }
 
         .bp-edit-sheet {
           background: #fff; width: 100%; max-width: 560px;
-          border-radius: 20px 20px 0 0; padding: 28px 24px 52px;
+          border-radius: 20px 20px 0 0;
+          padding: 28px 24px calc(52px + env(safe-area-inset-bottom, 0px));
           animation: slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1);
           margin-top: auto;
+          overflow-y: auto;
+          max-height: 92dvh;
         }
         @media (min-width: 640px) {
-          .bp-edit-sheet { border-radius: 20px; margin: 24px 16px; padding: 32px; }
+          .bp-edit-sheet { border-radius: 20px; margin: 24px 16px; padding: 32px; max-height: none; overflow-y: visible; }
         }
 
         .bp-hours-editor { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -593,7 +597,7 @@ export default function BusinessProfilePage() {
                           border: isToday ? `1.5px solid ${accent}40` : `1.5px solid ${C.sand}`,
                         }}>
                           <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: isToday ? accent : C.textMuted, marginBottom: 3 }}>
-                            {day}{isToday && <span style={{ marginLeft: 3, fontSize: 9 }}>TODAY</span>}
+                            {day}{isToday && <span style={{ marginLeft: 3, fontSize: 10 }}>TODAY</span>}
                           </div>
                           <div style={{ fontSize: 13, fontWeight: 600, color: h ? C.text : C.textMuted }}>
                             {h || 'Closed'}
