@@ -312,6 +312,8 @@ export default async function handler(req, res) {
         googlePlaceId: p['Google Place ID']?.rich_text?.[0]?.text?.content || null,
         socialInstagram: p['Instagram URL']?.url || null,
         socialFacebook: p['Facebook URL']?.url || null,
+        tagline: p['Tagline']?.rich_text?.[0]?.text?.content || null,
+        accentColor: p['Accent Color']?.rich_text?.[0]?.text?.content || null,
       };
       if (!business.name) return;
 

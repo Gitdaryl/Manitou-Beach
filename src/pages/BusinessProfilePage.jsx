@@ -105,6 +105,8 @@ export default function BusinessProfilePage() {
               googlePlaceId: biz.googlePlaceId || '',
               socialInstagram: biz.socialInstagram || '',
               socialFacebook: biz.socialFacebook || '',
+              tagline: biz.tagline || '',
+              accentColor: biz.accentColor || '',
             });
             setEditHours(biz.hours || {});
             if (biz.heroPhoto) setHeroPreview(biz.heroPhoto);
@@ -275,7 +277,7 @@ export default function BusinessProfilePage() {
   } : null;
 
   const scrollTo = id => { window.location.href = '/#' + id; };
-  const accent = business ? (CAT_COLORS[business.category] || C.sage) : C.sage;
+  const accent = business ? (business.accentColor || CAT_COLORS[business.category] || C.sage) : C.sage;
   const hasActions = business && (business.phone || business.email || business.website);
   const autoDesc = business
     ? `${business.name} is a ${(business.category || 'local business').toLowerCase()} serving Manitou Beach, Devils Lake, and the Irish Hills area of Michigan.`
@@ -600,6 +602,17 @@ export default function BusinessProfilePage() {
                 }}>
                   {business.name}
                 </h1>
+
+                {/* Tagline */}
+                {business.tagline && (
+                  <p style={{
+                    margin: '0 0 8px', fontSize: 15, fontStyle: 'italic',
+                    color: C.textLight, lineHeight: 1.5,
+                    fontFamily: "'Libre Baskerville', serif",
+                  }}>
+                    {business.tagline}
+                  </p>
+                )}
 
                 {/* Location + service area */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: C.textMuted, fontSize: 13, flexWrap: 'wrap' }}>
@@ -1204,6 +1217,63 @@ export default function BusinessProfilePage() {
                         </p>
                       </div>
                     </div>
+                  </div>
+
+                  {/* Tagline */}
+                  <div>
+                    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>Tagline</div>
+                    <input type="text" className="bp-input"
+                      placeholder="One line that captures what makes you special"
+                      maxLength={80}
+                      value={editForm.tagline || ''}
+                      onChange={e => setEditForm(f => ({ ...f, tagline: e.target.value }))}
+                    />
+                    <p style={{ fontSize: 11, color: C.textMuted, margin: '5px 0 0' }}>Shows under your business name on your profile</p>
+                  </div>
+
+                  {/* Accent colour */}
+                  <div>
+                    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 10 }}>Profile Colour</div>
+                    <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                      {[
+                        { hex: '#7A8E72', label: 'Sage' },
+                        { hex: '#5B7E95', label: 'Lake' },
+                        { hex: '#D4845A', label: 'Sunset' },
+                        { hex: '#B8956A', label: 'Driftwood' },
+                        { hex: '#7D6EAA', label: 'Grape' },
+                        { hex: '#5B8A6E', label: 'Forest' },
+                        { hex: '#C06FA0', label: 'Rose' },
+                        { hex: '#2D3B45', label: 'Dusk' },
+                      ].map(({ hex, label }) => {
+                        const selected = (editForm.accentColor || '') === hex;
+                        return (
+                          <button
+                            key={hex}
+                            type="button"
+                            title={label}
+                            onClick={() => setEditForm(f => ({ ...f, accentColor: selected ? '' : hex }))}
+                            style={{
+                              width: 36, height: 36, borderRadius: '50%',
+                              background: hex, border: 'none', cursor: 'pointer', flexShrink: 0,
+                              outline: selected ? `3px solid ${hex}` : '3px solid transparent',
+                              outlineOffset: 2,
+                              boxShadow: selected ? `0 0 0 2px #fff, 0 0 0 4px ${hex}` : '0 1px 4px rgba(0,0,0,0.2)',
+                              transform: selected ? 'scale(1.15)' : 'scale(1)',
+                              transition: 'transform 0.15s, box-shadow 0.15s',
+                            }}
+                          />
+                        );
+                      })}
+                    </div>
+                    {editForm.accentColor && (
+                      <button type="button"
+                        onClick={() => setEditForm(f => ({ ...f, accentColor: '' }))}
+                        style={{ background: 'none', border: 'none', fontSize: 12, color: C.textMuted, cursor: 'pointer', padding: '4px 0', fontFamily: "'Libre Franklin', sans-serif" }}
+                      >
+                        Reset to default
+                      </button>
+                    )}
+                    <p style={{ fontSize: 11, color: C.textMuted, margin: '6px 0 0' }}>Sets the colour used throughout your profile page</p>
                   </div>
 
                   {/* Description */}

@@ -56,7 +56,7 @@ export default function UpdateListingPage() {
 
   // Step 2 state - pre-filled from Notion response
   const [business, setBusiness] = useState(null);
-  const [form, setForm] = useState({ phone: '', website: '', address: '', description: '', category: '', socialInstagram: '', socialFacebook: '' });
+  const [form, setForm] = useState({ phone: '', website: '', address: '', description: '', category: '', socialInstagram: '', socialFacebook: '', tagline: '', accentColor: '' });
   const [hours, setHours] = useState({});
   const [logoFile, setLogoFile] = useState(null);
   const [logoPreview, setLogoPreview] = useState(null);
@@ -87,6 +87,8 @@ export default function UpdateListingPage() {
           category: data.business.category || '',
           socialInstagram: data.business.socialInstagram || '',
           socialFacebook: data.business.socialFacebook || '',
+          tagline: data.business.tagline || '',
+          accentColor: data.business.accentColor || '',
         });
         if (data.business.hours) { try { setHours(JSON.parse(data.business.hours)); } catch {} }
         if (data.business.logo) setLogoPreview(data.business.logo);
@@ -172,6 +174,8 @@ export default function UpdateListingPage() {
           category: form.category || null,
           socialInstagram: form.socialInstagram || null,
           socialFacebook: form.socialFacebook || null,
+          tagline: form.tagline || null,
+          accentColor: form.accentColor || null,
         }),
       });
       const data = await res.json();
@@ -368,6 +372,51 @@ export default function UpdateListingPage() {
                   <Field label="Website" value={form.website} onChange={v => setForm(f => ({ ...f, website: v }))} placeholder="Your website address (if you have one)" />
                   <Field label="Address" value={form.address} onChange={v => setForm(f => ({ ...f, address: v }))} />
                   <Field label="Description" value={form.description} onChange={v => setForm(f => ({ ...f, description: v }))} multiline placeholder="Brief description (2–3 sentences)" />
+                  <div>
+                    <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>Tagline</p>
+                    <Field label="Tagline" value={form.tagline} onChange={v => setForm(f => ({ ...f, tagline: v }))} placeholder="One line that captures what makes you special" />
+                    <p style={{ fontSize: 12, color: C.textMuted, margin: '4px 0 0', fontFamily: "'Libre Franklin', sans-serif" }}>Shows under your business name on your profile</p>
+                  </div>
+                  <div>
+                    <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 10, fontFamily: "'Libre Franklin', sans-serif" }}>Profile Colour</p>
+                    <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                      {[
+                        { hex: '#7A8E72', label: 'Sage' },
+                        { hex: '#5B7E95', label: 'Lake' },
+                        { hex: '#D4845A', label: 'Sunset' },
+                        { hex: '#B8956A', label: 'Driftwood' },
+                        { hex: '#7D6EAA', label: 'Grape' },
+                        { hex: '#5B8A6E', label: 'Forest' },
+                        { hex: '#C06FA0', label: 'Rose' },
+                        { hex: '#2D3B45', label: 'Dusk' },
+                      ].map(({ hex, label }) => {
+                        const selected = form.accentColor === hex;
+                        return (
+                          <button
+                            key={hex}
+                            type="button"
+                            title={label}
+                            onClick={() => setForm(f => ({ ...f, accentColor: selected ? '' : hex }))}
+                            style={{
+                              width: 36, height: 36, borderRadius: '50%',
+                              background: hex, border: 'none', cursor: 'pointer', flexShrink: 0,
+                              boxShadow: selected ? `0 0 0 2px #fff, 0 0 0 4px ${hex}` : '0 1px 4px rgba(0,0,0,0.2)',
+                              transform: selected ? 'scale(1.15)' : 'scale(1)',
+                              transition: 'transform 0.15s, box-shadow 0.15s',
+                            }}
+                          />
+                        );
+                      })}
+                    </div>
+                    {form.accentColor && (
+                      <button type="button"
+                        onClick={() => setForm(f => ({ ...f, accentColor: '' }))}
+                        style={{ background: 'none', border: 'none', fontSize: 12, color: C.textMuted, cursor: 'pointer', padding: '4px 0', fontFamily: "'Libre Franklin', sans-serif" }}
+                      >
+                        Reset to default
+                      </button>
+                    )}
+                  </div>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                     <div>
                       <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>Instagram</p>

@@ -70,6 +70,8 @@ export default async function handler(req, res) {
     googlePlaceId,
     socialInstagram,
     socialFacebook,
+    tagline,
+    accentColor,
   } = req.body || {};
 
   if (!slug || !claimToken) {
@@ -115,6 +117,8 @@ export default async function handler(req, res) {
     if (googlePlaceId !== undefined) properties['Google Place ID'] = { rich_text: [{ text: { content: googlePlaceId || '' } }] };
     if (socialInstagram !== undefined) properties['Instagram URL'] = { url: socialInstagram || null };
     if (socialFacebook !== undefined)  properties['Facebook URL']  = { url: socialFacebook || null };
+    if (tagline !== undefined)         properties['Tagline']       = { rich_text: [{ text: { content: tagline || '' } }] };
+    if (accentColor !== undefined)     properties['Accent Color']  = { rich_text: [{ text: { content: accentColor || '' } }] };
 
     if (Object.keys(properties).length === 0) {
       return res.status(400).json({ error: 'No fields to update.' });
