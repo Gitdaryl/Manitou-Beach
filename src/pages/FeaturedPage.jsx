@@ -228,8 +228,8 @@ export default function FeaturedPage() {
     { icon: "⚡", title: "More People Find You", desc: "Every week, visitors search this directory for exactly what you offer. The businesses at the top get the call. Right now, that's not you." },
     { icon: "🎨", title: "Look Worth Visiting", desc: "A polished listing with your logo and photos signals quality before they ever arrive. First impressions convert." },
     { icon: "📱", title: "Fewer Lost Customers", desc: "People decide in seconds on mobile. One tap to call you means the difference between a visit and a scroll past." },
-    { icon: "📰", title: "In Front of 500+ Local Inboxes Weekly", desc: "The Dispatch goes to subscribers who live here and spend here. Your business stays top of mind, not just when they're searching." },
-    { icon: "🎙️", title: "A Personal Endorsement", desc: "A podcast shoutout isn't an ad - it's a neighbor telling hundreds of people you're worth their money. That kind of trust doesn't come from a banner." },
+    { icon: "📰", title: "In Front of 500+ Local Inboxes Weekly", desc: "The Dispatch goes to subscribers who live here and spend here. Your business stays top of mind, not just when they're searching.", tier: "Front and Center" },
+    { icon: "🎙️", title: "A Personal Endorsement", desc: "A podcast shoutout isn't an ad - it's a neighbor telling hundreds of people you're worth their money. That kind of trust doesn't come from a banner.", tier: "Front and Center" },
   ];
 
   return (
@@ -387,7 +387,10 @@ export default function FeaturedPage() {
               {benefits.map((b, i) => (
                 <FadeIn key={i} delay={i * 60}>
                   <div style={{ padding: "24px 20px", background: C.warmWhite, borderRadius: 12, border: `1px solid ${C.sand}` }}>
-                    <div style={{ fontSize: 28, marginBottom: 10 }}>{b.icon}</div>
+                    <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginBottom: 10 }}>
+                      <div style={{ fontSize: 28 }}>{b.icon}</div>
+                      {b.tier && <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: `${C.sunsetLight}18`, color: C.sunsetLight, border: `1px solid ${C.sunsetLight}30`, flexShrink: 0 }}>{b.tier}</span>}
+                    </div>
                     <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text, margin: "0 0 6px 0" }}>{b.title}</h3>
                     <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: 0 }}>{b.desc}</p>
                   </div>
@@ -704,24 +707,6 @@ export default function FeaturedPage() {
                 <span style={{ color: "rgba(255,255,255,0.2)", fontSize: 16 }}>·</span>
                 <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, fontWeight: 700, color: C.sage }}>$970 / year <span style={{ fontWeight: 400, fontSize: 12, color: "rgba(255,255,255,0.35)" }}>(2 months free)</span></span>
               </div>
-              {/* Beta founding sponsor bonus - auto-hides after April 10 */}
-              {Date.now() < new Date('2026-04-10T16:00:00Z').getTime() && (
-                <div style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 8,
-                  background: "rgba(212,160,23,0.12)",
-                  border: "1px solid rgba(212,160,23,0.3)",
-                  borderRadius: 20,
-                  padding: "8px 18px",
-                  marginTop: 16,
-                }}>
-                  <span style={{ fontSize: 14 }}>🎁</span>
-                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 600, color: "#D4A017" }}>
-                    Beta founding bonus: sign up now and get <strong>13 months</strong> for the price of 12
-                  </span>
-                </div>
-              )}
             </div>
           </FadeIn>
 
@@ -854,7 +839,7 @@ export default function FeaturedPage() {
                     ))}
                   </div>
                   <p style={{ fontSize: 12, color: "rgba(255,255,255,0.22)", lineHeight: 1.6, maxWidth: 400, margin: "0 auto" }}>
-                    Questions? Email hello@manitou-beach.com and we'll be in touch within a few hours.
+                    Questions? Email hello@manitoubeachmichigan.com and we'll be in touch within a few hours.
                   </p>
                 </div>
               ) : (
@@ -970,15 +955,15 @@ export default function FeaturedPage() {
             </div>
           </FadeIn>
           {[
-            { q: "Do I have to commit for a whole year?", a: "No. Everything is month-to-month. Featured is $25/month, Premium is $49/month - billed monthly, cancel anytime. There is no annual contract. Take a spot for one month, the whole summer, or as long as you want." },
-            { q: "Can I do Featured or Premium just for the summer?", a: "Yes, that's exactly how it's designed. Sign up when your season starts, cancel when it ends. If you pause instead of canceling, your rate is locked and waiting for you when you come back next year." },
-            { q: "What if the Featured or Premium spots in my category are taken?", a: "Join the waitlist. We'll save your payment details - but nothing gets charged yet. The moment a spot opens in your category, you'll receive a text notification. You'll have 48 hours to claim it. Claim it and your card is billed and your listing goes live. Don't claim it and no charge - the next person on the list gets the offer." },
-            { q: "How many businesses can be Featured or Premium in my category?", a: "Featured has 3 spots per category. Premium has 1 spot per category - it's exclusive, one business at a time. Different categories have different availability, so check the availability band at the top of this page to see where your category stands." },
+            { q: "Do I have to commit for a whole year?", a: "No. Everything is month-to-month. Highlighted is $25/month, Front and Center is $49/month - billed monthly, cancel anytime. There is no annual contract. Take a spot for one month, the whole summer, or as long as you want." },
+            { q: "Can I do Highlighted or Front and Center just for the summer?", a: "Yes, that's exactly how it's designed. Sign up when your season starts, cancel when it ends. If you pause instead of canceling, your rate is locked and waiting for you when you come back next year." },
+            { q: "What if the Highlighted or Front and Center spots in my category are taken?", a: "Join the waitlist. We'll save your payment details - but nothing gets charged yet. The moment a spot opens in your category, you'll receive a text notification. You'll have 48 hours to claim it. Claim it and your card is billed and your listing goes live. Don't claim it and no charge - the next person on the list gets the offer." },
+            { q: "How many businesses can be Highlighted or Front and Center in my category?", a: "Highlighted has 3 spots per category. Front and Center has 1 spot per category - it's exclusive, one business at a time. Different categories have different availability, so check the availability band at the top of this page to see where your category stands." },
             { q: "I already have a free listing. What changes?", a: "Your free listing stays as-is. The featured upgrade gives you a premium card at the top of the directory, above all free listings. It's a separate, more visible placement - not a replacement." },
             { q: "What happens if I cancel my listing?", a: "Your listing reverts to the free directory. No lock-in, cancel anytime. If you cancel and later rejoin, you pay whatever the current rate is at that time - your original rate is not held after a full cancellation." },
             { q: "What if I pause my subscription?", a: "Pausing is fine - your spot and rate are held while paused. Only a full cancellation releases your category spot. If your business is seasonal, pause in the off-months and your placement is waiting when you come back." },
-            { q: "Can I change my listing details after I pay?", a: "Absolutely. Email us and we'll update your logo, description, phone number, or link within 24 hours." },
-            { q: "What's the Holly & Yeti podcast mention?", a: "Premium tier businesses get a shoutout on the Holly & Yeti community podcast, reaching the broader Devils Lake and Irish Hills audience." },
+            { q: "Can I change my listing details after I pay?", a: "Yes - and you don't need to email us. Once you've paid, visit your profile page and tap 'Claim This Listing.' Enter the phone number on your account, verify with the code we text you, and you can edit your description, hours, photos, and contact details yourself. Changes go live immediately." },
+            { q: "What's the Holly & Yeti podcast mention?", a: "Front and Center businesses get a shoutout on the Holly & Yeti community podcast, reaching the broader Devils Lake and Irish Hills audience." },
           ].map((faq, i) => (
             <FadeIn key={i} delay={i * 60}>
               <div style={{ padding: "24px 0", borderBottom: `1px solid ${C.sand}` }}>
