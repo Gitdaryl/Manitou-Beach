@@ -8,6 +8,14 @@ import { toSlug } from '../utils/slugify';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
+function formatPhone(phone) {
+  if (!phone) return phone;
+  const d = phone.replace(/\D/g, '');
+  if (d.length === 11 && d[0] === '1') return `${d.slice(1,4)}-${d.slice(4,7)}-${d.slice(7)}`;
+  if (d.length === 10) return `${d.slice(0,3)}-${d.slice(3,6)}-${d.slice(6)}`;
+  return phone;
+}
+
 // ─── Schema type map ────────────────────────────────────────────────────────
 const SCHEMA_TYPES = {
   'Restaurant': 'Restaurant', 'Bar': 'BarOrPub', 'Real Estate': 'RealEstateAgent',
@@ -907,7 +915,7 @@ export default function BusinessProfilePage() {
                       accent={accent}
                     >
                       <a href={`tel:${business.phone}`} style={{ color: C.lakeBlue, textDecoration: 'none', fontWeight: 500 }}>
-                        {business.phone}
+                        {formatPhone(business.phone)}
                       </a>
                     </ContactDetail>
                   )}
