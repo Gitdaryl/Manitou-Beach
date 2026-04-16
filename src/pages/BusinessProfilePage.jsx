@@ -409,7 +409,7 @@ export default function BusinessProfilePage() {
           max-height: 92dvh;
         }
         @media (min-width: 640px) {
-          .bp-edit-sheet { border-radius: 20px; margin: 24px 16px; padding: 32px; max-height: none; overflow-y: visible; }
+          .bp-edit-sheet { border-radius: 20px; margin: 24px 16px; padding: 32px; max-height: 90dvh; overflow-y: auto; }
         }
 
         .bp-hours-editor { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
