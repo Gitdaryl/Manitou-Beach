@@ -585,12 +585,20 @@ export default function BusinessProfilePage() {
                   }}>
                     {business.category || 'Local Business'}
                   </span>
-                  {(business.tier === 'premium' || business.tier === 'featured') && (
+                  {business.tier === 'premium' && (
                     <span style={{
                       background: `${C.driftwood}18`, color: C.driftwood,
                       borderRadius: 20, padding: '3px 11px', fontSize: 11, fontWeight: 700, letterSpacing: 0.5,
                     }}>
-                      {business.tier === 'premium' ? '⭐ Featured Member' : '✓ Verified'}
+                      ⭐ Front and Center
+                    </span>
+                  )}
+                  {business.tier === 'featured' && (
+                    <span style={{
+                      background: `${C.lakeBlue}15`, color: C.lakeBlue,
+                      borderRadius: 20, padding: '3px 11px', fontSize: 11, fontWeight: 700, letterSpacing: 0.5,
+                    }}>
+                      ✓ Highlighted
                     </span>
                   )}
                 </div>
@@ -793,8 +801,31 @@ export default function BusinessProfilePage() {
                     </div>
                   ))}
                 </div>
+              ) : ['featured', 'premium'].includes(business.tier) ? (
+                // Already on a reviews-eligible tier - just needs a Place ID connected
+                <div className="bp-section-card" style={{ background: `linear-gradient(135deg, #fff 0%, ${C.warmWhite} 100%)` }}>
+                  <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+                    <div style={{
+                      width: 44, height: 44, borderRadius: 10, flexShrink: 0,
+                      background: '#FFF8E7', border: '1.5px solid #FBBF2440',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="#FBBF24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                      </svg>
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: C.dusk, marginBottom: 4 }}>
+                        Google reviews ready to connect
+                      </div>
+                      <p style={{ margin: '0 0 12px', fontSize: 13, color: C.textLight, lineHeight: 1.6 }}>
+                        Your plan includes live Google reviews. We just need your Google Place ID to switch it on - email us at hello@manitoubeachmichigan.com and we'll get it sorted.
+                      </p>
+                    </div>
+                  </div>
+                </div>
               ) : (
-                // Reviews teaser - upsell to Featured
+                // Free/Enhanced - upsell to a paid tier
                 <div className="bp-section-card" style={{ background: `linear-gradient(135deg, #fff 0%, ${C.warmWhite} 100%)` }}>
                   <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
                     <div style={{
@@ -811,13 +842,13 @@ export default function BusinessProfilePage() {
                         Show your Google reviews here
                       </div>
                       <p style={{ margin: '0 0 12px', fontSize: 13, color: C.textLight, lineHeight: 1.6 }}>
-                        Upgrade to Featured and your star rating and reviews pull straight from Google. Social proof that works while you sleep.
+                        Upgrade your listing and your star rating and reviews pull straight from Google. Social proof that works while you sleep.
                       </p>
                       <a href="/business" style={{
                         fontSize: 12, fontWeight: 700, color: C.sage,
                         textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4,
                       }}>
-                        Upgrade to Featured →
+                        See listing options →
                       </a>
                     </div>
                   </div>
