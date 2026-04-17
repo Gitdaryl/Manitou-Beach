@@ -73,6 +73,9 @@ export default function BusinessProfilePage() {
   const [logoFile, setLogoFile] = useState(null);
   const [logoPreview, setLogoPreview] = useState(null);
   const logoFileRef = useRef();
+  const [gallerySlots, setGallerySlots] = useState(Array(6).fill(null).map(() => ({ url: null, file: null, preview: null })));
+  const galleryFileRefs = useRef(Array(6).fill(null));
+  const [lightboxIndex, setLightboxIndex] = useState(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -123,6 +126,8 @@ export default function BusinessProfilePage() {
             setEditHours(biz.hours || {});
             if (biz.heroPhoto) setHeroPreview(biz.heroPhoto);
             if (biz.logo) setLogoPreview(biz.logo);
+            const gal = biz.gallery || [];
+            setGallerySlots(Array(6).fill(null).map((_, i) => ({ url: gal[i] || null, file: null, preview: gal[i] || null })));
             setLoading(false);
             // In setup mode, auto-open the claim modal after the page settles
             if (isSetup && !localStorage.getItem(`mb-claim-${slug}`)) {
@@ -244,6 +249,24 @@ export default function BusinessProfilePage() {
         if (!uploadRes.ok) throw new Error(uploadData.error || 'Logo upload failed');
         logoUrl = uploadData.url;
       }
+      // Upload any new gallery images in parallel
+      const galleryUploadResults = await Promise.all(
+        gallerySlots.map(async (slot, i) => {
+          if (slot.file) {
+            const { base64, filename } = await compressImage(slot.file, 1200, 0.85);
+            const uploadRes = await fetch('/api/upload-image', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ data: base64, filename: `gallery-${i}-${filename}`, contentType: 'image/jpeg', folder: 'business-gallery' }),
+            });
+            const uploadData = await uploadRes.json();
+            return uploadRes.ok ? uploadData.url : slot.url;
+          }
+          return slot.url;
+        })
+      );
+      const finalGallery = galleryUploadResults.filter(Boolean);
+
       const res = await fetch('/api/self-edit-listing', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -254,6 +277,7 @@ export default function BusinessProfilePage() {
           hours: Object.keys(editHours).length ? JSON.stringify(editHours) : undefined,
           heroPhotoUrl,
           logoUrl,
+          gallery: JSON.stringify(finalGallery),
         }),
       });
       const data = await res.json();
@@ -271,6 +295,15 @@ export default function BusinessProfilePage() {
     } finally {
       setEditLoading(false);
     }
+  };
+
+  const handleGalleryChange = (i, file) => {
+    if (!file) return;
+    const preview = URL.createObjectURL(file);
+    setGallerySlots(slots => { const next = [...slots]; next[i] = { ...next[i], file, preview }; return next; });
+  };
+  const removeGallerySlot = (i) => {
+    setGallerySlots(slots => { const next = [...slots]; next[i] = { url: null, file: null, preview: null }; return next; });
   };
 
   const handleQuote = async e => {
@@ -343,6 +376,10 @@ export default function BusinessProfilePage() {
           border-left: 3px solid ${accent}40;
         }
         @media (min-width: 640px) { .bp-section-card { padding: 28px 28px; } }
+
+        .bp-gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        @media (min-width: 640px) { .bp-gallery-grid { grid-template-columns: repeat(3, 1fr); } }
+        .bp-gallery-slot { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 
         .bp-action-btn {
           flex: 1; min-width: 0; display: flex; align-items: center; justify-content: center;
@@ -755,6 +792,25 @@ export default function BusinessProfilePage() {
                   }}>
                     {business.description}
                   </p>
+                </div>
+              )}
+
+              {/* ── Photo Gallery (Premium only) ── */}
+              {business.tier === 'premium' && business.gallery?.length > 0 && (
+                <div className="bp-section-card">
+                  <div className="bp-section-label">Gallery</div>
+                  <div className="bp-gallery-grid">
+                    {business.gallery.map((url, i) => (
+                      <div key={i} onClick={() => setLightboxIndex(i)}
+                        style={{ cursor: 'pointer', borderRadius: 10, overflow: 'hidden', aspectRatio: '4/3' }}>
+                        <img src={url} alt={`Gallery photo ${i + 1}`}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.2s' }}
+                          onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.04)'}
+                          onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 
@@ -1365,6 +1421,48 @@ export default function BusinessProfilePage() {
                     </div>
                   </div>
 
+                  {/* Photo Gallery - Premium only */}
+                  {business.tier === 'premium' && (
+                    <div>
+                      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: accent, marginBottom: 10 }}>
+                        Photo Gallery <span style={{ fontWeight: 400, color: C.textMuted, textTransform: 'none', letterSpacing: 0, fontSize: 11 }}>· up to 6 photos</span>
+                      </div>
+                      <div className="bp-gallery-slot">
+                        {gallerySlots.map((slot, i) => (
+                          <div key={i}
+                            style={{ position: 'relative', aspectRatio: '4/3', borderRadius: 8, overflow: 'hidden', border: `1.5px dashed ${slot.preview ? 'transparent' : C.sand}`, background: slot.preview ? 'transparent' : C.warmWhite, cursor: slot.preview ? 'default' : 'pointer' }}
+                            onClick={() => { if (!slot.preview) galleryFileRefs.current[i]?.click(); }}
+                          >
+                            <input
+                              ref={el => galleryFileRefs.current[i] = el}
+                              type="file" accept="image/*" style={{ display: 'none' }}
+                              onChange={e => handleGalleryChange(i, e.target.files?.[0])}
+                            />
+                            {slot.preview ? (
+                              <>
+                                <img src={slot.preview} alt={`Gallery ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                                <button type="button" onClick={e => { e.stopPropagation(); removeGallerySlot(i); }}
+                                  style={{ position: 'absolute', top: 4, right: 4, width: 22, height: 22, borderRadius: '50%', background: 'rgba(0,0,0,0.65)', color: '#fff', border: 'none', cursor: 'pointer', fontSize: 15, lineHeight: '22px', textAlign: 'center', padding: 0 }}>
+                                  ×
+                                </button>
+                                <button type="button" onClick={e => { e.stopPropagation(); galleryFileRefs.current[i]?.click(); }}
+                                  style={{ position: 'absolute', bottom: 4, left: '50%', transform: 'translateX(-50%)', fontSize: 10, fontWeight: 700, background: 'rgba(0,0,0,0.55)', color: '#fff', border: 'none', borderRadius: 4, padding: '2px 7px', cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                                  Change
+                                </button>
+                              </>
+                            ) : (
+                              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: 2 }}>
+                                <div style={{ fontSize: 20, color: C.textMuted, lineHeight: 1 }}>+</div>
+                                <div style={{ fontSize: 9, color: C.textMuted, fontWeight: 600, letterSpacing: 0.5 }}>Add photo</div>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                      <p style={{ fontSize: 11, color: C.textMuted, margin: '6px 0 0' }}>Tap any slot to add a photo. Visitors can click to view full size.</p>
+                    </div>
+                  )}
+
                   {/* Tagline */}
                   <div>
                     <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>Tagline</div>
@@ -1549,6 +1647,45 @@ export default function BusinessProfilePage() {
           )}
 
         </>
+      )}
+
+      {/* ── Lightbox ── */}
+      {lightboxIndex !== null && business?.gallery?.length > 0 && (
+        <div
+          onClick={() => setLightboxIndex(null)}
+          style={{ position: 'fixed', inset: 0, zIndex: 500, background: 'rgba(0,0,0,0.93)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+          <img
+            src={business.gallery[lightboxIndex]}
+            alt={`Gallery photo ${lightboxIndex + 1}`}
+            style={{ maxWidth: '90vw', maxHeight: '88vh', objectFit: 'contain', borderRadius: 10, boxShadow: '0 8px 48px rgba(0,0,0,0.5)' }}
+            onClick={e => e.stopPropagation()}
+          />
+          {lightboxIndex > 0 && (
+            <button onClick={e => { e.stopPropagation(); setLightboxIndex(i => i - 1); }}
+              style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff', fontSize: 28, width: 44, height: 44, borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              ‹
+            </button>
+          )}
+          {lightboxIndex < business.gallery.length - 1 && (
+            <button onClick={e => { e.stopPropagation(); setLightboxIndex(i => i + 1); }}
+              style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff', fontSize: 28, width: 44, height: 44, borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              ›
+            </button>
+          )}
+          <button onClick={() => setLightboxIndex(null)}
+            style={{ position: 'absolute', top: 16, right: 16, background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff', fontSize: 20, width: 36, height: 36, borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            ×
+          </button>
+          {business.gallery.length > 1 && (
+            <div style={{ position: 'absolute', bottom: 20, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 6 }}>
+              {business.gallery.map((_, i) => (
+                <div key={i} onClick={e => { e.stopPropagation(); setLightboxIndex(i); }}
+                  style={{ width: 8, height: 8, borderRadius: '50%', background: i === lightboxIndex ? '#fff' : 'rgba(255,255,255,0.35)', cursor: 'pointer', transition: 'background 0.2s' }} />
+              ))}
+            </div>
+          )}
+        </div>
       )}
 
       {!loading && <Footer />}

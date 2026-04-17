@@ -314,6 +314,7 @@ export default async function handler(req, res) {
         socialFacebook: p['Facebook URL']?.url || null,
         tagline: p['Tagline']?.rich_text?.[0]?.text?.content || null,
         accentColor: p['Accent Color']?.rich_text?.[0]?.text?.content || null,
+        gallery: (() => { try { return JSON.parse(p['Gallery']?.rich_text?.[0]?.text?.content || '[]'); } catch { return []; } })(),
       };
       if (!business.name) return;
 

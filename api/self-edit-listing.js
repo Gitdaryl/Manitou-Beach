@@ -74,6 +74,7 @@ export default async function handler(req, res) {
     tagline,
     accentColor,
     emergency,
+    gallery,
   } = req.body || {};
 
   if (!slug || !claimToken) {
@@ -129,6 +130,7 @@ export default async function handler(req, res) {
     if (tagline !== undefined)         properties['Tagline']       = { rich_text: [{ text: { content: tagline || '' } }] };
     if (accentColor !== undefined)     properties['Accent Color']  = { rich_text: [{ text: { content: accentColor || '' } }] };
     if (emergency !== undefined)       properties['Emergency']     = { checkbox: !!emergency };
+    if (gallery !== undefined)         properties['Gallery']       = { rich_text: [{ text: { content: gallery || '' } }] };
 
     if (Object.keys(properties).length === 0) {
       return res.status(400).json({ error: 'No fields to update.' });
