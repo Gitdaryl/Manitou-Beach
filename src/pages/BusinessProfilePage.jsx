@@ -614,12 +614,12 @@ export default function BusinessProfilePage() {
               {/* Logo or color bar */}
               {business.logo ? (
                 <div style={{
-                  width: 56, height: 56, borderRadius: 12, flexShrink: 0,
+                  width: 120, height: 120, borderRadius: 16, flexShrink: 0,
                   border: `2px solid ${accent}30`, background: '#fff',
-                  overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                  overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
                 }}>
                   <img src={business.logo} alt={`${business.name} logo`}
-                    style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 4 }} />
+                    style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 8 }} />
                 </div>
               ) : (
                 <div style={{ width: 4, borderRadius: 4, background: accent, alignSelf: 'stretch', flexShrink: 0, minHeight: 32 }} />
@@ -1321,8 +1321,8 @@ export default function BusinessProfilePage() {
                     <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 8 }}>Logo / Profile Picture</div>
                     <div style={{ display: 'flex', gap: 14, alignItems: 'center', flexWrap: 'wrap' }}>
                       {logoPreview && (
-                        <div style={{ width: 56, height: 56, borderRadius: 10, border: `1px solid ${C.sand}`, background: '#fff', overflow: 'hidden', flexShrink: 0 }}>
-                          <img src={logoPreview} alt="Logo preview" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 4 }} />
+                        <div style={{ width: 100, height: 100, borderRadius: 12, border: `1px solid ${C.sand}`, background: '#fff', overflow: 'hidden', flexShrink: 0 }}>
+                          <img src={logoPreview} alt="Logo preview" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 6 }} />
                         </div>
                       )}
                       <div>
