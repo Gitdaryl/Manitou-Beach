@@ -318,7 +318,7 @@ export default function BusinessProfilePage() {
     : '';
 
   return (
-    <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: 'hidden', minHeight: '100vh' }}>
+    <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: `linear-gradient(180deg, ${accent}06 0%, ${C.cream} 320px)`, color: C.text, overflowX: 'hidden', minHeight: '100vh' }}>
       <GlobalStyles />
 
       {/* ── Inline styles for profile-specific classes ── */}
@@ -340,6 +340,7 @@ export default function BusinessProfilePage() {
           background: #fff; border-radius: 14px;
           box-shadow: 0 2px 16px rgba(0,0,0,0.07);
           padding: 22px 22px; margin-bottom: 16px;
+          border-left: 3px solid ${accent}40;
         }
         @media (min-width: 640px) { .bp-section-card { padding: 28px 28px; } }
 
@@ -374,7 +375,7 @@ export default function BusinessProfilePage() {
 
         .bp-section-label {
           font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
-          text-transform: uppercase; color: ${C.textMuted};
+          text-transform: uppercase; color: ${accent};
           margin-bottom: 14px; font-family: "'Libre Franklin', sans-serif";
         }
 
