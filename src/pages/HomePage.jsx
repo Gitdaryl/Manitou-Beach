@@ -996,11 +996,15 @@ function BusinessDirectory() {
     return matchesCat && matchesSearch(b);
   });
 
-  // Premium: full-width banner rows at top
-  const premiumBusinesses = filtered.filter(b => b.tier === 'premium');
+  // Premium: one banner pinned at the top of their own category
+  const premiumByCategory = {};
+  filtered.filter(b => b.tier === 'premium').forEach(b => {
+    if (!premiumByCategory[b.category]) premiumByCategory[b.category] = [];
+    premiumByCategory[b.category].push(b);
+  });
 
-  // Featured cards within their category: Featured + Premium tiers get a dark spotlight card
-  const featuredCardBusinesses = filtered.filter(b => b.featured || b.tier === 'featured' || b.tier === 'premium');
+  // Featured spotlight cards within their category (premium excluded - they use PremiumBanner above)
+  const featuredCardBusinesses = filtered.filter(b => b.featured || b.tier === 'featured');
   const featuredByCategory = {};
   featuredCardBusinesses.forEach(b => {
     if (!featuredByCategory[b.category]) featuredByCategory[b.category] = [];
@@ -1083,22 +1087,7 @@ function BusinessDirectory() {
           </div>
         </FadeIn>
 
-        {/* Premium Partners - full-width banner rows, stacked before categories */}
-        {premiumBusinesses.length > 0 && (
-          <FadeIn delay={100}>
-            <div style={{ marginBottom: 56 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 16 }}>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3.5, textTransform: "uppercase", color: C.sunset, whiteSpace: "nowrap" }}>
-                  Premium Partners
-                </div>
-                <div style={{ flex: 1, height: 1, background: C.sand }} />
-              </div>
-              {premiumBusinesses.map(b => <PremiumBanner key={b.id} business={b} />)}
-            </div>
-          </FadeIn>
-        )}
-
-        {/* Directory - category sections: featured cards on top, then all businesses as rows */}
+        {/* Directory - category sections: premium banner first, then featured cards, then rows */}
         {allCategories.map((category, i) => {
           const catFeatured = featuredByCategory[category] || [];
           const catAll = grouped[category] || [];
@@ -1114,15 +1103,17 @@ function BusinessDirectory() {
                     {catAll.length}
                   </div>
                 </div>
-                {/* Featured spotlight cards - 3 per row, wraps to new rows as needed */}
+                {/* Premium banner pinned at top of its own category */}
+                {(premiumByCategory[category] || []).map(b => <PremiumBanner key={`prem-${b.id}`} business={b} />)}
+                {/* Featured spotlight cards */}
                 {catFeatured.length > 0 && (
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 14, marginBottom: 14 }}>
                     {catFeatured.map(b => <FeaturedBusinessCard key={`card-${b.id}`} business={b} />)}
                   </div>
                 )}
-                {/* All businesses as rows - Enhanced/Featured/Premium get expanded view */}
-                {catAll.map(b =>
-                  (b.tier === 'enhanced' || b.tier === 'featured' || b.tier === 'premium' || b.featured)
+                {/* All non-premium businesses as rows */}
+                {catAll.filter(b => b.tier !== 'premium').map(b =>
+                  (b.tier === 'enhanced' || b.tier === 'featured' || b.featured)
                     ? <EnhancedBusinessRow key={`row-${b.id}`} business={b} />
                     : <BusinessRow key={`row-${b.id}`} business={b} />
                 )}
