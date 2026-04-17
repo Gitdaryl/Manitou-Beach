@@ -70,6 +70,9 @@ export default function BusinessProfilePage() {
   const [editError, setEditError] = useState('');
   const [editSaved, setEditSaved] = useState(false);
   const heroFileRef = useRef();
+  const [logoFile, setLogoFile] = useState(null);
+  const [logoPreview, setLogoPreview] = useState(null);
+  const logoFileRef = useRef();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -119,6 +122,7 @@ export default function BusinessProfilePage() {
             });
             setEditHours(biz.hours || {});
             if (biz.heroPhoto) setHeroPreview(biz.heroPhoto);
+            if (biz.logo) setLogoPreview(biz.logo);
             setLoading(false);
             // In setup mode, auto-open the claim modal after the page settles
             if (isSetup && !localStorage.getItem(`mb-claim-${slug}`)) {
@@ -203,6 +207,14 @@ export default function BusinessProfilePage() {
     setHeroPreview(`data:image/jpeg;base64,${base64}`);
   };
 
+  const handleLogoChange = async e => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setLogoFile(file);
+    const { base64 } = await compressImage(file, 600, 0.9);
+    setLogoPreview(`data:image/jpeg;base64,${base64}`);
+  };
+
   const handleEditSave = async e => {
     e.preventDefault();
     setEditLoading(true);
@@ -220,6 +232,18 @@ export default function BusinessProfilePage() {
         if (!uploadRes.ok) throw new Error(uploadData.error || 'Photo upload failed');
         heroPhotoUrl = uploadData.url;
       }
+      let logoUrl = business?.logo || null;
+      if (logoFile) {
+        const { base64, filename } = await compressImage(logoFile, 600, 0.9);
+        const uploadRes = await fetch('/api/upload-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ data: base64, filename: `logo-${filename}`, contentType: 'image/jpeg', folder: 'business-logos' }),
+        });
+        const uploadData = await uploadRes.json();
+        if (!uploadRes.ok) throw new Error(uploadData.error || 'Logo upload failed');
+        logoUrl = uploadData.url;
+      }
       const res = await fetch('/api/self-edit-listing', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -229,6 +253,7 @@ export default function BusinessProfilePage() {
           ...editForm,
           hours: Object.keys(editHours).length ? JSON.stringify(editHours) : undefined,
           heroPhotoUrl,
+          logoUrl,
         }),
       });
       const data = await res.json();
@@ -528,9 +553,9 @@ export default function BusinessProfilePage() {
 
           {/* Hero */}
           <div style={{ position: 'relative', paddingTop: 64, background: C.dusk }}>
-            {(business.heroPhoto || business.logo) ? (
+            {business.heroPhoto ? (
               <img
-                src={business.heroPhoto || business.logo}
+                src={business.heroPhoto}
                 alt={`${business.name} - ${business.category} in Manitou Beach, Michigan`}
                 className="bp-hero-img"
                 style={{ objectPosition: 'center top' }}
@@ -538,20 +563,25 @@ export default function BusinessProfilePage() {
                 loading="eager"
               />
             ) : (
-              // Branded gradient hero when no photo
+              // Gradient hero - shows logo if available, otherwise initial
               <div className="bp-hero-img" style={{
                 background: `linear-gradient(135deg, ${accent}cc 0%, ${C.dusk} 60%, ${C.lakeDark} 100%)`,
                 display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 12,
               }}>
-                <div style={{
-                  width: 80, height: 80, borderRadius: '50%', background: 'rgba(255,255,255,0.12)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 32, color: 'rgba(255,255,255,0.5)', fontFamily: "'Libre Baskerville', serif", fontWeight: 700,
-                }}>
-                  {business.name[0].toUpperCase()}
-                </div>
+                {business.logo ? (
+                  <img src={business.logo} alt={business.name}
+                    style={{ width: 100, height: 100, objectFit: 'contain', borderRadius: 16, background: 'rgba(255,255,255,0.12)', padding: 8 }} />
+                ) : (
+                  <div style={{
+                    width: 80, height: 80, borderRadius: '50%', background: 'rgba(255,255,255,0.12)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 32, color: 'rgba(255,255,255,0.5)', fontFamily: "'Libre Baskerville', serif", fontWeight: 700,
+                  }}>
+                    {business.name[0].toUpperCase()}
+                  </div>
+                )}
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', letterSpacing: 1 }}>
-                  Add a photo to make this page shine
+                  Add a cover photo to make this page shine
                 </div>
               </div>
             )}
@@ -581,8 +611,19 @@ export default function BusinessProfilePage() {
           {/* ── Identity card (floats up over hero) ── */}
           <div className="bp-identity-card">
             <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
-              {/* Category color bar */}
-              <div style={{ width: 4, borderRadius: 4, background: accent, alignSelf: 'stretch', flexShrink: 0, minHeight: 32 }} />
+              {/* Logo or color bar */}
+              {business.logo ? (
+                <div style={{
+                  width: 56, height: 56, borderRadius: 12, flexShrink: 0,
+                  border: `2px solid ${accent}30`, background: '#fff',
+                  overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                }}>
+                  <img src={business.logo} alt={`${business.name} logo`}
+                    style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 4 }} />
+                </div>
+              ) : (
+                <div style={{ width: 4, borderRadius: 4, background: accent, alignSelf: 'stretch', flexShrink: 0, minHeight: 32 }} />
+              )}
               <div style={{ flex: 1, minWidth: 0 }}>
                 {/* Category + tier chips */}
                 <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap', marginBottom: 8 }}>
@@ -1275,12 +1316,37 @@ export default function BusinessProfilePage() {
 
                 <form onSubmit={handleEditSave} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
 
+                  {/* Logo */}
+                  <div>
+                    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 8 }}>Logo / Profile Picture</div>
+                    <div style={{ display: 'flex', gap: 14, alignItems: 'center', flexWrap: 'wrap' }}>
+                      {logoPreview && (
+                        <div style={{ width: 56, height: 56, borderRadius: 10, border: `1px solid ${C.sand}`, background: '#fff', overflow: 'hidden', flexShrink: 0 }}>
+                          <img src={logoPreview} alt="Logo preview" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 4 }} />
+                        </div>
+                      )}
+                      <div>
+                        <input ref={logoFileRef} type="file" accept="image/*" onChange={handleLogoChange} style={{ display: 'none' }} />
+                        <button type="button" onClick={() => logoFileRef.current?.click()} style={{
+                          fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600,
+                          padding: '8px 16px', borderRadius: 6, border: `1.5px solid ${C.sage}`,
+                          background: 'transparent', color: C.sage, cursor: 'pointer',
+                        }}>
+                          {logoPreview ? 'Change logo' : 'Upload logo'}
+                        </button>
+                        <p style={{ fontSize: 11, color: C.textMuted, margin: '5px 0 0', fontFamily: "'Libre Franklin', sans-serif" }}>
+                          Square image, 400x400px or larger. PNG with transparent background works best.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Hero photo */}
                   <div>
-                    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 8 }}>Hero Photo</div>
+                    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 8 }}>Cover Photo</div>
                     <div style={{ display: 'flex', gap: 14, alignItems: 'center', flexWrap: 'wrap' }}>
                       {heroPreview && (
-                        <img src={heroPreview} alt="Hero preview" style={{ width: 80, height: 52, objectFit: 'cover', borderRadius: 8, border: `1px solid ${C.sand}` }} />
+                        <img src={heroPreview} alt="Cover preview" style={{ width: 80, height: 52, objectFit: 'cover', borderRadius: 8, border: `1px solid ${C.sand}` }} />
                       )}
                       <div>
                         <input ref={heroFileRef} type="file" accept="image/*" capture="environment" onChange={handleHeroChange} style={{ display: 'none' }} />
@@ -1289,10 +1355,10 @@ export default function BusinessProfilePage() {
                           padding: '8px 16px', borderRadius: 6, border: `1.5px solid ${C.sage}`,
                           background: 'transparent', color: C.sage, cursor: 'pointer',
                         }}>
-                          {heroPreview ? 'Change photo' : 'Upload photo'}
+                          {heroPreview ? 'Change cover photo' : 'Upload cover photo'}
                         </button>
                         <p style={{ fontSize: 11, color: C.textMuted, margin: '5px 0 0', fontFamily: "'Libre Franklin', sans-serif" }}>
-                          Snap one from your phone or pick from your library
+                          Wide landscape photo, 1400x500px or larger. Storefront, interior, or scenery.
                         </p>
                       </div>
                     </div>

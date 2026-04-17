@@ -67,6 +67,7 @@ export default async function handler(req, res) {
     address,
     hours,       // JSON string: { Mon: "9am-5pm", Tue: "9am-5pm", ... }
     heroPhotoUrl,
+    logoUrl,
     googlePlaceId,
     socialInstagram,
     socialFacebook,
@@ -115,6 +116,13 @@ export default async function handler(req, res) {
     if (address !== undefined)       properties['Address']         = { rich_text: [{ text: { content: address || '' } }] };
     if (hours !== undefined)         properties['Hours']           = { rich_text: [{ text: { content: hours || '' } }] };
     if (normalizedHero)              properties['Hero Photo URL']  = { url: normalizedHero };
+
+    let normalizedLogo = null;
+    if (logoUrl && logoUrl.trim()) {
+      const u = logoUrl.trim();
+      normalizedLogo = /^https?:\/\//i.test(u) ? u : 'https://' + u;
+    }
+    if (normalizedLogo)              properties['Logo URL']        = { url: normalizedLogo };
     if (googlePlaceId !== undefined) properties['Google Place ID'] = { rich_text: [{ text: { content: googlePlaceId || '' } }] };
     if (socialInstagram !== undefined) properties['Instagram URL'] = { url: socialInstagram || null };
     if (socialFacebook !== undefined)  properties['Facebook URL']  = { url: socialFacebook || null };
