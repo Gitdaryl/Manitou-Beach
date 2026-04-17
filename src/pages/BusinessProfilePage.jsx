@@ -930,7 +930,6 @@ export default function BusinessProfilePage() {
                   ))}
                 </div>
               ) : ['featured', 'premium'].includes(business.tier) ? (
-                // Already on a reviews-eligible tier - just needs a Place ID connected
                 <div className="bp-section-card" style={{ background: `linear-gradient(135deg, #fff 0%, ${C.warmWhite} 100%)` }}>
                   <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
                     <div style={{
@@ -944,23 +943,24 @@ export default function BusinessProfilePage() {
                     </div>
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 14, fontWeight: 700, color: C.dusk, marginBottom: 4 }}>
-                        Google reviews ready to connect
+                        Your Google reviews can show right here
                       </div>
                       <p style={{ margin: '0 0 12px', fontSize: 13, color: C.textLight, lineHeight: 1.6 }}>
-                        Your plan includes live Google reviews. Add your Google Place ID in your profile settings and they'll appear automatically.
+                        Your plan includes live Google reviews on this page. We handle the whole setup - just fill out a quick form and we take it from there.
                       </p>
                       {claimToken ? (
-                        <button
-                          onClick={() => setEditOpen(true)}
+                        <a
+                          href={`/gbp-setup?business=${encodeURIComponent(business.name)}&slug=${encodeURIComponent(toSlug(business.name))}`}
                           style={{
                             fontSize: 12, fontWeight: 700, color: C.sage, background: 'none',
                             border: 'none', padding: 0, cursor: 'pointer',
                             fontFamily: "'Libre Franklin', sans-serif",
                             display: 'inline-flex', alignItems: 'center', gap: 4,
+                            textDecoration: 'none',
                           }}
                         >
-                          Add it now in Edit Listing →
-                        </button>
+                          We'll set it up for you →
+                        </a>
                       ) : (
                         <button
                           onClick={() => { setClaimOpen(true); setClaimStep('phone'); setClaimError(''); }}
@@ -992,10 +992,10 @@ export default function BusinessProfilePage() {
                     </div>
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 14, fontWeight: 700, color: C.dusk, marginBottom: 4 }}>
-                        Show your Google reviews here
+                        Your Google reviews could show right here
                       </div>
                       <p style={{ margin: '0 0 12px', fontSize: 13, color: C.textLight, lineHeight: 1.6 }}>
-                        Upgrade your listing and your star rating and reviews pull straight from Google. Social proof that works while you sleep.
+                        Upgrade to Front and Center and we'll set up your Google presence for you - reviews show up on this page automatically. No tech stuff required.
                       </p>
                       <a href="/business" style={{
                         fontSize: 12, fontWeight: 700, color: C.sage,
