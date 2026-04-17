@@ -186,7 +186,7 @@ export default function FeaturedPage() {
     {
       id: 'premium', name: 'Front and Center', color: C.sunsetLight, badge: 'Best Visibility',
       price: priceFor(49), priceInCents: centsFor(49),
-      features: ['Everything in Featured', 'Top of your category, always', 'Full-width banner in directory', 'Newsletter mention when live', 'Cross-page placements'],
+      features: ['Everything in Featured', 'Top of your category, always', 'Full-width banner in directory', 'Google Business Profile setup included', 'Newsletter mention when live', 'Cross-page placements'],
     },
   ];
 

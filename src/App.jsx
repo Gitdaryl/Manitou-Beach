@@ -53,6 +53,7 @@ const VendorRegisterPage = lazy(() => import('./pages/VendorRegisterPage'));
 const VendorPortalPage = lazy(() => import('./pages/VendorPortalPage'));
 const NightlifePage = lazy(() => import('./pages/NightlifePage'));
 const OrganizerDashboardPage = lazy(() => import('./pages/OrganizerDashboardPage'));
+const GBPSetupPage = lazy(() => import('./pages/GBPSetupPage'));
 const LaunchPage = lazy(() => import('./pages/LaunchPage'));
 const BetaBusinessPage = lazy(() => import('./pages/BetaBusinessPage'));
 const ActivateBusinessPage = lazy(() => import('./pages/ActivateBusinessPage'));
@@ -202,6 +203,7 @@ export default function App() {
           <Route path="/vendor-register" element={<VendorRegisterPage />} />
           <Route path="/vendor-portal" element={<VendorPortalPage />} />
           <Route path="/organizer-dashboard" element={<OrganizerDashboardPage />} />
+          <Route path="/gbp-setup" element={<GBPSetupPage />} />
           <Route path="/dispatch" element={<DispatchPage />} />
           <Route path="/dispatch/:slug" element={<DispatchArticlePage />} />
           <Route path="/yeti-admin" element={<YetiAdminPage />} />
