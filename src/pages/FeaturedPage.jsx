@@ -176,17 +176,17 @@ export default function FeaturedPage() {
     {
       id: 'enhanced', name: 'Showcased', color: C.lakeBlue, badge: null,
       price: priceFor(9), priceInCents: centsFor(9),
-      features: ['Your own profile page at manitoubeachmichigan.com', 'Description, hours, and photos', 'Call button + quote request form', 'Listed in the business directory', 'Pin on the Discover map'],
+      features: ['Your own page - a real URL you can share and bookmark', 'Photos, hours, and description all in one place', 'One-tap call button and quote request form', 'Pin on the interactive map so people can find you'],
     },
     {
       id: 'featured', name: 'Highlighted', color: C.sage, badge: 'Most Popular',
       price: priceFor(25), priceInCents: centsFor(25),
-      features: ['Everything in Showcased', 'Google Reviews shown on your profile', 'Featured badge + spotlight card', 'Above standard listings in your category'],
+      features: ['Everything in Showcased', 'Your Google star rating and reviews display on your profile', 'Highlighted badge visitors notice when browsing', 'Ranked above standard listings in your category'],
     },
     {
       id: 'premium', name: 'Front and Center', color: C.sunsetLight, badge: 'Best Visibility',
       price: priceFor(49), priceInCents: centsFor(49),
-      features: ['Everything in Featured', 'Top of your category, always', 'Full-width banner in directory', 'Google Business Profile setup included', 'Newsletter mention when live', 'Cross-page placements'],
+      features: ['Everything in Highlighted', 'First listing in your category - always', 'Your photo banner at the top of the directory page', 'We set up your Google Maps presence - done for you', 'Introductory shoutout to 500+ local inboxes'],
     },
   ];
 
@@ -226,10 +226,11 @@ export default function FeaturedPage() {
 
   const benefits = [
     { icon: "⚡", title: "More People Find You", desc: "Every week, visitors search this directory for exactly what you offer. The businesses at the top get the call. Right now, that's not you." },
-    { icon: "🎨", title: "Look Worth Visiting", desc: "A polished listing with your logo and photos signals quality before they ever arrive. First impressions convert." },
+    { icon: "🎨", title: "Look Worth Visiting", desc: "A polished listing with your logo, photos, and hours signals quality before they ever arrive. First impressions convert." },
     { icon: "📱", title: "Fewer Lost Customers", desc: "People decide in seconds on mobile. One tap to call you means the difference between a visit and a scroll past." },
+    { icon: "⭐", title: "Your Reviews Work for You While You Sleep", desc: "When someone leaves you a 5-star Google review, it shows right on your Manitou Beach profile. No copy-pasting, no tech fuss. And if you're not on Google yet, we set the whole thing up for you.", tier: "From Highlighted" },
     { icon: "📰", title: "In Front of 500+ Local Inboxes Weekly", desc: "The Dispatch goes to subscribers who live here and spend here. Your business stays top of mind, not just when they're searching.", tier: "Front and Center" },
-    { icon: "🎙️", title: "A Personal Endorsement", desc: "A podcast shoutout isn't an ad - it's a neighbor telling hundreds of people you're worth their money. That kind of trust doesn't come from a banner.", tier: "Front and Center" },
+    { icon: "🗺️", title: "On Google Maps - Done for You", desc: "When someone Googles your trade near Manitou Beach, your name, phone number, and hours show up right in the results. We handle the entire setup. You just verify it's yours.", tier: "Front and Center" },
   ];
 
   return (
@@ -398,29 +399,19 @@ export default function FeaturedPage() {
               ))}
             </div>
           ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
-                {benefits.slice(0, 3).map((b, i) => (
-                  <FadeIn key={i} delay={i * 60}>
-                    <div style={{ padding: "24px 20px", background: C.warmWhite, borderRadius: 12, border: `1px solid ${C.sand}` }}>
-                      <div style={{ fontSize: 28, marginBottom: 10 }}>{b.icon}</div>
-                      <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text, margin: "0 0 6px 0" }}>{b.title}</h3>
-                      <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: 0 }}>{b.desc}</p>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+              {benefits.map((b, i) => (
+                <FadeIn key={i} delay={i * 60}>
+                  <div style={{ padding: "24px 20px", background: C.warmWhite, borderRadius: 12, border: `1px solid ${C.sand}`, height: "100%", boxSizing: "border-box" }}>
+                    <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginBottom: 10 }}>
+                      <div style={{ fontSize: 28 }}>{b.icon}</div>
+                      {b.tier && <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: `${C.sunsetLight}18`, color: C.sunsetLight, border: `1px solid ${C.sunsetLight}30`, flexShrink: 0, whiteSpace: "nowrap" }}>{b.tier}</span>}
                     </div>
-                  </FadeIn>
-                ))}
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 20, maxWidth: "66.66%", margin: "0 auto", width: "100%" }}>
-                {benefits.slice(3).map((b, i) => (
-                  <FadeIn key={i + 3} delay={(i + 3) * 60}>
-                    <div style={{ padding: "24px 20px", background: C.warmWhite, borderRadius: 12, border: `1px solid ${C.sand}` }}>
-                      <div style={{ fontSize: 28, marginBottom: 10 }}>{b.icon}</div>
-                      <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text, margin: "0 0 6px 0" }}>{b.title}</h3>
-                      <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: 0 }}>{b.desc}</p>
-                    </div>
-                  </FadeIn>
-                ))}
-              </div>
+                    <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text, margin: "0 0 6px 0" }}>{b.title}</h3>
+                    <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: 0 }}>{b.desc}</p>
+                  </div>
+                </FadeIn>
+              ))}
             </div>
           )}
         </div>
