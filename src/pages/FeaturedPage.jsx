@@ -186,7 +186,7 @@ export default function FeaturedPage() {
     {
       id: 'premium', name: 'Front and Center', color: C.sunsetLight, badge: 'Best Visibility',
       price: priceFor(49), priceInCents: centsFor(49),
-      features: ['Everything in Highlighted', 'First listing in your category - always', 'Your photo banner at the top of the directory page', 'We set up your Google Maps presence - done for you', 'Introductory shoutout to 500+ local inboxes'],
+      features: ['Everything in Highlighted', 'First listing in your category - always', 'Your photo banner at the top of the directory page', 'We set up your Google Maps presence - done for you', 'One-time welcome announcement to our subscriber list when you go live'],
     },
   ];
 
@@ -573,6 +573,73 @@ export default function FeaturedPage() {
                       <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.75, margin: 0 }}>{step.body}</p>
                     </div>
                   </div>
+                </FadeIn>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* FAQ */}
+      {!isFull && (
+        <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
+          <div style={{ maxWidth: 760, margin: "0 auto" }}>
+            <FadeIn>
+              <div style={{ textAlign: "center", marginBottom: 52 }}>
+                <SectionLabel>FAQ</SectionLabel>
+                <SectionTitle center>Questions people actually ask</SectionTitle>
+              </div>
+            </FadeIn>
+            <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              {[
+                {
+                  q: "Is this the same thing as advertising in The Dispatch newsletter?",
+                  a: "No - these are two completely different products. A listing is your permanent home base on this site - your own page, your hours, your photos, your call button. It's always there. Newsletter advertising in The Dispatch is a separate purchase where your business is featured in an email issue sent to subscribers. Front and Center includes a one-time welcome announcement when your listing first goes live, but that's a hello, not an ad campaign. If you want ongoing newsletter placement, visit the Advertise page.",
+                },
+                {
+                  q: "What does the Google Maps setup actually involve?",
+                  a: "We create your Google Business Profile - the thing that makes your business show up on Google Maps and in local search results when someone nearby searches for what you do. Your name, phone, hours, and category appear right in Google without anyone needing to visit your website. We handle all the setup. The one thing you have to do is verify it's your business when Google contacts you - usually a short phone call or a postcard to your address.",
+                },
+                {
+                  q: "I already have a Google Business Profile. Does that matter?",
+                  a: "Even better. We'll claim it if it's unclaimed, clean it up, fill in anything that's missing, and connect it to your Manitou Beach profile so your reviews show up here automatically. A lot of businesses have a profile that's half-finished or out of date - we sort all of that out.",
+                },
+                {
+                  q: "How do my Google reviews end up on my profile page here?",
+                  a: "Once your Google Business Profile is connected, your star rating and recent reviews pull in automatically. No copy-pasting, no maintenance. When a new review comes in on Google, it shows up here too. This is included in Highlighted and Front and Center.",
+                },
+                {
+                  q: "Can I cancel anytime?",
+                  a: "Yes. Everything is month-to-month. Cancel before your next billing date and you won't be charged again. If you cancel and want to come back later, your spot may be taken - Featured and Front and Center have limited spots per category. Pausing holds your spot if you want to take the winter off.",
+                },
+                {
+                  q: "What happens right after I sign up?",
+                  a: "Your listing goes live on the site within 24 hours. You'll get a confirmation email with a link to your profile page. From there you can verify your phone number to unlock editing - add your photos, hours, description, and logo yourself anytime. If you're on Front and Center, we'll reach out to start your Google setup within a day or two.",
+                },
+                {
+                  q: "Do I need a website to have a listing here?",
+                  a: "Not at all. Your Manitou Beach profile is a real page with its own URL - you can share it, put it on your business cards, link to it from Facebook. It has everything a visitor needs: your phone number, hours, photos, address, and a call button. A lot of local businesses use it instead of maintaining a full website.",
+                },
+              ].map(({ q, a }, i) => (
+                <FadeIn key={i} delay={i * 40}>
+                  <details style={{ borderBottom: `1px solid ${C.sand}`, padding: "0" }} open={i === 0}>
+                    <summary style={{
+                      fontFamily: "'Libre Baskerville', serif", fontSize: 16,
+                      fontWeight: 400, color: C.dusk, padding: "22px 0",
+                      cursor: "pointer", listStyle: "none",
+                      display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16,
+                    }}>
+                      <span>{q}</span>
+                      <span style={{ fontSize: 20, color: C.textMuted, flexShrink: 0, lineHeight: 1 }}>+</span>
+                    </summary>
+                    <p style={{
+                      fontFamily: "'Libre Franklin', sans-serif", fontSize: 14,
+                      color: C.textLight, lineHeight: 1.8, margin: "0 0 22px",
+                      maxWidth: 680,
+                    }}>
+                      {a}
+                    </p>
+                  </details>
                 </FadeIn>
               ))}
             </div>
