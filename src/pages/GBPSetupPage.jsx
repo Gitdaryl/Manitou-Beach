@@ -117,13 +117,13 @@ export default function GBPSetupPage() {
             <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: 'rgba(255,255,255,0.55)' }}>Included with Premium</span>
           </div>
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(28px, 6vw, 42px)', fontWeight: 700, color: '#fff', margin: '0 0 16px', lineHeight: 1.15 }}>
-            Google Business Profile Setup
+            Get found when people Google you
           </h1>
           <p style={{ fontSize: 17, color: 'rgba(255,255,255,0.65)', lineHeight: 1.75, margin: '0 0 32px', maxWidth: 520 }}>
-            We create and optimize your Google Business Profile so your business shows up when people search locally. You get found on Google Maps, pull in reviews automatically, and look legitimate before a customer even calls.
+            When someone nearby searches for what you do, your name, phone number, and hours show up right in Google - no website required. We handle the whole setup. You just verify it's yours when Google sends a code. That's it.
           </p>
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-            {['Shows up on Google Maps', 'Reviews pull into your profile', 'Verified local business badge', 'Free with Premium listing'].map(item => (
+            {['Your phone number shows in search results', 'Customers find your hours instantly', 'Shows up on Google Maps', 'Free with Premium listing'].map(item => (
               <div key={item} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'rgba(255,255,255,0.6)' }}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7A8E72" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                 {item}

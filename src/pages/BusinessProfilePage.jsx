@@ -943,10 +943,10 @@ export default function BusinessProfilePage() {
                     </div>
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 14, fontWeight: 700, color: C.dusk, marginBottom: 4 }}>
-                        Your Google reviews can show right here
+                        Get found when people search Google
                       </div>
                       <p style={{ margin: '0 0 12px', fontSize: 13, color: C.textLight, lineHeight: 1.6 }}>
-                        Your plan includes live Google reviews on this page. We handle the whole setup - just fill out a quick form and we take it from there.
+                        When someone nearby Googles "{business.category?.toLowerCase() || 'your service'} near me", your name, phone number, and hours show up right in the results. No website needed. We handle the whole setup for you - your reviews then appear on this page automatically too.
                       </p>
                       {claimToken ? (
                         <a
@@ -992,10 +992,10 @@ export default function BusinessProfilePage() {
                     </div>
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 14, fontWeight: 700, color: C.dusk, marginBottom: 4 }}>
-                        Your Google reviews could show right here
+                        Show up when people search Google
                       </div>
                       <p style={{ margin: '0 0 12px', fontSize: 13, color: C.textLight, lineHeight: 1.6 }}>
-                        Upgrade to Front and Center and we'll set up your Google presence for you - reviews show up on this page automatically. No tech stuff required.
+                        Upgrade to Front and Center and we'll put your business on Google Maps - name, phone, hours, the works. When someone nearby searches "{business.category?.toLowerCase() || 'your service'} near me", you come up. Your reviews show here too. We handle everything, you just verify it's yours.
                       </p>
                       <a href="/business" style={{
                         fontSize: 12, fontWeight: 700, color: C.sage,
