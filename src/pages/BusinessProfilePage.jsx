@@ -351,31 +351,46 @@ export default function BusinessProfilePage() {
     : '';
 
   return (
-    <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: `linear-gradient(180deg, ${accent}06 0%, ${C.cream} 320px)`, color: C.text, overflowX: 'hidden', minHeight: '100vh' }}>
+    <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: 'hidden', minHeight: '100vh' }}>
       <GlobalStyles />
 
       {/* ── Inline styles for profile-specific classes ── */}
       <style>{`
-        .bp-hero-img { width: 100%; height: 300px; object-fit: cover; display: block; }
-        @media (min-width: 640px) { .bp-hero-img { height: 420px; } }
+        .bp-hero-img { width: 100%; height: 380px; object-fit: cover; display: block; }
+        @media (min-width: 640px) { .bp-hero-img { height: 540px; } }
 
-        .bp-identity-card {
-          position: relative; z-index: 2;
-          margin: -56px 16px 0; border-radius: 18px;
-          background: #fff; box-shadow: 0 4px 32px rgba(0,0,0,0.13);
-          padding: 22px 22px 18px;
+        .bp-hero-identity {
+          position: absolute; bottom: 0; left: 0; right: 0;
+          padding: 0 20px 28px;
         }
-        @media (min-width: 640px) {
-          .bp-identity-card { margin: -72px 32px 0; padding: 28px 32px 24px; }
+        @media (min-width: 640px) { .bp-hero-identity { padding: 0 36px 40px; } }
+
+        .bp-cred-strip {
+          display: flex; align-items: center; justify-content: space-between;
+          flex-wrap: wrap; gap: 8px;
+          padding: 13px 20px; background: #fff;
+          border-bottom: 1px solid ${C.sand};
         }
+        @media (min-width: 640px) { .bp-cred-strip { padding: 13px 36px; } }
+
+        .bp-photo-strip {
+          display: flex; gap: 8px; overflow-x: auto;
+          padding: 0 16px 4px; scrollbar-width: none;
+        }
+        .bp-photo-strip::-webkit-scrollbar { display: none; }
+        .bp-photo-strip-item {
+          flex-shrink: 0; width: 200px; height: 140px;
+          border-radius: 12px; overflow: hidden; cursor: pointer;
+        }
+        @media (min-width: 640px) { .bp-photo-strip-item { width: 260px; height: 178px; } }
 
         .bp-section-card {
-          background: #fff; border-radius: 14px;
-          box-shadow: 0 2px 16px rgba(0,0,0,0.07);
-          padding: 22px 22px; margin-bottom: 16px;
-          border-left: 3px solid ${accent}40;
+          background: #fff; border-radius: 16px;
+          box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+          padding: 24px; margin-bottom: 14px;
+          border-top: 3px solid ${accent};
         }
-        @media (min-width: 640px) { .bp-section-card { padding: 28px 28px; } }
+        @media (min-width: 640px) { .bp-section-card { padding: 28px 32px; } }
 
         .bp-gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
         @media (min-width: 640px) { .bp-gallery-grid { grid-template-columns: repeat(3, 1fr); } }
@@ -383,37 +398,40 @@ export default function BusinessProfilePage() {
 
         .bp-action-btn {
           flex: 1; min-width: 0; display: flex; align-items: center; justify-content: center;
-          gap: 7px; padding: 14px 12px; border-radius: 12px; font-size: 14px;
+          gap: 8px; padding: 16px 14px; border-radius: 50px; font-size: 15px;
           font-weight: 700; font-family: "'Libre Franklin', sans-serif";
           text-decoration: none; border: none; cursor: pointer;
-          transition: filter 0.15s, transform 0.1s;
+          transition: filter 0.15s, transform 0.12s, box-shadow 0.15s;
+          box-shadow: 0 4px 14px rgba(0,0,0,0.14);
+          letter-spacing: 0.2px;
         }
         .bp-action-btn:active { transform: scale(0.97); filter: brightness(0.93); }
+        .bp-action-btn:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
 
         .bp-hours-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         @media (min-width: 480px) { .bp-hours-grid { grid-template-columns: repeat(4, 1fr); } }
 
         .bp-review-card {
-          background: ${C.warmWhite}; border-radius: 10px;
-          padding: 14px 16px; border: 1px solid ${C.sand};
-          font-size: 13px; line-height: 1.6; color: ${C.textLight};
-          font-style: italic;
+          background: ${C.warmWhite}; border-radius: 12px;
+          padding: 16px 18px; border-left: 3px solid ${accent}60;
+          font-size: 14px; line-height: 1.75; color: ${C.textLight};
+          font-style: italic; font-family: "'Libre Baskerville', serif";
         }
 
         .bp-sticky {
           position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
-          background: rgba(250,246,239,0.92); backdrop-filter: blur(16px);
+          background: rgba(250,246,239,0.95); backdrop-filter: blur(16px);
           border-top: 1px solid ${C.sand};
           padding: 12px 16px calc(18px + env(safe-area-inset-bottom, 0px)); display: flex; gap: 10px;
           transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
-          box-shadow: 0 -8px 32px rgba(0,0,0,0.1);
+          box-shadow: 0 -8px 32px rgba(0,0,0,0.12);
         }
         .bp-sticky.visible { transform: translateY(0); }
 
         .bp-section-label {
-          font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+          font-size: 10px; font-weight: 800; letter-spacing: 2px;
           text-transform: uppercase; color: ${accent};
-          margin-bottom: 14px; font-family: "'Libre Franklin', sans-serif";
+          margin-bottom: 16px; font-family: "'Libre Franklin', sans-serif";
         }
 
         .bp-quote-overlay {
@@ -421,18 +439,14 @@ export default function BusinessProfilePage() {
           background: rgba(10,18,24,0.65); backdrop-filter: blur(4px);
           display: flex; align-items: flex-end; justify-content: center;
         }
-        @media (min-width: 640px) {
-          .bp-quote-overlay { align-items: center; }
-        }
+        @media (min-width: 640px) { .bp-quote-overlay { align-items: center; } }
         .bp-quote-sheet {
           background: #fff; width: 100%; max-width: 520px;
           border-radius: 20px 20px 0 0; padding: 28px 24px calc(40px + env(safe-area-inset-bottom, 0px));
           animation: slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1);
           overflow-y: auto; max-height: 90dvh;
         }
-        @media (min-width: 640px) {
-          .bp-quote-sheet { border-radius: 20px; margin: 0 16px; padding: 32px; max-height: none; }
-        }
+        @media (min-width: 640px) { .bp-quote-sheet { border-radius: 20px; margin: 0 16px; padding: 32px; max-height: none; } }
         @keyframes slideUp {
           from { transform: translateY(40px); opacity: 0; }
           to { transform: translateY(0); opacity: 1; }
@@ -589,53 +603,37 @@ export default function BusinessProfilePage() {
             </div>
           )}
 
-          {/* Hero */}
-          <div style={{ position: 'relative', paddingTop: 64, background: C.dusk }}>
+          {/* ── Hero ── */}
+          <div style={{ position: 'relative', paddingTop: 64, background: C.dusk, borderTop: business.tier === 'premium' ? '3px solid #C9A84C' : 'none' }}>
             {business.heroPhoto ? (
               <img
                 src={business.heroPhoto}
                 alt={`${business.name} - ${business.category} in Manitou Beach, Michigan`}
                 className="bp-hero-img"
-                style={{ objectPosition: 'center top' }}
+                style={{ objectPosition: 'center center' }}
                 fetchpriority="high"
                 loading="eager"
               />
             ) : (
-              // Gradient hero - shows logo if available, otherwise initial
               <div className="bp-hero-img" style={{
-                background: `linear-gradient(135deg, ${accent}cc 0%, ${C.dusk} 60%, ${C.lakeDark} 100%)`,
-                display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 12,
-              }}>
-                {business.logo ? (
-                  <img src={business.logo} alt={business.name}
-                    style={{ width: 100, height: 100, objectFit: 'contain', borderRadius: 16, background: 'rgba(255,255,255,0.12)', padding: 8 }} />
-                ) : (
-                  <div style={{
-                    width: 80, height: 80, borderRadius: '50%', background: 'rgba(255,255,255,0.12)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 32, color: 'rgba(255,255,255,0.5)', fontFamily: "'Libre Baskerville', serif", fontWeight: 700,
-                  }}>
-                    {business.name[0].toUpperCase()}
-                  </div>
-                )}
-                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', letterSpacing: 1 }}>
-                  Add a cover photo to make this page shine
-                </div>
-              </div>
+                background: `linear-gradient(145deg, ${accent}e0 0%, ${C.dusk} 55%, ${C.lakeDark} 100%)`,
+              }} />
             )}
-            {/* Gradient fade at bottom of hero */}
+
+            {/* Deep scrim for text legibility */}
             <div style={{
-              position: 'absolute', bottom: 0, left: 0, right: 0, height: 120,
-              background: 'linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 100%)',
+              position: 'absolute', bottom: 0, left: 0, right: 0, height: '80%',
+              background: 'linear-gradient(to top, rgba(5,12,18,0.88) 0%, rgba(5,12,18,0.45) 45%, transparent 100%)',
               pointerEvents: 'none',
             }} />
+
             {/* Back button */}
             <button
               onClick={() => navigate('/business')}
               style={{
                 position: 'absolute', top: 80, left: 16,
-                background: 'rgba(0,0,0,0.35)', backdropFilter: 'blur(8px)',
-                border: '1px solid rgba(255,255,255,0.2)', color: '#fff',
+                background: 'rgba(0,0,0,0.35)', backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255,255,255,0.18)', color: '#fff',
                 borderRadius: 20, padding: '7px 14px 7px 10px',
                 cursor: 'pointer', fontSize: 13, fontWeight: 600,
                 display: 'flex', alignItems: 'center', gap: 5,
@@ -644,123 +642,149 @@ export default function BusinessProfilePage() {
             >
               ← Businesses
             </button>
+
+            {/* Identity overlay - name lives on the photo */}
+            <div className="bp-hero-identity">
+              {/* Logo thumbnail */}
+              {business.logo && (
+                <div style={{
+                  width: 68, height: 68, borderRadius: 14, marginBottom: 14,
+                  border: '2px solid rgba(255,255,255,0.22)',
+                  background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)',
+                  overflow: 'hidden', flexShrink: 0,
+                }}>
+                  <img src={business.logo} alt={business.name}
+                    style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 7 }} />
+                </div>
+              )}
+
+              {/* Category + tier chips */}
+              <div style={{ display: 'flex', gap: 6, marginBottom: 12, flexWrap: 'wrap' }}>
+                <span style={{
+                  background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(10px)',
+                  color: '#fff', borderRadius: 20, padding: '4px 12px',
+                  fontSize: 11, fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase',
+                  border: '1px solid rgba(255,255,255,0.2)',
+                }}>
+                  {business.category || 'Local Business'}
+                </span>
+                {business.tier === 'premium' && (
+                  <span style={{
+                    background: 'rgba(201,168,76,0.25)', backdropFilter: 'blur(10px)',
+                    color: '#F5D98A', borderRadius: 20, padding: '4px 12px',
+                    fontSize: 11, fontWeight: 700, letterSpacing: 0.5,
+                    border: '1px solid rgba(245,217,138,0.35)',
+                  }}>
+                    ⭐ Front and Center
+                  </span>
+                )}
+                {business.tier === 'featured' && (
+                  <span style={{
+                    background: 'rgba(91,126,149,0.3)', backdropFilter: 'blur(10px)',
+                    color: '#A8D4EC', borderRadius: 20, padding: '4px 12px',
+                    fontSize: 11, fontWeight: 700, letterSpacing: 0.5,
+                    border: '1px solid rgba(168,212,236,0.3)',
+                  }}>
+                    ✓ Highlighted
+                  </span>
+                )}
+              </div>
+
+              {/* Business name - the hero moment */}
+              <h1 style={{
+                fontFamily: "'Libre Baskerville', serif",
+                fontSize: 'clamp(28px, 6.5vw, 46px)',
+                fontWeight: 700, color: '#fff', margin: '0 0 10px', lineHeight: 1.1,
+                textShadow: '0 2px 16px rgba(0,0,0,0.5)',
+              }}>
+                {business.name}
+              </h1>
+
+              {/* Tagline */}
+              {business.tagline && (
+                <p style={{
+                  margin: 0, fontSize: 'clamp(14px, 3.2vw, 17px)',
+                  color: 'rgba(255,255,255,0.82)', fontStyle: 'italic',
+                  fontFamily: "'Libre Baskerville', serif", lineHeight: 1.4,
+                  textShadow: '0 1px 8px rgba(0,0,0,0.4)',
+                }}>
+                  {business.tagline}
+                </p>
+              )}
+            </div>
           </div>
 
-          {/* ── Identity card (floats up over hero) ── */}
-          <div className="bp-identity-card">
-            <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
-              {/* Logo or color bar */}
-              {business.logo ? (
-                <div style={{
-                  width: 120, height: 120, borderRadius: 16, flexShrink: 0,
-                  border: `2px solid ${accent}30`, background: '#fff',
-                  overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
-                }}>
-                  <img src={business.logo} alt={`${business.name} logo`}
-                    style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 8 }} />
-                </div>
-              ) : (
-                <div style={{ width: 4, borderRadius: 4, background: accent, alignSelf: 'stretch', flexShrink: 0, minHeight: 32 }} />
+          {/* ── Credibility strip ── */}
+          <div className="bp-cred-strip">
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 5, color: C.textMuted, fontSize: 13 }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+                </svg>
+                <span>Manitou Beach, MI</span>
+              </div>
+              {business.address && (
+                <>
+                  <span style={{ color: C.sand, fontSize: 11 }}>·</span>
+                  <span style={{ fontSize: 13, color: C.textMuted }}>{business.address}</span>
+                </>
               )}
-              <div style={{ flex: 1, minWidth: 0 }}>
-                {/* Category + tier chips */}
-                <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap', marginBottom: 8 }}>
-                  <span style={{
-                    background: `${accent}18`, color: accent,
-                    borderRadius: 20, padding: '3px 11px', fontSize: 11, fontWeight: 700,
-                    letterSpacing: 0.5, textTransform: 'uppercase',
-                  }}>
-                    {business.category || 'Local Business'}
-                  </span>
-                  {business.tier === 'premium' && (
-                    <span style={{
-                      background: `${C.driftwood}18`, color: C.driftwood,
-                      borderRadius: 20, padding: '3px 11px', fontSize: 11, fontWeight: 700, letterSpacing: 0.5,
-                    }}>
-                      ⭐ Front and Center
-                    </span>
-                  )}
-                  {business.tier === 'featured' && (
-                    <span style={{
-                      background: `${C.lakeBlue}15`, color: C.lakeBlue,
-                      borderRadius: 20, padding: '3px 11px', fontSize: 11, fontWeight: 700, letterSpacing: 0.5,
-                    }}>
-                      ✓ Highlighted
-                    </span>
-                  )}
-                </div>
-
-                {/* Business name */}
-                <h1 style={{
-                  fontFamily: "'Libre Baskerville', serif",
-                  fontSize: 'clamp(22px, 5vw, 30px)',
-                  fontWeight: 700, color: C.dusk, margin: '0 0 6px', lineHeight: 1.2,
+              {business.emergency && (
+                <span style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 5,
+                  background: '#FFF3F0', border: '1px solid #F5C6BB',
+                  borderRadius: 20, padding: '3px 10px',
+                  fontSize: 11, fontWeight: 700, color: '#C0392B',
                 }}>
-                  {business.name}
-                </h1>
-
-                {/* Tagline */}
-                {business.tagline && (
-                  <p style={{
-                    margin: '0 0 8px', fontSize: 15, fontStyle: 'italic',
-                    color: C.textLight, lineHeight: 1.5,
-                    fontFamily: "'Libre Baskerville', serif",
-                  }}>
-                    {business.tagline}
-                  </p>
-                )}
-
-                {/* Emergency badge */}
-                {business.emergency && (
-                  <div style={{
-                    display: 'inline-flex', alignItems: 'center', gap: 6,
-                    background: '#FFF3F0', border: '1.5px solid #F5C6BB',
-                    borderRadius: 20, padding: '4px 12px', marginBottom: 8,
-                    fontSize: 12, fontWeight: 700, color: '#C0392B',
-                    letterSpacing: 0.3,
-                  }}>
-                    <span style={{ fontSize: 13 }}>🔴</span>
-                    After-hours emergency service available
-                  </div>
-                )}
-
-                {/* Location + service area */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: C.textMuted, fontSize: 13, flexWrap: 'wrap' }}>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+                  🔴 24/7 Emergency
+                </span>
+              )}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
+              {googleData?.rating && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="#FBBF24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                   </svg>
-                  <span>Manitou Beach, MI</span>
-                  {business.address && (
-                    <>
-                      <span style={{ color: C.sand }}>·</span>
-                      <span style={{ color: C.textMuted }}>{business.address}</span>
-                    </>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: C.text }}>{googleData.rating}</span>
+                  {googleData.reviewCount > 0 && (
+                    <span style={{ fontSize: 12, color: C.textMuted }}>({googleData.reviewCount})</span>
                   )}
                 </div>
+              )}
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: 5,
+                background: `${C.sage}12`, border: `1px solid ${C.sage}30`,
+                borderRadius: 20, padding: '4px 10px',
+              }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={C.sage} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+                <span style={{ fontSize: 11, fontWeight: 700, color: C.sageDark, letterSpacing: 0.2 }}>Verified</span>
               </div>
             </div>
           </div>
 
           {/* ── Main content ── */}
-          <div style={{ maxWidth: 680, margin: '0 auto', padding: '20px 16px 120px' }}>
+          <div style={{ maxWidth: 680, margin: '0 auto', padding: '24px 16px 120px' }}>
 
-            {/* Action buttons - inline (always visible, sticky version appears on scroll) */}
+            {/* Action buttons */}
             {hasActions && (
-              <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
+              <div style={{ display: 'flex', gap: 10, marginBottom: 24 }}>
                 {business.phone && (
                   <a href={`tel:${business.phone}`} className="bp-action-btn"
-                    style={{ background: C.sage, color: '#fff', fontSize: 14 }}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    style={{ background: C.sage, color: '#fff' }}>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13 19.79 19.79 0 0 1 1.61 4.4 2 2 0 0 1 3.6 2.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.06 6.06l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 17z"/>
                     </svg>
-                    Call
+                    Call Now
                   </a>
                 )}
                 {(business.email || business.phone) && (
                   <button className="bp-action-btn"
                     onClick={() => setQuoteOpen(true)}
-                    style={{ background: accent, color: '#fff', fontSize: 14 }}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    style={{ background: accent, color: '#fff' }}>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                     </svg>
                     Get a Quote
@@ -768,14 +792,32 @@ export default function BusinessProfilePage() {
                 )}
                 {business.website && (
                   <a href={business.website} target="_blank" rel="noopener noreferrer" className="bp-action-btn"
-                    style={{ background: C.warmWhite, color: C.text, border: `1.5px solid ${C.sand}`, fontSize: 14 }}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    style={{ background: C.warmWhite, color: C.text, border: `1.5px solid ${C.sand}`, boxShadow: 'none' }}>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
                       <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
                     </svg>
                     Website
                   </a>
                 )}
+              </div>
+            )}
+
+            {/* ── Premium photo strip - full bleed, horizontal scroll ── */}
+            {business.tier === 'premium' && business.gallery?.length > 0 && (
+              <div style={{ margin: '0 -16px 24px', position: 'relative' }}>
+                <div className="bp-photo-strip">
+                  {business.gallery.map((url, i) => (
+                    <div key={i} className="bp-photo-strip-item" onClick={() => setLightboxIndex(i)}>
+                      <img src={url} alt={`${business.name} photo ${i + 1}`}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.3s' }}
+                        onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}
+                        onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div style={{ position: 'absolute', right: 0, top: 0, bottom: 4, width: 40, background: `linear-gradient(to left, ${C.cream}, transparent)`, pointerEvents: 'none' }} />
               </div>
             )}
 
@@ -786,31 +828,12 @@ export default function BusinessProfilePage() {
                 <div className="bp-section-card">
                   <div className="bp-section-label">About</div>
                   <p style={{
-                    fontSize: 16, lineHeight: 1.8,
+                    fontSize: 17, lineHeight: 1.85,
                     color: C.text, margin: 0,
                     fontFamily: "'Libre Baskerville', serif",
                   }}>
                     {business.description}
                   </p>
-                </div>
-              )}
-
-              {/* ── Photo Gallery (Premium only) ── */}
-              {business.tier === 'premium' && business.gallery?.length > 0 && (
-                <div className="bp-section-card">
-                  <div className="bp-section-label">Gallery</div>
-                  <div className="bp-gallery-grid">
-                    {business.gallery.map((url, i) => (
-                      <div key={i} onClick={() => setLightboxIndex(i)}
-                        style={{ cursor: 'pointer', borderRadius: 10, overflow: 'hidden', aspectRatio: '4/3' }}>
-                        <img src={url} alt={`Gallery photo ${i + 1}`}
-                          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.2s' }}
-                          onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.04)'}
-                          onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-                        />
-                      </div>
-                    ))}
-                  </div>
                 </div>
               )}
 
@@ -825,14 +848,14 @@ export default function BusinessProfilePage() {
                       const isToday = day === today;
                       return (
                         <div key={day} style={{
-                          padding: '10px 12px', borderRadius: 8,
-                          background: isToday ? `${accent}12` : C.warmWhite,
-                          border: isToday ? `1.5px solid ${accent}40` : `1.5px solid ${C.sand}`,
+                          padding: '12px 12px', borderRadius: 10,
+                          background: isToday ? `${accent}14` : C.warmWhite,
+                          border: isToday ? `2px solid ${accent}50` : `1.5px solid ${C.sand}`,
                         }}>
-                          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: isToday ? accent : C.textMuted, marginBottom: 3 }}>
-                            {day}{isToday && <span style={{ marginLeft: 3, fontSize: 10 }}>TODAY</span>}
+                          <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: 1.2, textTransform: 'uppercase', color: isToday ? accent : C.textMuted, marginBottom: 4 }}>
+                            {isToday ? `${day} · Today` : day}
                           </div>
-                          <div style={{ fontSize: 13, fontWeight: 600, color: h ? C.text : C.textMuted }}>
+                          <div style={{ fontSize: 13, fontWeight: isToday ? 700 : 600, color: h ? (isToday ? accent : C.text) : C.textMuted }}>
                             {h || 'Closed'}
                           </div>
                         </div>
@@ -841,8 +864,7 @@ export default function BusinessProfilePage() {
                   </div>
                 </div>
               ) : (
-                // Teaser for missing hours - visible to all, nudges owner to add them
-                <div className="bp-section-card" style={{ border: `1.5px dashed ${C.sand}` }}>
+                <div className="bp-section-card" style={{ borderTop: `3px dashed ${C.sand}`, boxShadow: 'none' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                     <div style={{ width: 40, height: 40, borderRadius: '50%', background: `${C.sage}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.sage} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1104,49 +1126,63 @@ export default function BusinessProfilePage() {
 
               {/* ── Community badge ── */}
               <div style={{
-                borderRadius: 14, overflow: 'hidden',
-                background: `linear-gradient(135deg, ${C.dusk} 0%, ${C.lakeDark} 100%)`,
-                padding: '24px 22px', marginBottom: 16,
+                borderRadius: 18, overflow: 'hidden',
+                background: `linear-gradient(140deg, ${C.lakeDark} 0%, ${C.dusk} 60%, #0A1A24 100%)`,
+                padding: '28px 24px', marginBottom: 14,
                 position: 'relative',
               }}>
-                {/* Background texture dots */}
-                <div style={{ position: 'absolute', inset: 0, opacity: 0.04, backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '20px 20px', pointerEvents: 'none' }} />
-                <div style={{ position: 'relative', display: 'flex', gap: 14, alignItems: 'flex-start' }}>
-                  <div style={{ fontSize: 28, flexShrink: 0, lineHeight: 1 }}>🏖️</div>
-                  <div>
-                    <div style={{
-                      fontFamily: "'Libre Baskerville', serif",
-                      fontSize: 15, fontWeight: 700, color: '#fff', marginBottom: 5,
-                    }}>
-                      Part of Manitou Beach
+                {/* Subtle wave texture */}
+                <div style={{ position: 'absolute', inset: 0, opacity: 0.05, backgroundImage: 'radial-gradient(circle at 20% 80%, #fff 1px, transparent 1px), radial-gradient(circle at 80% 20%, #fff 1px, transparent 1px)', backgroundSize: '28px 28px', pointerEvents: 'none' }} />
+                {/* Accent glow */}
+                <div style={{ position: 'absolute', top: -40, right: -40, width: 180, height: 180, borderRadius: '50%', background: `${C.lakeBlue}20`, pointerEvents: 'none' }} />
+                <div style={{ position: 'relative' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+                    <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16 }}>🏖️</div>
+                    <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: 2, textTransform: 'uppercase', color: 'rgba(255,255,255,0.45)' }}>
+                      Manitou Beach, Michigan
                     </div>
-                    <p style={{ margin: '0 0 12px', fontSize: 13, color: 'rgba(255,255,255,0.6)', lineHeight: 1.65 }}>
-                      {business.name} is listed on Manitou Beach Michigan - the community guide for Devils Lake, the Irish Hills, and the people who love it.
-                    </p>
-                    <a href="/" style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.5)', textDecoration: 'none', letterSpacing: 0.3 }}>
-                      Explore the lake →
-                    </a>
                   </div>
+                  <div style={{
+                    fontFamily: "'Libre Baskerville', serif",
+                    fontSize: 18, fontWeight: 700, color: '#fff', marginBottom: 8, lineHeight: 1.3,
+                  }}>
+                    Featured on the Devils Lake community guide
+                  </div>
+                  <p style={{ margin: '0 0 16px', fontSize: 14, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7 }}>
+                    {business.name} is part of a curated local directory for Devils Lake, the Irish Hills, and everyone who loves this corner of Michigan.
+                  </p>
+                  <a href="/" style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 6,
+                    fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.65)',
+                    textDecoration: 'none', letterSpacing: 0.3,
+                    transition: 'color 0.15s',
+                  }}
+                    onMouseEnter={e => e.currentTarget.style.color = '#fff'}
+                    onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.65)'}
+                  >
+                    Explore Manitou Beach →
+                  </a>
                 </div>
               </div>
 
               {/* ── Owner panel: edit button (when claimed) or claim nudge ── */}
               {claimToken ? (
                 <div style={{
-                  borderRadius: 14, background: `${C.sage}12`,
-                  border: `1.5px solid ${C.sage}40`, padding: '18px 20px',
+                  borderRadius: 16, background: `${C.sage}10`,
+                  border: `1.5px solid ${C.sage}35`, padding: '20px 22px',
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
                 }}>
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: C.sageDark }}>Your listing</div>
-                    <div style={{ fontSize: 12, color: C.textMuted, marginTop: 2 }}>Changes go live right away</div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: C.sageDark, marginBottom: 2 }}>Your listing</div>
+                    <div style={{ fontSize: 12, color: C.textMuted }}>Changes go live right away</div>
                   </div>
                   <button
                     onClick={() => setEditOpen(true)}
                     style={{
-                      background: C.sage, color: '#fff', border: 'none', borderRadius: 10,
-                      padding: '10px 20px', cursor: 'pointer', fontSize: 14, fontWeight: 700,
+                      background: C.sage, color: '#fff', border: 'none', borderRadius: 50,
+                      padding: '11px 22px', cursor: 'pointer', fontSize: 14, fontWeight: 700,
                       fontFamily: "'Libre Franklin', sans-serif", flexShrink: 0,
+                      boxShadow: `0 4px 14px ${C.sage}50`,
                     }}
                   >
                     Edit listing
@@ -1154,21 +1190,22 @@ export default function BusinessProfilePage() {
                 </div>
               ) : (
                 <div style={{
-                  borderRadius: 14, background: `${accent}08`,
-                  border: `1.5px dashed ${accent}40`, padding: '18px 20px',
+                  borderRadius: 16, background: `${accent}07`,
+                  border: `1.5px dashed ${accent}35`, padding: '20px 22px',
                 }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: C.dusk, marginBottom: 4 }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: C.dusk, marginBottom: 5 }}>
                     Is this your business?
                   </div>
-                  <p style={{ margin: '0 0 12px', fontSize: 13, color: C.textLight, lineHeight: 1.6 }}>
+                  <p style={{ margin: '0 0 14px', fontSize: 14, color: C.textLight, lineHeight: 1.65 }}>
                     Verify your phone number to update hours, photos, and details yourself.
                   </p>
                   <button
                     onClick={() => { setClaimOpen(true); setClaimStep('phone'); setClaimError(''); }}
                     style={{
-                      background: accent, color: '#fff', border: 'none', borderRadius: 8,
-                      padding: '10px 18px', cursor: 'pointer', fontSize: 13, fontWeight: 700,
+                      background: accent, color: '#fff', border: 'none', borderRadius: 50,
+                      padding: '12px 22px', cursor: 'pointer', fontSize: 14, fontWeight: 700,
                       fontFamily: "'Libre Franklin', sans-serif",
+                      boxShadow: `0 4px 14px ${accent}45`,
                     }}
                   >
                     Claim This Listing
