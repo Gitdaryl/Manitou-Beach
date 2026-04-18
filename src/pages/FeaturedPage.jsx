@@ -186,7 +186,7 @@ export default function FeaturedPage() {
     {
       id: 'premium', name: 'Front and Center', color: C.sunsetLight, badge: 'Most Features',
       price: priceFor(49), priceInCents: centsFor(49),
-      features: ['Everything in Highlighted', 'Hero photo showcase at the top of your profile', 'Full photo gallery, scroll-through style', 'Gold accent and Premium badge on your profile', 'We set up your Google Maps presence - done for you', 'One-time welcome announcement to our subscriber list when you go live'],
+      features: ['Everything in Highlighted', 'A big showcase photo across the top of your page', 'Full photo gallery, scroll-through style', 'Gold accent and Premium badge on your profile', 'We set up your Google Maps presence - done for you', 'One-time welcome announcement to our subscriber list when you go live'],
     },
   ];
 
@@ -387,7 +387,7 @@ export default function FeaturedPage() {
                   Your own page. Go as deep as you like.
                 </h2>
                 <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 16, maxWidth: 600, margin: "0 auto 32px", lineHeight: 1.65 }}>
-                  Every paid tier includes a profile page with a real URL you can share. Showcased covers the essentials: photos, hours, a call button, a quote form, a map pin. Highlighted pulls your Google reviews in. Front and Center turns it into a full photo showcase with a hero image, gallery, and gold accent. Pick the depth that fits your story.
+                  Every paid tier includes a profile page with a real URL you can share. Showcased covers the essentials: photos, hours, a call button, a quote form, a map pin. Highlighted pulls your Google reviews in. Front and Center turns it into a full photo showcase with a big feature photo, a gallery, and a gold accent. Pick the depth that fits your story.
                 </p>
                 <div style={{ maxWidth: 460, margin: "0 auto", background: "rgba(255,255,255,0.05)", borderRadius: 14, padding: "20px 24px", border: "1px solid rgba(255,255,255,0.1)" }}>
                   <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.55)", margin: 0, lineHeight: 1.65, textAlign: "center" }}>
@@ -973,7 +973,7 @@ export default function FeaturedPage() {
             { q: "Do I have to commit for a whole year?", a: "No. Everything is month-to-month. Showcased is $9/month, Highlighted is $25/month, Front and Center is $49/month - billed monthly, cancel anytime. There is no annual contract. Stay for one month, the whole summer, or as long as you want." },
             { q: "Can I run Highlighted or Front and Center just for the summer?", a: "Yes, that's exactly how it's designed. Sign up when your season starts, cancel when it ends. If you pause instead of canceling, your rate is locked and your page is waiting for you when you come back next year." },
             { q: "Can I switch tiers later?", a: "Anytime, in either direction. Start with Showcased at $9 and upgrade to Highlighted or Front and Center when you're ready for more depth. Or step back down if your season slows. Your page stays yours - only the features change." },
-            { q: "What's the difference between the tiers?", a: "Showcased ($9) gets you your own page with photos, hours, a call button, a quote form, and a map pin. Highlighted ($25) adds your Google reviews on the page. Front and Center ($49) turns the page into a full photo showcase with a hero image, gallery, gold accent, and a welcome announcement to our subscriber list." },
+            { q: "What's the difference between the tiers?", a: "Showcased ($9) gets you your own page with photos, hours, a call button, a quote form, and a map pin. Highlighted ($25) adds your Google reviews on the page. Front and Center ($49) turns the page into a full photo showcase with a big feature photo, a gallery, a gold accent, and a welcome announcement to our subscriber list." },
             { q: "I already have a free listing. What changes?", a: "Your free listing stays as-is. Upgrading to any paid tier gives you your own profile page at a real URL you can share - photos, hours, a quote form, the works. The free entry is a phone-book line; the paid page is a real web page." },
             { q: "What happens if I cancel my listing?", a: "Your listing reverts to the free directory. No lock-in, cancel anytime. If you cancel and later rejoin, you pay whatever the current rate is at that time." },
             { q: "What if I pause my subscription?", a: "Pausing is fine - your rate and page are held while paused. Great for seasonal businesses: pause in the off-months and your page is waiting when you come back." },

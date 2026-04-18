@@ -1405,7 +1405,7 @@ function ListYourPropertySection({ stays = [] }) {
                         color: isFeatured ? C.cream : C.text,
                         fontFamily: "'Libre Franklin', sans-serif", marginBottom: 6,
                       }}>
-                        {isFeatured ? 'Hero photo - the one that stops the scroll' : 'Drag a photo here'}
+                        {isFeatured ? 'Main photo - the one that stops the scroll' : 'Drag a photo here'}
                       </div>
                       <div style={{
                         fontSize: 12,

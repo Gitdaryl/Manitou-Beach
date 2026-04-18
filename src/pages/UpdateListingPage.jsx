@@ -296,7 +296,7 @@ export default function UpdateListingPage() {
                   {/* Hero photo */}
                   <div>
                     <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>
-                      Hero Photo (appears at top of your profile page)
+                      Main Photo (the big one at the top of your page)
                     </p>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
                       {heroPreview && (
@@ -309,7 +309,7 @@ export default function UpdateListingPage() {
                           padding: '8px 16px', borderRadius: 4, border: `1.5px solid ${C.sage}`,
                           background: 'transparent', color: C.sage, cursor: 'pointer',
                         }}>
-                          {heroPreview ? 'Change hero photo' : 'Upload hero photo'}
+                          {heroPreview ? 'Change main photo' : 'Upload main photo'}
                         </button>
                         <p style={{ fontSize: 12, color: C.textMuted, margin: '6px 0 0', fontFamily: "'Libre Franklin', sans-serif" }}>
                           Wide photo works best - storefront, interior, landscape
