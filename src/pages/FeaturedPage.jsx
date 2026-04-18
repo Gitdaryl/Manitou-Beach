@@ -381,17 +381,17 @@ export default function FeaturedPage() {
             <FadeIn>
               <div style={{ textAlign: "center", marginBottom: 52 }}>
                 <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 4, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 14 }}>
-                  Your Place in the Community
+                  Your Profile, Your Way
                 </div>
                 <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 4vw, 42px)", fontWeight: 400, color: C.cream, margin: "0 0 14px 0" }}>
-                  Showcased is real visibility. There's more when you're ready.
+                  Your own page. Go as deep as you like.
                 </h2>
                 <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 16, maxWidth: 600, margin: "0 auto 32px", lineHeight: 1.65 }}>
-                  Every listing here reaches people who chose to follow Manitou Beach - neighbors, visitors, and regulars who care where they spend. Showcased puts your business in front of that audience. Highlighted and Front and Center go further, but spots at each tier are limited by business category. The businesses that claim them own their space in this community.
+                  Every paid tier includes a profile page with a real URL you can share. Showcased covers the essentials: photos, hours, a call button, a quote form, a map pin. Highlighted pulls your Google reviews in. Front and Center turns it into a full photo showcase with a hero image, gallery, and gold accent. Pick the depth that fits your story.
                 </p>
                 <div style={{ maxWidth: 460, margin: "0 auto", background: "rgba(255,255,255,0.05)", borderRadius: 14, padding: "20px 24px", border: "1px solid rgba(255,255,255,0.1)" }}>
                   <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.55)", margin: 0, lineHeight: 1.65, textAlign: "center" }}>
-                    Highlighted and Front and Center hold a limited number of spots per business category. If yours is full, join the waitlist - you'll be first to know when a seat opens.
+                    Not sure which one fits? Start with Showcased at $9/mo. You can upgrade whenever you're ready, and your page stays yours either way.
                   </p>
                 </div>
               </div>
@@ -970,13 +970,13 @@ export default function FeaturedPage() {
             </div>
           </FadeIn>
           {[
-            { q: "Do I have to commit for a whole year?", a: "No. Everything is month-to-month. Highlighted is $25/month, Front and Center is $49/month - billed monthly, cancel anytime. There is no annual contract. Take a spot for one month, the whole summer, or as long as you want." },
-            { q: "Can I do Highlighted or Front and Center just for the summer?", a: "Yes, that's exactly how it's designed. Sign up when your season starts, cancel when it ends. If you pause instead of canceling, your rate is locked and waiting for you when you come back next year." },
-            { q: "What if the Highlighted or Front and Center spots in my category are taken?", a: "Join the waitlist. We'll save your payment details - but nothing gets charged yet. The moment a spot opens in your category, you'll receive a text notification. You'll have 48 hours to claim it. Claim it and your card is billed and your listing goes live. Don't claim it and no charge - the next person on the list gets the offer." },
-            { q: "How many businesses can be Highlighted or Front and Center in my category?", a: "Highlighted has 3 spots per category. Front and Center has 1 spot per category - it's exclusive, one business at a time. Different categories have different availability, so check the availability band at the top of this page to see where your category stands." },
-            { q: "I already have a free listing. What changes?", a: "Your free listing stays as-is. The featured upgrade gives you a premium card at the top of the directory, above all free listings. It's a separate, more visible placement - not a replacement." },
-            { q: "What happens if I cancel my listing?", a: "Your listing reverts to the free directory. No lock-in, cancel anytime. If you cancel and later rejoin, you pay whatever the current rate is at that time - your original rate is not held after a full cancellation." },
-            { q: "What if I pause my subscription?", a: "Pausing is fine - your spot and rate are held while paused. Only a full cancellation releases your category spot. If your business is seasonal, pause in the off-months and your placement is waiting when you come back." },
+            { q: "Do I have to commit for a whole year?", a: "No. Everything is month-to-month. Showcased is $9/month, Highlighted is $25/month, Front and Center is $49/month - billed monthly, cancel anytime. There is no annual contract. Stay for one month, the whole summer, or as long as you want." },
+            { q: "Can I run Highlighted or Front and Center just for the summer?", a: "Yes, that's exactly how it's designed. Sign up when your season starts, cancel when it ends. If you pause instead of canceling, your rate is locked and your page is waiting for you when you come back next year." },
+            { q: "Can I switch tiers later?", a: "Anytime, in either direction. Start with Showcased at $9 and upgrade to Highlighted or Front and Center when you're ready for more depth. Or step back down if your season slows. Your page stays yours - only the features change." },
+            { q: "What's the difference between the tiers?", a: "Showcased ($9) gets you your own page with photos, hours, a call button, a quote form, and a map pin. Highlighted ($25) adds your Google reviews on the page. Front and Center ($49) turns the page into a full photo showcase with a hero image, gallery, gold accent, and a welcome announcement to our subscriber list." },
+            { q: "I already have a free listing. What changes?", a: "Your free listing stays as-is. Upgrading to any paid tier gives you your own profile page at a real URL you can share - photos, hours, a quote form, the works. The free entry is a phone-book line; the paid page is a real web page." },
+            { q: "What happens if I cancel my listing?", a: "Your listing reverts to the free directory. No lock-in, cancel anytime. If you cancel and later rejoin, you pay whatever the current rate is at that time." },
+            { q: "What if I pause my subscription?", a: "Pausing is fine - your rate and page are held while paused. Great for seasonal businesses: pause in the off-months and your page is waiting when you come back." },
             { q: "Can I change my listing details after I pay?", a: "Yes - and you don't need to email us. Once you've paid, visit your profile page and tap 'Claim This Listing.' Enter the phone number on your account, verify with the code we text you, and you can edit your description, hours, photos, and contact details yourself. Changes go live immediately." },
             { q: "What's the Holly & Yeti podcast mention?", a: "Front and Center businesses get a shoutout on the Holly & Yeti community podcast, reaching the broader Devils Lake and Irish Hills audience." },
           ].map((faq, i) => (
