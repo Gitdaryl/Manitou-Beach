@@ -81,6 +81,47 @@ function verifyReflection(pref) {
   return '';
 }
 
+function businessReflection(name) {
+  const t = (name || '').trim();
+  if (t.length < 2) return '';
+  return `Got it. That's exactly how it'll show on Google.`;
+}
+
+function phoneReflection(raw) {
+  const digits = (raw || '').replace(/\D/g, '');
+  if (digits.length < 10) return '';
+  return `Perfect. That's where Google will reach you.`;
+}
+
+function emailReflection(raw) {
+  const t = (raw || '').trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(t)) return '';
+  return `All set. Updates will land in your inbox.`;
+}
+
+function reachTimeReflection(raw) {
+  const t = (raw || '').trim();
+  if (t.length < 2) return '';
+  return `Noted. We'll stick to that window.`;
+}
+
+function FieldCheck({ show, children }) {
+  if (!show || !children) return null;
+  return (
+    <div className="gs-check" style={{
+      marginTop: 10, display: 'flex', alignItems: 'flex-start', gap: 10,
+      fontSize: 14, color: '#5C6E55', fontWeight: 600,
+      background: 'rgba(122,142,114,0.10)', padding: '10px 14px', borderRadius: 10,
+      lineHeight: 1.5, border: '1px solid rgba(122,142,114,0.22)',
+    }}>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7A8E72" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 2 }}>
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+      <span>{children}</span>
+    </div>
+  );
+}
+
 export default function GBPSetupPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -307,6 +348,7 @@ export default function GBPSetupPage() {
             </span>
           </button>
         ))}
+        <FieldCheck show={!!reflection}>{reflection}</FieldCheck>
         {form.hasGoogle === 'yes' && (
           <FadeIn>
             <div style={{ marginTop: 18 }}>
@@ -322,11 +364,6 @@ export default function GBPSetupPage() {
               </p>
             </div>
           </FadeIn>
-        )}
-        {reflection && (
-          <p style={{ marginTop: 22, fontSize: 15, color: C.sageDark, fontWeight: 600, background: `${C.sage}10`, padding: '12px 16px', borderRadius: 10, lineHeight: 1.55 }}>
-            {reflection}
-          </p>
         )}
       </>
     );
@@ -351,6 +388,7 @@ export default function GBPSetupPage() {
               onChange={e => set('ownerName', e.target.value)}
               autoFocus
             />
+            <FieldCheck show={!!ownerReflection(form.ownerName)}>{ownerReflection(form.ownerName)}</FieldCheck>
           </div>
           <div>
             <label style={labelStyle}>Business name</label>
@@ -360,6 +398,7 @@ export default function GBPSetupPage() {
               value={form.businessName}
               onChange={e => set('businessName', e.target.value)}
             />
+            <FieldCheck show={!!businessReflection(form.businessName)}>{businessReflection(form.businessName)}</FieldCheck>
           </div>
           <div>
             <label style={labelStyle}>A phone number Google can reach you at</label>
@@ -369,6 +408,7 @@ export default function GBPSetupPage() {
               value={form.phone}
               onChange={e => set('phone', e.target.value)}
             />
+            <FieldCheck show={!!phoneReflection(form.phone)}>{phoneReflection(form.phone)}</FieldCheck>
           </div>
           <div>
             <label style={labelStyle}>Your email (just so we can send you updates)</label>
@@ -378,6 +418,7 @@ export default function GBPSetupPage() {
               value={form.email}
               onChange={e => set('email', e.target.value)}
             />
+            <FieldCheck show={!!emailReflection(form.email)}>{emailReflection(form.email)}</FieldCheck>
           </div>
         </div>
       </>
@@ -406,6 +447,9 @@ export default function GBPSetupPage() {
             </span>
           </button>
         ))}
+        <FieldCheck show={form.locationType === 'storefront' || form.locationType === 'both' || (form.locationType === 'mobile' && !!form.serviceArea.trim())}>
+          {locationReflection(form.locationType, form.serviceArea)}
+        </FieldCheck>
         {(form.locationType === 'mobile' || form.locationType === 'both') && (
           <FadeIn>
             <div style={{ marginTop: 18 }}>
@@ -448,6 +492,7 @@ export default function GBPSetupPage() {
             <p style={{ margin: '8px 0 0', fontSize: 13, color: C.textMuted, lineHeight: 1.55 }}>
               Don't overthink it. We translate this into Google's categories for you.
             </p>
+            <FieldCheck show={!!whatYouDoReflection(form.whatYouDo)}>{whatYouDoReflection(form.whatYouDo)}</FieldCheck>
           </div>
           <div>
             <label style={labelStyle}>How many years have you been at it?</label>
@@ -457,11 +502,7 @@ export default function GBPSetupPage() {
               value={form.years}
               onChange={e => set('years', e.target.value)}
             />
-            {yearsReflection(form.years) && (
-              <p style={{ margin: '12px 0 0', fontSize: 14, color: C.sageDark, fontWeight: 600, background: `${C.sage}10`, padding: '10px 14px', borderRadius: 8, lineHeight: 1.5 }}>
-                {yearsReflection(form.years)}
-              </p>
-            )}
+            <FieldCheck show={!!yearsReflection(form.years)}>{yearsReflection(form.years)}</FieldCheck>
           </div>
         </div>
       </>
@@ -502,11 +543,7 @@ export default function GBPSetupPage() {
             Help me write this
           </button>
         </div>
-        {storyReflection(form.story) && (
-          <p style={{ marginTop: 18, fontSize: 15, color: C.sageDark, fontWeight: 600, background: `${C.sage}10`, padding: '12px 16px', borderRadius: 10, lineHeight: 1.55 }}>
-            {storyReflection(form.story)}
-          </p>
-        )}
+        <FieldCheck show={!!storyReflection(form.story)}>{storyReflection(form.story)}</FieldCheck>
       </>
     );
   }
@@ -533,6 +570,7 @@ export default function GBPSetupPage() {
             </span>
           </button>
         ))}
+        <FieldCheck show={!!verifyReflection(form.verifyPref)}>{verifyReflection(form.verifyPref)}</FieldCheck>
         <div style={{ marginTop: 22 }}>
           <label style={labelStyle}>When's a good time to reach you?</label>
           <input
@@ -544,6 +582,7 @@ export default function GBPSetupPage() {
           <p style={{ margin: '8px 0 0', fontSize: 13, color: C.textMuted, lineHeight: 1.55 }}>
             We only call if Google needs something from you - never for sales.
           </p>
+          <FieldCheck show={!!reachTimeReflection(form.reachTime)}>{reachTimeReflection(form.reachTime)}</FieldCheck>
         </div>
       </>
     );
@@ -631,6 +670,8 @@ export default function GBPSetupPage() {
         .gbp-input:focus { border-color: ${C.lakeBlue} !important; box-shadow: 0 0 0 3px ${C.lakeBlue}22 !important; }
         .gs-card { animation: gsFade 0.3s ease-out; }
         @keyframes gsFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        .gs-check { animation: gsCheck 0.35s ease-out; }
+        @keyframes gsCheck { from { opacity: 0; transform: translateY(-4px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
       `}</style>
 
       <SEOHead
@@ -767,27 +808,6 @@ export default function GBPSetupPage() {
                 )}
               </div>
 
-              {/* Per-step magic moment on non-first screens */}
-              {!submitted && step === 3 && locationReflection(form.locationType, form.serviceArea) && (
-                <p style={{ marginTop: 22, fontSize: 15, color: C.sageDark, fontWeight: 600, background: `${C.sage}10`, padding: '12px 16px', borderRadius: 10, lineHeight: 1.55 }}>
-                  {locationReflection(form.locationType, form.serviceArea)}
-                </p>
-              )}
-              {!submitted && step === 2 && ownerReflection(form.ownerName) && (
-                <p style={{ marginTop: 22, fontSize: 15, color: C.sageDark, fontWeight: 600, background: `${C.sage}10`, padding: '12px 16px', borderRadius: 10, lineHeight: 1.55 }}>
-                  {ownerReflection(form.ownerName)}
-                </p>
-              )}
-              {!submitted && step === 4 && whatYouDoReflection(form.whatYouDo) && (
-                <p style={{ marginTop: 22, fontSize: 15, color: C.sageDark, fontWeight: 600, background: `${C.sage}10`, padding: '12px 16px', borderRadius: 10, lineHeight: 1.55 }}>
-                  {whatYouDoReflection(form.whatYouDo)}
-                </p>
-              )}
-              {!submitted && step === 6 && verifyReflection(form.verifyPref) && (
-                <p style={{ marginTop: 22, fontSize: 15, color: C.sageDark, fontWeight: 600, background: `${C.sage}10`, padding: '12px 16px', borderRadius: 10, lineHeight: 1.55 }}>
-                  {verifyReflection(form.verifyPref)}
-                </p>
-              )}
             </>
           )}
         </div>
