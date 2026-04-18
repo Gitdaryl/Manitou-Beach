@@ -186,7 +186,7 @@ export default function FeaturedPage() {
     {
       id: 'premium', name: 'Front and Center', color: C.sunsetLight, badge: 'Most Features',
       price: priceFor(49), priceInCents: centsFor(49),
-      features: ['Everything in Highlighted', 'A big showcase photo across the top of your page', 'Full photo gallery, scroll-through style', 'Gold accent and Premium badge on your profile', 'We set up your Google Maps presence - done for you', 'One-time welcome announcement to our subscriber list when you go live'],
+      features: ['Everything in Highlighted', 'A big showcase photo across the top of your page', 'Full photo gallery, scroll-through style', 'Gold accent and Premium badge on your profile', "Showing up on Google when locals search 'near me'. We build your full Google Business profile from scratch: claim and verify the listing, load your photos, write your description, set your hours and service area. Agencies charge $200-400/mo for this alone - it's included."],
     },
   ];
 
@@ -229,8 +229,7 @@ export default function FeaturedPage() {
     { icon: "🎨", title: "Look Worth Visiting", desc: "A polished listing with your logo, photos, and hours signals quality before they ever arrive. First impressions convert." },
     { icon: "📱", title: "Fewer Lost Customers", desc: "People decide in seconds on mobile. One tap to call you means the difference between a visit and a scroll past." },
     { icon: "⭐", title: "Your Reviews Work for You While You Sleep", desc: "When someone leaves you a 5-star Google review, it shows right on your Manitou Beach profile. No copy-pasting, no tech fuss. And if you're not on Google yet, we set the whole thing up for you.", tier: "From Highlighted" },
-    { icon: "📰", title: "A Welcome Feature to 500+ Local Inboxes", desc: "When you go live, we introduce your business in The Dispatch, our local newsletter that goes to folks who live here and spend here.", tier: "Front and Center" },
-    { icon: "🗺️", title: "On Google Maps - Done for You", desc: "When someone Googles your trade near Manitou Beach, your name, phone number, and hours show up right in the results. We handle the entire setup. You just verify it's yours.", tier: "Front and Center" },
+    { icon: "🗺️", title: "On Google When Locals Search 'Near Me'", desc: "Half of local business comes from someone Googling 'electrician near me' or 'best coffee on Devils Lake' - and if you don't have a proper Google Business profile, you're invisible to every one of those searches. We build yours from scratch: claim, verify, photos, description, hours, service area. Agencies charge $200-400/mo for this service alone. It's built into Front and Center.", tier: "Front and Center" },
   ];
 
   return (
@@ -551,11 +550,11 @@ export default function FeaturedPage() {
               {[
                 {
                   q: "Is this the same thing as advertising in The Dispatch newsletter?",
-                  a: "No - these are two completely different products. A listing is your permanent home base on this site - your own page, your hours, your photos, your call button. It's always there. Newsletter advertising in The Dispatch is a separate purchase where your business is featured in an email issue sent to subscribers. Front and Center includes a one-time welcome announcement when your listing first goes live, but that's a hello, not an ad campaign. If you want ongoing newsletter placement, visit the Advertise page.",
+                  a: "No - these are two completely different products. A listing is your permanent home base on this site - your own page, your hours, your photos, your call button. It's always there. Newsletter advertising in The Dispatch is a separate, optional purchase where your business is featured in an email issue sent to subscribers. If you want newsletter placement, visit the Advertise page.",
                 },
                 {
-                  q: "What does the Google Maps setup actually involve?",
-                  a: "We create your Google Business Profile - the thing that makes your business show up on Google Maps and in local search results when someone nearby searches for what you do. Your name, phone, hours, and category appear right in Google without anyone needing to visit your website. We handle all the setup. The one thing you have to do is verify it's your business when Google contacts you - usually a short phone call or a postcard to your address.",
+                  q: "What does the Google Business setup actually include, and why is it a big deal?",
+                  a: "If you've been in business 20 years on word-of-mouth alone, a whole generation of customers is searching 'electrician near me' or 'best diner on Devils Lake' on their phone - and without a proper Google Business profile, you don't exist in those searches. We build yours from scratch: we claim the listing, verify it (Google mails you a postcard or calls - we walk you through it), load your photos, write a proper description, set your hours, add your service area, pick the right categories, and connect it to your Manitou Beach page so your Google reviews show up here automatically. This is the same service agencies charge $200-400/mo for. It's included in Front and Center.",
                 },
                 {
                   q: "I already have a Google Business Profile. Does that matter?",
@@ -973,7 +972,7 @@ export default function FeaturedPage() {
             { q: "Do I have to commit for a whole year?", a: "No. Everything is month-to-month. Showcased is $9/month, Highlighted is $25/month, Front and Center is $49/month - billed monthly, cancel anytime. There is no annual contract. Stay for one month, the whole summer, or as long as you want." },
             { q: "Can I run Highlighted or Front and Center just for the summer?", a: "Yes, that's exactly how it's designed. Sign up when your season starts, cancel when it ends. If you pause instead of canceling, your rate is locked and your page is waiting for you when you come back next year." },
             { q: "Can I switch tiers later?", a: "Anytime, in either direction. Start with Showcased at $9 and upgrade to Highlighted or Front and Center when you're ready for more depth. Or step back down if your season slows. Your page stays yours - only the features change." },
-            { q: "What's the difference between the tiers?", a: "Showcased ($9) gets you your own page with photos, hours, a call button, a quote form, and a map pin. Highlighted ($25) adds your Google reviews on the page. Front and Center ($49) turns the page into a full photo showcase with a big feature photo, a gallery, a gold accent, and a welcome announcement to our subscriber list." },
+            { q: "What's the difference between the tiers?", a: "Showcased ($9) gets you your own page with photos, hours, a call button, a quote form, and a map pin. Highlighted ($25) adds your Google reviews on the page. Front and Center ($49) turns the page into a full photo showcase with a big feature photo, a gallery, and a gold accent - and, most importantly, we build your full Google Business profile from scratch so you show up when locals search 'near me'. That service alone runs $200-400/mo at most agencies." },
             { q: "I already have a free listing. What changes?", a: "Your free listing stays as-is. Upgrading to any paid tier gives you your own profile page at a real URL you can share - photos, hours, a quote form, the works. The free entry is a phone-book line; the paid page is a real web page." },
             { q: "What happens if I cancel my listing?", a: "Your listing reverts to the free directory. No lock-in, cancel anytime. If you cancel and later rejoin, you pay whatever the current rate is at that time." },
             { q: "What if I pause my subscription?", a: "Pausing is fine - your rate and page are held while paused. Great for seasonal businesses: pause in the off-months and your page is waiting when you come back." },
