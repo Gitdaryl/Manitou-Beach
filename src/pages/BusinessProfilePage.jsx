@@ -345,7 +345,25 @@ export default function BusinessProfilePage() {
 
   const scrollTo = id => { window.location.href = '/#' + id; };
   const accent = business ? (business.accentColor || CAT_COLORS[business.category] || C.sage) : C.sage;
-  const hasActions = business && (business.phone || business.email || business.website);
+
+  // Category archetype → primary action. Services quote, hospitality books, retail/destination gets directions.
+  const RETAIL_CATS = ['Food & Drink', 'Food Truck', 'Breweries & Wineries', 'Shopping & Gifts', 'Arts & Culture'];
+  const HOSPITALITY_CATS = ['Stays & Rentals', 'Events & Venues', 'Activities', 'Health & Beauty'];
+  const actionType = business
+    ? (RETAIL_CATS.includes(business.category) ? 'directions'
+      : HOSPITALITY_CATS.includes(business.category) ? 'book'
+      : 'quote')
+    : 'quote';
+  const actionCopy = {
+    quote:      { label: 'Get a Quote',  title: 'Get a Quote',  placeholder: 'Describe the job or service…',       toast: '✓ Quote request sent' },
+    book:       { label: 'Book',         title: 'Request a Booking', placeholder: 'Dates, party size, or details…', toast: '✓ Booking request sent' },
+    directions: { label: 'Directions' },
+  }[actionType];
+  const mapsHref = business?.address
+    ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(business.address + ' Manitou Beach MI')}`
+    : null;
+
+  const hasActions = business && (business.phone || business.email || business.website || (actionType === 'directions' && business.address));
   const autoDesc = business
     ? `${business.name} is a ${(business.category || 'local business').toLowerCase()} serving Manitou Beach, Devils Lake, and the Irish Hills area of Michigan.`
     : '';
@@ -364,6 +382,9 @@ export default function BusinessProfilePage() {
           padding: 0 20px 28px;
         }
         @media (min-width: 640px) { .bp-hero-identity { padding: 0 36px 40px; } }
+
+        .bp-hero-logo { width: 120px; height: 120px; }
+        @media (min-width: 640px) { .bp-hero-logo { width: 150px; height: 150px; } }
 
         .bp-cred-strip {
           display: flex; align-items: center; justify-content: space-between;
@@ -647,14 +668,14 @@ export default function BusinessProfilePage() {
             <div className="bp-hero-identity">
               {/* Logo thumbnail */}
               {business.logo && (
-                <div style={{
-                  width: 68, height: 68, borderRadius: 14, marginBottom: 14,
+                <div className="bp-hero-logo" style={{
+                  borderRadius: 24, marginBottom: 16,
                   border: '2px solid rgba(255,255,255,0.22)',
                   background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)',
                   overflow: 'hidden', flexShrink: 0,
                 }}>
                   <img src={business.logo} alt={business.name}
-                    style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 7 }} />
+                    style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 14 }} />
                 </div>
               )}
 
@@ -780,14 +801,27 @@ export default function BusinessProfilePage() {
                     Call Now
                   </a>
                 )}
-                {(business.email || business.phone) && (
+                {actionType === 'directions' && mapsHref && (
+                  <a href={mapsHref} target="_blank" rel="noopener noreferrer" className="bp-action-btn"
+                    style={{ background: accent, color: '#fff' }}>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+                    </svg>
+                    Directions
+                  </a>
+                )}
+                {actionType !== 'directions' && (business.email || business.phone) && (
                   <button className="bp-action-btn"
                     onClick={() => setQuoteOpen(true)}
                     style={{ background: accent, color: '#fff' }}>
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                      {actionType === 'book' ? (
+                        <><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></>
+                      ) : (
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                      )}
                     </svg>
-                    Get a Quote
+                    {actionCopy.label}
                   </button>
                 )}
                 {business.website && (
@@ -1271,14 +1305,27 @@ export default function BusinessProfilePage() {
                   Call Now
                 </a>
               )}
-              {(business.email || business.phone) && (
+              {actionType === 'directions' && mapsHref && (
+                <a href={mapsHref} target="_blank" rel="noopener noreferrer" className="bp-action-btn"
+                  style={{ background: accent, color: '#fff' }}>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+                  </svg>
+                  Directions
+                </a>
+              )}
+              {actionType !== 'directions' && (business.email || business.phone) && (
                 <button className="bp-action-btn"
                   onClick={() => setQuoteOpen(true)}
                   style={{ background: accent, color: '#fff' }}>
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    {actionType === 'book' ? (
+                      <><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></>
+                    ) : (
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    )}
                   </svg>
-                  Get a Quote
+                  {actionCopy.label}
                 </button>
               )}
             </div>
@@ -1291,7 +1338,7 @@ export default function BusinessProfilePage() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
                   <div>
                     <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 700, color: C.dusk }}>
-                      Get a Quote
+                      {actionCopy.title}
                     </div>
                     <div style={{ fontSize: 13, color: C.textMuted, marginTop: 3 }}>from {business.name}</div>
                   </div>
@@ -1313,7 +1360,7 @@ export default function BusinessProfilePage() {
                   </div>
                   <div>
                     <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, display: 'block', marginBottom: 6 }}>What do you need? (optional)</label>
-                    <textarea className="bp-input" rows={3} placeholder="Describe the job or service…"
+                    <textarea className="bp-input" rows={3} placeholder={actionCopy.placeholder}
                       value={quoteForm.message} onChange={e => setQuoteForm(f => ({ ...f, message: e.target.value }))}
                       style={{ resize: 'vertical', minHeight: 80 }} />
                   </div>
@@ -1341,7 +1388,7 @@ export default function BusinessProfilePage() {
               boxShadow: '0 4px 24px rgba(0,0,0,0.3)',
               animation: 'fadeInUp 0.3s ease-out',
             }}>
-              ✓ Quote request sent
+              {actionCopy.toast}
             </div>
           )}
 
