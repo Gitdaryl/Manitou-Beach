@@ -52,8 +52,11 @@ export const PAGE_SPONSORS = {
 // USA250 - set true to make the page publicly visible + add to Community nav
 export const USA250_PUBLIC = true;
 
-// Slot caps per tier per category - Enhanced has no cap
-export const SLOT_CAPS = { premium: 1, featured: 3 };
+// Slot caps per tier per category - disabled at Phase 1 launch.
+// Profile tiers are unlimited; scarce directory positioning (Category Spotlight)
+// ships in Phase 3 once density + traffic justify the price. To restore:
+// SLOT_CAPS = { premium: 1, featured: 3 }
+export const SLOT_CAPS = {};
 export const LISTING_CATEGORIES = [
   "Food & Drink", "Food Truck", "Stays & Rentals", "Breweries & Wineries",
   "Boating & Water", "Events & Venues", "Shopping & Gifts", "Home Services",

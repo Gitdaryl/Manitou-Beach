@@ -1103,17 +1103,13 @@ function BusinessDirectory() {
                     {catAll.length}
                   </div>
                 </div>
-                {/* Premium banner pinned at top of its own category */}
-                {(premiumByCategory[category] || []).map(b => <PremiumBanner key={`prem-${b.id}`} business={b} />)}
-                {/* Featured spotlight cards */}
-                {catFeatured.length > 0 && (
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 14, marginBottom: 14 }}>
-                    {catFeatured.map(b => <FeaturedBusinessCard key={`card-${b.id}`} business={b} />)}
-                  </div>
-                )}
-                {/* All non-premium businesses as rows */}
-                {catAll.filter(b => b.tier !== 'premium').map(b =>
-                  (b.tier === 'enhanced' || b.tier === 'featured' || b.featured)
+                {/* Category Spotlight (PremiumBanner + FeaturedBusinessCard)
+                    is deferred until Phase 3 when density + traffic earn the
+                    scarce pricing. At Phase 1 launch, every listing gets the
+                    same uniform row treatment - tier differences show up on
+                    the business profile page, not the directory. */}
+                {catAll.map(b =>
+                  (b.tier === 'enhanced' || b.tier === 'featured' || b.tier === 'premium' || b.featured)
                     ? <EnhancedBusinessRow key={`row-${b.id}`} business={b} />
                     : <BusinessRow key={`row-${b.id}`} business={b} />
                 )}
@@ -1152,13 +1148,13 @@ function BusinessDirectory() {
                 Get Noticed
               </div>
               <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(20px, 3vw, 28px)", color: C.cream, margin: "0 0 8px 0", fontWeight: 400 }}>
-                Upgrade to a Featured Listing
+                Get Your Own Profile Page
               </h3>
               <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", margin: 0, maxWidth: 400, lineHeight: 1.7 }}>
-                Top-of-directory placement, newsletter inclusion, and a business spotlight video from Holly & The Yeti.
+                A real URL you can share. Photos, hours, Google reviews, a call button, and a quote form, all in one place. Starts at $9 a month.
               </p>
             </div>
-            <Btn href="/business" variant="sunset">Upgrade Your Listing</Btn>
+            <Btn href="/business" variant="sunset">See the Tiers</Btn>
           </div>
         </FadeIn>
       </div>

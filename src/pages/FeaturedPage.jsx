@@ -181,12 +181,12 @@ export default function FeaturedPage() {
     {
       id: 'featured', name: 'Highlighted', color: C.sage, badge: 'Most Popular',
       price: priceFor(25), priceInCents: centsFor(25),
-      features: ['Everything in Showcased', 'Your Google star rating and reviews display on your profile', 'Highlighted badge visitors notice when browsing', 'Ranked above standard listings in your category'],
+      features: ['Everything in Showcased', 'Your Google star rating and reviews right on your profile', 'Highlighted badge on your profile header', 'Extra room for photos and story so visitors get the full picture'],
     },
     {
-      id: 'premium', name: 'Front and Center', color: C.sunsetLight, badge: 'Best Visibility',
+      id: 'premium', name: 'Front and Center', color: C.sunsetLight, badge: 'Most Features',
       price: priceFor(49), priceInCents: centsFor(49),
-      features: ['Everything in Highlighted', 'First listing in your category - always', 'Your photo banner at the top of the directory page', 'We set up your Google Maps presence - done for you', 'One-time welcome announcement to our subscriber list when you go live'],
+      features: ['Everything in Highlighted', 'Hero photo showcase at the top of your profile', 'Full photo gallery, scroll-through style', 'Gold accent and Premium badge on your profile', 'We set up your Google Maps presence - done for you', 'One-time welcome announcement to our subscriber list when you go live'],
     },
   ];
 
@@ -229,7 +229,7 @@ export default function FeaturedPage() {
     { icon: "🎨", title: "Look Worth Visiting", desc: "A polished listing with your logo, photos, and hours signals quality before they ever arrive. First impressions convert." },
     { icon: "📱", title: "Fewer Lost Customers", desc: "People decide in seconds on mobile. One tap to call you means the difference between a visit and a scroll past." },
     { icon: "⭐", title: "Your Reviews Work for You While You Sleep", desc: "When someone leaves you a 5-star Google review, it shows right on your Manitou Beach profile. No copy-pasting, no tech fuss. And if you're not on Google yet, we set the whole thing up for you.", tier: "From Highlighted" },
-    { icon: "📰", title: "In Front of 500+ Local Inboxes Weekly", desc: "The Dispatch goes to subscribers who live here and spend here. Your business stays top of mind, not just when they're searching.", tier: "Front and Center" },
+    { icon: "📰", title: "A Welcome Feature to 500+ Local Inboxes", desc: "When you go live, we introduce your business in The Dispatch, our local newsletter that goes to folks who live here and spend here.", tier: "Front and Center" },
     { icon: "🗺️", title: "On Google Maps - Done for You", desc: "When someone Googles your trade near Manitou Beach, your name, phone number, and hours show up right in the results. We handle the entire setup. You just verify it's yours.", tier: "Front and Center" },
   ];
 
@@ -312,52 +312,9 @@ export default function FeaturedPage() {
         </div>
       </section>
 
-      {/* Category Slot Availability Band - shows Premium + Featured tier availability */}
-      {slotCounts && slotCounts.tierCounts && !isFull && (() => {
-        const premiumCats = LISTING_CATEGORIES.filter(cat => (slotCounts.tierCounts.premium?.[cat] || 0) > 0);
-        const featuredCats = LISTING_CATEGORIES.filter(cat => (slotCounts.tierCounts.featured?.[cat] || 0) > 0);
-        if (premiumCats.length === 0 && featuredCats.length === 0) return null;
-        const renderPills = (cats, tierId) => cats.map(cat => {
-          const used = slotCounts.tierCounts[tierId]?.[cat] || 0;
-          const cap = SLOT_CAPS[tierId];
-          const left = Math.max(0, cap - used);
-          const full = left === 0;
-          const almostFull = left === 1;
-          const dotColor = full ? C.sunset : almostFull ? C.driftwood : C.sage;
-          return (
-            <span key={cat} style={{
-              display: "inline-flex", alignItems: "center", gap: 5,
-              padding: "4px 10px", borderRadius: 20,
-              background: full ? `${C.sunset}12` : almostFull ? `${C.driftwood}12` : `${C.sage}10`,
-              border: `1px solid ${dotColor}28`,
-            }}>
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: dotColor, display: "inline-block", flexShrink: 0 }} />
-              <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.6)" }}>{cat}</span>
-              <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, color: full ? C.sunset : "rgba(255,255,255,0.3)" }}>
-                {full ? "Full" : `${left} of ${cap} left`}
-              </span>
-            </span>
-          );
-        });
-        return (
-          <div style={{ background: C.night, borderBottom: `1px solid rgba(255,255,255,0.06)`, padding: "14px 24px" }}>
-            <div style={{ maxWidth: 1000, margin: "0 auto", display: "flex", flexDirection: "column", gap: 10 }}>
-              {premiumCats.length > 0 && (
-                <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
-                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: C.sunsetLight, flexShrink: 0, minWidth: 68 }}>Premium</span>
-                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{renderPills(premiumCats, 'premium')}</div>
-                </div>
-              )}
-              {featuredCats.length > 0 && (
-                <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
-                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: C.sage, flexShrink: 0, minWidth: 68 }}>Featured</span>
-                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{renderPills(featuredCats, 'featured')}</div>
-                </div>
-              )}
-            </div>
-          </div>
-        );
-      })()}
+      {/* Category Spotlight slot availability band deferred until Phase 3
+          (density + traffic earned). Previously showed Premium (1/cat) +
+          Featured (3/cat) scarce inventory. Restore when ad tiers go live. */}
 
       {/* Success / Cancelled banners */}
       {status?.type === "success" && (
@@ -529,16 +486,16 @@ export default function FeaturedPage() {
         </section>
       )}
 
-      {/* How Spots Work */}
+      {/* How It Works */}
       {!isFull && (
         <section style={{ background: C.cream, padding: "80px 24px" }}>
           <div style={{ maxWidth: 860, margin: "0 auto" }}>
             <FadeIn>
               <div style={{ textAlign: "center", marginBottom: 52 }}>
                 <SectionLabel>How It Works</SectionLabel>
-                <SectionTitle center>No contracts. No year-long commitments.</SectionTitle>
+                <SectionTitle center>Start free. Upgrade when it's worth it.</SectionTitle>
                 <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.7, maxWidth: 540, margin: "16px auto 0" }}>
-                  Featured and Premium spots work month-to-month. Take a spot for the summer. Cancel in the off-season. Come back next year. Here's exactly how it works.
+                  Every local business belongs here. List for free, upgrade when you want a real profile page of your own. Month-to-month, no contracts.
                 </p>
               </div>
             </FadeIn>
@@ -546,18 +503,18 @@ export default function FeaturedPage() {
               {[
                 {
                   num: "01",
-                  title: "Pick your tier and your month",
-                  body: "Featured and Premium billing is monthly - nothing annual. If summer is your busy season, go Featured in June and cancel in September. Pause instead of canceling and your spot is held when you're ready to come back.",
+                  title: "Claim your free spot in 60 seconds",
+                  body: "Your business name, phone, and category go into the directory. That's it - no card, no catch. Visitors can find you when they search. It's a phone-book-level listing, always free, forever.",
                 },
                 {
                   num: "02",
-                  title: "Spots are limited - by category",
-                  body: "Featured has 3 spots per business category. Premium has 1 spot per category - it's exclusive. If you're a restaurant and all 3 Featured restaurant slots are taken, you go on the waitlist. Different categories have different availability, so it's worth checking yours.",
+                  title: "Upgrade when you want a profile page",
+                  body: "The paid tiers get you your own page at manitoubeachmichigan.com/yourbusiness - a real URL you can share on Facebook, print on a card, text to a customer. Photos, hours, a call button, a quote form, the whole deal. Think of it as a website, without the website hassle.",
                 },
                 {
                   num: "03",
-                  title: "On the waitlist? You'll get a text when a spot opens",
-                  body: "When you join the waitlist, we save your payment details - but we don't charge you anything yet. The moment a spot opens in your category, you'll get an SMS notification. You have 48 hours to claim it. If you claim it, your card is billed and your listing goes live. If you don't, no charge - the next person on the list gets the offer.",
+                  title: "Month-to-month, cancel or upgrade anytime",
+                  body: "Busy season in summer? Go Front and Center in June, drop to Showcased in September. Everything is monthly. You're never locked in, and we don't do annual contracts.",
                 },
               ].map((step, i) => (
                 <FadeIn key={i} delay={i * 80}>
@@ -610,7 +567,7 @@ export default function FeaturedPage() {
                 },
                 {
                   q: "Can I cancel anytime?",
-                  a: "Yes. Everything is month-to-month. Cancel before your next billing date and you won't be charged again. If you cancel and want to come back later, your spot may be taken - Featured and Front and Center have limited spots per category. Pausing holds your spot if you want to take the winter off.",
+                  a: "Yes. Everything is month-to-month. Cancel before your next billing date and you won't be charged again. If you want to come back later, just sign up again. Your free listing stays in the directory either way, so nobody goes dark.",
                 },
                 {
                   q: "What happens right after I sign up?",
