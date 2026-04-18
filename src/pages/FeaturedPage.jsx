@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Btn, FadeIn, ScrollProgress, SectionLabel, SectionTitle } from '../components/Shared';
 import { C, LISTING_CATEGORIES, PAGE_SPONSORS, SLOT_CAPS } from '../data/config';
 import { BASE_PRICES } from '../data/pricing';
@@ -30,11 +31,16 @@ export default function FeaturedPage() {
   const priceFor = (base) => base.toFixed(2);
   const centsFor = (base) => Math.round(base * 100);
   const [slotCounts, setSlotCounts] = useState(null);
-  const [modal, setModal] = useState(null);
-  const [form, setForm] = useState({ businessName: '', email: '', phone: '', duration: 3, category: '' });
-  const [loading, setLoading] = useState(false);
-  const [checkoutError, setCheckoutError] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
   const [status, setStatus] = useState(null);
+
+  const handleTierSelect = (tierId) => {
+    setSearchParams({ tier: tierId }, { replace: false });
+    setTimeout(() => {
+      const el = document.getElementById('submit');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 40);
+  };
 
   const slotsLeft = (tierId, cat) => {
     if (!slotCounts || !cat) return null;
@@ -189,22 +195,6 @@ export default function FeaturedPage() {
       features: ['Everything in Highlighted', 'A big showcase photo across the top of your page', 'Full photo gallery, scroll-through style', 'Gold accent and Premium badge on your profile', "Showing up on Google when locals search 'near me'. We build your full Google Business profile from scratch: claim and verify the listing, load your photos, write your description, set your hours and service area. Agencies charge $200-400/mo for this alone - it's included."],
     },
   ];
-
-  const handleCheckout = async () => {
-    if (!form.businessName.trim() || !form.email.trim()) { setCheckoutError('Business name and email are required.'); return; }
-    setLoading(true); setCheckoutError('');
-    try {
-      const res = await fetch('/api/create-checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tier: modal.tierId, businessName: form.businessName, email: form.email, phone: form.phone, priceInCents: modal.priceInCents, mode: 'subscription', duration: form.duration, category: form.category }),
-      });
-      const data = await res.json();
-      if (data.url) { window.location.href = data.url; }
-      else { setCheckoutError(data.error || yeti.oops()); }
-    } catch { setCheckoutError(yeti.network()); }
-    finally { setLoading(false); }
-  };
 
   const handleWaitlist = async (e) => {
     e.preventDefault();
@@ -457,7 +447,7 @@ export default function FeaturedPage() {
                     ))}
                   </ul>
                   <button
-                    onClick={() => { setModal({ tierId: tier.id, tierName: tier.name, price: tier.price, priceInCents: tier.priceInCents, color: tier.color }); setForm({ businessName: '', email: '', phone: '', duration: 3, category: '' }); setCheckoutError(''); }}
+                    onClick={() => handleTierSelect(tier.id)}
                     style={{ display: "block", width: "100%", padding: "11px 0", borderRadius: 8, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: "pointer", border: "none", background: tier.id === "premium" ? C.sunset : "transparent", color: tier.id === "premium" ? C.cream : tier.color, outline: tier.id === "premium" ? "none" : `1.5px solid ${tier.color}55`, transition: "all 0.22s" }}
                   >
                     Get Started
@@ -988,151 +978,6 @@ export default function FeaturedPage() {
           ))}
         </div>
       </section>
-
-      {/* Checkout modal */}
-      {modal && (
-        <div style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: 24, background: "rgba(10,18,24,0.88)", backdropFilter: "blur(8px)" }} onClick={() => setModal(null)}>
-          <div style={{ background: C.dusk, borderRadius: 20, padding: "36px 32px", maxWidth: 420, width: "100%", boxShadow: "0 24px 80px rgba(0,0,0,0.5)", border: `1px solid ${modal.color}30` }} onClick={e => e.stopPropagation()}>
-            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: modal.color, marginBottom: 6 }}>{modal.tierName} Listing</div>
-            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, fontWeight: 400, color: C.cream, margin: "0 0 4px 0" }}>
-              ${modal.price}<span style={{ fontSize: 14, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif" }}>/mo</span>
-            </h3>
-            <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 13, margin: "0 0 28px 0" }}>Rate held while subscribed - cancel anytime, pause anytime.</p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 20 }}>
-              <input
-                placeholder="Business name"
-                value={form.businessName}
-                onChange={e => setForm(f => ({ ...f, businessName: e.target.value }))}
-                style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}
-              />
-              <input
-                placeholder="Email address"
-                type="email"
-                value={form.email}
-                onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}
-              />
-              <div>
-                <input
-                  placeholder="Phone number"
-                  type="tel"
-                  value={form.phone}
-                  onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
-                  style={{ width: "100%", padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none", boxSizing: "border-box" }}
-                />
-                <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.28)", margin: "6px 0 0", letterSpacing: 0.3 }}>
-                  Used to verify your listing so you can edit it yourself
-                </p>
-              </div>
-              <div>
-                <select
-                  value={form.category}
-                  onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
-                  style={{ width: "100%", padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(30,40,50,0.9)", color: form.category ? C.cream : "rgba(255,255,255,0.38)", fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none", appearance: "none" }}
-                >
-                  <option value="">Select your category</option>
-                  {LISTING_CATEGORIES.map(cat => (
-                    <option key={cat} value={cat}>{cat}</option>
-                  ))}
-                </select>
-                {form.category && (() => {
-                  const left = slotsLeft(modal.tierId, form.category);
-                  if (left === null) return null;
-                  const cap = SLOT_CAPS[modal.tierId];
-                  if (left === 0) return (
-                    <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.sunset, margin: "7px 0 0", letterSpacing: 0.3 }}>
-                      All {modal.tierName} spots for {form.category} are taken - choose a different category or tier.
-                    </p>
-                  );
-                  return (
-                    <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: left === 1 ? C.driftwood : "rgba(255,255,255,0.32)", margin: "7px 0 0", letterSpacing: 0.3 }}>
-                      {left} of {cap} {modal.tierName} spot{cap === 1 ? '' : 's'} remaining in {form.category}
-                    </p>
-                  );
-                })()}
-              </div>
-            </div>
-
-            {/* Food Truck interstitial */}
-            {form.category === 'Food Truck' ? (
-              <div style={{ background: 'linear-gradient(135deg, #1A2830 0%, #2D4A3E 100%)', borderRadius: 12, padding: '24px 20px', marginTop: 4, border: '1px solid rgba(255,255,255,0.08)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-                  <img src="/images/icons/food-truck-icon.png" alt="Food truck" style={{ width: 44, height: 44, objectFit: 'contain', flexShrink: 0 }} />
-                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, color: '#F5F0E8', fontWeight: 400, lineHeight: 1.3 }}>
-                    Hold on - you qualify for something better
-                  </div>
-                </div>
-                <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.65)', lineHeight: 1.7, margin: '0 0 18px', fontFamily: "'Libre Franklin', sans-serif" }}>
-                  Manitou Beach has a whole special section just for food trucks - way more than a basic listing. You get your own personal page you tap when you're parked and open. Anyone following your truck gets a text message the moment you're there. Takes about two minutes to finish.
-                </p>
-                <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const params = new URLSearchParams();
-                      if (form.businessName) params.set('name', form.businessName);
-                      if (form.email) params.set('email', form.email);
-                      window.location.href = `/food-truck-partner?${params.toString()}`;
-                    }}
-                    style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, padding: '12px 22px', borderRadius: 8, border: 'none', background: '#4A7A5A', color: '#fff', cursor: 'pointer' }}
-                  >
-                    Set up my truck →
-                  </button>
-                  <button type="button" onClick={() => setForm(f => ({ ...f, category: '' }))} style={{ background: 'none', border: 'none', fontSize: 13, color: 'rgba(255,255,255,0.4)', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0 }}>
-                    ← Start over
-                  </button>
-                </div>
-              </div>
-            ) : (
-            <>
-            {/* Contract duration */}
-            <div style={{ marginBottom: 6 }}>
-              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 2.5, textTransform: "uppercase", color: "rgba(255,255,255,0.3)", marginBottom: 10 }}>
-                Commitment Length
-              </div>
-              <div style={{ display: "flex", gap: 8 }}>
-                {[3, 6, 12].map(mo => (
-                  <button
-                    key={mo}
-                    type="button"
-                    onClick={() => setForm(f => ({ ...f, duration: mo }))}
-                    style={{
-                      flex: 1, padding: "10px 0", borderRadius: 8, border: `1px solid ${form.duration === mo ? modal.color : "rgba(255,255,255,0.12)"}`,
-                      background: form.duration === mo ? `${modal.color}22` : "rgba(255,255,255,0.04)",
-                      color: form.duration === mo ? modal.color : "rgba(255,255,255,0.4)",
-                      fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: form.duration === mo ? 700 : 400,
-                      cursor: "pointer", transition: "all 0.18s",
-                    }}
-                  >
-                    {mo} mo
-                  </button>
-                ))}
-              </div>
-              <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, color: "rgba(255,255,255,0.2)", margin: "8px 0 0", letterSpacing: 0.3 }}>
-                Billed monthly · cancel anytime · your commitment is noted
-              </p>
-            </div>
-            {checkoutError && <p style={{ color: "#ff6b5b", fontSize: 13, marginBottom: 14 }}>{checkoutError}</p>}
-            {(() => {
-              const catFull = form.category && slotsLeft(modal.tierId, form.category) === 0;
-              return (
-                <button
-                  onClick={handleCheckout}
-                  disabled={loading || catFull}
-                  style={{ width: "100%", padding: "14px", borderRadius: 10, border: "none", background: catFull ? "rgba(255,255,255,0.08)" : modal.tierId === "premium" ? C.sunset : modal.color, color: catFull ? "rgba(255,255,255,0.3)" : C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: loading ? "wait" : catFull ? "not-allowed" : "pointer", opacity: loading ? 0.7 : 1, transition: "all 0.2s" }}
-                >
-                  {catFull ? "Category Full - Choose Another" : loading ? "Redirecting…" : "Continue to Secure Checkout →"}
-                </button>
-              );
-            })()}
-            <p style={{ textAlign: "center", fontSize: 11, color: "rgba(255,255,255,0.22)", marginTop: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
-              Powered by Stripe · Your card details are never stored here
-            </p>
-            </>
-            )}
-          </div>
-        </div>
-      )}
 
       {/* Website nudge strip */}
       <section style={{ background: C.warmWhite, padding: "32px 24px", borderTop: `1px solid ${C.sand}` }}>

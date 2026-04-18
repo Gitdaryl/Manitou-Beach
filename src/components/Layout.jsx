@@ -1,7 +1,15 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { C, PAGE_SPONSORS, SECTIONS, LISTING_CATEGORIES, VIDEOS, DISPATCH_CARD_SPONSORS, USA250_PUBLIC } from '../data/config';
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, WaveDivider, Btn, CategoryPill, PageSponsorBanner } from './Shared';
 import yeti from '../data/errorMessages';
+
+const TIER_BY_ID = {
+  enhanced: { value: 'Enhanced', display: 'Showcased', price: 9,  cents: 900  },
+  featured: { value: 'Featured', display: 'Highlighted', price: 25, cents: 2500 },
+  premium:  { value: 'Premium',  display: 'Front and Center', price: 49, cents: 4900 },
+};
+const TIER_PRICE_CENTS = { Enhanced: 900, Featured: 2500, Premium: 4900 };
 
 export function GlobalStyles() {
   return (
@@ -1062,13 +1070,34 @@ export async function compressImage(file, maxWidth = 1200, quality = 0.7) {
 }
 
 export function SubmitSection() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [logoFile, setLogoFile] = useState(null);
   const [logoPreview, setLogoPreview] = useState(null);
   const [isLogoDragging, setIsLogoDragging] = useState(false);
-  const [form, setForm] = useState({ name: "", category: "", phone: "", address: "", website: "", email: "", description: "", logoUrl: "", newsletter: true, tier: "Free", duration: "1", _hp: "" });
+  const [form, setForm] = useState({ name: "", category: "", phone: "", address: "", website: "", email: "", description: "", logoUrl: "", newsletter: true, tier: "Free", duration: "3", _hp: "" });
+
+  // Preselect tier from ?tier=<id> and scroll into view
+  useEffect(() => {
+    const rawTier = (searchParams.get('tier') || '').toLowerCase();
+    const match = TIER_BY_ID[rawTier];
+    if (match) {
+      setForm(f => ({ ...f, tier: match.value }));
+      // Wait a beat so the DOM has the preselected tier, then scroll
+      setTimeout(() => {
+        const el = document.getElementById('submit');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 60);
+    } else if (rawTier === 'free') {
+      setForm(f => ({ ...f, tier: 'Free' }));
+      setTimeout(() => {
+        const el = document.getElementById('submit');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 60);
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -1095,6 +1124,29 @@ export function SubmitSection() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || data.error || "Submission failed");
+
+      // Paid tier: hand off to Stripe checkout. Free: show confetti success.
+      if (form.tier !== 'Free' && TIER_PRICE_CENTS[form.tier]) {
+        const tierId = Object.keys(TIER_BY_ID).find(k => TIER_BY_ID[k].value === form.tier) || '';
+        const coRes = await fetch('/api/create-checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            tier: tierId,
+            businessName: form.name,
+            email: form.email,
+            phone: form.phone,
+            priceInCents: TIER_PRICE_CENTS[form.tier],
+            mode: 'subscription',
+            duration: form.duration,
+            category: form.category,
+          }),
+        });
+        const coData = await coRes.json();
+        if (coData.url) { window.location.href = coData.url; return; }
+        throw new Error(coData.error || yeti.oops());
+      }
+
       setSubmitted(true);
     } catch (err) {
       setSubmitError(err.message && err.message !== "Submission failed"
@@ -1235,7 +1287,7 @@ export function SubmitSection() {
                 ))}
               </div>
 
-              {/* Soft Enhanced upsell */}
+              {/* Soft upsell to paid tier */}
               <div style={{
                 background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)",
                 borderRadius: 8, padding: "16px 20px", maxWidth: 380, margin: "0 auto 20px", textAlign: "left",
@@ -1244,7 +1296,7 @@ export function SubmitSection() {
                   Whenever you're ready
                 </p>
                 <p style={{ fontSize: 13, color: "rgba(255,255,255,0.6)", marginBottom: 10, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.6 }}>
-                  If you ever want a bit more visibility, the Enhanced listing adds:
+                  If you ever want a bit more visibility, the Showcased listing adds:
                 </p>
                 <ul style={{ margin: 0, paddingLeft: 0, listStyle: "none" }}>
                   {["Clickable website link", "Business description", "Expandable card", "Category search placement", "Pin on the Discover map"].map(b => (
@@ -1380,10 +1432,10 @@ export function SubmitSection() {
                       onFocus={e => e.target.style.borderColor = C.sage}
                       onBlur={e => e.target.style.borderColor = C.sand}
                     >
-                      <option value="Free">Free - $0 · Name, category & phone</option>
-                      <option value="Enhanced">Enhanced - $9/mo · + Website link & description</option>
-                      <option value="Featured">Featured - $25/mo · + Spotlight card & logo</option>
-                      <option value="Premium">Premium - $49/mo · + Full banner & top placement</option>
+                      <option value="Free">Free · $0 · phone-book listing (name, category, phone)</option>
+                      <option value="Enhanced">Showcased · $9/mo · your own profile page with photos, hours & call button</option>
+                      <option value="Featured">Highlighted · $25/mo · everything in Showcased + Google reviews on your profile</option>
+                      <option value="Premium">Front and Center · $49/mo · everything above + we build your Google Business profile ($200-400/mo value)</option>
                     </select>
                   </div>
 
@@ -1409,7 +1461,7 @@ export function SubmitSection() {
                         ))}
                       </select>
                       <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, marginTop: 6, paddingLeft: 2 }}>
-                        Total: ${(({ Free: 0, Enhanced: 9, Featured: 25, Premium: 49 }[form.tier] || 0) * (parseInt(form.duration) || 1)).toLocaleString()} · We'll confirm and invoice before going live
+                        Total: ${(({ Free: 0, Enhanced: 9, Featured: 25, Premium: 49 }[form.tier] || 0) * (parseInt(form.duration) || 1)).toLocaleString()} · you'll be taken to secure Stripe checkout after submit
                       </div>
                     </div>
                   )}
@@ -1417,7 +1469,7 @@ export function SubmitSection() {
                   {/* Logo upload - drag & drop, compressed, Vercel Blob */}
                   <div>
                     <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 600, color: C.textLight, marginBottom: 8, letterSpacing: 0.5 }}>
-                      Logo (optional · displayed on Featured & Premium tiers)
+                      Logo (optional · displayed on Highlighted & Front and Center tiers)
                     </div>
                     <div
                       onDragEnter={e => { e.preventDefault(); setIsLogoDragging(true); }}
@@ -1510,7 +1562,7 @@ export function SubmitSection() {
                 onMouseEnter={e => { if (!submitting) e.target.style.opacity = "0.85"; }}
                 onMouseLeave={e => e.target.style.opacity = "1"}
               >
-                {submitting ? "Sending…" : "Submit Business"}
+                {submitting ? (form.tier === 'Free' ? "Sending…" : "Redirecting to secure checkout…") : (form.tier === 'Free' ? "Submit Free Listing" : "Continue to Secure Checkout →")}
               </button>
 
               {/* Honeypot - hidden from humans, bots fill it automatically */}

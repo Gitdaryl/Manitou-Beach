@@ -1,6 +1,6 @@
 ---
 name: pricing-guard
-description: Enforce Manitou Beach pricing rules and warn against underpricing. Use whenever the user touches pricing copy, tier names, price amounts, the FeaturedPage, PricingSection, PAID_TIERS, SubmitSection tier selector, or any text mentioning "$", "per month", "free", "enhanced", "featured", or "premium". Also use when the user says "lower the price", "make it cheaper", "simplify pricing", or anything that sounds like reducing what they charge.
+description: Enforce Manitou Beach pricing rules and warn against underpricing. Use whenever the user touches pricing copy, tier names, price amounts, the FeaturedPage, PricingSection, PAID_TIERS, SubmitSection tier selector, or any text mentioning "$", "per month", "free", "showcased", "highlighted", or "front and center". Also use when the user says "lower the price", "make it cheaper", "simplify pricing", or anything that sounds like reducing what they charge.
 ---
 
 # pricing-guard
@@ -9,11 +9,18 @@ Protect the Manitou Beach pricing model from instinct-driven underpricing.
 
 ## The model (do not change without Daryl explicitly confirming)
 
-**Tier names** (locked - never revert to old names):
-- Enhanced - $9/mo base
-- Featured - $23/mo base
-- Premium - $43/mo base
+**Tier display names** (what the user sees - locked):
+- Showcased - $9/mo
+- Highlighted - $25/mo
+- Front and Center - $49/mo
 - Free - $0 forever
+
+**Tier IDs** (backend values - do NOT rename without a data migration):
+- `enhanced` = Showcased ($9)
+- `featured` = Highlighted ($25)
+- `premium` = Front and Center ($49)
+
+The IDs are preserved for backward compatibility with Notion's "Requested Tier" select, Stripe checkout, and the "Listed Enhanced/Featured/Premium" Status values. Only the display labels have migrated.
 
 **Penny-per-subscriber formula:**
 ```
@@ -36,14 +43,11 @@ displayed price = base + max(0, subscriberCount - 100) * 0.01
 
 ## Tier names that are WRONG (never use these)
 
-| Wrong | Correct |
+| Wrong | Correct display name |
 |---|---|
-| Starter | Enhanced |
-| Basic | Enhanced |
-| Silver | Featured |
-| Season Pass | Featured |
-| Gold | Premium |
-| Spotlight | Premium |
+| Starter / Basic / Enhanced | Showcased |
+| Silver / Season Pass / Featured | Highlighted |
+| Gold / Spotlight / Premium | Front and Center |
 
 ## The warning to keep in mind
 
