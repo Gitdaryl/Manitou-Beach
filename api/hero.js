@@ -1,4 +1,4 @@
-const DAYS_AHEAD = 30; // 30-day window for hero feature events
+const DAYS_AHEAD = 50; // 50-day window for hero feature events
 
 export default async function handler(req, res) {
   // Cache for 10 minutes
