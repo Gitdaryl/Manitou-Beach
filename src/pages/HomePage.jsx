@@ -516,7 +516,7 @@ function HappeningSection() {
 
         {/* Timeline preview - 3 events */}
         <div style={{ position: "relative", marginBottom: 52 }}>
-          <div style={{
+          <div className="home-timeline-line" style={{
             position: "absolute", left: 200, top: 0, bottom: 0,
             width: 1, background: "rgba(255,255,255,0.08)",
           }} />
@@ -533,6 +533,7 @@ function HappeningSection() {
             return (
               <FadeIn key={event.id} delay={i * 70}>
                 <div
+                  className="home-event-row"
                   onClick={() => setLightboxEvent(event)}
                   style={{
                     display: "grid",
@@ -542,7 +543,7 @@ function HappeningSection() {
                     gap: 0,
                     cursor: "pointer",
                   }}>
-                  <div style={{ paddingRight: 24, paddingTop: 4, textAlign: "right" }}>
+                  <div className="home-event-date-col" style={{ paddingRight: 24, paddingTop: 4, textAlign: "right" }}>
                     <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color, lineHeight: 1.2 }}>
                       {dateLabel}
                     </div>
@@ -552,10 +553,10 @@ function HappeningSection() {
                       </div>
                     )}
                   </div>
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", paddingTop: 8 }}>
+                  <div className="home-event-dot-col" style={{ display: "flex", flexDirection: "column", alignItems: "center", paddingTop: 8 }}>
                     <div style={{ width: 11, height: 11, borderRadius: "50%", background: color, flexShrink: 0, boxShadow: `0 0 0 3px ${color}22` }} />
                   </div>
-                  <div style={{ paddingLeft: 20 }}>
+                  <div className="home-event-content-col" style={{ paddingLeft: 20 }}>
                     <div style={{ marginBottom: 8 }}><CategoryPill>{event.category}</CategoryPill></div>
                     <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(18px, 2.5vw, 24px)", fontWeight: 400, color: C.cream, margin: "0 0 10px 0", lineHeight: 1.2 }}>
                       {event.name}

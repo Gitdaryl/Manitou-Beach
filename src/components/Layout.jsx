@@ -346,6 +346,29 @@ export function GlobalStyles() {
         .submit-hero-row { flex-direction: column-reverse !important; text-align: center !important; }
         .submit-hero-row img { width: clamp(120px, 30vw, 160px) !important; }
         .event-lightbox-panel { padding: 20px !important; border-radius: 12px !important; }
+        /* Home page timeline - overlay date on top of content */
+        .home-timeline-line { display: none !important; }
+        .home-event-row {
+          display: block !important;
+          position: relative !important;
+          padding-top: 26px !important;
+        }
+        .home-event-date-col {
+          position: absolute !important;
+          top: 0 !important;
+          left: 0 !important;
+          padding: 0 !important;
+          text-align: left !important;
+        }
+        .home-event-dot-col { display: none !important; }
+        .home-event-content-col { padding-left: 0 !important; }
+        /* HappeningPage - date as inline label, not full-width row */
+        .calendar-event-row { gap: 2px 0 !important; }
+        .calendar-event-row > div:first-child {
+          font-size: 13px !important;
+          color: inherit !important;
+          margin-bottom: 4px !important;
+        }
       }
       @keyframes bar-breathe {
         0%, 100% { opacity: 1; }
