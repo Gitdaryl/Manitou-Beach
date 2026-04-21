@@ -543,10 +543,10 @@ const DEFAULT_PLATINUM = [
   { name: "Lakeside Construction",    logo: "/images/ladies-club/sponsors/lakeside-logo.jpg",     url: null },
   { name: "Land To Lakes",            logo: "/images/ladies-club/sponsors/landtolakes-logo.jpg",  url: "https://landtolakes.com" },
   { name: "Manitou Beach Marina",     logo: "/images/ladies-club/sponsors/marina_logo.png",       url: "https://manitoubeachmarina.com/" },
-  { name: "Devils Lake Yacht Club",   logo: "/images/ladies-club/sponsors/yacht_club_logo.png",   url: "https://www.devilslakeyachtclub.com/" },
   { name: "Devils Lake Water Sports", logo: "/images/ladies-club/sponsors/dl_watersports_logo.png", url: "https://dlwatersports.com/" },
 ];
 const DEFAULT_GOLD = [
+  { name: "Devils Lake Yacht Club",   logo: "/images/ladies-club/sponsors/yacht_club_logo.png",   url: "https://www.devilslakeyachtclub.com/" },
   { name: "Edison Builders",         logo: "/images/ladies-club/sponsors/edison-logo.jpg" },
   { name: "Henson Family",           logo: null },
   { name: "Kerentoff Family",        logo: null },
@@ -694,7 +694,7 @@ function LadiesClubSponsorsSection() {
         {/* Gold - smaller, clear step down */}
         <FadeIn>
           <TierHeader label="Gold Sponsors" color="#c9a227" />
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: 12 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(130px, 1fr))", gap: 12 }}>
             {GOLD.map(s => <LogoTile key={s.name} {...s} tierColor="#c9a227" />)}
           </div>
         </FadeIn>
