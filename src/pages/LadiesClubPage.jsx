@@ -157,6 +157,107 @@ function LadiesClubMissionSection() {
   );
 }
 
+function SpringFlingSection() {
+  const businesses = ["Trends", "Ang & Co", "Lake Roots Salon", "Faust House", "Two Lakes", "Devils Lake View Living", "Blackbird Cafe", "Paula's Poop Deck"];
+
+  return (
+    <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 960, margin: "0 auto" }}>
+        <FadeIn>
+          <div style={{ textAlign: "center", marginBottom: 56 }}>
+            <SectionLabel>Upcoming Event</SectionLabel>
+            <SectionTitle center>Spring Fling in the Village</SectionTitle>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${C.sunset}18`, border: `1px solid ${C.sunset}40`, borderRadius: 6, padding: "6px 16px", marginBottom: 20, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunset }}>
+              May 9th, 2026 · Begins at 10:00 AM
+            </div>
+            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 620, margin: "0 auto" }}>
+              We're excited to be part of the Spring Fling in the Village! Stop by and see us on the deck at Devils Lake View Living, where we'll be featuring a fabulous $100 giveaway you won't want to miss.
+            </p>
+          </div>
+        </FadeIn>
+
+        {/* Two-column layout */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32, marginBottom: 48 }} className="mobile-col-1">
+
+          {/* Basket photo */}
+          <FadeIn delay={60}>
+            <div style={{ borderRadius: 16, overflow: "hidden", boxShadow: "0 8px 32px rgba(0,0,0,0.12)" }}>
+              <img
+                src="/images/ladies-club/spring-fling/basket.jpg"
+                alt="Spring Fling $100 Giveaway Basket"
+                style={{ width: "100%", height: 420, objectFit: "cover", display: "block" }}
+              />
+            </div>
+          </FadeIn>
+
+          {/* How to enter */}
+          <FadeIn delay={100}>
+            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", gap: 24 }}>
+              <div>
+                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 24, color: C.sunset, marginBottom: 8 }}>
+                  $100 Giveaway - Here's How to Enter
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                  {[
+                    { num: "1", text: "Pick up your Spring Fling Flower Card at our table on the deck." },
+                    { num: "2", text: "Visit 4 participating businesses around the Village and collect initials on your flower petals." },
+                    { num: "3", text: "Return your completed card with your name and phone number to enter the drawing." },
+                    { num: "4", text: "No need to be present to win - enjoy the day at your own pace!" },
+                  ].map(step => (
+                    <div key={step.num} style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
+                      <div style={{ width: 32, height: 32, borderRadius: "50%", background: C.sunset, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Libre Baskerville', serif", fontSize: 15, flexShrink: 0, marginTop: 2 }}>
+                        {step.num}
+                      </div>
+                      <p style={{ fontSize: 14, color: C.text, lineHeight: 1.65, margin: 0 }}>{step.text}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ background: C.cream, borderRadius: 12, padding: "16px 20px", border: `1px solid ${C.sand}` }}>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sage, marginBottom: 8 }}>We'll Be on the Deck</div>
+                <div style={{ fontSize: 14, color: C.text, fontWeight: 600 }}>10:00 AM - 2:00 PM</div>
+                <div style={{ fontSize: 13, color: C.textLight, marginTop: 4 }}>Devils Lake View Living</div>
+                <div style={{ fontSize: 13, color: C.textMuted, marginTop: 6, lineHeight: 1.6 }}>Shops, businesses, and restaurants will be open all day - keep the fun going!</div>
+              </div>
+            </div>
+          </FadeIn>
+        </div>
+
+        {/* Flower card photo + participating businesses */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32 }} className="mobile-col-1">
+          <FadeIn delay={140}>
+            <div style={{ borderRadius: 16, overflow: "hidden", boxShadow: "0 8px 32px rgba(0,0,0,0.10)" }}>
+              <img
+                src="/images/ladies-club/spring-fling/flower-card.jpg"
+                alt="Spring Fling Flower Card"
+                style={{ width: "100%", height: 340, objectFit: "cover", display: "block" }}
+              />
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={180}>
+            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2.5, textTransform: "uppercase", color: C.sage, marginBottom: 16 }}>
+                Participating Businesses
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 24 }}>
+                {businesses.map(b => (
+                  <span key={b} style={{ background: C.cream, border: `1px solid ${C.sand}`, borderRadius: 20, padding: "5px 14px", fontSize: 13, color: C.text, fontFamily: "'Libre Franklin', sans-serif" }}>{b}</span>
+                ))}
+              </div>
+              <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.75, margin: 0 }}>
+                Stroll, shop, and celebrate spring with us. Let your day bloom with fun, and you just might leave with something extra bright!
+              </p>
+            </div>
+          </FadeIn>
+        </div>
+
+      </div>
+    </section>
+  );
+}
+
 function LadiesClubEventsSection() {
   const features = [
     { label: "Live Music", desc: "Continuous entertainment throughout the day with seating provided for relaxation" },
@@ -978,6 +1079,7 @@ export default function LadiesClubPage() {
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
       <LadiesClubHero />
       <LadiesClubMissionSection />
+      <SpringFlingSection />
       <LadiesClubSponsorsSection />
       <LadiesClubEventsSection />
       <LadiesClubGallerySection />
