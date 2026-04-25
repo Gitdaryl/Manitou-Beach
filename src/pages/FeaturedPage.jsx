@@ -382,6 +382,11 @@ export default function FeaturedPage() {
                   <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.55)", margin: 0, lineHeight: 1.65, textAlign: "center" }}>
                     Not sure which one fits? Start with Showcased at $9/mo. You can upgrade whenever you're ready, and your page stays yours either way.
                   </p>
+                  <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, margin: "12px 0 0", textAlign: "center" }}>
+                    <a href="/listing-finder" style={{ color: "rgba(255,255,255,0.45)", textDecoration: "underline", textUnderlineOffset: 3 }}>
+                      Answer 4 quick questions and we'll point you to the right one →
+                    </a>
+                  </p>
                 </div>
               </div>
             </FadeIn>

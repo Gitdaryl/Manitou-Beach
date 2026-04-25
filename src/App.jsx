@@ -54,6 +54,7 @@ const VendorPortalPage = lazy(() => import('./pages/VendorPortalPage'));
 const NightlifePage = lazy(() => import('./pages/NightlifePage'));
 const OrganizerDashboardPage = lazy(() => import('./pages/OrganizerDashboardPage'));
 const GBPSetupPage = lazy(() => import('./pages/GBPSetupPage'));
+const ListingFinderPage = lazy(() => import('./pages/ListingFinderPage'));
 const LaunchPage = lazy(() => import('./pages/LaunchPage'));
 const BetaBusinessPage = lazy(() => import('./pages/BetaBusinessPage'));
 const ActivateBusinessPage = lazy(() => import('./pages/ActivateBusinessPage'));
@@ -233,6 +234,7 @@ export default function App() {
           <Route path="/sms" element={<SMSOptInPage />} />
           <Route path="/beta-business" element={<BetaBusinessPage />} />
           <Route path="/activate" element={<ActivateBusinessPage />} />
+          <Route path="/listing-finder" element={<ListingFinderPage />} />
           <Route path="/activate-winery" element={<ActivateWineryPage />} />
           <Route path="/quick-events" element={<QuickEventsPage />} />
           <Route path="/create-offer" element={<CreateOfferPage />} />
