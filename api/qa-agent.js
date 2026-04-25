@@ -212,7 +212,7 @@ async function updateTruckStatus(pageId, decision, reason) {
 // ─── TWILIO: text vendor their check-in link on approval ──────────────────
 
 function buildCheckinUrl(truck) {
-  return `https://manitou-beach.vercel.app/food-trucks?truck=${encodeURIComponent(truck.slug)}&token=${encodeURIComponent(truck.token)}`;
+  return `${process.env.SITE_URL || 'https://manitoubeachmichigan.com'}/food-trucks?truck=${encodeURIComponent(truck.slug)}&token=${encodeURIComponent(truck.token)}`;
 }
 
 async function sendCheckinLink(truck) {

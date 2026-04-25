@@ -1391,7 +1391,7 @@ export default function YetiAdminPage() {
               </p>
               <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
                 <button
-                  onClick={() => { navigator.clipboard.writeText('https://manitou-beach.vercel.app/fireworks?preview=true'); }}
+                  onClick={() => { navigator.clipboard.writeText(`${import.meta.env.VITE_SITE_URL || 'https://manitoubeachmichigan.com'}/fireworks?preview=true`); }}
                   style={{ background: C.dusk, color: '#fff', border: 'none', borderRadius: 8, padding: '8px 16px', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}
                 >
                   📋 Copy Preview URL
@@ -1666,7 +1666,7 @@ export default function YetiAdminPage() {
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                 {promos.map(promo => {
-                  const claimUrl = promo.claimSlug ? `https://manitou-beach.vercel.app/claim/${promo.claimSlug}` : null;
+                  const claimUrl = promo.claimSlug ? `${import.meta.env.VITE_SITE_URL || 'https://manitoubeachmichigan.com'}/claim/${promo.claimSlug}` : null;
                   const expiryStr = promo.expiry ? new Date(promo.expiry + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : null;
 
                   // Newsletter block text - copy-paste ready for beehiiv

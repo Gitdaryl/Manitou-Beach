@@ -325,7 +325,7 @@ export default function FoodTrucksPage() {
   const shareTruck = (truck) => {
     const loc = truck.locationNote ? ` - ${truck.locationNote}` : '';
     const text = `${truck.name} is here today${loc}. Meet you there! 🚚`;
-    const url = 'https://manitou-beach.vercel.app/food-trucks';
+    const url = `${import.meta.env.VITE_SITE_URL || 'https://manitoubeachmichigan.com'}/food-trucks`;
     if (navigator.share) {
       navigator.share({ title: truck.name, text, url }).catch(() => {});
     } else {
@@ -801,7 +801,7 @@ export default function FoodTrucksPage() {
 
     const handleVendorShare = () => {
       const text = `🚚 ${truckName} is open at Manitou Beach! See all the food trucks out today →`;
-      const url = 'https://manitou-beach.vercel.app/food-trucks';
+      const url = `${import.meta.env.VITE_SITE_URL || 'https://manitoubeachmichigan.com'}/food-trucks`;
       if (navigator.share) {
         navigator.share({ title: truckName, text, url }).catch(() => {});
       } else {
@@ -814,7 +814,7 @@ export default function FoodTrucksPage() {
     const handleCopyLink = () => {
       const loc = checkinNote ? ` at ${checkinNote}` : '';
       const special = checkinSpecial ? ` Today's special: ${checkinSpecial}.` : '';
-      const text = `🚚 ${truckName} is serving${loc}!${special} Find us → https://manitou-beach.vercel.app/food-trucks`;
+      const text = `🚚 ${truckName} is serving${loc}!${special} Find us → ${import.meta.env.VITE_SITE_URL || 'https://manitoubeachmichigan.com'}/food-trucks`;
       navigator.clipboard.writeText(text).catch(() => {});
       setShareCopied(true);
       setTimeout(() => setShareCopied(false), 2200);
