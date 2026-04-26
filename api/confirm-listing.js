@@ -18,33 +18,41 @@ export default async function handler(req, res) {
     return res.status(400).send('Invalid or expired confirmation link.');
   }
 
-  // PATCH Notion page to Listed Free
-  const notionRes = await fetch(`https://api.notion.com/v1/pages/${pageId}`, {
-    method: 'PATCH',
-    headers: {
-      'Authorization': `Bearer ${process.env.NOTION_TOKEN_BUSINESS}`,
-      'Content-Type': 'application/json',
-      'Notion-Version': '2022-06-28',
-    },
-    body: JSON.stringify({ properties: { 'Status': { status: { name: 'Listed Free' } } } }),
-  });
+  const PAID_STATUSES = new Set(['Listed Enhanced', 'Listed Featured', 'Listed Premium']);
 
-  if (!notionRes.ok) {
-    console.error('confirm-listing Notion PATCH failed:', await notionRes.text());
+  // Fetch page first to check current status and get name/email
+  const siteUrl = process.env.SITE_URL || `https://${req.headers.host}`;
+  const notionHeaders = {
+    'Authorization': `Bearer ${process.env.NOTION_TOKEN_BUSINESS}`,
+    'Content-Type': 'application/json',
+    'Notion-Version': '2022-06-28',
+  };
+
+  const pageRes = await fetch(`https://api.notion.com/v1/pages/${pageId}`, {
+    headers: notionHeaders,
+  });
+  if (!pageRes.ok) {
+    console.error('confirm-listing Notion GET failed:', await pageRes.text());
     return res.status(500).send('Something went wrong confirming your listing. Please reply to your welcome email and we\'ll sort it out.');
   }
+  const page = await pageRes.json();
+  const currentStatus = page.properties?.['Status']?.status?.name || '';
 
-  // Fetch page to get name + email for the confirmation email
-  const siteUrl = process.env.SITE_URL || `https://${req.headers.host}`;
-  try {
-    const pageRes = await fetch(`https://api.notion.com/v1/pages/${pageId}`, {
-      headers: {
-        'Authorization': `Bearer ${process.env.NOTION_TOKEN_BUSINESS}`,
-        'Notion-Version': '2022-06-28',
-      },
+  // Only activate to Listed Free if not already on a paid tier
+  if (!PAID_STATUSES.has(currentStatus)) {
+    const patchRes = await fetch(`https://api.notion.com/v1/pages/${pageId}`, {
+      method: 'PATCH',
+      headers: notionHeaders,
+      body: JSON.stringify({ properties: { 'Status': { status: { name: 'Listed Free' } } } }),
     });
-    if (pageRes.ok && process.env.RESEND_API_KEY) {
-      const page = await pageRes.json();
+    if (!patchRes.ok) {
+      console.error('confirm-listing Notion PATCH failed:', await patchRes.text());
+      return res.status(500).send('Something went wrong confirming your listing. Please reply to your welcome email and we\'ll sort it out.');
+    }
+  }
+
+  try {
+    if (process.env.RESEND_API_KEY) {
       const businessName = page.properties?.['Name']?.title?.[0]?.plain_text || '';
       const email = page.properties?.['Email']?.email || '';
       if (email && businessName) {
