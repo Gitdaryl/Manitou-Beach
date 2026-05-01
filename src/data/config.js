@@ -102,14 +102,7 @@ export const CAT_COLORS = {
 // Add/remove sponsors here. Rotates across cards by index.
 // logo: path in /public (e.g. '/images/blackbird-logo.png'), or null → shows 📷 placeholder
 // Set array to [] to hide all sponsor strips.
-export const DISPATCH_CARD_SPONSORS = [
-  {
-    name: 'Blackbird Cafe & Baking Co.',
-    logo: '/images/blackbird-logo.png',
-    offerText: 'Free cookie for new subscribers',
-    smallPrint: 'First 20 people only. Expires May 31.',
-  },
-];
+export const DISPATCH_CARD_SPONSORS = [];
 
 export const DISPATCH_CATEGORIES = ['Lake Life', 'Community', 'Events', 'Real Estate', 'Food & Drink', 'History', 'Recreation', 'Seasonal Tips', "Holly's Corner", 'Advertorial'];
 

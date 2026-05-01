@@ -560,37 +560,24 @@ function SubscribeModal({ alreadySubscribed, onClose }) {
           </>
         ) : (
           <>
-            <div style={{ fontSize: 48, marginBottom: 12 }}>🍪</div>
+            <div style={{ fontSize: 48, marginBottom: 12 }}>🌊</div>
             <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunset, marginBottom: 10 }}>
               Welcome to the Community
             </div>
             <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, color: C.dusk, margin: '0 0 20px' }}>
-              You're in. Here's your welcome gift.
+              You're in. Welcome to Manitou Beach.
             </h3>
 
             <div style={{
               background: `linear-gradient(135deg, ${C.sage}10 0%, ${C.lakeBlue}10 100%)`,
               border: `1px solid ${C.sage}30`, borderRadius: 12, padding: '24px 20px', marginBottom: 28,
-              position: 'relative'
             }}>
-              <p style={{ color: C.text, fontSize: 15, lineHeight: 1.6, margin: '0 0 16px', fontWeight: 600 }}>
-                Step 1: Click confirm in your email.
+              <p style={{ color: C.text, fontSize: 15, lineHeight: 1.6, margin: '0 0 8px', fontWeight: 600 }}>
+                Click confirm in your email to get started.
               </p>
-              <p style={{ color: C.textLight, fontSize: 14, lineHeight: 1.6, margin: '0 0 16px' }}>
-                Step 2: Show this secret code at <strong>Blackbird Cafe</strong> this weekend for a welcome cookie on us.
+              <p style={{ color: C.textLight, fontSize: 14, lineHeight: 1.6, margin: 0 }}>
+                You'll get the next Dispatch in your inbox and be first to hear about events, deals, and what's happening around the lake.
               </p>
-              <p style={{ color: C.textMuted, fontSize: 11, lineHeight: 1.4, margin: '0 0 16px' }}>
-                First 20 people only. Expires May 31.
-              </p>
-              <div style={{
-                fontFamily: "'Courier New', monospace", fontSize: 22, fontWeight: 700,
-                letterSpacing: 4, color: C.sunset, background: '#fff', padding: '12px 24px',
-                borderRadius: 8, display: 'inline-block', border: `1.5px dashed ${C.sunset}60`,
-                boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-                animation: 'pulse-glow 2s ease-in-out infinite',
-              }}>
-                LAKEBOUND
-              </div>
             </div>
 
             <p style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.6, marginBottom: 24 }}>
