@@ -105,7 +105,7 @@ function BetaFullMessage() {
         The yeti ate all 30 spots.
       </p>
       <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, margin: '0 0 8px 0' }}>
-        Beta access is full - every last one, gone like hot cookies at Blackbird.
+        Beta access is full - every last one, gone faster than a summer weekend.
       </p>
       <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.35)', lineHeight: 1.7, margin: '0 0 24px 0' }}>
         But the gates open to everyone on May 1 at noon.<br />
@@ -225,7 +225,7 @@ function WhatsNextTimeline({ isBusiness }) {
   const steps = [
     { dot: C.sage,      text: 'Your spot is locked in. Screenshot your code.' },
     { dot: C.lakeBlue,  text: isBusiness ? 'Check your email - activate your free listing.' : 'May 1 at noon - the gates open.' },
-    { dot: C.sunsetLight, text: isBusiness ? 'Your listing goes live to thousands of visitors.' : 'Redeem your free cookie at Blackbird Cafe.' },
+    { dot: C.sunsetLight, text: isBusiness ? 'Your listing goes live to thousands of visitors.' : 'Explore the site and find your people.' },
   ];
   return (
     <div style={{ width: '100%', maxWidth: 340 }}>
@@ -487,15 +487,12 @@ function SignupForm({ remaining, onSpotsUpdate }) {
             borderRadius: 8, padding: '14px 18px', width: '100%', textAlign: 'center',
           }}>
             <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.55)', margin: '0 0 6px', lineHeight: 1.5 }}>
-              <span style={{ fontSize: 16 }}>🎁</span>{' '}
-              <span style={{ color: C.sunsetLight, fontWeight: 700 }}>Free cookie from Blackbird Cafe</span>
-              {' '}- claim it on the site when it opens May 1.
+              <span style={{ fontSize: 16 }}>🌊</span>{' '}
+              <span style={{ color: C.sunsetLight, fontWeight: 700 }}>You're one of the first.</span>
+              {' '}Explore everything when the site opens May 1.
             </p>
-            <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: 'rgba(255,255,255,0.3)', margin: '0 0 4px' }}>
-              Your welcome gift from the Manitou Beach community.
-            </p>
-            <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, color: 'rgba(255,255,255,0.25)', margin: 0 }}>
-              First 20 people only. Expires May 31.
+            <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: 'rgba(255,255,255,0.3)', margin: 0 }}>
+              Welcome to Manitou Beach.
             </p>
           </div>
         )}
@@ -566,22 +563,6 @@ function SignupForm({ remaining, onSpotsUpdate }) {
         <input id="beta-email" type="email" autoComplete="email" placeholder="your@email.com"
           value={form.email} onChange={e => set('email', e.target.value)}
           style={inputStyle} disabled={status === 'submitting'} />
-      </div>
-
-      {/* Cookie teaser above checkbox */}
-      <div style={{
-        display: 'flex', alignItems: 'center', gap: 8,
-        background: 'rgba(122,142,114,0.1)',
-        border: '1px solid rgba(122,142,114,0.2)',
-        borderRadius: 6, padding: '8px 12px', marginBottom: 12,
-      }}>
-        <span style={{ fontSize: 16, flexShrink: 0 }}>🎁</span>
-        <span style={{
-          fontFamily: "'Libre Franklin', sans-serif",
-          fontSize: 11, color: 'rgba(255,255,255,0.5)', lineHeight: 1.4,
-        }}>
-          Every beta tester gets a <span style={{ color: C.sunsetLight, fontWeight: 700 }}>free cookie from Blackbird Cafe</span> - claim it on site. First 20 people only, expires May 31.
-        </span>
       </div>
 
       <div style={{ marginBottom: 14 }}>
