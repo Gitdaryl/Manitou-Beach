@@ -21,6 +21,8 @@ export default function YetiAdminPage() {
   const [socialStatus, setSocialStatus] = useState('idle'); // idle | posting | success | error
   const [socialResult, setSocialResult] = useState(null);
   const [socialError, setSocialError] = useState('');
+  const [weekendLoading, setWeekendLoading] = useState(false);
+  const [weekendError, setWeekendError] = useState('');
 
   // ── Write tab ─────────────────────────────────────────────────
   const [topic, setTopic] = useState('');
@@ -3249,9 +3251,45 @@ export default function YetiAdminPage() {
         {activeTab === 'social' && (
           <div style={{ maxWidth: 560 }}>
             <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: C.textMuted, marginBottom: 8 }}>Post to Social Media</div>
-            <p style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: '0 0 28px' }}>
+            <p style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: '0 0 24px' }}>
               Post directly to the Manitou Beach Michigan Facebook Page and Instagram. Image URL required for Instagram.
             </p>
+
+            {/* Weekend auto-post loader */}
+            <div style={{ marginBottom: 32, padding: 20, background: C.warmWhite, borderRadius: 12, border: `1px solid ${C.sand}` }}>
+              <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>This Weekend Auto-Post</div>
+              <p style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: '0 0 14px' }}>
+                Pulls this weekend's events from Notion and loads them into the form below. Runs automatically every Thursday at 9am.
+              </p>
+              <button
+                disabled={weekendLoading}
+                onClick={async () => {
+                  setWeekendLoading(true);
+                  setWeekendError('');
+                  setSocialResult(null);
+                  setSocialStatus('idle');
+                  try {
+                    const res = await fetch('/api/cron-social-post?preview=1');
+                    const data = await res.json();
+                    if (data.skipped) {
+                      setWeekendError(data.reason || 'No events this weekend');
+                    } else {
+                      setSocialMessage(data.message || '');
+                      setSocialImageUrl(data.imageUrl || '');
+                      setSocialPlatforms(['facebook', 'instagram']);
+                    }
+                  } catch (err) {
+                    setWeekendError(err.message);
+                  } finally {
+                    setWeekendLoading(false);
+                  }
+                }}
+                style={{ padding: '10px 20px', borderRadius: 8, border: `1px solid ${C.lakeBlue}`, cursor: weekendLoading ? 'wait' : 'pointer', background: '#fff', color: C.lakeBlue, fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, fontWeight: 700 }}
+              >
+                {weekendLoading ? 'Loading...' : '📅 Load This Weekend\'s Post'}
+              </button>
+              {weekendError && <div style={{ marginTop: 10, fontSize: 13, color: '#dc2626', fontFamily: 'Libre Franklin, sans-serif' }}>{weekendError}</div>}
+            </div>
 
             {/* Platforms */}
             <div style={{ marginBottom: 20 }}>

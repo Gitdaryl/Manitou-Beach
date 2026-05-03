@@ -1,6 +1,6 @@
 // GET /api/cron-social-post
-// Runs every Thursday 9am ET — posts "This Weekend" event roundup to Facebook Page.
-// Instagram feed posts require an image; Phase 2 will add AI-generated images for IG.
+// Runs every Thursday 9am ET — posts "This Weekend" event roundup to FB + IG.
+// Supports ?preview=1 to return message + imageUrl without posting.
 
 const FB_API = 'https://graph.facebook.com/v25.0';
 
@@ -9,6 +9,23 @@ const NOTION_HEADERS = {
   'Content-Type': 'application/json',
   'Notion-Version': '2022-06-28',
 };
+
+// Rotates weekly — each Thursday gets a different branded image for Instagram
+const BRANDED_IMAGES = [
+  'happening-hero.jpg',
+  'explore-Irish-hills.jpg',
+  'community-bg.jpg',
+  'dispatch-header-web.jpg',
+  'landlakes-hero.jpg',
+  'foodtruck_hero.jpg',
+  'corks-kegs-hero.jpg',
+  'holly-yeti-bg.jpg',
+];
+
+function getWeeklyImageUrl(siteUrl) {
+  const weekNum = Math.floor(Date.now() / (7 * 24 * 60 * 60 * 1000));
+  return `${siteUrl}/images/${BRANDED_IMAGES[weekNum % BRANDED_IMAGES.length]}`;
+}
 
 function getWeekendDates() {
   const now = new Date();
@@ -67,11 +84,13 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  const preview = req.query?.preview === '1' || req.query?.preview === 'true';
   const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
   const pageId = process.env.META_PAGE_ID || process.env.FB_PAGE_ID;
   const pageToken = process.env.META_PAGE_ACCESS_TOKEN || process.env.FB_PAGE_ACCESS_TOKEN;
+  const igAccountId = process.env.META_IG_ACCOUNT_ID || process.env.IG_BUSINESS_ACCOUNT_ID;
 
-  if (!pageId || !pageToken) {
+  if (!preview && (!pageId || !pageToken)) {
     console.error('cron-social-post: META credentials not configured');
     return res.status(500).json({ error: 'META credentials not configured' });
   }
@@ -134,22 +153,59 @@ export default async function handler(req, res) {
   }
 
   const message = buildPost(events, siteUrl);
+  const imageUrl = getWeeklyImageUrl(siteUrl);
 
-  // Post to Facebook Page
+  // Preview mode — return without posting
+  if (preview) {
+    return res.status(200).json({ message, imageUrl, events: events.length, saturday, sunday });
+  }
+
+  const results = {};
+  const errors = {};
+
+  // Post to Facebook Page (text only, no image needed)
   try {
     const fbRes = await fetch(`${FB_API}/${pageId}/feed`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message, access_token: pageToken }),
     });
-
     const fbData = await fbRes.json();
     if (fbData.error) throw new Error(fbData.error.message);
-
-    console.log(`cron-social-post: posted to Facebook (${fbData.id}), ${events.length} events`);
-    return res.status(200).json({ success: true, facebookId: fbData.id, events: events.length });
+    results.facebook = fbData.id;
   } catch (err) {
-    console.error('cron-social-post: Facebook post error:', err.message);
-    return res.status(200).json({ success: false, error: err.message });
+    console.error('cron-social-post: Facebook error:', err.message);
+    errors.facebook = err.message;
   }
+
+  // Post to Instagram (requires image — use rotating branded image)
+  if (igAccountId) {
+    try {
+      // Step 1: Create media container
+      const containerRes = await fetch(`${FB_API}/${igAccountId}/media`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image_url: imageUrl, caption: message, access_token: pageToken }),
+      });
+      const containerData = await containerRes.json();
+      if (containerData.error) throw new Error(containerData.error.message);
+
+      // Step 2: Publish
+      const publishRes = await fetch(`${FB_API}/${igAccountId}/media_publish`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ creation_id: containerData.id, access_token: pageToken }),
+      });
+      const publishData = await publishRes.json();
+      if (publishData.error) throw new Error(publishData.error.message);
+      results.instagram = publishData.id;
+    } catch (err) {
+      console.error('cron-social-post: Instagram error:', err.message);
+      errors.instagram = err.message;
+    }
+  }
+
+  const hasSuccess = Object.keys(results).length > 0;
+  console.log(`cron-social-post: done — FB:${results.facebook || 'err'} IG:${results.instagram || errors.instagram || 'skipped'} events:${events.length}`);
+  return res.status(200).json({ success: hasSuccess, results, ...(Object.keys(errors).length && { errors }), events: events.length });
 }
