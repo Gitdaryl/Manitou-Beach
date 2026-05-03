@@ -24,6 +24,15 @@ export default function YetiAdminPage() {
   const [weekendLoading, setWeekendLoading] = useState(false);
   const [weekendError, setWeekendError] = useState('');
 
+  // ── Image Composer ────────────────────────────────────────────
+  const [composeBg, setComposeBg] = useState('happening-hero.jpg');
+  const [composeYeti, setComposeYeti] = useState('yeti/yeti-celebrates.png');
+  const [composeSize, setComposeSize] = useState(55);
+  const [composePos, setComposePos] = useState('bottom-right');
+  const [composeLoading, setComposeLoading] = useState(false);
+  const [composeError, setComposeError] = useState('');
+  const [composePreviewUrl, setComposePreviewUrl] = useState(null);
+
   // ── Write tab ─────────────────────────────────────────────────
   const [topic, setTopic] = useState('');
   const [category, setCategory] = useState('Lake Life');
@@ -509,6 +518,103 @@ export default function YetiAdminPage() {
   // ── Publish abort timer (Gmail undo-send) ──────────────────────
   const [pendingPublish, setPendingPublish] = useState(null); // { id, countdown, source }
   const publishIntervalRef = useRef(null);
+  const composeCanvasRef = useRef(null);
+
+  const COMPOSE_BGS = [
+    { file: 'happening-hero.jpg', label: 'Events Hero' },
+    { file: 'explore-Irish-hills.jpg', label: 'Irish Hills' },
+    { file: 'community-bg.jpg', label: 'Community' },
+    { file: 'dispatch-header-web.jpg', label: 'Lake Header' },
+    { file: 'landlakes-hero.jpg', label: 'Land & Lakes' },
+    { file: 'foodtruck_hero.jpg', label: 'Food Truck' },
+    { file: 'corks-kegs-hero.jpg', label: 'Wine & Beer' },
+    { file: 'holly-yeti-bg.jpg', label: 'Holly & Yeti BG' },
+    { file: 'explore-devils-lake.jpg', label: "Devil's Lake" },
+    { file: 'explore-lighthouse.jpg', label: 'Lighthouse' },
+    { file: 'explore-nightlife.jpg', label: 'Nightlife' },
+    { file: 'irish-hills-hero.jpg', label: 'Irish Hills Hero' },
+    { file: 'yeti/yeti-jetski-realism.png', label: 'Yeti Jetski' },
+    { file: 'yeti/yeti-deck-sunset-realism.png', label: 'Yeti Deck Sunset' },
+    { file: 'yeti/yeti-lighthouse-realism.png', label: 'Yeti Lighthouse' },
+    { file: 'yeti/yeti-cabin-2.jpg', label: 'Yeti Cabin' },
+  ];
+
+  const COMPOSE_YETIS = [
+    { file: 'none', label: 'No overlay' },
+    { file: 'yeti/yeti-celebrates.png', label: 'Celebrates' },
+    { file: 'yeti/yeti-camera.png', label: 'Camera' },
+    { file: 'yeti/yeti-selfie.png', label: 'Selfie' },
+    { file: 'yeti/yeti-front-profile.png', label: 'Profile' },
+    { file: 'yeti/yeti-influencer.png', label: 'Influencer' },
+    { file: 'yeti/yeti-drone.png', label: 'Drone' },
+    { file: 'yeti/yeti-painting.png', label: 'Painting' },
+    { file: 'yeti/yeti-aviator.png', label: 'Aviator' },
+    { file: 'yeti/yeti-futurist.png', label: 'Futurist' },
+    { file: 'yeti/yeti-director.png', label: 'Director' },
+    { file: 'yeti/yeti-camera-reverse.png', label: 'Camera Reverse' },
+  ];
+
+  const handleCompose = async () => {
+    setComposeLoading(true);
+    setComposeError('');
+    setComposePreviewUrl(null);
+    try {
+      const canvas = composeCanvasRef.current;
+      const ctx = canvas.getContext('2d');
+      const SIZE = 1080;
+      canvas.width = SIZE;
+      canvas.height = SIZE;
+
+      const loadImg = src => new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = () => reject(new Error(`Failed to load ${src}`));
+        img.src = src;
+      });
+
+      // Draw background (cover-fit)
+      const bg = await loadImg(`/images/${composeBg}`);
+      const scale = Math.max(SIZE / bg.width, SIZE / bg.height);
+      const bw = bg.width * scale;
+      const bh = bg.height * scale;
+      ctx.drawImage(bg, (SIZE - bw) / 2, (SIZE - bh) / 2, bw, bh);
+
+      // Draw Yeti overlay
+      if (composeYeti !== 'none') {
+        const yeti = await loadImg(`/images/${composeYeti}`);
+        const yw = SIZE * (composeSize / 100);
+        const yh = (yeti.height / yeti.width) * yw;
+        const pad = 32;
+        const positions = {
+          'bottom-right':  { x: SIZE - yw - pad, y: SIZE - yh - pad },
+          'bottom-left':   { x: pad, y: SIZE - yh - pad },
+          'bottom-center': { x: (SIZE - yw) / 2, y: SIZE - yh - pad },
+          'center':        { x: (SIZE - yw) / 2, y: (SIZE - yh) / 2 },
+        };
+        const { x, y } = positions[composePos] || positions['bottom-right'];
+        ctx.drawImage(yeti, x, y, yw, yh);
+      }
+
+      // Show preview
+      const previewUrl = canvas.toDataURL('image/jpeg', 0.85);
+      setComposePreviewUrl(previewUrl);
+
+      // Upload to Vercel Blob
+      const base64 = previewUrl.split(',')[1];
+      const uploadRes = await fetch('/api/upload-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename: `social-${Date.now()}.jpg`, contentType: 'image/jpeg', data: base64, folder: 'social' }),
+      });
+      const uploadData = await uploadRes.json();
+      if (!uploadData.url) throw new Error(uploadData.error || 'Upload failed');
+      setSocialImageUrl(uploadData.url);
+    } catch (err) {
+      setComposeError(err.message);
+    } finally {
+      setComposeLoading(false);
+    }
+  };
 
   // Helper: fetch with auth token
   const adminFetch = (url, options = {}) => fetch(url, {
@@ -3289,6 +3395,61 @@ export default function YetiAdminPage() {
                 {weekendLoading ? 'Loading...' : '📅 Load This Weekend\'s Post'}
               </button>
               {weekendError && <div style={{ marginTop: 10, fontSize: 13, color: '#dc2626', fontFamily: 'Libre Franklin, sans-serif' }}>{weekendError}</div>}
+            </div>
+
+            {/* Image Composer */}
+            <div style={{ marginBottom: 32, padding: 20, background: C.warmWhite, borderRadius: 12, border: `1px solid ${C.sand}` }}>
+              <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>Image Composer</div>
+              <p style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: '0 0 16px' }}>
+                Build a branded Instagram image by layering a Yeti over any background. Auto-uploads to Blob and fills the image field.
+              </p>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6, fontFamily: 'Libre Franklin, sans-serif' }}>Background</label>
+                  <select value={composeBg} onChange={e => setComposeBg(e.target.value)} style={{ width: '100%', padding: '9px 10px', border: `1px solid ${C.sand}`, borderRadius: 8, fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, background: '#fff' }}>
+                    {COMPOSE_BGS.map(b => <option key={b.file} value={b.file}>{b.label}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6, fontFamily: 'Libre Franklin, sans-serif' }}>Yeti Overlay</label>
+                  <select value={composeYeti} onChange={e => setComposeYeti(e.target.value)} style={{ width: '100%', padding: '9px 10px', border: `1px solid ${C.sand}`, borderRadius: 8, fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, background: '#fff' }}>
+                    {COMPOSE_YETIS.map(y => <option key={y.file} value={y.file}>{y.label}</option>)}
+                  </select>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: 14 }}>
+                <label style={{ display: 'block', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6, fontFamily: 'Libre Franklin, sans-serif' }}>Yeti Size: {composeSize}%</label>
+                <input type="range" min={25} max={90} value={composeSize} onChange={e => setComposeSize(Number(e.target.value))} style={{ width: '100%', accentColor: C.lakeBlue }} />
+              </div>
+
+              <div style={{ marginBottom: 16 }}>
+                <label style={{ display: 'block', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 8, fontFamily: 'Libre Franklin, sans-serif' }}>Position</label>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  {[['bottom-right', 'Bottom Right'], ['bottom-center', 'Bottom Center'], ['bottom-left', 'Bottom Left'], ['center', 'Center']].map(([val, label]) => (
+                    <button key={val} onClick={() => setComposePos(val)} style={{ padding: '7px 14px', borderRadius: 8, border: `1px solid ${composePos === val ? C.lakeBlue : C.sand}`, background: composePos === val ? C.lakeBlue : '#fff', color: composePos === val ? '#fff' : C.textLight, fontFamily: 'Libre Franklin, sans-serif', fontSize: 12, fontWeight: composePos === val ? 700 : 400, cursor: 'pointer' }}>{label}</button>
+                  ))}
+                </div>
+              </div>
+
+              {composePreviewUrl && (
+                <div style={{ marginBottom: 14 }}>
+                  <img src={composePreviewUrl} alt="Composed preview" style={{ width: '100%', maxWidth: 360, aspectRatio: '1', borderRadius: 10, display: 'block', objectFit: 'cover' }} />
+                </div>
+              )}
+
+              <canvas ref={composeCanvasRef} style={{ display: 'none' }} />
+
+              <button
+                disabled={composeLoading}
+                onClick={handleCompose}
+                style={{ padding: '10px 20px', borderRadius: 8, border: 'none', cursor: composeLoading ? 'wait' : 'pointer', background: composeLoading ? C.textMuted : C.lakeBlue, color: '#fff', fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, fontWeight: 700 }}
+              >
+                {composeLoading ? 'Composing...' : composePreviewUrl ? '🔄 Re-compose & Upload' : '🖼️ Compose & Upload'}
+              </button>
+              {composePreviewUrl && !composeLoading && <span style={{ marginLeft: 12, fontSize: 13, color: C.sage, fontFamily: 'Libre Franklin, sans-serif', fontWeight: 600 }}>Loaded into image field</span>}
+              {composeError && <div style={{ marginTop: 10, fontSize: 13, color: '#dc2626', fontFamily: 'Libre Franklin, sans-serif' }}>{composeError}</div>}
             </div>
 
             {/* Platforms */}
