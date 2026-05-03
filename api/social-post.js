@@ -23,8 +23,8 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'message is required' });
   }
 
-  const pageId = process.env.FB_PAGE_ID;
-  const pageToken = process.env.FB_PAGE_ACCESS_TOKEN;
+  const pageId = process.env.META_PAGE_ID || process.env.FB_PAGE_ID;
+  const pageToken = process.env.META_PAGE_ACCESS_TOKEN || process.env.FB_PAGE_ACCESS_TOKEN;
 
   if (!pageId || !pageToken) {
     return res.status(500).json({ error: 'Facebook credentials not configured' });
@@ -64,7 +64,7 @@ export default async function handler(req, res) {
   if (platforms.includes('instagram')) {
     try {
       // Resolve IG Business Account ID if not cached
-      let igAccountId = process.env.IG_BUSINESS_ACCOUNT_ID;
+      let igAccountId = process.env.META_IG_ACCOUNT_ID || process.env.IG_BUSINESS_ACCOUNT_ID;
 
       if (!igAccountId) {
         const igLookup = await fetch(
