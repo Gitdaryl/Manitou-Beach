@@ -33,6 +33,12 @@ export default function YetiAdminPage() {
   const [composeError, setComposeError] = useState('');
   const [composePreviewUrl, setComposePreviewUrl] = useState(null);
 
+  // ── Copy Generator ────────────────────────────────────────────
+  const [copyType, setCopyType] = useState('launch');
+  const [copyContext, setCopyContext] = useState('');
+  const [copyLoading, setCopyLoading] = useState(false);
+  const [copyError, setCopyError] = useState('');
+
   // ── Write tab ─────────────────────────────────────────────────
   const [topic, setTopic] = useState('');
   const [category, setCategory] = useState('Lake Life');
@@ -3395,6 +3401,51 @@ export default function YetiAdminPage() {
                 {weekendLoading ? 'Loading...' : '📅 Load This Weekend\'s Post'}
               </button>
               {weekendError && <div style={{ marginTop: 10, fontSize: 13, color: '#dc2626', fontFamily: 'Libre Franklin, sans-serif' }}>{weekendError}</div>}
+            </div>
+
+            {/* Copy Generator */}
+            <div style={{ marginBottom: 32, padding: 20, background: C.warmWhite, borderRadius: 12, border: `1px solid ${C.sand}` }}>
+              <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>Copy Generator</div>
+              <p style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: '0 0 14px' }}>
+                Pick a post type, add any extra context, and Haiku writes it in the Yeti voice. Edit before posting.
+              </p>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
+                {[['launch','Launch'],['events_calendar','Events Cal'],['submit_event','Submit Event'],['list_business','List Business'],['newsletter','Newsletter'],['food_truck','Food Truck'],['wine_trail','Wine Trail'],['weekend','Weekend Vibe'],['custom','Custom']].map(([val, label]) => (
+                  <button key={val} onClick={() => setCopyType(val)} style={{ padding: '6px 13px', borderRadius: 20, border: `1px solid ${copyType === val ? C.sunset : C.sand}`, background: copyType === val ? C.sunset : '#fff', color: copyType === val ? '#fff' : C.textLight, fontFamily: 'Libre Franklin, sans-serif', fontSize: 12, fontWeight: copyType === val ? 700 : 400, cursor: 'pointer' }}>{label}</button>
+                ))}
+              </div>
+              <input
+                type="text"
+                value={copyContext}
+                onChange={e => setCopyContext(e.target.value)}
+                placeholder={copyType === 'custom' ? 'Describe what the post is about...' : 'Extra context (optional)'}
+                style={{ width: '100%', boxSizing: 'border-box', padding: '9px 12px', border: `1px solid ${C.sand}`, borderRadius: 8, fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, marginBottom: 12, outline: 'none' }}
+              />
+              <button
+                disabled={copyLoading || (copyType === 'custom' && !copyContext.trim())}
+                onClick={async () => {
+                  setCopyLoading(true);
+                  setCopyError('');
+                  try {
+                    const res = await fetch('/api/generate-social-copy', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ token: authToken, postType: copyType, context: copyContext }),
+                    });
+                    const data = await res.json();
+                    if (data.copy) { setSocialMessage(data.copy); setSocialStatus('idle'); setSocialResult(null); }
+                    else setCopyError(data.error || 'Generation failed');
+                  } catch (err) {
+                    setCopyError(err.message);
+                  } finally {
+                    setCopyLoading(false);
+                  }
+                }}
+                style={{ padding: '10px 20px', borderRadius: 8, border: 'none', cursor: (copyLoading || (copyType === 'custom' && !copyContext.trim())) ? 'not-allowed' : 'pointer', background: copyLoading ? C.textMuted : C.sunset, color: '#fff', fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, fontWeight: 700 }}
+              >
+                {copyLoading ? 'Writing...' : '✍️ Generate Copy'}
+              </button>
+              {copyError && <div style={{ marginTop: 10, fontSize: 13, color: '#dc2626', fontFamily: 'Libre Franklin, sans-serif' }}>{copyError}</div>}
             </div>
 
             {/* Image Composer */}
