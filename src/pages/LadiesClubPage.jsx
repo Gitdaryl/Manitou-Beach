@@ -645,6 +645,7 @@ const DEFAULT_PLATINUM = [
   { name: "Land To Lakes",            logo: "/images/ladies-club/sponsors/landtolakes-logo.jpg",  url: "https://landtolakes.com" },
   { name: "Manitou Beach Marina",     logo: "/images/ladies-club/sponsors/marina_logo.png",       url: "https://manitoubeachmarina.com/" },
   { name: "Devils Lake Water Sports", logo: "/images/ladies-club/sponsors/dl_watersports_logo.png", url: "https://dlwatersports.com/" },
+  { name: "Kapnick Insurance",        logo: "/images/ladies-club/sponsors/kapnick-logo.jpg",        url: "https://kapnick.com/" },
 ];
 const DEFAULT_GOLD = [
   { name: "Devils Lake Yacht Club",   logo: "/images/ladies-club/sponsors/yacht_club_logo.png",   url: "https://www.devilslakeyachtclub.com/" },
