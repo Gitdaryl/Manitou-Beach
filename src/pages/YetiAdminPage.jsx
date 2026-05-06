@@ -111,6 +111,26 @@ export default function YetiAdminPage() {
     }
   };
 
+  // ── Food Truck Update Blast ────────────────────────────────────
+  const [truckBlastStatus, setTruckBlastStatus] = useState('idle'); // idle | loading | sent | error
+  const [truckBlastResult, setTruckBlastResult] = useState(null);
+
+  const handleTruckBlast = async () => {
+    if (!window.confirm('Send the update email to all Active food trucks? This cannot be undone.')) return;
+    setTruckBlastStatus('loading');
+    setTruckBlastResult(null);
+    try {
+      const res = await adminFetch('/api/send-truck-update', { method: 'POST' });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Send failed');
+      setTruckBlastResult(data);
+      setTruckBlastStatus('sent');
+    } catch (err) {
+      setTruckBlastResult({ error: err.message });
+      setTruckBlastStatus('error');
+    }
+  };
+
   // ── Org / Stripe Connect ───────────────────────────────────────
   const [orgForm, setOrgForm] = useState({ orgPageId: '', orgName: '', orgEmail: '' });
   const [orgConnectStatus, setOrgConnectStatus] = useState('idle'); // idle | loading | success | error
@@ -2527,6 +2547,77 @@ export default function YetiAdminPage() {
                 {vendorSetupResult.error}
               </div>
             )}
+
+            {/* ── Food Truck Update Blast ── */}
+            <div style={{ marginTop: 40, borderTop: `1px solid ${C.sand}`, paddingTop: 32 }}>
+              <div style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 20, color: C.text, marginBottom: 6 }}>Food Truck Update Blast</div>
+              <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: '0 0 20px' }}>
+                Sends a personalized email to every Active food truck. Tells them about their new profile page, the check-in auto-post to Facebook, how to add their Instagram handle for tagging, and how to upload food photos. One click, done.
+              </p>
+
+              {/* Email preview */}
+              <div style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 10, padding: '14px 18px', marginBottom: 20, fontSize: 13, color: C.textLight, lineHeight: 1.7 }}>
+                <div style={{ fontWeight: 700, color: C.text, marginBottom: 8 }}>What they receive:</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  {[
+                    { dot: C.sage, text: 'Your profile page is live - here\'s the link' },
+                    { dot: C.sunset, text: 'Every check-in auto-posts to our Facebook page' },
+                    { dot: C.lakeBlue, text: 'Add your Instagram handle and we\'ll tag you' },
+                    { dot: C.driftwood, text: 'Upload food photos - they rotate into our social posts' },
+                  ].map(({ dot, text }) => (
+                    <div key={text} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <div style={{ width: 8, height: 8, borderRadius: '50%', background: dot, flexShrink: 0 }} />
+                      <span>{text}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                onClick={handleTruckBlast}
+                disabled={truckBlastStatus === 'loading' || truckBlastStatus === 'sent'}
+                style={{
+                  padding: '13px 28px',
+                  background: truckBlastStatus === 'sent' ? C.sage : truckBlastStatus === 'loading' ? C.textMuted : C.sunset,
+                  color: '#fff', border: 'none', borderRadius: 8,
+                  fontSize: 14, fontWeight: 700, cursor: truckBlastStatus === 'loading' || truckBlastStatus === 'sent' ? 'not-allowed' : 'pointer',
+                  fontFamily: 'Libre Franklin, sans-serif', transition: 'background 0.2s',
+                }}
+              >
+                {truckBlastStatus === 'loading' ? 'Sending…' : truckBlastStatus === 'sent' ? '✓ Sent' : 'Send to All Active Trucks →'}
+              </button>
+
+              {truckBlastStatus === 'sent' && truckBlastResult && (
+                <div style={{ marginTop: 20, background: '#f0fff4', border: '1px solid #90d0a0', borderRadius: 12, padding: 20 }}>
+                  <div style={{ fontWeight: 700, color: '#1a5c2a', marginBottom: 12, fontSize: 14 }}>
+                    ✓ Blast complete - {truckBlastResult.sentCount} sent, {truckBlastResult.skippedCount} skipped
+                  </div>
+                  {truckBlastResult.sent?.length > 0 && (
+                    <div style={{ marginBottom: 10 }}>
+                      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: '#5c8a6a', marginBottom: 6 }}>Sent to</div>
+                      {truckBlastResult.sent.map(t => (
+                        <div key={t.email} style={{ fontSize: 13, color: '#2d5c3a', marginBottom: 2 }}>✓ {t.name} - {t.email}</div>
+                      ))}
+                    </div>
+                  )}
+                  {truckBlastResult.skipped?.length > 0 && (
+                    <div>
+                      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: '#7a5c3a', marginBottom: 6 }}>Skipped</div>
+                      {truckBlastResult.skipped.map((t, i) => (
+                        <div key={i} style={{ fontSize: 13, color: '#7a5c3a', marginBottom: 2 }}>- {t.name}: {t.reason}</div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {truckBlastStatus === 'error' && truckBlastResult?.error && (
+                <div style={{ marginTop: 16, background: '#fff0f0', border: '1px solid #f0b0b0', borderRadius: 10, padding: 16, color: '#c0392b', fontSize: 14 }}>
+                  {truckBlastResult.error}
+                </div>
+              )}
+            </div>
+
           </div>
         )}
 
