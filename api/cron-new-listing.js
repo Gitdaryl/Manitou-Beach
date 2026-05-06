@@ -261,10 +261,19 @@ export default async function handler(req, res) {
         body: JSON.stringify({
           filter: {
             and: [
-              { property: 'Status', status: { equals: 'Active' } },
+              {
+                or: [
+                  { property: 'Status', status: { equals: 'Listed Free' } },
+                  { property: 'Status', status: { equals: 'Listed Enhanced' } },
+                  { property: 'Status', status: { equals: 'Listed Premium' } },
+                  { property: 'Status', status: { equals: 'Active' } },
+                ],
+              },
               { property: 'Social Welcome Posted', checkbox: { equals: false } },
             ],
           },
+          sorts: [{ property: 'Name', direction: 'ascending' }],
+          page_size: 1,
         }),
       }
     );
@@ -304,6 +313,8 @@ export default async function handler(req, res) {
               { property: 'Social Welcome Posted', checkbox: { equals: false } },
             ],
           },
+          sorts: [{ property: 'Name', direction: 'ascending' }],
+          page_size: 1,
         }),
       }
     );
