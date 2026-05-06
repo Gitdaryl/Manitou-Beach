@@ -98,6 +98,8 @@ function buildPost(events, siteUrl, dates) {
 
   lines.push(`Full details + food truck locator: ${siteUrl}/happening`);
   lines.push('');
+  lines.push(`Your event not here? It could be - list it free: ${siteUrl}/happening`);
+  lines.push('');
   lines.push('#ManitouBeachMI #DevilsLakeMI #WeekendPlans #MichiganEvents #LakeLife #IrishHills');
 
   return lines.join('\n');
