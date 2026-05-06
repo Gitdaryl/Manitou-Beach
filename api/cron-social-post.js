@@ -30,14 +30,24 @@ function getWeeklyImageUrl(siteUrl) {
 function getWeekendDates() {
   const now = new Date();
   const day = now.getDay(); // 0=Sun ... 6=Sat
+  const fri = new Date(now);
+  fri.setDate(now.getDate() + (5 - day));
   const sat = new Date(now);
   sat.setDate(now.getDate() + (6 - day));
   const sun = new Date(now);
   sun.setDate(now.getDate() + (7 - day));
   return {
+    friday: fri.toISOString().split('T')[0],
     saturday: sat.toISOString().split('T')[0],
     sunday: sun.toISOString().split('T')[0],
   };
+}
+
+function friendlyDate(isoDate) {
+  const [, , d] = isoDate.split('-');
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const m = months[parseInt(isoDate.split('-')[1], 10) - 1];
+  return `${m} ${parseInt(d, 10)}`;
 }
 
 function fmtTime(time, timeEnd) {
@@ -45,36 +55,50 @@ function fmtTime(time, timeEnd) {
   return timeEnd ? `${time} - ${timeEnd}` : time;
 }
 
-function buildPost(events, siteUrl) {
+function buildPost(events, siteUrl, dates) {
+  const friEvents = events.filter(e => e.day === 'friday');
   const satEvents = events.filter(e => e.day === 'saturday');
   const sunEvents = events.filter(e => e.day === 'sunday');
+  const total = events.length;
 
-  const lines = ['Weekend plans? We have you covered.', ''];
+  const lines = [
+    `${total} thing${total !== 1 ? 's' : ''} happening at Manitou Beach this weekend. Pick your adventure.`,
+    '',
+  ];
+
+  if (friEvents.length) {
+    lines.push(`Friday, ${friendlyDate(dates.friday)}:`);
+    for (const e of friEvents) {
+      const time = fmtTime(e.time, e.timeEnd);
+      const loc = e.location ? ` - ${e.location}` : '';
+      lines.push(`  ${e.name}${time ? `, ${time}` : ''}${loc}`);
+    }
+    lines.push('');
+  }
 
   if (satEvents.length) {
-    lines.push('Saturday:');
+    lines.push(`Saturday, ${friendlyDate(dates.saturday)}:`);
     for (const e of satEvents) {
       const time = fmtTime(e.time, e.timeEnd);
-      const loc = e.location ? ` @ ${e.location}` : '';
-      lines.push(`  ${e.name}${time ? ` (${time})` : ''}${loc}`);
+      const loc = e.location ? ` - ${e.location}` : '';
+      lines.push(`  ${e.name}${time ? `, ${time}` : ''}${loc}`);
     }
+    lines.push('');
   }
-
-  if (satEvents.length && sunEvents.length) lines.push('');
 
   if (sunEvents.length) {
-    lines.push('Sunday:');
+    lines.push(`Sunday, ${friendlyDate(dates.sunday)}:`);
     for (const e of sunEvents) {
       const time = fmtTime(e.time, e.timeEnd);
-      const loc = e.location ? ` @ ${e.location}` : '';
-      lines.push(`  ${e.name}${time ? ` (${time})` : ''}${loc}`);
+      const loc = e.location ? ` - ${e.location}` : '';
+      lines.push(`  ${e.name}${time ? `, ${time}` : ''}${loc}`);
     }
+    lines.push('');
   }
 
+  lines.push(`Full details + food truck locator: ${siteUrl}/happening`);
   lines.push('');
-  lines.push(`Full details: ${siteUrl}/events`);
-  lines.push('');
-  lines.push('#ManitouBeach #ManitouBeachMichigan #IrishHills #Michigan #LakeLife #ThisWeekend');
+  lines.push('#ManitouBeachMI #DevilsLakeMI #WeekendPlans #MichiganEvents #LakeLife #IrishHills');
 
   return lines.join('\n');
 }
@@ -95,7 +119,8 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'META credentials not configured' });
   }
 
-  const { saturday, sunday } = getWeekendDates();
+  const dates = getWeekendDates();
+  const { friday, saturday, sunday } = dates;
 
   // Fetch weekend events from Notion
   let events = [];
@@ -116,6 +141,7 @@ export default async function handler(req, res) {
               },
               {
                 or: [
+                  { property: 'Event date', date: { equals: friday } },
                   { property: 'Event date', date: { equals: saturday } },
                   { property: 'Event date', date: { equals: sunday } },
                 ],
@@ -136,7 +162,7 @@ export default async function handler(req, res) {
       return {
         name: p['Event Name']?.title?.[0]?.text?.content || '',
         date,
-        day: date === saturday ? 'saturday' : 'sunday',
+        day: date === friday ? 'friday' : date === saturday ? 'saturday' : 'sunday',
         time: p['Time']?.rich_text?.[0]?.text?.content || '',
         timeEnd: p['Time End']?.rich_text?.[0]?.text?.content || '',
         location: p['Location']?.rich_text?.[0]?.text?.content || '',
@@ -152,7 +178,7 @@ export default async function handler(req, res) {
     return res.status(200).json({ skipped: true, reason: 'No events this weekend' });
   }
 
-  const message = buildPost(events, siteUrl);
+  const message = buildPost(events, siteUrl, dates);
   const imageUrl = getWeeklyImageUrl(siteUrl);
 
   // Preview mode — return without posting
