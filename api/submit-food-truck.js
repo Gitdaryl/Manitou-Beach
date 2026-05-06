@@ -38,7 +38,10 @@ function dedupeSlug(base, existing) {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { truckName, cuisine, email, phone, website, imageUrl, tier, skipVerification, _hp } = req.body || {};
+  const { truckName, cuisine, email, phone, website, instagram, imageUrl, tier, skipVerification, _hp } = req.body || {};
+
+  // Clean instagram handle - strip @, URL prefixes, whitespace
+  const cleanInstagram = (instagram || '').trim().replace(/^@/, '').replace(/^(?:https?:\/\/)?(?:www\.)?instagram\.com\/?/, '').replace(/\/$/, '').replace(/\s/g, '');
 
   // Honeypot - bots fill hidden fields, humans don't
   if (_hp) return res.status(200).json({ ok: true, needsVerification: true });
@@ -91,6 +94,7 @@ export default async function handler(req, res) {
       if (cleanCuisine) properties['Cuisine'] = { select: { name: cleanCuisine } };
       if (digits) properties['Phone'] = { phone_number: digits };
       if (cleanWebsite) properties['Website'] = { url: cleanWebsite };
+      if (cleanInstagram) properties['Instagram Handle'] = { rich_text: [{ text: { content: cleanInstagram } }] };
       if (imageUrl?.trim()) properties['Photo URL'] = { url: imageUrl.trim() };
 
       const notionRes = await fetch('https://api.notion.com/v1/pages', {
@@ -129,6 +133,7 @@ export default async function handler(req, res) {
     if (cleanCuisine) properties['Cuisine'] = { select: { name: cleanCuisine } };
     if (digits) properties['Phone'] = { phone_number: digits };
     if (cleanWebsite) properties['Website'] = { url: cleanWebsite };
+    if (cleanInstagram) properties['Instagram Handle'] = { rich_text: [{ text: { content: cleanInstagram } }] };
     if (imageUrl?.trim()) properties['Photo URL'] = { url: imageUrl.trim() };
 
     const notionRes = await fetch('https://api.notion.com/v1/pages', {

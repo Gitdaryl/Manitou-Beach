@@ -78,6 +78,8 @@ async function handleGet(req, res) {
           comingEventId: p['Coming Event ID']?.rich_text?.[0]?.text?.content || null,
           comingEventName: p['Coming Event Name']?.rich_text?.[0]?.text?.content || null,
           pinColor: p['Pin Color']?.rich_text?.[0]?.text?.content || '',
+          instagramHandle: p['Instagram Handle']?.rich_text?.[0]?.text?.content || '',
+          galleryPhotos: (() => { try { return JSON.parse(p['Gallery Photos']?.rich_text?.[0]?.text?.content || '[]'); } catch { return []; } })(),
         };
       })
       .filter(Boolean)
@@ -188,6 +190,30 @@ async function handlePost(req, res) {
       return res.status(200).json({ ok: true });
     }
 
+    // ── ADD GALLERY PHOTO - append a URL to the gallery array ──
+    if (action === 'add-gallery-photo') {
+      const { photoUrl: newPhotoUrl } = req.body;
+      if (!newPhotoUrl) return res.status(400).json({ error: 'photoUrl is required' });
+      const existingRaw = page.properties['Gallery Photos']?.rich_text?.[0]?.text?.content || '[]';
+      let existing = [];
+      try { existing = JSON.parse(existingRaw); } catch { existing = []; }
+      const updated = [...existing, newPhotoUrl].slice(-12); // cap at 12 photos
+      const patchRes = await fetch(`https://api.notion.com/v1/pages/${page.id}`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${process.env.NOTION_TOKEN_BUSINESS}`,
+          'Content-Type': 'application/json',
+          'Notion-Version': '2022-06-28',
+        },
+        body: JSON.stringify({ properties: { 'Gallery Photos': { rich_text: [{ type: 'text', text: { content: JSON.stringify(updated) } }] } } }),
+      });
+      if (!patchRes.ok) {
+        console.error('Gallery PATCH failed:', await patchRes.text());
+        return res.status(500).json({ error: 'Gallery update failed' });
+      }
+      return res.status(200).json({ ok: true, galleryPhotos: updated });
+    }
+
     // ── SCHEDULE ACTION - only patches Coming Date ──
     if (action === 'schedule') {
       const updateProps = {
@@ -255,6 +281,41 @@ async function handlePost(req, res) {
         if (!pcRes.ok) console.error('Pin color PATCH failed:', await pcRes.text());
       } catch (err) {
         console.error('Pin color update error:', err.message);
+      }
+    }
+
+    // Auto-post to Facebook on first check-in of the day
+    const pageToken = process.env.META_PAGE_ACCESS_TOKEN;
+    const fbPageId = process.env.META_PAGE_ID;
+    const lastCheckin = page.properties['Last Checkin']?.date?.start;
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const isFirstCheckinToday = !lastCheckin || !lastCheckin.startsWith(todayStr);
+
+    if (pageToken && fbPageId && isFirstCheckinToday) {
+      try {
+        const truckName = page.properties['Name']?.title?.[0]?.text?.content || slug;
+        const photoUrl = page.properties['Photo URL']?.url || '';
+        const igHandle = (page.properties['Instagram Handle']?.rich_text?.[0]?.text?.content || '').replace('@', '');
+        const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
+        const locText = note ? ` at ${note}` : '';
+        const igTag = igHandle ? `\n\nFollow them at @${igHandle} for schedule updates.` : '';
+        const message = `${truckName} just pulled up${locText} - they are open right now!\n\nFind them (and every truck at the lake today) at ${siteUrl}/food-trucks${igTag}\n\n#ManitoBeachMI #FoodTruck #DevilsLakeMI`;
+
+        const fbBody = { message, access_token: pageToken };
+        let fbEndpoint = `https://graph.facebook.com/v25.0/${fbPageId}/feed`;
+        if (photoUrl) {
+          fbEndpoint = `https://graph.facebook.com/v25.0/${fbPageId}/photos`;
+          fbBody.url = photoUrl;
+          fbBody.caption = message;
+          delete fbBody.message;
+        }
+        await fetch(fbEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(fbBody),
+        });
+      } catch (postErr) {
+        console.error('Check-in auto-post error:', postErr.message);
       }
     }
 

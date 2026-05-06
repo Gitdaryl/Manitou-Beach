@@ -321,6 +321,10 @@ export default function FoodTrucksPage() {
   const [sharedId, setSharedId] = useState(null);
   const [loveInput, setLoveInput] = useState({ slug: '', text: '' }); // one open at a time
 
+  // Gallery (vendor mode)
+  const [galleryPhotos, setGalleryPhotos] = useState([]);
+  const [galleryUploading, setGalleryUploading] = useState(false);
+
   // Share truck
   const shareTruck = (truck) => {
     const loc = truck.locationNote ? ` - ${truck.locationNote}` : '';
@@ -335,9 +339,54 @@ export default function FoodTrucksPage() {
     }
   };
 
+  const handleGalleryUpload = async (file) => {
+    if (!file || !file.type.startsWith('image/')) return;
+    setGalleryUploading(true);
+    try {
+      const processed = await new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const scale = Math.min(1, 1200 / img.width);
+          canvas.width = img.width * scale;
+          canvas.height = img.height * scale;
+          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+          canvas.toBlob(blob => resolve(file.size > 1.4 * 1024 * 1024 ? blob || file : file), 'image/jpeg', 0.8);
+        };
+        img.onerror = () => resolve(file);
+        img.src = URL.createObjectURL(file);
+      });
+      const base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = e => resolve(e.target.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(processed);
+      });
+      const uploadRes = await fetch('/api/upload-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename: file.name, contentType: 'image/jpeg', data: base64, folder: 'food-trucks' }),
+      });
+      const uploadData = await uploadRes.json();
+      if (uploadData.url) {
+        await fetch('/api/food-trucks', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ slug: truckSlug, token: truckToken, action: 'add-gallery-photo', photoUrl: uploadData.url }),
+        });
+        setGalleryPhotos(prev => [...prev, uploadData.url]);
+      }
+    } catch (err) {
+      console.error('Gallery upload error:', err);
+    } finally {
+      setGalleryUploading(false);
+    }
+  };
+
   // Sync comingDateLocal, pinColor, and detect "already live" on load
   useEffect(() => {
     if (!checkinTruck) return;
+    if (checkinTruck.galleryPhotos) setGalleryPhotos(checkinTruck.galleryPhotos);
     if (checkinTruck.comingDate) setComingDateLocal(checkinTruck.comingDate);
     if (checkinTruck.pinColor) {
       const pc = checkinTruck.pinColor;
@@ -1049,7 +1098,45 @@ export default function FoodTrucksPage() {
                   Pack Up &amp; Go - I'm Done for Today
                 </button>
 
-                <div style={{ display: "flex", justifyContent: "center", gap: 24, marginTop: 24 }}>
+                {/* Gallery Section */}
+              <div style={{ borderTop: `1px solid ${C.sand}`, paddingTop: 24, marginTop: 8 }}>
+                <p style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.dusk, margin: "0 0 4px", textAlign: "center" }}>
+                  Your Photos
+                </p>
+                <p style={{ fontSize: 13, color: C.textLight, textAlign: "center", margin: "0 0 16px", lineHeight: 1.5 }}>
+                  Add food photos to your profile - they rotate in auto-posts when you check in.
+                </p>
+                {galleryPhotos.length > 0 && (
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 14 }}>
+                    {galleryPhotos.map((url, i) => (
+                      <div key={i} style={{ borderRadius: 10, overflow: "hidden", border: `1px solid ${C.sand}`, aspectRatio: "1" }}>
+                        <img src={url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <label style={{ display: "block", cursor: "pointer" }}>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    onChange={e => { const f = e.target.files?.[0]; if (f) handleGalleryUpload(f); e.target.value = ''; }}
+                  />
+                  <div style={{
+                    border: `2px dashed ${C.sand}`, borderRadius: 10, padding: "16px",
+                    textAlign: "center", cursor: galleryUploading ? "default" : "pointer",
+                    background: C.warmWhite, transition: "border-color 0.2s",
+                  }}>
+                    <div style={{ fontSize: 22, marginBottom: 4 }}>📷</div>
+                    <div style={{ fontSize: 13, color: galleryUploading ? C.sage : C.textLight, fontWeight: 500 }}>
+                      {galleryUploading ? "Uploading…" : `Add a food photo ${galleryPhotos.length > 0 ? `(${galleryPhotos.length} added)` : ""}`}
+                    </div>
+                    <div style={{ fontSize: 11, color: C.textMuted, marginTop: 2 }}>JPG or PNG - tap to pick from your camera roll</div>
+                  </div>
+                </label>
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "center", gap: 24, marginTop: 24 }}>
                   <button
                     onClick={() => { setCheckinStatus(""); setCheckinMsg(""); setCheckinSpecial(""); setCheckinDeparture(""); setCheckinNote(""); setCheckinLat(null); setCheckinLng(null); setPinStatus(""); }}
                     style={{ fontSize: 13, color: C.textMuted, background: "none", border: "none", cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", textDecoration: "underline" }}
@@ -1791,6 +1878,11 @@ export default function FoodTrucksPage() {
                             >
                               {sharedId === truck.id ? '✓ Copied' : '↗ Tell a friend'}
                             </button>
+                            {truck.slug && (
+                              <a href={`/food-trucks/${truck.slug}`} style={{ fontSize: 12, color: C.textMuted, textDecoration: "none", fontWeight: 500, background: `${C.sand}80`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1px solid ${C.sand}` }}>
+                                View Profile →
+                              </a>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -1924,6 +2016,11 @@ export default function FoodTrucksPage() {
                           {truck.tier === 'featured' && truck.website && (
                             <a href={truck.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.sunset, textDecoration: "none", fontWeight: 600, background: `${C.sunset}10`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1px solid ${C.sunset}20` }}>
                               Menu / Info →
+                            </a>
+                          )}
+                          {truck.slug && (
+                            <a href={`/food-trucks/${truck.slug}`} style={{ fontSize: 12, color: C.textMuted, textDecoration: "none", fontWeight: 500, background: `${C.sand}80`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1px solid ${C.sand}` }}>
+                              View Profile →
                             </a>
                           )}
                         </div>

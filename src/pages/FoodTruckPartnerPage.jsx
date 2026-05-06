@@ -62,6 +62,7 @@ export default function FoodTruckPartnerPage() {
     email: prefill.email || '',
     phone: prefill.phone || '',
     website: prefill.website || '',
+    instagram: '',
   });
   const [selectedTier, setSelectedTier] = useState('paid'); // beta: everyone gets Featured
   const [imageUrl, setImageUrl] = useState('');
@@ -150,6 +151,7 @@ export default function FoodTruckPartnerPage() {
           email: form.email,
           phone: form.phone,
           website: form.website,
+          instagram: form.instagram,
           imageUrl,
           tier: selectedTier,
           skipVerification: prefill.verified === 'true',
@@ -599,15 +601,27 @@ export default function FoodTruckPartnerPage() {
                       />
                     </div>
                   </div>
-                  <div>
-                    <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 6 }}>Website or Instagram</label>
-                    <input
-                      type="text"
-                      value={form.website}
-                      onChange={e => setForm(f => ({ ...f, website: e.target.value }))}
-                      placeholder="instagram.com/yourtruckname"
-                      style={{ width: "100%", boxSizing: "border-box", padding: "13px 16px", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}
-                    />
+                  <div className="event-form-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 10 }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 6 }}>Website</label>
+                      <input
+                        type="text"
+                        value={form.website}
+                        onChange={e => setForm(f => ({ ...f, website: e.target.value }))}
+                        placeholder="yourtrucksite.com"
+                        style={{ width: "100%", boxSizing: "border-box", padding: "13px 16px", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 6 }}>Instagram Handle</label>
+                      <input
+                        type="text"
+                        value={form.instagram}
+                        onChange={e => setForm(f => ({ ...f, instagram: e.target.value }))}
+                        placeholder="@yourtruckname"
+                        style={{ width: "100%", boxSizing: "border-box", padding: "13px 16px", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}
+                      />
+                    </div>
                   </div>
 
                   {/* ── IMAGE DROPPER ── */}
