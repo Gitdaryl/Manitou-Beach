@@ -1,5 +1,5 @@
 import { lazy, Suspense, Component } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { PageThemeProvider } from './context/PageThemeContext';
 
 // Eager - first paint
@@ -71,6 +71,11 @@ const SponsorStatsPage = lazy(() => import('./pages/SponsorStatsPage'));
 const BusinessProfilePage = lazy(() => import('./pages/BusinessProfilePage'));
 const FoodTruckProfilePage = lazy(() => import('./pages/FoodTruckProfilePage'));
 const WineryProfilePage = lazy(() => import('./pages/WineryProfilePage'));
+
+function HappeningEventRedirect() {
+  const { eventId } = useParams();
+  return <Navigate to={`/events/${eventId}`} replace />;
+}
 
 // ── Beta gate - redirects / to /launch until LAUNCH_DATE
 //   ⚙️  Update LAUNCH_DATE when you have a firm date (must match LaunchPage.jsx)
@@ -177,8 +182,9 @@ export default function App() {
           <Route path="/" element={<BetaGate><HomePage /></BetaGate>} />
           <Route path="/events" element={<HappeningPage />} />
           <Route path="/events/edit" element={<EventEditPage />} />
-          <Route path="/happening/:eventId" element={<EventDetailPage />} />
-          <Route path="/happening" element={<HappeningPage />} />
+          <Route path="/events/:eventId" element={<EventDetailPage />} />
+          <Route path="/happening/:eventId" element={<HappeningEventRedirect />} />
+          <Route path="/happening" element={<Navigate to="/events" replace />} />
           <Route path="/round-lake" element={<RoundLakePage />} />
           <Route path="/village" element={<VillagePage />} />
           <Route path="/nightlife" element={<NightlifePage />} />

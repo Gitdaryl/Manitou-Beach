@@ -1012,7 +1012,7 @@ function WineriesCTASection() {
             Spend a morning at the lake, a leisurely lunch in the Village, an afternoon tasting at Chateau Aeronautique, and an evening back on the water. That's a Manitou Beach Saturday.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-            <Btn href="/happening" variant="sunset">What's On This Weekend →</Btn>
+            <Btn href="/events" variant="sunset">What's On This Weekend →</Btn>
             <Btn href="/village" variant="outlineLight" small>Explore the Village →</Btn>
           </div>
         </FadeIn>

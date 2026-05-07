@@ -100,7 +100,7 @@ export default function EventConfirmedPage() {
           {/* CTAs */}
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
             <a
-              href="/happening"
+              href="/events"
               style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, padding: '13px 24px', borderRadius: 8, background: C.sage, color: '#fff', textDecoration: 'none', display: 'inline-block' }}
             >
               See Events →

@@ -1934,7 +1934,7 @@ export default function FoodTrucksPage() {
                       {truck.cuisine && <div style={{ fontSize: 11, color: C.textMuted, marginTop: 2 }}>{truck.cuisine}</div>}
                       <div style={{ fontSize: 12, color: C.lakeBlue, fontWeight: 600, marginTop: 4 }}>{formatComingDate(truck.comingDate)}</div>
                       {truck.comingEventName && (
-                        <a href="/happening" style={{ fontSize: 11, color: C.sunset, fontWeight: 600, marginTop: 2, display: "block", textDecoration: "none", lineHeight: 1.4 }}>
+                        <a href="/events" style={{ fontSize: 11, color: C.sunset, fontWeight: 600, marginTop: 2, display: "block", textDecoration: "none", lineHeight: 1.4 }}>
                           {truck.comingEventName}
                         </a>
                       )}

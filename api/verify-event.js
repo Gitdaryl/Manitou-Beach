@@ -283,9 +283,9 @@ async function notifyAdmin({ eventName, email, eventType, organizerName, modFlag
     if (held) {
       sendSMS(darylPhone, `🚩 EVENT HELD FOR REVIEW:\n${eventName}\n${organizerName || email} · ${typeLabel}${flagText}\n\nNot live - check Notion to approve or reject.`).catch(() => {});
     } else if (modFlags.length > 0) {
-      sendSMS(darylPhone, `New event live (with flag):\n${eventName}\n${organizerName || email} · ${typeLabel}${flagText}\n${siteUrl}/happening`).catch(() => {});
+      sendSMS(darylPhone, `New event live (with flag):\n${eventName}\n${organizerName || email} · ${typeLabel}${flagText}\n${siteUrl}/events`).catch(() => {});
     } else {
-      sendSMS(darylPhone, `New event live on Manitou Beach:\n${eventName}\n${organizerName || email} · ${typeLabel}\n${siteUrl}/happening`).catch(() => {});
+      sendSMS(darylPhone, `New event live on Manitou Beach:\n${eventName}\n${organizerName || email} · ${typeLabel}\n${siteUrl}/events`).catch(() => {});
     }
   }
 
@@ -322,7 +322,7 @@ async function notifyAdmin({ eventName, email, eventType, organizerName, modFlag
           </div>
           ${flagsHtml}
           <div style="margin-top:20px;">
-            <a href="${siteUrl}/happening" style="display:inline-block;padding:10px 22px;background:#1A2830;color:#fff;text-decoration:none;border-radius:6px;font-size:13px;font-weight:700;">View on Happening →</a>
+            <a href="${siteUrl}/events" style="display:inline-block;padding:10px 22px;background:#1A2830;color:#fff;text-decoration:none;border-radius:6px;font-size:13px;font-weight:700;">View on Happening →</a>
           </div>
         </div>
       `,
@@ -333,7 +333,7 @@ async function notifyAdmin({ eventName, email, eventType, organizerName, modFlag
 async function sendOrganizerWelcomeEmail({ eventName, email, editUrl, siteUrl, organizerName }) {
   if (!process.env.RESEND_API_KEY || !email) return;
   const resend = new Resend(process.env.RESEND_API_KEY);
-  const happeningUrl = `${siteUrl}/happening`;
+  const happeningUrl = `${siteUrl}/events`;
   const promoteUrl = `${siteUrl}/promote`;
   const fbShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(happeningUrl)}&quote=${encodeURIComponent(`${eventName} is happening at Manitou Beach! Check it out:`)}`;
   const firstName = (organizerName || '').split(' ')[0] || 'Hey';

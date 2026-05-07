@@ -84,7 +84,7 @@ function RelatedCard({ event }) {
 
   return (
     <Link
-      to={`/happening/${event.id}`}
+      to={`/events/${event.id}`}
       style={{ textDecoration: 'none', display: 'block', borderRadius: 10, overflow: 'hidden', border: `1px solid ${C.sand}`, background: '#fff', transition: 'box-shadow 0.2s' }}
       onMouseEnter={e => e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.1)'}
       onMouseLeave={e => e.currentTarget.style.boxShadow = 'none'}
@@ -126,7 +126,7 @@ export default function EventDetailPage() {
   }, [eventId]);
 
   const handleShare = () => {
-    const url = `${siteUrl}/happening/${eventId}`;
+    const url = `${siteUrl}/events/${eventId}`;
     if (navigator.share && event) {
       navigator.share({ title: event.name, text: `Check out ${event.name} at Manitou Beach`, url });
     } else {
@@ -152,7 +152,7 @@ export default function EventDetailPage() {
         <SEOHead
           title={`${event.name} - Manitou Beach`}
           description={metaDesc}
-          path={`/happening/${eventId}`}
+          path={`/events/${eventId}`}
           ogImage={hasOrganizerImage ? event.imageUrl : `${siteUrl}${heroImage}`}
           ogType="event"
         />
@@ -175,7 +175,7 @@ export default function EventDetailPage() {
             <div style={{ fontSize: 48, marginBottom: 16 }}>🏖️</div>
             <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, color: C.dusk, margin: '0 0 12px' }}>Event not found</h1>
             <p style={{ color: C.textMuted, lineHeight: 1.7, marginBottom: 28 }}>This event may have been removed or the link might be wrong.</p>
-            <Link to="/happening" style={{ display: 'inline-block', background: C.dusk, color: C.cream, padding: '12px 28px', borderRadius: 8, textDecoration: 'none', fontWeight: 600, fontSize: 14 }}>
+            <Link to="/events" style={{ display: 'inline-block', background: C.dusk, color: C.cream, padding: '12px 28px', borderRadius: 8, textDecoration: 'none', fontWeight: 600, fontSize: 14 }}>
               See All Events
             </Link>
           </div>
@@ -246,7 +246,7 @@ export default function EventDetailPage() {
                     <div style={{ fontSize: 14, fontWeight: 600, color: C.dusk, marginBottom: 2, fontFamily: "'Libre Baskerville', serif" }}>This event has passed</div>
                     <div style={{ fontSize: 13, color: C.textMuted }}>It happened {formatShortDate(event.date)}. Catch what's coming up next.</div>
                   </div>
-                  <Link to="/happening" style={{ background: C.dusk, color: C.cream, padding: '9px 18px', borderRadius: 8, textDecoration: 'none', fontWeight: 600, fontSize: 13, whiteSpace: 'nowrap' }}>
+                  <Link to="/events" style={{ background: C.dusk, color: C.cream, padding: '9px 18px', borderRadius: 8, textDecoration: 'none', fontWeight: 600, fontSize: 13, whiteSpace: 'nowrap' }}>
                     Upcoming Events →
                   </Link>
                 </div>
@@ -353,7 +353,7 @@ export default function EventDetailPage() {
                 <div style={{ maxWidth: 760, margin: '0 auto', padding: '0 24px' }}>
                   <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 8 }}>
                     <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.dusk, margin: 0 }}>More coming up at Manitou Beach</h2>
-                    <Link to="/happening" style={{ fontSize: 13, color: C.lakeBlue, textDecoration: 'none', fontWeight: 600 }}>See all events →</Link>
+                    <Link to="/events" style={{ fontSize: 13, color: C.lakeBlue, textDecoration: 'none', fontWeight: 600 }}>See all events →</Link>
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14 }} className="event-related-grid">
                     {related.filter(e => !isPast(e.date)).map(e => <RelatedCard key={e.id} event={e} />)}
@@ -364,7 +364,7 @@ export default function EventDetailPage() {
 
             {/* Footer nav */}
             <div style={{ maxWidth: 760, margin: '0 auto', padding: '24px 24px 60px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-              <Link to="/happening" style={{ color: C.lakeBlue, textDecoration: 'none', fontSize: 14, fontWeight: 600 }}>← All events</Link>
+              <Link to="/events" style={{ color: C.lakeBlue, textDecoration: 'none', fontSize: 14, fontWeight: 600 }}>← All events</Link>
               <Link to="/submit-event" style={{ color: C.textMuted, textDecoration: 'none', fontSize: 13 }}>Got an event? List it free →</Link>
             </div>
           </>

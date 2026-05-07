@@ -2699,10 +2699,10 @@ export default function YetiAdminPage() {
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
                     <div style={{ fontSize: 11, color: '#A8C4CE', textTransform: 'uppercase', letterSpacing: 1.5, fontFamily: 'Libre Franklin, sans-serif' }}>Event Bullets ({nlAutoResult.eventCount} events found)</div>
-                    <a href={`${process.env.SITE_URL || 'https://manitoubeachmichigan.com'}/happening`} target="_blank" rel="noreferrer" style={{ fontSize: 11, color: '#D4845A', fontFamily: 'Libre Franklin, sans-serif', textDecoration: 'none', fontWeight: 600 }}>View Calendar →</a>
+                    <a href={`${process.env.SITE_URL || 'https://manitoubeachmichigan.com'}/events`} target="_blank" rel="noreferrer" style={{ fontSize: 11, color: '#D4845A', fontFamily: 'Libre Franklin, sans-serif', textDecoration: 'none', fontWeight: 600 }}>View Calendar →</a>
                   </div>
                   {nlAutoResult.bullets.map((b, i) => (
-                    <a key={i} href="https://manitoubeachmichigan.com/happening" target="_blank" rel="noreferrer" style={{ display: 'block', fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, color: '#d4e8f0', lineHeight: 1.65, marginBottom: 4, paddingLeft: 14, borderLeft: '2px solid #D4845A', textDecoration: 'none' }}>{b}</a>
+                    <a key={i} href="https://manitoubeachmichigan.com/events" target="_blank" rel="noreferrer" style={{ display: 'block', fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, color: '#d4e8f0', lineHeight: 1.65, marginBottom: 4, paddingLeft: 14, borderLeft: '2px solid #D4845A', textDecoration: 'none' }}>{b}</a>
                   ))}
                   <div style={{ display: 'flex', gap: 10, marginTop: 18, flexWrap: 'wrap' }}>
                     <button

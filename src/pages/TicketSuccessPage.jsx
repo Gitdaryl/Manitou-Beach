@@ -60,7 +60,7 @@ export default function TicketSuccessPage() {
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, minHeight: '100vh' }}>
       <GlobalStyles />
-      <Navbar activeSection="happening" scrollTo={scrollTo} isSubPage={true} />
+      <Navbar activeSection="events" scrollTo={scrollTo} isSubPage={true} />
 
       <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '120px 24px 80px' }}>
         <div style={{ maxWidth: 560, width: '100%', textAlign: 'center' }}>
@@ -90,7 +90,7 @@ export default function TicketSuccessPage() {
                 Payment Confirmed
               </h1>
               <p style={{ color: C.textMuted, fontSize: 15, lineHeight: 1.6, margin: '0 0 32px' }}>{error}</p>
-              <Btn href="/happening" variant="primary">Browse Events →</Btn>
+              <Btn href="/events" variant="primary">Browse Events →</Btn>
             </div>
           )}
 
@@ -234,7 +234,7 @@ export default function TicketSuccessPage() {
                 ))}
               </div>
 
-              <a href="/happening" style={{ fontSize: 14, color: C.lakeBlue, textDecoration: 'none', fontWeight: 600 }}>
+              <a href="/events" style={{ fontSize: 14, color: C.lakeBlue, textDecoration: 'none', fontWeight: 600 }}>
                 ← Browse more events
               </a>
             </div>

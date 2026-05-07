@@ -75,7 +75,7 @@ export default async function handler(req, res) {
             <p style="font-size:16px;line-height:1.75;margin:0 0 28px;color:#3B3228;">That's it. No noise, no spam. Just your weekend sorted, straight from Manitou Beach.</p>
 
             <p style="margin:0 0 28px;">
-              <a href="${siteUrl}/happening" style="background:#1A2830;color:#FAF6EF;text-decoration:none;padding:14px 28px;border-radius:4px;font-family:Arial,sans-serif;font-size:13px;font-weight:bold;letter-spacing:1px;display:inline-block;">See What's Happening This Weekend</a>
+              <a href="${siteUrl}/events" style="background:#1A2830;color:#FAF6EF;text-decoration:none;padding:14px 28px;border-radius:4px;font-family:Arial,sans-serif;font-size:13px;font-weight:bold;letter-spacing:1px;display:inline-block;">See What's Happening This Weekend</a>
             </p>
 
             <p style="font-size:14px;line-height:1.75;margin:0 0 6px;color:#6B5F52;">While you're here, check out:</p>

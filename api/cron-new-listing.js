@@ -177,7 +177,7 @@ function businessTipsEmail(biz, siteUrl) {
         </table>
 
         <div style="background:#FAF6EF;border-left:4px solid #7A8E72;padding:16px;margin:24px 0;">
-          <strong>Have an upcoming event?</strong> You can list it for free too - just go to <a href="${siteUrl}/happening" style="color:#5B7E95;">${siteUrl}/happening</a> and we'll add it to the calendar.
+          <strong>Have an upcoming event?</strong> You can list it for free too - just go to <a href="${siteUrl}/events" style="color:#5B7E95;">${siteUrl}/events</a> and we'll add it to the calendar.
         </div>
 
         <p style="color:#6B5D52;font-size:14px;">Questions? Just reply to this email. We're real people and we're happy to help.</p>
@@ -225,7 +225,7 @@ function stayTipsEmail(stay, siteUrl) {
         </table>
 
         <div style="background:#FAF6EF;border-left:4px solid #7A8E72;padding:16px;margin:24px 0;">
-          <strong>Hosting an event?</strong> Open houses, wine nights, bonfire weekends - you can list events for free at <a href="${siteUrl}/happening" style="color:#5B7E95;">${siteUrl}/happening</a>.
+          <strong>Hosting an event?</strong> Open houses, wine nights, bonfire weekends - you can list events for free at <a href="${siteUrl}/events" style="color:#5B7E95;">${siteUrl}/events</a>.
         </div>
 
         <p style="color:#6B5D52;font-size:14px;">Questions? Just reply. We're happy to help you get more bookings this summer.</p>

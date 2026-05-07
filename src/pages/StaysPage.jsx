@@ -2223,7 +2223,7 @@ export default function StaysPage() {
       {/* Seasonal banner */}
       <section style={{ padding: '40px 24px', background: `linear-gradient(135deg, ${C.sunset}15, ${C.lakeBlue}10)`, textAlign: 'center' }}>
         <p style={{ fontSize: 15, color: C.text, fontFamily: "'Libre Baskerville', serif", margin: 0 }}>
-          Peak season: June – September. <a href="/happening" style={{ color: C.sunset, textDecoration: 'none', fontWeight: 600 }}>See what's happening →</a>
+          Peak season: June - September. <a href="/events" style={{ color: C.sunset, textDecoration: 'none', fontWeight: 600 }}>See what's happening →</a>
         </p>
       </section>
 

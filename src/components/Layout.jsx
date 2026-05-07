@@ -1931,7 +1931,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
 
   const handleNavClick = (id) => {
     setMenuOpen(false);
-    if (id === "happening") { window.location.href = "/events"; return; }
+    if (id === "events") { window.location.href = "/events"; return; }
     if (id === "devils-lake") { window.location.href = "/devils-lake"; return; }
     if (id === "mens-club") { window.location.href = "/mens-club"; return; }
     if (id === "ladies-club") { window.location.href = "/ladies-club"; return; }
@@ -2029,7 +2029,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
 
             {/* Events */}
             <button
-              onClick={() => handleNavClick("happening")}
+              onClick={() => handleNavClick("events")}
               style={{
                 background: "transparent", border: "none",
                 color: solid ? C.text : "rgba(255,255,255,0.7)",
@@ -2216,7 +2216,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
         </button>
 
         {/* Events - mobile top level */}
-        <button onClick={() => { setMenuOpen(false); handleNavClick("happening"); }} style={{
+        <button onClick={() => { setMenuOpen(false); handleNavClick("events"); }} style={{
           background: "none", border: "none", fontFamily: "'Libre Baskerville', serif",
           fontSize: 24, fontWeight: 400, color: C.text, cursor: "pointer", padding: "12px 32px", letterSpacing: 0.5,
         }}>
@@ -2728,7 +2728,7 @@ export function EventLightbox({ event, onClose }) {
         {/* Share this event */}
         <ShareBar
           title={`${event.name}${event.date ? ` - ${(() => { try { return new Date(event.date + "T00:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric" }); } catch { return event.date; } })()}` : ""} at Manitou Beach`}
-          url={typeof window !== "undefined" ? `${window.location.origin}/happening` : "/happening"}
+          url={typeof window !== "undefined" ? `${window.location.origin}/events` : "/events"}
         />
       </div>
     </div>

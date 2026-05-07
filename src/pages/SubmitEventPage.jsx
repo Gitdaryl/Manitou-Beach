@@ -294,7 +294,7 @@ export default function SubmitEventPage() {
 
             {/* See it live */}
             <a
-              href="/happening"
+              href="/events"
               style={{ display: 'block', padding: '18px 22px', background: 'rgba(122,142,114,0.15)', border: '1px solid rgba(122,142,114,0.35)', borderRadius: 12, textDecoration: 'none', marginBottom: 14, transition: 'background 0.15s' }}
               onMouseEnter={e => e.currentTarget.style.background = 'rgba(122,142,114,0.25)'}
               onMouseLeave={e => e.currentTarget.style.background = 'rgba(122,142,114,0.15)'}
@@ -324,7 +324,7 @@ export default function SubmitEventPage() {
 
             {/* Share to Facebook */}
             <a
-              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(typeof window !== 'undefined' ? window.location.origin + '/happening' : 'https://manitoubeachmichigan.com/happening')}&quote=${encodeURIComponent((activatedData?.eventName || 'My event') + ' is happening at Manitou Beach! Check it out:')}`}
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(typeof window !== 'undefined' ? window.location.origin + '/events' : 'https://manitoubeachmichigan.com/events')}&quote=${encodeURIComponent((activatedData?.eventName || 'My event') + ' is happening at Manitou Beach! Check it out:')}`}
               target="_blank"
               rel="noopener noreferrer"
               style={{ display: 'block', padding: '18px 22px', background: 'rgba(66,103,178,0.1)', border: '1px solid rgba(66,103,178,0.25)', borderRadius: 12, textDecoration: 'none', marginBottom: 14, transition: 'background 0.15s' }}

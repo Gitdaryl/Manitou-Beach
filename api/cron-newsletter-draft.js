@@ -198,9 +198,9 @@ Return ONLY a JSON array of strings: ["...", "...", "..."]`,
 // ── HTML builders ─────────────────────────────────────────────────────────────
 
 function buildEmailHtml(featureText, subject, bullets, dates, siteUrl, events = []) {
-  const happeningUrl = `${siteUrl}/happening`;
+  const happeningUrl = `${siteUrl}/events`;
   const bulletRows = bullets.map((b, i) => {
-    const eventUrl = events[i]?.id ? `${siteUrl}/happening/${events[i].id}` : happeningUrl;
+    const eventUrl = events[i]?.id ? `${siteUrl}/events/${events[i].id}` : happeningUrl;
     return `<tr><td style="padding:6px 0 6px 20px;border-left:3px solid #D4845A;">
       <a href="${eventUrl}" style="font-family:Georgia,serif;font-size:16px;line-height:1.6;color:#3B3228;text-decoration:none;display:block;">${b.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</a>
     </td></tr>`;
@@ -249,7 +249,7 @@ function buildEmailHtml(featureText, subject, bullets, dates, siteUrl, events = 
         ${bulletRows}
       </table>
       <p style="margin:24px 0 0;">
-        <a href="${siteUrl}/happening" style="background:#1A2830;color:#FAF6EF;text-decoration:none;padding:12px 24px;border-radius:4px;font-family:Arial,sans-serif;font-size:13px;font-weight:bold;letter-spacing:1px;display:inline-block;">See Full Event Calendar</a>
+        <a href="${siteUrl}/events" style="background:#1A2830;color:#FAF6EF;text-decoration:none;padding:12px 24px;border-radius:4px;font-family:Arial,sans-serif;font-size:13px;font-weight:bold;letter-spacing:1px;display:inline-block;">See Full Event Calendar</a>
       </p>
     </td></tr>
 
@@ -273,9 +273,9 @@ function buildEmailHtml(featureText, subject, bullets, dates, siteUrl, events = 
 
 // Clean web version for beehiiv's web view (not email-client constrained)
 function buildWebHtml(featureText, bullets, dates, siteUrl, events = []) {
-  const happeningUrl = `${siteUrl}/happening`;
+  const happeningUrl = `${siteUrl}/events`;
   const bulletItems = bullets.map((b, i) => {
-    const eventUrl = events[i]?.id ? `${siteUrl}/happening/${events[i].id}` : happeningUrl;
+    const eventUrl = events[i]?.id ? `${siteUrl}/events/${events[i].id}` : happeningUrl;
     return `<li style="margin-bottom:10px;line-height:1.65;"><a href="${eventUrl}" style="color:#3B3228;text-decoration:none;">${b.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</a></li>`;
   }).join('');
 
@@ -285,7 +285,7 @@ function buildWebHtml(featureText, bullets, dates, siteUrl, events = []) {
   <hr style="border:none;border-top:2px solid #E8DFD0;margin:0 0 28px;"/>
   <p style="font-size:12px;color:#A8926E;letter-spacing:2px;text-transform:uppercase;margin:0 0 14px;">This Weekend at the Lake</p>
   <ul style="padding-left:24px;margin:0 0 28px;">${bulletItems}</ul>
-  <p style="margin:0;"><a href="${siteUrl}/happening" style="color:#D4845A;font-weight:bold;text-decoration:none;">Full event calendar at manitoubeachmichigan.com</a></p>
+  <p style="margin:0;"><a href="${siteUrl}/events" style="color:#D4845A;font-weight:bold;text-decoration:none;">Full event calendar at manitoubeachmichigan.com</a></p>
 </div>`;
 }
 

@@ -247,7 +247,7 @@ async function sendOrganizerWelcomeEmail({ eventName, email, editToken, organize
   const resend = new Resend(process.env.RESEND_API_KEY);
   const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
   const editUrl = `${siteUrl}/events/edit?token=${editToken}`;
-  const happeningUrl = `${siteUrl}/happening`;
+  const happeningUrl = `${siteUrl}/events`;
   const promoteUrl = `${siteUrl}/promote`;
   const fbShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(happeningUrl)}&quote=${encodeURIComponent(`${eventName} is happening at Manitou Beach! Check it out:`)}`;
   const firstName = (organizerName || '').split(' ')[0] || 'Hey';

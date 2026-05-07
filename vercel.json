@@ -5,6 +5,16 @@
       "has": [{ "type": "host", "value": "www.manitoubeachmichigan.com" }],
       "destination": "https://manitoubeachmichigan.com/$1",
       "permanent": true
+    },
+    {
+      "source": "/happening/:path*",
+      "destination": "/events/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/happening",
+      "destination": "/events",
+      "permanent": true
     }
   ],
   "headers": [

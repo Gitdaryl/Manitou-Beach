@@ -30,7 +30,7 @@ const STATIC_PAGES = [
   { path: '/wineries', priority: '0.8', changefreq: 'monthly' },
   { path: '/village', priority: '0.8', changefreq: 'monthly' },
   { path: '/stays', priority: '0.8', changefreq: 'weekly' },
-  { path: '/happening', priority: '0.8', changefreq: 'daily' },
+  { path: '/events', priority: '0.8', changefreq: 'daily' },
   { path: '/discover', priority: '0.7', changefreq: 'weekly' },
   { path: '/fishing', priority: '0.7', changefreq: 'monthly' },
   { path: '/devils-lake', priority: '0.7', changefreq: 'monthly' },
