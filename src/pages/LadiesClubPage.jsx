@@ -669,7 +669,7 @@ const DEFAULT_SILVER = [
   { name: "Woodstock Wine & Cheese" },
 ];
 const DEFAULT_BRONZE  = [{ name: "Glamour Auto Shop" }];
-const DEFAULT_FRIENDS = [{ name: "Benny D's on 223" }, { name: "Blackbird Cafe" }, { name: "Freddie Freeze" }, { name: "Sandbar Cafe" }];
+const DEFAULT_FRIENDS = [{ name: "Benny D's on 223" }, { name: "Blackbird Cafe" }, { name: "Freddie Freeze" }, { name: "Sandbar Cafe" }, { name: "Trillium House" }];
 
 function LadiesClubSponsorsSection() {
   const [sponsors, setSponsors] = React.useState(null); // null = use defaults
