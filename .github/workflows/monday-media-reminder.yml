@@ -18,7 +18,7 @@ jobs:
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `📸 Thursday Roundup — add background images (week of ${today})`,
+              title: `📸 Thursday Roundup - add background images (week of ${today})`,
               body: `The Thursday video roundup renders **Wednesday night**. Right now only \`bg.jpg\` (the landlakes aerial) is in rotation.
 
 ## What to do
@@ -28,7 +28,7 @@ Drop new images into \`video-templates/thursday-slideshow/assets/\` as:
 - \`bg3.jpg\`
 - \`bg4.jpg\`
 
-They rotate automatically each week — no code changes needed.
+They rotate automatically each week - no code changes needed.
 
 ## Good candidates
 - Aerial lake / community shots
@@ -39,3 +39,4 @@ They rotate automatically each week — no code changes needed.
 Once added, commit + push and the pipeline picks them up automatically next Wednesday night.`,
               labels: ['content', 'media'],
             });
+
