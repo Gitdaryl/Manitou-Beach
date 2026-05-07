@@ -89,7 +89,55 @@ export default async function handler(req, res) {
       return res.status(404).json({ error: 'Event not found' });
     }
 
-    return res.status(200).json({ event });
+    // Fetch related upcoming events (next 30 days, excluding this one)
+    let related = [];
+    try {
+      const now = new Date().toISOString().split('T')[0];
+      const future = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      const relRes = await fetch(
+        `https://api.notion.com/v1/databases/${process.env.NOTION_DB_EVENTS}/query`,
+        {
+          method: 'POST',
+          headers: { ...HEADERS, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            filter: {
+              and: [
+                { or: [
+                  { property: 'Status', status: { equals: 'Approved' } },
+                  { property: 'Status', status: { equals: 'Published' } },
+                ]},
+                { property: 'Event date', date: { on_or_after: now } },
+                { property: 'Event date', date: { on_or_before: future } },
+              ],
+            },
+            sorts: [{ property: 'Event date', direction: 'ascending' }],
+            page_size: 6,
+          }),
+        }
+      );
+      if (relRes.ok) {
+        const relData = await relRes.json();
+        related = (relData.results || [])
+          .filter(r => r.id !== page.id)
+          .slice(0, 4)
+          .map(r => {
+            const rp = r.properties;
+            return {
+              id: r.id,
+              name: rp['Event Name']?.title?.[0]?.plain_text || '',
+              date: rp['Event date']?.date?.start || null,
+              timeStart: (rp['Time End']?.rich_text?.[0]?.text?.content || '').split(' – ')[0].trim(),
+              location: rp['Location']?.rich_text?.[0]?.text?.content || '',
+              category: rp['Category']?.rich_text?.[0]?.text?.content || 'Community',
+              imageUrl: normalizeUrl(rp['Image URL']?.url || null),
+            };
+          }).filter(r => r.name);
+      }
+    } catch (err) {
+      console.error('event-detail related error:', err.message);
+    }
+
+    return res.status(200).json({ event, related });
   } catch (err) {
     console.error('event-detail error:', err.message);
     return res.status(500).json({ error: 'Failed to load event' });
