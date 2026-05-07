@@ -138,6 +138,40 @@ export default function YetiAdminPage() {
   const [orgCheckStatus, setOrgCheckStatus] = useState('idle');
   const [orgCheckResult, setOrgCheckResult] = useState(null);
 
+  // ── Newsletter Auto-Draft ───────────────────────────────────────
+  const [nlAutoLoading, setNlAutoLoading] = useState(false);
+  const [nlAutoResult, setNlAutoResult] = useState(null);
+  const [nlAutoError, setNlAutoError] = useState('');
+  const [nlAutoSending, setNlAutoSending] = useState(false);
+  const [nlAutoSent, setNlAutoSent] = useState(null);
+
+  const runNlPreview = async () => {
+    setNlAutoLoading(true); setNlAutoError(''); setNlAutoResult(null); setNlAutoSent(null);
+    try {
+      const res = await adminFetch('/api/cron-newsletter-draft?preview=1');
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Preview failed');
+      setNlAutoResult(data);
+    } catch (err) { setNlAutoError(err.message); }
+    finally { setNlAutoLoading(false); }
+  };
+
+  const runNlSend = async (mode) => {
+    if (!window.confirm(mode === 'now'
+      ? 'Send this issue to all subscribers in ~15 minutes?'
+      : 'Schedule this issue for Thursday 9am ET?'
+    )) return;
+    setNlAutoSending(true); setNlAutoError('');
+    try {
+      const url = mode === 'now' ? '/api/cron-newsletter-draft?send_now=1' : '/api/cron-newsletter-draft';
+      const res = await adminFetch(url);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Send failed');
+      setNlAutoSent({ mode, ...data });
+    } catch (err) { setNlAutoError(err.message); }
+    finally { setNlAutoSending(false); }
+  };
+
   // ── Newsletter Composer ─────────────────────────────────────────
   const NL_DRAFT_KEY = 'yeti_nl_draft';
   const nlDraft = (() => { try { return JSON.parse(localStorage.getItem(NL_DRAFT_KEY) || '{}'); } catch { return {}; } })();
@@ -2624,6 +2658,76 @@ export default function YetiAdminPage() {
         {/* ── NEWSLETTER COMPOSER TAB ── */}
         {activeTab === 'newsletter' && (
           <div style={{ maxWidth: 800 }}>
+
+            {/* ── Auto-Draft Panel ── */}
+            <div style={{ background: C.dusk, borderRadius: 12, padding: '20px 24px', marginBottom: 28, color: '#FAF6EF' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14, flexWrap: 'wrap', gap: 10 }}>
+                <div>
+                  <div style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 17, fontWeight: 700, marginBottom: 2 }}>This Week's Dispatch</div>
+                  <div style={{ fontSize: 12, color: '#A8C4CE', fontFamily: 'Libre Franklin, sans-serif' }}>Auto-generates from Notion events. Wednesday cron fires at 7pm ET.</div>
+                </div>
+                <button
+                  onClick={runNlPreview}
+                  disabled={nlAutoLoading || nlAutoSending}
+                  style={{ background: nlAutoLoading ? '#334' : C.lakeBlue, color: '#fff', border: 'none', borderRadius: 8, padding: '9px 18px', fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, fontWeight: 600, cursor: nlAutoLoading ? 'wait' : 'pointer', letterSpacing: 0.5 }}
+                >
+                  {nlAutoLoading ? 'Generating...' : '⚡ Generate Preview'}
+                </button>
+              </div>
+
+              {nlAutoError && (
+                <div style={{ background: 'rgba(200,80,80,0.2)', border: '1px solid rgba(200,80,80,0.4)', borderRadius: 8, padding: '10px 14px', fontSize: 13, color: '#fca5a5', marginBottom: 12 }}>
+                  {nlAutoError}
+                </div>
+              )}
+
+              {nlAutoSent && (
+                <div style={{ background: 'rgba(80,180,80,0.15)', border: '1px solid rgba(80,180,80,0.3)', borderRadius: 8, padding: '12px 16px', fontSize: 13, color: '#86efac', marginBottom: 4 }}>
+                  <strong>{nlAutoSent.mode === 'now' ? '✓ Queued to send in ~15 min' : '✓ Scheduled for Thursday 9am ET'}</strong>
+                  {nlAutoSent.beehiivWebUrl && <span> &bull; <a href={nlAutoSent.beehiivWebUrl} target="_blank" rel="noreferrer" style={{ color: '#86efac' }}>Preview in beehiiv</a></span>}
+                  {nlAutoSent.notionPageId && <span> &bull; Blog post created</span>}
+                </div>
+              )}
+
+              {nlAutoResult && !nlAutoSent && (
+                <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: 10, padding: '14px 18px', marginBottom: 14 }}>
+                  <div style={{ fontSize: 11, color: '#A8C4CE', textTransform: 'uppercase', letterSpacing: 1.5, fontFamily: 'Libre Franklin, sans-serif', marginBottom: 6 }}>Subject Line</div>
+                  <div style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 16, color: '#FAF6EF', marginBottom: 14 }}>{nlAutoResult.subject}</div>
+                  <div style={{ fontSize: 11, color: '#A8C4CE', textTransform: 'uppercase', letterSpacing: 1.5, fontFamily: 'Libre Franklin, sans-serif', marginBottom: 6 }}>Feature Article</div>
+                  <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, color: '#d4e8f0', lineHeight: 1.7, marginBottom: 14, maxHeight: 100, overflow: 'hidden', position: 'relative' }}>
+                    {nlAutoResult.featureText}
+                    <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 32, background: 'linear-gradient(transparent, rgba(26,40,48,0.95))' }} />
+                  </div>
+                  <div style={{ fontSize: 11, color: '#A8C4CE', textTransform: 'uppercase', letterSpacing: 1.5, fontFamily: 'Libre Franklin, sans-serif', marginBottom: 6 }}>Event Bullets ({nlAutoResult.eventCount} events found)</div>
+                  {nlAutoResult.bullets.map((b, i) => (
+                    <div key={i} style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, color: '#d4e8f0', lineHeight: 1.65, marginBottom: 4, paddingLeft: 14, borderLeft: '2px solid #D4845A' }}>{b}</div>
+                  ))}
+                  <div style={{ display: 'flex', gap: 10, marginTop: 18, flexWrap: 'wrap' }}>
+                    <button
+                      onClick={() => runNlSend('now')}
+                      disabled={nlAutoSending}
+                      style={{ background: '#D4845A', color: '#FAF6EF', border: 'none', borderRadius: 8, padding: '10px 20px', fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, fontWeight: 700, cursor: nlAutoSending ? 'wait' : 'pointer' }}
+                    >
+                      {nlAutoSending ? 'Sending...' : '🚀 Send Now (15 min)'}
+                    </button>
+                    <button
+                      onClick={() => runNlSend('thursday')}
+                      disabled={nlAutoSending}
+                      style={{ background: 'rgba(255,255,255,0.12)', color: '#FAF6EF', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '10px 20px', fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, fontWeight: 600, cursor: nlAutoSending ? 'wait' : 'pointer' }}
+                    >
+                      {nlAutoSending ? 'Scheduling...' : '📅 Schedule Thursday 9am'}
+                    </button>
+                    <button
+                      onClick={() => { setNlAutoResult(null); setNlAutoSent(null); }}
+                      style={{ background: 'transparent', color: '#A8C4CE', border: 'none', borderRadius: 8, padding: '10px 16px', fontFamily: 'Libre Franklin, sans-serif', fontSize: 12, cursor: 'pointer' }}
+                    >
+                      Regenerate
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
             <div style={{ marginBottom: 20 }}>
               <h2 style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 22, color: C.dusk, margin: '0 0 6px' }}>Newsletter Composer</h2>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>

@@ -415,7 +415,14 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  // Allow admin UI calls with X-Admin-Token; Vercel cron calls have no token
+  const adminToken = req.headers['x-admin-token'];
+  if (adminToken && adminToken !== process.env.ADMIN_SECRET) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
   const preview = req.query?.preview === '1';
+  const sendNow = req.query?.send_now === '1';
   const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
 
   try {
@@ -444,8 +451,10 @@ export default async function handler(req, res) {
     const emailHtml = buildEmailHtml(featureText, subject, bulletResult, dates, siteUrl);
     const webHtml = buildWebHtml(featureText, bulletResult, dates, siteUrl);
 
-    // 4. Create beehiiv scheduled post
-    const scheduleFor = getThursdaySendTime();
+    // 4. Determine send time: Thursday 9am ET for cron, 15 min from now for send_now
+    const scheduleFor = sendNow
+      ? Math.floor(Date.now() / 1000) + 900
+      : getThursdaySendTime();
     const sendDateIso = new Date(scheduleFor * 1000).toISOString().split('T')[0];
 
     let beehiivPost = null;
