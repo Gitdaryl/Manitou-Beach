@@ -1927,7 +1927,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
     return () => document.removeEventListener("mousedown", close);
   }, []);
 
-  const solid = scrollY > 60 || menuOpen;
+  const solid = scrollY > 60 || menuOpen || isSubPage;
 
   const handleNavClick = (id) => {
     setMenuOpen(false);
