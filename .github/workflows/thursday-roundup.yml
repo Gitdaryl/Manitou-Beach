@@ -1,0 +1,54 @@
+name: Thursday Roundup Video
+
+on:
+  schedule:
+    # Wednesday 11 PM ET = Thursday 3 AM UTC
+    # Posts before the 9 AM ET fallback Vercel cron
+    - cron: '0 3 * * 4'
+  workflow_dispatch:
+    inputs:
+      preview:
+        description: 'Preview only (no post)'
+        required: false
+        default: 'false'
+        type: choice
+        options: ['false', 'true']
+
+jobs:
+  render-and-post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
+        id: setup-chrome
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Render and post
+        run: |
+          FLAGS=""
+          if [ "${{ github.event.inputs.preview }}" = "true" ]; then
+            FLAGS="--preview"
+          fi
+          node scripts/thursday-pipeline.js $FLAGS
+        env:
+          NOTION_TOKEN_EVENTS:       ${{ secrets.NOTION_TOKEN_EVENTS }}
+          NOTION_DB_EVENTS:          ${{ secrets.NOTION_DB_EVENTS }}
+          META_PAGE_ID:              ${{ secrets.META_PAGE_ID }}
+          META_PAGE_ACCESS_TOKEN:    ${{ secrets.META_PAGE_ACCESS_TOKEN }}
+          META_IG_ACCOUNT_ID:        ${{ secrets.META_IG_ACCOUNT_ID }}
+          BLOB_READ_WRITE_TOKEN:     ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          SITE_URL:                  https://manitoubeachmichigan.com
+          PUPPETEER_EXECUTABLE_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}

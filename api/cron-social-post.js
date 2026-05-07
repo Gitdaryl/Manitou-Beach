@@ -1,6 +1,9 @@
 // GET /api/cron-social-post
 // Runs every Thursday 9am ET — posts "This Weekend" event roundup to FB + IG.
+// Skips if the GH Actions pipeline already posted today (checks Vercel Blob marker).
 // Supports ?preview=1 to return message + imageUrl without posting.
+
+import { head } from '@vercel/blob';
 
 const FB_API = 'https://graph.facebook.com/v25.0';
 
@@ -121,6 +124,16 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'META credentials not configured' });
   }
 
+  // Skip if the GH Actions video pipeline already ran today
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    await head(`thursday-post-${today}.json`, { token: process.env.BLOB_READ_WRITE_TOKEN });
+    console.log('cron-social-post: video already posted today via GH Actions – skipping text fallback');
+    return res.status(200).json({ skipped: true, reason: 'Video post already made today by GH Actions' });
+  } catch {
+    // marker not found – proceed with text fallback
+  }
+
   const dates = getWeekendDates();
   const { friday, saturday, sunday } = dates;
 
@@ -191,12 +204,12 @@ export default async function handler(req, res) {
   const results = {};
   const errors = {};
 
-  // Post to Facebook Page (text only, no image needed)
+  // Post to Facebook Page with branded image
   try {
-    const fbRes = await fetch(`${FB_API}/${pageId}/feed`, {
+    const fbRes = await fetch(`${FB_API}/${pageId}/photos`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message, access_token: pageToken }),
+      body: JSON.stringify({ message, url: imageUrl, access_token: pageToken }),
     });
     const fbData = await fbRes.json();
     if (fbData.error) throw new Error(fbData.error.message);
