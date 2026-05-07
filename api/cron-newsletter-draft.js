@@ -197,9 +197,10 @@ Return ONLY a JSON array of strings: ["...", "...", "..."]`,
 // ── HTML builders ─────────────────────────────────────────────────────────────
 
 function buildEmailHtml(featureText, subject, bullets, dates, siteUrl) {
+  const happeningUrl = `${siteUrl}/happening`;
   const bulletRows = bullets.map(b =>
-    `<tr><td style="padding:6px 0 6px 20px;font-family:Georgia,serif;font-size:16px;line-height:1.6;color:#3B3228;border-left:3px solid #D4845A;">
-      ${b.replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+    `<tr><td style="padding:6px 0 6px 20px;border-left:3px solid #D4845A;">
+      <a href="${happeningUrl}" style="font-family:Georgia,serif;font-size:16px;line-height:1.6;color:#3B3228;text-decoration:none;display:block;">${b.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</a>
     </td></tr>`
   ).join('');
 
@@ -270,8 +271,9 @@ function buildEmailHtml(featureText, subject, bullets, dates, siteUrl) {
 
 // Clean web version for beehiiv's web view (not email-client constrained)
 function buildWebHtml(featureText, bullets, dates, siteUrl) {
+  const happeningUrl = `${siteUrl}/happening`;
   const bulletItems = bullets.map(b =>
-    `<li style="margin-bottom:10px;line-height:1.65;">${b.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</li>`
+    `<li style="margin-bottom:10px;line-height:1.65;"><a href="${happeningUrl}" style="color:#3B3228;text-decoration:none;">${b.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</a></li>`
   ).join('');
 
   return `<div style="font-family:Georgia,serif;max-width:620px;margin:0 auto;color:#3B3228;">
