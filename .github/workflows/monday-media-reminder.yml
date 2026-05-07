@@ -1,0 +1,41 @@
+name: Monday Media Reminder
+
+on:
+  schedule:
+    # Every Monday 9am ET = 1pm UTC
+    - cron: '7 13 * * 1'
+  workflow_dispatch:
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Open reminder issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const today = new Date().toISOString().split('T')[0];
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `📸 Thursday Roundup — add background images (week of ${today})`,
+              body: `The Thursday video roundup renders **Wednesday night**. Right now only \`bg.jpg\` (the landlakes aerial) is in rotation.
+
+## What to do
+
+Drop new images into \`video-templates/thursday-slideshow/assets/\` as:
+- \`bg2.jpg\`
+- \`bg3.jpg\`
+- \`bg4.jpg\`
+
+They rotate automatically each week — no code changes needed.
+
+## Good candidates
+- Aerial lake / community shots
+- Seasonal scenery (beach, fall color, snow on the dock)
+- Event crowd photos
+- Any hero image already in \`public/images/\`
+
+Once added, commit + push and the pipeline picks them up automatically next Wednesday night.`,
+              labels: ['content', 'media'],
+            });
