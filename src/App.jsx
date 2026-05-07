@@ -25,6 +25,7 @@ const DispatchPage = lazy(() => import('./pages/DispatchPage'));
 const PromotePage = lazy(() => import('./pages/PromotePage'));
 const FeaturedPage = lazy(() => import('./pages/FeaturedPage'));
 const HappeningPage = lazy(() => import('./pages/HappeningPage'));
+const EventDetailPage = lazy(() => import('./pages/EventDetailPage'));
 const ClaimPromoView = lazy(() => import('./pages/ClaimPromoView'));
 const RedeemPromoView = lazy(() => import('./pages/RedeemPromoView'));
 const WineriesPage = lazy(() => import('./pages/WineriesPage'));
@@ -176,6 +177,7 @@ export default function App() {
           <Route path="/" element={<BetaGate><HomePage /></BetaGate>} />
           <Route path="/events" element={<HappeningPage />} />
           <Route path="/events/edit" element={<EventEditPage />} />
+          <Route path="/happening/:eventId" element={<EventDetailPage />} />
           <Route path="/happening" element={<HappeningPage />} />
           <Route path="/round-lake" element={<RoundLakePage />} />
           <Route path="/village" element={<VillagePage />} />
