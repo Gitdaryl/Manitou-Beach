@@ -637,33 +637,39 @@ function LadiesClubGallerySection() {
 
 // Hardcoded fallback sponsors — used when Notion fetch fails or has no active sponsors
 const DEFAULT_PLATINUM = [
-  { name: "Adrian Steel",             logo: "/images/ladies-club/sponsors/adrian-logo.jpg",      url: "https://adriansteel.com" },
-  { name: "Dave & Jose",              logo: null,                                                  url: null },
-  { name: "Decker and Sons Insurance",logo: "/images/ladies-club/sponsors/decker-logo.jpg",      url: "https://deckerandsonsinsurance.com" },
-  { name: "Foundation Realty",        logo: "/images/ladies-club/sponsors/foundation-logo.jpg",   url: "https://foundationlenawee.com" },
-  { name: "Lakeside Construction",    logo: "/images/ladies-club/sponsors/lakeside-logo.jpg",     url: null },
-  { name: "Land To Lakes",            logo: "/images/ladies-club/sponsors/landtolakes-logo.jpg",  url: "https://landtolakes.com" },
-  { name: "Manitou Beach Marina",     logo: "/images/ladies-club/sponsors/marina_logo.png",       url: "https://manitoubeachmarina.com/" },
-  { name: "Devils Lake Water Sports", logo: "/images/ladies-club/sponsors/dl_watersports_logo.png", url: "https://dlwatersports.com/" },
-  { name: "Kapnick Insurance",        logo: "/images/ladies-club/sponsors/kapnick-logo.jpg",        url: "https://kapnick.com/" },
+  { name: "Adrian Steel",                      logo: "/images/ladies-club/sponsors/adrian-logo.jpg",        url: "https://adriansteel.com" },
+  { name: "Black Oak Building Company",        logo: null,                                                    url: null },
+  { name: "Dave/Jose",                         logo: null,                                                    url: null },
+  { name: "Devil's and Round Lake Men's Club", logo: null,                                                    url: null },
+  { name: "Decker and Sons Insurance",         logo: "/images/ladies-club/sponsors/decker-logo.jpg",        url: "https://deckerandsonsinsurance.com" },
+  { name: "Devil's Lake Water Sports",         logo: "/images/ladies-club/sponsors/dl_watersports_logo.png", url: "https://dlwatersports.com/" },
+  { name: "Foundation Realty",                 logo: "/images/ladies-club/sponsors/foundation-logo.jpg",    url: "https://foundationlenawee.com" },
+  { name: "Kapnick Insurance",                 logo: "/images/ladies-club/sponsors/kapnick-logo.jpg",       url: "https://kapnick.com/" },
+  { name: "Lakeside Construction",             logo: "/images/ladies-club/sponsors/lakeside-logo.jpg",      url: null },
+  { name: "Land To Lakes",                     logo: "/images/ladies-club/sponsors/landtolakes-logo.jpg",   url: "https://landtolakes.com" },
+  { name: "Manitou Beach Marina",              logo: "/images/ladies-club/sponsors/marina_logo.png",        url: "https://manitoubeachmarina.com/" },
 ];
 const DEFAULT_GOLD = [
-  { name: "Devils Lake Yacht Club",   logo: "/images/ladies-club/sponsors/yacht_club_logo.png",   url: "https://www.devilslakeyachtclub.com/" },
-  { name: "Edison Builders",         logo: "/images/ladies-club/sponsors/edison-logo.jpg" },
-  { name: "Henson Family",           logo: null },
-  { name: "Kerentoff Family",        logo: null },
-  { name: "Mark Riggle Real Estate", logo: "/images/ladies-club/sponsors/riggle-logo.jpg" },
-  { name: "North Shore Pontoon",     logo: "/images/ladies-club/sponsors/northshore-logo.jpg" },
-  { name: "Sterling Market",         logo: "/images/ladies-club/sponsors/sterling-logo.jpg" },
+  { name: "Devil's Lake Bar and Grill",  logo: null },
+  { name: "Devils Lake Yacht Club",      logo: "/images/ladies-club/sponsors/yacht_club_logo.png", url: "https://www.devilslakeyachtclub.com/" },
+  { name: "Edison Builders",             logo: "/images/ladies-club/sponsors/edison-logo.jpg" },
+  { name: "Henson Family",              logo: null },
+  { name: "Karabetsos Family",          logo: null },
+  { name: "Kerentoff Family",           logo: null },
+  { name: "Mark Riggle Real Estate",    logo: "/images/ladies-club/sponsors/riggle-logo.jpg" },
+  { name: "Michelle Construction",      logo: null },
+  { name: "North Shore Pontoon",        logo: "/images/ladies-club/sponsors/northshore-logo.jpg" },
+  { name: "Sterling Market",            logo: "/images/ladies-club/sponsors/sterling-logo.jpg" },
 ];
 const DEFAULT_SILVER = [
-  { name: "FN Cuthbert Company" }, { name: "Boot Jack Tavern" }, { name: "Devil's Lake Golf Course" },
-  { name: "Manitou Beach Glass Factory" }, { name: "Papa's Place" }, { name: "Redwood Tree Service" },
-  { name: "Trends Salon and Spa" }, { name: "Two Lakes Tavern" }, { name: "Devil's Lake View Living" },
-  { name: "Luigi's Pizza" },
+  { name: "Boot Jack Tavern" }, { name: "Devil's Lake Golf Course" }, { name: "Devil's Lake View Living" },
+  { name: "FN Cuthbert Company" }, { name: "Highland Inn" }, { name: "Luigi's Pizza" },
+  { name: "Manitou Beach Glass Factory" }, { name: "Papa's Place" }, { name: "Printed on a Lark" },
+  { name: "Redwood Tree Service" }, { name: "Trends Salon and Spa" }, { name: "Two Lakes Tavern" },
+  { name: "Woodstock Wine & Cheese" },
 ];
 const DEFAULT_BRONZE  = [{ name: "Glamour Auto Shop" }];
-const DEFAULT_FRIENDS = [{ name: "Freddie Freeze" }, { name: "Benny D's on 223" }, { name: "Trillium House" }];
+const DEFAULT_FRIENDS = [{ name: "Benny D's on 223" }, { name: "Blackbird Cafe" }, { name: "Freddie Freeze" }, { name: "Sandbar Cafe" }];
 
 function LadiesClubSponsorsSection() {
   const [sponsors, setSponsors] = React.useState(null); // null = use defaults
