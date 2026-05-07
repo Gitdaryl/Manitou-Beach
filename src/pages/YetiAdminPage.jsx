@@ -2694,9 +2694,8 @@ export default function YetiAdminPage() {
                   <div style={{ fontSize: 11, color: '#A8C4CE', textTransform: 'uppercase', letterSpacing: 1.5, fontFamily: 'Libre Franklin, sans-serif', marginBottom: 6 }}>Subject Line</div>
                   <div style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 16, color: '#FAF6EF', marginBottom: 14 }}>{nlAutoResult.subject}</div>
                   <div style={{ fontSize: 11, color: '#A8C4CE', textTransform: 'uppercase', letterSpacing: 1.5, fontFamily: 'Libre Franklin, sans-serif', marginBottom: 6 }}>Feature Article</div>
-                  <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, color: '#d4e8f0', lineHeight: 1.7, marginBottom: 14, maxHeight: 100, overflow: 'hidden', position: 'relative' }}>
+                  <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, color: '#d4e8f0', lineHeight: 1.7, marginBottom: 14, whiteSpace: 'pre-wrap' }}>
                     {nlAutoResult.featureText}
-                    <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 32, background: 'linear-gradient(transparent, rgba(26,40,48,0.95))' }} />
                   </div>
                   <div style={{ fontSize: 11, color: '#A8C4CE', textTransform: 'uppercase', letterSpacing: 1.5, fontFamily: 'Libre Franklin, sans-serif', marginBottom: 6 }}>Event Bullets ({nlAutoResult.eventCount} events found)</div>
                   {nlAutoResult.bullets.map((b, i) => (
