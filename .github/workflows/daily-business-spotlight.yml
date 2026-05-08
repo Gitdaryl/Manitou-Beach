@@ -1,0 +1,73 @@
+name: Daily Business Spotlight
+
+on:
+  schedule:
+    # Every day at 12 PM ET = 17:00 UTC
+    - cron: '0 17 * * *'
+  workflow_dispatch:
+    inputs:
+      preview:
+        description: 'Preview only (render but no post)'
+        required: false
+        default: 'false'
+        type: choice
+        options: ['false', 'true']
+      slug:
+        description: 'Force a specific business by slug (optional)'
+        required: false
+        default: ''
+
+jobs:
+  spotlight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
+        id: setup-chrome
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run spotlight pipeline
+        run: |
+          FLAGS="--post"
+          if [ "${{ github.event.inputs.preview }}" = "true" ]; then
+            FLAGS="--preview"
+          fi
+          if [ -n "${{ github.event.inputs.slug }}" ]; then
+            FLAGS="$FLAGS --slug ${{ github.event.inputs.slug }}"
+          fi
+          node scripts/generate-business-spotlight.js $FLAGS
+        env:
+          NOTION_TOKEN_BUSINESS:     ${{ secrets.NOTION_TOKEN_BUSINESS }}
+          NOTION_DB_BUSINESS:        ${{ secrets.NOTION_DB_BUSINESS }}
+          ANTHROPIC_API_KEY:         ${{ secrets.ANTHROPIC_API_KEY }}
+          META_PAGE_ID:              ${{ secrets.META_PAGE_ID }}
+          META_PAGE_ACCESS_TOKEN:    ${{ secrets.META_PAGE_ACCESS_TOKEN }}
+          META_IG_ACCOUNT_ID:        ${{ secrets.META_IG_ACCOUNT_ID }}
+          BLOB_READ_WRITE_TOKEN:     ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          SITE_URL:                  https://manitoubeachmichigan.com
+          PUPPETEER_EXECUTABLE_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
+
+      - name: Commit updated featured-log.json
+        if: github.event.inputs.preview != 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add video-templates/business-spotlight-b/featured-log.json
+          git diff --staged --quiet || git commit -m "chore: update business spotlight featured-log [skip ci]"
+          git push

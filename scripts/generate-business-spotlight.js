@@ -19,6 +19,7 @@ import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
 import { createRequire } from 'module';
 import Anthropic from '@anthropic-ai/sdk';
+import { put } from '@vercel/blob';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname  = path.dirname(__filename);
@@ -311,10 +312,85 @@ function generateHtml(template, data) {
     .replace('{{PROFILE_SLUG}}',  data.profileSlug);
 }
 
+const FB_API       = 'https://graph.facebook.com/v25.0';
+const FB_VIDEO_API = 'https://graph-video.facebook.com/v25.0';
+
+async function uploadToBlob(mp4Path, slug) {
+  console.log(`Uploading ${mp4Path} to Vercel Blob...`);
+  const today = new Date().toISOString().split('T')[0];
+  const buffer = fs.readFileSync(mp4Path);
+  const blob = await put(`business-spotlight/spotlight-${slug}-${today}.mp4`, buffer, {
+    access: 'public',
+    token: process.env.BLOB_READ_WRITE_TOKEN,
+    contentType: 'video/mp4',
+    addRandomSuffix: false,
+  });
+  console.log(`Blob URL: ${blob.url}`);
+  return blob.url;
+}
+
+async function postToFacebook(videoUrl, caption) {
+  console.log('Posting to Facebook...');
+  const pageId    = process.env.META_PAGE_ID || process.env.FB_PAGE_ID;
+  const pageToken = process.env.META_PAGE_ACCESS_TOKEN || process.env.FB_PAGE_ACCESS_TOKEN;
+  const res = await fetch(`${FB_VIDEO_API}/${pageId}/videos`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ file_url: videoUrl, description: caption, access_token: pageToken }),
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(`FB error: ${data.error.message}`);
+  console.log(`Facebook post ID: ${data.id}`);
+  return data.id;
+}
+
+async function postToInstagram(videoUrl, caption) {
+  console.log('Posting to Instagram as Reel...');
+  const pageToken = process.env.META_PAGE_ACCESS_TOKEN || process.env.FB_PAGE_ACCESS_TOKEN;
+  const igId      = process.env.META_IG_ACCOUNT_ID || process.env.IG_BUSINESS_ACCOUNT_ID;
+
+  const containerRes = await fetch(`${FB_API}/${igId}/media`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      media_type: 'REELS',
+      video_url: videoUrl,
+      caption,
+      share_to_feed: 'true',
+      access_token: pageToken,
+    }),
+  });
+  const containerData = await containerRes.json();
+  if (containerData.error) throw new Error(`IG container error: ${containerData.error.message}`);
+  const creationId = containerData.id;
+
+  console.log(`IG container ${creationId} - waiting for processing...`);
+  for (let attempt = 0; attempt < 12; attempt++) {
+    await new Promise(r => setTimeout(r, 10000));
+    const statusRes = await fetch(`${FB_API}/${creationId}?fields=status_code&access_token=${pageToken}`);
+    const statusData = await statusRes.json();
+    console.log(`  IG status: ${statusData.status_code}`);
+    if (statusData.status_code === 'FINISHED') break;
+    if (statusData.status_code === 'ERROR') throw new Error('IG media processing failed');
+  }
+
+  const publishRes = await fetch(`${FB_API}/${igId}/media_publish`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ creation_id: creationId, access_token: pageToken }),
+  });
+  const publishData = await publishRes.json();
+  if (publishData.error) throw new Error(`IG publish error: ${publishData.error.message}`);
+  console.log(`Instagram Reel ID: ${publishData.id}`);
+  return publishData.id;
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 async function main() {
   const args = process.argv.slice(2);
   let forceSlug = null;
+  const doPost    = args.includes('--post');
+  const isPreview = args.includes('--preview');
   for (let i = 0; i < args.length; i++) {
     if (args[i] === '--slug' && args[i+1]) forceSlug = args[i+1];
     if (args[i] === '--name' && args[i+1]) forceSlug = toSlug(args[i+1]);
@@ -409,6 +485,50 @@ async function main() {
   console.log(caption);
   console.log('----------------------');
   if (videoPath) console.log(`\nVideo: ${videoPath}`);
+
+  if (isPreview) {
+    console.log('\nPreview mode - skipping upload + post.');
+    return;
+  }
+
+  if (!doPost) return;
+
+  // Upload + post
+  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    console.error('BLOB_READ_WRITE_TOKEN not set - cannot upload');
+    process.exit(1);
+  }
+  if (!videoPath) {
+    console.error('No video file found after render');
+    process.exit(1);
+  }
+
+  const videoUrl = await uploadToBlob(videoPath, slug);
+
+  const pageId    = process.env.META_PAGE_ID    || process.env.FB_PAGE_ID;
+  const pageToken = process.env.META_PAGE_ACCESS_TOKEN || process.env.FB_PAGE_ACCESS_TOKEN;
+  const igId      = process.env.META_IG_ACCOUNT_ID || process.env.IG_BUSINESS_ACCOUNT_ID;
+  const results = {};
+  const errors  = {};
+
+  if (pageId && pageToken) {
+    try { results.facebook = await postToFacebook(videoUrl, caption); }
+    catch (err) { console.error('Facebook failed:', err.message); errors.facebook = err.message; }
+  } else {
+    console.warn('Facebook credentials missing - skipping FB post');
+  }
+
+  if (igId && pageToken) {
+    try { results.instagram = await postToInstagram(videoUrl, caption); }
+    catch (err) { console.error('Instagram failed:', err.message); errors.instagram = err.message; }
+  } else {
+    console.warn('Instagram credentials missing - skipping IG post');
+  }
+
+  console.log('\n=== Spotlight pipeline complete ===');
+  console.log('Results:', results);
+  if (Object.keys(errors).length) console.log('Errors:', errors);
+  if (Object.keys(errors).length && !Object.keys(results).length) process.exit(1);
 }
 
 main().catch(err => { console.error(err); process.exit(1); });
