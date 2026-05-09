@@ -182,6 +182,73 @@ function splitBusinessName(name) {
   };
 }
 
+// ── Haiku: generate Yeti VO script ──────────────────────────────────────────
+async function generateVoiceScript(businessName, description, categories) {
+  if (!process.env.ELEVENLABS_API_KEY) return null;
+  const client = new Anthropic({ apiKey: ANTHROPIC_KEY });
+  const catStr = (categories || []).join(', ') || 'local business';
+  const descStr = description || `A ${catStr} in Manitou Beach, Michigan`;
+
+  const msg = await client.messages.create({
+    model: 'claude-haiku-4-5-20251001',
+    max_tokens: 120,
+    messages: [{
+      role: 'user',
+      content: `Write a voiceover script for a 10-second social media reel about a local business.
+
+Business: ${businessName} (${catStr})
+About: ${descStr}
+
+Rules:
+- Exactly 22-26 words total
+- Start with "Shoutout to", "Big love for", "Huge props to", or similar - never "Spotlight"
+- 1-2 punchy facts about the business (what makes them worth visiting)
+- End with "check the link below" or "link in the description"
+- Warm, energetic, like a local friend recommending their favourite spot
+- No em dashes, no corporate speak
+
+Return JSON only: {"script": "the spoken words here"}`
+    }]
+  });
+
+  try {
+    const raw = msg.content[0].text.trim().replace(/^```json\s*/,'').replace(/\s*```$/,'');
+    return JSON.parse(raw).script;
+  } catch {
+    return null;
+  }
+}
+
+// ── ElevenLabs: convert script to audio file ─────────────────────────────────
+async function generateElevenLabsAudio(script, outputPath) {
+  const apiKey  = process.env.ELEVENLABS_API_KEY;
+  const voiceId = process.env.ELEVENLABS_VOICE_ID || 'KkHX8g76CeUlV4tBlhub'; // Yeti Vibe - Aussie accent
+  const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'audio/mpeg',
+      'Content-Type': 'application/json',
+      'xi-api-key': apiKey,
+    },
+    body: JSON.stringify({
+      text: script,
+      model_id: 'eleven_turbo_v2_5',
+      voice_settings: { stability: 0.45, similarity_boost: 0.75, style: 0.55, use_speaker_boost: true },
+    }),
+  });
+  if (!res.ok) throw new Error(`ElevenLabs error: ${res.status} ${await res.text()}`);
+  fs.writeFileSync(outputPath, Buffer.from(await res.arrayBuffer()));
+  console.log(`VO audio saved: ${outputPath}`);
+}
+
+// ── FFmpeg: mux audio onto silent video ──────────────────────────────────────
+function muxAudio(videoPath, audioPath, outputPath) {
+  execSync(
+    `ffmpeg -i "${videoPath}" -i "${audioPath}" -c:v copy -c:a aac -map 0:v:0 -map 1:a:0 -shortest -y "${outputPath}"`,
+    { stdio: 'inherit' }
+  );
+}
+
 // ── Haiku: generate 3 punchy spotlight lines ────────────────────────────────
 async function generateSpotlightLines(businessName, description, categories) {
   const client = new Anthropic({ apiKey: ANTHROPIC_KEY });
@@ -409,9 +476,13 @@ async function main() {
   console.log(`\nSpotlighting: ${biz.name} (${slug})`);
 
   console.log('Generating spotlight lines with Haiku...');
-  const spotlight = await generateSpotlightLines(biz.name, biz.description, biz.categories);
+  const [spotlight, voScript] = await Promise.all([
+    generateSpotlightLines(biz.name, biz.description, biz.categories),
+    generateVoiceScript(biz.name, biz.description, biz.categories),
+  ]);
   console.log('Lines:', spotlight.lines);
   console.log('Sub:', spotlight.sub);
+  if (voScript) console.log('VO script:', voScript);
 
   const catConfig = getCategoryConfig(biz.categories);
   const { line1, line2 } = splitBusinessName(biz.name);
@@ -444,7 +515,24 @@ async function main() {
     .map(f => ({ f, t: fs.statSync(path.join(TEMPLATE_DIR, 'renders', f)).mtimeMs }))
     .sort((a, b) => b.t - a.t);
 
-  const videoPath = renders[0] ? path.join(TEMPLATE_DIR, 'renders', renders[0].f) : null;
+  let videoPath = renders[0] ? path.join(TEMPLATE_DIR, 'renders', renders[0].f) : null;
+
+  // Add VO audio if available
+  if (voScript && videoPath) {
+    try {
+      const audioPath  = path.join(TEMPLATE_DIR, 'renders', `vo-${slug}.mp3`);
+      const muxedPath  = videoPath.replace('.mp4', '-audio.mp4');
+      console.log('\nGenerating VO audio with ElevenLabs...');
+      await generateElevenLabsAudio(voScript, audioPath);
+      console.log('Muxing audio onto video...');
+      muxAudio(videoPath, audioPath, muxedPath);
+      fs.unlinkSync(audioPath);
+      videoPath = muxedPath;
+      console.log(`Final video with audio: ${videoPath}`);
+    } catch (err) {
+      console.warn('ElevenLabs/mux failed - using silent video:', err.message);
+    }
+  }
 
   // Update featured log
   log.featured.push({ name: biz.name, slug, date: new Date().toISOString().slice(0, 10) });
