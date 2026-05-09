@@ -200,7 +200,7 @@ Business: ${businessName} (${catStr})
 About: ${descStr}
 
 Rules:
-- Exactly 22-26 words total
+- Exactly 18-22 words total
 - Start with "Shoutout to", "Big love for", "Huge props to", or similar - never "Spotlight"
 - 1-2 punchy facts about the business (what makes them worth visiting)
 - End with "check the link below" or "link in the description"
