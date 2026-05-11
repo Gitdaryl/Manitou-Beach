@@ -638,9 +638,8 @@ function LadiesClubGallerySection() {
 // Hardcoded fallback sponsors — used when Notion fetch fails or has no active sponsors
 const DEFAULT_PLATINUM = [
   { name: "Adrian Steel",                      logo: "/images/ladies-club/sponsors/adrian-logo.jpg",        url: "https://adriansteel.com" },
-  { name: "Black Oak Building Company",        logo: null,                                                    url: null },
-  { name: "Dave/Jose",                         logo: null,                                                    url: null },
-  { name: "Devil's and Round Lake Men's Club", logo: null,                                                    url: null },
+{ name: "Dave/Jose",                         logo: null,                                                    url: null },
+  { name: "Devil's and Round Lake Men's Club", logo: "/images/mens_club_logo.png",                           url: "/mens-club" },
   { name: "Decker and Sons Insurance",         logo: "/images/ladies-club/sponsors/decker-logo.jpg",        url: "https://deckerandsonsinsurance.com" },
   { name: "Devil's Lake Water Sports",         logo: "/images/ladies-club/sponsors/dl_watersports_logo.png", url: "https://dlwatersports.com/" },
   { name: "Foundation Realty",                 logo: "/images/ladies-club/sponsors/foundation-logo.jpg",    url: "https://foundationlenawee.com" },
@@ -712,8 +711,8 @@ function LadiesClubSponsorsSection() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          padding: platinum ? 24 : 14,
-          gap: 10,
+          padding: platinum ? "12px 16px" : 14,
+          gap: 8,
           cursor: url ? "pointer" : "default",
           transform: hovered ? "translateY(-4px)" : "translateY(0)",
           boxShadow: hovered
@@ -728,7 +727,7 @@ function LadiesClubSponsorsSection() {
           <img
             src={logo}
             alt={name}
-            style={{ maxWidth: "100%", maxHeight: platinum ? 120 : 72, objectFit: "contain" }}
+            style={{ maxWidth: "100%", maxHeight: platinum ? 152 : 72, objectFit: "contain" }}
           />
         ) : (
           <span style={{
@@ -752,9 +751,10 @@ function LadiesClubSponsorsSection() {
         )}
       </div>
     );
-    if (url && platinum) {
+    if (url) {
+      const isExternal = url.startsWith('http');
       return (
-        <a href={url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "block" }}>
+        <a href={url} {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={{ textDecoration: "none", display: "block" }}>
           {inner}
         </a>
       );
@@ -1068,6 +1068,41 @@ function LadiesClubGetInvolved() {
   );
 }
 
+const SUMMERFEST_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'Event',
+  name: 'Devils Lake Summer Festival 2026',
+  startDate: '2026-06-20T09:00:00',
+  endDate: '2026-06-20T14:00:00',
+  description: 'The Land & Lake Ladies Club presents a lively day of food, music, crafts, art, and community in Manitou Beach Village.',
+  url: 'https://manitoubeachmichigan.com/ladies-club',
+  location: {
+    '@type': 'Place',
+    name: 'Manitou Beach Village',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Manitou Beach',
+      addressRegion: 'MI',
+      addressCountry: 'US',
+    },
+  },
+  organizer: {
+    '@type': 'Organization',
+    name: 'Land & Lake Ladies Club',
+    url: 'https://manitoubeachmichigan.com/ladies-club',
+  },
+  sponsor: [
+    ...DEFAULT_PLATINUM,
+    ...DEFAULT_GOLD,
+    ...DEFAULT_SILVER,
+    ...DEFAULT_BRONZE,
+    ...DEFAULT_FRIENDS,
+  ].map(s => {
+    const absUrl = s.url ? (s.url.startsWith('http') ? s.url : `https://manitoubeachmichigan.com${s.url}`) : null;
+    return Object.assign({ '@type': 'Organization', name: s.name }, absUrl ? { url: absUrl } : {});
+  }),
+};
+
 export default function LadiesClubPage() {
   const subScrollTo = (id) => { window.location.href = "/#" + id; };
   return (
@@ -1076,6 +1111,7 @@ export default function LadiesClubPage() {
         title="Land & Lake Ladies Club"
         description="Land & Lake Ladies Club - women's civic organization in Manitou Beach, Michigan. Summer Festival, community events, and membership."
         path="/ladies-club"
+        schema={SUMMERFEST_SCHEMA}
         breadcrumbs={[
           { name: 'Home', path: '/' },
           { name: 'Ladies Club', path: '/ladies-club' },
