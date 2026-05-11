@@ -507,7 +507,7 @@ async function main() {
   fs.writeFileSync(RENDER_FILE, html, 'utf8');
 
   console.log('\nRendering video...');
-  execSync('npx hyperframes render', { cwd: TEMPLATE_DIR, stdio: 'inherit' });
+  execSync('npx --yes hyperframes@0.5.6 render', { cwd: TEMPLATE_DIR, stdio: 'inherit' });
 
   // Find the newest render
   const renders = fs.readdirSync(path.join(TEMPLATE_DIR, 'renders'))
