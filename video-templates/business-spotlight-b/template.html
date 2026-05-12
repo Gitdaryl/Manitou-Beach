@@ -22,27 +22,23 @@
 
   <!-- Background: category-matched gradient -->
   <div id="bg" class="clip"
-    data-start="0" data-duration="10" data-track-index="0"
+    data-start="0" data-duration="13" data-track-index="0"
     style="position:absolute;top:0;left:0;width:1080px;height:1920px;
-    background:{{BG_GRADIENT}};
-    opacity:1;">
-    <!-- Soft center bloom -->
+    background:{{BG_GRADIENT}};opacity:1;">
     <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
     width:960px;height:960px;border-radius:50%;
     background:radial-gradient(circle,{{BLOOM_COLOR}} 0%,rgba(91,126,149,0.04) 50%,transparent 70%);"></div>
-    <!-- Category icon: large, low-opacity line drawing -->
     <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
     opacity:0.06;pointer-events:none;">
       {{ICON_SVG}}
     </div>
   </div>
 
-  <!-- Business logo: centered top-third, ~260px diameter (only present when logo exists) -->
   {{LOGO_BLOCK}}
 
   <!-- MB watermark: persistent bottom-left -->
   <div id="mb-brand" class="clip"
-    data-start="0" data-duration="10" data-track-index="2"
+    data-start="0" data-duration="13" data-track-index="2"
     style="position:absolute;bottom:52px;left:60px;
     display:flex;align-items:center;gap:16px;opacity:0;">
     <img src="assets/mb-icon.png"
@@ -52,12 +48,11 @@
     color:rgba(250,246,249,0.40);letter-spacing:2px;">MANITOU BEACH</span>
   </div>
 
-  <!-- SLIDE 1: "BUSINESS SPOTLIGHT" (0.4 - 1.63s) -->
+  <!-- SLIDE 1: word slam (0.4 - 1.63s) -->
   <div id="s1" class="clip"
-    data-start="0" data-duration="10" data-track-index="3"
+    data-start="0" data-duration="13" data-track-index="3"
     style="position:absolute;top:0;left:0;width:1080px;height:1920px;
-    display:flex;flex-direction:column;justify-content:center;
-    padding:0 64px;">
+    display:flex;flex-direction:column;justify-content:center;padding:0 64px;">
     <div id="s1-eyebrow" style="font-family:'Libre Franklin',sans-serif;font-size:26px;font-weight:600;
     color:rgba(250,246,239,0.40);letter-spacing:8px;text-transform:uppercase;margin-bottom:28px;">
       TODAY'S FEATURE
@@ -76,12 +71,11 @@
     text-shadow:0 4px 30px rgba(0,0,0,0.6);">LIGHT</div>
   </div>
 
-  <!-- SLIDE 2: Business name (1.63 - 5.2s) -->
+  <!-- SLIDE 2: business name (1.63 - 4.95s, light-leak handles exit) -->
   <div id="s2" class="clip"
-    data-start="0" data-duration="10" data-track-index="4"
+    data-start="0" data-duration="13" data-track-index="4"
     style="position:absolute;top:0;left:0;width:1080px;height:1920px;
-    display:flex;flex-direction:column;justify-content:center;
-    padding:0 64px;">
+    display:flex;flex-direction:column;justify-content:center;padding:0 64px;">
     <div id="s2-cat" style="font-family:'Libre Franklin',sans-serif;font-size:28px;font-weight:700;
     color:#5B7E95;letter-spacing:7px;text-transform:uppercase;margin-bottom:36px;opacity:0;">
       {{CATEGORY_LABEL}}
@@ -94,12 +88,11 @@
     text-shadow:0 6px 40px rgba(212,132,90,0.4);opacity:0;">{{NAME_LINE_2}}</div>
   </div>
 
-  <!-- SLIDE 3: What they do (5.2 - 8.05s) -->
+  <!-- SLIDE 3: descriptor lines — word stagger (5.45s+, cinematic-zoom handles exit) -->
   <div id="s3" class="clip"
-    data-start="0" data-duration="10" data-track-index="5"
+    data-start="0" data-duration="13" data-track-index="5"
     style="position:absolute;top:0;left:0;width:1080px;height:1920px;
-    display:flex;flex-direction:column;justify-content:center;
-    padding:0 64px;">
+    display:flex;flex-direction:column;justify-content:center;padding:0 64px;">
     <div id="s3-l1" style="font-family:'Libre Franklin',sans-serif;font-size:74px;font-weight:900;
     color:#FAF6EF;line-height:1.1;text-transform:uppercase;letter-spacing:-1px;
     text-shadow:0 4px 24px rgba(0,0,0,0.6);opacity:0;">{{DESC_LINE_1}}</div>
@@ -115,12 +108,11 @@
     </div>
   </div>
 
-  <!-- SLIDE 4: CTA (8.05 - 10s, holds to end) -->
+  <!-- SLIDE 4: CTA (8.3 - 13s, holds to end) -->
   <div id="s4" class="clip"
-    data-start="0" data-duration="10" data-track-index="6"
+    data-start="0" data-duration="13" data-track-index="6"
     style="position:absolute;top:0;left:0;width:1080px;height:1920px;
-    display:flex;flex-direction:column;justify-content:center;
-    padding:0 64px;">
+    display:flex;flex-direction:column;justify-content:center;padding:0 64px;">
     <div id="s4-label" style="font-family:'Libre Franklin',sans-serif;font-size:28px;font-weight:600;
     color:rgba(250,246,239,0.42);letter-spacing:7px;text-transform:uppercase;margin-bottom:28px;opacity:0;">
       FIND THEM AT
@@ -131,22 +123,47 @@
       manitoubeachmichigan.com<br/><span style="color:#D4845A;">/business/{{PROFILE_SLUG}}</span>
     </div>
   </div>
+
+  <!-- Shader: light-leak between slide 2 → 3 -->
+  <div data-composition-src="compositions/light-leak.html"
+    data-start="4.95" data-duration="0.5" data-track-index="7"
+    data-width="1080" data-height="1920"></div>
+
+  <!-- Shader: cinematic-zoom into CTA -->
+  <div data-composition-src="compositions/cinematic-zoom.html"
+    data-start="7.8" data-duration="0.5" data-track-index="8"
+    data-width="1080" data-height="1920"></div>
+
 </div>
 <script>
 window.__timelines = window.__timelines || {};
-const tl = gsap.timeline({ paused: true });
 
-// MB watermark
+// Wrap each descriptor line into per-word spans for stagger animation
+function wrapWords(id) {
+  var el = document.getElementById(id);
+  if (!el || !el.textContent.trim()) return;
+  var words = el.textContent.trim().split(/\s+/);
+  el.innerHTML = words.map(function(w) {
+    return '<span style="display:inline-block">' + w + ' </span>';
+  }).join('');
+}
+wrapWords('s3-l1');
+wrapWords('s3-l2');
+wrapWords('s3-l3');
+
+var tl = gsap.timeline({ paused: true });
+
+// Watermark
 tl.fromTo("#mb-brand", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.out" }, 0.2);
 
-// Logo (only if element exists in DOM)
-const logoEl = document.getElementById("biz-logo");
+// Logo (only if element exists)
+var logoEl = document.getElementById("biz-logo");
 if (logoEl) {
   tl.fromTo("#biz-logo", { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(2)" }, 0.2);
   tl.to("#biz-logo", { scale: 1.04, duration: 1.8, ease: "sine.inOut", yoyo: true, repeat: 4 }, 0.7);
 }
 
-// SLIDE 1 — "BUSINESS SPOTLIGHT" word slam (0.4 - 1.63s)
+// SLIDE 1 — word slam (0.4 - 1.63s)
 tl.fromTo("#s1-eyebrow", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 0.4);
 tl.fromTo("#s1-w1", { opacity: 0, scale: 1.45, y: -38 }, { opacity: 1, scale: 1, y: 0, duration: 0.18, ease: "power4.out" }, 0.55);
 tl.to("#s1-w1",     { scale: 1.035, duration: 0.4, ease: "sine.inOut", yoyo: true, repeat: 1 }, 0.74);
@@ -158,28 +175,44 @@ tl.fromTo("#s1-w4", { opacity: 0, scale: 1.45, y: -38 }, { opacity: 1, scale: 1,
 tl.to("#s1-w4",     { scale: 1.035, duration: 0.4, ease: "sine.inOut", yoyo: true, repeat: 1 }, 1.28);
 tl.to("#s1-eyebrow, #s1-w1, #s1-w2, #s1-w3, #s1-w4", { opacity: 0, duration: 0.37, ease: "power1.out" }, 1.63);
 
-// SLIDE 2 — Business name (1.63 - 5.2s)
+// SLIDE 2 — business name entrance + mid-scene drift (light-leak handles exit at 4.95s)
 tl.fromTo("#s2-cat",   { opacity: 0, letterSpacing: "18px" }, { opacity: 1, letterSpacing: "7px", duration: 0.45, ease: "power3.out" }, 1.63);
 tl.fromTo("#s2-name1", { opacity: 0, scale: 1.45, y: -36 }, { opacity: 1, scale: 1, y: 0, duration: 0.2, ease: "power4.out" }, 2.15);
 tl.to("#s2-name1",     { scale: 1.04, duration: 0.45, ease: "sine.inOut", yoyo: true, repeat: 1 }, 2.37);
 tl.fromTo("#s2-name2", { opacity: 0, scale: 1.45, y: -36 }, { opacity: 1, scale: 1, y: 0, duration: 0.22, ease: "elastic.out(1,0.45)" }, 2.5);
 tl.to("#s2-name2",     { scale: 1.04, duration: 0.45, ease: "sine.inOut", yoyo: true, repeat: 1 }, 2.75);
-tl.to("#s2-cat, #s2-name1, #s2-name2", { opacity: 0, duration: 0.37, ease: "power1.out" }, 5.2);
+// Mid-scene drift — keeps slide 2 alive while VO says the name
+tl.to("#s2-name1", { y: -10, duration: 2.0, ease: "sine.inOut", yoyo: true, repeat: 1 }, 3.1);
+tl.to("#s2-name2", { y: -7,  duration: 2.3, ease: "sine.inOut", yoyo: true, repeat: 1 }, 3.3);
+tl.to("#s2-cat",   { letterSpacing: "9px", duration: 1.6, ease: "sine.inOut", yoyo: true, repeat: 1 }, 3.1);
+// Hide after light-leak shader completes
+tl.set("#s2-cat, #s2-name1, #s2-name2", { autoAlpha: 0 }, 5.46);
 
-// SLIDE 3 — Description stagger (5.2 - 8.05s)
-tl.fromTo("#s3-l1",  { opacity: 0, scale: 1.4, y: -32 }, { opacity: 1, scale: 1, y: 0, duration: 0.2, ease: "power4.out" }, 5.2);
-tl.to("#s3-l1",      { scale: 1.04, duration: 0.4, ease: "sine.inOut", yoyo: true, repeat: 1 }, 5.42);
-tl.fromTo("#s3-l2",  { opacity: 0, scale: 1.4, y: -32 }, { opacity: 1, scale: 1, y: 0, duration: 0.2, ease: "power4.out" }, 5.45);
-tl.to("#s3-l2",      { scale: 1.04, duration: 0.4, ease: "sine.inOut", yoyo: true, repeat: 1 }, 5.67);
-tl.fromTo("#s3-l3",  { opacity: 0, scale: 1.4, y: -32 }, { opacity: 1, scale: 1, y: 0, duration: 0.2, ease: "power4.out" }, 5.7);
-tl.to("#s3-l3",      { scale: 1.04, duration: 0.4, ease: "sine.inOut", yoyo: true, repeat: 1 }, 5.92);
-tl.fromTo("#s3-sub", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 6.2);
-tl.to("#s3-l1, #s3-l2, #s3-l3, #s3-sub", { opacity: 0, duration: 0.37, ease: "power1.out" }, 8.05);
+// SLIDE 3 — per-word stagger + float (cinematic-zoom handles exit at 7.8s)
+['s3-l1', 's3-l2', 's3-l3'].forEach(function(id, lineIdx) {
+  var lineStart = 5.45 + lineIdx * 0.28;
+  var spans = document.querySelectorAll('#' + id + ' span');
+  tl.set('#' + id, { opacity: 1 }, lineStart);
+  spans.forEach(function(span, wi) {
+    tl.fromTo(span,
+      { opacity: 0, y: -22, scale: 1.28 },
+      { opacity: 1, y: 0, scale: 1, duration: 0.16, ease: "power4.out" },
+      lineStart + wi * 0.1
+    );
+  });
+  tl.to('#' + id, { y: -6, duration: 1.1, ease: "sine.inOut", yoyo: true, repeat: 1 }, lineStart + 0.55);
+});
+tl.fromTo("#s3-sub", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 6.35);
+tl.to("#s3-sub", { y: -4, duration: 1.3, ease: "sine.inOut", yoyo: true, repeat: 1 }, 6.85);
+// Hide after cinematic-zoom shader completes
+tl.set("#s3-l1, #s3-l2, #s3-l3, #s3-sub", { autoAlpha: 0 }, 8.31);
 
-// SLIDE 4 — CTA (8.05 - 10s, holds to end)
-tl.fromTo("#s4-label", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, 8.05);
-tl.fromTo("#s4-url",   { opacity: 0, scale: 1.42, y: -32 }, { opacity: 1, scale: 1, y: 0, duration: 0.24, ease: "elastic.out(1,0.45)" }, 8.42);
-tl.to("#s4-url",       { scale: 1.028, duration: 0.5, ease: "sine.inOut", yoyo: true, repeat: 1 }, 8.8);
+// SLIDE 4 — CTA entrance + held motion (8.3 - 13s)
+tl.fromTo("#s4-label", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, 8.3);
+tl.fromTo("#s4-url",   { opacity: 0, scale: 1.42, y: -32 }, { opacity: 1, scale: 1, y: 0, duration: 0.24, ease: "elastic.out(1,0.45)" }, 8.65);
+tl.to("#s4-url",   { scale: 1.028, duration: 0.5, ease: "sine.inOut", yoyo: true, repeat: 1 }, 9.0);
+tl.to("#s4-label", { letterSpacing: "9px", duration: 1.5, ease: "sine.inOut", yoyo: true, repeat: 2 }, 9.3);
+tl.to("#s4-url",   { y: -8, duration: 2.0, ease: "sine.inOut", yoyo: true, repeat: 1 }, 9.8);
 
 window.__timelines["main"] = tl;
 window.__hf = {
