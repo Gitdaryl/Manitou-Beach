@@ -56,7 +56,7 @@ export default function UpdateListingPage() {
 
   // Step 2 state - pre-filled from Notion response
   const [business, setBusiness] = useState(null);
-  const [form, setForm] = useState({ phone: '', website: '', address: '', description: '', category: '', socialInstagram: '', socialFacebook: '', tagline: '', accentColor: '' });
+  const [form, setForm] = useState({ phone: '', website: '', address: '', description: '', category: '', socialInstagram: '', socialFacebook: '', tagline: '', accentColor: '', googlePlaceId: '' });
   const [hours, setHours] = useState({});
   const [logoFile, setLogoFile] = useState(null);
   const [logoPreview, setLogoPreview] = useState(null);
@@ -89,6 +89,7 @@ export default function UpdateListingPage() {
           socialFacebook: data.business.socialFacebook || '',
           tagline: data.business.tagline || '',
           accentColor: data.business.accentColor || '',
+          googlePlaceId: data.business.googlePlaceId || '',
         });
         if (data.business.hours) { try { setHours(JSON.parse(data.business.hours)); } catch {} }
         if (data.business.logo) setLogoPreview(data.business.logo);
@@ -176,6 +177,7 @@ export default function UpdateListingPage() {
           socialFacebook: form.socialFacebook || null,
           tagline: form.tagline || null,
           accentColor: form.accentColor || null,
+          googlePlaceId: form.googlePlaceId || null,
         }),
       });
       const data = await res.json();
@@ -426,6 +428,13 @@ export default function UpdateListingPage() {
                       <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>Facebook</p>
                       <Field label="Facebook" value={form.socialFacebook} onChange={v => setForm(f => ({ ...f, socialFacebook: v }))} placeholder="Page URL or name" />
                     </div>
+                  </div>
+                  <div>
+                    <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>Google Place ID</p>
+                    <p style={{ fontSize: 12, color: C.textMuted, margin: '0 0 8px', fontFamily: "'Libre Franklin', sans-serif" }}>
+                      Unlocks real reviews on your profile. Find yours at <a href="https://developers.google.com/maps/documentation/places/web-service/place-id" target="_blank" rel="noopener noreferrer" style={{ color: C.lakeBlue }}>Google's Place ID finder</a>.
+                    </p>
+                    <Field label="Google Place ID" value={form.googlePlaceId} onChange={v => setForm(f => ({ ...f, googlePlaceId: v }))} placeholder="ChIJ..." />
                   </div>
 
                   {/* Hours */}

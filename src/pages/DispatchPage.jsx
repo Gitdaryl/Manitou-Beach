@@ -10,17 +10,51 @@ import yeti from '../data/errorMessages';
 
 // ============================================================
 // Ad slot renderer - picks a random ad from the slot array
+// Falls back to a self-promo CTA when no paid sponsor is active
 // ============================================================
 export function AdSlot({ ads, variant }) {
   const ad = pickAd(ads);
-  if (!ad) return null;
-
   const isLeaderboard = variant === 'leaderboard' || variant === 'listing-banner';
   const wrapStyle = {
     margin: isLeaderboard ? '16px auto' : '24px 0',
     maxWidth: isLeaderboard ? 960 : '100%',
     padding: isLeaderboard ? '0 24px' : 0,
   };
+
+  if (!ad) {
+    return (
+      <div style={wrapStyle}>
+        <a href="/sponsor-dispatch" style={{ display: 'block', textDecoration: 'none' }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 16,
+            background: 'rgba(91,126,149,0.06)',
+            border: `1px dashed ${C.lakeBlue}`,
+            borderRadius: 10,
+            padding: isLeaderboard ? '10px 20px' : '12px 16px',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ fontSize: isLeaderboard ? 22 : 20 }}>📣</div>
+              <div>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, fontSize: 14, color: C.lakeBlue }}>
+                  Want to reach Dispatch readers?
+                </div>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, marginTop: 2 }}>
+                  This spot is open. Put your business in front of the community.
+                </div>
+              </div>
+            </div>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 600, color: C.lakeBlue, whiteSpace: 'nowrap', flexShrink: 0 }}>
+              See rates →
+            </div>
+          </div>
+        </a>
+      </div>
+    );
+  }
+
   const innerStyle = {
     display: 'flex',
     alignItems: 'center',

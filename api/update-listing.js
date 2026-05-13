@@ -56,6 +56,7 @@ export default async function handler(req, res) {
           socialFacebook: p['Facebook URL']?.url || '',
           tagline: p['Tagline']?.rich_text?.[0]?.text?.content || '',
           accentColor: p['Accent Color']?.rich_text?.[0]?.text?.content || '',
+          googlePlaceId: p['Google Place ID']?.rich_text?.[0]?.text?.content || '',
         },
       });
     } catch (err) {
@@ -66,7 +67,7 @@ export default async function handler(req, res) {
 
   // POST - submit an update request
   if (req.method === 'POST') {
-    const { name, email, phone, website, address, description, logoUrl, heroPhotoUrl, hoursJson, category, socialInstagram, socialFacebook, tagline, accentColor } = req.body;
+    const { name, email, phone, website, address, description, logoUrl, heroPhotoUrl, hoursJson, category, socialInstagram, socialFacebook, tagline, accentColor, googlePlaceId } = req.body;
     if (!name || !email) return res.status(400).json({ success: false, error: 'Name and email are required' });
 
     try {
@@ -113,6 +114,7 @@ export default async function handler(req, res) {
             ...(socialFacebook && { 'Facebook URL': { url: socialFacebook } }),
             ...(tagline && { 'Tagline': { rich_text: [{ text: { content: tagline } }] } }),
             ...(accentColor && { 'Accent Color': { rich_text: [{ text: { content: accentColor } }] } }),
+            ...(googlePlaceId && { 'Google Place ID': { rich_text: [{ text: { content: googlePlaceId } }] } }),
           },
         }),
       });

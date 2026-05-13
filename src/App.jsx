@@ -22,6 +22,7 @@ const MerchantRedeemPage = lazy(() => import('./pages/MerchantRedeemPage'));
 const OfferReportPage = lazy(() => import('./pages/OfferReportPage'));
 const YetiAdminPage = lazy(() => import('./pages/YetiAdminPage'));
 const DispatchPage = lazy(() => import('./pages/DispatchPage'));
+const SponsorDispatchPage = lazy(() => import('./pages/SponsorDispatchPage'));
 const PromotePage = lazy(() => import('./pages/PromotePage'));
 const FeaturedPage = lazy(() => import('./pages/FeaturedPage'));
 const HappeningPage = lazy(() => import('./pages/HappeningPage'));
@@ -215,6 +216,7 @@ export default function App() {
           <Route path="/gbp-setup" element={<GBPSetupPage />} />
           <Route path="/dispatch" element={<DispatchPage />} />
           <Route path="/dispatch/:slug" element={<DispatchArticlePage />} />
+          <Route path="/sponsor-dispatch" element={<SponsorDispatchPage />} />
           <Route path="/yeti-admin" element={<YetiAdminPage />} />
           <Route path="/claim/:slug" element={<ClaimPage />} />
           <Route path="/redeem/:slug" element={<MerchantRedeemPage />} />
