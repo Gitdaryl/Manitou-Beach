@@ -389,7 +389,7 @@ async function emailPreview(subject, beehiivPost, dates) {
 
   await resend.emails.send({
     from: `Manitou Beach <events@manitoubeachmichigan.com>`,
-    to: 'admin@yetigroove.com',
+    to: 'admin@manitoubeachmichigan.com',
     subject: `Dispatch draft ready: "${subject}" - sends ${sendTime}`,
     html: `
       <div style="font-family:Georgia,serif;max-width:520px;margin:0 auto;color:#3B3228;background:#FAF6EF;padding:36px 32px;border-radius:8px;">

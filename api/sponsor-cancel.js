@@ -39,7 +39,7 @@ async function notifyFirstWaitlistEntry(notionToken, pageId, pageLabel, siteUrl)
     const { Resend } = await import('resend');
     const resend = new Resend(process.env.RESEND_API_KEY);
     await resend.emails.send({
-      from: 'Manitou Beach <hello@manitou-beach.com>',
+      from: 'Manitou Beach <hello@manitoubeachmichigan.com>',
       to: email,
       subject: `The ${pageLabel} sponsorship spot just opened`,
       html: `
@@ -129,7 +129,7 @@ export default async function handler(req, res) {
     return res.status(200).send(successPage(bizName, pageLabel, false));
   } catch (err) {
     console.error('sponsor-cancel error:', err.message);
-    return res.status(500).send(errorPage('Something went wrong. Please email hello@manitou-beach.com.'));
+    return res.status(500).send(errorPage('Something went wrong. Please email hello@manitoubeachmichigan.com.'));
   }
 }
 

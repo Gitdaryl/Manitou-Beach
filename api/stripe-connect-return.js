@@ -149,7 +149,7 @@ async function sendWelcomeEmail({ orgName, contactName, email, pageUrl }) {
         <div style="background:#faf6ef;border-radius:8px;padding:16px 20px;margin:24px 0;border-left:3px solid #5B7E95;">
           <p style="margin:0;font-size:13px;color:#6B5D52;">
             <strong>Questions?</strong> Reach out to Daryl directly -
-            <a href="mailto:daryl@yetigroove.com" style="color:#5B7E95;">daryl@yetigroove.com</a>.
+            <a href="mailto:daryl@manitoubeachmichigan.com" style="color:#5B7E95;">daryl@manitoubeachmichigan.com</a>.
             He'll get you sorted.
           </p>
         </div>

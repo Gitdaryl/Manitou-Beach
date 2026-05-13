@@ -74,7 +74,7 @@ export default async function handler(req, res) {
 
         if (resend) {
           await resend.emails.send({
-            from: 'Manitou Beach <hello@manitou-beach.com>',
+            from: 'Manitou Beach <hello@manitoubeachmichigan.com>',
             to: email,
             subject: `Your ${pageLabel} sponsorship expires in 5 days`,
             html: `

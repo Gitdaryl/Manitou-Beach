@@ -52,7 +52,7 @@ export default async function handler(req, res) {
         const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
         await resend.emails.send({
           from: 'Manitou Beach <events@manitoubeachmichigan.com>',
-          to: 'admin@yetigroove.com',
+          to: 'admin@manitoubeachmichigan.com',
           subject: `New GBP Setup Request - ${businessName}`,
           html: `
             <div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:28px 20px;background:#FAF6EF;">
