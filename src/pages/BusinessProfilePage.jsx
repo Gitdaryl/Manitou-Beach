@@ -60,6 +60,10 @@ export default function BusinessProfilePage() {
   // ── Google reviews ──────────────────────────────────────────────────────
   const [googleData, setGoogleData] = useState(null);
 
+  // ── Profile report card (owner only) ────────────────────────────────────
+  const [reportCard, setReportCard] = useState(null);
+  const [reportCardDismissed, setReportCardDismissed] = useState(false);
+
   // ── Edit mode ───────────────────────────────────────────────────────────
   const [editOpen, setEditOpen] = useState(false);
   const [editForm, setEditForm] = useState({});
@@ -147,6 +151,17 @@ export default function BusinessProfilePage() {
     loadBusiness();
     return () => { cancelled = true; };
   }, [slug]);
+
+  // Fetch report card when owner is verified
+  useEffect(() => {
+    if (!claimToken || !slug) return;
+    const dismissed = sessionStorage.getItem(`mb-rc-dismissed-${slug}`);
+    if (dismissed) { setReportCardDismissed(true); return; }
+    fetch(`/api/profile-report-card?slug=${encodeURIComponent(slug)}&claimToken=${encodeURIComponent(claimToken)}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(d => { if (d) setReportCard(d); })
+      .catch(() => {});
+  }, [claimToken, slug]);
 
   // Show sticky action bar after scrolling past hero
   useEffect(() => {
@@ -621,6 +636,44 @@ export default function BusinessProfilePage() {
               <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, color: '#fff' }}>
                 You're all set. Use the Edit button below to update your profile anytime.
               </span>
+            </div>
+          )}
+
+          {/* ── Profile Report Card (owner only) ── */}
+          {claimToken && reportCard && !reportCardDismissed && (
+            <div style={{ background: '#fff', borderBottom: `1px solid ${C.sand}`, padding: '16px 20px' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+                    <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.sage }}>Your Profile Report Card</span>
+                    <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted }}>{reportCard.score}% complete</span>
+                  </div>
+                  {/* Completion bar */}
+                  <div style={{ background: C.sand, borderRadius: 4, height: 6, marginBottom: 10, overflow: 'hidden' }}>
+                    <div style={{ width: `${reportCard.score}%`, height: '100%', background: reportCard.score >= 80 ? C.sage : reportCard.score >= 50 ? C.driftwood : C.sunset, borderRadius: 4, transition: 'width 0.6s ease' }} />
+                  </div>
+                  {/* Haiku nudge */}
+                  {reportCard.nudge && (
+                    <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textLight, margin: '0 0 8px', lineHeight: 1.6 }}>
+                      {reportCard.nudge}
+                    </p>
+                  )}
+                  {/* Top gap action */}
+                  {reportCard.topGap && (
+                    <button
+                      onClick={() => setEditOpen(true)}
+                      style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 600, color: C.lakeBlue, background: 'none', border: 'none', padding: 0, cursor: 'pointer', textDecoration: 'underline' }}
+                    >
+                      Add {reportCard.topGap.label} now (+{reportCard.topGap.points} pts) →
+                    </button>
+                  )}
+                </div>
+                <button
+                  onClick={() => { setReportCardDismissed(true); sessionStorage.setItem(`mb-rc-dismissed-${slug}`, '1'); }}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: C.textMuted, fontSize: 18, lineHeight: 1, padding: 0, flexShrink: 0 }}
+                  aria-label="Dismiss report card"
+                >×</button>
+              </div>
             </div>
           )}
 
