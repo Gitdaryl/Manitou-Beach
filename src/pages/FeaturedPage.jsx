@@ -503,12 +503,12 @@ export default function FeaturedPage() {
                   <span style={{ color: C.sand, fontSize: 13 }}>·</span>
                   <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted }}>$0 - always included</span>
                 </div>
-                <div style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 10, padding: "13px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+                <div style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 10, padding: "13px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, boxShadow: "0 2px 14px rgba(0,0,0,0.08)" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1, minWidth: 0 }}>
                     <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: C.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Yeti Groove Media</span>
                     <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: `${C.sage}18`, color: C.sageDark, border: `1px solid ${C.sage}35`, flexShrink: 0 }}>Creative Services</span>
                   </div>
-                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, flexShrink: 0 }}>(517) 230-0987</span>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, flexShrink: 0 }}>(517) 555-5555</span>
                 </div>
                 <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, margin: "8px 0 0 2px", lineHeight: 1.5 }}>Name, category, and phone. That's it - no profile page, no expand, no description.</p>
               </FadeIn>
@@ -520,18 +520,19 @@ export default function FeaturedPage() {
                   <span style={{ color: C.sand, fontSize: 13 }}>·</span>
                   <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted }}>$9/mo</span>
                 </div>
-                <div style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 10, overflow: "hidden" }}>
+                <div style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 10, overflow: "hidden", boxShadow: "0 2px 16px rgba(0,0,0,0.09)" }}>
                   <div style={{ padding: "13px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1, minWidth: 0 }}>
                       <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: C.text }}>Yeti Groove Media</span>
                       <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: `${C.sage}18`, color: C.sageDark, border: `1px solid ${C.sage}35`, flexShrink: 0 }}>Creative Services</span>
                     </div>
-                    <span style={{ color: C.lakeBlue, fontSize: 15, fontWeight: 700 }}>▾</span>
+                    <div style={{ display: "flex", alignItems: "center", gap: 14, flexShrink: 0 }}>
+                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted }}>(517) 555-5555</span>
+                      <span style={{ color: C.lakeBlue, fontSize: 15, fontWeight: 700 }}>▾</span>
+                    </div>
                   </div>
                   <div style={{ padding: "14px 18px 18px", borderTop: `1px solid ${C.sand}`, display: "flex", gap: 14, alignItems: "flex-start" }}>
-                    <div style={{ width: 64, height: 64, borderRadius: 8, background: `${C.lakeBlue}18`, border: `1px solid ${C.lakeBlue}30`, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 8, fontWeight: 700, color: C.lakeBlue, letterSpacing: 0.5, textAlign: "center", lineHeight: 1.4 }}>YETI<br/>GROOVE</span>
-                    </div>
+                    <img src="/images/yeti_logo.png" alt="Yeti Groove Media" style={{ width: 64, height: 64, borderRadius: 8, objectFit: "cover", flexShrink: 0 }} />
                     <div style={{ flex: 1 }}>
                       <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textLight, lineHeight: 1.65, margin: "0 0 12px 0" }}>
                         Manitou Beach's community web studio. Websites, marketing videos, and social media for Irish Hills businesses ready to grow online.
@@ -554,19 +555,20 @@ export default function FeaturedPage() {
                   <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted }}>$25/mo</span>
                   <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "2px 8px", borderRadius: 12, background: `${C.sage}18`, color: C.sage, border: `1px solid ${C.sage}35` }}>Most Popular</span>
                 </div>
-                <div style={{ background: `linear-gradient(135deg, ${C.lakeDark} 0%, ${C.lakeBlue} 100%)`, borderRadius: 10, overflow: "hidden" }}>
+                <div style={{ background: `linear-gradient(135deg, ${C.lakeDark} 0%, ${C.lakeBlue} 100%)`, borderRadius: 10, overflow: "hidden", boxShadow: "0 4px 24px rgba(61,90,110,0.45)" }}>
                   <div style={{ padding: "13px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1, minWidth: 0, flexWrap: "wrap" }}>
                       <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: "rgba(255,255,255,0.95)" }}>Yeti Groove Media</span>
                       <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: "rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.8)", border: "1px solid rgba(255,255,255,0.22)", flexShrink: 0 }}>Creative Services</span>
                       <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: `${C.sunsetLight}28`, color: C.sunsetLight, border: `1px solid ${C.sunsetLight}45`, flexShrink: 0 }}>Highlighted</span>
                     </div>
-                    <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 15, fontWeight: 700 }}>▾</span>
+                    <div style={{ display: "flex", alignItems: "center", gap: 14, flexShrink: 0 }}>
+                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.55)" }}>(517) 555-5555</span>
+                      <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 15, fontWeight: 700 }}>▾</span>
+                    </div>
                   </div>
                   <div style={{ padding: "14px 18px 18px", borderTop: "1px solid rgba(255,255,255,0.12)", display: "flex", gap: 14, alignItems: "flex-start" }}>
-                    <div style={{ width: 64, height: 64, borderRadius: 8, background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.2)", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 8, fontWeight: 700, color: "rgba(255,255,255,0.7)", letterSpacing: 0.5, textAlign: "center", lineHeight: 1.4 }}>YETI<br/>GROOVE</span>
-                    </div>
+                    <img src="/images/yeti_logo.png" alt="Yeti Groove Media" style={{ width: 64, height: 64, borderRadius: 8, objectFit: "cover", flexShrink: 0 }} />
                     <div style={{ flex: 1 }}>
                       <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.72)", lineHeight: 1.65, margin: "0 0 12px 0" }}>
                         Manitou Beach's community web studio. Websites, marketing videos, and social media for Irish Hills businesses ready to grow online.
@@ -589,17 +591,18 @@ export default function FeaturedPage() {
                   <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted }}>$49/mo</span>
                   <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "2px 8px", borderRadius: 12, background: `${C.sunsetLight}18`, color: C.sunsetLight, border: `1px solid ${C.sunsetLight}35` }}>Most Features</span>
                 </div>
-                <div style={{ background: `linear-gradient(135deg, ${C.night} 0%, ${C.dusk} 55%, #1A3A4A 100%)`, border: `1.5px solid ${C.sunsetLight}50`, borderRadius: 14, padding: "20px 20px", boxShadow: `0 4px 24px rgba(0,0,0,0.18)` }}>
+                <div style={{ background: `linear-gradient(135deg, ${C.night} 0%, ${C.dusk} 55%, #1A3A4A 100%)`, border: `1.5px solid ${C.sunsetLight}50`, borderRadius: 14, padding: "20px 20px", boxShadow: `0 6px 32px rgba(0,0,0,0.30), 0 0 0 1px rgba(232,168,124,0.12)` }}>
                   <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
-                    <div style={{ width: 72, height: 72, borderRadius: 10, background: `${C.sunsetLight}15`, border: `1.5px solid ${C.sunsetLight}40`, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 8, fontWeight: 700, color: C.sunsetLight, letterSpacing: 0.5, textAlign: "center", lineHeight: 1.4 }}>YETI<br/>GROOVE</span>
-                    </div>
+                    <img src="/images/yeti_logo.png" alt="Yeti Groove Media" style={{ width: 72, height: 72, borderRadius: 10, objectFit: "cover", flexShrink: 0 }} />
                     <div style={{ flex: 1 }}>
                       <div style={{ display: "flex", gap: 8, marginBottom: 6, flexWrap: "wrap", alignItems: "center" }}>
                         <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.cream }}>Yeti Groove Media</span>
                         <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: `${C.sunsetLight}22`, color: C.sunsetLight, border: `1px solid ${C.sunsetLight}45` }}>Front and Center</span>
                       </div>
-                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.55)", border: "1px solid rgba(255,255,255,0.15)", display: "inline-block", marginBottom: 10 }}>Creative Services</span>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10, flexWrap: "wrap" }}>
+                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.55)", border: "1px solid rgba(255,255,255,0.15)" }}>Creative Services</span>
+                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.4)" }}>(517) 555-5555</span>
+                      </div>
                       <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 1.65, margin: "0 0 14px 0" }}>
                         Manitou Beach's community web studio. Websites, marketing videos, and social media for Irish Hills businesses ready to grow online.
                       </p>
