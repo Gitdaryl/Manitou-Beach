@@ -730,7 +730,14 @@ export default function BusinessProfilePage() {
                 </div>
               </div>
             )}
-            {business.heroPhoto ? (
+            {business.heroVideo ? (
+              <video
+                src={business.heroVideo}
+                autoPlay muted loop playsInline
+                className="bp-hero-img"
+                style={{ objectPosition: 'center center' }}
+              />
+            ) : business.heroPhoto ? (
               <img
                 src={business.heroPhoto}
                 alt={`${business.name} - ${business.category} in Manitou Beach, Michigan`}
@@ -743,6 +750,35 @@ export default function BusinessProfilePage() {
               <div className="bp-hero-img" style={{
                 background: `linear-gradient(145deg, ${accent}e0 0%, ${C.dusk} 55%, ${C.lakeDark} 100%)`,
               }} />
+            )}
+
+            {/* Video hero upsell tag - only on demo profiles */}
+            {business.heroVideo && demoTabs.length > 1 && demoTabs.some(t => t.id === business.id) && (
+              <div style={{
+                position: 'absolute', top: 112, right: 14, zIndex: 10,
+                background: 'rgba(5,12,18,0.72)', backdropFilter: 'blur(14px)',
+                border: '1px solid rgba(255,255,255,0.15)',
+                borderRadius: 10, padding: '10px 14px', maxWidth: 210,
+              }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', marginBottom: 3, fontFamily: "'Libre Franklin', sans-serif" }}>
+                  🎬 Want a video hero like this?
+                </div>
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', lineHeight: 1.5, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 8 }}>
+                  We film, edit, and host it for you. One-time.
+                </div>
+                <a
+                  href="/business#contact"
+                  style={{
+                    display: 'block', textAlign: 'center',
+                    background: '#C9A84C', color: '#1A2830',
+                    borderRadius: 7, padding: '7px 0',
+                    fontSize: 12, fontWeight: 800, textDecoration: 'none',
+                    fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.2,
+                  }}
+                >
+                  $200 - Ask us about it →
+                </a>
+              </div>
             )}
 
             {/* Deep scrim for text legibility */}
