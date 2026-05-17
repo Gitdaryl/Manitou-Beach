@@ -1263,12 +1263,14 @@ function FeaturedBusinessCard({ business }) {
 
 // Premium partner - full-width dark banner (stacked at top of directory)
 function PremiumBanner({ business }) {
-  const color = CAT_COLORS[business.category] || C.sage;
+  const [descExpanded, setDescExpanded] = useState(false);
+  const isLong = (business.description || '').length > 160;
+
   return (
     <div className="premium-banner-glow" style={{
       background: `linear-gradient(135deg, ${C.dusk} 0%, ${C.lakeDark} 100%)`,
       borderRadius: 12, padding: "28px 32px",
-      display: "flex", gap: 24, alignItems: "center", flexWrap: "wrap",
+      display: "flex", gap: 24, alignItems: "flex-start", flexWrap: "wrap",
       marginBottom: 16, border: `1px solid rgba(255,255,255,0.07)`,
     }}>
       {/* Logo */}
@@ -1286,7 +1288,22 @@ function PremiumBanner({ business }) {
         </div>
         <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.cream, marginBottom: 8 }}>{business.name}</div>
         {business.description && (
-          <div style={{ fontSize: 13, color: "rgba(255,255,255,0.6)", lineHeight: 1.65 }}>{business.description}</div>
+          <div>
+            <div style={{
+              fontSize: 13, color: "rgba(255,255,255,0.6)", lineHeight: 1.65,
+              ...(!descExpanded && isLong ? { display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" } : {}),
+            }}>
+              {business.description}
+            </div>
+            {isLong && (
+              <button
+                onClick={() => setDescExpanded(e => !e)}
+                style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.4)", padding: "4px 0 0", marginTop: 2 }}
+              >
+                {descExpanded ? "Less ↑" : "More ↓"}
+              </button>
+            )}
+          </div>
         )}
         {business.address && <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", marginTop: 8, fontStyle: "italic" }}>{business.address}</div>}
       </div>
