@@ -563,11 +563,6 @@ export default function FeaturedPage() {
                       <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: `${C.sunsetLight}28`, color: C.sunsetLight, border: `1px solid ${C.sunsetLight}45`, flexShrink: 0 }}>Highlighted</span>
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                        <span style={{ color: "#FBBF24", fontSize: 12, letterSpacing: -1 }}>★★★★★</span>
-                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.9)" }}>4.8</span>
-                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, color: "rgba(255,255,255,0.45)" }}>(47)</span>
-                      </div>
                       <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.45)" }}>(517) 555-5555</span>
                       <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 15, fontWeight: 700 }}>▾</span>
                     </div>
@@ -575,6 +570,11 @@ export default function FeaturedPage() {
                   <div style={{ padding: "14px 18px 18px", borderTop: "1px solid rgba(255,255,255,0.12)", display: "flex", gap: 14, alignItems: "flex-start" }}>
                     <img src="/images/yeti_logo.png" alt="Yeti Groove Media" style={{ width: 80, height: 80, borderRadius: 10, objectFit: "cover", flexShrink: 0 }} />
                     <div style={{ flex: 1 }}>
+                      <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,191,36,0.25)", borderRadius: 10, padding: "8px 14px", marginBottom: 12 }}>
+                        <span style={{ color: "#FBBF24", fontSize: 22, letterSpacing: -1, lineHeight: 1 }}>★★★★★</span>
+                        <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, fontWeight: 700, color: "#fff", lineHeight: 1 }}>4.8</span>
+                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.45)", lineHeight: 1 }}>· 47 Google reviews</span>
+                      </div>
                       <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.72)", lineHeight: 1.65, margin: "0 0 12px 0" }}>
                         Manitou Beach's community web studio. Websites, marketing videos, and social media for Irish Hills businesses ready to grow online.
                       </p>
@@ -600,16 +600,14 @@ export default function FeaturedPage() {
                   <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
                     <img src="/images/yeti_logo.png" alt="Yeti Groove Media" style={{ width: 110, height: 110, borderRadius: 12, objectFit: "cover", flexShrink: 0 }} />
                     <div style={{ flex: 1 }}>
-                      <div style={{ display: "flex", gap: 8, marginBottom: 6, flexWrap: "wrap", alignItems: "center", justifyContent: "space-between" }}>
-                        <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-                          <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.cream }}>Yeti Groove Media</span>
-                          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: `${C.sunsetLight}22`, color: C.sunsetLight, border: `1px solid ${C.sunsetLight}45` }}>Front and Center</span>
-                        </div>
-                        <div style={{ display: "flex", alignItems: "center", gap: 4, flexShrink: 0 }}>
-                          <span style={{ color: "#FBBF24", fontSize: 13, letterSpacing: -1 }}>★★★★★</span>
-                          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.9)" }}>4.9</span>
-                          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.4)" }}>(83)</span>
-                        </div>
+                      <div style={{ display: "flex", gap: 8, marginBottom: 10, flexWrap: "wrap", alignItems: "center" }}>
+                        <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.cream }}>Yeti Groove Media</span>
+                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: `${C.sunsetLight}22`, color: C.sunsetLight, border: `1px solid ${C.sunsetLight}45` }}>Front and Center</span>
+                      </div>
+                      <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(251,191,36,0.1)", border: "1px solid rgba(251,191,36,0.3)", borderRadius: 10, padding: "8px 14px", marginBottom: 10 }}>
+                        <span style={{ color: "#FBBF24", fontSize: 24, letterSpacing: -1, lineHeight: 1 }}>★★★★★</span>
+                        <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, fontWeight: 700, color: "#fff", lineHeight: 1 }}>4.9</span>
+                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.45)", lineHeight: 1 }}>· 83 Google reviews</span>
                       </div>
                       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10, flexWrap: "wrap" }}>
                         <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.55)", border: "1px solid rgba(255,255,255,0.15)" }}>Creative Services</span>
