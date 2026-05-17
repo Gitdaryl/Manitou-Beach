@@ -266,7 +266,6 @@ export default async function handler(req, res) {
                 { property: 'Status', status: { equals: 'Listed Enhanced' } },
                 { property: 'Status', status: { equals: 'Listed Featured' } },
                 { property: 'Status', status: { equals: 'Listed Premium' } },
-                { property: 'Status', status: { equals: 'Listed Comp' } },
               ],
             },
             { property: 'Category', select: { does_not_equal: 'Stays & Rentals' } },
