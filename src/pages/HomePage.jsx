@@ -1110,9 +1110,11 @@ function BusinessDirectory() {
                     same uniform row treatment - tier differences show up on
                     the business profile page, not the directory. */}
                 {catAll.map(b =>
-                  (b.tier === 'enhanced' || b.tier === 'featured' || b.tier === 'premium' || b.featured)
-                    ? <EnhancedBusinessRow key={`row-${b.id}`} business={b} />
-                    : <BusinessRow key={`row-${b.id}`} business={b} />
+                  b.tier === 'premium'
+                    ? <PremiumBanner key={`banner-${b.id}`} business={b} />
+                    : (b.tier === 'featured' || b.tier === 'enhanced' || b.featured)
+                      ? <EnhancedBusinessRow key={`row-${b.id}`} business={b} highlighted={b.tier === 'featured'} />
+                      : <BusinessRow key={`row-${b.id}`} business={b} />
                 )}
               </div>
             </FadeIn>
@@ -1305,16 +1307,24 @@ function PremiumBanner({ business }) {
 }
 
 // Enhanced business row - visually distinct from Free row with persistent border, tint, and icon badge
-function EnhancedBusinessRow({ business }) {
+// highlighted=true = $25 Featured tier: lake-blue gradient treatment + richer expanded panel
+function EnhancedBusinessRow({ business, highlighted = false }) {
   const [expanded, setExpanded] = useState(false);
   const color = CAT_COLORS[business.category] || C.sage;
-  const isPremium = business.tier === 'premium';
-  const isFeatured = business.tier === 'featured';
-  const dotColor = isPremium ? C.sunset : color;
+  const dotColor = highlighted ? C.lakeBlue : color;
+
+  const headerBg = highlighted
+    ? 'linear-gradient(to right, rgba(61,90,110,0.13), rgba(91,126,149,0.05))'
+    : `${color}06`;
+  const headerBorder = highlighted ? C.lakeBlue : `${color}55`;
+  const headerBgHover = highlighted
+    ? 'linear-gradient(to right, rgba(61,90,110,0.2), rgba(91,126,149,0.1))'
+    : `${color}12`;
+  const headerBorderHover = highlighted ? C.lakeDark : color;
 
   return (
     <div style={{ borderBottom: `1px solid ${C.sand}` }}>
-      {/* Collapsed header - persistent left border + tint to distinguish from free listings */}
+      {/* Collapsed header */}
       <div
         onClick={() => setExpanded(e => !e)}
         style={{
@@ -1323,26 +1333,31 @@ function EnhancedBusinessRow({ business }) {
           gap: "0 20px",
           alignItems: "center",
           padding: "15px 10px",
-          borderLeft: `3px solid ${color}55`,
+          borderLeft: `3px solid ${headerBorder}`,
           marginLeft: -13,
           paddingLeft: 10,
-          background: `${color}06`,
+          background: headerBg,
           transition: "all 0.18s",
           borderRadius: expanded ? "0 4px 0 0" : "0 4px 4px 0",
           cursor: "pointer",
         }}
-        onMouseEnter={e => { e.currentTarget.style.borderLeftColor = color; e.currentTarget.style.background = `${color}12`; }}
-        onMouseLeave={e => { e.currentTarget.style.borderLeftColor = `${color}55`; e.currentTarget.style.background = `${color}06`; }}
+        onMouseEnter={e => { e.currentTarget.style.borderLeftColor = headerBorderHover; e.currentTarget.style.background = headerBgHover; }}
+        onMouseLeave={e => { e.currentTarget.style.borderLeftColor = headerBorder; e.currentTarget.style.background = headerBg; }}
       >
         {/* Category dot - all enhanced+ tiers get the pulse */}
         <div
           className="listing-dot-pulse"
           style={{ width: 8, height: 8, borderRadius: "50%", background: dotColor, flexShrink: 0 }}
         />
-        {/* Name + icon badge + phone + address */}
+        {/* Name + phone + address */}
         <div style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
             <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: C.text, fontWeight: 400 }}>{business.name}</span>
+            {highlighted && (
+              <span style={{ fontSize: 9, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", color: C.lakeBlue, background: "rgba(91,126,149,0.12)", border: "1px solid rgba(91,126,149,0.25)", borderRadius: 20, padding: "2px 8px", flexShrink: 0 }}>
+                Highlighted
+              </span>
+            )}
             {business.phone && (
               <span style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", whiteSpace: "nowrap" }}>{formatPhone(business.phone)}</span>
             )}
@@ -1352,39 +1367,50 @@ function EnhancedBusinessRow({ business }) {
           )}
         </div>
         {/* Expand toggle */}
-        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600, color, whiteSpace: "nowrap" }}>
+        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600, color: dotColor, whiteSpace: "nowrap" }}>
           {expanded ? "Less ↑" : "More ↓"}
         </span>
       </div>
 
-      {/* Expanded detail panel - animated ease-out */}
-      <div style={{ maxHeight: expanded ? "400px" : 0, overflow: "hidden", transition: "max-height 0.5s ease-out" }}>
+      {/* Expanded detail panel */}
+      <div style={{ maxHeight: expanded ? (highlighted ? "560px" : "400px") : 0, overflow: "hidden", transition: "max-height 0.5s ease-out" }}>
+
+        {/* Highlighted tier: hero photo strip if available */}
+        {highlighted && business.heroPhoto && (
+          <div style={{ position: "relative", height: 120, overflow: "hidden", marginLeft: -13 }}>
+            <img src={business.heroPhoto} alt={business.name} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(61,90,110,0.2), rgba(61,90,110,0.5))" }} />
+          </div>
+        )}
+
         <div style={{
           padding: "14px 10px 16px 27px",
-          background: `${color}05`,
-          borderLeft: `3px solid ${color}30`,
+          background: highlighted
+            ? 'linear-gradient(to right, rgba(61,90,110,0.08), rgba(91,126,149,0.03))'
+            : `${color}05`,
+          borderLeft: highlighted ? `3px solid rgba(91,126,149,0.4)` : `3px solid ${color}30`,
           marginLeft: -13,
           paddingLeft: 27,
           borderRadius: "0 0 4px 0",
         }}>
           <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
             {business.logo && (
-              <div style={{ width: 48, height: 48, borderRadius: 8, overflow: "hidden", flexShrink: 0, background: `${color}12` }}>
+              <div style={{ width: highlighted ? 64 : 48, height: highlighted ? 64 : 48, borderRadius: 8, overflow: "hidden", flexShrink: 0, background: highlighted ? "rgba(91,126,149,0.1)" : `${color}12` }}>
                 <img src={business.logo} alt={business.name} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
               </div>
             )}
             <div style={{ flex: 1, minWidth: 0 }}>
               {business.description && (
-                <p style={{ fontSize: 13, color: C.textMuted, lineHeight: 1.65, margin: "0 0 10px 0", fontFamily: "'Libre Franklin', sans-serif" }}>{business.description}</p>
+                <p style={{ fontSize: highlighted ? 14 : 13, color: highlighted ? C.textLight : C.textMuted, lineHeight: 1.7, margin: "0 0 10px 0", fontFamily: "'Libre Franklin', sans-serif" }}>{business.description}</p>
               )}
               <div style={{ display: "flex", gap: 16, flexWrap: "wrap", alignItems: "center" }}>
                 {business.website && (
-                  <a href={business.website} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sage, textDecoration: "none" }}>Visit Website →</a>
+                  <a href={business.website} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: highlighted ? C.lakeBlue : C.sage, textDecoration: "none" }}>Visit Website →</a>
                 )}
                 {business.email && (
                   <a href={`mailto:${business.email}`} onClick={e => e.stopPropagation()} style={{ fontSize: 12, color: C.textMuted, textDecoration: "none" }}>{business.email}</a>
                 )}
-                <a href={`/business/${toSlug(business.name)}`} onClick={e => e.stopPropagation()} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, textDecoration: "none", opacity: 0.7 }}>View Profile →</a>
+                <a href={`/business/${toSlug(business.name)}`} onClick={e => e.stopPropagation()} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: highlighted ? 600 : 400, color: highlighted ? C.lakeBlue : C.textMuted, textDecoration: "none", opacity: highlighted ? 1 : 0.7 }}>View Profile →</a>
               </div>
             </div>
           </div>
