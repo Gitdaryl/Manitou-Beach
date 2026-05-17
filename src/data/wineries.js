@@ -155,6 +155,7 @@ export const WINERY_VENUES = [
     highlight: "Wines + ciders + flower farm - a full afternoon stop",
     distance: "~6 min from Manitou Beach",
     lat: 41.9170, lng: -84.3115,
+    profilePath: '/business/gypsy-blue-vineyards',
     photos: [
       "/images/wineries/gypsy_blue_01.jpg",
       "/images/wineries/gypsy_blue_02.jpg",

@@ -641,17 +641,28 @@ function WineryCard({ v, i, isStamped, onStamp, venueRating, wineRankings, autoO
           )}
 
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginTop: 16 }}>
-            {v.website && (
-              <a
-                href={v.website}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={e => e.stopPropagation()}
-                style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: v.accent, textDecoration: "none" }}
-              >
-                Visit Website →
-              </a>
-            )}
+            <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
+              {v.website && (
+                <a
+                  href={v.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={e => e.stopPropagation()}
+                  style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: v.accent, textDecoration: "none" }}
+                >
+                  Visit Website →
+                </a>
+              )}
+              {v.profilePath && (
+                <a
+                  href={v.profilePath}
+                  onClick={e => e.stopPropagation()}
+                  style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sage, textDecoration: "none" }}
+                >
+                  View Listing →
+                </a>
+              )}
+            </div>
             {onStamp && (
               <div style={{ marginLeft: "auto" }}>
                 <button
