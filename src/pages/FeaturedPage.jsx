@@ -539,7 +539,7 @@ export default function FeaturedPage() {
                       </p>
                       <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
                         <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.lakeBlue }}>Visit Website →</span>
-                        <a href="/business/yeti-groove-showcased" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sage, textDecoration: "none" }}>View Listing →</a>
+                        <a href="/business/yeti-groove-showcased" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sage, textDecoration: "none" }}>View Profile →</a>
                       </div>
                     </div>
                   </div>
@@ -580,7 +580,7 @@ export default function FeaturedPage() {
                       </p>
                       <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
                         <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.88)" }}>Visit Website →</span>
-                        <a href="/business/yeti-groove-highlighted" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.88)", textDecoration: "none" }}>View Listing →</a>
+                        <a href="/business/yeti-groove-highlighted" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.88)", textDecoration: "none" }}>View Profile →</a>
                       </div>
                     </div>
                   </div>
@@ -618,7 +618,7 @@ export default function FeaturedPage() {
                       </p>
                       <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
                         <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sunsetLight }}>Visit Website →</span>
-                        <a href="/business/yeti-groove-media" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sunsetLight, textDecoration: "none" }}>View Full Listing →</a>
+                        <a href="/business/yeti-groove-media" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sunsetLight, textDecoration: "none" }}>View Full Profile →</a>
                       </div>
                     </div>
                   </div>
