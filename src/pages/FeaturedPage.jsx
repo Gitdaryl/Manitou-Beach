@@ -480,6 +480,148 @@ export default function FeaturedPage() {
         </section>
       )}
 
+      {/* Tier Demo - See It In Action */}
+      {!isFull && (
+        <section style={{ background: C.cream, padding: "80px 24px" }}>
+          <div style={{ maxWidth: 900, margin: "0 auto" }}>
+            <FadeIn>
+              <div style={{ textAlign: "center", marginBottom: 52 }}>
+                <SectionLabel>See It In Action</SectionLabel>
+                <SectionTitle center>Here's exactly what each tier looks like</SectionTitle>
+                <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.7, maxWidth: 560, margin: "16px auto 0" }}>
+                  Four tiers, four different ways to show up in the community directory. What your neighbors see when they search for you.
+                </p>
+              </div>
+            </FadeIn>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 36, maxWidth: 760, margin: "0 auto" }}>
+
+              {/* Free */}
+              <FadeIn>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.driftwood }}>Free</span>
+                  <span style={{ color: C.sand, fontSize: 13 }}>·</span>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted }}>$0 - always included</span>
+                </div>
+                <div style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 10, padding: "13px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1, minWidth: 0 }}>
+                    <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: C.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Yeti Groove Media</span>
+                    <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: `${C.sage}18`, color: C.sageDark, border: `1px solid ${C.sage}35`, flexShrink: 0 }}>Creative Services</span>
+                  </div>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, flexShrink: 0 }}>(517) 230-0987</span>
+                </div>
+                <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, margin: "8px 0 0 2px", lineHeight: 1.5 }}>Name, category, and phone. That's it - no profile page, no expand, no description.</p>
+              </FadeIn>
+
+              {/* $9 Showcased */}
+              <FadeIn delay={60}>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.lakeBlue }}>Showcased</span>
+                  <span style={{ color: C.sand, fontSize: 13 }}>·</span>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted }}>$9/mo</span>
+                </div>
+                <div style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 10, overflow: "hidden" }}>
+                  <div style={{ padding: "13px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1, minWidth: 0 }}>
+                      <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: C.text }}>Yeti Groove Media</span>
+                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: `${C.sage}18`, color: C.sageDark, border: `1px solid ${C.sage}35`, flexShrink: 0 }}>Creative Services</span>
+                    </div>
+                    <span style={{ color: C.lakeBlue, fontSize: 15, fontWeight: 700 }}>▾</span>
+                  </div>
+                  <div style={{ padding: "14px 18px 18px", borderTop: `1px solid ${C.sand}`, display: "flex", gap: 14, alignItems: "flex-start" }}>
+                    <div style={{ width: 64, height: 64, borderRadius: 8, background: `${C.lakeBlue}18`, border: `1px solid ${C.lakeBlue}30`, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 8, fontWeight: 700, color: C.lakeBlue, letterSpacing: 0.5, textAlign: "center", lineHeight: 1.4 }}>YETI<br/>GROOVE</span>
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textLight, lineHeight: 1.65, margin: "0 0 12px 0" }}>
+                        Manitou Beach's community web studio. Websites, marketing videos, and social media for Irish Hills businesses ready to grow online.
+                      </p>
+                      <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.lakeBlue }}>Visit Website →</span>
+                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sage }}>View Listing →</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, margin: "8px 0 0 2px", lineHeight: 1.5 }}>Expandable strip with logo, description, and links. Your own profile page at a real URL.</p>
+              </FadeIn>
+
+              {/* $25 Highlighted */}
+              <FadeIn delay={120}>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.lakeBlue }}>Highlighted</span>
+                  <span style={{ color: C.sand, fontSize: 13 }}>·</span>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted }}>$25/mo</span>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "2px 8px", borderRadius: 12, background: `${C.sage}18`, color: C.sage, border: `1px solid ${C.sage}35` }}>Most Popular</span>
+                </div>
+                <div style={{ background: `linear-gradient(135deg, ${C.lakeDark} 0%, ${C.lakeBlue} 100%)`, borderRadius: 10, overflow: "hidden" }}>
+                  <div style={{ padding: "13px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1, minWidth: 0, flexWrap: "wrap" }}>
+                      <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: "rgba(255,255,255,0.95)" }}>Yeti Groove Media</span>
+                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: "rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.8)", border: "1px solid rgba(255,255,255,0.22)", flexShrink: 0 }}>Creative Services</span>
+                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: `${C.sunsetLight}28`, color: C.sunsetLight, border: `1px solid ${C.sunsetLight}45`, flexShrink: 0 }}>Highlighted</span>
+                    </div>
+                    <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 15, fontWeight: 700 }}>▾</span>
+                  </div>
+                  <div style={{ padding: "14px 18px 18px", borderTop: "1px solid rgba(255,255,255,0.12)", display: "flex", gap: 14, alignItems: "flex-start" }}>
+                    <div style={{ width: 64, height: 64, borderRadius: 8, background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.2)", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 8, fontWeight: 700, color: "rgba(255,255,255,0.7)", letterSpacing: 0.5, textAlign: "center", lineHeight: 1.4 }}>YETI<br/>GROOVE</span>
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.72)", lineHeight: 1.65, margin: "0 0 12px 0" }}>
+                        Manitou Beach's community web studio. Websites, marketing videos, and social media for Irish Hills businesses ready to grow online.
+                      </p>
+                      <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.88)" }}>Visit Website →</span>
+                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.88)" }}>View Listing →</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, margin: "8px 0 0 2px", lineHeight: 1.5 }}>Same expandable strip, but highlighted with a blue gradient so it stands out in the directory. Gets noticed first.</p>
+              </FadeIn>
+
+              {/* $49 Front and Center */}
+              <FadeIn delay={180}>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunsetLight }}>Front and Center</span>
+                  <span style={{ color: C.sand, fontSize: 13 }}>·</span>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted }}>$49/mo</span>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "2px 8px", borderRadius: 12, background: `${C.sunsetLight}18`, color: C.sunsetLight, border: `1px solid ${C.sunsetLight}35` }}>Most Features</span>
+                </div>
+                <div style={{ background: `linear-gradient(135deg, ${C.night} 0%, ${C.dusk} 55%, #1A3A4A 100%)`, border: `1.5px solid ${C.sunsetLight}50`, borderRadius: 14, padding: "20px 20px", boxShadow: `0 4px 24px rgba(0,0,0,0.18)` }}>
+                  <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
+                    <div style={{ width: 72, height: 72, borderRadius: 10, background: `${C.sunsetLight}15`, border: `1.5px solid ${C.sunsetLight}40`, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 8, fontWeight: 700, color: C.sunsetLight, letterSpacing: 0.5, textAlign: "center", lineHeight: 1.4 }}>YETI<br/>GROOVE</span>
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: "flex", gap: 8, marginBottom: 6, flexWrap: "wrap", alignItems: "center" }}>
+                        <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.cream }}>Yeti Groove Media</span>
+                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: `${C.sunsetLight}22`, color: C.sunsetLight, border: `1px solid ${C.sunsetLight}45` }}>Front and Center</span>
+                      </div>
+                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.55)", border: "1px solid rgba(255,255,255,0.15)", display: "inline-block", marginBottom: 10 }}>Creative Services</span>
+                      <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 1.65, margin: "0 0 14px 0" }}>
+                        Manitou Beach's community web studio. Websites, marketing videos, and social media for Irish Hills businesses ready to grow online.
+                      </p>
+                      <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sunsetLight }}>Visit Website →</span>
+                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sunsetLight }}>View Full Listing →</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, margin: "8px 0 0 2px", lineHeight: 1.5 }}>Always-on dark banner - no clicking to expand. Stands apart from everything else in the directory. Clicking goes straight to the full profile page.</p>
+              </FadeIn>
+
+            </div>
+
+            <p style={{ textAlign: "center", fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted, marginTop: 40 }}>
+              These previews show how your business appears on the home page directory. Every paid tier also includes a full profile page at your own URL.
+            </p>
+          </div>
+        </section>
+      )}
+
       {/* How It Works */}
       {!isFull && (
         <section style={{ background: C.cream, padding: "80px 24px" }}>
