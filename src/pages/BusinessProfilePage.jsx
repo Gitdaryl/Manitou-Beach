@@ -57,6 +57,9 @@ export default function BusinessProfilePage() {
   const [claimLoading, setClaimLoading] = useState(false);
   const [claimError, setClaimError] = useState('');
 
+  // ── Demo tier comparison tabs ────────────────────────────────────────────
+  const [demoTabs, setDemoTabs] = useState([]);
+
   // ── Google reviews ──────────────────────────────────────────────────────
   const [googleData, setGoogleData] = useState(null);
 
@@ -108,6 +111,10 @@ export default function BusinessProfilePage() {
             ...(data.samples || []),
           ];
           const biz = all.find(b => toSlug(b.name) === slug) || null;
+          if (data.samples?.length > 1) {
+            const tierOrder = ['enhanced', 'featured', 'premium'];
+            setDemoTabs([...data.samples].sort((a, b) => tierOrder.indexOf(a.tier) - tierOrder.indexOf(b.tier)));
+          }
           if (biz) {
             setBusiness(biz);
             if (biz.googlePlaceId) {
@@ -674,6 +681,47 @@ export default function BusinessProfilePage() {
                   style={{ background: 'none', border: 'none', cursor: 'pointer', color: C.textMuted, fontSize: 18, lineHeight: 1, padding: 0, flexShrink: 0 }}
                   aria-label="Dismiss report card"
                 >×</button>
+              </div>
+            </div>
+          )}
+
+          {/* ── Demo tier comparison strip ── */}
+          {demoTabs.length > 1 && demoTabs.some(t => t.id === business.id) && (
+            <div style={{
+              background: C.night, borderBottom: '1px solid rgba(255,255,255,0.08)',
+              padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap',
+            }}>
+              <span style={{
+                fontSize: 11, fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase',
+                color: 'rgba(255,255,255,0.35)', flexShrink: 0,
+                fontFamily: "'Libre Franklin', sans-serif",
+              }}>
+                Compare tiers
+              </span>
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                {demoTabs.map(t => {
+                  const isActive = t.id === business.id;
+                  const label = t.tier === 'enhanced' ? 'Showcased · $9/mo'
+                    : t.tier === 'featured' ? 'Highlighted · $25/mo'
+                    : 'Front and Center · $49/mo';
+                  return (
+                    <a
+                      key={t.id}
+                      href={`/business/${toSlug(t.name)}`}
+                      style={{
+                        padding: '6px 16px', borderRadius: 50, fontSize: 12, fontWeight: 700,
+                        textDecoration: 'none', transition: 'all 0.15s',
+                        fontFamily: "'Libre Franklin', sans-serif",
+                        background: isActive ? '#fff' : 'rgba(255,255,255,0.07)',
+                        color: isActive ? C.dusk : 'rgba(255,255,255,0.6)',
+                        border: isActive ? 'none' : '1px solid rgba(255,255,255,0.12)',
+                        pointerEvents: isActive ? 'none' : 'auto',
+                      }}
+                    >
+                      {label}
+                    </a>
+                  );
+                })}
               </div>
             </div>
           )}
