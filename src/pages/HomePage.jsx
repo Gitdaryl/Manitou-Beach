@@ -1748,7 +1748,7 @@ function AboutSection() {
                   Local real estate expert and co-host of Holly & The Yeti. If you're buying or selling on Devils Lake, she's the person with the keys.
                 </p>
                 <a href="#businesses" style={{ fontSize: 12, fontWeight: 700, color: C.sage, textDecoration: "none", letterSpacing: 1, textTransform: "uppercase", fontFamily: "'Libre Franklin', sans-serif" }}>
-                  View Listings →
+                  View Profiles →
                 </a>
               </div>
 

@@ -659,7 +659,7 @@ function WineryCard({ v, i, isStamped, onStamp, venueRating, wineRankings, autoO
                   onClick={e => e.stopPropagation()}
                   style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sage, textDecoration: "none" }}
                 >
-                  View Listing →
+                  View Profile →
                 </a>
               )}
             </div>
