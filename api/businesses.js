@@ -266,6 +266,7 @@ export default async function handler(req, res) {
                 { property: 'Status', status: { equals: 'Listed Enhanced' } },
                 { property: 'Status', status: { equals: 'Listed Featured' } },
                 { property: 'Status', status: { equals: 'Listed Premium' } },
+                { property: 'Status', status: { equals: 'Listed Comp' } },
               ],
             },
             { property: 'Category', select: { does_not_equal: 'Stays & Rentals' } },
@@ -283,7 +284,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ free: [], enhanced: [], featured: [], premium: [] });
     }
 
-    const free = [], enhanced = [], featured = [], premium = [];
+    const free = [], enhanced = [], featured = [], premium = [], samples = [];
 
     const today = new Date().toISOString().split('T')[0];
 
@@ -291,6 +292,7 @@ export default async function handler(req, res) {
       const p = page.properties;
       const status = p['Status']?.status?.name || '';
       const featuredExpires = p['Featured Expires']?.date?.start || null;
+      const isDemo = p['Is Demo']?.checkbox ?? false;
       const business = {
         id: `notion-${page.id}`,
         name: p['Name']?.title?.[0]?.text?.content || '',
@@ -321,13 +323,17 @@ export default async function handler(req, res) {
       // If featured listing has expired, treat as free tier
       const expired = status === 'Listed Featured' && featuredExpires && featuredExpires < today;
 
-      if (status === 'Listed Premium') premium.push({ ...business, tier: 'premium' });
+      if (isDemo) {
+        if (status === 'Listed Premium') samples.push({ ...business, tier: 'premium' });
+        else if (status === 'Listed Featured') samples.push({ ...business, tier: 'featured' });
+        else samples.push({ ...business, tier: 'enhanced' });
+      } else if (status === 'Listed Premium') premium.push({ ...business, tier: 'premium' });
       else if (status === 'Listed Featured' && !expired) featured.push({ ...business, tier: 'featured' });
       else if (status === 'Listed Enhanced' || status === 'Listed Comp') enhanced.push({ ...business, tier: 'enhanced' });
       else free.push({ ...business, tier: 'free' });
     });
 
-    return res.status(200).json({ free, enhanced, featured, premium });
+    return res.status(200).json({ free, enhanced, featured, premium, samples });
   } catch (err) {
     console.error('Businesses API error:', err.message);
     return res.status(200).json({ free: [], enhanced: [], featured: [], premium: [] });

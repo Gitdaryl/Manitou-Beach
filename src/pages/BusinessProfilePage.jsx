@@ -105,6 +105,7 @@ export default function BusinessProfilePage() {
           const all = [
             ...(data.premium || []), ...(data.featured || []),
             ...(data.enhanced || []), ...(data.free || []),
+            ...(data.samples || []),
           ];
           const biz = all.find(b => toSlug(b.name) === slug) || null;
           if (biz) {

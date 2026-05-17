@@ -539,7 +539,7 @@ export default function FeaturedPage() {
                       </p>
                       <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
                         <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.lakeBlue }}>Visit Website →</span>
-                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sage }}>View Listing →</span>
+                        <a href="/business/yeti-groove-showcased" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sage, textDecoration: "none" }}>View Listing →</a>
                       </div>
                     </div>
                   </div>
@@ -568,14 +568,14 @@ export default function FeaturedPage() {
                     </div>
                   </div>
                   <div style={{ padding: "14px 18px 18px", borderTop: "1px solid rgba(255,255,255,0.12)", display: "flex", gap: 14, alignItems: "flex-start" }}>
-                    <img src="/images/yeti_logo.png" alt="Yeti Groove Media" style={{ width: 64, height: 64, borderRadius: 8, objectFit: "cover", flexShrink: 0 }} />
+                    <img src="/images/yeti_logo.png" alt="Yeti Groove Media" style={{ width: 80, height: 80, borderRadius: 10, objectFit: "cover", flexShrink: 0 }} />
                     <div style={{ flex: 1 }}>
                       <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.72)", lineHeight: 1.65, margin: "0 0 12px 0" }}>
                         Manitou Beach's community web studio. Websites, marketing videos, and social media for Irish Hills businesses ready to grow online.
                       </p>
                       <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
                         <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.88)" }}>Visit Website →</span>
-                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.88)" }}>View Listing →</span>
+                        <a href="/business/yeti-groove-highlighted" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.88)", textDecoration: "none" }}>View Listing →</a>
                       </div>
                     </div>
                   </div>
@@ -593,7 +593,7 @@ export default function FeaturedPage() {
                 </div>
                 <div style={{ background: `linear-gradient(135deg, ${C.night} 0%, ${C.dusk} 55%, #1A3A4A 100%)`, border: `1.5px solid ${C.sunsetLight}50`, borderRadius: 14, padding: "20px 20px", boxShadow: `0 6px 32px rgba(0,0,0,0.30), 0 0 0 1px rgba(232,168,124,0.12)` }}>
                   <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
-                    <img src="/images/yeti_logo.png" alt="Yeti Groove Media" style={{ width: 72, height: 72, borderRadius: 10, objectFit: "cover", flexShrink: 0 }} />
+                    <img src="/images/yeti_logo.png" alt="Yeti Groove Media" style={{ width: 110, height: 110, borderRadius: 12, objectFit: "cover", flexShrink: 0 }} />
                     <div style={{ flex: 1 }}>
                       <div style={{ display: "flex", gap: 8, marginBottom: 6, flexWrap: "wrap", alignItems: "center" }}>
                         <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.cream }}>Yeti Groove Media</span>
@@ -608,7 +608,7 @@ export default function FeaturedPage() {
                       </p>
                       <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
                         <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sunsetLight }}>Visit Website →</span>
-                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sunsetLight }}>View Full Listing →</span>
+                        <a href="/business/yeti-groove-media" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sunsetLight, textDecoration: "none" }}>View Full Listing →</a>
                       </div>
                     </div>
                   </div>
