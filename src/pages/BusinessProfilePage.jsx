@@ -687,49 +687,6 @@ export default function BusinessProfilePage() {
 
           {/* ── Hero ── */}
           <div style={{ position: 'relative', paddingTop: 64, background: C.dusk, borderTop: business.tier === 'premium' ? '3px solid #C9A84C' : 'none' }}>
-
-            {/* Demo tier comparison strip - sits just below navbar inside the hero */}
-            {demoTabs.length > 1 && demoTabs.some(t => t.id === business.id) && (
-              <div style={{
-                position: 'absolute', top: 64, left: 0, right: 0, zIndex: 10,
-                background: 'rgba(5,12,18,0.82)', backdropFilter: 'blur(12px)',
-                borderBottom: '1px solid rgba(255,255,255,0.1)',
-                padding: '9px 16px', display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap',
-              }}>
-                <span style={{
-                  fontSize: 11, fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase',
-                  color: 'rgba(255,255,255,0.35)', flexShrink: 0,
-                  fontFamily: "'Libre Franklin', sans-serif",
-                }}>
-                  Compare tiers
-                </span>
-                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                  {demoTabs.map(t => {
-                    const isActive = t.id === business.id;
-                    const label = t.tier === 'enhanced' ? 'Showcased · $9/mo'
-                      : t.tier === 'featured' ? 'Highlighted · $25/mo'
-                      : 'Front and Center · $49/mo';
-                    return (
-                      <a
-                        key={t.id}
-                        href={`/business/${toSlug(t.name)}`}
-                        style={{
-                          padding: '5px 14px', borderRadius: 50, fontSize: 12, fontWeight: 700,
-                          textDecoration: 'none', transition: 'all 0.15s',
-                          fontFamily: "'Libre Franklin', sans-serif",
-                          background: isActive ? '#fff' : 'rgba(255,255,255,0.07)',
-                          color: isActive ? C.dusk : 'rgba(255,255,255,0.6)',
-                          border: isActive ? 'none' : '1px solid rgba(255,255,255,0.12)',
-                          pointerEvents: isActive ? 'none' : 'auto',
-                        }}
-                      >
-                        {label}
-                      </a>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
             {business.heroVideo ? (
               <video
                 src={business.heroVideo}
@@ -925,6 +882,46 @@ export default function BusinessProfilePage() {
               </div>
             </div>
           </div>
+
+          {/* ── Demo tier comparison strip ── */}
+          {demoTabs.length > 1 && demoTabs.some(t => t.id === business.id) && (
+            <div style={{
+              background: C.warmWhite, borderBottom: `1px solid ${C.sand}`,
+              padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap',
+            }}>
+              <span style={{
+                fontSize: 11, fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase',
+                color: C.textMuted, flexShrink: 0, fontFamily: "'Libre Franklin', sans-serif",
+              }}>
+                Compare tiers
+              </span>
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                {demoTabs.map(t => {
+                  const isActive = t.id === business.id;
+                  const label = t.tier === 'enhanced' ? 'Showcased · $9/mo'
+                    : t.tier === 'featured' ? 'Highlighted · $25/mo'
+                    : 'Front and Center · $49/mo';
+                  return (
+                    <a
+                      key={t.id}
+                      href={`/business/${toSlug(t.name)}`}
+                      style={{
+                        padding: '6px 16px', borderRadius: 50, fontSize: 12, fontWeight: 700,
+                        textDecoration: 'none', transition: 'all 0.15s',
+                        fontFamily: "'Libre Franklin', sans-serif",
+                        background: isActive ? C.dusk : C.sand,
+                        color: isActive ? '#fff' : C.textMuted,
+                        border: 'none',
+                        pointerEvents: isActive ? 'none' : 'auto',
+                      }}
+                    >
+                      {label}
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* ── Main content ── */}
           <div style={{ maxWidth: 680, margin: '0 auto', padding: '24px 16px 120px' }}>
