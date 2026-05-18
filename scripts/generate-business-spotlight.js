@@ -452,24 +452,36 @@ async function main() {
   if (log.featured.length > 200) log.featured = log.featured.slice(-200);
   fs.writeFileSync(FEATURED_LOG, JSON.stringify(log, null, 2), 'utf8');
 
-  // Extract Instagram handle from URL or raw handle string
   function extractInstagramHandle(raw) {
     if (!raw) return null;
-    // Strip URL prefix: https://instagram.com/handle or https://www.instagram.com/handle/
     const match = raw.match(/instagram\.com\/([^/?#]+)/i);
     if (match) return `@${match[1].replace(/\/$/, '')}`;
-    // Already a handle
     const h = raw.trim();
     if (h.startsWith('@')) return h;
     if (/^[a-zA-Z0-9_.]+$/.test(h)) return `@${h}`;
     return null;
   }
 
+  function extractFacebookHandle(raw) {
+    if (!raw) return null;
+    const match = raw.match(/facebook\.com\/([^/?#]+)/i);
+    if (!match) return null;
+    const handle = match[1].replace(/\/$/, '');
+    // Skip generic paths like 'pages', 'groups', 'profile.php'
+    if (/^(pages|groups|profile\.php|events|watch|marketplace)$/i.test(handle)) return null;
+    return `@${handle}`;
+  }
+
   // Build caption
   const profileUrl = `https://manitoubeachmichigan.com/business/${slug}`;
   const igHandle  = extractInstagramHandle(biz.instagram);
+  const fbHandle  = extractFacebookHandle(biz.facebook);
   const websiteLine = biz.website ? `\nVisit them at: ${biz.website}` : '';
-  const tagLine = igHandle ? `\nFollow them: ${igHandle}` : '';
+  const socialLines = [
+    igHandle ? `Follow on IG: ${igHandle}` : null,
+    fbHandle ? `Find on FB: ${fbHandle}` : null,
+  ].filter(Boolean).join('\n');
+  const tagLine = socialLines ? `\n${socialLines}` : '';
   const caption = [
     `Shining a light on ${biz.name} - one of Manitou Beach's favorite local businesses.`,
     '',

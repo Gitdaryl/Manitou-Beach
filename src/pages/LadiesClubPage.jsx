@@ -157,115 +157,13 @@ function LadiesClubMissionSection() {
   );
 }
 
-function SpringFlingSection() {
-  const businesses = ["Trends", "Ang & Co", "Lake Roots Salon", "Faust House", "Two Lakes", "Devils Lake View Living", "Blackbird Cafe", "Paula's Poop Deck"];
-
-  return (
-    <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
-      <div style={{ maxWidth: 960, margin: "0 auto" }}>
-        <FadeIn>
-          <div style={{ textAlign: "center", marginBottom: 56 }}>
-            <SectionLabel>Upcoming Event</SectionLabel>
-            <SectionTitle center>Spring Fling in the Village</SectionTitle>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `${C.sunset}18`, border: `1px solid ${C.sunset}40`, borderRadius: 6, padding: "6px 16px", marginBottom: 20, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunset }}>
-              May 9th, 2026 · Begins at 10:00 AM
-            </div>
-            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 620, margin: "0 auto" }}>
-              We're excited to be part of the Spring Fling in the Village! Stop by and see us on the deck at Devils Lake View Living, where we'll be featuring a fabulous $100 giveaway you won't want to miss.
-            </p>
-          </div>
-        </FadeIn>
-
-        {/* Two-column layout */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32, marginBottom: 48 }} className="mobile-col-1">
-
-          {/* Basket photo */}
-          <FadeIn delay={60}>
-            <div style={{ borderRadius: 16, overflow: "hidden", boxShadow: "0 8px 32px rgba(0,0,0,0.12)" }}>
-              <img
-                src="/images/ladies-club/spring-fling/basket.jpg"
-                alt="Spring Fling $100 Giveaway Basket"
-                style={{ width: "100%", height: 420, objectFit: "cover", display: "block" }}
-              />
-            </div>
-          </FadeIn>
-
-          {/* How to enter */}
-          <FadeIn delay={100}>
-            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", gap: 24 }}>
-              <div>
-                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 24, color: C.sunset, marginBottom: 8 }}>
-                  $100 Giveaway - Here's How to Enter
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                  {[
-                    { num: "1", text: "Pick up your Spring Fling Flower Card at our table on the deck." },
-                    { num: "2", text: "Visit 4 participating businesses around the Village and collect initials on your flower petals." },
-                    { num: "3", text: "Return your completed card with your name and phone number to enter the drawing." },
-                    { num: "4", text: "No need to be present to win - enjoy the day at your own pace!" },
-                  ].map(step => (
-                    <div key={step.num} style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
-                      <div style={{ width: 32, height: 32, borderRadius: "50%", background: C.sunset, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Libre Baskerville', serif", fontSize: 15, flexShrink: 0, marginTop: 2 }}>
-                        {step.num}
-                      </div>
-                      <p style={{ fontSize: 14, color: C.text, lineHeight: 1.65, margin: 0 }}>{step.text}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div style={{ background: C.cream, borderRadius: 12, padding: "16px 20px", border: `1px solid ${C.sand}` }}>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sage, marginBottom: 8 }}>We'll Be on the Deck</div>
-                <div style={{ fontSize: 14, color: C.text, fontWeight: 600 }}>10:00 AM - 2:00 PM</div>
-                <div style={{ fontSize: 13, color: C.textLight, marginTop: 4 }}>Devils Lake View Living</div>
-                <div style={{ fontSize: 13, color: C.textMuted, marginTop: 6, lineHeight: 1.6 }}>Shops, businesses, and restaurants will be open all day - keep the fun going!</div>
-              </div>
-            </div>
-          </FadeIn>
-        </div>
-
-        {/* Flower card photo + participating businesses */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32 }} className="mobile-col-1">
-          <FadeIn delay={140}>
-            <div style={{ borderRadius: 16, overflow: "hidden", boxShadow: "0 8px 32px rgba(0,0,0,0.10)" }}>
-              <img
-                src="/images/ladies-club/spring-fling/flower-card.jpg"
-                alt="Spring Fling Flower Card"
-                style={{ width: "100%", height: 340, objectFit: "cover", display: "block" }}
-              />
-            </div>
-          </FadeIn>
-
-          <FadeIn delay={180}>
-            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
-              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2.5, textTransform: "uppercase", color: C.sage, marginBottom: 16 }}>
-                Participating Businesses
-              </div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 24 }}>
-                {businesses.map(b => (
-                  <span key={b} style={{ background: C.cream, border: `1px solid ${C.sand}`, borderRadius: 20, padding: "5px 14px", fontSize: 13, color: C.text, fontFamily: "'Libre Franklin', sans-serif" }}>{b}</span>
-                ))}
-              </div>
-              <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.75, margin: 0 }}>
-                Stroll, shop, and celebrate spring with us. Let your day bloom with fun, and you just might leave with something extra bright!
-              </p>
-            </div>
-          </FadeIn>
-        </div>
-
-      </div>
-    </section>
-  );
-}
 
 function LadiesClubEventsSection() {
   const features = [
-    { label: "Live Music", desc: "Continuous entertainment throughout the day with seating provided for relaxation" },
-    { label: "Fine Arts Section", desc: "A dozen or more outdoor artist booths featuring local talent and original work" },
-    { label: "Children's Area", desc: "Bounce items, face painting, Lucky Ducky, balloons, and fun for all ages" },
-    { label: "Crafts & Vendors", desc: "Local makers, artisan goods, handmade creations, and the Farmer's Craft Market" },
-    { label: "Food & Drinks", desc: "Shaved ice, acai bowls, possible craft beer and wine - something for everyone" },
-    { label: "Raffle Baskets", desc: "6-8 items to bid on" },
+    { label: "35+ Crafters & Vendors", desc: "Local makers, artisan goods, handmade creations, and the Farmer's Craft Market", img: "/images/ladies-club/crafters.jpg" },
+    { label: "Fine Artists Area", desc: "Original work from talented local and regional artists", img: "/images/ladies-club/artists.jpg" },
+    { label: "Local Author Lisa Wheeler", desc: "Books, signings, and story time near the Children's Area", img: "/images/ladies-club/lisa.jpg", link: { label: "lisawheelerbooks.com", url: "https://www.lisawheelerbooks.com/" } },
+    { label: "Amazing Raffle Baskets", desc: "8 baskets, each valued at over $150 - you won't want to miss your shot", img: "/images/ladies-club/raffle.jpg" },
   ];
 
   const tiers = [
@@ -405,25 +303,163 @@ function LadiesClubEventsSection() {
           </div>
         </FadeIn>
 
-        {/* What to Expect - 3 per row, larger text */}
+        {/* Band Spotlight */}
+        <FadeIn delay={140}>
+          <div style={{
+            background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)",
+            borderRadius: 18, overflow: "hidden", marginBottom: 32,
+          }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 0 }} className="mobile-col-1">
+              <div style={{ position: "relative", minHeight: 280, overflow: "hidden" }}>
+                <img
+                  src="/images/ladies-club/martindales.jpg"
+                  alt="Brian Brickley and The Martindales"
+                  style={{ width: "100%", height: "100%", objectFit: "cover", minHeight: 280, display: "block" }}
+                />
+                <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, transparent 60%, rgba(8,14,20,0.7) 100%)" }} />
+              </div>
+              <div style={{ padding: "40px 36px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 12 }}>
+                  Live Music
+                </div>
+                <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(20px, 2.5vw, 28px)", fontWeight: 400, color: C.cream, margin: "0 0 10px 0", lineHeight: 1.2 }}>
+                  Brian Brickley &<br />The Martindales
+                </h3>
+                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 17, color: C.sunsetLight, marginBottom: 16 }}>
+                  10:00 AM - 2:00 PM
+                </div>
+                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.7, margin: 0, fontStyle: "italic" }}>
+                  "The best damn Southern soul band... period."
+                </p>
+              </div>
+            </div>
+          </div>
+        </FadeIn>
+
+        {/* What to Expect label */}
         <FadeIn delay={150}>
           <div style={{ marginBottom: 20, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.3)" }}>
             What to Expect
           </div>
         </FadeIn>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 40 }} className="mobile-col-1">
+
+        {/* Children's Area - large hero card */}
+        <FadeIn delay={155}>
+          <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 14, overflow: "hidden", marginBottom: 16 }}>
+            <img src="/images/ladies-club/childrens-area.jpg" alt="Children's Area" style={{ width: "100%", height: "auto", display: "block" }} />
+            <div style={{ padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
+              <div>
+                <div style={{ fontSize: 15, fontWeight: 600, color: C.cream, marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>Children's Area</div>
+                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", lineHeight: 1.6, margin: 0 }}>Create-a-Boat & Float It, carnival games, face painting, and pony rides</p>
+              </div>
+              <a href="https://seriouslyfunnybiz.com/" target="_blank" rel="noopener noreferrer"
+                style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 12, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>
+                Seriously Funny Biz ↗
+              </a>
+            </div>
+          </div>
+        </FadeIn>
+
+        {/* 2x2 grid */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
           {features.map((f, i) => (
-            <FadeIn key={i} delay={160 + i * 40}>
-              <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 14, padding: "24px 22px" }}>
-                <div style={{ fontSize: 16, fontWeight: 600, color: C.cream, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>{f.label}</div>
-                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.4)", lineHeight: 1.65, margin: 0 }}>{f.desc}</p>
+            <FadeIn key={i} delay={165 + i * 40}>
+              <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 14, overflow: "hidden" }}>
+                <img src={f.img} alt={f.label} style={{ width: "100%", height: "auto", display: "block" }} />
+                <div style={{ padding: "14px 16px" }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: C.cream, marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>{f.label}</div>
+                  <p style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", lineHeight: 1.6, margin: 0 }}>{f.desc}</p>
+                  {f.link && (
+                    <a href={f.link.url} target="_blank" rel="noopener noreferrer"
+                      style={{ display: "inline-flex", alignItems: "center", gap: 4, marginTop: 8, fontSize: 11, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textDecoration: "none" }}>
+                      {f.link.label} ↗
+                    </a>
+                  )}
+                </div>
               </div>
             </FadeIn>
           ))}
         </div>
 
-        {/* Festival Map */}
+        {/* Popcorn - large closer */}
+        <FadeIn delay={210}>
+          <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 14, overflow: "hidden", marginBottom: 32 }}>
+            <img src="/images/ladies-club/popcorn.jpg" alt="Free fresh popcorn outside Foundation Realty" style={{ width: "100%", height: "auto", display: "block" }} />
+            <div style={{ padding: "14px 20px" }}>
+              <div style={{ fontSize: 15, fontWeight: 600, color: C.cream, marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>Free Fresh Popcorn</div>
+              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", lineHeight: 1.6, margin: 0 }}>Hot, fresh popcorn outside Foundation Realty - on the house!</p>
+            </div>
+          </div>
+        </FadeIn>
+
+        {/* Food Vendors */}
         <FadeIn delay={200}>
+          <div style={{ marginBottom: 16, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.3)" }}>
+            Food Favorites
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 12, marginBottom: 40 }}>
+            {[
+              { name: "Brenda's Little Taste of Texas", url: "https://brendas-little-taste-of-texas.weeblyte.com/" },
+              { name: "Sips and Sweets", url: "https://www.facebook.com/profile.php?id=61557431462745" },
+              { name: "Hannah's Hawaiian Shaved Ice", url: "https://www.facebook.com/p/Hannahs-Hawaiian-Shaved-Ice-100086661759892/" },
+            ].map((v, i) => (
+              <a
+                key={i}
+                href={v.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: "block", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)",
+                  borderRadius: 12, padding: "18px 20px", textDecoration: "none",
+                  transition: "border-color 0.2s, background 0.2s",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.15)"; e.currentTarget.style.background = "rgba(255,255,255,0.07)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
+              >
+                <div style={{ fontSize: 14, fontWeight: 600, color: C.cream, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 4 }}>{v.name}</div>
+                <div style={{ fontSize: 11, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.3 }}>Visit ↗</div>
+              </a>
+            ))}
+          </div>
+        </FadeIn>
+
+        {/* Village Stores */}
+        <FadeIn delay={225}>
+          <div style={{ marginBottom: 16, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.3)" }}>
+            Village Stores Open All Day
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 40 }} className="mobile-col-2">
+            {[
+              { name: "Blackbird Cafe",             logo: "/images/blackbird-logo.png" },
+              { name: "Two Lakes Tavern",            logo: "/images/two_lakes_logo.jpg" },
+              { name: "Michigan Gypsy",              logo: "/images/michigan-gypsy-logo.png" },
+              { name: "Boathouse Art Gallery",       logo: "/images/boathouse-art-gallery-logo.jpg" },
+              { name: "Devils Lake View Living",     logo: "/images/dl-view-living-logo.png" },
+              { name: "Ang & Co",                    logo: "/images/ang_co_logo.png" },
+              { name: "Trends Salon & Spa",          logo: "/images/trends-logo.png" },
+              { name: "Faust House Scrap & Craft",   logo: "/images/faust_house_logo.png" },
+            ].map((s, i) => (
+              <FadeIn key={i} delay={230 + i * 25}>
+                <div style={{
+                  background: "#fff", borderRadius: 10, overflow: "hidden",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  display: "flex", flexDirection: "column", alignItems: "center",
+                  padding: "20px 16px", gap: 12,
+                }}>
+                  <img
+                    src={s.logo}
+                    alt={s.name}
+                    style={{ width: "100%", maxHeight: 100, objectFit: "contain", display: "block" }}
+                  />
+                  <div style={{ fontSize: 11, color: "#3a3228", fontFamily: "'Libre Franklin', sans-serif", textAlign: "center", lineHeight: 1.3 }}>{s.name}</div>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </FadeIn>
+
+        {/* Festival Map */}
+        <FadeIn delay={220}>
           <img
             src="/images/ladies-club/summerfest-map.jpg"
             alt="Summer Festival 2026 Map - Manitou Beach Village"
@@ -1111,6 +1147,7 @@ export default function LadiesClubPage() {
         title="Land & Lake Ladies Club"
         description="Land & Lake Ladies Club - women's civic organization in Manitou Beach, Michigan. Summer Festival, community events, and membership."
         path="/ladies-club"
+        ogImage="https://manitoubeachmichigan.com/images/ladies-club/summer-festival.png"
         schema={SUMMERFEST_SCHEMA}
         breadcrumbs={[
           { name: 'Home', path: '/' },
@@ -1122,7 +1159,6 @@ export default function LadiesClubPage() {
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
       <LadiesClubHero />
       <LadiesClubMissionSection />
-      <SpringFlingSection />
       <LadiesClubSponsorsSection />
       <LadiesClubEventsSection />
       <LadiesClubGallerySection />
