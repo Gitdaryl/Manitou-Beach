@@ -335,11 +335,11 @@ function LadiesClubEventsSection() {
           <div style={{ marginBottom: 16, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.3)" }}>
             Food Favorites
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 12, marginBottom: 40 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 40 }}>
             {[
-              { name: "Brenda's Little Taste of Texas", url: "https://brendas-little-taste-of-texas.weeblyte.com/" },
-              { name: "Sips and Sweets", url: "https://www.facebook.com/profile.php?id=61557431462745" },
-              { name: "Hannah's Hawaiian Shaved Ice", url: "https://www.facebook.com/p/Hannahs-Hawaiian-Shaved-Ice-100086661759892/" },
+              { name: "Brenda's Little Taste of Texas", url: "https://brendas-little-taste-of-texas.weeblyte.com/", img: "/images/ladies-club/brendas.png" },
+              { name: "Sips and Sweets", url: "https://www.facebook.com/profile.php?id=61557431462745", img: "/images/ladies-club/sip-sweets.png" },
+              { name: "Hannah's Hawaiian Shaved Ice", url: "https://www.facebook.com/p/Hannahs-Hawaiian-Shaved-Ice-100086661759892/", img: "/images/ladies-club/hannas.png" },
             ].map((v, i) => (
               <a
                 key={i}
@@ -348,14 +348,17 @@ function LadiesClubEventsSection() {
                 rel="noopener noreferrer"
                 style={{
                   display: "block", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)",
-                  borderRadius: 12, padding: "18px 20px", textDecoration: "none",
+                  borderRadius: 12, overflow: "hidden", textDecoration: "none",
                   transition: "border-color 0.2s, background 0.2s",
                 }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.15)"; e.currentTarget.style.background = "rgba(255,255,255,0.07)"; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
               >
-                <div style={{ fontSize: 14, fontWeight: 600, color: C.cream, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 4 }}>{v.name}</div>
-                <div style={{ fontSize: 11, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.3 }}>Visit ↗</div>
+                <img src={v.img} alt={v.name} style={{ width: "100%", height: 180, objectFit: "cover", display: "block" }} />
+                <div style={{ padding: "14px 16px" }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: C.cream, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 4 }}>{v.name}</div>
+                  <div style={{ fontSize: 11, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.3 }}>Visit ↗</div>
+                </div>
               </a>
             ))}
           </div>
