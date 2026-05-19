@@ -329,16 +329,6 @@ function LadiesClubEventsSection() {
           ))}
         </div>
 
-        {/* Popcorn - large closer */}
-        <FadeIn delay={210}>
-          <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 14, overflow: "hidden", marginBottom: 32 }}>
-            <img src="/images/ladies-club/popcorn.jpg" alt="Free fresh popcorn outside Foundation Realty" style={{ width: "100%", height: "auto", display: "block" }} />
-            <div style={{ padding: "14px 20px" }}>
-              <div style={{ fontSize: 15, fontWeight: 600, color: C.cream, marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>Free Fresh Popcorn</div>
-              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", lineHeight: 1.6, margin: 0 }}>Hot, fresh popcorn outside Foundation Realty - on the house!</p>
-            </div>
-          </div>
-        </FadeIn>
 
         {/* Food Vendors */}
         <FadeIn delay={200}>
