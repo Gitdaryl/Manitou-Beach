@@ -1159,9 +1159,9 @@ export default function LadiesClubPage() {
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
       <LadiesClubHero />
       <LadiesClubMissionSection />
-      <LadiesClubSponsorsSection />
       <LadiesClubEventsSection />
       <LadiesClubGallerySection />
+      <LadiesClubSponsorsSection />
       <LadiesClubSponsorForm />
       <LadiesClubGetInvolved />
       <NewsletterInline />
