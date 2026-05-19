@@ -251,6 +251,24 @@ function LadiesClubEventsSection() {
           </div>
         </FadeIn>
 
+        {/* Last Year's Festival Video */}
+        <FadeIn delay={120}>
+          <div style={{ marginBottom: 32 }}>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.3)", marginBottom: 12 }}>
+              Last Year's Festival
+            </div>
+            <div style={{ position: "relative", paddingTop: "56.25%", borderRadius: 16, overflow: "hidden", border: "1px solid rgba(255,255,255,0.08)" }}>
+              <iframe
+                src="https://www.youtube.com/embed/GYlhCLop5Ek?autoplay=1&mute=1&loop=1&playlist=GYlhCLop5Ek&controls=1&rel=0"
+                title="Devils Lake Summer Festival - Last Year's Highlights"
+                allow="autoplay; encrypted-media; picture-in-picture"
+                allowFullScreen
+                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }}
+              />
+            </div>
+          </div>
+        </FadeIn>
+
         {/* Band Spotlight */}
         <FadeIn delay={140}>
           <div style={{
