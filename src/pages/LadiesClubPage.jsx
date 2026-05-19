@@ -356,8 +356,8 @@ function LadiesClubEventsSection() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 40 }}>
             {[
               { name: "Brenda's Little Taste of Texas", url: "https://brendas-little-taste-of-texas.weeblyte.com/", img: "/images/ladies-club/brendas.png" },
-              { name: "Sips and Sweets", url: "https://www.facebook.com/profile.php?id=61557431462745", img: "/images/ladies-club/sip-sweets.png" },
               { name: "Hannah's Hawaiian Shaved Ice", url: "https://www.facebook.com/p/Hannahs-Hawaiian-Shaved-Ice-100086661759892/", img: "/images/ladies-club/hannas.png" },
+              { name: "Sips and Sweets", url: "https://www.facebook.com/profile.php?id=61557431462745", img: "/images/ladies-club/sip-sweets.png" },
             ].map((v, i) => (
               <a
                 key={i}
