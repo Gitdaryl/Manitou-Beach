@@ -9,8 +9,6 @@ on:
 jobs:
   remind:
     runs-on: ubuntu-latest
-    # Only run on schedule or manual dispatch — ignore any spurious push events
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     permissions:
       issues: write
     steps:
@@ -23,23 +21,5 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: `📸 Thursday Roundup - add background images (week of ${today})`,
-              body: `The Thursday video roundup renders **Wednesday night**. Right now only \`bg.jpg\` (the landlakes aerial) is in rotation.
-
-## What to do
-
-Drop new images into \`video-templates/thursday-slideshow/assets/\` as:
-- \`bg2.jpg\`
-- \`bg3.jpg\`
-- \`bg4.jpg\`
-
-They rotate automatically each week - no code changes needed.
-
-## Good candidates
-- Aerial lake / community shots
-- Seasonal scenery (beach, fall color, snow on the dock)
-- Event crowd photos
-- Any hero image already in \`public/images/\`
-
-Once added, commit + push and the pipeline picks them up automatically next Wednesday night.`,
+              body: `The Thursday video roundup renders **Wednesday night**. Right now only \`bg.jpg\` (the landlakes aerial) is in rotation.\n\n## What to do\n\nDrop new images into \`video-templates/thursday-slideshow/assets/\` as:\n- \`bg2.jpg\`\n- \`bg3.jpg\`\n- \`bg4.jpg\`\n\nThey rotate automatically each week - no code changes needed.\n\n## Good candidates\n- Aerial lake / community shots\n- Seasonal scenery (beach, fall color, snow on the dock)\n- Event crowd photos\n- Any hero image already in \`public/images/\`\n\nOnce added, commit + push and the pipeline picks them up automatically next Wednesday night.`,
             });
-
