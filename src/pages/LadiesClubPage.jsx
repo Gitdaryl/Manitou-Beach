@@ -166,58 +166,6 @@ function LadiesClubEventsSection() {
     { label: "Amazing Raffle Baskets", desc: "8 baskets, each valued at over $150 - you won't want to miss your shot", img: "/images/ladies-club/raffle.jpg" },
   ];
 
-  const tiers = [
-    {
-      level: "Platinum", amount: "$500", color: "#C8A84B",
-      benefits: [
-        "Individual sponsor banner for event or projects",
-        "Featured advertisement on social media for event sponsorship",
-        "Larger logo / print on Festival T-shirt",
-        "Recognition on Sponsor Board",
-        "Recognition on Festival Sponsor Banner and Brochures",
-        "Recognition on this web page",
-      ],
-      areas: ["Children's Area", "Vendor & Crafter's Market", "Live Music Entertainment", "Fine Artists Section", "LLLC Community Projects"],
-    },
-    {
-      level: "Gold", amount: "$250", color: "#E8C547",
-      benefits: [
-        "Advertisement on social media for sponsorship",
-        "Larger logo / print on Festival T-shirt",
-        "Recognition on Sponsor Board",
-        "Recognition on Festival Sponsor Banner and Brochures",
-        "Recognition on this web page",
-      ],
-    },
-    {
-      level: "Silver", amount: "$100", color: "#A8B8C8",
-      benefits: [
-        "Advertisement on social media for sponsorship",
-        "Name / logo on Festival T-shirt",
-        "Recognition on Sponsor Board",
-        "Recognition on Festival Sponsor Banner and Brochures",
-        "Recognition on this web page",
-      ],
-    },
-    {
-      level: "Bronze", amount: "$50", color: "#B87333",
-      benefits: [
-        "Advertisement on social media for sponsorship",
-        "Name listed on Festival T-shirt",
-        "Recognition on Sponsor Board and Brochures",
-        "Recognition on this web page",
-      ],
-    },
-    {
-      level: "Friend", amount: "$25", color: C.sage,
-      benefits: [
-        "Advertisement on social media for sponsorship",
-        "Name listed on Festival T-shirt",
-        "Recognition on this web page",
-      ],
-    },
-  ];
-
   return (
     <section id="ladies-events" style={{
       background: C.night, padding: "100px 24px", position: "relative", overflow: "hidden",
@@ -468,8 +416,68 @@ function LadiesClubEventsSection() {
           />
         </FadeIn>
 
-        {/* Sponsorship intro */}
-        <FadeIn delay={220}>
+      </div>
+    </section>
+  );
+}
+
+function LadiesClubSponsorTiersSection() {
+  const tiers = [
+    {
+      level: "Platinum", amount: "$500", color: "#C8A84B",
+      benefits: [
+        "Individual sponsor banner for event or projects",
+        "Featured advertisement on social media for event sponsorship",
+        "Larger logo / print on Festival T-shirt",
+        "Recognition on Sponsor Board",
+        "Recognition on Festival Sponsor Banner and Brochures",
+        "Recognition on this web page",
+      ],
+      areas: ["Children's Area", "Vendor & Crafter's Market", "Live Music Entertainment", "Fine Artists Section", "LLLC Community Projects"],
+    },
+    {
+      level: "Gold", amount: "$250", color: "#E8C547",
+      benefits: [
+        "Advertisement on social media for sponsorship",
+        "Larger logo / print on Festival T-shirt",
+        "Recognition on Sponsor Board",
+        "Recognition on Festival Sponsor Banner and Brochures",
+        "Recognition on this web page",
+      ],
+    },
+    {
+      level: "Silver", amount: "$100", color: "#A8B8C8",
+      benefits: [
+        "Advertisement on social media for sponsorship",
+        "Name / logo on Festival T-shirt",
+        "Recognition on Sponsor Board",
+        "Recognition on Festival Sponsor Banner and Brochures",
+        "Recognition on this web page",
+      ],
+    },
+    {
+      level: "Bronze", amount: "$50", color: "#B87333",
+      benefits: [
+        "Advertisement on social media for sponsorship",
+        "Name listed on Festival T-shirt",
+        "Recognition on Sponsor Board and Brochures",
+        "Recognition on this web page",
+      ],
+    },
+    {
+      level: "Friend", amount: "$25", color: C.sage,
+      benefits: [
+        "Advertisement on social media for sponsorship",
+        "Name listed on Festival T-shirt",
+        "Recognition on this web page",
+      ],
+    },
+  ];
+
+  return (
+    <section style={{ background: C.night, padding: "100px 24px" }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+        <FadeIn>
           <div style={{ textAlign: "center", marginBottom: 40 }}>
             <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.3)", marginBottom: 16 }}>
               Sponsorship Opportunities
@@ -481,7 +489,6 @@ function LadiesClubEventsSection() {
           </div>
         </FadeIn>
 
-        {/* Tier cards */}
         {/* Platinum - full width featured */}
         {tiers.slice(0, 1).map(tier => (
           <FadeIn key={tier.level} delay={240}>
@@ -576,7 +583,6 @@ function LadiesClubEventsSection() {
           ))}
         </div>
 
-        {/* Footer */}
         <FadeIn delay={340}>
           <div style={{ textAlign: "center", padding: "24px 0 0" }}>
             <p style={{ fontSize: 15, color: "rgba(255,255,255,0.4)", lineHeight: 1.75, maxWidth: 600, margin: "0 auto 12px" }}>
@@ -1160,9 +1166,10 @@ export default function LadiesClubPage() {
       <LadiesClubHero />
       <LadiesClubMissionSection />
       <LadiesClubEventsSection />
-      <LadiesClubGallerySection />
       <LadiesClubSponsorsSection />
+      <LadiesClubSponsorTiersSection />
       <LadiesClubSponsorForm />
+      <LadiesClubGallerySection />
       <LadiesClubGetInvolved />
       <NewsletterInline />
       <Footer scrollTo={subScrollTo} />
