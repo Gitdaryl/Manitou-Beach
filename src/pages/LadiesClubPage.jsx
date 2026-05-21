@@ -700,6 +700,7 @@ const DEFAULT_PLATINUM = [
   { name: "Lakeside Construction",             logo: "/images/ladies-club/sponsors/lakeside-logo.jpg",      url: null },
   { name: "Land To Lakes",                     logo: "/images/ladies-club/sponsors/landtolakes-logo.jpg",   url: "https://landtolakes.com" },
   { name: "Manitou Beach Marina",              logo: "/images/ladies-club/sponsors/marina_logo.png",        url: "https://manitoubeachmarina.com/" },
+  { name: "Black Oak Building Company",        logo: "/images/ladies-club/sponsors/black-oak-building-company-logo-300w.jpeg", url: "https://www.blackoakbuildingcompany.com/" },
 ];
 const DEFAULT_GOLD = [
   { name: "Devil's Lake Bar and Grill",  logo: null },
