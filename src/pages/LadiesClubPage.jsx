@@ -703,14 +703,14 @@ const DEFAULT_PLATINUM = [
   { name: "Black Oak Building Company",        logo: "/images/ladies-club/sponsors/black-oak-building-company-logo-300w.jpeg", url: "https://www.blackoakbuildingcompany.com/" },
 ];
 const DEFAULT_GOLD = [
-  { name: "Devil's Lake Bar and Grill",  logo: null },
+  { name: "Devil's Lake Bar and Grill",  logo: "/images/ladies-club/sponsors/DL-bar-and-grill-logo.jpg" },
   { name: "Devils Lake Yacht Club",      logo: "/images/ladies-club/sponsors/yacht_club_logo.png", url: "https://www.devilslakeyachtclub.com/" },
   { name: "Edison Builders",             logo: "/images/ladies-club/sponsors/edison-logo.jpg" },
   { name: "Henson Family",              logo: null },
   { name: "Karabetsos Family",          logo: null },
   { name: "Kerentoff Family",           logo: null },
   { name: "Mark Riggle Real Estate",    logo: "/images/ladies-club/sponsors/riggle-logo.jpg" },
-  { name: "Michelle Construction",      logo: null },
+  { name: "Michelle Construction",      logo: "/images/ladies-club/sponsors/michelle-construction-logo.jpg" },
   { name: "North Shore Pontoon",        logo: "/images/ladies-club/sponsors/northshore-logo.jpg" },
   { name: "Sterling Market",            logo: "/images/ladies-club/sponsors/sterling-logo.jpg" },
 ];
@@ -778,11 +778,24 @@ function LadiesClubSponsorsSection() {
         }}
       >
         {logo ? (
-          <img
-            src={logo}
-            alt={name}
-            style={{ maxWidth: "100%", maxHeight: platinum ? 152 : 72, objectFit: "contain" }}
-          />
+          <>
+            <img
+              src={logo}
+              alt={name}
+              style={{ maxWidth: "100%", maxHeight: platinum ? 152 : 72, objectFit: "contain" }}
+            />
+            {!platinum && (
+              <span style={{
+                fontFamily: "'Libre Franklin', sans-serif",
+                fontSize: 11,
+                color: "#6b5d52",
+                textAlign: "center",
+                lineHeight: 1.3,
+                fontWeight: 500,
+                marginTop: 2,
+              }}>{name}</span>
+            )}
+          </>
         ) : (
           <span style={{
             fontFamily: "'Libre Baskerville', serif",
