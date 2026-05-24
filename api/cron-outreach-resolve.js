@@ -32,7 +32,7 @@ async function readDb() {
 async function writeDb(data) {
   await put('outreach/db.json', JSON.stringify({ ...data, lastUpdated: new Date().toISOString() }), {
     access: 'public', token: process.env.BLOB_READ_WRITE_TOKEN,
-    contentType: 'application/json', addRandomSuffix: false,
+    contentType: 'application/json', addRandomSuffix: false, allowOverwrite: true,
   });
 }
 
