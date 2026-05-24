@@ -72,6 +72,7 @@ const SponsorStatsPage = lazy(() => import('./pages/SponsorStatsPage'));
 const BusinessProfilePage = lazy(() => import('./pages/BusinessProfilePage'));
 const FoodTruckProfilePage = lazy(() => import('./pages/FoodTruckProfilePage'));
 const WineryProfilePage = lazy(() => import('./pages/WineryProfilePage'));
+const OutreachPage = lazy(() => import('./pages/OutreachPage'));
 
 function HappeningEventRedirect() {
   const { eventId } = useParams();
@@ -218,6 +219,7 @@ export default function App() {
           <Route path="/dispatch/:slug" element={<DispatchArticlePage />} />
           <Route path="/sponsor-dispatch" element={<SponsorDispatchPage />} />
           <Route path="/yeti-admin" element={<YetiAdminPage />} />
+          <Route path="/outreach" element={<OutreachPage />} />
           <Route path="/claim/:slug" element={<ClaimPage />} />
           <Route path="/redeem/:slug" element={<MerchantRedeemPage />} />
           <Route path="/offer-report/:slug" element={<OfferReportPage />} />
