@@ -91,32 +91,47 @@ export default async function handler(req, res) {
   if (req.method === 'POST') {
 
     // Batch create businesses — admin only
+    // Accepts either:
+    //   { names: ['Biz A', 'Biz B'], category, area, priority }  (UI batch add)
+    //   { businesses: [{name, phone, category, area, notes},...], priority }  (scraper import)
     if (req.body.action === 'batch') {
       if (agent !== 'admin') return res.status(403).json({ error: 'Admin only' });
-      const { names, category, area, priority } = req.body;
-      if (!Array.isArray(names) || !names.length) return res.status(400).json({ error: 'names array required' });
+      const { names, businesses: bizObjects, category, area, priority } = req.body;
       const db = await readDb();
-      const newBizzes = names
-        .map(n => String(n).trim())
-        .filter(n => n.length > 0)
-        .map(name => ({
+      const existingNames = new Set((db.businesses || []).map(b => b.name.toLowerCase()));
+
+      let items = [];
+      if (Array.isArray(bizObjects) && bizObjects.length) {
+        items = bizObjects
+          .map(b => ({ name: String(b.name || '').trim(), phone: String(b.phone || ''), category: b.category || category || 'Other', area: b.area || area || 'Manitou Beach', notes: b.notes || '' }))
+          .filter(b => b.name.length > 0);
+      } else if (Array.isArray(names) && names.length) {
+        items = names.map(n => ({ name: String(n).trim(), phone: '', category: category || 'Other', area: area || 'Manitou Beach', notes: '' })).filter(b => b.name.length > 0);
+      } else {
+        return res.status(400).json({ error: 'names or businesses array required' });
+      }
+
+      const newBizzes = items
+        .filter(b => !existingNames.has(b.name.toLowerCase()))
+        .map(b => ({
           id: makeId(),
-          name,
-          category: category || 'Other',
-          area: area || 'Manitou Beach',
-          phone: '',
+          name: b.name,
+          category: b.category,
+          area: b.area,
+          phone: b.phone,
           contact: '',
           assignedTo: null,
           status: 'new',
           priority: priority || 'warm',
-          notes: '',
+          notes: b.notes,
           lastActivity: null,
           activityLog: [],
           createdAt: new Date().toISOString(),
         }));
+
       db.businesses = [...(db.businesses || []), ...newBizzes];
       await writeDb(db);
-      return res.status(201).json({ ok: true, added: newBizzes.length, businesses: newBizzes });
+      return res.status(201).json({ ok: true, added: newBizzes.length, skipped: items.length - newBizzes.length, businesses: newBizzes });
     }
 
     // Create ticket — any authenticated agent
