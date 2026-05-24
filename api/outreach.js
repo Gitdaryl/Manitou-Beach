@@ -4,7 +4,7 @@
 // POST /api/outreach              - create business (admin) or ticket (any agent)
 // PATCH /api/outreach             - claim, log activity, update status, resolve ticket
 
-import { put, list } from '@vercel/blob';
+import { put, list, del } from '@vercel/blob';
 
 const AGENTS = {
   lead:      { label: 'Chelsea',  color: '#7D6EAA' },
@@ -39,13 +39,19 @@ async function readDb() {
 
 async function writeDb(data) {
   const content = JSON.stringify({ ...data, lastUpdated: new Date().toISOString() });
-  await put('outreach/db.json', content, {
+  // addRandomSuffix: true gives each write a unique URL — no CDN stale-cache on reads
+  const newBlob = await put('outreach/db.json', content, {
     access: 'public',
     token: process.env.BLOB_READ_WRITE_TOKEN,
     contentType: 'application/json',
-    addRandomSuffix: false,
-    allowOverwrite: true,
+    addRandomSuffix: true,
   });
+  // Clean up old blobs so they don't accumulate
+  try {
+    const { blobs } = await list({ prefix: 'outreach/db', token: process.env.BLOB_READ_WRITE_TOKEN });
+    const old = blobs.filter(b => b.url !== newBlob.url);
+    if (old.length) await del(old.map(b => b.url), { token: process.env.BLOB_READ_WRITE_TOKEN });
+  } catch {}
 }
 
 function makeId() {

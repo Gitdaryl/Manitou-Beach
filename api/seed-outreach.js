@@ -1,7 +1,7 @@
 // POST /api/seed-outreach — admin only
 // Seeds the outreach DB with businesses near Manitou Beach village (5-mile radius)
 // Body: { clear: true } wipes existing list before importing (for a fresh reseed)
-import { put, list } from '@vercel/blob';
+import { put, list, del } from '@vercel/blob';
 
 // Manitou Beach village, south shore of Devils Lake — not the lake center
 const CENTER = { lat: 41.9561, lng: -84.0612 };
@@ -94,10 +94,15 @@ async function readDb() {
 }
 
 async function writeDb(data) {
-  await put('outreach/db.json', JSON.stringify({ ...data, lastUpdated: new Date().toISOString() }), {
+  const newBlob = await put('outreach/db.json', JSON.stringify({ ...data, lastUpdated: new Date().toISOString() }), {
     access: 'public', token: process.env.BLOB_READ_WRITE_TOKEN,
-    contentType: 'application/json', addRandomSuffix: false, allowOverwrite: true,
+    contentType: 'application/json', addRandomSuffix: true,
   });
+  try {
+    const { blobs } = await list({ prefix: 'outreach/db', token: process.env.BLOB_READ_WRITE_TOKEN });
+    const old = blobs.filter(b => b.url !== newBlob.url);
+    if (old.length) await del(old.map(b => b.url), { token: process.env.BLOB_READ_WRITE_TOKEN });
+  } catch {}
 }
 
 export default async function handler(req, res) {

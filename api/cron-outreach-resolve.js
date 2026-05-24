@@ -5,7 +5,7 @@
 // URL Recovery tickets: looks up business in Notion, sends SMS/email with listing URL
 // All other open tickets: compiles daily digest email to Daryl
 
-import { put, list } from '@vercel/blob';
+import { put, list, del } from '@vercel/blob';
 import { Resend } from 'resend';
 import { sendSMS, normalizePhone } from './lib/twilio.js';
 
@@ -30,10 +30,15 @@ async function readDb() {
 }
 
 async function writeDb(data) {
-  await put('outreach/db.json', JSON.stringify({ ...data, lastUpdated: new Date().toISOString() }), {
+  const newBlob = await put('outreach/db.json', JSON.stringify({ ...data, lastUpdated: new Date().toISOString() }), {
     access: 'public', token: process.env.BLOB_READ_WRITE_TOKEN,
-    contentType: 'application/json', addRandomSuffix: false, allowOverwrite: true,
+    contentType: 'application/json', addRandomSuffix: true,
   });
+  try {
+    const { blobs } = await list({ prefix: 'outreach/db', token: process.env.BLOB_READ_WRITE_TOKEN });
+    const old = blobs.filter(b => b.url !== newBlob.url);
+    if (old.length) await del(old.map(b => b.url), { token: process.env.BLOB_READ_WRITE_TOKEN });
+  } catch {}
 }
 
 async function lookupNotionListing(bizName) {
