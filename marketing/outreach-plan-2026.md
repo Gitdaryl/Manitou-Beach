@@ -7,9 +7,9 @@
 
 | Role | Who | Strengths | Primary Channel |
 |------|-----|-----------|----------------|
-| **Outreach Lead** | [Chamber Girl — fill name] | Ran old MB site. Inside Irish Hills Chamber. Knows every business owner personally. | Phone + in-person |
-| **Community Connector** | [Wife — fill name] | Personal network, trusted face, local social presence | Facebook + personal visits |
-| **Follow-Up Agent** | [Mother-in-law — fill name] | Warm, relationship-building, good with older business owners | Phone follow-up calls |
+| **Outreach Lead** | Chelsea | Ran old MB site. Inside Irish Hills Chamber. Knows every business owner personally. | Phone + in-person |
+| **Community Connector** | Erin | Personal network, trusted face, local social presence | Facebook + personal visits |
+| **Follow-Up Agent** | Amy | Warm, relationship-building, good with older business owners | Phone follow-up calls |
 
 **Daryl's role:** Platform operator, content producer, escalation point. Not doing outreach while filming/editing Sunny Skies. Monitors tracker app and handles any business that specifically asks for the "guy who built it."
 
@@ -72,12 +72,12 @@ Post this in: Manitou Beach community groups, Devils Lake area groups, Irish Hil
 
 ### Follow-Up Agent — The Second Touch
 
-**Her territory:** The follow-up queue. Any business that Outreach Lead or Community Connector has contacted but hasn't gotten a response from in 5+ business days.
+**Her territory:** The follow-up queue. Any business that Chelsea or Erin has contacted but hasn't gotten a response from in 5+ business days.
 
 **Why she's the follow-up person:** A second call from a different, warmer voice lands differently than the same person calling again. It also signals that the community platform has more than one person behind it - it's a real operation.
 
 **Her script:**
-> "Hi, my name is [name] - I'm calling about the Manitou Beach community platform. I think [Outreach Lead] may have reached out to you recently? I just wanted to follow up and see if you had any questions. It's completely free to get listed and it takes about 5 minutes."
+> "Hi, my name is Amy - I'm calling about the Manitou Beach community platform. I think Chelsea may have reached out to you recently? I just wanted to follow up and see if you had any questions. It's completely free to get listed and it takes about 5 minutes."
 
 **Also her territory:** Churches, faith communities, and seasonal organizations. These are relationship-driven, slower-moving, and suit her warm approach. They're also often the most loyal once they're in.
 
@@ -105,11 +105,11 @@ Every business goes through these stages. Track in the app.
 
 ### Opening (phone call)
 
-**Outreach Lead version:**
-> "Hi [name], this is [her name] - I work with the Irish Hills Chamber and I used to run the old Manitou Beach website. I'm calling because we've rebuilt it as a proper community platform and I wanted to make sure [business name] was on it. It's completely free to have a listing and it's already getting good traffic. Do you have two minutes?"
+**Chelsea's version:**
+> "Hi, this is Chelsea - I work with the Irish Hills Chamber and I used to run the old Manitou Beach website. I'm calling because we've rebuilt it as a proper community platform and I wanted to make sure [business name] was on it. It's completely free to have a listing and it's already getting good traffic. Do you have two minutes?"
 
-**Community Connector version (personal network):**
-> "Hey, it's [name] - Daryl's wife. He built this new website for Manitou Beach and I'm helping get local businesses listed. It's completely free to start and you'd be one of the first on there. Can I send you the link?"
+**Erin's version (personal network):**
+> "Hey, it's Erin - Daryl's wife. He built this new website for Manitou Beach and I'm helping get local businesses listed. It's completely free to start and you'd be one of the first on there. Can I send you the link?"
 
 **Follow-Up Agent version:**
 > "Hi, I think someone from our team may have been in touch recently about the Manitou Beach website? I'm just following up to see if you had any questions. Takes about 5 minutes to get listed and it's free."
@@ -173,16 +173,16 @@ When a business says yes, here's what happens:
 
 | Agent | Businesses Contacted | Listings Generated | Follow-ups Completed |
 |-------|---------------------|-------------------|---------------------|
-| Outreach Lead | 40-60 | 15-20 | n/a |
-| Community Connector | 20-30 | 8-12 | n/a |
-| Follow-Up Agent | 20-30 (follow-ups) | 3-5 (from follow-ups) | 100% of 5-day queue |
+| Chelsea | 40-60 | 15-20 | n/a |
+| Erin | 20-30 | 8-12 | n/a |
+| Amy | 20-30 (follow-ups) | 3-5 (from follow-ups) | 100% of 5-day queue |
 | **Total** | **80-120** | **26-37** | — |
 
 At these rates: 30 new free listings per month. At 20% upgrade rate within 90 days: 6 paid listings/month. At $9-$25 average: $54-$150 new MRR per month from outreach alone.
 
 ---
 
-## The Chamber Girl's Special Play
+## Chelsea's Special Play
 
 This is separate from regular outreach. She should pursue these institutional wins:
 
@@ -200,17 +200,17 @@ These institutional plays are worth more than 10 individual business calls each.
 
 ## The Conversation to Have With Each Agent Before They Start
 
-**Tell Outreach Lead:**
+**Tell Chelsea:**
 - "You're the professional here. You have Chamber credibility and you know these people. Your job is acquisition - get them to say yes to a free listing. You don't need to sell the paid tiers at all. That's my job later."
 - "The tracker app is how I see what you're doing without calling you every day. Update it when you finish a contact - takes 30 seconds."
 - "Your $400/week is justified the moment you bring in 15 listings in a week. The math works out."
 
-**Tell Wife:**
+**Tell Erin:**
 - "You're not selling anything. You're sharing something you're proud of. If a friend asks what it is, tell them. If a business owner asks how much it costs, say free to start. That's it."
 - "The Facebook groups are yours. Post once in each group, don't spam, answer questions if people respond."
 
-**Tell Mother-in-law:**
-- "You're the warm second voice. If someone got a call from [Outreach Lead] and didn't respond, a call from you - friendly, no pressure - is often the one that works."
+**Tell Amy:**
+- "You're the warm second voice. If someone got a call from Chelsea and didn't respond, a call from you - friendly, no pressure - is often the one that works."
 - "You're not chasing anyone. If they say no interest, that's fine. Update the tracker and move on."
 
 ---

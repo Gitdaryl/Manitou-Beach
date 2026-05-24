@@ -7,10 +7,10 @@
 import { put, list } from '@vercel/blob';
 
 const AGENTS = {
-  lead:      { label: 'Outreach Lead',        color: '#7D6EAA' },
-  connector: { label: 'Community Connector',  color: '#5B8A6E' },
-  followup:  { label: 'Follow-Up Agent',      color: '#D4845A' },
-  admin:     { label: 'Daryl (Admin)',         color: '#5B7E95' },
+  lead:      { label: 'Chelsea',  color: '#7D6EAA' },
+  connector: { label: 'Erin',     color: '#5B8A6E' },
+  followup:  { label: 'Amy',      color: '#D4845A' },
+  admin:     { label: 'Daryl',    color: '#5B7E95' },
 };
 
 function resolveAgent(pin) {
