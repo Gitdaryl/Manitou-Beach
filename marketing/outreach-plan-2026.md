@@ -29,13 +29,13 @@ Before contacting any business, the agent claims it in the tracker app. If a bus
 
 ### Outreach Lead — Business Acquisition
 
-**Her territory:** Any business she personally knows from Chamber work or the old MB website. Also: ALL cold outreach to businesses neither of the other two agents has a personal relationship with.
+**Her territory:** Any business she personally knows from the old MB website or from living in the area. Also: ALL cold outreach to businesses neither of the other two agents has a personal relationship with.
 
-**Why she owns the cold list:** She has the most credibility with strangers. "I work with the Irish Hills Chamber and I used to run the Manitou Beach website" opens doors that a personal introduction can't. Business owners know the Chamber. They trust it.
+**Why she owns the cold list:** She's known to local business owners as someone who's been invested in Manitou Beach for years. "I used to run the old Manitou Beach website" positions her as a community builder returning to her roots - not a salesperson. Business owners remember her.
 
-**Immediate first task:** Pull the Irish Hills Chamber member directory. Every member business that isn't already on the MB platform is a lead. She probably knows 60-70% of them by name.
+**Immediate first task:** Work through the businesses seeded in the tracker app. Start with any she personally knows or has history with from the old website - those are the warmest leads on the list.
 
-**Her advantage over everyone:** She's positioned as a local authority, not someone selling something. She's informing them about a community resource they should know about.
+**Her advantage over everyone:** She's a recognizable face in the community. Business owners who were on the old site already trust her. She's not introducing a stranger - she's a familiar voice calling about something she built before.
 
 **Target:** 10-15 newly claimed/contacted businesses per week.
 
@@ -106,7 +106,7 @@ Every business goes through these stages. Track in the app.
 ### Opening (phone call)
 
 **Chelsea's version:**
-> "Hi, this is Chelsea - I work with the Irish Hills Chamber and I used to run the old Manitou Beach website. I'm calling because we've rebuilt it as a proper community platform and I wanted to make sure [business name] was on it. It's completely free to have a listing and it's already getting good traffic. Do you have two minutes?"
+> "Hi, this is Chelsea - I used to run the old Manitou Beach website. I'm calling because we've rebuilt it as a proper community platform and I wanted to make sure [business name] was on it. It's completely free to have a listing and it's already getting good traffic. Do you have two minutes?"
 
 **Erin's version (personal network):**
 > "Hey, it's Erin - Daryl's wife. He built this new website for Manitou Beach and I'm helping get local businesses listed. It's completely free to start and you'd be one of the first on there. Can I send you the link?"
@@ -184,24 +184,22 @@ At these rates: 30 new free listings per month. At 20% upgrade rate within 90 da
 
 ## Chelsea's Special Play
 
-This is separate from regular outreach. She should pursue these institutional wins:
+These are the highest-leverage moves she can make outside of regular outreach:
 
-1. **Irish Hills Chamber member directory** - Ask if the platform can be listed as a "community resource" in Chamber communications. One mention in a Chamber newsletter reaches every member business.
+1. **Old website users** - She knows who was on the old MB website. These people already believe in the concept. They're the hottest leads on the list. Call them first - this week, before anything else.
 
-2. **Official Chamber endorsement** - Can the platform be the "official community directory" for Irish Hills/Manitou Beach area? Even informal endorsement ("recommended by the Irish Hills Chamber") is a credibility multiplier.
+2. **Referral chain** - After every "yes," ask: "Do you know any other businesses around the lake that should be on here?" One good referral per listing = exponential growth. She's already trusted, so asking is low-friction.
 
-3. **Chamber website cross-link** - Ask if manitoubeachmichigan.com can be listed on the Chamber's community resources page. This is a high-authority backlink AND referral traffic.
+3. **Vacation rentals** - Private cabin and cottage rentals that aren't on Airbnb. Owners often rent through Facebook Marketplace or word of mouth. Easy yes for the /stays page - no listing fee, ever.
 
-4. **Old website users** - She knows who was on the old MB website. These people already believe in the concept. They're the hottest leads on the list. Call them first.
-
-These institutional plays are worth more than 10 individual business calls each. She should prioritize them in week 1.
+One warm referral from someone already listed is worth more than 5 cold calls.
 
 ---
 
 ## The Conversation to Have With Each Agent Before They Start
 
 **Tell Chelsea:**
-- "You're the professional here. You have Chamber credibility and you know these people. Your job is acquisition - get them to say yes to a free listing. You don't need to sell the paid tiers at all. That's my job later."
+- "You're the professional here. You ran the old website and you know these people personally. Your job is acquisition - get them to say yes to a free listing. You don't need to sell the paid tiers at all. That's my job later."
 - "The tracker app is how I see what you're doing without calling you every day. Update it when you finish a contact - takes 30 seconds."
 - "Your $400/week is justified the moment you bring in 15 listings in a week. The math works out."
 

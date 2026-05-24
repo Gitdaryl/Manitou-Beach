@@ -578,6 +578,31 @@ export default function OutreachPage() {
   const [selected, setSelected] = useState(null);
   const [showAdd, setShowAdd] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [seeding, setSeeding] = useState(false);
+  const [seedMsg, setSeedMsg] = useState('');
+
+  const handleSeed = async () => {
+    if (seeding) return;
+    setSeeding(true);
+    setSeedMsg('');
+    try {
+      const res = await fetch('/api/seed-outreach', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-outreach-pin': pin },
+      });
+      const d = await res.json();
+      if (res.ok) {
+        setSeedMsg(`Added ${d.added} businesses (${d.total} total)`);
+        await load(pin);
+      } else {
+        setSeedMsg(d.error || 'Seed failed');
+      }
+    } catch {
+      setSeedMsg('Connection error');
+    }
+    setSeeding(false);
+    setTimeout(() => setSeedMsg(''), 5000);
+  };
 
   const load = useCallback(async (p = pin) => {
     if (!p) return;
@@ -651,18 +676,30 @@ export default function OutreachPage() {
             <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: '#fff', fontWeight: 700 }}>Outreach Tracker</div>
             <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginTop: 1 }}>{agentLabel}</div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             {isAdmin && (
-              <button onClick={() => setShowAdd(true)}
-                style={{ background: C.sage, color: '#fff', border: 'none', borderRadius: 8, padding: '8px 14px', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}>
-                + Add
-              </button>
+              <>
+                <button onClick={() => setShowAdd(true)}
+                  style={{ background: C.sage, color: '#fff', border: 'none', borderRadius: 8, padding: '8px 14px', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}>
+                  + Add
+                </button>
+                <button onClick={handleSeed} disabled={seeding}
+                  title="Import businesses from Google Places"
+                  style={{ background: 'rgba(255,255,255,0.12)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '8px 12px', fontSize: 13, cursor: seeding ? 'not-allowed' : 'pointer', opacity: seeding ? 0.6 : 1, fontFamily: "'Libre Franklin', sans-serif" }}>
+                  {seeding ? '…' : '⬇ Seed'}
+                </button>
+              </>
             )}
             <button onClick={() => { setPin(''); setAgent(''); sessionStorage.clear(); setData(null); }}
               style={{ background: 'none', border: '1px solid rgba(255,255,255,0.2)', color: 'rgba(255,255,255,0.6)', borderRadius: 8, padding: '7px 12px', fontSize: 12, cursor: 'pointer' }}>
               Sign out
             </button>
           </div>
+          {seedMsg && (
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: seedMsg.includes('Added') ? '#90ee90' : '#ff8a8a', marginTop: 6, paddingBottom: 4 }}>
+              {seedMsg}
+            </div>
+          )}
         </div>
 
         {/* Tabs */}
