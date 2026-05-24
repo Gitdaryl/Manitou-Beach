@@ -144,6 +144,31 @@ export default function EventDetailPage() {
     ? `${event.name}${event.location ? ` at ${event.location}` : ''}. ${event.date ? formatFullDate(event.date) : ''}${event.description ? '. ' + event.description.slice(0, 100) : ''}`
     : 'Event details at Manitou Beach, Devils Lake Michigan.';
 
+  const eventSchema = event ? {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    name: event.name,
+    startDate: event.date ? `${event.date}${event.timeStart ? 'T' + event.timeStart : 'T00:00:00'}` : undefined,
+    endDate: event.date ? `${event.date}${event.timeEnd ? 'T' + event.timeEnd : 'T23:59:59'}` : undefined,
+    eventStatus: 'https://schema.org/EventScheduled',
+    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    location: {
+      '@type': 'Place',
+      name: event.location || 'Manitou Beach, Michigan',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Manitou Beach',
+        addressRegion: 'MI',
+        addressCountry: 'US',
+      },
+    },
+    description: event.description || undefined,
+    image: event.imageUrl || `${siteUrl}${heroImage}`,
+    url: `${siteUrl}/events/${eventId}`,
+    ...(event.organizerName ? { organizer: { '@type': 'Organization', name: event.organizerName } } : {}),
+    ...(event.ticketPrice ? { offers: { '@type': 'Offer', price: String(event.ticketPrice), priceCurrency: 'USD', url: `${siteUrl}/events/${eventId}`, availability: 'https://schema.org/InStock' } } : {}),
+  } : null;
+
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, minHeight: '100vh' }}>
       <GlobalStyles />
@@ -155,6 +180,7 @@ export default function EventDetailPage() {
           path={`/events/${eventId}`}
           ogImage={hasOrganizerImage ? event.imageUrl : `${siteUrl}${heroImage}`}
           ogType="event"
+          schema={eventSchema}
         />
       )}
 

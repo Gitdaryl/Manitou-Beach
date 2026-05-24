@@ -296,11 +296,13 @@ async function handlePost(req, res) {
         const truckName = page.properties['Name']?.title?.[0]?.text?.content || slug;
         const photoUrl = page.properties['Photo URL']?.url || '';
         const igHandle = (page.properties['Instagram Handle']?.rich_text?.[0]?.text?.content || '').replace('@', '');
+        const igAccountId = process.env.META_IG_ACCOUNT_ID;
         const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
         const locText = note ? ` at ${note}` : '';
         const igTag = igHandle ? `\n\nFollow them at @${igHandle} for schedule updates.` : '';
         const message = `${truckName} just pulled up${locText} - they are open right now!\n\nFind them (and every truck at the lake today) at ${siteUrl}/food-trucks${igTag}\n\n#ManitoBeachMI #FoodTruck #DevilsLakeMI`;
 
+        // Post to Facebook
         const fbBody = { message, access_token: pageToken };
         let fbEndpoint = `https://graph.facebook.com/v25.0/${fbPageId}/feed`;
         if (photoUrl) {
@@ -314,6 +316,23 @@ async function handlePost(req, res) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(fbBody),
         });
+
+        // Post to Instagram (requires a public photo URL)
+        if (igAccountId && photoUrl) {
+          const containerRes = await fetch(`https://graph.facebook.com/v25.0/${igAccountId}/media`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image_url: photoUrl, caption: message, access_token: pageToken }),
+          });
+          const containerData = await containerRes.json();
+          if (containerData.id) {
+            await fetch(`https://graph.facebook.com/v25.0/${igAccountId}/media_publish`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ creation_id: containerData.id, access_token: pageToken }),
+            });
+          }
+        }
       } catch (postErr) {
         console.error('Check-in auto-post error:', postErr.message);
       }
