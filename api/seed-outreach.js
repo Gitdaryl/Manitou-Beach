@@ -10,36 +10,27 @@ const RADIUS = 8047; // 5 miles in meters
 // Cities to EXCLUDE — they show up inside 5 miles but aren't Manitou Beach area
 const EXCLUDED_CITIES = [', adrian', ', tecumseh', ', blissfield', ', hudson', ', clinton,'];
 
-// Searches to run — each is { type } or { keyword }, never both required
+// 13 searches — stays well under 60s maxDuration even on slow API days
 const SEARCHES = [
-  // Food & drink - use specific types so Google returns actual local places
+  // Food & drink
   { type: 'restaurant' },
-  { type: 'cafe' },
   { type: 'bar' },
-  { type: 'meal_takeaway' },
-  // Lodging
+  // Lodging & camping
   { type: 'lodging' },
   { type: 'campground' },
-  { type: 'rv_park' },
-  // Recreation & tourism
+  // Recreation
   { type: 'tourist_attraction' },
   { type: 'golf_course' },
-  // Wineries — keyword catches both winery pages and vineyard
+  // Wineries & lake businesses — keyword search is broader
   { keyword: 'winery vineyard' },
-  // Lake-specific — no Google type for these
-  { keyword: 'marina' },
-  { keyword: 'boat rental' },
-  // Home services — residents around the lake need these
+  { keyword: 'marina boat rental' },
+  // Home services
   { type: 'plumber' },
   { type: 'electrician' },
-  { type: 'locksmith' },
   { type: 'painter' },
-  { keyword: 'roofing contractor' },
   { keyword: 'landscaping lawn care' },
-  { keyword: 'HVAC heating cooling' },
-  // Beauty & shopping
+  // Beauty & retail
   { type: 'beauty_salon' },
-  { type: 'store' },
 ];
 
 const CATEGORY_MAP = [

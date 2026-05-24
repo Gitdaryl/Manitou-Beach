@@ -834,18 +834,19 @@ export default function OutreachPage() {
         headers: { 'Content-Type': 'application/json', 'x-outreach-pin': pin },
         body: JSON.stringify({ clear }),
       });
-      const d = await res.json();
-      if (res.ok) {
+      let d;
+      try { d = await res.json(); } catch { d = null; }
+      if (res.ok && d) {
         setSeedMsg(clear
           ? `Cleared + imported ${d.added} businesses (${d.excluded} excluded)`
           : `Added ${d.added} new (${d.excluded} excluded, ${d.total} total)`
         );
         await load(pin);
       } else {
-        setSeedMsg(d.error || 'Seed failed');
+        setSeedMsg(d?.error || `Error ${res.status} — try again`);
       }
     } catch {
-      setSeedMsg('Connection error');
+      setSeedMsg('Network error — check connection');
     }
     setSeeding(false);
     setTimeout(() => setSeedMsg(''), 6000);
