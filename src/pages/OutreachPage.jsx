@@ -37,6 +37,24 @@ const PRIORITY_META = {
   cold: { label: 'Cold', color: '#5B7E95' },
 };
 
+const TICKET_TYPES = {
+  url_recovery: { label: 'URL Recovery', color: '#5B7E95', icon: '🔗' },
+  question:     { label: 'Question',     color: '#7D6EAA', icon: '❓' },
+  modification: { label: 'Modification', color: '#C5821A', icon: '✏️' },
+  idea:         { label: 'Idea',         color: '#5B8A6E', icon: '💡' },
+  other:        { label: 'Other',        color: '#9B9B9B', icon: '📌' },
+};
+
+const KANBAN_COLS = [
+  { id: 'new',         label: 'New',         color: '#9B9B9B' },
+  { id: 'contacted',   label: 'Contacted',   color: '#5B7E95' },
+  { id: 'interested',  label: 'Interested',  color: '#5B8A6E' },
+  { id: 'listed-free', label: 'Listed Free', color: '#7D6EAA' },
+  { id: 'listed-paid', label: 'Paid ✓',      color: '#C5821A' },
+  { id: 'no-interest', label: 'No Interest', color: '#B84040' },
+  { id: 'unavailable', label: 'Unavailable', color: '#B87A40' },
+];
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function timeAgo(iso) {
@@ -191,6 +209,66 @@ function BusinessCard({ biz, agent, agentLabel, onOpen }) {
   );
 }
 
+function KanbanCard({ biz, agents, onClick }) {
+  const priority = PRIORITY_META[biz.priority] || PRIORITY_META.warm;
+  const ag = biz.assignedTo ? agents[biz.assignedTo] : null;
+  return (
+    <div onClick={onClick} style={{
+      background: '#fff', borderRadius: 8, padding: '10px 12px', marginBottom: 8,
+      cursor: 'pointer', boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+      borderLeft: `3px solid ${priority.color}`,
+    }}>
+      <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 13, color: C.dusk, fontWeight: 600, lineHeight: 1.3 }}>
+        {biz.name}
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 6 }}>
+        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted }}>{biz.area || ''}</span>
+        {ag && (
+          <span style={{
+            width: 20, height: 20, borderRadius: '50%', background: ag.color,
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: 10, color: '#fff', fontWeight: 700, fontFamily: "'Libre Franklin', sans-serif",
+          }}>
+            {ag.label[0]}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function KanbanBoard({ businesses, agents, onOpen }) {
+  return (
+    <div style={{ overflowX: 'auto', display: 'flex', gap: 10, padding: '12px 16px 32px', WebkitOverflowScrolling: 'touch', minHeight: '60vh' }}>
+      {KANBAN_COLS.map(col => {
+        const cards = businesses.filter(b => b.status === col.id);
+        const isSink = col.id === 'no-interest' || col.id === 'unavailable';
+        return (
+          <div key={col.id} style={{ flexShrink: 0, width: isSink ? 145 : 185 }}>
+            <div style={{
+              background: `${col.color}18`, borderRadius: '8px 8px 0 0',
+              padding: '8px 10px', borderBottom: `2px solid ${col.color}`,
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8,
+            }}>
+              <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: isSink ? 11 : 12, fontWeight: 700, color: col.color }}>
+                {col.label}
+              </span>
+              <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, fontWeight: 700, color: C.dusk }}>
+                {cards.length}
+              </span>
+            </div>
+            {cards.length === 0 ? (
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, textAlign: 'center', padding: '14px 0', fontStyle: 'italic' }}>empty</div>
+            ) : (
+              cards.map(b => <KanbanCard key={b.id} biz={b} agents={agents} onClick={() => onOpen(b)} />)
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function LogModal({ biz, agent, pin, onClose, onUpdated }) {
   const [actType, setActType] = useState('call');
   const [note, setNote] = useState('');
@@ -289,8 +367,9 @@ function LogModal({ biz, agent, pin, onClose, onUpdated }) {
   );
 }
 
-function BusinessDetail({ biz, agent, pin, agents, onClose, onUpdated }) {
+function BusinessDetail({ biz, agent, pin, agents, onClose, onUpdated, onTicketCreated }) {
   const [showLog, setShowLog] = useState(false);
+  const [showTicket, setShowTicket] = useState(false);
   const [claiming, setClaiming] = useState(false);
   const [editNotes, setEditNotes] = useState(false);
   const [notes, setNotes] = useState(biz.notes || '');
@@ -437,6 +516,10 @@ function BusinessDetail({ biz, agent, pin, agents, onClose, onUpdated }) {
                   {claiming ? 'Claiming…' : '🙋 Claim This Lead'}
                 </button>
               )}
+              <button onClick={() => setShowTicket(true)}
+                style={{ background: 'none', border: `1px solid ${C.sand}`, color: C.textMuted, borderRadius: 10, padding: '12px', fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", cursor: 'pointer' }}>
+                🎫 Report Issue
+              </button>
             </div>
           </div>
         </div>
@@ -444,6 +527,14 @@ function BusinessDetail({ biz, agent, pin, agents, onClose, onUpdated }) {
 
       {showLog && (
         <LogModal biz={biz} agent={agent} pin={pin} onClose={() => setShowLog(false)} onUpdated={(updated) => { onUpdated(updated); setShowLog(false); }} />
+      )}
+
+      {showTicket && (
+        <CreateTicketModal
+          biz={biz} pin={pin}
+          onClose={() => setShowTicket(false)}
+          onCreated={(t) => { onTicketCreated?.(t); setShowTicket(false); }}
+        />
       )}
     </>
   );
@@ -533,6 +624,74 @@ function AddBusinessModal({ pin, onClose, onAdded }) {
   );
 }
 
+function CreateTicketModal({ biz, pin, onClose, onCreated }) {
+  const [type, setType] = useState('question');
+  const [body, setBody] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const save = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/outreach', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-outreach-pin': pin },
+        body: JSON.stringify({ action: 'ticket', bizId: biz?.id, bizName: biz?.name || '', type, body }),
+      });
+      if (res.ok) { const d = await res.json(); onCreated(d.ticket); onClose(); }
+      else { const d = await res.json(); setError(d.error || 'Failed'); }
+    } catch { setError('Connection error'); }
+    setLoading(false);
+  };
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 200, display: 'flex', alignItems: 'flex-end' }} onClick={onClose}>
+      <div style={{ background: '#fff', borderRadius: '16px 16px 0 0', width: '100%', padding: '20px 16px 32px', maxHeight: '80vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
+        <div style={{ width: 36, height: 4, background: '#ddd', borderRadius: 2, margin: '0 auto 16px' }} />
+        <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.dusk, fontWeight: 700, marginBottom: 4 }}>Report Issue</div>
+        {biz && <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, marginBottom: 16 }}>{biz.name}</div>}
+        {error && <div style={{ background: '#FBEDED', color: '#B84040', borderRadius: 8, padding: '10px 12px', marginBottom: 12, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif" }}>{error}</div>}
+
+        <div style={{ marginBottom: 14 }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.5 }}>Type</div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            {Object.entries(TICKET_TYPES).map(([k, v]) => (
+              <button key={k} onClick={() => setType(k)}
+                style={{
+                  padding: '7px 12px', borderRadius: 8, border: `2px solid ${type === k ? v.color : '#ddd'}`,
+                  background: type === k ? `${v.color}15` : '#fff',
+                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, cursor: 'pointer',
+                  color: type === k ? v.color : C.text, fontWeight: type === k ? 600 : 400,
+                }}>
+                {v.icon} {v.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {type === 'url_recovery' && (
+          <div style={{ background: '#EBF2F7', borderRadius: 8, padding: '10px 12px', marginBottom: 12, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.lakeBlue }}>
+            Auto-handled: system looks up their listing in Notion and sends them the URL.
+          </div>
+        )}
+
+        <div style={{ marginBottom: 20 }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted, marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.5 }}>Details</div>
+          <textarea value={body} onChange={e => setBody(e.target.value)} rows={4}
+            placeholder={type === 'url_recovery' ? 'Any extra context (optional)' : 'What happened or what needs attention?'}
+            style={{ width: '100%', borderRadius: 8, border: '1px solid #ddd', padding: '10px 12px', fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, resize: 'vertical', boxSizing: 'border-box', outline: 'none' }}
+          />
+        </div>
+
+        <button onClick={save} disabled={loading}
+          style={{ width: '100%', background: C.lakeBlue, color: '#fff', border: 'none', borderRadius: 10, padding: '14px', fontSize: 15, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif", cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1 }}>
+          {loading ? 'Submitting…' : 'Submit Ticket'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ── Admin Stats ───────────────────────────────────────────────────────────────
 
 function AdminStats({ stats, agents }) {
@@ -567,6 +726,88 @@ function AdminStats({ stats, agents }) {
   );
 }
 
+function TicketsTab({ tickets, agents, isAdmin, pin, onResolved }) {
+  const [filter, setFilter] = useState('open');
+  const [resolving, setResolving] = useState(null);
+  const shown = tickets.filter(t => filter === 'open' ? t.status === 'open' : t.status !== 'open');
+  const openCount = tickets.filter(t => t.status === 'open').length;
+
+  const resolve = async (ticket) => {
+    setResolving(ticket.id);
+    try {
+      const res = await fetch('/api/outreach', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'x-outreach-pin': pin },
+        body: JSON.stringify({ action: 'resolve_ticket', ticketId: ticket.id, resolution: 'Manually resolved' }),
+      });
+      if (res.ok) { const d = await res.json(); onResolved(d.ticket); }
+    } catch {}
+    setResolving(null);
+  };
+
+  return (
+    <div style={{ padding: '12px 16px 80px' }}>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+        {[['open', `Open (${openCount})`], ['resolved', 'Resolved']].map(([f, label]) => (
+          <button key={f} onClick={() => setFilter(f)}
+            style={{
+              flex: 1, padding: '8px', borderRadius: 8,
+              border: `2px solid ${filter === f ? C.lakeBlue : '#ddd'}`,
+              background: filter === f ? `${C.lakeBlue}15` : '#fff',
+              fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: filter === f ? 700 : 400,
+              color: filter === f ? C.lakeBlue : C.text, cursor: 'pointer',
+            }}>
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {shown.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: '40px 0' }}>
+          <div style={{ fontSize: 36, marginBottom: 8 }}>🎫</div>
+          <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.dusk, marginBottom: 6 }}>
+            {filter === 'open' ? 'No open tickets' : 'No resolved tickets yet'}
+          </div>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted }}>
+            {filter === 'open' ? 'All clear. Nice work.' : 'Resolved tickets will appear here.'}
+          </div>
+        </div>
+      ) : shown.map(t => {
+        const tt = TICKET_TYPES[t.type] || TICKET_TYPES.other;
+        const ag = agents[t.agent] || { label: t.agent, color: '#999' };
+        return (
+          <div key={t.id} style={{ background: '#fff', borderRadius: 12, padding: '14px 16px', marginBottom: 10, boxShadow: '0 1px 6px rgba(0,0,0,0.08)', borderLeft: `4px solid ${tt.color}` }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8, marginBottom: 6 }}>
+              <div>
+                <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, color: tt.color, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                  {tt.icon} {tt.label}
+                </span>
+                {t.bizName && <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, fontWeight: 700, color: C.dusk, marginTop: 2 }}>{t.bizName}</div>}
+              </div>
+              <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, whiteSpace: 'nowrap', flexShrink: 0 }}>{timeAgo(t.createdAt)}</span>
+            </div>
+            {t.body && <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.text, lineHeight: 1.5, marginBottom: 8 }}>{t.body}</div>}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted }}>
+                by <span style={{ color: ag.color, fontWeight: 600 }}>{ag.label}</span>
+              </span>
+              {t.status === 'resolved' && t.resolution && (
+                <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: '#5B8A6E' }}>✓ {t.resolution}</span>
+              )}
+              {t.status === 'open' && isAdmin && (
+                <button onClick={() => resolve(t)} disabled={resolving === t.id}
+                  style={{ background: 'none', border: `1px solid ${C.sage}`, color: C.sage, borderRadius: 6, padding: '5px 10px', fontSize: 11, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}>
+                  {resolving === t.id ? '…' : '✓ Resolve'}
+                </button>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 // ── Main Page ─────────────────────────────────────────────────────────────────
 
 export default function OutreachPage() {
@@ -580,19 +821,25 @@ export default function OutreachPage() {
   const [loading, setLoading] = useState(false);
   const [seeding, setSeeding] = useState(false);
   const [seedMsg, setSeedMsg] = useState('');
+  const [confirmClear, setConfirmClear] = useState(false);
 
-  const handleSeed = async () => {
+  const handleSeed = async (clear = false) => {
     if (seeding) return;
     setSeeding(true);
     setSeedMsg('');
+    setConfirmClear(false);
     try {
       const res = await fetch('/api/seed-outreach', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-outreach-pin': pin },
+        body: JSON.stringify({ clear }),
       });
       const d = await res.json();
       if (res.ok) {
-        setSeedMsg(`Added ${d.added} businesses (${d.total} total)`);
+        setSeedMsg(clear
+          ? `Cleared + imported ${d.added} businesses (${d.excluded} excluded)`
+          : `Added ${d.added} new (${d.excluded} excluded, ${d.total} total)`
+        );
         await load(pin);
       } else {
         setSeedMsg(d.error || 'Seed failed');
@@ -601,7 +848,7 @@ export default function OutreachPage() {
       setSeedMsg('Connection error');
     }
     setSeeding(false);
-    setTimeout(() => setSeedMsg(''), 5000);
+    setTimeout(() => setSeedMsg(''), 6000);
   };
 
   const load = useCallback(async (p = pin) => {
@@ -631,6 +878,16 @@ export default function OutreachPage() {
     setData(prev => ({ ...prev, businesses: [...prev.businesses, biz] }));
   };
 
+  const handleTicketCreated = (ticket) => {
+    setData(prev => ({ ...prev, tickets: [...(prev.tickets || []), ticket] }));
+  };
+  const handleTicketResolved = (updated) => {
+    setData(prev => ({
+      ...prev,
+      tickets: (prev.tickets || []).map(t => t.id === updated.id ? updated : t),
+    }));
+  };
+
   if (!pin || !agent) return <PinScreen onLogin={handleLogin} />;
   if (!data) return (
     <div style={{ minHeight: '100vh', background: C.cream, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -638,7 +895,7 @@ export default function OutreachPage() {
     </div>
   );
 
-  const { businesses = [], agents = {}, stats = {} } = data;
+  const { businesses = [], agents = {}, stats = {}, tickets = [] } = data;
   const isAdmin = agent === 'admin';
   const agentLabel = agents[agent]?.label || agent;
 
@@ -655,16 +912,20 @@ export default function OutreachPage() {
     return true;
   });
 
+  const openTicketCount = tickets.filter(t => t.status === 'open').length;
   const tabs = isAdmin
     ? [
-        { id: 'all', label: 'All', count: businesses.length },
+        { id: 'all',       label: 'All',     count: businesses.length },
+        { id: 'board',     label: '⬛ Board', count: null },
         { id: 'available', label: 'Available', count: businesses.filter(b => !b.assignedTo).length },
-        { id: 'active', label: 'Active', count: businesses.filter(b => ['contacted','interested'].includes(b.status)).length },
-        { id: 'listed', label: 'Listed', count: businesses.filter(b => ['listed-free','listed-paid'].includes(b.status)).length },
+        { id: 'active',    label: 'Active',  count: businesses.filter(b => ['contacted','interested'].includes(b.status)).length },
+        { id: 'listed',    label: 'Listed',  count: businesses.filter(b => ['listed-free','listed-paid'].includes(b.status)).length },
+        { id: 'tickets',   label: `🎫 ${openTicketCount > 0 ? `Tickets (${openTicketCount})` : 'Tickets'}`, count: null },
       ]
     : [
-        { id: 'mine', label: 'My Leads', count: businesses.filter(b => b.assignedTo === agent).length },
+        { id: 'mine',      label: 'My Leads', count: businesses.filter(b => b.assignedTo === agent).length },
         { id: 'available', label: 'Available', count: businesses.filter(b => !b.assignedTo).length },
+        { id: 'tickets',   label: `🎫 ${openTicketCount > 0 ? `(${openTicketCount})` : 'Tickets'}`, count: null },
       ];
 
   return (
@@ -683,11 +944,32 @@ export default function OutreachPage() {
                   style={{ background: C.sage, color: '#fff', border: 'none', borderRadius: 8, padding: '8px 14px', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}>
                   + Add
                 </button>
-                <button onClick={handleSeed} disabled={seeding}
-                  title="Import businesses from Google Places"
-                  style={{ background: 'rgba(255,255,255,0.12)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '8px 12px', fontSize: 13, cursor: seeding ? 'not-allowed' : 'pointer', opacity: seeding ? 0.6 : 1, fontFamily: "'Libre Franklin', sans-serif" }}>
-                  {seeding ? '…' : '⬇ Seed'}
-                </button>
+                {confirmClear ? (
+                  <>
+                    <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: '#ffcc88' }}>Clear all leads?</span>
+                    <button onClick={() => handleSeed(true)} disabled={seeding}
+                      style={{ background: '#B84040', color: '#fff', border: 'none', borderRadius: 8, padding: '7px 10px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}>
+                      Yes
+                    </button>
+                    <button onClick={() => setConfirmClear(false)}
+                      style={{ background: 'rgba(255,255,255,0.12)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '7px 10px', fontSize: 12, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}>
+                      No
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button onClick={() => handleSeed(false)} disabled={seeding}
+                      title="Add new businesses from Google Places (keeps existing)"
+                      style={{ background: 'rgba(255,255,255,0.12)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '8px 10px', fontSize: 12, cursor: seeding ? 'not-allowed' : 'pointer', opacity: seeding ? 0.6 : 1, fontFamily: "'Libre Franklin', sans-serif" }}>
+                      {seeding ? '…' : '⬇ Seed'}
+                    </button>
+                    <button onClick={() => setConfirmClear(true)} disabled={seeding}
+                      title="Clear all leads and re-import from Google Places"
+                      style={{ background: 'rgba(255,255,255,0.08)', color: '#ffcc88', border: '1px solid rgba(255,200,100,0.3)', borderRadius: 8, padding: '8px 10px', fontSize: 12, cursor: seeding ? 'not-allowed' : 'pointer', opacity: seeding ? 0.6 : 1, fontFamily: "'Libre Franklin', sans-serif" }}>
+                      🔄
+                    </button>
+                  </>
+                )}
               </>
             )}
             <button onClick={() => { setPin(''); setAgent(''); sessionStorage.clear(); setData(null); }}
@@ -736,26 +1018,38 @@ export default function OutreachPage() {
         </div>
       )}
 
-      {/* Business list */}
-      <div style={{ padding: '12px 16px 80px' }}>
-        {loading ? (
-          <div style={{ textAlign: 'center', padding: '40px 0', color: C.textMuted }}>Loading…</div>
-        ) : filtered.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '40px 0' }}>
-            <div style={{ fontSize: 36, marginBottom: 8 }}>📋</div>
-            <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.dusk, marginBottom: 6 }}>
-              {tab === 'mine' ? 'No leads claimed yet' : tab === 'available' ? 'All leads are claimed' : 'Nothing here'}
+      {/* Kanban board */}
+      {tab === 'board' && isAdmin && (
+        <KanbanBoard businesses={businesses} agents={agents} onOpen={setSelected} />
+      )}
+
+      {/* Tickets inbox */}
+      {tab === 'tickets' && (
+        <TicketsTab tickets={tickets} agents={agents} isAdmin={isAdmin} pin={pin} onResolved={handleTicketResolved} />
+      )}
+
+      {/* Business list (all non-board, non-tickets tabs) */}
+      {tab !== 'board' && tab !== 'tickets' && (
+        <div style={{ padding: '12px 16px 80px' }}>
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '40px 0', color: C.textMuted }}>Loading…</div>
+          ) : filtered.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '40px 0' }}>
+              <div style={{ fontSize: 36, marginBottom: 8 }}>📋</div>
+              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.dusk, marginBottom: 6 }}>
+                {tab === 'mine' ? 'No leads claimed yet' : tab === 'available' ? 'All leads are claimed' : 'Nothing here'}
+              </div>
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted }}>
+                {tab === 'mine' ? 'Go to "Available" to claim your first lead.' : tab === 'available' ? 'Check back when new businesses are added.' : 'Try a different filter.'}
+              </div>
             </div>
-            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted }}>
-              {tab === 'mine' ? 'Go to "Available" to claim your first lead.' : tab === 'available' ? 'Check back when new businesses are added.' : 'Try a different filter.'}
-            </div>
-          </div>
-        ) : (
-          filtered.map(b => (
-            <BusinessCard key={b.id} biz={b} agent={agent} agents={agents} onOpen={setSelected} />
-          ))
-        )}
-      </div>
+          ) : (
+            filtered.map(b => (
+              <BusinessCard key={b.id} biz={b} agent={agent} agents={agents} onOpen={setSelected} />
+            ))
+          )}
+        </div>
+      )}
 
       {/* Refresh button (floating) */}
       <button onClick={() => load()}
@@ -773,6 +1067,7 @@ export default function OutreachPage() {
           biz={selected} agent={agent} pin={pin} agents={agents}
           onClose={() => setSelected(null)}
           onUpdated={handleUpdated}
+          onTicketCreated={handleTicketCreated}
         />
       )}
 
