@@ -52,8 +52,8 @@ const CATEGORY_MAP = [
   [/doctor|dentist|pharmacy|medical/,                           'Health & Beauty'],
 ];
 
-function inferCategory(types = [], name = '') {
-  const s = [...types, name.toLowerCase()].join(' ');
+function inferCategory(types, name = '') {
+  const s = [...(types || []), (name || '').toLowerCase()].join(' ');
   for (const [re, cat] of CATEGORY_MAP) {
     if (re.test(s)) return cat;
   }
@@ -114,13 +114,15 @@ export default async function handler(req, res) {
   const apiKey = process.env.GOOGLE_PLACES_API_KEY || process.env.VITE_GOOGLE_MAPS_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'No Google Places API key configured' });
 
+  try {
+
   const clear = req.body?.clear === true;
   const db = await readDb();
 
   // When clearing: wipe businesses but preserve tickets
   const seenPlaceIds = clear
     ? new Set()
-    : new Set((db.businesses || []).map(b => b.placeId).filter(Boolean));
+    : new Set((db.businesses || []).filter(Boolean).map(b => b.placeId).filter(Boolean));
 
   const added = [];
   let excluded = 0;
@@ -167,7 +169,12 @@ export default async function handler(req, res) {
   }
 
   db.businesses = clear ? [...added] : [...(db.businesses || []), ...added];
-  await writeDb(db);
+
+  try {
+    await writeDb(db);
+  } catch (err) {
+    return res.status(500).json({ error: `DB write failed: ${err.message}` });
+  }
 
   return res.status(200).json({
     ok: true,
@@ -176,4 +183,9 @@ export default async function handler(req, res) {
     excluded,
     total: db.businesses.length,
   });
+
+  } catch (err) {
+    console.error('seed-outreach fatal:', err);
+    return res.status(500).json({ error: err.message || 'Unexpected error' });
+  }
 }
