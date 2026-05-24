@@ -914,6 +914,8 @@ export default function OutreachPage() {
   const [selected, setSelected] = useState(null);
   const [showAdd, setShowAdd] = useState(false);
   const [showBatch, setShowBatch] = useState(false);
+  const [confirmClear, setConfirmClear] = useState(false);
+  const [clearing, setClearing] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const load = useCallback(async (p = pin) => {
@@ -945,6 +947,20 @@ export default function OutreachPage() {
 
   const handleBatchAdded = (bizzes) => {
     setData(prev => ({ ...prev, businesses: [...prev.businesses, ...bizzes] }));
+  };
+
+  const handleClearAll = async () => {
+    setClearing(true);
+    try {
+      const res = await fetch('/api/outreach', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json', 'x-outreach-pin': pin },
+        body: JSON.stringify({ action: 'clear_all' }),
+      });
+      if (res.ok) { setData(prev => ({ ...prev, businesses: [] })); }
+    } catch {}
+    setClearing(false);
+    setConfirmClear(false);
   };
 
   const handleTicketCreated = (ticket) => {
@@ -1009,14 +1025,34 @@ export default function OutreachPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             {isAdmin && (
               <>
-                <button onClick={() => setShowBatch(true)}
-                  style={{ background: 'rgba(255,255,255,0.12)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '8px 12px', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}>
-                  + Batch
-                </button>
-                <button onClick={() => setShowAdd(true)}
-                  style={{ background: C.sage, color: '#fff', border: 'none', borderRadius: 8, padding: '8px 14px', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}>
-                  + Add
-                </button>
+                {confirmClear ? (
+                  <>
+                    <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: '#ffcc88' }}>Clear all {businesses.length} leads?</span>
+                    <button onClick={handleClearAll} disabled={clearing}
+                      style={{ background: '#B84040', color: '#fff', border: 'none', borderRadius: 8, padding: '7px 10px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}>
+                      {clearing ? '…' : 'Yes'}
+                    </button>
+                    <button onClick={() => setConfirmClear(false)}
+                      style={{ background: 'rgba(255,255,255,0.12)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '7px 10px', fontSize: 12, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}>
+                      No
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button onClick={() => setConfirmClear(true)}
+                      style={{ background: 'rgba(255,255,255,0.08)', color: '#ffaa88', border: '1px solid rgba(255,150,100,0.3)', borderRadius: 8, padding: '8px 10px', fontSize: 12, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}>
+                      Clear
+                    </button>
+                    <button onClick={() => setShowBatch(true)}
+                      style={{ background: 'rgba(255,255,255,0.12)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '8px 12px', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}>
+                      + Batch
+                    </button>
+                    <button onClick={() => setShowAdd(true)}
+                      style={{ background: C.sage, color: '#fff', border: 'none', borderRadius: 8, padding: '8px 14px', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}>
+                      + Add
+                    </button>
+                  </>
+                )}
               </>
             )}
             <button onClick={() => { setPin(''); setAgent(''); sessionStorage.clear(); setData(null); }}

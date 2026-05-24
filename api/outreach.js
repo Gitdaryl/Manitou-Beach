@@ -243,11 +243,17 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: true, business: biz });
   }
 
-  // ── DELETE — remove business (admin only) ────────────────────────────────
+  // ── DELETE — remove business or clear all (admin only) ───────────────────
   if (req.method === 'DELETE') {
     if (agent !== 'admin') return res.status(403).json({ error: 'Admin only' });
-    const { id } = req.body;
     const db = await readDb();
+    if (req.body.action === 'clear_all') {
+      const count = (db.businesses || []).length;
+      db.businesses = [];
+      await writeDb(db);
+      return res.status(200).json({ ok: true, cleared: count });
+    }
+    const { id } = req.body;
     db.businesses = (db.businesses || []).filter(b => b.id !== id);
     await writeDb(db);
     return res.status(200).json({ ok: true });
