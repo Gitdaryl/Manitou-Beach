@@ -1019,9 +1019,11 @@ export default function OutreachPage() {
         </div>
       )}
 
-      {/* Kanban board */}
+      {/* Kanban board — breaks out of the 480px container to use full viewport width */}
       {tab === 'board' && isAdmin && (
-        <KanbanBoard businesses={businesses} agents={agents} onOpen={setSelected} />
+        <div style={{ width: '100vw', marginLeft: 'calc(-50vw + 50%)', overflowX: 'hidden' }}>
+          <KanbanBoard businesses={businesses} agents={agents} onOpen={setSelected} />
+        </div>
       )}
 
       {/* Tickets inbox */}

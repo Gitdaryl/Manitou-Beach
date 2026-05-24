@@ -5,7 +5,7 @@ import { put, list } from '@vercel/blob';
 
 // Manitou Beach village, south shore of Devils Lake — not the lake center
 const CENTER = { lat: 41.9561, lng: -84.0612 };
-const RADIUS = 8047; // 5 miles in meters
+const RADIUS = 6000; // ~3.7 miles — tight enough to exclude Adrian (~7.2km away)
 
 // Cities to EXCLUDE — they show up inside 5 miles but aren't Manitou Beach area
 const EXCLUDED_CITIES = [', adrian', ', tecumseh', ', blissfield', ', hudson', ', clinton,'];
