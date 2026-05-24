@@ -121,28 +121,19 @@ async function scrape() {
     return;
   }
 
-  // Import in batches of 50
-  const BATCH = 50;
-  let totalAdded = 0, totalSkipped = 0;
-  for (let i = 0; i < all.length; i += BATCH) {
-    const chunk = all.slice(i, i + BATCH);
-    process.stdout.write(`  Batch ${Math.floor(i/BATCH)+1}: importing ${chunk.length} ... `);
-    const res = await fetch(`${API_URL}/api/outreach`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-outreach-pin': PIN },
-      body: JSON.stringify({ action: 'batch', businesses: chunk }),
-    });
-    const d = await res.json();
-    if (res.ok) {
-      console.log(`added ${d.added}, skipped ${d.skipped} duplicates`);
-      totalAdded += d.added;
-      totalSkipped += (d.skipped || 0);
-    } else {
-      console.log(`Error: ${d.error}`);
-    }
+  // Import all in a single request to avoid read/write race conditions on Blob
+  process.stdout.write(`\nImporting ${all.length} businesses in one request ... `);
+  const res = await fetch(`${API_URL}/api/outreach`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-outreach-pin': PIN },
+    body: JSON.stringify({ action: 'batch', businesses: all }),
+  });
+  const d = await res.json();
+  if (res.ok) {
+    console.log(`done.\n\nAdded ${d.added}, skipped ${d.skipped || 0} duplicates.`);
+  } else {
+    console.log(`Error: ${d.error}`);
   }
-
-  console.log(`\nDone. Added ${totalAdded} new businesses, skipped ${totalSkipped} duplicates.`);
 }
 
 console.log(`\nIrish Hills Chamber scraper — ${DRY_RUN ? 'DRY RUN' : `importing to ${API_URL}`}\n`);
