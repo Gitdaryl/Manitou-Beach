@@ -624,6 +624,101 @@ function AddBusinessModal({ pin, onClose, onAdded }) {
   );
 }
 
+function BatchAddModal({ pin, onClose, onBatchAdded }) {
+  const [text, setText] = useState('');
+  const [category, setCategory] = useState('Other');
+  const [area, setArea] = useState('Manitou Beach');
+  const [priority, setPriority] = useState('warm');
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState('');
+
+  const names = text.split('\n').map(n => n.trim()).filter(Boolean);
+
+  const save = async () => {
+    if (!names.length) { setError('Add at least one business name'); return; }
+    setLoading(true);
+    setError('');
+    try {
+      const res = await fetch('/api/outreach', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-outreach-pin': pin },
+        body: JSON.stringify({ action: 'batch', names, category, area, priority }),
+      });
+      const d = await res.json();
+      if (res.ok) { onBatchAdded(d.businesses); setResult(d.added); }
+      else setError(d.error || 'Failed');
+    } catch { setError('Connection error'); }
+    setLoading(false);
+  };
+
+  const inputStyle = { width: '100%', borderRadius: 8, border: '1px solid #ddd', padding: '10px 12px', fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, boxSizing: 'border-box', outline: 'none', background: '#fff' };
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 100, display: 'flex', alignItems: 'flex-end' }} onClick={onClose}>
+      <div style={{ background: C.cream, borderRadius: '16px 16px 0 0', width: '100%', padding: '20px 16px 32px', maxHeight: '85vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
+        <div style={{ width: 36, height: 4, background: '#ddd', borderRadius: 2, margin: '0 auto 16px' }} />
+        <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.dusk, marginBottom: 4, fontWeight: 700 }}>Batch Add Businesses</div>
+        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, marginBottom: 16 }}>One business name per line. Category, area, and priority apply to all.</div>
+
+        {result !== null ? (
+          <div style={{ textAlign: 'center', padding: '24px 0' }}>
+            <div style={{ fontSize: 40, marginBottom: 8 }}>✓</div>
+            <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.dusk, fontWeight: 700 }}>{result} businesses added</div>
+            <button onClick={onClose} style={{ marginTop: 20, background: C.sage, color: '#fff', border: 'none', borderRadius: 10, padding: '12px 32px', fontSize: 14, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif", cursor: 'pointer' }}>Done</button>
+          </div>
+        ) : (
+          <>
+            {error && <div style={{ background: '#FBEDED', color: '#B84040', borderRadius: 8, padding: '10px 12px', marginBottom: 12, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif" }}>{error}</div>}
+            <textarea
+              value={text}
+              onChange={e => setText(e.target.value)}
+              placeholder={"Devils Lake Bar & Grill\nOutdoor Oasis Resort\nSunrise Cottages\nIrish Hills Golf Course\n..."}
+              rows={10}
+              autoFocus
+              style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.7 }}
+            />
+            {names.length > 0 && (
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted, marginTop: 4, marginBottom: 12 }}>
+                {names.length} business{names.length !== 1 ? 'es' : ''} ready to add
+              </div>
+            )}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: names.length > 0 ? 0 : 12 }}>
+              <div>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted, marginBottom: 4 }}>Category</div>
+                <select value={category} onChange={e => setCategory(e.target.value)} style={inputStyle}>
+                  {['Food & Drink','Lodging','Recreation','Winery','Home Services','Health & Beauty','Services','Shopping','Auto','Other'].map(c => <option key={c}>{c}</option>)}
+                </select>
+              </div>
+              <div>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted, marginBottom: 4 }}>Area</div>
+                <select value={area} onChange={e => setArea(e.target.value)} style={inputStyle}>
+                  {['Manitou Beach','Irish Hills','Brooklyn','Cambridge Junction','Clark Lake','Other'].map(a => <option key={a}>{a}</option>)}
+                </select>
+              </div>
+            </div>
+            <div style={{ marginTop: 10 }}>
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted, marginBottom: 6 }}>Priority</div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                {Object.entries(PRIORITY_META).map(([k, v]) => (
+                  <button key={k} onClick={() => setPriority(k)}
+                    style={{ flex: 1, padding: '8px', borderRadius: 8, border: `2px solid ${priority === k ? v.color : '#ddd'}`, background: priority === k ? `${v.color}15` : '#fff', color: priority === k ? v.color : C.text, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}>
+                    {v.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <button onClick={save} disabled={loading || !names.length}
+              style={{ marginTop: 16, width: '100%', background: names.length ? C.sage : '#ccc', color: '#fff', border: 'none', borderRadius: 10, padding: '14px', fontSize: 15, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif", cursor: loading || !names.length ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1 }}>
+              {loading ? 'Adding…' : names.length ? `Add ${names.length} Business${names.length !== 1 ? 'es' : ''}` : 'Add Businesses'}
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function CreateTicketModal({ biz, pin, onClose, onCreated }) {
   const [type, setType] = useState('question');
   const [body, setBody] = useState('');
@@ -818,39 +913,8 @@ export default function OutreachPage() {
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
   const [showAdd, setShowAdd] = useState(false);
+  const [showBatch, setShowBatch] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [seeding, setSeeding] = useState(false);
-  const [seedMsg, setSeedMsg] = useState('');
-  const [confirmClear, setConfirmClear] = useState(false);
-
-  const handleSeed = async (clear = false) => {
-    if (seeding) return;
-    setSeeding(true);
-    setSeedMsg('');
-    setConfirmClear(false);
-    try {
-      const res = await fetch('/api/seed-outreach', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-outreach-pin': pin },
-        body: JSON.stringify({ clear }),
-      });
-      let d;
-      try { d = await res.json(); } catch { d = null; }
-      if (res.ok && d) {
-        setSeedMsg(clear
-          ? `Cleared + imported ${d.added} businesses (${d.excluded} excluded)`
-          : `Added ${d.added} new (${d.excluded} excluded, ${d.total} total)`
-        );
-        await load(pin);
-      } else {
-        setSeedMsg(d?.error || `Error ${res.status} — try again`);
-      }
-    } catch {
-      setSeedMsg('Network error — check connection');
-    }
-    setSeeding(false);
-    setTimeout(() => setSeedMsg(''), 6000);
-  };
 
   const load = useCallback(async (p = pin) => {
     if (!p) return;
@@ -877,6 +941,10 @@ export default function OutreachPage() {
 
   const handleAdded = (biz) => {
     setData(prev => ({ ...prev, businesses: [...prev.businesses, biz] }));
+  };
+
+  const handleBatchAdded = (bizzes) => {
+    setData(prev => ({ ...prev, businesses: [...prev.businesses, ...bizzes] }));
   };
 
   const handleTicketCreated = (ticket) => {
@@ -941,36 +1009,14 @@ export default function OutreachPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             {isAdmin && (
               <>
+                <button onClick={() => setShowBatch(true)}
+                  style={{ background: 'rgba(255,255,255,0.12)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '8px 12px', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}>
+                  + Batch
+                </button>
                 <button onClick={() => setShowAdd(true)}
                   style={{ background: C.sage, color: '#fff', border: 'none', borderRadius: 8, padding: '8px 14px', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}>
                   + Add
                 </button>
-                {confirmClear ? (
-                  <>
-                    <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: '#ffcc88' }}>Clear all leads?</span>
-                    <button onClick={() => handleSeed(true)} disabled={seeding}
-                      style={{ background: '#B84040', color: '#fff', border: 'none', borderRadius: 8, padding: '7px 10px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}>
-                      Yes
-                    </button>
-                    <button onClick={() => setConfirmClear(false)}
-                      style={{ background: 'rgba(255,255,255,0.12)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '7px 10px', fontSize: 12, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}>
-                      No
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button onClick={() => handleSeed(false)} disabled={seeding}
-                      title="Add new businesses from Google Places (keeps existing)"
-                      style={{ background: 'rgba(255,255,255,0.12)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '8px 10px', fontSize: 12, cursor: seeding ? 'not-allowed' : 'pointer', opacity: seeding ? 0.6 : 1, fontFamily: "'Libre Franklin', sans-serif" }}>
-                      {seeding ? '…' : '⬇ Seed'}
-                    </button>
-                    <button onClick={() => setConfirmClear(true)} disabled={seeding}
-                      title="Clear all leads and re-import from Google Places"
-                      style={{ background: 'rgba(255,255,255,0.08)', color: '#ffcc88', border: '1px solid rgba(255,200,100,0.3)', borderRadius: 8, padding: '8px 10px', fontSize: 12, cursor: seeding ? 'not-allowed' : 'pointer', opacity: seeding ? 0.6 : 1, fontFamily: "'Libre Franklin', sans-serif" }}>
-                      🔄
-                    </button>
-                  </>
-                )}
               </>
             )}
             <button onClick={() => { setPin(''); setAgent(''); sessionStorage.clear(); setData(null); }}
@@ -978,11 +1024,6 @@ export default function OutreachPage() {
               Sign out
             </button>
           </div>
-          {seedMsg && (
-            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: seedMsg.includes('Added') ? '#90ee90' : '#ff8a8a', marginTop: 6, paddingBottom: 4 }}>
-              {seedMsg}
-            </div>
-          )}
         </div>
 
         {/* Tabs */}
@@ -1076,6 +1117,10 @@ export default function OutreachPage() {
 
       {showAdd && (
         <AddBusinessModal pin={pin} onClose={() => setShowAdd(false)} onAdded={handleAdded} />
+      )}
+
+      {showBatch && (
+        <BatchAddModal pin={pin} onClose={() => setShowBatch(false)} onBatchAdded={handleBatchAdded} />
       )}
     </div>
   );

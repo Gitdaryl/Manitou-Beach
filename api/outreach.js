@@ -90,6 +90,35 @@ export default async function handler(req, res) {
   // ── POST ─────────────────────────────────────────────────────────────────
   if (req.method === 'POST') {
 
+    // Batch create businesses — admin only
+    if (req.body.action === 'batch') {
+      if (agent !== 'admin') return res.status(403).json({ error: 'Admin only' });
+      const { names, category, area, priority } = req.body;
+      if (!Array.isArray(names) || !names.length) return res.status(400).json({ error: 'names array required' });
+      const db = await readDb();
+      const newBizzes = names
+        .map(n => String(n).trim())
+        .filter(n => n.length > 0)
+        .map(name => ({
+          id: makeId(),
+          name,
+          category: category || 'Other',
+          area: area || 'Manitou Beach',
+          phone: '',
+          contact: '',
+          assignedTo: null,
+          status: 'new',
+          priority: priority || 'warm',
+          notes: '',
+          lastActivity: null,
+          activityLog: [],
+          createdAt: new Date().toISOString(),
+        }));
+      db.businesses = [...(db.businesses || []), ...newBizzes];
+      await writeDb(db);
+      return res.status(201).json({ ok: true, added: newBizzes.length, businesses: newBizzes });
+    }
+
     // Create ticket — any authenticated agent
     if (req.body.action === 'ticket') {
       const { bizId, bizName, type, body } = req.body;
