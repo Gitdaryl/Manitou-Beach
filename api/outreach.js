@@ -1,8 +1,8 @@
 // /api/outreach.js
 // Outreach team CRM - Blob-backed JSON database
 // GET  /api/outreach              - read full DB (requires PIN)
-// POST /api/outreach              - create new business entry (admin only)
-// PATCH /api/outreach             - claim, log activity, update status
+// POST /api/outreach              - create business (admin) or ticket (any agent)
+// PATCH /api/outreach             - claim, log activity, update status, resolve ticket
 
 import { put, list } from '@vercel/blob';
 
@@ -12,6 +12,8 @@ const AGENTS = {
   followup:  { label: 'Amy',      color: '#D4845A' },
   admin:     { label: 'Daryl',    color: '#5B7E95' },
 };
+
+const VALID_TICKET_TYPES = ['url_recovery', 'question', 'modification', 'idea', 'other'];
 
 function resolveAgent(pin) {
   if (!pin) return null;
@@ -25,13 +27,13 @@ function resolveAgent(pin) {
 async function readDb() {
   try {
     const { blobs } = await list({ prefix: 'outreach/db', token: process.env.BLOB_READ_WRITE_TOKEN });
-    if (!blobs.length) return { businesses: [] };
+    if (!blobs.length) return { businesses: [], tickets: [] };
     const latest = blobs.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt))[0];
     const res = await fetch(latest.url);
-    if (!res.ok) return { businesses: [] };
+    if (!res.ok) return { businesses: [], tickets: [] };
     return await res.json();
   } catch {
-    return { businesses: [] };
+    return { businesses: [], tickets: [] };
   }
 }
 
@@ -59,12 +61,17 @@ export default async function handler(req, res) {
   // ── GET ──────────────────────────────────────────────────────────────────
   if (req.method === 'GET') {
     const db = await readDb();
-    const { businesses = [] } = db;
+    const { businesses = [], tickets = [] } = db;
 
-    // Non-admins only see their own + unclaimed
+    // Non-admins only see their own + unclaimed businesses
     const visible = agent === 'admin'
       ? businesses
       : businesses.filter(b => !b.assignedTo || b.assignedTo === agent);
+
+    // Non-admins only see tickets they created
+    const visibleTickets = agent === 'admin'
+      ? tickets
+      : tickets.filter(t => t.agent === agent);
 
     const stats = {
       total: businesses.length,
@@ -76,11 +83,37 @@ export default async function handler(req, res) {
       if (b.assignedTo) stats.byAgent[b.assignedTo] = (stats.byAgent[b.assignedTo] || 0) + 1;
     });
 
-    return res.status(200).json({ agent, agents: AGENTS, businesses: visible, stats, lastUpdated: db.lastUpdated });
+    return res.status(200).json({ agent, agents: AGENTS, businesses: visible, tickets: visibleTickets, stats, lastUpdated: db.lastUpdated });
   }
 
-  // ── POST — create new business (admin only) ──────────────────────────────
+  // ── POST ─────────────────────────────────────────────────────────────────
   if (req.method === 'POST') {
+
+    // Create ticket — any authenticated agent
+    if (req.body.action === 'ticket') {
+      const { bizId, bizName, type, body } = req.body;
+      if (!type || !VALID_TICKET_TYPES.includes(type)) {
+        return res.status(400).json({ error: 'Valid type required' });
+      }
+      const ticket = {
+        id: makeId(),
+        bizId: bizId || null,
+        bizName: (bizName || '').slice(0, 100),
+        agent,
+        type,
+        body: (body || '').slice(0, 500),
+        status: 'open',
+        resolution: '',
+        createdAt: new Date().toISOString(),
+        resolvedAt: null,
+      };
+      const db = await readDb();
+      db.tickets = [...(db.tickets || []), ticket];
+      await writeDb(db);
+      return res.status(201).json({ ok: true, ticket });
+    }
+
+    // Create business — admin only
     if (agent !== 'admin') return res.status(403).json({ error: 'Admin only' });
 
     const { name, category, area, phone, contact, priority, notes } = req.body;
@@ -108,10 +141,32 @@ export default async function handler(req, res) {
     return res.status(201).json({ ok: true, business: newBiz });
   }
 
-  // ── PATCH — claim / log activity / update status ─────────────────────────
+  // ── PATCH ─────────────────────────────────────────────────────────────────
   if (req.method === 'PATCH') {
-    const { id, action } = req.body;
-    if (!id || !action) return res.status(400).json({ error: 'id and action required' });
+    const { action } = req.body;
+    if (!action) return res.status(400).json({ error: 'action required' });
+
+    // Resolve ticket — admin only
+    if (action === 'resolve_ticket') {
+      if (agent !== 'admin') return res.status(403).json({ error: 'Admin only' });
+      const { ticketId, resolution } = req.body;
+      if (!ticketId) return res.status(400).json({ error: 'ticketId required' });
+      const db = await readDb();
+      const idx = (db.tickets || []).findIndex(t => t.id === ticketId);
+      if (idx === -1) return res.status(404).json({ error: 'Ticket not found' });
+      db.tickets[idx] = {
+        ...db.tickets[idx],
+        status: 'resolved',
+        resolution: (resolution || '').slice(0, 200),
+        resolvedAt: new Date().toISOString(),
+      };
+      await writeDb(db);
+      return res.status(200).json({ ok: true, ticket: db.tickets[idx] });
+    }
+
+    // Business operations
+    const { id } = req.body;
+    if (!id) return res.status(400).json({ error: 'id required' });
 
     const db = await readDb();
     const idx = db.businesses.findIndex(b => b.id === id);
