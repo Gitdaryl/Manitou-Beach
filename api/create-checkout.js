@@ -68,7 +68,7 @@ export default async function handler(req, res) {
 
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-  const { tier, businessName, email, phone, mode: checkoutMode, duration, isBeta, billingInterval } = req.body;
+  const { tier, businessName, email, phone, mode: checkoutMode, duration, isBeta, billingInterval, referredBy } = req.body;
 
   if (!tier || !businessName || !email) {
     return res.status(400).json({ error: 'Missing required fields' });
@@ -122,6 +122,7 @@ export default async function handler(req, res) {
           ...(phone && { phone }),
           ...(duration && { duration: String(duration) + ' months' }),
           ...(isBeta && { beta: 'true' }),
+          ...(referredBy && { referredBy }),
         },
         success_url: tier === 'food_truck_founding'
           ? `${baseUrl}/food-trucks?listed=true&truck=${encodeURIComponent(businessName)}`
@@ -167,6 +168,7 @@ export default async function handler(req, res) {
         businessName,
         tier,
         days: String(plan.days),
+        ...(referredBy && { referredBy }),
       },
       success_url: `${baseUrl}/featured?success=true&business=${encodeURIComponent(businessName)}`,
       cancel_url: `${baseUrl}/featured?cancelled=true`,

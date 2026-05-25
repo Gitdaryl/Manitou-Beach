@@ -40,6 +40,7 @@ export default function ActivateBusinessPage() {
           mode: 'subscription',
           isBeta: true,
           billingInterval: billing,
+          referredBy: sessionStorage.getItem('outreach_ref') || undefined,
         }),
       });
       const data = await res.json();

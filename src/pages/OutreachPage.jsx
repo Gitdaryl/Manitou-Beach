@@ -374,6 +374,9 @@ function BusinessDetail({ biz, agent, pin, agents, onClose, onUpdated, onTicketC
   const [editNotes, setEditNotes] = useState(false);
   const [notes, setNotes] = useState(biz.notes || '');
   const [savingNotes, setSavingNotes] = useState(false);
+  const [editRef, setEditRef] = useState(false);
+  const [refCode, setRefCode] = useState(biz.referredBy || '');
+  const [savingRef, setSavingRef] = useState(false);
 
   const isOwn = biz.assignedTo === agent;
   const isFree = !biz.assignedTo;
@@ -409,6 +412,19 @@ function BusinessDetail({ biz, agent, pin, agents, onClose, onUpdated, onTicketC
 
   const assignedLabel = biz.assignedTo ? (agents[biz.assignedTo]?.label || biz.assignedTo) : 'Unassigned';
 
+  const saveRef = async () => {
+    setSavingRef(true);
+    try {
+      const res = await fetch('/api/outreach', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'x-outreach-pin': pin },
+        body: JSON.stringify({ id: biz.id, action: 'set_referral', referredBy: refCode }),
+      });
+      if (res.ok) { const d = await res.json(); onUpdated(d.business); setEditRef(false); }
+    } catch {}
+    setSavingRef(false);
+  };
+
   return (
     <>
       <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 90, display: 'flex', alignItems: 'flex-end' }} onClick={onClose}>
@@ -441,10 +457,41 @@ function BusinessDetail({ biz, agent, pin, agents, onClose, onUpdated, onTicketC
                   <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.text }}>{biz.contact}</span>
                 </div>
               )}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', borderBottom: (biz.referredBy || isAdmin) ? `1px solid ${C.sand}` : 'none' }}>
                 <span style={{ fontSize: 18 }}>🎯</span>
                 <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.text }}>Assigned: {assignedLabel}</span>
               </div>
+              {(biz.referredBy || isAdmin) && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0' }}>
+                  <span style={{ fontSize: 18 }}>🔗</span>
+                  {editRef && isAdmin ? (
+                    <div style={{ flex: 1, display: 'flex', gap: 6 }}>
+                      <input value={refCode} onChange={e => setRefCode(e.target.value)} placeholder="ref code e.g. holly"
+                        style={{ flex: 1, borderRadius: 6, border: '1px solid #ddd', padding: '6px 8px', fontFamily: "'Libre Franklin', sans-serif", fontSize: 13 }} />
+                      <button onClick={saveRef} disabled={savingRef}
+                        style={{ background: C.sage, color: '#fff', border: 'none', borderRadius: 6, padding: '6px 10px', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}>
+                        {savingRef ? '…' : 'Save'}
+                      </button>
+                      <button onClick={() => { setEditRef(false); setRefCode(biz.referredBy || ''); }}
+                        style={{ background: '#eee', border: 'none', borderRadius: 6, padding: '6px 10px', fontSize: 12, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}>
+                        Cancel
+                      </button>
+                    </div>
+                  ) : (
+                    <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: biz.referredBy ? C.sunset : C.textMuted }}>
+                        {biz.referredBy ? `Referred by: ${biz.referredBy}` : 'No referral'}
+                      </span>
+                      {isAdmin && (
+                        <button onClick={() => setEditRef(true)}
+                          style={{ background: 'none', border: 'none', color: C.lakeBlue, fontSize: 12, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}>
+                          {biz.referredBy ? 'Edit' : 'Set'}
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Notes */}
@@ -789,8 +836,16 @@ function CreateTicketModal({ biz, pin, onClose, onCreated }) {
 
 // ── Admin Stats ───────────────────────────────────────────────────────────────
 
-function AdminStats({ stats, agents }) {
+function AdminStats({ stats, agents, businesses }) {
   const statusOrder = ['new','contacted','interested','listed-free','listed-paid','no-interest','unavailable'];
+
+  // Referral credit ledger — $25 credit per paid listing that came through a ref code
+  const paidWithRef = (businesses || []).filter(b => b.referredBy && ['listed-free','listed-paid'].includes(b.status));
+  const creditsByCode = paidWithRef.reduce((acc, b) => {
+    acc[b.referredBy] = (acc[b.referredBy] || 0) + 1;
+    return acc;
+  }, {});
+
   return (
     <div style={{ padding: '0 16px 16px' }}>
       <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, color: C.textMuted, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>Team Progress</div>
@@ -817,6 +872,24 @@ function AdminStats({ stats, agents }) {
           );
         })}
       </div>
+
+      {Object.keys(creditsByCode).length > 0 && (
+        <div style={{ background: '#fff', borderRadius: 10, padding: '12px 14px', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', marginTop: 8 }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, color: C.textMuted, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>Referral Credits</div>
+          {Object.entries(creditsByCode).sort((a,b) => b[1]-a[1]).map(([code, count]) => (
+            <div key={code} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+              <div>
+                <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 600, color: C.sunset }}>{code}</span>
+                <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted, marginLeft: 8 }}>{count} listing{count !== 1 ? 's' : ''}</span>
+              </div>
+              <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 700, color: C.sage }}>${count * 25} credit</span>
+            </div>
+          ))}
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, marginTop: 8, borderTop: `1px solid ${C.sand}`, paddingTop: 8 }}>
+            $25 credit per paid listing referral
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -1092,7 +1165,7 @@ export default function OutreachPage() {
       {/* Admin stats (admin only, all tab) */}
       {isAdmin && tab === 'all' && stats.total > 0 && (
         <div style={{ padding: '12px 0 0' }}>
-          <AdminStats stats={stats} agents={agents} />
+          <AdminStats stats={stats} agents={agents} businesses={businesses} />
         </div>
       )}
 

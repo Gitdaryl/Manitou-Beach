@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=1080, height=1920"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;600;700;800;900&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 1080px; height: 1920px; overflow: hidden; background: #060C12; }
+    .clip { visibility: hidden; }
+  </style>
+</head>
+<body>
+<div id="root"
+  data-composition-id="main"
+  data-start="0"
+  data-duration="13"
+  data-width="1080"
+  data-height="1920">
+
+  <!-- Background: category-matched gradient -->
+  <div id="bg" class="clip"
+    data-start="0" data-duration="13" data-track-index="0"
+    style="position:absolute;top:0;left:0;width:1080px;height:1920px;
+    background:linear-gradient(168deg,#060C12 0%,#0D1B26 30%,#122230 58%,#0A1820 80%,#060C12 100%);opacity:1;">
+    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:960px;height:960px;border-radius:50%;
+    background:radial-gradient(circle,rgba(91,126,149,0.08) 0%,rgba(91,126,149,0.04) 50%,transparent 70%);"></div>
+    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    opacity:0.06;pointer-events:none;">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 220" width="440" height="968"
+    fill="none" stroke="white" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 28,210 L 22,68 L 78,68 L 72,210 Z"/>
+    <rect x="16" y="46" width="68" height="24" rx="2"/>
+    <polygon points="12,46 50,18 88,46"/>
+    <path d="M 38,210 L 38,174 Q 50,162 62,174 L 62,210"/>
+    <line x1="23" y1="108" x2="77" y2="108"/>
+    <line x1="22" y1="140" x2="78" y2="140"/>
+    <line x1="22" y1="172" x2="78" y2="172"/>
+  </svg>
+    </div>
+  </div>
+
+    <div id="biz-logo" class="clip"
+    data-start="0" data-duration="10" data-track-index="1"
+    style="position:absolute;top:190px;left:50%;transform:translateX(-50%);
+    width:260px;height:260px;border-radius:50%;overflow:hidden;
+    border:3px solid rgba(250,246,239,0.28);
+    box-shadow:0 0 60px rgba(255,255,255,0.10),0 0 120px rgba(255,255,255,0.04);
+    opacity:0;">
+    <img src="https://manitou-beach.vercel.app/images/diamond-ruff-logo.png" style="width:100%;height:100%;object-fit:cover;" alt=""/>
+  </div>
+
+  <!-- MB watermark: persistent bottom-left -->
+  <div id="mb-brand" class="clip"
+    data-start="0" data-duration="13" data-track-index="2"
+    style="position:absolute;bottom:52px;left:60px;
+    display:flex;align-items:center;gap:16px;opacity:0;">
+    <img src="assets/mb-icon.png"
+      style="width:54px;height:54px;border-radius:50%;object-fit:cover;
+      border:1px solid rgba(250,246,239,0.18);opacity:0.65;"/>
+    <span style="font-family:'Libre Franklin',sans-serif;font-size:24px;font-weight:600;
+    color:rgba(250,246,249,0.40);letter-spacing:2px;">MANITOU BEACH</span>
+  </div>
+
+  <!-- SLIDE 1: word slam (0.4 - 1.63s) -->
+  <div id="s1" class="clip"
+    data-start="0" data-duration="13" data-track-index="3"
+    style="position:absolute;top:0;left:0;width:1080px;height:1920px;
+    display:flex;flex-direction:column;justify-content:center;padding:0 64px;">
+    <div id="s1-eyebrow" style="font-family:'Libre Franklin',sans-serif;font-size:26px;font-weight:600;
+    color:rgba(250,246,239,0.40);letter-spacing:8px;text-transform:uppercase;margin-bottom:28px;">
+      TODAY'S FEATURE
+    </div>
+    <div id="s1-w1" style="font-family:'Libre Franklin',sans-serif;font-size:138px;font-weight:900;
+    color:#FAF6EF;line-height:0.88;letter-spacing:-4px;text-transform:uppercase;
+    text-shadow:0 4px 30px rgba(0,0,0,0.6);">BUSI</div>
+    <div id="s1-w2" style="font-family:'Libre Franklin',sans-serif;font-size:138px;font-weight:900;
+    color:#D4845A;line-height:0.88;letter-spacing:-4px;text-transform:uppercase;
+    text-shadow:0 4px 30px rgba(212,132,90,0.4);">NESS</div>
+    <div id="s1-w3" style="font-family:'Libre Franklin',sans-serif;font-size:138px;font-weight:900;
+    color:#5B7E95;line-height:0.88;letter-spacing:-4px;text-transform:uppercase;
+    text-shadow:0 4px 30px rgba(91,126,149,0.35);">SPOT</div>
+    <div id="s1-w4" style="font-family:'Libre Franklin',sans-serif;font-size:138px;font-weight:900;
+    color:#FAF6EF;line-height:0.88;letter-spacing:-4px;text-transform:uppercase;
+    text-shadow:0 4px 30px rgba(0,0,0,0.6);">LIGHT</div>
+  </div>
+
+  <!-- SLIDE 2: business name (1.63 - 4.95s, light-leak handles exit) -->
+  <div id="s2" class="clip"
+    data-start="0" data-duration="13" data-track-index="4"
+    style="position:absolute;top:0;left:0;width:1080px;height:1920px;
+    display:flex;flex-direction:column;justify-content:center;padding:0 64px;">
+    <div id="s2-cat" style="font-family:'Libre Franklin',sans-serif;font-size:28px;font-weight:700;
+    color:#5B7E95;letter-spacing:7px;text-transform:uppercase;margin-bottom:36px;opacity:0;">
+      PET SERVICES
+    </div>
+    <div id="s2-name1" style="font-family:'Libre Baskerville',serif;font-size:128px;font-weight:700;
+    color:#FAF6EF;line-height:0.9;letter-spacing:-3px;
+    text-shadow:0 6px 40px rgba(0,0,0,0.6);opacity:0;">Diamond in</div>
+    <div id="s2-name2" style="font-family:'Libre Baskerville',serif;font-size:128px;font-weight:700;
+    font-style:italic;color:#D4845A;line-height:0.9;letter-spacing:-3px;margin-top:10px;
+    text-shadow:0 6px 40px rgba(212,132,90,0.4);opacity:0;">the Ruff.</div>
+  </div>
+
+  <!-- SLIDE 3: descriptor lines — word stagger (5.45s+, cinematic-zoom handles exit) -->
+  <div id="s3" class="clip"
+    data-start="0" data-duration="13" data-track-index="5"
+    style="position:absolute;top:0;left:0;width:1080px;height:1920px;
+    display:flex;flex-direction:column;justify-content:center;padding:0 64px;">
+    <div id="s3-l1" style="font-family:'Libre Franklin',sans-serif;font-size:74px;font-weight:900;
+    color:#FAF6EF;line-height:1.1;text-transform:uppercase;letter-spacing:-1px;
+    text-shadow:0 4px 24px rgba(0,0,0,0.6);opacity:0;">PAWFESSIONAL GROOMING EXCELLENCE.</div>
+    <div id="s3-l2" style="font-family:'Libre Franklin',sans-serif;font-size:74px;font-weight:900;
+    color:#D4845A;line-height:1.1;text-transform:uppercase;letter-spacing:-1px;margin-top:14px;
+    text-shadow:0 4px 24px rgba(212,132,90,0.4);opacity:0;">FURRY FAMILY TRANSFORMATION.</div>
+    <div id="s3-l3" style="font-family:'Libre Franklin',sans-serif;font-size:74px;font-weight:900;
+    color:#5B7E95;line-height:1.1;text-transform:uppercase;letter-spacing:-1px;margin-top:14px;
+    text-shadow:0 4px 24px rgba(91,126,149,0.4);opacity:0;">MANITOU BEACH PET PARADISE.</div>
+    <div id="s3-sub" style="font-family:'Libre Baskerville',serif;font-size:40px;font-weight:400;
+    font-style:italic;color:rgba(250,246,239,0.50);margin-top:52px;opacity:0;">
+      where your pup gets pampered
+    </div>
+  </div>
+
+  <!-- SLIDE 4: CTA (8.3 - 13s, holds to end) -->
+  <div id="s4" class="clip"
+    data-start="0" data-duration="13" data-track-index="6"
+    style="position:absolute;top:0;left:0;width:1080px;height:1920px;
+    display:flex;flex-direction:column;justify-content:center;padding:0 64px;">
+    <div id="s4-label" style="font-family:'Libre Franklin',sans-serif;font-size:28px;font-weight:600;
+    color:rgba(250,246,239,0.42);letter-spacing:7px;text-transform:uppercase;margin-bottom:28px;opacity:0;">
+      FIND THEM AT
+    </div>
+    <div id="s4-url" style="font-family:'Libre Franklin',sans-serif;font-size:54px;font-weight:800;
+    color:#FAF6EF;line-height:1.2;letter-spacing:-1px;
+    text-shadow:0 4px 24px rgba(0,0,0,0.6);opacity:0;">
+      manitoubeachmichigan.com<br/><span style="color:#D4845A;">/business/diamond-in-the-ruff</span>
+    </div>
+  </div>
+
+
+</div>
+<script>
+window.__timelines = window.__timelines || {};
+
+// Wrap each descriptor line into per-word spans for stagger animation
+function wrapWords(id) {
+  var el = document.getElementById(id);
+  if (!el || !el.textContent.trim()) return;
+  var words = el.textContent.trim().split(/\s+/);
+  el.innerHTML = words.map(function(w) {
+    return '<span style="display:inline-block">' + w + ' </span>';
+  }).join('');
+}
+wrapWords('s3-l1');
+wrapWords('s3-l2');
+wrapWords('s3-l3');
+
+var tl = gsap.timeline({ paused: true });
+
+// Watermark
+tl.fromTo("#mb-brand", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.out" }, 0.2);
+
+// Logo (only if element exists)
+var logoEl = document.getElementById("biz-logo");
+if (logoEl) {
+  tl.fromTo("#biz-logo", { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(2)" }, 0.2);
+  tl.to("#biz-logo", { scale: 1.04, duration: 1.8, ease: "sine.inOut", yoyo: true, repeat: 4 }, 0.7);
+}
+
+// SLIDE 1 — word slam (0.4 - 1.63s)
+tl.fromTo("#s1-eyebrow", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 0.4);
+tl.fromTo("#s1-w1", { opacity: 0, scale: 1.45, y: -38 }, { opacity: 1, scale: 1, y: 0, duration: 0.18, ease: "power4.out" }, 0.55);
+tl.to("#s1-w1",     { scale: 1.035, duration: 0.4, ease: "sine.inOut", yoyo: true, repeat: 1 }, 0.74);
+tl.fromTo("#s1-w2", { opacity: 0, scale: 1.45, y: -38 }, { opacity: 1, scale: 1, y: 0, duration: 0.18, ease: "power4.out" }, 0.73);
+tl.to("#s1-w2",     { scale: 1.035, duration: 0.4, ease: "sine.inOut", yoyo: true, repeat: 1 }, 0.92);
+tl.fromTo("#s1-w3", { opacity: 0, scale: 1.45, y: -38 }, { opacity: 1, scale: 1, y: 0, duration: 0.18, ease: "power4.out" }, 0.91);
+tl.to("#s1-w3",     { scale: 1.035, duration: 0.4, ease: "sine.inOut", yoyo: true, repeat: 1 }, 1.10);
+tl.fromTo("#s1-w4", { opacity: 0, scale: 1.45, y: -38 }, { opacity: 1, scale: 1, y: 0, duration: 0.18, ease: "power4.out" }, 1.09);
+tl.to("#s1-w4",     { scale: 1.035, duration: 0.4, ease: "sine.inOut", yoyo: true, repeat: 1 }, 1.28);
+tl.to("#s1-eyebrow, #s1-w1, #s1-w2, #s1-w3, #s1-w4", { opacity: 0, duration: 0.37, ease: "power1.out" }, 1.63);
+
+// SLIDE 2 — business name entrance + mid-scene drift (light-leak handles exit at 4.95s)
+tl.fromTo("#s2-cat",   { opacity: 0, letterSpacing: "18px" }, { opacity: 1, letterSpacing: "7px", duration: 0.45, ease: "power3.out" }, 1.63);
+tl.fromTo("#s2-name1", { opacity: 0, scale: 1.45, y: -36 }, { opacity: 1, scale: 1, y: 0, duration: 0.2, ease: "power4.out" }, 2.15);
+tl.to("#s2-name1",     { scale: 1.04, duration: 0.45, ease: "sine.inOut", yoyo: true, repeat: 1 }, 2.37);
+tl.fromTo("#s2-name2", { opacity: 0, scale: 1.45, y: -36 }, { opacity: 1, scale: 1, y: 0, duration: 0.22, ease: "elastic.out(1,0.45)" }, 2.5);
+tl.to("#s2-name2",     { scale: 1.04, duration: 0.45, ease: "sine.inOut", yoyo: true, repeat: 1 }, 2.75);
+// Mid-scene drift — keeps slide 2 alive while VO says the name
+tl.to("#s2-name1", { y: -10, duration: 2.0, ease: "sine.inOut", yoyo: true, repeat: 1 }, 3.1);
+tl.to("#s2-name2", { y: -7,  duration: 2.3, ease: "sine.inOut", yoyo: true, repeat: 1 }, 3.3);
+tl.to("#s2-cat",   { letterSpacing: "9px", duration: 1.6, ease: "sine.inOut", yoyo: true, repeat: 1 }, 3.1);
+// Hide after light-leak shader completes
+tl.set("#s2-cat, #s2-name1, #s2-name2", { autoAlpha: 0 }, 5.46);
+
+// SLIDE 3 — per-word stagger + float (cinematic-zoom handles exit at 7.8s)
+['s3-l1', 's3-l2', 's3-l3'].forEach(function(id, lineIdx) {
+  var lineStart = 5.45 + lineIdx * 0.28;
+  var spans = document.querySelectorAll('#' + id + ' span');
+  tl.set('#' + id, { opacity: 1 }, lineStart);
+  spans.forEach(function(span, wi) {
+    tl.fromTo(span,
+      { opacity: 0, y: -22, scale: 1.28 },
+      { opacity: 1, y: 0, scale: 1, duration: 0.16, ease: "power4.out" },
+      lineStart + wi * 0.1
+    );
+  });
+  tl.to('#' + id, { y: -6, duration: 1.1, ease: "sine.inOut", yoyo: true, repeat: 1 }, lineStart + 0.55);
+});
+tl.fromTo("#s3-sub", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 6.35);
+tl.to("#s3-sub", { y: -4, duration: 1.3, ease: "sine.inOut", yoyo: true, repeat: 1 }, 6.85);
+// Hide after cinematic-zoom shader completes
+tl.set("#s3-l1, #s3-l2, #s3-l3, #s3-sub", { autoAlpha: 0 }, 8.31);
+
+// SLIDE 4 — CTA entrance + held motion (8.3 - 13s)
+tl.fromTo("#s4-label", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, 8.3);
+tl.fromTo("#s4-url",   { opacity: 0, scale: 1.42, y: -32 }, { opacity: 1, scale: 1, y: 0, duration: 0.24, ease: "elastic.out(1,0.45)" }, 8.65);
+tl.to("#s4-url",   { scale: 1.028, duration: 0.5, ease: "sine.inOut", yoyo: true, repeat: 1 }, 9.0);
+tl.to("#s4-label", { letterSpacing: "9px", duration: 1.5, ease: "sine.inOut", yoyo: true, repeat: 2 }, 9.3);
+tl.to("#s4-url",   { y: -8, duration: 2.0, ease: "sine.inOut", yoyo: true, repeat: 1 }, 9.8);
+
+window.__timelines["main"] = tl;
+window.__hf = {
+  duration: 13,
+  seek: function(t) { tl.seek(t, false); }
+};
+</script>
+</body>
+</html>

@@ -54,6 +54,93 @@ function VillageHero() {
   );
 }
 
+const DESC_CLAMP_CHARS = 180;
+
+function BizCard({ biz, i }) {
+  const [expanded, setExpanded] = useState(false);
+  const color = CAT_COLORS[biz.category] || C.sage;
+  const isLong = biz.description && biz.description.length > DESC_CLAMP_CHARS;
+
+  return (
+    <FadeIn key={biz.id} delay={i * 80} direction={i % 2 === 0 ? "left" : "right"} style={{ height: "100%" }}>
+      <div
+        style={{
+          background: "rgba(255,255,255,0.04)",
+          border: "1px solid rgba(255,255,255,0.08)",
+          borderRadius: 14, padding: "28px 24px",
+          transition: "all 0.25s",
+          position: "relative",
+          overflow: "hidden",
+          display: "flex", flexDirection: "column",
+          height: "100%", boxSizing: "border-box",
+        }}
+        onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.07)"; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 8px 30px rgba(0,0,0,0.3), 0 0 0 1px ${color}25`; }}
+        onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
+      >
+        {/* Accent stripe */}
+        <div style={{ position: "absolute", top: 0, left: 0, width: 3, height: "100%", background: color, borderRadius: "14px 0 0 14px" }} />
+
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 16 }}>
+          {biz.logo && (
+            <img src={biz.logo} alt="" style={{ width: 52, height: 52, borderRadius: 10, objectFit: "cover", background: "rgba(255,255,255,0.08)", flexShrink: 0 }} />
+          )}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.cream, margin: "0 0 4px 0", lineHeight: 1.3 }}>
+              {biz.name}
+            </h3>
+            <div style={{ fontSize: 11, color: color, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", marginBottom: 8 }}>
+              {biz.category}
+            </div>
+          </div>
+        </div>
+
+        {/* Description with clamp */}
+        <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, margin: "10px 0 0 0", whiteSpace: "pre-line" }}>
+          {isLong && !expanded ? biz.description.slice(0, DESC_CLAMP_CHARS).trimEnd() + '...' : biz.description}
+        </p>
+        {isLong && (
+          <button
+            onClick={() => setExpanded(v => !v)}
+            style={{
+              background: "none", border: "none", padding: 0, marginTop: 4, cursor: "pointer",
+              fontSize: 11, color: color, fontFamily: "'Libre Franklin', sans-serif",
+              fontWeight: 600, letterSpacing: 0.5, textAlign: "left",
+            }}
+          >
+            {expanded ? "Show less ↑" : "Show more ↓"}
+          </button>
+        )}
+
+        {/* Footer — address, phone, website link */}
+        <div style={{ marginTop: "auto", paddingTop: 14 }}>
+          {biz.address && (
+            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", marginBottom: 4 }}>
+              📍 {biz.address}
+            </div>
+          )}
+          {biz.phone && (
+            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", marginBottom: biz.website ? 10 : 0 }}>
+              📞 {formatPhone(biz.phone)}
+            </div>
+          )}
+          {biz.website && (
+            <div
+              className="link-hover-underline"
+              onClick={() => window.open(biz.website, "_blank")}
+              style={{
+                fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700,
+                letterSpacing: 1.5, color: C.sunsetLight, textTransform: "uppercase", cursor: "pointer",
+              }}
+            >
+              Visit Website →
+            </div>
+          )}
+        </div>
+      </div>
+    </FadeIn>
+  );
+}
+
 function VillageMapSection() {
   const [businesses, setBusinesses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -82,69 +169,10 @@ function VillageMapSection() {
           </div>
         )}
 
-        {/* Village business cards - staggered layout */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 20 }}>
-          {businesses.map((biz, i) => {
-            const color = CAT_COLORS[biz.category] || C.sage;
-            return (
-              <FadeIn key={biz.id} delay={i * 80} direction={i % 2 === 0 ? "left" : "right"}>
-                <div
-                  onClick={() => biz.website && window.open(biz.website, "_blank")}
-                  style={{
-                    background: "rgba(255,255,255,0.04)",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    borderRadius: 14, padding: "28px 24px",
-                    cursor: biz.website ? "pointer" : "default",
-                    transition: "all 0.25s",
-                    position: "relative",
-                    overflow: "hidden",
-                    display: "flex", flexDirection: "column",
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.07)"; e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 8px 30px rgba(0,0,0,0.3), 0 0 0 1px ${color}25`; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
-                >
-                  {/* Accent stripe */}
-                  <div style={{ position: "absolute", top: 0, left: 0, width: 3, height: "100%", background: color, borderRadius: "14px 0 0 14px" }} />
-
-                  <div style={{ display: "flex", alignItems: "flex-start", gap: 16, flex: 1 }}>
-                    {biz.logo && (
-                      <img src={biz.logo} alt="" style={{ width: 52, height: 52, borderRadius: 10, objectFit: "cover", background: "rgba(255,255,255,0.08)", flexShrink: 0 }} />
-                    )}
-                    <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
-                      <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.cream, margin: "0 0 4px 0", lineHeight: 1.3 }}>
-                        {biz.name}
-                      </h3>
-                      <div style={{ fontSize: 11, color: color, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", marginBottom: 8 }}>
-                        {biz.category}
-                      </div>
-                      <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, margin: "0 0 10px 0", whiteSpace: "pre-line", flex: 1 }}>
-                        {biz.description}
-                      </p>
-                      {biz.address && (
-                        <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", marginBottom: 4 }}>
-                          📍 {biz.address}
-                        </div>
-                      )}
-                      {biz.phone && (
-                        <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)" }}>
-                          📞 {formatPhone(biz.phone)}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {biz.website && (
-                    <div className="link-hover-underline" style={{
-                      fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700,
-                      letterSpacing: 1.5, color: C.sunsetLight, textTransform: "uppercase", marginTop: 14,
-                    }}>
-                      Visit Website →
-                    </div>
-                  )}
-                </div>
-              </FadeIn>
-            );
-          })}
+          {businesses.map((biz, i) => (
+            <BizCard key={biz.id} biz={biz} i={i} />
+          ))}
         </div>
       </div>
     </section>

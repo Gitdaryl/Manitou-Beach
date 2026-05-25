@@ -455,6 +455,7 @@ function CheckoutForm({ tier, onBack, onSuccess }) {
           email:        form.email.trim().toLowerCase(),
           mode:         'subscription',
           isBeta:       true,
+          referredBy:   sessionStorage.getItem('outreach_ref') || undefined,
         }),
       });
       const data = await res.json();

@@ -749,7 +749,7 @@ function PricingSection() {
       const res = await fetch('/api/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tier: modal.tierId, businessName: form.businessName, email: form.email, priceInCents: modal.priceInCents, mode: 'subscription' }),
+        body: JSON.stringify({ tier: modal.tierId, businessName: form.businessName, email: form.email, priceInCents: modal.priceInCents, mode: 'subscription', referredBy: sessionStorage.getItem('outreach_ref') || undefined }),
       });
       const data = await res.json();
       if (data.url) { window.location.href = data.url; }

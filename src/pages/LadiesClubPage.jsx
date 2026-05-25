@@ -387,16 +387,17 @@ function LadiesClubEventsSection() {
           <div style={{ marginBottom: 16, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.3)" }}>
             Village Stores Open All Day
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 40 }} className="mobile-col-2">
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 40 }} className="mobile-col-2">
             {[
               { name: "Blackbird Cafe",             logo: "/images/blackbird-logo.png" },
               { name: "Two Lakes Tavern",            logo: "/images/two_lakes_logo.jpg" },
               { name: "Michigan Gypsy",              logo: "/images/michigan-gypsy-logo.png" },
-              { name: "Boathouse Art Gallery",       logo: "/images/boathouse-art-gallery-logo.jpg" },
               { name: "Devils Lake View Living",     logo: "/images/dl-view-living-logo.png" },
               { name: "Ang & Co",                    logo: "/images/ang_co_logo.png" },
               { name: "Trends Salon & Spa",          logo: "/images/trends-logo.png" },
               { name: "Faust House Scrap & Craft",   logo: "/images/faust_house_logo.png" },
+              { name: "Rob's Rental",               logo: "/images/ladies-club/sponsors/robs-rentals-logo.jpg" },
+              { name: "Paula's Poop Deck",           logo: "/images/ladies-club/sponsors/paulas%20poop%20deck.png" },
             ].map((s, i) => (
               <FadeIn key={i} delay={230 + i * 25}>
                 <div style={{
@@ -717,12 +718,13 @@ const DEFAULT_GOLD = [
 const DEFAULT_SILVER = [
   { name: "Boot Jack Tavern" }, { name: "Devil's Lake Golf Course" }, { name: "Devil's Lake View Living" },
   { name: "FN Cuthbert Company" }, { name: "Highland Inn" }, { name: "Luigi's Pizza" },
-  { name: "Manitou Beach Glass Factory" }, { name: "Papa's Place" }, { name: "Printed on a Lark" },
-  { name: "Redwood Tree Service" }, { name: "Trends Salon and Spa" }, { name: "Two Lakes Tavern" },
+  { name: "Manitou Beach Glass Factory" }, { name: "Papa's Place" }, { name: "Paula's Poop Deck" },
+  { name: "Printed on a Lark" }, { name: "Redwood Tree Service" }, { name: "Rob's Rental" },
+  { name: "Sandbar Cafe" }, { name: "Trends Salon and Spa" }, { name: "Two Lakes Tavern" },
   { name: "Woodstock Wine & Cheese" },
 ];
 const DEFAULT_BRONZE  = [{ name: "Glamour Auto Shop" }];
-const DEFAULT_FRIENDS = [{ name: "Benny D's on 223" }, { name: "Blackbird Cafe" }, { name: "Freddie Freeze" }, { name: "Sandbar Cafe" }, { name: "Trillium House" }];
+const DEFAULT_FRIENDS = [{ name: "Benny D's on 223" }, { name: "Blackbird Cafe" }, { name: "Freddie Freeze" }, { name: "Trillium House" }];
 
 function LadiesClubSponsorsSection() {
   const [sponsors, setSponsors] = React.useState(null); // null = use defaults

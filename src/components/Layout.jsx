@@ -1150,6 +1150,7 @@ export function SubmitSection() {
             mode: 'subscription',
             duration: form.duration,
             category: form.category,
+            referredBy: sessionStorage.getItem('outreach_ref') || undefined,
           }),
         });
         const coData = await coRes.json();

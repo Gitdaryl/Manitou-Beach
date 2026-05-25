@@ -1,5 +1,5 @@
-import { lazy, Suspense, Component } from 'react';
-import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-dom';
+import { lazy, Suspense, Component, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useParams, useLocation } from 'react-router-dom';
 import { PageThemeProvider } from './context/PageThemeContext';
 
 // Eager - first paint
@@ -170,11 +170,23 @@ export { DISPATCH_CARD_SPONSORS, DISPATCH_CATEGORIES } from './data/config';
 // ============================================================
 // 🌐  APP ROOT
 // ============================================================
+// Captures ?ref= from any landing URL and persists it for checkout attribution
+function RefCapture() {
+  const location = useLocation();
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const ref = params.get('ref');
+    if (ref) sessionStorage.setItem('outreach_ref', ref.toLowerCase().trim());
+  }, [location.search]);
+  return null;
+}
+
 export default function App() {
   return (
     <BrowserRouter>
       {/* Page routes get their own Suspense so VoiceConcierge / BetaFeedbackStrip
           can't block the main content from appearing while they download. */}
+      <RefCapture />
       <ChunkErrorBoundary>
         <Suspense fallback={null}>
           <Routes>

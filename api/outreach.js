@@ -109,10 +109,10 @@ export default async function handler(req, res) {
       let items = [];
       if (Array.isArray(bizObjects) && bizObjects.length) {
         items = bizObjects
-          .map(b => ({ name: String(b.name || '').trim(), phone: String(b.phone || ''), category: b.category || category || 'Other', area: b.area || area || 'Manitou Beach', notes: b.notes || '' }))
+          .map(b => ({ name: String(b.name || '').trim(), phone: String(b.phone || ''), category: b.category || category || 'Other', area: b.area || area || 'Manitou Beach', notes: b.notes || '', referredBy: b.referredBy || '' }))
           .filter(b => b.name.length > 0);
       } else if (Array.isArray(names) && names.length) {
-        items = names.map(n => ({ name: String(n).trim(), phone: '', category: category || 'Other', area: area || 'Manitou Beach', notes: '' })).filter(b => b.name.length > 0);
+        items = names.map(n => ({ name: String(n).trim(), phone: '', category: category || 'Other', area: area || 'Manitou Beach', notes: '', referredBy: '' })).filter(b => b.name.length > 0);
       } else {
         return res.status(400).json({ error: 'names or businesses array required' });
       }
@@ -130,6 +130,7 @@ export default async function handler(req, res) {
           status: 'new',
           priority: priority || 'warm',
           notes: b.notes,
+          referredBy: b.referredBy || '',
           lastActivity: null,
           activityLog: [],
           createdAt: new Date().toISOString(),
@@ -167,7 +168,7 @@ export default async function handler(req, res) {
     // Create business — admin only
     if (agent !== 'admin') return res.status(403).json({ error: 'Admin only' });
 
-    const { name, category, area, phone, contact, priority, notes } = req.body;
+    const { name, category, area, phone, contact, priority, notes, referredBy } = req.body;
     if (!name) return res.status(400).json({ error: 'name is required' });
 
     const db = await readDb();
@@ -182,6 +183,7 @@ export default async function handler(req, res) {
       status: 'new',
       priority: priority || 'warm',
       notes: notes || '',
+      referredBy: referredBy || '',
       lastActivity: null,
       activityLog: [],
       createdAt: new Date().toISOString(),
@@ -254,6 +256,10 @@ export default async function handler(req, res) {
 
     } else if (action === 'notes') {
       biz.notes = (req.body.notes || '').slice(0, 500);
+
+    } else if (action === 'set_referral') {
+      if (agent !== 'admin') return res.status(403).json({ error: 'Admin only' });
+      biz.referredBy = (req.body.referredBy || '').slice(0, 50).toLowerCase().trim();
 
     } else {
       return res.status(400).json({ error: 'Unknown action' });
