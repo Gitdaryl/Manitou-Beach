@@ -254,7 +254,7 @@ function EventShareBtn({ event, color }) {
   const ref = useRef(null);
 
   const siteUrl = typeof window !== "undefined" ? window.location.origin : "";
-  const shareUrl = `${siteUrl}/happening`;
+  const shareUrl = event.id ? `${siteUrl}/events/${event.id}` : `${siteUrl}/happening`;
   const shareText = `${event.name}${event.date ? ` - ${formatEventDate(event.date)}` : ""} at Manitou Beach`;
 
   useEffect(() => {
@@ -313,9 +313,9 @@ function EventShareBtn({ event, color }) {
       </button>
       {open && (
         <div style={{
-          position: "absolute", right: 0, top: "100%", marginTop: 6, zIndex: 20,
-          background: "#fff", borderRadius: 10, boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
-          border: `1px solid ${C.sand}`, padding: "6px 4px", minWidth: 140,
+          position: "absolute", right: 0, top: "100%", marginTop: 6, zIndex: 100,
+          background: C.dusk, borderRadius: 10, boxShadow: "0 6px 24px rgba(0,0,0,0.45)",
+          border: "1px solid rgba(255,255,255,0.1)", padding: "6px 4px", minWidth: 140,
           display: "flex", flexDirection: "column", gap: 2,
         }}>
           {[
@@ -329,12 +329,12 @@ function EventShareBtn({ event, color }) {
               style={{
                 display: "block", width: "100%", textAlign: "left",
                 padding: "8px 14px", border: "none", borderRadius: 6,
-                background: key === "copy" && copied ? `${C.sage}15` : "transparent",
-                color: key === "copy" && copied ? C.sage : C.text,
+                background: key === "copy" && copied ? `${C.sage}30` : "transparent",
+                color: key === "copy" && copied ? C.sage : C.sand,
                 fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 500,
                 cursor: "pointer", transition: "background 0.15s",
               }}
-              onMouseEnter={e => { if (!(key === "copy" && copied)) e.currentTarget.style.background = `${C.sand}80`; }}
+              onMouseEnter={e => { if (!(key === "copy" && copied)) e.currentTarget.style.background = "rgba(255,255,255,0.08)"; }}
               onMouseLeave={e => { if (!(key === "copy" && copied)) e.currentTarget.style.background = "transparent"; }}
             >
               {label}
