@@ -28,6 +28,12 @@ export default function FoodTruckProfilePage() {
   }, [slug]);
 
   useEffect(() => {
+    if (slug) {
+      fetch('/api/track-view', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ page: 'food-truck', slug }) }).catch(() => {});
+    }
+  }, [slug]);
+
+  useEffect(() => {
     const onScroll = () => setStickyVisible(window.scrollY > 320);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);

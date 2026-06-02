@@ -171,6 +171,12 @@ export default function BusinessProfilePage() {
       .catch(() => {});
   }, [claimToken, slug]);
 
+  useEffect(() => {
+    if (business?.id) {
+      fetch('/api/track-view', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ page: 'business', slug }) }).catch(() => {});
+    }
+  }, [business?.id]);
+
   // Show sticky action bar after scrolling past hero
   useEffect(() => {
     const onScroll = () => setStickyVisible(window.scrollY > 320);

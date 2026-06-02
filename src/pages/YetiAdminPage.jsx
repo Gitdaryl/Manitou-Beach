@@ -72,6 +72,10 @@ export default function YetiAdminPage() {
   const [dashLoading, setDashLoading] = useState(false);
   const [dashData, setDashData] = useState(null);
 
+  // ── Traffic Analytics ──────────────────────────────────────────
+  const [trafficData, setTrafficData] = useState(null);
+  const [trafficLoading, setTrafficLoading] = useState(false);
+
   // ── Revenue Summary ────────────────────────────────────────────
   const [revenueData, setRevenueData] = useState(null);
   const [revenueLoading, setRevenueLoading] = useState(false);
@@ -877,6 +881,15 @@ export default function YetiAdminPage() {
     finally { setDashLoading(false); }
   };
 
+  const fetchTraffic = async () => {
+    setTrafficLoading(true);
+    try {
+      const res = await adminFetch('/api/analytics-views');
+      if (res.ok) setTrafficData(await res.json());
+    } catch (err) { console.error('Traffic fetch error:', err); }
+    finally { setTrafficLoading(false); }
+  };
+
   const fetchPromos = async () => {
     setPromosLoading(true);
     try {
@@ -1021,7 +1034,7 @@ export default function YetiAdminPage() {
     if (!authed) return;
     if (activeTab === 'newsletter') { fetchNlArticles(); fetchNlAds(); }
     if (activeTab === 'review') fetchDrafts();
-    if (activeTab === 'dashboard') { fetchDashboard(); fetchAdSlots(); fetchRevenueSummary(); fetchAttentionQueue(); }
+    if (activeTab === 'dashboard') { fetchDashboard(); fetchAdSlots(); fetchRevenueSummary(); fetchAttentionQueue(); fetchTraffic(); }
     if (activeTab === 'promos') fetchPromos();
     if (activeTab === 'pois') fetchAdminPois();
     if (activeTab === 'ratings') fetchAdminRatings();
@@ -1291,6 +1304,121 @@ export default function YetiAdminPage() {
         {/* ── DASHBOARD TAB ── */}
         {activeTab === 'dashboard' && (
           <div>
+
+            {/* ── TRAFFIC SECTION ── */}
+            <div style={{ marginBottom: 20 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.08em', color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif', fontWeight: 700 }}>👁 Profile Views</div>
+                <button onClick={fetchTraffic} style={{ background: 'transparent', border: `1px solid ${C.sand}`, borderRadius: 7, padding: '4px 12px', fontSize: 11, color: C.textLight, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}>↻</button>
+              </div>
+
+              {trafficLoading ? (
+                <div style={{ background: '#fff', borderRadius: 12, padding: '20px 24px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', textAlign: 'center', color: C.textMuted, fontSize: 13, fontFamily: 'Libre Franklin, sans-serif' }}>Loading traffic data…</div>
+              ) : trafficData ? (() => {
+                const allViews = trafficData.bizViews || [];
+                const totalProfileViews = allViews.reduce((s, v) => s + v.total, 0);
+                const thisMonthViews = allViews.reduce((s, v) => s + (v.thisMonth || 0), 0);
+                const lastMonthViews = allViews.reduce((s, v) => s + (v.lastMonth || 0), 0);
+                const growthPct = lastMonthViews > 0 ? Math.round(((thisMonthViews - lastMonthViews) / lastMonthViews) * 100) : null;
+                const top10 = allViews.slice(0, 10);
+                const maxViews = top10[0]?.total || 1;
+                const upsellTargets = allViews.filter(v => v.type === 'business' && v.thisMonth >= 20);
+
+                const typeLabel = { business: 'Biz', winery: 'Winery', 'food-truck': 'Truck' };
+                const typeColor = { business: C.lakeBlue, winery: '#7D6EAA', 'food-truck': '#E07B39' };
+
+                return (
+                  <>
+                    {/* KPI row */}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 12, marginBottom: 16 }}>
+                      {[
+                        { icon: '👁', label: 'Total Views', value: totalProfileViews.toLocaleString(), color: C.lakeBlue },
+                        { icon: '📅', label: 'This Month', value: thisMonthViews.toLocaleString(), color: C.sage },
+                        { icon: '📈', label: 'vs Last Month', value: growthPct !== null ? `${growthPct > 0 ? '+' : ''}${growthPct}%` : '—', color: growthPct > 0 ? C.sage : growthPct < 0 ? '#c05a5a' : C.textMuted },
+                        { icon: '🏆', label: 'Top Profile', value: top10[0] ? top10[0].slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()).slice(0, 18) : '—', color: C.sunset, small: true },
+                      ].map(stat => (
+                        <div key={stat.label} style={{ background: '#fff', borderRadius: 12, padding: '16px 14px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', borderTop: `3px solid ${stat.color}` }}>
+                          <div style={{ fontSize: 18, marginBottom: 6 }}>{stat.icon}</div>
+                          <div style={{ fontFamily: 'Libre Baskerville, serif', fontSize: stat.small ? 13 : 22, fontWeight: 700, color: C.dusk, marginBottom: 3, lineHeight: 1.2 }}>{stat.value}</div>
+                          <div style={{ fontSize: 10, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '0.05em', fontFamily: 'Libre Franklin, sans-serif' }}>{stat.label}</div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Top profiles bar chart */}
+                    {top10.length > 0 && (
+                      <div style={{ background: '#fff', borderRadius: 12, padding: '18px 20px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', marginBottom: 16 }}>
+                        <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif', marginBottom: 14 }}>Top Profiles</div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                          {top10.map(item => {
+                            const pct = (item.total / maxViews) * 100;
+                            const label = item.slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                            const color = typeColor[item.type] || C.lakeBlue;
+                            return (
+                              <div key={item.key} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                <div style={{ width: 8, height: 8, borderRadius: '50%', background: color, flexShrink: 0 }} />
+                                <div style={{ width: 160, fontSize: 12, color: C.dusk, fontFamily: 'Libre Franklin, sans-serif', fontWeight: 500, flexShrink: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{label}</div>
+                                <div style={{ flex: 1, background: C.sand, borderRadius: 999, height: 7, overflow: 'hidden' }}>
+                                  <div style={{ height: '100%', width: `${pct}%`, background: color, borderRadius: 999, transition: 'width 0.5s ease' }} />
+                                </div>
+                                <div style={{ width: 36, fontSize: 11, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif', textAlign: 'right', fontWeight: 600 }}>{item.total}</div>
+                                <div style={{ width: 40, fontSize: 10, color: '#fff', background: color, borderRadius: 4, padding: '2px 5px', textAlign: 'center', fontFamily: 'Libre Franklin, sans-serif', fontWeight: 700, flexShrink: 0 }}>{typeLabel[item.type] || item.type}</div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                        {trafficData.updatedAt && (
+                          <div style={{ marginTop: 12, fontSize: 11, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>
+                            Updated {new Date(trafficData.updatedAt).toLocaleString()}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Upsell Radar */}
+                    {upsellTargets.length > 0 && (
+                      <div style={{ background: '#fff', borderRadius: 12, padding: '18px 20px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', marginBottom: 16, borderLeft: `4px solid ${C.sunset}` }}>
+                        <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: C.sunset, fontFamily: 'Libre Franklin, sans-serif', marginBottom: 4 }}>Upsell Radar</div>
+                        <div style={{ fontSize: 12, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif', marginBottom: 12 }}>Business profiles with 20+ views this month — warm upgrade targets</div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                          {upsellTargets.map(item => {
+                            const label = item.slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                            return (
+                              <div key={item.key} style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+                                <div style={{ flex: 1 }}>
+                                  <div style={{ fontSize: 13, fontWeight: 600, color: C.dusk, fontFamily: 'Libre Franklin, sans-serif' }}>{label}</div>
+                                  <div style={{ fontSize: 11, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>{item.thisMonth} views this month · {item.total} total</div>
+                                </div>
+                                <button
+                                  onClick={() => navigator.clipboard.writeText(`Hi! Noticed your profile on manitoubeachmichigan.com has been getting great traffic this month. Wanted to let you know about our Featured tier at $25/mo - puts you front and centre with a highlighted listing. Happy to chat!`)}
+                                  style={{ padding: '5px 12px', fontSize: 11, fontWeight: 600, background: C.sunset, color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif', whiteSpace: 'nowrap' }}
+                                >Copy pitch</button>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                    {allViews.length === 0 && (
+                      <div style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 12, padding: '20px 24px', marginBottom: 16 }}>
+                        <div style={{ fontSize: 13, color: C.dusk, fontWeight: 600, fontFamily: 'Libre Franklin, sans-serif', marginBottom: 6 }}>Tracking is live</div>
+                        <div style={{ fontSize: 13, color: C.textLight, fontFamily: 'Libre Franklin, sans-serif', lineHeight: 1.6 }}>
+                          Profile views will appear here as visitors browse businesses, wineries, and food trucks. Check back after a day of traffic.
+                        </div>
+                        <a href="https://vercel.com/daryls-projects-5d48a4f8/manitou-beach/analytics" target="_blank" rel="noreferrer" style={{ display: 'inline-block', marginTop: 10, fontSize: 12, color: C.lakeBlue, fontFamily: 'Libre Franklin, sans-serif', fontWeight: 600, textDecoration: 'none' }}>Aggregate site traffic in Vercel →</a>
+                      </div>
+                    )}
+                  </>
+                );
+              })() : (
+                <div style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 12, padding: '20px 24px', marginBottom: 16 }}>
+                  <div style={{ fontSize: 13, color: C.dusk, fontWeight: 600, fontFamily: 'Libre Franklin, sans-serif', marginBottom: 6 }}>Tracking is live</div>
+                  <div style={{ fontSize: 13, color: C.textLight, fontFamily: 'Libre Franklin, sans-serif', lineHeight: 1.6 }}>Profile views will appear here as visitors browse. Vercel Analytics is also running for aggregate site traffic.</div>
+                  <a href="https://vercel.com/daryls-projects-5d48a4f8/manitou-beach/analytics" target="_blank" rel="noreferrer" style={{ display: 'inline-block', marginTop: 10, fontSize: 12, color: C.lakeBlue, fontFamily: 'Libre Franklin, sans-serif', fontWeight: 600, textDecoration: 'none' }}>View Vercel Analytics →</a>
+                </div>
+              )}
+            </div>
 
             {/* ── MONEY ROW ── */}
             {revenueLoading ? (
