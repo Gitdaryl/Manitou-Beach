@@ -2436,7 +2436,22 @@ export function EventLightbox({ event, onClose }) {
           style={{ position: "absolute", top: 16, right: 20, background: "none", border: "none", color: "rgba(255,255,255,0.4)", fontSize: 24, cursor: "pointer" }}
         >×</button>
 
-        {event.imageUrl && (
+        {event.videoUrl && (
+          <div style={{ margin: "0 -36px 20px", background: "#000" }}>
+            <video
+              key={event.videoUrl}
+              autoPlay muted loop playsInline controls
+              style={{
+                display: "block", width: "100%",
+                maxHeight: 400, objectFit: "contain",
+              }}
+            >
+              <source src={event.videoUrl} type="video/mp4" />
+            </video>
+          </div>
+        )}
+
+        {!event.videoUrl && event.imageUrl && (
           <img src={event.imageUrl} alt={event.name} loading="lazy" style={{ display: "block", maxWidth: "100%", maxHeight: 220, width: "auto", margin: "0 auto 20px", objectFit: "contain", borderRadius: 10 }} />
         )}
 

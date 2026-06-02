@@ -31,7 +31,7 @@ function normalizeUrl(url) {
 export default async function handler(req, res) {
   // POST - submit a new event
   if (req.method === 'POST') {
-    const { name, category, email, phone, description, date, time, timeEnd, location, eventUrl, imageUrl, cost, recurring, recurringDay, attendance, rsvpCapacity, _hp } = req.body;
+    const { name, category, email, phone, description, date, time, timeEnd, location, eventUrl, imageUrl, videoUrl, cost, recurring, recurringDay, attendance, rsvpCapacity, _hp } = req.body;
 
     // Honeypot - bots fill hidden fields, humans don't
     if (_hp) return res.status(200).json({ success: true });
@@ -64,6 +64,7 @@ export default async function handler(req, res) {
       if (date) properties['Event date'] = { date: { start: date } };
       if (includeEventUrl && normalizedEventUrl) properties['Event URL'] = { url: normalizedEventUrl };
       if (includeImageUrl && imageUrl) properties['Image URL'] = { url: imageUrl };
+      if (videoUrl) properties['Video URL'] = { url: videoUrl };
       if (cost) properties['Cost'] = { rich_text: [{ text: { content: cost } }] };
       if (recurring && recurring !== 'None') properties['Recurring'] = { select: { name: recurring } };
       if (recurringDay) properties['Recurring Day'] = { select: { name: recurringDay } };
@@ -232,6 +233,7 @@ export default async function handler(req, res) {
           rsvpCapacity: p['RSVP Capacity']?.number || 0,
           rsvpsCount: p['RSVPs Count']?.number || 0,
           vendorRegEnabled: p['Vendor Reg Enabled']?.checkbox || false,
+          videoUrl: normalizeUrl(p['Video URL']?.url || null),
         };
       })
       .filter(e => e.name);

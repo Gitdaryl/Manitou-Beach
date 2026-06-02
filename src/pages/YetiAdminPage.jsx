@@ -54,6 +54,15 @@ export default function YetiAdminPage() {
   const [photoPreview, setPhotoPreview] = useState(null);
   const [photoDims, setPhotoDims] = useState(null); // { w, h }
 
+  // ── Events Video tab ──────────────────────────────────────────
+  const [eventsData, setEventsData] = useState([]);
+  const [eventsLoading, setEventsLoading] = useState(false);
+  const [eventsVideoEditing, setEventsVideoEditing] = useState(null); // notionId being edited
+  const [eventsVideoUrl, setEventsVideoUrl] = useState('');
+  const [eventsVideoFile, setEventsVideoFile] = useState(null);
+  const [eventsVideoStatus, setEventsVideoStatus] = useState('idle'); // idle | uploading | saving | done | error
+  const [eventsVideoMsg, setEventsVideoMsg] = useState('');
+
   // ── Review tab ────────────────────────────────────────────────
   const [drafts, setDrafts] = useState([]);
   const [draftsLoading, setDraftsLoading] = useState(false);
@@ -1285,7 +1294,7 @@ export default function YetiAdminPage() {
 
         {/* Tabs */}
         <div style={{ display: 'flex', gap: 8, marginBottom: 32, flexWrap: 'wrap' }}>
-          {[{ id: 'write', label: '✍️  Write' }, { id: 'newsletter', label: '📰  Newsletter' }, { id: 'review', label: '📋  Review Queue' }, { id: 'dashboard', label: '📊  Dashboard' }, { id: 'advertisers', label: '🤝  Advertisers' }, { id: 'promos', label: '🎟️  Promos' }, { id: 'pois', label: '📍  Community POIs' }, { id: 'ratings', label: '🍷  Winery Ratings' }, { id: 'wines', label: '🍾  Wines Registry' }, { id: 'vendors', label: '🏪  Vendors' }, { id: 'orgs', label: '🏛️  Orgs' }, { id: 'incentives', label: '🎁  Incentives' }, { id: 'categories', label: '🗂️  Categories' }, { id: 'quickevents', label: '📸  Quick Events' }, { id: 'social', label: '📣  Social' }].map(tab => (
+          {[{ id: 'write', label: '✍️  Write' }, { id: 'newsletter', label: '📰  Newsletter' }, { id: 'review', label: '📋  Review Queue' }, { id: 'dashboard', label: '📊  Dashboard' }, { id: 'advertisers', label: '🤝  Advertisers' }, { id: 'promos', label: '🎟️  Promos' }, { id: 'events', label: '📅  Events' }, { id: 'pois', label: '📍  Community POIs' }, { id: 'ratings', label: '🍷  Winery Ratings' }, { id: 'wines', label: '🍾  Wines Registry' }, { id: 'vendors', label: '🏪  Vendors' }, { id: 'orgs', label: '🏛️  Orgs' }, { id: 'incentives', label: '🎁  Incentives' }, { id: 'categories', label: '🗂️  Categories' }, { id: 'quickevents', label: '📸  Quick Events' }, { id: 'social', label: '📣  Social' }].map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
@@ -3684,6 +3693,210 @@ export default function YetiAdminPage() {
             {qeResult?.count > 0 && <div style={{ textAlign: 'center', marginTop: 20, fontSize: 13, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>Got another one? Drop the next photo or paste above.</div>}
           </div>
         )}
+
+        {/* ── EVENTS VIDEO TAB ── */}
+        {activeTab === 'events' && (() => {
+          const loadEvents = async () => {
+            setEventsLoading(true);
+            try {
+              const res = await fetch('/api/events');
+              const data = await res.json();
+              const all = [...(data.events || []), ...(data.recurring || [])];
+              all.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+              setEventsData(all);
+            } catch (e) { console.error(e); }
+            finally { setEventsLoading(false); }
+          };
+
+          const handleVideoSave = async (event) => {
+            setEventsVideoStatus('saving');
+            setEventsVideoMsg('');
+            try {
+              const res = await adminFetch('/api/patch-event-video', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ notionId: event.id, videoUrl: eventsVideoUrl || null, oldVideoUrl: event.videoUrl }),
+              });
+              const data = await res.json();
+              if (!res.ok) throw new Error(data.error || 'Save failed');
+              setEventsData(prev => prev.map(e => e.id === event.id ? { ...e, videoUrl: eventsVideoUrl || null } : e));
+              setEventsVideoStatus('done');
+              setEventsVideoMsg('Saved!');
+              setTimeout(() => { setEventsVideoEditing(null); setEventsVideoStatus('idle'); setEventsVideoMsg(''); setEventsVideoUrl(''); }, 1800);
+            } catch (err) {
+              setEventsVideoStatus('error');
+              setEventsVideoMsg(err.message);
+            }
+          };
+
+          const handleVideoUpload = async (event, file) => {
+            setEventsVideoStatus('uploading');
+            setEventsVideoMsg('Uploading...');
+            try {
+              const { upload } = await import('@vercel/blob/client');
+              const blob = await upload(file.name, file, {
+                access: 'public',
+                handleUploadUrl: '/api/upload-video',
+                clientPayload: JSON.stringify({ token: authToken }),
+                headers: { 'x-admin-token': authToken },
+              });
+              setEventsVideoUrl(blob.url);
+              setEventsVideoStatus('idle');
+              setEventsVideoMsg('Video ready - click Save to attach to event.');
+            } catch (err) {
+              setEventsVideoStatus('error');
+              setEventsVideoMsg(err.message);
+            }
+          };
+
+          return (
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+                <div>
+                  <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: C.textMuted, marginBottom: 4 }}>Events - Video Manager</div>
+                  <p style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, color: C.textLight, margin: 0 }}>
+                    Attach a promo video to any event listing. Video plays on click in the lightbox.
+                  </p>
+                </div>
+                <button
+                  onClick={loadEvents}
+                  disabled={eventsLoading}
+                  style={{ background: C.lakeBlue, color: '#fff', border: 'none', borderRadius: 8, padding: '8px 18px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif', opacity: eventsLoading ? 0.6 : 1 }}
+                >
+                  {eventsLoading ? 'Loading...' : eventsData.length ? 'Refresh' : 'Load Events'}
+                </button>
+              </div>
+
+              {/* Notion setup reminder */}
+              <div style={{ background: `${C.lakeBlue}10`, border: `1px solid ${C.lakeBlue}30`, borderRadius: 10, padding: '12px 16px', marginBottom: 20, fontFamily: 'Libre Franklin, sans-serif', fontSize: 12, color: C.textLight, lineHeight: 1.6 }}>
+                <strong style={{ color: C.lakeBlue }}>Notion setup:</strong> Make sure the Events DB has a <code style={{ background: C.sand, borderRadius: 3, padding: '1px 5px' }}>Video URL</code> property of type <strong>URL</strong>.
+              </div>
+
+              {eventsData.length > 0 && (
+                <div style={{ border: `1px solid ${C.sand}`, borderRadius: 12, overflow: 'hidden' }}>
+                  {eventsData.map((event, i) => {
+                    const isEditing = eventsVideoEditing === event.id;
+                    return (
+                      <div
+                        key={event.id}
+                        style={{
+                          padding: '16px 20px',
+                          borderBottom: i < eventsData.length - 1 ? `1px solid ${C.sand}` : 'none',
+                          background: isEditing ? `${C.lakeBlue}06` : '#fff',
+                        }}
+                      >
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 15, color: C.text, marginBottom: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                              {event.name}
+                            </div>
+                            <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 12, color: C.textMuted }}>
+                              {event.date || 'Recurring'}{event.location ? ` · ${event.location}` : ''}
+                            </div>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+                            {event.videoUrl && !isEditing && (
+                              <span style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 10, fontWeight: 700, letterSpacing: 1, color: C.sunset, background: `${C.sunset}15`, padding: '3px 10px', borderRadius: 10 }}>
+                                ▶ VIDEO
+                              </span>
+                            )}
+                            <button
+                              onClick={() => {
+                                if (isEditing) {
+                                  setEventsVideoEditing(null);
+                                  setEventsVideoUrl('');
+                                  setEventsVideoStatus('idle');
+                                  setEventsVideoMsg('');
+                                  setEventsVideoFile(null);
+                                } else {
+                                  setEventsVideoEditing(event.id);
+                                  setEventsVideoUrl(event.videoUrl || '');
+                                  setEventsVideoStatus('idle');
+                                  setEventsVideoMsg('');
+                                  setEventsVideoFile(null);
+                                }
+                              }}
+                              style={{ background: isEditing ? C.sand : C.dusk, color: isEditing ? C.text : '#fff', border: 'none', borderRadius: 6, padding: '6px 14px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}
+                            >
+                              {isEditing ? 'Cancel' : event.videoUrl ? 'Edit Video' : 'Add Video'}
+                            </button>
+                          </div>
+                        </div>
+
+                        {isEditing && (
+                          <div style={{ marginTop: 14, padding: 16, background: C.warmWhite, borderRadius: 10 }}>
+                            {/* File drop zone */}
+                            <div
+                              onDragOver={e => e.preventDefault()}
+                              onDrop={e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f && f.type.startsWith('video/')) handleVideoUpload(event, f); }}
+                              style={{ border: `2px dashed ${C.sand}`, borderRadius: 8, padding: '20px 16px', textAlign: 'center', marginBottom: 12, cursor: 'pointer' }}
+                              onClick={() => document.getElementById(`video-upload-${event.id}`).click()}
+                            >
+                              <div style={{ fontSize: 24, marginBottom: 6 }}>🎬</div>
+                              <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, color: C.textMuted }}>
+                                {eventsVideoStatus === 'uploading' ? 'Uploading...' : 'Drop video here or click to browse'}
+                              </div>
+                              <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 11, color: C.textMuted, marginTop: 4 }}>MP4, WebM, MOV - max 250MB - 9:16 or 16:9</div>
+                              <input
+                                id={`video-upload-${event.id}`}
+                                type="file"
+                                accept="video/mp4,video/webm,video/quicktime"
+                                style={{ display: 'none' }}
+                                onChange={e => { const f = e.target.files[0]; if (f) handleVideoUpload(event, f); }}
+                              />
+                            </div>
+
+                            {/* Manual URL input */}
+                            <div style={{ marginBottom: 12 }}>
+                              <label style={{ display: 'block', fontFamily: 'Libre Franklin, sans-serif', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>Or paste video URL</label>
+                              <input
+                                type="url"
+                                value={eventsVideoUrl}
+                                onChange={e => setEventsVideoUrl(e.target.value)}
+                                placeholder="https://..."
+                                style={{ width: '100%', boxSizing: 'border-box', padding: '10px 12px', border: `1px solid ${C.sand}`, borderRadius: 8, fontSize: 13, fontFamily: 'Libre Franklin, sans-serif', color: C.text, background: '#fff' }}
+                              />
+                            </div>
+
+                            {eventsVideoMsg && (
+                              <div style={{ fontFamily: 'Libre Franklin, sans-serif', fontSize: 12, color: eventsVideoStatus === 'error' ? C.sunset : C.sage, marginBottom: 10 }}>
+                                {eventsVideoMsg}
+                              </div>
+                            )}
+
+                            <div style={{ display: 'flex', gap: 8 }}>
+                              <button
+                                onClick={() => handleVideoSave(event)}
+                                disabled={eventsVideoStatus === 'uploading' || eventsVideoStatus === 'saving'}
+                                style={{ flex: 1, background: C.sage, color: '#fff', border: 'none', borderRadius: 8, padding: '10px 0', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif', opacity: (eventsVideoStatus === 'uploading' || eventsVideoStatus === 'saving') ? 0.6 : 1 }}
+                              >
+                                {eventsVideoStatus === 'saving' ? 'Saving...' : eventsVideoStatus === 'done' ? 'Saved!' : 'Save Video URL'}
+                              </button>
+                              {event.videoUrl && (
+                                <button
+                                  onClick={() => { setEventsVideoUrl(''); handleVideoSave({ ...event, videoUrl: event.videoUrl }); }}
+                                  style={{ background: 'transparent', color: C.sunset, border: `1px solid ${C.sunset}40`, borderRadius: 8, padding: '10px 16px', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}
+                                >
+                                  Remove Video
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {!eventsLoading && eventsData.length === 0 && (
+                <div style={{ textAlign: 'center', padding: '48px 24px', color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif', fontSize: 14 }}>
+                  Click "Load Events" to fetch the calendar.
+                </div>
+              )}
+            </div>
+          );
+        })()}
 
         {activeTab === 'social' && (
           <div style={{ maxWidth: 560 }}>

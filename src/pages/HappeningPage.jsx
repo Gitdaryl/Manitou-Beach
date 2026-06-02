@@ -520,6 +520,11 @@ function EventRow({ event, onEventClick, isLast, variant = "default" }) {
             Vendors Welcome
           </span>
         )}
+        {event.videoUrl && (
+          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1.5, color: C.sunset, background: `${C.sunset}18`, padding: "3px 10px", borderRadius: 10, textTransform: "uppercase", whiteSpace: "nowrap" }}>
+            ▶ Video
+          </span>
+        )}
         <EventShareBtn event={event} color={color} />
       </div>
     </div>
