@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { FadeIn, SectionTitle, SectionLabel, Btn, ShareBar, WaveDivider, PageSponsorBanner, ScrollProgress, CategoryPill } from '../components/Shared';
-import { C, PAGE_SPONSORS, VIDEOS } from '../data/config';
+import { C, PAGE_SPONSORS, VIDEOS, EVENT_TICKER_SPONSORS } from '../data/config';
+import { SponsorTicker } from '../components/SponsorTicker';
 import { Footer, GlobalStyles, PromoBanner, EventLightbox, EventTimeline, Navbar, compressImage } from '../components/Layout';
 import SMSOptInWidget from '../components/SMSOptInWidget';
 import SEOHead, { buildEventSchema } from '../components/SEOHead';
@@ -28,17 +29,22 @@ function HappeningHero() {
 
   return (
     <section style={{
-      backgroundImage: "url(/images/happening-hero.jpg)",
-      backgroundSize: "cover",
-      backgroundPosition: "center 40%",
-      backgroundAttachment: "fixed",
       padding: "180px 24px 140px",
       position: "relative",
       overflow: "hidden",
     }}>
+      <video
+        autoPlay muted loop playsInline
+        style={{
+          position: "absolute", inset: 0, width: "100%", height: "100%",
+          objectFit: "cover", zIndex: 0,
+        }}
+      >
+        <source src="/videos/events%20hero.mp4" type="video/mp4" />
+      </video>
       {/* Dark overlay - preserves text readability */}
       <div style={{
-        position: "absolute", inset: 0,
+        position: "absolute", inset: 0, zIndex: 1,
         background: "linear-gradient(170deg, rgba(10,18,24,0.72) 0%, rgba(10,18,24,0.50) 50%, rgba(10,18,24,0.82) 100%)",
       }} />
 
@@ -56,11 +62,12 @@ function HappeningHero() {
         userSelect: "none",
         letterSpacing: -12,
         pointerEvents: "none",
+        zIndex: 2,
       }}>
         2026
       </div>
 
-      <div style={{ maxWidth: 960, margin: "0 auto", position: "relative", zIndex: 1 }}>
+      <div style={{ maxWidth: 960, margin: "0 auto", position: "relative", zIndex: 2 }}>
         <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? "none" : "translateY(24px)", transition: "all 0.9s ease" }}>
           <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 28 }}>
             Events & Community Calendar
@@ -1031,6 +1038,7 @@ export default function HappeningPage() {
       <ScrollProgress />
       <Navbar activeSection="happening" scrollTo={subScrollTo} isSubPage={true} />
       <HappeningHero />
+      <SponsorTicker sponsors={EVENT_TICKER_SPONSORS} />
       <PromoBanner page="Events" />
       <HeroTakeover event={heroTakeover} onEventClick={setLightboxEvent} />
       <CalendarSection events={upcomingEvents} weeklyEvents={weeklyEvents} onEventClick={setLightboxEvent} activeFilter={activeFilter} onFilterChange={setActiveFilter} />

@@ -48,6 +48,16 @@ export const PAGE_SPONSORS = {
 };
 
 // ============================================================
+// 🎯  EVENTS PAGE SPONSOR TICKER - max 6 slots
+// Empty array = ticker hidden. First in = first to commit.
+// Each entry: { name, tagline, logo (optional), url (optional) }
+// ============================================================
+export const EVENT_TICKER_SPONSORS = [
+  // { name: "Kelleys Bar & Grill", tagline: "Cold drinks, warm people", url: "https://..." },
+  // { name: "Devils Lake Marina", tagline: "Rent. Launch. Explore.", url: "https://..." },
+];
+
+// ============================================================
 // 🧭  NAV SECTIONS
 // USA250 - set true to make the page publicly visible + add to Community nav
 export const USA250_PUBLIC = true;

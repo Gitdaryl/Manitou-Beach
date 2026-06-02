@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Events Sponsor Program - Manitou Beach Michigan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:       #FAF6EF;
+      --sand:        #E8DFD0;
+      --night:       #1A2830;
+      --dusk:        #2D3B45;
+      --lake:        #5B7E95;
+      --sage:        #7A8E72;
+      --sunset:      #D4845A;
+      --sunsetLight: #E8A87C;
+      --text:        #3B3228;
+      --textLight:   #6B6052;
+    }
+
+    body {
+      font-family: 'Libre Franklin', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ---- PRINT ---- */
+    @media print {
+      body { background: white; }
+      .no-print { display: none !important; }
+      .page { page-break-after: always; }
+      .page:last-child { page-break-after: avoid; }
+    }
+
+    /* ---- LAYOUT ---- */
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 60px 60px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---- COVER ---- */
+    .cover {
+      background: var(--night);
+      color: var(--cream);
+      padding: 80px 60px;
+    }
+
+    .cover-eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--sunset);
+      margin-bottom: 20px;
+    }
+
+    .cover-headline {
+      font-family: 'Libre Baskerville', serif;
+      font-size: clamp(40px, 6vw, 72px);
+      font-weight: 400;
+      line-height: 1.05;
+      color: var(--cream);
+      margin-bottom: 24px;
+    }
+
+    .cover-sub {
+      font-size: 17px;
+      color: rgba(255,255,255,0.5);
+      max-width: 540px;
+      line-height: 1.7;
+      margin-bottom: 60px;
+    }
+
+    .cover-stat-row {
+      display: flex;
+      gap: 48px;
+      flex-wrap: wrap;
+      padding-top: 40px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .cover-stat-num {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 42px;
+      color: var(--sunsetLight);
+      line-height: 1;
+    }
+
+    .cover-stat-label {
+      font-size: 11px;
+      color: rgba(255,255,255,0.4);
+      margin-top: 6px;
+      letter-spacing: 1px;
+    }
+
+    /* ---- SECTION HEADINGS ---- */
+    .section-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--sunset);
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 36px;
+      font-weight: 400;
+      color: var(--night);
+      margin-bottom: 16px;
+    }
+
+    .section-desc {
+      font-size: 15px;
+      color: var(--textLight);
+      max-width: 560px;
+      line-height: 1.8;
+      margin-bottom: 48px;
+    }
+
+    /* ---- WHAT YOU GET ---- */
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+
+    .benefit-card {
+      background: white;
+      border: 1px solid var(--sand);
+      border-radius: 8px;
+      padding: 28px;
+    }
+
+    .benefit-icon {
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    .benefit-title {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--night);
+      margin-bottom: 8px;
+    }
+
+    .benefit-desc {
+      font-size: 13px;
+      color: var(--textLight);
+      line-height: 1.7;
+    }
+
+    .benefit-tag {
+      display: inline-block;
+      margin-top: 12px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--sage);
+      background: rgba(122,142,114,0.1);
+      border-radius: 4px;
+      padding: 3px 8px;
+    }
+
+    /* ---- REACH ---- */
+    .reach-row {
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--sand);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 48px;
+    }
+
+    .reach-item {
+      flex: 1;
+      padding: 28px 24px;
+      border-right: 1px solid var(--sand);
+      text-align: center;
+    }
+
+    .reach-item:last-child { border-right: none; }
+
+    .reach-num {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 36px;
+      color: var(--lake);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .reach-label {
+      font-size: 12px;
+      color: var(--textLight);
+      line-height: 1.5;
+    }
+
+    /* ---- PRICING ---- */
+    .pricing-box {
+      background: var(--night);
+      color: var(--cream);
+      border-radius: 12px;
+      padding: 48px;
+      margin-bottom: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pricing-box::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(212,132,90,0.15) 0%, transparent 70%);
+    }
+
+    .pricing-amount {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 72px;
+      color: var(--sunsetLight);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .pricing-period {
+      font-size: 14px;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 32px;
+    }
+
+    .pricing-includes {
+      list-style: none;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px 32px;
+      margin-bottom: 32px;
+    }
+
+    .pricing-includes li {
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .pricing-includes li::before {
+      content: '✓';
+      color: var(--sage);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .scarcity-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(212,132,90,0.2);
+      border: 1px solid rgba(212,132,90,0.4);
+      border-radius: 100px;
+      padding: 10px 20px;
+      font-size: 13px;
+      color: var(--sunsetLight);
+      font-weight: 600;
+    }
+
+    .scarcity-dot {
+      width: 8px; height: 8px;
+      background: var(--sunset);
+      border-radius: 50%;
+      animation: pulse 2s ease infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    /* ---- SPONSOR STRIP MOCKUP ---- */
+    .mockup-ticker {
+      background: var(--night);
+      border-radius: 8px;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 48px;
+      overflow: hidden;
+    }
+
+    .mockup-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--sunset);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .mockup-sponsors {
+      display: flex;
+      gap: 0;
+      align-items: center;
+      color: var(--cream);
+      font-size: 13px;
+      font-weight: 600;
+      flex-wrap: nowrap;
+    }
+
+    .mockup-sep {
+      width: 5px; height: 5px;
+      background: var(--sunset);
+      border-radius: 50%;
+      margin: 0 20px;
+      opacity: 0.6;
+      flex-shrink: 0;
+    }
+
+    .mockup-tagline {
+      font-size: 12px;
+      color: rgba(255,255,255,0.3);
+      font-weight: 400;
+      margin-left: 8px;
+    }
+
+    /* ---- CTA ---- */
+    .cta-box {
+      background: var(--sage);
+      color: white;
+      border-radius: 8px;
+      padding: 40px 48px;
+      text-align: center;
+    }
+
+    .cta-headline {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    .cta-sub {
+      font-size: 15px;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 28px;
+    }
+
+    .cta-contact {
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+    }
+
+    /* ---- CARD MOCKUP ---- */
+    .card-mockup-wrap {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+      margin-bottom: 48px;
+    }
+
+    .card-mockup {
+      width: 280px;
+      background: var(--night);
+      border-radius: 10px;
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    }
+
+    .card-mockup-body {
+      padding: 24px;
+      text-align: center;
+    }
+
+    .card-mockup-logo-area {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 18px;
+      color: var(--cream);
+      margin-bottom: 6px;
+    }
+
+    .card-mockup-sub {
+      font-size: 10px;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .card-mockup-qr {
+      width: 80px; height: 80px;
+      background: white;
+      border-radius: 6px;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: var(--textLight);
+      padding: 8px;
+    }
+
+    .card-mockup-cta {
+      font-family: 'Libre Franklin', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--sunsetLight);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .card-mockup-domain {
+      font-size: 10px;
+      color: rgba(255,255,255,0.25);
+    }
+
+    .card-mockup-sponsors-bar {
+      background: rgba(0,0,0,0.4);
+      padding: 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px;
+    }
+
+    .card-sponsor-slot {
+      background: rgba(255,255,255,0.06);
+      border-radius: 4px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8px;
+      color: rgba(255,255,255,0.25);
+    }
+
+    .card-sponsor-slot.filled {
+      background: rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.6);
+      font-weight: 600;
+    }
+
+    .card-mockup-desc {
+      flex: 1;
+    }
+
+    .card-mockup-desc h3 {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--night);
+      margin-bottom: 12px;
+    }
+
+    .card-mockup-desc p {
+      font-size: 14px;
+      color: var(--textLight);
+      line-height: 1.7;
+      margin-bottom: 12px;
+    }
+
+    .card-mockup-desc ul {
+      padding-left: 18px;
+      font-size: 13px;
+      color: var(--textLight);
+      line-height: 2;
+    }
+
+    /* ---- DIVIDER ---- */
+    hr {
+      border: none;
+      border-top: 1px solid var(--sand);
+      margin: 48px 0;
+    }
+
+    /* ---- FOOTER ---- */
+    .footer-bar {
+      margin-top: auto;
+      padding-top: 32px;
+      border-top: 1px solid var(--sand);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--textLight);
+    }
+
+    .print-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--night);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-family: 'Libre Franklin', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .print-btn:hover { background: var(--lake); }
+  </style>
+</head>
+<body>
+
+<!-- COVER PAGE -->
+<div class="page cover">
+  <div class="cover-eyebrow">Manitou Beach Michigan Events Page</div>
+  <div class="cover-headline">Your Business.<br>Front and Center.<br>All Summer Long.</div>
+  <div class="cover-sub">
+    A limited sponsorship program putting your name in front of every visitor,
+    cottage renter, and local who scans for things to do at Devils Lake.
+  </div>
+
+  <div class="cover-stat-row">
+    <div>
+      <div class="cover-stat-num">5,000+</div>
+      <div class="cover-stat-label">Cards in circulation</div>
+    </div>
+    <div>
+      <div class="cover-stat-num">6</div>
+      <div class="cover-stat-label">Sponsor slots total</div>
+    </div>
+    <div>
+      <div class="cover-stat-num">$99</div>
+      <div class="cover-stat-label">Per month</div>
+    </div>
+  </div>
+
+  <div class="footer-bar" style="border-top-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.25);">
+    <span>manitoubeachmichigan.com</span>
+    <span>Summer 2026</span>
+  </div>
+</div>
+
+<!-- PAGE 2: THE IDEA -->
+<div class="page" style="padding-top: 80px;">
+  <div class="section-label">The Campaign</div>
+  <div class="section-title">What We're Building</div>
+  <div class="section-desc">
+    Manitou Beach Michigan is the go-to events guide for Devils Lake.
+    We're running a print and digital campaign to make it the first thing
+    anyone reaches for when they want to know what's happening around the lakes.
+    Your sponsorship funds it and gets your name on all of it.
+  </div>
+
+  <div class="benefits-grid">
+    <div class="benefit-card">
+      <div class="benefit-icon">🃏</div>
+      <div class="benefit-title">5x7 Event Cards</div>
+      <div class="benefit-desc">
+        Durable cards with a QR code linking to the events page.
+        On tables at bars and restaurants. In windows. At the marina.
+        In visitor packets. Your logo on the back.
+      </div>
+      <span class="benefit-tag">Print Distribution</span>
+    </div>
+
+    <div class="benefit-card">
+      <div class="benefit-icon">📍</div>
+      <div class="benefit-title">Yard Signs</div>
+      <div class="benefit-desc">
+        "What's On This Weekend? Scan Me." signs placed around
+        the lakes, at key intersections, and near put-in points.
+        Sponsor names on the bottom panel.
+      </div>
+      <span class="benefit-tag">Outdoor Signage</span>
+    </div>
+
+    <div class="benefit-card">
+      <div class="benefit-icon">🖥</div>
+      <div class="benefit-title">Digital Sponsor Ticker</div>
+      <div class="benefit-desc">
+        A scrolling strip directly below the Events page hero.
+        Every visitor who scans a QR code lands here first.
+        Your name, tagline, and link in the rotation.
+      </div>
+      <span class="benefit-tag">Digital Placement</span>
+    </div>
+
+    <div class="benefit-card">
+      <div class="benefit-icon">📬</div>
+      <div class="benefit-title">EDDM Mail Drop</div>
+      <div class="benefit-desc">
+        Direct mail to 5,000+ households and visitor addresses
+        in the Manitou Beach and Devils Lake area. Your name
+        lands in mailboxes before they even arrive.
+      </div>
+      <span class="benefit-tag">Direct Mail</span>
+    </div>
+  </div>
+
+  <div class="section-label">What It Looks Like</div>
+  <div class="card-mockup-wrap">
+    <div class="card-mockup">
+      <div class="card-mockup-body">
+        <div class="card-mockup-logo-area">Manitou Beach</div>
+        <div class="card-mockup-sub">Devils Lake, Michigan</div>
+        <div class="card-mockup-qr">[ QR ]</div>
+        <div class="card-mockup-cta">What's On This Weekend?</div>
+        <div class="card-mockup-domain">manitoubeachmichigan.com/events</div>
+      </div>
+      <div class="card-mockup-sponsors-bar">
+        <div class="card-sponsor-slot filled">Your Biz</div>
+        <div class="card-sponsor-slot filled">Sponsor</div>
+        <div class="card-sponsor-slot filled">Sponsor</div>
+        <div class="card-sponsor-slot">Open</div>
+        <div class="card-sponsor-slot">Open</div>
+        <div class="card-sponsor-slot">Open</div>
+      </div>
+    </div>
+    <div class="card-mockup-desc">
+      <h3>The Card</h3>
+      <p>
+        5x7 card. One side: the QR code and "What's on this weekend?" call to action.
+        Other side or bottom strip: sponsor logos with space for a tagline.
+      </p>
+      <p>
+        These sit on bar tables, in window displays, at the marina, at the boat launch,
+        at lakeside cottage check-in spots. Anywhere someone might wonder what to do next.
+      </p>
+      <ul>
+        <li>Professionally printed, weather-resistant stock</li>
+        <li>Updated each season with current sponsor names</li>
+        <li>Identical layout on yard signs</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    <span>Manitou Beach Michigan Events Sponsor Program</span>
+    <span>Page 2</span>
+  </div>
+</div>
+
+<!-- PAGE 3: DIGITAL PLACEMENT -->
+<div class="page" style="padding-top: 80px;">
+  <div class="section-label">Digital</div>
+  <div class="section-title">The Events Page Ticker</div>
+  <div class="section-desc">
+    Every QR code on every card, sign, and flyer points here.
+    The ticker sits right below the hero, before they see anything else.
+    It scrolls your name in front of the most engaged audience
+    at the moment they're deciding what to do.
+  </div>
+
+  <!-- Mockup ticker -->
+  <div class="mockup-ticker">
+    <div class="mockup-label">Event Sponsors</div>
+    <div class="mockup-sponsors">
+      <span>Your Business Name</span>
+      <span class="mockup-tagline">Your tagline here</span>
+      <div class="mockup-sep"></div>
+      <span>Lakeside Sponsor</span>
+      <span class="mockup-tagline">Great eats on the water</span>
+      <div class="mockup-sep"></div>
+      <span>Another Business</span>
+      <span class="mockup-tagline">Open daily 8am - 9pm</span>
+      <div class="mockup-sep"></div>
+      <span style="color: rgba(255,255,255,0.25); font-style: italic; font-weight: 400;">4 more spots...</span>
+    </div>
+  </div>
+
+  <div class="section-label">The Reach</div>
+  <div class="reach-row">
+    <div class="reach-item">
+      <div class="reach-num">5,000+</div>
+      <div class="reach-label">Cards via EDDM mail drop + local placement</div>
+    </div>
+    <div class="reach-item">
+      <div class="reach-num">20+</div>
+      <div class="reach-label">Yard sign locations around the lakes</div>
+    </div>
+    <div class="reach-item">
+      <div class="reach-num">All summer</div>
+      <div class="reach-label">Materials stay live through Labor Day</div>
+    </div>
+    <div class="reach-item">
+      <div class="reach-num">6 only</div>
+      <div class="reach-label">Sponsor spots, ever. First in locks it in.</div>
+    </div>
+  </div>
+
+  <div class="section-label">Who Sees It</div>
+  <div class="section-desc" style="margin-bottom: 0;">
+    Cottage renters figuring out their weekend. Day trippers who just arrived.
+    Locals planning the week. Anyone who picks up a card at a bar or restaurant
+    and scans to see what's on. This is not a general internet ad.
+    These are people already at the lake, already looking to do something.
+    Your name is the first thing they see when they look.
+  </div>
+
+  <div class="footer-bar">
+    <span>Manitou Beach Michigan Events Sponsor Program</span>
+    <span>Page 3</span>
+  </div>
+</div>
+
+<!-- PAGE 4: PRICING + CTA -->
+<div class="page" style="padding-top: 80px;">
+  <div class="section-label">Investment</div>
+  <div class="section-title">Simple and Flat</div>
+  <div class="section-desc">
+    One price, everything included. No tiers, no add-ons, no surprise fees.
+    Cards, yard signs, digital ticker, EDDM placement, and a link to your listing.
+  </div>
+
+  <div class="pricing-box">
+    <div class="pricing-amount">$99</div>
+    <div class="pricing-period">per month, minimum 3 months (Summer 2026 season)</div>
+
+    <ul class="pricing-includes">
+      <li>Logo on all 5,000+ printed cards</li>
+      <li>Logo on yard signs around the lakes</li>
+      <li>Rotating digital ticker on the Events page</li>
+      <li>Named in the sponsor strip on window flyers</li>
+      <li>Link to your business listing from the ticker</li>
+      <li>Lakes Preservation League mail-out inclusion</li>
+    </ul>
+
+    <div class="scarcity-pill">
+      <div class="scarcity-dot"></div>
+      Only 6 spots available. 3 already spoken for.
+    </div>
+  </div>
+
+  <div style="background: #F0EDE7; border-radius: 8px; padding: 24px 28px; margin-bottom: 40px;">
+    <div style="font-weight: 700; font-size: 14px; color: var(--night); margin-bottom: 8px;">
+      First 3 sponsors to commit get priority placement on all print materials.
+    </div>
+    <div style="font-size: 13px; color: var(--textLight); line-height: 1.7;">
+      Print runs are locked in by June 15. Sign up before then and your logo appears
+      in the best position on the card, top row on yard signs,
+      and first in the ticker rotation. After that, you're still in, just in order received.
+    </div>
+  </div>
+
+  <div class="cta-box">
+    <div class="cta-headline">Ready to Claim Your Spot?</div>
+    <div class="cta-sub">
+      Spots are first come, first served. The summer doesn't wait and neither should you.
+    </div>
+    <div class="cta-contact">admin@yetigroove.com</div>
+    <div style="font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 8px;">
+      manitoubeachmichigan.com
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    <span>Manitou Beach Michigan - Yeti Groove Media LLC</span>
+    <span>Summer 2026 Sponsor Program</span>
+  </div>
+</div>
+
+<button class="print-btn no-print" onclick="window.print()">Save as PDF</button>
+
+</body>
+</html>
