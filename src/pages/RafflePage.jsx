@@ -135,6 +135,7 @@ export default function RafflePage({ embed = false }) {
   const audioCtxRef = useRef(null);
   const segmentsRef = useRef(BUILT_SEGMENTS);
   const resultPanelRef = useRef(null);
+  const wheelRef = useRef(null);
   const confettiStateRef = useRef([]);
   const phaseRef = useRef('idle');
   const phys = useRef({
@@ -386,10 +387,14 @@ export default function RafflePage({ embed = false }) {
     p.lastTickSegment = -1;
     p.stableSegment = -1;
     p.stableCount = 0;
+    p.zeroVelCount = 0;
     setPhase('idle');
     setWinSeg(null);
     setHintVisible(true);
     setHint('Spin again - see what else you could win!');
+    setTimeout(() => {
+      if (wheelRef.current) wheelRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 50);
   }, []);
 
   // ── ANIMATION LOOP ──
@@ -404,8 +409,11 @@ export default function RafflePage({ embed = false }) {
         const speed = Math.abs(p.angularVelocity);
         p.angularVelocity *= speed > 0.06 ? FRICTION : speed > 0.02 ? FRICTION_SLOW : FRICTION_CRAWL;
 
+        // Only tick + apply flapper bounce when wheel has meaningful speed.
+        // At near-zero speed on a boundary, the bounce would kick velocity back
+        // above MIN_VELOCITY creating an infinite beep loop.
         const cur = getSegAtPointer();
-        if (cur !== p.lastTickSegment) {
+        if (cur !== p.lastTickSegment && speed > MIN_VELOCITY * 4) {
           p.lastTickSegment = cur;
           playTick(speed > 0.1);
           if (p.angularVelocity > 0) p.angularVelocity -= FLAPPER_BOUNCE;
@@ -414,16 +422,17 @@ export default function RafflePage({ embed = false }) {
 
         if (Math.abs(p.angularVelocity) < MIN_VELOCITY && !p.spinDone) {
           p.angularVelocity = 0;
+          p.zeroVelCount = (p.zeroVelCount || 0) + 1;
           const seg = getSegAtPointer();
           if (seg === p.stableSegment) { p.stableCount++; }
           else { p.stableSegment = seg; p.stableCount = 1; }
-          if (p.stableCount >= 3) {
+          if (p.stableCount >= 3 || p.zeroVelCount > 20) {
             p.isSpinning = false; p.spinDone = true;
-            p.stableCount = 0; p.stableSegment = -1;
+            p.stableCount = 0; p.stableSegment = -1; p.zeroVelCount = 0;
             handleResult(seg);
           }
         } else {
-          p.stableSegment = -1; p.stableCount = 0;
+          p.stableSegment = -1; p.stableCount = 0; p.zeroVelCount = 0;
         }
       }
       drawWheel();
@@ -664,7 +673,7 @@ export default function RafflePage({ embed = false }) {
         }}>
 
           {/* Left: wheel + marquee lights */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
+          <div ref={wheelRef} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
             {/* Lights ring wrapper */}
             <div style={{ position: 'relative', width: ringSize, height: ringSize, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               {/* Marquee bulbs */}
