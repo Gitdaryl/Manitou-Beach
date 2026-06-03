@@ -281,9 +281,9 @@ export default function RafflePage({ embed = false }) {
       ctx.shadowBlur = 4;
 
       const isTry = seg.type === 'try-again';
-      const textRadial = -(RADIUS * 0.62);
+      const textRadial = -(RADIUS * 0.72);
       const maxW = 2 * Math.abs(textRadial) * Math.sin(seg.sweep / 2) * 0.82;
-      let fs = 13;
+      let fs = 15;
       const setF = (s) => { ctx.font = `bold ${s}px 'Libre Franklin', system-ui, sans-serif`; };
       setF(fs);
       while (ctx.measureText(seg.label).width > maxW && fs > 7) { fs--; setF(fs); }
