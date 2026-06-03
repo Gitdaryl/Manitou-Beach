@@ -134,6 +134,7 @@ export default function RafflePage({ embed = false }) {
   const rafRef = useRef(null);
   const audioCtxRef = useRef(null);
   const segmentsRef = useRef(BUILT_SEGMENTS);
+  const resultPanelRef = useRef(null);
   const confettiStateRef = useRef([]);
   const phaseRef = useRef('idle');
   const phys = useRef({
@@ -523,6 +524,14 @@ export default function RafflePage({ embed = false }) {
     };
   }, [initAudio]);
 
+  useEffect(() => {
+    if (phase === 'landed' && resultPanelRef.current) {
+      setTimeout(() => {
+        resultPanelRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 350);
+    }
+  }, [phase]);
+
   const isIdle = phase === 'idle';
   const isSpinning = phase === 'spinning';
   const isLanded = phase === 'landed';
@@ -706,7 +715,7 @@ export default function RafflePage({ embed = false }) {
           </div>
 
           {/* Right: details panel */}
-          <div style={{ flex: 1, minWidth: 260, maxWidth: 420 }}>
+          <div ref={resultPanelRef} style={{ flex: 1, minWidth: 260, maxWidth: 420 }}>
 
             {/* Idle */}
             {isIdle && (
