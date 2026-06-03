@@ -790,7 +790,7 @@ export default function RafflePage({ embed = false }) {
                     <img
                       src={winSeg.image}
                       alt={winSeg.fullName}
-                      style={{ width: '100%', height: 220, objectFit: 'cover', display: 'block' }}
+                      style={{ width: '100%', height: 160, objectFit: 'contain', display: 'block', background: '#FFF0E0' }}
                     />
                   )}
                 <div style={{ padding: '20px 24px 24px' }}>

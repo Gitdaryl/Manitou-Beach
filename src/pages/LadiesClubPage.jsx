@@ -199,11 +199,12 @@ function RaffleWheelTeaser() {
         <div style={{
           position: 'fixed', inset: 0, zIndex: 1000,
           background: 'rgba(10,4,14,0.88)', backdropFilter: 'blur(6px)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
+          paddingTop: 72, paddingLeft: 16, paddingRight: 16,
         }} onClick={() => setOpen(false)}>
           <div style={{
             position: 'relative', width: '100%', maxWidth: 980,
-            height: '90vh', borderRadius: 16, overflow: 'hidden',
+            height: 'calc(100vh - 88px)', borderRadius: 16, overflow: 'hidden',
             boxShadow: '0 24px 80px rgba(0,0,0,0.7)',
           }} onClick={e => e.stopPropagation()}>
             <button onClick={() => setOpen(false)} style={{
