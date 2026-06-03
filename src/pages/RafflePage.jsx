@@ -119,7 +119,7 @@ function buildSegments(data) {
 
 const BUILT_SEGMENTS = buildSegments(BASKET_DATA);
 
-export default function RafflePage() {
+export default function RafflePage({ embed = false }) {
   const [hint, setHint] = useState('Grab the wheel and give it a flick!');
   const [hintVisible, setHintVisible] = useState(true);
   const [phase, setPhase] = useState('idle'); // idle | spinning | landed | try-again
@@ -527,7 +527,7 @@ export default function RafflePage() {
   const isSpinning = phase === 'spinning';
   const isLanded = phase === 'landed';
   const isTryAgain = phase === 'try-again';
-  const isEmbed = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '').get('embed') === 'true';
+  const isEmbed = embed || new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '').get('embed') === 'true';
 
   // Marquee light dots around the wheel
   const BULB_COUNT = 22;

@@ -3,6 +3,7 @@ import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, Community
 import { Footer, GlobalStyles, Navbar, NewsletterInline, ContactModal } from '../components/Layout';
 import { C } from '../data/config';
 import SEOHead from '../components/SEOHead';
+import RafflePage from './RafflePage';
 
 // ============================================================
 // 🌿  LAND & LAKE LADIES CLUB PAGE (/ladies-club)
@@ -211,11 +212,9 @@ function RaffleWheelTeaser() {
               color: '#fff', borderRadius: 8, width: 36, height: 36,
               fontSize: 18, cursor: 'pointer', lineHeight: 1,
             }}>×</button>
-            <iframe
-              src="/raffle?embed=true"
-              style={{ width: '100%', height: '100%', border: 'none', display: 'block' }}
-              title="Summerfest Raffle Wheel"
-            />
+            <div style={{ width: '100%', height: '100%', overflowY: 'auto' }}>
+              <RafflePage embed />
+            </div>
           </div>
         </div>
       )}
