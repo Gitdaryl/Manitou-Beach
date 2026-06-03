@@ -67,6 +67,7 @@ const EventConfirmedPage = lazy(() => import('./pages/EventConfirmedPage'));
 const QuickEventsPage = lazy(() => import('./pages/QuickEventsPage'));
 const CreateOfferPage = lazy(() => import('./pages/CreateOfferPage'));
 const SpinPage = lazy(() => import('./pages/SpinPage'));
+const RafflePage = lazy(() => import('./pages/RafflePage'));
 const PrizeRedeemPage = lazy(() => import('./pages/PrizeRedeemPage'));
 const SponsorStatsPage = lazy(() => import('./pages/SponsorStatsPage'));
 const BusinessProfilePage = lazy(() => import('./pages/BusinessProfilePage'));
@@ -263,6 +264,7 @@ export default function App() {
           <Route path="/quick-events" element={<QuickEventsPage />} />
           <Route path="/create-offer" element={<CreateOfferPage />} />
           <Route path="/spin" element={<SpinPage />} />
+          <Route path="/raffle" element={<RafflePage />} />
           <Route path="/redeem" element={<PrizeRedeemPage />} />
           <Route path="/sponsor/:id" element={<SponsorStatsPage />} />
         </Routes>

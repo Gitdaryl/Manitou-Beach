@@ -158,6 +158,71 @@ function LadiesClubMissionSection() {
 }
 
 
+function RaffleWheelTeaser() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <FadeIn delay={260}>
+        <div style={{
+          marginBottom: 56, borderRadius: 16, overflow: 'hidden',
+          border: '2px solid rgba(245,196,44,0.35)',
+          background: 'linear-gradient(135deg, rgba(196,30,58,0.18) 0%, rgba(26,5,16,0.6) 60%)',
+          display: 'flex', alignItems: 'center', gap: 28,
+          padding: '24px 28px', flexWrap: 'wrap',
+        }}>
+          <div style={{ fontSize: 48, lineHeight: 1, flexShrink: 0 }}>🎡</div>
+          <div style={{ flex: 1, minWidth: 200 }}>
+            <div style={{ fontFamily: "'Caveat', cursive", fontSize: 19, color: '#F5C42C', marginBottom: 4 }}>
+              Try your luck before the big day!
+            </div>
+            <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: '1.1rem', color: '#FFF8E7', fontWeight: 700, marginBottom: 5 }}>
+              Spin the Raffle Wheel
+            </div>
+            <div style={{ fontSize: '0.85rem', color: 'rgba(255,248,231,0.6)', lineHeight: 1.5 }}>
+              11 prize baskets up to $300 - spin to predict which one is coming home with you.
+            </div>
+          </div>
+          <button onClick={() => setOpen(true)} style={{
+            flexShrink: 0, padding: '12px 26px', borderRadius: 8,
+            background: '#F5C42C', color: '#1a0510', border: 'none',
+            fontWeight: 700, fontSize: '0.92rem', cursor: 'pointer',
+            textTransform: 'uppercase', letterSpacing: '0.05em', whiteSpace: 'nowrap',
+            fontFamily: "'Libre Franklin', system-ui, sans-serif",
+          }}>
+            Spin the Wheel
+          </button>
+        </div>
+      </FadeIn>
+
+      {open && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 1000,
+          background: 'rgba(10,4,14,0.88)', backdropFilter: 'blur(6px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }} onClick={() => setOpen(false)}>
+          <div style={{
+            position: 'relative', width: '100%', maxWidth: 980,
+            height: '90vh', borderRadius: 16, overflow: 'hidden',
+            boxShadow: '0 24px 80px rgba(0,0,0,0.7)',
+          }} onClick={e => e.stopPropagation()}>
+            <button onClick={() => setOpen(false)} style={{
+              position: 'absolute', top: 12, right: 14, zIndex: 10,
+              background: 'rgba(0,0,0,0.5)', border: '1px solid rgba(255,255,255,0.2)',
+              color: '#fff', borderRadius: 8, width: 36, height: 36,
+              fontSize: 18, cursor: 'pointer', lineHeight: 1,
+            }}>×</button>
+            <iframe
+              src="/raffle?embed=true"
+              style={{ width: '100%', height: '100%', border: 'none', display: 'block' }}
+              title="Summerfest Raffle Wheel"
+            />
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
 function LadiesClubEventsSection() {
   const features = [
     { label: "35+ Crafters & Vendors", desc: "Local makers, artisan goods, handmade creations, and the Farmer's Craft Market", img: "/images/ladies-club/crafters.jpg" },
@@ -423,10 +488,13 @@ function LadiesClubEventsSection() {
           <img
             src="/images/ladies-club/summerfest-map.jpg"
             alt="Summer Festival 2026 Map - Manitou Beach Village"
-            style={{ width: "100%", borderRadius: 14, marginBottom: 56, display: "block", border: "1px solid rgba(255,255,255,0.08)" }}
+            style={{ width: "100%", borderRadius: 14, marginBottom: 40, display: "block", border: "1px solid rgba(255,255,255,0.08)" }}
             onError={(e) => { e.target.style.display = "none"; }}
           />
         </FadeIn>
+
+        {/* Raffle Wheel Teaser + Popover */}
+        <RaffleWheelTeaser />
 
       </div>
     </section>
