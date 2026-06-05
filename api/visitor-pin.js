@@ -94,8 +94,9 @@ export default async function handler(req, res) {
     });
 
     if (!notionRes.ok) {
-      console.error('visitor-pin Notion error:', await notionRes.text());
-      return res.status(500).json({ error: 'Could not save pin. Please try again.' });
+      const notionErr = await notionRes.text();
+      console.error('visitor-pin Notion error:', notionErr);
+      return res.status(500).json({ error: 'Could not save pin. Please try again.', _debug: notionErr });
     }
 
     return res.status(200).json({ ok: true, city: city.trim(), country: country.trim() });
