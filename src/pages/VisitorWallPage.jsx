@@ -197,162 +197,197 @@ function ColorPicker({ value, onChange }) {
   );
 }
 
+// ── Place map: country → suggested regions/cities ────────────
+const PLACE_MAP = {
+  'United States':       ['Michigan', 'Ohio', 'Indiana', 'Illinois', 'Wisconsin', 'Florida', 'Texas', 'California', 'New York', 'Colorado', 'Utah', 'Tennessee', 'Georgia', 'Pennsylvania', 'Minnesota', 'Arizona', 'Nevada', 'Oregon', 'Washington', 'Missouri'],
+  'Canada':              ['Ontario', 'British Columbia', 'Quebec', 'Alberta', 'Manitoba', 'Saskatchewan', 'Nova Scotia'],
+  'Australia':           ['Sydney', 'Melbourne', 'Brisbane', 'Perth', 'Adelaide', 'Canberra', 'Gold Coast', 'Darwin', 'Hobart'],
+  'New Zealand':         ['Auckland', 'Wellington', 'Christchurch', 'Queenstown', 'Dunedin'],
+  'United Kingdom':      ['London', 'Manchester', 'Edinburgh', 'Birmingham', 'Bristol', 'Glasgow', 'Cardiff', 'Belfast'],
+  'Ireland':             ['Dublin', 'Cork', 'Galway', 'Limerick', 'Waterford'],
+  'Germany':             ['Berlin', 'Munich', 'Hamburg', 'Frankfurt', 'Cologne', 'Stuttgart'],
+  'France':              ['Paris', 'Lyon', 'Marseille', 'Bordeaux', 'Nice', 'Toulouse'],
+  'Netherlands':         ['Amsterdam', 'Rotterdam', 'The Hague', 'Utrecht'],
+  'Italy':               ['Rome', 'Milan', 'Florence', 'Venice', 'Naples', 'Turin'],
+  'Spain':               ['Madrid', 'Barcelona', 'Seville', 'Valencia', 'Bilbao'],
+  'Portugal':            ['Lisbon', 'Porto', 'Faro', 'Braga'],
+  'Sweden':              ['Stockholm', 'Gothenburg', 'Malmö', 'Uppsala'],
+  'Norway':              ['Oslo', 'Bergen', 'Trondheim', 'Stavanger'],
+  'Denmark':             ['Copenhagen', 'Aarhus', 'Odense', 'Aalborg'],
+  'Switzerland':         ['Zurich', 'Geneva', 'Bern', 'Basel', 'Lausanne'],
+  'Austria':             ['Vienna', 'Graz', 'Salzburg', 'Innsbruck'],
+  'Belgium':             ['Brussels', 'Antwerp', 'Ghent', 'Bruges'],
+  'Poland':              ['Warsaw', 'Kraków', 'Wrocław', 'Gdańsk'],
+  'Czech Republic':      ['Prague', 'Brno', 'Ostrava'],
+  'Japan':               ['Tokyo', 'Osaka', 'Kyoto', 'Hiroshima', 'Sapporo'],
+  'South Korea':         ['Seoul', 'Busan', 'Incheon', 'Jeju'],
+  'China':               ['Beijing', 'Shanghai', 'Guangzhou', 'Hong Kong', 'Chengdu'],
+  'India':               ['Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Kolkata'],
+  'Singapore':           ['Singapore'],
+  'Thailand':            ['Bangkok', 'Chiang Mai', 'Phuket'],
+  'Mexico':              ['Mexico City', 'Guadalajara', 'Monterrey', 'Cancun', 'Tijuana'],
+  'Brazil':              ['São Paulo', 'Rio de Janeiro', 'Brasília', 'Salvador'],
+  'Argentina':           ['Buenos Aires', 'Córdoba', 'Rosario', 'Mendoza'],
+  'Colombia':            ['Bogotá', 'Medellín', 'Cali', 'Cartagena'],
+  'United Arab Emirates':['Dubai', 'Abu Dhabi', 'Sharjah'],
+  'South Africa':        ['Cape Town', 'Johannesburg', 'Durban', 'Pretoria'],
+};
+const SORTED_COUNTRIES = Object.keys(PLACE_MAP).sort();
+
 // ── Pin submission ───────────────────────────────────────────
 function PinSubmitForm({ onPinAdded }) {
-  const [step, setStep] = useState('idle'); // idle | detecting | confirm | manual | submitting | done | error
-  const [detected, setDetected] = useState(null); // { city, state, country, lat, lng }
-  const [manual, setManual] = useState({ city: '', country: '' });
+  const [country, setCountry] = useState('');
+  const [city, setCity] = useState('');
+  const [customCity, setCustomCity] = useState('');
+  const [showCustom, setShowCustom] = useState(false);
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
   const [pinColor, setPinColor] = useState('#FF6B6B');
+  const [submitting, setSubmitting] = useState(false);
+  const [done, setDone] = useState(false);
   const [err, setErr] = useState('');
 
-  const detectLocation = () => {
-    setStep('detecting');
-    setErr('');
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        try {
-          const { latitude: lat, longitude: lng } = pos.coords;
-          const res = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`,
-            { headers: { 'User-Agent': 'ManitouBeach/1.0' } }
-          );
-          const data = await res.json();
-          const addr = data.address || {};
-          const city = addr.city || addr.town || addr.village || addr.hamlet || addr.county || '';
-          const state = addr.state || addr.region || '';
-          const country = addr.country || '';
-          if (!city || !country) { setStep('manual'); return; }
-          setDetected({ city, state, country, lat, lng });
-          setStep('confirm');
-        } catch { setStep('manual'); }
-      },
-      () => setStep('manual'),
-      { timeout: 10000 }
-    );
-  };
-
-  const submitPin = async (pinData) => {
-    setStep('submitting');
-    try {
-      const res = await fetch('/api/visitor-pin', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...pinData, name: name.trim(), message: message.trim(), pinColor }),
-      });
-      const data = await res.json();
-      if (data.ok) {
-        setStep('done');
-        onPinAdded({ ...pinData, name: name.trim(), message: message.trim(), pinColor });
-      } else {
-        setErr(data.error || 'Something went wrong.'); setStep('error');
-      }
-    } catch { setErr('Network error. Please try again.'); setStep('error'); }
-  };
-
-  const geocodeManual = async () => {
-    if (!manual.city.trim() || !manual.country.trim()) { setErr('City and country are required.'); return; }
-    setStep('submitting');
-    try {
-      const q = encodeURIComponent(`${manual.city.trim()}, ${manual.country.trim()}`);
-      const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1`, {
-        headers: { 'User-Agent': 'ManitouBeach/1.0' }
-      });
-      const results = await res.json();
-      const lat = results[0] ? parseFloat(results[0].lat) : null;
-      const lng = results[0] ? parseFloat(results[0].lon) : null;
-      await submitPin({ ...manual, lat: lat || 0, lng: lng || 0 });
-    } catch { setErr('Could not locate that city. Try another.'); setStep('manual'); }
-  };
-
   const inp = {
-    width: '100%', padding: '13px 16px', borderRadius: 10,
-    border: `1px solid rgba(255,255,255,0.15)`, background: 'rgba(255,255,255,0.07)',
+    width: '100%', padding: '12px 16px', borderRadius: 10,
+    border: '1px solid rgba(255,255,255,0.15)', background: 'rgba(255,255,255,0.07)',
     color: '#fff', fontFamily: "'Libre Franklin', sans-serif", fontSize: 14,
     outline: 'none', boxSizing: 'border-box',
   };
-  const btn = (accent = C.sunset) => ({
-    padding: '14px 28px', borderRadius: 24, border: 'none',
-    background: accent, color: '#fff',
-    fontFamily: "'Libre Franklin', sans-serif", fontSize: 13,
-    fontWeight: 700, letterSpacing: 1.2, textTransform: 'uppercase',
-    cursor: 'pointer', transition: 'opacity 0.2s',
-  });
 
-  if (step === 'done') return (
+  const submitPin = async () => {
+    const finalCity = showCustom ? customCity.trim() : city;
+    if (!country || !finalCity) { setErr('Pick your country and city first.'); return; }
+    setSubmitting(true); setErr('');
+    try {
+      // Geocode the city + country on the client
+      const q = encodeURIComponent(`${finalCity}, ${country}`);
+      const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1`, {
+        headers: { 'User-Agent': 'ManitouBeach/1.0' },
+      });
+      const geoData = await geoRes.json();
+      const lat = geoData[0] ? parseFloat(geoData[0].lat) : 0;
+      const lng = geoData[0] ? parseFloat(geoData[0].lon) : 0;
+
+      const res = await fetch('/api/visitor-pin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ city: finalCity, country, state: '', lat, lng, name: name.trim(), message: message.trim(), pinColor }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setDone(true);
+        onPinAdded({ city: finalCity, country, state: '', lat, lng, name: name.trim(), message: message.trim(), pinColor });
+      } else {
+        setErr(data.error || 'Something went wrong.'); setSubmitting(false);
+      }
+    } catch { setErr('Network error. Please try again.'); setSubmitting(false); }
+  };
+
+  if (done) return (
     <div style={{ textAlign: 'center', padding: '32px 0' }}>
       <div style={{ fontSize: 48, marginBottom: 12 }}>📍</div>
-      <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: '#fff', marginBottom: 8, fontWeight: 400 }}>
-        You're on the map!
-      </div>
-      <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.7 }}>
-        Your pin is live on the Visitor Wall. Welcome to Manitou Beach.
-      </p>
+      <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: '#fff', marginBottom: 8, fontWeight: 400 }}>You're on the map!</div>
+      <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.7 }}>Your pin is live. Welcome to Manitou Beach.</p>
     </div>
   );
 
+  const cities = PLACE_MAP[country] || [];
+
   return (
-    <div style={{ maxWidth: 480, margin: '0 auto' }}>
-      {step === 'idle' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
-          <button onClick={detectLocation} style={btn(C.sunset)}>
-            📍 Use My Location
-          </button>
-          <button onClick={() => setStep('manual')} style={{ ...btn('transparent'), border: '1px solid rgba(255,255,255,0.2)', color: 'rgba(255,255,255,0.5)', fontSize: 12 }}>
-            Enter city manually
-          </button>
+    <div style={{ maxWidth: 500, margin: '0 auto' }}>
+      {/* VPN note */}
+      <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', fontFamily: "'Libre Franklin', sans-serif", textAlign: 'center', marginBottom: 20, lineHeight: 1.6 }}>
+        Using a VPN? Just pick your real country below. Capital city or state works perfectly - no need to be specific.
+      </p>
+
+      {/* Country selector */}
+      <div style={{ marginBottom: 20 }}>
+        <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', fontFamily: "'Libre Franklin', sans-serif", display: 'block', marginBottom: 8 }}>
+          Where are you from?
+        </label>
+        <select
+          value={country}
+          onChange={e => { setCountry(e.target.value); setCity(''); setShowCustom(false); setCustomCity(''); }}
+          style={{ ...inp, appearance: 'none', cursor: 'pointer', backgroundImage: 'none' }}
+        >
+          <option value="">Select your country...</option>
+          {SORTED_COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
+          <option value="_other">Other country</option>
+        </select>
+      </div>
+
+      {/* Country "other" free text */}
+      {country === '_other' && (
+        <div style={{ marginBottom: 20 }}>
+          <input style={inp} placeholder="Your country" value={customCity} onChange={e => setCustomCity(e.target.value)} />
         </div>
       )}
 
-      {step === 'detecting' && (
-        <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.5)', fontFamily: "'Libre Franklin', sans-serif", fontSize: 14 }}>
-          Finding your location...
-        </p>
+      {/* City/region picker */}
+      {country && country !== '_other' && cities.length > 0 && (
+        <div style={{ marginBottom: 20 }}>
+          <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', fontFamily: "'Libre Franklin', sans-serif", display: 'block', marginBottom: 10 }}>
+            {country === 'United States' || country === 'Canada' ? 'State / Province' : 'City or region'} <span style={{ fontWeight: 400, color: 'rgba(255,255,255,0.25)' }}>— keep it general if you like</span>
+          </label>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            {cities.map(c => (
+              <button
+                key={c}
+                type="button"
+                onClick={() => { setCity(c); setShowCustom(false); setCustomCity(''); }}
+                style={{
+                  padding: '8px 16px', borderRadius: 20, border: 'none', cursor: 'pointer',
+                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 13,
+                  background: city === c ? pinColor : 'rgba(255,255,255,0.1)',
+                  color: city === c ? '#fff' : 'rgba(255,255,255,0.65)',
+                  fontWeight: city === c ? 700 : 400,
+                  transform: city === c ? 'scale(1.05)' : 'scale(1)',
+                  transition: 'all 0.15s',
+                  boxShadow: city === c ? `0 0 12px ${pinColor}60` : 'none',
+                }}
+              >
+                {c}
+              </button>
+            ))}
+            <button
+              type="button"
+              onClick={() => { setShowCustom(true); setCity(''); }}
+              style={{
+                padding: '8px 16px', borderRadius: 20, border: '1px dashed rgba(255,255,255,0.2)', cursor: 'pointer',
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 12,
+                background: 'transparent', color: 'rgba(255,255,255,0.35)', transition: 'all 0.15s',
+              }}
+            >
+              Somewhere else...
+            </button>
+          </div>
+          {showCustom && (
+            <input
+              autoFocus
+              style={{ ...inp, marginTop: 10 }}
+              placeholder="e.g. Southern Utah, St. George, Moab, Rural Victoria..."
+              value={customCity}
+              onChange={e => setCustomCity(e.target.value)}
+            />
+          )}
+        </div>
       )}
 
-      {step === 'confirm' && detected && (
+      {/* Show form fields once location is chosen */}
+      {(city || (showCustom && customCity.trim()) || country === '_other') && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-          <div style={{ textAlign: 'center', padding: '16px', background: 'rgba(255,255,255,0.06)', borderRadius: 12, border: '1px solid rgba(255,255,255,0.1)' }}>
-            <div style={{ fontSize: 28, marginBottom: 6 }}>📍</div>
-            <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: '#fff', fontWeight: 400 }}>
-              {[detected.city, detected.state, detected.country].filter(Boolean).join(', ')}
-            </div>
-          </div>
           <ColorPicker value={pinColor} onChange={setPinColor} />
-          <input style={{ ...inp, marginTop: 4 }} placeholder="Your name (optional — or stay anonymous)" value={name} onChange={e => setName(e.target.value)} />
+          <input style={inp} placeholder="Your name (optional - or stay anonymous)" value={name} onChange={e => setName(e.target.value)} />
           <input style={inp} placeholder="A note — 'First time here!' / 'Back every summer'" value={message} onChange={e => setMessage(e.target.value)} />
-          <button onClick={() => submitPin(detected)} style={btn(pinColor)}>Pin It →</button>
-          <button onClick={() => setStep('manual')} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.35)', fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, cursor: 'pointer', textAlign: 'center' }}>
-            Wrong location? Enter manually
+          {err && <p style={{ color: '#f87171', fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", margin: 0 }}>{err}</p>}
+          <button
+            type="button"
+            onClick={submitPin}
+            disabled={submitting}
+            style={{ padding: '14px 28px', borderRadius: 24, border: 'none', background: submitting ? 'rgba(255,255,255,0.15)' : pinColor, color: '#fff', fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.2, textTransform: 'uppercase', cursor: submitting ? 'wait' : 'pointer', transition: 'all 0.2s', boxShadow: submitting ? 'none' : `0 4px 20px ${pinColor}50` }}
+          >
+            {submitting ? 'Pinning...' : 'Pin It →'}
           </button>
-        </div>
-      )}
-
-      {step === 'manual' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-            <input style={inp} placeholder="City" value={manual.city} onChange={e => setManual(m => ({ ...m, city: e.target.value }))} />
-            <input style={inp} placeholder="Country" value={manual.country} onChange={e => setManual(m => ({ ...m, country: e.target.value }))} />
-          </div>
-          <input style={inp} placeholder="Your name (optional)" value={name} onChange={e => setName(e.target.value)} />
-          <input style={inp} placeholder="A note — 'First time here!' / 'Back every summer'" value={message} onChange={e => setMessage(e.target.value)} />
-          <ColorPicker value={pinColor} onChange={setPinColor} />
-          {err && <p style={{ color: '#f87171', fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", margin: 0 }}>{err}</p>}
-          <button onClick={geocodeManual} style={btn(pinColor)}>Pin It →</button>
-        </div>
-      )}
-
-      {step === 'submitting' && (
-        <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.5)', fontFamily: "'Libre Franklin', sans-serif", fontSize: 14 }}>
-          Pinning your visit...
-        </p>
-      )}
-
-      {step === 'error' && (
-        <div style={{ textAlign: 'center' }}>
-          <p style={{ color: '#f87171', fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 12 }}>{err}</p>
-          <button onClick={() => setStep('idle')} style={btn()}>Try again</button>
         </div>
       )}
     </div>
