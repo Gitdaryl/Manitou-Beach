@@ -471,7 +471,7 @@ export default function VisitorWallPage() {
   const subScrollTo = (id) => { window.location.href = '/#' + id; };
 
   useEffect(() => {
-    fetch('/api/visitor-pins')
+    fetch('/api/visitor-pin')
       .then(r => r.json())
       .then(d => setPins(d.pins || []))
       .catch(() => {});
@@ -485,7 +485,7 @@ export default function VisitorWallPage() {
     setTimeout(() => setNewPin(null), 5000);
     // Re-fetch to get the real Notion ID
     setTimeout(() => {
-      fetch('/api/visitor-pins').then(r => r.json()).then(d => setPins(d.pins || [])).catch(() => {});
+      fetch('/api/visitor-pin').then(r => r.json()).then(d => setPins(d.pins || [])).catch(() => {});
     }, 2000);
   };
 
