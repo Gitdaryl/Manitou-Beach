@@ -272,7 +272,7 @@ export default function FoodTruckPartnerPage() {
             <img src="/images/yeti/yeti-celebrates.png" alt="The Yeti" style={{ width: 200, height: 200, objectFit: "contain" }} />
           </div>
           <div style={{ display: "inline-block", background: "rgba(212,132,90,0.15)", border: "1px solid rgba(212,132,90,0.3)", borderRadius: 12, padding: "12px 24px", marginBottom: 28 }}>
-            <span style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: C.sunsetLight }}>Founding trucks get everything free through May 10</span>
+            <span style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: C.sunsetLight }}>Founding trucks get everything free through July 4th</span>
           </div>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
             <Btn onClick={() => scrollToSignup('paid')} variant="sunset" style={{ whiteSpace: "nowrap" }}>
@@ -348,7 +348,7 @@ export default function FoodTruckPartnerPage() {
           <FadeIn>
             <SectionLabel light>Founding Truck Beta</SectionLabel>
             <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 40px)", fontWeight: 400, color: C.cream, margin: "16px 0 48px", lineHeight: 1.2, textAlign: "center" }}>
-              Everything you get<br /><em style={{ color: C.sunsetLight }}>free through May 10.</em>
+              Everything you get<br /><em style={{ color: C.sunsetLight }}>free through July 4th.</em>
             </h2>
           </FadeIn>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 20 }}>
@@ -389,7 +389,7 @@ export default function FoodTruckPartnerPage() {
             <SectionLabel style={{ textAlign: "center", display: "block" }}>Beta Launch</SectionLabel>
             <SectionTitle center>Founding trucks get everything.</SectionTitle>
             <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 560, margin: "0 auto 48px", textAlign: "center" }}>
-              Sign up now and get the full Featured experience - live map pin, customer hearts, Most Loved rankings, newsletter mentions - completely free through May 10. After that, it's $9/month to stay live on the map.
+              Sign up now and get the full Featured experience - live map pin, customer hearts, Most Loved rankings, newsletter mentions - completely free through July 4th. After that, it's $9/month to stay live on the map.
             </p>
           </FadeIn>
 
@@ -407,10 +407,10 @@ export default function FoodTruckPartnerPage() {
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 12 }}>Founding Truck</div>
                 <div style={{ marginBottom: 4 }}>
                   <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 48, fontWeight: 700, color: C.cream }}>$0</span>
-                  <span style={{ fontSize: 14, color: "rgba(255,255,255,0.45)", marginLeft: 4 }}>/mo through May 10</span>
+                  <span style={{ fontSize: 14, color: "rgba(255,255,255,0.45)", marginLeft: 4 }}>/mo through July 4th</span>
                 </div>
                 <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: C.sunsetLight, marginBottom: 8 }}>everything included · no card required</div>
-                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginBottom: 24, lineHeight: 1.6 }}>After May 10: $9/mo to stay live on the map, or downgrade to a free directory listing.</div>
+                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginBottom: 24, lineHeight: 1.6 }}>After July 4th: $9/mo to stay live on the map, or downgrade to a free directory listing.</div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {TRUCK_PAID_ITEMS.map(item => (
                     <div key={item.label} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
@@ -446,7 +446,7 @@ export default function FoodTruckPartnerPage() {
             <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 60%, rgba(212,132,90,0.12) 0%, transparent 65%)", pointerEvents: "none" }} />
             <SectionLabel light>Get Listed</SectionLabel>
             <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 40px)", fontWeight: 400, color: C.cream, margin: "16px 0 12px", lineHeight: 1.25, textAlign: "center" }}>
-              Your truck. Live on the map.<br /><em style={{ color: C.sunsetLight }}>Free through May 10.</em>
+              Your truck. Live on the map.<br /><em style={{ color: C.sunsetLight }}>Free through July 4th.</em>
             </h2>
             <p style={{ fontSize: 14, color: "rgba(255,255,255,0.42)", lineHeight: 1.85, marginBottom: 32, textAlign: "center" }}>
               Founding trucks get the full Featured experience - live map pin, customer hearts, Most Loved rankings - completely free. No card required.
@@ -553,7 +553,7 @@ export default function FoodTruckPartnerPage() {
               <>
                 {/* ── BETA BADGE ── */}
                 <div style={{ textAlign: "center", marginBottom: 24, padding: "14px 20px", background: "rgba(212,132,90,0.12)", border: "1px solid rgba(212,132,90,0.25)", borderRadius: 12 }}>
-                  <div style={{ fontFamily: "'Caveat', cursive", fontSize: 17, color: C.sunsetLight, marginBottom: 2 }}>Founding Truck - Free through May 10</div>
+                  <div style={{ fontFamily: "'Caveat', cursive", fontSize: 17, color: C.sunsetLight, marginBottom: 2 }}>Founding Truck - Free through July 4th</div>
                   <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)" }}>Full Featured experience. No credit card. No catch.</div>
                 </div>
 

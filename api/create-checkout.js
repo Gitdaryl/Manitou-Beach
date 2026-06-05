@@ -78,8 +78,8 @@ export default async function handler(req, res) {
     || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null)
     || 'http://localhost:3000';
 
-  // Beta trial end: May 10 2026 at midnight UTC
-  const BETA_TRIAL_END = Math.floor(new Date('2026-05-10T00:00:00Z').getTime() / 1000);
+  // Summer launch trial end: July 4 2026 at midnight UTC
+  const BETA_TRIAL_END = Math.floor(new Date('2026-07-04T00:00:00Z').getTime() / 1000);
 
   // Monthly subscription - business directory listing tiers
   if (checkoutMode === 'subscription') {
@@ -104,9 +104,9 @@ export default async function handler(req, res) {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: isBeta ? `${plan.name} - Beta Founder` : plan.name,
+              name: isBeta ? `${plan.name} - Summer Launch` : plan.name,
               description: isBeta
-                ? `${plan.description} - ${businessName} · Free through May 10, then ${priceLabel}`
+                ? `${plan.description} - ${businessName} · Free through July 4th, then ${priceLabel}`
                 : `${plan.description} - ${businessName}`,
             },
             unit_amount: unitAmount,

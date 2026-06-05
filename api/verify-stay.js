@@ -1,7 +1,7 @@
 // /api/verify-stay.js
 // POST { phone, code, tier, resend }
 // 1. Finds "New" stay matching phone + code in Notion (status type property)
-// 2. During beta (before May 10 2026): auto-activates as "Listed Enhanced" ($9/mo tier free)
+// 2. During summer launch (before July 4th 2026): auto-activates as "Listed Enhanced" ($9/mo tier free)
 // 3. After beta, free tier: activates immediately
 // 4. After beta, paid tier: sets verified, returns needsPayment for Stripe
 //
@@ -83,11 +83,11 @@ export default async function handler(req, res) {
 
     // Code matches - determine activation path
     const isPaid = tier === 'listed' || tier === 'featured';
-    const BETA_END = new Date('2026-05-10T00:00:00');
+    const BETA_END = new Date('2026-07-04T00:00:00');
     const isBeta = new Date() < BETA_END;
 
-    // During beta: everyone gets Listed Enhanced for free (full experience)
-    // After beta: free tier → activate immediately, paid tier → needs Stripe
+    // During summer launch: everyone gets Listed Enhanced for free (full experience)
+    // After July 4th: free tier → activate immediately, paid tier → needs Stripe
     const activateNow = isBeta || !isPaid;
 
     const updateProps = {
@@ -95,9 +95,9 @@ export default async function handler(req, res) {
     };
 
     if (isBeta) {
-      // Beta: everyone gets full Listed Enhanced experience free through May 10
+      // Summer launch: everyone gets full Listed Enhanced experience free through July 4th
       updateProps['Status'] = { status: { name: 'Listed Enhanced' } };
-      updateProps['Featured Expires'] = { date: { start: '2026-05-10' } };
+      updateProps['Featured Expires'] = { date: { start: '2026-07-04' } };
     } else if (!isPaid) {
       // Post-beta free tier - basic directory listing
       updateProps['Status'] = { status: { name: 'Listed Enhanced' } };

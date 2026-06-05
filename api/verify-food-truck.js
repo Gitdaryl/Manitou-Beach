@@ -134,12 +134,12 @@ export default async function handler(req, res) {
 
     const isPaid = tier === 'paid';
 
-    // Beta grace period: before May 10 2026, everyone gets Featured/Active for free
-    const BETA_END = new Date('2026-05-10T00:00:00');
+    // Summer launch: before July 4 2026, everyone gets Featured/Active for free
+    const BETA_END = new Date('2026-07-04T00:00:00');
     const isBeta = new Date() < BETA_END;
 
-    // During beta: activate everyone as Featured immediately (no Stripe needed)
-    // After beta: free tier → Active/Basic, paid tier → Verified (needs Stripe)
+    // During summer launch: activate everyone as Featured immediately (no Stripe needed)
+    // After July 4th: free tier → Active/Basic, paid tier → Verified (needs Stripe)
     const activateNow = isBeta || !isPaid;
 
     const updateProps = {
@@ -152,7 +152,7 @@ export default async function handler(req, res) {
     // Beta users get Featured tier regardless of selection
     if (isBeta) {
       updateProps['Tier'] = { select: { name: 'Featured' } };
-      updateProps['Beta Expires'] = { date: { start: '2026-05-10' } };
+      updateProps['Beta Expires'] = { date: { start: '2026-07-04' } };
     }
 
     const patchRes = await fetch(`https://api.notion.com/v1/pages/${match.id}`, {
@@ -176,7 +176,7 @@ export default async function handler(req, res) {
     if (activateNow) {
       // Active immediately - send check-in link
       const betaNote = isBeta && isPaid
-        ? `\n\nYou're a founding food truck - everything is free through May 10. After that, it's $9/month to stay live on the map.`
+        ? `\n\nYou're in for the summer - everything is free through July 4th. After that, it's $9/month to stay live on the map.`
         : '';
       await sendSMS(inputDigits,
         `Manitou Beach Food Trucks\n\n${truckName} is live! 🎉\n\nHere's your personal check-in link:\n${checkinUrl}\n\nOpen it each time you head to Manitou Beach. Drop your pin, add today's special, and go live on the map.${betaNote}\n\nSave this to your home screen for quick access.\n\nTip: Save this number as "Manitou Beach" in your contacts so you can always find your check-in link!`

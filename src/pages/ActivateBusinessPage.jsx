@@ -132,7 +132,7 @@ export default function ActivateBusinessPage() {
             fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.textLight,
             lineHeight: 1.7, maxWidth: 400, margin: '0 auto',
           }}>
-            Your listing is already live. Add your payment info to keep it going - totally free until May 10.
+            Your listing is already live. Add your payment info to keep it going - totally free through July 4th.
           </p>
         </div>
 

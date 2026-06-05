@@ -210,7 +210,7 @@ function TierCard({ tier, slots, onSelect }) {
         margin: '10px 0 0',
         letterSpacing: 0.3,
       }}>
-        Free through May 10 · then ${tier.price}/mo
+        Free through July 4th · then ${tier.price}/mo
       </p>
     </div>
   );
@@ -535,7 +535,7 @@ function CheckoutForm({ tier, onBack, onSuccess }) {
           Selected: {tier.label} Listing
         </div>
         <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textLight }}>
-          Free through May 10 · then ${tier.price}/mo · cancel anytime
+          Free through July 4th · then ${tier.price}/mo · cancel anytime
         </div>
       </div>
 
@@ -619,7 +619,7 @@ function CheckoutForm({ tier, onBack, onSuccess }) {
           margin: '12px 0 0',
           lineHeight: 1.6,
         }}>
-          Secured by Stripe · Card stored, not charged until May 10 · Cancel before then for zero cost
+          Secured by Stripe · Card stored, not charged until July 4th · Cancel before then for zero cost
         </p>
       </form>
     </div>
@@ -670,7 +670,7 @@ export default function BetaBusinessPage() {
             {businessName ? `${decodeURIComponent(businessName)} is now on Manitou Beach.` : 'Your listing is live.'}
           </p>
           <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.textLight, maxWidth: 400, lineHeight: 1.7, margin: '0 0 32px' }}>
-            Your listing will be live when the site launches on April 10. You won't be charged anything until May 10 - check your email for confirmation.
+            Your listing will be live when the site launches on April 10. You won't be charged anything until July 4th - check your email for confirmation.
           </p>
           <a
             href="/"
@@ -762,7 +762,7 @@ export default function BetaBusinessPage() {
             margin: '0 0 16px',
             lineHeight: 1.2,
           }}>
-            Your listing, free through May 10
+            Your listing, free through July 4th
           </h1>
           <p style={{
             fontFamily: "'Libre Franklin', sans-serif",
@@ -772,7 +772,7 @@ export default function BetaBusinessPage() {
             margin: '0 auto 24px',
             lineHeight: 1.7,
           }}>
-            This is where Manitou Beach lives online. This summer, it's where lake visitors will find you.<br/><br/>Choose your tier and add your card. We won't charge anything until May 10 -
+            This is where Manitou Beach lives online. This summer, it's where lake visitors will find you.<br/><br/>Choose your tier and add your card. We won't charge anything until July 4th -
             that's your entire founding period free. Cancel before then and you owe nothing.
           </p>
 
@@ -793,7 +793,7 @@ export default function BetaBusinessPage() {
               fontWeight: 600,
               color: C.sunset,
             }}>
-              Beta founders · Site launches April 10 · No charge until May 10
+              Beta founders · Site launches April 10 · No charge until July 4th
             </span>
           </div>
         </div>

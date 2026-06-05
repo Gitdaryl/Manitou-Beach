@@ -176,11 +176,11 @@ function StaysHero() {
             Your Airbnb link, your VRBO page, your own website - wherever you take bookings, that's where we send them.
           </p>
           <div style={{ display: 'inline-block', background: 'rgba(91,126,149,0.15)', border: '1px solid rgba(91,126,149,0.3)', borderRadius: 12, padding: '12px 24px', marginBottom: 28 }}>
-            <span style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: C.sunsetLight }}>Founding properties get everything free through May 10</span>
+            <span style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: C.sunsetLight }}>Summer Launch - list free through July 4th</span>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
             <Btn onClick={scrollToList} variant="sunset" style={{ whiteSpace: 'nowrap' }}>
-              Get on the Map - Free During Beta →
+              Get on the Map - Free Through July 4 →
             </Btn>
             <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
               <a href="/" style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'none' }}>← Back to Home</a>
@@ -862,7 +862,7 @@ function ListYourPropertySection({ stays = [] }) {
         {/* Founding offer badge */}
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <div style={{ display: 'inline-block', background: `${C.sunset}10`, border: `1px solid ${C.sunset}25`, borderRadius: 12, padding: '12px 24px' }}>
-            <div style={{ fontFamily: "'Caveat', cursive", fontSize: 17, color: C.sunset, marginBottom: 2 }}>Founding Property - Free through May 10</div>
+            <div style={{ fontFamily: "'Caveat', cursive", fontSize: 17, color: C.sunset, marginBottom: 2 }}>Summer Launch - Free through July 4th</div>
             <div style={{ fontSize: 11, color: C.textMuted }}>Full Listed experience. No credit card. No catch.</div>
           </div>
         </div>
@@ -934,7 +934,7 @@ function ListYourPropertySection({ stays = [] }) {
                         fontSize: 12, color: active && t.key === 'featured' ? 'rgba(255,255,255,0.4)' : C.textMuted,
                         fontFamily: "'Libre Franklin', sans-serif",
                       }}>
-                        thru May 10
+                        thru July 4
                       </span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 4, marginBottom: active ? 10 : 6 }}>
@@ -1227,13 +1227,13 @@ function ListYourPropertySection({ stays = [] }) {
                 {form.name || 'Your property'} is on the map!
               </h3>
               <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: C.sunset, marginBottom: 20 }}>
-                You're a founding property - welcome aboard.
+                You're live for summer - welcome aboard.
               </div>
               <p style={{ fontSize: 14, color: isFeatured ? 'rgba(255,255,255,0.5)' : C.textLight, lineHeight: 1.8, margin: '0 0 16px', maxWidth: 480, marginLeft: 'auto', marginRight: 'auto' }}>
                 Your listing is live on the stays page. Visitors can find you on the map, see your details, and click through to book with you directly. Check your texts for a confirmation.
               </p>
               <p style={{ fontSize: 13, color: isFeatured ? 'rgba(255,255,255,0.35)' : C.textMuted, lineHeight: 1.7, margin: '0 0 28px', maxWidth: 460, marginLeft: 'auto', marginRight: 'auto' }}>
-                Before May 10 we'll send you details about keeping your listing live - month to month, no contract, cancel anytime.
+                Before July 4th we'll send you details about keeping your listing live after the summer launch period ends - month to month, no contract, cancel anytime.
               </p>
               <a href="/stays" style={{
                 display: 'inline-block', padding: '14px 32px', background: C.lakeBlue, color: C.cream, borderRadius: 28,
@@ -2243,8 +2243,8 @@ export default function StaysPage() {
               a: "No - we're not Airbnb or VRBO. We don't handle reservations or take a cut of your bookings. Your listing links directly to wherever you take bookings - your Airbnb page, your VRBO listing, your own website, or just your phone number and email. We send guests your way. That's it.",
             },
             {
-              q: "What happens after May 10?",
-              a: "Before May 10, we'll send you an email and a text with details about keeping your listing live. You pick a tier - $9/month for a full listing with photos, map pin, and booking link, or $25/month for Featured placement with a Staff Pick badge. No obligation. If you don't want to continue, your listing simply moves to a free directory entry.",
+              q: "What happens after July 4th?",
+              a: "Before July 4th, we'll send you an email and a text with details about keeping your listing live. You pick a tier - $9/month for a full listing with photos, map pin, and booking link, or $25/month for Featured placement with a Staff Pick badge. No obligation. If you don't want to continue, your listing simply moves to a free directory entry.",
             },
             {
               q: 'Is there a contract?',

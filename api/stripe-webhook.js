@@ -537,7 +537,7 @@ export default async function handler(req, res) {
                     <p style="margin: 0 0 4px; font-size: 18px; font-weight: bold; color: #1A2830;">${businessName}</p>
                     <p style="margin: 0 0 12px; font-size: 14px; color: #D4845A; font-weight: bold;">${tierLabel} Founding Business</p>
                     <p style="margin: 0; font-size: 13px; color: #8A7E6E; line-height: 1.6;">
-                      Free through <strong style="color: #3B3228;">May 10</strong> - no charge until then.<br>
+                      Free through <strong style="color: #3B3228;">July 4th</strong> - no charge until then.<br>
                       We'll send you a reminder 5 days before billing starts.
                     </p>
                   </div>

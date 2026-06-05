@@ -477,7 +477,7 @@ function SignupForm({ remaining, onSpotsUpdate }) {
               <span style={{ color: C.sunsetLight, fontWeight: 700 }}>Check your email</span>
               {' '}- we sent a link to activate your{' '}
               <span style={{ color: C.cream, fontWeight: 600 }}>free listing</span>.
-              {' '}No charge until May 10. You're a founding business on Manitou Beach.
+              {' '}No charge until July 4th. You're a founding business on Manitou Beach.
             </p>
           </div>
         ) : (
@@ -574,7 +574,7 @@ function SignupForm({ remaining, onSpotsUpdate }) {
           />
           <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: 'rgba(255,255,255,0.45)', lineHeight: 1.4 }}>
             I own or manage a local business -{' '}
-            <span style={{ color: C.sunsetLight }}>get a free listing through May 10</span>
+            <span style={{ color: C.sunsetLight }}>get a free listing through July 4th</span>
           </span>
         </label>
       </div>

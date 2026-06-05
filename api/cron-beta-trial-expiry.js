@@ -1,4 +1,4 @@
-// Nightly cron - emails beta business owners a reminder 5 days before their trial ends (May 10)
+// Nightly cron - emails beta business owners a reminder 5 days before their trial ends (July 4th)
 // Runs daily; fires reminder once per business, then marks Trial Reminder Sent = true
 
 import { Resend } from 'resend';
@@ -14,10 +14,10 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Missing Notion config' });
   }
 
-  // Only start sending reminders from May 5 (5 days before May 10 billing)
+  // Only start sending reminders from June 29 (5 days before July 4th billing)
   const today = new Date();
-  const reminderStart = new Date('2026-05-05T00:00:00Z');
-  const billingDate   = new Date('2026-05-10T00:00:00Z');
+  const reminderStart = new Date('2026-06-29T00:00:00Z');
+  const billingDate   = new Date('2026-07-04T00:00:00Z');
 
   if (today < reminderStart || today >= billingDate) {
     return res.status(200).json({ skipped: true, reason: 'Outside reminder window' });
@@ -67,13 +67,13 @@ export default async function handler(req, res) {
           await resend.emails.send({
             from: 'Manitou Beach <events@manitoubeachmichigan.com>',
             to: email,
-            subject: `Your free beta listing ends May 10 - ${name}`,
+            subject: `Your free beta listing ends July 4th - ${name}`,
             html: `
               <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; color: #3B3228;">
                 <p style="font-size: 17px; margin-bottom: 8px;">Hi,</p>
-                <p>Just a heads up - your free beta listing for <strong>${name}</strong> on Manitou Beach ends <strong>May 10</strong>.</p>
+                <p>Just a heads up - your free beta listing for <strong>${name}</strong> on Manitou Beach ends <strong>July 4th</strong>.</p>
                 <p>Your card on file will be charged automatically to continue your <strong>${tier}</strong> listing. No action needed to keep your listing live.</p>
-                <p>If you'd like to cancel before May 10, you can do so through the Stripe customer portal or reply to this email and we'll handle it.</p>
+                <p>If you'd like to cancel before July 4th, you can do so through the Stripe customer portal or reply to this email and we'll handle it.</p>
                 <p style="margin: 24px 0;">
                   <a href="${baseUrl}/discover" style="background: #D4845A; color: #FAF6EF; text-decoration: none; padding: 13px 24px; border-radius: 4px; font-family: sans-serif; font-weight: bold; font-size: 13px; letter-spacing: 1px;">
                     View Your Listing →

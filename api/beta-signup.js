@@ -147,14 +147,14 @@ export default async function handler(req, res) {
             <p style="font-size: 15px; color: #6B5F52; margin: 0 0 24px; line-height: 1.7;">You're one of the first businesses on a platform built for this community - for the people who love Devils Lake and come back every summer.</p>
             <p style="font-size: 15px; margin: 0 0 8px;">Your beta code: <strong style="font-size: 20px; letter-spacing: 3px; color: #1A2830;">${code}</strong></p>
             <p style="font-size: 13px; color: #8A7E6E; margin: 0 0 28px;">Screenshot it - you'll enter it when the site opens April 10.</p>
-            <p style="font-size: 15px; margin: 0 0 16px; line-height: 1.7;">As a founding business, your listing is <strong>completely free through May 10</strong>. Add your card now - you won't be charged a cent until after the site launches.</p>
+            <p style="font-size: 15px; margin: 0 0 16px; line-height: 1.7;">As an early business, your listing is <strong>completely free through July 4th</strong>. Add your card now - you won't be charged a cent until the summer launch period ends.</p>
             <p style="margin: 28px 0;">
               <a href="${baseUrl}/beta-business" style="background: #D4845A; color: #FAF6EF; text-decoration: none; padding: 15px 30px; border-radius: 4px; font-family: sans-serif; font-weight: bold; font-size: 14px; letter-spacing: 1px; display: inline-block;">
                 Choose My Listing Tier →
               </a>
             </p>
             <div style="background: #fff; border-radius: 6px; padding: 20px 24px; margin-bottom: 24px; border: 1px solid #E8DFD0;">
-              <p style="margin: 0 0 10px; font-size: 12px; color: #8A7E6E; text-transform: uppercase; letter-spacing: 1px; font-family: sans-serif;">Three tiers. All free until May 10.</p>
+              <p style="margin: 0 0 10px; font-size: 12px; color: #8A7E6E; text-transform: uppercase; letter-spacing: 1px; font-family: sans-serif;">Three tiers. All free through July 4th.</p>
               <p style="margin: 0 0 6px; font-size: 14px;"><strong>Enhanced</strong> <span style="color: #8A7E6E;">- $9/mo</span> · Link, description, expandable card</p>
               <p style="margin: 0 0 6px; font-size: 14px;"><strong>Featured</strong> <span style="color: #8A7E6E;">- $23/mo</span> · Spotlight card, logo, priority placement (3 slots)</p>
               <p style="margin: 0; font-size: 14px;"><strong>Premium</strong> <span style="color: #8A7E6E;">- $43/mo</span> · Full-width banner, top of page (1 slot)</p>
