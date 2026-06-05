@@ -39,6 +39,7 @@ const LadiesClubJoinPage = lazy(() => import('./pages/LadiesClubJoinPage'));
 const DevilsLakePage = lazy(() => import('./pages/DevilsLakePage'));
 const RoundLakePage = lazy(() => import('./pages/RoundLakePage'));
 const VillagePage = lazy(() => import('./pages/VillagePage'));
+const VisitorWallPage = lazy(() => import('./pages/VisitorWallPage'));
 const USA250Page = lazy(() => import('./pages/USA250Page'));
 const StaysPage = lazy(() => import('./pages/StaysPage'));
 const ManageStayPage = lazy(() => import('./pages/ManageStayPage'));
@@ -202,6 +203,7 @@ export default function App() {
           <Route path="/happening" element={<Navigate to="/events" replace />} />
           <Route path="/round-lake" element={<RoundLakePage />} />
           <Route path="/village" element={<VillagePage />} />
+          <Route path="/visitor-wall" element={<VisitorWallPage />} />
           <Route path="/nightlife" element={<NightlifePage />} />
           <Route path="/business" element={<FeaturedPage />} />
           <Route path="/business/:slug" element={<BusinessProfilePage />} />

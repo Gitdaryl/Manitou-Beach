@@ -2419,6 +2419,14 @@ export default function StaysPage() {
                 {filtered.map((stay, i) => (
                   <StayCard key={stay.id} stay={stay} i={i} />
                 ))}
+                {/* Visitor wall teaser */}
+                <a href="/visitor-wall" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, padding: '20px 24px', borderRadius: 16, background: `${C.night}`, border: `1px solid rgba(91,126,149,0.2)`, textDecoration: 'none', transition: 'opacity 0.2s' }} onMouseEnter={e => e.currentTarget.style.opacity = '0.85'} onMouseLeave={e => e.currentTarget.style.opacity = '1'}>
+                  <div>
+                    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', fontFamily: "'Libre Franklin', sans-serif", marginBottom: 4 }}>Visitor Wall</div>
+                    <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, color: '#fff', fontWeight: 400 }}>🌍 Visitors find their way here from around the world</div>
+                  </div>
+                  <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: C.sunset, fontFamily: "'Libre Franklin', sans-serif" }}>See the map →</span>
+                </a>
               </div>
             )}
           </div>

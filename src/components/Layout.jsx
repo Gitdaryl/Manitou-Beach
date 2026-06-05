@@ -2124,6 +2124,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
                     { label: "Men's Club", href: "/mens-club" },
                     { label: "Ladies Club", href: "/ladies-club" },
                     { label: "Historical Society", href: "/historical-society" },
+                    { label: "Visitor Wall 📍", href: "/visitor-wall" },
                     { label: "Gallery ↗", href: "https://photogallery.yetigroove.com/folder/muVgmuXuvFwI/", external: true },
                     ...(USA250_PUBLIC ? [{ label: "July 4th Fireworks", href: "/fireworks" }] : []),
                   ].map((link, i) => (
@@ -2255,6 +2256,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
           { label: "Ladies Club", href: "/ladies-club" },
           { label: "July 4th Fireworks", href: "/fireworks" },
           { label: "Historical Society", href: "/historical-society" },
+          { label: "Visitor Wall 📍", href: "/visitor-wall" },
         ].map(link => (
           <a key={link.href} href={link.href} onClick={() => setMenuOpen(false)} style={{
             fontFamily: "'Libre Baskerville', serif",
