@@ -16,7 +16,7 @@ export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
 
   if (req.method === 'GET') {
-    const dbId = process.env.NOTION_DB_VISITOR_PINS;
+    const dbId = (process.env.NOTION_DB_VISITOR_PINS || '').trim();
     if (!dbId) return res.status(200).json({ pins: [] });
 
     const allPins = [];
@@ -68,7 +68,7 @@ export default async function handler(req, res) {
     if (!city?.trim() || !country?.trim()) return res.status(400).json({ error: 'City and country are required.' });
     if (lat == null || lng == null || isNaN(lat) || isNaN(lng)) return res.status(400).json({ error: 'Location coordinates required.' });
 
-    const dbId = process.env.NOTION_DB_VISITOR_PINS;
+    const dbId = (process.env.NOTION_DB_VISITOR_PINS || '').trim();
     if (!dbId) return res.status(500).json({ error: 'Not configured.' });
 
     const today = new Date().toISOString().split('T')[0];
@@ -94,9 +94,8 @@ export default async function handler(req, res) {
     });
 
     if (!notionRes.ok) {
-      const notionErr = await notionRes.text();
-      console.error('visitor-pin Notion error:', notionErr);
-      return res.status(500).json({ error: 'Could not save pin. Please try again.', _debug: notionErr });
+      console.error('visitor-pin Notion error:', await notionRes.text());
+      return res.status(500).json({ error: 'Could not save pin. Please try again.' });
     }
 
     return res.status(200).json({ ok: true, city: city.trim(), country: country.trim() });
