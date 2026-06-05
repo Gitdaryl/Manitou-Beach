@@ -77,10 +77,11 @@ function WorldPinMap({ pins, highlightPin }) {
       new Loader({ apiKey, version: 'weekly' }).load().then(google => {
         if (!active || !mapDivRef.current) return;
         googleRef.current = google;
+        const isMobile = window.innerWidth < 768;
         mapRef.current = new google.maps.Map(mapDivRef.current, {
           center: { lat: 20, lng: 10 },
-          zoom: 2,
-          minZoom: 2,
+          zoom: isMobile ? 1 : 2,
+          minZoom: 1,
           maxZoom: 8,
           mapTypeControl: false,
           streetViewControl: false,
@@ -145,7 +146,7 @@ function WorldPinMap({ pins, highlightPin }) {
   );
 
   return (
-    <div ref={mapDivRef} style={{ width: '100%', height: 480, background: '#0e1626' }} />
+    <div ref={mapDivRef} style={{ width: '100%', height: 'clamp(280px, 50vw, 480px)', background: '#0e1626' }} />
   );
 }
 
