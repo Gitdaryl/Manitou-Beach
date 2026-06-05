@@ -306,7 +306,7 @@ function PinSubmitForm({ onPinAdded }) {
       {/* Country selector */}
       <div style={{ marginBottom: 20 }}>
         <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', fontFamily: "'Libre Franklin', sans-serif", display: 'block', marginBottom: 8 }}>
-          Where are you from?
+          Your country
         </label>
         <select
           value={country}
@@ -601,7 +601,7 @@ export default function VisitorWallPage() {
             Where are you from?
           </h2>
           <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.45)', marginBottom: 36, lineHeight: 1.7 }}>
-            One tap. Your city goes on the map.
+            Pick your country and city - as general or specific as you like. Your pin goes on the world map.
           </p>
           <PinSubmitForm onPinAdded={handlePinAdded} />
         </div>
