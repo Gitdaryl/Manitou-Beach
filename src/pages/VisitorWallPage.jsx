@@ -288,7 +288,9 @@ function PinSubmitForm({ onPinAdded }) {
     <div style={{ textAlign: 'center', padding: '32px 0' }}>
       <div style={{ fontSize: 48, marginBottom: 12 }}>📍</div>
       <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: '#fff', marginBottom: 8, fontWeight: 400 }}>You're on the map!</div>
-      <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.7 }}>Your pin is live. Welcome to Manitou Beach.</p>
+      <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.7, marginBottom: 24 }}>Your pin is live. Welcome to Manitou Beach.</p>
+      <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 12 }}>Know someone else who's been here?</p>
+      <ShareButton label="Invite them to pin" />
     </div>
   );
 
@@ -392,6 +394,42 @@ function PinSubmitForm({ onPinAdded }) {
         </div>
       )}
     </div>
+  );
+}
+
+// ── Share button ─────────────────────────────────────────────
+function ShareButton({ label = 'Share with friends', style: styleProp = {} }) {
+  const [copied, setCopied] = useState(false);
+  const url = 'https://manitoubeachmichigan.com/visitor-wall';
+  const text = 'Hey - show where you\'re from on the Manitou Beach visitor wall. Visitors from around the world are adding their pin. Takes 30 seconds:';
+
+  const share = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: 'Manitou Beach Visitor Wall', text, url });
+      } catch { /* user cancelled */ }
+    } else {
+      navigator.clipboard.writeText(`${text} ${url}`).then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2500);
+      }).catch(() => {});
+    }
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={share}
+      style={{
+        padding: '12px 24px', borderRadius: 24, border: '1px solid rgba(255,255,255,0.25)',
+        background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.8)',
+        fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600,
+        cursor: 'pointer', transition: 'all 0.2s', letterSpacing: 0.3,
+        ...styleProp,
+      }}
+    >
+      {copied ? '✓ Link copied!' : `↗ ${label}`}
+    </button>
   );
 }
 
@@ -537,9 +575,12 @@ export default function VisitorWallPage() {
               </div>
             )}
 
-            <a href="#add-pin" onClick={e => { e.preventDefault(); document.getElementById('add-pin')?.scrollIntoView({ behavior: 'smooth' }); }} style={{ display: 'inline-block', padding: '14px 32px', borderRadius: 24, background: C.sunset, color: '#fff', fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', textDecoration: 'none' }}>
-              Add Your Pin →
-            </a>
+            <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+              <a href="#add-pin" onClick={e => { e.preventDefault(); document.getElementById('add-pin')?.scrollIntoView({ behavior: 'smooth' }); }} style={{ display: 'inline-block', padding: '14px 32px', borderRadius: 24, background: C.sunset, color: '#fff', fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', textDecoration: 'none' }}>
+                Add Your Pin →
+              </a>
+              <ShareButton label="Send to friends" />
+            </div>
           </div>
         </FadeIn>
       </section>
