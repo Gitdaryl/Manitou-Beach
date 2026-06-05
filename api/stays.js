@@ -63,6 +63,9 @@ export default async function handler(req, res) {
         ...(checkIn !== undefined && { 'Check In': { rich_text: [{ text: { content: checkIn || '' } }] } }),
         ...(checkOut !== undefined && { 'Check Out': { rich_text: [{ text: { content: checkOut || '' } }] } }),
         ...(houseRules !== undefined && { 'House Rules': { rich_text: [{ text: { content: houseRules || '' } }] } }),
+        ...(req.body.paymentMethod !== undefined && { 'Payment Method': { rich_text: [{ text: { content: req.body.paymentMethod || '' } }] } }),
+        ...(req.body.cancellationPolicy !== undefined && { 'Cancellation Policy': { rich_text: [{ text: { content: req.body.cancellationPolicy || '' } }] } }),
+        ...(req.body.bookingConfirmation !== undefined && { 'Booking Confirmation': { rich_text: [{ text: { content: req.body.bookingConfirmation || '' } }] } }),
         ...(photoList && { 'Photos JSON': { rich_text: [{ text: { content: JSON.stringify(photoList) } }] } }),
         ...(photoList && photoList[0] && { 'Photo URL': { url: photoList[0] } }),
         ...(photoList && photoList[1] && { 'Photo URL 2': { url: photoList[1] } }),
@@ -232,6 +235,9 @@ export default async function handler(req, res) {
         checkIn: p['Check In']?.rich_text?.[0]?.text?.content || '',
         checkOut: p['Check Out']?.rich_text?.[0]?.text?.content || '',
         houseRules: p['House Rules']?.rich_text?.[0]?.text?.content || '',
+        paymentMethod: p['Payment Method']?.rich_text?.[0]?.text?.content || '',
+        cancellationPolicy: p['Cancellation Policy']?.rich_text?.[0]?.text?.content || '',
+        bookingConfirmation: p['Booking Confirmation']?.rich_text?.[0]?.text?.content || '',
         tier,
       };
       if (stay.name) stays.push(stay);

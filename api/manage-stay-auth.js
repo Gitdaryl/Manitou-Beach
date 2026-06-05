@@ -81,6 +81,9 @@ function mapListing(page) {
     checkIn: p['Check In']?.rich_text?.[0]?.text?.content || '',
     checkOut: p['Check Out']?.rich_text?.[0]?.text?.content || '',
     houseRules: p['House Rules']?.rich_text?.[0]?.text?.content || '',
+    paymentMethod: p['Payment Method']?.rich_text?.[0]?.text?.content || '',
+    cancellationPolicy: p['Cancellation Policy']?.rich_text?.[0]?.text?.content || '',
+    bookingConfirmation: p['Booking Confirmation']?.rich_text?.[0]?.text?.content || '',
     tier: p['Status']?.status?.name || '',
   };
 }

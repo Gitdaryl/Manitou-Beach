@@ -291,6 +291,31 @@ function BookingDrawer({ stay, onClose }) {
         <button type="button" onClick={onClose} style={{ border: 'none', background: 'none', cursor: 'pointer', color: C.textMuted, fontSize: 18, padding: 0 }}>×</button>
       </div>
 
+      {/* How this owner takes bookings */}
+      {(stay.paymentMethod || stay.cancellationPolicy || stay.bookingConfirmation) && (
+        <div style={{ background: isFeatured ? 'rgba(255,255,255,0.05)' : `${C.lakeBlue}08`, borderRadius: 10, padding: '14px 16px', marginBottom: 16, border: `1px solid ${isFeatured ? 'rgba(255,255,255,0.08)' : `${C.lakeBlue}15`}` }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>How {stay.name} takes bookings</div>
+          {stay.paymentMethod && (
+            <div style={{ marginBottom: 7 }}>
+              <span style={{ fontSize: 11, fontWeight: 700, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.3 }}>Payment </span>
+              <span style={{ fontSize: 13, color: isFeatured ? C.cream : C.text, fontFamily: "'Libre Franklin', sans-serif" }}>{stay.paymentMethod}</span>
+            </div>
+          )}
+          {stay.cancellationPolicy && (
+            <div style={{ marginBottom: 7 }}>
+              <span style={{ fontSize: 11, fontWeight: 700, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.3 }}>Cancellation </span>
+              <span style={{ fontSize: 13, color: isFeatured ? C.cream : C.text, fontFamily: "'Libre Franklin', sans-serif" }}>{stay.cancellationPolicy}</span>
+            </div>
+          )}
+          {stay.bookingConfirmation && (
+            <div>
+              <span style={{ fontSize: 11, fontWeight: 700, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.3 }}>Confirmation </span>
+              <span style={{ fontSize: 13, color: isFeatured ? C.cream : C.text, fontFamily: "'Libre Franklin', sans-serif" }}>{stay.bookingConfirmation}</span>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Mini availability calendar */}
       <div style={{ marginBottom: 16 }}>
         <div style={{ fontSize: 11, fontWeight: 700, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>Availability</div>
@@ -905,7 +930,7 @@ function ListYourPropertySection({ stays = [] }) {
     } catch { return {}; }
   })();
 
-  const [form, setForm] = useState({ name: prefill.name, stayType: '', address: '', bookingUrl: '', email: prefill.email, description: '', phone: '', beds: '', guests: '', amenities: [], photos: [], pricePerNight: '', minStay: '', checkIn: '', checkOut: '', houseRules: '', _hp: '' });
+  const [form, setForm] = useState({ name: prefill.name, stayType: '', address: '', bookingUrl: '', email: prefill.email, description: '', phone: '', beds: '', guests: '', amenities: [], photos: [], pricePerNight: '', minStay: '', checkIn: '', checkOut: '', houseRules: '', paymentMethod: '', cancellationPolicy: '', bookingConfirmation: '', _hp: '' });
   const [status, setStatus] = useState(null);
   const [lightbox, setLightbox] = useState(null);
   const formRef = useRef(null);
@@ -1069,12 +1094,15 @@ function ListYourPropertySection({ stays = [] }) {
     <section id="list-property" style={{ padding: '80px 24px', background: C.warmWhite }}>
       <div style={{ maxWidth: 720, margin: '0 auto' }}>
         <SectionLabel>Get Listed</SectionLabel>
-        <SectionTitle>Get Your Property on the Map</SectionTitle>
-        <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.7, textAlign: 'center', marginBottom: 16 }}>
-          Own a rental, cottage, or campground? List it here and visitors find you on the map, see your photos, and book directly.
+        <SectionTitle>Your booking. Your rules. Your money.</SectionTitle>
+        <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, textAlign: 'center', marginBottom: 10, maxWidth: 580, margin: '0 auto 10px' }}>
+          We put your property in front of lake visitors - you handle the booking your own way. No commission on every stay, no platform dictating your cancellation policy, no middleman between you and your guests.
+        </p>
+        <p style={{ fontSize: 13, color: C.textMuted, lineHeight: 1.7, textAlign: 'center', marginBottom: 20, maxWidth: 520, margin: '0 auto 20px' }}>
+          Take payment by Zelle, bank transfer, PayPal - whatever works for you. Set your own deposit and cancellation terms. Talk directly with guests before they arrive. Keep every dollar.
         </p>
 
-        {/* Founding offer badge */}
+        {/* Summer launch badge */}
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <div style={{ display: 'inline-block', background: `${C.sunset}10`, border: `1px solid ${C.sunset}25`, borderRadius: 12, padding: '12px 24px' }}>
             <div style={{ fontFamily: "'Caveat', cursive", fontSize: 17, color: C.sunset, marginBottom: 2 }}>Summer Launch - Free through July 4th</div>
@@ -1600,14 +1628,20 @@ function ListYourPropertySection({ stays = [] }) {
 
                   {/* Booking URL */}
                   <div>
-                    <label style={labelStyle}>
-                      {isFeatured
-                        ? 'Booking URL - where guests go to book (Airbnb, VRBO, your own site)'
-                        : 'Booking URL (Airbnb, VRBO, or your site)'}
-                    </label>
+                    <label style={labelStyle}>Booking URL <span style={{ fontWeight: 400, color: isFeatured ? 'rgba(255,255,255,0.3)' : C.textMuted }}>(optional - Airbnb, VRBO, your own site)</span></label>
                     <input style={inputStyle} value={form.bookingUrl} onChange={e => set('bookingUrl', e.target.value)} placeholder="https://airbnb.com/rooms/..." />
-                    <p style={{ fontSize: 11, color: isFeatured ? 'rgba(255,255,255,0.25)' : C.textMuted, margin: '6px 0 0', lineHeight: 1.5 }}>
-                      We link visitors straight to your booking page - we never handle reservations or take a cut.
+                  </div>
+
+                  {/* How you take bookings */}
+                  <div>
+                    <label style={labelStyle}>How you take bookings <span style={{ fontWeight: 400, color: isFeatured ? 'rgba(255,255,255,0.3)' : C.textMuted }}>(guests see this before reaching out)</span></label>
+                    <div style={{ display: 'grid', gap: 10 }}>
+                      <input style={inputStyle} value={form.paymentMethod} onChange={e => set('paymentMethod', e.target.value)} placeholder="Payment method - e.g. Zelle, PayPal, bank transfer" />
+                      <input style={inputStyle} value={form.cancellationPolicy} onChange={e => set('cancellationPolicy', e.target.value)} placeholder="Cancellation policy - e.g. 50% deposit, full refund 30+ days out" />
+                      <input style={inputStyle} value={form.bookingConfirmation} onChange={e => set('bookingConfirmation', e.target.value)} placeholder="Confirmation - e.g. Written rental agreement sent by email" />
+                    </div>
+                    <p style={{ fontSize: 11, color: isFeatured ? 'rgba(255,255,255,0.25)' : C.textMuted, margin: '8px 0 0', lineHeight: 1.6 }}>
+                      Your booking, your rules. We never handle payments or stand between you and your guests.
                     </p>
                   </div>
 

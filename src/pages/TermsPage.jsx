@@ -52,6 +52,19 @@ export default function TermsPage() {
         <p style={S.p}><strong>Third-party sharing:</strong> Your phone number and opt-in consent are never sold or shared with unauthorized third parties. Numbers are transmitted to Twilio solely for message delivery.</p>
         <p style={S.p}>Supported carriers include AT&amp;T, T-Mobile, Verizon, and most major US carriers. Carrier liability is not assumed.</p>
 
+        <h2 style={S.h2}>Property stays &amp; short-term rentals</h2>
+        <p style={S.p}>The Stays &amp; Rentals section of this Site is a listing directory - a place where property owners can be discovered by visitors. We are not a booking platform, travel agency, or party to any rental transaction.</p>
+        <ul style={{ paddingLeft: 20, margin: '0 0 14px' }}>
+          {[
+            'All booking arrangements, payment terms, deposits, and cancellation policies are set by the individual property owner and agreed between the owner and guest directly.',
+            'Manitou Beach does not process, hold, or facilitate payments of any kind for rental stays.',
+            'We do not verify property condition, ownership, or the accuracy of any listing details submitted by property owners.',
+            'Disputes regarding a stay, payment, refund, or property condition are solely between the guest and the property owner.',
+          ].map((item, i) => <li key={i} style={S.li}>{item}</li>)}
+        </ul>
+        <p style={S.p}>By submitting a stays listing, you confirm that you are the property owner or authorized agent, that the property is lawfully available for rental under applicable local laws and zoning, and that you are solely responsible for collecting and remitting any applicable local accommodation taxes.</p>
+        <p style={S.p}>Guests: always verify booking terms directly with the property owner before transferring any payment. Manitou Beach has no liability for transactions entered into through this directory.</p>
+
         <h2 style={S.h2}>Acceptable use</h2>
         <p style={S.p}>You agree not to submit content that is false, defamatory, harassing, illegal, or infringes the rights of others. We may remove content and terminate access for violations without notice.</p>
 
@@ -67,8 +80,8 @@ export default function TermsPage() {
         <p style={S.p}><strong>Removal:</strong> We reserve the right to remove or modify any advertising content at our sole discretion, including promotions we believe to be misleading, unfulfillable, or harmful to the community.</p>
 
         <h2 style={S.h2}>Disclaimer &amp; limitation of liability</h2>
-        <p style={S.p}>The Site is provided "as is." We make no warranties about the accuracy, completeness, or reliability of directory listings or advertiser promotions. Business information and promotional offers are submitted by third parties - always verify directly with a business before visiting or transacting.</p>
-        <p style={S.p}>To the fullest extent permitted by law, Yeti Groove Media LLC is not liable for any indirect, incidental, or consequential damages arising from your use of the Site, including but not limited to losses arising from reliance on advertiser promotions or offers.</p>
+        <p style={S.p}>The Site is provided "as is." We make no warranties about the accuracy, completeness, or reliability of directory listings, advertiser promotions, or property rental listings. All information is submitted by third parties - always verify directly with a business or property owner before visiting, booking, or transacting.</p>
+        <p style={S.p}>To the fullest extent permitted by law, Yeti Groove Media LLC is not liable for any indirect, incidental, or consequential damages arising from your use of the Site, including but not limited to losses arising from reliance on advertiser promotions, business listings, rental property listings, or transactions entered into with any party discovered through this Site.</p>
 
         <h2 style={S.h2}>Governing law</h2>
         <p style={S.p}>These Terms are governed by the laws of the State of Michigan. Any disputes shall be resolved in the courts of Lenawee County, Michigan.</p>

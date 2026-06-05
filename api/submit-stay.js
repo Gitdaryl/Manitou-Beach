@@ -33,7 +33,8 @@ export default async function handler(req, res) {
   const {
     name, stayType, email, phone, address, bookingUrl,
     website, description, beds, guests, amenities, photos, photoUrl,
-    pricePerNight, minStay, checkIn, checkOut, houseRules, tier, _hp
+    pricePerNight, minStay, checkIn, checkOut, houseRules,
+    paymentMethod, cancellationPolicy, bookingConfirmation, tier, _hp
   } = req.body || {};
 
   // Honeypot - bots fill hidden fields, humans don't
@@ -93,7 +94,10 @@ export default async function handler(req, res) {
   }
   if (checkIn?.trim())    properties['Check In']    = { rich_text: [{ text: { content: checkIn.trim() } }] };
   if (checkOut?.trim())   properties['Check Out']   = { rich_text: [{ text: { content: checkOut.trim() } }] };
-  if (houseRules?.trim()) properties['House Rules'] = { rich_text: [{ text: { content: houseRules.trim() } }] };
+  if (houseRules?.trim())           properties['House Rules']          = { rich_text: [{ text: { content: houseRules.trim() } }] };
+  if (paymentMethod?.trim())        properties['Payment Method']        = { rich_text: [{ text: { content: paymentMethod.trim() } }] };
+  if (cancellationPolicy?.trim())   properties['Cancellation Policy']   = { rich_text: [{ text: { content: cancellationPolicy.trim() } }] };
+  if (bookingConfirmation?.trim())  properties['Booking Confirmation']  = { rich_text: [{ text: { content: bookingConfirmation.trim() } }] };
 
   if (beds != null && beds !== '') {
     const bedsNum = Number(beds);

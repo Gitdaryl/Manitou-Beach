@@ -489,6 +489,9 @@ function StepEdit({ listing }) {
     checkIn: listing.checkIn || '',
     checkOut: listing.checkOut || '',
     houseRules: listing.houseRules || '',
+    paymentMethod: listing.paymentMethod || '',
+    cancellationPolicy: listing.cancellationPolicy || '',
+    bookingConfirmation: listing.bookingConfirmation || '',
   });
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -654,8 +657,30 @@ function StepEdit({ listing }) {
         </div>
       </>)}
 
+      {/* Booking details */}
+      {isPaid && (<>
+        {sectionHead('How you take bookings')}
+        <p style={{ fontSize: 13, color: C.textMuted, marginBottom: 16, lineHeight: 1.6, fontFamily: "'Libre Franklin', sans-serif" }}>
+          Guests see this before they reach out - sets expectations and builds trust without MB in the middle.
+        </p>
+        <div style={{ display: 'grid', gap: 14, marginBottom: 16 }}>
+          <div>
+            <label style={label} htmlFor="ms-payment">Payment method</label>
+            <input id="ms-payment" style={inp} value={form.paymentMethod} onChange={e => set('paymentMethod', e.target.value)} placeholder="e.g. Zelle, PayPal invoice, direct bank transfer" onFocus={inputFocus} onBlur={inputBlur} />
+          </div>
+          <div>
+            <label style={label} htmlFor="ms-cancel">Cancellation policy</label>
+            <input id="ms-cancel" style={inp} value={form.cancellationPolicy} onChange={e => set('cancellationPolicy', e.target.value)} placeholder="e.g. 50% deposit, full refund if cancelled 30+ days out" onFocus={inputFocus} onBlur={inputBlur} />
+          </div>
+          <div>
+            <label style={label} htmlFor="ms-confirm">Booking confirmation</label>
+            <input id="ms-confirm" style={inp} value={form.bookingConfirmation} onChange={e => set('bookingConfirmation', e.target.value)} placeholder="e.g. Written rental agreement sent by email" onFocus={inputFocus} onBlur={inputBlur} />
+          </div>
+        </div>
+      </>)}
+
       {/* Links */}
-      {sectionHead('Booking & contact')}
+      {sectionHead('Contact & booking link')}
       <div style={{ display: 'grid', gap: 16, marginBottom: 16 }}>
         <div>
           <label style={label} htmlFor="ms-booking">Booking URL <span style={{ color: C.textMuted, fontWeight: 400 }}>(Airbnb, VRBO, your site...)</span></label>
