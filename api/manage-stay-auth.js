@@ -72,9 +72,15 @@ function mapListing(page) {
     website: p['Website']?.url || '',
     phone: p['Phone']?.phone_number || '',
     email: p['Email']?.email || '',
+    photos: (() => { try { const r = p['Photos JSON']?.rich_text?.[0]?.text?.content; return r ? JSON.parse(r) : null; } catch { return null; } })() || [p['Photo URL']?.url, p['Photo URL 2']?.url, p['Photo URL 3']?.url].filter(Boolean),
     photoUrl: p['Photo URL']?.url || '',
     photoUrl2: p['Photo URL 2']?.url || '',
     photoUrl3: p['Photo URL 3']?.url || '',
+    pricePerNight: p['Price Per Night']?.rich_text?.[0]?.text?.content || '',
+    minStay: p['Min Stay']?.number ?? '',
+    checkIn: p['Check In']?.rich_text?.[0]?.text?.content || '',
+    checkOut: p['Check Out']?.rich_text?.[0]?.text?.content || '',
+    houseRules: p['House Rules']?.rich_text?.[0]?.text?.content || '',
     tier: p['Status']?.status?.name || '',
   };
 }

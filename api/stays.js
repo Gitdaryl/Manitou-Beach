@@ -4,6 +4,15 @@ function normalizeUrl(url) {
   return /^https?:\/\//i.test(u) ? u : 'https://' + u;
 }
 
+function parsePhotosJSON(field) {
+  try {
+    const raw = field?.rich_text?.[0]?.text?.content || '';
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) && parsed.length ? parsed : null;
+  } catch { return null; }
+}
+
 async function geocodeAndStore(pageId, address) {
   const q = encodeURIComponent(address + ', Michigan, USA');
   const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1`, {
@@ -30,10 +39,11 @@ async function geocodeAndStore(pageId, address) {
 export default async function handler(req, res) {
   // PATCH - update an existing listing
   if (req.method === 'PATCH') {
-    const { pageId, name, stayType, phone, email, website, bookingUrl, description, address, beds, guests, amenities, photoUrl, photoUrl2, photoUrl3 } = req.body;
+    const { pageId, name, stayType, phone, email, website, bookingUrl, description, address, beds, guests, amenities, photos, photoUrl, photoUrl2, photoUrl3, pricePerNight, minStay, checkIn, checkOut, houseRules } = req.body;
     if (!pageId) return res.status(400).json({ error: 'pageId is required' });
 
     const amenityTags = (amenities || []).map(a => ({ name: a }));
+    const photoList = photos && Array.isArray(photos) ? photos.filter(Boolean) : null;
 
     try {
       const properties = {
@@ -48,9 +58,18 @@ export default async function handler(req, res) {
         ...(beds !== undefined && { 'Beds': { number: beds ? parseInt(beds, 10) : null } }),
         ...(guests !== undefined && { 'Guests': { number: guests ? parseInt(guests, 10) : null } }),
         'Amenities': { multi_select: amenityTags },
-        ...(photoUrl !== undefined && { 'Photo URL': { url: normalizeUrl(photoUrl) || null } }),
-        ...(photoUrl2 !== undefined && { 'Photo URL 2': { url: normalizeUrl(photoUrl2) || null } }),
-        ...(photoUrl3 !== undefined && { 'Photo URL 3': { url: normalizeUrl(photoUrl3) || null } }),
+        ...(pricePerNight !== undefined && { 'Price Per Night': { rich_text: [{ text: { content: pricePerNight || '' } }] } }),
+        ...(minStay !== undefined && { 'Min Stay': { number: minStay ? parseInt(minStay, 10) : null } }),
+        ...(checkIn !== undefined && { 'Check In': { rich_text: [{ text: { content: checkIn || '' } }] } }),
+        ...(checkOut !== undefined && { 'Check Out': { rich_text: [{ text: { content: checkOut || '' } }] } }),
+        ...(houseRules !== undefined && { 'House Rules': { rich_text: [{ text: { content: houseRules || '' } }] } }),
+        ...(photoList && { 'Photos JSON': { rich_text: [{ text: { content: JSON.stringify(photoList) } }] } }),
+        ...(photoList && photoList[0] && { 'Photo URL': { url: photoList[0] } }),
+        ...(photoList && photoList[1] && { 'Photo URL 2': { url: photoList[1] } }),
+        ...(photoList && photoList[2] && { 'Photo URL 3': { url: photoList[2] } }),
+        ...(!photoList && photoUrl !== undefined && { 'Photo URL': { url: normalizeUrl(photoUrl) || null } }),
+        ...(!photoList && photoUrl2 !== undefined && { 'Photo URL 2': { url: normalizeUrl(photoUrl2) || null } }),
+        ...(!photoList && photoUrl3 !== undefined && { 'Photo URL 3': { url: normalizeUrl(photoUrl3) || null } }),
       };
 
       const response = await fetch(`https://api.notion.com/v1/pages/${pageId}`, {
@@ -199,12 +218,20 @@ export default async function handler(req, res) {
         website: normalizeUrl(p['Website']?.url || ''),
         phone: p['Phone']?.phone_number || '',
         email: p['Email']?.email || '',
+        photos: parsePhotosJSON(p['Photos JSON']) || [
+          normalizeUrl(p['Photo URL']?.url || ''),
+          normalizeUrl(p['Photo URL 2']?.url || ''),
+          normalizeUrl(p['Photo URL 3']?.url || ''),
+        ].filter(Boolean),
         photo: normalizeUrl(p['Photo URL']?.url || ''),
-        photo2: normalizeUrl(p['Photo URL 2']?.url || ''),
-        photo3: normalizeUrl(p['Photo URL 3']?.url || ''),
         logo: normalizeUrl(p['Logo URL']?.url || null),
         lat: p['Lat']?.number ?? null,
         lng: p['Lng']?.number ?? null,
+        pricePerNight: p['Price Per Night']?.rich_text?.[0]?.text?.content || '',
+        minStay: p['Min Stay']?.number ?? null,
+        checkIn: p['Check In']?.rich_text?.[0]?.text?.content || '',
+        checkOut: p['Check Out']?.rich_text?.[0]?.text?.content || '',
+        houseRules: p['House Rules']?.rich_text?.[0]?.text?.content || '',
         tier,
       };
       if (stay.name) stays.push(stay);

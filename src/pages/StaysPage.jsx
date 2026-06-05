@@ -193,10 +193,146 @@ function StaysHero() {
   );
 }
 
+// ── Booking Drawer (Request to Book / Waitlist) ─────────────
+function BookingDrawer({ stay, onClose }) {
+  const pageId = stay.id?.replace('stay-', '');
+  const [blocked, setBlocked] = React.useState(null);
+  const [form, setForm] = React.useState({ name: '', phone: '', dates: '', guests: '', message: '' });
+  const [status, setStatus] = React.useState(null); // null | 'loading' | 'done' | 'error'
+  const isFeatured = stay.tier === 'featured';
+  const accent = TYPE_COLORS[stay.stayType] || C.lakeBlue;
+
+  React.useEffect(() => {
+    if (!pageId) return;
+    fetch(`/api/stay-availability?pageId=${pageId}`)
+      .then(r => r.json())
+      .then(d => setBlocked(d.blocked || []))
+      .catch(() => setBlocked([]));
+  }, [pageId]);
+
+  const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+
+  const isDateBlocked = (dateStr) => {
+    if (!blocked) return false;
+    return blocked.some(r => dateStr >= r.from && dateStr <= r.to);
+  };
+
+  const renderMiniCalendar = () => {
+    if (!blocked) return <div style={{ fontSize: 12, color: C.textMuted, padding: '12px 0', fontFamily: "'Libre Franklin', sans-serif" }}>Loading availability...</div>;
+    if (blocked.length === 0) return <div style={{ fontSize: 12, color: '#166534', padding: '8px 12px', background: '#F0FDF4', borderRadius: 8, fontFamily: "'Libre Franklin', sans-serif" }}>Calendar not yet set - contact owner for availability.</div>;
+
+    const today = new Date();
+    const months = [0, 1].map(offset => {
+      const d = new Date(today.getFullYear(), today.getMonth() + offset, 1);
+      return { year: d.getFullYear(), month: d.getMonth(), label: d.toLocaleString('default', { month: 'short', year: 'numeric' }) };
+    });
+
+    return (
+      <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+        {months.map(({ year, month, label }) => {
+          const firstDay = new Date(year, month, 1).getDay();
+          const lastDate = new Date(year, month + 1, 0).getDate();
+          const cells = [];
+          for (let i = 0; i < firstDay; i++) cells.push(null);
+          for (let d = 1; d <= lastDate; d++) {
+            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+            cells.push({ d, dateStr, past: new Date(year, month, d) < today, booked: isDateBlocked(dateStr) });
+          }
+          return (
+            <div key={label} style={{ minWidth: 180 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: C.textLight, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 6, letterSpacing: 0.5 }}>{label}</div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 1 }}>
+                {['S','M','T','W','T','F','S'].map((d, i) => <div key={i} style={{ fontSize: 9, color: C.textMuted, textAlign: 'center', padding: '2px 0', fontFamily: "'Libre Franklin', sans-serif" }}>{d}</div>)}
+                {cells.map((cell, i) => !cell ? <div key={`e${i}`} /> : (
+                  <div key={cell.d} style={{ fontSize: 10, textAlign: 'center', padding: '3px 1px', borderRadius: 3, background: cell.booked ? '#FECACA' : 'transparent', color: cell.past ? C.sand : cell.booked ? '#B91C1C' : C.text, fontFamily: "'Libre Franklin', sans-serif" }}>{cell.d}</div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
+  const submit = async () => {
+    if (!form.name.trim() || !form.phone.trim()) { setStatus('error'); return; }
+    setStatus('loading');
+    try {
+      const res = await fetch('/api/stay-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pageId, stayName: stay.name, guestName: form.name, guestPhone: form.phone, datesRequested: form.dates, guestCount: form.guests, message: form.message }),
+      });
+      const data = await res.json();
+      setStatus(data.ok ? 'done' : 'error');
+    } catch { setStatus('error'); }
+  };
+
+  const joinWaitlist = async () => {
+    if (!form.name.trim() || !form.phone.trim()) { setStatus('error'); return; }
+    setStatus('loading');
+    try {
+      const res = await fetch('/api/stay-waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pageId, stayName: stay.name, guestName: form.name, guestPhone: form.phone, guestEmail: form.email, datesRequested: form.dates }),
+      });
+      const data = await res.json();
+      setStatus(data.ok ? 'waitlisted' : 'error');
+    } catch { setStatus('error'); }
+  };
+
+  const drawerInp = { width: '100%', padding: '10px 13px', borderRadius: 8, border: `1px solid ${C.sand}`, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, background: '#fff', color: C.text, outline: 'none', boxSizing: 'border-box' };
+
+  return (
+    <div style={{ marginTop: 20, paddingTop: 20, borderTop: `1px solid ${isFeatured ? 'rgba(255,255,255,0.08)' : C.sand}` }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+        <div style={{ fontSize: 13, fontWeight: 700, color: isFeatured ? C.cream : C.text, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.3 }}>Request to Book</div>
+        <button type="button" onClick={onClose} style={{ border: 'none', background: 'none', cursor: 'pointer', color: C.textMuted, fontSize: 18, padding: 0 }}>×</button>
+      </div>
+
+      {/* Mini availability calendar */}
+      <div style={{ marginBottom: 16 }}>
+        <div style={{ fontSize: 11, fontWeight: 700, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>Availability</div>
+        {renderMiniCalendar()}
+        {blocked?.length > 0 && <p style={{ fontSize: 11, color: C.textMuted, margin: '6px 0 0', fontFamily: "'Libre Franklin', sans-serif" }}>Red = booked. If your dates are blocked, use the waitlist below.</p>}
+      </div>
+
+      {status === 'done' && <div style={{ background: '#F0FDF4', border: '1px solid #86EFAC', borderRadius: 8, padding: '12px 14px', fontSize: 13, color: '#166534', fontFamily: "'Libre Franklin', sans-serif" }}>Request sent! The owner will contact you directly.</div>}
+      {status === 'waitlisted' && <div style={{ background: '#F0FDF4', border: '1px solid #86EFAC', borderRadius: 8, padding: '12px 14px', fontSize: 13, color: '#166534', fontFamily: "'Libre Franklin', sans-serif" }}>You're on the waitlist. We'll text you if those dates open up.</div>}
+      {status !== 'done' && status !== 'waitlisted' && (
+        <div style={{ display: 'grid', gap: 10 }}>
+          {status === 'error' && <div style={{ fontSize: 12, color: '#B91C1C', fontFamily: "'Libre Franklin', sans-serif" }}>Name and phone are required.</div>}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+            <input style={drawerInp} placeholder="Your name" value={form.name} onChange={e => set('name', e.target.value)} />
+            <input style={drawerInp} placeholder="Phone number" value={form.phone} onChange={e => set('phone', e.target.value)} />
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+            <input style={drawerInp} placeholder="Dates (e.g. July 14-21)" value={form.dates} onChange={e => set('dates', e.target.value)} />
+            <input style={drawerInp} placeholder="# guests" value={form.guests} onChange={e => set('guests', e.target.value)} />
+          </div>
+          <textarea style={{ ...drawerInp, minHeight: 56, resize: 'none' }} placeholder="Message (optional)" value={form.message} onChange={e => set('message', e.target.value)} />
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            <button type="button" onClick={submit} disabled={status === 'loading'} style={{ padding: '10px 22px', borderRadius: 20, border: 'none', background: isFeatured ? C.sunset : accent, color: '#fff', fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer' }}>
+              {status === 'loading' ? 'Sending...' : 'Request Dates →'}
+            </button>
+            {isFeatured && (
+              <button type="button" onClick={joinWaitlist} disabled={status === 'loading'} style={{ padding: '10px 22px', borderRadius: 20, border: `1px solid ${C.sunset}40`, background: 'transparent', color: C.sunset, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer' }}>
+                Join Waitlist
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── Stay Card ───────────────────────────────────────────────
 function StayCard({ stay, i }) {
   const accent = TYPE_COLORS[stay.stayType] || C.lakeBlue;
   const isFeatured = stay.tier === 'featured';
+  const [showBooking, setShowBooking] = React.useState(false);
 
   return (
     <FadeIn delay={i * 80} direction={i % 2 === 0 ? 'left' : 'right'}>
@@ -214,13 +350,11 @@ function StayCard({ stay, i }) {
           position: 'relative',
           overflow: 'hidden',
           transition: 'all 0.25s',
-          cursor: (stay.bookingUrl || stay.website || stay.email || stay.phone) ? 'pointer' : 'default',
+          cursor: (stay.bookingUrl || stay.website) ? 'pointer' : 'default',
         }}
         onClick={() => {
           const url = stay.bookingUrl || stay.website;
           if (url) window.open(url, '_blank');
-          else if (stay.email) window.location.href = `mailto:${stay.email}?subject=Inquiry about ${encodeURIComponent(stay.name)}`;
-          else if (stay.phone) window.location.href = `tel:${stay.phone}`;
         }}
         onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = `0 8px 32px rgba(0,0,0,0.1), 0 0 0 1px ${accent}30`; }}
         onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none'; }}
@@ -228,9 +362,9 @@ function StayCard({ stay, i }) {
         {/* Left accent */}
         <div style={{ position: 'absolute', top: 0, left: 0, width: 4, height: '100%', background: accent, borderRadius: '16px 0 0 16px' }} />
 
-        {/* Logo */}
-        {stay.logo && (
-          <img className="stay-card-logo" src={stay.logo} alt="" style={{ width: 120, height: 120, borderRadius: 16, objectFit: 'cover', flexShrink: 0, background: C.sand }} />
+        {/* Main photo */}
+        {(stay.photos?.[0] || stay.logo || stay.photo) && (
+          <img className="stay-card-logo" src={stay.photos?.[0] || stay.logo || stay.photo} alt="" style={{ width: 120, height: 120, borderRadius: 16, objectFit: 'cover', flexShrink: 0, background: C.sand }} onError={e => e.target.style.display = 'none'} />
         )}
 
         <div style={{ flex: 1, minWidth: 0 }}>
@@ -253,12 +387,13 @@ function StayCard({ stay, i }) {
             </div>
           </div>
 
-          {/* Beds & Guests */}
-          {(stay.beds || stay.guests) && (
-            <div style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.5)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 8 }}>
-              {stay.beds && <span>🛏 {stay.beds} bed{stay.beds !== 1 ? 's' : ''}</span>}
-              {stay.beds && stay.guests && <span> · </span>}
-              {stay.guests && <span>👥 Sleeps {stay.guests}</span>}
+          {/* Beds, Guests & Price */}
+          {(stay.beds || stay.guests || stay.pricePerNight || stay.minStay) && (
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center', marginBottom: 8 }}>
+              {stay.beds && <span style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.5)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>🛏 {stay.beds} bed{stay.beds !== 1 ? 's' : ''}</span>}
+              {stay.guests && <span style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.5)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>👥 Sleeps {stay.guests}</span>}
+              {stay.pricePerNight && <span style={{ fontSize: 12, fontWeight: 700, color: isFeatured ? C.sunsetLight : C.sunset, fontFamily: "'Libre Franklin', sans-serif", background: isFeatured ? `${C.sunset}20` : `${C.sunset}10`, padding: '2px 8px', borderRadius: 10 }}>{stay.pricePerNight}</span>}
+              {stay.minStay && <span style={{ fontSize: 11, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>{stay.minStay}+ nights</span>}
             </div>
           )}
 
@@ -294,8 +429,8 @@ function StayCard({ stay, i }) {
             {stay.email && <a href={`mailto:${stay.email}?subject=Inquiry about ${encodeURIComponent(stay.name)}`} onClick={e => e.stopPropagation()} style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted, textDecoration: 'none' }}>✉️ {stay.email}</a>}
           </div>
 
-          {/* CTA */}
-          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          {/* CTA row */}
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
             {(() => {
               const ctaStyle = {
                 fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700,
@@ -305,11 +440,19 @@ function StayCard({ stay, i }) {
               };
               if (stay.bookingUrl) return <a href={stay.bookingUrl} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={ctaStyle}>Book Now →</a>;
               if (stay.website) return <a href={stay.website} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={ctaStyle}>Visit Website →</a>;
-              if (stay.email) return <a href={`mailto:${stay.email}?subject=Inquiry about ${encodeURIComponent(stay.name)}`} onClick={e => e.stopPropagation()} style={ctaStyle}>Send Inquiry →</a>;
-              if (stay.phone) return <a href={`tel:${stay.phone}`} onClick={e => e.stopPropagation()} style={ctaStyle}>Call to Inquire →</a>;
               return null;
             })()}
+            {stay.tier !== 'free' && (
+              <button type="button" onClick={e => { e.stopPropagation(); setShowBooking(v => !v); }} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: isFeatured ? 'rgba(255,255,255,0.5)' : C.textMuted, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+                {showBooking ? 'Close' : 'Request to Book →'}
+              </button>
+            )}
           </div>
+
+          {/* Booking drawer */}
+          {showBooking && stay.tier !== 'free' && (
+            <BookingDrawer stay={stay} onClose={() => setShowBooking(false)} />
+          )}
         </div>
       </div>
     </FadeIn>
@@ -657,6 +800,79 @@ function StaysMapView({ stays, filtered }) {
 
 // ── List Your Property Form ─────────────────────────────────
 
+function FormPhotoUploader({ photos, onChange, maxPhotos, isFeatured, inputStyle }) {
+  const [uploading, setUploading] = React.useState(false);
+  const fileRef = React.useRef();
+
+  const compressImage = (file) => new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const scale = Math.min(1, 1200 / img.width);
+      canvas.width = img.width * scale; canvas.height = img.height * scale;
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(blob => resolve(blob || file), 'image/jpeg', 0.82);
+    };
+    img.onerror = () => resolve(file);
+    img.src = URL.createObjectURL(file);
+  });
+
+  const handleFile = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file || !file.type.startsWith('image/')) return;
+    if (photos.length >= maxPhotos) return;
+    setUploading(true);
+    try {
+      const processed = file.size > 1.4 * 1024 * 1024 ? await compressImage(file) : file;
+      const base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = ev => resolve(ev.target.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(processed);
+      });
+      const res = await fetch('/api/upload-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename: file.name, contentType: 'image/jpeg', data: base64, folder: 'stays' }),
+      });
+      const data = await res.json();
+      if (data.url) onChange([...photos, data.url]);
+    } catch { /* silent */ }
+    finally { setUploading(false); e.target.value = ''; }
+  };
+
+  const remove = (i) => onChange(photos.filter((_, idx) => idx !== i));
+  const accent = isFeatured ? C.sunset : C.lakeBlue;
+  const textColor = isFeatured ? 'rgba(255,255,255,0.6)' : C.textLight;
+  const mutedColor = isFeatured ? 'rgba(255,255,255,0.3)' : C.textMuted;
+
+  return (
+    <div>
+      <label style={{ fontSize: 12, fontWeight: 700, color: textColor, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 10, display: 'block', letterSpacing: 0.8, textTransform: 'uppercase' }}>
+        Photos <span style={{ fontWeight: 400, color: mutedColor }}>(up to {maxPhotos})</span>
+      </label>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 10 }}>
+        {photos.map((url, i) => (
+          <div key={i} style={{ position: 'relative', width: 80, height: 80, borderRadius: 10, overflow: 'hidden', border: `1px solid ${isFeatured ? 'rgba(255,255,255,0.15)' : C.sand}`, flexShrink: 0 }}>
+            <img src={url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <button type="button" onClick={() => remove(i)} style={{ position: 'absolute', top: 3, right: 3, width: 20, height: 20, borderRadius: '50%', border: 'none', background: 'rgba(0,0,0,0.6)', color: '#fff', fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>×</button>
+            {i === 0 && <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'rgba(0,0,0,0.5)', color: '#fff', fontSize: 8, textAlign: 'center', padding: '2px 0', fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>MAIN</div>}
+          </div>
+        ))}
+        {photos.length < maxPhotos && (
+          <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading} style={{ width: 80, height: 80, borderRadius: 10, border: `2px dashed ${isFeatured ? 'rgba(255,255,255,0.2)' : C.sand}`, background: isFeatured ? 'rgba(255,255,255,0.04)' : C.cream, color: mutedColor, fontSize: 22, cursor: uploading ? 'wait' : 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3 }}>
+            {uploading ? <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif" }}>...</span> : <>+<span style={{ fontSize: 9, fontFamily: "'Libre Franklin', sans-serif" }}>Add</span></>}
+          </button>
+        )}
+      </div>
+      <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFile} />
+      <p style={{ fontSize: 11, color: mutedColor, margin: 0, fontFamily: "'Libre Franklin', sans-serif" }}>
+        {photos.length}/{maxPhotos} added. JPG or PNG, max 2MB each. First photo is your main image.
+      </p>
+    </div>
+  );
+}
+
 const TIERS = [
   { key: 'free', name: 'Directory', price: '$0', priceSub: 'forever', betaPrice: null, color: C.textMuted, accent: C.warmGray, icon: '📋',
     headline: 'Get Found',
@@ -665,13 +881,13 @@ const TIERS = [
   },
   { key: 'listed', name: 'Listed', price: '$9', priceSub: '/mo', betaPrice: '$0', color: C.lakeBlue, accent: C.lakeBlue, icon: '📸',
     headline: 'Stand Out',
-    tagline: 'Photos, map pin, and a booking link - everything a guest needs to say yes.',
-    features: ['Beautiful photo gallery', 'Map pin with address', 'Booking URL or inquiry button', 'Amenity badges', 'Full listing card'],
+    tagline: 'Up to 5 photos, map pin, and an availability calendar - everything a guest needs.',
+    features: ['Up to 5 photos', 'Map pin with address', 'Availability calendar', 'Request to Book form', 'Price & house rules', 'Amenity badges', 'Full listing card'],
   },
   { key: 'featured', name: 'Featured', price: '$25', priceSub: '/mo', betaPrice: '$0', color: C.sunset, accent: C.sunset, icon: '✦',
     headline: 'Front & Center',
-    tagline: 'Top placement, Staff Pick badge, and a listing that feels like a destination.',
-    features: ['Everything in Listed', 'Top of directory placement', 'Staff Pick badge', 'Premium dark card design', 'Priority in search & map', 'Featured in weekly newsletter', 'Social media spotlight post'],
+    tagline: 'Up to 10 photos, top placement, and waitlist auto-notify when dates open up.',
+    features: ['Up to 10 photos', 'Top of directory placement', 'Staff Pick badge', 'Waitlist auto-notify on cancellation', 'Priority in search & map', 'Featured in weekly newsletter', 'Social media spotlight post'],
   },
 ];
 
@@ -689,9 +905,8 @@ function ListYourPropertySection({ stays = [] }) {
     } catch { return {}; }
   })();
 
-  const [form, setForm] = useState({ name: prefill.name, stayType: '', address: '', bookingUrl: '', email: prefill.email, description: '', phone: '', beds: '', guests: '', amenities: [], photoUrl: '', photoUrl2: '', photoUrl3: '', _hp: '' });
+  const [form, setForm] = useState({ name: prefill.name, stayType: '', address: '', bookingUrl: '', email: prefill.email, description: '', phone: '', beds: '', guests: '', amenities: [], photos: [], pricePerNight: '', minStay: '', checkIn: '', checkOut: '', houseRules: '', _hp: '' });
   const [status, setStatus] = useState(null);
-  const [dragOver, setDragOver] = useState(false);
   const [lightbox, setLightbox] = useState(null);
   const formRef = useRef(null);
 
@@ -730,7 +945,7 @@ function ListYourPropertySection({ stays = [] }) {
       const res = await fetch('/api/submit-stay', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, tier, _hp: form._hp }),
+        body: JSON.stringify({ ...form, photos: form.photos, tier, _hp: form._hp }),
       });
       const data = await res.json();
       if (data.needsVerification) {
@@ -1368,112 +1583,14 @@ function ListYourPropertySection({ stays = [] }) {
               {/* ── Paid-tier fields ── */}
               {isPaid && (
                 <>
-                  {/* Photo Drop Zone(s) */}
-                  <div>
-                    <label style={labelStyle}>
-                      {isFeatured ? 'Photos - 3 images to show off your property' : 'Property Photo'}
-                    </label>
-
-                    {/* Hero photo drop zone */}
-                    <div
-                      onDragOver={e => { e.preventDefault(); setDragOver(true); }}
-                      onDragLeave={() => setDragOver(false)}
-                      onDrop={e => { e.preventDefault(); setDragOver(false); }}
-                      style={{
-                        borderRadius: 16,
-                        border: `2px dashed ${dragOver
-                          ? (isFeatured ? C.sunset : C.lakeBlue)
-                          : (isFeatured ? 'rgba(255,255,255,0.15)' : C.sand)}`,
-                        background: dragOver
-                          ? (isFeatured ? `${C.sunset}10` : `${C.lakeBlue}06`)
-                          : (isFeatured ? 'rgba(255,255,255,0.03)' : `${C.cream}`),
-                        padding: isFeatured ? '48px 24px' : '36px 24px',
-                        textAlign: 'center',
-                        transition: 'all 0.25s ease',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      <div style={{
-                        fontSize: isFeatured ? 44 : 36, marginBottom: 12,
-                        filter: dragOver ? 'none' : 'grayscale(0.2)',
-                        transition: 'filter 0.2s',
-                      }}>
-                        {isFeatured ? '🏠' : '📷'}
-                      </div>
-                      <div style={{
-                        fontSize: 14, fontWeight: 600,
-                        color: isFeatured ? C.cream : C.text,
-                        fontFamily: "'Libre Franklin', sans-serif", marginBottom: 6,
-                      }}>
-                        {isFeatured ? 'Main photo - the one that stops the scroll' : 'Drag a photo here'}
-                      </div>
-                      <div style={{
-                        fontSize: 12,
-                        color: isFeatured ? 'rgba(255,255,255,0.35)' : C.textMuted,
-                        fontFamily: "'Libre Franklin', sans-serif", marginBottom: 12,
-                      }}>
-                        JPG or PNG, under 2 MB
-                      </div>
-                      <div style={{
-                        display: 'inline-block', fontSize: 11, fontWeight: 700,
-                        letterSpacing: 1, textTransform: 'uppercase',
-                        color: isFeatured ? C.sunset : C.lakeBlue,
-                        padding: '8px 20px', borderRadius: 20,
-                        border: `1px solid ${isFeatured ? `${C.sunset}40` : `${C.lakeBlue}30`}`,
-                        fontFamily: "'Libre Franklin', sans-serif",
-                      }}>
-                        Or Choose File
-                      </div>
-                    </div>
-                    <input
-                      style={{ ...inputStyle, marginTop: 8, fontSize: 12, padding: '10px 14px' }}
-                      value={form.photoUrl}
-                      onChange={e => set('photoUrl', e.target.value)}
-                      placeholder="Or paste an image URL"
-                    />
-
-                    {/* Gallery photos 2 & 3 - Featured only */}
-                    {isFeatured && (
-                      <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 14 }}>
-                        {[
-                          { key: 'photoUrl2', label: 'Interior or living space', num: '2' },
-                          { key: 'photoUrl3', label: 'View, dock, or outdoor area', num: '3' },
-                        ].map(slot => (
-                          <div key={slot.key}>
-                            <div style={{
-                              borderRadius: 14,
-                              border: `2px dashed rgba(255,255,255,0.12)`,
-                              background: 'rgba(255,255,255,0.03)',
-                              padding: '28px 16px',
-                              textAlign: 'center',
-                              cursor: 'pointer',
-                              transition: 'all 0.2s',
-                            }}>
-                              <div style={{ fontSize: 28, marginBottom: 8, opacity: 0.6 }}>📷</div>
-                              <div style={{
-                                fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.5)',
-                                fontFamily: "'Libre Franklin', sans-serif", marginBottom: 4,
-                              }}>
-                                Photo {slot.num}
-                              </div>
-                              <div style={{
-                                fontSize: 11, color: 'rgba(255,255,255,0.3)',
-                                fontFamily: "'Libre Franklin', sans-serif",
-                              }}>
-                                {slot.label}
-                              </div>
-                            </div>
-                            <input
-                              style={{ ...inputStyle, marginTop: 6, fontSize: 11, padding: '8px 12px' }}
-                              value={form[slot.key]}
-                              onChange={e => set(slot.key, e.target.value)}
-                              placeholder="Paste image URL"
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                  {/* Photos */}
+                  <FormPhotoUploader
+                    photos={form.photos}
+                    onChange={urls => set('photos', urls)}
+                    maxPhotos={isFeatured ? 10 : 5}
+                    isFeatured={isFeatured}
+                    inputStyle={inputStyle}
+                  />
 
                   {/* Address */}
                   <div>
@@ -1554,6 +1671,30 @@ function ListYourPropertySection({ stays = [] }) {
                         );
                       })}
                     </div>
+                  </div>
+
+                  {/* Pricing & policies */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                    <div>
+                      <label style={labelStyle}>Price per night</label>
+                      <input style={inputStyle} value={form.pricePerNight} onChange={e => set('pricePerNight', e.target.value)} placeholder="e.g. From $150/night" />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Minimum stay (nights)</label>
+                      <input type="number" min="1" style={inputStyle} value={form.minStay} onChange={e => set('minStay', e.target.value)} placeholder="e.g. 2" />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Check-in time</label>
+                      <input style={inputStyle} value={form.checkIn} onChange={e => set('checkIn', e.target.value)} placeholder="e.g. 3:00 PM" />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Check-out time</label>
+                      <input style={inputStyle} value={form.checkOut} onChange={e => set('checkOut', e.target.value)} placeholder="e.g. 11:00 AM" />
+                    </div>
+                  </div>
+                  <div>
+                    <label style={labelStyle}>House rules <span style={{ fontWeight: 400, color: isFeatured ? 'rgba(255,255,255,0.3)' : C.textMuted }}>(optional)</span></label>
+                    <textarea style={{ ...inputStyle, height: 64, resize: 'vertical', lineHeight: 1.6 }} value={form.houseRules} onChange={e => set('houseRules', e.target.value)} placeholder="No smoking, pets by arrangement, quiet after 10pm..." />
                   </div>
                 </>
               )}

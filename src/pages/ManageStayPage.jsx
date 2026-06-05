@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Footer, GlobalStyles, Navbar } from '../components/Layout';
 import { C } from '../data/config';
 import yeti from '../data/errorMessages';
@@ -216,8 +216,261 @@ function StepCode({ phone, onVerified }) {
   );
 }
 
+// ── Photo manager ──────────────────────────────────────────────
+function PhotoManager({ photos, onChange, maxPhotos }) {
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef();
+
+  const compressImage = (file) => new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const scale = Math.min(1, 1200 / img.width);
+      canvas.width = img.width * scale; canvas.height = img.height * scale;
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(blob => resolve(blob || file), 'image/jpeg', 0.82);
+    };
+    img.onerror = () => resolve(file);
+    img.src = URL.createObjectURL(file);
+  });
+
+  const handleFile = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file || !file.type.startsWith('image/')) return;
+    setUploading(true);
+    try {
+      const processed = file.size > 1.4 * 1024 * 1024 ? await compressImage(file) : file;
+      const base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = ev => resolve(ev.target.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(processed);
+      });
+      const res = await fetch('/api/upload-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename: file.name, contentType: 'image/jpeg', data: base64, folder: 'stays' }),
+      });
+      const data = await res.json();
+      if (data.url) onChange([...photos, data.url]);
+    } catch { /* ignore upload errors silently */ }
+    finally { setUploading(false); e.target.value = ''; }
+  };
+
+  const remove = (i) => onChange(photos.filter((_, idx) => idx !== i));
+
+  return (
+    <div>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 12 }}>
+        {photos.map((url, i) => (
+          <div key={i} style={{ position: 'relative', width: 88, height: 88, borderRadius: 10, overflow: 'hidden', border: `1px solid ${C.sand}`, flexShrink: 0 }}>
+            <img src={url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => e.target.style.opacity = 0.3} />
+            <button type="button" onClick={() => remove(i)} style={{ position: 'absolute', top: 3, right: 3, width: 22, height: 22, borderRadius: '50%', border: 'none', background: 'rgba(0,0,0,0.55)', color: '#fff', fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1 }}>×</button>
+            {i === 0 && <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'rgba(0,0,0,0.45)', color: '#fff', fontSize: 9, textAlign: 'center', padding: '2px 0', fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>MAIN</div>}
+          </div>
+        ))}
+        {photos.length < maxPhotos && (
+          <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading} style={{ width: 88, height: 88, borderRadius: 10, border: `1.5px dashed ${C.sand}`, background: C.warmWhite, color: C.textMuted, fontSize: 28, cursor: uploading ? 'wait' : 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+            {uploading ? <span style={{ fontSize: 12, fontFamily: "'Libre Franklin', sans-serif" }}>Uploading...</span> : <>+<span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.3 }}>Add photo</span></>}
+          </button>
+        )}
+      </div>
+      <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFile} />
+      <p style={{ fontSize: 12, color: C.textMuted, margin: 0, fontFamily: "'Libre Franklin', sans-serif" }}>
+        {photos.length}/{maxPhotos} photos. First photo is your main image. JPG or PNG, max 2MB each.
+      </p>
+    </div>
+  );
+}
+
+// ── Availability calendar ──────────────────────────────────────
+function AvailabilityCalendar({ listing }) {
+  const [blocked, setBlocked] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selecting, setSelecting] = useState(null); // { from: Date }
+  const [hovered, setHovered] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState('');
+  const [viewMonth, setViewMonth] = useState(() => {
+    const d = new Date(); return { year: d.getFullYear(), month: d.getMonth() };
+  });
+
+  useEffect(() => {
+    fetch(`/api/stay-availability?pageId=${listing.pageId}`)
+      .then(r => r.json())
+      .then(d => setBlocked(d.blocked || []))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [listing.pageId]);
+
+  const isBlocked = useCallback((date) => {
+    const d = date.toISOString().split('T')[0];
+    return blocked.some(r => d >= r.from && d <= r.to);
+  }, [blocked]);
+
+  const findBlockedRange = (date) => {
+    const d = date.toISOString().split('T')[0];
+    return blocked.find(r => d >= r.from && d <= r.to);
+  };
+
+  const handleDayClick = async (date) => {
+    if (date < new Date(new Date().toDateString())) return; // no past dates
+
+    const range = findBlockedRange(date);
+    if (range) {
+      // Unblock this range
+      setSaving(true);
+      try {
+        const res = await fetch('/api/stay-availability', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pageId: listing.pageId, action: 'unblock', from: range.from, to: range.to, stayName: listing.name }),
+        });
+        const data = await res.json();
+        if (data.ok) { setBlocked(data.blocked); setSaved('Dates unblocked - waitlist notified if applicable.'); }
+      } catch { /* ignore */ }
+      finally { setSaving(false); setTimeout(() => setSaved(''), 3000); }
+      return;
+    }
+
+    if (!selecting) {
+      setSelecting({ from: date });
+    } else {
+      const from = selecting.from <= date ? selecting.from : date;
+      const to = selecting.from <= date ? date : selecting.from;
+      setSelecting(null);
+      setSaving(true);
+      try {
+        const res = await fetch('/api/stay-availability', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            pageId: listing.pageId,
+            action: 'block',
+            from: from.toISOString().split('T')[0],
+            to: to.toISOString().split('T')[0],
+          }),
+        });
+        const data = await res.json();
+        if (data.ok) { setBlocked(data.blocked); setSaved('Dates blocked.'); }
+      } catch { /* ignore */ }
+      finally { setSaving(false); setTimeout(() => setSaved(''), 3000); }
+    }
+  };
+
+  const renderMonth = (year, month) => {
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const startOffset = firstDay.getDay();
+    const days = [];
+    const today = new Date(new Date().toDateString());
+
+    for (let i = 0; i < startOffset; i++) days.push(null);
+    for (let d = 1; d <= lastDay.getDate(); d++) {
+      days.push(new Date(year, month, d));
+    }
+
+    const monthName = firstDay.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+    const inSelection = (date) => {
+      if (!selecting || !hovered) return false;
+      const a = selecting.from, b = hovered;
+      const lo = a <= b ? a : b, hi = a <= b ? b : a;
+      return date >= lo && date <= hi;
+    };
+
+    return (
+      <div style={{ flex: 1, minWidth: 240 }}>
+        <div style={{ fontSize: 13, fontWeight: 700, color: C.text, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 8, letterSpacing: 0.5 }}>{monthName}</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 2 }}>
+          {['Su','Mo','Tu','We','Th','Fr','Sa'].map(d => (
+            <div key={d} style={{ fontSize: 10, color: C.textMuted, textAlign: 'center', padding: '4px 0', fontFamily: "'Libre Franklin', sans-serif" }}>{d}</div>
+          ))}
+          {days.map((date, i) => {
+            if (!date) return <div key={`e${i}`} />;
+            const past = date < today;
+            const blocked_ = isBlocked(date);
+            const inSel = inSelection(date);
+            const isFrom = selecting && date.toDateString() === selecting.from.toDateString();
+            return (
+              <button
+                key={date.getDate()}
+                type="button"
+                disabled={past}
+                onClick={() => handleDayClick(date)}
+                onMouseEnter={() => selecting && setHovered(date)}
+                style={{
+                  padding: '6px 2px', borderRadius: 6, border: 'none', textAlign: 'center',
+                  fontSize: 12, fontFamily: "'Libre Franklin', sans-serif",
+                  cursor: past ? 'default' : 'pointer',
+                  background: blocked_ ? '#FECACA' : inSel || isFrom ? `${C.lakeBlue}25` : 'transparent',
+                  color: past ? C.textMuted : blocked_ ? '#B91C1C' : C.text,
+                  fontWeight: isFrom ? 700 : 400,
+                  transition: 'all 0.1s',
+                }}
+              >
+                {date.getDate()}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
+  const prevMonth = () => setViewMonth(v => {
+    const m = v.month === 0 ? { year: v.year - 1, month: 11 } : { year: v.year, month: v.month - 1 };
+    return m;
+  });
+  const nextMonth = () => setViewMonth(v => {
+    const m = v.month === 11 ? { year: v.year + 1, month: 0 } : { year: v.year, month: v.month + 1 };
+    return m;
+  });
+  const nextM = viewMonth.month === 11 ? { year: viewMonth.year + 1, month: 0 } : { year: viewMonth.year, month: viewMonth.month + 1 };
+
+  if (loading) return <div style={{ fontSize: 13, color: C.textMuted, padding: '20px 0' }}>Loading calendar...</div>;
+
+  return (
+    <div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+        <button type="button" onClick={prevMonth} style={{ border: 'none', background: 'none', cursor: 'pointer', fontSize: 18, color: C.textLight, padding: '4px 8px' }}>‹</button>
+        <div style={{ display: 'flex', gap: 24, flex: 1, justifyContent: 'center' }}>
+          {renderMonth(viewMonth.year, viewMonth.month)}
+          {renderMonth(nextM.year, nextM.month)}
+        </div>
+        <button type="button" onClick={nextMonth} style={{ border: 'none', background: 'none', cursor: 'pointer', fontSize: 18, color: C.textLight, padding: '4px 8px' }}>›</button>
+      </div>
+      <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'center', marginBottom: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div style={{ width: 16, height: 16, borderRadius: 4, background: '#FECACA' }} />
+          <span style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>Blocked (click to unblock)</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div style={{ width: 16, height: 16, borderRadius: 4, background: `${C.lakeBlue}25` }} />
+          <span style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>Selection</span>
+        </div>
+      </div>
+      {selecting && (
+        <div style={{ fontSize: 13, color: C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 8 }}>
+          Start date selected. Click an end date to block the range.
+        </div>
+      )}
+      {saving && <div style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>Saving...</div>}
+      {saved && <div style={{ fontSize: 13, color: '#166534', fontFamily: "'Libre Franklin', sans-serif" }}>{saved}</div>}
+      <p style={{ fontSize: 12, color: C.textMuted, margin: '12px 0 0', fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.6 }}>
+        Click any available date to start blocking a range, then click the end date. Click a blocked range (red) to unblock it - waitlist guests are auto-notified when dates open.
+      </p>
+    </div>
+  );
+}
+
 // ── Step 3: Edit form ──────────────────────────────────────────
 function StepEdit({ listing }) {
+  const tierStatus = listing.tier || '';
+  const isPaid = tierStatus !== 'Listed Free' && tierStatus !== 'New';
+  const isFeatured = tierStatus === 'Listed Featured' || tierStatus === 'Listed Premium';
+  const maxPhotos = isFeatured ? 10 : 5;
+
   const [form, setForm] = useState({
     name: listing.name || '',
     stayType: listing.stayType || '',
@@ -230,9 +483,12 @@ function StepEdit({ listing }) {
     beds: listing.beds ?? '',
     guests: listing.guests ?? '',
     amenities: listing.amenities || [],
-    photoUrl: listing.photoUrl || '',
-    photoUrl2: listing.photoUrl2 || '',
-    photoUrl3: listing.photoUrl3 || '',
+    photos: listing.photos || [listing.photoUrl, listing.photoUrl2, listing.photoUrl3].filter(Boolean),
+    pricePerNight: listing.pricePerNight || '',
+    minStay: listing.minStay ?? '',
+    checkIn: listing.checkIn || '',
+    checkOut: listing.checkOut || '',
+    houseRules: listing.houseRules || '',
   });
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -255,7 +511,7 @@ function StepEdit({ listing }) {
       const res = await fetch('/api/stays', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pageId: listing.pageId, ...form }),
+        body: JSON.stringify({ pageId: listing.pageId, ...form, photos: form.photos }),
       });
       const data = await res.json();
       if (data.error) { setError(data.error); }
@@ -368,35 +624,35 @@ function StepEdit({ listing }) {
       </div>
 
       {/* Photos */}
-      {sectionHead('Photos')}
-      <p style={{ fontSize: 13, color: C.textMuted, marginBottom: 16, lineHeight: 1.6 }}>
-        Paste direct image URLs. Use Airbnb, your website, or upload to{' '}
-        <a href="https://imgur.com" target="_blank" rel="noopener noreferrer" style={{ color: C.lakeBlue }}>imgur.com</a> and paste the link.
-      </p>
-      {['photoUrl', 'photoUrl2', 'photoUrl3'].map((field, i) => (
-        <div key={field} style={{ marginBottom: 12 }}>
-          <label style={label} htmlFor={`ms-${field}`}>Photo {i + 1}{i === 0 ? ' (main)' : ' (optional)'}</label>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <input
-              id={`ms-${field}`}
-              style={{ ...inp, flex: 1 }}
-              value={form[field]}
-              onChange={e => set(field, e.target.value)}
-              placeholder="https://..."
-              onFocus={inputFocus}
-              onBlur={inputBlur}
-            />
-            {form[field] && (
-              <img
-                src={form[field]}
-                alt=""
-                style={{ width: 48, height: 48, borderRadius: 8, objectFit: 'cover', border: `1px solid ${C.sand}`, flexShrink: 0 }}
-                onError={e => e.target.style.display = 'none'}
-              />
-            )}
+      {sectionHead(`Photos (up to ${maxPhotos})`)}
+      <PhotoManager photos={form.photos} onChange={urls => set('photos', urls)} maxPhotos={maxPhotos} />
+
+      {/* Pricing & Policies */}
+      {isPaid && (<>
+        {sectionHead('Pricing & policies')}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
+          <div>
+            <label style={label} htmlFor="ms-price">Price per night</label>
+            <input id="ms-price" style={inp} value={form.pricePerNight} onChange={e => set('pricePerNight', e.target.value)} placeholder="e.g. From $150/night" onFocus={inputFocus} onBlur={inputBlur} />
+          </div>
+          <div>
+            <label style={label} htmlFor="ms-minstay">Minimum stay (nights)</label>
+            <input id="ms-minstay" type="number" min="1" max="30" style={inp} value={form.minStay} onChange={e => set('minStay', e.target.value)} placeholder="e.g. 2" onFocus={inputFocus} onBlur={inputBlur} />
+          </div>
+          <div>
+            <label style={label} htmlFor="ms-checkin">Check-in time</label>
+            <input id="ms-checkin" style={inp} value={form.checkIn} onChange={e => set('checkIn', e.target.value)} placeholder="e.g. 3:00 PM" onFocus={inputFocus} onBlur={inputBlur} />
+          </div>
+          <div>
+            <label style={label} htmlFor="ms-checkout">Check-out time</label>
+            <input id="ms-checkout" style={inp} value={form.checkOut} onChange={e => set('checkOut', e.target.value)} placeholder="e.g. 11:00 AM" onFocus={inputFocus} onBlur={inputBlur} />
           </div>
         </div>
-      ))}
+        <div style={{ marginBottom: 16 }}>
+          <label style={label} htmlFor="ms-rules">House rules</label>
+          <textarea id="ms-rules" style={{ ...inp, minHeight: 72, resize: 'vertical', lineHeight: 1.65 }} value={form.houseRules} onChange={e => set('houseRules', e.target.value)} placeholder="No smoking, pets by arrangement, quiet after 10pm..." onFocus={inputFocus} onBlur={inputBlur} />
+        </div>
+      </>)}
 
       {/* Links */}
       {sectionHead('Booking & contact')}
@@ -447,7 +703,7 @@ function StepEdit({ listing }) {
       {listing.tier !== 'Listed Featured' && listing.tier !== 'Listed Premium' && (
         <div style={{ textAlign: 'center', marginTop: 24, padding: '20px', background: `${C.sunset}08`, borderRadius: 12, border: `1px solid ${C.sunset}20` }}>
           <div style={{ fontSize: 13, color: C.textLight, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>
-            Want top placement, a Staff Pick badge, and newsletter features?
+            Want top placement, a Staff Pick badge, and waitlist auto-notify?
           </div>
           <a
             href="/stays#list-property"
@@ -458,6 +714,28 @@ function StepEdit({ listing }) {
         </div>
       )}
     </form>
+  );
+}
+
+// ── Availability wrapper (shown below the edit form) ───────────
+function ManageAvailability({ listing }) {
+  const isPaid = listing.tier !== 'Listed Free' && listing.tier !== 'New';
+  if (!isPaid || !listing.pageId) return null;
+
+  const sectionHead = (text) => (
+    <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.text, fontWeight: 400, margin: '40px 0 16px', paddingBottom: 10, borderBottom: `1px solid ${C.sand}` }}>
+      {text}
+    </div>
+  );
+
+  return (
+    <div style={{ maxWidth: 640, margin: '0 auto', paddingBottom: 40 }}>
+      {sectionHead('Availability calendar')}
+      <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, marginBottom: 20 }}>
+        Block dates when your property is booked. Visitors see your availability before they reach out - no more apologising for booked windows. When you unblock dates, anyone on your waitlist gets an automatic text.
+      </p>
+      <AvailabilityCalendar listing={listing} />
+    </div>
   );
 }
 
@@ -504,7 +782,10 @@ export default function ManageStayPage() {
             <StepCode phone={phone} onVerified={(data) => { setListing(data); setStep('edit'); }} />
           )}
           {step === 'edit' && listing && (
-            <StepEdit listing={listing} />
+            <>
+              <StepEdit listing={listing} />
+              <ManageAvailability listing={listing} />
+            </>
           )}
         </div>
       </div>

@@ -32,7 +32,8 @@ export default async function handler(req, res) {
 
   const {
     name, stayType, email, phone, address, bookingUrl,
-    website, description, beds, guests, amenities, photoUrl, tier, _hp
+    website, description, beds, guests, amenities, photos, photoUrl,
+    pricePerNight, minStay, checkIn, checkOut, houseRules, tier, _hp
   } = req.body || {};
 
   // Honeypot - bots fill hidden fields, humans don't
@@ -75,7 +76,24 @@ export default async function handler(req, res) {
   const cleanBookingUrl = normalizeUrl(bookingUrl);
   if (cleanBookingUrl?.trim()) properties['Booking URL'] = { url: cleanBookingUrl };
 
-  if (photoUrl?.trim())     properties['Photo URL'] = { url: photoUrl.trim() };
+  const photoList = photos && Array.isArray(photos) ? photos.filter(Boolean) : null;
+  if (photoList?.length) {
+    properties['Photos JSON'] = { rich_text: [{ text: { content: JSON.stringify(photoList) } }] };
+    if (photoList[0]) properties['Photo URL'] = { url: photoList[0] };
+    if (photoList[1]) properties['Photo URL 2'] = { url: photoList[1] };
+    if (photoList[2]) properties['Photo URL 3'] = { url: photoList[2] };
+  } else if (photoUrl?.trim()) {
+    properties['Photo URL'] = { url: photoUrl.trim() };
+  }
+
+  if (pricePerNight?.trim()) properties['Price Per Night'] = { rich_text: [{ text: { content: pricePerNight.trim() } }] };
+  if (minStay != null && minStay !== '') {
+    const n = parseInt(minStay, 10);
+    if (!isNaN(n)) properties['Min Stay'] = { number: n };
+  }
+  if (checkIn?.trim())    properties['Check In']    = { rich_text: [{ text: { content: checkIn.trim() } }] };
+  if (checkOut?.trim())   properties['Check Out']   = { rich_text: [{ text: { content: checkOut.trim() } }] };
+  if (houseRules?.trim()) properties['House Rules'] = { rich_text: [{ text: { content: houseRules.trim() } }] };
 
   if (beds != null && beds !== '') {
     const bedsNum = Number(beds);
