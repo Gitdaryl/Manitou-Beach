@@ -479,6 +479,35 @@ function StayCard({ stay, i }) {
             <BookingDrawer stay={stay} onClose={() => setShowBooking(false)} />
           )}
         </div>
+
+        {/* Additional photos strip */}
+        {stay.photos?.length > 1 && (
+          <div
+            style={{
+              display: 'flex', gap: 8, overflowX: 'auto', padding: '16px 28px 20px',
+              borderTop: `1px solid ${isFeatured ? 'rgba(255,255,255,0.06)' : '#f0ebe4'}`,
+              marginTop: 4,
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            {stay.photos.slice(1).map((src, i) => (
+              <img
+                key={i}
+                src={src}
+                alt=""
+                onClick={() => setLightbox({ images: stay.photos, startIndex: i + 1 })}
+                style={{
+                  height: 90, width: 'auto', flexShrink: 0,
+                  borderRadius: 10, cursor: 'pointer',
+                  transition: 'transform 0.2s, box-shadow 0.2s',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.04)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.2)'; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none'; }}
+                onError={e => e.target.style.display = 'none'}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </FadeIn>
   );
@@ -1380,6 +1409,7 @@ function ListYourPropertySection({ stays = [] }) {
                 <div className="gallery-strip" style={{
                   display: 'flex', gap: 10, padding: '0 28px 24px',
                   borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 20,
+                  overflowX: 'auto',
                 }}>
                   {samplePhotos.map((src, i) => (
                     <img
@@ -1388,9 +1418,9 @@ function ListYourPropertySection({ stays = [] }) {
                       alt=""
                       onClick={() => setLightbox({ images: samplePhotos, startIndex: i })}
                       style={{
-                        flex: 1, height: 100, borderRadius: 12, objectFit: 'cover',
-                        cursor: 'pointer', transition: 'transform 0.2s, box-shadow 0.2s',
-                        background: C.night,
+                        height: 110, width: 'auto', flexShrink: 0,
+                        borderRadius: 12, cursor: 'pointer',
+                        transition: 'transform 0.2s, box-shadow 0.2s',
                       }}
                       onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.03)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.4)'; }}
                       onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none'; }}
