@@ -111,16 +111,17 @@ function WorldPinMap({ pins, highlightPin }) {
     pins.forEach(pin => {
       if (!pin.lat || !pin.lng) return;
       const isNew = highlightPin && pin.id === highlightPin.id;
+      const dotColor = pin.pinColor || C.sunset;
       const marker = new google.maps.Marker({
         position: { lat: pin.lat, lng: pin.lng },
         map: mapRef.current,
         icon: {
           path: DOT_PATH,
-          fillColor: isNew ? '#FFD700' : C.sunset,
-          fillOpacity: isNew ? 1 : 0.85,
-          strokeColor: isNew ? '#fff' : 'rgba(255,255,255,0.3)',
-          strokeWeight: isNew ? 2 : 1,
-          scale: isNew ? 1.4 : 1,
+          fillColor: isNew ? dotColor : dotColor,
+          fillOpacity: isNew ? 1 : 0.9,
+          strokeColor: isNew ? '#fff' : 'rgba(255,255,255,0.4)',
+          strokeWeight: isNew ? 2 : 1.5,
+          scale: isNew ? 1.5 : 1,
         },
         title: [pin.city, pin.country].filter(Boolean).join(', '),
         zIndex: isNew ? 100 : 1,
@@ -148,6 +149,54 @@ function WorldPinMap({ pins, highlightPin }) {
   );
 }
 
+const PIN_COLORS = [
+  '#FF6B6B', // coral red
+  '#FF9B47', // amber
+  '#FFD166', // yellow
+  '#7BC67E', // sage green
+  '#3EB489', // emerald
+  '#4EC5C1', // teal
+  '#74B3CE', // sky blue
+  '#6699FF', // periwinkle
+  '#A78BFA', // purple
+  '#F472B6', // pink
+  '#FB923C', // orange
+  '#FFFFFF', // white
+];
+
+function ColorPicker({ value, onChange }) {
+  return (
+    <div>
+      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', fontFamily: "'Libre Franklin', sans-serif", marginBottom: 10 }}>
+        Pick your pin color
+      </div>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center' }}>
+        {PIN_COLORS.map(color => (
+          <button
+            key={color}
+            type="button"
+            onClick={() => onChange(color)}
+            style={{
+              width: 32, height: 32, borderRadius: '50%', border: 'none',
+              background: color,
+              cursor: 'pointer',
+              transform: value === color ? 'scale(1.25)' : 'scale(1)',
+              boxShadow: value === color ? `0 0 0 3px rgba(255,255,255,0.8), 0 0 12px ${color}` : `0 0 0 1px rgba(255,255,255,0.15)`,
+              transition: 'all 0.15s',
+              flexShrink: 0,
+            }}
+            title={color}
+          />
+        ))}
+        {/* Custom color option */}
+        <label style={{ position: 'relative', width: 32, height: 32, borderRadius: '50%', cursor: 'pointer', flexShrink: 0, overflow: 'hidden', boxShadow: !PIN_COLORS.includes(value) && value ? `0 0 0 3px rgba(255,255,255,0.8), 0 0 12px ${value}` : '0 0 0 1px rgba(255,255,255,0.15)', background: !PIN_COLORS.includes(value) && value ? value : 'conic-gradient(red,yellow,lime,cyan,blue,magenta,red)', transition: 'all 0.15s' }} title="Custom color">
+          <input type="color" value={value || '#FF6B6B'} onChange={e => onChange(e.target.value)} style={{ opacity: 0, position: 'absolute', inset: 0, width: '100%', height: '100%', cursor: 'pointer' }} />
+        </label>
+      </div>
+    </div>
+  );
+}
+
 // ── Pin submission ───────────────────────────────────────────
 function PinSubmitForm({ onPinAdded }) {
   const [step, setStep] = useState('idle'); // idle | detecting | confirm | manual | submitting | done | error
@@ -155,6 +204,7 @@ function PinSubmitForm({ onPinAdded }) {
   const [manual, setManual] = useState({ city: '', country: '' });
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
+  const [pinColor, setPinColor] = useState('#FF6B6B');
   const [err, setErr] = useState('');
 
   const detectLocation = () => {
@@ -189,12 +239,12 @@ function PinSubmitForm({ onPinAdded }) {
       const res = await fetch('/api/visitor-pin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...pinData, name: name.trim(), message: message.trim() }),
+        body: JSON.stringify({ ...pinData, name: name.trim(), message: message.trim(), pinColor }),
       });
       const data = await res.json();
       if (data.ok) {
         setStep('done');
-        onPinAdded({ ...pinData, name: name.trim(), message: message.trim() });
+        onPinAdded({ ...pinData, name: name.trim(), message: message.trim(), pinColor });
       } else {
         setErr(data.error || 'Something went wrong.'); setStep('error');
       }
@@ -269,9 +319,10 @@ function PinSubmitForm({ onPinAdded }) {
               {[detected.city, detected.state, detected.country].filter(Boolean).join(', ')}
             </div>
           </div>
+          <ColorPicker value={pinColor} onChange={setPinColor} />
           <input style={{ ...inp, marginTop: 4 }} placeholder="Your name (optional — or stay anonymous)" value={name} onChange={e => setName(e.target.value)} />
           <input style={inp} placeholder="A note — 'First time here!' / 'Back every summer'" value={message} onChange={e => setMessage(e.target.value)} />
-          <button onClick={() => submitPin(detected)} style={btn()}>Pin It →</button>
+          <button onClick={() => submitPin(detected)} style={btn(pinColor)}>Pin It →</button>
           <button onClick={() => setStep('manual')} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.35)', fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, cursor: 'pointer', textAlign: 'center' }}>
             Wrong location? Enter manually
           </button>
@@ -286,8 +337,9 @@ function PinSubmitForm({ onPinAdded }) {
           </div>
           <input style={inp} placeholder="Your name (optional)" value={name} onChange={e => setName(e.target.value)} />
           <input style={inp} placeholder="A note — 'First time here!' / 'Back every summer'" value={message} onChange={e => setMessage(e.target.value)} />
+          <ColorPicker value={pinColor} onChange={setPinColor} />
           {err && <p style={{ color: '#f87171', fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", margin: 0 }}>{err}</p>}
-          <button onClick={geocodeManual} style={btn()}>Pin It →</button>
+          <button onClick={geocodeManual} style={btn(pinColor)}>Pin It →</button>
         </div>
       )}
 

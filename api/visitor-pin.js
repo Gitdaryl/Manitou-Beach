@@ -1,6 +1,6 @@
 // /api/visitor-pin.js
 // GET  → returns all pins for the world map
-// POST { city, state, country, lat, lng, name?, message?, _hp } → submit a new pin
+// POST { city, state, country, lat, lng, pinColor?, name?, message?, _hp } → submit a new pin
 
 const NOTION_VERSION = '2022-06-28';
 
@@ -49,6 +49,7 @@ export default async function handler(req, res) {
           lat,
           lng,
           message: p['Message']?.rich_text?.[0]?.text?.content || '',
+          pinColor: p['Pin Color']?.rich_text?.[0]?.text?.content || '',
           created: p['Created']?.date?.start || '',
         });
       });
@@ -61,7 +62,7 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'POST') {
-    const { city, country, state, lat, lng, name, message, _hp } = req.body || {};
+    const { city, country, state, lat, lng, name, message, pinColor, _hp } = req.body || {};
 
     if (_hp) return res.status(200).json({ ok: true });
     if (!city?.trim() || !country?.trim()) return res.status(400).json({ error: 'City and country are required.' });
@@ -86,6 +87,7 @@ export default async function handler(req, res) {
           'Lat':     { number: parseFloat(lat) },
           'Lng':     { number: parseFloat(lng) },
           ...(message?.trim() && { 'Message': { rich_text: [{ text: { content: message.trim() } }] } }),
+          ...(pinColor?.trim() && { 'Pin Color': { rich_text: [{ text: { content: pinColor.trim() } }] } }),
           'Created': { date: { start: today } },
         },
       }),
