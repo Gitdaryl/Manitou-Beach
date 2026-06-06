@@ -400,6 +400,9 @@ function GuestCalendar({ stay, onClose }) {
                 <input style={inp} placeholder="Phone number" value={form.phone} onChange={e => setF('phone', e.target.value)} />
               </div>
               <textarea style={{ ...inp, minHeight: 52, resize: 'none' }} placeholder="Message to owner (optional)" value={form.message} onChange={e => setF('message', e.target.value)} />
+              <p style={{ fontSize: 11, color: isFeatured ? 'rgba(255,255,255,0.3)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif", margin: 0, lineHeight: 1.6 }}>
+                Manitou Beach is a local discovery platform. Bookings, payments, and all arrangements are directly between you and the property owner. We take no responsibility for transactions or disputes.
+              </p>
               <button type="button" onClick={submitRequest} disabled={reqStatus === 'loading'}
                 style={{ alignSelf: 'flex-start', padding: '11px 26px', borderRadius: 22, border: 'none', background: isFeatured ? C.sunset : accent, color: '#fff', fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: reqStatus === 'loading' ? 'default' : 'pointer' }}>
                 {reqStatus === 'loading' ? 'Sending...' : `Request ${fmtDate(checkIn)} → ${fmtDate(checkOut)} →`}
@@ -1253,6 +1256,7 @@ function ListYourPropertySection({ stays = [] }) {
 
   const [form, setForm] = useState({ name: prefill.name, stayType: '', address: '', bookingUrl: '', email: prefill.email, description: '', phone: '', beds: '', guests: '', amenities: [], photos: [], pricePerNight: '', minStay: '', checkIn: '', checkOut: '', houseRules: '', paymentMethod: '', cancellationPolicy: '', bookingConfirmation: '', icalUrl: '', _hp: '' });
   const [status, setStatus] = useState(null);
+  const [termsAgreed, setTermsAgreed] = useState(false);
   const [lightbox, setLightbox] = useState(null);
   const formRef = useRef(null);
 
@@ -1286,6 +1290,7 @@ function ListYourPropertySection({ stays = [] }) {
     if (!form.email.trim() || !form.email.includes('@')) { setStatus('error_email'); return; }
     const phoneDigits = (form.phone || '').replace(/\D/g, '');
     if (phoneDigits.length < 10) { setStatus('error_phone'); return; }
+    if (!termsAgreed) { setStatus('error_terms'); return; }
     setStatus('sending');
     try {
       const res = await fetch('/api/submit-stay', {
@@ -2076,11 +2081,25 @@ function ListYourPropertySection({ stays = [] }) {
 
               {/* Submit / Waitlist */}
 
+                {/* Terms agreement */}
+                <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, cursor: 'pointer', padding: '14px 16px', borderRadius: 10, background: isFeatured ? 'rgba(255,255,255,0.05)' : '#f9f7f4', border: `1px solid ${isFeatured ? 'rgba(255,255,255,0.08)' : '#e8e2da'}` }}>
+                  <input
+                    type="checkbox"
+                    checked={termsAgreed}
+                    onChange={e => setTermsAgreed(e.target.checked)}
+                    style={{ marginTop: 2, flexShrink: 0, accentColor: isFeatured ? C.sunset : C.lakeBlue, width: 16, height: 16 }}
+                  />
+                  <span style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.55)' : C.textLight, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.6 }}>
+                    I understand Manitou Beach is a local discovery platform, not a booking agent. All guest arrangements, payments, and any disputes are my responsibility as the property owner. Manitou Beach and YetiGroove Media LLC accept no liability for transactions, property damage, or guest conduct.
+                  </span>
+                </label>
+
                 <div style={{ marginTop: isFeatured ? 12 : 8 }}>
                   {/* Validation hints */}
                   {status === 'error_name' && <p style={{ fontSize: 13, color: '#c0392b', textAlign: 'center', margin: '0 0 8px' }}>Property name is required.</p>}
                   {status === 'error_email' && <p style={{ fontSize: 13, color: '#c0392b', textAlign: 'center', margin: '0 0 8px' }}>A valid email address is required.</p>}
                   {status === 'error_phone' && <p style={{ fontSize: 13, color: '#c0392b', textAlign: 'center', margin: '0 0 8px' }}>A valid phone number is required - we'll text you a verification code.</p>}
+                  {status === 'error_terms' && <p style={{ fontSize: 13, color: '#c0392b', textAlign: 'center', margin: '0 0 8px' }}>Please agree to the terms above before listing.</p>}
                   <Btn
                     type="submit"
                     variant={isFeatured ? 'primary' : isPaid ? 'primary' : 'outlineDark'}
