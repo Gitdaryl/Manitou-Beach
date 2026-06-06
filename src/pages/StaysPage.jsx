@@ -440,12 +440,14 @@ function GuestCalendar({ stay, onClose }) {
 
 // ── Stay Card ───────────────────────────────────────────────
 const DESC_LIMIT = 180;
+const CARD_COLLAPSED_H = 185;
 
 function StayCard({ stay, i }) {
   const accent = TYPE_COLORS[stay.stayType] || C.lakeBlue;
   const isFeatured = stay.tier === 'featured';
   const [showCalendar, setShowCalendar] = React.useState(false);
   const [descExpanded, setDescExpanded] = React.useState(false);
+  const [expanded, setExpanded] = React.useState(false);
   const [lightbox, setLightbox] = React.useState(null);
   const descLong = stay.description && stay.description.length > DESC_LIMIT;
 
@@ -458,145 +460,155 @@ function StayCard({ stay, i }) {
           border: `1px solid ${isFeatured ? C.lakeDark : '#e0dbd4'}`,
           boxShadow: isFeatured ? 'none' : '0 2px 12px rgba(0,0,0,0.06)',
           borderRadius: 16,
-          padding: '32px 28px 0',
+          padding: 0,
           display: 'flex',
           flexDirection: 'column',
           position: 'relative',
           overflow: 'hidden',
-          transition: 'all 0.25s',
-          cursor: (stay.bookingUrl || stay.website) ? 'pointer' : 'default',
+          transition: 'box-shadow 0.25s',
         }}
-        onClick={() => {
-          const url = stay.bookingUrl || stay.website;
-          if (url) window.open(url, '_blank');
-        }}
-        onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = `0 8px 32px rgba(0,0,0,0.1), 0 0 0 1px ${accent}30`; }}
-        onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none'; }}
+        onMouseEnter={e => { e.currentTarget.style.boxShadow = `0 8px 32px rgba(0,0,0,0.1), 0 0 0 1px ${accent}30`; }}
+        onMouseLeave={e => { e.currentTarget.style.boxShadow = isFeatured ? 'none' : '0 2px 12px rgba(0,0,0,0.06)'; }}
       >
         {/* Left accent */}
-        <div style={{ position: 'absolute', top: 0, left: 0, width: 4, height: '100%', background: accent, borderRadius: '16px 0 0 16px' }} />
+        <div style={{ position: 'absolute', top: 0, left: 0, width: 4, height: '100%', background: accent, borderRadius: '16px 0 0 16px', zIndex: 1 }} />
 
-        {/* Main row: photo + content */}
-        <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start', paddingBottom: stay.photos?.length > 1 ? 16 : 32 }}>
+        {/* Collapsible content area */}
+        <div style={{ maxHeight: expanded ? 'none' : CARD_COLLAPSED_H, overflow: 'hidden', position: 'relative', padding: '28px 28px 0' }}>
 
-        {/* Main photo */}
-        {(stay.photos?.[0] || stay.logo || stay.photo) && (
-          <img
-            className="stay-card-logo"
-            src={stay.photos?.[0] || stay.logo || stay.photo}
-            alt=""
-            onClick={e => { e.stopPropagation(); if (stay.photos?.length) setLightbox({ images: stay.photos, startIndex: 0 }); }}
-            style={{ width: 120, height: 120, borderRadius: 16, objectFit: 'cover', flexShrink: 0, background: C.sand, cursor: stay.photos?.length ? 'zoom-in' : 'default' }}
-            onError={e => e.target.style.display = 'none'}
-          />
-        )}
+          {/* Main row: photo + content */}
+          <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start', paddingBottom: 24 }}>
 
-        <div style={{ flex: 1, minWidth: 0 }}>
-          {/* Header */}
-          <div className="stay-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 8, marginBottom: 6 }}>
-            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: isFeatured ? C.cream : C.text, margin: 0 }}>
-              {stay.name}
-            </h3>
-            <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-              {isFeatured && (
-                <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.cream, background: C.sunset, padding: '4px 10px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>
-                  ✦ Staff Pick
-                </span>
-              )}
-              {stay.stayType && (
-                <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: isFeatured ? C.cream : accent, background: isFeatured ? `${accent}40` : `${accent}15`, padding: '4px 10px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>
-                  {stay.stayType}
-                </span>
-              )}
-            </div>
-          </div>
-
-          {/* Beds, Guests & Price */}
-          {(stay.beds || stay.guests || stay.pricePerNight || stay.minStay) && (
-            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center', marginBottom: 8 }}>
-              {stay.beds && <span style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.5)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>🛏 {stay.beds} bed{stay.beds !== 1 ? 's' : ''}</span>}
-              {stay.guests && <span style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.5)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>👥 Sleeps {stay.guests}</span>}
-              {stay.pricePerNight && <span style={{ fontSize: 12, fontWeight: 700, color: isFeatured ? C.sunsetLight : C.sunset, fontFamily: "'Libre Franklin', sans-serif", background: isFeatured ? `${C.sunset}20` : `${C.sunset}10`, padding: '2px 8px', borderRadius: 10 }}>{stay.pricePerNight}</span>}
-              {stay.minStay && <span style={{ fontSize: 11, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>{stay.minStay}+ nights</span>}
-            </div>
-          )}
-
-          {/* Description */}
-          {stay.description && (
-            <div style={{ marginBottom: 14 }}>
-              <p style={{ fontSize: 14, color: isFeatured ? 'rgba(255,255,255,0.7)' : C.textLight, lineHeight: 1.7, margin: 0 }}>
-                {descLong && !descExpanded ? stay.description.slice(0, DESC_LIMIT).trimEnd() + '...' : stay.description}
-              </p>
-              {descLong && (
-                <button type="button" onClick={e => { e.stopPropagation(); setDescExpanded(v => !v); }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: isFeatured ? C.sunsetLight : accent, fontFamily: "'Libre Franklin', sans-serif", padding: '4px 0 0', display: 'block' }}>
-                  {descExpanded ? 'Show less ↑' : 'Read more ↓'}
-                </button>
-              )}
-            </div>
-          )}
-
-          {/* Amenity tags */}
-          {stay.amenities && stay.amenities.length > 0 && (
-            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 14 }}>
-              {stay.amenities.map(a => (
-                <span key={a} style={{
-                  fontSize: 11, padding: '4px 10px', borderRadius: 12,
-                  background: isFeatured ? 'rgba(255,255,255,0.1)' : `${accent}10`,
-                  color: isFeatured ? 'rgba(255,255,255,0.6)' : accent,
-                  fontFamily: "'Libre Franklin', sans-serif",
-                  fontWeight: 600,
-                  border: `1px solid ${isFeatured ? 'rgba(255,255,255,0.08)' : `${accent}20`}`,
-                }}>
-                  {AMENITY_ICONS[a] || '·'} {a}
-                </span>
-              ))}
-            </div>
-          )}
-
-          {/* Address, Phone & Email */}
-          <div className="stay-card-meta" style={{ display: 'flex', gap: 20, flexWrap: 'wrap', marginBottom: 12 }}>
-            {stay.address && <span style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted }}>📍 {stay.address}</span>}
-            {stay.phone && <a href={`tel:${stay.phone}`} onClick={e => e.stopPropagation()} style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted, textDecoration: 'none' }}>📞 {stay.phone}</a>}
-            {stay.email && <a href={`mailto:${stay.email}?subject=Inquiry about ${encodeURIComponent(stay.name)}`} onClick={e => e.stopPropagation()} style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted, textDecoration: 'none' }}>✉️ {stay.email}</a>}
-          </div>
-
-          {/* CTA row */}
-          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
-            {(() => {
-              const ctaStyle = {
-                fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700,
-                letterSpacing: 1.5, textTransform: 'uppercase',
-                color: isFeatured ? C.sunset : accent,
-                textDecoration: 'none',
-              };
-              if (stay.bookingUrl) return <a href={stay.bookingUrl} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={ctaStyle}>Book Now →</a>;
-              if (stay.website) return <a href={stay.website} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={ctaStyle}>Visit Website →</a>;
-              return null;
-            })()}
-            {stay.tier !== 'free' && (
-              <button type="button" onClick={e => { e.stopPropagation(); setShowCalendar(v => !v); }} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: isFeatured ? C.sunsetLight : accent, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
-                {showCalendar ? 'Close' : 'Check Availability →'}
-              </button>
+            {/* Main photo */}
+            {(stay.photos?.[0] || stay.logo || stay.photo) && (
+              <img
+                className="stay-card-logo"
+                src={stay.photos?.[0] || stay.logo || stay.photo}
+                alt=""
+                onClick={e => { e.stopPropagation(); if (stay.photos?.length) setLightbox({ images: stay.photos, startIndex: 0 }); }}
+                style={{ width: 120, height: 120, borderRadius: 16, objectFit: 'cover', flexShrink: 0, background: C.sand, cursor: stay.photos?.length ? 'zoom-in' : 'default' }}
+                onError={e => e.target.style.display = 'none'}
+              />
             )}
-          </div>
 
-          {/* Availability calendar */}
-          {showCalendar && stay.tier !== 'free' && (
-            <GuestCalendar stay={stay} onClose={() => setShowCalendar(false)} />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              {/* Header */}
+              <div className="stay-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 8, marginBottom: 6 }}>
+                <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: isFeatured ? C.cream : C.text, margin: 0 }}>
+                  {stay.name}
+                </h3>
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+                  {isFeatured && (
+                    <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.cream, background: C.sunset, padding: '4px 10px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>
+                      ✦ Staff Pick
+                    </span>
+                  )}
+                  {stay.stayType && (
+                    <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: isFeatured ? C.cream : accent, background: isFeatured ? `${accent}40` : `${accent}15`, padding: '4px 10px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>
+                      {stay.stayType}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Beds, Guests & Price */}
+              {(stay.beds || stay.guests || stay.pricePerNight || stay.minStay) && (
+                <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center', marginBottom: 8 }}>
+                  {stay.beds && <span style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.5)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>🛏 {stay.beds} bed{stay.beds !== 1 ? 's' : ''}</span>}
+                  {stay.guests && <span style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.5)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>👥 Sleeps {stay.guests}</span>}
+                  {stay.pricePerNight && <span style={{ fontSize: 12, fontWeight: 700, color: isFeatured ? C.sunsetLight : C.sunset, fontFamily: "'Libre Franklin', sans-serif", background: isFeatured ? `${C.sunset}20` : `${C.sunset}10`, padding: '2px 8px', borderRadius: 10 }}>{stay.pricePerNight}</span>}
+                  {stay.minStay && <span style={{ fontSize: 11, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>{stay.minStay}+ nights</span>}
+                </div>
+              )}
+
+              {/* Description */}
+              {stay.description && (
+                <div style={{ marginBottom: 14 }}>
+                  <p style={{ fontSize: 14, color: isFeatured ? 'rgba(255,255,255,0.7)' : C.textLight, lineHeight: 1.7, margin: 0 }}>
+                    {descLong && !descExpanded ? stay.description.slice(0, DESC_LIMIT).trimEnd() + '...' : stay.description}
+                  </p>
+                  {descLong && (
+                    <button type="button" onClick={e => { e.stopPropagation(); setDescExpanded(v => !v); }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: isFeatured ? C.sunsetLight : accent, fontFamily: "'Libre Franklin', sans-serif", padding: '4px 0 0', display: 'block' }}>
+                      {descExpanded ? 'Show less ↑' : 'Read more ↓'}
+                    </button>
+                  )}
+                </div>
+              )}
+
+              {/* Amenity tags */}
+              {stay.amenities && stay.amenities.length > 0 && (
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 14 }}>
+                  {stay.amenities.map(a => (
+                    <span key={a} style={{
+                      fontSize: 11, padding: '4px 10px', borderRadius: 12,
+                      background: isFeatured ? 'rgba(255,255,255,0.1)' : `${accent}10`,
+                      color: isFeatured ? 'rgba(255,255,255,0.6)' : accent,
+                      fontFamily: "'Libre Franklin', sans-serif",
+                      fontWeight: 600,
+                      border: `1px solid ${isFeatured ? 'rgba(255,255,255,0.08)' : `${accent}20`}`,
+                    }}>
+                      {AMENITY_ICONS[a] || '·'} {a}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {/* Address, Phone & Email */}
+              <div className="stay-card-meta" style={{ display: 'flex', gap: 20, flexWrap: 'wrap', marginBottom: 12 }}>
+                {stay.address && <span style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted }}>📍 {stay.address}</span>}
+                {stay.phone && <a href={`tel:${stay.phone}`} onClick={e => e.stopPropagation()} style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted, textDecoration: 'none' }}>📞 {stay.phone}</a>}
+                {stay.email && <a href={`mailto:${stay.email}?subject=Inquiry about ${encodeURIComponent(stay.name)}`} onClick={e => e.stopPropagation()} style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted, textDecoration: 'none' }}>✉️ {stay.email}</a>}
+              </div>
+
+              {/* Book Now / Visit Website */}
+              {(stay.bookingUrl || stay.website) && (() => {
+                const ctaStyle = { fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: isFeatured ? C.sunset : accent, textDecoration: 'none' };
+                if (stay.bookingUrl) return <a href={stay.bookingUrl} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={ctaStyle}>Book Now →</a>;
+                if (stay.website) return <a href={stay.website} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={ctaStyle}>Visit Website →</a>;
+              })()}
+            </div>
+          </div>{/* end inner row */}
+
+          {/* Gradient fade when collapsed */}
+          {!expanded && (
+            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 72, background: `linear-gradient(to bottom, transparent, ${isFeatured ? C.dusk : '#fff'})`, pointerEvents: 'none' }} />
+          )}
+        </div>{/* end collapsible */}
+
+        {/* Always-visible bottom bar */}
+        <div
+          onClick={e => e.stopPropagation()}
+          style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 28px 14px', borderTop: `1px solid ${isFeatured ? 'rgba(255,255,255,0.06)' : '#f0ebe4'}` }}
+        >
+          <button
+            type="button"
+            onClick={() => setExpanded(v => !v)}
+            style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: isFeatured ? 'rgba(255,255,255,0.35)' : C.textMuted, background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0 }}
+          >
+            {expanded ? 'Show less ↑' : 'Show more ↓'}
+          </button>
+          {stay.tier !== 'free' && (
+            <button
+              type="button"
+              onClick={() => { setExpanded(true); setShowCalendar(v => !v); }}
+              style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: isFeatured ? C.sunsetLight : accent, background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0 }}
+            >
+              {showCalendar ? 'Close Calendar' : 'Check Availability →'}
+            </button>
           )}
         </div>
 
-        </div>{/* end inner row */}
+        {/* Availability calendar — full width, outside the content column */}
+        {expanded && showCalendar && stay.tier !== 'free' && (
+          <div style={{ padding: '0 28px 24px', borderTop: `1px solid ${isFeatured ? 'rgba(255,255,255,0.06)' : '#f0ebe4'}` }} onClick={e => e.stopPropagation()}>
+            <GuestCalendar stay={stay} onClose={() => setShowCalendar(false)} />
+          </div>
+        )}
 
-        {/* Additional photos strip — full width below the main row */}
-        {stay.photos?.length > 1 && (
+        {/* Additional photos strip — only when expanded */}
+        {expanded && stay.photos?.length > 1 && (
           <div
-            style={{
-              display: 'flex', gap: 8, overflowX: 'auto',
-              padding: '12px 28px 20px',
-              borderTop: `1px solid ${isFeatured ? 'rgba(255,255,255,0.06)' : '#f0ebe4'}`,
-              margin: '0 -28px',
-            }}
+            style={{ display: 'flex', gap: 8, overflowX: 'auto', padding: '12px 28px 20px', borderTop: `1px solid ${isFeatured ? 'rgba(255,255,255,0.06)' : '#f0ebe4'}` }}
             onClick={e => e.stopPropagation()}
           >
             {stay.photos.slice(1).map((src, idx) => (
@@ -605,11 +617,7 @@ function StayCard({ stay, i }) {
                 src={src}
                 alt=""
                 onClick={() => setLightbox({ images: stay.photos, startIndex: idx + 1 })}
-                style={{
-                  height: 90, width: 'auto', flexShrink: 0,
-                  borderRadius: 10, cursor: 'zoom-in',
-                  transition: 'transform 0.2s, box-shadow 0.2s',
-                }}
+                style={{ height: 90, width: 'auto', flexShrink: 0, borderRadius: 10, cursor: 'zoom-in', transition: 'transform 0.2s, box-shadow 0.2s' }}
                 onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.04)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.2)'; }}
                 onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none'; }}
                 onError={e => e.target.style.display = 'none'}
