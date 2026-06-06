@@ -124,6 +124,7 @@ export default async function handler(req, res) {
           ...(isBeta && { beta: 'true' }),
           ...(referredBy && { referredBy }),
         },
+        allow_promotion_codes: true,
         success_url: tier === 'food_truck_founding'
           ? `${baseUrl}/food-trucks?listed=true&truck=${encodeURIComponent(businessName)}`
           : `${baseUrl}/business/${toSlug(businessName)}?setup=true`,
@@ -170,6 +171,7 @@ export default async function handler(req, res) {
         days: String(plan.days),
         ...(referredBy && { referredBy }),
       },
+      allow_promotion_codes: true,
       success_url: `${baseUrl}/featured?success=true&business=${encodeURIComponent(businessName)}`,
       cancel_url: `${baseUrl}/featured?cancelled=true`,
     });

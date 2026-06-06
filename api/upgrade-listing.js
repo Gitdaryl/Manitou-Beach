@@ -119,6 +119,7 @@ export default async function handler(req, res) {
           previousTier: currentTier || '',
           billingInterval: interval,
         },
+        allow_promotion_codes: true,
         success_url: `${baseUrl}/upgrade-listing?success=true&business=${encodeURIComponent(businessName)}&tier=${newTier}`,
         cancel_url: `${baseUrl}/upgrade-listing?business=${encodeURIComponent(businessName)}`,
       });
