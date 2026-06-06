@@ -433,6 +433,89 @@ function ShareButton({ label = 'Share with friends', style: styleProp = {} }) {
   );
 }
 
+// ── Gallery lightbox ─────────────────────────────────────────
+function GalleryLightbox({ items, startIndex, onClose }) {
+  const [idx, setIdx] = useState(startIndex);
+  const touchX = useRef(null);
+
+  const prev = useCallback(() => setIdx(i => Math.max(0, i - 1)), []);
+  const next = useCallback(() => setIdx(i => Math.min(items.length - 1, i + 1)), [items.length]);
+
+  useEffect(() => {
+    const handler = e => {
+      if (e.key === 'Escape') onClose();
+      if (e.key === 'ArrowLeft') prev();
+      if (e.key === 'ArrowRight') next();
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [onClose, prev, next]);
+
+  // Lock body scroll while open
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
+  }, []);
+
+  const item = items[idx];
+  const src = item?.url || item?.mediaUrl || '';
+  const caption = item?.caption || '';
+
+  const onTouchStart = e => { touchX.current = e.touches[0].clientX; };
+  const onTouchEnd = e => {
+    if (touchX.current == null) return;
+    const delta = touchX.current - e.changedTouches[0].clientX;
+    if (delta > 50) next();
+    else if (delta < -50) prev();
+    touchX.current = null;
+  };
+
+  const btnStyle = (side) => ({
+    position: 'absolute', top: '50%', [side]: 16, transform: 'translateY(-50%)',
+    background: 'rgba(255,255,255,0.12)', border: 'none', color: '#fff',
+    width: 44, height: 44, borderRadius: '50%', fontSize: 20, cursor: 'pointer',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    transition: 'background 0.15s', zIndex: 2,
+  });
+
+  return (
+    <div
+      onClick={onClose}
+      style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.95)', zIndex: 9000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+    >
+      {/* Close */}
+      <button onClick={onClose} style={{ position: 'absolute', top: 16, right: 16, background: 'rgba(255,255,255,0.12)', border: 'none', color: '#fff', width: 40, height: 40, borderRadius: '50%', fontSize: 20, cursor: 'pointer', zIndex: 3 }}>✕</button>
+
+      {/* Counter */}
+      <div style={{ position: 'absolute', top: 20, left: '50%', transform: 'translateX(-50%)', color: 'rgba(255,255,255,0.5)', fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1, zIndex: 3 }}>
+        {idx + 1} / {items.length}
+      </div>
+
+      {/* Image */}
+      <img
+        src={src}
+        alt={caption || 'Visitor photo'}
+        onClick={e => e.stopPropagation()}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+        style={{ maxHeight: '88vh', maxWidth: '92vw', objectFit: 'contain', borderRadius: 8, userSelect: 'none' }}
+      />
+
+      {/* Caption */}
+      {caption && (
+        <div style={{ position: 'absolute', bottom: 20, left: '50%', transform: 'translateX(-50%)', background: 'rgba(0,0,0,0.6)', color: 'rgba(255,255,255,0.8)', padding: '8px 16px', borderRadius: 20, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", maxWidth: '80vw', textAlign: 'center', zIndex: 3 }}>
+          {caption}
+        </div>
+      )}
+
+      {/* Prev */}
+      {idx > 0 && <button onClick={e => { e.stopPropagation(); prev(); }} style={btnStyle('left')}>‹</button>}
+      {/* Next */}
+      {idx < items.length - 1 && <button onClick={e => { e.stopPropagation(); next(); }} style={btnStyle('right')}>›</button>}
+    </div>
+  );
+}
+
 // ── Client-side image compression ───────────────────────────
 async function compressImage(file, maxPx = 1200, quality = 0.82) {
   return new Promise((resolve, reject) => {
@@ -464,6 +547,7 @@ function ArchGallery() {
   const [uploadDone, setUploadDone] = useState(false);
   const [uploadErr, setUploadErr] = useState('');
   const [caption, setCaption] = useState('');
+  const [lightbox, setLightbox] = useState(null); // { items, index }
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -508,10 +592,15 @@ function ArchGallery() {
     if (igPosts[i]) allItems.push({ type: 'ig', ...igPosts[i] });
   }
 
+  // Dynamic columns: more photos = more columns = smaller tiles
+  const colCount = allItems.length <= 20 ? 2 : allItems.length <= 60 ? 3 : allItems.length <= 150 ? 4 : 5;
+  const colStyle = `${colCount} ${Math.max(120, 260 - colCount * 20)}px`;
+
   const inp = { width: '100%', padding: '11px 14px', borderRadius: 10, border: `1px solid ${C.sand}`, background: '#fff', fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.text, outline: 'none', boxSizing: 'border-box' };
 
   return (
     <section style={{ padding: '80px 24px', background: C.warmWhite }}>
+      {lightbox && <GalleryLightbox items={lightbox.items} startIndex={lightbox.index} onClose={() => setLightbox(null)} />}
       <div style={{ maxWidth: 1000, margin: '0 auto' }}>
         <SectionLabel>From the Community</SectionLabel>
         <SectionTitle>Padlock Arch — Visitor Photos</SectionTitle>
@@ -538,19 +627,26 @@ function ArchGallery() {
           <p style={{ fontSize: 11, color: C.textMuted, marginTop: 12 }}>Photos compress automatically. Max 7MB.</p>
         </div>
 
-        {/* Gallery grid */}
+        {/* Gallery grid — dynamic column count based on total items */}
         {loaded && allItems.length > 0 ? (
-          <div style={{ columns: '3 220px', columnGap: 14 }}>
-            {allItems.map((item, i) => item.type === 'upload' ? (
-              <div key={item.id} style={{ marginBottom: 14, borderRadius: 12, overflow: 'hidden', breakInside: 'avoid', background: C.sand }}>
-                <img src={item.url} alt={item.caption || 'Visitor photo at Manitou Beach padlock arch'} style={{ width: '100%', display: 'block' }} onError={e => e.target.closest('div').style.display = 'none'} />
-                {item.caption && <div style={{ padding: '8px 12px', background: '#fff' }}><p style={{ fontSize: 12, color: C.textLight, margin: 0, lineHeight: 1.5, fontFamily: "'Libre Franklin', sans-serif" }}>{item.caption}</p></div>}
+          <div style={{ columns: colStyle, columnGap: 10 }}>
+            {allItems.map((item, i) => (
+              <div
+                key={item.id || i}
+                onClick={() => setLightbox({ items: allItems, index: i })}
+                style={{ marginBottom: 10, borderRadius: 10, overflow: 'hidden', breakInside: 'avoid', background: C.sand, cursor: 'pointer', transition: 'opacity 0.15s' }}
+                onMouseEnter={e => e.currentTarget.style.opacity = '0.88'}
+                onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+              >
+                <img
+                  src={item.url || item.mediaUrl}
+                  alt={item.caption || 'Visitor photo at Manitou Beach padlock arch'}
+                  style={{ width: '100%', display: 'block' }}
+                  onError={e => e.target.closest('div').style.display = 'none'}
+                  loading="lazy"
+                />
+                {item.caption && <div style={{ padding: '6px 10px', background: '#fff' }}><p style={{ fontSize: 11, color: C.textLight, margin: 0, lineHeight: 1.5, fontFamily: "'Libre Franklin', sans-serif" }}>{item.caption}</p></div>}
               </div>
-            ) : (
-              <a key={item.id} href={item.permalink} target="_blank" rel="noopener noreferrer" style={{ display: 'block', marginBottom: 14, borderRadius: 12, overflow: 'hidden', breakInside: 'avoid', textDecoration: 'none', background: C.sand }}>
-                <img src={item.mediaUrl} alt={item.caption || 'Manitou Beach visitor photo'} style={{ width: '100%', display: 'block' }} onError={e => e.target.closest('a').style.display = 'none'} />
-                {item.caption && <div style={{ padding: '8px 12px', background: '#fff' }}><p style={{ fontSize: 12, color: C.textLight, margin: 0, lineHeight: 1.5, fontFamily: "'Libre Franklin', sans-serif" }}>{item.caption}</p></div>}
-              </a>
             ))}
           </div>
         ) : loaded && allItems.length === 0 ? (
