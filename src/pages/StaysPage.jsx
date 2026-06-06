@@ -596,7 +596,7 @@ function StayCard({ stay, i }) {
           >
             {expanded ? 'Show less ↑' : 'Show more ↓'}
           </button>
-          {stay.tier !== 'free' && (
+          {stay.tier !== 'free' ? (
             <button
               type="button"
               onClick={() => { setExpanded(true); setShowCalendar(v => !v); }}
@@ -604,7 +604,15 @@ function StayCard({ stay, i }) {
             >
               {showCalendar ? 'Close Calendar' : 'Check Availability →'}
             </button>
-          )}
+          ) : (stay.email || stay.phone) ? (
+            <a
+              href={stay.email ? `mailto:${stay.email}?subject=Inquiry about ${encodeURIComponent(stay.name)}` : `tel:${stay.phone}`}
+              onClick={e => e.stopPropagation()}
+              style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: accent, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}
+            >
+              Contact Owner →
+            </a>
+          ) : null}
         </div>
 
         {/* Availability calendar — full width, outside the content column */}
@@ -734,10 +742,10 @@ function MapDetailPanel({ stay, onBack }) {
               {showCalendar ? 'Close Calendar' : 'Check Availability'}
             </button>
           )}
-          {!stay.bookingUrl && !stay.website && stay.email && (
-            <a href={`mailto:${stay.email}?subject=Inquiry about ${encodeURIComponent(stay.name)}`}
+          {!stay.bookingUrl && !stay.website && (stay.email || stay.phone) && (
+            <a href={stay.email ? `mailto:${stay.email}?subject=Inquiry about ${encodeURIComponent(stay.name)}` : `tel:${stay.phone}`}
               style={{ padding: '11px 22px', borderRadius: 24, background: isFeatured ? C.sunset : accent, color: '#fff', fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', textDecoration: 'none', display: 'inline-block' }}>
-              Send Inquiry →
+              {stay.email ? 'Send Inquiry →' : 'Call Owner →'}
             </a>
           )}
         </div>

@@ -121,6 +121,15 @@ async function syncOne(pageId, icalUrl) {
   return { pageId, manual: manual.length, ical: icalEvents.length, total: merged.length, ok };
 }
 
+async function alertAdmin(message) {
+  const adminPhone = process.env.PLATFORM_ADMIN_PHONE;
+  if (!adminPhone) return;
+  try {
+    const { sendSMS } = await import('./lib/twilio.js');
+    await sendSMS(adminPhone, `MB Stays iCal sync: ${message}`);
+  } catch { /* silent - don't let alert failure break the cron */ }
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -166,5 +175,11 @@ export default async function handler(req, res) {
     console.log('sync-ical:', result);
   }
 
-  return res.status(200).json({ ok: true, synced: results.length, results });
+  const failures = results.filter(r => r.error);
+  if (failures.length > 0) {
+    const names = failures.map(f => f.pageId).join(', ');
+    await alertAdmin(`${failures.length} feed(s) failed: ${names}`);
+  }
+
+  return res.status(200).json({ ok: true, synced: results.length, failures: failures.length, results });
 }
