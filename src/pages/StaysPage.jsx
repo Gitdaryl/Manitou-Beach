@@ -1960,7 +1960,8 @@ function ListYourPropertySection({ stays = [] }) {
                     <label style={labelStyle}>Availability calendar link <span style={{ fontWeight: 400, color: isFeatured ? 'rgba(255,255,255,0.3)' : C.textMuted }}>(optional)</span></label>
                     <input style={inputStyle} value={form.icalUrl} onChange={e => set('icalUrl', e.target.value)} placeholder="https://www.airbnb.com/calendar/ical/..." />
                     <p style={{ fontSize: 11, color: isFeatured ? 'rgba(255,255,255,0.25)' : C.textMuted, margin: '6px 0 0', lineHeight: 1.6 }}>
-                      On Airbnb or VRBO? Export your iCal link from their calendar settings and paste it here. We'll sync your blocked dates automatically every day so guests see real-time availability.
+                      On Airbnb or VRBO? Paste your calendar export link and we sync your booked dates every day.
+                      Not on any platform? <strong style={{ fontWeight: 700 }}>Google Calendar is free</strong> - create events for your bookings, grab the public iCal link from Calendar Settings, and paste it here.
                     </p>
                   </div>
 

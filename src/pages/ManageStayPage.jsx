@@ -690,7 +690,10 @@ function StepEdit({ listing }) {
         <div>
           <label style={label} htmlFor="ms-ical">Availability calendar link <span style={{ color: C.textMuted, fontWeight: 400 }}>(optional - iCal/Airbnb/VRBO)</span></label>
           <input id="ms-ical" style={inp} value={form.icalUrl} onChange={e => set('icalUrl', e.target.value)} placeholder="https://www.airbnb.com/calendar/ical/..." onFocus={inputFocus} onBlur={inputBlur} />
-          <p style={{ fontSize: 11, color: C.textMuted, margin: '5px 0 0', lineHeight: 1.6 }}>Paste your Airbnb or VRBO iCal export link. We'll sync your booked dates automatically every day.</p>
+          <p style={{ fontSize: 11, color: C.textMuted, margin: '5px 0 0', lineHeight: 1.6 }}>
+            On Airbnb or VRBO? Paste your calendar export link and we sync your booked dates every day, automatically.
+            Not on any platform? <strong>Google Calendar is free</strong> - just create events for your bookings, grab the public iCal link from Calendar Settings, and paste it here.
+          </p>
         </div>
         <div>
           <label style={label} htmlFor="ms-website">Website <span style={{ color: C.textMuted, fontWeight: 400 }}>(optional)</span></label>
