@@ -584,13 +584,11 @@ function ArchGallery() {
     if (inputRef.current) inputRef.current.value = '';
   };
 
-  // Merge uploaded photos + IG posts, interleaved for variety
-  const allItems = [];
-  const maxLen = Math.max(photos.length, igPosts.length);
-  for (let i = 0; i < maxLen; i++) {
-    if (photos[i]) allItems.push({ type: 'upload', ...photos[i] });
-    if (igPosts[i]) allItems.push({ type: 'ig', ...igPosts[i] });
-  }
+  // Merge + sort newest first — uploads use `created`, IG posts use `timestamp`
+  const allItems = [
+    ...photos.map(p => ({ type: 'upload', sortDate: p.created || '', ...p })),
+    ...igPosts.map(p => ({ type: 'ig', sortDate: p.timestamp || '', ...p })),
+  ].sort((a, b) => (b.sortDate > a.sortDate ? 1 : -1));
 
   // Dynamic columns: more photos = more columns = smaller tiles
   const colCount = allItems.length <= 20 ? 2 : allItems.length <= 60 ? 3 : allItems.length <= 150 ? 4 : 5;
