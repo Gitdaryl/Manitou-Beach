@@ -219,7 +219,7 @@ function BookingDrawer({ stay, onClose }) {
 
   const renderMiniCalendar = () => {
     if (!blocked) return <div style={{ fontSize: 12, color: C.textMuted, padding: '12px 0', fontFamily: "'Libre Franklin', sans-serif" }}>Loading availability...</div>;
-    if (blocked.length === 0) return <div style={{ fontSize: 12, color: '#166534', padding: '8px 12px', background: '#F0FDF4', borderRadius: 8, fontFamily: "'Libre Franklin', sans-serif" }}>Calendar not yet set - contact owner for availability.</div>;
+    if (blocked.length === 0) return <div style={{ fontSize: 12, color: C.textMuted, padding: '8px 12px', background: isFeatured ? 'rgba(255,255,255,0.05)' : '#f8f6f2', borderRadius: 8, fontFamily: "'Libre Franklin', sans-serif" }}>Availability not set up yet. Send a request below and the owner will confirm your dates.</div>;
 
     const today = new Date();
     const months = [0, 1].map(offset => {
@@ -361,6 +361,7 @@ function StayCard({ stay, i }) {
   const isFeatured = stay.tier === 'featured';
   const [showBooking, setShowBooking] = React.useState(false);
   const [descExpanded, setDescExpanded] = React.useState(false);
+  const [lightbox, setLightbox] = React.useState(null);
   const descLong = stay.description && stay.description.length > DESC_LIMIT;
 
   return (
@@ -372,10 +373,9 @@ function StayCard({ stay, i }) {
           border: `1px solid ${isFeatured ? C.lakeDark : '#e0dbd4'}`,
           boxShadow: isFeatured ? 'none' : '0 2px 12px rgba(0,0,0,0.06)',
           borderRadius: 16,
-          padding: '32px 28px',
+          padding: '32px 28px 0',
           display: 'flex',
-          gap: 24,
-          alignItems: 'flex-start',
+          flexDirection: 'column',
           position: 'relative',
           overflow: 'hidden',
           transition: 'all 0.25s',
@@ -391,9 +391,19 @@ function StayCard({ stay, i }) {
         {/* Left accent */}
         <div style={{ position: 'absolute', top: 0, left: 0, width: 4, height: '100%', background: accent, borderRadius: '16px 0 0 16px' }} />
 
+        {/* Main row: photo + content */}
+        <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start', paddingBottom: stay.photos?.length > 1 ? 16 : 32 }}>
+
         {/* Main photo */}
         {(stay.photos?.[0] || stay.logo || stay.photo) && (
-          <img className="stay-card-logo" src={stay.photos?.[0] || stay.logo || stay.photo} alt="" style={{ width: 120, height: 120, borderRadius: 16, objectFit: 'cover', flexShrink: 0, background: C.sand }} onError={e => e.target.style.display = 'none'} />
+          <img
+            className="stay-card-logo"
+            src={stay.photos?.[0] || stay.logo || stay.photo}
+            alt=""
+            onClick={e => { e.stopPropagation(); if (stay.photos?.length) setLightbox({ images: stay.photos, startIndex: 0 }); }}
+            style={{ width: 120, height: 120, borderRadius: 16, objectFit: 'cover', flexShrink: 0, background: C.sand, cursor: stay.photos?.length ? 'zoom-in' : 'default' }}
+            onError={e => e.target.style.display = 'none'}
+          />
         )}
 
         <div style={{ flex: 1, minWidth: 0 }}>
@@ -491,25 +501,28 @@ function StayCard({ stay, i }) {
           )}
         </div>
 
-        {/* Additional photos strip */}
+        </div>{/* end inner row */}
+
+        {/* Additional photos strip — full width below the main row */}
         {stay.photos?.length > 1 && (
           <div
             style={{
-              display: 'flex', gap: 8, overflowX: 'auto', padding: '16px 28px 20px',
+              display: 'flex', gap: 8, overflowX: 'auto',
+              padding: '12px 28px 20px',
               borderTop: `1px solid ${isFeatured ? 'rgba(255,255,255,0.06)' : '#f0ebe4'}`,
-              marginTop: 4,
+              margin: '0 -28px',
             }}
             onClick={e => e.stopPropagation()}
           >
-            {stay.photos.slice(1).map((src, i) => (
+            {stay.photos.slice(1).map((src, idx) => (
               <img
-                key={i}
+                key={idx}
                 src={src}
                 alt=""
-                onClick={() => setLightbox({ images: stay.photos, startIndex: i + 1 })}
+                onClick={() => setLightbox({ images: stay.photos, startIndex: idx + 1 })}
                 style={{
                   height: 90, width: 'auto', flexShrink: 0,
-                  borderRadius: 10, cursor: 'pointer',
+                  borderRadius: 10, cursor: 'zoom-in',
                   transition: 'transform 0.2s, box-shadow 0.2s',
                 }}
                 onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.04)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.2)'; }}
@@ -518,6 +531,15 @@ function StayCard({ stay, i }) {
               />
             ))}
           </div>
+        )}
+
+        {/* Lightbox */}
+        {lightbox && (
+          <PhotoLightbox
+            images={lightbox.images}
+            startIndex={lightbox.startIndex}
+            onClose={() => setLightbox(null)}
+          />
         )}
       </div>
     </FadeIn>

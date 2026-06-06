@@ -126,7 +126,7 @@ export default async function handler(req, res) {
       // Send confirmation SMS
       const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
       await sendSMS(inputDigits,
-        `Manitou Beach Stays\n\n${stayName} is listed! 🏡\n\nVisitors can find you now at ${siteUrl}/stays\n\nNeed to update photos, description, or your booking link? Manage your listing anytime:\n${siteUrl}/stays/manage\n\nMonth to month, no contract, cancel anytime. Founding properties get first pick on Featured slots.\n\nWelcome aboard!`
+        `Manitou Beach Stays\n\n${stayName} is listed! 🏡\n\nVisitors can find you at ${siteUrl}/stays\n\nNext step - set your available dates so guests know when to book:\n${siteUrl}/stays/manage\n\n(You can also update photos, description, and pricing there.)\n\nMonth to month, no contract, cancel anytime. Welcome aboard!`
       );
 
       return res.status(200).json({
