@@ -492,6 +492,7 @@ function StepEdit({ listing }) {
     paymentMethod: listing.paymentMethod || '',
     cancellationPolicy: listing.cancellationPolicy || '',
     bookingConfirmation: listing.bookingConfirmation || '',
+    icalUrl: listing.icalUrl || '',
   });
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -685,6 +686,11 @@ function StepEdit({ listing }) {
         <div>
           <label style={label} htmlFor="ms-booking">Booking URL <span style={{ color: C.textMuted, fontWeight: 400 }}>(Airbnb, VRBO, your site...)</span></label>
           <input id="ms-booking" style={inp} value={form.bookingUrl} onChange={e => set('bookingUrl', e.target.value)} placeholder="https://airbnb.com/rooms/..." onFocus={inputFocus} onBlur={inputBlur} />
+        </div>
+        <div>
+          <label style={label} htmlFor="ms-ical">Availability calendar link <span style={{ color: C.textMuted, fontWeight: 400 }}>(optional - iCal/Airbnb/VRBO)</span></label>
+          <input id="ms-ical" style={inp} value={form.icalUrl} onChange={e => set('icalUrl', e.target.value)} placeholder="https://www.airbnb.com/calendar/ical/..." onFocus={inputFocus} onBlur={inputBlur} />
+          <p style={{ fontSize: 11, color: C.textMuted, margin: '5px 0 0', lineHeight: 1.6 }}>Paste your Airbnb or VRBO iCal export link. We'll sync your booked dates automatically every day.</p>
         </div>
         <div>
           <label style={label} htmlFor="ms-website">Website <span style={{ color: C.textMuted, fontWeight: 400 }}>(optional)</span></label>

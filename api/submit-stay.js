@@ -34,7 +34,7 @@ export default async function handler(req, res) {
     name, stayType, email, phone, address, bookingUrl,
     website, description, beds, guests, amenities, photos, photoUrl,
     pricePerNight, minStay, checkIn, checkOut, houseRules,
-    paymentMethod, cancellationPolicy, bookingConfirmation, tier, _hp
+    paymentMethod, cancellationPolicy, bookingConfirmation, tier, icalUrl, _hp
   } = req.body || {};
 
   // Honeypot - bots fill hidden fields, humans don't
@@ -96,6 +96,7 @@ export default async function handler(req, res) {
   if (paymentMethod?.trim())        properties['Payment Method']        = { rich_text: [{ text: { content: paymentMethod.trim() } }] };
   if (cancellationPolicy?.trim())   properties['Cancellation Policy']   = { rich_text: [{ text: { content: cancellationPolicy.trim() } }] };
   if (bookingConfirmation?.trim())  properties['Booking Confirmation']  = { rich_text: [{ text: { content: bookingConfirmation.trim() } }] };
+  if (icalUrl?.trim())              properties['iCal Feed URL']         = { rich_text: [{ text: { content: icalUrl.trim() } }] };
 
   if (beds != null && beds !== '') {
     const bedsNum = Number(beds);

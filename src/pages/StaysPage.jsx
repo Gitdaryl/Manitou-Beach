@@ -194,160 +194,245 @@ function StaysHero() {
 }
 
 // ── Booking Drawer (Request to Book / Waitlist) ─────────────
-function BookingDrawer({ stay, onClose }) {
+function GuestCalendar({ stay, onClose }) {
   const pageId = stay.id?.replace('stay-', '');
-  const [blocked, setBlocked] = React.useState(null);
-  const [form, setForm] = React.useState({ name: '', phone: '', dates: '', guests: '', message: '' });
-  const [status, setStatus] = React.useState(null); // null | 'loading' | 'done' | 'error'
   const isFeatured = stay.tier === 'featured';
   const accent = TYPE_COLORS[stay.stayType] || C.lakeBlue;
 
+  const [blocked, setBlocked] = React.useState(null); // null = loading
+  const [checkIn, setCheckIn]   = React.useState(null); // 'YYYY-MM-DD'
+  const [checkOut, setCheckOut] = React.useState(null);
+  const [hovered, setHovered]   = React.useState(null);
+  const [pickStep, setPickStep] = React.useState('in'); // 'in' | 'out' | 'done'
+  const [viewMonth, setViewMonth] = React.useState(() => {
+    const d = new Date(); return { year: d.getFullYear(), month: d.getMonth() };
+  });
+  const [form, setForm]         = React.useState({ name: '', phone: '', message: '' });
+  const [reqStatus, setReqStatus]   = React.useState(null);
+  const [waitStatus, setWaitStatus] = React.useState(null);
+
   React.useEffect(() => {
-    if (!pageId) return;
+    if (!pageId) { setBlocked([]); return; }
     fetch(`/api/stay-availability?pageId=${pageId}`)
       .then(r => r.json())
       .then(d => setBlocked(d.blocked || []))
       .catch(() => setBlocked([]));
   }, [pageId]);
 
-  const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
-
-  const isDateBlocked = (dateStr) => {
-    if (!blocked) return false;
-    return blocked.some(r => dateStr >= r.from && dateStr <= r.to);
+  const todayStr = new Date().toISOString().split('T')[0];
+  const isDateBlocked = ds => blocked?.some(r => ds >= r.from && ds <= r.to) ?? false;
+  const rangeHasBlock = (from, to) => {
+    if (!blocked?.length || !from || !to) return false;
+    const [a, b] = from <= to ? [from, to] : [to, from];
+    return blocked.some(r => r.to >= a && r.from <= b);
   };
 
-  const renderMiniCalendar = () => {
-    if (!blocked) return <div style={{ fontSize: 12, color: C.textMuted, padding: '12px 0', fontFamily: "'Libre Franklin', sans-serif" }}>Loading availability...</div>;
-    if (blocked.length === 0) return <div style={{ fontSize: 12, color: C.textMuted, padding: '8px 12px', background: isFeatured ? 'rgba(255,255,255,0.05)' : '#f8f6f2', borderRadius: 8, fontFamily: "'Libre Franklin', sans-serif" }}>Availability not set up yet. Send a request below and the owner will confirm your dates.</div>;
+  const previewOut = pickStep === 'out' && hovered ? hovered : checkOut;
+  const isInRange = ds => {
+    if (!checkIn) return false;
+    const hi = previewOut;
+    if (!hi) return ds === checkIn;
+    const [a, b] = checkIn <= hi ? [checkIn, hi] : [hi, checkIn];
+    return ds >= a && ds <= b;
+  };
 
-    const today = new Date();
-    const months = [0, 1].map(offset => {
-      const d = new Date(today.getFullYear(), today.getMonth() + offset, 1);
-      return { year: d.getFullYear(), month: d.getMonth(), label: d.toLocaleString('default', { month: 'short', year: 'numeric' }) };
-    });
+  const handleDay = ds => {
+    if (ds < todayStr || isDateBlocked(ds)) return;
+    if (pickStep === 'in' || (checkIn && ds <= checkIn)) {
+      setCheckIn(ds); setCheckOut(null); setPickStep('out');
+      setReqStatus(null); setWaitStatus(null);
+    } else {
+      setCheckOut(ds); setPickStep('done');
+    }
+  };
 
+  const isAvailable = !!(checkIn && checkOut && !rangeHasBlock(checkIn, checkOut));
+  const setF = (k, v) => setForm(f => ({ ...f, [k]: v }));
+
+  const fmtDate = ds => {
+    if (!ds) return '';
+    return new Date(ds + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
+
+  const submitRequest = async () => {
+    if (!form.name.trim() || !form.phone.trim()) { setReqStatus('error'); return; }
+    setReqStatus('loading');
+    try {
+      const res = await fetch('/api/stay-request', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pageId, stayName: stay.name, guestName: form.name, guestPhone: form.phone, datesRequested: `${checkIn} to ${checkOut}`, message: form.message }),
+      });
+      const d = await res.json();
+      setReqStatus(d.ok ? 'done' : 'error');
+    } catch { setReqStatus('error'); }
+  };
+
+  const joinWaitlist = async () => {
+    if (!form.name.trim() || !form.phone.trim()) { setWaitStatus('error'); return; }
+    setWaitStatus('loading');
+    try {
+      const res = await fetch('/api/stay-waitlist', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pageId, stayName: stay.name, guestName: form.name, guestPhone: form.phone, datesRequested: `${checkIn} to ${checkOut}` }),
+      });
+      const d = await res.json();
+      setWaitStatus(d.ok ? 'done' : 'error');
+    } catch { setWaitStatus('error'); }
+  };
+
+  const nextM = viewMonth.month === 11 ? { year: viewMonth.year + 1, month: 0 } : { year: viewMonth.year, month: viewMonth.month + 1 };
+  const navBtn = { background: 'none', border: 'none', cursor: 'pointer', fontSize: 18, color: isFeatured ? 'rgba(255,255,255,0.35)' : C.textMuted, padding: '2px 10px', borderRadius: 6, lineHeight: 1 };
+  const inp = { width: '100%', padding: '10px 13px', borderRadius: 8, border: `1px solid ${isFeatured ? 'rgba(255,255,255,0.12)' : C.sand}`, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, background: isFeatured ? 'rgba(255,255,255,0.05)' : '#fff', color: isFeatured ? C.cream : C.text, outline: 'none', boxSizing: 'border-box' };
+
+  const renderMonth = (year, month) => {
+    const firstDay = new Date(year, month, 1).getDay();
+    const lastDate = new Date(year, month + 1, 0).getDate();
+    const label = new Date(year, month, 1).toLocaleString('default', { month: 'long', year: 'numeric' });
+    const cells = [];
+    for (let i = 0; i < firstDay; i++) cells.push(null);
+    for (let d = 1; d <= lastDate; d++) {
+      cells.push(`${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`);
+    }
     return (
-      <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-        {months.map(({ year, month, label }) => {
-          const firstDay = new Date(year, month, 1).getDay();
-          const lastDate = new Date(year, month + 1, 0).getDate();
-          const cells = [];
-          for (let i = 0; i < firstDay; i++) cells.push(null);
-          for (let d = 1; d <= lastDate; d++) {
-            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-            cells.push({ d, dateStr, past: new Date(year, month, d) < today, booked: isDateBlocked(dateStr) });
-          }
-          return (
-            <div key={label} style={{ minWidth: 180 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: C.textLight, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 6, letterSpacing: 0.5 }}>{label}</div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 1 }}>
-                {['S','M','T','W','T','F','S'].map((d, i) => <div key={i} style={{ fontSize: 9, color: C.textMuted, textAlign: 'center', padding: '2px 0', fontFamily: "'Libre Franklin', sans-serif" }}>{d}</div>)}
-                {cells.map((cell, i) => !cell ? <div key={`e${i}`} /> : (
-                  <div key={cell.d} style={{ fontSize: 10, textAlign: 'center', padding: '3px 1px', borderRadius: 3, background: cell.booked ? '#FECACA' : 'transparent', color: cell.past ? C.sand : cell.booked ? '#B91C1C' : C.text, fontFamily: "'Libre Franklin', sans-serif" }}>{cell.d}</div>
-                ))}
-              </div>
-            </div>
-          );
-        })}
+      <div key={`${year}-${month}`} style={{ flex: 1, minWidth: 200 }}>
+        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 0.5, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif", color: isFeatured ? 'rgba(255,255,255,0.45)' : C.textMuted }}>{label}</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 2 }}>
+          {['Su','Mo','Tu','We','Th','Fr','Sa'].map((d, i) => (
+            <div key={i} style={{ fontSize: 9, textAlign: 'center', padding: '3px 0', fontFamily: "'Libre Franklin', sans-serif", color: isFeatured ? 'rgba(255,255,255,0.25)' : C.textMuted }}>{d}</div>
+          ))}
+          {cells.map((ds, ci) => {
+            if (!ds) return <div key={`e${ci}`} />;
+            const isPast = ds < todayStr;
+            const isBooked = isDateBlocked(ds);
+            const isStart = ds === checkIn, isEnd = ds === checkOut;
+            const inRange = isInRange(ds);
+            let bg = 'transparent', color = isFeatured ? 'rgba(255,255,255,0.7)' : C.text, opacity = 1, fw = 400;
+            if (isPast) { opacity = 0.25; }
+            else if (isBooked) { bg = isFeatured ? 'rgba(220,38,38,0.2)' : '#FECACA'; color = isFeatured ? '#fca5a5' : '#B91C1C'; }
+            else if (isStart || isEnd) { bg = accent; color = '#fff'; fw = 700; }
+            else if (inRange) { bg = `${accent}28`; }
+            return (
+              <button key={ds} type="button" disabled={isPast || isBooked}
+                onClick={() => handleDay(ds)}
+                onMouseEnter={() => { if (pickStep === 'out' && checkIn) setHovered(ds); }}
+                onMouseLeave={() => setHovered(null)}
+                style={{ padding: '5px 2px', borderRadius: 5, border: 'none', textAlign: 'center', fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", cursor: (isPast || isBooked) ? 'default' : 'pointer', background: bg, color, opacity, fontWeight: fw, transition: 'background 0.1s' }}>
+                {parseInt(ds.split('-')[2])}
+              </button>
+            );
+          })}
+        </div>
       </div>
     );
   };
 
-  const submit = async () => {
-    if (!form.name.trim() || !form.phone.trim()) { setStatus('error'); return; }
-    setStatus('loading');
-    try {
-      const res = await fetch('/api/stay-request', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pageId, stayName: stay.name, guestName: form.name, guestPhone: form.phone, datesRequested: form.dates, guestCount: form.guests, message: form.message }),
-      });
-      const data = await res.json();
-      setStatus(data.ok ? 'done' : 'error');
-    } catch { setStatus('error'); }
-  };
-
-  const joinWaitlist = async () => {
-    if (!form.name.trim() || !form.phone.trim()) { setStatus('error'); return; }
-    setStatus('loading');
-    try {
-      const res = await fetch('/api/stay-waitlist', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pageId, stayName: stay.name, guestName: form.name, guestPhone: form.phone, guestEmail: form.email, datesRequested: form.dates }),
-      });
-      const data = await res.json();
-      setStatus(data.ok ? 'waitlisted' : 'error');
-    } catch { setStatus('error'); }
-  };
-
-  const drawerInp = { width: '100%', padding: '10px 13px', borderRadius: 8, border: `1px solid ${C.sand}`, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, background: '#fff', color: C.text, outline: 'none', boxSizing: 'border-box' };
-
   return (
     <div style={{ marginTop: 20, paddingTop: 20, borderTop: `1px solid ${isFeatured ? 'rgba(255,255,255,0.08)' : C.sand}` }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-        <div style={{ fontSize: 13, fontWeight: 700, color: isFeatured ? C.cream : C.text, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.3 }}>Request to Book</div>
-        <button type="button" onClick={onClose} style={{ border: 'none', background: 'none', cursor: 'pointer', color: C.textMuted, fontSize: 18, padding: 0 }}>×</button>
-      </div>
-
-      {/* How this owner takes bookings */}
+      {/* How this stay takes bookings */}
       {(stay.paymentMethod || stay.cancellationPolicy || stay.bookingConfirmation) && (
-        <div style={{ background: isFeatured ? 'rgba(255,255,255,0.05)' : `${C.lakeBlue}08`, borderRadius: 10, padding: '14px 16px', marginBottom: 16, border: `1px solid ${isFeatured ? 'rgba(255,255,255,0.08)' : `${C.lakeBlue}15`}` }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>How {stay.name} takes bookings</div>
-          {stay.paymentMethod && (
-            <div style={{ marginBottom: 7 }}>
-              <span style={{ fontSize: 11, fontWeight: 700, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.3 }}>Payment </span>
-              <span style={{ fontSize: 13, color: isFeatured ? C.cream : C.text, fontFamily: "'Libre Franklin', sans-serif" }}>{stay.paymentMethod}</span>
-            </div>
-          )}
-          {stay.cancellationPolicy && (
-            <div style={{ marginBottom: 7 }}>
-              <span style={{ fontSize: 11, fontWeight: 700, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.3 }}>Cancellation </span>
-              <span style={{ fontSize: 13, color: isFeatured ? C.cream : C.text, fontFamily: "'Libre Franklin', sans-serif" }}>{stay.cancellationPolicy}</span>
-            </div>
-          )}
-          {stay.bookingConfirmation && (
-            <div>
-              <span style={{ fontSize: 11, fontWeight: 700, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.3 }}>Confirmation </span>
-              <span style={{ fontSize: 13, color: isFeatured ? C.cream : C.text, fontFamily: "'Libre Franklin', sans-serif" }}>{stay.bookingConfirmation}</span>
-            </div>
-          )}
+        <div style={{ background: isFeatured ? 'rgba(255,255,255,0.04)' : `${C.lakeBlue}06`, borderRadius: 10, padding: '11px 14px', marginBottom: 14, border: `1px solid ${isFeatured ? 'rgba(255,255,255,0.07)' : `${C.lakeBlue}12`}` }}>
+          <div style={{ fontSize: 10, fontWeight: 700, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1, textTransform: 'uppercase', marginBottom: 7 }}>How {stay.name} takes bookings</div>
+          {stay.paymentMethod    && <div style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.55)' : C.textLight, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 3 }}><strong style={{ color: isFeatured ? 'rgba(255,255,255,0.35)' : C.textMuted, fontWeight: 600 }}>Payment</strong> · {stay.paymentMethod}</div>}
+          {stay.cancellationPolicy && <div style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.55)' : C.textLight, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 3 }}><strong style={{ color: isFeatured ? 'rgba(255,255,255,0.35)' : C.textMuted, fontWeight: 600 }}>Cancellation</strong> · {stay.cancellationPolicy}</div>}
+          {stay.bookingConfirmation && <div style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.55)' : C.textLight, fontFamily: "'Libre Franklin', sans-serif" }}><strong style={{ color: isFeatured ? 'rgba(255,255,255,0.35)' : C.textMuted, fontWeight: 600 }}>Confirmation</strong> · {stay.bookingConfirmation}</div>}
         </div>
       )}
 
-      {/* Mini availability calendar */}
-      <div style={{ marginBottom: 16 }}>
-        <div style={{ fontSize: 11, fontWeight: 700, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>Availability</div>
-        {renderMiniCalendar()}
-        {blocked?.length > 0 && <p style={{ fontSize: 11, color: C.textMuted, margin: '6px 0 0', fontFamily: "'Libre Franklin', sans-serif" }}>Red = booked. If your dates are blocked, use the waitlist below.</p>}
+      {/* Header row */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', fontFamily: "'Libre Franklin', sans-serif", color: isFeatured ? 'rgba(255,255,255,0.35)' : C.textMuted }}>
+          {pickStep === 'in' && 'Pick a check-in date'}
+          {pickStep === 'out' && 'Now pick check-out'}
+          {pickStep === 'done' && checkIn && checkOut && `${fmtDate(checkIn)} → ${fmtDate(checkOut)}`}
+        </div>
+        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+          {(checkIn || checkOut) && (
+            <button type="button" onClick={() => { setCheckIn(null); setCheckOut(null); setPickStep('in'); setReqStatus(null); setWaitStatus(null); }} style={{ fontSize: 11, color: C.textMuted, background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontFamily: "'Libre Franklin', sans-serif" }}>Clear</button>
+          )}
+          <button type="button" onClick={onClose} style={{ border: 'none', background: 'none', cursor: 'pointer', color: C.textMuted, fontSize: 20, padding: 0, lineHeight: 1 }}>×</button>
+        </div>
       </div>
 
-      {status === 'done' && <div style={{ background: '#F0FDF4', border: '1px solid #86EFAC', borderRadius: 8, padding: '12px 14px', fontSize: 13, color: '#166534', fontFamily: "'Libre Franklin', sans-serif" }}>Request sent! The owner will contact you directly.</div>}
-      {status === 'waitlisted' && <div style={{ background: '#F0FDF4', border: '1px solid #86EFAC', borderRadius: 8, padding: '12px 14px', fontSize: 13, color: '#166534', fontFamily: "'Libre Franklin', sans-serif" }}>You're on the waitlist. We'll text you if those dates open up.</div>}
-      {status !== 'done' && status !== 'waitlisted' && (
-        <div style={{ display: 'grid', gap: 10 }}>
-          {status === 'error' && <div style={{ fontSize: 12, color: '#B91C1C', fontFamily: "'Libre Franklin', sans-serif" }}>Name and phone are required.</div>}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-            <input style={drawerInp} placeholder="Your name" value={form.name} onChange={e => set('name', e.target.value)} />
-            <input style={drawerInp} placeholder="Phone number" value={form.phone} onChange={e => set('phone', e.target.value)} />
+      {blocked === null ? (
+        <div style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", padding: '12px 0' }}>Loading availability...</div>
+      ) : (
+        <>
+          {/* Month nav */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+            <button type="button" style={navBtn} onClick={() => setViewMonth(v => v.month === 0 ? { year: v.year - 1, month: 11 } : { year: v.year, month: v.month - 1 })}>‹</button>
+            <button type="button" style={navBtn} onClick={() => setViewMonth(v => v.month === 11 ? { year: v.year + 1, month: 0 } : { year: v.year, month: v.month + 1 })}>›</button>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-            <input style={drawerInp} placeholder="Dates (e.g. July 14-21)" value={form.dates} onChange={e => set('dates', e.target.value)} />
-            <input style={drawerInp} placeholder="# guests" value={form.guests} onChange={e => set('guests', e.target.value)} />
+
+          {/* Calendar */}
+          <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', marginBottom: 10 }}>
+            {renderMonth(viewMonth.year, viewMonth.month)}
+            {renderMonth(nextM.year, nextM.month)}
           </div>
-          <textarea style={{ ...drawerInp, minHeight: 56, resize: 'none' }} placeholder="Message (optional)" value={form.message} onChange={e => set('message', e.target.value)} />
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-            <button type="button" onClick={submit} disabled={status === 'loading'} style={{ padding: '10px 22px', borderRadius: 20, border: 'none', background: isFeatured ? C.sunset : accent, color: '#fff', fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer' }}>
-              {status === 'loading' ? 'Sending...' : 'Request Dates →'}
-            </button>
-            {isFeatured && (
-              <button type="button" onClick={joinWaitlist} disabled={status === 'loading'} style={{ padding: '10px 22px', borderRadius: 20, border: `1px solid ${C.sunset}40`, background: 'transparent', color: C.sunset, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer' }}>
-                Join Waitlist
-              </button>
+
+          {/* Legend */}
+          <div style={{ display: 'flex', gap: 14, marginBottom: 14, flexWrap: 'wrap' }}>
+            <span style={{ fontSize: 10, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", display: 'flex', alignItems: 'center', gap: 4 }}>
+              <span style={{ width: 10, height: 10, borderRadius: 2, background: '#FECACA', display: 'inline-block' }} /> Booked
+            </span>
+            {checkIn && (
+              <span style={{ fontSize: 10, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", display: 'flex', alignItems: 'center', gap: 4 }}>
+                <span style={{ width: 10, height: 10, borderRadius: 2, background: accent, display: 'inline-block' }} /> Your selection
+              </span>
             )}
           </div>
-        </div>
+
+          {/* Availability result */}
+          {checkIn && checkOut && (
+            <div style={{ padding: '10px 14px', borderRadius: 10, marginBottom: 14, background: isAvailable ? (isFeatured ? 'rgba(16,185,129,0.12)' : '#F0FDF4') : (isFeatured ? 'rgba(220,38,38,0.12)' : '#FEF2F2'), border: `1px solid ${isAvailable ? '#86EFAC' : '#FECACA'}` }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: isAvailable ? '#166534' : '#B91C1C', fontFamily: "'Libre Franklin', sans-serif" }}>
+                {isAvailable ? `✓ ${fmtDate(checkIn)} to ${fmtDate(checkOut)} looks available` : '✗ Those dates overlap with a booking'}
+              </div>
+              {!isAvailable && <div style={{ fontSize: 11, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginTop: 4 }}>Try different dates, or join the waitlist below.</div>}
+            </div>
+          )}
+
+          {/* Request form — only when available */}
+          {checkIn && checkOut && isAvailable && reqStatus !== 'done' && (
+            <div style={{ display: 'grid', gap: 10 }}>
+              {reqStatus === 'error' && <div style={{ fontSize: 12, color: '#B91C1C', fontFamily: "'Libre Franklin', sans-serif" }}>Name and phone are required.</div>}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                <input style={inp} placeholder="Your name" value={form.name} onChange={e => setF('name', e.target.value)} />
+                <input style={inp} placeholder="Phone number" value={form.phone} onChange={e => setF('phone', e.target.value)} />
+              </div>
+              <textarea style={{ ...inp, minHeight: 52, resize: 'none' }} placeholder="Message to owner (optional)" value={form.message} onChange={e => setF('message', e.target.value)} />
+              <button type="button" onClick={submitRequest} disabled={reqStatus === 'loading'}
+                style={{ alignSelf: 'flex-start', padding: '11px 26px', borderRadius: 22, border: 'none', background: isFeatured ? C.sunset : accent, color: '#fff', fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: reqStatus === 'loading' ? 'default' : 'pointer' }}>
+                {reqStatus === 'loading' ? 'Sending...' : `Request ${fmtDate(checkIn)} → ${fmtDate(checkOut)} →`}
+              </button>
+            </div>
+          )}
+          {reqStatus === 'done' && (
+            <div style={{ background: '#F0FDF4', border: '1px solid #86EFAC', borderRadius: 10, padding: '12px 14px', fontSize: 13, color: '#166534', fontFamily: "'Libre Franklin', sans-serif" }}>
+              Request sent! The owner will contact you directly to confirm.
+            </div>
+          )}
+
+          {/* Waitlist — when dates blocked */}
+          {checkIn && checkOut && !isAvailable && waitStatus !== 'done' && (
+            <div style={{ display: 'grid', gap: 10, marginTop: 4 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 0.5, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>Notify me if those dates open up</div>
+              {waitStatus === 'error' && <div style={{ fontSize: 12, color: '#B91C1C', fontFamily: "'Libre Franklin', sans-serif" }}>Name and phone are required.</div>}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                <input style={inp} placeholder="Your name" value={form.name} onChange={e => setF('name', e.target.value)} />
+                <input style={inp} placeholder="Phone number" value={form.phone} onChange={e => setF('phone', e.target.value)} />
+              </div>
+              <button type="button" onClick={joinWaitlist} disabled={waitStatus === 'loading'}
+                style={{ alignSelf: 'flex-start', padding: '11px 26px', borderRadius: 22, border: `1px solid ${isFeatured ? C.sunset + '50' : accent + '50'}`, background: 'transparent', color: isFeatured ? C.sunsetLight : accent, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: waitStatus === 'loading' ? 'default' : 'pointer' }}>
+                {waitStatus === 'loading' ? 'Adding...' : 'Join Waitlist →'}
+              </button>
+            </div>
+          )}
+          {waitStatus === 'done' && (
+            <div style={{ background: '#F0FDF4', border: '1px solid #86EFAC', borderRadius: 10, padding: '12px 14px', fontSize: 13, color: '#166534', fontFamily: "'Libre Franklin', sans-serif", marginTop: 4 }}>
+              You're on the waitlist. We'll text if those dates open up.
+            </div>
+          )}
+        </>
       )}
     </div>
   );
@@ -359,7 +444,7 @@ const DESC_LIMIT = 180;
 function StayCard({ stay, i }) {
   const accent = TYPE_COLORS[stay.stayType] || C.lakeBlue;
   const isFeatured = stay.tier === 'featured';
-  const [showBooking, setShowBooking] = React.useState(false);
+  const [showCalendar, setShowCalendar] = React.useState(false);
   const [descExpanded, setDescExpanded] = React.useState(false);
   const [lightbox, setLightbox] = React.useState(null);
   const descLong = stay.description && stay.description.length > DESC_LIMIT;
@@ -489,15 +574,15 @@ function StayCard({ stay, i }) {
               return null;
             })()}
             {stay.tier !== 'free' && (
-              <button type="button" onClick={e => { e.stopPropagation(); setShowBooking(v => !v); }} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: isFeatured ? 'rgba(255,255,255,0.5)' : C.textMuted, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
-                {showBooking ? 'Close' : 'Request to Book →'}
+              <button type="button" onClick={e => { e.stopPropagation(); setShowCalendar(v => !v); }} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: isFeatured ? C.sunsetLight : accent, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+                {showCalendar ? 'Close' : 'Check Availability →'}
               </button>
             )}
           </div>
 
-          {/* Booking drawer */}
-          {showBooking && stay.tier !== 'free' && (
-            <BookingDrawer stay={stay} onClose={() => setShowBooking(false)} />
+          {/* Availability calendar */}
+          {showCalendar && stay.tier !== 'free' && (
+            <GuestCalendar stay={stay} onClose={() => setShowCalendar(false)} />
           )}
         </div>
 
@@ -992,7 +1077,7 @@ function ListYourPropertySection({ stays = [] }) {
     } catch { return {}; }
   })();
 
-  const [form, setForm] = useState({ name: prefill.name, stayType: '', address: '', bookingUrl: '', email: prefill.email, description: '', phone: '', beds: '', guests: '', amenities: [], photos: [], pricePerNight: '', minStay: '', checkIn: '', checkOut: '', houseRules: '', paymentMethod: '', cancellationPolicy: '', bookingConfirmation: '', _hp: '' });
+  const [form, setForm] = useState({ name: prefill.name, stayType: '', address: '', bookingUrl: '', email: prefill.email, description: '', phone: '', beds: '', guests: '', amenities: [], photos: [], pricePerNight: '', minStay: '', checkIn: '', checkOut: '', houseRules: '', paymentMethod: '', cancellationPolicy: '', bookingConfirmation: '', icalUrl: '', _hp: '' });
   const [status, setStatus] = useState(null);
   const [lightbox, setLightbox] = useState(null);
   const formRef = useRef(null);
@@ -1538,9 +1623,18 @@ function ListYourPropertySection({ stays = [] }) {
               <p style={{ fontSize: 14, color: isFeatured ? 'rgba(255,255,255,0.5)' : C.textLight, lineHeight: 1.8, margin: '0 0 16px', maxWidth: 480, marginLeft: 'auto', marginRight: 'auto' }}>
                 Your listing is live on the stays page. Visitors can find you on the map, see your details, and click through to book with you directly. Check your texts for a confirmation.
               </p>
-              <p style={{ fontSize: 13, color: isFeatured ? 'rgba(255,255,255,0.35)' : C.textMuted, lineHeight: 1.7, margin: '0 0 28px', maxWidth: 460, marginLeft: 'auto', marginRight: 'auto' }}>
+              <p style={{ fontSize: 13, color: isFeatured ? 'rgba(255,255,255,0.35)' : C.textMuted, lineHeight: 1.7, margin: '0 0 20px', maxWidth: 460, marginLeft: 'auto', marginRight: 'auto' }}>
                 Before July 4th we'll send you details about keeping your listing live after the summer launch period ends - month to month, no contract, cancel anytime.
               </p>
+              <div style={{ background: isFeatured ? 'rgba(255,255,255,0.06)' : '#f0f8ff', border: `1px solid ${isFeatured ? 'rgba(255,255,255,0.1)' : C.lakeBlue + '30'}`, borderRadius: 12, padding: '16px 20px', maxWidth: 460, margin: '0 auto 28px', textAlign: 'left' }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: isFeatured ? C.cream : C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5, marginBottom: 6 }}>Next step: set your availability</div>
+                <p style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.5)' : C.textLight, margin: '0 0 10px', lineHeight: 1.6, fontFamily: "'Libre Franklin', sans-serif" }}>
+                  Guests can see and select your available dates in real time. Head to your manage page to block out dates or add your Airbnb/VRBO calendar for automatic sync.
+                </p>
+                <a href="/stays/manage" style={{ fontSize: 11, fontWeight: 700, color: isFeatured ? C.sunsetLight : C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1, textTransform: 'uppercase', textDecoration: 'none' }}>
+                  Set Up Calendar →
+                </a>
+              </div>
               <a href="/stays" style={{
                 display: 'inline-block', padding: '14px 32px', background: C.lakeBlue, color: C.cream, borderRadius: 28,
                 fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5,
@@ -1693,6 +1787,15 @@ function ListYourPropertySection({ stays = [] }) {
                   <div>
                     <label style={labelStyle}>Booking URL <span style={{ fontWeight: 400, color: isFeatured ? 'rgba(255,255,255,0.3)' : C.textMuted }}>(optional - Airbnb, VRBO, your own site)</span></label>
                     <input style={inputStyle} value={form.bookingUrl} onChange={e => set('bookingUrl', e.target.value)} placeholder="https://airbnb.com/rooms/..." />
+                  </div>
+
+                  {/* iCal calendar sync */}
+                  <div>
+                    <label style={labelStyle}>Availability calendar link <span style={{ fontWeight: 400, color: isFeatured ? 'rgba(255,255,255,0.3)' : C.textMuted }}>(optional)</span></label>
+                    <input style={inputStyle} value={form.icalUrl} onChange={e => set('icalUrl', e.target.value)} placeholder="https://www.airbnb.com/calendar/ical/..." />
+                    <p style={{ fontSize: 11, color: isFeatured ? 'rgba(255,255,255,0.25)' : C.textMuted, margin: '6px 0 0', lineHeight: 1.6 }}>
+                      On Airbnb or VRBO? Export your iCal link from their calendar settings and paste it here. We'll sync your blocked dates automatically every day so guests see real-time availability.
+                    </p>
                   </div>
 
                   {/* How you take bookings */}
