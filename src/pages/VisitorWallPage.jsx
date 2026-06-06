@@ -433,69 +433,129 @@ function ShareButton({ label = 'Share with friends', style: styleProp = {} }) {
   );
 }
 
-// ── Instagram gallery ────────────────────────────────────────
-function InstagramGallery() {
-  const [posts, setPosts] = useState([]);
+// ── Client-side image compression ───────────────────────────
+async function compressImage(file, maxPx = 1200, quality = 0.82) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = e => {
+      const img = new Image();
+      img.onerror = reject;
+      img.onload = () => {
+        const ratio = Math.min(maxPx / img.width, maxPx / img.height, 1);
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(img.width * ratio);
+        canvas.height = Math.round(img.height * ratio);
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// ── Arch photo gallery + upload ──────────────────────────────
+function ArchGallery() {
+  const [photos, setPhotos] = useState([]);
+  const [igPosts, setIgPosts] = useState([]);
   const [loaded, setLoaded] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadDone, setUploadDone] = useState(false);
+  const [uploadErr, setUploadErr] = useState('');
+  const [caption, setCaption] = useState('');
+  const inputRef = useRef(null);
 
   useEffect(() => {
-    fetch('/api/instagram-gallery')
-      .then(r => r.json())
-      .then(d => { setPosts(d.posts || []); setLoaded(true); })
-      .catch(() => setLoaded(true));
+    Promise.all([
+      fetch('/api/arch-photo').then(r => r.json()).catch(() => ({ photos: [] })),
+      fetch('/api/instagram-gallery').then(r => r.json()).catch(() => ({ posts: [] })),
+    ]).then(([archData, igData]) => {
+      setPhotos(archData.photos || []);
+      setIgPosts(igData.posts || []);
+      setLoaded(true);
+    });
   }, []);
+
+  const handleFileSelect = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { setUploadErr('Please select an image file.'); return; }
+
+    setUploading(true); setUploadErr(''); setUploadDone(false);
+    try {
+      const compressed = await compressImage(file);
+      const res = await fetch('/api/arch-photo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageData: compressed, caption: caption.trim() }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setPhotos(prev => [{ id: Date.now(), url: data.url, caption: caption.trim(), created: new Date().toISOString() }, ...prev]);
+        setUploadDone(true); setCaption('');
+      } else { setUploadErr(data.error || 'Upload failed.'); }
+    } catch { setUploadErr('Upload failed. Please try again.'); }
+    setUploading(false);
+    if (inputRef.current) inputRef.current.value = '';
+  };
+
+  // Merge uploaded photos + IG posts, interleaved for variety
+  const allItems = [];
+  const maxLen = Math.max(photos.length, igPosts.length);
+  for (let i = 0; i < maxLen; i++) {
+    if (photos[i]) allItems.push({ type: 'upload', ...photos[i] });
+    if (igPosts[i]) allItems.push({ type: 'ig', ...igPosts[i] });
+  }
+
+  const inp = { width: '100%', padding: '11px 14px', borderRadius: 10, border: `1px solid ${C.sand}`, background: '#fff', fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.text, outline: 'none', boxSizing: 'border-box' };
 
   return (
     <section style={{ padding: '80px 24px', background: C.warmWhite }}>
       <div style={{ maxWidth: 1000, margin: '0 auto' }}>
         <SectionLabel>From the Community</SectionLabel>
         <SectionTitle>Padlock Arch — Visitor Photos</SectionTitle>
-        <p style={{ fontSize: 14, color: C.textLight, textAlign: 'center', lineHeight: 1.7, marginBottom: 12 }}>
-          Visiting Manitou Beach? Tag <strong style={{ color: C.lakeBlue }}>@manitoubeachlife</strong> at the padlock arch and we'll add your photo here.
-        </p>
-        <p style={{ fontSize: 12, color: C.textMuted, textAlign: 'center', marginBottom: 40, fontFamily: "'Libre Franklin', sans-serif" }}>
-          Found in the village near the waterfront.
-        </p>
 
-        {loaded && posts.length > 0 ? (
-          <div style={{
-            columns: '3 240px', columnGap: 14,
-          }}>
-            {posts.map(post => (
-              <a
-                key={post.id}
-                href={post.permalink}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ display: 'block', marginBottom: 14, borderRadius: 12, overflow: 'hidden', breakInside: 'avoid', textDecoration: 'none' }}
-              >
-                <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', background: C.sand }}>
-                  <img
-                    src={post.mediaUrl}
-                    alt={post.caption || 'Manitou Beach visitor photo'}
-                    style={{ width: '100%', display: 'block', transition: 'transform 0.3s' }}
-                    onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.03)'}
-                    onMouseLeave={e => e.currentTarget.style.transform = 'none'}
-                    onError={e => e.target.closest('a').style.display = 'none'}
-                  />
-                  {post.caption && (
-                    <div style={{ padding: '10px 12px', background: '#fff' }}>
-                      <p style={{ fontSize: 12, color: C.textLight, margin: 0, lineHeight: 1.5, fontFamily: "'Libre Franklin', sans-serif" }}>
-                        {post.caption.length > 100 ? post.caption.slice(0, 100) + '…' : post.caption}
-                      </p>
-                    </div>
-                  )}
-                </div>
+        {/* Upload box */}
+        <div style={{ maxWidth: 500, margin: '0 auto 48px', textAlign: 'center', background: '#fff', borderRadius: 16, padding: '28px 24px', border: `1px solid ${C.sand}`, boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
+          <div style={{ fontSize: 28, marginBottom: 8 }}>📸</div>
+          <p style={{ fontSize: 14, color: C.text, fontWeight: 600, marginBottom: 4 }}>Been to the padlock arch?</p>
+          <p style={{ fontSize: 13, color: C.textMuted, marginBottom: 20, lineHeight: 1.6 }}>Drop your photo here. It goes straight into the gallery — no Instagram needed.</p>
+
+          <input style={{ ...inp, marginBottom: 12 }} placeholder="Add a caption (optional)" value={caption} onChange={e => setCaption(e.target.value)} />
+
+          <input ref={inputRef} type="file" accept="image/*" capture="environment" onChange={handleFileSelect} style={{ display: 'none' }} id="arch-photo-input" />
+
+          {uploadDone ? (
+            <div style={{ color: C.sage, fontWeight: 700, fontSize: 14, padding: '10px 0' }}>✓ Photo added to the gallery!</div>
+          ) : (
+            <label htmlFor="arch-photo-input" style={{ display: 'inline-block', padding: '13px 28px', borderRadius: 24, background: uploading ? C.sand : C.lakeBlue, color: '#fff', fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: uploading ? 'wait' : 'pointer', transition: 'all 0.2s' }}>
+              {uploading ? 'Uploading...' : 'Choose Photo →'}
+            </label>
+          )}
+
+          {uploadErr && <p style={{ color: '#ef4444', fontSize: 12, marginTop: 10, fontFamily: "'Libre Franklin', sans-serif" }}>{uploadErr}</p>}
+          <p style={{ fontSize: 11, color: C.textMuted, marginTop: 12 }}>Photos compress automatically. Max 7MB.</p>
+        </div>
+
+        {/* Gallery grid */}
+        {loaded && allItems.length > 0 ? (
+          <div style={{ columns: '3 220px', columnGap: 14 }}>
+            {allItems.map((item, i) => item.type === 'upload' ? (
+              <div key={item.id} style={{ marginBottom: 14, borderRadius: 12, overflow: 'hidden', breakInside: 'avoid', background: C.sand }}>
+                <img src={item.url} alt={item.caption || 'Visitor photo at Manitou Beach padlock arch'} style={{ width: '100%', display: 'block' }} onError={e => e.target.closest('div').style.display = 'none'} />
+                {item.caption && <div style={{ padding: '8px 12px', background: '#fff' }}><p style={{ fontSize: 12, color: C.textLight, margin: 0, lineHeight: 1.5, fontFamily: "'Libre Franklin', sans-serif" }}>{item.caption}</p></div>}
+              </div>
+            ) : (
+              <a key={item.id} href={item.permalink} target="_blank" rel="noopener noreferrer" style={{ display: 'block', marginBottom: 14, borderRadius: 12, overflow: 'hidden', breakInside: 'avoid', textDecoration: 'none', background: C.sand }}>
+                <img src={item.mediaUrl} alt={item.caption || 'Manitou Beach visitor photo'} style={{ width: '100%', display: 'block' }} onError={e => e.target.closest('a').style.display = 'none'} />
+                {item.caption && <div style={{ padding: '8px 12px', background: '#fff' }}><p style={{ fontSize: 12, color: C.textLight, margin: 0, lineHeight: 1.5, fontFamily: "'Libre Franklin', sans-serif" }}>{item.caption}</p></div>}
               </a>
             ))}
           </div>
-        ) : loaded ? (
-          <div style={{ textAlign: 'center', padding: '48px 0', color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
-            <div style={{ fontSize: 40, marginBottom: 16 }}>📸</div>
-            <p style={{ fontSize: 14, marginBottom: 8 }}>No photos yet — be the first!</p>
-            <a href="https://instagram.com/manitoubeachlife" target="_blank" rel="noopener noreferrer" style={{ color: C.lakeBlue, fontSize: 13, fontWeight: 700 }}>
-              @manitoubeachlife →
-            </a>
+        ) : loaded && allItems.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '32px 0', color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
+            <p style={{ fontSize: 14 }}>No photos yet — upload yours above and be the first!</p>
           </div>
         ) : null}
       </div>
@@ -623,8 +683,8 @@ export default function VisitorWallPage() {
         </div>
       </section>
 
-      {/* ── Instagram gallery ── */}
-      <InstagramGallery />
+      {/* ── Arch photo gallery + upload ── */}
+      <ArchGallery />
 
       <Footer scrollTo={subScrollTo} />
     </div>
