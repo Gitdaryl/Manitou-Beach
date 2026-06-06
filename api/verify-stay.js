@@ -95,8 +95,8 @@ export default async function handler(req, res) {
     };
 
     if (isBeta) {
-      // Summer launch: everyone gets full Listed Enhanced experience free through July 4th
-      updateProps['Status'] = { status: { name: 'Listed Enhanced' } };
+      // Summer launch: free through July 4th - Featured tier gets the featured card look
+      updateProps['Status'] = { status: { name: tier === 'featured' ? 'Listed Featured' : 'Listed Enhanced' } };
       updateProps['Featured Expires'] = { date: { start: '2026-07-04' } };
     } else if (!isPaid) {
       // Post-beta free tier - basic directory listing

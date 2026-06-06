@@ -354,10 +354,14 @@ function BookingDrawer({ stay, onClose }) {
 }
 
 // ── Stay Card ───────────────────────────────────────────────
+const DESC_LIMIT = 180;
+
 function StayCard({ stay, i }) {
   const accent = TYPE_COLORS[stay.stayType] || C.lakeBlue;
   const isFeatured = stay.tier === 'featured';
   const [showBooking, setShowBooking] = React.useState(false);
+  const [descExpanded, setDescExpanded] = React.useState(false);
+  const descLong = stay.description && stay.description.length > DESC_LIMIT;
 
   return (
     <FadeIn delay={i * 80} direction={i % 2 === 0 ? 'left' : 'right'}>
@@ -424,9 +428,16 @@ function StayCard({ stay, i }) {
 
           {/* Description */}
           {stay.description && (
-            <p style={{ fontSize: 14, color: isFeatured ? 'rgba(255,255,255,0.7)' : C.textLight, lineHeight: 1.7, margin: '0 0 14px 0' }}>
-              {stay.description}
-            </p>
+            <div style={{ marginBottom: 14 }}>
+              <p style={{ fontSize: 14, color: isFeatured ? 'rgba(255,255,255,0.7)' : C.textLight, lineHeight: 1.7, margin: 0 }}>
+                {descLong && !descExpanded ? stay.description.slice(0, DESC_LIMIT).trimEnd() + '...' : stay.description}
+              </p>
+              {descLong && (
+                <button type="button" onClick={e => { e.stopPropagation(); setDescExpanded(v => !v); }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: isFeatured ? C.sunsetLight : accent, fontFamily: "'Libre Franklin', sans-serif", padding: '4px 0 0', display: 'block' }}>
+                  {descExpanded ? 'Show less ↑' : 'Read more ↓'}
+                </button>
+              )}
+            </div>
           )}
 
           {/* Amenity tags */}
