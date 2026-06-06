@@ -481,14 +481,23 @@ function StayCard({ stay, i }) {
 
             {/* Main photo */}
             {(stay.photos?.[0] || stay.logo || stay.photo) && (
-              <img
-                className="stay-card-logo"
-                src={stay.photos?.[0] || stay.logo || stay.photo}
-                alt=""
-                onClick={e => { e.stopPropagation(); if (stay.photos?.length) setLightbox({ images: stay.photos, startIndex: 0 }); }}
-                style={{ width: 120, height: 120, borderRadius: 16, objectFit: 'cover', flexShrink: 0, background: C.sand, cursor: stay.photos?.length ? 'zoom-in' : 'default' }}
-                onError={e => e.target.style.display = 'none'}
-              />
+              <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+                <img
+                  className="stay-card-logo"
+                  src={stay.photos?.[0] || stay.logo || stay.photo}
+                  alt=""
+                  onClick={e => { e.stopPropagation(); if (stay.photos?.length) setLightbox({ images: stay.photos, startIndex: 0 }); }}
+                  style={{ width: 120, height: 120, borderRadius: 16, objectFit: 'cover', background: C.sand, cursor: stay.photos?.length ? 'zoom-in' : 'default', display: 'block' }}
+                  onError={e => e.target.style.display = 'none'}
+                />
+                {stay.photos?.length > 1 && (
+                  <button type="button"
+                    onClick={e => { e.stopPropagation(); setLightbox({ images: stay.photos, startIndex: 0 }); }}
+                    style={{ fontSize: 10, fontWeight: 600, letterSpacing: 0.3, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif", background: 'none', border: 'none', cursor: 'pointer', padding: 0, textAlign: 'center', whiteSpace: 'nowrap' }}>
+                    📷 {stay.photos.length} photos
+                  </button>
+                )}
+              </div>
             )}
 
             <div style={{ flex: 1, minWidth: 0 }}>
