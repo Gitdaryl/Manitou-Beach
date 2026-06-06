@@ -587,7 +587,7 @@ function StayCard({ stay, i }) {
         {/* Always-visible bottom bar */}
         <div
           onClick={e => e.stopPropagation()}
-          style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 28px 14px', borderTop: `1px solid ${isFeatured ? 'rgba(255,255,255,0.06)' : '#f0ebe4'}` }}
+          style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8, padding: '10px 20px 14px', borderTop: `1px solid ${isFeatured ? 'rgba(255,255,255,0.06)' : '#f0ebe4'}` }}
         >
           <button
             type="button"
@@ -657,7 +657,7 @@ function MapDetailPanel({ stay, onBack }) {
   const photos = (stay.photos || []).filter(Boolean);
 
   return (
-    <div style={{ height: '100%', overflowY: 'auto', display: 'flex', flexDirection: 'column', background: isFeatured ? C.dusk : '#fff' }}>
+    <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column', background: isFeatured ? C.dusk : '#fff' }}>
 
       {/* Back bar */}
       <div style={{ padding: '12px 20px', borderBottom: `1px solid ${isFeatured ? 'rgba(255,255,255,0.08)' : C.sand}`, display: 'flex', alignItems: 'center', background: isFeatured ? C.dusk : '#fff', position: 'sticky', top: 0, zIndex: 2 }}>
@@ -1018,9 +1018,9 @@ function StaysMapView({ stays, filtered }) {
                 {/* Left accent */}
                 <div style={{ position: 'absolute', top: 0, left: 0, width: 3, height: '100%', background: accent, borderRadius: '14px 0 0 14px' }} />
 
-                {/* Logo */}
-                {stay.logo && (
-                  <img src={stay.logo} alt="" style={{ width: 72, height: 72, borderRadius: 12, objectFit: 'cover', flexShrink: 0, background: C.sand }} />
+                {/* Thumbnail */}
+                {(stay.photos?.[0] || stay.logo || stay.photo) && (
+                  <img src={stay.photos?.[0] || stay.logo || stay.photo} alt="" style={{ width: 72, height: 72, borderRadius: 12, objectFit: 'cover', flexShrink: 0, background: C.sand }} onError={e => e.target.style.display='none'} />
                 )}
 
                 <div style={{ flex: 1, minWidth: 0 }}>
