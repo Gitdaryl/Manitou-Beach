@@ -81,8 +81,6 @@ export default async function handler(req, res) {
   if (photoList?.length) {
     properties['Photos JSON'] = { rich_text: [{ text: { content: JSON.stringify(photoList) } }] };
     if (photoList[0]) properties['Photo URL'] = { url: photoList[0] };
-    if (photoList[1]) properties['Photo URL 2'] = { url: photoList[1] };
-    if (photoList[2]) properties['Photo URL 3'] = { url: photoList[2] };
   } else if (photoUrl?.trim()) {
     properties['Photo URL'] = { url: photoUrl.trim() };
   }
