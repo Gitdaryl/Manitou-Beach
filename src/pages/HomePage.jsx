@@ -191,6 +191,10 @@ function Hero({ scrollTo }) {
     </div>
   );
 
+  // ── SUMMERFEST TAKEOVER (Jun 8-20 2026) ──
+  const _now = new Date();
+  const _showSummerfest = !heroTakeover.length && _now >= new Date('2026-06-08T00:00:00') && _now < new Date('2026-06-21T00:00:00');
+
   // ── EVENT HERO (with rotation) ──
   // If a paid Hero Takeover promo is active, show takeover events exclusively
   const isSponsored = heroTakeover.length > 0;
@@ -346,6 +350,43 @@ function Hero({ scrollTo }) {
           </div>
         )}
 
+        {scrollIndicator}
+      </section>
+    );
+  }
+
+  // ── SUMMERFEST HERO (Jun 8-20 2026) ──
+  if (_showSummerfest) {
+    return (
+      <section id="home" style={{ minHeight: "100vh", display: "flex", alignItems: "center", position: "relative", overflow: "hidden" }}>
+        <video
+          autoPlay muted loop playsInline
+          style={{ position: "absolute", inset: 0, width: "100%", height: "120%", objectFit: "cover", zIndex: 1, transform: `translateY(${scrollY * 0.3}px)`, willChange: "transform" }}
+        >
+          <source src="/images/ladies-club/video/LLLC-webloop.mp4" type="video/mp4" />
+        </video>
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg, rgba(10,18,24,0.72) 0%, rgba(26,40,48,0.55) 50%, rgba(10,18,24,0.80) 100%)", zIndex: 2 }} />
+        <div style={{ position: "relative", zIndex: 3, maxWidth: 960, margin: "0 auto", padding: "160px 48px 120px", transform: `translateY(${scrollY * 0.08}px)` }}>
+          <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? "none" : "translateY(24px)", transition: "all 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94)" }}>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.45)", marginBottom: 28 }}>
+              Land &amp; Lake Ladies Club presents
+            </div>
+            <img
+              src="/images/ladies-club/summer-festival.png"
+              alt="Summer Festival 2026"
+              style={{ display: "block", maxWidth: "clamp(260px, 40vw, 460px)", width: "100%", marginBottom: 28, filter: "drop-shadow(0 4px 24px rgba(0,0,0,0.5))" }}
+            />
+            <div style={{ fontFamily: "'Caveat', cursive", fontSize: "clamp(22px, 3vw, 36px)", color: C.sunsetLight, marginBottom: 12 }}>
+              June 20 &middot; Devils Lake Village, Michigan
+            </div>
+            <p style={{ fontSize: 17, color: "rgba(255,255,255,0.65)", lineHeight: 1.8, maxWidth: 480, margin: "0 0 40px 0" }}>
+              Live music, fine arts, crafts, food trucks and family fun - all day long at the heart of the lakes community.
+            </p>
+            <Btn href="/ladies-club" variant="sunset" style={{ fontSize: 16, padding: "14px 36px" }}>
+              See Everything &rarr;
+            </Btn>
+          </div>
+        </div>
         {scrollIndicator}
       </section>
     );
