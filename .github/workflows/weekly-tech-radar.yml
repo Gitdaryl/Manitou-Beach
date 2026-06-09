@@ -1,0 +1,53 @@
+name: Weekly Tech Radar
+
+on:
+  schedule:
+    # Monday 8 AM ET = 13:00 UTC — lands before the work week starts
+    - cron: '0 13 * * 1'
+  workflow_dispatch:
+    inputs:
+      preview:
+        description: 'Preview only (scan + rank + log, no email/Notion writes)'
+        required: false
+        default: 'false'
+        type: choice
+        options: ['false', 'true']
+
+jobs:
+  radar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tech radar
+        run: |
+          FLAGS=""
+          if [ "${{ github.event.inputs.preview }}" = "true" ]; then
+            FLAGS="--preview"
+          fi
+          node scripts/tech-radar.js $FLAGS
+        env:
+          ANTHROPIC_API_KEY:            ${{ secrets.ANTHROPIC_API_KEY }}
+          RESEND_API_KEY:               ${{ secrets.RESEND_API_KEY }}
+          RADAR_FROM:                   ${{ secrets.RADAR_FROM }}
+          RADAR_TO:                     ${{ secrets.RADAR_TO }}
+          # Notion Command Center lives in the Yeti workspace — needs its own
+          # integration token, NOT NOTION_TOKEN_BUSINESS (that's MB-scoped).
+          NOTION_COMMAND_CENTER_TOKEN:  ${{ secrets.NOTION_COMMAND_CENTER_TOKEN }}
+          NOTION_DB_COMMAND_CENTER:     ${{ secrets.NOTION_DB_COMMAND_CENTER }}
+          # Optional: enables competitor/clone monitoring
+          BRAVE_API_KEY:                ${{ secrets.BRAVE_API_KEY }}
+          # Optional: raises GitHub API rate limit
+          GITHUB_TOKEN:                 ${{ secrets.GITHUB_TOKEN }}
