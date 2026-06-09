@@ -27,13 +27,17 @@ const {
   RADAR_TO = 'admin@yetigroove.com',
   // Notion Command Center (Yeti workspace - NOT the MB business token)
   NOTION_COMMAND_CENTER_TOKEN,
-  NOTION_DB_COMMAND_CENTER = '14f8e7a675dc442394d304c6498d5bb2',
+  NOTION_DB_COMMAND_CENTER,
   // Optional integrations
   GITHUB_TOKEN,
   BRAVE_API_KEY,
   // SMS ping for high-urgency items (reuses MB's Twilio setup)
   DARYL_PHONE,
 } = process.env;
+
+// Falls back to the known Master Task Board id. Uses `||` not a default param
+// because GitHub Actions injects "" (not undefined) for unset secrets.
+const COMMAND_CENTER_DB = NOTION_DB_COMMAND_CENTER || '14f8e7a675dc442394d304c6498d5bb2';
 
 const NOW = Date.now();
 const SINCE_TS = Math.floor((NOW - 7 * 24 * 60 * 60 * 1000) / 1000); // 7 days ago, unix seconds
@@ -264,7 +268,7 @@ async function pushToNotion(items) {
   let created = 0;
   for (const it of doItems) {
     const body = {
-      parent: { database_id: NOTION_DB_COMMAND_CENTER },
+      parent: { database_id: COMMAND_CENTER_DB },
       properties: {
         Task: { title: [{ text: { content: `Radar: ${it.title}`.slice(0, 100) } }] },
         Status: { select: { name: 'Backlog' } },
