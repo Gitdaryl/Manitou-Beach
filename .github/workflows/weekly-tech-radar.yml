@@ -47,8 +47,10 @@ jobs:
           # integration token, NOT NOTION_TOKEN_BUSINESS (that's MB-scoped).
           NOTION_COMMAND_CENTER_TOKEN:  ${{ secrets.NOTION_COMMAND_CENTER_TOKEN }}
           NOTION_DB_COMMAND_CENTER:     ${{ secrets.NOTION_DB_COMMAND_CENTER }}
-          # Optional: enables competitor/clone monitoring
+          # Optional: enables competitor/clone monitoring (use either provider)
           BRAVE_API_KEY:                ${{ secrets.BRAVE_API_KEY }}
+          GOOGLE_CSE_KEY:               ${{ secrets.GOOGLE_CSE_KEY }}
+          GOOGLE_CSE_CX:                ${{ secrets.GOOGLE_CSE_CX }}
           # Optional: raises GitHub API rate limit
           GITHUB_TOKEN:                 ${{ secrets.GITHUB_TOKEN }}
           # SMS ping for high-urgency items (reuses MB's existing Twilio secrets)

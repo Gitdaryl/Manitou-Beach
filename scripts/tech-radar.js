@@ -28,9 +28,11 @@ const {
   // Notion Command Center (Yeti workspace - NOT the MB business token)
   NOTION_COMMAND_CENTER_TOKEN,
   NOTION_DB_COMMAND_CENTER,
-  // Optional integrations
+  // Optional integrations (competitor/clone search — use either provider)
   GITHUB_TOKEN,
   BRAVE_API_KEY,
+  GOOGLE_CSE_KEY,
+  GOOGLE_CSE_CX,
   // SMS ping for high-urgency items (reuses MB's Twilio setup)
   DARYL_PHONE,
 } = process.env;
@@ -125,19 +127,25 @@ async function fetchGitHub(queries, sourceTag) {
   return dedupe(out);
 }
 
-// Optional: competitor / clone alerts via Brave Search API
+// Competitor / clone alerts — searches for new community/events/ticketing
+// sites launching in Daryl's target territories. Provider-agnostic: uses
+// Brave if a key is present, else Google Programmable Search, else skips.
+const CLONE_QUERIES = [
+  'community events platform South Haven Michigan',
+  'local business directory Traverse City Michigan',
+  'town community website ticketing Michigan launch',
+];
+
 async function fetchCloneAlerts() {
-  if (!BRAVE_API_KEY) {
-    console.warn('  [clone-alerts] skipped: no BRAVE_API_KEY (add one to enable competitor monitoring)');
-    return [];
-  }
-  const queries = [
-    'community events platform South Haven Michigan',
-    'local business directory Traverse City Michigan',
-    'town community website ticketing Michigan launch',
-  ];
+  if (BRAVE_API_KEY) return cloneViaBrave();
+  if (GOOGLE_CSE_KEY && GOOGLE_CSE_CX) return cloneViaGoogle();
+  console.warn('  [clone-alerts] skipped: no search key (set BRAVE_API_KEY, or GOOGLE_CSE_KEY + GOOGLE_CSE_CX)');
+  return [];
+}
+
+async function cloneViaBrave() {
   const out = [];
-  for (const q of queries) {
+  for (const q of CLONE_QUERIES) {
     const url = `https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(q)}&freshness=pw&count=5`;
     const res = await fetch(url, {
       headers: { Accept: 'application/json', 'X-Subscription-Token': BRAVE_API_KEY },
@@ -145,12 +153,22 @@ async function fetchCloneAlerts() {
     if (!res.ok) throw new Error(`Brave ${res.status}`);
     const data = await res.json();
     for (const r of data.web?.results || []) {
-      out.push({
-        source: 'clone-alert',
-        title: `${r.title} — ${r.description || ''}`.slice(0, 220),
-        url: r.url,
-        signal: 'past week',
-      });
+      out.push({ source: 'clone-alert', title: `${r.title} — ${r.description || ''}`.slice(0, 220), url: r.url, signal: 'past week' });
+    }
+  }
+  return dedupe(out);
+}
+
+async function cloneViaGoogle() {
+  const out = [];
+  for (const q of CLONE_QUERIES) {
+    // dateRestrict=w1 limits to the past week
+    const url = `https://www.googleapis.com/customsearch/v1?key=${GOOGLE_CSE_KEY}&cx=${GOOGLE_CSE_CX}&q=${encodeURIComponent(q)}&dateRestrict=w1&num=5`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`Google CSE ${res.status}`);
+    const data = await res.json();
+    for (const r of data.items || []) {
+      out.push({ source: 'clone-alert', title: `${r.title} — ${r.snippet || ''}`.slice(0, 220), url: r.link, signal: 'past week' });
     }
   }
   return dedupe(out);
