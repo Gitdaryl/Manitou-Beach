@@ -51,3 +51,8 @@ jobs:
           BRAVE_API_KEY:                ${{ secrets.BRAVE_API_KEY }}
           # Optional: raises GitHub API rate limit
           GITHUB_TOKEN:                 ${{ secrets.GITHUB_TOKEN }}
+          # SMS ping for high-urgency items (reuses MB's existing Twilio secrets)
+          DARYL_PHONE:                  ${{ secrets.DARYL_PHONE }}
+          TWILIO_ACCOUNT_SID:           ${{ secrets.TWILIO_ACCOUNT_SID }}
+          TWILIO_AUTH_TOKEN:            ${{ secrets.TWILIO_AUTH_TOKEN }}
+          TWILIO_PHONE:                 ${{ secrets.TWILIO_PHONE }}

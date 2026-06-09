@@ -16,6 +16,7 @@
 
 import Anthropic from '@anthropic-ai/sdk';
 import { Resend } from 'resend';
+import { sendSMS, normalizePhone } from '../api/lib/twilio.js';
 
 const PREVIEW = process.argv.includes('--preview');
 
@@ -30,6 +31,8 @@ const {
   // Optional integrations
   GITHUB_TOKEN,
   BRAVE_API_KEY,
+  // SMS ping for high-urgency items (reuses MB's Twilio setup)
+  DARYL_PHONE,
 } = process.env;
 
 const NOW = Date.now();
@@ -212,8 +215,11 @@ Return ONLY a JSON array (no prose, no markdown fences). Each element:
   "category": "AI model" | "Dev tool" | "Video/creative" | "Competitor" | "Other",
   "project": one of ["Manitou Beach","Yetickets","Sunny Skies","Swayze Legacy","Holly Realty","Joe Profit","DLVL - Darlene","YetiClone","Yeti Groove Media","Business Dev"],
   "why": "<one sharp sentence: what it is + why it matters to HIS work>",
-  "effort": "trivial" | "moderate" | "significant"
+  "effort": "trivial" | "moderate" | "significant",
+  "urgent": true | false
 }
+
+Set "urgent": true ONLY for items that warrant interrupting his day with a text — a competitor/clone surfacing in one of his target territories, or a capability shift that materially changes a build already in progress. Almost everything should be urgent:false. A normal week has zero urgent items.
 
 Order the array most-important first. Max 12 items. Be ruthless — fewer, higher-signal items beat a long list.
 
@@ -342,6 +348,30 @@ async function sendDigest(items, candidateCount) {
   return true;
 }
 
+// ── SMS ping for urgent items (rare by design) ──────────────────────────────
+async function pingUrgent(items) {
+  const urgent = items.filter(i => i.urgent && i.verdict === 'do');
+  if (!urgent.length) {
+    console.log('No urgent items — no SMS.');
+    return false;
+  }
+  if (!DARYL_PHONE) {
+    console.warn(`  [sms] skipped: no DARYL_PHONE. ${urgent.length} urgent item(s) would have pinged.`);
+    return false;
+  }
+  const lead = urgent[0];
+  const extra = urgent.length > 1 ? ` (+${urgent.length - 1} more)` : '';
+  const body = `Yeti Radar - URGENT${extra}\n${lead.title.slice(0, 110)}\n${lead.why.slice(0, 120)}\n${lead.url}\nFull digest in your inbox.`;
+  try {
+    await sendSMS(normalizePhone(DARYL_PHONE), body);
+    console.log(`SMS: pinged ${DARYL_PHONE} about ${urgent.length} urgent item(s).`);
+    return true;
+  } catch (err) {
+    console.warn(`  [sms] failed: ${err.message}`);
+    return false;
+  }
+}
+
 // ── Main ────────────────────────────────────────────────────────────────────
 async function main() {
   console.log(`Yeti Tech Radar — ${new Date(NOW).toISOString()}${PREVIEW ? ' (PREVIEW)' : ''}`);
@@ -353,13 +383,15 @@ async function main() {
   if (PREVIEW) {
     console.log('\n=== PREVIEW (no writes) ===');
     for (const it of ranked) {
-      console.log(`[${it.verdict.toUpperCase()}] (${it.project}) ${it.title}\n   ${it.why}\n   ${it.url}\n`);
+      const flag = it.urgent ? ' ⚠ URGENT' : '';
+      console.log(`[${it.verdict.toUpperCase()}]${flag} (${it.project}) ${it.title}\n   ${it.why}\n   ${it.url}\n`);
     }
     return;
   }
 
   await pushToNotion(ranked);
   await sendDigest(ranked, candidates.length);
+  await pingUrgent(ranked);
   console.log('Done.');
 }
 
