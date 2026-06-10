@@ -211,3 +211,46 @@ Connecting a custom domain to Vercel doesn't change how the code works. The APIs
 - **Historical Society link**: Add a link/card pointing to `/historical-society`
 - **Children's arts programs**: Link to manitoubeachcreative.org
 - **Boat House Gallery**: Link to gallery info (already on /historical-society page)
+
+---
+
+# Audit Fix Tasks (added 2026-06-09, see AUDIT.md)
+
+Each task is tagged with the model it should run on. **Do NOT run the Fable-tagged
+security tasks as Sonnet** — they need cross-file reasoning. SOP: check model fit first.
+
+## [SONNET] AF-1: Gate upload-image.js default upload path
+File: `api/upload-image.js`. The `action=upload` branch is unauthenticated. Add a token
+check (reuse the form's existing token) or a per-IP rate limit. Also fix the comment at
+line 17 — it says ADMIN_TOKEN but code checks ADMIN_SECRET.
+
+## [SONNET] AF-2: Standardize ADMIN_TOKEN vs ADMIN_SECRET
+Files: `api/admin/attention-queue.js`, `api/admin/revenue-summary.js`, `api/admin/sync-categories.js`
+check `ADMIN_TOKEN`; everything else checks `ADMIN_SECRET`. Pick one (ADMIN_SECRET — it's the
+majority), update the three admin/* files, confirm env var is set in Vercel.
+
+## [SONNET] AF-3: Add OG images for /business and /featured
+File: `middleware.js` OG_MAP — both set `image: null`. Add a Main Street / business-collage
+image to public/images/og/ and wire it in.
+
+## [SONNET] AF-4: Verify /api/events and /api/food-trucks return data in prod
+Hit both in a real browser. If empty, debug the Notion query/env. If they return data, no-op
+(was likely an audit-tool artifact).
+
+## [SONNET] AF-5: Triage 32 TODO/FIXME markers
+`grep -rn -iE 'TODO|FIXME|HACK|hardcod' api/ src/pages/`. Start with the hardcoded Google
+review Place ID in `api/promo-redeem.js`.
+
+## [FABLE] AF-6: Authenticate all cron-*.js endpoints
+~12 cron endpoints, 6 with zero caller auth. Add `Authorization: Bearer ${CRON_SECRET}` check
+(Vercel cron sends this automatically). Build one shared helper, sweep ALL cron files for
+consistency. Security + cost (Twilio/Anthropic) blast radius — needs the full-surface pass.
+
+## [FABLE] AF-7: Replace 'fallback' HMAC signing secret
+Files: `api/self-edit-listing.js`, `api/confirm-listing.js`, `api/verify-claim.js`, `api/businesses.js`.
+Introduce dedicated CLAIM_SIGNING_SECRET, remove `|| 'fallback'` (fail closed), stop reusing the
+Notion token as a signing key. Plan token migration so existing claim links don't all break.
+
+## [FABLE] AF-8: Fix Tickets Sold oversell race
+File: `api/stripe-webhook.js`. Read-modify-write on `Tickets Sold` loses concurrent updates.
+Same bug class fixed in Yetickets — decide on a reconcile-from-records or serialized strategy.
