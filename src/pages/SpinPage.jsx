@@ -74,6 +74,7 @@ export default function SpinPage() {
   const [phase, setPhase] = useState('idle'); // idle | spinning | won | spin-again | tomorrow | claimed | done
   const [winSeg, setWinSeg] = useState(null);
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [claiming, setClaiming] = useState(false);
   const [claimError, setClaimError] = useState('');
   const [claimCode, setClaimCode] = useState('');
@@ -653,6 +654,7 @@ export default function SpinPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: email.trim(),
+          phone: phone.trim(),
           prizeLabel: winSeg.label,
           sponsorName: winSeg.sponsor,
           sponsorId: winSeg.sponsorId,
@@ -838,6 +840,14 @@ export default function SpinPage() {
             onChange={e => { setEmail(e.target.value); setClaimError(''); }}
             onKeyDown={e => e.key === 'Enter' && handleClaim()}
           />
+          <input
+            type="tel"
+            className="prize-email-input"
+            placeholder="Phone for a text too (optional)"
+            value={phone}
+            onChange={e => setPhone(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && handleClaim()}
+          />
           {claimError && (
             <p style={{ color: '#ff6b35', fontSize: '0.85rem', marginBottom: 8, marginTop: -4 }}>
               {claimError}
@@ -860,7 +870,7 @@ export default function SpinPage() {
           <div style={{ fontSize: 40, marginBottom: 8 }}>🎉</div>
           <h2 style={{ fontSize: '1.4rem', color: '#2ecc71', marginBottom: 6 }}>Check your inbox!</h2>
           <p style={{ fontSize: '0.95rem', opacity: 0.8, marginBottom: 8, lineHeight: 1.6 }}>
-            Your QR code is on its way. Show it to the staff at <strong>{winSeg?.sponsor}</strong> within 7 days.
+            Your QR code is on its way to your inbox{phone.trim() ? ' and phone' : ''}. Show it to the staff at <strong>{winSeg?.sponsor}</strong> within 7 days.
           </p>
           {claimCode && (
             <p style={{ fontFamily: 'monospace', fontSize: '1.2rem', letterSpacing: 3, color: '#fff', opacity: 0.85 }}>
