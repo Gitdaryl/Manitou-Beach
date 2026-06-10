@@ -240,13 +240,29 @@ function GalleryLightbox({ items, index, setIndex, onClose }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose, prev, next]);
 
-  const onTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
+  // Lock background scroll while the lightbox is open (released on close)
+  React.useEffect(() => {
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = prevOverflow; };
+  }, []);
+
+  const touchStartY = React.useRef(null);
+  const onTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
   const onTouchEnd = (e) => {
     if (touchStartX.current === null) return;
     const dx = e.changedTouches[0].clientX - touchStartX.current;
-    if (dx > 50) prev();
-    else if (dx < -50) next();
+    const dy = e.changedTouches[0].clientY - touchStartY.current;
+    // Horizontal swipe only - ignore mostly-vertical gestures
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+      if (dx > 0) prev();
+      else next();
+    }
     touchStartX.current = null;
+    touchStartY.current = null;
   };
 
   const item = items[index];
@@ -262,6 +278,7 @@ function GalleryLightbox({ items, index, setIndex, onClose }) {
       style={{
         position: "fixed", inset: 0, zIndex: 1000, background: "rgba(8,14,20,0.94)",
         display: "flex", alignItems: "center", justifyContent: "center", padding: 24,
+        touchAction: "none", overscrollBehavior: "contain",
       }}
     >
       <button onClick={e => { e.stopPropagation(); prev(); }} style={arrowStyle("left")}>‹</button>
