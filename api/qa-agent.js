@@ -1,3 +1,4 @@
+import { requireCron } from './lib/cronAuth.js';
 // /api/qa-agent.js
 // QA Agent - evaluates pending food truck registrations via Claude
 // Runs on cron every 30 min, or trigger manually via POST /api/qa-agent
@@ -16,6 +17,9 @@ export default async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+
+  // Authorized callers only: Vercel cron (Bearer CRON_SECRET) or manual admin trigger with same
+  if (!requireCron(req, res)) return;
 
   try {
     const pending = await getPendingTrucks();

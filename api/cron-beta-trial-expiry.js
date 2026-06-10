@@ -1,12 +1,11 @@
+import { requireCron } from './lib/cronAuth.js';
 // Nightly cron - emails beta business owners a reminder 5 days before their trial ends (July 4th)
 // Runs daily; fires reminder once per business, then marks Trial Reminder Sent = true
 
 import { Resend } from 'resend';
 
 export default async function handler(req, res) {
-  if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
+  if (!requireCron(req, res)) return;
 
   const token = process.env.NOTION_TOKEN_BUSINESS;
   const dbId = process.env.NOTION_DB_BUSINESS;

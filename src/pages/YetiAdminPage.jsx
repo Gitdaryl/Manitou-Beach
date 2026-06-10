@@ -3919,7 +3919,7 @@ export default function YetiAdminPage() {
                   setSocialResult(null);
                   setSocialStatus('idle');
                   try {
-                    const res = await fetch('/api/cron-social-post?preview=1');
+                    const res = await adminFetch('/api/cron-social-post?preview=1');
                     const data = await res.json();
                     if (data.skipped) {
                       setWeekendError(data.reason || 'No events this weekend');

@@ -1,3 +1,4 @@
+import { requireCronOrAdmin } from './lib/cronAuth.js';
 // GET /api/cron-newsletter-draft
 // Runs every Wednesday at 7pm ET (23:00 UTC)
 // Pulls upcoming weekend events, generates AI content via Haiku,
@@ -420,11 +421,8 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // Allow admin UI calls with X-Admin-Token; Vercel cron calls have no token
-  const adminToken = req.headers['x-admin-token'];
-  if (adminToken && adminToken !== process.env.ADMIN_SECRET) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
+  // Authorized callers: Vercel cron (Bearer CRON_SECRET) or the admin UI (X-Admin-Token)
+  if (!requireCronOrAdmin(req, res)) return;
 
   const preview = req.query?.preview === '1';
   const sendNow = req.query?.send_now === '1';

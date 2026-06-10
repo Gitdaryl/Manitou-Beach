@@ -1,12 +1,11 @@
+import { requireCron } from './lib/cronAuth.js';
 // Nightly cron - archive past one-time events in Event Submissions.
 // Skips Weekly/Monthly recurring events (no natural end date).
 // Annual and non-recurring events get archived the day after they pass.
 // Requires "Archived" to exist as a Status option in the Notion DB.
 
 export default async function handler(req, res) {
-  if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
+  if (!requireCron(req, res)) return;
 
   const token = process.env.NOTION_TOKEN_EVENTS;
   const dbId = process.env.NOTION_DB_EVENTS;

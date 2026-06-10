@@ -1,3 +1,4 @@
+import { requireCron } from './lib/cronAuth.js';
 // GET /api/cron-profile-report-card
 // Runs 1st of each month at 10am ET
 // Sends each active business owner an SMS with their profile report card link.
@@ -76,6 +77,7 @@ Start with something encouraging, then hint at the one thing worth adding. End w
 }
 
 export default async function handler(req, res) {
+  if (!requireCron(req, res)) return;
   if (req.method !== 'GET') return res.status(405).end();
 
   const preview = req.query.preview === '1';

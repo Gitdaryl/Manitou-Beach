@@ -1,3 +1,4 @@
+import { requireCron } from './lib/cronAuth.js';
 // /api/cron-site-audit.js
 // Monthly site health audit - SMS report to Daryl
 // Schedule: 0 9 1 * * (9am on the 1st of each month)
@@ -87,6 +88,7 @@ const FLAG_LABELS = {
 };
 
 export default async function handler(req, res) {
+  if (!requireCron(req, res)) return;
   res.setHeader('Cache-Control', 'no-store');
   if (req.method !== 'GET' && req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });

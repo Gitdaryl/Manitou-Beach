@@ -4,13 +4,10 @@
 
 import { createHmac } from 'crypto';
 import { Resend } from 'resend';
+import { requireCron } from './lib/cronAuth.js';
 
 export default async function handler(req, res) {
-  // Allow Vercel cron scheduler (no Authorization header) or manual trigger with secret
-  const authHeader = req.headers.authorization;
-  if (authHeader && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
+  if (!requireCron(req, res)) return;
 
   const token  = process.env.NOTION_TOKEN_PAGE_SPONSORS || process.env.NOTION_TOKEN_BUSINESS;
   const dbId   = process.env.NOTION_DB_PAGE_SPONSORS;

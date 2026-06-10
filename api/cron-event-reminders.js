@@ -1,3 +1,4 @@
+import { requireCron } from './lib/cronAuth.js';
 import { Resend } from 'resend';
 import { sendSMS, normalizePhone } from './lib/twilio.js';
 
@@ -12,6 +13,7 @@ function toDateStr(d) {
 }
 
 export default async function handler(req, res) {
+  if (!requireCron(req, res)) return;
   // Allow Vercel Cron (GET) or manual trigger (GET/POST)
   if (req.method !== 'GET' && req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });

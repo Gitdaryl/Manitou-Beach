@@ -1,3 +1,4 @@
+import { requireCron } from './lib/cronAuth.js';
 // GET /api/cron-new-listing
 // Runs daily at 10am ET — welcomes new Active business + stay listings to social media
 // and sends the owner a tips email to help them get more out of their listing.
@@ -236,6 +237,7 @@ function stayTipsEmail(stay, siteUrl) {
 }
 
 export default async function handler(req, res) {
+  if (!requireCron(req, res)) return;
   if (req.method !== 'GET' && req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }

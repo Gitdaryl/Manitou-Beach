@@ -1,3 +1,4 @@
+import { requireCron } from './lib/cronAuth.js';
 // /api/cron-review-digest.js
 // Daily safety-net: texts admin if any events are sitting in Review or Pending status.
 // Runs daily at 9am ET via Vercel Cron.
@@ -11,6 +12,7 @@ const NOTION_HEADERS = {
 };
 
 export default async function handler(req, res) {
+  if (!requireCron(req, res)) return;
   if (req.method !== 'GET' && req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }

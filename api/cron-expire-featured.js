@@ -1,11 +1,9 @@
+import { requireCron } from './lib/cronAuth.js';
 // Nightly cron - downgrade expired one-time featured listings back to "Listed Free"
 // and clear the Featured Expires date so they don't get re-processed.
 
 export default async function handler(req, res) {
-  // Vercel cron sends GET requests with authorization header
-  if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
+  if (!requireCron(req, res)) return;
 
   const token = process.env.NOTION_TOKEN_BUSINESS;
   const dbId = process.env.NOTION_DB_BUSINESS;

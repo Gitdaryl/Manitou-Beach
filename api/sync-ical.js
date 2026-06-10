@@ -1,3 +1,4 @@
+import { requireCron } from './lib/cronAuth.js';
 // api/sync-ical.js
 // Daily cron: fetches iCal feeds from all listed stays, parses blocked date ranges,
 // merges with manual blocks (preserving them), writes back to Notion.
@@ -131,6 +132,7 @@ async function alertAdmin(message) {
 }
 
 export default async function handler(req, res) {
+  if (!requireCron(req, res)) return;
   if (req.method !== 'GET' && req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }

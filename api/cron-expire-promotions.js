@@ -1,10 +1,9 @@
+import { requireCron } from './lib/cronAuth.js';
 // Nightly cron - clear expired event promotions.
 // Resets Promo Type, Hero Feature, and Promo End on events past their promo window.
 
 export default async function handler(req, res) {
-  if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
+  if (!requireCron(req, res)) return;
 
   const token = process.env.NOTION_TOKEN_EVENTS;
   const dbId = process.env.NOTION_DB_EVENTS;

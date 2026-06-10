@@ -1,3 +1,4 @@
+import { requireCronOrAdmin } from './lib/cronAuth.js';
 // GET /api/cron-social-post
 // Runs every Thursday 9am ET — posts "This Weekend" event roundup to FB + IG.
 // Skips if the GH Actions pipeline already posted today (checks Vercel Blob marker).
@@ -112,6 +113,9 @@ export default async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+
+  // Authorized callers: Vercel cron (Bearer CRON_SECRET) or the admin UI (X-Admin-Token)
+  if (!requireCronOrAdmin(req, res)) return;
 
   const preview = req.query?.preview === '1' || req.query?.preview === 'true';
   const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
