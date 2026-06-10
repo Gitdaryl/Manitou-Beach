@@ -45,12 +45,12 @@ const OG_MAP = {
   '/business': {
     title: 'Business Directory - Manitou Beach',
     description: 'Local businesses, shops, restaurants, and services in the Devils Lake community.',
-    image: null, // NEEDS IMAGE - Main Street or business collage
+    image: '/images/og/village-og.jpg', // STOPGAP - replace with a Main Street / business collage when available
   },
   '/featured': {
     title: 'Featured Businesses - Manitou Beach',
     description: 'Premium local businesses serving the Devils Lake community.',
-    image: null, // NEEDS IMAGE - same as /business
+    image: '/images/og/village-og.jpg', // STOPGAP - replace with a Main Street / business collage when available
   },
   '/mens-club': {
     title: "Men's Club - Manitou Beach",
