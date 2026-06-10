@@ -3,7 +3,7 @@
 // Only accessible with a valid claim token.
 
 import Anthropic from '@anthropic-ai/sdk';
-import { makeClaimToken } from './verify-claim.js';
+import { verifyClaimToken } from './verify-claim.js';
 
 const ai = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -125,8 +125,7 @@ export default async function handler(req, res) {
     const page = await findBusinessBySlug(slug);
     if (!page) return res.status(404).json({ error: 'Business not found' });
 
-    const expected = makeClaimToken(page.id);
-    if (claimToken !== expected) return res.status(403).json({ error: 'Invalid claim token' });
+    if (!verifyClaimToken(page.id, claimToken)) return res.status(403).json({ error: 'Invalid claim token' });
 
     const { score, gaps, present, name, tier, category, phone } = scoreProfile(page.properties);
     const nudge = await generateNudge(name, category, score, gaps, present);

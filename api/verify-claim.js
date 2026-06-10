@@ -1,19 +1,42 @@
 // /api/verify-claim.js
 // POST { slug, phone, code } - verify SMS code, return HMAC claim token
 //
-// The claim token is HMAC(pageId, secret) - deterministic, no storage needed.
+// The claim token is HMAC(pageId, CLAIM_SIGNING_SECRET) - deterministic, no storage needed.
 // Browser stores it in localStorage['mb-claim-{slug}'] and sends it with edits.
 
-import { createHmac } from 'crypto';
+import { createHmac, timingSafeEqual } from 'crypto';
 import { normalizePhone } from './lib/twilio.js';
 
 function toSlug(name) {
   return (name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
-export function makeClaimToken(pageId) {
-  const secret = process.env.NOTION_TOKEN_BUSINESS || 'fallback';
+function signClaimToken(pageId, secret) {
   return createHmac('sha256', secret).update(`claim:${pageId}`).digest('hex').slice(0, 48);
+}
+
+export function makeClaimToken(pageId) {
+  const secret = process.env.CLAIM_SIGNING_SECRET;
+  if (!secret) throw new Error('CLAIM_SIGNING_SECRET is not set - refusing to sign claim token');
+  return signClaimToken(pageId, secret);
+}
+
+function safeEqual(a, b) {
+  const ab = Buffer.from(String(a));
+  const bb = Buffer.from(String(b));
+  return ab.length === bb.length && timingSafeEqual(ab, bb);
+}
+
+export function verifyClaimToken(pageId, token) {
+  if (!token) return false;
+  const secret = process.env.CLAIM_SIGNING_SECRET;
+  if (!secret) return false; // fail closed - never verify against a known constant
+  if (safeEqual(token, signClaimToken(pageId, secret))) return true;
+  // TRANSITION: tokens issued before CLAIM_SIGNING_SECRET existed were signed with
+  // NOTION_TOKEN_BUSINESS. Accept those too so links already sent to business owners
+  // keep working. Remove this branch once outstanding claim links have expired.
+  const legacy = process.env.NOTION_TOKEN_BUSINESS;
+  return !!legacy && safeEqual(token, signClaimToken(pageId, legacy));
 }
 
 const NOTION_HEADERS = {

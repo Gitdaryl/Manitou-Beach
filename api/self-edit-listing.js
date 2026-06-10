@@ -6,7 +6,7 @@
 //
 // Bypasses the manual-review flow in update-listing.js - changes go live immediately.
 
-import { createHmac } from 'crypto';
+import { verifyClaimToken } from './verify-claim.js';
 import { normalizePhone } from './lib/twilio.js';
 
 export const config = {
@@ -15,11 +15,6 @@ export const config = {
 
 function toSlug(name) {
   return (name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-}
-
-function makeClaimToken(pageId) {
-  const secret = process.env.NOTION_TOKEN_BUSINESS || 'fallback';
-  return createHmac('sha256', secret).update(`claim:${pageId}`).digest('hex').slice(0, 48);
 }
 
 const NOTION_HEADERS = {
@@ -85,9 +80,8 @@ export default async function handler(req, res) {
     const page = await findBusinessBySlug(slug);
     if (!page) return res.status(404).json({ error: 'Business not found' });
 
-    // Verify the claim token
-    const expected = makeClaimToken(page.id);
-    if (claimToken !== expected) {
+    // Verify the claim token (constant-time, fails closed if secret is unset)
+    if (!verifyClaimToken(page.id, claimToken)) {
       return res.status(403).json({ error: 'Invalid claim token. Re-verify your phone number.' });
     }
 

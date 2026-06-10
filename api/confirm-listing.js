@@ -1,9 +1,26 @@
-import { createHmac } from 'crypto';
+import { createHmac, timingSafeEqual } from 'crypto';
 import { Resend } from 'resend';
 
-function makeConfirmToken(pageId) {
-  const secret = process.env.NOTION_TOKEN_BUSINESS || 'fallback';
+function signConfirmToken(pageId, secret) {
   return createHmac('sha256', secret).update(pageId).digest('hex').slice(0, 40);
+}
+
+function safeEqual(a, b) {
+  const ab = Buffer.from(String(a));
+  const bb = Buffer.from(String(b));
+  return ab.length === bb.length && timingSafeEqual(ab, bb);
+}
+
+function verifyConfirmToken(pageId, token) {
+  if (!token) return false;
+  const secret = process.env.CLAIM_SIGNING_SECRET;
+  if (!secret) return false; // fail closed - never verify against a known constant
+  if (safeEqual(token, signConfirmToken(pageId, secret))) return true;
+  // TRANSITION: tokens issued before CLAIM_SIGNING_SECRET existed were signed with
+  // NOTION_TOKEN_BUSINESS. Accept those too so confirmation links already emailed/texted
+  // keep working. Remove this branch once outstanding links have expired.
+  const legacy = process.env.NOTION_TOKEN_BUSINESS;
+  return !!legacy && safeEqual(token, signConfirmToken(pageId, legacy));
 }
 
 export default async function handler(req, res) {
@@ -13,8 +30,7 @@ export default async function handler(req, res) {
     return res.status(400).send('Missing confirmation parameters.');
   }
 
-  const expected = makeConfirmToken(pageId);
-  if (token !== expected) {
+  if (!verifyConfirmToken(pageId, token)) {
     return res.status(400).send('Invalid or expired confirmation link.');
   }
 

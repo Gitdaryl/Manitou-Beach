@@ -3,7 +3,8 @@ import { createHmac } from 'crypto';
 import { sendSMS, normalizePhone } from './lib/twilio.js';
 
 function makeConfirmToken(pageId) {
-  const secret = process.env.NOTION_TOKEN_BUSINESS || 'fallback';
+  const secret = process.env.CLAIM_SIGNING_SECRET;
+  if (!secret) throw new Error('CLAIM_SIGNING_SECRET is not set - refusing to sign confirmation token');
   return createHmac('sha256', secret).update(pageId).digest('hex').slice(0, 40);
 }
 
