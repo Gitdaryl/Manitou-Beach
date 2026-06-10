@@ -6,6 +6,23 @@ export const config = {
   api: { bodyParser: { sizeLimit: '4mb' } },
 };
 
+// Folders that public forms are allowed to write into.
+// Admin-only folders (e.g. 'dispatch', 'social') are NOT listed here; they are
+// still reachable by public callers — we just cap what strangers can name.
+// The real guard against abuse is: 2 MB cap + this allowlist so no one can
+// invent arbitrary top-level paths in Vercel Blob.
+const ALLOWED_FOLDERS = new Set([
+  'events',
+  'food-trucks',
+  'business-logos',
+  'business-photos',
+  'business-gallery',
+  'sponsors',
+  'stays',
+  'dispatch',
+  'social',
+]);
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -14,7 +31,7 @@ export default async function handler(req, res) {
   const { action = 'upload' } = req.body || {};
 
   // action=apply - update a Notion article's Cover Image URL (no file upload)
-  // Admin-only: requires x-admin-token header matching ADMIN_TOKEN env var
+  // Admin-only: requires x-admin-token header matching ADMIN_SECRET env var
   if (action === 'apply') {
     const adminToken = req.headers['x-admin-token'];
     if (!adminToken || adminToken !== process.env.ADMIN_SECRET) {
@@ -67,6 +84,11 @@ export default async function handler(req, res) {
     const { filename, contentType, data, folder = 'events' } = req.body;
     if (!data || !filename) {
       return res.status(400).json({ error: 'Missing file data' });
+    }
+
+    // Guard: reject unknown folders to prevent arbitrary blob path abuse
+    if (!ALLOWED_FOLDERS.has(folder)) {
+      return res.status(400).json({ error: 'Invalid folder' });
     }
 
     const buffer = Buffer.from(data, 'base64');
