@@ -223,13 +223,102 @@ function RaffleWheelTeaser() {
   );
 }
 
+// Swipeable, captioned lightbox shared by the "What to Expect" cards
+function GalleryLightbox({ items, index, setIndex, onClose }) {
+  const touchStartX = React.useRef(null);
+  const total = items.length;
+  const prev = React.useCallback(() => setIndex(i => (i > 0 ? i - 1 : total - 1)), [setIndex, total]);
+  const next = React.useCallback(() => setIndex(i => (i < total - 1 ? i + 1 : 0)), [setIndex, total]);
+
+  React.useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "Escape") onClose();
+      else if (e.key === "ArrowLeft") prev();
+      else if (e.key === "ArrowRight") next();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose, prev, next]);
+
+  const onTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
+  const onTouchEnd = (e) => {
+    if (touchStartX.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    if (dx > 50) prev();
+    else if (dx < -50) next();
+    touchStartX.current = null;
+  };
+
+  const item = items[index];
+  const arrowStyle = (side) => ({
+    position: "absolute", [side]: 20, top: "50%", transform: "translateY(-50%)",
+    background: "rgba(255,255,255,0.12)", border: "none", borderRadius: "50%",
+    width: 44, height: 44, cursor: "pointer", color: "#fff", fontSize: 22, lineHeight: 1, zIndex: 2,
+  });
+
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: "fixed", inset: 0, zIndex: 1000, background: "rgba(8,14,20,0.94)",
+        display: "flex", alignItems: "center", justifyContent: "center", padding: 24,
+      }}
+    >
+      <button onClick={e => { e.stopPropagation(); prev(); }} style={arrowStyle("left")}>‹</button>
+
+      <div
+        onClick={e => e.stopPropagation()}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+        style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 18, maxWidth: "92vw" }}
+      >
+        <img
+          src={item.img}
+          alt={item.label}
+          style={{ maxWidth: "92vw", maxHeight: "68vh", objectFit: "contain", borderRadius: 10, boxShadow: "0 20px 60px rgba(0,0,0,0.5)" }}
+        />
+        <div style={{ textAlign: "center", maxWidth: 560 }}>
+          <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 19, color: C.cream, marginBottom: 6 }}>{item.label}</div>
+          <p style={{ fontSize: 13.5, color: "rgba(255,255,255,0.6)", lineHeight: 1.65, margin: 0 }}>{item.desc}</p>
+          {item.link && (
+            <a href={item.link.url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}
+              style={{ display: "inline-flex", alignItems: "center", gap: 4, marginTop: 10, fontSize: 12, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textDecoration: "none" }}>
+              {item.link.label} ↗
+            </a>
+          )}
+        </div>
+      </div>
+
+      <button onClick={e => { e.stopPropagation(); next(); }} style={arrowStyle("right")}>›</button>
+      <button
+        onClick={onClose}
+        style={{ position: "absolute", top: 16, right: 16, background: "rgba(255,255,255,0.12)", border: "none", borderRadius: "50%", width: 36, height: 36, cursor: "pointer", color: "#fff", fontSize: 18, lineHeight: 1 }}
+      >×</button>
+      <div style={{ position: "absolute", bottom: 16, left: "50%", transform: "translateX(-50%)", color: "rgba(255,255,255,0.5)", fontSize: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
+        {index + 1} / {total}
+      </div>
+    </div>
+  );
+}
+
 function LadiesClubEventsSection() {
+  const [lightbox, setLightbox] = useState(null);
+
   const features = [
     { label: "35+ Crafters & Vendors", desc: "Local makers, artisan goods, handmade creations, and the Farmer's Craft Market", img: "/images/ladies-club/crafters.jpg" },
     { label: "Fine Artists Area", desc: "Original work from talented local and regional artists", img: "/images/ladies-club/artists.jpg" },
     { label: "Local Author Lisa Wheeler", desc: "Books, signings, and story time near the Children's Area", img: "/images/ladies-club/lisa.jpg", link: { label: "lisawheelerbooks.com", url: "https://www.lisawheelerbooks.com/" } },
     { label: "Amazing Raffle Baskets", desc: "8 baskets, each valued at over $150 - you won't want to miss your shot", img: "/images/ladies-club/raffle.jpg" },
   ];
+
+  // Children's Area sits first, then the 2x2 grid features - one shared swipeable gallery
+  const childrensArea = {
+    label: "Children's Area",
+    desc: "Create-a-Boat & Float It, carnival games, face painting, and pony rides",
+    img: "/images/ladies-club/childrens-area.jpg",
+    link: { label: "Seriously Funny Biz", url: "https://seriouslyfunnybiz.com/" },
+  };
+  const galleryItems = [childrensArea, ...features];
 
   return (
     <section id="ladies-events" style={{
@@ -377,7 +466,13 @@ function LadiesClubEventsSection() {
         {/* Children's Area - large hero card */}
         <FadeIn delay={155}>
           <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 14, overflow: "hidden", marginBottom: 16 }}>
-            <img src="/images/ladies-club/childrens-area.jpg" alt="Children's Area" style={{ width: "100%", height: "auto", display: "block" }} />
+            <div onClick={() => setLightbox(0)} style={{ cursor: "zoom-in", position: "relative", overflow: "hidden" }}>
+              <img src="/images/ladies-club/childrens-area.jpg" alt="Children's Area" loading="lazy"
+                style={{ width: "100%", height: "auto", display: "block", transition: "transform 0.35s ease" }}
+                onMouseEnter={e => e.currentTarget.style.transform = "scale(1.03)"}
+                onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
+              />
+            </div>
             <div style={{ padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
               <div>
                 <div style={{ fontSize: 15, fontWeight: 600, color: C.cream, marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>Children's Area</div>
@@ -396,7 +491,13 @@ function LadiesClubEventsSection() {
           {features.map((f, i) => (
             <FadeIn key={i} delay={165 + i * 40}>
               <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 14, overflow: "hidden" }}>
-                <img src={f.img} alt={f.label} style={{ width: "100%", height: "auto", display: "block" }} />
+                <div onClick={() => setLightbox(i + 1)} style={{ cursor: "zoom-in", position: "relative", overflow: "hidden" }}>
+                  <img src={f.img} alt={f.label} loading="lazy"
+                    style={{ width: "100%", height: "auto", display: "block", transition: "transform 0.35s ease" }}
+                    onMouseEnter={e => e.currentTarget.style.transform = "scale(1.04)"}
+                    onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
+                  />
+                </div>
                 <div style={{ padding: "14px 16px" }}>
                   <div style={{ fontSize: 13, fontWeight: 600, color: C.cream, marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>{f.label}</div>
                   <p style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", lineHeight: 1.6, margin: 0 }}>{f.desc}</p>
@@ -497,6 +598,16 @@ function LadiesClubEventsSection() {
         <RaffleWheelTeaser />
 
       </div>
+
+      {/* Swipeable gallery for the "What to Expect" cards */}
+      {lightbox !== null && (
+        <GalleryLightbox
+          items={galleryItems}
+          index={lightbox}
+          setIndex={setLightbox}
+          onClose={() => setLightbox(null)}
+        />
+      )}
     </section>
   );
 }
