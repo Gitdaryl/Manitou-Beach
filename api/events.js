@@ -28,6 +28,17 @@ function normalizeUrl(url) {
   return /^https?:\/\//i.test(u) ? u : 'https://' + u;
 }
 
+// Derive how likely an event is to change/cancel, so proactive check-ins only
+// target the events that actually need them (e.g. weather-exposed outdoor markets).
+const LOW_RISK_CATEGORIES = new Set(['Live Music', 'Arts & Culture', 'Community', 'Food & Social']);
+const HIGH_RISK_CATEGORIES = new Set(['Markets & Vendors', 'Sports & Outdoors', 'Boating & Water']);
+function deriveChangeRisk(category, outdoors) {
+  if (outdoors) return 'high';
+  if (HIGH_RISK_CATEGORIES.has(category)) return 'high';
+  if (LOW_RISK_CATEGORIES.has(category)) return 'low';
+  return 'medium';
+}
+
 export default async function handler(req, res) {
   // POST - submit a new event
   if (req.method === 'POST') {
@@ -221,6 +232,13 @@ export default async function handler(req, res) {
             return raw.includes(' – ') ? raw.split(' – ')[1].trim() : null;
           })(),
           attendance: p['Attendance']?.select?.name || null,
+          lifecycle: p['Lifecycle']?.select?.name || 'Active',
+          outdoors: p['Outdoors']?.checkbox || false,
+          changeNote: p['Change Note']?.rich_text?.[0]?.text?.content || '',
+          changeRisk: deriveChangeRisk(
+            p['Category']?.rich_text?.[0]?.text?.content || 'Community',
+            p['Outdoors']?.checkbox || false
+          ),
           updated: p['Updated']?.checkbox || false,
           rsvpEnabled: p['RSVP Enabled']?.checkbox || false,
           heroFeature: p['Hero Feature']?.checkbox || false,
@@ -236,7 +254,10 @@ export default async function handler(req, res) {
           videoUrl: normalizeUrl(p['Video URL']?.url || null),
         };
       })
-      .filter(e => e.name);
+      .filter(e => e.name)
+      // 'Paused' events are quietly pulled from the public site (organizer may resume later).
+      // 'Cancelled' / 'Postponed' stay visible with a ribbon so attendees get the heads-up.
+      .filter(e => e.lifecycle !== 'Paused');
 
     const recurring = allEvents.filter(e => e.recurring === 'Weekly' || e.recurring === 'Monthly');
     const events = allEvents

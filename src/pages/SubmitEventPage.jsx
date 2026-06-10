@@ -60,6 +60,7 @@ const EMPTY_FORM = {
   vendorFee: '', vendorCapacity: '',
   recurring: 'None', recurringDay: '', recurringEndDate: '',
   eventType: 'free',
+  outdoors: false,
 };
 
 const GUIDE_KEY = 'mb_event_guide_dismissed';
@@ -614,6 +615,16 @@ export default function SubmitEventPage() {
                 <div>
                   <label style={label}>Location / Venue</label>
                   <input style={input} type="text" value={form.location} onChange={set('location')} placeholder="e.g. Manitou Beach Park, Vineyard Ave" />
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 12, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.6)' }}>
+                    <input
+                      type="checkbox"
+                      checked={form.outdoors}
+                      onChange={e => setForm(f => ({ ...f, outdoors: e.target.checked }))}
+                      style={{ width: 16, height: 16, accentColor: '#D4845A', cursor: 'pointer', flexShrink: 0 }}
+                    />
+                    This event is held outdoors
+                    <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)' }}>- so we can give you a heads-up if the weather turns</span>
+                  </label>
                 </div>
 
                 {submitError && formStep === 1 && <div style={{ fontSize: 13, color: '#e07070', fontWeight: 500 }}>{submitError}</div>}

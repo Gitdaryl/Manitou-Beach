@@ -78,6 +78,7 @@ export default async function handler(req, res) {
     recurring,          // 'Annual' | 'Weekly' | 'Monthly' | 'None'
     recurringDay,       // 'Monday' … 'Sunday'
     recurringEndDate,   // last date in the recurring series (stored in description metadata)
+    outdoors,           // true if the event is held outdoors (drives weather change-risk)
     sessionToken,       // HMAC token from a prior verify - skip SMS if valid
     _hp,                // honeypot
   } = req.body || {};
@@ -135,6 +136,7 @@ export default async function handler(req, res) {
   if (imageUrl?.trim()) { try { properties['Image URL'] = { url: normalizeUrl(imageUrl) }; } catch (_) {} }
   if (recurring && recurring !== 'None') properties['Recurring'] = { select: { name: recurring } };
   if (recurringDay) properties['Recurring Day'] = { select: { name: recurringDay } };
+  if (outdoors) properties['Outdoors'] = { checkbox: true };
 
   // Event type → set the right flags
   switch (eventType) {
@@ -189,6 +191,19 @@ export default async function handler(req, res) {
       if (sessionStatus === 'Review' && errText.includes('Review')) {
         console.warn('submit-event: "Review" status not in Notion, falling back to "Pending"');
         properties['Status'] = { status: { name: 'Pending' } };
+        const retryRes = await fetch('https://api.notion.com/v1/pages', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${notionToken}`, 'Content-Type': 'application/json', 'Notion-Version': '2022-06-28' },
+          body: JSON.stringify({ parent: { database_id: dbId }, properties }),
+        });
+        if (!retryRes.ok) {
+          console.error('submit-event retry Notion error:', await retryRes.text());
+          return res.status(500).json({ error: 'Something went wrong. Please try again.' });
+        }
+      } else if (properties['Outdoors'] && /Outdoors|is not a property/i.test(errText)) {
+        // 'Outdoors' field may not exist in this workspace yet - retry without it rather than fail the submission
+        console.warn('submit-event: "Outdoors" property missing, retrying without it');
+        delete properties['Outdoors'];
         const retryRes = await fetch('https://api.notion.com/v1/pages', {
           method: 'POST',
           headers: { Authorization: `Bearer ${notionToken}`, 'Content-Type': 'application/json', 'Notion-Version': '2022-06-28' },

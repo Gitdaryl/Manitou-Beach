@@ -5,6 +5,7 @@ import { SponsorTicker } from '../components/SponsorTicker';
 import { Footer, GlobalStyles, PromoBanner, EventLightbox, EventTimeline, Navbar, compressImage } from '../components/Layout';
 import SMSOptInWidget from '../components/SMSOptInWidget';
 import SEOHead, { buildEventSchema } from '../components/SEOHead';
+import { LifecycleRibbon, LIFECYCLE_BADGES } from '../components/LifecycleRibbon';
 
 const ATTENDANCE_LABELS = {
   just_show_up: "Just Show Up",
@@ -179,16 +180,24 @@ function WeeklyEventsSection({ events, onEventClick }) {
 
                   {/* Event info */}
                   <div>
-                    <h3 style={{
-                      fontFamily: "'Libre Baskerville', serif",
-                      fontSize: "clamp(20px, 2.5vw, 30px)",
-                      fontWeight: 400,
-                      color: C.text,
-                      margin: "0 0 6px 0",
-                      lineHeight: 1.2,
-                    }}>
-                      {event.name}
-                    </h3>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", margin: "0 0 6px 0" }}>
+                      <h3 style={{
+                        fontFamily: "'Libre Baskerville', serif",
+                        fontSize: "clamp(20px, 2.5vw, 30px)",
+                        fontWeight: 400,
+                        color: C.text,
+                        margin: 0,
+                        lineHeight: 1.2,
+                      }}>
+                        {event.name}
+                      </h3>
+                      <LifecycleRibbon event={event} />
+                    </div>
+                    {event.changeNote && LIFECYCLE_BADGES[event.lifecycle] && (
+                      <div style={{ fontSize: 13, color: LIFECYCLE_BADGES[event.lifecycle].color, fontStyle: "italic", marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>
+                        {event.changeNote}
+                      </div>
+                    )}
                     {event.location && (
                       <div style={{ fontSize: 13, color: C.textMuted, marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>
                         {event.location}
@@ -438,6 +447,7 @@ function EventRow({ event, onEventClick, isLast, variant = "default" }) {
           }}>
             {event.name}
           </h3>
+          <LifecycleRibbon event={event} />
           {event._virtual && event.recurringDay && (
             <span style={{
               fontFamily: "'Libre Franklin', sans-serif",
@@ -468,6 +478,11 @@ function EventRow({ event, onEventClick, isLast, variant = "default" }) {
           {event.time && event.location && <span style={{ margin: "0 6px", opacity: 0.4 }}>·</span>}
           {event.location && <span>{event.location}</span>}
         </div>
+        {event.changeNote && LIFECYCLE_BADGES[event.lifecycle] && (
+          <div style={{ fontSize: 12, color: LIFECYCLE_BADGES[event.lifecycle].color, fontStyle: "italic", marginTop: 4, fontFamily: "'Libre Franklin', sans-serif" }}>
+            {event.changeNote}
+          </div>
+        )}
       </div>
 
       <div className="calendar-cost-badge" style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>

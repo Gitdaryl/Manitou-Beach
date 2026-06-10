@@ -54,6 +54,7 @@ export default function EventEditPage() {
   const [form, setForm] = useState({
     name: "", date: "", time: "", timeEnd: "", location: "",
     description: "", cost: "", eventUrl: "", attendance: "",
+    lifecycle: "Active", changeNote: "",
   });
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
@@ -80,6 +81,8 @@ export default function EventEditPage() {
             cost: data.cost || "",
             eventUrl: data.eventUrl || "",
             attendance: data.attendance || "",
+            lifecycle: data.lifecycle || "Active",
+            changeNote: data.changeNote || "",
           });
           if (data.imageUrl) setImagePreview(data.imageUrl);
         }
@@ -187,6 +190,56 @@ export default function EventEditPage() {
 
               <FadeIn delay={80}>
                 <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+                  {/* Event status - change of plans control */}
+                  <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "18px 20px" }}>
+                    <label style={labelStyle}>Change of plans?</label>
+                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 4 }}>
+                      {[
+                        { value: "Active", label: "Running normally", color: C.sage },
+                        { value: "Postponed", label: "Postponed", color: "#B07A12" },
+                        { value: "Cancelled", label: "Cancelled", color: "#C0392B" },
+                      ].map(opt => {
+                        const active = form.lifecycle === opt.value;
+                        return (
+                          <button
+                            key={opt.value}
+                            type="button"
+                            onClick={() => set("lifecycle", opt.value)}
+                            style={{
+                              padding: "10px 18px", borderRadius: 8, cursor: "pointer",
+                              fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700,
+                              letterSpacing: 0.5, transition: "all 0.15s",
+                              border: `1px solid ${active ? opt.color : "rgba(255,255,255,0.12)"}`,
+                              background: active ? opt.color : "rgba(255,255,255,0.04)",
+                              color: active ? "#fff" : "rgba(255,255,255,0.5)",
+                            }}
+                          >
+                            {opt.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {form.lifecycle !== "Active" && (
+                      <div style={{ marginTop: 14 }}>
+                        <label style={labelStyle}>Quick note for attendees <span style={{ opacity: 0.5, fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>(optional)</span></label>
+                        <input
+                          value={form.changeNote}
+                          onChange={e => set("changeNote", e.target.value)}
+                          maxLength={200}
+                          placeholder={form.lifecycle === "Postponed" ? "e.g. Moved to next Saturday, same time" : "e.g. Cancelled due to weather - back next week"}
+                          style={inputStyle}
+                        />
+                      </div>
+                    )}
+                    <p style={{ margin: "12px 0 0", fontSize: 12, color: "rgba(255,255,255,0.35)", lineHeight: 1.6, fontFamily: "'Libre Franklin', sans-serif" }}>
+                      {form.lifecycle === "Cancelled"
+                        ? "Your event stays listed with a “Cancelled” ribbon so attendees see the update."
+                        : form.lifecycle === "Postponed"
+                        ? "We'll show a “Postponed” ribbon on your event so nobody shows up at the wrong time."
+                        : "Everything's on as scheduled."}
+                    </p>
+                  </div>
+
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
                     <div>
                       <label style={labelStyle}>Date</label>

@@ -63,6 +63,8 @@ export default async function handler(req, res) {
         imageUrl: p['Image URL']?.url || '',
         attendance: p['Attendance']?.select?.name || '',
         category: p['Category']?.rich_text?.[0]?.text?.content || '',
+        lifecycle: p['Lifecycle']?.select?.name || 'Active',
+        changeNote: p['Change Note']?.rich_text?.[0]?.text?.content || '',
       });
     } catch (err) {
       console.error('Event edit GET error:', err.message);
@@ -72,7 +74,7 @@ export default async function handler(req, res) {
 
   // POST - update event fields by token
   if (req.method === 'POST') {
-    const { token, time, timeEnd, location, description, cost, eventUrl, imageUrl, attendance, date } = req.body;
+    const { token, time, timeEnd, location, description, cost, eventUrl, imageUrl, attendance, date, lifecycle, changeNote } = req.body;
     if (!token) return res.status(400).json({ error: 'Token required' });
 
     try {
@@ -80,6 +82,13 @@ export default async function handler(req, res) {
       if (!page) return res.status(404).json({ error: 'Event not found or token invalid' });
 
       const properties = { 'Updated': { checkbox: true } };
+      // Lifecycle = organizer-controlled status (Active / Postponed / Cancelled).
+      // Tracked separately from the moderation Status so it never affects approval state.
+      const LIFECYCLE_VALUES = ['Active', 'Paused', 'Postponed', 'Cancelled'];
+      if (lifecycle !== undefined && LIFECYCLE_VALUES.includes(lifecycle)) {
+        properties['Lifecycle'] = { select: { name: lifecycle } };
+      }
+      if (changeNote !== undefined) properties['Change Note'] = { rich_text: [{ text: { content: (changeNote || '').slice(0, 200) } }] };
       // Combine start + end time into 'Time End' property (same format as submit-event.js)
       if (time !== undefined || timeEnd !== undefined) {
         const start = time || '';
@@ -102,16 +111,26 @@ export default async function handler(req, res) {
         try { properties['Image URL'] = { url: normalizedImageUrl }; } catch (_) {}
       }
 
-      const updateRes = await fetch(`https://api.notion.com/v1/pages/${page.id}`, {
+      const patchProps = (props) => fetch(`https://api.notion.com/v1/pages/${page.id}`, {
         method: 'PATCH',
         headers: notionHeaders(),
-        body: JSON.stringify({ properties }),
+        body: JSON.stringify({ properties: props }),
       });
+
+      let updateRes = await patchProps(properties);
 
       if (!updateRes.ok) {
         const err = await updateRes.json();
-        console.error('Notion update error:', JSON.stringify(err));
-        return res.status(500).json({ error: 'Update failed', notionError: err?.message });
+        // Lifecycle / Change Note fields may not exist yet - retry without them so core edits still save
+        if (/Lifecycle|Change Note|is not a property/i.test(err?.message || '') && (properties['Lifecycle'] || properties['Change Note'])) {
+          delete properties['Lifecycle'];
+          delete properties['Change Note'];
+          updateRes = await patchProps(properties);
+        }
+        if (!updateRes.ok) {
+          console.error('Notion update error:', JSON.stringify(err));
+          return res.status(500).json({ error: 'Update failed', notionError: err?.message });
+        }
       }
 
       return res.status(200).json({ success: true });

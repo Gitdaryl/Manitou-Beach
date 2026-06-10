@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { C } from '../data/config';
 import { Footer, Navbar, GlobalStyles } from '../components/Layout';
 import SEOHead from '../components/SEOHead';
+import { LIFECYCLE_BADGES } from '../components/LifecycleRibbon';
 
 const CAT_COLORS = {
   'Live Music': C.sunset,
@@ -227,6 +228,11 @@ export default function EventDetailPage() {
                   <span style={{ background: catColor, color: '#fff', padding: '4px 14px', borderRadius: 20, fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', fontFamily: "'Libre Franklin', sans-serif" }}>
                     {event.category}
                   </span>
+                  {LIFECYCLE_BADGES[event.lifecycle] && (
+                    <span style={{ background: LIFECYCLE_BADGES[event.lifecycle].color, color: '#fff', padding: '4px 14px', borderRadius: 20, fontSize: 11, fontWeight: 800, letterSpacing: 1.5, textTransform: 'uppercase', fontFamily: "'Libre Franklin', sans-serif" }}>
+                      {LIFECYCLE_BADGES[event.lifecycle].label}
+                    </span>
+                  )}
                   {past && (
                     <span style={{ background: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.8)', padding: '4px 14px', borderRadius: 20, fontSize: 11, letterSpacing: 1.5, textTransform: 'uppercase', fontFamily: "'Libre Franklin', sans-serif" }}>
                       Past Event
@@ -238,6 +244,12 @@ export default function EventDetailPage() {
                 <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 36, fontWeight: 700, color: '#fff', margin: '0 0 10px', lineHeight: 1.15, textShadow: '0 2px 16px rgba(0,0,0,0.4)' }} className="event-detail-title">
                   {event.name}
                 </h1>
+
+                {LIFECYCLE_BADGES[event.lifecycle] && event.changeNote && (
+                  <p style={{ margin: '0 0 16px', padding: '12px 16px', borderRadius: 10, background: 'rgba(255,255,255,0.1)', borderLeft: `3px solid ${LIFECYCLE_BADGES[event.lifecycle].color}`, color: '#fff', fontSize: 15, lineHeight: 1.6, fontFamily: "'Libre Franklin', sans-serif" }}>
+                    {event.changeNote}
+                  </p>
+                )}
 
                 {event.organizerName && (
                   <p style={{ margin: '0 0 24px', color: 'rgba(255,255,255,0.72)', fontSize: 15, fontFamily: "'Libre Franklin', sans-serif" }}>
