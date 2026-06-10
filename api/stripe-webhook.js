@@ -5,6 +5,7 @@ import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import QRCode from 'qrcode';
 import bwipjs from 'bwip-js';
 import { sendSMS, normalizePhone } from './lib/twilio.js';
+import { countTicketsSold } from './lib/ticketCount.js';
 
 export const config = {
   api: {
@@ -307,9 +308,20 @@ async function createTicketInNotion({ ticketId, eventId, eventName, buyerName, e
   return res.json();
 }
 
-// Increment Tickets Sold count on the Event record
-async function incrementSoldCount(eventId, additionalQty) {
-  // Fetch current sold count
+// AF-8: Reconcile the cached "Tickets Sold" counter on the Event record from
+// the authoritative ticket rows. Notion has no atomic increment, so the old
+// read-modify-write (read counter, add qty, write back) lost updates under
+// concurrent webhook deliveries. Instead we COUNT non-Refunded ticket rows in
+// the Tickets DB (the row for this sale was already created above, and we pass
+// its id/qty as a read-after-write safeguard) and overwrite the counter with
+// that total. Concurrent reconciles converge: even if one briefly writes a low
+// value (cross-writer read lag), the next reconcile self-heals, and nothing
+// enforces capacity off this cached number — ticket-checkout.js counts rows
+// directly. Residual race window + future hard fix (transactional store /
+// queue) are documented in api/lib/ticketCount.js.
+async function reconcileSoldCount(eventId, { justCreatedTicketId, justCreatedQty } = {}) {
+  // Fetch the event page: previous cached counter (for the first-sale SMS
+  // trigger) plus organizer contact fields.
   const getRes = await fetch(`https://api.notion.com/v1/pages/${eventId}`, {
     headers: {
       'Authorization': `Bearer ${process.env.NOTION_TOKEN_EVENTS}`,
@@ -319,7 +331,21 @@ async function incrementSoldCount(eventId, additionalQty) {
   if (!getRes.ok) return;
   const page = await getRes.json();
   const p = page.properties;
-  const currentSold = p['Tickets Sold']?.number || 0;
+  const previousCachedSold = p['Tickets Sold']?.number || 0;
+
+  // Authoritative count: sum of Quantity over non-Refunded ticket rows.
+  let soldCount;
+  try {
+    soldCount = await countTicketsSold(eventId, {
+      includeTicketId: justCreatedTicketId,
+      includeQuantity: justCreatedQty || 0,
+    });
+  } catch (err) {
+    // Counting failed - leave the cached counter untouched rather than write
+    // a wrong value. It will be reconciled on the next sale.
+    console.error('Tickets Sold reconcile: count failed, skipping update:', err.message);
+    return;
+  }
 
   await fetch(`https://api.notion.com/v1/pages/${eventId}`, {
     method: 'PATCH',
@@ -330,13 +356,14 @@ async function incrementSoldCount(eventId, additionalQty) {
     },
     body: JSON.stringify({
       properties: {
-        'Tickets Sold': { number: currentSold + additionalQty },
+        // Cached/display value only - source of truth is the Tickets DB.
+        'Tickets Sold': { number: soldCount },
       },
     }),
   });
 
   // First sale - send organizer a notification with their sales page link
-  if (currentSold === 0) {
+  if (previousCachedSold === 0 && soldCount > 0) {
     try {
       const phone = p['Phone']?.phone_number || '';
       const editToken = p['Edit Token']?.rich_text?.[0]?.plain_text || '';
@@ -346,7 +373,7 @@ async function incrementSoldCount(eventId, additionalQty) {
         const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
         const dashboardUrl = `${siteUrl}/organizer-dashboard?token=${editToken}&event=${eventId}`;
         await sendSMS(digits,
-          `Manitou Beach Events\n\nYour first ticket for ${eventName} just sold! 🎉\n\nSee who bought, who showed up, and what you earned:\n${dashboardUrl}`
+          `Manitou Beach Events\n\nYour first ticket for ${eventName} just sold! \u{1F389}\n\nSee who bought, who showed up, and what you earned:\n${dashboardUrl}`
         );
       }
     } catch (err) {
@@ -871,8 +898,9 @@ export default async function handler(req, res) {
           ticketPartner: metadata.ticketPartner || '',
         });
 
-        // Increment sold count on the event
-        await incrementSoldCount(metadata.eventId, quantity);
+        // Reconcile the cached sold count from the authoritative ticket rows
+        // (the row for this sale was created above)
+        await reconcileSoldCount(metadata.eventId, { justCreatedTicketId: ticketId, justCreatedQty: quantity });
 
         // Send confirmation email with PDF download link
         const buyerEmail = session.customer_email || session.customer_details?.email;

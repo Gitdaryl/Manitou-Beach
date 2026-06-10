@@ -1,4 +1,5 @@
 import Stripe from 'stripe';
+import { countTicketsSold } from './lib/ticketCount.js';
 
 // Platform fee: 1.25% per ticket (deducted from org's payout via Stripe Connect)
 const PLATFORM_FEE_PERCENT = 0.0125;
@@ -60,7 +61,6 @@ export default async function handler(req, res) {
     }
 
     const capacity = p['Ticket Capacity']?.number || 0;
-    const soldCount = p['Tickets Sold']?.number || 0;
     const eventName = p['Event Name']?.title?.[0]?.text?.content || 'Event';
     const eventDate = p['Event date']?.date?.start || '';
     const eventTime = p['Time']?.rich_text?.[0]?.text?.content || '';
@@ -102,15 +102,37 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Payment account not set up for this organizer. Contact the event organizer.' });
     }
 
-    // Check capacity
-    if (capacity > 0 && (soldCount + qty) > capacity) {
-      const remaining = Math.max(0, capacity - soldCount);
-      return res.status(400).json({
-        error: remaining === 0
-          ? 'This event is sold out'
-          : `Only ${remaining} ticket${remaining === 1 ? '' : 's'} remaining`,
-        remaining,
-      });
+    // AF-8: Capacity is enforced against the AUTHORITATIVE sold count - the
+    // sum of Quantity over non-Refunded ticket rows in the Tickets DB - not
+    // the event's "Tickets Sold" number property. Notion has no atomic
+    // increment, so that counter is maintained as a best-effort cache only
+    // (reconciled by the webhook) and can lag under concurrent purchases.
+    // Refunded tickets (Status = 'Refunded') automatically free their seats.
+    //
+    // Residual race window (no lock exists on Notion): this check runs when
+    // the Checkout session is CREATED, but payment completes later, so two
+    // buyers can both pass while seats remain and oversell by their combined
+    // in-flight quantity. See api/lib/ticketCount.js for the full caveat and
+    // the future hard-fix path (transactional inventory store / queue).
+    if (capacity > 0) {
+      let soldCount;
+      try {
+        soldCount = await countTicketsSold(eventId);
+      } catch (countErr) {
+        // Counting failed - fall back to the cached counter rather than
+        // blocking all sales (cache may undercount; accepted trade-off).
+        console.error('Authoritative ticket count failed, using cached counter:', countErr.message);
+        soldCount = p['Tickets Sold']?.number || 0;
+      }
+      if ((soldCount + qty) > capacity) {
+        const remaining = Math.max(0, capacity - soldCount);
+        return res.status(400).json({
+          error: remaining === 0
+            ? 'This event is sold out'
+            : `Only ${remaining} ticket${remaining === 1 ? '' : 's'} remaining`,
+          remaining,
+        });
+      }
     }
 
     // Compute price in cents (server-side - never trust client-sent prices)
