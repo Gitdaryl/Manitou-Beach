@@ -91,6 +91,9 @@ export default function WheelDemoPage() {
     if (!audioCtxRef.current) {
       try { audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)(); } catch {}
     }
+    if (audioCtxRef.current?.state === 'suspended') {
+      audioCtxRef.current.resume().catch(() => {});
+    }
   }, []);
 
   const playTick = useCallback((loud) => {
