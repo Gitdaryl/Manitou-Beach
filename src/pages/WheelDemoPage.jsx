@@ -56,6 +56,8 @@ export default function WheelDemoPage() {
   const audioCtxRef = useRef(null);
   const confettiStateRef = useRef([]);
   const phaseRef = useRef('idle');
+  const wheelRef = useRef(null);
+  const couponRef = useRef(null);
   const phys = useRef({
     rotation: 0,
     angularVelocity: 0,
@@ -73,6 +75,16 @@ export default function WheelDemoPage() {
   });
 
   useEffect(() => { phaseRef.current = phase; }, [phase]);
+
+  // Scroll to coupon on win, back to wheel on spin again
+  useEffect(() => {
+    if (phase === 'won') {
+      const t = setTimeout(() => {
+        couponRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 380);
+      return () => clearTimeout(t);
+    }
+  }, [phase]);
 
   // ── AUDIO ──
   const initAudio = useCallback(() => {
@@ -257,6 +269,7 @@ export default function WheelDemoPage() {
     setWinSeg(seg);
     playWin();
     launchConfetti();
+    try { window.navigator.vibrate?.([40, 60, 120, 60, 280]); } catch {}
     setPhase('won');
     // Fire tracking (fire-and-forget)
     fetch('/api/wheel-demo/spin', {
@@ -282,6 +295,9 @@ export default function WheelDemoPage() {
     setWinSeg(null);
     setClaimCode('');
     setHintVisible(true);
+    setTimeout(() => {
+      wheelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
   }, []);
 
   // ── ANIMATION LOOP ──
@@ -550,7 +566,7 @@ export default function WheelDemoPage() {
         </div>
 
         {/* Wheel with marquee ring */}
-        <div style={{ position: 'relative', width: ringSize, height: ringSize, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12, flexShrink: 0 }}>
+        <div ref={wheelRef} style={{ position: 'relative', width: ringSize, height: ringSize, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12, flexShrink: 0 }}>
           {bulbs.map((b, i) => (
             <div key={i} style={{
               position: 'absolute', left: b.x, top: b.y,
@@ -602,7 +618,7 @@ export default function WheelDemoPage() {
 
         {/* Win coupon */}
         {isWon && winSeg && (
-          <div style={{
+          <div ref={couponRef} style={{
             width: '100%', maxWidth: 400,
             borderRadius: 16, overflow: 'hidden',
             animation: 'couponPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1)',
