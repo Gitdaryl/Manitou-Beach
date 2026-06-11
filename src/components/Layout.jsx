@@ -2125,7 +2125,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
                     { label: "Ladies Club", href: "/ladies-club" },
                     { label: "Historical Society", href: "/historical-society" },
                     { label: "Visitor Wall 📍", href: "/visitor-wall" },
-                    { label: "Gallery ↗", href: "https://photogallery.yetigroove.com/folder/muVgmuXuvFwI/", external: true },
+                    { label: "Gallery ↗", href: "https://yetigroove.pixieset.com/folder/muVgmuXuvFwI/", external: true },
                     ...(USA250_PUBLIC ? [{ label: "July 4th Fireworks", href: "/fireworks" }] : []),
                   ].map((link, i) => (
                     link.href ? (
@@ -2267,7 +2267,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
           </a>
         ))}
         <a
-          href="https://photogallery.yetigroove.com/folder/muVgmuXuvFwI/"
+          href="https://yetigroove.pixieset.com/folder/muVgmuXuvFwI/"
           target="_blank"
           rel="noopener noreferrer"
           style={{
