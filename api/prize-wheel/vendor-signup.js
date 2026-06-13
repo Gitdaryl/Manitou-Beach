@@ -43,7 +43,7 @@ export default async function handler(req, res) {
       method: 'POST',
       headers,
       body: JSON.stringify({
-        parent: { database_id: process.env.NOTION_DB_PRIZE_WHEEL_SPONSORS },
+        parent: { database_id: (process.env.NOTION_DB_PRIZE_WHEEL_SPONSORS || '').trim() },
         properties: {
           'Business Name':  { title:        [{ text: { content: businessName } }] },
           'Contact Name':   { rich_text:    [{ text: { content: contactName } }] },
