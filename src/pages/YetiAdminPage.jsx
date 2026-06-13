@@ -217,6 +217,10 @@ export default function YetiAdminPage() {
   const [attentionLoading, setAttentionLoading] = useState(false);
   const [attentionExpanded, setAttentionExpanded] = useState({});
 
+  // ── Activity Summary ───────────────────────────────────────────
+  const [activityData, setActivityData] = useState(null);
+  const [activityLoading, setActivityLoading] = useState(false);
+
   // ── Ad Slot Monitor ────────────────────────────────────────────
   const [adSlots, setAdSlots] = useState(null);
   const [adSlotsLoading, setAdSlotsLoading] = useState(false);
@@ -994,6 +998,15 @@ export default function YetiAdminPage() {
     finally { setAttentionLoading(false); }
   };
 
+  const fetchActivitySummary = async () => {
+    setActivityLoading(true);
+    try {
+      const res = await adminFetch('/api/activity-summary');
+      if (res.ok) setActivityData(await res.json());
+    } catch (err) { console.error('Activity summary error:', err); }
+    finally { setActivityLoading(false); }
+  };
+
   const fetchDashboard = async () => {
     setDashLoading(true);
     try {
@@ -1165,7 +1178,7 @@ export default function YetiAdminPage() {
     if (!authed) return;
     if (activeTab === 'newsletter') { fetchNlArticles(); fetchNlAds(); }
     if (activeTab === 'review') fetchDrafts();
-    if (activeTab === 'dashboard') { fetchDashboard(); fetchAdSlots(); fetchRevenueSummary(); fetchAttentionQueue(); fetchTraffic(); }
+    if (activeTab === 'dashboard') { fetchDashboard(); fetchAdSlots(); fetchRevenueSummary(); fetchAttentionQueue(); fetchTraffic(); fetchActivitySummary(); }
     if (activeTab === 'promos') fetchPromos();
     if (activeTab === 'pois') fetchAdminPois();
     if (activeTab === 'ratings') fetchAdminRatings();
@@ -1722,6 +1735,102 @@ export default function YetiAdminPage() {
                 </div>
               );
             })() : null}
+
+            {/* ── THIS WEEK ON MB ── */}
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.08em', color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif', fontWeight: 700 }}>📡 This Week on Manitou Beach</div>
+                <button onClick={fetchActivitySummary} style={{ background: 'transparent', border: `1px solid ${C.sand}`, borderRadius: 7, padding: '4px 12px', fontSize: 11, color: C.textLight, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}>↻</button>
+              </div>
+              {activityLoading ? (
+                <div style={{ background: '#fff', borderRadius: 12, padding: '20px 24px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', textAlign: 'center', color: C.textMuted, fontSize: 13, fontFamily: 'Libre Franklin, sans-serif' }}>Checking platform activity...</div>
+              ) : activityData ? (() => {
+                const { events, businesses, foodTrucks, truckPins, wheelVendors, wheelClaims, total } = activityData;
+                const hasActivity = total > 0;
+
+                const fmt = (arr, label) => arr.length === 0 ? null : arr;
+
+                const rows = [];
+
+                if (events.length > 0) {
+                  rows.push({
+                    icon: '📅',
+                    color: C.lakeBlue,
+                    label: `${events.length} event${events.length > 1 ? 's' : ''} listed`,
+                    detail: events.map(e => e.name).join(', '),
+                  });
+                }
+
+                if (businesses.length > 0) {
+                  rows.push({
+                    icon: '🏪',
+                    color: C.sage,
+                    label: `${businesses.length} business${businesses.length > 1 ? 'es' : ''} joined`,
+                    detail: businesses.map(b => b.category ? `${b.name} (${b.category})` : b.name).join(', '),
+                  });
+                }
+
+                if (foodTrucks.length > 0) {
+                  rows.push({
+                    icon: '🚚',
+                    color: '#E07B39',
+                    label: `${foodTrucks.length} food truck${foodTrucks.length > 1 ? 's' : ''} signed up`,
+                    detail: foodTrucks.map(t => t.name).join(', '),
+                  });
+                }
+
+                if (truckPins.length > 0) {
+                  const totalPins = truckPins.reduce((s, t) => s + t.count, 0);
+                  rows.push({
+                    icon: '📍',
+                    color: '#c05a5a',
+                    label: `${totalPins} truck pin${totalPins > 1 ? 's' : ''} this week`,
+                    detail: truckPins.map(t => `${t.name} x${t.count}`).join(', '),
+                  });
+                }
+
+                if (wheelVendors.length > 0) {
+                  const pending = wheelVendors.filter(v => !v.approved).length;
+                  rows.push({
+                    icon: '🎡',
+                    color: C.sunset,
+                    label: `${wheelVendors.length} wheel vendor${wheelVendors.length > 1 ? 's' : ''} applied${pending > 0 ? ` (${pending} pending)` : ''}`,
+                    detail: wheelVendors.map(v => `${v.name}${v.approved ? '' : ' - needs approval'}`).join(', '),
+                  });
+                }
+
+                if (wheelClaims.issued > 0) {
+                  rows.push({
+                    icon: '🎰',
+                    color: '#9b59b6',
+                    label: `${wheelClaims.issued} spin${wheelClaims.issued > 1 ? 's' : ''}, ${wheelClaims.redeemed} redeemed`,
+                    detail: wheelClaims.redeemed === 0 ? 'No redemptions yet this week' : `${Math.round((wheelClaims.redeemed / wheelClaims.issued) * 100)}% redemption rate`,
+                  });
+                }
+
+                return (
+                  <div style={{ background: '#fff', borderRadius: 12, padding: '18px 20px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+                    {!hasActivity ? (
+                      <div style={{ textAlign: 'center', padding: '12px 0', color: C.textMuted, fontSize: 13, fontFamily: 'Libre Franklin, sans-serif' }}>
+                        Quiet week so far - no new platform activity in the last 7 days.
+                      </div>
+                    ) : (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                        {rows.map((row, i) => (
+                          <div key={i} style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+                            <div style={{ width: 32, height: 32, borderRadius: '50%', background: `${row.color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, flexShrink: 0 }}>{row.icon}</div>
+                            <div style={{ flex: 1 }}>
+                              <div style={{ fontSize: 13, fontWeight: 700, color: C.dusk, fontFamily: 'Libre Franklin, sans-serif', marginBottom: 2 }}>{row.label}</div>
+                              <div style={{ fontSize: 12, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif', lineHeight: 1.5 }}>{row.detail}</div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })() : null}
+            </div>
 
             {/* ── EDITORIAL & TOOLS divider ── */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '8px 0 20px', opacity: 0.5 }}>
