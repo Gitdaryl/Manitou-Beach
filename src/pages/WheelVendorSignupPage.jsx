@@ -284,7 +284,7 @@ export default function WheelVendorSignupPage() {
             <div style={sectionHeadStyle}>
               <span style={{ color: C.sunset }}>01</span> About you
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))', gap: 14, marginBottom: 14 }}>
               <div>
                 <label style={labelStyle}>Your name *</label>
                 <input
@@ -308,7 +308,7 @@ export default function WheelVendorSignupPage() {
                 />
               </div>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))', gap: 14 }}>
               <div>
                 <label style={labelStyle}>Email *</label>
                 <input

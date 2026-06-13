@@ -73,15 +73,15 @@ function WheelAdminPanel({ authToken }) {
           <p style={{ color: C.textMuted, fontSize: 14 }}>No active vendors yet. Set Active = true in Notion to add them.</p>
         )}
         {vendors.map((v, i) => (
-          <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: i < vendors.length - 1 ? `1px solid ${C.sand}` : 'none' }}>
-            <div>
+          <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, padding: '10px 0', borderBottom: i < vendors.length - 1 ? `1px solid ${C.sand}` : 'none', flexWrap: 'wrap' }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: 14, fontWeight: 600, color: C.text }}>{v.name}</div>
-              <div style={{ fontSize: 12, color: C.textMuted, marginTop: 2 }}>
+              <div style={{ fontSize: 12, color: C.textMuted, marginTop: 2, wordBreak: 'break-word' }}>
                 {v.offer} &middot; PIN {v.pin}
                 {v.trialEnd && <span> &middot; Trial ends {new Date(v.trialEnd).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>}
               </div>
             </div>
-            <div style={{ width: 14, height: 14, borderRadius: '50%', background: v.color || C.sunset, flexShrink: 0 }} />
+            <div style={{ width: 14, height: 14, borderRadius: '50%', background: v.color || C.sunset, flexShrink: 0, marginTop: 3 }} />
           </div>
         ))}
       </div>
