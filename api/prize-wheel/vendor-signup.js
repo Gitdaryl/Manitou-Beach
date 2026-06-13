@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { sendSMSFull, sendSMS, normalizePhone } from '../lib/twilio.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
@@ -167,6 +168,13 @@ export default async function handler(req, res) {
         </div>
       `,
     }).catch(err => console.error('Daryl alert email error:', err.message));
+
+    // SMS Daryl so it doesn't get buried in email
+    if (process.env.DARYL_PHONE) {
+      sendSMSFull(process.env.DARYL_PHONE,
+        `Wheel vendor applied: ${businessName} (${contactName}). Go to Notion to approve. Once active they'll appear on the wheel.`
+      ).catch(err => console.error('Daryl alert SMS error:', err.message));
+    }
 
     return res.status(200).json({ ok: true, sponsorId, statsUrl });
   } catch (err) {
