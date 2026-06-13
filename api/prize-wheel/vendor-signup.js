@@ -172,7 +172,7 @@ export default async function handler(req, res) {
     // SMS Daryl so it doesn't get buried in email
     if (process.env.DARYL_PHONE) {
       sendSMSFull(process.env.DARYL_PHONE,
-        `Wheel vendor applied: ${businessName} (${contactName}). Go to Notion to approve. Once active they'll appear on the wheel.`
+        `Wheel vendor applied: ${businessName} (${contactName}). Tap to approve in Notion: https://www.notion.so/${sponsorId.replace(/-/g, '')}`
       ).catch(err => console.error('Daryl alert SMS error:', err.message));
     }
 
