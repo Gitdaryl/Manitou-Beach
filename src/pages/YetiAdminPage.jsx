@@ -3,6 +3,128 @@ import { C, DISPATCH_CARD_SPONSORS, DISPATCH_CATEGORIES, USA250_PUBLIC } from '.
 import { Footer, GlobalStyles } from '../components/Layout';
 import { DispatchArticleContent, SponsorStrip } from './DispatchPage';
 
+function WheelAdminPanel({ authToken }) {
+  const [loading, setLoading] = useState(true);
+  const [vendors, setVendors] = useState([]);
+  const [count, setCount] = useState(0);
+  const [launching, setLaunching] = useState(false);
+  const [launchResult, setLaunchResult] = useState(null);
+  const [launchError, setLaunchError] = useState('');
+
+  useEffect(() => {
+    fetch('/api/prize-wheel/sponsors-admin', { headers: { 'x-admin-token': authToken } })
+      .then(r => r.json())
+      .then(d => { setVendors(d.vendors || []); setCount(d.count || 0); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, [authToken]);
+
+  async function handleLaunch() {
+    if (!window.confirm(`Launch the wheel and start 60-day trials for all ${count} active vendors?`)) return;
+    setLaunching(true);
+    setLaunchError('');
+    setLaunchResult(null);
+    try {
+      const res = await fetch('/api/prize-wheel/launch-wheel', {
+        method: 'POST',
+        headers: { 'x-admin-token': authToken },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Launch failed');
+      setLaunchResult(data);
+    } catch (err) {
+      setLaunchError(err.message);
+    } finally {
+      setLaunching(false);
+    }
+  }
+
+  const CARD = { background: '#fff', border: `1.5px solid ${C.sand}`, borderRadius: 14, padding: '20px 24px', marginBottom: 16 };
+  const LABEL = { fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: C.textMuted, marginBottom: 6, display: 'block' };
+
+  return (
+    <div style={{ maxWidth: 640 }}>
+      <h2 style={{ fontFamily: "'Libre Baskerville', serif", color: C.dusk, marginBottom: 24 }}>Spin to Win - Wheel Admin</h2>
+
+      {/* Status */}
+      <div style={CARD}>
+        <span style={LABEL}>Wheel status</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{
+            width: 12, height: 12, borderRadius: '50%',
+            background: count >= 6 ? '#22c55e' : '#f59e0b',
+            boxShadow: count >= 6 ? '0 0 0 3px rgba(34,197,94,0.2)' : '0 0 0 3px rgba(245,158,11,0.2)',
+          }} />
+          <span style={{ fontSize: 15, fontWeight: 600, color: C.text }}>
+            {loading ? 'Loading...' : count >= 6 ? `Live - ${count} active vendors` : `Paused - ${count}/6 vendors active`}
+          </span>
+        </div>
+        {count < 6 && !loading && (
+          <p style={{ fontSize: 13, color: C.textMuted, margin: '10px 0 0' }}>
+            Need {6 - count} more active vendor{6 - count !== 1 ? 's' : ''} before the wheel goes live on the site.
+          </p>
+        )}
+      </div>
+
+      {/* Vendor list */}
+      <div style={CARD}>
+        <span style={LABEL}>Active vendors ({count})</span>
+        {loading && <p style={{ color: C.textMuted, fontSize: 14 }}>Loading...</p>}
+        {!loading && vendors.length === 0 && (
+          <p style={{ color: C.textMuted, fontSize: 14 }}>No active vendors yet. Set Active = true in Notion to add them.</p>
+        )}
+        {vendors.map((v, i) => (
+          <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: i < vendors.length - 1 ? `1px solid ${C.sand}` : 'none' }}>
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: C.text }}>{v.name}</div>
+              <div style={{ fontSize: 12, color: C.textMuted, marginTop: 2 }}>
+                {v.offer} &middot; PIN {v.pin}
+                {v.trialEnd && <span> &middot; Trial ends {new Date(v.trialEnd).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>}
+              </div>
+            </div>
+            <div style={{ width: 14, height: 14, borderRadius: '50%', background: v.color || C.sunset, flexShrink: 0 }} />
+          </div>
+        ))}
+      </div>
+
+      {/* Launch */}
+      <div style={CARD}>
+        <span style={LABEL}>Launch wheel & start trials</span>
+        <p style={{ fontSize: 13, color: C.textLight, margin: '0 0 16px', lineHeight: 1.6 }}>
+          Press this once when you're ready to go live. Sets Trial Start to today and Trial End to 60 days from now for all active vendors simultaneously.
+          Only needs to be pressed once - don't press it again or it resets the trial clock.
+        </p>
+        {launchResult && (
+          <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 10, padding: '12px 16px', marginBottom: 12, fontSize: 13, color: '#15803d' }}>
+            Launched! {launchResult.count} vendors' trials start today and end {new Date(launchResult.trialEnd).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}.
+          </div>
+        )}
+        {launchError && (
+          <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, padding: '12px 16px', marginBottom: 12, fontSize: 13, color: '#b91c1c' }}>
+            {launchError}
+          </div>
+        )}
+        <button
+          onClick={handleLaunch}
+          disabled={launching || count < 6 || !!launchResult}
+          style={{
+            padding: '12px 28px', borderRadius: 10, border: 'none',
+            background: launchResult ? C.sage : count < 6 ? C.driftwood : C.sunset,
+            color: '#fff', fontSize: 14, fontWeight: 700, cursor: count >= 6 && !launchResult ? 'pointer' : 'not-allowed',
+            fontFamily: "'Libre Franklin', sans-serif",
+          }}
+        >
+          {launchResult ? 'Trials started' : launching ? 'Launching...' : count < 6 ? `Need ${6 - count} more vendor${6 - count !== 1 ? 's' : ''}` : 'Launch Wheel & Start Trials'}
+        </button>
+      </div>
+
+      <p style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.5 }}>
+        Vendor applications come in at <a href="/wheel-signup" style={{ color: C.sage }}>/wheel-signup</a>.
+        Activate them by setting Active = true in <a href="https://www.notion.so" target="_blank" rel="noreferrer" style={{ color: C.sage }}>Notion</a>.
+      </p>
+    </div>
+  );
+}
+
 export default function YetiAdminPage() {
   // ── Auth ──────────────────────────────────────────────────────
   const [authed, setAuthed] = useState(() => !!sessionStorage.getItem('yeti_admin_token'));
@@ -1294,7 +1416,7 @@ export default function YetiAdminPage() {
 
         {/* Tabs */}
         <div style={{ display: 'flex', gap: 8, marginBottom: 32, flexWrap: 'wrap' }}>
-          {[{ id: 'write', label: '✍️  Write' }, { id: 'newsletter', label: '📰  Newsletter' }, { id: 'review', label: '📋  Review Queue' }, { id: 'dashboard', label: '📊  Dashboard' }, { id: 'advertisers', label: '🤝  Advertisers' }, { id: 'promos', label: '🎟️  Promos' }, { id: 'events', label: '📅  Events' }, { id: 'pois', label: '📍  Community POIs' }, { id: 'ratings', label: '🍷  Winery Ratings' }, { id: 'wines', label: '🍾  Wines Registry' }, { id: 'vendors', label: '🏪  Vendors' }, { id: 'orgs', label: '🏛️  Orgs' }, { id: 'incentives', label: '🎁  Incentives' }, { id: 'categories', label: '🗂️  Categories' }, { id: 'quickevents', label: '📸  Quick Events' }, { id: 'social', label: '📣  Social' }].map(tab => (
+          {[{ id: 'write', label: '✍️  Write' }, { id: 'newsletter', label: '📰  Newsletter' }, { id: 'review', label: '📋  Review Queue' }, { id: 'dashboard', label: '📊  Dashboard' }, { id: 'advertisers', label: '🤝  Advertisers' }, { id: 'promos', label: '🎟️  Promos' }, { id: 'events', label: '📅  Events' }, { id: 'pois', label: '📍  Community POIs' }, { id: 'ratings', label: '🍷  Winery Ratings' }, { id: 'wines', label: '🍾  Wines Registry' }, { id: 'vendors', label: '🏪  Vendors' }, { id: 'orgs', label: '🏛️  Orgs' }, { id: 'incentives', label: '🎁  Incentives' }, { id: 'categories', label: '🗂️  Categories' }, { id: 'quickevents', label: '📸  Quick Events' }, { id: 'social', label: '📣  Social' }, { id: 'wheel', label: '🎡  Wheel' }].map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
@@ -4128,6 +4250,8 @@ export default function YetiAdminPage() {
             )}
           </div>
         )}
+
+        {activeTab === 'wheel' && <WheelAdminPanel authToken={authToken} />}
 
       </div>
     </div>

@@ -23,6 +23,11 @@ export default async function handler(req, res) {
     if (!notionRes.ok) throw new Error(`Notion error: ${await notionRes.text()}`);
     const data = await notionRes.json();
 
+    const activeCount = (data.results || []).length;
+    if (activeCount < 6) {
+      return res.status(200).json({ paused: true, count: activeCount, needed: 6 - activeCount });
+    }
+
     const prize = [];
     for (const page of data.results || []) {
       const p = page.properties;

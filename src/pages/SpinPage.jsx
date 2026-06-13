@@ -116,6 +116,10 @@ export default function SpinPage() {
     fetch('/api/prize-wheel/sponsors')
       .then(r => r.json())
       .then(data => {
+        if (data.paused) {
+          // Fewer than 6 vendors - wheel not live yet, render nothing
+          return;
+        }
         if (Array.isArray(data) && data.length) {
           const built = buildSegments(data);
           segmentsRef.current = built;
