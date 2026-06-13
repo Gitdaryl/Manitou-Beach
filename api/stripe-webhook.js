@@ -623,64 +623,98 @@ export default async function handler(req, res) {
             const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
             const billingLabel = metadata.billingInterval === 'year' ? '/yr' : '/mo';
             const amount = `$${(session.amount_total / 100).toFixed(0)}${billingLabel}`;
-
             const isUpgrade = metadata.upgrade === 'true';
+
+            const slugName = businessName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+            const profileUrl = `${siteUrl}/business/${slugName}`;
+
+            const tipsByTier = {
+              enhanced: `
+                <div style="background: #F0F5F1; border-radius: 6px; padding: 20px 24px; margin-bottom: 28px; border: 1px solid #C8DDD0;">
+                  <p style="margin: 0 0 12px; font-size: 12px; color: #4A7A5A; text-transform: uppercase; letter-spacing: 1px; font-family: sans-serif; font-weight: bold;">Get the most out of your listing</p>
+                  <p style="margin: 0 0 8px; font-size: 14px; color: #3B3228; line-height: 1.7;">A few quick things that make a real difference:</p>
+                  <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #3B3228; line-height: 2;">
+                    <li>Add a description - tell visitors what makes you worth the visit</li>
+                    <li>Set your hours so people know when to find you</li>
+                    <li>Upload at least one photo - listings with photos get clicked far more</li>
+                    <li>Share your profile link on your social pages: <a href="${profileUrl}" style="color: #4A7A5A;">${profileUrl}</a></li>
+                  </ul>
+                  <p style="margin: 12px 0 0; font-size: 14px; color: #3B3228; line-height: 1.7;">
+                    <a href="${siteUrl}/update-listing" style="color: #4A7A5A; font-weight: bold;">Update your listing now →</a>
+                  </p>
+                </div>`,
+              featured: `
+                <div style="background: #F0F5F1; border-radius: 6px; padding: 20px 24px; margin-bottom: 28px; border: 1px solid #C8DDD0;">
+                  <p style="margin: 0 0 12px; font-size: 12px; color: #4A7A5A; text-transform: uppercase; letter-spacing: 1px; font-family: sans-serif; font-weight: bold;">Get the most out of your Highlighted listing</p>
+                  <p style="margin: 0 0 8px; font-size: 14px; color: #3B3228; line-height: 1.7;">Your listing now shows your Google reviews right on your profile - that's a big deal for visitors doing their research. Here's how to make it count:</p>
+                  <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #3B3228; line-height: 2;">
+                    <li>Add photos - a winery, a shop, a view. Give people a reason to stop</li>
+                    <li>Fill in your hours and description so visitors have everything they need</li>
+                    <li>Share your profile link on social and your own website: <a href="${profileUrl}" style="color: #4A7A5A;">${profileUrl}</a></li>
+                    <li>Ask your happy customers to leave a Google review - they'll show up here automatically</li>
+                  </ul>
+                  <p style="margin: 12px 0 0; font-size: 14px; color: #3B3228; line-height: 1.7;">
+                    <a href="${siteUrl}/update-listing" style="color: #4A7A5A; font-weight: bold;">Update your listing now →</a>
+                  </p>
+                </div>`,
+              premium: `
+                <div style="background: #F0F5F1; border-radius: 6px; padding: 20px 24px; margin-bottom: 28px; border: 1px solid #C8DDD0;">
+                  <p style="margin: 0 0 12px; font-size: 12px; color: #4A7A5A; text-transform: uppercase; letter-spacing: 1px; font-family: sans-serif; font-weight: bold;">Get the most out of your Front and Center listing</p>
+                  <p style="margin: 0 0 8px; font-size: 14px; color: #3B3228; line-height: 1.7;">You've got the full showcase - here's how to fill it out:</p>
+                  <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #3B3228; line-height: 2;">
+                    <li>Add a hero photo - this is the first thing visitors see, make it a good one</li>
+                    <li>Upload your photo gallery - tell your story visually</li>
+                    <li>Your Google reviews show prominently on your profile - ask happy customers to leave one</li>
+                    <li>Share your profile everywhere: <a href="${profileUrl}" style="color: #4A7A5A;">${profileUrl}</a></li>
+                    <li><strong>Google Business setup is included in your plan</strong> - just reply to this email and I'll take care of it personally</li>
+                  </ul>
+                  <p style="margin: 12px 0 0; font-size: 14px; color: #3B3228; line-height: 1.7;">
+                    <a href="${siteUrl}/update-listing" style="color: #4A7A5A; font-weight: bold;">Update your listing now →</a>
+                  </p>
+                </div>`,
+            };
+
+            const tipsHtml = tipsByTier[tierId] || tipsByTier.enhanced;
+
+            const signOff = `
+              <p style="font-size: 14px; color: #3B3228; margin: 0 0 4px; line-height: 1.7;">
+                Any questions at all - just reply to this email. I'm happy to help get your listing looking its best.
+              </p>
+              <p style="font-size: 14px; color: #3B3228; margin: 0 0 24px; line-height: 1.7;">
+                Daryl<br>
+                <span style="color: #8A7E6E;">Manitou Beach</span>
+              </p>`;
+
             resend.emails.send({
               from: 'Manitou Beach <events@manitoubeachmichigan.com>',
               to: customerEmail,
               subject: isUpgrade
                 ? `Your listing just got an upgrade - ${businessName} is now ${tierLabel}`
                 : `Welcome to Manitou Beach - ${businessName} is listed`,
-              html: isUpgrade ? `
+              html: `
                 <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; color: #3B3228; background: #FAF6EF; padding: 40px 32px; border-radius: 8px;">
-                  <p style="font-size: 26px; font-weight: bold; margin: 0 0 8px; color: #1A2830;">You're moving up.</p>
+                  <p style="font-size: 26px; font-weight: bold; margin: 0 0 8px; color: #1A2830;">${isUpgrade ? "You're moving up." : "You're on the map."}</p>
                   <p style="font-size: 15px; color: #6B5F52; margin: 0 0 24px; line-height: 1.7;">
-                    <strong>${businessName}</strong> has been upgraded to <strong>${tierLabel}</strong> on Manitou Beach.
-                    Your previous subscription has been cancelled - nothing else you need to do.
+                    ${isUpgrade
+                      ? `<strong>${businessName}</strong> has been upgraded to <strong>${tierLabel}</strong> on Manitou Beach. Your previous subscription has been cancelled - nothing else you need to do.`
+                      : `<strong>${businessName}</strong> is now listed on Manitou Beach - the community hub for Devils Lake, Michigan. Visitors heading to the lake will find you right here.`
+                    }
                   </p>
                   <div style="background: #fff; border-radius: 6px; padding: 20px 24px; margin-bottom: 28px; border: 1px solid #E8DFD0;">
                     <p style="margin: 0 0 8px; font-size: 12px; color: #8A7E6E; text-transform: uppercase; letter-spacing: 1px; font-family: sans-serif;">Your listing</p>
                     <p style="margin: 0 0 4px; font-size: 18px; font-weight: bold; color: #1A2830;">${businessName}</p>
                     <p style="margin: 0 0 4px; font-size: 14px; color: #D4845A; font-weight: bold;">${tierLabel} · ${amount}</p>
-                    <p style="margin: 0; font-size: 13px; color: #8A7E6E; line-height: 1.6;">
-                      Cancel anytime - no contracts, no hassle.
-                    </p>
+                    <p style="margin: 0; font-size: 13px; color: #8A7E6E; line-height: 1.6;">Cancel anytime - no contracts, no hassle.</p>
                   </div>
                   <p style="margin: 0 0 28px;">
-                    <a href="${siteUrl}/discover" style="background: #1A2830; color: #FAF6EF; text-decoration: none; padding: 15px 30px; border-radius: 4px; font-family: sans-serif; font-weight: bold; font-size: 14px; letter-spacing: 1px; display: inline-block;">
+                    <a href="${profileUrl}" style="background: #1A2830; color: #FAF6EF; text-decoration: none; padding: 15px 30px; border-radius: 4px; font-family: sans-serif; font-weight: bold; font-size: 14px; letter-spacing: 1px; display: inline-block;">
                       See Your Listing →
                     </a>
                   </p>
+                  ${tipsHtml}
+                  ${signOff}
                   <p style="font-size: 13px; color: #8A7E6E; margin: 0 0 6px; line-height: 1.7;">
-                    Need to update your info or add a logo? <a href="${siteUrl}/update-listing" style="color: #4A7A5A;">Edit your listing anytime →</a><br>
-                    Want to upgrade, downgrade, or cancel? <a href="${siteUrl}/manage-billing" style="color: #4A7A5A;">Manage your billing anytime →</a>
-                  </p>
-                  <hr style="border: none; border-top: 1px solid #E8DFD0; margin: 28px 0 16px;">
-                  <p style="font-size: 11px; color: #9A8E7E; margin: 0;">Manitou Beach · Devils Lake, Michigan · manitoubeachmichigan.com</p>
-                </div>
-              ` : `
-                <div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; color: #3B3228; background: #FAF6EF; padding: 40px 32px; border-radius: 8px;">
-                  <p style="font-size: 26px; font-weight: bold; margin: 0 0 8px; color: #1A2830;">You're on the map.</p>
-                  <p style="font-size: 15px; color: #6B5F52; margin: 0 0 24px; line-height: 1.7;">
-                    <strong>${businessName}</strong> is now listed on Manitou Beach - the community hub for Devils Lake, Michigan.
-                    Visitors heading to the lake will find you right here.
-                  </p>
-                  <div style="background: #fff; border-radius: 6px; padding: 20px 24px; margin-bottom: 28px; border: 1px solid #E8DFD0;">
-                    <p style="margin: 0 0 8px; font-size: 12px; color: #8A7E6E; text-transform: uppercase; letter-spacing: 1px; font-family: sans-serif;">Your listing</p>
-                    <p style="margin: 0 0 4px; font-size: 18px; font-weight: bold; color: #1A2830;">${businessName}</p>
-                    <p style="margin: 0 0 4px; font-size: 14px; color: #D4845A; font-weight: bold;">${tierLabel} · ${amount}</p>
-                    <p style="margin: 0; font-size: 13px; color: #8A7E6E; line-height: 1.6;">
-                      Cancel anytime - no contracts, no hassle.
-                    </p>
-                  </div>
-                  <p style="margin: 0 0 28px;">
-                    <a href="${siteUrl}/discover" style="background: #1A2830; color: #FAF6EF; text-decoration: none; padding: 15px 30px; border-radius: 4px; font-family: sans-serif; font-weight: bold; font-size: 14px; letter-spacing: 1px; display: inline-block;">
-                      See Your Listing →
-                    </a>
-                  </p>
-                  <p style="font-size: 13px; color: #8A7E6E; margin: 0 0 6px; line-height: 1.7;">
-                    Need to update your info or add a logo? <a href="${siteUrl}/update-listing" style="color: #4A7A5A;">Edit your listing anytime →</a><br>
-                    Want to upgrade, downgrade, or cancel? <a href="${siteUrl}/manage-billing" style="color: #4A7A5A;">Manage your billing anytime →</a>
+                    <a href="${siteUrl}/manage-billing" style="color: #4A7A5A;">Manage billing →</a>
                   </p>
                   <hr style="border: none; border-top: 1px solid #E8DFD0; margin: 28px 0 16px;">
                   <p style="font-size: 11px; color: #9A8E7E; margin: 0;">Manitou Beach · Devils Lake, Michigan · manitoubeachmichigan.com</p>
