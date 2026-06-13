@@ -1,17 +1,5 @@
 import { Resend } from 'resend';
 
-// NEW Notion columns required on NOTION_DB_PRIZE_WHEEL_SPONSORS:
-//   Contact Name  — Text
-//   Contact Email — Email
-//   Contact Phone — Phone
-//   Trial Start   — Date
-//   Trial End     — Date
-//   Plan Type     — Select (options: trial, founding, paid)
-
-function genPin() {
-  return String(Math.floor(1000 + Math.random() * 9000));
-}
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
 
@@ -20,6 +8,7 @@ export default async function handler(req, res) {
     businessName,
     email,
     phone,
+    vendorPin,
     logoUrl,
     dealLabel,
     dealDescription,
@@ -29,13 +18,14 @@ export default async function handler(req, res) {
   if (!contactName || !businessName || !email || !dealLabel) {
     return res.status(400).json({ error: 'Contact name, business name, email, and offer are required.' });
   }
+  if (!/^\d{4}$/.test(String(vendorPin || ''))) {
+    return res.status(400).json({ error: 'PIN must be exactly 4 digits.' });
+  }
 
   const cleanEmail = String(email).trim().toLowerCase();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
     return res.status(400).json({ error: 'Please enter a valid email address.' });
   }
-
-  const vendorPin = genPin();
   const trialStart = new Date().toISOString();
   const trialEnd = new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString();
   const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';

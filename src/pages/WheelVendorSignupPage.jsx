@@ -11,6 +11,7 @@ export default function WheelVendorSignupPage() {
     businessName: '',
     email: '',
     phone: '',
+    vendorPin: '',
     dealLabel: '',
     dealDescription: '',
     dealColor: '#D4845A',
@@ -91,6 +92,7 @@ export default function WheelVendorSignupPage() {
     if (!form.businessName.trim()) return setError('Please enter your business name.');
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) return setError('Please enter a valid email.');
     if (!form.dealLabel.trim()) return setError('Please enter your offer.');
+    if (!/^\d{4}$/.test(form.vendorPin)) return setError('PIN must be exactly 4 digits.');
 
     setSubmitting(true);
     try {
@@ -322,6 +324,25 @@ export default function WheelVendorSignupPage() {
                   onBlur={e => e.target.style.borderColor = C.sand}
                 />
               </div>
+            </div>
+            <div style={{ marginTop: 14, maxWidth: 200 }}>
+              <label style={labelStyle}>
+                Your 4-digit staff PIN *
+              </label>
+              <input
+                style={{ ...inputStyle, fontFamily: "'Courier New', monospace", fontSize: 22, letterSpacing: '0.3em', textAlign: 'center' }}
+                type="text"
+                inputMode="numeric"
+                placeholder="1234"
+                maxLength={4}
+                value={form.vendorPin}
+                onChange={e => set('vendorPin', e.target.value.replace(/\D/g, '').slice(0, 4))}
+                onFocus={e => e.target.style.borderColor = C.sunset}
+                onBlur={e => e.target.style.borderColor = C.sand}
+              />
+              <p style={{ fontSize: 11, color: C.textMuted, margin: '5px 0 0', lineHeight: 1.4 }}>
+                Staff enter this when scanning a customer's QR code to redeem it. Pick something easy to remember.
+              </p>
             </div>
           </div>
 
