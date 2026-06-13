@@ -73,6 +73,7 @@ const RafflePage = lazy(() => import('./pages/RafflePage'));
 const WheelDemoPage = lazy(() => import('./pages/WheelDemoPage'));
 const PrizeRedeemPage = lazy(() => import('./pages/PrizeRedeemPage'));
 const SponsorStatsPage = lazy(() => import('./pages/SponsorStatsPage'));
+const WheelVendorSignupPage = lazy(() => import('./pages/WheelVendorSignupPage'));
 const BusinessProfilePage = lazy(() => import('./pages/BusinessProfilePage'));
 const FoodTruckProfilePage = lazy(() => import('./pages/FoodTruckProfilePage'));
 const WineryProfilePage = lazy(() => import('./pages/WineryProfilePage'));
@@ -273,6 +274,7 @@ export default function App() {
           <Route path="/wheel" element={<WheelDemoPage />} />
           <Route path="/redeem" element={<PrizeRedeemPage />} />
           <Route path="/sponsor/:id" element={<SponsorStatsPage />} />
+          <Route path="/wheel-signup" element={<WheelVendorSignupPage />} />
         </Routes>
         </Suspense>
       </ChunkErrorBoundary>
