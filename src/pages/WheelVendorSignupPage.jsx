@@ -2,6 +2,15 @@ import { useState, useRef } from 'react';
 import { C } from '../data/config';
 import { Navbar, Footer, GlobalStyles } from '../components/Layout';
 
+const WHEEL_COLORS = [
+  { hex: '#D4845A', label: 'Sunset'  },
+  { hex: '#7A8E72', label: 'Sage'    },
+  { hex: '#5B7E95', label: 'Lake'    },
+  { hex: '#9b59b6', label: 'Grape'   },
+  { hex: '#e74c3c', label: 'Cherry'  },
+  { hex: '#f39c12', label: 'Amber'   },
+];
+
 
 const MAX_LABEL_CHARS = 32;
 
@@ -390,45 +399,48 @@ export default function WheelVendorSignupPage() {
 
             <div>
               <label style={labelStyle}>Wheel segment color</label>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                <div style={{ position: 'relative', width: 48, height: 48, flexShrink: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                {WHEEL_COLORS.map(({ hex, label }) => (
+                  <button
+                    key={hex}
+                    title={label}
+                    onClick={() => set('dealColor', hex)}
+                    style={{
+                      width: 36,
+                      height: 36,
+                      borderRadius: '50%',
+                      background: hex,
+                      border: form.dealColor === hex ? `3px solid ${C.night}` : '3px solid transparent',
+                      cursor: 'pointer',
+                      outline: form.dealColor === hex ? `2px solid ${hex}` : 'none',
+                      outlineOffset: 2,
+                      flexShrink: 0,
+                    }}
+                  />
+                ))}
+                {/* Custom color picker */}
+                <div style={{ position: 'relative', width: 36, height: 36, flexShrink: 0 }} title="Custom color">
                   <div style={{
-                    width: 48,
-                    height: 48,
+                    width: 36,
+                    height: 36,
                     borderRadius: '50%',
-                    background: form.dealColor,
-                    border: `3px solid ${C.sand}`,
-                    boxShadow: `0 0 0 3px ${form.dealColor}33`,
+                    background: 'conic-gradient(red, yellow, lime, cyan, blue, magenta, red)',
+                    border: !WHEEL_COLORS.some(c => c.hex === form.dealColor) ? `3px solid ${C.night}` : `3px solid transparent`,
                     cursor: 'pointer',
-                    transition: 'background 0.1s, box-shadow 0.1s',
+                    outline: !WHEEL_COLORS.some(c => c.hex === form.dealColor) ? `2px solid ${form.dealColor}` : 'none',
+                    outlineOffset: 2,
                   }} />
                   <input
                     type="color"
                     value={form.dealColor}
                     onChange={e => set('dealColor', e.target.value)}
-                    style={{
-                      position: 'absolute',
-                      inset: 0,
-                      opacity: 0,
-                      width: '100%',
-                      height: '100%',
-                      cursor: 'pointer',
-                      border: 'none',
-                      padding: 0,
-                    }}
+                    style={{ position: 'absolute', inset: 0, opacity: 0, width: '100%', height: '100%', cursor: 'pointer', border: 'none', padding: 0 }}
                   />
                 </div>
-                <div>
-                  <p style={{ fontSize: 14, color: C.text, margin: '0 0 2px', fontWeight: 500 }}>
-                    {form.dealColor.toUpperCase()}
-                  </p>
-                  <p style={{ fontSize: 12, color: C.textMuted, margin: 0 }}>
-                    Click the circle to open the color picker
-                  </p>
-                </div>
               </div>
-              <p style={{ fontSize: 12, color: C.textMuted, margin: '10px 0 0' }}>
-                This is the color of your segment on the wheel. Match it to your brand.
+              <p style={{ fontSize: 12, color: C.textMuted, margin: '8px 0 0' }}>
+                Selected: <span style={{ fontWeight: 600, color: form.dealColor }}>{form.dealColor.toUpperCase()}</span>
+                {' '}&mdash; click the rainbow circle for a custom color.
               </p>
             </div>
           </div>
