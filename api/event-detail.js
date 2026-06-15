@@ -81,6 +81,7 @@ export default async function handler(req, res) {
       ticketCapacity: p['Ticket Capacity']?.number || null,
       ctaLabel: p['CTA Label']?.select?.name || null,
       recurring: p['Recurring']?.select?.name || null,
+      geoFaq: (() => { try { return JSON.parse(p['GEO FAQ']?.rich_text?.[0]?.text?.content || 'null'); } catch { return null; } })(),
       status: p['Status']?.status?.name || null,
     };
 

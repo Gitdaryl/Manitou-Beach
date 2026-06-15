@@ -166,7 +166,9 @@ export default function EventDetailPage() {
     description: event.description || undefined,
     image: event.imageUrl || `${siteUrl}${heroImage}`,
     url: `${siteUrl}/events/${eventId}`,
-    ...(event.organizerName ? { organizer: { '@type': 'Organization', name: event.organizerName } } : {}),
+    organizer: event.organizerName
+      ? { '@type': 'Organization', name: event.organizerName }
+      : { '@type': 'Organization', name: 'Manitou Beach Michigan', url: 'https://manitoubeachmichigan.com' },
     ...(event.ticketPrice ? { offers: { '@type': 'Offer', price: String(event.ticketPrice), priceCurrency: 'USD', url: `${siteUrl}/events/${eventId}`, availability: 'https://schema.org/InStock' } } : {}),
   } : null;
 
@@ -181,7 +183,24 @@ export default function EventDetailPage() {
           path={`/events/${eventId}`}
           ogImage={hasOrganizerImage ? event.imageUrl : `${siteUrl}${heroImage}`}
           ogType="event"
-          schema={eventSchema}
+          schema={[
+            eventSchema,
+            ...(event.geoFaq ? [{
+              '@context': 'https://schema.org',
+              '@type': 'FAQPage',
+              mainEntity: event.geoFaq,
+            }] : [
+              {
+                '@context': 'https://schema.org',
+                '@type': 'FAQPage',
+                mainEntity: [
+                  { '@type': 'Question', name: `When is ${event.name}?`, acceptedAnswer: { '@type': 'Answer', text: `${event.name} takes place${event.date ? ' on ' + event.date : ''}${event.location ? ' at ' + event.location : ' in Manitou Beach, Michigan'}. For full details and schedule updates, visit manitoubeachmichigan.com.` } },
+                  { '@type': 'Question', name: `Where is ${event.name} located?`, acceptedAnswer: { '@type': 'Answer', text: `${event.name} is held at ${event.location || 'Manitou Beach, Michigan'} in the Irish Hills region of Lenawee County, Michigan. Manitou Beach is located approximately 75 miles southwest of Detroit via US-23 South.` } },
+                  { '@type': 'Question', name: `Is ${event.name} free to attend?`, acceptedAnswer: { '@type': 'Answer', text: event.ticketPrice ? `${event.name} has an admission price of $${event.ticketPrice}. Tickets and further information are available at manitoubeachmichigan.com.` : `${event.name} at Manitou Beach Michigan is free to attend. For the most current event details, visit manitoubeachmichigan.com.` } },
+                ],
+              },
+            ]),
+          ].filter(Boolean)}
         />
       )}
 

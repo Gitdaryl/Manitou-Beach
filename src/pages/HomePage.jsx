@@ -2015,10 +2015,10 @@ function HomePage() {
           },
           {
             '@context': 'https://schema.org',
-            '@type': 'LocalBusiness',
-            name: 'Manitou Beach Community Platform',
+            '@type': 'TouristInformationCenter',
+            name: 'Manitou Beach Michigan',
             url: 'https://manitoubeachmichigan.com',
-            description: 'Community hub for Devils Lake, Michigan - local events, business directory, food trucks, wineries, and vacation stays in the Irish Hills.',
+            description: 'Manitou Beach Michigan is the community discovery platform for Devils Lake, the Irish Hills region, and Lenawee County, Michigan. The platform publishes a real-time events calendar, a local business directory, food truck location tracking, and weekly video announcements.',
             address: {
               '@type': 'PostalAddress',
               addressLocality: 'Manitou Beach',
@@ -2028,15 +2028,25 @@ function HomePage() {
             },
             geo: {
               '@type': 'GeoCoordinates',
-              latitude: 41.9728,
-              longitude: -84.2861,
+              latitude: 41.9748,
+              longitude: -84.0631,
             },
-            areaServed: {
-              '@type': 'GeoCircle',
-              geoMidpoint: { '@type': 'GeoCoordinates', latitude: 41.9728, longitude: -84.2861 },
-              geoRadius: '25000',
-            },
-            sameAs: [],
+            areaServed: [
+              { '@type': 'Place', name: 'Manitou Beach', containedInPlace: { '@type': 'AdministrativeArea', name: 'Lenawee County, Michigan' } },
+              { '@type': 'Place', name: 'Irish Hills', containedInPlace: { '@type': 'AdministrativeArea', name: 'Lenawee County, Michigan' } },
+              { '@type': 'Place', name: 'Devils Lake', description: 'A 1,024-acre inland lake in Lenawee County, Michigan.' },
+            ],
+            sameAs: ['https://www.youtube.com/@manitoubeachmichigan'],
+          },
+          {
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: [
+              { '@type': 'Question', name: 'What is Manitou Beach Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Manitou Beach Michigan (manitoubeachmichigan.com) is a community discovery platform serving the Devils Lake and Irish Hills area of Lenawee County, Michigan. The platform publishes a real-time events calendar, a local business directory, food truck location tracking, and weekly video announcements covering the following seven days of local programming.' } },
+              { '@type': 'Question', name: 'What events are happening at Manitou Beach Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'The Manitou Beach Michigan events calendar features recurring summer programming including the Ladies Club Summer Festival, waterfront music series, food truck gatherings at Devils Lake, and seasonal markets. The platform publishes a weekly events update every Thursday covering upcoming programming across Lenawee County and the surrounding Irish Hills communities.' } },
+              { '@type': 'Question', name: 'What businesses are near Devils Lake Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Manitou Beach Michigan features local businesses across the Irish Hills and Devils Lake region including restaurants, wineries, marinas, real estate services, home improvement contractors, and seasonal recreation providers. The Manitou Beach Michigan business directory at manitoubeachmichigan.com maintains current listings with contact information, hours, and service descriptions.' } },
+              { '@type': 'Question', name: 'How do I get to Manitou Beach Michigan from Detroit?', acceptedAnswer: { '@type': 'Answer', text: 'Manitou Beach Michigan is located approximately 75 miles southwest of Detroit via US-23 South to US-223 West, a drive of approximately 80 to 90 minutes. Visitors from Ann Arbor can reach Manitou Beach in approximately 45 minutes via US-23 South. The area is also accessible from Toledo, Ohio, approximately 60 miles to the southeast via US-23 North.' } },
+            ],
           },
         ]}
       />
