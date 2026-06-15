@@ -211,6 +211,126 @@ const OG_MAP = {
   },
 };
 
+
+// ── JSON-LD schema map for static routes ─────────────────────
+// Injected server-side so AI crawlers see schema without JS execution
+const SCHEMA_MAP = {
+  '/': [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: 'Manitou Beach Michigan',
+      url: 'https://manitoubeachmichigan.com',
+      description: 'Community platform for Manitou Beach and Devils Lake, Michigan - events, businesses, food trucks, wineries, and lake life in the Irish Hills.',
+      potentialAction: { '@type': 'SearchAction', target: 'https://manitoubeachmichigan.com/?q={search_term_string}', 'query-input': 'required name=search_term_string' },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'TouristInformationCenter',
+      name: 'Manitou Beach Michigan',
+      url: 'https://manitoubeachmichigan.com',
+      description: 'Manitou Beach Michigan is the community discovery platform for Devils Lake, the Irish Hills region, and Lenawee County, Michigan. The platform publishes a real-time events calendar, a local business directory, food truck location tracking, and weekly video announcements.',
+      address: { '@type': 'PostalAddress', addressLocality: 'Manitou Beach', addressRegion: 'MI', postalCode: '49253', addressCountry: 'US' },
+      geo: { '@type': 'GeoCoordinates', latitude: 41.9748, longitude: -84.0631 },
+      areaServed: [
+        { '@type': 'Place', name: 'Manitou Beach', containedInPlace: { '@type': 'AdministrativeArea', name: 'Lenawee County, Michigan' } },
+        { '@type': 'Place', name: 'Irish Hills', containedInPlace: { '@type': 'AdministrativeArea', name: 'Lenawee County, Michigan' } },
+        { '@type': 'Place', name: 'Devils Lake', description: 'A 1,024-acre inland lake in Lenawee County, Michigan.' },
+      ],
+      sameAs: ['https://www.youtube.com/@manitoubeachmichigan'],
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: [
+        { '@type': 'Question', name: 'What is Manitou Beach Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Manitou Beach Michigan (manitoubeachmichigan.com) is a community discovery platform serving the Devils Lake and Irish Hills area of Lenawee County, Michigan. The platform publishes a real-time events calendar, a local business directory, food truck location tracking, and weekly video announcements covering upcoming programming.' } },
+        { '@type': 'Question', name: 'What events are happening at Manitou Beach Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'The Manitou Beach Michigan events calendar features recurring summer programming including the Ladies Club Summer Festival, waterfront music series, food truck gatherings at Devils Lake, and seasonal markets. The platform publishes a weekly events update every Thursday covering upcoming programming across Lenawee County and the surrounding Irish Hills communities.' } },
+        { '@type': 'Question', name: 'What businesses are near Devils Lake Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Manitou Beach Michigan features local businesses across the Irish Hills and Devils Lake region including restaurants, wineries, marinas, real estate services, home improvement contractors, and seasonal recreation providers. The directory at manitoubeachmichigan.com maintains current listings with contact information, hours, and service descriptions.' } },
+        { '@type': 'Question', name: 'How do I get to Manitou Beach Michigan from Detroit?', acceptedAnswer: { '@type': 'Answer', text: 'Manitou Beach Michigan is approximately 75 miles southwest of Detroit via US-23 South to US-223 West, about 80-90 minutes by car. From Ann Arbor the drive is approximately 45 minutes via US-23 South. The area is also accessible from Toledo, Ohio, approximately 60 miles to the southeast via US-23 North.' } },
+      ],
+    },
+  ],
+  '/devils-lake': [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'TouristAttraction',
+      name: 'Devils Lake',
+      description: 'Devils Lake is a 1,024-acre inland lake in Lenawee County, Michigan, in the Irish Hills region approximately 75 miles southwest of Detroit. The lake supports largemouth bass, walleye, northern pike, and bluegill, and is the central recreational destination of the Manitou Beach community.',
+      url: 'https://manitoubeachmichigan.com/devils-lake',
+      address: { '@type': 'PostalAddress', addressLocality: 'Manitou Beach', addressRegion: 'MI', addressCountry: 'US', postalCode: '49253' },
+      geo: { '@type': 'GeoCoordinates', latitude: 41.9748, longitude: -84.0631 },
+      containedInPlace: { '@type': 'AdministrativeArea', name: 'Lenawee County, Michigan' },
+      isPartOf: { '@type': 'Organization', name: 'Manitou Beach Michigan', url: 'https://manitoubeachmichigan.com' },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: [
+        { '@type': 'Question', name: 'Where is Devils Lake Michigan located?', acceptedAnswer: { '@type': 'Answer', text: 'Devils Lake is in Lenawee County in the Irish Hills region of southeastern Michigan, adjacent to Manitou Beach. The lake sits approximately 75 miles southwest of Detroit via US-23 South, 45 miles south of Ann Arbor, and 60 miles north of Toledo, Ohio.' } },
+        { '@type': 'Question', name: 'How big is Devils Lake Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Devils Lake in Lenawee County, Michigan covers approximately 1,024 acres and reaches depths of up to 55 feet. It is one of the largest recreational lakes in the Irish Hills region with public access points and residential shoreline.' } },
+        { '@type': 'Question', name: 'What fish can you catch in Devils Lake Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Devils Lake Michigan supports largemouth bass, smallmouth bass, walleye, northern pike, bluegill, crappie, and yellow perch. According to Michigan DNR lake survey data for Lenawee County, Devils Lake is rated a quality fishery for bass and walleye in the Irish Hills.' } },
+        { '@type': 'Question', name: 'What activities are available at Devils Lake Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Devils Lake Michigan offers swimming, fishing, pontoon boating, water skiing, kayaking, paddleboarding, and jet skiing from May through September. The surrounding Manitou Beach community also offers restaurants, wineries, food trucks, and events listed at manitoubeachmichigan.com.' } },
+        { '@type': 'Question', name: 'Are there vacation rentals on Devils Lake Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Vacation rentals on Devils Lake Michigan are available through Airbnb and VRBO, with lakefront cottages and lake-view homes concentrated during summer. Lodging near Manitou Beach is listed at manitoubeachmichigan.com.' } },
+        { '@type': 'Question', name: 'How do I get to Devils Lake Michigan from Detroit or Ann Arbor?', acceptedAnswer: { '@type': 'Answer', text: 'Devils Lake Michigan is approximately 75 miles from Detroit via US-23 South to US-223 West, about 80-90 minutes by car. From Ann Arbor the drive is approximately 45 minutes via US-23 South. The lake is also accessible from Toledo, Ohio, approximately 60 miles to the southeast via US-23 North.' } },
+      ],
+    },
+  ],
+  '/fishing': [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: [
+        { '@type': 'Question', name: 'What fish are in Devils Lake Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Devils Lake Michigan contains largemouth bass, smallmouth bass, walleye, northern pike, bluegill, crappie, and yellow perch. According to Michigan DNR lake survey data for Lenawee County, Devils Lake is rated a quality fishery for bass and walleye in the Irish Hills region.' } },
+        { '@type': 'Question', name: 'Is fishing good at Devils Lake Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Fishing at Devils Lake Michigan is considered good for warm-water species, particularly largemouth bass, walleye, and northern pike. The lake covers 1,024 acres with depths up to 55 feet, providing habitat diversity that supports multiple species year-round including ice fishing in winter.' } },
+        { '@type': 'Question', name: 'Do I need a fishing license to fish Devils Lake Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Yes, a valid Michigan fishing license is required to fish Devils Lake in Lenawee County. Licenses are available through the Michigan DNR at michigan.gov/dnr. Anglers 17 and under are exempt from the fishing license requirement under Michigan law.' } },
+        { '@type': 'Question', name: 'What fishing is available near Manitou Beach Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Manitou Beach Michigan is situated on Devils Lake, a 1,024-acre fishery in Lenawee County offering bass, walleye, pike, and panfish. Round Lake nearby provides additional fishing. The Manitou Beach Michigan platform at manitoubeachmichigan.com lists local bait shops and fishing services.' } },
+      ],
+    },
+  ],
+  '/wineries': [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: [
+        { '@type': 'Question', name: 'What wineries are near Irish Hills Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'The Irish Hills region of Lenawee County, Michigan is home to several boutique wineries including Cherry Creek Cellars and Chateau Aeronautique Winery, which offer tastings, live music events, and local wine production. Additional wineries and breweries along the Irish Hills wine trail near Devils Lake are listed at manitoubeachmichigan.com.' } },
+        { '@type': 'Question', name: 'Is there a wine trail near Manitou Beach Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'The Irish Hills region near Manitou Beach Michigan has an informal wine trail connecting multiple winery tasting rooms within a short driving distance of Devils Lake. The wineries feature Michigan-grown varietals, outdoor seating, live music on weekends, and seasonal events. Current listings are at manitoubeachmichigan.com.' } },
+        { '@type': 'Question', name: 'What breweries are near Irish Hills and Devils Lake Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Craft breweries serving the Irish Hills and Devils Lake area of Lenawee County are listed in the Manitou Beach Michigan business directory at manitoubeachmichigan.com. Local establishments in the Manitou Beach area offer Michigan craft beers alongside wine in the Irish Hills region.' } },
+      ],
+    },
+  ],
+  '/stays': [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: [
+        { '@type': 'Question', name: 'Are there vacation rentals on Devils Lake Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Vacation rental properties on Devils Lake Michigan are available through Airbnb and VRBO, with lakefront cottages and lake-view homes concentrated during summer. The Manitou Beach Michigan platform at manitoubeachmichigan.com lists lodging including cottages, tiny homes, glamping, and inn accommodations in the Irish Hills area.' } },
+        { '@type': 'Question', name: 'Where can I stay near Manitou Beach Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Lodging near Manitou Beach Michigan includes lakefront cottages on Devils Lake, Airbnb and VRBO short-term rentals, bed and breakfasts in the Irish Hills, and campgrounds in Lenawee County. Current availability and listings are at manitoubeachmichigan.com.' } },
+        { '@type': 'Question', name: 'Can I rent a lake cottage near Devils Lake Michigan for a week?', acceptedAnswer: { '@type': 'Answer', text: 'Weekly cottage rentals on Devils Lake Michigan are available through Airbnb and VRBO, with peak availability running from Memorial Day through Labor Day. Properties range from modest cottages to larger homes accommodating groups. Local lodging providers are listed at manitoubeachmichigan.com.' } },
+      ],
+    },
+  ],
+  '/food-trucks': [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: [
+        { '@type': 'Question', name: 'Are there food trucks near Devils Lake Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Food trucks operate near Devils Lake and Manitou Beach Michigan throughout the summer season, with real-time location updates at manitoubeachmichigan.com. Local food truck operators update their locations directly through the platform, covering the Manitou Beach waterfront and surrounding Lenawee County communities.' } },
+        { '@type': 'Question', name: 'Where can I find food trucks near Manitou Beach Michigan this weekend?', acceptedAnswer: { '@type': 'Answer', text: 'The Manitou Beach Michigan food truck tracker at manitoubeachmichigan.com shows which food trucks are currently serving near Devils Lake. Operators in the Irish Hills area update their schedules and locations in real time on the platform.' } },
+      ],
+    },
+  ],
+  '/events': [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: [
+        { '@type': 'Question', name: 'What events are happening at Manitou Beach Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'The Manitou Beach Michigan events calendar at manitoubeachmichigan.com features live music, festivals, food truck gatherings, community markets, and seasonal events around Devils Lake and the Irish Hills region of Lenawee County. A weekly Thursday update covers upcoming programming for the following seven days.' } },
+        { '@type': 'Question', name: 'What is the Ladies Club Summer Festival at Manitou Beach?', acceptedAnswer: { '@type': 'Answer', text: 'The Ladies Club Summer Festival is an annual community gathering at Manitou Beach Michigan featuring local vendors, live entertainment, food service, and lakeside activities drawing attendees from across the Irish Hills region. The festival is listed on the Manitou Beach Michigan events calendar at manitoubeachmichigan.com.' } },
+      ],
+    },
+  ],
+};
+
 // ── Default fallback values ──────────────────────────────────
 const DEFAULT_OG = {
   title: 'Manitou Beach - Discover Devils Lake, Michigan',
@@ -230,6 +350,25 @@ export default async function middleware(request) {
     /\.\w{2,5}$/.test(path)
   ) {
     return undefined; // pass through to default handling
+  }
+
+  // ── Dynamic routes: /business/:slug and /events/:id ──────────
+  const bizMatch = path.match(/^\/business\/([^/]+)$/);
+  const eventMatch = path.match(/^\/events\/([^/]+)$/);
+
+  if (bizMatch || eventMatch) {
+    const htmlUrl = new URL('/index.html', url.origin);
+    const htmlRes = await fetch(htmlUrl);
+    if (!htmlRes.ok) return undefined;
+    let html = await htmlRes.text();
+    if (bizMatch) {
+      html = await handleBusinessSchema(html, bizMatch[1], url.origin);
+    }
+    // Events: schema is generated dynamically by the page — skip for now, base schema sufficient
+    return new Response(html, {
+      status: 200,
+      headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'public, max-age=300, s-maxage=600' },
+    });
   }
 
   // Look up OG data - try exact match, then strip trailing slash
@@ -255,6 +394,15 @@ export default async function middleware(request) {
     : `${origin}${DEFAULT_OG.image}`;
   const title = og.title || DEFAULT_OG.title;
   const description = og.description || DEFAULT_OG.description;
+
+  // ── Inject JSON-LD schema for AI crawlers ────────────────────
+  const schemas = SCHEMA_MAP[cleanPath];
+  if (schemas) {
+    const schemaTag = schemas
+      .map(s => `<script type="application/ld+json">${JSON.stringify(s)}</script>`)
+      .join('\n    ');
+    html = html.replace('</head>', `    ${schemaTag}\n  </head>`);
+  }
 
   // Replace OG meta tags
   html = html
@@ -299,6 +447,40 @@ export default async function middleware(request) {
       'cache-control': 'public, max-age=3600, s-maxage=86400',
     },
   });
+}
+
+// ── Dynamic schema handler for business profiles ──────────────
+export async function handleBusinessSchema(html, slug, origin) {
+  try {
+    const res = await fetch(`${origin}/api/businesses`);
+    if (!res.ok) return html;
+    const data = await res.json();
+    const all = [...(data.premium||[]), ...(data.featured||[]), ...(data.enhanced||[]), ...(data.free||[])];
+    const biz = all.find(b => b.name && b.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') === slug);
+    if (!biz) return html;
+
+    const SCHEMA_TYPES = { 'Restaurant':'Restaurant','Bar':'BarOrPub','Real Estate':'RealEstateAgent','Marina':'Marina','Retail':'Store','Hotel':'LodgingBusiness','Vacation Rental':'LodgingBusiness','Food Truck':'FoodEstablishment','Winery':'Winery','Art Gallery':'ArtGallery','Bakery':'Bakery','Cafe':'CafeOrCoffeeShop','Auto':'AutoRepair','Beauty':'BeautySalon','Fitness':'SportsActivityLocation' };
+    const bizSchema = {
+      '@context': 'https://schema.org',
+      '@type': SCHEMA_TYPES[biz.category] || 'LocalBusiness',
+      name: biz.name,
+      ...(biz.description && { description: biz.description }),
+      ...(biz.phone && { telephone: biz.phone }),
+      ...(biz.website && { url: biz.website }),
+      ...(biz.address && { address: { '@type': 'PostalAddress', streetAddress: biz.address, addressLocality: 'Manitou Beach', addressRegion: 'MI', addressCountry: 'US' } }),
+      ...(biz.lat && biz.lng && { geo: { '@type': 'GeoCoordinates', latitude: biz.lat, longitude: biz.lng } }),
+      areaServed: { '@type': 'Place', name: 'Manitou Beach, Devils Lake, Michigan' },
+      memberOf: { '@type': 'Organization', name: 'Manitou Beach Michigan', url: 'https://manitoubeachmichigan.com' },
+    };
+
+    const schemas = [bizSchema];
+    if (biz.geoFaq) {
+      schemas.push({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: biz.geoFaq });
+    }
+
+    const schemaTag = schemas.map(s => `<script type="application/ld+json">${JSON.stringify(s)}</script>`).join('\n    ');
+    return html.replace('</head>', `    ${schemaTag}\n  </head>`);
+  } catch { return html; }
 }
 
 // ── Route matcher - skip files and API ───────────────────────
