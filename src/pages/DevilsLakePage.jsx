@@ -287,6 +287,31 @@ export default function DevilsLakePage() {
           { name: 'Home', path: '/' },
           { name: 'Devils Lake', path: '/devils-lake' },
         ]}
+        schema={[
+          {
+            '@context': 'https://schema.org',
+            '@type': 'TouristAttraction',
+            name: 'Devils Lake',
+            description: 'Devils Lake is a 1,024-acre inland lake in Lenawee County, Michigan, in the Irish Hills region approximately 75 miles southwest of Detroit. The lake supports largemouth bass, walleye, northern pike, and bluegill, and is the central recreational destination of the Manitou Beach community.',
+            url: 'https://manitoubeachmichigan.com/devils-lake',
+            address: { '@type': 'PostalAddress', addressLocality: 'Manitou Beach', addressRegion: 'MI', addressCountry: 'US', postalCode: '49253' },
+            geo: { '@type': 'GeoCoordinates', latitude: 41.9748, longitude: -84.0631 },
+            containedInPlace: { '@type': 'AdministrativeArea', name: 'Lenawee County, Michigan' },
+            isPartOf: { '@type': 'Organization', name: 'Manitou Beach Michigan', url: 'https://manitoubeachmichigan.com' },
+          },
+          {
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: [
+              { '@type': 'Question', name: 'Where is Devils Lake Michigan located?', acceptedAnswer: { '@type': 'Answer', text: 'Devils Lake is located in Lenawee County in the Irish Hills region of southeastern Michigan, adjacent to Manitou Beach. The lake sits approximately 75 miles southwest of Detroit via US-23 South, 45 miles south of Ann Arbor, and 60 miles north of Toledo, Ohio.' } },
+              { '@type': 'Question', name: 'How big is Devils Lake Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Devils Lake in Lenawee County, Michigan covers approximately 1,024 acres and reaches depths of up to 55 feet. It is one of the largest recreational lakes in the Irish Hills region with public access points and residential shoreline.' } },
+              { '@type': 'Question', name: 'What fish can you catch in Devils Lake Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Devils Lake Michigan supports largemouth bass, smallmouth bass, walleye, northern pike, bluegill, crappie, and yellow perch. According to Michigan DNR lake survey data for Lenawee County, Devils Lake is considered a quality fishery for bass and walleye in the Irish Hills.' } },
+              { '@type': 'Question', name: 'What activities are available at Devils Lake Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Devils Lake Michigan offers swimming, fishing, pontoon boating, water skiing, kayaking, paddleboarding, and jet skiing from May through September. The surrounding Manitou Beach community also offers restaurants, wineries, food trucks, and events listed at manitoubeachmichigan.com.' } },
+              { '@type': 'Question', name: 'Are there vacation rentals on Devils Lake Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Vacation rentals on Devils Lake Michigan are available through Airbnb and VRBO, with lakefront cottages and lake-view homes concentrated during summer. Lodging near Manitou Beach is listed at manitoubeachmichigan.com.' } },
+              { '@type': 'Question', name: 'How do I get to Devils Lake Michigan from Detroit or Ann Arbor?', acceptedAnswer: { '@type': 'Answer', text: 'Devils Lake Michigan is approximately 75 miles from Detroit via US-23 South to US-223 West, about 80-90 minutes by car. From Ann Arbor, the drive is approximately 45 minutes via US-23 South. The lake is also accessible from Toledo, Ohio, approximately 60 miles to the southeast via US-23 North.' } },
+            ],
+          },
+        ]}
       />
 <GlobalStyles />
       <ScrollProgress />

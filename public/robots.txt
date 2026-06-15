@@ -1,3 +1,6 @@
+# Manitou Beach Michigan - manitoubeachmichigan.com
+
+# Standard crawlers
 User-agent: *
 Allow: /
 Disallow: /api/
@@ -7,5 +10,33 @@ Disallow: /redeem-promo
 Disallow: /build
 Disallow: /quick-events
 Disallow: /organizer-dashboard
+
+# AI crawlers — explicitly permitted
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Gemini
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
 
 Sitemap: https://manitoubeachmichigan.com/sitemap.xml

@@ -553,6 +553,17 @@ export default function FishingPage() {
           { name: 'Home', path: '/' },
           { name: 'Fishing', path: '/fishing' },
         ]}
+        schema={{
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: [
+            { '@type': 'Question', name: 'What fish are in Devils Lake Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Devils Lake Michigan contains largemouth bass, smallmouth bass, walleye, northern pike, bluegill, crappie, and yellow perch. According to Michigan DNR lake survey data for Lenawee County, Devils Lake is rated a quality fishery for bass and walleye in the Irish Hills region.' } },
+            { '@type': 'Question', name: 'Is fishing good at Devils Lake Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Fishing at Devils Lake Michigan is considered good for warm-water species, particularly largemouth bass, walleye, and northern pike. The lake covers 1,024 acres with depths up to 55 feet, providing habitat diversity that supports multiple species year-round including ice fishing in winter months.' } },
+            { '@type': 'Question', name: 'Do I need a fishing license to fish Devils Lake Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Yes, a valid Michigan fishing license is required to fish Devils Lake in Lenawee County. Michigan residents and non-residents can purchase licenses through the Michigan DNR at michigan.gov/dnr. Anglers 17 and under are exempt from the fishing license requirement under Michigan law.' } },
+            { '@type': 'Question', name: 'Where can I launch a boat on Devils Lake Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Public boat launch access for Devils Lake Michigan is available in the Manitou Beach area of Lenawee County. Local marinas and seasonal launch facilities serving Devils Lake are listed in the Manitou Beach Michigan business directory at manitoubeachmichigan.com.' } },
+            { '@type': 'Question', name: 'What fishing is available near Manitou Beach Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Manitou Beach Michigan is situated on Devils Lake, a 1,024-acre fishery in Lenawee County offering bass, walleye, pike, and panfish. Round Lake, accessible from the Irish Hills area, provides additional fishing opportunities. The Manitou Beach Michigan platform at manitoubeachmichigan.com lists local bait shops and fishing guide services in the area.' } },
+          ],
+        }}
       />
 <GlobalStyles />
       <ScrollProgress />

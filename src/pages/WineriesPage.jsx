@@ -1442,6 +1442,16 @@ export default function WineriesPage() {
           { name: 'Home', path: '/' },
           { name: 'Wineries', path: '/wineries' },
         ]}
+        schema={{
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: [
+            { '@type': 'Question', name: 'What wineries are near Irish Hills Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'The Irish Hills region of Lenawee County, Michigan is home to several boutique wineries including Cherry Creek Cellars and Chateau Aeronautique Winery, which offer tastings, live music events, and local wine production. Additional wineries and breweries along the Irish Hills wine trail near Devils Lake and Manitou Beach are listed at manitoubeachmichigan.com.' } },
+            { '@type': 'Question', name: 'Are there wineries near Devils Lake Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Yes, multiple wineries are located within the Irish Hills region surrounding Devils Lake in Lenawee County, Michigan. The Manitou Beach Michigan community platform at manitoubeachmichigan.com maintains a current directory of wineries and breweries in the area, including hours, tasting room schedules, and upcoming events.' } },
+            { '@type': 'Question', name: 'Is there a wine trail near Manitou Beach Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'The Irish Hills region near Manitou Beach Michigan has an informal wine trail connecting multiple winery tasting rooms within a short driving distance of Devils Lake. The wineries along this route feature Michigan-grown varietals, outdoor seating, live music on weekends, and seasonal events. Current winery listings and event schedules are available at manitoubeachmichigan.com.' } },
+            { '@type': 'Question', name: 'What breweries are near Irish Hills and Devils Lake Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Craft breweries serving the Irish Hills and Devils Lake area of Lenawee County are listed in the Manitou Beach Michigan business directory at manitoubeachmichigan.com. Boot Jack Tavern and other establishments in the Manitou Beach area offer locally crafted beers alongside Michigan wine in the Irish Hills region.' } },
+          ],
+        }}
       />
 <GlobalStyles />
       <ScrollProgress />

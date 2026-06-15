@@ -2498,6 +2498,16 @@ export default function StaysPage() {
           { name: 'Home', path: '/' },
           { name: 'Stays', path: '/stays' },
         ]}
+        schema={{
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: [
+            { '@type': 'Question', name: 'Are there vacation rentals on Devils Lake Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Vacation rental properties on Devils Lake Michigan are available through short-term rental platforms including Airbnb and VRBO, with a concentration of lakefront cottages and lake-view homes during summer. The Manitou Beach Michigan platform at manitoubeachmichigan.com lists lodging options including cottages, tiny homes, glamping, and inn accommodations in the Irish Hills area.' } },
+            { '@type': 'Question', name: 'Where can I stay near Manitou Beach Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Lodging near Manitou Beach Michigan includes lakefront cottages on Devils Lake, Airbnb and VRBO short-term rentals, bed and breakfasts in the Irish Hills region, and campgrounds in Lenawee County. Devils Lake Inn is among the established lodging options in the Manitou Beach area. Current availability and listings are at manitoubeachmichigan.com.' } },
+            { '@type': 'Question', name: 'Can I rent a lake cottage near Devils Lake Michigan for a week?', acceptedAnswer: { '@type': 'Answer', text: 'Weekly cottage rentals on Devils Lake Michigan are available through platforms including Airbnb and VRBO, with peak availability running from Memorial Day through Labor Day. Lakefront properties on Devils Lake in Lenawee County range from modest cottages to larger homes accommodating groups and families. The Manitou Beach Michigan platform at manitoubeachmichigan.com lists local lodging providers serving the Irish Hills area.' } },
+            { '@type': 'Question', name: 'Is there camping near Devils Lake Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Camping options near Devils Lake Michigan and the Irish Hills region of Lenawee County include private campgrounds and glamping sites within driving distance of Manitou Beach. Seasonal camping availability in the Irish Hills area is listed in the Manitou Beach Michigan directory at manitoubeachmichigan.com.' } },
+          ],
+        }}
       />
       <GlobalStyles />
       <style>{`

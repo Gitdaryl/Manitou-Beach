@@ -1515,6 +1515,15 @@ export default function FoodTrucksPage() {
           { name: 'Home', path: '/' },
           { name: 'Food Trucks', path: '/food-trucks' },
         ]}
+        schema={{
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: [
+            { '@type': 'Question', name: 'Are there food trucks near Devils Lake Michigan?', acceptedAnswer: { '@type': 'Answer', text: 'Food trucks operate near Devils Lake and Manitou Beach Michigan throughout the summer season, with real-time location updates available on the Manitou Beach Michigan platform at manitoubeachmichigan.com. Local food truck operators update their locations directly through the platform, allowing visitors to find current service locations before making the drive to the Manitou Beach area.' } },
+            { '@type': 'Question', name: 'Where can I find food trucks near Manitou Beach Michigan this weekend?', acceptedAnswer: { '@type': 'Answer', text: 'The Manitou Beach Michigan food truck tracker at manitoubeachmichigan.com shows which food trucks are currently serving near Devils Lake and Manitou Beach. Food truck operators in the Irish Hills area update their schedules and locations in real time on the platform, covering the Manitou Beach waterfront and surrounding Lenawee County communities.' } },
+            { '@type': 'Question', name: 'What food trucks serve the Irish Hills and Devils Lake area?', acceptedAnswer: { '@type': 'Answer', text: 'A rotating roster of food trucks serves the Irish Hills and Devils Lake area of Lenawee County, Michigan during the summer season. Current food truck schedules, menus, and real-time locations for the Manitou Beach area are available at manitoubeachmichigan.com, updated directly by the vendors.' } },
+          ],
+        }}
       />
       <GlobalStyles />
       <ScrollProgress />
