@@ -560,7 +560,7 @@ export default function BusinessProfilePage() {
           path={`/business/${slug}`}
           ogImage={business.logo || undefined}
           ogType="website"
-          schema={schema}
+          schema={[schema, ...(business.geoFaq ? [{ "@context": "https://schema.org", "@type": "FAQPage", "mainEntity": business.geoFaq }] : [])].filter(Boolean)}
           breadcrumbs={[
             { name: 'Home', path: '/' },
             { name: 'Businesses', path: '/business' },

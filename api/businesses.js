@@ -318,6 +318,7 @@ export default async function handler(req, res) {
         tagline: p['Tagline']?.rich_text?.[0]?.text?.content || null,
         accentColor: p['Accent Color']?.rich_text?.[0]?.text?.content || null,
         gallery: (() => { try { return JSON.parse(p['Gallery']?.rich_text?.[0]?.text?.content || '[]'); } catch { return []; } })(),
+        geoFaq: (() => { try { return JSON.parse(p['GEO FAQ']?.rich_text?.[0]?.text?.content || 'null'); } catch { return null; } })(),
       };
       if (!business.name) return;
 
