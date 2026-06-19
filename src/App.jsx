@@ -260,6 +260,7 @@ export default function App() {
           <Route path="/partner-intake" element={<PartnerIntakePage />} />
           <Route path="/fireworks" element={<USA250Page />} />
           <Route path="/usa250" element={<USA250Page />} />
+          <Route path="/america-250" element={<USA250Page />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/sms" element={<SMSOptInPage />} />
