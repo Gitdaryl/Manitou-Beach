@@ -363,8 +363,10 @@ export default async function middleware(request) {
     let html = await htmlRes.text();
     if (bizMatch) {
       html = await handleBusinessSchema(html, bizMatch[1], url.origin);
+    } else if (eventMatch) {
+      // Inject event-specific OG tags so shared links show the organizer's photo (crawlers don't run JS)
+      html = await handleEventOG(html, eventMatch[1], url.origin);
     }
-    // Events: schema is generated dynamically by the page — skip for now, base schema sufficient
     return new Response(html, {
       status: 200,
       headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'public, max-age=300, s-maxage=600' },
@@ -480,6 +482,81 @@ export async function handleBusinessSchema(html, slug, origin) {
 
     const schemaTag = schemas.map(s => `<script type="application/ld+json">${JSON.stringify(s)}</script>`).join('\n    ');
     return html.replace('</head>', `    ${schemaTag}\n  </head>`);
+  } catch { return html; }
+}
+
+// ── Dynamic OG + schema handler for event detail pages ────────
+// Crawlers (Facebook, iMessage, X) don't run JS, so the client-side SEOHead
+// tags are invisible to them. Inject event-specific OG tags server-side here.
+export async function handleEventOG(html, id, origin) {
+  try {
+    const res = await fetch(`${origin}/api/event-detail?id=${encodeURIComponent(id)}`);
+    if (!res.ok) return html; // 404 / unapproved → keep default OG (safe fallback)
+    const data = await res.json();
+    const event = data.event;
+    if (!event || !event.name) return html;
+
+    // Escape for safe insertion into HTML attribute values (user-supplied content)
+    const esc = (s) => String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+
+    // Replicates formatFullDate() from EventDetailPage.jsx
+    const fullDate = event.date
+      ? new Date(event.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+      : '';
+
+    // Replicates metaDesc from EventDetailPage.jsx, capped to ~200 chars
+    const rawDesc = `${event.name}${event.location ? ` at ${event.location}` : ''}. ${fullDate}${event.description ? '. ' + event.description.slice(0, 100) : ''}`.trim();
+    const description = rawDesc.length > 200 ? rawDesc.slice(0, 197) + '…' : rawDesc;
+
+    const title = `${event.name} - Manitou Beach`;
+    const image = event.imageUrl || `${origin}${DEFAULT_OG.image}`;
+    const pageUrl = `${origin}/events/${id}`;
+
+    const t = esc(title);
+    const d = esc(description);
+    const img = esc(image);
+
+    html = html
+      .replace(/<title>[^<]*<\/title>/, `<title>${t}</title>`)
+      .replace(/<meta name="description" content="[^"]*"/, `<meta name="description" content="${d}"`)
+      .replace(/<meta property="og:title" content="[^"]*"/, `<meta property="og:title" content="${t}"`)
+      .replace(/<meta property="og:description" content="[^"]*"/, `<meta property="og:description" content="${d}"`)
+      .replace(/<meta property="og:image" content="[^"]*"/, `<meta property="og:image" content="${img}"`)
+      .replace(/<meta property="og:url" content="[^"]*"/, `<meta property="og:url" content="${esc(pageUrl)}"`)
+      .replace(/<meta name="twitter:title" content="[^"]*"/, `<meta name="twitter:title" content="${t}"`)
+      .replace(/<meta name="twitter:description" content="[^"]*"/, `<meta name="twitter:description" content="${d}"`)
+      .replace(/<meta name="twitter:image" content="[^"]*"/, `<meta name="twitter:image" content="${img}"`);
+
+    // Inject Event JSON-LD schema for richer crawler / AI results (mirrors EventDetailPage.jsx)
+    const eventSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'Event',
+      name: event.name,
+      ...(event.date && { startDate: `${event.date}${event.timeStart ? 'T' + event.timeStart : 'T00:00:00'}` }),
+      ...(event.date && { endDate: `${event.date}${event.timeEnd ? 'T' + event.timeEnd : 'T23:59:59'}` }),
+      eventStatus: 'https://schema.org/EventScheduled',
+      eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+      location: {
+        '@type': 'Place',
+        name: event.location || 'Manitou Beach, Michigan',
+        address: { '@type': 'PostalAddress', addressLocality: 'Manitou Beach', addressRegion: 'MI', addressCountry: 'US' },
+      },
+      ...(event.description && { description: event.description }),
+      image,
+      url: pageUrl,
+      organizer: event.organizerName
+        ? { '@type': 'Organization', name: event.organizerName }
+        : { '@type': 'Organization', name: 'Manitou Beach Michigan', url: 'https://manitoubeachmichigan.com' },
+      ...(event.ticketPrice ? { offers: { '@type': 'Offer', price: String(event.ticketPrice), priceCurrency: 'USD', url: pageUrl, availability: 'https://schema.org/InStock' } } : {}),
+    };
+    const schemaTag = `<script type="application/ld+json">${JSON.stringify(eventSchema)}</script>`;
+    html = html.replace('</head>', `    ${schemaTag}\n  </head>`);
+
+    return html;
   } catch { return html; }
 }
 
