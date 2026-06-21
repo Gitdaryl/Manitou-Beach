@@ -2126,7 +2126,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
                     { label: "Historical Society", href: "/historical-society" },
                     { label: "Visitor Wall 📍", href: "/visitor-wall" },
                     { label: "Gallery ↗", href: "https://yetigroove.pixieset.com/folder/muVgmuXuvFwI/", external: true },
-                    ...(USA250_PUBLIC ? [{ label: "July 4th Fireworks", href: "/fireworks" }] : []),
+                    ...(USA250_PUBLIC ? [{ label: "America 250", href: "/america-250" }] : []),
                   ].map((link, i) => (
                     link.href ? (
                       <a key={i} href={link.href} {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={{
@@ -2254,7 +2254,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
           { label: "Wineries & Breweries", href: "/wineries" },
           { label: "Men's Club", href: "/mens-club" },
           { label: "Ladies Club", href: "/ladies-club" },
-          { label: "July 4th Fireworks", href: "/fireworks" },
+          { label: "America 250", href: "/america-250" },
           { label: "Historical Society", href: "/historical-society" },
           { label: "Visitor Wall 📍", href: "/visitor-wall" },
         ].map(link => (
