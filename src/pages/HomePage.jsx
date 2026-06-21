@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { C, SECTIONS, CAT_COLORS } from '../data/config';
+import { C, SECTIONS, CAT_COLORS, USA250_VIDEO_URL } from '../data/config';
 import { BASE_PRICES } from '../data/pricing';
 import { ShareBar, CategoryPill, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivider, PageSponsorBanner, DiagonalDivider, Btn, useCardTilt } from '../components/Shared';
 import { GlobalStyles, PromoBanner, NewsletterInline, HollyYetiSection, EventLightbox, Footer, Navbar, ContactModal } from '../components/Layout';
@@ -141,6 +141,25 @@ function Hero({ scrollTo }) {
   const [heroFade, setHeroFade] = useState(true);
   const [heroPaused, setHeroPaused] = useState(false);
   const [scrollY, setScrollY] = useState(0);
+  const [fwTimeLeft, setFwTimeLeft] = useState({ days: 0, hours: 0, mins: 0, secs: 0 });
+
+  // Countdown to America 250 fireworks - Friday July 3, 2026 10:00 PM
+  useEffect(() => {
+    const target = new Date("2026-07-03T22:00:00");
+    const calc = () => {
+      const diff = target - new Date();
+      if (diff <= 0) return setFwTimeLeft({ days: 0, hours: 0, mins: 0, secs: 0 });
+      setFwTimeLeft({
+        days:  Math.floor(diff / 86400000),
+        hours: Math.floor((diff % 86400000) / 3600000),
+        mins:  Math.floor((diff % 3600000)  / 60000),
+        secs:  Math.floor((diff % 60000)    / 1000),
+      });
+    };
+    calc();
+    const t = setInterval(calc, 1000);
+    return () => clearInterval(t);
+  }, []);
 
   useEffect(() => {
     setTimeout(() => setLoaded(true), 100);
@@ -191,16 +210,18 @@ function Hero({ scrollTo }) {
     </div>
   );
 
-  // ── SUMMERFEST TAKEOVER (Jun 8-20 2026) ──
+  // ── AMERICA 250 HERO (through July 4 2026) ──
+  // Featured site hero leading up to the July 3rd celebrations
   const _now = new Date();
-  const _showSummerfest = !heroTakeover.length && _now >= new Date('2026-06-08T00:00:00') && _now < new Date('2026-06-21T00:00:00');
+  const _showAmerica250 = _now < new Date('2026-07-04T12:00:00');
 
   // ── EVENT HERO (with rotation) ──
   // If a paid Hero Takeover promo is active, show takeover events exclusively
   const isSponsored = heroTakeover.length > 0;
   const displayEvents = isSponsored ? heroTakeover : heroEvents;
   const heroEvent = displayEvents[heroIndex] || null;
-  if (heroReady && heroEvent) {
+  // Paid takeovers always win; otherwise America 250 takes priority
+  if (heroReady && heroEvent && (isSponsored || !_showAmerica250)) {
     // heroImageUrl = high-res image for full-screen bg (add "Hero Image URL" column in Notion)
     // imageUrl = small event image - shown as a contained card, never stretched
     const bgStyle = heroEvent.heroImageUrl
@@ -355,38 +376,83 @@ function Hero({ scrollTo }) {
     );
   }
 
-  // ── SUMMERFEST HERO (Jun 8-20 2026) ──
-  if (_showSummerfest) {
+  // ── AMERICA 250 HERO (countdown to July 3 2026) ──
+  if (_showAmerica250) {
+    const fwPad = n => String(n).padStart(2, "0");
+    const FW = { gold: "#C9A84C", goldLight: "#E8C97A", navy: "#0D1B3E" };
     return (
-      <section id="home" style={{ minHeight: "100vh", display: "flex", alignItems: "center", position: "relative", overflow: "hidden" }}>
-        <video
-          autoPlay muted loop playsInline
-          style={{ position: "absolute", inset: 0, width: "100%", height: "120%", objectFit: "cover", zIndex: 1, transform: `translateY(${scrollY * 0.3}px)`, willChange: "transform" }}
-        >
-          <source src="/images/ladies-club/video/LLLC-webloop.mp4" type="video/mp4" />
-        </video>
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg, rgba(10,18,24,0.72) 0%, rgba(26,40,48,0.55) 50%, rgba(10,18,24,0.80) 100%)", zIndex: 2 }} />
-        <div style={{ position: "relative", zIndex: 3, maxWidth: 960, margin: "0 auto", padding: "160px 48px 120px", transform: `translateY(${scrollY * 0.08}px)`, textAlign: "center" }}>
-          <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? "none" : "translateY(24px)", transition: "all 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94)" }}>
-            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.45)", marginBottom: 28 }}>
-              Land &amp; Lake Ladies Club presents
-            </div>
-            <img
-              src="/images/ladies-club/summer-festival.png"
-              alt="Summer Festival 2026"
-              style={{ display: "block", maxWidth: "clamp(221px, 34vw, 391px)", width: "100%", margin: "0 auto 28px", filter: "drop-shadow(0 4px 24px rgba(0,0,0,0.5))" }}
-            />
-            <div style={{ fontFamily: "'Caveat', cursive", fontSize: "clamp(22px, 3vw, 36px)", color: C.sunsetLight, marginBottom: 12 }}>
-              June 20 &middot; Devils Lake Village, Michigan
-            </div>
-            <p style={{ fontSize: 17, color: "rgba(255,255,255,0.65)", lineHeight: 1.8, maxWidth: 480, margin: "0 auto 40px" }}>
-              Live music, fine arts, crafts, food trucks and family fun - all day long at the heart of the lakes community.
-            </p>
-            <Btn href="/ladies-club" variant="sunset" style={{ fontSize: 16, padding: "14px 36px" }}>
-              See Everything &rarr;
-            </Btn>
+      <section id="home" style={{
+        minHeight: "100vh", display: "flex", flexDirection: "column",
+        alignItems: "center", justifyContent: "center",
+        position: "relative", overflow: "hidden",
+        background: `linear-gradient(160deg, ${FW.navy} 0%, #0A1218 40%, #16091e 100%)`,
+      }}>
+        {USA250_VIDEO_URL && (
+          <video autoPlay muted loop playsInline
+            style={{ position: "absolute", inset: 0, width: "100%", height: "120%", objectFit: "cover", zIndex: 0, transform: `translateY(${scrollY * 0.3}px)`, willChange: "transform" }}
+            src={USA250_VIDEO_URL}
+          />
+        )}
+        <div style={{ position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none", background: "linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(13,27,62,0.88) 100%)" }} />
+
+        <div style={{
+          position: "relative", zIndex: 2, textAlign: "center", padding: "120px 24px 80px", maxWidth: 840,
+          opacity: loaded ? 1 : 0, transform: loaded ? "translateY(0)" : "translateY(28px)", transition: "all 0.9s ease",
+        }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 14, marginBottom: 28, fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 4.5, textTransform: "uppercase", color: FW.gold }}>
+            <span style={{ width: 36, height: 1, background: `${FW.gold}55`, display: "block" }} />
+            Devils &amp; Round Lake · Manitou Beach
+            <span style={{ width: 36, height: 1, background: `${FW.gold}55`, display: "block" }} />
+          </div>
+
+          <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(44px, 9vw, 90px)", fontWeight: 700, color: C.cream, margin: "0 0 4px 0", lineHeight: 1.0, letterSpacing: -1.5 }}>
+            America
+          </h1>
+          <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(40px, 8vw, 82px)", fontWeight: 700, color: FW.gold, margin: "0 0 20px 0", lineHeight: 1.0, letterSpacing: -1 }}>
+            250
+          </div>
+
+          <div style={{ fontFamily: "'Caveat', cursive", fontSize: "clamp(18px, 2.5vw, 26px)", color: "rgba(255,255,255,0.6)", marginBottom: 52, lineHeight: 1.4 }}>
+            July 3rd, 2026 · Celebrations on the Lake
+          </div>
+
+          <style>{`
+            @keyframes fw-colon-pulse { 0%,100%{opacity:1} 50%{opacity:0.15} }
+            .fw-countdown { display:flex; gap:clamp(8px,2vw,20px); justify-content:center; flex-wrap:nowrap; align-items:stretch; margin-bottom:56px; width:100%; max-width:720px; margin-left:auto; margin-right:auto; }
+            .fw-card { text-align:center; background:rgba(255,255,255,0.06); backdrop-filter:blur(12px); border:1px solid rgba(201,168,76,0.25); border-radius:16px; padding:clamp(16px,2.5vw,32px) clamp(12px,2.5vw,36px); box-shadow:0 0 32px rgba(201,168,76,0.09), inset 0 1px 0 rgba(255,255,255,0.08); flex:1; min-width:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+            .fw-num { font-family:'Libre Baskerville',serif; font-size:clamp(36px,6vw,80px); font-weight:700; color:#C9A84C; line-height:1; letter-spacing:-2px; font-variant-numeric:tabular-nums; text-shadow:0 0 40px rgba(201,168,76,0.33); }
+            .fw-unit { font-size:clamp(8px,1.1vw,11px); letter-spacing:4px; text-transform:uppercase; color:rgba(255,255,255,0.45); margin-top:10px; font-weight:700; font-family:'Libre Franklin',sans-serif; }
+            .fw-colon { font-size:clamp(24px,4vw,56px); color:#C9A84C; font-family:'Libre Baskerville',serif; line-height:1; opacity:0.4; align-self:center; margin-top:-16px; animation:fw-colon-pulse 1s steps(1) infinite; flex-shrink:0; }
+          `}</style>
+          <div className="fw-countdown">
+            {[
+              { val: fwTimeLeft.days,  label: "Days"  },
+              { val: fwTimeLeft.hours, label: "Hours" },
+              { val: fwTimeLeft.mins,  label: "Min"   },
+              { val: fwTimeLeft.secs,  label: "Sec"   },
+            ].map(({ val, label }, i) => (
+              <React.Fragment key={label}>
+                <div className="fw-card">
+                  <div className="fw-num">{fwPad(val)}</div>
+                  <div className="fw-unit">{label}</div>
+                </div>
+                {i < 3 && <div className="fw-colon">:</div>}
+              </React.Fragment>
+            ))}
+          </div>
+
+          <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", alignItems: "center" }}>
+            <a href="/america-250" className="btn-animated" style={{
+              display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 32px", borderRadius: 6,
+              background: FW.gold, color: FW.navy, fontFamily: "'Libre Franklin', sans-serif",
+              fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none",
+            }}>
+              See What's Happening →
+            </a>
+            <Btn onClick={() => scrollTo("businesses")} variant="outlineLight">Explore the Community</Btn>
           </div>
         </div>
+
         {scrollIndicator}
       </section>
     );
