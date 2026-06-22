@@ -768,7 +768,9 @@ function LadiesClubSponsorTiersSection() {
 const GALLERY_2026 = Array.from({ length: 58 }, (_, i) =>
   `/images/ladies-club/summerfest2026/devils-lake-summerfest-2026-${String(i + 1).padStart(2, "0")}.jpg`
 );
-const GALLERY_2025 = Array.from({ length: 22 }, (_, i) => `/images/ladies-club/summerfest/summerfest-${i + 1}.jpg`);
+const GALLERY_2025 = Array.from({ length: 22 }, (_, i) =>
+  `/images/ladies-club/summerfest/devils-lake-summerfest-2025-${String(i + 1).padStart(2, "0")}.jpg`
+);
 
 function LadiesClubGallerySection() {
   // lightbox = { year, index } | null  — navigates within the active year's set
