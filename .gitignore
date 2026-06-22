@@ -9,3 +9,4 @@ dist
 out/
 video-templates/*/renders/
 .env.vercel-preview
+.env*.tmp

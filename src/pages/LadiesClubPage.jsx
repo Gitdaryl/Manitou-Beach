@@ -10,31 +10,9 @@ import RafflePage from './RafflePage';
 // ============================================================
 // LADIES_CLUB_EVENTS removed - content now inline in LadiesClubEventsSection
 
-function useCountdown(targetISO) {
-  const [timeLeft, setTimeLeft] = useState(() => Math.max(0, new Date(targetISO) - new Date()));
-  useEffect(() => {
-    const id = setInterval(() => setTimeLeft(Math.max(0, new Date(targetISO) - new Date())), 1000);
-    return () => clearInterval(id);
-  }, [targetISO]);
-  return {
-    days:    Math.floor(timeLeft / 86400000),
-    hours:   Math.floor((timeLeft % 86400000) / 3600000),
-    minutes: Math.floor((timeLeft % 3600000) / 60000),
-    seconds: Math.floor((timeLeft % 60000) / 1000),
-  };
-}
-
 function LadiesClubHero() {
   const [loaded, setLoaded] = useState(false);
   useEffect(() => { setTimeout(() => setLoaded(true), 80); }, []);
-  // June 20 2026 9:00am EDT = 13:00 UTC
-  const countdown = useCountdown("2026-06-20T13:00:00.000Z");
-  const countdownUnits = [
-    { label: "Days",    val: countdown.days },
-    { label: "Hours",   val: countdown.hours },
-    { label: "Minutes", val: countdown.minutes },
-    { label: "Seconds", val: countdown.seconds },
-  ];
 
   return (
     <section style={{ position: "relative", overflow: "hidden", textAlign: "center", minHeight: "92vh", display: "flex", alignItems: "center" }}>
@@ -62,40 +40,33 @@ function LadiesClubHero() {
             A nonprofit civic organization serving Devils Lake, Round Lake, Addison, and Manitou Beach - bringing women together to strengthen our community through events, fundraising, and good old-fashioned neighborly love.
           </p>
 
-          {/* Countdown */}
+          {/* Summerfest 2026 thank-you */}
           <div style={{ marginBottom: 48 }}>
-            <div style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.sunsetLight, marginBottom: 20 }}>
-              The countdown is on to Summerfest 2026
+            <div style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              background: `${C.sunset}22`, border: `1px solid ${C.sunset}50`,
+              borderRadius: 6, padding: "6px 14px", marginBottom: 20,
+              fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700,
+              letterSpacing: 2.5, textTransform: "uppercase", color: C.sunsetLight,
+            }}>
+              Summerfest 2026 · June 20th
             </div>
-            <div style={{ display: "flex", justifyContent: "center", gap: "clamp(12px, 3vw, 32px)", flexWrap: "wrap" }}>
-              {countdownUnits.map(({ label, val }) => (
-                <div key={label} style={{ textAlign: "center", minWidth: 64 }}>
-                  <div style={{
-                    fontFamily: "'Libre Baskerville', serif",
-                    fontSize: "clamp(36px, 6vw, 60px)",
-                    fontWeight: 400,
-                    color: "#fff",
-                    lineHeight: 1,
-                    marginBottom: 6,
-                  }}>
-                    {String(val).padStart(2, "0")}
-                  </div>
-                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.4)", letterSpacing: 1.5, textTransform: "uppercase" }}>
-                    {label}
-                  </div>
-                </div>
-              ))}
+            <div style={{ fontFamily: "'Caveat', cursive", fontSize: "clamp(26px, 4vw, 38px)", color: C.cream, lineHeight: 1.2, maxWidth: 560, margin: "0 auto" }}>
+              Thank you for an amazing Summerfest 2026!
             </div>
+            <p style={{ fontSize: "clamp(13px, 1.4vw, 15px)", color: "rgba(255,255,255,0.5)", lineHeight: 1.7, maxWidth: 480, margin: "14px auto 0" }}>
+              What a day. Thank you to every neighbor, vendor, artist, and sponsor who made it special. Relive the highlights in our festival gallery below.
+            </p>
           </div>
 
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-            <a href="#ladies-events" className="btn-animated" style={{
+            <a href="#festival-gallery" className="btn-animated" style={{
               display: "inline-flex", alignItems: "center", gap: 8,
               padding: "12px 28px", borderRadius: 8,
               background: C.sunset, color: C.cream,
               fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
             }}>
-              Events & Activities
+              View Festival Gallery
             </a>
             <ShareBar title="Land & Lake Ladies Club - Manitou Beach" />
           </div>
@@ -325,7 +296,7 @@ function LadiesClubEventsSection() {
     { label: "35+ Crafters & Vendors", desc: "Local makers, artisan goods, handmade creations, and the Farmer's Craft Market", img: "/images/ladies-club/crafters.jpg" },
     { label: "Fine Artists Area", desc: "Original work from talented local and regional artists", img: "/images/ladies-club/artists.jpg" },
     { label: "Local Author Lisa Wheeler", desc: "Books, signings, and story time near the Children's Area", img: "/images/ladies-club/lisa.jpg", link: { label: "lisawheelerbooks.com", url: "https://www.lisawheelerbooks.com/" } },
-    { label: "Amazing Raffle Baskets", desc: "8 baskets, each valued at over $150 - you won't want to miss your shot", img: "/images/ladies-club/raffle.jpg" },
+    { label: "Amazing Raffle Baskets", desc: "8 baskets, each valued at over $150 - always a festival favorite", img: "/images/ladies-club/raffle.jpg" },
   ];
 
   // Children's Area sits first, then the 2x2 grid features - one shared swipeable gallery
@@ -349,9 +320,9 @@ function LadiesClubEventsSection() {
         <FadeIn>
           <div style={{ textAlign: "center", marginBottom: 56 }}>
             <SectionLabel light>Signature Event</SectionLabel>
-            <SectionTitle center light>Summer Festival 2026</SectionTitle>
+            <SectionTitle center light>Summerfest 2026 Recap</SectionTitle>
             <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, maxWidth: 520, margin: "0 auto" }}>
-              The Land & Lake Ladies Club presents a lively day of food, music, crafts, art, and community - right in the heart of Manitou Beach Village.
+              On June 20th, the Land & Lake Ladies Club filled the heart of Manitou Beach Village with a full day of food, music, crafts, art, and community. Here's a look back at what made it special.
             </p>
           </div>
         </FadeIn>
@@ -473,10 +444,10 @@ function LadiesClubEventsSection() {
           </div>
         </FadeIn>
 
-        {/* What to Expect label */}
+        {/* Festival Highlights label */}
         <FadeIn delay={150}>
           <div style={{ marginBottom: 20, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.3)" }}>
-            What to Expect
+            Festival Highlights
           </div>
         </FadeIn>
 
@@ -600,19 +571,6 @@ function LadiesClubEventsSection() {
             ))}
           </div>
         </FadeIn>
-
-        {/* Festival Map */}
-        <FadeIn delay={220}>
-          <img
-            src="/images/ladies-club/summerfest-map.jpg"
-            alt="Summer Festival 2026 Map - Manitou Beach Village"
-            style={{ width: "100%", borderRadius: 14, marginBottom: 40, display: "block", border: "1px solid rgba(255,255,255,0.08)" }}
-            onError={(e) => { e.target.style.display = "none"; }}
-          />
-        </FadeIn>
-
-        {/* Raffle Wheel Teaser + Popover */}
-        <RaffleWheelTeaser />
 
       </div>
 
@@ -806,12 +764,55 @@ function LadiesClubSponsorTiersSection() {
   );
 }
 
+// 2026 Summerfest gallery - 58 photos, SEO-named devils-lake-summerfest-2026-NN.jpg
+const GALLERY_2026 = Array.from({ length: 58 }, (_, i) =>
+  `/images/ladies-club/summerfest2026/devils-lake-summerfest-2026-${String(i + 1).padStart(2, "0")}.jpg`
+);
+const GALLERY_2025 = Array.from({ length: 22 }, (_, i) => `/images/ladies-club/summerfest/summerfest-${i + 1}.jpg`);
+
 function LadiesClubGallerySection() {
+  // lightbox = { year, index } | null  — navigates within the active year's set
   const [lightbox, setLightbox] = useState(null);
-  const photos = Array.from({ length: 22 }, (_, i) => `/images/ladies-club/summerfest/summerfest-${i + 1}.jpg`);
+
+  const sets = { 2026: GALLERY_2026, 2025: GALLERY_2025 };
+  const activePhotos = lightbox ? sets[lightbox.year] : [];
+
+  const YearGallery = ({ year, photos, label }) => (
+    <>
+      <FadeIn>
+        <div style={{ display: "flex", alignItems: "center", gap: 16, margin: "8px 0 24px" }}>
+          <div style={{ flex: 1, height: 1, background: C.sand }} />
+          <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.text, fontWeight: 400, letterSpacing: 1 }}>{label}</span>
+          <div style={{ flex: 1, height: 1, background: C.sand }} />
+        </div>
+      </FadeIn>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 10, marginBottom: 56 }}>
+        {photos.map((src, i) => (
+          <FadeIn key={src} delay={Math.min(i, 8) * 30} direction="scale">
+            <div
+              onClick={() => setLightbox({ year, index: i })}
+              style={{
+                borderRadius: 10, overflow: "hidden", position: "relative", paddingTop: "75%",
+                cursor: "pointer", background: C.warmWhite,
+              }}
+            >
+              <img
+                src={src}
+                alt={`Devils Lake Summer Festival ${year} in Manitou Beach - photo ${i + 1}`}
+                loading="lazy"
+                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.35s ease" }}
+                onMouseEnter={e => e.currentTarget.style.transform = "scale(1.04)"}
+                onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
+              />
+            </div>
+          </FadeIn>
+        ))}
+      </div>
+    </>
+  );
 
   return (
-    <section style={{ background: C.cream, padding: "80px 24px" }}>
+    <section id="festival-gallery" style={{ background: C.cream, padding: "80px 24px", scrollMarginTop: 80 }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
         <FadeIn>
           <div style={{ textAlign: "center", marginBottom: 48 }}>
@@ -823,28 +824,8 @@ function LadiesClubGallerySection() {
           </div>
         </FadeIn>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 10 }}>
-          {photos.map((src, i) => (
-            <FadeIn key={i} delay={i * 30} direction="scale">
-              <div
-                onClick={() => setLightbox(i)}
-                style={{
-                  borderRadius: 10, overflow: "hidden", position: "relative", paddingTop: "75%",
-                  cursor: "pointer", background: C.warmWhite,
-                }}
-              >
-                <img
-                  src={src}
-                  alt={`Summer Festival photo ${i + 1}`}
-                  loading="lazy"
-                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.35s ease" }}
-                  onMouseEnter={e => e.currentTarget.style.transform = "scale(1.04)"}
-                  onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
-                />
-              </div>
-            </FadeIn>
-          ))}
-        </div>
+        <YearGallery year={2026} photos={GALLERY_2026} label="Summerfest 2026" />
+        <YearGallery year={2025} photos={GALLERY_2025} label="Summerfest 2025" />
 
         {/* Lightbox */}
         {lightbox !== null && (
@@ -858,17 +839,17 @@ function LadiesClubGallerySection() {
             }}
           >
             <button
-              onClick={e => { e.stopPropagation(); setLightbox(l => (l > 0 ? l - 1 : photos.length - 1)); }}
+              onClick={e => { e.stopPropagation(); setLightbox(l => ({ ...l, index: l.index > 0 ? l.index - 1 : activePhotos.length - 1 })); }}
               style={{ position: "absolute", left: 20, top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.12)", border: "none", borderRadius: "50%", width: 44, height: 44, cursor: "pointer", color: "#fff", fontSize: 20 }}
             >‹</button>
             <img
-              src={photos[lightbox]}
+              src={activePhotos[lightbox.index]}
               alt=""
               style={{ maxWidth: "90vw", maxHeight: "88vh", objectFit: "contain", borderRadius: 8 }}
               onClick={e => e.stopPropagation()}
             />
             <button
-              onClick={e => { e.stopPropagation(); setLightbox(l => (l < photos.length - 1 ? l + 1 : 0)); }}
+              onClick={e => { e.stopPropagation(); setLightbox(l => ({ ...l, index: l.index < activePhotos.length - 1 ? l.index + 1 : 0 })); }}
               style={{ position: "absolute", right: 20, top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.12)", border: "none", borderRadius: "50%", width: 44, height: 44, cursor: "pointer", color: "#fff", fontSize: 20 }}
             >›</button>
             <button
@@ -876,7 +857,7 @@ function LadiesClubGallerySection() {
               style={{ position: "absolute", top: 16, right: 16, background: "rgba(255,255,255,0.12)", border: "none", borderRadius: "50%", width: 36, height: 36, cursor: "pointer", color: "#fff", fontSize: 18 }}
             >×</button>
             <div style={{ position: "absolute", bottom: 16, left: "50%", transform: "translateX(-50%)", color: "rgba(255,255,255,0.5)", fontSize: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
-              {lightbox + 1} / {photos.length}
+              Summerfest {lightbox.year} · {lightbox.index + 1} / {activePhotos.length}
             </div>
           </div>
         )}
