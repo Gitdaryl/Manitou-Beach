@@ -979,14 +979,14 @@ export default function USA250Page() {
       <FireworksHero />
       <WaveDivider topColor={FW.navy} bottomColor={C.warmWhite} />
       <ActivitiesSection />
-      <DiagonalDivider topColor={C.warmWhite} bottomColor={C.warmWhite} />
-      <FireworksStorySection />
       <DiagonalDivider topColor={C.warmWhite} bottomColor={C.night} />
       <Fireworks2026Section />
-      <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
-      <FireworksGallerySection />
-      <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
+      <WaveDivider topColor={C.night} bottomColor={C.warmWhite} flip />
       <FirecrackerRunSection />
+      <DiagonalDivider topColor={C.warmWhite} bottomColor={C.warmWhite} />
+      <FireworksStorySection />
+      <WaveDivider topColor={C.warmWhite} bottomColor={C.cream} />
+      <FireworksGallerySection />
       <StayInLoop />
       <NewsletterInline />
       <Footer scrollTo={subScrollTo} />
