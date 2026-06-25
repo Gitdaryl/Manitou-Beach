@@ -1,3 +1,4 @@
+import { alertOutage } from './lib/notionGuard.js';
 // Community POIs - public, visitor-facing locations that will never advertise
 // (hospitals, schools, boat launches, pharmacies, etc.)
 // Separate from the paid Businesses DB.
@@ -59,6 +60,8 @@ export default async function handler(req, res) {
 
       if (!response.ok) {
         console.error('Notion POIs query failed:', await response.text());
+        await alertOutage('community-pois', 'Notion query failed');
+        res.setHeader('Cache-Control', 'no-store');
         return res.status(200).json({ pois: [] });
       }
 
@@ -94,6 +97,8 @@ export default async function handler(req, res) {
     return res.status(200).json({ pois, suppressed });
   } catch (err) {
     console.error('Community POIs API error:', err.message);
+    await alertOutage('community-pois', err.message);
+    res.setHeader('Cache-Control', 'no-store');
     return res.status(200).json({ pois: [] });
   }
 }

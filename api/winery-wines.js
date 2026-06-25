@@ -1,3 +1,4 @@
+import { alertOutage } from './lib/notionGuard.js';
 // Wines Registry - GET active wines for autocomplete on /rate
 // Admin: GET with X-Admin-Token returns all; POST creates; PATCH toggles Active
 export default async function handler(req, res) {
@@ -43,7 +44,7 @@ export default async function handler(req, res) {
           }
         );
 
-        if (!response.ok) return res.status(200).json({ wines: [] });
+        if (!response.ok) { await alertOutage('winery-wines', 'Notion query failed'); res.setHeader('Cache-Control', 'no-store'); return res.status(200).json({ wines: [] }); }
 
         const data = await response.json();
         allResults = allResults.concat(data.results);
@@ -66,6 +67,8 @@ export default async function handler(req, res) {
       return res.status(200).json({ wines });
     } catch (err) {
       console.error('winery-wines GET error:', err.message);
+      await alertOutage('winery-wines', err.message);
+      res.setHeader('Cache-Control', 'no-store');
       return res.status(200).json({ wines: [] });
     }
   }

@@ -1,3 +1,4 @@
+import { alertOutage } from './lib/notionGuard.js';
 // Converts a Notion rich_text array to a plain string
 function richTextToString(richTextArr) {
   if (!richTextArr || !richTextArr.length) return '';
@@ -148,6 +149,8 @@ export default async function handler(req, res) {
 
     if (!response.ok) {
       console.error('Notion query failed:', await response.text());
+      await alertOutage('dispatch-articles', 'Notion query failed');
+      res.setHeader('Cache-Control', 'no-store');
       return res.status(200).json({ articles: [] });
     }
 
@@ -173,6 +176,8 @@ export default async function handler(req, res) {
     return res.status(200).json({ articles });
   } catch (err) {
     console.error('Dispatch articles API error:', err.message);
+    await alertOutage('dispatch-articles', err.message);
+    res.setHeader('Cache-Control', 'no-store');
     return res.status(200).json({ articles: [] });
   }
 }

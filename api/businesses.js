@@ -1,3 +1,4 @@
+import { alertOutage } from './lib/notionGuard.js';
 import { Resend } from 'resend';
 import { createHmac } from 'crypto';
 import { sendSMS, normalizePhone } from './lib/twilio.js';
@@ -281,6 +282,8 @@ export default async function handler(req, res) {
       pages = await queryAllNotionPages(process.env.NOTION_DB_BUSINESS, process.env.NOTION_TOKEN_BUSINESS, queryBody);
     } catch (err) {
       console.error('Notion query failed:', err.message);
+      await alertOutage('businesses', err.message);
+      res.setHeader('Cache-Control', 'no-store');
       return res.status(200).json({ free: [], enhanced: [], featured: [], premium: [], samples: [] });
     }
 
@@ -338,6 +341,8 @@ export default async function handler(req, res) {
     return res.status(200).json({ free, enhanced, featured, premium, samples });
   } catch (err) {
     console.error('Businesses API error:', err.message);
+    await alertOutage('businesses', err.message);
+    res.setHeader('Cache-Control', 'no-store');
     return res.status(200).json({ free: [], enhanced: [], featured: [], premium: [], samples: [] });
   }
 }

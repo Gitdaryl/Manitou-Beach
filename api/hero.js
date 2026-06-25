@@ -1,3 +1,4 @@
+import { alertOutage } from './lib/notionGuard.js';
 const DAYS_AHEAD = 50; // 50-day window for hero feature events
 
 export default async function handler(req, res) {
@@ -34,6 +35,8 @@ export default async function handler(req, res) {
 
     if (!response.ok) {
       console.error('Notion query failed:', await response.text());
+      await alertOutage('hero', 'Notion query failed');
+      res.setHeader('Cache-Control', 'no-store');
       return res.status(200).json({ events: [] });
     }
 
@@ -72,6 +75,8 @@ export default async function handler(req, res) {
     return res.status(200).json({ events: heroEvents });
   } catch (err) {
     console.error('Hero API error:', err.message);
+    await alertOutage('hero', err.message);
+    res.setHeader('Cache-Control', 'no-store');
     return res.status(200).json({ events: [] });
   }
 }

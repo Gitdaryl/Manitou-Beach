@@ -1,3 +1,4 @@
+import { alertOutage } from './lib/notionGuard.js';
 // Winery Ratings - POST to submit a tasting review, GET to fetch aggregates by venue + wine rankings
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
@@ -169,7 +170,7 @@ export default async function handler(req, res) {
           }
         );
 
-        if (!response.ok) return res.status(200).json({ ratings: {} });
+        if (!response.ok) { await alertOutage('winery-ratings', 'Notion query failed'); res.setHeader('Cache-Control', 'no-store'); return res.status(200).json({ ratings: {} }); }
 
         const data = await response.json();
         allResults = allResults.concat(data.results);
@@ -177,6 +178,8 @@ export default async function handler(req, res) {
       } while (cursor);
     } catch (err) {
       console.error('Winery ratings GET error:', err.message);
+      await alertOutage('winery-ratings', err.message);
+      res.setHeader('Cache-Control', 'no-store');
       return res.status(200).json({ ratings: {} });
     }
 

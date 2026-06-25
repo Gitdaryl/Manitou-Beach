@@ -1,3 +1,4 @@
+import { alertOutage } from './lib/notionGuard.js';
 // GET /api/page-sponsors?page=nightlife
 // Returns the active sponsor for a given page from Notion.
 // PageSponsorBanner calls this to auto-activate banners after payment.
@@ -70,6 +71,8 @@ export default async function handler(req, res) {
     return res.status(200).json({ sponsor });
   } catch (err) {
     console.error('page-sponsors error:', err.message);
+    await alertOutage('page-sponsors', err.message);
+    res.setHeader('Cache-Control', 'no-store');
     return res.status(200).json(all ? { taken: [] } : { sponsor: null });
   }
 }

@@ -1,3 +1,4 @@
+import { alertOutage } from './lib/notionGuard.js';
 // Village businesses API - fetches businesses with Village=true from Notion
 const DB_ID = process.env.NOTION_DB_BUSINESS;
 const TOKEN = process.env.NOTION_TOKEN_BUSINESS;
@@ -56,6 +57,8 @@ export default async function handler(req, res) {
     if (!response.ok) {
       const err = await response.text();
       console.error('Notion query failed:', err);
+      await alertOutage('village-businesses', err);
+      res.setHeader('Cache-Control', 'no-store');
       return res.status(502).json({ error: 'Failed to fetch village businesses' });
     }
 
@@ -66,6 +69,8 @@ export default async function handler(req, res) {
     return res.status(200).json(businesses);
   } catch (err) {
     console.error('Village businesses error:', err);
+    await alertOutage('village-businesses', err?.message || String(err));
+    res.setHeader('Cache-Control', 'no-store');
     return res.status(500).json({ error: 'Internal server error' });
   }
 }

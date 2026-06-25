@@ -1,3 +1,4 @@
+import { alertOutage } from './lib/notionGuard.js';
 export default async function handler(req, res) {
   // Cache for 5 minutes - promos are time-sensitive
   res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate');
@@ -33,6 +34,8 @@ export default async function handler(req, res) {
 
     if (!response.ok) {
       console.error('Notion promotions query failed:', await response.text());
+      await alertOutage('promotions', 'Notion query failed');
+      res.setHeader('Cache-Control', 'no-store');
       return res.status(200).json({ heroTakeover: [], pageBanners: {}, stripPin: null, videoSpotlight: null });
     }
 
@@ -90,6 +93,8 @@ export default async function handler(req, res) {
     return res.status(200).json({ heroTakeover, pageBanners, stripPin, videoSpotlight });
   } catch (err) {
     console.error('Promotions API error:', err.message);
+    await alertOutage('promotions', err.message);
+    res.setHeader('Cache-Control', 'no-store');
     return res.status(200).json({ heroTakeover: [], pageBanners: {}, stripPin: null, videoSpotlight: null });
   }
 }

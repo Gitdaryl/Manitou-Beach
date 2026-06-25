@@ -1,3 +1,4 @@
+import { alertOutage } from './lib/notionGuard.js';
 // /api/food-trucks.js
 // GET  - returns all Active food trucks (with last check-in time)
 // POST - truck checks in; verifies slug + token, then updates Notion record
@@ -42,6 +43,8 @@ async function handleGet(req, res) {
 
       if (!response.ok) {
         console.error('Food Trucks Notion query failed:', await response.text());
+        await alertOutage('food-trucks', 'Notion query failed');
+        res.setHeader('Cache-Control', 'no-store');
         return res.status(200).json({ trucks: [] });
       }
 
@@ -92,6 +95,8 @@ async function handleGet(req, res) {
     return res.status(200).json({ trucks });
   } catch (err) {
     console.error('Food Trucks GET error:', err.message);
+    await alertOutage('food-trucks', err.message);
+    res.setHeader('Cache-Control', 'no-store');
     return res.status(200).json({ trucks: [] });
   }
 }

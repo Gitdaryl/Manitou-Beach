@@ -1,3 +1,4 @@
+import { alertOutage } from './lib/notionGuard.js';
 // GET /api/lllc-sponsors
 // Returns active LLLC sponsors from Notion, grouped by tier.
 // Michele activates sponsors by checking the "Active" checkbox in Notion.
@@ -42,6 +43,8 @@ export default async function handler(req, res) {
 
     if (!queryRes.ok) {
       console.error('Notion query failed:', await queryRes.text());
+      await alertOutage('lllc-sponsors', 'Notion query failed');
+      res.setHeader('Cache-Control', 'no-store');
       return res.status(200).json({ sponsors: null });
     }
 
@@ -71,6 +74,8 @@ export default async function handler(req, res) {
     return res.status(200).json({ sponsors: grouped });
   } catch (err) {
     console.error('lllc-sponsors error:', err);
+    await alertOutage('lllc-sponsors', err?.message || String(err));
+    res.setHeader('Cache-Control', 'no-store');
     return res.status(200).json({ sponsors: null }); // graceful fallback
   }
 }
