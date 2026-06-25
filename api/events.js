@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { sendSMSFull } from './lib/twilio.js';
 
 // Fetch all pages from a Notion database query, following cursors past the 100-record limit
 async function queryAllNotionPages(dbId, token, body) {
@@ -37,6 +38,21 @@ function deriveChangeRisk(category, outdoors) {
   if (HIGH_RISK_CATEGORIES.has(category)) return 'high';
   if (LOW_RISK_CATEGORIES.has(category)) return 'low';
   return 'medium';
+}
+
+// Surface events-feed outages loudly instead of silently serving an empty page.
+// (A blanked NOTION_TOKEN_EVENTS once made the live /events page look like "no events".)
+let lastEventsAlertAt = 0;
+const EVENTS_ALERT_COOLDOWN_MS = 30 * 60 * 1000; // throttle so a sustained outage can't storm SMS
+async function alertEventsOutage(detail) {
+  const now = Date.now();
+  if (now - lastEventsAlertAt < EVENTS_ALERT_COOLDOWN_MS) return;
+  lastEventsAlertAt = now;
+  const to = process.env.ADMIN_PHONE;
+  if (!to) return;
+  try {
+    await sendSMSFull(to, `⚠️ Manitou Beach: the public Events feed is DOWN (${detail}). The /events page is empty until fixed — check NOTION_TOKEN_EVENTS in Vercel.`);
+  } catch (_) { /* never let alerting break the response */ }
 }
 
 export default async function handler(req, res) {
@@ -174,6 +190,14 @@ export default async function handler(req, res) {
   }
 
   // GET - fetch approved/published events
+  // Fail fast + loudly on missing config (e.g. a blanked NOTION_TOKEN_EVENTS) instead of
+  // serving an empty 200 that looks identical to "no events scheduled".
+  if (!process.env.NOTION_TOKEN_EVENTS || !process.env.NOTION_DB_EVENTS) {
+    console.error('Events config missing', { tokenSet: !!process.env.NOTION_TOKEN_EVENTS, dbSet: !!process.env.NOTION_DB_EVENTS });
+    await alertEventsOutage('NOTION_TOKEN_EVENTS or NOTION_DB_EVENTS not set');
+    res.setHeader('Cache-Control', 'no-store');
+    return res.status(503).json({ error: 'events_unavailable', reason: 'config', events: [], recurring: [] });
+  }
   res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate');
   try {
     const queryBody = {
@@ -191,7 +215,10 @@ export default async function handler(req, res) {
       pages = await queryAllNotionPages(process.env.NOTION_DB_EVENTS, process.env.NOTION_TOKEN_EVENTS, queryBody);
     } catch (err) {
       console.error('Notion query failed:', err.message);
-      return res.status(200).json({ events: [], recurring: [] });
+      const isAuth = /\b401\b|unauthorized|API token is invalid|restricted from accessing/i.test(err.message);
+      await alertEventsOutage(isAuth ? 'Notion auth failed (401 / invalid token)' : 'Notion query failed');
+      res.setHeader('Cache-Control', 'no-store');
+      return res.status(503).json({ error: 'events_unavailable', reason: isAuth ? 'auth' : 'query', events: [], recurring: [] });
     }
 
     const now = new Date();
@@ -270,6 +297,8 @@ export default async function handler(req, res) {
     return res.status(200).json({ events, recurring });
   } catch (err) {
     console.error('Events API error:', err.message);
-    return res.status(200).json({ events: [], recurring: [] });
+    await alertEventsOutage('Unexpected events API error');
+    res.setHeader('Cache-Control', 'no-store');
+    return res.status(503).json({ error: 'events_unavailable', reason: 'server', events: [], recurring: [] });
   }
 }

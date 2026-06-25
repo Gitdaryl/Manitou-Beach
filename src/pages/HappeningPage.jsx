@@ -549,7 +549,7 @@ function EventRow({ event, onEventClick, isLast, variant = "default" }) {
 // ============================================================
 // 📅  TIME-BUCKETED CALENDAR - This Week → This Month → Later
 // ============================================================
-function CalendarSection({ events, weeklyEvents = [], onEventClick, activeFilter, onFilterChange }) {
+function CalendarSection({ events, weeklyEvents = [], onEventClick, activeFilter, onFilterChange, loadError = false }) {
   const [expandedMonths, setExpandedMonths] = useState({});
 
   // Time boundaries
@@ -631,6 +631,22 @@ function CalendarSection({ events, weeklyEvents = [], onEventClick, activeFilter
 
   // Find next upcoming event when this week is empty
   const nextEvent = filtered.length > 0 ? filtered[0] : null;
+
+  if (loadError) {
+    return (
+      <section style={{ background: C.cream, padding: "80px 24px" }}>
+        <div style={{ maxWidth: 680, margin: "0 auto", textAlign: "center", background: "#FFF8F0", border: "1px solid #F0E4D0", borderRadius: 16, padding: "44px 28px" }}>
+          <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.text, marginBottom: 10 }}>We can't load events right now</div>
+          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.textMuted, lineHeight: 1.7, margin: "0 0 24px" }}>
+            This is a temporary hiccup on our end &mdash; not a quiet week. The calendar is just having trouble loading. Please try again in a moment.
+          </p>
+          <button onClick={() => window.location.reload()} className="btn-animated" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", padding: "12px 28px", borderRadius: 24, border: "none", background: C.sunset, color: C.cream, cursor: "pointer" }}>
+            Refresh
+          </button>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <>
@@ -1017,15 +1033,18 @@ export default function HappeningPage() {
   const subScrollTo = (id) => { window.location.href = "/#" + id; };
   const [lightboxEvent, setLightboxEvent] = useState(null);
   const [activeFilter, setActiveFilter] = useState("All");
+  const [loadError, setLoadError] = useState(false);
 
   useEffect(() => {
     fetch("/api/events")
       .then(r => r.json())
       .then(data => {
+        if (data.error) { setLoadError(true); return; }
+        setLoadError(false);
         setUpcomingEvents(data.events || []);
         setWeeklyEvents(data.recurring || []);
       })
-      .catch(() => {});
+      .catch(() => setLoadError(true));
 
     fetch("/api/promotions")
       .then(r => r.json())
@@ -1061,7 +1080,7 @@ export default function HappeningPage() {
       <SponsorTicker sponsors={EVENT_TICKER_SPONSORS} />
       <PromoBanner page="Events" />
       <HeroTakeover event={heroTakeover} onEventClick={setLightboxEvent} />
-      <CalendarSection events={upcomingEvents} weeklyEvents={weeklyEvents} onEventClick={setLightboxEvent} activeFilter={activeFilter} onFilterChange={setActiveFilter} />
+      <CalendarSection events={upcomingEvents} weeklyEvents={weeklyEvents} onEventClick={setLightboxEvent} activeFilter={activeFilter} onFilterChange={setActiveFilter} loadError={loadError} />
       <WeeklyEventsSection events={weeklyEvents} onEventClick={setLightboxEvent} />
 
       {/* Promote upsell strip */}
