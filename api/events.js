@@ -174,22 +174,6 @@ export default async function handler(req, res) {
   }
 
   // GET - fetch approved/published events
-  // TEMP DIAGNOSTIC - gated behind secret param; reveals only Notion HTTP status + error text (no secrets). Remove after use.
-  if (req.query && req.query.debug === 'mbdiag2026') {
-    const tok = process.env.NOTION_TOKEN_EVENTS || '';
-    const db = process.env.NOTION_DB_EVENTS || '';
-    try {
-      const r = await fetch(`https://api.notion.com/v1/databases/${db}/query`, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${tok}`, 'Content-Type': 'application/json', 'Notion-Version': '2022-06-28' },
-        body: JSON.stringify({ page_size: 1 }),
-      });
-      const body = await r.text();
-      return res.status(200).json({ tokenPresent: !!tok, dbPresent: !!db, notionStatus: r.status, notionBody: body.slice(0, 400) });
-    } catch (e) {
-      return res.status(200).json({ tokenPresent: !!tok, dbPresent: !!db, fetchError: e.message });
-    }
-  }
   res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate');
   try {
     const queryBody = {
