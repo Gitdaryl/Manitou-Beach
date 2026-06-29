@@ -51,6 +51,14 @@ const ACTIVITIES = [
     icon: "🎆",
     featured: true,
   },
+  {
+    date: "July 4th",
+    time: "8:00 PM",
+    title: "Skydive Tecumseh Drop-In",
+    body: "Skydive Tecumseh teams up with the Devils Lake Yacht Club for a 4th of July Drop-In. Watch from your boat or the shore as jumpers buzz over the lake before landing right in front of the DLYC. Weather permitting.",
+    location: "Landing in front of Devils Lake Yacht Club",
+    icon: "🪂",
+  },
 ];
 
 // ─── Hero ────────────────────────────────────────────────────────────────────
