@@ -92,10 +92,18 @@ export default async function handler(req, res) {
       }
     }
 
-    let normalizedUrl = null;
-    if (website && website.trim()) {
-      const u = website.trim();
-      normalizedUrl = /^https?:\/\//i.test(u) ? u : 'https://' + u;
+    // normalizedUrl stays undefined unless 'website' was actually included in the
+    // request body - mirrors the !== undefined gate used for every other field below.
+    // (Previously defaulted to null, so any partial save that omitted 'website'
+    // silently wiped the business's website URL - fixed 2026-07-01.)
+    let normalizedUrl;
+    if (website !== undefined) {
+      if (website && website.trim()) {
+        const u = website.trim();
+        normalizedUrl = /^https?:\/\//i.test(u) ? u : 'https://' + u;
+      } else {
+        normalizedUrl = null; // explicit clear requested
+      }
     }
 
     let normalizedHero = null;
