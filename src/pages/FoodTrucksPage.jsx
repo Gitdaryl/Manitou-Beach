@@ -1538,7 +1538,7 @@ export default function FoodTrucksPage() {
           muted
           loop
           playsInline
-          preload="none"
+          preload="metadata"
           poster="/images/foodtruck_hero.jpg"
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }}
         >

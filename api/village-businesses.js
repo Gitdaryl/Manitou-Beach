@@ -63,7 +63,10 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json();
-    const businesses = data.results.map(mapBusiness).filter(b => b.name);
+    // Extra safety net: exclude test/QA listings by name pattern even if the
+    // "Hidden" checkbox wasn't set (mirrors the filter in api/businesses.js).
+    const looksLikeTestListing = (name) => /\byeti\s*test\b|\btest\s*business\b|^\s*test[\s-]/i.test(name || '');
+    const businesses = data.results.map(mapBusiness).filter(b => b.name && !looksLikeTestListing(b.name));
 
     res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=600');
     return res.status(200).json(businesses);

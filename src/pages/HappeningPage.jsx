@@ -36,12 +36,14 @@ function HappeningHero() {
     }}>
       <video
         autoPlay muted loop playsInline
+        preload="metadata"
+        poster="/images/happening-hero.jpg"
         style={{
           position: "absolute", inset: 0, width: "100%", height: "100%",
           objectFit: "cover", zIndex: 0,
         }}
       >
-        <source src="/videos/events%20hero.mp4" type="video/mp4" />
+        <source src="/videos/events-hero.mp4" type="video/mp4" />
       </video>
       {/* Dark overlay - preserves text readability */}
       <div style={{

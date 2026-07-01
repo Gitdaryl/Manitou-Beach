@@ -464,6 +464,8 @@ function Hero({ scrollTo }) {
       <div style={{ position: "absolute", inset: 0, background: `linear-gradient(160deg, ${C.night} 0%, ${C.lakeDark} 60%, ${C.dusk} 100%)`, zIndex: 0 }} />
       <video
         autoPlay muted loop playsInline
+        preload="metadata"
+        poster="/images/og-image.jpg"
         style={{
           position: "absolute", inset: 0, width: "100%", height: "120%", objectFit: "cover", zIndex: 1,
           transform: `translateY(${scrollY * 0.3}px)`, willChange: "transform",
@@ -605,7 +607,6 @@ function HappeningSection() {
       backgroundImage: "url(/images/happening-bg.jpg)",
       backgroundSize: "cover",
       backgroundPosition: "center",
-      backgroundAttachment: "fixed",
       backgroundColor: C.dusk, /* fallback until image is added */
     }}>
       {/* Dark overlay - adjust opacity for photo intensity */}

@@ -106,14 +106,31 @@ export function SectionTitle({ children, light = false, center = false, style: s
 
 export function FadeIn({ children, delay = 0, direction = "up", style = {} }) {
   const ref = useRef(null);
+  // If the element is already inside (or within 200px of) the viewport on mount,
+  // show it immediately with no animation - avoids the blank-viewport-while-scrolling
+  // problem where content pops in awkwardly after a fast scroll or deep link.
   const [visible, setVisible] = useState(false);
+  const [instant, setInstant] = useState(false);
 
   useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    // Check on mount whether the element is already within the early-trigger zone.
+    const rect = el.getBoundingClientRect();
+    const vh = window.innerHeight || document.documentElement.clientHeight;
+    const alreadyInView = rect.top < vh + 200 && rect.bottom > -200;
+    if (alreadyInView) {
+      setInstant(true);
+      setVisible(true);
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([e]) => { if (e.isIntersecting) setVisible(true); },
-      { threshold: 0.12 }
+      { threshold: 0.12, rootMargin: "0px 0px 200px 0px" }
     );
-    if (ref.current) observer.observe(ref.current);
+    observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
@@ -126,13 +143,17 @@ export function FadeIn({ children, delay = 0, direction = "up", style = {} }) {
     none: "none",
   };
 
+  const cappedDelay = instant ? 0 : Math.min(delay, 150);
+
   return (
     <div
       ref={ref}
       style={{
         opacity: visible ? 1 : 0,
         transform: visible ? "translateY(0) translateX(0) scale(1)" : transforms[direction] || transforms.up,
-        transition: `opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${delay}ms, transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${delay}ms`,
+        transition: instant
+          ? "none"
+          : `opacity 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${cappedDelay}ms, transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${cappedDelay}ms`,
         ...style,
       }}
     >

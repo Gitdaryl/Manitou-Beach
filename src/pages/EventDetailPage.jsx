@@ -4,6 +4,8 @@ import { C } from '../data/config';
 import { Footer, Navbar, GlobalStyles } from '../components/Layout';
 import SEOHead from '../components/SEOHead';
 import { LIFECYCLE_BADGES } from '../components/LifecycleRibbon';
+import { toSlug } from '../utils/slugify';
+import { FadeIn } from '../components/Shared';
 
 const CAT_COLORS = {
   'Live Music': C.sunset,
@@ -74,6 +76,86 @@ function isPast(dateStr) {
   return new Date(dateStr + 'T23:59:59') < new Date();
 }
 
+// ── Add to Calendar (.ics) - generated client-side, no dependencies ──────────
+
+// Escape text per RFC 5545 (commas, semicolons, backslashes, newlines)
+function icsEscape(str) {
+  return String(str || '')
+    .replace(/\\/g, '\\\\')
+    .replace(/;/g, '\\;')
+    .replace(/,/g, '\\,')
+    .replace(/\n/g, '\\n');
+}
+
+// Format a JS Date as a UTC "floating" local timestamp (YYYYMMDDTHHMMSS) for ICS
+function icsLocalStamp(date) {
+  const pad = n => String(n).padStart(2, '0');
+  return `${date.getFullYear()}${pad(date.getMonth() + 1)}${pad(date.getDate())}T${pad(date.getHours())}${pad(date.getMinutes())}${pad(date.getSeconds())}`;
+}
+
+function buildIcsDates(event) {
+  // All-day event (no start time) - use DATE value type, end date exclusive per spec
+  if (!event.timeStart) {
+    const startStr = (event.date || '').replace(/-/g, '');
+    const endDateSrc = event.dateEnd && event.dateEnd !== event.date ? event.dateEnd : event.date;
+    const endDate = new Date(endDateSrc + 'T00:00:00');
+    endDate.setDate(endDate.getDate() + 1); // DTEND is exclusive for all-day events
+    const pad = n => String(n).padStart(2, '0');
+    const endStr = `${endDate.getFullYear()}${pad(endDate.getMonth() + 1)}${pad(endDate.getDate())}`;
+    return { allDay: true, dtstart: startStr, dtend: endStr };
+  }
+
+  const start = new Date(`${event.date}T${event.timeStart}`);
+  let end;
+  if (event.timeEnd) {
+    end = new Date(`${event.date}T${event.timeEnd}`);
+    if (end <= start) end = new Date(start.getTime() + 2 * 60 * 60 * 1000);
+  } else {
+    end = new Date(start.getTime() + 2 * 60 * 60 * 1000); // default 2hr duration
+  }
+  return { allDay: false, dtstart: icsLocalStamp(start), dtend: icsLocalStamp(end) };
+}
+
+function downloadEventIcs(event, eventId, siteUrl) {
+  if (!event?.date) return;
+  const { allDay, dtstart, dtend } = buildIcsDates(event);
+  const nowStamp = icsLocalStamp(new Date()).replace(/[-:]/g, '');
+  const uid = `${eventId}@manitoubeachmichigan.com`;
+  const url = `${siteUrl}/events/${eventId}`;
+
+  const descParts = [event.description || '', `Details: ${url}`].filter(Boolean).join('\n\n');
+
+  const lines = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Manitou Beach Michigan//Events//EN',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+    'BEGIN:VEVENT',
+    `UID:${uid}`,
+    `DTSTAMP:${nowStamp}`,
+    allDay ? `DTSTART;VALUE=DATE:${dtstart}` : `DTSTART:${dtstart}`,
+    allDay ? `DTEND;VALUE=DATE:${dtend}` : `DTEND:${dtend}`,
+    `SUMMARY:${icsEscape(event.name)}`,
+    ...(event.location ? [`LOCATION:${icsEscape(event.location)}`] : []),
+    ...(descParts ? [`DESCRIPTION:${icsEscape(descParts)}`] : []),
+    `URL:${url}`,
+    'END:VEVENT',
+    'END:VCALENDAR',
+  ];
+
+  const icsContent = lines.join('\r\n');
+  const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+  const blobUrl = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = blobUrl;
+  a.download = `${(event.name || 'event').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'event'}.ics`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
+}
+
 // ── Related event card ────────────────────────────────────────────────────────
 
 function RelatedCard({ event }) {
@@ -115,6 +197,7 @@ export default function EventDetailPage() {
   const [related, setRelated] = useState([]);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [businesses, setBusinesses] = useState([]);
 
   const siteUrl = 'https://manitoubeachmichigan.com';
 
@@ -125,6 +208,20 @@ export default function EventDetailPage() {
       .then(d => { setEvent(d.event || null); setRelated(d.related || []); setLoading(false); })
       .catch(() => setLoading(false));
   }, [eventId]);
+
+  // Businesses, for matching the event's venue string to a business profile (item 8)
+  useEffect(() => {
+    fetch('/api/businesses')
+      .then(r => r.json())
+      .then(d => {
+        const all = [
+          ...(d.premium || []), ...(d.featured || []),
+          ...(d.enhanced || []), ...(d.free || []),
+        ];
+        setBusinesses(all);
+      })
+      .catch(() => {});
+  }, []);
 
   const handleShare = () => {
     const url = `${siteUrl}/events/${eventId}`;
@@ -140,6 +237,23 @@ export default function EventDetailPage() {
   const catColor = event ? (CAT_COLORS[event.category] || C.sage) : C.sage;
   const heroImage = event ? getSmartImage(event) : '/images/happening-hero.jpg';
   const hasOrganizerImage = event?.imageUrl;
+
+  // Match the event's free-text venue/location string to a business listing, if any.
+  // The location field often reads "Business Name, 123 Main St, City MI" so we check
+  // whether the location text contains a known business name (or vice versa).
+  const matchedVenue = (() => {
+    if (!event?.location || !businesses.length) return null;
+    const locLower = event.location.toLowerCase();
+    let best = null;
+    for (const b of businesses) {
+      if (!b.name || b.name.length < 4) continue;
+      const nameLower = b.name.toLowerCase();
+      if (locLower.includes(nameLower) || nameLower.includes(locLower)) {
+        if (!best || b.name.length > best.name.length) best = b;
+      }
+    }
+    return best ? { name: best.name, slug: toSlug(best.name) } : null;
+  })();
 
   const metaDesc = event
     ? `${event.name}${event.location ? ` at ${event.location}` : ''}. ${event.date ? formatFullDate(event.date) : ''}${event.description ? '. ' + event.description.slice(0, 100) : ''}`
@@ -289,6 +403,14 @@ export default function EventDetailPage() {
                   >
                     {copied ? '✓ Copied' : '↗ Share'}
                   </button>
+                  {event.date && (
+                    <button
+                      onClick={() => downloadEventIcs(event, eventId, siteUrl)}
+                      style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)', color: '#fff', padding: '6px 16px', borderRadius: 20, fontSize: 12, fontWeight: 600, cursor: 'pointer', backdropFilter: 'blur(8px)', fontFamily: "'Libre Franklin', sans-serif" }}
+                    >
+                      📅 Add to Calendar
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -309,19 +431,8 @@ export default function EventDetailPage() {
                 </div>
               )}
 
-              {/* No-image nudge */}
-              {!hasOrganizerImage && !past && (
-                <div style={{ background: `${C.lakeBlue}10`, border: `1px solid ${C.lakeBlue}30`, borderRadius: 8, padding: '10px 16px', marginBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
-                  <span style={{ fontSize: 13, color: C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif" }}>
-                    📷 Is this your event? Add a photo - it shows when people share the link.
-                  </span>
-                  <Link to="/submit-event" style={{ fontSize: 12, fontWeight: 700, color: C.lakeBlue, textDecoration: 'none', whiteSpace: 'nowrap' }}>
-                    Update event →
-                  </Link>
-                </div>
-              )}
-
               {/* Details grid */}
+              <FadeIn delay={0}>
               <div style={{ display: 'grid', gap: 14, marginBottom: 28 }} className="event-detail-grid">
                 {event.date && (
                   <div style={{ background: '#fff', border: `1px solid ${C.sand}`, borderRadius: 10, padding: '14px 18px' }}>
@@ -354,7 +465,13 @@ export default function EventDetailPage() {
                   <div style={{ background: '#fff', border: `1px solid ${C.sand}`, borderRadius: 10, padding: '14px 18px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
                     <div>
                       <div style={{ fontSize: 10, color: C.textMuted, textTransform: 'uppercase', letterSpacing: 1.8, marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>Location</div>
-                      <div style={{ fontSize: 16, fontWeight: 600, color: C.dusk, fontFamily: "'Libre Baskerville', serif", lineHeight: 1.3 }}>{event.location}</div>
+                      {matchedVenue ? (
+                        <Link to={`/business/${matchedVenue.slug}`} style={{ fontSize: 16, fontWeight: 600, color: C.lakeBlue, fontFamily: "'Libre Baskerville', serif", lineHeight: 1.3, textDecoration: 'none' }}>
+                          {event.location} <span style={{ fontSize: 12, fontWeight: 500 }}>↗</span>
+                        </Link>
+                      ) : (
+                        <div style={{ fontSize: 16, fontWeight: 600, color: C.dusk, fontFamily: "'Libre Baskerville', serif", lineHeight: 1.3 }}>{event.location}</div>
+                      )}
                     </div>
                     <a
                       href={`https://maps.google.com/?q=${encodeURIComponent(event.location + ' Manitou Beach Michigan')}`}
@@ -367,9 +484,11 @@ export default function EventDetailPage() {
                   </div>
                 )}
               </div>
+              </FadeIn>
 
               {/* Description */}
               {event.description && (
+                <FadeIn delay={60}>
                 <div style={{ marginBottom: 32 }}>
                   <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.dusk, margin: '0 0 12px' }}>About this event</h2>
                   <p style={{ fontSize: 16, lineHeight: 1.85, color: C.text, margin: 0, whiteSpace: 'pre-wrap' }}>{event.description}</p>
@@ -377,10 +496,12 @@ export default function EventDetailPage() {
                     <p key={i} style={{ fontSize: 16, lineHeight: 1.85, color: C.text, margin: '12px 0 0', whiteSpace: 'pre-wrap' }}>{b}</p>
                   ))}
                 </div>
+                </FadeIn>
               )}
 
               {/* CTAs */}
               {!past && (event.ticketsEnabled || event.rsvpEnabled || event.eventUrl) && (
+                <FadeIn delay={120}>
                 <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 36 }}>
                   {event.ticketsEnabled && event.eventUrl && (
                     <a href={event.eventUrl} target="_blank" rel="noreferrer"
@@ -401,11 +522,13 @@ export default function EventDetailPage() {
                     </a>
                   )}
                 </div>
+                </FadeIn>
               )}
             </div>
 
             {/* ── More events strip ── */}
             {related.filter(e => !isPast(e.date)).length > 0 && (
+              <FadeIn delay={0}>
               <div style={{ background: C.warmWhite, borderTop: `1px solid ${C.sand}`, marginTop: 16, padding: '36px 0 48px' }}>
                 <div style={{ maxWidth: 760, margin: '0 auto', padding: '0 24px' }}>
                   <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 8 }}>
@@ -417,10 +540,20 @@ export default function EventDetailPage() {
                   </div>
                 </div>
               </div>
+              </FadeIn>
+            )}
+
+            {/* Ops nudge - demoted to a small link, never the first thing a visitor sees */}
+            {!hasOrganizerImage && !past && (
+              <div style={{ maxWidth: 760, margin: '0 auto', padding: '0 24px' }}>
+                <Link to="/submit-event" style={{ fontSize: 12, color: C.textMuted, textDecoration: 'none' }}>
+                  Is this your event? Add a photo & update details →
+                </Link>
+              </div>
             )}
 
             {/* Footer nav */}
-            <div style={{ maxWidth: 760, margin: '0 auto', padding: '24px 24px 60px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+            <div style={{ maxWidth: 760, margin: '0 auto', padding: '12px 24px 60px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
               <Link to="/events" style={{ color: C.lakeBlue, textDecoration: 'none', fontSize: 14, fontWeight: 600 }}>← All events</Link>
               <Link to="/submit-event" style={{ color: C.textMuted, textDecoration: 'none', fontSize: 13 }}>Got an event? List it free →</Link>
             </div>
@@ -444,7 +577,7 @@ export default function EventDetailPage() {
         @media (max-width: 640px) {
           .event-detail-hero { height: 280px !important; }
           .event-detail-hero-content { padding-top: 40px !important; padding-bottom: 32px !important; }
-          .event-detail-title { font-size: 24px !important; }
+          .event-detail-title { font-size: 28px !important; }
           .event-detail-subgrid { grid-template-columns: 1fr !important; }
           .event-related-grid { grid-template-columns: repeat(2, 1fr) !important; }
         }

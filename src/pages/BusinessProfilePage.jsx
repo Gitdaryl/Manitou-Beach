@@ -415,6 +415,20 @@ export default function BusinessProfilePage() {
     ? `${business.name} is a ${(business.category || 'local business').toLowerCase()} serving Manitou Beach, Devils Lake, and the Irish Hills area of Michigan.`
     : '';
 
+  // -- Claimed / paid-tier gating ------------------------------------------
+  // The API (api/businesses.js) does not return a per-listing "claimed" flag -
+  // ownership is only ever known to the current browser via the HMAC claimToken
+  // stored after phone verification (see handleClaimCode above). A listing on a
+  // paid tier ('featured' | 'premium') only gets there via a completed Stripe
+  // checkout (see api/stripe-webhook.js), which is itself proof the business is
+  // real and being paid for - so paid tier doubles as a server-verified proxy
+  // for "claimed" even when the current visitor's browser has no claimToken.
+  // Ops/upsell/claim nag UI must never show to visitors of a claimed OR paid
+  // listing (spec: premium-profiles-spec.md section A.2).
+  const isPaidTier = business && ['featured', 'premium'].includes(business.tier);
+  const isClaimed = Boolean(claimToken) || isPaidTier;
+  const hasCoverImage = Boolean(business?.heroVideo || business?.heroPhoto);
+
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: 'hidden', minHeight: '100vh' }}>
       <GlobalStyles />
@@ -430,8 +444,8 @@ export default function BusinessProfilePage() {
         }
         @media (min-width: 640px) { .bp-hero-identity { padding: 0 36px 40px; } }
 
-        .bp-hero-logo { width: 120px; height: 120px; }
-        @media (min-width: 640px) { .bp-hero-logo { width: 150px; height: 150px; } }
+        .bp-hero-logo { width: 140px; height: 140px; }
+        @media (min-width: 640px) { .bp-hero-logo { width: 160px; height: 160px; } }
 
         .bp-cred-strip {
           display: flex; align-items: center; justify-content: space-between;
@@ -495,6 +509,19 @@ export default function BusinessProfilePage() {
           box-shadow: 0 -8px 32px rgba(0,0,0,0.12);
         }
         .bp-sticky.visible { transform: translateY(0); }
+        /* Desktop: float as a centered pill instead of a full-bleed bar, and stop
+           translating it off past its own height so it never overlaps the footer. */
+        @media (min-width: 900px) {
+          .bp-sticky {
+            left: 50%; right: auto; bottom: 20px;
+            width: calc(100% - 48px); max-width: 720px;
+            transform: translate(-50%, calc(100% + 40px));
+            border-top: none; border: 1px solid ${C.sand};
+            border-radius: 100px; padding: 14px 22px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+          }
+          .bp-sticky.visible { transform: translate(-50%, 0); }
+        }
 
         .bp-section-label {
           font-size: 10px; font-weight: 800; letter-spacing: 2px;
@@ -728,9 +755,24 @@ export default function BusinessProfilePage() {
                 loading="eager"
               />
             ) : (
-              <div className="bp-hero-img" style={{
-                background: `linear-gradient(145deg, ${accent}e0 0%, ${C.dusk} 55%, ${C.lakeDark} 100%)`,
-              }} />
+              // Branded fallback - never a flat void. Layered night->lakeDark
+              // gradient over the existing Devils Lake texture image, with the
+              // same slow Ken Burns drift used for other hero fallbacks across
+              // the site (see .ken-burns-bg in components/Layout.jsx GlobalStyles -
+              // it already no-ops under prefers-reduced-motion).
+              <div className="bp-hero-img" style={{ position: 'relative', overflow: 'hidden' }}>
+                <div
+                  className="ken-burns-bg"
+                  style={{
+                    position: 'absolute', inset: '-4%', backgroundImage: 'url(/images/explore-devils-lake.jpg)',
+                    backgroundSize: 'cover', backgroundPosition: 'center 55%', opacity: 0.4,
+                  }}
+                />
+                <div style={{
+                  position: 'absolute', inset: 0,
+                  background: `linear-gradient(145deg, ${accent}cc 0%, ${C.night}f2 55%, ${C.lakeDark}f2 100%)`,
+                }} />
+              </div>
             )}
 
             {/* Video hero upsell tag - only on demo profiles */}
@@ -791,7 +833,8 @@ export default function BusinessProfilePage() {
               {business.logo && (
                 <div className="bp-hero-logo" style={{
                   borderRadius: 24, marginBottom: 16,
-                  border: '2px solid rgba(255,255,255,0.22)',
+                  border: '2.5px solid rgba(255,255,255,0.32)',
+                  boxShadow: '0 0 0 6px rgba(255,255,255,0.08), 0 10px 30px rgba(0,0,0,0.35)',
                   background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)',
                   overflow: 'hidden', flexShrink: 0,
                 }}>
@@ -835,7 +878,7 @@ export default function BusinessProfilePage() {
               {/* Business name - the hero moment */}
               <h1 style={{
                 fontFamily: "'Libre Baskerville', serif",
-                fontSize: 'clamp(28px, 6.5vw, 46px)',
+                fontSize: 'clamp(2.5rem, 6vw, 4rem)',
                 fontWeight: 700, color: '#fff', margin: '0 0 10px', lineHeight: 1.1,
                 textShadow: '0 2px 16px rgba(0,0,0,0.5)',
               }}>
@@ -998,41 +1041,26 @@ export default function BusinessProfilePage() {
               </div>
             )}
 
-            {/* ── Premium photo strip - full bleed, horizontal scroll ── */}
-            {business.tier === 'premium' && business.gallery?.length > 0 && (
-              <div style={{ margin: '0 -16px 24px', position: 'relative' }}>
-                <div className="bp-photo-strip">
-                  {business.gallery.map((url, i) => (
-                    <div key={i} className="bp-photo-strip-item" onClick={() => setLightboxIndex(i)}>
-                      <img src={url} alt={`${business.name} photo ${i + 1}`}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.3s' }}
-                        onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}
-                        onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-                      />
-                    </div>
-                  ))}
-                </div>
-                <div style={{ position: 'absolute', right: 0, top: 0, bottom: 4, width: 40, background: `linear-gradient(to left, ${C.cream}, transparent)`, pointerEvents: 'none' }} />
-              </div>
-            )}
-
             <FadeIn>
 
-              {/* ── About ── */}
+              {/* -- About -- */}
               {business.description && (
-                <div className="bp-section-card">
-                  <div className="bp-section-label">About</div>
-                  <p style={{
-                    fontSize: 17, lineHeight: 1.85,
-                    color: C.text, margin: 0,
-                    fontFamily: "'Libre Baskerville', serif",
-                  }}>
-                    {business.description}
-                  </p>
-                </div>
+                <FadeIn delay={0}>
+                  <div className="bp-section-card">
+                    <div className="bp-section-label">About</div>
+                    <p style={{
+                      fontSize: 17, lineHeight: 1.85,
+                      color: C.text, margin: 0,
+                      fontFamily: "'Libre Baskerville', serif",
+                    }}>
+                      {business.description}
+                    </p>
+                  </div>
+                </FadeIn>
               )}
 
-              {/* ── Hours ── */}
+              {/* -- Hours -- */}
+              <FadeIn delay={60}>
               {business.hours ? (
                 <div className="bp-section-card">
                   <div className="bp-section-label">Hours</div>
@@ -1078,8 +1106,10 @@ export default function BusinessProfilePage() {
                   </div>
                 </div>
               )}
+              </FadeIn>
 
-              {/* ── Google Reviews teaser ── */}
+              {/* -- Reviews / Google upsell -- */}
+              <FadeIn delay={120}>
               {googleData ? (
                 <div className="bp-section-card">
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
@@ -1124,7 +1154,9 @@ export default function BusinessProfilePage() {
                     </div>
                   ))}
                 </div>
-              ) : ['featured', 'premium'].includes(business.tier) ? (
+              ) : isPaidTier && claimToken ? (
+                // Owner-only nudge to set up Google Business Profile - never shown
+                // to third-party visitors of a paid listing (see isClaimed above).
                 <div className="bp-section-card" style={{ background: `linear-gradient(135deg, #fff 0%, ${C.warmWhite} 100%)` }}>
                   <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
                     <div style={{
@@ -1143,35 +1175,26 @@ export default function BusinessProfilePage() {
                       <p style={{ margin: '0 0 12px', fontSize: 13, color: C.textLight, lineHeight: 1.6 }}>
                         When someone nearby Googles "{business.category?.toLowerCase() || 'your service'} near me", your name, phone number, and hours show up right in the results. No website needed. We handle the whole setup for you - your reviews then appear on this page automatically too.
                       </p>
-                      {claimToken ? (
-                        <a
-                          href={`/gbp-setup?business=${encodeURIComponent(business.name)}&slug=${encodeURIComponent(toSlug(business.name))}`}
-                          style={{
-                            fontSize: 12, fontWeight: 700, color: C.sage, background: 'none',
-                            border: 'none', padding: 0, cursor: 'pointer',
-                            fontFamily: "'Libre Franklin', sans-serif",
-                            display: 'inline-flex', alignItems: 'center', gap: 4,
-                            textDecoration: 'none',
-                          }}
-                        >
-                          We'll set it up for you →
-                        </a>
-                      ) : (
-                        <button
-                          onClick={() => { setClaimOpen(true); setClaimStep('phone'); setClaimError(''); }}
-                          style={{
-                            fontSize: 12, fontWeight: 700, color: C.sage, background: 'none',
-                            border: 'none', padding: 0, cursor: 'pointer',
-                            fontFamily: "'Libre Franklin', sans-serif",
-                            display: 'inline-flex', alignItems: 'center', gap: 4,
-                          }}
-                        >
-                          Claim your listing to add it →
-                        </button>
-                      )}
+                      <a
+                        href={`/gbp-setup?business=${encodeURIComponent(business.name)}&slug=${encodeURIComponent(toSlug(business.name))}`}
+                        style={{
+                          fontSize: 12, fontWeight: 700, color: C.sage, background: 'none',
+                          border: 'none', padding: 0, cursor: 'pointer',
+                          fontFamily: "'Libre Franklin', sans-serif",
+                          display: 'inline-flex', alignItems: 'center', gap: 4,
+                          textDecoration: 'none',
+                        }}
+                      >
+                        We'll set it up for you →
+                      </a>
                     </div>
                   </div>
                 </div>
+              ) : isPaidTier ? (
+                // Paid tier, no Google data yet, viewed by a third party - the spec
+                // forbids showing claim/upsell ops UI here, so render nothing rather
+                // than nagging a visitor on a listing that's already claimed/paid.
+                null
               ) : (
                 // Free/Enhanced - upsell to a paid tier
                 <div className="bp-section-card" style={{ background: `linear-gradient(135deg, #fff 0%, ${C.warmWhite} 100%)` }}>
@@ -1202,8 +1225,10 @@ export default function BusinessProfilePage() {
                   </div>
                 </div>
               )}
+              </FadeIn>
 
-              {/* ── Contact details ── */}
+              {/* -- Contact & Find Us (includes Get Directions - our Map touchpoint) -- */}
+              <FadeIn delay={150}>
               <div className="bp-section-card">
                 <div className="bp-section-label">Contact & Find Us</div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -1318,7 +1343,42 @@ export default function BusinessProfilePage() {
                   )}
                 </div>
               </div>
+              </FadeIn>
 
+              {/* -- Photos (premium gallery, if any) - content order per spec:
+                   About -> Hours & Contact -> Photos -> related offers/events
+                   (no offers/events data exists on the business object today) -> Map
+                   (Map is the Get Directions link inside Contact & Find Us above). -- */}
+              {business.tier === 'premium' && business.gallery?.length > 0 && (
+                <FadeIn delay={150}>
+                  <div className="bp-section-card" style={{ padding: '20px 0 24px' }}>
+                    <div className="bp-section-label" style={{ margin: '0 24px 16px' }}>Photo Gallery</div>
+                    <div style={{ position: 'relative' }}>
+                      <div className="bp-photo-strip">
+                        {business.gallery.map((url, i) => (
+                          <div key={i} className="bp-photo-strip-item" onClick={() => setLightboxIndex(i)}>
+                            <img src={url} alt={`${business.name} photo ${i + 1}`}
+                              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.3s' }}
+                              onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}
+                              onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                      <div style={{ position: 'absolute', right: 0, top: 0, bottom: 4, width: 40, background: 'linear-gradient(to left, #fff, transparent)', pointerEvents: 'none' }} />
+                    </div>
+                  </div>
+                </FadeIn>
+              )}
+
+              {/* -- Loves / testimonials chips: parity with food truck profiles is not
+                   possible yet - businesses have no loves/testimonials data source
+                   (food truck loves come from a dedicated api/food-truck-loves.js with
+                   no business equivalent, and no testimonial field exists on the
+                   business object from api/businesses.js). Nothing to render here
+                   today; wire this up if/when that data exists. -- */}
+
+              <FadeIn delay={150}>
               {/* ── Community badge ── */}
               <div style={{
                 borderRadius: 18, overflow: 'hidden',
@@ -1359,9 +1419,10 @@ export default function BusinessProfilePage() {
                   </a>
                 </div>
               </div>
+              </FadeIn>
 
-              {/* ── GBP Setup CTA (premium + claimed, no Place ID yet) ── */}
-              {claimToken && business.tier === 'premium' && !business.googlePlaceId && (
+              {/* -- GBP Setup CTA (premium + claimed, no Place ID yet) -- */}
+              {claimToken && isPaidTier && business.tier === 'premium' && !business.googlePlaceId && (
                 <div style={{
                   borderRadius: 16, overflow: 'hidden',
                   background: `linear-gradient(135deg, ${C.lakeBlue}12 0%, ${C.lakeDark}08 100%)`,
@@ -1403,8 +1464,8 @@ export default function BusinessProfilePage() {
                 </div>
               )}
 
-              {/* ── Owner panel: edit button (when claimed) or claim nudge ── */}
-              {claimToken ? (
+              {/* -- Owner panel: edit button (claimed listings only) -- */}
+              {claimToken && (
                 <div style={{
                   borderRadius: 16, background: `${C.sage}10`,
                   border: `1.5px solid ${C.sage}35`, padding: '20px 22px',
@@ -1426,7 +1487,13 @@ export default function BusinessProfilePage() {
                     Edit listing
                   </button>
                 </div>
-              ) : (
+              )}
+
+              {/* -- Claim nudge: unclaimed FREE listings only. Paid tiers (isPaidTier)
+                   are proof-of-legitimacy on their own and must never show this to a
+                   visitor (spec: premium-profiles-spec.md section A.2). Already the
+                   last card in the FadeIn content flow, i.e. bottom, above the footer. -- */}
+              {!claimToken && !isPaidTier && (
                 <div style={{
                   borderRadius: 16, background: `${accent}07`,
                   border: `1.5px dashed ${accent}35`, padding: '20px 22px',

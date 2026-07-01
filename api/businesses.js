@@ -296,6 +296,14 @@ export default async function handler(req, res) {
       const status = p['Status']?.status?.name || '';
       const featuredExpires = p['Featured Expires']?.date?.start || null;
       const isDemo = p['Is Demo']?.checkbox ?? false;
+      // Filter out internal test/QA listings so they never reach public directory output.
+      // Covers an explicit "Hidden" or "Is Test" checkbox (same convention as village-businesses.js)
+      // and falls back to a name-pattern safety net (e.g. "Yeti Test Business").
+      const nameRaw = p['Name']?.title?.[0]?.text?.content || '';
+      const isHidden = (p['Hidden']?.checkbox ?? false) || (p['Is Test']?.checkbox ?? false);
+      const looksLikeTestListing = /\byeti\s*test\b|\btest\s*business\b|^\s*test[\s-]/i.test(nameRaw);
+      if (isHidden || looksLikeTestListing) return;
+
       const business = {
         id: `notion-${page.id}`,
         name: p['Name']?.title?.[0]?.text?.content || '',

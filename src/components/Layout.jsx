@@ -901,7 +901,6 @@ export function HollyYetiSection() {
       backgroundImage: "url(/images/holly-yeti-bg.jpg)",
       backgroundSize: "cover",
       backgroundPosition: "center",
-      backgroundAttachment: "fixed",
       padding: "100px 24px",
       position: "relative",
       overflow: "hidden",

@@ -8,12 +8,33 @@ import SEOHead from '../components/SEOHead';
 // ─── Accent ──────────────────────────────────────────────────────────────────
 const ACCENT = C.sunset;
 
+// Session id for rate-limiting loves - same localStorage key as the /food-trucks
+// listing page so a visitor's loves stay in sync between pages.
+function getTruckSessionId() {
+  const key = 'mb-truck-session';
+  let sid = localStorage.getItem(key);
+  if (!sid) {
+    sid = Math.random().toString(36).slice(2) + Date.now().toString(36);
+    localStorage.setItem(key, sid);
+  }
+  return sid;
+}
+
 export default function FoodTruckProfilePage() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const [truck, setTruck] = useState(null);
   const [loading, setLoading] = useState(true);
   const [stickyVisible, setStickyVisible] = useState(false);
+
+  // Loves - same data source (/api/food-truck-loves) and localStorage key
+  // ('mb-truck-loves') as the /food-trucks listing cards, so counts + hearts match.
+  const [loves, setLoves] = useState({});
+  const [lovedItems, setLovedItems] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('mb-truck-loves') || '{}'); } catch { return {}; }
+  });
+  const [loveInputOpen, setLoveInputOpen] = useState(false);
+  const [loveInputText, setLoveInputText] = useState('');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -25,6 +46,11 @@ export default function FoodTruckProfilePage() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
+
+    fetch('/api/food-truck-loves')
+      .then(r => r.json())
+      .then(d => setLoves(d.loves || {}))
+      .catch(() => {});
   }, [slug]);
 
   useEffect(() => {
@@ -79,6 +105,55 @@ export default function FoodTruckProfilePage() {
   const hasHero = truck?.photoUrl;
   const hasActions = truck?.phone || truck?.website;
   const isActive = truck && !truck.departureTime;
+  const isFeatured = truck?.tier === 'featured';
+
+  // Loves for this truck - items sorted by count, top 5 shown as chips
+  const truckLoves = truck ? loves[truck.slug] : null;
+  const loveTotal = truckLoves?.total || 0;
+  const loveItems = Object.entries(truckLoves?.items || {}).sort((a, b) => b[1] - a[1]).slice(0, 5);
+
+  const handleLove = async (item) => {
+    if (!truck?.slug) return;
+    const key = `${truck.slug}:${item}`;
+    if (lovedItems[key]) return; // already loved this session
+
+    const sessionId = getTruckSessionId();
+    const newLovedItems = { ...lovedItems, [key]: true };
+    setLovedItems(newLovedItems);
+    localStorage.setItem('mb-truck-loves', JSON.stringify(newLovedItems));
+    setLoves(prev => {
+      const existing = prev[truck.slug] || { items: {}, total: 0 };
+      return {
+        ...prev,
+        [truck.slug]: {
+          items: { ...existing.items, [item]: (existing.items[item] || 0) + 1 },
+          total: existing.total + 1,
+        },
+      };
+    });
+
+    try {
+      const resp = await fetch('/api/food-truck-loves', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slug: truck.slug, item, sessionId }),
+      });
+      if (!resp.ok) throw new Error('failed');
+    } catch {
+      const rolledBack = { ...newLovedItems };
+      delete rolledBack[key];
+      setLovedItems(rolledBack);
+      localStorage.setItem('mb-truck-loves', JSON.stringify(rolledBack));
+    }
+  };
+
+  const handleLoveCustom = () => {
+    const item = loveInputText.trim().toLowerCase();
+    if (!item) return;
+    setLoveInputOpen(false);
+    setLoveInputText('');
+    handleLove(item);
+  };
 
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: 'hidden', minHeight: '100vh' }}>
@@ -253,7 +328,7 @@ export default function FoodTruckProfilePage() {
               <div style={{ flex: 1 }}>
                 <h1 style={{
                   fontFamily: "'Libre Baskerville', serif",
-                  fontSize: 'clamp(20px, 5vw, 28px)',
+                  fontSize: 'clamp(28px, 5.5vw, 34px)',
                   fontWeight: 700, color: C.dusk,
                   margin: '0 0 8px', lineHeight: 1.15,
                 }}>
@@ -278,8 +353,80 @@ export default function FoodTruckProfilePage() {
                     </span>
                   )}
                   <span style={{ color: C.textMuted, fontSize: 11 }}>Manitou Beach, MI</span>
+                  {loveTotal > 0 && (
+                    <span style={{ color: ACCENT, fontSize: 11, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 3 }}>
+                      ❤️ {loveTotal} love{loveTotal !== 1 ? 's' : ''}
+                    </span>
+                  )}
                 </div>
               </div>
+            </div>
+
+            {/* Love chips - same data source as the /food-trucks listing cards */}
+            <div style={{ marginBottom: 16 }}>
+              {loveItems.length > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
+                  {loveItems.map(([item, count]) => {
+                    const key = `${truck.slug}:${item}`;
+                    const loved = !!lovedItems[key];
+                    return (
+                      <button
+                        key={item}
+                        onClick={() => handleLove(item)}
+                        title={loved ? 'Already loved!' : `Love ${item}`}
+                        style={{
+                          display: 'inline-flex', alignItems: 'center', gap: 4,
+                          padding: '4px 11px', borderRadius: 14,
+                          background: loved ? `${ACCENT}20` : `${ACCENT}10`,
+                          border: `1px solid ${loved ? ACCENT + '60' : ACCENT + '30'}`,
+                          fontSize: 12, color: loved ? ACCENT : C.textLight,
+                          fontWeight: loved ? 600 : 400,
+                          cursor: loved ? 'default' : 'pointer',
+                          fontFamily: "'Libre Franklin', sans-serif",
+                          textTransform: 'capitalize',
+                        }}
+                      >
+                        {loved ? '❤️' : '🤍'} {item} <span style={{ opacity: 0.65 }}>({count})</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+              {loveInputOpen ? (
+                <form
+                  onSubmit={e => { e.preventDefault(); handleLoveCustom(); }}
+                  style={{ display: 'flex', gap: 6, alignItems: 'center' }}
+                >
+                  <input
+                    type="text"
+                    inputMode="text"
+                    enterKeyHint="send"
+                    autoComplete="off"
+                    autoFocus
+                    value={loveInputText}
+                    onChange={e => setLoveInputText(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Escape') { setLoveInputOpen(false); setLoveInputText(''); } }}
+                    placeholder="What did you love?"
+                    maxLength={50}
+                    style={{ flex: 1, padding: '7px 10px', borderRadius: 8, border: `1px solid ${C.sand}`, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", color: C.text, outline: 'none', background: C.warmWhite }}
+                  />
+                  <button type="submit" style={{ padding: '7px 14px', borderRadius: 8, background: ACCENT, color: '#fff', border: 'none', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>❤️</button>
+                  <button type="button" onClick={() => { setLoveInputOpen(false); setLoveInputText(''); }} style={{ padding: '7px 10px', borderRadius: 8, background: 'transparent', color: C.textMuted, border: `1px solid ${C.sand}`, fontSize: 12, cursor: 'pointer' }}>✕</button>
+                </form>
+              ) : (
+                <button
+                  onClick={() => setLoveInputOpen(true)}
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 5,
+                    padding: '6px 14px', borderRadius: 20,
+                    background: `${ACCENT}12`, border: `1.5px dashed ${ACCENT}40`,
+                    fontSize: 12, color: ACCENT, fontWeight: 600,
+                    cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif",
+                  }}
+                >
+                  {loveItems.length > 0 ? '+ Love something else' : '❤️ Love a dish'}
+                </button>
+              )}
             </div>
 
             {/* Inline action buttons */}
@@ -301,17 +448,18 @@ export default function FoodTruckProfilePage() {
               {truck.website && (
                 <a href={truck.website} target="_blank" rel="noopener noreferrer" style={{
                   display: 'inline-flex', alignItems: 'center', gap: 6,
-                  background: C.warmWhite, color: C.dusk,
+                  background: ACCENT, color: '#fff',
                   borderRadius: 8, padding: '9px 16px',
                   fontSize: 13, fontWeight: 700, textDecoration: 'none',
-                  border: `1.5px solid ${C.sand}`, minHeight: 44,
+                  minHeight: 44, boxShadow: `0 2px 10px ${ACCENT}40`,
                 }}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                    <polyline points="15,3 21,3 21,9"/>
-                    <line x1="10" y1="14" x2="21" y2="3"/>
+                    <path d="M3 2h12l6 6v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/>
+                    <path d="M15 2v6h6"/>
+                    <line x1="8" y1="13" x2="16" y2="13"/>
+                    <line x1="8" y1="17" x2="13" y2="17"/>
                   </svg>
-                  Website
+                  Menu / Info
                 </a>
               )}
             </div>
@@ -363,10 +511,23 @@ export default function FoodTruckProfilePage() {
                 </div>
               )}
 
-              {/* Where to find */}
-              {(truck.locationNote || truck.scheduleNote || truck.comingDate || truck.departureTime || truck.lat) && (
-                <div className="ftp-section-card">
-                  <div className="ftp-section-label">Where to Find Us</div>
+              {/* Find Us - current status, schedule, or fall back to the live map */}
+              <div className="ftp-section-card">
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14, flexWrap: 'wrap', gap: 8 }}>
+                  <div className="ftp-section-label" style={{ marginBottom: 0 }}>Find Us</div>
+                  {isActive && (
+                    <div style={{
+                      background: '#22c55e', color: '#fff',
+                      borderRadius: 20, padding: '4px 11px',
+                      fontSize: 10, fontWeight: 700, letterSpacing: 0.5,
+                      display: 'flex', alignItems: 'center', gap: 5,
+                    }}>
+                      <span style={{ width: 6, height: 6, background: '#fff', borderRadius: '50%', display: 'inline-block' }}></span>
+                      ON THE LAKE
+                    </div>
+                  )}
+                </div>
+                {(truck.locationNote || truck.scheduleNote || truck.comingDate || truck.departureTime || truck.lat) ? (
                   <div>
                     {truck.locationNote && (
                       <TruckInfoRow
@@ -427,8 +588,29 @@ export default function FoodTruckProfilePage() {
                       </a>
                     )}
                   </div>
-                </div>
-              )}
+                ) : (
+                  <div>
+                    <p style={{ margin: '0 0 12px', fontSize: 13, color: C.textLight, lineHeight: 1.6 }}>
+                      No check-in yet - see the live map for who's out on the lake right now.
+                    </p>
+                    <a
+                      href="/food-trucks"
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: 10,
+                        background: C.warmWhite, borderRadius: 10,
+                        padding: '13px 16px', textDecoration: 'none', color: C.text,
+                        border: `1.5px solid ${C.sand}`,
+                      }}
+                    >
+                      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke={ACCENT} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+                      </svg>
+                      <span style={{ flex: 1, fontSize: 14, fontWeight: 500 }}>See the Live Map & All Trucks</span>
+                      <span style={{ fontSize: 12, color: C.textMuted }}>→</span>
+                    </a>
+                  </div>
+                )}
+              </div>
 
               {/* Contact */}
               {(truck.phone || truck.website) && (
@@ -489,20 +671,22 @@ export default function FoodTruckProfilePage() {
                 </div>
               </div>
 
-              {/* Claim nudge */}
-              <div style={{
-                borderRadius: 14, background: `${ACCENT}10`,
-                border: `1.5px dashed ${ACCENT}50`,
-                padding: '20px 22px',
-              }}>
-                <div style={{ fontSize: 14, fontWeight: 700, color: C.dusk, marginBottom: 6 }}>
-                  Is this your truck?
+              {/* Claim nudge - hidden for featured/claimed trucks, kept at page bottom for unclaimed */}
+              {!isFeatured && (
+                <div style={{
+                  borderRadius: 14, background: `${ACCENT}10`,
+                  border: `1.5px dashed ${ACCENT}50`,
+                  padding: '20px 22px',
+                }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: C.dusk, marginBottom: 6 }}>
+                    Is this your truck?
+                  </div>
+                  <p style={{ margin: '0 0 14px', fontSize: 13, color: C.textLight, lineHeight: 1.65 }}>
+                    Add your photo, schedule, specials, and contact info. Starting at $9/mo.
+                  </p>
+                  <Btn href="/featured" variant="primary" small>Claim This Listing</Btn>
                 </div>
-                <p style={{ margin: '0 0 14px', fontSize: 13, color: C.textLight, lineHeight: 1.65 }}>
-                  Add your photo, schedule, specials, and contact info. Starting at $9/mo.
-                </p>
-                <Btn href="/featured" variant="primary" small>Claim This Listing</Btn>
-              </div>
+              )}
 
             </FadeIn>
           </div>
