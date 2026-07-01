@@ -310,6 +310,24 @@ export default function BusinessProfilePage() {
         }),
       });
       const data = await res.json();
+
+      // Stale/expired claim token: don't just show the error text - there's no other
+      // path back to phone verification once a token is stuck in localStorage (see
+      // RUNBOOK-claim-tokens.md). Clear it and re-open the claim flow automatically
+      // so the owner can re-verify without needing dev-tools instructions. Fixed 2026-07-01
+      // after The Lakes Print Shop hit this with no way to recover via the UI.
+      if (res.status === 403) {
+        localStorage.removeItem(`mb-claim-${slug}`);
+        setClaimToken(null);
+        setEditOpen(false);
+        setClaimPhone(business?.phone || '');
+        setClaimStep('phone');
+        setClaimError('Your verification expired. Please re-verify your phone number to continue editing.');
+        setClaimOpen(true);
+        setEditLoading(false);
+        return;
+      }
+
       if (!res.ok || !data.ok) throw new Error(data.error || 'Save failed');
       setEditSaved(true);
       setEditOpen(false);
