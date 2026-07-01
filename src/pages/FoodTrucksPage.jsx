@@ -1542,7 +1542,7 @@ export default function FoodTrucksPage() {
           poster="/images/foodtruck_hero.jpg"
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }}
         >
-          <source src="https://dmg0joh3jdjfmu8k.public.blob.vercel-storage.com/foodtruck_webloop.mp4" type="video/mp4" />
+          <source src="/videos/foodtruck-loop.mp4" type="video/mp4" />
         </video>
         {/* Overlay - darkens video for text legibility */}
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg, rgba(10,18,24,0.72) 0%, rgba(45,59,69,0.65) 60%, rgba(10,18,24,0.55) 100%)", zIndex: 1 }} />
