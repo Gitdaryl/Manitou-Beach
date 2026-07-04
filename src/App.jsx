@@ -34,6 +34,7 @@ const FishingPage = lazy(() => import('./pages/FishingPage'));
 const HistoricalSocietyPage = lazy(() => import('./pages/HistoricalSocietyPage'));
 const MensClubPage = lazy(() => import('./pages/MensClubPage'));
 const LadiesClubPage = lazy(() => import('./pages/LadiesClubPage'));
+const GalleryPage = lazy(() => import('./pages/GalleryPage'));
 const LadiesClubVendorPage = lazy(() => import('./pages/LadiesClubVendorPage'));
 const LadiesClubJoinPage = lazy(() => import('./pages/LadiesClubJoinPage'));
 const DevilsLakePage = lazy(() => import('./pages/DevilsLakePage'));
@@ -219,6 +220,7 @@ export default function App() {
           <Route path="/event-confirmed" element={<EventConfirmedPage />} />
           <Route path="/mens-club" element={<MensClubPage />} />
           <Route path="/ladies-club" element={<LadiesClubPage />} />
+          <Route path="/gallery/:slug" element={<GalleryPage />} />
           <Route path="/ladies-club/vendor" element={<LadiesClubVendorPage />} />
           <Route path="/ladies-club/join" element={<LadiesClubJoinPage />} />
           <Route path="/historical-society" element={<HistoricalSocietyPage />} />

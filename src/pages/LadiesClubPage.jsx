@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, CommunityDonationForm } from '../components/Shared';
 import { Footer, GlobalStyles, Navbar, NewsletterInline, ContactModal } from '../components/Layout';
+import { ShareRow } from '../components/PhotoGallery';
 import { C } from '../data/config';
 import SEOHead from '../components/SEOHead';
 import RafflePage from './RafflePage';
@@ -779,7 +780,6 @@ const thumbSrc = (src) => src.replace(/\/([^/]+)$/, "/thumbs/$1");
 function LadiesClubGallerySection() {
   // lightbox = { year, index } | null  — navigates within the active year's set
   const [lightbox, setLightbox] = useState(null);
-  const [shareMsg, setShareMsg] = useState(null); // transient feedback (desktop "Link copied!")
 
   const sets = { 2026: GALLERY_2026, 2025: GALLERY_2025 };
   const activePhotos = lightbox ? sets[lightbox.year] : [];
@@ -804,40 +804,6 @@ function LadiesClubGallerySection() {
       window.history.replaceState(null, "", window.location.pathname);
     }
   }, [lightbox]);
-
-  // Share the open photo. Mobile: native share sheet with the image (original .jpg
-  // for best app compatibility) + a deep link back here. Desktop: copy the deep link.
-  async function shareCurrent() {
-    if (!lightbox) return;
-    const num = lightbox.index + 1;
-    const url = `${window.location.origin}${window.location.pathname}?photo=${lightbox.year}-${String(num).padStart(2, "0")}`;
-    const data = {
-      title: `Devil's Lake Summerfest ${lightbox.year}`,
-      text: `A moment from Devil's Lake Summerfest ${lightbox.year} in Manitou Beach 🌅 See the whole gallery:`,
-      url,
-    };
-    // Build the image file from the original jpg (most compatible across share targets).
-    let file = null;
-    try {
-      const jpg = activePhotos[lightbox.index].replace(/\.webp$/, ".jpg");
-      const blob = await (await fetch(jpg)).blob();
-      file = new File([blob], jpg.split("/").pop(), { type: blob.type || "image/jpeg" });
-    } catch (_) { file = null; }
-
-    if (navigator.share) {
-      const payload = file && navigator.canShare?.({ files: [file] }) ? { ...data, files: [file] } : data;
-      try { await navigator.share(payload); } catch (_) { /* cancelled or failed — no-op */ }
-      return;
-    }
-    // Desktop without Web Share: copy the deep link.
-    try {
-      await navigator.clipboard.writeText(url);
-      setShareMsg("Link copied!");
-    } catch (_) {
-      setShareMsg(url);
-    }
-    setTimeout(() => setShareMsg(null), 2500);
-  }
 
   const YearGallery = ({ year, photos, label }) => (
     <>
@@ -897,46 +863,44 @@ function LadiesClubGallerySection() {
             onClick={() => setLightbox(null)}
             style={{
               position: "fixed", inset: 0, zIndex: 1000,
-              background: "rgba(10,18,24,0.92)",
+              background: "rgba(10,18,24,0.93)",
               display: "flex", alignItems: "center", justifyContent: "center",
-              padding: 24,
+              padding: "64px 24px 96px",
             }}
           >
-            {/* Share the current photo — turns "that's us!" moments into traffic back here */}
-            <button
-              aria-label="Share this photo"
-              onClick={e => { e.stopPropagation(); shareCurrent(); }}
-              style={{ position: "absolute", top: 16, left: 16, display: "flex", alignItems: "center", gap: 7, background: "rgba(255,255,255,0.14)", border: "none", borderRadius: 22, height: 36, padding: "0 16px", cursor: "pointer", color: "#fff", fontSize: 14, fontWeight: 500, fontFamily: "'Libre Franklin', sans-serif" }}
-            >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-              Share
-            </button>
             <button
               onClick={e => { e.stopPropagation(); setLightbox(l => ({ ...l, index: l.index > 0 ? l.index - 1 : activePhotos.length - 1 })); }}
+              aria-label="Previous photo"
               style={{ position: "absolute", left: 20, top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.12)", border: "none", borderRadius: "50%", width: 44, height: 44, cursor: "pointer", color: "#fff", fontSize: 20 }}
             >‹</button>
             <img
               src={activePhotos[lightbox.index]}
-              alt=""
-              style={{ maxWidth: "90vw", maxHeight: "88vh", objectFit: "contain", borderRadius: 8 }}
+              alt={`Devils Lake Summerfest ${lightbox.year} - photo ${lightbox.index + 1}`}
+              style={{ maxWidth: "92vw", maxHeight: "78vh", objectFit: "contain", borderRadius: 8 }}
               onClick={e => e.stopPropagation()}
             />
             <button
               onClick={e => { e.stopPropagation(); setLightbox(l => ({ ...l, index: l.index < activePhotos.length - 1 ? l.index + 1 : 0 })); }}
+              aria-label="Next photo"
               style={{ position: "absolute", right: 20, top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.12)", border: "none", borderRadius: "50%", width: 44, height: 44, cursor: "pointer", color: "#fff", fontSize: 20 }}
             >›</button>
             <button
               onClick={() => setLightbox(null)}
+              aria-label="Close"
               style={{ position: "absolute", top: 16, right: 16, background: "rgba(255,255,255,0.12)", border: "none", borderRadius: "50%", width: 36, height: 36, cursor: "pointer", color: "#fff", fontSize: 18 }}
             >×</button>
-            <div style={{ position: "absolute", bottom: 16, left: "50%", transform: "translateX(-50%)", color: "rgba(255,255,255,0.5)", fontSize: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
+            <div style={{ position: "absolute", top: 20, left: "50%", transform: "translateX(-50%)", color: "rgba(255,255,255,0.55)", fontSize: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
               Summerfest {lightbox.year} · {lightbox.index + 1} / {activePhotos.length}
             </div>
-            {shareMsg && (
-              <div style={{ position: "absolute", bottom: 54, left: "50%", transform: "translateX(-50%)", background: "rgba(255,255,255,0.16)", color: "#fff", fontSize: 13, padding: "8px 16px", borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif", maxWidth: "82vw", textAlign: "center", wordBreak: "break-all" }}>
-                {shareMsg}
-              </div>
-            )}
+            {/* Shared ShareRow — icon row + native "More"; per-photo link previews via middleware */}
+            <div style={{ position: "absolute", bottom: 22, left: 0, right: 0, display: "flex", justifyContent: "center", padding: "0 16px" }}>
+              <ShareRow
+                url={`${typeof window !== "undefined" ? window.location.origin : ""}/ladies-club?photo=${lightbox.year}-${String(lightbox.index + 1).padStart(2, "0")}`}
+                title={`Devil's Lake Summerfest ${lightbox.year}`}
+                text={`A moment from Devil's Lake Summerfest ${lightbox.year} in Manitou Beach 🌅 See the whole gallery:`}
+                imageSrc={activePhotos[lightbox.index]}
+              />
+            </div>
           </div>
         )}
       </div>

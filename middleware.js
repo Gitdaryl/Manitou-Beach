@@ -373,6 +373,20 @@ export default async function middleware(request) {
     });
   }
 
+  // ── Public event galleries: /gallery/:slug (per-photo OG via ?photo=) ─────────
+  const galleryMatch = path.match(/^\/gallery\/([^/]+)$/);
+  if (galleryMatch) {
+    const htmlUrl = new URL('/index.html', url.origin);
+    const htmlRes = await fetch(htmlUrl);
+    if (!htmlRes.ok) return undefined;
+    let html = await htmlRes.text();
+    html = handleGalleryOG(html, galleryMatch[1], url);
+    return new Response(html, {
+      status: 200,
+      headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'public, max-age=300, s-maxage=600' },
+    });
+  }
+
   // Look up OG data - try exact match, then strip trailing slash
   const cleanPath = path === '/' ? '/' : path.replace(/\/$/, '');
   const og = OG_MAP[cleanPath];
@@ -391,11 +405,26 @@ export default async function middleware(request) {
   // Build absolute URLs
   const origin = url.origin;
   const pageUrl = `${origin}${cleanPath}`;
-  const imageUrl = og.image
+  let imageUrl = og.image
     ? `${origin}${og.image}`
     : `${origin}${DEFAULT_OG.image}`;
-  const title = og.title || DEFAULT_OG.title;
-  const description = og.description || DEFAULT_OG.description;
+  let title = og.title || DEFAULT_OG.title;
+  let description = og.description || DEFAULT_OG.description;
+
+  // Per-photo preview for the Ladies Club Summerfest galleries:
+  // /ladies-club?photo=YYYY-NN → shared link shows that exact festival photo.
+  const lcPhoto = cleanPath === '/ladies-club' && url.searchParams.get('photo');
+  if (lcPhoto) {
+    const pm = String(lcPhoto).match(/^(\d{4})-(\d{1,2})$/);
+    if (pm) {
+      const yr = pm[1];
+      const nn = pm[2].padStart(2, '0');
+      const folder = yr === '2025' ? '/images/ladies-club/summerfest' : `/images/ladies-club/summerfest${yr}`;
+      imageUrl = `${origin}${folder}/devils-lake-summerfest-${yr}-${nn}.jpg`;
+      title = `Devil's Lake Summerfest ${yr} - Manitou Beach`;
+      description = `A moment from Devil's Lake Summerfest ${yr} in Manitou Beach, Michigan. See the whole festival gallery.`;
+    }
+  }
 
   // ── Inject JSON-LD schema for AI crawlers ────────────────────
   const schemas = SCHEMA_MAP[cleanPath];
@@ -449,6 +478,46 @@ export default async function middleware(request) {
       'cache-control': 'public, max-age=3600, s-maxage=86400',
     },
   });
+}
+
+// ── Public event galleries ────────────────────────────────────
+// Mirror of src/data/galleries.js (edge middleware can't reliably import from src).
+// Keep in sync when adding a gallery so shared links show the right photo preview.
+const GALLERY_OG = {
+  'july-4-2026': {
+    title: 'July 4th Weekend 2026',
+    description: 'Photos from July 4th weekend on Devils Lake in Manitou Beach, Michigan. View the gallery and share your favorites.',
+    folder: '/images/galleries/july-4-2026',
+    prefix: 'manitou-july-4-2026',
+  },
+};
+
+// Inject gallery OG tags. With ?photo=NN the preview is that exact photo; otherwise photo 01.
+function handleGalleryOG(html, slug, url) {
+  const g = GALLERY_OG[slug];
+  if (!g) return html; // unknown gallery → leave default OG
+
+  const origin = url.origin;
+  const esc = (s) => String(s || '')
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+  const photoParam = url.searchParams.get('photo');
+  const nn = photoParam && /^\d{1,3}$/.test(photoParam) ? String(photoParam).padStart(2, '0') : '01';
+  const img = esc(`${origin}${g.folder}/${g.prefix}-${nn}.jpg`);
+  const t = esc(`${g.title} - Manitou Beach`);
+  const d = esc(g.description);
+  const pageUrl = esc(`${origin}/gallery/${slug}${photoParam ? `?photo=${photoParam}` : ''}`);
+
+  return html
+    .replace(/<title>[^<]*<\/title>/, `<title>${t}</title>`)
+    .replace(/<meta name="description" content="[^"]*"/, `<meta name="description" content="${d}"`)
+    .replace(/<meta property="og:title" content="[^"]*"/, `<meta property="og:title" content="${t}"`)
+    .replace(/<meta property="og:description" content="[^"]*"/, `<meta property="og:description" content="${d}"`)
+    .replace(/<meta property="og:image" content="[^"]*"/, `<meta property="og:image" content="${img}"`)
+    .replace(/<meta property="og:url" content="[^"]*"/, `<meta property="og:url" content="${pageUrl}"`)
+    .replace(/<meta name="twitter:title" content="[^"]*"/, `<meta name="twitter:title" content="${t}"`)
+    .replace(/<meta name="twitter:description" content="[^"]*"/, `<meta name="twitter:description" content="${d}"`)
+    .replace(/<meta name="twitter:image" content="[^"]*"/, `<meta name="twitter:image" content="${img}"`);
 }
 
 // ── Dynamic schema handler for business profiles ──────────────
