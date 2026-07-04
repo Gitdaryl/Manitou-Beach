@@ -764,13 +764,17 @@ function LadiesClubSponsorTiersSection() {
   );
 }
 
-// 2026 Summerfest gallery - 59 photos, SEO-named devils-lake-summerfest-2026-NN.jpg
+// 2026 Summerfest gallery - 59 photos, SEO-named devils-lake-summerfest-2026-NN.
+// Arrays hold full-size .webp (used by the lightbox). The grid uses the lighter
+// ~600px thumbnail in /thumbs/ via thumbSrc(). Original .jpg kept on disk as source.
 const GALLERY_2026 = Array.from({ length: 59 }, (_, i) =>
-  `/images/ladies-club/summerfest2026/devils-lake-summerfest-2026-${String(i + 1).padStart(2, "0")}.jpg`
+  `/images/ladies-club/summerfest2026/devils-lake-summerfest-2026-${String(i + 1).padStart(2, "0")}.webp`
 );
 const GALLERY_2025 = Array.from({ length: 22 }, (_, i) =>
-  `/images/ladies-club/summerfest/devils-lake-summerfest-2025-${String(i + 1).padStart(2, "0")}.jpg`
+  `/images/ladies-club/summerfest/devils-lake-summerfest-2025-${String(i + 1).padStart(2, "0")}.webp`
 );
+// full path -> thumbnail path: /dir/name.webp -> /dir/thumbs/name.webp
+const thumbSrc = (src) => src.replace(/\/([^/]+)$/, "/thumbs/$1");
 
 function LadiesClubGallerySection() {
   // lightbox = { year, index } | null  — navigates within the active year's set
@@ -801,7 +805,7 @@ function LadiesClubGallerySection() {
               }}
             >
               <img
-                src={src}
+                src={thumbSrc(src)}
                 alt={`Devils Lake Summer Festival ${year} in Manitou Beach - photo ${i + 1}`}
                 loading="lazy"
                 style={{ width: "100%", height: "auto", display: "block", transition: "transform 0.35s ease" }}
