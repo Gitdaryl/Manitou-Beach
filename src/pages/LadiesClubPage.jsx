@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, CommunityDonationForm } from '../components/Shared';
 import { Footer, GlobalStyles, Navbar, NewsletterInline, ContactModal } from '../components/Layout';
-import { ShareRow } from '../components/PhotoGallery';
+import { ShareRow, useSwipeNav } from '../components/PhotoGallery';
 import { C } from '../data/config';
 import SEOHead from '../components/SEOHead';
 import RafflePage from './RafflePage';
@@ -805,6 +805,13 @@ function LadiesClubGallerySection() {
     }
   }, [lightbox]);
 
+  // Touch gestures for the lightbox: swipe between photos, swipe down to close.
+  const swipe = useSwipeNav({
+    onPrev: () => setLightbox(l => l && ({ ...l, index: l.index > 0 ? l.index - 1 : activePhotos.length - 1 })),
+    onNext: () => setLightbox(l => l && ({ ...l, index: l.index < activePhotos.length - 1 ? l.index + 1 : 0 })),
+    onClose: () => setLightbox(null),
+  });
+
   const YearGallery = ({ year, photos, label }) => (
     <>
       <FadeIn>
@@ -861,11 +868,13 @@ function LadiesClubGallerySection() {
         {lightbox !== null && (
           <div
             onClick={() => setLightbox(null)}
+            {...swipe}
             style={{
               position: "fixed", inset: 0, zIndex: 1000,
               background: "rgba(10,18,24,0.93)",
               display: "flex", alignItems: "center", justifyContent: "center",
               padding: "64px 24px 96px",
+              touchAction: "none",
             }}
           >
             <button

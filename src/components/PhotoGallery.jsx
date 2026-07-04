@@ -1,8 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { FadeIn } from './Shared';
 import { thumbSrc } from '../data/galleries';
 import { C } from '../data/config';
+
+// Touch gestures for a lightbox: swipe left/right to navigate, swipe down to close.
+// Attach the returned handlers to the lightbox container. A short move is treated as a
+// tap (so buttons still work), not a swipe.
+export function useSwipeNav({ onPrev, onNext, onClose }) {
+  const start = useRef(null);
+  return {
+    onTouchStart: (e) => {
+      const t = e.touches[0];
+      start.current = { x: t.clientX, y: t.clientY };
+    },
+    onTouchEnd: (e) => {
+      if (!start.current) return;
+      const t = e.changedTouches[0];
+      const dx = t.clientX - start.current.x;
+      const dy = t.clientY - start.current.y;
+      start.current = null;
+      if (Math.abs(dx) < 45 && Math.abs(dy) < 45) return; // tap, not a swipe
+      if (Math.abs(dx) > Math.abs(dy)) {
+        (dx < 0 ? onNext : onPrev)();
+      } else if (dy > 70) {
+        onClose();
+      }
+    },
+  };
+}
 
 // ── Share icons (inline SVG, monochrome) ─────────────────────
 const Ic = ({ children }) => (
@@ -137,6 +163,12 @@ export function PhotoGallery({ photos, slug, title, shareText }) {
     ? `${window.location.origin}/gallery/${slug}?photo=${index + 1}`
     : '';
 
+  const swipe = useSwipeNav({
+    onPrev: () => setIndex(i => (i > 0 ? i - 1 : photos.length - 1)),
+    onNext: () => setIndex(i => (i < photos.length - 1 ? i + 1 : 0)),
+    onClose: () => setIndex(null),
+  });
+
   return (
     <>
       {/* Masonry: each photo keeps its natural shape, nothing cropped. */}
@@ -164,7 +196,8 @@ export function PhotoGallery({ photos, slug, title, shareText }) {
       {index !== null && (
         <div
           onClick={() => setIndex(null)}
-          style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(10,18,24,0.93)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '64px 24px 96px' }}
+          {...swipe}
+          style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(10,18,24,0.93)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '64px 24px 96px', touchAction: 'none' }}
         >
           <button onClick={ev => { ev.stopPropagation(); setIndex(i => (i > 0 ? i - 1 : photos.length - 1)); }}
             aria-label="Previous photo"
