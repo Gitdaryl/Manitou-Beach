@@ -115,6 +115,7 @@ export function Lightbox({ photos, index, setIndex, onClose, title, shareUrl, sh
   const startRef = useRef(null);
   const busyRef = useRef(false);            // true while a snap animation is running
   const movedRef = useRef(false);          // suppress the click-to-close after a drag
+  const timerRef = useRef(null);           // pending snap-commit timer (cleared on unmount)
   const DUR = 320;
 
   const prevIdx = (index - 1 + n) % n;
@@ -126,7 +127,7 @@ export function Lightbox({ photos, index, setIndex, onClose, title, shareUrl, sh
     busyRef.current = true;
     setAnim(true);
     setDx(targetPx);
-    window.setTimeout(() => {
+    timerRef.current = window.setTimeout(() => {
       setAnim(false);
       setDx(0);
       setIndex(newIndex);
@@ -153,11 +154,15 @@ export function Lightbox({ photos, index, setIndex, onClose, title, shareUrl, sh
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index]);
 
-  // Lock background scroll while open.
+  // Lock background scroll while open; clear any pending snap timer on unmount so a
+  // late commit can't reopen the lightbox after it's been closed.
   useEffect(() => {
     const prev = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = prev; };
+    return () => {
+      document.body.style.overflow = prev;
+      window.clearTimeout(timerRef.current);
+    };
   }, []);
 
   const onTouchStart = (e) => {
