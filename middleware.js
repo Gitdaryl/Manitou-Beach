@@ -471,6 +471,9 @@ export default async function middleware(request) {
       `<meta name="twitter:image" content="${imageUrl}"`
     );
 
+  // Extra image hints so first-time scrapers render the photo faster / more reliably.
+  html = html.replace('</head>', `    <meta property="og:image:secure_url" content="${imageUrl}" />\n    <meta property="og:image:type" content="image/jpeg" />\n  </head>`);
+
   return new Response(html, {
     status: 200,
     headers: {
@@ -517,7 +520,8 @@ function handleGalleryOG(html, slug, url) {
     .replace(/<meta property="og:url" content="[^"]*"/, `<meta property="og:url" content="${pageUrl}"`)
     .replace(/<meta name="twitter:title" content="[^"]*"/, `<meta name="twitter:title" content="${t}"`)
     .replace(/<meta name="twitter:description" content="[^"]*"/, `<meta name="twitter:description" content="${d}"`)
-    .replace(/<meta name="twitter:image" content="[^"]*"/, `<meta name="twitter:image" content="${img}"`);
+    .replace(/<meta name="twitter:image" content="[^"]*"/, `<meta name="twitter:image" content="${img}"`)
+    .replace('</head>', `    <meta property="og:image:secure_url" content="${img}" />\n    <meta property="og:image:type" content="image/jpeg" />\n  </head>`);
 }
 
 // ── Dynamic schema handler for business profiles ──────────────
