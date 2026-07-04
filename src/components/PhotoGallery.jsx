@@ -30,6 +30,14 @@ export function useSwipeNav({ onPrev, onNext, onClose }) {
   };
 }
 
+// Slide-in animation for lightbox photo changes. Direction depends on nav direction:
+// next → new photo slides in from the right, prev → from the left.
+const LB_KEYFRAMES = `
+@keyframes lbInNext { from { opacity: 0; transform: translateX(7%) scale(0.985); } to { opacity: 1; transform: none; } }
+@keyframes lbInPrev { from { opacity: 0; transform: translateX(-7%) scale(0.985); } to { opacity: 1; transform: none; } }
+`;
+export function LightboxKeyframes() { return <style>{LB_KEYFRAMES}</style>; }
+
 // ── Share icons (inline SVG, monochrome) ─────────────────────
 const Ic = ({ children }) => (
   <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">{children}</svg>
@@ -137,6 +145,10 @@ export function PhotoGallery({ photos, slug, title, shareText }) {
     const p = parseInt(searchParams.get('photo') || '', 10);
     return p >= 1 && p <= photos.length ? p - 1 : null;
   });
+  const [dir, setDir] = useState(1); // last nav direction: 1 = next, -1 = prev (drives slide-in)
+
+  const goNext = () => { setDir(1); setIndex(i => (i < photos.length - 1 ? i + 1 : 0)); };
+  const goPrev = () => { setDir(-1); setIndex(i => (i > 0 ? i - 1 : photos.length - 1)); };
 
   // Keep the URL in sync with the open photo (shareable while swiping).
   useEffect(() => {
@@ -152,8 +164,8 @@ export function PhotoGallery({ photos, slug, title, shareText }) {
     if (index === null) return;
     const onKey = (ev) => {
       if (ev.key === 'Escape') setIndex(null);
-      else if (ev.key === 'ArrowRight') setIndex(i => (i < photos.length - 1 ? i + 1 : 0));
-      else if (ev.key === 'ArrowLeft') setIndex(i => (i > 0 ? i - 1 : photos.length - 1));
+      else if (ev.key === 'ArrowRight') goNext();
+      else if (ev.key === 'ArrowLeft') goPrev();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -163,11 +175,7 @@ export function PhotoGallery({ photos, slug, title, shareText }) {
     ? `${window.location.origin}/gallery/${slug}?photo=${index + 1}`
     : '';
 
-  const swipe = useSwipeNav({
-    onPrev: () => setIndex(i => (i > 0 ? i - 1 : photos.length - 1)),
-    onNext: () => setIndex(i => (i < photos.length - 1 ? i + 1 : 0)),
-    onClose: () => setIndex(null),
-  });
+  const swipe = useSwipeNav({ onPrev: goPrev, onNext: goNext, onClose: () => setIndex(null) });
 
   return (
     <>
@@ -199,15 +207,16 @@ export function PhotoGallery({ photos, slug, title, shareText }) {
           {...swipe}
           style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(10,18,24,0.93)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '64px 24px 96px', touchAction: 'none' }}
         >
-          <button onClick={ev => { ev.stopPropagation(); setIndex(i => (i > 0 ? i - 1 : photos.length - 1)); }}
+          <LightboxKeyframes />
+          <button onClick={ev => { ev.stopPropagation(); goPrev(); }}
             aria-label="Previous photo"
             style={{ position: 'absolute', left: 20, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: '50%', width: 44, height: 44, cursor: 'pointer', color: '#fff', fontSize: 20 }}>‹</button>
 
-          <img src={photos[index]} alt={`${title} - photo ${index + 1}`}
-            style={{ maxWidth: '92vw', maxHeight: '78vh', objectFit: 'contain', borderRadius: 8 }}
+          <img key={index} src={photos[index]} alt={`${title} - photo ${index + 1}`}
+            style={{ maxWidth: '92vw', maxHeight: '78vh', objectFit: 'contain', borderRadius: 8, animation: `${dir < 0 ? 'lbInPrev' : 'lbInNext'} 0.3s ease` }}
             onClick={ev => ev.stopPropagation()} />
 
-          <button onClick={ev => { ev.stopPropagation(); setIndex(i => (i < photos.length - 1 ? i + 1 : 0)); }}
+          <button onClick={ev => { ev.stopPropagation(); goNext(); }}
             aria-label="Next photo"
             style={{ position: 'absolute', right: 20, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: '50%', width: 44, height: 44, cursor: 'pointer', color: '#fff', fontSize: 20 }}>›</button>
 

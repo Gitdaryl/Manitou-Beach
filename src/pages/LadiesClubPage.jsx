@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, CommunityDonationForm } from '../components/Shared';
 import { Footer, GlobalStyles, Navbar, NewsletterInline, ContactModal } from '../components/Layout';
-import { ShareRow, useSwipeNav } from '../components/PhotoGallery';
+import { ShareRow, useSwipeNav, LightboxKeyframes } from '../components/PhotoGallery';
 import { C } from '../data/config';
 import SEOHead from '../components/SEOHead';
 import RafflePage from './RafflePage';
@@ -780,6 +780,7 @@ const thumbSrc = (src) => src.replace(/\/([^/]+)$/, "/thumbs/$1");
 function LadiesClubGallerySection() {
   // lightbox = { year, index } | null  — navigates within the active year's set
   const [lightbox, setLightbox] = useState(null);
+  const [dir, setDir] = useState(1); // last nav direction: 1 = next, -1 = prev (drives slide-in)
 
   const sets = { 2026: GALLERY_2026, 2025: GALLERY_2025 };
   const activePhotos = lightbox ? sets[lightbox.year] : [];
@@ -805,12 +806,12 @@ function LadiesClubGallerySection() {
     }
   }, [lightbox]);
 
+  // Photo navigation with slide direction (drives the lightbox slide-in animation).
+  const goPrev = () => { setDir(-1); setLightbox(l => l && ({ ...l, index: l.index > 0 ? l.index - 1 : activePhotos.length - 1 })); };
+  const goNext = () => { setDir(1); setLightbox(l => l && ({ ...l, index: l.index < activePhotos.length - 1 ? l.index + 1 : 0 })); };
+
   // Touch gestures for the lightbox: swipe between photos, swipe down to close.
-  const swipe = useSwipeNav({
-    onPrev: () => setLightbox(l => l && ({ ...l, index: l.index > 0 ? l.index - 1 : activePhotos.length - 1 })),
-    onNext: () => setLightbox(l => l && ({ ...l, index: l.index < activePhotos.length - 1 ? l.index + 1 : 0 })),
-    onClose: () => setLightbox(null),
-  });
+  const swipe = useSwipeNav({ onPrev: goPrev, onNext: goNext, onClose: () => setLightbox(null) });
 
   const YearGallery = ({ year, photos, label }) => (
     <>
@@ -877,19 +878,21 @@ function LadiesClubGallerySection() {
               touchAction: "none",
             }}
           >
+            <LightboxKeyframes />
             <button
-              onClick={e => { e.stopPropagation(); setLightbox(l => ({ ...l, index: l.index > 0 ? l.index - 1 : activePhotos.length - 1 })); }}
+              onClick={e => { e.stopPropagation(); goPrev(); }}
               aria-label="Previous photo"
               style={{ position: "absolute", left: 20, top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.12)", border: "none", borderRadius: "50%", width: 44, height: 44, cursor: "pointer", color: "#fff", fontSize: 20 }}
             >‹</button>
             <img
+              key={`${lightbox.year}-${lightbox.index}`}
               src={activePhotos[lightbox.index]}
               alt={`Devils Lake Summerfest ${lightbox.year} - photo ${lightbox.index + 1}`}
-              style={{ maxWidth: "92vw", maxHeight: "78vh", objectFit: "contain", borderRadius: 8 }}
+              style={{ maxWidth: "92vw", maxHeight: "78vh", objectFit: "contain", borderRadius: 8, animation: `${dir < 0 ? "lbInPrev" : "lbInNext"} 0.3s ease` }}
               onClick={e => e.stopPropagation()}
             />
             <button
-              onClick={e => { e.stopPropagation(); setLightbox(l => ({ ...l, index: l.index < activePhotos.length - 1 ? l.index + 1 : 0 })); }}
+              onClick={e => { e.stopPropagation(); goNext(); }}
               aria-label="Next photo"
               style={{ position: "absolute", right: 20, top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.12)", border: "none", borderRadius: "50%", width: 44, height: 44, cursor: "pointer", color: "#fff", fontSize: 20 }}
             >›</button>
