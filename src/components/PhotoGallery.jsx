@@ -4,42 +4,6 @@ import { FadeIn } from './Shared';
 import { thumbSrc } from '../data/galleries';
 import { C } from '../data/config';
 
-// Touch gestures for a lightbox: swipe left/right to navigate, swipe down to close.
-// Attach the returned handlers to the lightbox container. A short move is treated as a
-// tap (so buttons still work), not a swipe.
-export function useSwipeNav({ onPrev, onNext, onClose }) {
-  const start = useRef(null);
-  return {
-    onTouchStart: (e) => {
-      const t = e.touches[0];
-      start.current = { x: t.clientX, y: t.clientY };
-    },
-    onTouchEnd: (e) => {
-      if (!start.current) return;
-      const t = e.changedTouches[0];
-      const dx = t.clientX - start.current.x;
-      const dy = t.clientY - start.current.y;
-      start.current = null;
-      if (Math.abs(dx) < 45 && Math.abs(dy) < 45) return; // tap, not a swipe
-      if (Math.abs(dx) > Math.abs(dy)) {
-        (dx < 0 ? onNext : onPrev)();
-      } else if (dy > 70) {
-        onClose();
-      }
-    },
-  };
-}
-
-// Slide-in animation for lightbox photo changes. Direction depends on nav direction:
-// next → new photo slides in from the right, prev → from the left.
-const LB_KEYFRAMES = `
-@keyframes lbInNext { from { opacity: 0; transform: translateX(22%) scale(0.94); } to { opacity: 1; transform: none; } }
-@keyframes lbInPrev { from { opacity: 0; transform: translateX(-22%) scale(0.94); } to { opacity: 1; transform: none; } }
-`;
-export const LB_ANIM_NEXT = 'lbInNext 0.42s cubic-bezier(0.22, 0.61, 0.36, 1)';
-export const LB_ANIM_PREV = 'lbInPrev 0.42s cubic-bezier(0.22, 0.61, 0.36, 1)';
-export function LightboxKeyframes() { return <style>{LB_KEYFRAMES}</style>; }
-
 // ── Share icons (inline SVG, monochrome) ─────────────────────
 const Ic = ({ children }) => (
   <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">{children}</svg>
@@ -55,7 +19,7 @@ const IcMore = () => <Ic><path d="M18 8a3 3 0 10-2.82-4H15a3 3 0 00.14 6l.09-.01
  * ShareRow — a row of share targets for one photo/URL. Self-contained; no page deps.
  * Link targets (FB/X/WhatsApp/Mail) rely on the page's OG tags for their preview image;
  * middleware.js injects the specific photo per ?photo= so those previews show the photo.
- * "More" uses the native share sheet with the actual image file (best on mobile).
+ * Mobile shows one native Share button (shares the bare URL for a rich, tappable card).
  */
 export function ShareRow({ url, title, text, dark = true }) {
   const [msg, setMsg] = useState(null);
@@ -79,10 +43,9 @@ export function ShareRow({ url, title, text, dark = true }) {
     catch { flash(url); }
   };
 
-  // Mobile: share the bare URL. The recipient's app (Messages, Facebook, WhatsApp)
-  // fetches it and renders a rich card showing the photo (per-photo OG) that's tappable —
-  // which drives traffic. Passing url alone (no text/file) is what makes iOS reliably
-  // attach the link + preview instead of dropping it, which is what went wrong before.
+  // Mobile: share the bare URL. The recipient's app fetches it and renders a rich card
+  // with the photo (per-photo OG), tappable → drives traffic. url alone is what makes
+  // iOS reliably attach the link + preview instead of dropping it.
   const nativeShare = async () => {
     try { await navigator.share({ url }); }
     catch { /* user cancelled */ }
@@ -133,11 +96,157 @@ export function ShareRow({ url, title, text, dark = true }) {
   );
 }
 
+const NAV_BTN = { position: 'absolute', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: '50%', width: 44, height: 44, cursor: 'pointer', color: '#fff', fontSize: 20, zIndex: 2 };
+
 /**
- * PhotoGallery — masonry grid + lightbox with per-photo sharing and deep links.
+ * Lightbox — full-screen photo viewer with a finger-follow carousel.
+ * The photo tracks your thumb as you drag; on release it snaps to the neighbour
+ * (or back) with eased motion. Swipe down to close. Arrows / keyboard also animate.
+ *   photos    : ordered array of full-size image paths
+ *   index     : current photo index (controlled by parent)
+ *   setIndex  : (newIndex) => void — parent commits the new index
+ *   onClose   : () => void
+ *   shareUrl  : shareable deep link for the current photo
+ */
+export function Lightbox({ photos, index, setIndex, onClose, title, shareUrl, shareText }) {
+  const n = photos.length;
+  const [dx, setDx] = useState(0);          // live horizontal drag offset (px)
+  const [anim, setAnim] = useState(false);  // whether the track is transitioning
+  const startRef = useRef(null);
+  const busyRef = useRef(false);            // true while a snap animation is running
+  const movedRef = useRef(false);          // suppress the click-to-close after a drag
+  const DUR = 320;
+
+  const prevIdx = (index - 1 + n) % n;
+  const nextIdx = (index + 1) % n;
+
+  // Animate the track to a neighbour, then commit the new index and re-center instantly.
+  const commit = (targetPx, newIndex) => {
+    if (busyRef.current || n < 2) { setAnim(true); setDx(0); return; }
+    busyRef.current = true;
+    setAnim(true);
+    setDx(targetPx);
+    window.setTimeout(() => {
+      setAnim(false);
+      setDx(0);
+      setIndex(newIndex);
+      busyRef.current = false;
+    }, DUR);
+  };
+  const goNext = () => commit(-window.innerWidth, nextIdx);
+  const goPrev = () => commit(window.innerWidth, prevIdx);
+
+  // Keyboard (no deps → closures see the current index each render).
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose();
+      else if (e.key === 'ArrowRight') goNext();
+      else if (e.key === 'ArrowLeft') goPrev();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  });
+
+  // Preload neighbours so the swipe animates a decoded image (no pop).
+  useEffect(() => {
+    [prevIdx, nextIdx].forEach(j => { const im = new Image(); im.src = photos[j]; });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index]);
+
+  // Lock background scroll while open.
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = prev; };
+  }, []);
+
+  const onTouchStart = (e) => {
+    if (busyRef.current) return;
+    const t = e.touches[0];
+    startRef.current = { x: t.clientX, y: t.clientY, locked: false, vertical: false };
+    movedRef.current = false;
+    setAnim(false);
+  };
+  const onTouchMove = (e) => {
+    const s = startRef.current;
+    if (!s) return;
+    const t = e.touches[0];
+    const ddx = t.clientX - s.x;
+    const ddy = t.clientY - s.y;
+    if (!s.locked && (Math.abs(ddx) > 8 || Math.abs(ddy) > 8)) {
+      s.locked = true;
+      s.vertical = Math.abs(ddy) > Math.abs(ddx);
+      movedRef.current = true;
+    }
+    if (s.vertical) return;      // vertical gesture → handled on release (close)
+    setDx(ddx);
+  };
+  const onTouchEnd = (e) => {
+    const s = startRef.current;
+    startRef.current = null;
+    if (!s) return;
+    const t = e.changedTouches[0];
+    const ddx = t.clientX - s.x;
+    const ddy = t.clientY - s.y;
+    if (s.vertical) { if (ddy > 90) onClose(); return; }
+    const w = window.innerWidth;
+    if (ddx <= -w * 0.2) goNext();
+    else if (ddx >= w * 0.2) goPrev();
+    else { setAnim(true); setDx(0); }   // snap back
+  };
+
+  const onBgClick = () => {
+    if (movedRef.current) { movedRef.current = false; return; }
+    onClose();
+  };
+
+  const slide = { flex: '0 0 100vw', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '64px 24px 96px', boxSizing: 'border-box' };
+  const imgStyle = { maxWidth: '92vw', maxHeight: '100%', objectFit: 'contain', borderRadius: 8, userSelect: 'none', WebkitUserSelect: 'none' };
+
+  return (
+    <div
+      onClick={onBgClick}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+      style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(10,18,24,0.93)', overflow: 'hidden', touchAction: 'none' }}
+    >
+      {/* Sliding track: [prev, current, next], centered via translateX(-100vw). */}
+      <div style={{
+        position: 'absolute', inset: 0, display: 'flex',
+        transform: `translateX(calc(-100vw + ${dx}px))`,
+        transition: anim ? `transform ${DUR}ms cubic-bezier(0.22, 0.61, 0.36, 1)` : 'none',
+        willChange: 'transform',
+      }}>
+        {[prevIdx, index, nextIdx].map((pi, slot) => (
+          <div key={`${slot}-${pi}`} style={slide}>
+            <img src={photos[pi]} alt={`${title} - photo ${pi + 1}`} draggable={false}
+              onClick={(e) => e.stopPropagation()} style={imgStyle} />
+          </div>
+        ))}
+      </div>
+
+      {/* Chrome */}
+      <button onClick={(e) => { e.stopPropagation(); goPrev(); }} aria-label="Previous photo" style={{ ...NAV_BTN, left: 20 }}>‹</button>
+      <button onClick={(e) => { e.stopPropagation(); goNext(); }} aria-label="Next photo" style={{ ...NAV_BTN, right: 20 }}>›</button>
+      <button onClick={(e) => { e.stopPropagation(); onClose(); }} aria-label="Close" style={{ position: 'absolute', top: 16, right: 16, background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: '50%', width: 36, height: 36, cursor: 'pointer', color: '#fff', fontSize: 18, zIndex: 2 }}>×</button>
+
+      <div style={{ position: 'absolute', top: 20, left: '50%', transform: 'translateX(-50%)', color: 'rgba(255,255,255,0.55)', fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", zIndex: 2 }}>
+        {title} · {index + 1} / {n}
+      </div>
+
+      <div style={{ position: 'absolute', bottom: 22, left: 0, right: 0, display: 'flex', justifyContent: 'center', padding: '0 16px', zIndex: 2 }}>
+        <ShareRow url={shareUrl} title={title} text={shareText} />
+      </div>
+    </div>
+  );
+}
+
+/**
+ * PhotoGallery — masonry grid + shared Lightbox with per-photo sharing and deep links.
  *   photos    : ordered array of full-size image paths (grid uses thumbSrc())
  *   slug      : gallery slug, used to build shareable ?photo= deep links
- *   title     : gallery title (used in share text)
+ *   title     : gallery title
  *   shareText : optional custom share message
  */
 export function PhotoGallery({ photos, slug, title, shareText }) {
@@ -147,10 +256,6 @@ export function PhotoGallery({ photos, slug, title, shareText }) {
     const p = parseInt(searchParams.get('photo') || '', 10);
     return p >= 1 && p <= photos.length ? p - 1 : null;
   });
-  const [dir, setDir] = useState(1); // last nav direction: 1 = next, -1 = prev (drives slide-in)
-
-  const goNext = () => { setDir(1); setIndex(i => (i < photos.length - 1 ? i + 1 : 0)); };
-  const goPrev = () => { setDir(-1); setIndex(i => (i > 0 ? i - 1 : photos.length - 1)); };
 
   // Keep the URL in sync with the open photo (shareable while swiping).
   useEffect(() => {
@@ -161,33 +266,9 @@ export function PhotoGallery({ photos, slug, title, shareText }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index]);
 
-  // Keyboard: arrows navigate, Esc closes.
-  useEffect(() => {
-    if (index === null) return;
-    const onKey = (ev) => {
-      if (ev.key === 'Escape') setIndex(null);
-      else if (ev.key === 'ArrowRight') goNext();
-      else if (ev.key === 'ArrowLeft') goPrev();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [index, photos.length]);
-
-  // Preload the neighbouring full-size photos so the next swipe animates a decoded
-  // image (no pop) instead of an empty frame.
-  useEffect(() => {
-    if (index === null) return;
-    [index - 1, index + 1].forEach(j => {
-      const img = new Image();
-      img.src = photos[(j + photos.length) % photos.length];
-    });
-  }, [index, photos]);
-
   const shareUrl = index !== null && typeof window !== 'undefined'
     ? `${window.location.origin}/gallery/${slug}?photo=${index + 1}`
     : '';
-
-  const swipe = useSwipeNav({ onPrev: goPrev, onNext: goNext, onClose: () => setIndex(null) });
 
   return (
     <>
@@ -212,38 +293,16 @@ export function PhotoGallery({ photos, slug, title, shareText }) {
         ))}
       </div>
 
-      {/* Lightbox */}
       {index !== null && (
-        <div
-          onClick={() => setIndex(null)}
-          {...swipe}
-          style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(10,18,24,0.93)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '64px 24px 96px', touchAction: 'none' }}
-        >
-          <LightboxKeyframes />
-          <button onClick={ev => { ev.stopPropagation(); goPrev(); }}
-            aria-label="Previous photo"
-            style={{ position: 'absolute', left: 20, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: '50%', width: 44, height: 44, cursor: 'pointer', color: '#fff', fontSize: 20 }}>‹</button>
-
-          <img key={index} src={photos[index]} alt={`${title} - photo ${index + 1}`}
-            style={{ maxWidth: '92vw', maxHeight: '78vh', objectFit: 'contain', borderRadius: 8, animation: dir < 0 ? LB_ANIM_PREV : LB_ANIM_NEXT }}
-            onClick={ev => ev.stopPropagation()} />
-
-          <button onClick={ev => { ev.stopPropagation(); goNext(); }}
-            aria-label="Next photo"
-            style={{ position: 'absolute', right: 20, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: '50%', width: 44, height: 44, cursor: 'pointer', color: '#fff', fontSize: 20 }}>›</button>
-
-          <button onClick={() => setIndex(null)} aria-label="Close"
-            style={{ position: 'absolute', top: 16, right: 16, background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: '50%', width: 36, height: 36, cursor: 'pointer', color: '#fff', fontSize: 18 }}>×</button>
-
-          <div style={{ position: 'absolute', top: 20, left: '50%', transform: 'translateX(-50%)', color: 'rgba(255,255,255,0.55)', fontSize: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
-            {title} · {index + 1} / {photos.length}
-          </div>
-
-          {/* Share row under the photo */}
-          <div style={{ position: 'absolute', bottom: 22, left: 0, right: 0, display: 'flex', justifyContent: 'center', padding: '0 16px' }}>
-            <ShareRow url={shareUrl} title={title} text={shareText} imageSrc={photos[index]} />
-          </div>
-        </div>
+        <Lightbox
+          photos={photos}
+          index={index}
+          setIndex={setIndex}
+          onClose={() => setIndex(null)}
+          title={title}
+          shareUrl={shareUrl}
+          shareText={shareText}
+        />
       )}
     </>
   );

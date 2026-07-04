@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, CommunityDonationForm } from '../components/Shared';
 import { Footer, GlobalStyles, Navbar, NewsletterInline, ContactModal } from '../components/Layout';
-import { ShareRow, useSwipeNav, LightboxKeyframes, LB_ANIM_NEXT, LB_ANIM_PREV } from '../components/PhotoGallery';
+import { Lightbox } from '../components/PhotoGallery';
 import { C } from '../data/config';
 import SEOHead from '../components/SEOHead';
 import RafflePage from './RafflePage';
@@ -780,7 +780,6 @@ const thumbSrc = (src) => src.replace(/\/([^/]+)$/, "/thumbs/$1");
 function LadiesClubGallerySection() {
   // lightbox = { year, index } | null  — navigates within the active year's set
   const [lightbox, setLightbox] = useState(null);
-  const [dir, setDir] = useState(1); // last nav direction: 1 = next, -1 = prev (drives slide-in)
 
   const sets = { 2026: GALLERY_2026, 2025: GALLERY_2025 };
   const activePhotos = lightbox ? sets[lightbox.year] : [];
@@ -805,23 +804,6 @@ function LadiesClubGallerySection() {
       window.history.replaceState(null, "", window.location.pathname);
     }
   }, [lightbox]);
-
-  // Preload neighbouring photos so the next swipe animates a decoded image (no pop).
-  useEffect(() => {
-    if (!lightbox) return;
-    const arr = sets[lightbox.year];
-    [lightbox.index - 1, lightbox.index + 1].forEach(j => {
-      const img = new Image();
-      img.src = arr[(j + arr.length) % arr.length];
-    });
-  }, [lightbox]);
-
-  // Photo navigation with slide direction (drives the lightbox slide-in animation).
-  const goPrev = () => { setDir(-1); setLightbox(l => l && ({ ...l, index: l.index > 0 ? l.index - 1 : activePhotos.length - 1 })); };
-  const goNext = () => { setDir(1); setLightbox(l => l && ({ ...l, index: l.index < activePhotos.length - 1 ? l.index + 1 : 0 })); };
-
-  // Touch gestures for the lightbox: swipe between photos, swipe down to close.
-  const swipe = useSwipeNav({ onPrev: goPrev, onNext: goNext, onClose: () => setLightbox(null) });
 
   const YearGallery = ({ year, photos, label }) => (
     <>
@@ -875,55 +857,17 @@ function LadiesClubGallerySection() {
         <YearGallery year={2026} photos={GALLERY_2026} label="Summerfest 2026" />
         <YearGallery year={2025} photos={GALLERY_2025} label="Summerfest 2025" />
 
-        {/* Lightbox */}
+        {/* Lightbox — shared finger-follow carousel (swipe photos, swipe down to close) */}
         {lightbox !== null && (
-          <div
-            onClick={() => setLightbox(null)}
-            {...swipe}
-            style={{
-              position: "fixed", inset: 0, zIndex: 1000,
-              background: "rgba(10,18,24,0.93)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              padding: "64px 24px 96px",
-              touchAction: "none",
-            }}
-          >
-            <LightboxKeyframes />
-            <button
-              onClick={e => { e.stopPropagation(); goPrev(); }}
-              aria-label="Previous photo"
-              style={{ position: "absolute", left: 20, top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.12)", border: "none", borderRadius: "50%", width: 44, height: 44, cursor: "pointer", color: "#fff", fontSize: 20 }}
-            >‹</button>
-            <img
-              key={`${lightbox.year}-${lightbox.index}`}
-              src={activePhotos[lightbox.index]}
-              alt={`Devils Lake Summerfest ${lightbox.year} - photo ${lightbox.index + 1}`}
-              style={{ maxWidth: "92vw", maxHeight: "78vh", objectFit: "contain", borderRadius: 8, animation: dir < 0 ? LB_ANIM_PREV : LB_ANIM_NEXT }}
-              onClick={e => e.stopPropagation()}
-            />
-            <button
-              onClick={e => { e.stopPropagation(); goNext(); }}
-              aria-label="Next photo"
-              style={{ position: "absolute", right: 20, top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.12)", border: "none", borderRadius: "50%", width: 44, height: 44, cursor: "pointer", color: "#fff", fontSize: 20 }}
-            >›</button>
-            <button
-              onClick={() => setLightbox(null)}
-              aria-label="Close"
-              style={{ position: "absolute", top: 16, right: 16, background: "rgba(255,255,255,0.12)", border: "none", borderRadius: "50%", width: 36, height: 36, cursor: "pointer", color: "#fff", fontSize: 18 }}
-            >×</button>
-            <div style={{ position: "absolute", top: 20, left: "50%", transform: "translateX(-50%)", color: "rgba(255,255,255,0.55)", fontSize: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
-              Summerfest {lightbox.year} · {lightbox.index + 1} / {activePhotos.length}
-            </div>
-            {/* Shared ShareRow — icon row + native "More"; per-photo link previews via middleware */}
-            <div style={{ position: "absolute", bottom: 22, left: 0, right: 0, display: "flex", justifyContent: "center", padding: "0 16px" }}>
-              <ShareRow
-                url={`${typeof window !== "undefined" ? window.location.origin : ""}/ladies-club?photo=${lightbox.year}-${String(lightbox.index + 1).padStart(2, "0")}`}
-                title={`Devil's Lake Summerfest ${lightbox.year}`}
-                text={`A moment from Devil's Lake Summerfest ${lightbox.year} in Manitou Beach 🌅 See the whole gallery:`}
-                imageSrc={activePhotos[lightbox.index]}
-              />
-            </div>
-          </div>
+          <Lightbox
+            photos={activePhotos}
+            index={lightbox.index}
+            setIndex={(i) => setLightbox(l => l && ({ ...l, index: i }))}
+            onClose={() => setLightbox(null)}
+            title={`Summerfest ${lightbox.year}`}
+            shareUrl={`${typeof window !== "undefined" ? window.location.origin : ""}/ladies-club?photo=${lightbox.year}-${String(lightbox.index + 1).padStart(2, "0")}`}
+            shareText={`A moment from Devil's Lake Summerfest ${lightbox.year} in Manitou Beach 🌅 See the whole gallery:`}
+          />
         )}
       </div>
     </section>
