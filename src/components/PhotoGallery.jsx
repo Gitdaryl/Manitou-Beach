@@ -21,8 +21,19 @@ const IcMore = () => <Ic><path d="M18 8a3 3 0 10-2.82-4H15a3 3 0 00.14 6l.09-.01
  * middleware.js injects the specific photo per ?photo= so those previews show the photo.
  * "More" uses the native share sheet with the actual image file (best on mobile).
  */
-export function ShareRow({ url, title, text, imageSrc, dark = true }) {
+export function ShareRow({ url, title, text, dark = true }) {
   const [msg, setMsg] = useState(null);
+  const [touch, setTouch] = useState(false);
+
+  // Touch device WITH a native share sheet → mobile treatment. Desktop Chrome also
+  // exposes navigator.share, so gate on a coarse pointer too.
+  useEffect(() => {
+    setTouch(
+      typeof navigator !== 'undefined' && !!navigator.share &&
+      typeof window !== 'undefined' && !!window.matchMedia?.('(pointer: coarse)')?.matches
+    );
+  }, []);
+
   const e = encodeURIComponent;
   const shareText = text || title;
   const flash = (m) => { setMsg(m); setTimeout(() => setMsg(null), 2500); };
@@ -32,38 +43,46 @@ export function ShareRow({ url, title, text, imageSrc, dark = true }) {
     catch { flash(url); }
   };
 
+  // Mobile: share the bare URL. The recipient's app (Messages, Facebook, WhatsApp)
+  // fetches it and renders a rich card showing the photo (per-photo OG) that's tappable —
+  // which drives traffic. Passing url alone (no text/file) is what makes iOS reliably
+  // attach the link + preview instead of dropping it, which is what went wrong before.
   const nativeShare = async () => {
-    const data = { title, text: shareText, url };
-    let file = null;
-    try {
-      const jpg = imageSrc.replace(/\.webp$/, '.jpg');
-      const blob = await (await fetch(jpg)).blob();
-      file = new File([blob], jpg.split('/').pop(), { type: blob.type || 'image/jpeg' });
-    } catch { /* image fetch failed — share link only */ }
-    if (navigator.share) {
-      try {
-        await navigator.share(file && navigator.canShare?.({ files: [file] }) ? { ...data, files: [file] } : data);
-      } catch { /* user cancelled */ }
-    } else {
-      copyLink();
-    }
+    try { await navigator.share({ url }); }
+    catch { /* user cancelled */ }
   };
 
   const fg = dark ? '#fff' : (C.text || '#1a1a1a');
   const bg = dark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.06)';
-  const style = { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 40, height: 40, borderRadius: '50%', background: bg, border: 'none', cursor: 'pointer', color: fg, textDecoration: 'none', transition: 'background 0.2s' };
+  const toast = msg && (
+    <div style={{ fontSize: 12, color: fg, background: bg, padding: '4px 12px', borderRadius: 14, maxWidth: '80vw', textAlign: 'center', wordBreak: 'break-all' }}>{msg}</div>
+  );
 
+  // ── Mobile: one clear Share button (native sheet) + Copy link ──
+  if (touch) {
+    return (
+      <div onClick={ev => ev.stopPropagation()} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+          <button type="button" onClick={ev => { ev.stopPropagation(); nativeShare(); }}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#fff', color: '#12202b', border: 'none', borderRadius: 24, height: 46, padding: '0 24px', fontSize: 16, fontWeight: 600, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}>
+            <IcMore /> Share
+          </button>
+          <button type="button" onClick={ev => { ev.stopPropagation(); copyLink(); }} aria-label="Copy link" title="Copy link"
+            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 46, height: 46, borderRadius: '50%', background: bg, border: 'none', color: fg, cursor: 'pointer' }}>
+            <IcLink />
+          </button>
+        </div>
+        {toast}
+      </div>
+    );
+  }
+
+  // ── Desktop: explicit network icons (these behave on a logged-in computer) ──
+  const style = { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 40, height: 40, borderRadius: '50%', background: bg, border: 'none', cursor: 'pointer', color: fg, textDecoration: 'none', transition: 'background 0.2s' };
   const linkChip = (label, href, icon) => (
     <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label} title={label}
        style={style} onClick={ev => ev.stopPropagation()}>{icon}</a>
   );
-  const btnChip = (label, onClick, icon) => (
-    <button key={label} type="button" aria-label={label} title={label}
-       style={style} onClick={ev => { ev.stopPropagation(); onClick(); }}>{icon}</button>
-  );
-
-  const hasNative = typeof navigator !== 'undefined' && !!navigator.share;
-
   return (
     <div onClick={ev => ev.stopPropagation()} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
@@ -71,14 +90,9 @@ export function ShareRow({ url, title, text, imageSrc, dark = true }) {
         {linkChip('Share on X', `https://twitter.com/intent/tweet?url=${e(url)}&text=${e(shareText)}`, <IcX />)}
         {linkChip('Share on WhatsApp', `https://wa.me/?text=${e(shareText + ' ' + url)}`, <IcWhatsApp />)}
         {linkChip('Share by email', `mailto:?subject=${e(title)}&body=${e(shareText + '\n\n' + url)}`, <IcMail />)}
-        {btnChip('Copy link', copyLink, <IcLink />)}
-        {hasNative && btnChip('More sharing options', nativeShare, <IcMore />)}
+        <button type="button" aria-label="Copy link" title="Copy link" style={style} onClick={ev => { ev.stopPropagation(); copyLink(); }}><IcLink /></button>
       </div>
-      {msg && (
-        <div style={{ fontSize: 12, color: fg, background: bg, padding: '4px 12px', borderRadius: 14, maxWidth: '80vw', textAlign: 'center', wordBreak: 'break-all' }}>
-          {msg}
-        </div>
-      )}
+      {toast}
     </div>
   );
 }

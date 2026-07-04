@@ -24,7 +24,7 @@ export default function GalleryPage() {
         <div style={{ maxWidth: 640, margin: '0 auto', padding: '140px 24px', textAlign: 'center' }}>
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, marginBottom: 12 }}>Gallery not found</h1>
           <p style={{ color: C.textLight, marginBottom: 24 }}>That gallery doesn’t exist or has moved.</p>
-          <Link to="/" style={{ color: C.lake || C.text, fontWeight: 600 }}>← Back home</Link>
+          <Link to="/" style={{ color: C.lakeBlue || C.text, fontWeight: 600 }}>← Back home</Link>
         </div>
         <Footer scrollTo={subScrollTo} />
       </div>
