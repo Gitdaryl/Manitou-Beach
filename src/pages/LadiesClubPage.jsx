@@ -788,21 +788,23 @@ function LadiesClubGallerySection() {
           <div style={{ flex: 1, height: 1, background: C.sand }} />
         </div>
       </FadeIn>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 10, marginBottom: 56 }}>
+      {/* Masonry layout - each photo keeps its natural aspect ratio, nothing cropped.
+          break-inside: avoid keeps a photo from splitting across two columns. */}
+      <div style={{ columnWidth: 240, columnGap: 10, marginBottom: 56 }}>
         {photos.map((src, i) => (
-          <FadeIn key={src} delay={Math.min(i, 8) * 30} direction="scale">
+          <FadeIn key={src} delay={Math.min(i, 8) * 30} direction="scale" style={{ breakInside: "avoid", WebkitColumnBreakInside: "avoid", marginBottom: 10 }}>
             <div
               onClick={() => setLightbox({ year, index: i })}
               style={{
-                borderRadius: 10, overflow: "hidden", position: "relative", paddingTop: "75%",
-                cursor: "pointer", background: C.warmWhite,
+                borderRadius: 10, overflow: "hidden",
+                cursor: "pointer", background: C.warmWhite, lineHeight: 0,
               }}
             >
               <img
                 src={src}
                 alt={`Devils Lake Summer Festival ${year} in Manitou Beach - photo ${i + 1}`}
                 loading="lazy"
-                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.35s ease" }}
+                style={{ width: "100%", height: "auto", display: "block", transition: "transform 0.35s ease" }}
                 onMouseEnter={e => e.currentTarget.style.transform = "scale(1.04)"}
                 onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
               />
