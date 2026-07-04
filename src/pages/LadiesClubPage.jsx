@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, CommunityDonationForm } from '../components/Shared';
 import { Footer, GlobalStyles, Navbar, NewsletterInline, ContactModal } from '../components/Layout';
-import { ShareRow, useSwipeNav, LightboxKeyframes } from '../components/PhotoGallery';
+import { ShareRow, useSwipeNav, LightboxKeyframes, LB_ANIM_NEXT, LB_ANIM_PREV } from '../components/PhotoGallery';
 import { C } from '../data/config';
 import SEOHead from '../components/SEOHead';
 import RafflePage from './RafflePage';
@@ -806,6 +806,16 @@ function LadiesClubGallerySection() {
     }
   }, [lightbox]);
 
+  // Preload neighbouring photos so the next swipe animates a decoded image (no pop).
+  useEffect(() => {
+    if (!lightbox) return;
+    const arr = sets[lightbox.year];
+    [lightbox.index - 1, lightbox.index + 1].forEach(j => {
+      const img = new Image();
+      img.src = arr[(j + arr.length) % arr.length];
+    });
+  }, [lightbox]);
+
   // Photo navigation with slide direction (drives the lightbox slide-in animation).
   const goPrev = () => { setDir(-1); setLightbox(l => l && ({ ...l, index: l.index > 0 ? l.index - 1 : activePhotos.length - 1 })); };
   const goNext = () => { setDir(1); setLightbox(l => l && ({ ...l, index: l.index < activePhotos.length - 1 ? l.index + 1 : 0 })); };
@@ -888,7 +898,7 @@ function LadiesClubGallerySection() {
               key={`${lightbox.year}-${lightbox.index}`}
               src={activePhotos[lightbox.index]}
               alt={`Devils Lake Summerfest ${lightbox.year} - photo ${lightbox.index + 1}`}
-              style={{ maxWidth: "92vw", maxHeight: "78vh", objectFit: "contain", borderRadius: 8, animation: `${dir < 0 ? "lbInPrev" : "lbInNext"} 0.3s ease` }}
+              style={{ maxWidth: "92vw", maxHeight: "78vh", objectFit: "contain", borderRadius: 8, animation: dir < 0 ? LB_ANIM_PREV : LB_ANIM_NEXT }}
               onClick={e => e.stopPropagation()}
             />
             <button

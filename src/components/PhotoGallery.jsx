@@ -33,9 +33,11 @@ export function useSwipeNav({ onPrev, onNext, onClose }) {
 // Slide-in animation for lightbox photo changes. Direction depends on nav direction:
 // next → new photo slides in from the right, prev → from the left.
 const LB_KEYFRAMES = `
-@keyframes lbInNext { from { opacity: 0; transform: translateX(7%) scale(0.985); } to { opacity: 1; transform: none; } }
-@keyframes lbInPrev { from { opacity: 0; transform: translateX(-7%) scale(0.985); } to { opacity: 1; transform: none; } }
+@keyframes lbInNext { from { opacity: 0; transform: translateX(22%) scale(0.94); } to { opacity: 1; transform: none; } }
+@keyframes lbInPrev { from { opacity: 0; transform: translateX(-22%) scale(0.94); } to { opacity: 1; transform: none; } }
 `;
+export const LB_ANIM_NEXT = 'lbInNext 0.42s cubic-bezier(0.22, 0.61, 0.36, 1)';
+export const LB_ANIM_PREV = 'lbInPrev 0.42s cubic-bezier(0.22, 0.61, 0.36, 1)';
 export function LightboxKeyframes() { return <style>{LB_KEYFRAMES}</style>; }
 
 // ── Share icons (inline SVG, monochrome) ─────────────────────
@@ -171,6 +173,16 @@ export function PhotoGallery({ photos, slug, title, shareText }) {
     return () => window.removeEventListener('keydown', onKey);
   }, [index, photos.length]);
 
+  // Preload the neighbouring full-size photos so the next swipe animates a decoded
+  // image (no pop) instead of an empty frame.
+  useEffect(() => {
+    if (index === null) return;
+    [index - 1, index + 1].forEach(j => {
+      const img = new Image();
+      img.src = photos[(j + photos.length) % photos.length];
+    });
+  }, [index, photos]);
+
   const shareUrl = index !== null && typeof window !== 'undefined'
     ? `${window.location.origin}/gallery/${slug}?photo=${index + 1}`
     : '';
@@ -213,7 +225,7 @@ export function PhotoGallery({ photos, slug, title, shareText }) {
             style={{ position: 'absolute', left: 20, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: '50%', width: 44, height: 44, cursor: 'pointer', color: '#fff', fontSize: 20 }}>‹</button>
 
           <img key={index} src={photos[index]} alt={`${title} - photo ${index + 1}`}
-            style={{ maxWidth: '92vw', maxHeight: '78vh', objectFit: 'contain', borderRadius: 8, animation: `${dir < 0 ? 'lbInPrev' : 'lbInNext'} 0.3s ease` }}
+            style={{ maxWidth: '92vw', maxHeight: '78vh', objectFit: 'contain', borderRadius: 8, animation: dir < 0 ? LB_ANIM_PREV : LB_ANIM_NEXT }}
             onClick={ev => ev.stopPropagation()} />
 
           <button onClick={ev => { ev.stopPropagation(); goNext(); }}
