@@ -764,8 +764,8 @@ function LadiesClubSponsorTiersSection() {
   );
 }
 
-// 2026 Summerfest gallery - 58 photos, SEO-named devils-lake-summerfest-2026-NN.jpg
-const GALLERY_2026 = Array.from({ length: 58 }, (_, i) =>
+// 2026 Summerfest gallery - 59 photos, SEO-named devils-lake-summerfest-2026-NN.jpg
+const GALLERY_2026 = Array.from({ length: 59 }, (_, i) =>
   `/images/ladies-club/summerfest2026/devils-lake-summerfest-2026-${String(i + 1).padStart(2, "0")}.jpg`
 );
 const GALLERY_2025 = Array.from({ length: 22 }, (_, i) =>
