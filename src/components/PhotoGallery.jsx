@@ -108,8 +108,9 @@ const NAV_BTN = { position: 'absolute', top: '50%', transform: 'translateY(-50%)
  *   onClose   : () => void
  *   shareUrl  : shareable deep link for the current photo
  */
-export function Lightbox({ photos, index, setIndex, onClose, title, shareUrl, shareText }) {
+export function Lightbox({ photos, index, setIndex, onClose, title, shareUrl, shareText, onReport }) {
   const n = photos.length;
+  const [reported, setReported] = useState(false);
   const [dx, setDx] = useState(0);          // live horizontal drag offset (px)
   const [anim, setAnim] = useState(false);  // whether the track is transitioning
   const startRef = useRef(null);
@@ -120,6 +121,9 @@ export function Lightbox({ photos, index, setIndex, onClose, title, shareUrl, sh
 
   const prevIdx = (index - 1 + n) % n;
   const nextIdx = (index + 1) % n;
+
+  // Reset the "reported" acknowledgement when the visible photo changes.
+  useEffect(() => { setReported(false); }, [index]);
 
   // Animate the track to a neighbour, then commit the new index and re-center instantly.
   const commit = (targetPx, newIndex) => {
@@ -236,6 +240,17 @@ export function Lightbox({ photos, index, setIndex, onClose, title, shareUrl, sh
       <button onClick={(e) => { e.stopPropagation(); goNext(); }} aria-label="Next photo" style={{ ...NAV_BTN, right: 20 }}>›</button>
       <button onClick={(e) => { e.stopPropagation(); onClose(); }} aria-label="Close" style={{ position: 'absolute', top: 16, right: 16, background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: '50%', width: 36, height: 36, cursor: 'pointer', color: '#fff', fontSize: 18, zIndex: 2 }}>×</button>
 
+      {/* Community flag — only on crowd galleries (onReport supplied) */}
+      {onReport && (
+        <button
+          onClick={(e) => { e.stopPropagation(); if (!reported) { onReport(); setReported(true); } }}
+          aria-label="Flag this photo"
+          style={{ position: 'absolute', top: 16, left: 16, background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: 16, height: 34, padding: '0 14px', cursor: reported ? 'default' : 'pointer', color: '#fff', fontSize: 12.5, fontFamily: "'Libre Franklin', sans-serif", zIndex: 2, opacity: reported ? 0.65 : 1 }}
+        >
+          {reported ? '✓ Flagged' : '⚑ Flag'}
+        </button>
+      )}
+
       <div style={{ position: 'absolute', top: 20, left: '50%', transform: 'translateX(-50%)', color: 'rgba(255,255,255,0.55)', fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", zIndex: 2 }}>
         {title} · {index + 1} / {n}
       </div>
@@ -254,7 +269,7 @@ export function Lightbox({ photos, index, setIndex, onClose, title, shareUrl, sh
  *   title     : gallery title
  *   shareText : optional custom share message
  */
-export function PhotoGallery({ photos, slug, title, shareText }) {
+export function PhotoGallery({ photos, slug, title, shareText, thumbOf = thumbSrc, onReport }) {
   const [searchParams, setSearchParams] = useSearchParams();
   // index of open photo, or null. Initialised from ?photo= so deep links open straight to it.
   const [index, setIndex] = useState(() => {
@@ -286,7 +301,7 @@ export function PhotoGallery({ photos, slug, title, shareText }) {
               style={{ borderRadius: 10, overflow: 'hidden', cursor: 'pointer', background: C.warmWhite || '#f5f2ec', lineHeight: 0 }}
             >
               <img
-                src={thumbSrc(src)}
+                src={thumbOf(src)}
                 alt={`${title} - photo ${i + 1}`}
                 loading="lazy"
                 style={{ width: '100%', height: 'auto', display: 'block', transition: 'transform 0.35s ease' }}
@@ -307,6 +322,7 @@ export function PhotoGallery({ photos, slug, title, shareText }) {
           title={title}
           shareUrl={shareUrl}
           shareText={shareText}
+          onReport={onReport ? () => onReport(photos[index]) : undefined}
         />
       )}
     </>

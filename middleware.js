@@ -486,7 +486,20 @@ export default async function middleware(request) {
 // ── Public event galleries ────────────────────────────────────
 // Mirror of src/data/galleries.js (edge middleware can't reliably import from src).
 // Keep in sync when adding a gallery so shared links show the right photo preview.
+// Curated galleries have folder+prefix (per-photo previews via ?photo=NN).
+// Crowd galleries have a static `cover` instead (photos are user-submitted Blob
+// URLs with no predictable path), so the share preview uses the cover image.
 const GALLERY_OG = {
+  'america-250': {
+    title: 'America 250',
+    description: 'Community photos from the America 250 celebration in Manitou Beach, Michigan. Add yours and share the day.',
+    cover: '/images/happening-hero.jpg',
+  },
+  'ladies-club': {
+    title: 'Ladies Club',
+    description: 'Community photos from Manitou Beach Ladies Club events on Devils Lake, Michigan.',
+    cover: '/images/ladies-club/artists.jpg',
+  },
   'july-4-2026': {
     title: 'July 4th Weekend 2026',
     description: 'Photos from July 4th weekend on Devils Lake in Manitou Beach, Michigan. View the gallery and share your favorites.',
@@ -506,7 +519,8 @@ function handleGalleryOG(html, slug, url) {
 
   const photoParam = url.searchParams.get('photo');
   const nn = photoParam && /^\d{1,3}$/.test(photoParam) ? String(photoParam).padStart(2, '0') : '01';
-  const img = esc(`${origin}${g.folder}/${g.prefix}-${nn}.jpg`);
+  // Crowd galleries use a fixed cover; curated galleries preview the chosen photo.
+  const img = esc(g.cover ? `${origin}${g.cover}` : `${origin}${g.folder}/${g.prefix}-${nn}.jpg`);
   const t = esc(`${g.title} - Manitou Beach`);
   const d = esc(g.description);
   const pageUrl = esc(`${origin}/gallery/${slug}${photoParam ? `?photo=${photoParam}` : ''}`);

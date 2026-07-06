@@ -1,21 +1,54 @@
 // ============================================================
-// Public event galleries  (/gallery/:slug)
+// Public event galleries  (/gallery/:slug  +  hub at /gallery)
 // ------------------------------------------------------------
-// To add a new gallery:
-//   1. Run  ./scripts/optimize-gallery.sh <source-dir> <slug> <prefix>
-//      (creates full .webp, /thumbs/ .webp, and .jpg in public/images/galleries/<slug>/)
-//   2. Add an entry below with the count it reports.
-// That's it — the route, masonry grid, lightbox, and sharing all work automatically.
+// Two kinds of gallery, both live here:
 //
-// NOTE: middleware.js keeps a small mirror of {slug -> folder, prefix, title} so shared
-// links show the right photo preview. If you add a gallery here, add it there too.
+//  • CURATED — photos you place yourself:
+//      1. Run  ./scripts/optimize-gallery.sh <source-dir> <slug> <prefix>
+//         (creates full .webp, /thumbs/ .webp, and .jpg in public/images/galleries/<slug>/)
+//      2. Add an entry below with the count it reports.
+//
+//  • CROWD — community submits photos at the event (scan → upload):
+//      Add an entry with  crowd: true  and  count: 0. No files needed; the
+//      photos flow in through /api/photos-upload and appear automatically.
+//      IMPORTANT: also add the slug to api/lib/photo-slugs.js (server allowlist).
+//
+// A gallery can be both (curated seed photos + open crowd submissions).
+//
+// NOTE: middleware.js keeps a small mirror of {slug -> title, cover} so shared
+// links show the right preview. If you add a gallery here, add it there too.
+// `order` (higher = newer) drives the hub sort; `cover` is the hub tile image.
 // ============================================================
 
 export const GALLERIES = {
+  'america-250': {
+    title: 'America 250',
+    subtitle: 'Our town’s 250th of July celebration on Devils Lake',
+    date: 'July 2026',
+    order: 3,
+    crowd: true,
+    count: 0,
+    cover: '/images/happening-hero.jpg',
+    ogDescription:
+      'Community photos from the America 250 celebration in Manitou Beach, Michigan. Add yours and share the day.',
+  },
+  'ladies-club': {
+    title: 'Ladies Club',
+    subtitle: 'Moments from Ladies Club events around Manitou Beach',
+    date: '2026',
+    order: 2,
+    crowd: true,
+    count: 0,
+    cover: '/images/ladies-club/artists.jpg',
+    ogDescription:
+      'Community photos from Manitou Beach Ladies Club events on Devils Lake, Michigan. Add yours and share.',
+  },
   'july-4-2026': {
     title: 'July 4th Weekend 2026',
     subtitle: 'Sunsets, sparklers, and lake life on Devils Lake',
     date: 'July 2026',
+    order: 1,
+    crowd: true,
     folder: '/images/galleries/july-4-2026',
     prefix: 'manitou-july-4-2026',
     count: 3,
@@ -23,6 +56,20 @@ export const GALLERIES = {
       'Photos from July 4th weekend on Devils Lake in Manitou Beach, Michigan. View the gallery and share your favorites.',
   },
 };
+
+// Hub list: galleries as {slug, ...config}, newest first (by `order`, then title).
+export function galleryList() {
+  return Object.entries(GALLERIES)
+    .map(([slug, g]) => ({ slug, ...g }))
+    .sort((a, b) => (b.order || 0) - (a.order || 0) || a.title.localeCompare(b.title));
+}
+
+// First curated photo (webp) for a gallery, or its explicit cover, for hub tiles.
+export function galleryCover(g) {
+  if (g.cover) return g.cover;
+  if (g.folder && g.prefix && g.count > 0) return `${g.folder}/${g.prefix}-01.webp`;
+  return '/images/og-image.jpg';
+}
 
 // Build the ordered list of full-size photo paths for a gallery config.
 export function galleryPhotos(g) {

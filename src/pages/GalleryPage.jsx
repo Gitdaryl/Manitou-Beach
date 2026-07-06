@@ -3,7 +3,8 @@ import { useParams, Link } from 'react-router-dom';
 import { GlobalStyles, Navbar, Footer, NewsletterInline } from '../components/Layout';
 import { ScrollProgress, SectionLabel } from '../components/Shared';
 import { PhotoGallery } from '../components/PhotoGallery';
-import { GALLERIES, galleryPhotos } from '../data/galleries';
+import EventPhotoWall from '../components/EventPhotoWall';
+import { GALLERIES, galleryPhotos, galleryCover } from '../data/galleries';
 import { C } from '../data/config';
 import SEOHead from '../components/SEOHead';
 
@@ -32,7 +33,8 @@ export default function GalleryPage() {
   }
 
   const photos = galleryPhotos(g);
-  const ogImage = `${g.folder}/${g.prefix}-01.jpg`;
+  // Curated galleries preview their first photo; crowd galleries use their cover.
+  const ogImage = g.folder && g.prefix && g.count > 0 ? `${g.folder}/${g.prefix}-01.jpg` : galleryCover(g);
 
   return (
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: 'hidden' }}>
@@ -66,12 +68,17 @@ export default function GalleryPage() {
         </div>
       </section>
 
-      {/* Gallery */}
-      <section style={{ background: C.cream, padding: '16px 24px 72px' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <PhotoGallery photos={photos} slug={slug} title={g.title} shareText={`${g.title} — Manitou Beach, Devils Lake 🌅 See the whole gallery:`} />
-        </div>
-      </section>
+      {/* Curated gallery (only when there are placed photos) */}
+      {photos.length > 0 && (
+        <section style={{ background: C.cream, padding: '16px 24px 40px' }}>
+          <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+            <PhotoGallery photos={photos} slug={slug} title={g.title} shareText={`${g.title} — Manitou Beach, Devils Lake 🌅 See the whole gallery:`} />
+          </div>
+        </section>
+      )}
+
+      {/* Crowd photo wall: upload + live community feed + community flagging */}
+      {g.crowd && <EventPhotoWall slug={slug} title={g.title} />}
 
       <NewsletterInline />
       <Footer scrollTo={subScrollTo} />
