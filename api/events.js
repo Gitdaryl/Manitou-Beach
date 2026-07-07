@@ -1,4 +1,3 @@
-import { Resend } from 'resend';
 import { sendSMSFull } from './lib/twilio.js';
 
 // Fetch all pages from a Notion database query, following cursors past the 100-record limit
@@ -56,137 +55,11 @@ async function alertEventsOutage(detail) {
 }
 
 export default async function handler(req, res) {
-  // POST - submit a new event
-  if (req.method === 'POST') {
-    const { name, category, email, phone, description, date, time, timeEnd, location, eventUrl, imageUrl, videoUrl, cost, recurring, recurringDay, attendance, rsvpCapacity, _hp } = req.body;
-
-    // Honeypot - bots fill hidden fields, humans don't
-    if (_hp) return res.status(200).json({ success: true });
-
-    if (!name || !email) {
-      return res.status(400).json({ error: 'Event name and email are required' });
-    }
-
-    let normalizedEventUrl = null;
-    if (eventUrl && eventUrl.trim()) {
-      let url = eventUrl.trim();
-      if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
-      normalizedEventUrl = url;
-    }
-
-    const editToken = crypto.randomUUID();
-
-    const buildProperties = ({ includeEventUrl = true, includeImageUrl = true } = {}) => {
-      const properties = {
-        'Event Name': { title: [{ text: { content: name } }] },
-        'Category': { rich_text: [{ text: { content: category || '' } }] },
-        'Status': { status: { name: 'Published' } },
-        'Email': { email: email },
-        'Phone': { phone_number: phone || null },
-        'Description': { rich_text: [{ text: { content: description || '' } }] },
-        'Time': { rich_text: [{ text: { content: time || '' } }] },
-        'Location': { rich_text: [{ text: { content: location || '' } }] },
-        'Edit Token': { rich_text: [{ text: { content: editToken } }] },
-      };
-      if (date) properties['Event date'] = { date: { start: date } };
-      if (includeEventUrl && normalizedEventUrl) properties['Event URL'] = { url: normalizedEventUrl };
-      if (includeImageUrl && imageUrl) properties['Image URL'] = { url: imageUrl };
-      if (videoUrl) properties['Video URL'] = { url: videoUrl };
-      if (cost) properties['Cost'] = { rich_text: [{ text: { content: cost } }] };
-      if (recurring && recurring !== 'None') properties['Recurring'] = { select: { name: recurring } };
-      if (recurringDay) properties['Recurring Day'] = { select: { name: recurringDay } };
-      if (timeEnd) properties['Time End'] = { rich_text: [{ text: { content: timeEnd } }] };
-      if (attendance) properties['Attendance'] = { select: { name: attendance } };
-      if (rsvpCapacity) properties['RSVP Capacity'] = { number: parseInt(rsvpCapacity, 10) };
-      return properties;
-    };
-
-    const postToNotion = async (properties) => fetch('https://api.notion.com/v1/pages', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.NOTION_TOKEN_EVENTS}`,
-        'Content-Type': 'application/json',
-        'Notion-Version': '2022-06-28',
-      },
-      body: JSON.stringify({ parent: { database_id: process.env.NOTION_DB_EVENTS }, properties }),
-    });
-
-    try {
-      let response = await postToNotion(buildProperties());
-      if (!response.ok) {
-        const err = await response.json();
-        console.error('Notion error (first attempt):', JSON.stringify(err));
-        
-        // If Notion rejects because a property doesn't exist or is the wrong type (like Event URL)
-        const isUrlFieldError = err?.message?.toLowerCase().includes('event url') ||
-          err?.message?.toLowerCase().includes('image url') || err?.code === 'validation_error';
-          
-        if (isUrlFieldError) {
-          console.log('Attempting fallback without URL fields to bypass Notion schema mismatch...');
-          response = await postToNotion(buildProperties({ includeEventUrl: false, includeImageUrl: false }));
-          if (!response.ok) {
-            const retryErr = await response.json();
-            return res.status(500).json({ 
-              error: 'Submission failed', 
-              notionError: retryErr?.message || 'Unknown Notion error. Check that your Notion Database column types precisely match the code.'
-            });
-          }
-        } else {
-          return res.status(500).json({ 
-            error: 'Submission failed', 
-            notionError: err?.message || 'Check your Notion Database columns.'
-          });
-        }
-      }
-      // Send confirmation email (best-effort - never block the response)
-      if (email && process.env.RESEND_API_KEY) {
-        const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
-        const editLink = `${siteUrl}/events/edit?token=${editToken}`;
-        const dateDisplay = date ? new Date(date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) : '';
-        const timeDisplay = [time, timeEnd].filter(Boolean).join(' – ');
-        try {
-          const resend = new Resend(process.env.RESEND_API_KEY);
-          await resend.emails.send({
-            from: 'Manitou Beach <events@manitoubeachmichigan.com>',
-            to: email,
-            subject: `"${name}" is live on Manitou Beach!`,
-            html: `
-              <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;background:#FAF6EF;">
-                <h1 style="color:#1A2830;font-size:22px;margin:0 0 8px;">You're on the calendar!</h1>
-                <p style="color:#5C5248;font-size:15px;margin:0 0 24px;line-height:1.7;">
-                  <strong>${name}</strong> is live on the What's Happening page right now. The whole lake can see it.
-                  ${dateDisplay ? `<br/>${dateDisplay}` : ''}
-                  ${timeDisplay ? `<br/>${timeDisplay}` : ''}
-                  ${location ? `<br/>${location}` : ''}
-                </p>
-                <div style="background:#fff;border-radius:12px;padding:20px 24px;margin-bottom:24px;border:1px solid #E8E0D5;">
-                  <p style="margin:0 0 4px;color:#8C806E;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Need to update details?</p>
-                  <p style="margin:0 0 16px;color:#3B3228;font-size:14px;line-height:1.6;">Use your private edit link to update your event's time, location, description, or photo at any time.</p>
-                  <a href="${editLink}" style="display:inline-block;background:#1A2830;color:#FAF6EF;text-decoration:none;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;">
-                    Edit My Event
-                  </a>
-                  <p style="margin:12px 0 0;color:#8C806E;font-size:11px;">Keep this email - it contains your private edit link.</p>
-                </div>
-                <div style="background:#FFF8F0;border-radius:12px;padding:20px 24px;border:1px solid #F0E4D0;">
-                  <p style="margin:0 0 8px;color:#D4845A;font-size:12px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Want more visibility?</p>
-                  <p style="margin:0 0 16px;color:#5C5248;font-size:14px;line-height:1.6;">Hero Feature · Newsletter Spotlight · Featured Banners.<br/>Get your event in front of every lake neighbor.</p>
-                  <a href="${siteUrl}/promote" style="display:inline-block;background:#D4845A;color:#fff;text-decoration:none;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;">
-                    See Promotion Packages →
-                  </a>
-                </div>
-              </div>
-            `,
-          });
-        } catch (emailErr) {
-          console.error('Event confirmation email error:', emailErr.message);
-        }
-      }
-
-      return res.status(200).json({ success: true });
-    } catch (err) {
-      console.error('Server error:', err.message);
-      return res.status(500).json({ error: 'Server error', detail: err.message });
-    }
+  // Event submissions go through /api/submit-event (SMS-verified + moderated).
+  // The old instant-publish POST path was removed here. It set Status:'Published'
+  // directly and bypassed verification, letting anyone spam the public calendar.
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed. Submit events via /api/submit-event.' });
   }
 
   // GET - fetch approved/published events
@@ -221,12 +94,16 @@ export default async function handler(req, res) {
       return res.status(503).json({ error: 'events_unavailable', reason: isAuth ? 'auth' : 'query', events: [], recurring: [] });
     }
 
-    const now = new Date();
+    // "Today" as a Michigan calendar day (YYYY-MM-DD). Comparing date strings avoids
+    // both the UTC-midnight bug (events vanishing at 8pm ET) and DST offset math.
+    const todayET = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Detroit' }).format(new Date());
 
     const allEvents = pages
       .map(page => {
         const p = page.properties;
-        const dateStr = p['Event date']?.date?.start;
+        // Normalize to a bare date. If an admin toggles "include time" in Notion, start
+        // becomes a full ISO timestamp; slicing keeps date math from producing Invalid Date.
+        const dateStr = (p['Event date']?.date?.start || '').slice(0, 10);
         const recurringVal = p['Recurring']?.select?.name || null;
         const desc = p['Description']?.rich_text?.[0]?.text?.content || '';
         // Fall back to parsing "Runs until: YYYY-MM-DD" from description if Notion date has no end
@@ -291,7 +168,7 @@ export default async function handler(req, res) {
       .filter(e => e.recurring !== 'Weekly' && e.recurring !== 'Monthly')
       .filter(e => {
         if (!e.date) return false;
-        return new Date(e.date + 'T23:59:59') >= now;
+        return e.date >= todayET; // keep events through the end of their Michigan calendar day
       });
 
     return res.status(200).json({ events, recurring });

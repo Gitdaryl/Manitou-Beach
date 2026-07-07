@@ -1,3 +1,12 @@
+// ============================================================================
+// ⚠️  LEGACY / DEAD FILE - DO NOT EDIT TO CHANGE THE LIVE SITE.
+// This is an old single-file Framer prototype. Nothing imports it.
+// The live application is src/App.jsx + src/pages/, with content driven by
+// Notion (events, businesses, hero "Hero Feature" checkbox) and sponsors in
+// src/data/config.js. Editing the "configurable content" below has no effect.
+// Kept only for historical reference. See README.md.
+// ============================================================================
+
 import { useState, useEffect, useRef } from "react";
 
 // ============================================================

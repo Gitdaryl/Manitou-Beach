@@ -1,7 +1,26 @@
 import { alertOutage } from './lib/notionGuard.js';
+import { sendSMSFull } from './lib/twilio.js';
 // /api/food-trucks.js
 // GET  - returns all Active food trucks (with last check-in time)
 // POST - truck checks in; verifies slug + token, then updates Notion record
+
+// Throttled admin alert for social auto-post failures. Meta page tokens expire (~60 days),
+// and the post used to fail silently — this surfaces it so posts don't just quietly stop.
+let lastSocialAlertAt = 0;
+const SOCIAL_ALERT_COOLDOWN_MS = 6 * 60 * 60 * 1000; // 6h — token issues persist; don't spam
+async function alertSocial(detail) {
+  try {
+    const now = Date.now();
+    if (now - lastSocialAlertAt < SOCIAL_ALERT_COOLDOWN_MS) return;
+    lastSocialAlertAt = now;
+    const to = process.env.ADMIN_PHONE;
+    if (!to) return;
+    await sendSMSFull(
+      to,
+      `⚠️ Manitou Beach: food-truck auto-post to Facebook/Instagram is failing. ${String(detail).slice(0, 150)} Check META_PAGE_ACCESS_TOKEN / FB_PAGE_ACCESS_TOKEN in Vercel.`
+    );
+  } catch (_) { /* alerting must never break the check-in */ }
+}
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
@@ -289,57 +308,80 @@ async function handlePost(req, res) {
       }
     }
 
-    // Auto-post to Facebook on first check-in of the day
-    const pageToken = process.env.META_PAGE_ACCESS_TOKEN;
-    const fbPageId = process.env.META_PAGE_ID;
+    // Auto-post to Facebook/Instagram on first check-in of the day.
+    // Read both env naming schemes (META_* and legacy FB_*/IG_*) to match the rest of the
+    // social code (see social-post.js). food-trucks.js previously read only META_* with no
+    // fallback, so on an FB_*-configured deploy this post silently never fired.
+    const pageToken = process.env.META_PAGE_ACCESS_TOKEN || process.env.FB_PAGE_ACCESS_TOKEN;
+    const fbPageId = process.env.META_PAGE_ID || process.env.FB_PAGE_ID;
     const lastCheckin = page.properties['Last Checkin']?.date?.start;
     const todayStr = new Date().toISOString().slice(0, 10);
     const isFirstCheckinToday = !lastCheckin || !lastCheckin.startsWith(todayStr);
 
-    if (pageToken && fbPageId && isFirstCheckinToday) {
-      try {
-        const truckName = page.properties['Name']?.title?.[0]?.text?.content || slug;
-        const photoUrl = page.properties['Photo URL']?.url || '';
-        const igHandle = (page.properties['Instagram Handle']?.rich_text?.[0]?.text?.content || '').replace('@', '');
-        const igAccountId = process.env.META_IG_ACCOUNT_ID;
-        const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
-        const locText = note ? ` at ${note}` : '';
-        const igTag = igHandle ? `\n\nFollow them at @${igHandle} for schedule updates.` : '';
-        const message = `${truckName} just pulled up${locText} - they are open right now!\n\nFind them (and every truck at the lake today) at ${siteUrl}/food-trucks${igTag}\n\n#ManitoBeachMI #FoodTruck #DevilsLakeMI`;
+    if (isFirstCheckinToday) {
+      if (!pageToken || !fbPageId) {
+        // Previously a silent no-op. Surface it so a missing/rotated token is visible.
+        await alertSocial('Skipped: no page token/ID set (META_PAGE_ACCESS_TOKEN/FB_PAGE_ACCESS_TOKEN + META_PAGE_ID/FB_PAGE_ID) in Vercel.');
+      } else {
+        try {
+          const truckName = page.properties['Name']?.title?.[0]?.text?.content || slug;
+          const photoUrl = page.properties['Photo URL']?.url || '';
+          const igHandle = (page.properties['Instagram Handle']?.rich_text?.[0]?.text?.content || '').replace('@', '');
+          const igAccountId = process.env.META_IG_ACCOUNT_ID || process.env.IG_BUSINESS_ACCOUNT_ID;
+          const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
+          const locText = note ? ` at ${note}` : '';
+          const igTag = igHandle ? `\n\nFollow them at @${igHandle} for schedule updates.` : '';
+          // ref=post lets us later attribute finder visits that came from this announcement.
+          const message = `${truckName} just pulled up${locText} - they are open right now!\n\nFind them (and every truck at the lake today) at ${siteUrl}/food-trucks?ref=post${igTag}\n\n#ManitouBeachMI #FoodTruck #DevilsLakeMI`;
 
-        // Post to Facebook
-        const fbBody = { message, access_token: pageToken };
-        let fbEndpoint = `https://graph.facebook.com/v25.0/${fbPageId}/feed`;
-        if (photoUrl) {
-          fbEndpoint = `https://graph.facebook.com/v25.0/${fbPageId}/photos`;
-          fbBody.url = photoUrl;
-          fbBody.caption = message;
-          delete fbBody.message;
-        }
-        await fetch(fbEndpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(fbBody),
-        });
-
-        // Post to Instagram (requires a public photo URL)
-        if (igAccountId && photoUrl) {
-          const containerRes = await fetch(`https://graph.facebook.com/v25.0/${igAccountId}/media`, {
+          // Post to Facebook
+          const fbBody = { message, access_token: pageToken };
+          let fbEndpoint = `https://graph.facebook.com/v25.0/${fbPageId}/feed`;
+          if (photoUrl) {
+            fbEndpoint = `https://graph.facebook.com/v25.0/${fbPageId}/photos`;
+            fbBody.url = photoUrl;
+            fbBody.caption = message;
+            delete fbBody.message;
+          }
+          const fbRes = await fetch(fbEndpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ image_url: photoUrl, caption: message, access_token: pageToken }),
+            body: JSON.stringify(fbBody),
           });
-          const containerData = await containerRes.json();
-          if (containerData.id) {
-            await fetch(`https://graph.facebook.com/v25.0/${igAccountId}/media_publish`, {
+          if (!fbRes.ok) {
+            const errText = await fbRes.text();
+            console.error('FB post failed:', errText);
+            await alertSocial(`Facebook returned ${fbRes.status}. ${errText.slice(0, 100)}`);
+          }
+
+          // Post to Instagram (requires a public photo URL)
+          if (igAccountId && photoUrl) {
+            const containerRes = await fetch(`https://graph.facebook.com/v25.0/${igAccountId}/media`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ creation_id: containerData.id, access_token: pageToken }),
+              body: JSON.stringify({ image_url: photoUrl, caption: message, access_token: pageToken }),
             });
+            const containerData = await containerRes.json();
+            if (containerData.id) {
+              const pubRes = await fetch(`https://graph.facebook.com/v25.0/${igAccountId}/media_publish`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ creation_id: containerData.id, access_token: pageToken }),
+              });
+              if (!pubRes.ok) {
+                const pubErr = await pubRes.text();
+                console.error('IG publish failed:', pubErr);
+                await alertSocial(`Instagram publish returned ${pubRes.status}. ${pubErr.slice(0, 100)}`);
+              }
+            } else {
+              console.error('IG container failed:', JSON.stringify(containerData));
+              await alertSocial(`Instagram media create failed. ${JSON.stringify(containerData).slice(0, 100)}`);
+            }
           }
+        } catch (postErr) {
+          console.error('Check-in auto-post error:', postErr.message);
+          await alertSocial(`Threw: ${postErr.message}`);
         }
-      } catch (postErr) {
-        console.error('Check-in auto-post error:', postErr.message);
       }
     }
 

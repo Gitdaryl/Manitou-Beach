@@ -30,7 +30,7 @@
         { "key": "X-Frame-Options", "value": "DENY" },
         { "key": "X-Content-Type-Options", "value": "nosniff" },
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(self)" }
       ]
     }
   ],
@@ -53,6 +53,7 @@
     { "path": "/api/cron-site-audit",      "schedule": "0 9 1 * *" },
     { "path": "/api/cron-archive-events",  "schedule": "0 3 * * *" },
     { "path": "/api/cron-social-post",       "schedule": "0 13 * * 4" },
+    { "path": "/api/cron-truck-reminder",    "schedule": "0 14 * * 6,0" },
     { "path": "/api/cron-newsletter-draft",  "schedule": "0 23 * * 3" },
     { "path": "/api/cron-new-listing",       "schedule": "0 14 * * *" },
     { "path": "/api/cron-profile-report-card", "schedule": "0 14 1 * *" },
