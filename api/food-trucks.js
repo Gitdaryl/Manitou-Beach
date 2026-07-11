@@ -363,15 +363,33 @@ async function handlePost(req, res) {
             });
             const containerData = await containerRes.json();
             if (containerData.id) {
-              const pubRes = await fetch(`https://graph.facebook.com/v25.0/${igAccountId}/media_publish`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ creation_id: containerData.id, access_token: pageToken }),
-              });
-              if (!pubRes.ok) {
-                const pubErr = await pubRes.text();
-                console.error('IG publish failed:', pubErr);
-                await alertSocial(`Instagram publish returned ${pubRes.status}. ${pubErr.slice(0, 100)}`);
+              // Poll container status before publishing - IG must finish fetching/
+              // processing the image or media_publish fails with 9007 "Media ID is
+              // not available". ~15s max wait.
+              let status = 'IN_PROGRESS';
+              for (let attempt = 0; attempt < 10 && status === 'IN_PROGRESS'; attempt++) {
+                await new Promise(r => setTimeout(r, 1500));
+                const statusRes = await fetch(
+                  `https://graph.facebook.com/v25.0/${containerData.id}?fields=status_code&access_token=${pageToken}`
+                );
+                const statusData = await statusRes.json();
+                status = statusData.status_code || 'ERROR';
+              }
+
+              if (status === 'FINISHED') {
+                const pubRes = await fetch(`https://graph.facebook.com/v25.0/${igAccountId}/media_publish`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ creation_id: containerData.id, access_token: pageToken }),
+                });
+                if (!pubRes.ok) {
+                  const pubErr = await pubRes.text();
+                  console.error('IG publish failed:', pubErr);
+                  await alertSocial(`Instagram publish returned ${pubRes.status}. ${pubErr.slice(0, 100)}`);
+                }
+              } else {
+                console.error(`IG container never reached FINISHED (last status: ${status})`);
+                await alertSocial(`Instagram container stuck at status ${status} - not a token issue, likely a Meta-side processing delay.`);
               }
             } else {
               console.error('IG container failed:', JSON.stringify(containerData));

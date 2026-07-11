@@ -235,6 +235,22 @@ export default async function handler(req, res) {
       const containerData = await containerRes.json();
       if (containerData.error) throw new Error(containerData.error.message);
 
+      // Step 1.5: Poll container status - IG must finish fetching/processing
+      // the image before media_publish will accept it (fixes error 9007
+      // "Media ID is not available" when publish fires too early).
+      let status = 'IN_PROGRESS';
+      for (let attempt = 0; attempt < 10 && status === 'IN_PROGRESS'; attempt++) {
+        await new Promise(r => setTimeout(r, 1500)); // 1.5s between checks, ~15s max
+        const statusRes = await fetch(
+          `${FB_API}/${containerData.id}?fields=status_code&access_token=${pageToken}`
+        );
+        const statusData = await statusRes.json();
+        status = statusData.status_code || 'ERROR';
+      }
+      if (status !== 'FINISHED') {
+        throw new Error(`IG container never reached FINISHED (last status: ${status})`);
+      }
+
       // Step 2: Publish
       const publishRes = await fetch(`${FB_API}/${igAccountId}/media_publish`, {
         method: 'POST',
