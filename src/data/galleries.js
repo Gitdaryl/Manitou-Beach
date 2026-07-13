@@ -21,6 +21,17 @@
 // ============================================================
 
 export const GALLERIES = {
+  'mens-club': {
+    title: "Men's Club",
+    subtitle: 'Devils Lake & Round Lake Men’s Club events and get-togethers',
+    date: '2026',
+    order: 4,
+    crowd: true,
+    count: 0,
+    cover: '/images/og/mensclub-og.jpg',
+    ogDescription:
+      'Community photos from the Devils Lake & Round Lake Men’s Club in Manitou Beach, Michigan. Add yours and share.',
+  },
   'america-250': {
     title: 'America 250',
     subtitle: 'Our town’s 250th of July celebration on Devils Lake',

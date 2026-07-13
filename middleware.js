@@ -490,6 +490,11 @@ export default async function middleware(request) {
 // Crowd galleries have a static `cover` instead (photos are user-submitted Blob
 // URLs with no predictable path), so the share preview uses the cover image.
 const GALLERY_OG = {
+  'mens-club': {
+    title: "Men's Club",
+    description: 'Community photos from the Devils Lake & Round Lake Men’s Club in Manitou Beach, Michigan. Add yours and share.',
+    cover: '/images/og/mensclub-og.jpg',
+  },
   'america-250': {
     title: 'America 250',
     description: 'Community photos from the America 250 celebration in Manitou Beach, Michigan. Add yours and share the day.',
