@@ -3,6 +3,7 @@ import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivid
 import { Footer, GlobalStyles, Navbar, NewsletterInline } from '../components/Layout';
 import { C } from '../data/config';
 import SEOHead from '../components/SEOHead';
+import EventPhotoWall from '../components/EventPhotoWall';
 
 // ============================================================
 // 🏛️  MEN'S CLUB PAGE (/mens-club)
@@ -367,6 +368,7 @@ export default function MensClubPage() {
       <DiagonalDivider topColor={C.warmWhite} bottomColor={C.dusk} />
       <MensClubEventsSection />
       <WaveDivider topColor={C.dusk} bottomColor={C.cream} flip />
+      <EventPhotoWall slug="mens-club" title="Men's Club" />
       <MensClubGallerySection />
       <MensClubSponsorForm />
       <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
