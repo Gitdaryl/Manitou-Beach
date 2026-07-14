@@ -27,6 +27,14 @@ export const GALLERIES = {
     date: '2026',
     order: 4,
     crowd: true,
+    // Crowd uploads can be tagged to one of these; untagged photos land in "Club Life".
+    // IMPORTANT: mirror the keys in api/lib/photo-slugs.js (GALLERY_EVENTS).
+    events: [
+      { key: 'tip-up-festival', title: 'Tip-Up Festival', date: 'February' },
+      { key: 'firecracker-7k', title: 'Firecracker 7K', date: 'July 4th' },
+      { key: 'fireworks', title: 'July 4th Fireworks', date: 'July 4th' },
+      { key: 'golf-outing', title: 'Golf Outing', date: 'Summer' },
+    ],
     count: 0,
     cover: '/images/og/mensclub-og.jpg',
     ogDescription:

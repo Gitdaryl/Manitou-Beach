@@ -291,7 +291,7 @@ export function Lightbox({ photos, index, setIndex, onClose, title, shareUrl, sh
         <button
           onClick={(e) => { e.stopPropagation(); onHeart(); }}
           aria-label={cur.hearted ? 'Remove your heart' : 'Heart this photo'}
-          style={{ position: 'absolute', bottom: 22, left: 20, zIndex: 3, background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: 18, height: 38, padding: '0 15px', cursor: 'pointer', color: cur.hearted ? '#ff6b81' : '#fff', fontSize: 15, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif" }}
+          style={{ position: 'absolute', bottom: 22, right: 20, zIndex: 3, background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: 18, height: 38, padding: '0 15px', cursor: 'pointer', color: cur.hearted ? '#ff6b81' : '#fff', fontSize: 15, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif" }}
         >
           {cur.hearted ? '♥' : '♡'}{cur.hearts > 0 ? ` ${cur.hearts}` : ''}
         </button>
@@ -315,16 +315,18 @@ export function Lightbox({ photos, index, setIndex, onClose, title, shareUrl, sh
  *   title     : gallery title
  *   shareText : optional custom share message
  */
-export function PhotoGallery({ photos, slug, title, shareText, thumbOf = thumbSrc, onReport, reactions, onHeart }) {
+export function PhotoGallery({ photos, slug, title, shareText, thumbOf = thumbSrc, onReport, reactions, onHeart, urlSync = true }) {
   const [searchParams, setSearchParams] = useSearchParams();
   // index of open photo, or null. Initialised from ?photo= so deep links open straight to it.
   const [index, setIndex] = useState(() => {
+    if (!urlSync) return null;
     const p = parseInt(searchParams.get('photo') || '', 10);
     return p >= 1 && p <= photos.length ? p - 1 : null;
   });
 
   // Keep the URL in sync with the open photo (shareable while swiping).
   useEffect(() => {
+    if (!urlSync) return;
     const next = new URLSearchParams(searchParams);
     if (index !== null) next.set('photo', String(index + 1));
     else next.delete('photo');
@@ -354,10 +356,15 @@ export function PhotoGallery({ photos, slug, title, shareText, thumbOf = thumbSr
                 onMouseEnter={ev => (ev.currentTarget.style.transform = 'scale(1.04)')}
                 onMouseLeave={ev => (ev.currentTarget.style.transform = 'scale(1)')}
               />
-              {reactions?.[src]?.hearts > 0 && (
-                <span style={{ position: 'absolute', right: 8, bottom: 8, background: 'rgba(10,18,24,0.55)', color: '#fff', borderRadius: 12, padding: '3px 9px', fontSize: 11.5, lineHeight: '14px', fontFamily: "'Libre Franklin', sans-serif" }}>
-                  ♥ {reactions[src].hearts}
-                </span>
+              {onHeart && reactions?.[src] && (
+                <button
+                  type="button"
+                  onClick={(ev) => { ev.stopPropagation(); onHeart(src); }}
+                  aria-label={reactions[src].hearted ? 'Remove your heart' : 'Heart this photo'}
+                  style={{ position: 'absolute', right: 8, bottom: 8, display: 'inline-flex', alignItems: 'center', gap: 4, background: 'rgba(10,18,24,0.55)', border: 'none', color: reactions[src].hearted ? '#ff6b81' : '#fff', borderRadius: 14, padding: '5px 10px', fontSize: 13, lineHeight: '16px', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}
+                >
+                  {reactions[src].hearted ? '♥' : '♡'}{reactions[src].hearts > 0 ? ` ${reactions[src].hearts}` : ''}
+                </button>
               )}
             </div>
           </FadeIn>

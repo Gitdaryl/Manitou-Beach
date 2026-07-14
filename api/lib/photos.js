@@ -55,6 +55,7 @@ function normalize(h) {
     name: h.name || '',
     w: Number(h.w) || null,
     h: Number(h.h) || null,
+    event: h.event || '',
     status: h.status || 'live',
     flags: Number(h.flags) || 0,
     hearts: Number(h.hearts) || 0,
@@ -63,10 +64,10 @@ function normalize(h) {
 }
 
 // Add an uploaded photo to a gallery. Returns the stored record.
-export async function addPhoto(slug, { url, name, w, h }) {
+export async function addPhoto(slug, { url, name, w, h, event }) {
   const id = newId();
   const ts = Date.now();
-  const rec = { id, slug, url, name: name || '', w: w || '', h: h || '', status: 'live', flags: 0, hearts: 0, ts };
+  const rec = { id, slug, url, name: name || '', w: w || '', h: h || '', event: event || '', status: 'live', flags: 0, hearts: 0, ts };
   await kv.hset(pKey(id), rec);
   await kv.zadd(gKey(slug), { score: ts, member: id });
   return normalize(rec);

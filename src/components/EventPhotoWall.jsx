@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { PhotoGallery } from './PhotoGallery';
 import { SectionLabel } from './Shared';
 import { C } from '../data/config';
+import { GALLERIES } from '../data/galleries';
 
 // ============================================================
 // 📸  EventPhotoWall  — the drop-anywhere crowd photo module
@@ -83,7 +84,9 @@ export default function EventPhotoWall({ slug, title, compact = false }) {
   const [loaded, setLoaded] = useState(false);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState(null);
+  const [selEvent, setSelEvent] = useState('');
   const inputRef = useRef(null);
+  const eventDefs = GALLERIES[slug]?.events || [];
 
   const flash = (m, ms = 3500) => { setMsg(m); setTimeout(() => setMsg(null), ms); };
 
@@ -116,6 +119,7 @@ export default function EventPhotoWall({ slug, title, compact = false }) {
             data: shrunk.base64,
             w: shrunk.w,
             h: shrunk.h,
+            event: selEvent,
           }),
         });
         const d = await res.json();
@@ -161,6 +165,19 @@ export default function EventPhotoWall({ slug, title, compact = false }) {
   };
 
   const urls = photos.map((p) => p.url);
+
+  // Group photos into event sections (config order), untagged photos land in Club Life.
+  // Galleries without an events list keep the single flat grid.
+  const byEvent = {};
+  photos.forEach((p) => { const k = p.event || ''; (byEvent[k] = byEvent[k] || []).push(p); });
+  const sections = eventDefs.length
+    ? [
+        ...eventDefs.map((e) => ({ key: e.key, title: e.title, date: e.date, list: byEvent[e.key] || [] })),
+        { key: '', title: 'Club Life', date: '', list: byEvent[''] || [] },
+      ].filter((sec) => sec.list.length)
+    : [{ key: '', title: '', date: '', list: photos }];
+  const multiSection = sections.length > 1;
+
   const reactions = {};
   photos.forEach((p) => {
     reactions[p.url] = { id: p.id, hearts: p.hearts || 0, hearted: hasLocal('mb-hearted', p.id), flagged: hasLocal('mb-flagged', p.id) };
@@ -212,6 +229,25 @@ export default function EventPhotoWall({ slug, title, compact = false }) {
           Snap a photo or pick from your camera roll. It goes straight to the community gallery below.
         </p>
 
+        {eventDefs.length > 0 && (
+          <div style={{ margin: '0 auto 16px', maxWidth: 320, textAlign: 'left' }}>
+            <label htmlFor={`photo-event-${slug}`} style={{ display: 'block', fontSize: 12, fontWeight: 600, color: C.textMuted, margin: '0 0 6px 2px', fontFamily: "'Libre Franklin', sans-serif" }}>
+              Which event are these from?
+            </label>
+            <select
+              id={`photo-event-${slug}`}
+              value={selEvent}
+              onChange={(e) => setSelEvent(e.target.value)}
+              style={{ width: '100%', height: 42, padding: '0 12px', borderRadius: 10, border: `1px solid ${C.lakeBlue}33`, background: '#fff', color: C.text, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif" }}
+            >
+              <option value="">Club Life (no specific event)</option>
+              {eventDefs.map((e) => (
+                <option key={e.key} value={e.key}>{e.title}{e.date ? ` · ${e.date}` : ''}</option>
+              ))}
+            </select>
+          </div>
+        )}
+
         <input
           ref={inputRef}
           type="file"
@@ -247,21 +283,33 @@ export default function EventPhotoWall({ slug, title, compact = false }) {
           <p style={{ textAlign: 'center', color: C.textLight, fontSize: 13, margin: '0 0 16px' }}>
             {urls.length} community {urls.length === 1 ? 'photo' : 'photos'} · tap any photo to view, heart, share, or flag
           </p>
-          <PhotoGallery
-            photos={urls}
-            slug={slug}
-            title={`${title} — community photos`}
-            thumbOf={crowdThumb}
-            onReport={(src, reason) => {
-              const p = photos.find((x) => x.url === src);
-              if (p) reportPhoto(p.id, reason);
-            }}
-            reactions={reactions}
-            onHeart={(src) => {
-              const p = photos.find((x) => x.url === src);
-              if (p) heartPhoto(p.id);
-            }}
-          />
+          {sections.map((sec) => (
+            <div key={sec.key || 'general'} style={{ marginBottom: multiSection ? 36 : 0 }}>
+              {sec.title && multiSection && (
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, margin: '0 2px 12px', borderBottom: `1px solid ${C.lakeBlue}1c`, paddingBottom: 8 }}>
+                  <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 19, fontWeight: 400, color: C.text, margin: 0 }}>{sec.title}</h3>
+                  {sec.date && <span style={{ fontSize: 12, fontWeight: 600, color: C.textMuted, letterSpacing: 0.4, fontFamily: "'Libre Franklin', sans-serif" }}>{sec.date}</span>}
+                  <span style={{ marginLeft: 'auto', fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>{sec.list.length} {sec.list.length === 1 ? 'photo' : 'photos'}</span>
+                </div>
+              )}
+              <PhotoGallery
+                photos={sec.list.map((p) => p.url)}
+                slug={slug}
+                title={sec.title ? `${title} — ${sec.title}` : `${title} — community photos`}
+                thumbOf={crowdThumb}
+                urlSync={!multiSection}
+                onReport={(src, reason) => {
+                  const p = photos.find((x) => x.url === src);
+                  if (p) reportPhoto(p.id, reason);
+                }}
+                reactions={reactions}
+                onHeart={(src) => {
+                  const p = photos.find((x) => x.url === src);
+                  if (p) heartPhoto(p.id);
+                }}
+              />
+            </div>
+          ))}
         </>
       )}
       {loaded && urls.length === 0 && (

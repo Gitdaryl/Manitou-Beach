@@ -13,7 +13,7 @@
 
 import { put } from '@vercel/blob';
 import { addPhoto, KV_READY } from './lib/photos.js';
-import { GALLERY_SLUGS } from './lib/photo-slugs.js';
+import { GALLERY_SLUGS, cleanEvent } from './lib/photo-slugs.js';
 import { notifyFlagHook } from './lib/notify.js';
 
 export const config = {
@@ -29,7 +29,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { slug, filename, contentType, data, w, h } = req.body || {};
+    const { slug, filename, contentType, data, w, h, event } = req.body || {};
 
     if (!slug || !GALLERY_SLUGS.has(slug)) {
       return res.status(400).json({ error: 'Unknown gallery' });
@@ -108,6 +108,7 @@ export default async function handler(req, res) {
       name: `${seoName}.${ext}`,
       w: Number(w) || undefined,
       h: Number(h) || undefined,
+      event: cleanEvent(slug, event),
     });
 
     return res.status(200).json({ photo: rec });
