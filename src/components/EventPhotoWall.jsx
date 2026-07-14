@@ -57,6 +57,27 @@ function shrinkImage(file) {
 // to use each source as its own thumbnail.
 const crowdThumb = (src) => src;
 
+// Stable anonymous id for this browser — powers one-flag / one-heart per person.
+function deviceId() {
+  try {
+    let d = localStorage.getItem('mb-device');
+    if (!d) {
+      d = globalThis.crypto?.randomUUID?.() || 'd_' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+      localStorage.setItem('mb-device', d);
+    }
+    return d;
+  } catch { return 'anon-' + Math.random().toString(36).slice(2, 10); }
+}
+const localIds = (key) => { try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch { return []; } };
+const hasLocal = (key, id) => localIds(key).includes(id);
+const setLocal = (key, id, on) => {
+  try {
+    let a = localIds(key).filter((x) => x !== id);
+    if (on) a.push(id);
+    localStorage.setItem(key, JSON.stringify(a.slice(-800)));
+  } catch { /* private mode etc. */ }
+};
+
 export default function EventPhotoWall({ slug, title, compact = false }) {
   const [photos, setPhotos] = useState([]);
   const [loaded, setLoaded] = useState(false);
@@ -109,19 +130,70 @@ export default function EventPhotoWall({ slug, title, compact = false }) {
     if (inputRef.current) inputRef.current.value = '';
   };
 
-  const reportPhoto = async (id) => {
+  const reportPhoto = async (id, reason) => {
     if (!id) return;
     try {
       await fetch('/api/photos-report', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id }),
+        body: JSON.stringify({ id, reason, deviceId: deviceId() }),
       });
+      setLocal('mb-flagged', id, true);
+      setPhotos((prev) => [...prev]);
       flash('Thanks — that photo has been flagged for review.');
     } catch { flash('Could not flag that photo.'); }
   };
 
+  const heartPhoto = async (id) => {
+    if (!id) return;
+    try {
+      const res = await fetch('/api/photos-heart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, deviceId: deviceId() }),
+      });
+      const d = await res.json();
+      if (res.ok) {
+        setLocal('mb-hearted', id, !!d.hearted);
+        setPhotos((prev) => prev.map((p) => (p.id === id ? { ...p, hearts: d.hearts } : p)));
+      }
+    } catch { /* leave count as-is */ }
+  };
+
   const urls = photos.map((p) => p.url);
+  const reactions = {};
+  photos.forEach((p) => {
+    reactions[p.url] = { id: p.id, hearts: p.hearts || 0, hearted: hasLocal('mb-hearted', p.id), flagged: hasLocal('mb-flagged', p.id) };
+  });
+
+  // Machine-readable engagement (schema.org InteractionCounter / LikeAction)
+  // so AI search and crawlers can see real community interaction on these photos.
+  useEffect(() => {
+    if (typeof document === 'undefined') return undefined;
+    const elId = `photowall-jsonld-${slug}`;
+    document.getElementById(elId)?.remove();
+    if (!photos.length) return undefined;
+    const el = document.createElement('script');
+    el.type = 'application/ld+json';
+    el.id = elId;
+    el.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'ImageGallery',
+      name: `${title} — community photos`,
+      image: photos.slice(0, 50).map((p) => ({
+        '@type': 'ImageObject',
+        contentUrl: p.url,
+        name: p.name || undefined,
+        interactionStatistic: {
+          '@type': 'InteractionCounter',
+          interactionType: { '@type': 'LikeAction' },
+          userInteractionCount: p.hearts || 0,
+        },
+      })),
+    });
+    document.head.appendChild(el);
+    return () => document.getElementById(elId)?.remove();
+  }, [photos, slug, title]);
 
   return (
     <section style={{ maxWidth: 1100, margin: '0 auto', padding: compact ? '8px 20px 32px' : '24px 20px 56px' }}>
@@ -173,16 +245,21 @@ export default function EventPhotoWall({ slug, title, compact = false }) {
       {loaded && urls.length > 0 && (
         <>
           <p style={{ textAlign: 'center', color: C.textLight, fontSize: 13, margin: '0 0 16px' }}>
-            {urls.length} community {urls.length === 1 ? 'photo' : 'photos'} · tap any photo to view, share, or flag
+            {urls.length} community {urls.length === 1 ? 'photo' : 'photos'} · tap any photo to view, heart, share, or flag
           </p>
           <PhotoGallery
             photos={urls}
             slug={slug}
             title={`${title} — community photos`}
             thumbOf={crowdThumb}
-            onReport={(src) => {
+            onReport={(src, reason) => {
               const p = photos.find((x) => x.url === src);
-              if (p) reportPhoto(p.id);
+              if (p) reportPhoto(p.id, reason);
+            }}
+            reactions={reactions}
+            onHeart={(src) => {
+              const p = photos.find((x) => x.url === src);
+              if (p) heartPhoto(p.id);
             }}
           />
         </>

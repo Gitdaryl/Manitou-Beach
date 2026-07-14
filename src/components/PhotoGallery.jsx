@@ -96,6 +96,13 @@ export function ShareRow({ url, title, text, dark = true }) {
   );
 }
 
+const FLAG_REASONS = [
+  ['not-event', 'Not from this event'],
+  ['inappropriate', 'Inappropriate'],
+  ['remove-request', 'Someone in it asked to remove it'],
+  ['spam', 'Spam or ads'],
+];
+
 const NAV_BTN = { position: 'absolute', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: '50%', width: 44, height: 44, cursor: 'pointer', color: '#fff', fontSize: 20, zIndex: 2 };
 
 /**
@@ -108,9 +115,11 @@ const NAV_BTN = { position: 'absolute', top: '50%', transform: 'translateY(-50%)
  *   onClose   : () => void
  *   shareUrl  : shareable deep link for the current photo
  */
-export function Lightbox({ photos, index, setIndex, onClose, title, shareUrl, shareText, onReport }) {
+export function Lightbox({ photos, index, setIndex, onClose, title, shareUrl, shareText, onReport, reactions, onHeart }) {
   const n = photos.length;
-  const [reported, setReported] = useState(false);
+  const cur = reactions ? reactions[photos[index]] : null;
+  const [reported, setReported] = useState(!!cur?.flagged);
+  const [askReason, setAskReason] = useState(false);
   const [dx, setDx] = useState(0);          // live horizontal drag offset (px)
   const [anim, setAnim] = useState(false);  // whether the track is transitioning
   const startRef = useRef(null);
@@ -123,7 +132,7 @@ export function Lightbox({ photos, index, setIndex, onClose, title, shareUrl, sh
   const nextIdx = (index + 1) % n;
 
   // Reset the "reported" acknowledgement when the visible photo changes.
-  useEffect(() => { setReported(false); }, [index]);
+  useEffect(() => { setReported(!!(reactions && reactions[photos[index]]?.flagged)); setAskReason(false); }, [index]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Animate the track to a neighbour, then commit the new index and re-center instantly.
   const commit = (targetPx, newIndex) => {
@@ -240,14 +249,51 @@ export function Lightbox({ photos, index, setIndex, onClose, title, shareUrl, sh
       <button onClick={(e) => { e.stopPropagation(); goNext(); }} aria-label="Next photo" style={{ ...NAV_BTN, right: 20 }}>›</button>
       <button onClick={(e) => { e.stopPropagation(); onClose(); }} aria-label="Close" style={{ position: 'absolute', top: 16, right: 16, background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: '50%', width: 36, height: 36, cursor: 'pointer', color: '#fff', fontSize: 18, zIndex: 2 }}>×</button>
 
-      {/* Community flag — only on crowd galleries (onReport supplied) */}
+      {/* Community flag — only on crowd galleries (onReport supplied).
+          Calm grey until tapped; a reason is required before the flag counts. */}
       {onReport && (
+        <div onClick={(e) => e.stopPropagation()} style={{ position: 'absolute', top: 16, left: 16, zIndex: 3 }}>
+          {!askReason ? (
+            <button
+              onClick={() => { if (!reported) setAskReason(true); }}
+              aria-label="Flag this photo"
+              style={{ background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: 16, height: 34, padding: '0 14px', cursor: reported ? 'default' : 'pointer', color: reported ? '#ff8a8a' : 'rgba(255,255,255,0.75)', fontSize: 12.5, fontFamily: "'Libre Franklin', sans-serif", opacity: reported ? 0.9 : 1 }}
+            >
+              {reported ? '⚑ Flagged' : '⚑ Flag'}
+            </button>
+          ) : (
+            <div style={{ background: 'rgba(16,26,34,0.97)', border: '1px solid rgba(255,255,255,0.16)', borderRadius: 12, padding: '10px 8px 4px', width: 232, boxShadow: '0 8px 28px rgba(0,0,0,0.45)' }}>
+              <div style={{ color: 'rgba(255,255,255,0.9)', fontSize: 12.5, fontWeight: 600, margin: '0 6px 8px', fontFamily: "'Libre Franklin', sans-serif" }}>Why flag this photo?</div>
+              {FLAG_REASONS.map(([key, label]) => (
+                <button
+                  key={key}
+                  onClick={() => { onReport(key); setReported(true); setAskReason(false); }}
+                  style={{ display: 'block', width: '100%', textAlign: 'left', background: 'transparent', border: 'none', color: '#fff', fontSize: 13, padding: '8px 6px', cursor: 'pointer', borderRadius: 6, fontFamily: "'Libre Franklin', sans-serif" }}
+                  onMouseEnter={(ev) => (ev.currentTarget.style.background = 'rgba(255,255,255,0.09)')}
+                  onMouseLeave={(ev) => (ev.currentTarget.style.background = 'transparent')}
+                >
+                  {label}
+                </button>
+              ))}
+              <button
+                onClick={() => setAskReason(false)}
+                style={{ display: 'block', width: '100%', textAlign: 'center', background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.5)', fontSize: 12, padding: '8px 6px 6px', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}
+              >
+                Cancel
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Community heart — toggles, one per person */}
+      {onHeart && cur && (
         <button
-          onClick={(e) => { e.stopPropagation(); if (!reported) { onReport(); setReported(true); } }}
-          aria-label="Flag this photo"
-          style={{ position: 'absolute', top: 16, left: 16, background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: 16, height: 34, padding: '0 14px', cursor: reported ? 'default' : 'pointer', color: '#fff', fontSize: 12.5, fontFamily: "'Libre Franklin', sans-serif", zIndex: 2, opacity: reported ? 0.65 : 1 }}
+          onClick={(e) => { e.stopPropagation(); onHeart(); }}
+          aria-label={cur.hearted ? 'Remove your heart' : 'Heart this photo'}
+          style={{ position: 'absolute', bottom: 22, left: 20, zIndex: 3, background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: 18, height: 38, padding: '0 15px', cursor: 'pointer', color: cur.hearted ? '#ff6b81' : '#fff', fontSize: 15, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif" }}
         >
-          {reported ? '✓ Flagged' : '⚑ Flag'}
+          {cur.hearted ? '♥' : '♡'}{cur.hearts > 0 ? ` ${cur.hearts}` : ''}
         </button>
       )}
 
@@ -269,7 +315,7 @@ export function Lightbox({ photos, index, setIndex, onClose, title, shareUrl, sh
  *   title     : gallery title
  *   shareText : optional custom share message
  */
-export function PhotoGallery({ photos, slug, title, shareText, thumbOf = thumbSrc, onReport }) {
+export function PhotoGallery({ photos, slug, title, shareText, thumbOf = thumbSrc, onReport, reactions, onHeart }) {
   const [searchParams, setSearchParams] = useSearchParams();
   // index of open photo, or null. Initialised from ?photo= so deep links open straight to it.
   const [index, setIndex] = useState(() => {
@@ -298,7 +344,7 @@ export function PhotoGallery({ photos, slug, title, shareText, thumbOf = thumbSr
           <FadeIn key={src} delay={Math.min(i, 8) * 30} direction="scale" style={{ breakInside: 'avoid', WebkitColumnBreakInside: 'avoid', marginBottom: 10 }}>
             <div
               onClick={() => setIndex(i)}
-              style={{ borderRadius: 10, overflow: 'hidden', cursor: 'pointer', background: C.warmWhite || '#f5f2ec', lineHeight: 0 }}
+              style={{ borderRadius: 10, overflow: 'hidden', cursor: 'pointer', background: C.warmWhite || '#f5f2ec', lineHeight: 0, position: 'relative' }}
             >
               <img
                 src={thumbOf(src)}
@@ -308,6 +354,11 @@ export function PhotoGallery({ photos, slug, title, shareText, thumbOf = thumbSr
                 onMouseEnter={ev => (ev.currentTarget.style.transform = 'scale(1.04)')}
                 onMouseLeave={ev => (ev.currentTarget.style.transform = 'scale(1)')}
               />
+              {reactions?.[src]?.hearts > 0 && (
+                <span style={{ position: 'absolute', right: 8, bottom: 8, background: 'rgba(10,18,24,0.55)', color: '#fff', borderRadius: 12, padding: '3px 9px', fontSize: 11.5, lineHeight: '14px', fontFamily: "'Libre Franklin', sans-serif" }}>
+                  ♥ {reactions[src].hearts}
+                </span>
+              )}
             </div>
           </FadeIn>
         ))}
@@ -322,7 +373,9 @@ export function PhotoGallery({ photos, slug, title, shareText, thumbOf = thumbSr
           title={title}
           shareUrl={shareUrl}
           shareText={shareText}
-          onReport={onReport ? () => onReport(photos[index]) : undefined}
+          onReport={onReport ? (reason) => onReport(photos[index], reason) : undefined}
+          reactions={reactions}
+          onHeart={onHeart ? () => onHeart(photos[index]) : undefined}
         />
       )}
     </>

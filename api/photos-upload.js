@@ -2,13 +2,19 @@
 // Guest photo submission for a crowd gallery.
 // Body: { slug, filename, contentType, data (base64, no prefix), w?, h? }
 //
-// Flow: base64 → Blob (public) with a Claude-Vision SEO filename → KV index.
+// Flow: base64 → Claude Vision (safety pre-screen + SEO filename in ONE call)
+//       → Blob (public) → KV index.
+// Unsafe photos are rejected before anything is stored, and the n8n notify
+// hook gets a 'prescreen-block' event so Yeti hears about the attempt.
+// If the vision call fails or returns garbage, uploads still work (screen
+// open > gallery dark) — the community flag system is the backstop.
 // Images are downscaled client-side before they get here (see EventPhotoWall),
 // so this just enforces a hard cap and stores what arrives.
 
 import { put } from '@vercel/blob';
 import { addPhoto, KV_READY } from './lib/photos.js';
 import { GALLERY_SLUGS } from './lib/photo-slugs.js';
+import { notifyFlagHook } from './lib/notify.js';
 
 export const config = {
   api: { bodyParser: { sizeLimit: '6mb' } },
@@ -40,7 +46,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Photo too large. Please try again.' });
     }
 
-    // ── SEO filename via Claude Vision (falls back to a sanitised name) ──
+    // ── Safety pre-screen + SEO filename via Claude Vision (one call) ──
     const ext = (filename.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
     let seoName = `${slug}-photo`;
     if (process.env.ANTHROPIC_API_KEY) {
@@ -54,24 +60,41 @@ export default async function handler(req, res) {
           },
           body: JSON.stringify({
             model: 'claude-haiku-4-5-20251001',
-            max_tokens: 60,
+            max_tokens: 150,
             messages: [{
               role: 'user',
               content: [
                 { type: 'image', source: { type: 'base64', media_type: contentType, data } },
-                { type: 'text', text: `This is a community photo submitted to the "${slug}" event gallery in Manitou Beach, Michigan (Devils Lake / Irish Hills). Generate a descriptive SEO-friendly filename (no extension, hyphens, max 8 words, include location keywords like manitou-beach, devils-lake, michigan where relevant). Reply with ONLY the filename. Example: manitou-beach-america-250-fireworks-devils-lake` },
+                { type: 'text', text: `This is a community photo submitted to the public "${slug}" event gallery on a family-friendly small-town community website for Manitou Beach, Michigan (Devils Lake / Irish Hills).\n\nDo two things:\n1. SAFETY: decide if this photo is appropriate for a family community site. Unsafe = nudity or sexual content, graphic violence or gore, hate symbols, drug use, or content clearly intended to shock or harass. Normal photos of people, kids at public events, pets, food, scenery, and casual fun are SAFE. When genuinely unsure, lean safe.\n2. FILENAME: a descriptive SEO filename (no extension, hyphens, max 8 words, include location keywords like manitou-beach, devils-lake, michigan where relevant).\n\nReply with ONLY minified JSON, no markdown: {"safe":true,"reason":"","filename":"manitou-beach-example"} — set safe to false and give a short reason only when unsafe.` },
               ],
             }],
           }),
         });
         if (visionRes.ok) {
           const vd = await visionRes.json();
-          const suggested = vd.content?.[0]?.text?.trim().toLowerCase()
+          const raw = (vd.content?.[0]?.text || '').trim().replace(/^```(json)?/i, '').replace(/```$/, '').trim();
+          let verdict = null;
+          try { verdict = JSON.parse(raw); } catch { /* garbage → treat as no verdict */ }
+
+          if (verdict && verdict.safe === false) {
+            await notifyFlagHook({
+              event: 'prescreen-block',
+              slug,
+              photoUrl: '',
+              name: filename,
+              reason: String(verdict.reason || 'AI pre-screen').slice(0, 200),
+              flags: 0,
+              id: 'blocked-before-store',
+            });
+            return res.status(400).json({ error: "This photo can't be posted to the community gallery." });
+          }
+
+          const suggested = String(verdict?.filename || '').toLowerCase()
             .replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').slice(0, 80);
           if (suggested && suggested.length > 4) seoName = suggested;
         }
       } catch (visionErr) {
-        console.warn('photos-upload vision rename skipped:', visionErr.message);
+        console.warn('photos-upload vision screen skipped:', visionErr.message);
       }
     }
 
