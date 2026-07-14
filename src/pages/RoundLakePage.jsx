@@ -278,7 +278,7 @@ function RoundLakeCommunitySection() {
               Devils & Round Lake Men's Club
             </h3>
             <p style={{ fontSize: 14, color: "rgba(255,255,255,0.35)", lineHeight: 1.7, maxWidth: 480, margin: "0 auto" }}>
-              A charitable nonprofit that donates laptops to students, supports Toys for Tots, runs benefit auctions, and sponsors Shop with a Cop. The club that ties both lakes together.
+              A charitable nonprofit that donates laptops to students, supports Toys for Tots, runs benefit auctions, and sponsors Shop with a Hero. The club that ties both lakes together.
             </p>
           </div>
         </FadeIn>

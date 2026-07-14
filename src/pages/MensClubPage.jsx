@@ -39,7 +39,7 @@ const MENS_CLUB_EVENTS = [
   {
     title: "Benefit Auction & Raffle",
     date: "During Tip-Up Festival",
-    desc: "The auction is the club's biggest fundraiser - local businesses and community members donate items. Proceeds support laptops for students, Toys for Tots, Shop with a Cop, and food pantries.",
+    desc: "The auction is the club's biggest fundraiser - local businesses and community members donate items. Proceeds support laptops for students, Toys for Tots, Shop with a Hero, and food pantries.",
     image: "/images/mens-club/auction.jpg",
   },
   {
@@ -52,14 +52,14 @@ const MENS_CLUB_EVENTS = [
     title: "Community Service Days",
     date: "Year-round",
     desc: "Throughout the year, club members volunteer for lake cleanups, food drives, Christmas gift baskets, and support for families in need through the Community for People in Need program.",
-    image: "/images/mens-club/shop-with-a-cop.jpg",
+    image: "/images/mens-club/shop-with-a-hero.jpg",
   },
 ];
 
 const MENS_CLUB_PROGRAMS = [
   { icon: "🎓", title: "Laptops for Students", desc: "Donating laptops to college-bound high school graduates from the local community." },
   { icon: "🎄", title: "Toys for Tots", desc: "Over $8,000 contributed to ensure every child in the area has a gift under the tree." },
-  { icon: "👮", title: "Shop with a Cop", desc: "Partnering with local law enforcement to give kids a positive holiday shopping experience." },
+  { icon: "🦸", title: "Shop with a Hero", desc: "Partnering with local law enforcement and first responders to give kids a positive holiday shopping experience." },
   { icon: "🍞", title: "Food Pantry Support", desc: "Collecting pantry items for the Kiwanis Club and Community for People in Need." },
   { icon: "🎁", title: "Christmas Gift Baskets", desc: "Assembling and delivering holiday gift baskets to families facing hardship." },
   { icon: "🎆", title: "Fireworks Fund", desc: "Funding the annual July 4th fireworks display over Devils Lake for the entire community." },
@@ -162,7 +162,7 @@ function MensClubMissionSection() {
                 The Devils and Round Lake Men's Club is a 501(c)(3) nonprofit dedicated to improving life in the Manitou Beach community. Through annual events like the legendary Tip-Up Festival and the Fourth of July Firecracker 7K, the club raises funds that go directly back to the people who need it most.
               </p>
               <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, margin: 0 }}>
-                From buying laptops for college-bound students to donating thousands in toys through Toys for Tots, partnering with law enforcement for Shop with a Cop, and delivering Christmas gift baskets to families in need - the Men's Club is the backbone of Manitou Beach's charitable community.
+                From buying laptops for college-bound students to donating thousands in toys through Toys for Tots, partnering with law enforcement for Shop with a Hero, and delivering Christmas gift baskets to families in need - the Men's Club is the backbone of Manitou Beach's charitable community.
               </p>
             </div>
           </FadeIn>
@@ -240,7 +240,7 @@ function MensClubGallerySection() {
     { src: "/images/mens-club/firecracker-7k-2.jpg", caption: "Firecracker 7K" },
     { src: "/images/mens-club/auction.jpg", caption: "Benefit Auction" },
     { src: "/images/mens-club/fireworks.jpg", caption: "July 4th Fireworks" },
-    { src: "/images/mens-club/shop-with-a-cop.jpg", caption: "Shop with a Cop" },
+    { src: "/images/mens-club/shop-with-a-hero.jpg", caption: "Shop with a Hero" },
     { src: "/images/mens-club/toys-for-tots.jpg", caption: "Toys for Tots" },
   ];
 
