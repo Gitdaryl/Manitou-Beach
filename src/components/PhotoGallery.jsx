@@ -219,7 +219,7 @@ export function Lightbox({ photos, index, setIndex, onClose, title, shareUrl, sh
   };
 
   const slide = { flex: '0 0 100vw', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '64px 24px 96px', boxSizing: 'border-box' };
-  const imgStyle = { maxWidth: '92vw', maxHeight: '100%', objectFit: 'contain', borderRadius: 8, userSelect: 'none', WebkitUserSelect: 'none' };
+  const imgStyle = { maxWidth: '92vw', maxHeight: 'calc(100vh - 175px)', objectFit: 'contain', borderRadius: 8, userSelect: 'none', WebkitUserSelect: 'none' };
 
   return (
     <div
@@ -238,8 +238,18 @@ export function Lightbox({ photos, index, setIndex, onClose, title, shareUrl, sh
       }}>
         {[prevIdx, index, nextIdx].map((pi, slot) => (
           <div key={`${slot}-${pi}`} style={slide}>
-            <img src={photos[pi]} alt={`${title} - photo ${pi + 1}`} draggable={false}
-              onClick={(e) => e.stopPropagation()} style={imgStyle} />
+            <div style={{ position: 'relative', display: 'inline-block', lineHeight: 0 }} onClick={(e) => e.stopPropagation()}>
+              <img src={photos[pi]} alt={`${title} - photo ${pi + 1}`} draggable={false} style={imgStyle} />
+              {slot === 1 && onHeart && cur && (
+                <button
+                  onClick={(e) => { e.stopPropagation(); onHeart(); }}
+                  aria-label={cur.hearted ? 'Remove your heart' : 'Heart this photo'}
+                  style={{ position: 'absolute', right: 10, bottom: 10, display: 'inline-flex', alignItems: 'center', gap: 5, background: 'rgba(10,18,24,0.6)', border: 'none', borderRadius: 17, height: 34, padding: '0 13px', cursor: 'pointer', color: cur.hearted ? '#ff6b81' : '#fff', fontSize: 15, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif" }}
+                >
+                  {cur.hearted ? '♥' : '♡'}{cur.hearts > 0 ? ` ${cur.hearts}` : ''}
+                </button>
+              )}
+            </div>
           </div>
         ))}
       </div>
@@ -286,16 +296,6 @@ export function Lightbox({ photos, index, setIndex, onClose, title, shareUrl, sh
         </div>
       )}
 
-      {/* Community heart — toggles, one per person */}
-      {onHeart && cur && (
-        <button
-          onClick={(e) => { e.stopPropagation(); onHeart(); }}
-          aria-label={cur.hearted ? 'Remove your heart' : 'Heart this photo'}
-          style={{ position: 'absolute', bottom: 22, right: 20, zIndex: 3, background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: 18, height: 38, padding: '0 15px', cursor: 'pointer', color: cur.hearted ? '#ff6b81' : '#fff', fontSize: 15, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif" }}
-        >
-          {cur.hearted ? '♥' : '♡'}{cur.hearts > 0 ? ` ${cur.hearts}` : ''}
-        </button>
-      )}
 
       <div style={{ position: 'absolute', top: 20, left: '50%', transform: 'translateX(-50%)', color: 'rgba(255,255,255,0.55)', fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", zIndex: 2 }}>
         {title} · {index + 1} / {n}
