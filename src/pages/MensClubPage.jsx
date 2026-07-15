@@ -8,6 +8,59 @@ import EventPhotoWall from '../components/EventPhotoWall';
 // ============================================================
 // 🏛️  MEN'S CLUB PAGE (/mens-club)
 // ============================================================
+
+// --- Golf Outing 2026 ---
+// Hero flips to golf mode until the event has passed, then reverts automatically.
+const GOLF_OUTING = {
+  date: new Date("2026-09-13T08:30:00-04:00"),
+  heroUntil: new Date("2026-09-14T00:00:00-04:00"),
+  venue: "Devils Lake Golf Course",
+  address: "14600 U.S. 223, Manitou Beach, MI 49253",
+  phone: "(517) 547-3653",
+  video: "/images/mens-club/video/golf-hero-loop.mp4",
+  poster: "/images/mens-club/golf.jpg",
+};
+
+const GOLF_SPONSOR_TIERS = [
+  {
+    tier: "Gold",
+    accent: "#C9A227",
+    sponsors: [
+      { name: "National Transportation Associates", sub: "NTA Truck Team · Independent Insurance Agent", logo: null, url: null },
+    ],
+  },
+  {
+    tier: "Silver",
+    accent: "#9BA3AD",
+    sponsors: [
+      { name: "Scotty's Body Shop", sub: "Quality Autobody Repair Since 1990 · 2410 East US 223, Adrian · (517) 265-3711", logo: null, url: null },
+    ],
+  },
+  {
+    tier: "Bronze",
+    accent: "#A87243",
+    sponsors: [
+      { name: "Edison Builders LLC", sub: "Licensed & Insured · (517) 448-8653", logo: "/images/mens-club/sponsors/edison-logo.jpg", url: null },
+    ],
+  },
+];
+
+function useCountdown(target) {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(t);
+  }, []);
+  const diff = Math.max(0, target.getTime() - now);
+  return {
+    days: Math.floor(diff / 86400000),
+    hours: Math.floor(diff / 3600000) % 24,
+    mins: Math.floor(diff / 60000) % 60,
+    secs: Math.floor(diff / 1000) % 60,
+    done: diff === 0,
+  };
+}
+
 const MENS_CLUB_STATS = [
   { label: "Founded", value: "501(c)(3)", sub: "IRS Ruling 2016" },
   { label: "EIN", value: "46-4087550", sub: "Tax-exempt nonprofit" },
@@ -32,8 +85,8 @@ const MENS_CLUB_EVENTS = [
   },
   {
     title: "Golf Outing",
-    date: "Annual - Summer",
-    desc: "A community golf outing that brings together members, local businesses, and supporters. All proceeds benefit the club's charitable programs.",
+    date: "September 13, 2026 - Shotgun start 8:30 AM",
+    desc: "18 holes plus cart at Devils Lake Golf Course, $75 per person. Check in at 8:00 am, hot dogs at the turn, and a hole-in-one contest where an ace wins a 2-year lease on a Ford Bronco Sport. All proceeds benefit the club's charitable programs.",
     image: "/images/mens-club/golf.jpg",
   },
   {
@@ -65,50 +118,228 @@ const MENS_CLUB_PROGRAMS = [
   { icon: "🎆", title: "Fireworks Fund", desc: "Funding the annual July 4th fireworks display over Devils Lake for the entire community." },
 ];
 
+function GolfCountdown() {
+  const { days, hours, mins, secs } = useCountdown(GOLF_OUTING.date);
+  const units = [
+    { label: "Days", value: days },
+    { label: "Hours", value: hours },
+    { label: "Min", value: mins },
+    { label: "Sec", value: secs },
+  ];
+  return (
+    <div style={{ display: "flex", gap: "clamp(8px, 2vw, 14px)", justifyContent: "center", flexWrap: "wrap", marginBottom: 32 }}>
+      {units.map((u) => (
+        <div key={u.label} style={{
+          minWidth: "clamp(64px, 16vw, 92px)", padding: "clamp(10px, 2vw, 16px) 8px",
+          background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)",
+          borderRadius: 12, backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
+        }}>
+          <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 5vw, 40px)", color: C.cream, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>
+            {String(u.value).padStart(2, "0")}
+          </div>
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunsetLight, marginTop: 6, fontFamily: "'Libre Franklin', sans-serif" }}>
+            {u.label}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function MensClubHero() {
   const [loaded, setLoaded] = useState(false);
   useEffect(() => { setTimeout(() => setLoaded(true), 80); }, []);
+  const golfMode = Date.now() < GOLF_OUTING.heroUntil.getTime();
 
   return (
     <section style={{
-      backgroundImage: "url(/images/mens-club-hero.jpg)",
+      backgroundImage: golfMode ? `url(${GOLF_OUTING.poster})` : "url(/images/mens-club-hero.jpg)",
       backgroundSize: "cover",
       backgroundPosition: "center",
       backgroundColor: C.night,
-      padding: "180px 24px 140px",
+      padding: golfMode ? "160px 24px 110px" : "180px 24px 140px",
       position: "relative", overflow: "hidden", textAlign: "center",
     }}>
+      {golfMode && (
+        <video
+          autoPlay muted loop playsInline
+          poster={GOLF_OUTING.poster}
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+        >
+          <source src={GOLF_OUTING.video} type="video/mp4" />
+        </video>
+      )}
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(170deg, rgba(10,18,24,0.72) 0%, rgba(10,18,24,0.45) 50%, rgba(10,18,24,0.85) 100%)" }} />
       <div style={{ maxWidth: 800, margin: "0 auto", position: "relative", zIndex: 1, opacity: loaded ? 1 : 0, transform: loaded ? "translateY(0)" : "translateY(20px)", transition: "all 0.8s ease" }}>
-        <img src="/images/mens_club_logo.png" alt="Men's Club Logo" style={{ width: 96, height: 96, borderRadius: "50%", objectFit: "cover", marginBottom: 20, border: `3px solid rgba(255,255,255,0.18)`, boxShadow: "0 4px 24px rgba(0,0,0,0.4)" }} />
-        <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunsetLight, marginBottom: 12 }}>
-          501(c)(3) Nonprofit
+        <img src="/images/mens_club_logo.png" alt="Men's Club Logo" style={{ width: golfMode ? 76 : 96, height: golfMode ? 76 : 96, borderRadius: "50%", objectFit: "cover", marginBottom: 20, border: `3px solid rgba(255,255,255,0.18)`, boxShadow: "0 4px 24px rgba(0,0,0,0.4)" }} />
+        {golfMode ? (
+          <>
+            <div style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.sunsetLight, marginBottom: 12 }}>
+              Devils & Round Lake Men's Club presents
+            </div>
+            <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(34px, 6vw, 62px)", fontWeight: 400, color: C.cream, lineHeight: 1.05, margin: "0 0 14px 0" }}>
+              Golf Outing 2026
+            </h1>
+            <p style={{ fontSize: "clamp(14px, 1.6vw, 18px)", color: "rgba(255,255,255,0.75)", lineHeight: 1.6, maxWidth: 560, margin: "0 auto 28px" }}>
+              September 13, 2026 · Shotgun start 8:30 am<br />
+              {GOLF_OUTING.venue} · Manitou Beach
+            </p>
+            <GolfCountdown />
+            <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+              <a href="#golf-outing" className="btn-animated" style={{
+                display: "inline-flex", alignItems: "center", gap: 8,
+                padding: "12px 28px", borderRadius: 8,
+                background: C.sunset, color: C.cream,
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+              }}>
+                Event Details
+              </a>
+              <a href={`tel:${GOLF_OUTING.phone.replace(/[^0-9]/g, "")}`} className="btn-animated" style={{
+                display: "inline-flex", alignItems: "center", gap: 8,
+                padding: "12px 28px", borderRadius: 8,
+                background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", color: C.cream,
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+              }}>
+                Call to Sign Up
+              </a>
+              <ShareBar title="Men's Club Golf Outing 2026 - Devils Lake Golf Course - Manitou Beach" />
+            </div>
+          </>
+        ) : (
+          <>
+            <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunsetLight, marginBottom: 12 }}>
+              501(c)(3) Nonprofit
+            </div>
+            <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(32px, 6vw, 64px)", fontWeight: 400, color: C.cream, lineHeight: 1.05, margin: "0 0 20px 0" }}>
+              Devils & Round Lake<br />Men's Club
+            </h1>
+            <p style={{ fontSize: "clamp(14px, 1.5vw, 17px)", color: "rgba(255,255,255,0.5)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto 32px" }}>
+              Service, leadership, tradition, fellowship, and fun. Supporting needy families and community events across Manitou Beach since the days our grandfathers fished these lakes.
+            </p>
+            <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+              <a href="https://www.facebook.com/profile.php?id=100064837808733" target="_blank" rel="noopener noreferrer" className="btn-animated" style={{
+                display: "inline-flex", alignItems: "center", gap: 8,
+                padding: "12px 28px", borderRadius: 8,
+                background: C.sunset, color: C.cream,
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+              }}>
+                Follow on Facebook
+              </a>
+              <a href="#mens-club-events" className="btn-animated" style={{
+                display: "inline-flex", alignItems: "center", gap: 8,
+                padding: "12px 28px", borderRadius: 8,
+                background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", color: C.cream,
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+              }}>
+                View Events
+              </a>
+              <ShareBar title="Devils & Round Lake Men's Club - Manitou Beach" />
+            </div>
+          </>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function GolfOutingSection() {
+  const details = [
+    { label: "When", value: "September 13, 2026" },
+    { label: "Check-In", value: "8:00 am" },
+    { label: "Shotgun Start", value: "8:30 am" },
+    { label: "Cost", value: "$75 / person" },
+    { label: "Includes", value: "18 holes + cart" },
+    { label: "At the Turn", value: "Hot dogs" },
+  ];
+
+  return (
+    <section id="golf-outing" style={{ background: C.warmWhite, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 900, margin: "0 auto" }}>
+        <FadeIn>
+          <div style={{ textAlign: "center", marginBottom: 40 }}>
+            <SectionLabel>September 13, 2026</SectionLabel>
+            <SectionTitle center>Golf Outing at Devils Lake Golf Course</SectionTitle>
+            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 560, margin: "0 auto" }}>
+              Grab your foursome and join us for 18 holes on the shore of Devils Lake. Every dollar raised goes right back into the community through the club's charitable programs.
+            </p>
+          </div>
+        </FadeIn>
+
+        <div className="mens-club-stats" style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 16, marginBottom: 28 }}>
+          {details.map((d, i) => (
+            <FadeIn key={d.label} delay={i * 60} direction="scale">
+              <div style={{ background: C.cream, borderRadius: 12, padding: "20px 12px", textAlign: "center", border: `1px solid ${C.sand}`, height: "100%" }}>
+                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sage, marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>
+                  {d.label}
+                </div>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: C.text }}>{d.value}</div>
+              </div>
+            </FadeIn>
+          ))}
         </div>
-        <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(32px, 6vw, 64px)", fontWeight: 400, color: C.cream, lineHeight: 1.05, margin: "0 0 20px 0" }}>
-          Devils & Round Lake<br />Men's Club
-        </h1>
-        <p style={{ fontSize: "clamp(14px, 1.5vw, 17px)", color: "rgba(255,255,255,0.5)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto 32px" }}>
-          Service, leadership, tradition, fellowship, and fun. Supporting needy families and community events across Manitou Beach since the days our grandfathers fished these lakes.
-        </p>
-        <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-          <a href="https://www.facebook.com/profile.php?id=100064837808733" target="_blank" rel="noopener noreferrer" className="btn-animated" style={{
-            display: "inline-flex", alignItems: "center", gap: 8,
-            padding: "12px 28px", borderRadius: 8,
-            background: C.sunset, color: C.cream,
-            fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+
+        <FadeIn delay={100}>
+          <div style={{
+            display: "flex", gap: 18, alignItems: "center", flexWrap: "wrap", justifyContent: "center",
+            background: C.dusk, borderRadius: 16, padding: "28px 28px", marginBottom: 28, textAlign: "center",
           }}>
-            Follow on Facebook
-          </a>
-          <a href="#mens-club-events" className="btn-animated" style={{
-            display: "inline-flex", alignItems: "center", gap: 8,
-            padding: "12px 28px", borderRadius: 8,
-            background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", color: C.cream,
-            fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
-          }}>
-            View Events
-          </a>
-          <ShareBar title="Devils & Round Lake Men's Club - Manitou Beach" />
+            <span className="mono-icon" style={{ fontSize: 36, lineHeight: 1 }}>🏌️</span>
+            <div style={{ flex: "1 1 320px" }}>
+              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.cream, marginBottom: 6 }}>
+                Hole-in-One: Win a 2-Year Lease on a Ford Bronco Sport
+              </div>
+              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", lineHeight: 1.6 }}>
+                Hole-in-one prize packages courtesy of Ford / Lincoln and Bell. Ace the contest hole and drive home a Bronco Sport.
+              </div>
+            </div>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={150}>
+          <div style={{ textAlign: "center", marginBottom: 20 }}>
+            <SectionLabel>Thank You</SectionLabel>
+            <SectionTitle center>2026 Golf Outing Sponsors</SectionTitle>
+          </div>
+        </FadeIn>
+        <div style={{ display: "grid", gap: 14, marginBottom: 28 }}>
+          {GOLF_SPONSOR_TIERS.map((tier, ti) => (
+            <FadeIn key={tier.tier} delay={ti * 80}>
+              <div style={{ background: C.cream, borderRadius: 14, border: `1px solid ${C.sand}`, padding: "20px 22px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
+                  <span style={{ width: 10, height: 10, borderRadius: "50%", background: tier.accent, flexShrink: 0 }} />
+                  <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.textLight, fontFamily: "'Libre Franklin', sans-serif" }}>
+                    {tier.tier} Sponsor
+                  </span>
+                </div>
+                <div style={{ display: "flex", gap: 18, flexWrap: "wrap" }}>
+                  {tier.sponsors.map((s) => (
+                    <div key={s.name} style={{ display: "flex", alignItems: "center", gap: 14, flex: "1 1 280px" }}>
+                      {s.logo && (
+                        <img src={s.logo} alt={s.name} style={{ width: 72, height: 72, objectFit: "contain", borderRadius: 8, background: "#fff", border: `1px solid ${C.sand}`, flexShrink: 0 }} />
+                      )}
+                      <div>
+                        <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.text }}>{s.name}</div>
+                        {s.sub && <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.5, marginTop: 2 }}>{s.sub}</div>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </FadeIn>
+          ))}
         </div>
+
+        <FadeIn delay={200}>
+          <div style={{ textAlign: "center" }}>
+            <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, marginBottom: 16 }}>
+              To sign up, call {GOLF_OUTING.venue} at <a href={`tel:${GOLF_OUTING.phone.replace(/[^0-9]/g, "")}`} style={{ color: C.sunset, fontWeight: 600, textDecoration: "none" }}>{GOLF_OUTING.phone}</a><br />
+              {GOLF_OUTING.address}
+            </p>
+            <p style={{ fontFamily: "'Caveat', cursive", fontSize: 19, color: C.sage, margin: 0 }}>
+              Save the date: Tip-Up 2027 · February 5, 6 & 7
+            </p>
+          </div>
+        </FadeIn>
       </div>
     </section>
   );
@@ -362,6 +593,8 @@ export default function MensClubPage() {
       <ScrollProgress />
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
       <MensClubHero />
+      <GolfOutingSection />
+      <WaveDivider topColor={C.warmWhite} bottomColor={C.cream} />
       <MensClubStatsSection />
       <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
       <MensClubMissionSection />

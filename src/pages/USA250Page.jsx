@@ -3,6 +3,7 @@ import { Footer, GlobalStyles, Navbar, NewsletterInline } from "../components/La
 import { FadeIn, SectionLabel, SectionTitle, ScrollProgress, WaveDivider, DiagonalDivider, ShareBar } from "../components/Shared";
 import { C, USA250_VIDEO_URL } from "../data/config";
 import SEOHead from '../components/SEOHead';
+import EventPhotoWall from '../components/EventPhotoWall';
 
 // ============================================================
 //  AMERICA 250 - DEVILS & ROUND LAKE CELEBRATIONS (/america-250)
@@ -66,6 +67,9 @@ const ACTIVITIES = [
 function FireworksHero() {
   const [loaded, setLoaded] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, mins: 0, secs: 0 });
+  // Once the celebration has passed, the hero flips from countdown to recap mode
+  // (no dead 00:00:00 clock) and points people at the community photo gallery.
+  const [isPast, setIsPast] = useState(false);
 
   useEffect(() => {
     setTimeout(() => setLoaded(true), 80);
@@ -73,7 +77,7 @@ function FireworksHero() {
     const target = new Date("2026-07-03T22:00:00");
     const calc = () => {
       const diff = target - new Date();
-      if (diff <= 0) return setTimeLeft({ days: 0, hours: 0, mins: 0, secs: 0 });
+      if (diff <= 0) { setIsPast(true); return setTimeLeft({ days: 0, hours: 0, mins: 0, secs: 0 }); }
       setTimeLeft({
         days:  Math.floor(diff / 86400000),
         hours: Math.floor((diff % 86400000) / 3600000),
@@ -217,7 +221,7 @@ function FireworksHero() {
           marginBottom: 52,
           lineHeight: 1.4,
         }}>
-          July 3rd, 2026 · Celebrations on the Lake
+          {isPast ? "July 3rd, 2026 · That's a wrap 🎆" : "July 3rd, 2026 · Celebrations on the Lake"}
         </div>
 
         <style>{`
@@ -280,25 +284,37 @@ function FireworksHero() {
             flex-shrink: 0;
           }
         `}</style>
-        <div className="fw-countdown">
-          {[
-            { val: timeLeft.days,  label: "Days"  },
-            { val: timeLeft.hours, label: "Hours" },
-            { val: timeLeft.mins,  label: "Min"   },
-            { val: timeLeft.secs,  label: "Sec"   },
-          ].map(({ val, label }, i) => (
-            <React.Fragment key={label}>
-              <div className="fw-card">
-                <div className="fw-num">{pad(val)}</div>
-                <div className="fw-unit">{label}</div>
-              </div>
-              {i < 3 && <div className="fw-colon">:</div>}
-            </React.Fragment>
-          ))}
-        </div>
+        {isPast ? (
+          <div style={{
+            maxWidth: 620, margin: "0 auto 52px", padding: "0 8px",
+            fontFamily: "'Libre Franklin', sans-serif",
+            fontSize: "clamp(15px, 2vw, 18px)", lineHeight: 1.6,
+            color: "rgba(255,255,255,0.75)",
+          }}>
+            Thank you to everyone who came out on the water. The lake glowed. 🎆<br />
+            Were you there? Add your photos below and help us relive the night.
+          </div>
+        ) : (
+          <div className="fw-countdown">
+            {[
+              { val: timeLeft.days,  label: "Days"  },
+              { val: timeLeft.hours, label: "Hours" },
+              { val: timeLeft.mins,  label: "Min"   },
+              { val: timeLeft.secs,  label: "Sec"   },
+            ].map(({ val, label }, i) => (
+              <React.Fragment key={label}>
+                <div className="fw-card">
+                  <div className="fw-num">{pad(val)}</div>
+                  <div className="fw-unit">{label}</div>
+                </div>
+                {i < 3 && <div className="fw-colon">:</div>}
+              </React.Fragment>
+            ))}
+          </div>
+        )}
 
         <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", alignItems: "center" }}>
-          <a href="#events" className="btn-animated" style={{
+          <a href={isPast ? "#gallery" : "#events"} className="btn-animated" style={{
             display: "inline-flex", alignItems: "center", gap: 8,
             padding: "14px 32px", borderRadius: 6,
             background: FW.gold, color: FW.navy,
@@ -306,7 +322,7 @@ function FireworksHero() {
             fontSize: 12, fontWeight: 700, letterSpacing: 1.5,
             textTransform: "uppercase", textDecoration: "none",
           }}>
-            See What's Happening →
+            {isPast ? "Add your photos →" : "See What's Happening →"}
           </a>
           <ShareBar title="America 250 - Devils &amp; Round Lake Celebrations, July 3rd 2026" />
         </div>
@@ -682,7 +698,7 @@ function FireworksGallerySection() {
   ];
 
   return (
-    <section style={{ background: C.cream, padding: "80px 24px" }}>
+    <section id="gallery" style={{ background: C.cream, padding: "80px 24px 40px" }}>
       <div style={{ maxWidth: 1000, margin: "0 auto" }}>
         <FadeIn>
           <div style={{ textAlign: "center", marginBottom: 48 }}>
@@ -698,6 +714,9 @@ function FireworksGallerySection() {
           ))}
         </div>
       </div>
+
+      {/* Community photo wall — everyone's shots from the 2026 celebration */}
+      <EventPhotoWall slug="america-250" title="America 250" />
     </section>
   );
 }
