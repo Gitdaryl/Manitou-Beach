@@ -329,6 +329,22 @@ function GolfOutingSection() {
           ))}
         </div>
 
+        <FadeIn delay={180}>
+          <div style={{ textAlign: "center", marginBottom: 32 }}>
+            <a href="#become-a-sponsor" className="btn-animated" style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              padding: "14px 32px", borderRadius: 8,
+              background: C.sunset, color: C.cream,
+              fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+            }}>
+              Put Your Business on the Course
+            </a>
+            <div style={{ fontSize: 13, color: C.textMuted, marginTop: 10 }}>
+              Join these sponsors and support the club's charitable programs
+            </div>
+          </div>
+        </FadeIn>
+
         <FadeIn delay={200}>
           <div style={{ textAlign: "center" }}>
             <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, marginBottom: 16 }}>
@@ -516,7 +532,7 @@ const MENS_CLUB_SPONSOR_TIERS = [
 
 function MensClubSponsorForm() {
   return (
-    <section style={{ background: C.cream, padding: "80px 24px" }}>
+    <section id="become-a-sponsor" style={{ background: C.cream, padding: "80px 24px" }}>
       <div style={{ maxWidth: 800, margin: "0 auto" }}>
         <FadeIn>
           <div style={{ textAlign: "center", marginBottom: 48 }}>
