@@ -651,7 +651,7 @@ const MENS_CLUB_YEARLY_SPONSORS = [
 
 function MensClubSponsorWall() {
   return (
-    <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
+    <section id="sponsors" style={{ background: C.warmWhite, padding: "80px 24px" }}>
       <div style={{ maxWidth: 1000, margin: "0 auto" }}>
         <FadeIn>
           <div style={{ textAlign: "center", marginBottom: 40 }}>
