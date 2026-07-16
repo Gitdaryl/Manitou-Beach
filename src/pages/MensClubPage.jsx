@@ -250,6 +250,37 @@ function MensClubHero() {
   );
 }
 
+function MensClubSponsorTicker() {
+  // Two identical halves so the -50% marquee loop is seamless.
+  const items = [{ name: "Thank You · 2026-27 Yearly Sponsors", badge: true }, ...MENS_CLUB_YEARLY_SPONSORS];
+  const repeated = [...items, ...items];
+  return (
+    <a href="#sponsors" aria-label="See all 2026-2027 yearly sponsors" style={{ textDecoration: "none", display: "block" }}>
+      <div style={{
+        background: `linear-gradient(90deg, ${C.night} 0%, ${C.dusk} 50%, ${C.night} 100%)`,
+        padding: "13px 0", overflow: "hidden", position: "relative",
+        borderBottom: `1px solid ${C.sage}20`,
+      }}>
+        <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 80, background: `linear-gradient(90deg, ${C.night}, transparent)`, zIndex: 2, pointerEvents: "none" }} />
+        <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 80, background: `linear-gradient(270deg, ${C.night}, transparent)`, zIndex: 2, pointerEvents: "none" }} />
+        <div className="marquee-track" style={{ whiteSpace: "nowrap", animationDuration: "160s" }}>
+          {repeated.map((s, i) => (
+            <span key={i} style={{
+              fontFamily: "'Libre Franklin', sans-serif",
+              fontSize: 12, fontWeight: s.badge ? 700 : 500, letterSpacing: 1,
+              textTransform: "uppercase", color: s.badge ? C.sunsetLight : "rgba(255,255,255,0.75)",
+              padding: "0 20px", display: "inline-flex", alignItems: "center", gap: 20,
+            }}>
+              {s.name}
+              <span style={{ width: 4, height: 4, borderRadius: "50%", background: C.sage, display: "inline-block", opacity: 0.5 }} />
+            </span>
+          ))}
+        </div>
+      </div>
+    </a>
+  );
+}
+
 function GolfOutingSection() {
   const details = [
     { label: "When", value: "September 13, 2026" },
@@ -814,6 +845,7 @@ export default function MensClubPage() {
       <ScrollProgress />
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
       <MensClubHero />
+      <MensClubSponsorTicker />
       <GolfOutingSection />
       <WaveDivider topColor={C.warmWhite} bottomColor={C.cream} />
       <MensClubStatsSection />
