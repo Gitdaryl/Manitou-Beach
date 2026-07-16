@@ -217,6 +217,14 @@ export function GlobalStyles() {
       .marquee-track:hover {
         animation-play-state: paused;
       }
+      /* TV-news-crawl pace: fast enough to read, loops anyway. Slower on
+         phones so names stay readable on a narrow screen. */
+      .ticker-crawl {
+        animation-duration: 32s !important;
+      }
+      @media (max-width: 640px) {
+        .ticker-crawl { animation-duration: 70s !important; }
+      }
       .btn-animated {
         transition: all 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
       }
