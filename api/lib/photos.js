@@ -22,6 +22,7 @@
 // ============================================================
 
 import { Redis } from '@upstash/redis';
+import { del as blobDel } from '@vercel/blob';
 
 // Accept whichever env-var names the connected store injects. Vercel's Upstash
 // Marketplace integration sets KV_REST_API_* (legacy KV compatibility) and/or
@@ -147,6 +148,22 @@ export async function heartPhoto(id, deviceId) {
   const hearts = await kv.scard(hKey(id));
   await kv.hset(pKey(id), { hearts });
   return { hearts, hearted };
+}
+
+// Admin action: permanent delete. Removes the KV index entries first (photo
+// vanishes from every feed immediately), then the Blob file itself. If the
+// Blob delete fails the bytes are orphaned but unreachable; we log and move on.
+export async function deletePhoto(id) {
+  const rec = normalize(await kv.hgetall(pKey(id)));
+  if (!rec) return false;
+  await kv.zrem(gKey(rec.slug), id);
+  await kv.del(pKey(id), fKey(id), hKey(id), rKey(id));
+  try {
+    if (rec.url) await blobDel(rec.url);
+  } catch (err) {
+    console.error(`deletePhoto: blob removal failed for ${id}:`, err.message);
+  }
+  return true;
 }
 
 // Admin action: 'hidden' (take down), 'live' (restore, clears flags + flaggers).

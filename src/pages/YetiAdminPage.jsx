@@ -1174,6 +1174,47 @@ export default function YetiAdminPage() {
     } catch { setSwapStatus(prev => ({ ...prev, [articleId]: 'error' })); }
   };
 
+  // ── Photo moderation (crowd galleries) ──────────────────────
+  const [modSlug, setModSlug] = useState('mens-club');
+  const [modPhotos, setModPhotos] = useState([]);
+  const [modLoading, setModLoading] = useState(false);
+  const [modBusy, setModBusy] = useState(null);      // photo id mid-action
+  const [modConfirm, setModConfirm] = useState(null); // photo id awaiting delete confirm
+
+  const fetchModPhotos = async (slug = modSlug) => {
+    setModLoading(true);
+    try {
+      const res = await fetch(`/api/photos-admin?slug=${encodeURIComponent(slug)}`, { headers: { 'x-admin-token': authToken } });
+      const data = await res.json();
+      setModPhotos(res.ok ? (data.photos || []) : []);
+    } catch { setModPhotos([]); }
+    setModLoading(false);
+  };
+
+  const modAction = async (id, action) => {
+    setModBusy(id);
+    try {
+      const res = await fetch('/api/photos-admin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-token': authToken },
+        body: JSON.stringify({ action, id }),
+      });
+      if (res.ok) {
+        if (action === 'delete') {
+          setModPhotos(prev => prev.filter(p => p.id !== id));
+        } else {
+          const next = action === 'hide' ? 'hidden' : 'live';
+          setModPhotos(prev => prev.map(p => p.id === id ? { ...p, status: next, flags: action === 'restore' ? 0 : p.flags, reasons: action === 'restore' ? [] : p.reasons } : p));
+        }
+      }
+    } catch { /* leave list as-is; admin can retry */ }
+    setModBusy(null); setModConfirm(null);
+  };
+
+  useEffect(() => {
+    if (authed && activeTab === 'photos') fetchModPhotos(modSlug);
+  }, [activeTab, authed, modSlug]);
+
   useEffect(() => {
     if (!authed) return;
     if (activeTab === 'newsletter') { fetchNlArticles(); fetchNlAds(); }
@@ -1429,7 +1470,7 @@ export default function YetiAdminPage() {
 
         {/* Tabs */}
         <div style={{ display: 'flex', gap: 8, marginBottom: 32, flexWrap: 'wrap' }}>
-          {[{ id: 'write', label: '✍️  Write' }, { id: 'newsletter', label: '📰  Newsletter' }, { id: 'review', label: '📋  Review Queue' }, { id: 'dashboard', label: '📊  Dashboard' }, { id: 'advertisers', label: '🤝  Advertisers' }, { id: 'promos', label: '🎟️  Promos' }, { id: 'events', label: '📅  Events' }, { id: 'pois', label: '📍  Community POIs' }, { id: 'ratings', label: '🍷  Winery Ratings' }, { id: 'wines', label: '🍾  Wines Registry' }, { id: 'vendors', label: '🏪  Vendors' }, { id: 'orgs', label: '🏛️  Orgs' }, { id: 'incentives', label: '🎁  Incentives' }, { id: 'categories', label: '🗂️  Categories' }, { id: 'quickevents', label: '📸  Quick Events' }, { id: 'social', label: '📣  Social' }, { id: 'wheel', label: '🎡  Wheel' }].map(tab => (
+          {[{ id: 'write', label: '✍️  Write' }, { id: 'newsletter', label: '📰  Newsletter' }, { id: 'review', label: '📋  Review Queue' }, { id: 'dashboard', label: '📊  Dashboard' }, { id: 'advertisers', label: '🤝  Advertisers' }, { id: 'promos', label: '🎟️  Promos' }, { id: 'events', label: '📅  Events' }, { id: 'pois', label: '📍  Community POIs' }, { id: 'ratings', label: '🍷  Winery Ratings' }, { id: 'wines', label: '🍾  Wines Registry' }, { id: 'vendors', label: '🏪  Vendors' }, { id: 'orgs', label: '🏛️  Orgs' }, { id: 'incentives', label: '🎁  Incentives' }, { id: 'categories', label: '🗂️  Categories' }, { id: 'quickevents', label: '📸  Quick Events' }, { id: 'photos', label: '🖼️  Photo Mod' }, { id: 'social', label: '📣  Social' }, { id: 'wheel', label: '🎡  Wheel' }].map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
@@ -1444,6 +1485,91 @@ export default function YetiAdminPage() {
             >{tab.label}</button>
           ))}
         </div>
+
+        {/* ── PHOTO MODERATION TAB ── */}
+        {activeTab === 'photos' && (
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14, flexWrap: 'wrap', gap: 10 }}>
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                {[
+                  { slug: 'mens-club', label: "Men's Club" },
+                  { slug: 'ladies-club', label: 'Ladies Club' },
+                  { slug: 'america-250', label: 'America 250' },
+                  { slug: 'july-4-2026', label: 'July 4' },
+                ].map(g => (
+                  <button key={g.slug} onClick={() => setModSlug(g.slug)} style={{
+                    padding: '7px 14px', borderRadius: 7, fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                    fontFamily: 'Libre Franklin, sans-serif',
+                    border: modSlug === g.slug ? 'none' : `1px solid ${C.sand}`,
+                    background: modSlug === g.slug ? C.sage : '#fff',
+                    color: modSlug === g.slug ? '#fff' : C.textLight,
+                  }}>{g.label}</button>
+                ))}
+              </div>
+              <button onClick={() => fetchModPhotos()} style={{ background: 'transparent', border: `1px solid ${C.sand}`, borderRadius: 7, padding: '6px 14px', fontSize: 12, color: C.textLight, cursor: 'pointer', fontFamily: 'Libre Franklin, sans-serif' }}>↻ Refresh</button>
+            </div>
+
+            <p style={{ fontSize: 12, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif', margin: '0 0 16px', lineHeight: 1.6 }}>
+              <strong>Hide</strong> pulls a photo from the public wall instantly (reversible). <strong>Delete</strong> is permanent - it removes the file itself. Flagged photos float to the top.
+            </p>
+
+            {modLoading ? (
+              <div style={{ background: '#fff', borderRadius: 12, padding: '28px 24px', textAlign: 'center', color: C.textMuted, fontSize: 13, fontFamily: 'Libre Franklin, sans-serif' }}>Loading photos…</div>
+            ) : modPhotos.length === 0 ? (
+              <div style={{ background: '#fff', borderRadius: 12, padding: '28px 24px', textAlign: 'center', color: C.textMuted, fontSize: 13, fontFamily: 'Libre Franklin, sans-serif' }}>No photos in this gallery yet.</div>
+            ) : (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))', gap: 12 }}>
+                {modPhotos.map(p => {
+                  const busy = modBusy === p.id;
+                  const chip = p.status === 'live'
+                    ? { text: 'LIVE', bg: '#EEF6EE', fg: '#2D5A2D' }
+                    : p.status === 'flagged'
+                      ? { text: `FLAGGED ×${p.flags}`, bg: '#FDF0E6', fg: '#A85A28' }
+                      : { text: 'HIDDEN', bg: '#EFEBE4', fg: C.textMuted };
+                  return (
+                    <div key={p.id} style={{ background: '#fff', borderRadius: 10, overflow: 'hidden', border: p.status === 'flagged' ? '2px solid #E8A882' : `1px solid ${C.sand}` }}>
+                      <a href={p.url} target="_blank" rel="noopener noreferrer">
+                        <img src={p.url} alt="" loading="lazy" style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', display: 'block', opacity: p.status === 'live' ? 1 : 0.55 }} />
+                      </a>
+                      <div style={{ padding: '8px 10px 10px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+                          <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 0.5, padding: '2px 8px', borderRadius: 4, background: chip.bg, color: chip.fg, fontFamily: 'Libre Franklin, sans-serif' }}>{chip.text}</span>
+                          <span style={{ fontSize: 11, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>♥ {p.hearts || 0}</span>
+                        </div>
+                        {p.status === 'flagged' && p.reasons?.length > 0 && (
+                          <div style={{ fontSize: 11, color: '#A85A28', fontFamily: 'Libre Franklin, sans-serif', marginBottom: 6, lineHeight: 1.4 }}>
+                            "{p.reasons[p.reasons.length - 1]}"
+                          </div>
+                        )}
+                        <div style={{ display: 'flex', gap: 6 }}>
+                          {p.status !== 'hidden' && (
+                            <button disabled={busy} onClick={() => modAction(p.id, 'hide')} style={{ flex: 1, padding: '6px 0', borderRadius: 6, fontSize: 11, fontWeight: 700, cursor: 'pointer', border: `1px solid ${C.sand}`, background: '#fff', color: C.textLight, fontFamily: 'Libre Franklin, sans-serif' }}>
+                              {busy ? '…' : 'Hide'}
+                            </button>
+                          )}
+                          {p.status !== 'live' && (
+                            <button disabled={busy} onClick={() => modAction(p.id, 'restore')} style={{ flex: 1, padding: '6px 0', borderRadius: 6, fontSize: 11, fontWeight: 700, cursor: 'pointer', border: 'none', background: C.sage, color: '#fff', fontFamily: 'Libre Franklin, sans-serif' }}>
+                              {busy ? '…' : 'Restore'}
+                            </button>
+                          )}
+                          {modConfirm === p.id ? (
+                            <button disabled={busy} onClick={() => modAction(p.id, 'delete')} style={{ flex: 1, padding: '6px 0', borderRadius: 6, fontSize: 11, fontWeight: 700, cursor: 'pointer', border: 'none', background: '#B0413E', color: '#fff', fontFamily: 'Libre Franklin, sans-serif' }}>
+                              {busy ? '…' : 'Really?'}
+                            </button>
+                          ) : (
+                            <button disabled={busy} onClick={() => setModConfirm(p.id)} style={{ flex: 1, padding: '6px 0', borderRadius: 6, fontSize: 11, fontWeight: 700, cursor: 'pointer', border: '1px solid #E0B4B2', background: '#fff', color: '#B0413E', fontFamily: 'Libre Franklin, sans-serif' }}>
+                              Delete
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* ── DASHBOARD TAB ── */}
         {activeTab === 'dashboard' && (
