@@ -3,6 +3,31 @@ import { alertOutage } from './lib/notionGuard.js';
 // Returns the active sponsor for a given page from Notion.
 // PageSponsorBanner calls this to auto-activate banners after payment.
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// Query Notion once. Throws on network error or non-JSON response (e.g. Notion
+// handing back an HTML gateway/error page instead of JSON).
+async function queryNotion(dbId, token, filter, pageSize) {
+  const queryRes = await fetch(`https://api.notion.com/v1/databases/${dbId}/query`, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Notion-Version': '2022-06-28' },
+    body: JSON.stringify({ filter, sorts: [{ property: 'Start Date', direction: 'descending' }], page_size: pageSize }),
+  });
+  return queryRes.json();
+}
+
+// Retry once after a short delay before treating this as a real outage. Covers
+// brief Notion-side gateway hiccups (e.g. a transient HTML error page) without
+// paging the phone for a single blip.
+async function queryNotionWithRetry(dbId, token, filter, pageSize) {
+  try {
+    return await queryNotion(dbId, token, filter, pageSize);
+  } catch (err) {
+    await sleep(800);
+    return await queryNotion(dbId, token, filter, pageSize);
+  }
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
 
@@ -33,13 +58,7 @@ export default async function handler(req, res) {
       ? { and: [{ property: 'Status', select: { equals: 'active' } }, { property: 'Expiry Date', date: { on_or_after: today } }] }
       : { and: [{ property: 'Page ID', select: { equals: pageId } }, { property: 'Status', select: { equals: 'active' } }, { property: 'Expiry Date', date: { on_or_after: today } }] };
 
-    const queryRes = await fetch(`https://api.notion.com/v1/databases/${dbId}/query`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Notion-Version': '2022-06-28' },
-      body: JSON.stringify({ filter, sorts: [{ property: 'Start Date', direction: 'descending' }], page_size: all ? 50 : 1 }),
-    });
-
-    const data = await queryRes.json();
+    const data = await queryNotionWithRetry(dbId, token, filter, all ? 50 : 1);
     if (!data.results || data.results.length === 0) {
       return res.status(200).json(all ? { taken: [] } : { sponsor: null });
     }
