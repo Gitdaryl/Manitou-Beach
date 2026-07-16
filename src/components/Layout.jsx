@@ -212,6 +212,10 @@ export function GlobalStyles() {
       }
       .marquee-track {
         display: flex;
+        /* max-content so translateX(-50%) spans exactly one full copy of the
+           content (two identical halves) - without it the track is only as
+           wide as the viewport and the loop restarts mid-content. */
+        width: max-content;
         animation: marquee 35s linear infinite;
       }
       .marquee-track:hover {
@@ -223,7 +227,7 @@ export function GlobalStyles() {
         animation-duration: 32s !important;
       }
       @media (max-width: 640px) {
-        .ticker-crawl { animation-duration: 70s !important; }
+        .ticker-crawl { animation-duration: 110s !important; }
       }
       .btn-animated {
         transition: all 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
