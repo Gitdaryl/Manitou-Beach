@@ -26,14 +26,14 @@ const GOLF_SPONSOR_TIERS = [
     tier: "Gold",
     accent: "#C9A227",
     sponsors: [
-      { name: "National Transportation Associates", sub: "NTA Truck Team · Independent Insurance Agent", logo: null, url: null },
+      { name: "National Transportation Associates", sub: "NTA Truck Team · Independent Insurance Agent", logo: "/images/mens-club/sponsors/nta-logo.png", url: "https://www.ntains.com/" },
     ],
   },
   {
     tier: "Silver",
     accent: "#9BA3AD",
     sponsors: [
-      { name: "Scotty's Body Shop", sub: "Quality Autobody Repair Since 1990 · 2410 East US 223, Adrian · (517) 265-3711", logo: null, url: null },
+      { name: "Scotty's Body Shop", sub: "Quality Autobody Repair Since 1990 · 2410 East US 223, Adrian · (517) 265-3711", logo: "/images/mens-club/sponsors/scottys-logo.png", url: "https://scottysbodyshopmi.com/" },
     ],
   },
   {
@@ -351,17 +351,25 @@ function GolfOutingSection() {
                   </span>
                 </div>
                 <div style={{ display: "flex", gap: 18, flexWrap: "wrap" }}>
-                  {tier.sponsors.map((s) => (
-                    <div key={s.name} style={{ display: "flex", alignItems: "center", gap: 14, flex: "1 1 280px" }}>
+                  {tier.sponsors.map((s) => {
+                    const Tag = s.url ? "a" : "div";
+                    return (
+                    <Tag
+                      key={s.name}
+                      href={s.url || undefined}
+                      target={s.url ? "_blank" : undefined}
+                      rel={s.url ? "noopener noreferrer" : undefined}
+                      style={{ display: "flex", alignItems: "center", gap: 14, flex: "1 1 280px", textDecoration: "none", color: "inherit" }}
+                    >
                       {s.logo && (
-                        <img src={s.logo} alt={s.name} style={{ width: 72, height: 72, objectFit: "contain", borderRadius: 8, background: "#fff", border: `1px solid ${C.sand}`, flexShrink: 0 }} />
+                        <img src={s.logo} alt={s.name} style={{ width: 72, height: 72, objectFit: "contain", borderRadius: 8, background: "#fff", border: `1px solid ${C.sand}`, flexShrink: 0, padding: 4, boxSizing: "border-box" }} />
                       )}
                       <div>
                         <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.text }}>{s.name}</div>
                         {s.sub && <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.5, marginTop: 2 }}>{s.sub}</div>}
                       </div>
-                    </div>
-                  ))}
+                    </Tag>
+                  );})}
                 </div>
               </div>
             </FadeIn>
