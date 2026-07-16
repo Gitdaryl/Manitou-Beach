@@ -263,7 +263,7 @@ function MensClubSponsorTicker() {
       }}>
         <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 80, background: `linear-gradient(90deg, ${C.night}, transparent)`, zIndex: 2, pointerEvents: "none" }} />
         <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 80, background: `linear-gradient(270deg, ${C.night}, transparent)`, zIndex: 2, pointerEvents: "none" }} />
-        <div className="marquee-track" style={{ whiteSpace: "nowrap", animationDuration: "45s" }}>
+        <div className="marquee-track" style={{ whiteSpace: "nowrap", animationDuration: "32s" }}>
           {repeated.map((s, i) => (
             <span key={i} style={{
               fontFamily: "'Libre Franklin', sans-serif",
