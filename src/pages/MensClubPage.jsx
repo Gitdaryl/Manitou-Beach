@@ -66,7 +66,7 @@ const MENS_CLUB_STATS = [
   { label: "EIN", value: "46-4087550", sub: "Tax-exempt nonprofit" },
   { label: "Tip-Up Festival", value: "70+", sub: "Years running" },
   { label: "Toys for Tots", value: "$8,000+", sub: "In donations" },
-  { label: "Address", value: "3171", sub: "Round Lake Hwy" },
+  { label: "Yearly Sponsors", value: "48", sub: "Businesses & families" },
   { label: "Annual Events", value: "6+", sub: "Community events" },
 ];
 
@@ -86,8 +86,14 @@ const MENS_CLUB_EVENTS = [
   {
     title: "Golf Outing",
     date: "September 13, 2026 - Shotgun start 8:30 AM",
-    desc: "18 holes plus cart at Devils Lake Golf Course, $75 per person. Check in at 8:00 am, hot dogs at the turn, and a hole-in-one contest where an ace wins a 2-year lease on a Ford Bronco Sport. All proceeds benefit the club's charitable programs.",
+    desc: "18 holes plus cart at Devils Lake Golf Course - $75 per person or $300 per foursome. Check in at 8:00 am, hot dogs at the turn, a chance at a Yeti cooler, and a hole-in-one contest where an ace wins a 2-year lease on a Ford Bronco Sport. All proceeds benefit the club's charitable programs.",
     image: "/images/mens-club/golf.jpg",
+  },
+  {
+    title: "Halloween Hot Dog Roast",
+    date: "Late October",
+    desc: "A fall tradition for the whole family - hot dogs over the fire, costumes, and neighbors gathering one more time before the lake freezes and Tip-Up season begins.",
+    image: "/images/mens-club/halloween-hot-dog-roast.jpg",
   },
   {
     title: "Benefit Auction & Raffle",
@@ -114,7 +120,9 @@ const MENS_CLUB_PROGRAMS = [
   { icon: "🎄", title: "Toys for Tots", desc: "Over $8,000 contributed to ensure every child in the area has a gift under the tree." },
   { icon: "🦸", title: "Shop with a Hero", desc: "Partnering with local law enforcement and first responders to give kids a positive holiday shopping experience." },
   { icon: "🍞", title: "Food Pantry Support", desc: "Collecting pantry items for the Kiwanis Club and Community for People in Need." },
-  { icon: "🎁", title: "Christmas Gift Baskets", desc: "Assembling and delivering holiday gift baskets to families facing hardship." },
+  { icon: "🎁", title: "Christmas Gift Baskets", desc: "Delivering holiday gift baskets to families facing hardship, and supplying the hams for the Kiwanis Christmas Baskets." },
+  { icon: "🛡️", title: "Catherine Cobb Domestic Violence Center", desc: "Supporting the Lenawee County shelter that helps survivors of domestic violence rebuild their lives." },
+  { icon: "🌊", title: "Lakes Preservation", desc: "Backing the Lakes Preservation League's work to keep Devils Lake and Round Lake healthy for the next generation." },
   { icon: "🎆", title: "Fireworks Fund", desc: "Funding the annual July 4th fireworks display over Devils Lake for the entire community." },
 ];
 
@@ -248,7 +256,7 @@ function GolfOutingSection() {
     { label: "Check-In", value: "8:00 am" },
     { label: "Shotgun Start", value: "8:30 am" },
     { label: "Cost", value: "$75 / person" },
-    { label: "Includes", value: "18 holes + cart" },
+    { label: "Foursome", value: "$300 / team" },
     { label: "At the Turn", value: "Hot dogs" },
   ];
 
@@ -260,7 +268,7 @@ function GolfOutingSection() {
             <SectionLabel>September 13, 2026</SectionLabel>
             <SectionTitle center>Golf Outing at Devils Lake Golf Course</SectionTitle>
             <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 560, margin: "0 auto" }}>
-              Grab your foursome and join us for 18 holes on the shore of Devils Lake. Every dollar raised goes right back into the community through the club's charitable programs.
+              Grab your foursome and join us for 18 holes, cart included, on the shore of Devils Lake. Every dollar raised goes right back into the community through the club's charitable programs.
             </p>
           </div>
         </FadeIn>
@@ -289,7 +297,7 @@ function GolfOutingSection() {
                 Hole-in-One: Win a 2-Year Lease on a Ford Bronco Sport
               </div>
               <div style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", lineHeight: 1.6 }}>
-                Hole-in-one prize packages courtesy of Ford / Lincoln and Bell. Ace the contest hole and drive home a Bronco Sport.
+                Hole-in-one prize packages courtesy of Ford / Lincoln and Bell. Ace the contest hole and drive home a Bronco Sport. Plus a chance to win a Yeti cooler on the course.
               </div>
             </div>
           </div>
@@ -346,10 +354,46 @@ function GolfOutingSection() {
         </FadeIn>
 
         <FadeIn delay={200}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16, marginBottom: 32 }}>
+            <div style={{ background: C.cream, borderRadius: 14, border: `1px solid ${C.sand}`, padding: "26px 26px" }}>
+              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.text, marginBottom: 10 }}>
+                ⛳ Sign Up Your Team
+              </div>
+              <p style={{ fontSize: 13.5, color: C.textLight, lineHeight: 1.75, margin: "0 0 14px 0" }}>
+                $300 per foursome or $75 per person. Reservations must be accompanied by a check payable to <strong>Men's Club</strong> - mail your registration and payment to 3171 Round Lake Highway, Manitou Beach, MI 49253. Flying solo? Ask to be placed on a team.
+              </p>
+              <a href={`tel:${GOLF_OUTING.phone.replace(/[^0-9]/g, "")}`} className="btn-animated" style={{
+                display: "inline-flex", alignItems: "center", gap: 8,
+                padding: "11px 22px", borderRadius: 8,
+                background: C.sage, color: C.cream,
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 0.5, textDecoration: "none",
+              }}>
+                Call {GOLF_OUTING.venue} · {GOLF_OUTING.phone}
+              </a>
+            </div>
+            <div style={{ background: C.cream, borderRadius: 14, border: `1px solid ${C.sand}`, padding: "26px 26px" }}>
+              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.text, marginBottom: 10 }}>
+                🚩 Sponsor a Hole - $50
+              </div>
+              <p style={{ fontSize: 13.5, color: C.textLight, lineHeight: 1.75, margin: "0 0 14px 0" }}>
+                A sign with your business name at one of the 18 holes, seen by every golfer on the course - plus a thank-you in the golf day program. Email your name and logo to get on a hole.
+              </p>
+              <a href="mailto:jborton1031@gmail.com?subject=Golf%20Outing%20Hole%20Sponsorship" className="btn-animated" style={{
+                display: "inline-flex", alignItems: "center", gap: 8,
+                padding: "11px 22px", borderRadius: 8,
+                background: C.sunset, color: C.cream,
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 0.5, textDecoration: "none",
+              }}>
+                Email jborton1031@gmail.com
+              </a>
+            </div>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={240}>
           <div style={{ textAlign: "center" }}>
-            <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, marginBottom: 16 }}>
-              To sign up, call {GOLF_OUTING.venue} at <a href={`tel:${GOLF_OUTING.phone.replace(/[^0-9]/g, "")}`} style={{ color: C.sunset, fontWeight: 600, textDecoration: "none" }}>{GOLF_OUTING.phone}</a><br />
-              {GOLF_OUTING.address}
+            <p style={{ fontSize: 13, color: C.textMuted, lineHeight: 1.7, marginBottom: 12 }}>
+              {GOLF_OUTING.venue} · {GOLF_OUTING.address}
             </p>
             <p style={{ fontFamily: "'Caveat', cursive", fontSize: 19, color: C.sage, margin: 0 }}>
               Save the date: Tip-Up 2027 · February 5, 6 & 7
@@ -406,7 +450,7 @@ function MensClubMissionSection() {
           <FadeIn delay={100} direction="left">
             <div>
               <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, margin: "0 0 18px 0" }}>
-                The Devils Lake & Round Lake Men's Club is a 501(c)(3) nonprofit dedicated to improving life in the Manitou Beach community. Through annual events like the legendary Tip-Up Festival and the Fourth of July Firecracker 7K, the club raises funds that go directly back to the people who need it most.
+                The Devils Lake & Round Lake Men's Club is a 501(c)(3) nonprofit dedicated to improving life in the Manitou Beach community. Through the legendary Tip-Up Festival, the Fourth of July Firecracker 7K, the September Golf Outing, and the Halloween Hot Dog Roast, the club raises funds that go directly back to the people who need it most.
               </p>
               <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, margin: 0 }}>
                 From buying laptops for college-bound students to donating thousands in toys through Toys for Tots, partnering with law enforcement for Shop with a Hero, and delivering Christmas gift baskets to families in need - the Men's Club is the backbone of Manitou Beach's charitable community.
@@ -523,31 +567,151 @@ function MensClubGallerySection() {
   ) : null;
 }
 
+// Real club programs from the 2026 sponsor letter: $130/yr Yearly Sponsor, $50 golf hole.
+// Form default is tiers[1] (Yearly Sponsor) — keep it second in this array.
 const MENS_CLUB_SPONSOR_TIERS = [
-  { level: "Presenting Sponsor", amount: 2500, perks: ["Named sponsor in all event promotions", "Logo on website & event banners", "Newsletter feature story", "On-site recognition at Tip-Up Festival", "Social media campaign inclusion"] },
-  { level: "Gold Sponsor", amount: 1000, perks: ["Logo on website & event banners", "Newsletter mention", "Social media tag", "On-site recognition at events"] },
-  { level: "Silver Sponsor", amount: 500, perks: ["Name on website", "Newsletter mention", "Community recognition at events"] },
-  { level: "Community Partner", amount: 100, perks: ["Name listed on website", "Community recognition"] },
+  {
+    level: "Golf Hole Sponsor", amount: 50,
+    perks: [
+      "A sign with your business name at one of the 18 holes at the Golf Outing",
+      "Acknowledged in the golf day program and brochure",
+    ],
+  },
+  {
+    level: "Yearly Sponsor", amount: 130,
+    perks: [
+      "Your name on the banner displayed at every club event - Tip-Up, Firecracker 7K, Golf Outing, and the Halloween Hot Dog Roast",
+      "Your name printed on the back of the Firecracker 7K race t-shirts",
+      "Your name displayed on a hole at the Golf Outing",
+      "A cling label for your door or window",
+    ],
+  },
 ];
+
+const YEARLY_SPONSOR_PERK_CARDS = [
+  { icon: "🚩", title: "Banner at Every Event", desc: "Your name on the club banner at Tip-Up, the Firecracker 7K, the Golf Outing, and the Halloween Hot Dog Roast." },
+  { icon: "👕", title: "On the 7K Race Shirts", desc: "Printed on the back of every Firecracker 7K run/walk t-shirt - worn all over the lakes, all summer long." },
+  { icon: "⛳", title: "Your Own Golf Hole", desc: "Your name displayed on a hole at the September Golf Outing at Devils Lake Golf Course." },
+  { icon: "🪟", title: "Window Cling", desc: "A cling label for your door or window that tells everyone you back the lakes community." },
+];
+
+// 2026-2027 Yearly Sponsors, transcribed from the club's golf brochure.
+const MENS_CLUB_YEARLY_SPONSORS = [
+  "Addison Gun Club", "Addison Kiwanis", "Alumi-Span Docks", "American 1 Towing",
+  "Ashby Lift Truck Service", "Batko Family", "Benny D's on 223", "Blackbird Cafe",
+  "Boot Jack Tavern", "Bow to Stern Marine", "Carrie Lynn Wellness", "CDs Party Rental",
+  "County National Bank - Hudson", "Decker & Sons Insurance", "Dempsey & Dempsey Accounting",
+  "Devils Lake Bar & Grill", "Devils Lake Golf Course", "Devils Lake View Living",
+  "Devils Lake Water Sports", "Down 2 Earth Custom Logging", "Edison Builders",
+  "Faust House Scrap & Craft / Ice Cream", "Gil Henry & Assoc. Inc", "Glamour Auto Shop",
+  "Harper Landscaping & Patio", "Highland Inn", "Jeff Jackson Farm Bureau Ins",
+  "Lakeside Construction", "Lakes Preservation League - Devils & Round Lake",
+  "Lightning Quick Gas N Go", "Manitou Beach Marina", "Manitou Storage Co.",
+  "McAuliffe's Meats", "MonsterMotors.com", "National Transportation Associates",
+  "Poppas Place Inc", "Printed on a Lark", "Rock Hard Concrete - Adrian",
+  "Sam & Jeryl Cepida - Foundation Realty", "Mark Scarlato Family", "Scotty's Body Shop",
+  "Shea'Nanigans", "South Shore Marine Services", "Sterling Market & Pizzeria",
+  "The Lakes Print Shop", "The Springs BP", "The Tavern on 223", "Trends Salon & Spa",
+];
+
+function MensClubSponsorWall() {
+  return (
+    <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+        <FadeIn>
+          <div style={{ textAlign: "center", marginBottom: 40 }}>
+            <SectionLabel>Thank You</SectionLabel>
+            <SectionTitle center>2026-2027 Yearly Sponsors</SectionTitle>
+            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 560, margin: "0 auto" }}>
+              These {MENS_CLUB_YEARLY_SPONSORS.length} businesses and families fund everything the club does - from student laptops to the fireworks over the lake. When you see their name, thank them.
+            </p>
+          </div>
+        </FadeIn>
+        <FadeIn delay={100}>
+          <div style={{
+            display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "8px 20px",
+            background: C.cream, border: `1px solid ${C.sand}`, borderRadius: 16, padding: "28px 28px",
+          }}>
+            {MENS_CLUB_YEARLY_SPONSORS.map((name) => (
+              <div key={name} style={{ display: "flex", gap: 9, alignItems: "flex-start", padding: "5px 0", fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.text, lineHeight: 1.45 }}>
+                <span style={{ width: 5, height: 5, borderRadius: "50%", background: C.sunset, flexShrink: 0, marginTop: 6 }} />
+                {name}
+              </div>
+            ))}
+          </div>
+        </FadeIn>
+        <FadeIn delay={150}>
+          <p style={{ textAlign: "center", fontSize: 14, color: C.textLight, marginTop: 24, marginBottom: 0 }}>
+            Want your name on this wall, the race shirts, and the event banner?{" "}
+            <a href="#become-a-sponsor" style={{ color: C.sunset, fontWeight: 600, textDecoration: "none" }}>Become a Yearly Sponsor for $130 →</a>
+          </p>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
 
 function MensClubSponsorForm() {
   return (
     <section id="become-a-sponsor" style={{ background: C.cream, padding: "80px 24px" }}>
       <div style={{ maxWidth: 800, margin: "0 auto" }}>
         <FadeIn>
-          <div style={{ textAlign: "center", marginBottom: 48 }}>
+          <div style={{ textAlign: "center", marginBottom: 40 }}>
             <SectionLabel>Support the Mission</SectionLabel>
-            <SectionTitle center>Become a Sponsor</SectionTitle>
-            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 520, margin: "0 auto" }}>
-              Your sponsorship directly funds laptops for students, Toys for Tots, the annual fireworks display, and the programs that have made Manitou Beach stronger for over 70 years.
+            <SectionTitle center>Become a Yearly Sponsor</SectionTitle>
+            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 560, margin: "0 auto" }}>
+              For <strong style={{ color: C.text }}>$130 a year</strong>, your name travels with the club through every season - and every dollar funds laptops for students, Toys for Tots, Shop with a Hero, and families in need right here at the lakes.
+            </p>
+          </div>
+        </FadeIn>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 14, marginBottom: 28 }}>
+          {YEARLY_SPONSOR_PERK_CARDS.map((p, i) => (
+            <FadeIn key={p.title} delay={i * 60} direction="scale">
+              <div style={{ display: "flex", gap: 14, alignItems: "flex-start", padding: "18px 20px", background: C.warmWhite, borderRadius: 12, border: `1px solid ${C.sand}`, height: "100%" }}>
+                <span className="mono-icon" style={{ fontSize: 26, lineHeight: 1, flexShrink: 0 }}>{p.icon}</span>
+                <div>
+                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: C.text }}>{p.title}</div>
+                  <div style={{ fontSize: 12.5, color: C.textLight, lineHeight: 1.6, marginTop: 3 }}>{p.desc}</div>
+                </div>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+
+        <FadeIn delay={100}>
+          <div style={{
+            display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap",
+            background: C.dusk, borderRadius: 14, padding: "20px 24px", marginBottom: 36,
+          }}>
+            <span className="mono-icon" style={{ fontSize: 30, lineHeight: 1 }}>📅</span>
+            <div style={{ flex: "1 1 300px" }}>
+              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.cream, marginBottom: 4 }}>
+                Sponsorships are due by May 1st
+              </div>
+              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", lineHeight: 1.6 }}>
+                That's the cutoff to get your name on the 7K shirts, your golf hole sign, and the event banner for the year.
+              </div>
+            </div>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={140}>
+          <div style={{ textAlign: "center", marginBottom: 24 }}>
+            <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.text, marginBottom: 6 }}>
+              Apply online
+            </div>
+            <p style={{ fontSize: 13, color: C.textMuted, lineHeight: 1.7, maxWidth: 520, margin: "0 auto" }}>
+              Enter your name <em>exactly as you want it to appear</em> on the banner and t-shirt. Prefer paper? Mail your form and check, payable to <strong style={{ color: C.textLight }}>The Devils Lake & Round Lake Men's Club</strong>, to 3171 Round Lake Hwy., Manitou Beach, MI 49253.
             </p>
           </div>
         </FadeIn>
         <CommunityDonationForm
           orgName="Devils Lake & Round Lake Men's Club"
+          submitEndpoint="/api/mens-club-sponsor"
           tiers={MENS_CLUB_SPONSOR_TIERS}
           accentColor={C.sunset}
-          note="Your application will be reviewed and a club representative will follow up within 2 business days."
+          note="A club representative will follow up within 2 business days to arrange payment by check. The Devils Lake & Round Lake Men's Club is a 501(c)(3) nonprofit - EIN 46-4087550 - so your sponsorship may be tax deductible."
         />
       </div>
     </section>
@@ -598,7 +762,7 @@ export default function MensClubPage() {
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
 <SEOHead
         title="Men's Club"
-        description="Devils Lake & Round Lake Men's Club - community organization serving Manitou Beach, Michigan. Events, membership, and local projects."
+        description="Devils Lake & Round Lake Men's Club - 501(c)(3) serving Manitou Beach, Michigan. Tip-Up Festival, Firecracker 7K, Golf Outing, yearly sponsorships, and membership."
         path="/mens-club"
         breadcrumbs={[
           { name: 'Home', path: '/' },
@@ -619,6 +783,7 @@ export default function MensClubPage() {
       <WaveDivider topColor={C.dusk} bottomColor={C.cream} flip />
       <EventPhotoWall slug="mens-club" title="Men's Club" />
       <MensClubGallerySection />
+      <MensClubSponsorWall />
       <MensClubSponsorForm />
       <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
       <MensClubGetInvolved />

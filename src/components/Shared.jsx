@@ -446,6 +446,7 @@ export function CommunityDonationForm({ orgName, orgPageId, submitEndpoint, tier
             email: form.email,
             phone: form.phone || '',
             tier: selectedTier?.level || '',
+            amount,
             message: form.message || '',
             logoUrl: logoUrl || null,
             websiteUrl: null,
