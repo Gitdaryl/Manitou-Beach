@@ -596,22 +596,57 @@ const YEARLY_SPONSOR_PERK_CARDS = [
 ];
 
 // 2026-2027 Yearly Sponsors, transcribed from the club's golf brochure.
+// url: official website when one exists, else the business's own Facebook page,
+// else null (renders as plain text). Verified July 2026.
 const MENS_CLUB_YEARLY_SPONSORS = [
-  "Addison Gun Club", "Addison Kiwanis", "Alumi-Span Docks", "American 1 Towing",
-  "Ashby Lift Truck Service", "Batko Family", "Benny D's on 223", "Blackbird Cafe",
-  "Boot Jack Tavern", "Bow to Stern Marine", "Carrie Lynn Wellness", "CDs Party Rental",
-  "County National Bank - Hudson", "Decker & Sons Insurance", "Dempsey & Dempsey Accounting",
-  "Devils Lake Bar & Grill", "Devils Lake Golf Course", "Devils Lake View Living",
-  "Devils Lake Water Sports", "Down 2 Earth Custom Logging", "Edison Builders",
-  "Faust House Scrap & Craft / Ice Cream", "Gil Henry & Assoc. Inc", "Glamour Auto Shop",
-  "Harper Landscaping & Patio", "Highland Inn", "Jeff Jackson Farm Bureau Ins",
-  "Lakeside Construction", "Lakes Preservation League - Devils & Round Lake",
-  "Lightning Quick Gas N Go", "Manitou Beach Marina", "Manitou Storage Co.",
-  "McAuliffe's Meats", "MonsterMotors.com", "National Transportation Associates",
-  "Poppas Place Inc", "Printed on a Lark", "Rock Hard Concrete - Adrian",
-  "Sam & Jeryl Cepida - Foundation Realty", "Mark Scarlato Family", "Scotty's Body Shop",
-  "Shea'Nanigans", "South Shore Marine Services", "Sterling Market & Pizzeria",
-  "The Lakes Print Shop", "The Springs BP", "The Tavern on 223", "Trends Salon & Spa",
+  { name: "Addison Gun Club", url: "https://www.facebook.com/p/Addison-Defense-and-Gun-Club-61573124099438/" },
+  { name: "Addison Kiwanis", url: "https://www.facebook.com/addison.kiwanis.2025/" },
+  { name: "Alumi-Span Docks", url: "https://www.alumi-span.com/" },
+  { name: "American 1 Towing", url: "https://american1-towing.com/" },
+  { name: "Ashby Lift Truck Service", url: "https://www.facebook.com/people/Ashby-Lift-Truck-Service/100054264891286/" },
+  { name: "Batko Family", url: null },
+  { name: "Benny D's on 223", url: "https://www.facebook.com/BennyD223" },
+  { name: "Blackbird Cafe", url: "https://blackbirdcafedevils.com" },
+  { name: "Boot Jack Tavern", url: "https://bootjacktavern.com" },
+  { name: "Bow to Stern Marine", url: "https://www.facebook.com/p/Bow-To-Stern-Marine-61576982261903/" },
+  { name: "Carrie Lynn Wellness", url: "https://www.carrielynnwellness.com" },
+  { name: "CDs Party Rental", url: "https://cdspartyrental.com/" },
+  { name: "County National Bank - Hudson", url: "https://www.cnbb.bank/About-CNB/Locations-Hours/Hudson" },
+  { name: "Decker & Sons Insurance", url: "https://www.deckerandsonsinsurance.com/" },
+  { name: "Dempsey & Dempsey Accounting", url: "https://www.dempseycpa.com/" },
+  { name: "Devils Lake Bar & Grill", url: "https://www.facebook.com/Thecovedevilslake/" },
+  { name: "Devils Lake Golf Course", url: "https://www.devilslakegolfcourse.com/" },
+  { name: "Devils Lake View Living", url: "http://devilslakeviewliving.com" },
+  { name: "Devils Lake Water Sports", url: "https://dlwatersports.com" },
+  { name: "Down 2 Earth Custom Logging", url: "https://d2elogging.com/" },
+  { name: "Edison Builders", url: null },
+  { name: "Faust House Scrap & Craft / Ice Cream", url: "https://fausthousescrapncraft.com" },
+  { name: "Gil Henry & Assoc. Inc", url: "https://www.gilhenryandassociates.com/" },
+  { name: "Glamour Auto Shop", url: "https://www.facebook.com/p/Glamour-Auto-Shop-100092441275673/" },
+  { name: "Harper Landscaping & Patio", url: "https://www.facebook.com/HarperLandscapePatioLlc/" },
+  { name: "Highland Inn", url: "https://thewellstavern.net/highland-inn" },
+  { name: "Jeff Jackson Farm Bureau Ins", url: "https://www.michfb.com/insurance/find-an-agent/jeff-jackson-4025-s-adrian-hwy" },
+  { name: "Lakeside Construction", url: null },
+  { name: "Lakes Preservation League - Devils & Round Lake", url: "https://lakespreservationleague.org/" },
+  { name: "Lightning Quick Gas N Go", url: null },
+  { name: "Manitou Beach Marina", url: "https://manitoubeachmarina.com/" },
+  { name: "Manitou Storage Co.", url: "https://www.manitoustorageco.com/" },
+  { name: "McAuliffe's Meats", url: "https://www.facebook.com/McauliffesMeats/" },
+  { name: "MonsterMotors.com", url: "https://www.monstermotors.com/" },
+  { name: "National Transportation Associates", url: "https://www.ntains.com/" },
+  { name: "Poppas Place Inc", url: "https://www.facebook.com/poppasplacedos/" },
+  { name: "Printed on a Lark", url: "https://printedonalark.com/" },
+  { name: "Rock Hard Concrete - Adrian", url: null },
+  { name: "Sam & Jeryl Cepida - Foundation Realty", url: "https://www.foundationlenawee.com/" },
+  { name: "Mark Scarlato Family", url: null },
+  { name: "Scotty's Body Shop", url: "https://scottysbodyshopmi.com/" },
+  { name: "Shea'Nanigans", url: "https://sheananigansmi.com/" },
+  { name: "South Shore Marine Services", url: "https://www.facebook.com/p/South-Shore-Marine-Services-LLC-100092384540558/" },
+  { name: "Sterling Market & Pizzeria", url: "https://www.sterlingmarketandpizzeria.com/" },
+  { name: "The Lakes Print Shop", url: "https://thelakesprintshop.com/" },
+  { name: "The Springs BP", url: null },
+  { name: "The Tavern on 223", url: "https://www.facebook.com/CheeseHouse1/" },
+  { name: "Trends Salon & Spa", url: "https://trendssalonmi.wixsite.com/salon" },
 ];
 
 function MensClubSponsorWall() {
@@ -632,10 +667,16 @@ function MensClubSponsorWall() {
             display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "8px 20px",
             background: C.cream, border: `1px solid ${C.sand}`, borderRadius: 16, padding: "28px 28px",
           }}>
-            {MENS_CLUB_YEARLY_SPONSORS.map((name) => (
-              <div key={name} style={{ display: "flex", gap: 9, alignItems: "flex-start", padding: "5px 0", fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.text, lineHeight: 1.45 }}>
+            {MENS_CLUB_YEARLY_SPONSORS.map((s) => (
+              <div key={s.name} style={{ display: "flex", gap: 9, alignItems: "flex-start", padding: "5px 0", fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, lineHeight: 1.45 }}>
                 <span style={{ width: 5, height: 5, borderRadius: "50%", background: C.sunset, flexShrink: 0, marginTop: 6 }} />
-                {name}
+                {s.url ? (
+                  <a href={s.url} target="_blank" rel="noopener noreferrer" className="link-hover-underline" style={{ color: C.lakeDark, textDecoration: "none" }}>
+                    {s.name}
+                  </a>
+                ) : (
+                  <span style={{ color: C.text }}>{s.name}</span>
+                )}
               </div>
             ))}
           </div>
