@@ -175,7 +175,7 @@ function MensClubHero() {
         {golfMode ? (
           <>
             <div style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.sunsetLight, marginBottom: 12 }}>
-              Devils & Round Lake Men's Club presents
+              Devils Lake & Round Lake Men's Club presents
             </div>
             <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(34px, 6vw, 62px)", fontWeight: 400, color: C.cream, lineHeight: 1.05, margin: "0 0 14px 0" }}>
               Golf Outing 2026
@@ -211,7 +211,7 @@ function MensClubHero() {
               501(c)(3) Nonprofit
             </div>
             <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(32px, 6vw, 64px)", fontWeight: 400, color: C.cream, lineHeight: 1.05, margin: "0 0 20px 0" }}>
-              Devils & Round Lake<br />Men's Club
+              Devils Lake & Round Lake<br />Men's Club
             </h1>
             <p style={{ fontSize: "clamp(14px, 1.5vw, 17px)", color: "rgba(255,255,255,0.5)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto 32px" }}>
               Service, leadership, tradition, fellowship, and fun. Supporting needy families and community events across Manitou Beach since the days our grandfathers fished these lakes.
@@ -233,7 +233,7 @@ function MensClubHero() {
               }}>
                 View Events
               </a>
-              <ShareBar title="Devils & Round Lake Men's Club - Manitou Beach" />
+              <ShareBar title="Devils Lake & Round Lake Men's Club - Manitou Beach" />
             </div>
           </>
         )}
@@ -406,7 +406,7 @@ function MensClubMissionSection() {
           <FadeIn delay={100} direction="left">
             <div>
               <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, margin: "0 0 18px 0" }}>
-                The Devils and Round Lake Men's Club is a 501(c)(3) nonprofit dedicated to improving life in the Manitou Beach community. Through annual events like the legendary Tip-Up Festival and the Fourth of July Firecracker 7K, the club raises funds that go directly back to the people who need it most.
+                The Devils Lake & Round Lake Men's Club is a 501(c)(3) nonprofit dedicated to improving life in the Manitou Beach community. Through annual events like the legendary Tip-Up Festival and the Fourth of July Firecracker 7K, the club raises funds that go directly back to the people who need it most.
               </p>
               <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, margin: 0 }}>
                 From buying laptops for college-bound students to donating thousands in toys through Toys for Tots, partnering with law enforcement for Shop with a Hero, and delivering Christmas gift baskets to families in need - the Men's Club is the backbone of Manitou Beach's charitable community.
@@ -544,7 +544,7 @@ function MensClubSponsorForm() {
           </div>
         </FadeIn>
         <CommunityDonationForm
-          orgName="Devils & Round Lake Men's Club"
+          orgName="Devils Lake & Round Lake Men's Club"
           tiers={MENS_CLUB_SPONSOR_TIERS}
           accentColor={C.sunset}
           note="Your application will be reviewed and a club representative will follow up within 2 business days."
@@ -598,7 +598,7 @@ export default function MensClubPage() {
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
 <SEOHead
         title="Men's Club"
-        description="Devils Lake Men's Club - community organization serving Manitou Beach, Michigan. Events, membership, and local projects."
+        description="Devils Lake & Round Lake Men's Club - community organization serving Manitou Beach, Michigan. Events, membership, and local projects."
         path="/mens-club"
         breadcrumbs={[
           { name: 'Home', path: '/' },

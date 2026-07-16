@@ -878,7 +878,7 @@ function LadiesClubGallerySection() {
 const DEFAULT_PLATINUM = [
   { name: "Adrian Steel",                      logo: "/images/ladies-club/sponsors/adrian-logo.jpg",        url: "https://adriansteel.com" },
 { name: "Dave/Jose",                         logo: null,                                                    url: null },
-  { name: "Devil's and Round Lake Men's Club", logo: "/images/mens_club_logo.png",                           url: "/mens-club" },
+  { name: "Devils Lake & Round Lake Men's Club", logo: "/images/mens_club_logo.png",                           url: "/mens-club" },
   { name: "Decker and Sons Insurance",         logo: "/images/ladies-club/sponsors/decker-logo.jpg",        url: "https://deckerandsonsinsurance.com" },
   { name: "Devil's Lake Water Sports",         logo: "/images/ladies-club/sponsors/dl_watersports_logo.png", url: "https://dlwatersports.com/" },
   { name: "Foundation Realty",                 logo: "/images/ladies-club/sponsors/foundation-logo.jpg",    url: "https://foundationlenawee.com" },

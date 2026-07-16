@@ -784,7 +784,7 @@ function FirecrackerRunSection() {
             <SectionLabel>July 4th Morning</SectionLabel>
             <SectionTitle center>15th Annual Firecracker 7K</SectionTitle>
             <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 560, margin: "0 auto" }}>
-              Start your Fourth of July bright and early on the roads of Manitou Beach. The Devil's Lake &amp; Round Lake Men's Club hosts the 15th annual run with a 7K and a 1 Mile walk/run option for all ages.
+              Start your Fourth of July bright and early on the roads of Manitou Beach. The Devils Lake &amp; Round Lake Men's Club hosts the 15th annual run with a 7K and a 1 Mile walk/run option for all ages.
             </p>
           </div>
         </FadeIn>
@@ -939,7 +939,7 @@ function FirecrackerRunSection() {
           </div>
 
           <p style={{ textAlign: "center", fontSize: 12, color: C.textMuted, marginTop: 16, fontFamily: "'Libre Franklin', sans-serif" }}>
-            Sponsored by the Devil's Lake &amp; Round Lake Men's Club · Highland Inn · 3171 Round Lake Hwy, Manitou Beach, MI 49253
+            Sponsored by the Devils Lake &amp; Round Lake Men's Club · Highland Inn · 3171 Round Lake Hwy, Manitou Beach, MI 49253
           </p>
         </FadeIn>
       </div>
