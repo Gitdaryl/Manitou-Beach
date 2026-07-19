@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { C, SECTIONS, CAT_COLORS, USA250_VIDEO_URL } from '../data/config';
 import { BASE_PRICES } from '../data/pricing';
 import { ShareBar, CategoryPill, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivider, PageSponsorBanner, DiagonalDivider, Btn, useCardTilt } from '../components/Shared';
@@ -18,6 +18,8 @@ import SEOHead from '../components/SEOHead';
 
 function EventTicker() {
   const [tickerItems, setTickerItems] = useState([]);
+  const trackRef = useRef(null);
+  const [duration, setDuration] = useState(null);
   useEffect(() => {
     fetch("/api/events")
       .then(r => r.json())
@@ -35,6 +37,16 @@ function EventTicker() {
       .catch(() => {});
   }, []);
 
+  /* The shared 35s marquee used to move half a viewport per cycle; since
+     .marquee-track became width: max-content, -50% spans half the full
+     repeated content, so a fixed 35s races. Scale the duration by
+     content-to-viewport width to keep the original gentle crawl. */
+  useLayoutEffect(() => {
+    if (tickerItems.length === 0 || !trackRef.current) return;
+    const w = trackRef.current.scrollWidth;
+    setDuration(Math.max(35, Math.round(35 * (w / window.innerWidth))));
+  }, [tickerItems]);
+
   if (tickerItems.length === 0) return null;
   const repeated = [...tickerItems, ...tickerItems, ...tickerItems, ...tickerItems];
   return (
@@ -48,7 +60,7 @@ function EventTicker() {
       }}>
         <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 80, background: `linear-gradient(90deg, ${C.night}, transparent)`, zIndex: 2, pointerEvents: "none" }} />
         <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 80, background: `linear-gradient(270deg, ${C.night}, transparent)`, zIndex: 2, pointerEvents: "none" }} />
-        <div className="marquee-track" style={{ whiteSpace: "nowrap" }}>
+        <div ref={trackRef} className="marquee-track" style={{ whiteSpace: "nowrap", ...(duration ? { animationDuration: `${duration}s` } : {}) }}>
           {repeated.map((item, i) => (
             <span key={i} style={{
               fontFamily: "'Libre Franklin', sans-serif",
