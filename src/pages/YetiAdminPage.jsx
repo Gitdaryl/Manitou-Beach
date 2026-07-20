@@ -1690,6 +1690,66 @@ export default function YetiAdminPage() {
               )}
             </div>
 
+            {/* ── QR CODE SCANS ── */}
+            {trafficData && (() => {
+              const qrViews = (trafficData.bizViews || []).filter(v => v.type === 'qr');
+              const qrTotal = qrViews.reduce((s, v) => s + v.total, 0);
+              const qrThisMonth = qrViews.reduce((s, v) => s + (v.thisMonth || 0), 0);
+              const maxQr = qrViews[0]?.total || 1;
+              return (
+                <div style={{ marginBottom: 20 }}>
+                  <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.08em', color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif', fontWeight: 700, marginBottom: 10 }}>📱 QR Code Scans</div>
+                  {qrViews.length === 0 ? (
+                    <div style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 12, padding: '20px 24px' }}>
+                      <div style={{ fontSize: 13, color: C.dusk, fontWeight: 600, fontFamily: 'Libre Franklin, sans-serif', marginBottom: 6 }}>No scans yet</div>
+                      <div style={{ fontSize: 13, color: C.textLight, fontFamily: 'Libre Franklin, sans-serif', lineHeight: 1.6 }}>
+                        Scans will show up here once someone hits a link tagged <code>?src=qr-...</code>. The events poster QR points to <code>/events?src=qr-events-poster</code>.
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 12, marginBottom: 14 }}>
+                        <div style={{ background: '#fff', borderRadius: 12, padding: '16px 14px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', borderTop: `3px solid ${C.lakeBlue}` }}>
+                          <div style={{ fontSize: 18, marginBottom: 6 }}>📱</div>
+                          <div style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 22, fontWeight: 700, color: C.dusk, marginBottom: 3 }}>{qrTotal.toLocaleString()}</div>
+                          <div style={{ fontSize: 10, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '0.05em', fontFamily: 'Libre Franklin, sans-serif' }}>Total Scans</div>
+                        </div>
+                        <div style={{ background: '#fff', borderRadius: 12, padding: '16px 14px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', borderTop: `3px solid ${C.sage}` }}>
+                          <div style={{ fontSize: 18, marginBottom: 6 }}>📅</div>
+                          <div style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 22, fontWeight: 700, color: C.dusk, marginBottom: 3 }}>{qrThisMonth.toLocaleString()}</div>
+                          <div style={{ fontSize: 10, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '0.05em', fontFamily: 'Libre Franklin, sans-serif' }}>This Month</div>
+                        </div>
+                      </div>
+                      <div style={{ background: '#fff', borderRadius: 12, padding: '18px 20px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                          {qrViews.map(item => {
+                            const label = item.slug.replace(/^qr-/, '').replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                            const pct = (item.total / maxQr) * 100;
+                            return (
+                              <div key={item.key} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                <div style={{ width: 8, height: 8, borderRadius: '50%', background: C.lakeBlue, flexShrink: 0 }} />
+                                <div style={{ width: 160, fontSize: 12, color: C.dusk, fontFamily: 'Libre Franklin, sans-serif', fontWeight: 500, flexShrink: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{label}</div>
+                                <div style={{ flex: 1, background: C.sand, borderRadius: 999, height: 7, overflow: 'hidden' }}>
+                                  <div style={{ height: '100%', width: `${pct}%`, background: C.lakeBlue, borderRadius: 999, transition: 'width 0.5s ease' }} />
+                                </div>
+                                <div style={{ width: 36, fontSize: 11, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif', textAlign: 'right', fontWeight: 600 }}>{item.total}</div>
+                                <div style={{ width: 50, fontSize: 10, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif', textAlign: 'right' }}>{item.thisMonth} mo</div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                        {trafficData.updatedAt && (
+                          <div style={{ marginTop: 12, fontSize: 11, color: C.textMuted, fontFamily: 'Libre Franklin, sans-serif' }}>
+                            Updated {new Date(trafficData.updatedAt).toLocaleString()}
+                          </div>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </div>
+              );
+            })()}
+
             {/* ── MONEY ROW ── */}
             {revenueLoading ? (
               <div style={{ background: '#fff', borderRadius: 12, padding: '20px 24px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', marginBottom: 16, textAlign: 'center', color: C.textMuted, fontSize: 13, fontFamily: 'Libre Franklin, sans-serif' }}>Loading revenue…</div>

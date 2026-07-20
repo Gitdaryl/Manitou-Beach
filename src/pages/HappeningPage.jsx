@@ -1057,6 +1057,15 @@ export default function HappeningPage() {
       .catch(() => {});
   }, []);
 
+  // QR-code campaign tracking: /events?src=qr-<campaign> logs a scan through
+  // the same view-tracking pipeline used for business/winery/food-truck profiles.
+  useEffect(() => {
+    const qrSrc = new URLSearchParams(window.location.search).get('src');
+    if (qrSrc && qrSrc.startsWith('qr-')) {
+      fetch('/api/track-view', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ page: 'qr', slug: qrSrc }) }).catch(() => {});
+    }
+  }, []);
+
   // Build Event schema for all upcoming events (Google rich results)
   const eventSchemas = useMemo(() =>
     upcomingEvents.slice(0, 50).map(buildEventSchema).filter(Boolean),
