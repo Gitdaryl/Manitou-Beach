@@ -334,11 +334,21 @@ export function PhotoGallery({ photos, slug, title, shareText, thumbOf = thumbSr
   });
 
   // Keep the URL in sync with the open photo (shareable while swiping).
+  // Several galleries can share one page (event sections), so each gallery only
+  // ever sets its own keys and only clears the param when it holds one of ours —
+  // never someone else's, and never on mount.
   useEffect(() => {
     if (!urlSync) return;
     const next = new URLSearchParams(searchParams);
-    if (index !== null) next.set('photo', keyFor(index));
-    else next.delete('photo');
+    const cur = next.get('photo');
+    if (index !== null) {
+      if (cur === keyFor(index)) return;
+      next.set('photo', keyFor(index));
+    } else {
+      const owned = cur && photos.some((_, i) => keyFor(i) === cur);
+      if (!owned) return;
+      next.delete('photo');
+    }
     setSearchParams(next, { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index]);

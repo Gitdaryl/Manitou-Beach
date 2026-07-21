@@ -168,11 +168,6 @@ export default function EventPhotoWall({ slug, title, compact = false }) {
   const urls = photos.map((p) => p.url);
   const idByUrl = {};
   photos.forEach((p) => { idByUrl[p.url] = p.id; });
-  // Captured once on mount: a ?photo=<id> deep link decides which section may
-  // drive URL sync (multi-section walls can't all sync the same param).
-  const [deepKey] = useState(() => {
-    try { return new URLSearchParams(window.location.search).get('photo'); } catch { return null; }
-  });
 
   // Group photos into event sections (config order); untagged photos land in the
   // gallery's general bucket. Galleries without an events list keep the single flat grid.
@@ -306,7 +301,7 @@ export default function EventPhotoWall({ slug, title, compact = false }) {
                 title={sec.title ? `${title} — ${sec.title}` : `${title} — community photos`}
                 thumbOf={crowdThumb}
                 shareKeyOf={(src, i) => idByUrl[src] || String(i + 1)}
-                urlSync={multiSection ? !!deepKey && sec.list.some((p) => p.id === deepKey) : true}
+                urlSync
                 onReport={(src, reason) => {
                   const p = photos.find((x) => x.url === src);
                   if (p) reportPhoto(p.id, reason);

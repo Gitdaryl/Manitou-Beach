@@ -107,6 +107,11 @@ const OG_MAP = {
     description: 'America\'s 250th birthday celebration on the shores of Devils Lake, Manitou Beach.',
     image: '/images/og/fireworks-og.jpg',
   },
+  '/america-250': {
+    title: 'America 250 - July 4th Celebrations at Devils Lake',
+    description: 'Photos, film, and memories from America\'s 250th at Devils and Round Lake - boat parades, fireworks, the Firecracker 7K, and skydivers.',
+    image: '/images/og/fireworks-og.jpg',
+  },
   '/holly-yeti': {
     title: 'Holly & Yeti - Foundation Realty at Devils Lake',
     description: 'Irish Hills lake homes and real estate with Holly Griewahn and the Yeti - Foundation Realty.',
@@ -404,7 +409,7 @@ export default async function middleware(request) {
 
   // Build absolute URLs
   const origin = url.origin;
-  const pageUrl = `${origin}${cleanPath}`;
+  let pageUrl = `${origin}${cleanPath}`;
   let imageUrl = og.image
     ? `${origin}${og.image}`
     : `${origin}${DEFAULT_OG.image}`;
@@ -424,6 +429,18 @@ export default async function middleware(request) {
       title = `Devil's Lake Summerfest ${yr} - Manitou Beach`;
       description = `A moment from Devil's Lake Summerfest ${yr} in Manitou Beach, Michigan. See the whole festival gallery.`;
     }
+  }
+
+  // Per-photo preview for pages that embed a crowd photo wall: ?photo=<id> in
+  // a link copied from the page itself (not just /gallery/:slug) previews that
+  // exact photo. Summerfest YYYY-NN links above keep their curated handling.
+  const WALL_PAGES = { '/america-250': 'america-250', '/mens-club': 'mens-club', '/ladies-club': 'ladies-club' };
+  const wallSlug = WALL_PAGES[cleanPath];
+  const wallParam = wallSlug && url.searchParams.get('photo');
+  if (wallParam && !/^\d{4}-\d{1,2}$/.test(wallParam)) {
+    const hit = await resolveCrowdPhoto(wallSlug, wallParam, origin);
+    // Keep ?photo= in og:url so crawlers canonicalise to the photo, not the bare page
+    if (hit) { imageUrl = hit; pageUrl = `${pageUrl}?photo=${encodeURIComponent(wallParam)}`; }
   }
 
   // ── Inject JSON-LD schema for AI crawlers ────────────────────
@@ -518,6 +535,20 @@ const GALLERY_OG = {
   },
 };
 
+// Resolve a crowd-photo ?photo= param (photo id, or a legacy 1-based position)
+// to its Blob URL via the public feed. Returns null when there's no match so
+// callers fall back to their static cover.
+async function resolveCrowdPhoto(slug, param, origin) {
+  try {
+    const r = await fetch(`${origin}/api/photos-list?slug=${encodeURIComponent(slug)}`);
+    if (!r.ok) return null;
+    const list = (await r.json()).photos || [];
+    const hit = list.find((p) => p.id === param)
+      || (/^\d{1,3}$/.test(param) ? list[parseInt(param, 10) - 1] : null);
+    return hit && hit.url ? hit.url : null;
+  } catch { return null; }
+}
+
 // Inject gallery OG tags. ?photo= picks the exact preview image:
 //   numeric NN + curated folder → that curated file
 //   photo id (or legacy numeric position) + crowd gallery → that photo's Blob URL
@@ -538,15 +569,7 @@ async function handleGalleryOG(html, slug, url) {
     const nn = (isNum ? photoParam : '1').padStart(2, '0');
     imageUrl = `${origin}${g.folder}/${g.prefix}-${nn}.jpg`;
   } else if (photoParam && g.crowd) {
-    try {
-      const r = await fetch(`${origin}/api/photos-list?slug=${encodeURIComponent(slug)}`);
-      if (r.ok) {
-        const list = (await r.json()).photos || [];
-        const hit = list.find((p) => p.id === photoParam)
-          || (isNum ? list[parseInt(photoParam, 10) - 1] : null);
-        if (hit && hit.url) imageUrl = hit.url;
-      }
-    } catch { /* fall through to cover */ }
+    imageUrl = await resolveCrowdPhoto(slug, photoParam, origin);
   }
   if (!imageUrl) imageUrl = g.cover ? `${origin}${g.cover}` : `${origin}${g.folder}/${g.prefix}-01.jpg`;
   const img = esc(imageUrl);
