@@ -380,7 +380,7 @@ export default async function middleware(request) {
     const htmlRes = await fetch(htmlUrl);
     if (!htmlRes.ok) return undefined;
     let html = await htmlRes.text();
-    html = handleGalleryOG(html, galleryMatch[1], url);
+    html = await handleGalleryOG(html, galleryMatch[1], url);
     return new Response(html, {
       status: 200,
       headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'public, max-age=300, s-maxage=600' },
@@ -487,34 +487,42 @@ export default async function middleware(request) {
 // Mirror of src/data/galleries.js (edge middleware can't reliably import from src).
 // Keep in sync when adding a gallery so shared links show the right photo preview.
 // Curated galleries have folder+prefix (per-photo previews via ?photo=NN).
-// Crowd galleries have a static `cover` instead (photos are user-submitted Blob
-// URLs with no predictable path), so the share preview uses the cover image.
+// Crowd galleries (crowd: true) resolve ?photo=<id> against the live feed via
+// /api/photos-list, so a shared link previews the exact submitted photo; the
+// static `cover` is the fallback for the bare gallery URL or a missing photo.
 const GALLERY_OG = {
   'mens-club': {
     title: "Men's Club",
     description: 'Community photos from the Devils Lake & Round Lake Men’s Club in Manitou Beach, Michigan. Add yours and share.',
     cover: '/images/og/mensclub-og.jpg',
+    crowd: true,
   },
   'america-250': {
     title: 'America 250',
     description: 'Community photos from the America 250 celebration in Manitou Beach, Michigan. Add yours and share the day.',
     cover: '/images/happening-hero.jpg',
+    crowd: true,
   },
   'ladies-club': {
     title: 'Ladies Club',
     description: 'Community photos from Manitou Beach Ladies Club events on Devils Lake, Michigan.',
     cover: '/images/ladies-club/artists.jpg',
+    crowd: true,
   },
   'july-4-2026': {
     title: 'July 4th Weekend 2026',
     description: 'Photos from July 4th weekend on Devils Lake in Manitou Beach, Michigan. View the gallery and share your favorites.',
     folder: '/images/galleries/july-4-2026',
     prefix: 'manitou-july-4-2026',
+    crowd: true,
   },
 };
 
-// Inject gallery OG tags. With ?photo=NN the preview is that exact photo; otherwise photo 01.
-function handleGalleryOG(html, slug, url) {
+// Inject gallery OG tags. ?photo= picks the exact preview image:
+//   numeric NN + curated folder → that curated file
+//   photo id (or legacy numeric position) + crowd gallery → that photo's Blob URL
+// No param / no match → curated photo 01 or the gallery cover.
+async function handleGalleryOG(html, slug, url) {
   const g = GALLERY_OG[slug];
   if (!g) return html; // unknown gallery → leave default OG
 
@@ -522,10 +530,26 @@ function handleGalleryOG(html, slug, url) {
   const esc = (s) => String(s || '')
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-  const photoParam = url.searchParams.get('photo');
-  const nn = photoParam && /^\d{1,3}$/.test(photoParam) ? String(photoParam).padStart(2, '0') : '01';
-  // Crowd galleries use a fixed cover; curated galleries preview the chosen photo.
-  const img = esc(g.cover ? `${origin}${g.cover}` : `${origin}${g.folder}/${g.prefix}-${nn}.jpg`);
+  const photoParam = url.searchParams.get('photo') || '';
+  const isNum = /^\d{1,3}$/.test(photoParam);
+
+  let imageUrl = null;
+  if (g.folder && (isNum || !photoParam)) {
+    const nn = (isNum ? photoParam : '1').padStart(2, '0');
+    imageUrl = `${origin}${g.folder}/${g.prefix}-${nn}.jpg`;
+  } else if (photoParam && g.crowd) {
+    try {
+      const r = await fetch(`${origin}/api/photos-list?slug=${encodeURIComponent(slug)}`);
+      if (r.ok) {
+        const list = (await r.json()).photos || [];
+        const hit = list.find((p) => p.id === photoParam)
+          || (isNum ? list[parseInt(photoParam, 10) - 1] : null);
+        if (hit && hit.url) imageUrl = hit.url;
+      }
+    } catch { /* fall through to cover */ }
+  }
+  if (!imageUrl) imageUrl = g.cover ? `${origin}${g.cover}` : `${origin}${g.folder}/${g.prefix}-01.jpg`;
+  const img = esc(imageUrl);
   const t = esc(`${g.title} - Manitou Beach`);
   const d = esc(g.description);
   const pageUrl = esc(`${origin}/gallery/${slug}${photoParam ? `?photo=${photoParam}` : ''}`);

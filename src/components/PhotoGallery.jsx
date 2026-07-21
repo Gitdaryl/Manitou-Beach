@@ -315,27 +315,36 @@ export function Lightbox({ photos, index, setIndex, onClose, title, shareUrl, sh
  *   title     : gallery title
  *   shareText : optional custom share message
  */
-export function PhotoGallery({ photos, slug, title, shareText, thumbOf = thumbSrc, onReport, reactions, onHeart, urlSync = true }) {
+export function PhotoGallery({ photos, slug, title, shareText, thumbOf = thumbSrc, onReport, reactions, onHeart, urlSync = true, shareKeyOf }) {
   const [searchParams, setSearchParams] = useSearchParams();
+  // Stable share key per photo. Curated photos use their 1-based position (files
+  // never reorder); crowd photos pass shareKeyOf to use the photo's KV id, so a
+  // shared link keeps pointing at the same photo as new uploads shift positions.
+  const keyFor = (i) => (shareKeyOf ? String(shareKeyOf(photos[i], i)) : String(i + 1));
   // index of open photo, or null. Initialised from ?photo= so deep links open straight to it.
   const [index, setIndex] = useState(() => {
     if (!urlSync) return null;
-    const p = parseInt(searchParams.get('photo') || '', 10);
-    return p >= 1 && p <= photos.length ? p - 1 : null;
+    const p = searchParams.get('photo') || '';
+    if (!p) return null;
+    const byKey = photos.findIndex((_, i) => keyFor(i) === p);
+    if (byKey >= 0) return byKey;
+    // Legacy numeric links (pre-id sharing) fall back to position.
+    const n = parseInt(p, 10);
+    return Number.isInteger(n) && n >= 1 && n <= photos.length ? n - 1 : null;
   });
 
   // Keep the URL in sync with the open photo (shareable while swiping).
   useEffect(() => {
     if (!urlSync) return;
     const next = new URLSearchParams(searchParams);
-    if (index !== null) next.set('photo', String(index + 1));
+    if (index !== null) next.set('photo', keyFor(index));
     else next.delete('photo');
     setSearchParams(next, { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index]);
 
   const shareUrl = index !== null && typeof window !== 'undefined'
-    ? `${window.location.origin}/gallery/${slug}?photo=${index + 1}`
+    ? `${window.location.origin}/gallery/${slug}?photo=${encodeURIComponent(keyFor(index))}`
     : '';
 
   return (
