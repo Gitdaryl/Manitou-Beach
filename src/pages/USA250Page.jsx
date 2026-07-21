@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Footer, GlobalStyles, Navbar, NewsletterInline } from "../components/Layout";
 import { FadeIn, SectionLabel, SectionTitle, ScrollProgress, WaveDivider, DiagonalDivider, ShareBar } from "../components/Shared";
-import { C, USA250_VIDEO_URL } from "../data/config";
+import { C, USA250_VIDEO_URL, USA250_FILM_URL } from "../data/config";
 import SEOHead from '../components/SEOHead';
 import EventPhotoWall from '../components/EventPhotoWall';
 
@@ -16,22 +16,13 @@ const FW = {
   red: "#B22234",
 };
 
-const COMMITTEE = [
-  { name: "Craig Gabel",       role: "Chair"     },
-  { name: "Byrne Stapleton",   role: "Treasurer" },
-  { name: "Chris Sherman",     role: "Committee" },
-  { name: "Brent Hopson",      role: "Committee" },
-  { name: "Troy Langenderfer", role: "Committee" },
-  { name: "Mike Clark",        role: "Founder"   },
-];
-
-// Add events here in chronological order as they're confirmed
+// The weekend's main events, in chronological order (shown as a recap timeline)
 const ACTIVITIES = [
   {
     date: "July 3rd",
     time: "10:00 AM",
     title: "DLYC Boat Parade",
-    body: "Meet at the Devils Lake Yacht Club and parade out onto the water. This year there's a special touch - the DLYC dock will fly American flags only. They normally display flags from around the world, but for the 250th it's all stars and stripes.",
+    body: "Boats gathered at the Devils Lake Yacht Club and paraded out onto the water. The DLYC dock, which normally displays flags from around the world, flew American flags only - for the 250th it was all stars and stripes.",
     location: "Devils Lake Yacht Club",
     icon: "⚓",
   },
@@ -39,7 +30,7 @@ const ACTIVITIES = [
     date: "July 3rd",
     time: "10:00 AM",
     title: "Round Lake Boat Parade",
-    body: "Meet at the sandbar and join the Round Lake parade. Two lakes, two parades, one celebration.",
+    body: "Round Lake's parade formed up at the sandbar and made its way around the lake. Two lakes, two parades, one celebration.",
     location: "The Sandbar, Round Lake",
     icon: "🚤",
   },
@@ -47,16 +38,24 @@ const ACTIVITIES = [
     date: "July 3rd",
     time: "10:00 PM",
     title: "Fireworks",
-    body: "17 launch barges across both lakes. 2,500 shells. Every dock has a front-row seat. America's 250th - the biggest Fourth of our lifetime.",
+    body: "17 launch barges across both lakes. 2,500 shells. Every dock had a front-row seat. America's 250th - the biggest Fourth of our lifetime.",
     location: "Devils & Round Lake",
     icon: "🎆",
     featured: true,
   },
   {
     date: "July 4th",
+    time: "8:00 AM",
+    title: "15th Annual Firecracker 7K",
+    body: "Runners and walkers took over the roads of Manitou Beach for the Men's Club's 15th annual Firecracker 7K, with the 1 Mile walk/run bringing out all ages. Water stations on the course, Bomb Pops and trophies at the finish.",
+    location: "Highland Inn, Manitou Beach",
+    icon: "🏃",
+  },
+  {
+    date: "July 4th",
     time: "8:00 PM",
     title: "Skydive Tecumseh Drop-In",
-    body: "Skydive Tecumseh teams up with the Devils Lake Yacht Club for a 4th of July Drop-In. Watch from your boat or the shore as jumpers buzz over the lake before landing right in front of the DLYC. Weather permitting.",
+    body: "Skydive Tecumseh teamed up with the Devils Lake Yacht Club for a 4th of July Drop-In. Jumpers buzzed over the lake before landing right in front of the DLYC as boats and shoreline crowds looked on.",
     location: "Landing in front of Devils Lake Yacht Club",
     icon: "🪂",
   },
@@ -344,10 +343,10 @@ function ActivitiesSection() {
       <div style={{ maxWidth: 760, margin: "0 auto" }}>
         <FadeIn>
           <div style={{ textAlign: "center", marginBottom: 64 }}>
-            <SectionLabel>July 3rd, 2026</SectionLabel>
-            <SectionTitle center>What's On</SectionTitle>
+            <SectionLabel>July 3rd &amp; 4th, 2026</SectionLabel>
+            <SectionTitle center>The Main Events</SectionTitle>
             <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 520, margin: "0 auto" }}>
-              More events being added as details are confirmed. Check back closer to the date.
+              Two days, two lakes, and a weekend the whole town showed up for. Here's how it went down.
             </p>
           </div>
         </FadeIn>
@@ -462,82 +461,106 @@ function ActivitiesSection() {
   );
 }
 
-// ─── Story / Committee ────────────────────────────────────────────────────────
+// ─── The Film (long-form YouTube recap) ──────────────────────────────────────
 
-function FireworksStorySection() {
+// Accepts youtube.com/watch?v=, youtu.be/, /embed/, or /shorts/ URLs.
+function toYouTubeEmbed(url) {
+  if (!url) return null;
+  const m = url.match(/(?:youtu\.be\/|v=|\/embed\/|\/shorts\/)([\w-]{11})/);
+  return m ? `https://www.youtube-nocookie.com/embed/${m[1]}` : null;
+}
+
+function FilmSection() {
+  const embed = toYouTubeEmbed(USA250_FILM_URL);
+
   return (
-    <section style={{ background: C.warmWhite, padding: "100px 24px" }}>
-      <div style={{ maxWidth: 960, margin: "0 auto" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "start" }} className="mobile-col-1">
+    <section id="film" style={{ background: C.warmWhite, padding: "90px 24px 70px" }}>
+      <div style={{ maxWidth: 880, margin: "0 auto" }}>
+        <FadeIn>
+          <div style={{ textAlign: "center", marginBottom: 40 }}>
+            <SectionLabel>The Film</SectionLabel>
+            <SectionTitle center>America 250: The Movie</SectionTitle>
+            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 560, margin: "0 auto" }}>
+              We filmed the whole weekend - the boat parades, the show over both lakes, the Firecracker 7K, and the skydivers dropping in. The full-length film lands right here.
+            </p>
+          </div>
+        </FadeIn>
 
-          <FadeIn>
-            <SectionLabel>The Origin</SectionLabel>
-            <SectionTitle>A Legacy in the Sky</SectionTitle>
-            <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.9, marginBottom: 18 }}>
-              Years ago, Mike Clark looked out over Devils and Round Lake and decided this place deserved something worth gathering for. He wasn't thinking about a single show - he was thinking about a tradition. A summer night that families would plan around, that kids would grow up remembering, that neighbors would watch from their docks year after year.
-            </p>
-            <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.9, marginBottom: 18 }}>
-              Mike was the original - the OG - but even the boldest visions need a crew. He called on fellow lifetime "Lakers," people who knew these waters and these summer nights like their own backyard. Together, they built something that's been growing ever since.
-            </p>
-            <p style={{ fontSize: 15, color: C.textMuted, lineHeight: 1.85 }}>
-              What began as a vision became a tradition. What became a tradition is now, in 2026, something legendary.
-            </p>
-          </FadeIn>
-
-          <FadeIn delay={120}>
+        <FadeIn delay={100}>
+          {embed ? (
             <div style={{
-              fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase",
-              color: C.sage, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 24,
+              position: "relative", paddingTop: "56.25%",
+              borderRadius: 18, overflow: "hidden",
+              boxShadow: "0 12px 48px rgba(13,27,62,0.25)",
+              background: FW.navy,
             }}>
-              The Committee
+              <iframe
+                src={embed}
+                title="America 250 - The Film"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: 0 }}
+              />
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {COMMITTEE.map((m, i) => (
-                <FadeIn key={i} delay={140 + i * 40}>
-                  <div style={{
-                    display: "flex", alignItems: "center", gap: 16,
-                    background: m.role === "Founder"
-                      ? `linear-gradient(135deg, rgba(201,168,76,0.07) 0%, ${C.cream} 100%)`
-                      : C.cream,
-                    border: `1px solid ${m.role === "Founder" ? FW.gold + "55" : C.sand}`,
-                    borderRadius: 12, padding: "16px 20px",
-                  }}>
-                    <div style={{
-                      width: 38, height: 38, borderRadius: "50%", flexShrink: 0,
-                      background: m.role === "Founder" ? `${FW.gold}22`
-                               : m.role === "Chair"    ? `${C.lakeBlue}1e`
-                               : `${C.sage}18`,
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      fontFamily: "'Libre Baskerville', serif",
-                      fontSize: 14, fontWeight: 700,
-                      color: m.role === "Founder" ? FW.gold
-                           : m.role === "Chair"    ? C.lakeBlue
-                           : C.sage,
-                    }}>
-                      {m.name.charAt(0)}
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700, color: C.text }}>{m.name}</div>
-                      <div style={{ fontSize: 11, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>{m.role}</div>
-                    </div>
-                    {m.role === "Founder" && (
-                      <div style={{
-                        fontSize: 9, fontWeight: 700, letterSpacing: 2,
-                        textTransform: "uppercase", color: FW.gold,
-                        fontFamily: "'Libre Franklin', sans-serif",
-                        border: `1px solid ${FW.gold}45`,
-                        borderRadius: 4, padding: "3px 9px", flexShrink: 0,
-                      }}>
-                        OG
-                      </div>
-                    )}
-                  </div>
-                </FadeIn>
-              ))}
+          ) : (
+            <div style={{
+              position: "relative", paddingTop: "56.25%",
+              borderRadius: 18, overflow: "hidden",
+              boxShadow: "0 12px 48px rgba(13,27,62,0.25)",
+            }}>
+              <div style={{
+                position: "absolute", inset: 0,
+                background: `linear-gradient(160deg, ${FW.navy} 0%, #0A1218 60%, #16091e 100%)`,
+              }} />
+              <div style={{
+                position: "absolute", inset: 0,
+                backgroundImage: "url(/images/fireworks/devilslake-dlyc-bg2.jpg)",
+                backgroundSize: "cover", backgroundPosition: "center",
+                opacity: 0.28,
+              }} />
+              <div style={{
+                position: "absolute", inset: 0, zIndex: 1,
+                display: "flex", flexDirection: "column",
+                alignItems: "center", justifyContent: "center",
+                gap: 18, padding: 24, textAlign: "center",
+              }}>
+                <div style={{
+                  width: 72, height: 72, borderRadius: "50%",
+                  background: `${FW.gold}22`,
+                  border: `2px solid ${FW.gold}`,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  boxShadow: `0 0 32px ${FW.gold}40`,
+                }}>
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill={FW.gold}>
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </div>
+                <div style={{
+                  fontFamily: "'Libre Franklin', sans-serif",
+                  fontSize: 10, fontWeight: 700, letterSpacing: 3.5,
+                  textTransform: "uppercase", color: FW.gold,
+                }}>
+                  In the Edit Bay
+                </div>
+                <div style={{
+                  fontFamily: "'Libre Baskerville', serif",
+                  fontSize: "clamp(18px, 3vw, 26px)", fontWeight: 700,
+                  color: C.cream, maxWidth: 460, lineHeight: 1.35,
+                }}>
+                  The full film premieres here soon
+                </div>
+                <a href="/#newsletter" style={{
+                  fontFamily: "'Libre Franklin', sans-serif",
+                  fontSize: 12, fontWeight: 600, letterSpacing: 0.5,
+                  color: "rgba(255,255,255,0.65)", textDecoration: "underline",
+                  textUnderlineOffset: 3,
+                }}>
+                  Subscribe to The Dispatch to catch the premiere
+                </a>
+              </div>
             </div>
-          </FadeIn>
-
-        </div>
+          )}
+        </FadeIn>
       </div>
     </section>
   );
@@ -567,9 +590,9 @@ function Fireworks2026Section() {
         <FadeIn>
           <div style={{ textAlign: "center", marginBottom: 64 }}>
             <SectionLabel light>The Fireworks</SectionLabel>
-            <SectionTitle center light>2026: Bigger Than Ever Before</SectionTitle>
+            <SectionTitle center light>The Biggest Show These Lakes Have Ever Seen</SectionTitle>
             <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.85, maxWidth: 600, margin: "0 auto" }}>
-              In honor of America's 250th, the committee is honoring it properly. At dawn on July 3rd, the crew heads out on the water to position 17 launch barges across both lakes - so no matter where you're watching from, you've got a front-row view.
+              At dawn on July 3rd, the crew headed out on the water to position 17 launch barges across both lakes - so no matter where you were watching from, you had a front-row view.
             </p>
           </div>
         </FadeIn>
@@ -622,13 +645,13 @@ function Fireworks2026Section() {
               fontFamily: "'Caveat', cursive",
               fontSize: 22, color: FW.goldLight, marginBottom: 20,
             }}>
-              And there's something new this year.
+              The sky over both lakes, on fire.
             </div>
             <p style={{ fontSize: 16, color: "rgba(255,255,255,0.62)", lineHeight: 1.9, margin: "0 0 20px 0", maxWidth: 700 }}>
-              When the sky ignites on July 3rd, 2,500 shells will go up in waves of color, thunder, and light. Reflections across the water. Cheers from every dock. And when you think the show is winding down - there's something new in the program. Something the committee is keeping close to the vest. Something worthy of 250 years.
+              2,500 shells went up in waves of color, thunder, and light. Reflections across the water. Cheers from every dock. A finale worthy of 250 years.
             </p>
             <p style={{ fontSize: 14, color: "rgba(255,255,255,0.38)", lineHeight: 1.85, margin: 0, maxWidth: 680 }}>
-              This is early mornings loading barges. Volunteers giving their time. Neighbors becoming friends. A community pulling together to create something worth remembering - not just a show, but a night.
+              Behind it all: early mornings loading barges. Volunteers giving their time. Neighbors becoming friends. A community pulling together to create something worth remembering - not just a show, but a night.
             </p>
           </div>
         </FadeIn>
@@ -688,7 +711,7 @@ function GalleryTile({ src, alt }) {
 }
 
 function FireworksGallerySection() {
-  const images = [
+  const archiveImages = [
     "/images/fireworks/devilslake-fireworks-1.jpg",
     "/images/fireworks/devilslake-fireworks-2.jpg",
     "/images/fireworks/devilslake-fireworks-3.jpg",
@@ -701,247 +724,33 @@ function FireworksGallerySection() {
     <section id="gallery" style={{ background: C.cream, padding: "80px 24px 40px" }}>
       <div style={{ maxWidth: 1000, margin: "0 auto" }}>
         <FadeIn>
-          <div style={{ textAlign: "center", marginBottom: 48 }}>
+          <div style={{ textAlign: "center", marginBottom: 8 }}>
             <SectionLabel>Memories</SectionLabel>
-            <SectionTitle center>Gallery</SectionTitle>
-          </div>
-        </FadeIn>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(290px, 1fr))", gap: 12 }}>
-          {images.map((src, i) => (
-            <FadeIn key={i} delay={i * 55} direction="scale">
-              <GalleryTile src={src} alt={`Fireworks ${2026 - i}`} />
-            </FadeIn>
-          ))}
-        </div>
-      </div>
-
-      {/* Community photo wall — everyone's shots from the 2026 celebration */}
-      <EventPhotoWall slug="america-250" title="America 250" />
-    </section>
-  );
-}
-
-
-// ─── Firecracker 7K ──────────────────────────────────────────────────────────
-
-function FirecrackerRunSection() {
-  const [tab, setTab] = React.useState("race");
-
-  const locations = [
-    "Highland Inn",
-    "Sterling Market & Pizzeria",
-    "Boot Jack Tavern",
-    "Two Lakes Tavern",
-    "Devil's Lake Bar & Grill",
-  ];
-
-  const tabStyle = (active) => ({
-    flex: 1,
-    padding: "10px 6px",
-    fontFamily: "'Libre Franklin', sans-serif",
-    fontSize: 11,
-    fontWeight: 700,
-    letterSpacing: "0.16em",
-    textTransform: "uppercase",
-    border: "none",
-    borderBottom: active ? `3px solid ${FW.red}` : "3px solid transparent",
-    background: "transparent",
-    color: active ? FW.red : C.textMuted,
-    cursor: "pointer",
-    transition: "all 0.15s",
-  });
-
-  const infoBox = {
-    background: C.cream,
-    border: `1px solid ${C.sand}`,
-    borderRadius: 10,
-    padding: "14px 16px",
-  };
-
-  const highlight = (bg) => ({
-    background: bg || `linear-gradient(135deg, ${FW.navy} 0%, #1a3a6b 100%)`,
-    borderRadius: 10,
-    padding: "16px 20px",
-    display: "flex",
-    alignItems: "center",
-    gap: 14,
-    color: "#fff",
-  });
-
-  const tdStyle = {
-    padding: "9px 14px",
-    fontFamily: "'Libre Franklin', sans-serif",
-    fontSize: 13,
-    borderBottom: `1px solid ${C.sand}`,
-    color: C.text,
-  };
-
-  return (
-    <section style={{ background: C.warmWhite, padding: "80px 24px" }}>
-      <div style={{ maxWidth: 800, margin: "0 auto" }}>
-        <FadeIn>
-          <div style={{ textAlign: "center", marginBottom: 40 }}>
-            <SectionLabel>July 4th Morning</SectionLabel>
-            <SectionTitle center>15th Annual Firecracker 7K</SectionTitle>
+            <SectionTitle center>The Gallery</SectionTitle>
             <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 560, margin: "0 auto" }}>
-              Start your Fourth of July bright and early on the roads of Manitou Beach. The Devils Lake &amp; Round Lake Men's Club hosts the 15th annual run with a 7K and a 1 Mile walk/run option for all ages.
+              Photos from across the weekend, organised by event - the boat parades, the fireworks, the Firecracker 7K, the skydivers, and the random fun in between. Got shots of your own? Add them right here.
             </p>
           </div>
         </FadeIn>
+      </div>
 
-        <FadeIn delay={80}>
-          <div style={{
-            background: `linear-gradient(135deg, ${FW.navy} 0%, #1a3a6b 100%)`,
-            borderRadius: 12, padding: "18px 24px",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            gap: 20, flexWrap: "wrap", marginBottom: 24,
-          }}>
-            {[
-              { label: "Date",     value: "July 4, 2026" },
-              { label: "Start",    value: "8:00 AM" },
-              { label: "Location", value: "Highland Inn · Manitou Beach" },
-            ].map(({ label, value }) => (
-              <div key={label} style={{ textAlign: "center" }}>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "rgba(255,255,255,0.5)", marginBottom: 3 }}>{label}</div>
-                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, fontWeight: 700, color: "#fff" }}>{value}</div>
-              </div>
-            ))}
+      {/* Community photo wall — grouped by event via GALLERIES['america-250'].events */}
+      <EventPhotoWall slug="america-250" title="America 250" />
+
+      {/* Fireworks shots from earlier years, kept as a small archive strip */}
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+        <FadeIn>
+          <div style={{ textAlign: "center", margin: "16px 0 24px" }}>
+            <SectionLabel>From Years Past</SectionLabel>
           </div>
-
-          <div style={{ display: "flex", borderBottom: `1px solid ${C.sand}`, marginBottom: 24 }}>
-            {["race", "register", "logistics"].map(t => (
-              <button key={t} style={tabStyle(tab === t)} onClick={() => setTab(t)}>
-                {t === "race"      && "Race Info"}
-                {t === "register"  && "Register"}
-                {t === "logistics" && "Day Of"}
-              </button>
-            ))}
-          </div>
-
-          {tab === "race" && (
-            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                {[["Registration Opens","7:15 AM"],["Race Starts","8:00 AM"]].map(([l,v]) => (
-                  <div key={l} style={infoBox}>
-                    <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: C.textMuted, marginBottom: 4 }}>{l}</div>
-                    <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 700, color: C.text }}>{v}</div>
-                  </div>
-                ))}
-              </div>
-              <div style={highlight()}>
-                <span style={{ fontSize: 26 }}>📦</span>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, lineHeight: 1.5 }}>
-                  Early Bird Packet Pickup: July 2nd · 5:00–8:00 PM<br />
-                  <span style={{ color: "rgba(255,255,255,0.6)" }}>Highland Inn · 3171 Round Lake Hwy, Manitou Beach</span>
-                </div>
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10, textAlign: "center" }}>
-                {[["💧","Water Stations"],["🏆","Kids Trophies"],["🧊","Bomb Pops at Finish"]].map(([icon,label]) => (
-                  <div key={label} style={{ ...infoBox, padding: "18px 10px" }}>
-                    <div style={{ fontSize: 26, marginBottom: 8 }}>{icon}</div>
-                    <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: C.text, lineHeight: 1.3 }}>{label}</div>
-                  </div>
-                ))}
-              </div>
-              <div style={highlight(`linear-gradient(135deg, ${FW.red} 0%, #8b0000 100%)`)}>
-                <span style={{ fontSize: 22 }}>📍</span>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, lineHeight: 1.5 }}>
-                  Land &amp; Lake Ladies Club at the 1 Mile Mark<br />
-                  <span style={{ color: "rgba(255,255,255,0.65)" }}>Across from Sterling Market</span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {tab === "register" && (
-            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-              <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                <thead>
-                  <tr style={{ background: FW.navy }}>
-                    <td style={{ ...tdStyle, color: "#fff", fontWeight: 700 }}>Event</td>
-                    <td style={{ ...tdStyle, color: FW.gold, fontWeight: 700 }}>Early Bird</td>
-                    <td style={{ ...tdStyle, color: "#BFD7EA", fontWeight: 700 }}>Day of Race</td>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr style={{ background: C.warmWhite }}>
-                    <td style={tdStyle}>7K Run / Walk</td>
-                    <td style={{ ...tdStyle, color: FW.red, fontWeight: 800, fontSize: 16 }}>$40</td>
-                    <td style={{ ...tdStyle, fontWeight: 700 }}>$50</td>
-                  </tr>
-                  <tr style={{ background: C.cream }}>
-                    <td style={tdStyle}>1 Mile Walk / Run</td>
-                    <td style={{ ...tdStyle, color: FW.red, fontWeight: 800, fontSize: 16 }}>$5</td>
-                    <td style={{ ...tdStyle, fontWeight: 700 }}>$10</td>
-                  </tr>
-                </tbody>
-              </table>
-              <div style={highlight()}>
-                <span style={{ fontSize: 22 }}>👕</span>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, lineHeight: 1.5, color: "rgba(255,255,255,0.8)" }}>
-                  Shirts available to purchase: S–XL $21 · 2XL/3XL $27 · Youth sizes available
-                </div>
-              </div>
-              <div>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: "0.20em", textTransform: "uppercase", color: C.textMuted, marginBottom: 10 }}>Paper Forms Available At</div>
-                {locations.map(loc => (
-                  <div key={loc} style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 0", borderBottom: `1px solid ${C.sand}`, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.text }}>
-                    <div style={{ width: 5, height: 5, borderRadius: "50%", background: FW.red, flexShrink: 0 }} />
-                    {loc}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {tab === "logistics" && (
-            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-              <div style={highlight()}>
-                <span style={{ fontSize: 26 }}>🏁</span>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, lineHeight: 1.5 }}>
-                  Start Line: Highland Inn<br />
-                  <span style={{ color: "rgba(255,255,255,0.6)" }}>3171 Round Lake Hwy · Manitou Beach, MI 49253</span>
-                </div>
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                {[["1 Mile Mark","Land & Lake Ladies Club\nAcross from Sterling Market"],["Finish Line","Bomb Pops · Trophies\nWater throughout"]].map(([l,v]) => (
-                  <div key={l} style={infoBox}>
-                    <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: C.textMuted, marginBottom: 4 }}>{l}</div>
-                    <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.text, lineHeight: 1.5, whiteSpace: "pre-line" }}>{v}</div>
-                  </div>
-                ))}
-              </div>
-              <div style={highlight(`linear-gradient(135deg, ${FW.red} 0%, #8b0000 100%)`)}>
-                <span style={{ fontSize: 24 }}>📞</span>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, lineHeight: 1.5 }}>
-                  Questions? Call Jackie<br />
-                  <span style={{ color: FW.gold, fontSize: 18, fontWeight: 800 }}>(517) 605-9306</span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div style={{ marginTop: 28, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12, padding: "18px 20px", background: FW.navy, borderRadius: 10 }}>
-            <div>
-              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(255,255,255,0.5)" }}>Questions? Call Jackie</div>
-              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 700, color: FW.gold }}>(517) 605-9306</div>
-            </div>
-            <a href="#" onClick={e => e.preventDefault()} className="btn-animated" style={{
-              display: "inline-flex", alignItems: "center", gap: 8,
-              padding: "12px 24px", borderRadius: 6,
-              background: FW.red, color: "#fff",
-              fontFamily: "'Libre Franklin', sans-serif",
-              fontSize: 11, fontWeight: 700, letterSpacing: "0.14em",
-              textTransform: "uppercase", textDecoration: "none",
-            }}>
-              Register Online →
-            </a>
-          </div>
-
-          <p style={{ textAlign: "center", fontSize: 12, color: C.textMuted, marginTop: 16, fontFamily: "'Libre Franklin', sans-serif" }}>
-            Sponsored by the Devils Lake &amp; Round Lake Men's Club · Highland Inn · 3171 Round Lake Hwy, Manitou Beach, MI 49253
-          </p>
         </FadeIn>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(290px, 1fr))", gap: 12 }}>
+          {archiveImages.map((src, i) => (
+            <FadeIn key={i} delay={i * 55} direction="scale">
+              <GalleryTile src={src} alt={`Devils Lake fireworks, past years (${i + 1})`} />
+            </FadeIn>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -954,9 +763,9 @@ function StayInLoop() {
       <div style={{ maxWidth: 600, margin: "0 auto", textAlign: "center" }}>
         <FadeIn>
           <SectionLabel>Stay Connected</SectionLabel>
-          <SectionTitle center>More Events Coming</SectionTitle>
+          <SectionTitle center>See You Next Summer</SectionTitle>
           <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, marginBottom: 36 }}>
-            We're still pulling together the full schedule for the weekend. Subscribe to The Dispatch and you'll hear about every new event, parade detail, and fireworks update before anyone else.
+            America 250 was one for the books, and the fireworks come back every year. Subscribe to The Dispatch and you'll hear about next summer's parades, fireworks, and lake events before anyone else - plus the premiere of the America 250 film.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
             <a href="/#newsletter" className="btn-animated" style={{
@@ -993,7 +802,7 @@ export default function USA250Page() {
     <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
       <SEOHead
         title="America 250 - July 4th Celebrations at Devils Lake"
-        description="Boat parades, fireworks, and America's 250th anniversary celebrations at Devils and Round Lake, Manitou Beach Michigan. July 3rd, 2026."
+        description="Photos, film, and memories from America's 250th at Devils and Round Lake, Manitou Beach Michigan - boat parades, fireworks, the Firecracker 7K, and skydivers. July 3rd-4th, 2026."
         path="/america-250"
         breadcrumbs={[
           { name: 'Home', path: '/' },
@@ -1005,15 +814,13 @@ export default function USA250Page() {
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
       <FireworksHero />
       <WaveDivider topColor={FW.navy} bottomColor={C.warmWhite} />
-      <ActivitiesSection />
-      <DiagonalDivider topColor={C.warmWhite} bottomColor={C.night} />
-      <Fireworks2026Section />
-      <WaveDivider topColor={C.night} bottomColor={C.warmWhite} flip />
-      <FirecrackerRunSection />
-      <DiagonalDivider topColor={C.warmWhite} bottomColor={C.warmWhite} />
-      <FireworksStorySection />
+      <FilmSection />
       <WaveDivider topColor={C.warmWhite} bottomColor={C.cream} />
       <FireworksGallerySection />
+      <DiagonalDivider topColor={C.cream} bottomColor={C.night} />
+      <Fireworks2026Section />
+      <WaveDivider topColor={C.night} bottomColor={C.warmWhite} flip />
+      <ActivitiesSection />
       <StayInLoop />
       <NewsletterInline />
       <Footer scrollTo={subScrollTo} />

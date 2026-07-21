@@ -87,6 +87,7 @@ export default function EventPhotoWall({ slug, title, compact = false }) {
   const [selEvent, setSelEvent] = useState('');
   const inputRef = useRef(null);
   const eventDefs = GALLERIES[slug]?.events || [];
+  const generalTitle = GALLERIES[slug]?.generalTitle || 'General';
 
   const flash = (m, ms = 3500) => { setMsg(m); setTimeout(() => setMsg(null), ms); };
 
@@ -166,14 +167,14 @@ export default function EventPhotoWall({ slug, title, compact = false }) {
 
   const urls = photos.map((p) => p.url);
 
-  // Group photos into event sections (config order), untagged photos land in Club Life.
-  // Galleries without an events list keep the single flat grid.
+  // Group photos into event sections (config order); untagged photos land in the
+  // gallery's general bucket. Galleries without an events list keep the single flat grid.
   const byEvent = {};
   photos.forEach((p) => { const k = p.event || ''; (byEvent[k] = byEvent[k] || []).push(p); });
   const sections = eventDefs.length
     ? [
         ...eventDefs.map((e) => ({ key: e.key, title: e.title, date: e.date, list: byEvent[e.key] || [] })),
-        { key: '', title: 'Club Life', date: '', list: byEvent[''] || [] },
+        { key: '', title: generalTitle, date: '', list: byEvent[''] || [] },
       ].filter((sec) => sec.list.length)
     : [{ key: '', title: '', date: '', list: photos }];
   const multiSection = sections.length > 1;
@@ -240,7 +241,7 @@ export default function EventPhotoWall({ slug, title, compact = false }) {
               onChange={(e) => setSelEvent(e.target.value)}
               style={{ width: '100%', height: 42, padding: '0 12px', borderRadius: 10, border: `1px solid ${C.lakeBlue}33`, background: '#fff', color: C.text, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif" }}
             >
-              <option value="">Club Life (no specific event)</option>
+              <option value="">{generalTitle} (no specific event)</option>
               {eventDefs.map((e) => (
                 <option key={e.key} value={e.key}>{e.title}{e.date ? ` · ${e.date}` : ''}</option>
               ))}

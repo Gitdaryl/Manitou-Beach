@@ -75,6 +75,9 @@ export const LISTING_CATEGORIES = [
 ];
 // Drop your drone fireworks video in public/images/ and set the path here:
 export const USA250_VIDEO_URL = "/images/fireworks/devilslake-fireworks-hero.mp4";
+// Long-form America 250 recap film. Paste the YouTube watch URL (or youtu.be
+// link) here when it's live - the page shows a "coming soon" card until then.
+export const USA250_FILM_URL = "";
 
 // ============================================================
 export const SECTIONS = [

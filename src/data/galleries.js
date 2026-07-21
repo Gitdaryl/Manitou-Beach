@@ -27,14 +27,16 @@ export const GALLERIES = {
     date: '2026',
     order: 4,
     crowd: true,
-    // Crowd uploads can be tagged to one of these; untagged photos land in "Club Life".
-    // IMPORTANT: mirror the keys in api/lib/photo-slugs.js (GALLERY_EVENTS).
+    // Crowd uploads can be tagged to one of these; untagged photos land in the
+    // `generalTitle` bucket. IMPORTANT: mirror the keys in api/lib/photo-slugs.js
+    // (GALLERY_EVENTS).
     events: [
       { key: 'tip-up-festival', title: 'Tip-Up Festival', date: 'February' },
       { key: 'firecracker-7k', title: 'Firecracker 7K', date: 'July 4th' },
       { key: 'fireworks', title: 'July 4th Fireworks', date: 'July 4th' },
       { key: 'golf-outing', title: 'Golf Outing', date: 'Summer' },
     ],
+    generalTitle: 'Club Life',
     count: 0,
     cover: '/images/og/mensclub-og.jpg',
     ogDescription:
@@ -46,6 +48,13 @@ export const GALLERIES = {
     date: 'July 2026',
     order: 3,
     crowd: true,
+    events: [
+      { key: 'boat-parade', title: 'Boat Parades', date: 'July 3rd' },
+      { key: 'fireworks', title: 'Fireworks', date: 'July 3rd' },
+      { key: 'firecracker-7k', title: 'Firecracker 7K', date: 'July 4th' },
+      { key: 'skydivers', title: 'Skydivers', date: 'July 4th' },
+    ],
+    generalTitle: 'Random Fun',
     count: 0,
     cover: '/images/happening-hero.jpg',
     ogDescription:

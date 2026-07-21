@@ -15,9 +15,10 @@ export const GALLERY_SLUGS = new Set([
 ]);
 
 // Event tags allowed per gallery (mirrors `events` in src/data/galleries.js).
-// Unknown tags are silently dropped to '' (Club Life) — never trusted from the client.
+// Unknown tags are silently dropped to '' (the gallery's general bucket) — never trusted from the client.
 export const GALLERY_EVENTS = {
   'mens-club': new Set(['tip-up-festival', 'firecracker-7k', 'fireworks', 'golf-outing']),
+  'america-250': new Set(['boat-parade', 'fireworks', 'firecracker-7k', 'skydivers']),
 };
 
 export function cleanEvent(slug, event) {
