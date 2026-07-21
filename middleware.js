@@ -437,10 +437,16 @@ export default async function middleware(request) {
   const WALL_PAGES = { '/america-250': 'america-250', '/mens-club': 'mens-club', '/ladies-club': 'ladies-club' };
   const wallSlug = WALL_PAGES[cleanPath];
   const wallParam = wallSlug && url.searchParams.get('photo');
+  let imgW = 0, imgH = 0;
   if (wallParam && !/^\d{4}-\d{1,2}$/.test(wallParam)) {
     const hit = await resolveCrowdPhoto(wallSlug, wallParam, origin);
     // Keep ?photo= in og:url so crawlers canonicalise to the photo, not the bare page
-    if (hit) { imageUrl = hit; pageUrl = `${pageUrl}?photo=${encodeURIComponent(wallParam)}`; }
+    if (hit) {
+      imageUrl = hit.url;
+      imgW = parseInt(hit.w, 10) || 0;
+      imgH = parseInt(hit.h, 10) || 0;
+      pageUrl = `${pageUrl}?photo=${encodeURIComponent(wallParam)}`;
+    }
   }
 
   // ── Inject JSON-LD schema for AI crawlers ────────────────────
@@ -489,7 +495,7 @@ export default async function middleware(request) {
     );
 
   // Extra image hints so first-time scrapers render the photo faster / more reliably.
-  html = html.replace('</head>', `    <meta property="og:image:secure_url" content="${imageUrl}" />\n    <meta property="og:image:type" content="image/jpeg" />\n  </head>`);
+  html = html.replace('</head>', `${ogImageHints(imageUrl, imgW, imgH)}  </head>`);
 
   return new Response(html, {
     status: 200,
@@ -536,8 +542,10 @@ const GALLERY_OG = {
 };
 
 // Resolve a crowd-photo ?photo= param (photo id, or a legacy 1-based position)
-// to its Blob URL via the public feed. Returns null when there's no match so
-// callers fall back to their static cover.
+// to its photo record {url, w, h} via the public feed. Returns null when there's
+// no match so callers fall back to their static cover. w/h matter: without
+// og:image:width/height Facebook renders the FIRST share of a new URL with no
+// image (it fetches the picture async), and every new photo link is a first share.
 async function resolveCrowdPhoto(slug, param, origin) {
   try {
     const r = await fetch(`${origin}/api/photos-list?slug=${encodeURIComponent(slug)}`);
@@ -545,8 +553,18 @@ async function resolveCrowdPhoto(slug, param, origin) {
     const list = (await r.json()).photos || [];
     const hit = list.find((p) => p.id === param)
       || (/^\d{1,3}$/.test(param) ? list[parseInt(param, 10) - 1] : null);
-    return hit && hit.url ? hit.url : null;
+    return hit && hit.url ? hit : null;
   } catch { return null; }
+}
+
+// The og:image:* hint block appended to </head>: secure_url + type always,
+// width/height when known so crawlers can render the image on first scrape.
+function ogImageHints(imageUrl, w, h) {
+  let extra = `    <meta property="og:image:secure_url" content="${imageUrl}" />\n    <meta property="og:image:type" content="image/jpeg" />\n`;
+  if (w > 0 && h > 0) {
+    extra += `    <meta property="og:image:width" content="${w}" />\n    <meta property="og:image:height" content="${h}" />\n`;
+  }
+  return extra;
 }
 
 // Inject gallery OG tags. ?photo= picks the exact preview image:
@@ -565,11 +583,17 @@ async function handleGalleryOG(html, slug, url) {
   const isNum = /^\d{1,3}$/.test(photoParam);
 
   let imageUrl = null;
+  let imgW = 0, imgH = 0;
   if (g.folder && (isNum || !photoParam)) {
     const nn = (isNum ? photoParam : '1').padStart(2, '0');
     imageUrl = `${origin}${g.folder}/${g.prefix}-${nn}.jpg`;
   } else if (photoParam && g.crowd) {
-    imageUrl = await resolveCrowdPhoto(slug, photoParam, origin);
+    const hit = await resolveCrowdPhoto(slug, photoParam, origin);
+    if (hit) {
+      imageUrl = hit.url;
+      imgW = parseInt(hit.w, 10) || 0;
+      imgH = parseInt(hit.h, 10) || 0;
+    }
   }
   if (!imageUrl) imageUrl = g.cover ? `${origin}${g.cover}` : `${origin}${g.folder}/${g.prefix}-01.jpg`;
   const img = esc(imageUrl);
@@ -587,7 +611,7 @@ async function handleGalleryOG(html, slug, url) {
     .replace(/<meta name="twitter:title" content="[^"]*"/, `<meta name="twitter:title" content="${t}"`)
     .replace(/<meta name="twitter:description" content="[^"]*"/, `<meta name="twitter:description" content="${d}"`)
     .replace(/<meta name="twitter:image" content="[^"]*"/, `<meta name="twitter:image" content="${img}"`)
-    .replace('</head>', `    <meta property="og:image:secure_url" content="${img}" />\n    <meta property="og:image:type" content="image/jpeg" />\n  </head>`);
+    .replace('</head>', `${ogImageHints(img, imgW, imgH)}  </head>`);
 }
 
 // ── Dynamic schema handler for business profiles ──────────────
