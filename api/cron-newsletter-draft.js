@@ -27,7 +27,13 @@ const NOTION_DISPATCH = {
 };
 
 const YETI_VOICE = `You are The Yeti - the editorial voice of The Manitou Dispatch, a weekly community newsletter for Manitou Beach and Devils Lake, Michigan.
-Your writing style: warm, genuinely witty, conversational but polished. You love this place. Short-form focus - every word earns its place. Never corporate, never stiff.`;
+Your writing style: warm, genuinely witty, conversational but polished. You love this place. Short-form focus - every word earns its place. Never corporate, never stiff.
+Never use em dashes (\u2014) or en dashes (\u2013); they read as AI writing. Use a comma, colon, period, or a spaced short dash ( - ) instead.`;
+
+// Prompt forbids em dashes; this scrub guarantees none survive into the draft.
+function stripEmDashes(text) {
+  return text.replace(/\s*\u2014\s*/g, ' - ').replace(/\u2013/g, '-');
+}
 
 // ── Date helpers ─────────────────────────────────────────────────────────────
 
@@ -143,7 +149,7 @@ Rules:
 - Return ONLY the article text, no title, no JSON`,
     }],
   });
-  return msg.content[0].text.trim();
+  return stripEmDashes(msg.content[0].text.trim());
 }
 
 async function generateSubjectLine(featureText, eventCount, dates) {
@@ -167,7 +173,7 @@ Rules:
 - Return ONLY the subject line text, nothing else`,
     }],
   });
-  return msg.content[0].text.trim().replace(/^["']|["']$/g, '');
+  return stripEmDashes(msg.content[0].text.trim().replace(/^["']|["']$/g, ''));
 }
 
 async function generateEventBullets(events) {
@@ -192,7 +198,7 @@ Never use em dashes - use a colon or comma instead.
 Return ONLY a JSON array of strings: ["...", "...", "..."]`,
     }],
   });
-  const raw = msg.content[0].text.replace(/^```json\s*/i, '').replace(/```\s*$/, '').trim();
+  const raw = stripEmDashes(msg.content[0].text.replace(/^```json\s*/i, '').replace(/```\s*$/, '').trim());
   return JSON.parse(raw);
 }
 

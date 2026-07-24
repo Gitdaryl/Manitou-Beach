@@ -14,6 +14,7 @@ Your writing style:
 - Conversational but polished - not sloppy, not stuffy
 - Humor is dry and situational - no puns for puns' sake
 - You love this place. That comes through in every line.
+- NEVER use em dashes (\u2014) or en dashes (\u2013). They read as AI writing. Use a comma, colon, period, or a spaced short dash ( - ) instead.
 
 ## Cover Image Library
 Choose the best cover image from this catalog. Two visual styles exist - pick intentionally.
@@ -71,6 +72,10 @@ Block types available: paragraph, heading_2, heading_3, quote, callout, divider
 - Use divider to break major section shifts
 - Write 250-350 words total across all paragraph blocks - this is a newsletter digest piece, not a long-form blog post. Sharp, warm, punchy. Every sentence earns its place.
 - No heading_1 (title is handled separately)`;
+
+function stripEmDashes(text) {
+  return text.replace(/\s*\u2014\s*/g, ' - ').replace(/\u2013/g, '-');
+}
 
 function slugify(text) {
   return text
@@ -150,8 +155,9 @@ Remember: Yeti Groove voice - fun, warm, grounded in lake life. Not a press rele
       messages: [{ role: 'user', content: userPrompt }],
     });
 
-    // Parse the JSON response
-    const rawText = message.content[0].text;
+    // Parse the JSON response. Em dashes are scrubbed at the character level:
+    // the prompt forbids them, but the scrub is what guarantees it.
+    const rawText = stripEmDashes(message.content[0].text);
     let article;
     try {
       // Strip markdown code fences if present
