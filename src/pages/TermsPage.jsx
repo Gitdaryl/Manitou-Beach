@@ -18,7 +18,7 @@ export default function TermsPage() {
       <div style={{ maxWidth: 760, margin: '0 auto', padding: '120px 28px 80px' }}>
         <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 4, textTransform: 'uppercase', color: C.sage, marginBottom: 12 }}>Legal</div>
         <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(30px, 5vw, 46px)', fontWeight: 400, color: C.dusk, margin: '0 0 8px' }}>Terms of Service</h1>
-        <p style={{ ...S.p, color: C.textMuted, fontSize: 13, marginBottom: 40 }}>Effective date: March 2026 &nbsp;·&nbsp; Yeti Groove Media LLC</p>
+        <p style={{ ...S.p, color: C.textMuted, fontSize: 13, marginBottom: 40 }}>Effective date: March 2026 &nbsp;·&nbsp; Updated August 2026 &nbsp;·&nbsp; Yeti Groove Media LLC</p>
 
         <p style={S.p}>By using the Manitou Beach community platform at manitoubeachmichigan.com ("the Site"), you agree to these Terms. If you don't agree, please don't use the Site.</p>
 
@@ -64,6 +64,19 @@ export default function TermsPage() {
         </ul>
         <p style={S.p}>By submitting a stays listing, you confirm that you are the property owner or authorized agent, that the property is lawfully available for rental under applicable local laws and zoning, and that you are solely responsible for collecting and remitting any applicable local accommodation taxes.</p>
         <p style={S.p}>Guests: always verify booking terms directly with the property owner before transferring any payment. Manitou Beach has no liability for transactions entered into through this directory.</p>
+
+        <h2 style={S.h2}>Community photo uploads</h2>
+        <p style={S.p}>Our event galleries let community members share photos from local events. By uploading a photo, you confirm that:</p>
+        <ul style={{ paddingLeft: 20, margin: '0 0 14px' }}>
+          {[
+            'You took the photo yourself or have the right to share it',
+            'You have permission from the people who appear in it, and from a parent or guardian for any minors',
+            'The photo was taken at the community event you tag it to',
+            'You grant Yeti Groove Media LLC a non-exclusive license to display the photo on this Site',
+          ].map((item, i) => <li key={i} style={S.li}>{item}</li>)}
+        </ul>
+        <p style={S.p}><strong>Screening and moderation:</strong> Every upload is automatically screened, including by AI review, before it appears. We may decline or remove any photo at our sole discretion. Any visitor may flag a photo; photos receiving multiple flags are hidden automatically pending review.</p>
+        <p style={S.p}><strong>Takedowns:</strong> If you appear in a photo and want it removed, flag it on the Site or email <a href="mailto:admin@yetigroove.com" style={{ color: C.sage }}>admin@yetigroove.com</a>. We honor removal requests promptly, no questions asked.</p>
 
         <h2 style={S.h2}>Acceptable use</h2>
         <p style={S.p}>You agree not to submit content that is false, defamatory, harassing, illegal, or infringes the rights of others. We may remove content and terminate access for violations without notice.</p>
