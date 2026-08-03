@@ -1237,7 +1237,7 @@ function WineriesVenueSection() {
           <SectionLabel>Day Trips</SectionLabel>
           <SectionTitle>The Wineries & Breweries Trail</SectionTitle>
           <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 580, margin: "0 0 48px 0" }}>
-            Pack the cooler, pick a starting point, and make a day of it. Cherry Creek for the laid-back pour, Gypsy Blue for the scenery, Chateau Aeronautique to close it out right.
+            Pack the cooler, pick a starting point, and make a day of it. Gypsy Blue for the scenery just six minutes away, Cherry Creek for the laid-back pour, Chateau Aeronautique to close it out right.
           </p>
         </FadeIn>
         <div style={{ display: "flex", flexDirection: "column", gap: 24, marginBottom: 80 }}>
