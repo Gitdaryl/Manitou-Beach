@@ -284,10 +284,68 @@ function NowPouringCard({ v, i }) {
   );
 }
 
+// Real bottles from the tasting-room photos - merchandise the glass, not the concept
+const NOW_POURING_WINES = [
+  "Chateau Fontaine · Dry Riesling",
+  "Brengman Family · Viva Magenta Rosé",
+  "Chateau Fontaine · Big Paw Red",
+  "Chateau Fontaine · Pinot Noir Rosé",
+  "Chateau Fontaine · Big Paw White",
+  "Amoritas Vineyards · ask what's pouring",
+  "Chateau Fontaine · Sweet Riesling",
+  "Brengman Family · 11 organic pours",
+  "Chateau Fontaine · Auxerrois",
+  "Chateau Fontaine · Woodland White",
+];
+
+function WineMarqueeStrip() {
+  return (
+    <div style={{
+      overflow: "hidden",
+      background: `linear-gradient(100deg, ${C.wineDeep} 0%, ${C.wine} 50%, ${C.wineDeep} 100%)`,
+      borderTop: "1px solid rgba(201,123,154,0.25)",
+      borderBottom: "1px solid rgba(201,123,154,0.25)",
+      padding: "13px 0",
+    }}>
+      <div className="scoreboard-ticker">
+        {[...NOW_POURING_WINES, ...NOW_POURING_WINES].map((w, i) => (
+          <span key={i} style={{ display: "inline-block", padding: "0 30px", whiteSpace: "nowrap", fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 600, letterSpacing: 1.2, textTransform: "uppercase", color: "rgba(250,246,239,0.8)" }}>
+            <span style={{ color: C.rose, marginRight: 30 }}>🍷</span>{w}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function WineParallaxBreak({ image, quote, sub }) {
+  return (
+    <section style={{
+      backgroundImage: `url(${image})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundAttachment: "fixed",
+      minHeight: 380,
+      position: "relative",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    }}>
+      <div style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg, rgba(26,40,48,0.55) 0%, rgba(58,15,26,0.55) 100%)` }} />
+      <div style={{ position: "relative", zIndex: 1, textAlign: "center", padding: "90px 24px" }}>
+        <p style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 3.5vw, 40px)", fontWeight: 400, fontStyle: "italic", color: C.cream, margin: 0, lineHeight: 1.35, maxWidth: 680 }}>
+          "{quote}"
+        </p>
+        <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.55)", marginTop: 18 }}>{sub}</p>
+      </div>
+    </section>
+  );
+}
+
 function NowPouringSection() {
   const openVenues = WINERY_VENUES.filter(v => v.section === "village" && v.nowOpen);
   return (
-    <section style={{ background: C.night, padding: "72px 24px 64px" }}>
+    <section style={{ background: `radial-gradient(ellipse 75% 65% at 12% 0%, rgba(107,31,46,0.4), transparent 62%), ${C.night}`, padding: "72px 24px 64px" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
         <FadeIn>
           <SectionLabel light>Open Now · Summer 2026</SectionLabel>
@@ -311,7 +369,7 @@ function NowPouringSection() {
 
 function WineriesVillageCallout() {
   return (
-    <section style={{ background: C.night, padding: "80px 24px" }}>
+    <section style={{ background: `radial-gradient(ellipse 70% 60% at 88% 100%, rgba(107,31,46,0.35), transparent 62%), ${C.night}`, padding: "80px 24px" }}>
       <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
         <FadeIn>
           <SectionLabel light>Now Open</SectionLabel>
@@ -333,7 +391,7 @@ function WineriesVillageCallout() {
 
 function WineTrailNotifySection() {
   return (
-    <section style={{ background: C.cream, padding: '64px 24px' }}>
+    <section style={{ background: `radial-gradient(ellipse 55% 65% at 0% 100%, rgba(201,123,154,0.16), transparent 60%), ${C.cream}`, padding: '64px 24px' }}>
       <div style={{ maxWidth: 520, margin: '0 auto', textAlign: 'center' }}>
         <FadeIn>
           <div style={{ marginBottom: 24 }}>
@@ -1156,7 +1214,7 @@ function WineriesVenueSection() {
   const stampSlug = new URLSearchParams(window.location.search).get('stamp') || '';
 
   return (
-    <section style={{ background: C.cream, padding: "56px 24px" }}>
+    <section style={{ background: `radial-gradient(ellipse 60% 40% at 100% 10%, rgba(201,123,154,0.14), transparent 65%), radial-gradient(ellipse 55% 35% at 0% 60%, rgba(201,123,154,0.1), transparent 60%), ${C.cream}`, padding: "56px 24px" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
 
         {WINE_PROGRAM_LIVE && <WinePassportWidget stamped={stamped} villageVenues={villageOpen} trailVenues={trailVenues} />}
@@ -1238,7 +1296,7 @@ const WINERY_ITINERARIES = [
 
 function WineriesItinerarySection() {
   return (
-    <section style={{ background: C.night, padding: "64px 24px" }}>
+    <section style={{ background: `radial-gradient(ellipse 70% 55% at 92% 0%, rgba(107,31,46,0.38), transparent 60%), ${C.night}`, padding: "64px 24px" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
         <FadeIn>
           <SectionLabel light>How to Do It</SectionLabel>
@@ -1286,7 +1344,7 @@ function WineriesItinerarySection() {
 
 function WineriesCTASection() {
   return (
-    <section style={{ background: C.dusk, padding: "64px 24px" }}>
+    <section style={{ background: `radial-gradient(ellipse 90% 95% at 50% 45%, rgba(107,31,46,0.45), transparent 75%), ${C.dusk}`, padding: "64px 24px" }}>
       <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
         <FadeIn>
           <SectionLabel light>Plan Your Visit</SectionLabel>
@@ -1732,11 +1790,16 @@ export default function WineriesPage() {
       <CorkScrubHero />
       <WaveDivider topColor={C.dusk} bottomColor={C.night} />
       <NowPouringSection />
+      <WineMarqueeStrip />
       {WINE_PROGRAM_LIVE && <WineriesHowItWorksSection />}
       <WineriesVillageCallout />
       <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
       <WineTrailNotifySection />
-      <WaveDivider topColor={C.cream} bottomColor={C.night} />
+      <WineParallaxBreak
+        image="/images/wineries/ang_co_fontaine_02.jpg"
+        quote="Walk the boulevard. Follow the pour."
+        sub="Now Pouring · Manitou Beach Village"
+      />
       <WineriesItinerarySection />
       <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
       <PromoBanner page="Wineries" />
@@ -1754,7 +1817,11 @@ export default function WineriesPage() {
           <WaveDivider topColor={C.night} bottomColor={C.dusk} />
         </>
       ) : (
-        <WaveDivider topColor={C.cream} bottomColor={C.dusk} />
+        <WineParallaxBreak
+          image="/images/wineries/dlv_brengman_02.jpg"
+          quote="Ask Darlene where to start."
+          sub="Devils Lake View Living · 11 Organic Brengman Wines"
+        />
       )}
       <WineriesCTASection />
       <WaveDivider topColor={C.dusk} bottomColor={C.warmWhite} />
