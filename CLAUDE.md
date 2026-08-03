@@ -30,3 +30,7 @@ All other pages in this project use the standard Layout component and are not af
 - 73 WebP frames in `public/images/wine-scrub/` extracted from a Seedance 2.0 video (source: Yeti's cork-pop reference)
 - `SCRUB_FRAME_COUNT` in WineriesPage.jsx - set to 0 to instantly fall back to the static hero
 - Regenerate frames: `ffmpeg -i cork-pop.mp4 -vf "select='not(mod(n\,2))',scale=1280:-2" -vsync vfr -c:v libwebp -quality 72 frame_%03d.webp`
+
+## Trail Partner Tier (wineries page)
+
+Paying trail partners get `partner: true` in wineries.js: top billing, Featured Trail Partner badge, glow border, logo, photos, profile link. Free trail listings render as compact one-line rows (intentional - the contrast sells the upgrade; upsell caption links to /featured). Gypsy Blue is the first paying partner (Aug 2026). When a winery pays, add the flag and move them up the array.
