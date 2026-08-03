@@ -114,6 +114,11 @@ export function GlobalStyles() {
       }
       /* overflow-x: clip (not hidden) - hidden on html/body breaks position: sticky in Chrome */
       html, body { overflow-x: clip; max-width: 100vw; }
+      /* Winery cards: logo + text row stacks on phones */
+      @media (max-width: 640px) {
+        .winery-card { flex-direction: column !important; align-items: stretch !important; gap: 16px !important; padding: 24px 18px !important; }
+        .winery-card-logo { width: 88px !important; height: 88px !important; align-self: flex-start; }
+      }
       @keyframes slideUp {
         0% { transform: translateY(100%); opacity: 0; }
         100% { transform: translateY(0); opacity: 1; }

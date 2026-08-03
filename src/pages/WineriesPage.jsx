@@ -861,6 +861,7 @@ function WineryCard({ v, i, isStamped, onStamp, venueRating, wineRankings, autoO
       <div
         ref={cardRef}
         id={venueSlug(v.name)}
+        className="winery-card"
         onClick={() => v.website && window.open(v.website, "_blank")}
         style={{
           background: C.warmWhite,
@@ -881,9 +882,9 @@ function WineryCard({ v, i, isStamped, onStamp, venueRating, wineRankings, autoO
       >
         <div style={{ position: "absolute", top: 0, left: 0, width: 4, height: "100%", background: v.accent, borderRadius: "16px 0 0 16px" }} />
         {v.logo && (
-          <img src={v.logo} alt="" style={{ width: 144, height: 144, borderRadius: 16, objectFit: "cover", flexShrink: 0, background: C.sand }} />
+          <img src={v.logo} alt="" className="winery-card-logo" style={{ width: 144, height: 144, borderRadius: 16, objectFit: "cover", flexShrink: 0, background: C.sand }} />
         )}
-        <div style={{ flex: 1 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 8, marginBottom: 6 }}>
             <div>
               <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.text, margin: "0 0 6px 0" }}>{v.name}</h3>
