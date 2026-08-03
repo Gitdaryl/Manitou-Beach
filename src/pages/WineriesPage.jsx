@@ -1798,7 +1798,7 @@ export default function WineriesPage() {
       <WineTrailNotifySection />
       <WineParallaxBreak
         image="/images/wineries/ang_co_fontaine_02.jpg"
-        quote="Walk the boulevard. Follow the pour."
+        quote="Walk the village. Follow the pour."
         sub="Now Pouring · Manitou Beach Village"
       />
       <WineriesItinerarySection />
