@@ -112,7 +112,8 @@ export function GlobalStyles() {
         --page-hero-text:    var(--color-lavender-300);
         --page-eyebrow:      var(--color-sand-700);
       }
-      html, body { overflow-x: hidden; max-width: 100vw; }
+      /* overflow-x: clip (not hidden) - hidden on html/body breaks position: sticky in Chrome */
+      html, body { overflow-x: clip; max-width: 100vw; }
       @keyframes slideUp {
         0% { transform: translateY(100%); opacity: 0; }
         100% { transform: translateY(0); opacity: 1; }

@@ -24,6 +24,148 @@ import yeti from '../data/errorMessages';
 // 🍷  WINERIES PAGE (/wineries)
 // ============================================================
 
+// ── Cork-pop scroll scrub hero ─────────────────────────────────
+// Frames extracted from the Seedance cork-pop video. Scrolling the
+// first ~2.6 viewport-heights scrubs corked → pop → fizz.
+const SCRUB_FRAME_COUNT = 73; // frames in /public/images/wine-scrub; 0 = fall back to static hero
+const scrubFramePath = (i) => `/images/wine-scrub/frame_${String(i + 1).padStart(3, '0')}.webp`;
+
+function CorkScrubHero() {
+  const wrapRef = useRef(null);
+  const canvasRef = useRef(null);
+  const contentRef = useRef(null);
+  const hintRef = useRef(null);
+  const framesRef = useRef([]);
+  const lastDrawnRef = useRef(-1);
+  const [ready, setReady] = useState(false);
+
+  const reducedMotion = typeof window !== 'undefined' &&
+    window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+  // Preload frames: first dozen eagerly, the rest in the background
+  useEffect(() => {
+    if (reducedMotion) return;
+    const frames = new Array(SCRUB_FRAME_COUNT);
+    framesRef.current = frames;
+    let alive = true;
+    const load = (i) => new Promise(res => {
+      const img = new Image();
+      img.onload = () => { if (alive) frames[i] = img; res(); };
+      img.onerror = res;
+      img.src = scrubFramePath(i);
+    });
+    (async () => {
+      await Promise.all(Array.from({ length: Math.min(12, SCRUB_FRAME_COUNT) }, (_, i) => load(i)));
+      if (alive) setReady(true);
+      for (let i = 12; i < SCRUB_FRAME_COUNT; i += 1) await load(i);
+      if (alive) lastDrawnRef.current = -1; // force redraw at full quality
+    })();
+    return () => { alive = false; };
+  }, [reducedMotion]);
+
+  // Scroll-driven draw loop
+  useEffect(() => {
+    if (reducedMotion) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let raf = 0;
+
+    const sizeCanvas = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      canvas.width = canvas.clientWidth * dpr;
+      canvas.height = canvas.clientHeight * dpr;
+      lastDrawnRef.current = -1;
+    };
+
+    const drawFrame = (idx) => {
+      const frames = framesRef.current;
+      let img = frames[idx];
+      // fall back to the nearest loaded frame so scrubbing never blanks
+      if (!img) {
+        for (let d = 1; d < SCRUB_FRAME_COUNT && !img; d += 1) {
+          img = frames[idx - d] || frames[idx + d];
+        }
+      }
+      if (!img) return;
+      const cw = canvas.width, ch = canvas.height;
+      const scale = Math.max(cw / img.width, ch / img.height);
+      const w = img.width * scale, h = img.height * scale;
+      ctx.drawImage(img, (cw - w) / 2, (ch - h) / 2, w, h);
+    };
+
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const wrap = wrapRef.current;
+        if (!wrap) return;
+        const rect = wrap.getBoundingClientRect();
+        const scrollable = wrap.offsetHeight - window.innerHeight;
+        const progress = Math.min(1, Math.max(0, -rect.top / Math.max(1, scrollable)));
+        const idx = Math.min(SCRUB_FRAME_COUNT - 1, Math.round(progress * (SCRUB_FRAME_COUNT - 1)));
+        if (idx !== lastDrawnRef.current) { drawFrame(idx); lastDrawnRef.current = idx; }
+        // content drifts up + fades as the cork pops; hint fades early
+        if (contentRef.current) {
+          contentRef.current.style.transform = `translateY(${progress * -46}px)`;
+          contentRef.current.style.opacity = String(1 - Math.max(0, progress - 0.55) * 1.6);
+        }
+        if (hintRef.current) hintRef.current.style.opacity = String(Math.max(0, 1 - progress * 4));
+      });
+    };
+
+    sizeCanvas();
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', sizeCanvas);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', sizeCanvas);
+      cancelAnimationFrame(raf);
+    };
+  }, [reducedMotion, ready]);
+
+  // Static fallback: no frames shipped yet, or user prefers reduced motion
+  if (SCRUB_FRAME_COUNT === 0 || reducedMotion) return <WineriesHero />;
+
+  return (
+    <section ref={wrapRef} style={{ height: '260vh', position: 'relative', background: '#1C130C' }}>
+      <div style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden' }}>
+        <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(170deg, rgba(10,18,24,0.62) 0%, rgba(10,18,24,0.28) 45%, rgba(10,18,24,0.85) 100%)' }} />
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center' }}>
+          <div ref={contentRef} style={{ maxWidth: 960, margin: '0 auto', padding: '0 24px', width: '100%', willChange: 'transform, opacity' }}>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: 'uppercase', color: 'rgba(255,255,255,0.55)', marginBottom: 20 }}>
+              Wine · Beer · Cider · Irish Hills · Manitou Beach Village
+            </div>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 9, background: 'rgba(122,142,114,0.22)', border: `1px solid ${C.sage}`, borderRadius: 24, padding: '7px 16px', marginBottom: 26 }}>
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: C.sage, animation: 'mbPulse 2s ease-out infinite' }} />
+              <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: C.cream }}>
+                3 Village Tasting Rooms Now Pouring
+              </span>
+            </div>
+            <style>{`@keyframes mbPulse { 0% { box-shadow: 0 0 0 0 rgba(122,142,114,0.6); } 70% { box-shadow: 0 0 0 9px rgba(122,142,114,0); } 100% { box-shadow: 0 0 0 0 rgba(122,142,114,0); } }`}</style>
+            <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(48px, 9vw, 110px)', fontWeight: 400, color: C.cream, lineHeight: 0.95, margin: '0 0 20px 0' }}>
+              Wineries &<br />Breweries Trail
+            </h1>
+            <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 'clamp(14px, 1.6vw, 17px)', color: 'rgba(255,255,255,0.55)', lineHeight: 1.8, maxWidth: 520, margin: '0 0 32px 0' }}>
+              Michigan wine country meets lake country. Three Village shops are now pouring Northern Michigan wine steps from Devils Lake - and the full Irish Hills trail of wineries, breweries, and cider stops is waiting just beyond.
+            </p>
+            <Btn href="/" variant="outlineLight" small>← Back to Home</Btn>
+            <ShareBar title="Irish Hills Wineries & Breweries Trail - Manitou Beach" />
+          </div>
+        </div>
+        <div ref={hintRef} style={{ position: 'absolute', bottom: 28, left: 0, right: 0, textAlign: 'center', pointerEvents: 'none' }}>
+          <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: 'rgba(255,255,255,0.75)', marginBottom: 4 }}>
+            Scroll to pop the cork
+          </div>
+          <div style={{ fontSize: 18, color: 'rgba(255,255,255,0.55)', animation: 'mbBounce 1.6s ease-in-out infinite' }}>↓</div>
+          <style>{`@keyframes mbBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }`}</style>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function WineriesHero() {
   const [loaded, setLoaded] = useState(false);
   const bgRef = useRef(null);
@@ -1563,7 +1705,7 @@ function WineAwardCeremonySection() {
 export default function WineriesPage() {
   const subScrollTo = (id) => { window.location.href = "/#" + id; };
   return (
-    <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "hidden" }}>
+    <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, overflowX: "clip" }}>
 <SEOHead
         title="Wineries & Breweries"
         description="Three wine tasting rooms now open in Manitou Beach Village, pouring Brengman Family Wines, Chateau Fontaine, and Amoritas Vineyards. Plus the full Irish Hills wine trail near Devils Lake, Michigan."
@@ -1587,7 +1729,7 @@ export default function WineriesPage() {
 <GlobalStyles />
       <ScrollProgress />
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
-      <WineriesHero />
+      <CorkScrubHero />
       <WaveDivider topColor={C.dusk} bottomColor={C.night} />
       <NowPouringSection />
       {WINE_PROGRAM_LIVE && <WineriesHowItWorksSection />}
