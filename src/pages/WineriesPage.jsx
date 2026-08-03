@@ -132,7 +132,8 @@ function CorkScrubHero() {
       <div style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden' }}>
         <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(170deg, rgba(10,18,24,0.62) 0%, rgba(10,18,24,0.28) 45%, rgba(10,18,24,0.85) 100%)' }} />
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center' }}>
+        {/* paddingTop reserves the fixed navbar's height so centered content never tucks under it */}
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', paddingTop: 110, paddingBottom: 40, boxSizing: 'border-box' }}>
           <div ref={contentRef} style={{ maxWidth: 960, margin: '0 auto', padding: '0 24px', width: '100%', willChange: 'transform, opacity' }}>
             <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: 'uppercase', color: 'rgba(255,255,255,0.55)', marginBottom: 20 }}>
               Wine · Beer · Cider · Irish Hills · Manitou Beach Village
