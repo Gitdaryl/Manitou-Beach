@@ -823,6 +823,8 @@ const venueSlug = name => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace
 function WineryCard({ v, i, isStamped, onStamp, venueRating, wineRankings, autoOpen }) {
   const [showModal, setShowModal] = useState(false);
   const cardRef = useRef(null);
+  // Free trail listings render as compact rows; paid partners get the full card
+  const compact = v.section === 'trail' && !v.partner;
   useEffect(() => {
     if (autoOpen && onStamp && !isStamped) {
       const t1 = setTimeout(() => cardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
@@ -830,6 +832,30 @@ function WineryCard({ v, i, isStamped, onStamp, venueRating, wineRankings, autoO
       return () => { clearTimeout(t1); clearTimeout(t2); };
     }
   }, [autoOpen]);
+
+  if (compact) {
+    return (
+      <FadeIn delay={i * 60}>
+        <div id={venueSlug(v.name)} style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 12, padding: "18px 22px" }}>
+          <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap", gap: "4px 14px", marginBottom: 6 }}>
+            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.text, margin: 0 }}>{v.name}</h3>
+            <span style={{ fontSize: 10, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase" }}>{v.type}</span>
+            <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.textMuted, background: C.sand, padding: "3px 9px", borderRadius: 20, marginLeft: "auto" }}>{v.distance}</span>
+          </div>
+          <div style={{ display: "flex", gap: 18, flexWrap: "wrap", alignItems: "center" }}>
+            {v.address && <span style={{ fontSize: 12, color: C.textMuted }}>📍 {v.address}</span>}
+            {v.hours && <span style={{ fontSize: 12, color: C.textMuted }}>🕐 {v.hours}</span>}
+            {v.website && (
+              <a href={v.website} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", color: v.accent, textDecoration: "none" }}>
+                Website →
+              </a>
+            )}
+          </div>
+        </div>
+      </FadeIn>
+    );
+  }
+
   return (
     <FadeIn delay={i * 80} direction={i % 2 === 0 ? "left" : "right"}>
       <div
@@ -838,7 +864,8 @@ function WineryCard({ v, i, isStamped, onStamp, venueRating, wineRankings, autoO
         onClick={() => v.website && window.open(v.website, "_blank")}
         style={{
           background: C.warmWhite,
-          border: `1px solid ${C.sand}`,
+          border: v.partner ? `1px solid ${v.accent}` : `1px solid ${C.sand}`,
+          boxShadow: v.partner ? `0 0 0 1px ${v.accent}40, 0 10px 32px ${v.accent}26` : "none",
           borderRadius: 16,
           padding: "32px 28px",
           display: "flex",
@@ -885,6 +912,9 @@ function WineryCard({ v, i, isStamped, onStamp, venueRating, wineRankings, autoO
               ) : null}
             </div>
             <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+              {v.partner && (
+                <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.cream, background: `linear-gradient(100deg, ${C.wine}, ${C.sunset})`, padding: "4px 10px", borderRadius: 20 }}>★ Featured Trail Partner</span>
+              )}
               {v.nowOpen && (
                 <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.cream, background: C.sage, padding: "4px 10px", borderRadius: 20 }}>Now Pouring</span>
               )}
@@ -1240,8 +1270,12 @@ function WineriesVenueSection() {
             Pack the cooler, pick a starting point, and make a day of it. Gypsy Blue for the scenery just six minutes away, Cherry Creek for the laid-back pour, Chateau Aeronautique to close it out right.
           </p>
         </FadeIn>
-        <div style={{ display: "flex", flexDirection: "column", gap: 24, marginBottom: 80 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 24, marginBottom: 16 }}>
           {trailVenues.map((v, i) => <WineryCard key={i} v={v} i={i} isStamped={isStamped(v.name)} onStamp={WINE_PROGRAM_LIVE ? toggleStamp : undefined} venueRating={WINE_PROGRAM_LIVE ? ratings[v.name] : undefined} wineRankings={WINE_PROGRAM_LIVE ? wineRankings : undefined} autoOpen={WINE_PROGRAM_LIVE && stampSlug === venueSlug(v.name)} />)}
+        </div>
+        <div style={{ marginBottom: 80, fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.7 }}>
+          Featured placement - top billing, photos, and a full profile page - is part of a paid trail partnership.{" "}
+          <a href="/featured" style={{ color: C.sage, fontWeight: 700, textDecoration: "none" }}>List your business →</a>
         </div>
 
       </div>

@@ -135,6 +135,7 @@ export const WINERY_VENUES = [
   },
   {
     section: "trail",
+    partner: true, // paid trail partnership - full featured card
     name: "Gypsy Blue Vineyards",
     type: "Vineyard & Flower Farm",
     tagline: "Handcrafted wines, crisp hard ciders, and seasonal blooms from their own flower farm. Private events, tastings, and a setting that earns the drive.",
