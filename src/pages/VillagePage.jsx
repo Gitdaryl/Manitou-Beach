@@ -159,7 +159,7 @@ function VillageMapSection() {
           <SectionLabel light>The Strip</SectionLabel>
           <SectionTitle light>Walk the Village</SectionTitle>
           <p style={{ fontSize: 14, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, maxWidth: 520, marginBottom: 48 }}>
-            Everything's within a five-minute walk. Park once, stroll the boulevard, and hit every shop. That's the beauty of a village built to human scale.
+            Everything's within a five-minute walk. Park once, stroll the Village, and hit every shop. That's the beauty of a village built to human scale.
           </p>
         </FadeIn>
 
