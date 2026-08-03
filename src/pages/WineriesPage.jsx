@@ -1080,7 +1080,7 @@ const WINERY_ITINERARIES = [
     duration: "2 Days",
     badge: "The Full Experience",
     accent: C.sage,
-    intro: "All eight stops across two days. Village Saturday morning, trail Saturday afternoon and evening, Sunday wine country. The version you talk about all winter.",
+    intro: "Every open stop across two days. Village Saturday morning, trail Saturday afternoon and evening, Sunday wine country. The version you talk about all winter.",
     stops: [
       { time: "Sat AM", stop: "Village Tasting Rooms", note: "Walk all three open rooms - two hours, zero driving" },
       { time: "Sat Noon", stop: "Cherry Creek Cellars", note: "Lunch stop in Brooklyn - small-batch wines, laid-back room" },
@@ -1118,9 +1118,9 @@ function WineriesItinerarySection() {
                     {it.stops.map((s, si) => (
                       <div key={si} style={{ display: "flex", gap: 14, paddingBottom: 16, position: "relative" }}>
                         {si < it.stops.length - 1 && (
-                          <div style={{ position: "absolute", left: 42, top: 18, bottom: 0, width: 1, background: "rgba(255,255,255,0.07)" }} />
+                          <div style={{ position: "absolute", left: 69.5, top: 18, bottom: 0, width: 1, background: "rgba(255,255,255,0.07)" }} />
                         )}
-                        <div style={{ flexShrink: 0, width: 36, paddingTop: 3, fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 0.3, color: it.accent, textAlign: "right", lineHeight: 1.3 }}>{s.time}</div>
+                        <div style={{ flexShrink: 0, width: 52, paddingTop: 3, fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 0.3, color: it.accent, textAlign: "right", lineHeight: 1.3 }}>{s.time}</div>
                         <div style={{ width: 8, height: 8, borderRadius: "50%", background: it.accent, flexShrink: 0, marginTop: 5, opacity: 0.75 }} />
                         <div style={{ flex: 1 }}>
                           <div style={{ fontSize: 13, fontFamily: "'Libre Baskerville', serif", color: C.cream, marginBottom: 3, lineHeight: 1.4 }}>{s.stop}</div>
