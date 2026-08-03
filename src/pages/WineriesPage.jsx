@@ -16,7 +16,7 @@ import { Footer, GlobalStyles, Navbar, NewsletterInline, PromoBanner } from '../
 import SEOHead from '../components/SEOHead';
 import SMSOptInWidget from '../components/SMSOptInWidget';
 import { C } from '../data/config';
-import { WINERY_VENUES } from '../data/wineries';
+import { WINERY_VENUES, WINE_PROGRAM_LIVE } from '../data/wineries';
 import { DISCOVER_MAP_STYLES, createDiscoverPin } from '../data/discover';
 import yeti from '../data/errorMessages';
 
@@ -835,7 +835,7 @@ function WineriesMapSection() {
   const markersRef = useRef([]);
   const infoWindowRef = useRef(null);
 
-  const mapVenues = WINERY_VENUES.filter(v => v.lat && v.lng && v.section !== 'extended');
+  const mapVenues = WINERY_VENUES.filter(v => v.lat && v.lng && v.section !== 'extended' && !v.hidden);
 
   useEffect(() => {
     const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
@@ -1005,10 +1005,10 @@ function WineriesScorecardSection() {
 }
 
 function WineriesVenueSection() {
-  const villageVenues = WINERY_VENUES.filter(v => v.section === "village");
+  const villageVenues = WINERY_VENUES.filter(v => v.section === "village" && !v.hidden);
   const villageOpen = villageVenues.filter(v => v.nowOpen);
-  const trailVenues = WINERY_VENUES.filter(v => v.section === "trail");
-  const extendedVenues = WINERY_VENUES.filter(v => v.section === "extended");
+  const trailVenues = WINERY_VENUES.filter(v => v.section === "trail" && !v.hidden);
+  const extendedVenues = WINERY_VENUES.filter(v => v.section === "extended" && !v.hidden);
   const { stamped, toggleStamp, isStamped } = useWinePassport();
   const { ratings, wineRankings } = useWineryRatings();
   const stampSlug = new URLSearchParams(window.location.search).get('stamp') || '';
@@ -1017,7 +1017,7 @@ function WineriesVenueSection() {
     <section style={{ background: C.cream, padding: "56px 24px" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
 
-        <WinePassportWidget stamped={stamped} villageVenues={villageOpen} trailVenues={trailVenues} />
+        {WINE_PROGRAM_LIVE && <WinePassportWidget stamped={stamped} villageVenues={villageOpen} trailVenues={trailVenues} />}
 
         {/* Village Tasting Rooms */}
         <FadeIn>
@@ -1028,7 +1028,7 @@ function WineriesVenueSection() {
           </p>
         </FadeIn>
         <div style={{ display: "flex", flexDirection: "column", gap: 24, marginBottom: 80 }}>
-          {villageVenues.map((v, i) => <WineryCard key={i} v={v} i={i} isStamped={isStamped(v.name)} onStamp={v.nowOpen ? toggleStamp : undefined} venueRating={ratings[v.name]} wineRankings={wineRankings} autoOpen={stampSlug === venueSlug(v.name)} />)}
+          {villageVenues.map((v, i) => <WineryCard key={i} v={v} i={i} isStamped={isStamped(v.name)} onStamp={WINE_PROGRAM_LIVE && v.nowOpen ? toggleStamp : undefined} venueRating={WINE_PROGRAM_LIVE ? ratings[v.name] : undefined} wineRankings={WINE_PROGRAM_LIVE ? wineRankings : undefined} autoOpen={WINE_PROGRAM_LIVE && stampSlug === venueSlug(v.name)} />)}
         </div>
 
         {/* The Trail */}
@@ -1036,11 +1036,11 @@ function WineriesVenueSection() {
           <SectionLabel>Day Trips</SectionLabel>
           <SectionTitle>The Wineries & Breweries Trail</SectionTitle>
           <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 580, margin: "0 0 48px 0" }}>
-            Pack the cooler, pick a starting point, and make a day of it. Meckleys to reset the palate, Cherry Creek for the laid-back pour, Chateau Aeronautique to close it out right.
+            Pack the cooler, pick a starting point, and make a day of it. Cherry Creek for the laid-back pour, Gypsy Blue for the scenery, Chateau Aeronautique to close it out right.
           </p>
         </FadeIn>
         <div style={{ display: "flex", flexDirection: "column", gap: 24, marginBottom: 80 }}>
-          {trailVenues.map((v, i) => <WineryCard key={i} v={v} i={i} isStamped={isStamped(v.name)} onStamp={toggleStamp} venueRating={ratings[v.name]} wineRankings={wineRankings} autoOpen={stampSlug === venueSlug(v.name)} />)}
+          {trailVenues.map((v, i) => <WineryCard key={i} v={v} i={i} isStamped={isStamped(v.name)} onStamp={WINE_PROGRAM_LIVE ? toggleStamp : undefined} venueRating={WINE_PROGRAM_LIVE ? ratings[v.name] : undefined} wineRankings={WINE_PROGRAM_LIVE ? wineRankings : undefined} autoOpen={WINE_PROGRAM_LIVE && stampSlug === venueSlug(v.name)} />)}
         </div>
 
       </div>
@@ -1067,9 +1067,10 @@ const WINERY_ITINERARIES = [
     duration: "Full Day",
     badge: "Best on a Saturday",
     accent: C.lakeBlue,
-    intro: "One loop, four stops, a fruit farm to start. Leave by 10, back lakeside before dark with excellent stories.",
+    intro: "One loop, three stops, zero rush. Leave by 11, back lakeside before dark with excellent stories.",
     stops: [
-      { time: "10am", stop: "Meckleys Flavor Fruit Farm", note: "Fresh-picked fruit - reset the palate before the first pour" },
+      // Re-add when Meckleys signs up:
+      // { time: "10am", stop: "Meckleys Flavor Fruit Farm", note: "Fresh-picked fruit - reset the palate before the first pour" },
       { time: "11:30am", stop: "Cherry Creek Cellars", note: "Small-batch Michigan wines in Brooklyn's laid-back tasting room" },
       { time: "1pm", stop: "Chateau Aeronautique", note: "Lunch + live music - all-weather biergarten, aviation-themed" },
       { time: "3:30pm", stop: "Gypsy Blue Vineyards", note: "Wines, ciders, flower farm - the most scenic stop on the loop" },
@@ -1085,7 +1086,9 @@ const WINERY_ITINERARIES = [
       { time: "Sat AM", stop: "Village Tasting Rooms", note: "Walk all three open rooms - two hours, zero driving" },
       { time: "Sat Noon", stop: "Cherry Creek Cellars", note: "Lunch stop in Brooklyn - small-batch wines, laid-back room" },
       { time: "Sat Eve", stop: "Chateau Aeronautique", note: "Evening entertainment - live tribute bands, all-weather biergarten" },
-      { time: "Sun Brunch", stop: "Meckleys Flavor Fruit Farm", note: "Brunch at the farm - fresh fruit, jams, the perfect wake-up" },
+      // Re-add when Meckleys signs up:
+      // { time: "Sun Brunch", stop: "Meckleys Flavor Fruit Farm", note: "Brunch at the farm - fresh fruit, jams, the perfect wake-up" },
+      { time: "Sun Brunch", stop: "Brunch at Blackbird Cafe", note: "From-scratch lakeside brunch in the Village - fuel up before wine country" },
       { time: "Sun PM", stop: "Gypsy Blue Vineyards", note: "Flower farm, ciders, wines - the most scenic finish on the trail" },
     ],
   },
@@ -1587,7 +1590,7 @@ export default function WineriesPage() {
       <WineriesHero />
       <WaveDivider topColor={C.dusk} bottomColor={C.night} />
       <NowPouringSection />
-      <WineriesHowItWorksSection />
+      {WINE_PROGRAM_LIVE && <WineriesHowItWorksSection />}
       <WineriesVillageCallout />
       <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
       <WineTrailNotifySection />
@@ -1598,13 +1601,19 @@ export default function WineriesPage() {
       <WineriesMapSection />
       <WaveDivider topColor={C.warmWhite} bottomColor={C.cream} />
       <WineriesVenueSection />
-      <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
-      <WineriesScorecardSection />
-      <WaveDivider topColor={C.warmWhite} bottomColor={C.dusk} />
-      <WineScoreboardSection />
-      <WaveDivider topColor={C.dusk} bottomColor={C.night} />
-      <WineAwardCeremonySection />
-      <WaveDivider topColor={C.night} bottomColor={C.dusk} />
+      {WINE_PROGRAM_LIVE ? (
+        <>
+          <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
+          <WineriesScorecardSection />
+          <WaveDivider topColor={C.warmWhite} bottomColor={C.dusk} />
+          <WineScoreboardSection />
+          <WaveDivider topColor={C.dusk} bottomColor={C.night} />
+          <WineAwardCeremonySection />
+          <WaveDivider topColor={C.night} bottomColor={C.dusk} />
+        </>
+      ) : (
+        <WaveDivider topColor={C.cream} bottomColor={C.dusk} />
+      )}
       <WineriesCTASection />
       <WaveDivider topColor={C.dusk} bottomColor={C.warmWhite} />
       <PageSponsorBanner pageName="wineries" />

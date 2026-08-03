@@ -1,7 +1,16 @@
 import { C } from './config';
 
 // ============================================================
+//  WINE_PROGRAM_LIVE - master switch for the passport/ratings
+//  program (stamp my visit, passport widget, scoreboard,
+//  awards ceremony). Flip to true when the program launches.
+// ============================================================
+export const WINE_PROGRAM_LIVE = false;
+
+// ============================================================
 //  WINERY_VENUES - shared by WineriesPage + WineryProfilePage
+//  `hidden: true` keeps a venue in the data but off the site
+//  (unsigned partners) - remove the flag to re-list them.
 // ============================================================
 export const WINERY_VENUES = [
   // ── Village Tasting Rooms (3 of 4 now open · Summer 2026) ────────────
@@ -99,6 +108,7 @@ export const WINERY_VENUES = [
   // ── The Trail (day trips) ─────────────────────────────────────────────
   {
     section: "trail",
+    hidden: true, // not signed up yet - remove this flag when Meckleys joins the trail
     name: "Meckleys Flavor Fruit Farm",
     type: "Fruit Farm · Trail Stop",
     tagline: "Start your day here. Fresh-picked fruit, homemade jams, and flavors that reset the palate before your first pour. The perfect opening move on the wine trail.",
