@@ -83,7 +83,7 @@ export const WINERY_VENUES = [
     accent: C.lakeBlue,
     distance: "In the Village",
     nowOpen: true,
-    hours: "Open now · call for tasting hours",
+    hours: "Sun–Mon 11–3 · Tue closed · Wed 11–4 · Thu 11–5 · Fri–Sat 9–5",
     lat: 41.971727, lng: -84.309131,
     hostedBrands: [
       {

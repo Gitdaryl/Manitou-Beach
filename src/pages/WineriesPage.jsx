@@ -352,7 +352,7 @@ function NowPouringSection() {
           <SectionLabel light>Open Now · Summer 2026</SectionLabel>
           <SectionTitle light>The Village Is Pouring</SectionTitle>
           <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 560, margin: "0 0 44px 0" }}>
-            Three Village shops have opened their doors as satellite tasting rooms for Northern Michigan wineries. Walk the boulevard, browse the shelves, stay for a glass - all within steps of the lake.
+            Three Village shops have opened their doors as satellite tasting rooms for Northern Michigan wineries. Walk the Village, browse the shelves, stay for a glass - all within steps of the lake.
           </p>
         </FadeIn>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }} className="wineries-itinerary-grid">
@@ -376,7 +376,7 @@ function WineriesVillageCallout() {
           <SectionLabel light>Now Open</SectionLabel>
           <SectionTitle light center>The Village Comes Alive</SectionTitle>
           <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 620, margin: "0 auto 20px" }}>
-            Three Manitou Beach Village shops have opened their doors as satellite tasting rooms for Michigan wineries - with a fourth on the way. Walk the boulevard. Browse the boathouse. Pick up something for the cottage. Stay for a glass.
+            Three Manitou Beach Village shops have opened their doors as satellite tasting rooms for Michigan wineries - with a fourth on the way. Walk the Village. Browse the boathouse. Pick up something for the cottage. Stay for a glass.
           </p>
           <p style={{ fontSize: 15, color: "rgba(255,255,255,0.35)", lineHeight: 1.8, maxWidth: 560, margin: "0 auto 32px", fontStyle: "italic" }}>
             Brengman Family Wines · Chateau Fontaine · Amoritas Vineyards - pouring now. Cherry Creek Cellars joins soon at Faust House.
@@ -1225,7 +1225,7 @@ function WineriesVenueSection() {
           <SectionLabel>In the Village</SectionLabel>
           <SectionTitle>Village Tasting Rooms</SectionTitle>
           <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 580, margin: "0 0 48px 0" }}>
-            Three Village shops are pouring now, with a fourth on the way. Walk the boulevard - each stop is a new pour, a new story, all within steps of the lake.
+            Three Village shops are pouring now, with a fourth on the way. Walk the Village - each stop is a new pour, a new story, all within steps of the lake.
           </p>
         </FadeIn>
         <div style={{ display: "flex", flexDirection: "column", gap: 24, marginBottom: 80 }}>
@@ -1255,7 +1255,7 @@ const WINERY_ITINERARIES = [
     duration: "2–3 Hours",
     badge: "Open Now",
     accent: C.sunset,
-    intro: "Three tasting rooms, one boulevard, zero driving. Walk the Village loop - start anywhere, end at the lake.",
+    intro: "Three tasting rooms, one walkable Village, zero driving. Start anywhere, end at the lake.",
     stops: [
       { time: "11am", stop: "Devils Lake View Living", note: "Brengman Family Wines - 11 organic pours from Traverse City, by the glass or bottle" },
       { time: "11:45am", stop: "Ang & Co", note: "Chateau Fontaine - 8 wines by the taste, glass, or bottle" },
