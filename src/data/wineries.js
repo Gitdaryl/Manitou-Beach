@@ -51,6 +51,10 @@ export const WINERY_VENUES = [
     nowOpen: true,
     hours: "Open now · call for tasting hours",
     lat: 41.9712, lng: -84.3093,
+    photos: [
+      "/images/wineries/ang_co_fontaine_02.jpg",
+      "/images/wineries/ang_co_fontaine_01.jpg",
+    ],
     hostedBrands: [
       {
         name: "Chateau Fontaine",
