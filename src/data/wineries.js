@@ -37,9 +37,9 @@ export const WINERY_VENUES = [
     hostedBrands: [
       {
         name: "Brengman Family Wines",
-        pours: "9 wines · by the glass or bottle",
+        pours: "11 wines · by the glass or bottle",
         url: "https://brengmanfamilywines.com",
-        description: "Organic, estate-grown wines from the hills outside Traverse City. Nine to choose from, poured by the glass or sent home by the bottle - ask Darlene where to start.",
+        description: "Organic, estate-grown wines from the hills outside Traverse City. Eleven to choose from, poured by the glass or sent home by the bottle - ask Darlene where to start.",
       },
     ],
   },
