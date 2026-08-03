@@ -217,7 +217,7 @@ function VillageHistorySection() {
             <div style={{ background: C.warmWhite, borderRadius: 14, padding: "32px 28px", border: `1px solid ${C.sand}` }}>
               <div style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: "#8B5E3C", marginBottom: 10 }}>Wine Country Meets Lake Country</div>
               <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: 0 }}>
-                Starting May 2026, village shops become satellite tasting rooms for Michigan wineries. Ang & Co pours Chateau Fontaine from Leelanau Peninsula. Faust House represents Cherry Creek Cellars from Brooklyn. A new chapter for the village - and a reason to visit every weekend.
+                Three village shops are now pouring as satellite tasting rooms for Michigan wineries. Devils Lake View Living pours organic Brengman Family Wines from Traverse City, Ang & Co pours Chateau Fontaine from the Leelanau Peninsula, and The Boathouse at Michigan Gypsy pours Amoritas Vineyards - with Faust House and Cherry Creek Cellars joining soon. A new chapter for the village, and a reason to visit every weekend.
               </p>
             </div>
           </FadeIn>

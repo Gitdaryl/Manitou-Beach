@@ -2714,7 +2714,7 @@ export default function YetiAdminPage() {
                     <select value={wineForm.venue} onChange={e => setWineForm(f => ({ ...f, venue: e.target.value }))}
                       style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: `1.5px solid ${C.sand}`, fontFamily: 'Libre Franklin, sans-serif', fontSize: 13, color: C.text, boxSizing: 'border-box', background: '#fff' }}>
                       <option value="">- Select -</option>
-                      {['Cherry Creek Cellars','Chateau Aeronautique','Gypsy Blue Vineyards','Meckleys Flavor Fruit Farm','Faust House Scrap n Craft','Ang & Co','Boathouse Art Gallery','Devils Lake View Living'].map(v => (
+                      {['Cherry Creek Cellars','Chateau Aeronautique','Gypsy Blue Vineyards','Meckleys Flavor Fruit Farm','Faust House Scrap n Craft','Ang & Co','The Boathouse at Michigan Gypsy','Devils Lake View Living'].map(v => (
                         <option key={v} value={v}>{v}</option>
                       ))}
                     </select>
