@@ -26,8 +26,14 @@ export const WINERY_VENUES = [
     accent: C.sage,
     distance: "In the Village",
     nowOpen: true,
-    hours: "Open now · call for tasting hours",
+    // Switch to "Daily 10–5" after Labor Day (farmers market season ends)
+    hours: "Most days 10–5 · Tue & Sun 10–3 · Sat 9–5",
     lat: 41.9708, lng: -84.3099,
+    photos: [
+      "/images/wineries/dlv_brengman_01.jpg",
+      "/images/wineries/dlv_brengman_03.jpg",
+      "/images/wineries/dlv_brengman_02.jpg",
+    ],
     hostedBrands: [
       {
         name: "Brengman Family Wines",
@@ -49,9 +55,10 @@ export const WINERY_VENUES = [
     accent: C.sunsetLight,
     distance: "In the Village",
     nowOpen: true,
-    hours: "Open now · call for tasting hours",
+    hours: "Mon–Wed 10–5 · Thu 10–6 · Fri 10–7 · Sat 8:30–7 · Sun 12–5",
     lat: 41.9712, lng: -84.3093,
     photos: [
+      "/images/wineries/ang_co_fontaine_03.jpg",
       "/images/wineries/ang_co_fontaine_02.jpg",
       "/images/wineries/ang_co_fontaine_01.jpg",
     ],
@@ -98,8 +105,8 @@ export const WINERY_VENUES = [
     logo: "/images/faust_house_logo.png",
     accent: "#8B5E3C",
     distance: "In the Village",
-    openingDate: "Opening Soon",
-    hours: "Tasting room opening soon",
+    openingDate: "Coming Soon",
+    hours: "Tasting room coming soon",
     lat: 41.9717, lng: -84.3091,
     hostedBrands: [
       {
