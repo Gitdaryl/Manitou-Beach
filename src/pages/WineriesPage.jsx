@@ -346,7 +346,7 @@ function WineParallaxBreak({ image, quote, sub }) {
 function NowPouringSection() {
   const openVenues = WINERY_VENUES.filter(v => v.section === "village" && v.nowOpen);
   return (
-    <section style={{ background: `radial-gradient(ellipse 75% 65% at 12% 0%, rgba(107,31,46,0.4), transparent 62%), ${C.night}`, padding: "72px 24px 64px" }}>
+    <section style={{ background: `linear-gradient(180deg, ${C.night} 0%, #3B2330 55%, ${C.night} 100%)`, padding: "72px 24px 64px" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
         <FadeIn>
           <SectionLabel light>Open Now · Summer 2026</SectionLabel>
@@ -370,7 +370,7 @@ function NowPouringSection() {
 
 function WineriesVillageCallout() {
   return (
-    <section style={{ background: `radial-gradient(ellipse 70% 60% at 88% 100%, rgba(107,31,46,0.35), transparent 62%), ${C.night}`, padding: "80px 24px" }}>
+    <section style={{ background: `linear-gradient(180deg, ${C.night} 0%, #33202B 60%, ${C.night} 100%)`, padding: "80px 24px" }}>
       <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
         <FadeIn>
           <SectionLabel light>Now Open</SectionLabel>
@@ -392,7 +392,7 @@ function WineriesVillageCallout() {
 
 function WineTrailNotifySection() {
   return (
-    <section style={{ background: `radial-gradient(ellipse 55% 65% at 0% 100%, rgba(201,123,154,0.16), transparent 60%), ${C.cream}`, padding: '64px 24px' }}>
+    <section style={{ background: `linear-gradient(180deg, ${C.cream} 0%, #F4E7E6 55%, ${C.cream} 100%)`, padding: '64px 24px' }}>
       <div style={{ maxWidth: 520, margin: '0 auto', textAlign: 'center' }}>
         <FadeIn>
           <div style={{ marginBottom: 24 }}>
@@ -1215,7 +1215,7 @@ function WineriesVenueSection() {
   const stampSlug = new URLSearchParams(window.location.search).get('stamp') || '';
 
   return (
-    <section style={{ background: `radial-gradient(ellipse 60% 40% at 100% 10%, rgba(201,123,154,0.14), transparent 65%), radial-gradient(ellipse 55% 35% at 0% 60%, rgba(201,123,154,0.1), transparent 60%), ${C.cream}`, padding: "56px 24px" }}>
+    <section style={{ background: `linear-gradient(180deg, ${C.cream} 0%, #F4E8E5 50%, ${C.cream} 100%)`, padding: "56px 24px" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
 
         {WINE_PROGRAM_LIVE && <WinePassportWidget stamped={stamped} villageVenues={villageOpen} trailVenues={trailVenues} />}
@@ -1297,7 +1297,7 @@ const WINERY_ITINERARIES = [
 
 function WineriesItinerarySection() {
   return (
-    <section style={{ background: `radial-gradient(ellipse 70% 55% at 92% 0%, rgba(107,31,46,0.38), transparent 60%), ${C.night}`, padding: "64px 24px" }}>
+    <section style={{ background: `linear-gradient(180deg, ${C.night} 0%, #3B2330 50%, ${C.night} 100%)`, padding: "64px 24px" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
         <FadeIn>
           <SectionLabel light>How to Do It</SectionLabel>
@@ -1345,7 +1345,7 @@ function WineriesItinerarySection() {
 
 function WineriesCTASection() {
   return (
-    <section style={{ background: `radial-gradient(ellipse 90% 95% at 50% 45%, rgba(107,31,46,0.45), transparent 75%), ${C.dusk}`, padding: "64px 24px" }}>
+    <section style={{ background: `linear-gradient(180deg, ${C.dusk} 0%, #46303C 50%, ${C.dusk} 100%)`, padding: "64px 24px" }}>
       <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
         <FadeIn>
           <SectionLabel light>Plan Your Visit</SectionLabel>
