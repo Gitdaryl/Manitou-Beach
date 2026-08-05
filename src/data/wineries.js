@@ -93,6 +93,12 @@ export const WINERY_VENUES = [
         description: "A family vineyard on the shore of Lake Leelanau, known for crisp whites and small-lot rieslings. The lineup rotates - stop in and ask what's open.",
       },
     ],
+    photos: [
+      "/images/wineries/boathouse_01.jpg",
+      "/images/wineries/boathouse_02.jpg",
+      "/images/wineries/boathouse_03.jpg",
+      "/images/wineries/boathouse_04.jpg",
+    ],
   },
   {
     section: "village",
