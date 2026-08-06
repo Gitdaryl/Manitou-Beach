@@ -1,4 +1,5 @@
 import { alertOutage } from './lib/notionGuard.js';
+import { SERVICE_AREA_NAMES } from '../src/data/serviceAreas.js';
 import { Resend } from 'resend';
 import { createHmac } from 'crypto';
 import { sendSMS, normalizePhone } from './lib/twilio.js';
@@ -66,11 +67,16 @@ export default async function handler(req, res) {
   // POST - submit a new business listing
   if (req.method === 'POST') {
     const { name, category, phone, website, email, description, address, newsletter, tier, duration, logoUrl, _hp,
-            businessType, serviceArea } = req.body;
+            businessType, serviceArea, serviceAreas } = req.body;
 
     // Only ever trust the three known values; anything else falls back to Storefront.
     const type = ['Storefront', 'Service Area', 'Mobile & Markets'].includes(businessType)
       ? businessType : 'Storefront';
+    // Checklist areas are whitelisted against the shared list; anything else the
+    // owner typed stays in the free-text Service Area field.
+    const areas = Array.isArray(serviceAreas)
+      ? serviceAreas.filter(a => SERVICE_AREA_NAMES.includes(a))
+      : [];
     // A business that travels to its customers is often run from home, so its
     // address is held for our reference only and never published.
     const keepAddressPrivate = type !== 'Storefront';
@@ -116,6 +122,7 @@ export default async function handler(req, res) {
             'Address': { rich_text: [{ text: { content: address || '' } }] },
             'Business Type': { select: { name: type } },
             'Service Area': { rich_text: [{ text: { content: (serviceArea || '').slice(0, 200) } }] },
+            'Service Areas': { multi_select: areas.map(name => ({ name })) },
             ...(keepAddressPrivate && { 'Address Private': { checkbox: true } }),
             ...(normalizedLogoUrl && { 'Logo URL': { url: normalizedLogoUrl } }),
             ...(tier && { 'Requested Tier': { select: { name: tier } } }),
@@ -339,6 +346,7 @@ export default async function handler(req, res) {
           : [p['Category']?.select?.name || 'Other'],
         businessType: p['Business Type']?.select?.name || 'Storefront',
         serviceArea: p['Service Area']?.rich_text?.[0]?.text?.content || '',
+        serviceAreas: (p['Service Areas']?.multi_select || []).map(s => s.name),
         phone: p['Phone']?.phone_number || '',
         website: normalizeUrl(p['URL']?.url || ''),
         email: p['Email']?.email || '',

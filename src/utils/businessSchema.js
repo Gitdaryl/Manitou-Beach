@@ -23,6 +23,19 @@ const SCHEMA_TYPES = {
   'Fitness': 'SportsActivityLocation',
 };
 
+// "Will travel further" is a willingness, not a place - it would be meaningless
+// (and unmatchable) as a schema.org Place, so it never reaches areaServed.
+const NON_PLACE_AREAS = new Set(['Will travel further']);
+
+function buildAreaServed(biz) {
+  const named = (biz.serviceAreas || []).filter(a => a && !NON_PLACE_AREAS.has(a));
+  const custom = (biz.serviceArea || '').trim();
+  const places = [...named, ...(custom ? [custom] : [])];
+  if (!places.length) return { '@type': 'Place', name: 'Manitou Beach, Devils Lake, Michigan' };
+  if (places.length === 1) return { '@type': 'Place', name: places[0] };
+  return places.map(name => ({ '@type': 'Place', name }));
+}
+
 export function isServiceAreaBusiness(biz) {
   return biz?.businessType === 'Service Area' || biz?.businessType === 'Mobile & Markets';
 }
@@ -59,10 +72,10 @@ export function buildBusinessSchema(biz) {
     // rather than guessed. See openingHours.js.
     ...(hoursSpec.length && { openingHoursSpecification: hoursSpec }),
 
-    areaServed: {
-      '@type': 'Place',
-      name: biz.serviceArea?.trim() || 'Manitou Beach, Devils Lake, Michigan',
-    },
+    // Checklist areas become one named Place each, which local and AI search can
+    // actually match against. A custom typed area is appended as its own Place, so
+    // it still counts even before anyone gives it a shape for the map.
+    areaServed: buildAreaServed(biz),
     containedInPlace: {
       '@type': 'Place', name: 'Manitou Beach',
       address: { '@type': 'PostalAddress', addressLocality: 'Manitou Beach', addressRegion: 'MI', addressCountry: 'US' },

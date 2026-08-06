@@ -6,6 +6,7 @@ import { FadeIn, Btn } from '../components/Shared';
 import SEOHead from '../components/SEOHead';
 import { toSlug } from '../utils/slugify';
 import { buildBusinessSchema } from '../utils/businessSchema';
+import { formatServiceAreas } from '../data/serviceAreas';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -399,7 +400,7 @@ export default function BusinessProfilePage() {
   // honest coverage statement for someone who travels.
   const locationLine = business
     ? (isServiceArea
-        ? (business.serviceArea || 'Serving Manitou Beach & the Irish Hills')
+        ? (formatServiceAreas(business.serviceAreas, business.serviceArea) || 'Serving Manitou Beach & the Irish Hills')
         : business.address)
     : '';
 

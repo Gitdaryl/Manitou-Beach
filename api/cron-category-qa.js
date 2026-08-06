@@ -135,11 +135,23 @@ export default async function handler(req, res) {
     }
     const newCategoryIdeas = Object.values(themes).filter(t => t.listings.length >= NEW_CATEGORY_QUORUM);
 
-    const summary = { evaluated: pending.length, moved, proposed, noFit, newCategoryIdeas, errors };
+    // Custom service areas that keep coming up are candidates for promotion into
+    // SERVICE_AREAS (src/data/serviceAreas.js). A promoted area gains a shape, so it
+    // can be drawn on the map instead of only reaching the schema as text.
+    const areaCounts = {};
+    for (const l of listings) {
+      const a = (l.customArea || '').trim();
+      if (!a) continue;
+      const key = a.toLowerCase();
+      (areaCounts[key] = areaCounts[key] || { area: a, listings: [] }).listings.push(l.name);
+    }
+    const areaPromotions = Object.values(areaCounts).filter(a => a.listings.length >= 2);
+
+    const summary = { evaluated: pending.length, moved, proposed, noFit, newCategoryIdeas, areaPromotions, errors };
 
     if (dry) return res.status(200).json({ ok: true, dryRun: true, ...summary });
 
-    if (moved.length || proposed.length || newCategoryIdeas.length || errors.length) {
+    if (moved.length || proposed.length || newCategoryIdeas.length || areaPromotions.length || errors.length) {
       try {
         await sendDigest(summary);
       } catch (err) {
@@ -198,6 +210,7 @@ export async function getListings() {
         description: p['Description']?.rich_text?.[0]?.text?.content || '',
         address: p['Address']?.rich_text?.[0]?.text?.content || '',
         website: p['URL']?.url || '',
+        customArea: p['Service Area']?.rich_text?.[0]?.text?.content || '',
         locked: p['Category Locked']?.checkbox ?? false,
         qaSignedOff: p['Category QA']?.rich_text?.[0]?.text?.content || '',
         hidden: p['Hidden']?.checkbox ?? false,
@@ -319,7 +332,7 @@ async function signOff(pageId, category) {
 
 // ─── EMAIL DIGEST ──────────────────────────────────────────────────────────
 
-function digestHtml({ evaluated, moved, proposed, newCategoryIdeas, errors }) {
+function digestHtml({ evaluated, moved, proposed, newCategoryIdeas, areaPromotions = [], errors }) {
   const site = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
   const row = (label, body) => `
     <div style="margin:0 0 24px;">
@@ -345,6 +358,12 @@ function digestHtml({ evaluated, moved, proposed, newCategoryIdeas, errors }) {
     parts.push(row('Possible new categories', li(newCategoryIdeas.map(t =>
       `<li>${t.listings.length} listings look like <strong>${t.theme}</strong>: ${t.listings.join(', ')}<br>
        <span style="color:#6B5D52;font-size:13px;">No category created. Add one in Notion if you agree.</span></li>`))));
+  }
+  if (areaPromotions.length) {
+    parts.push(row('Service areas worth adding to the list', li(areaPromotions.map(a =>
+      `<li>${a.listings.length} listings typed <strong>${a.area}</strong>: ${a.listings.join(', ')}<br>
+       <span style="color:#6B5D52;font-size:13px;">Add it to SERVICE_AREAS with a centre and radius and it becomes
+       a tickable option that can be drawn on the map.</span></li>`))));
   }
   if (errors.length) {
     parts.push(row(`Errors (${errors.length})`, li(errors.map(e => `<li>${e.name}: ${e.error}</li>`))));

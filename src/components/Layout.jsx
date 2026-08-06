@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { C, PAGE_SPONSORS, SECTIONS, LISTING_CATEGORIES, VIDEOS, DISPATCH_CARD_SPONSORS, USA250_PUBLIC } from '../data/config';
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, WaveDivider, Btn, CategoryPill, PageSponsorBanner } from './Shared';
 import yeti from '../data/errorMessages';
+import { SERVICE_AREA_NAMES } from '../data/serviceAreas';
 
 const TIER_BY_ID = {
   enhanced: { value: 'Enhanced', display: 'Showcased', price: 9,  cents: 900  },
@@ -1104,7 +1105,7 @@ export function SubmitSection() {
   const [logoFile, setLogoFile] = useState(null);
   const [logoPreview, setLogoPreview] = useState(null);
   const [isLogoDragging, setIsLogoDragging] = useState(false);
-  const [form, setForm] = useState({ name: "", category: "", phone: "", address: "", website: "", email: "", description: "", logoUrl: "", newsletter: true, tier: "Free", duration: "3", businessType: "Storefront", serviceArea: "", _hp: "" });
+  const [form, setForm] = useState({ name: "", category: "", phone: "", address: "", website: "", email: "", description: "", logoUrl: "", newsletter: true, tier: "Free", duration: "3", businessType: "Storefront", serviceArea: "", serviceAreas: [], _hp: "" });
 
   // Preselect tier from ?tier=<id> and scroll into view
   useEffect(() => {
@@ -1464,9 +1465,44 @@ export function SubmitSection() {
                     ? input("address", "Address (optional)")
                     : (
                       <>
+                        {form.businessType === "Service Area" && (
+                          <div>
+                            <div style={{
+                              fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase",
+                              color: C.textMuted, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif",
+                            }}>
+                              Which areas do you serve?
+                            </div>
+                            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                              {SERVICE_AREA_NAMES.map(area => {
+                                const on = form.serviceAreas.includes(area);
+                                return (
+                                  <button
+                                    key={area}
+                                    type="button"
+                                    onClick={() => setForm(f => ({
+                                      ...f,
+                                      serviceAreas: on ? f.serviceAreas.filter(a => a !== area) : [...f.serviceAreas, area],
+                                    }))}
+                                    style={{
+                                      padding: "7px 14px", borderRadius: 50, cursor: "pointer",
+                                      border: `1.5px solid ${on ? C.sage : C.sand}`,
+                                      background: on ? C.sage : C.cream,
+                                      color: on ? "#fff" : C.textMuted,
+                                      fontSize: 12, fontWeight: 700,
+                                      fontFamily: "'Libre Franklin', sans-serif", transition: "all 0.15s",
+                                    }}
+                                  >
+                                    {area}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
                         {input("serviceArea", form.businessType === "Mobile & Markets"
                           ? "Where and when do you set up? (e.g. Saturdays at the Crafters Market)"
-                          : "Which areas do you serve? (e.g. Devils Lake and the Irish Hills)")}
+                          : "Anywhere else? (optional)")}
                         {input("address", "Your address (optional, never shown publicly)")}
                         <div style={{
                           fontSize: 11, color: C.textMuted, marginTop: -8,
