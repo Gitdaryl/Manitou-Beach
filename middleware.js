@@ -8,6 +8,8 @@
 // og:title / og:description / og:image before returning it.
 // ============================================================
 
+import { buildBusinessSchemaBlocks } from './src/utils/businessSchema.js';
+
 // ── OG data per route ────────────────────────────────────────
 // image: null  →  keeps the default og-image.jpg (you need to provide one)
 // image: path  →  absolute path from public root
@@ -624,24 +626,11 @@ export async function handleBusinessSchema(html, slug, origin) {
     const biz = all.find(b => b.name && b.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') === slug);
     if (!biz) return html;
 
-    const SCHEMA_TYPES = { 'Restaurant':'Restaurant','Bar':'BarOrPub','Real Estate':'RealEstateAgent','Marina':'Marina','Retail':'Store','Hotel':'LodgingBusiness','Vacation Rental':'LodgingBusiness','Food Truck':'FoodEstablishment','Winery':'Winery','Art Gallery':'ArtGallery','Bakery':'Bakery','Cafe':'CafeOrCoffeeShop','Auto':'AutoRepair','Beauty':'BeautySalon','Fitness':'SportsActivityLocation' };
-    const bizSchema = {
-      '@context': 'https://schema.org',
-      '@type': SCHEMA_TYPES[biz.category] || 'LocalBusiness',
-      name: biz.name,
-      ...(biz.description && { description: biz.description }),
-      ...(biz.phone && { telephone: biz.phone }),
-      ...(biz.website && { url: biz.website }),
-      ...(biz.address && { address: { '@type': 'PostalAddress', streetAddress: biz.address, addressLocality: 'Manitou Beach', addressRegion: 'MI', addressCountry: 'US' } }),
-      ...(biz.lat && biz.lng && { geo: { '@type': 'GeoCoordinates', latitude: biz.lat, longitude: biz.lng } }),
-      areaServed: { '@type': 'Place', name: 'Manitou Beach, Devils Lake, Michigan' },
-      memberOf: { '@type': 'Organization', name: 'Manitou Beach Michigan', url: 'https://manitoubeachmichigan.com' },
-    };
-
-    const schemas = [bizSchema];
-    if (biz.geoFaq) {
-      schemas.push({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: biz.geoFaq });
-    }
+    // Built by the SAME function the client uses (src/utils/businessSchema.js).
+    // This used to be a second hand-maintained copy and it drifted: JS-less
+    // crawlers were served a stale schema with no hours and a generic areaServed.
+    const schemas = buildBusinessSchemaBlocks(biz);
+    if (!schemas.length) return html;
 
     const schemaTag = schemas.map(s => `<script type="application/ld+json">${JSON.stringify(s)}</script>`).join('\n    ');
     return html.replace('</head>', `    ${schemaTag}\n  </head>`);

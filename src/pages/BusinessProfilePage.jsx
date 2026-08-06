@@ -5,7 +5,7 @@ import { Footer, Navbar, GlobalStyles, compressImage } from '../components/Layou
 import { FadeIn, Btn } from '../components/Shared';
 import SEOHead from '../components/SEOHead';
 import { toSlug } from '../utils/slugify';
-import { buildOpeningHoursSpec } from '../utils/openingHours';
+import { buildBusinessSchema } from '../utils/businessSchema';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -371,46 +371,9 @@ export default function BusinessProfilePage() {
     ? business.businessType === 'Service Area' || business.businessType === 'Mobile & Markets'
     : false;
 
-  // Build schema
-  const schema = business ? {
-    '@context': 'https://schema.org',
-    '@type': SCHEMA_TYPES[business.category] || 'LocalBusiness',
-    name: business.name,
-    ...(business.description && { description: business.description }),
-    ...(business.phone && { telephone: business.phone }),
-    ...(business.website && { url: business.website }),
-    ...(business.logo && { image: business.logo }),
-    // Google's guidance for service-area businesses is to omit the street address
-    // and describe the coverage area instead. Emitting a home address (or a bare
-    // locality in streetAddress) is both wrong and a privacy leak.
-    ...(!isServiceArea && business.address && {
-      address: {
-        '@type': 'PostalAddress',
-        streetAddress: business.address,
-        addressLocality: 'Manitou Beach',
-        addressRegion: 'MI', addressCountry: 'US',
-      },
-    }),
-    ...(!isServiceArea && business.lat && business.lng && {
-      geo: { '@type': 'GeoCoordinates', latitude: business.lat, longitude: business.lng },
-    }),
-    // Hours are free text entered by owners, so only the days that parse cleanly
-    // are emitted. See utils/openingHours.js - a day we cannot read is skipped
-    // rather than guessed, because wrong hours in search send people to a closed door.
-    ...(() => {
-      const spec = buildOpeningHoursSpec(business.hours);
-      return spec.length ? { openingHoursSpecification: spec } : {};
-    })(),
-    // Per-listing coverage when the owner stated one, otherwise the directory default.
-    areaServed: {
-      '@type': 'Place',
-      name: business.serviceArea?.trim() || 'Manitou Beach, Devils Lake, Michigan',
-    },
-    containedInPlace: {
-      '@type': 'Place', name: 'Manitou Beach',
-      address: { '@type': 'PostalAddress', addressLocality: 'Manitou Beach', addressRegion: 'MI', addressCountry: 'US' },
-    },
-  } : null;
+  // Schema comes from the shared builder so the client and the edge middleware
+  // (which serves JS-less crawlers) can never drift apart again.
+  const schema = buildBusinessSchema(business);
 
   const scrollTo = id => { window.location.href = '/#' + id; };
   const accent = business ? (business.accentColor || CAT_COLORS[business.category] || C.sage) : C.sage;
