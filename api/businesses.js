@@ -310,6 +310,13 @@ export default async function handler(req, res) {
       const looksLikeTestListing = /\byeti\s*test\b|\btest\s*business\b|^\s*test[\s-]/i.test(nameRaw);
       if (isHidden || looksLikeTestListing) return;
 
+      // Service-area businesses (contractors, photographers, mobile vendors) often
+      // work out of a home. "Address Private" means we may hold the address for
+      // internal use but must never publish it - and that includes Lat/Lng, which
+      // reverse-geocode straight back to the same house.
+      const addressPrivate = p['Address Private']?.checkbox ?? false;
+      const rawAddress = p['Address']?.rich_text?.[0]?.text?.content || '';
+
       const business = {
         id: `notion-${page.id}`,
         name: p['Name']?.title?.[0]?.text?.content || '',
@@ -317,14 +324,16 @@ export default async function handler(req, res) {
         categories: p['Categories']?.multi_select?.length
           ? p['Categories'].multi_select.map(s => s.name)
           : [p['Category']?.select?.name || 'Other'],
+        businessType: p['Business Type']?.select?.name || 'Storefront',
+        serviceArea: p['Service Area']?.rich_text?.[0]?.text?.content || '',
         phone: p['Phone']?.phone_number || '',
         website: normalizeUrl(p['URL']?.url || ''),
         email: p['Email']?.email || '',
         description: p['Description']?.rich_text?.[0]?.text?.content || '',
-        address: p['Address']?.rich_text?.[0]?.text?.content || '',
+        address: addressPrivate ? '' : rawAddress,
         logo: normalizeUrl(p['Logo URL']?.url || null),
-        lat: p['Lat']?.number ?? null,
-        lng: p['Lng']?.number ?? null,
+        lat: addressPrivate ? null : (p['Lat']?.number ?? null),
+        lng: addressPrivate ? null : (p['Lng']?.number ?? null),
         emergency: p['Emergency']?.checkbox ?? false,
         hours: (() => { try { return JSON.parse(p['Hours']?.rich_text?.[0]?.text?.content || ''); } catch { return null; } })(),
         heroPhoto: normalizeUrl(p['Hero Photo URL']?.url || null),

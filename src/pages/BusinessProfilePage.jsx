@@ -373,7 +373,10 @@ export default function BusinessProfilePage() {
     ...(business.phone && { telephone: business.phone }),
     ...(business.website && { url: business.website }),
     ...(business.logo && { image: business.logo }),
-    ...(business.address && {
+    // Google's guidance for service-area businesses is to omit the street address
+    // and describe the coverage area instead. Emitting a home address (or a bare
+    // locality in streetAddress) is both wrong and a privacy leak.
+    ...(!isServiceArea && business.address && {
       address: {
         '@type': 'PostalAddress',
         streetAddress: business.address,
@@ -381,7 +384,7 @@ export default function BusinessProfilePage() {
         addressRegion: 'MI', addressCountry: 'US',
       },
     }),
-    ...(business.lat && business.lng && {
+    ...(!isServiceArea && business.lat && business.lng && {
       geo: { '@type': 'GeoCoordinates', latitude: business.lat, longitude: business.lng },
     }),
     // Hours are free text entered by owners, so only the days that parse cleanly
@@ -391,7 +394,11 @@ export default function BusinessProfilePage() {
       const spec = buildOpeningHoursSpec(business.hours);
       return spec.length ? { openingHoursSpecification: spec } : {};
     })(),
-    areaServed: { '@type': 'Place', name: 'Manitou Beach, Devils Lake, Michigan' },
+    // Per-listing coverage when the owner stated one, otherwise the directory default.
+    areaServed: {
+      '@type': 'Place',
+      name: business.serviceArea?.trim() || 'Manitou Beach, Devils Lake, Michigan',
+    },
     containedInPlace: {
       '@type': 'Place', name: 'Manitou Beach',
       address: { '@type': 'PostalAddress', addressLocality: 'Manitou Beach', addressRegion: 'MI', addressCountry: 'US' },
@@ -404,8 +411,15 @@ export default function BusinessProfilePage() {
   // Category archetype → primary action. Services quote, hospitality books, retail/destination gets directions.
   const RETAIL_CATS = ['Food & Drink', 'Food Truck', 'Breweries & Wineries', 'Shopping & Gifts', 'Arts & Culture'];
   const HOSPITALITY_CATS = ['Places to Stay', 'Rentals & Recreation', 'Events & Venues', 'Activities', 'Health & Beauty'];
+  // A service-area business has no address the public should visit: contractors,
+  // photographers, mobile vendors. It must never be offered directions, even when
+  // its category would normally get them (a market honey seller is Shopping & Gifts).
+  const isServiceArea = business
+    ? business.businessType === 'Service Area' || business.businessType === 'Mobile & Markets'
+    : false;
   const actionType = business
-    ? (RETAIL_CATS.includes(business.category) ? 'directions'
+    ? (isServiceArea ? 'quote'
+      : RETAIL_CATS.includes(business.category) ? 'directions'
       : HOSPITALITY_CATS.includes(business.category) ? 'book'
       : 'quote')
     : 'quote';
@@ -414,9 +428,16 @@ export default function BusinessProfilePage() {
     book:       { label: 'Book',         title: 'Request a Booking', placeholder: 'Dates, party size, or details…', toast: '✓ Booking request sent' },
     directions: { label: 'Directions' },
   }[actionType];
-  const mapsHref = business?.address
+  const mapsHref = business?.address && !isServiceArea
     ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(business.address + ' Manitou Beach MI')}`
     : null;
+  // What sits under the business name: a street address for a storefront, or an
+  // honest coverage statement for someone who travels.
+  const locationLine = business
+    ? (isServiceArea
+        ? (business.serviceArea || 'Serving Manitou Beach & the Irish Hills')
+        : business.address)
+    : '';
 
   const hasActions = business && (business.phone || business.email || business.website || (actionType === 'directions' && business.address));
   const autoDesc = business
@@ -914,13 +935,26 @@ export default function BusinessProfilePage() {
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
                 </svg>
-                <span>Manitou Beach, MI</span>
+                <span>{isServiceArea ? locationLine : 'Manitou Beach, MI'}</span>
               </div>
-              {business.address && (
+              {/* Storefronts show the street address next to the locality. Skip it when
+                  the address already repeats the locality, which read as
+                  "Manitou Beach, MI · Manitou Beach, MI". */}
+              {!isServiceArea && business.address && !/manitou beach/i.test(business.address.trim()) && (
                 <>
                   <span style={{ color: C.sand, fontSize: 11 }}>·</span>
                   <span style={{ fontSize: 13, color: C.textMuted }}>{business.address}</span>
                 </>
+              )}
+              {isServiceArea && (
+                <span style={{
+                  display: 'inline-flex', alignItems: 'center',
+                  background: `${C.sage}12`, border: `1px solid ${C.sage}30`,
+                  borderRadius: 20, padding: '3px 10px',
+                  fontSize: 11, fontWeight: 700, color: C.sageDark,
+                }}>
+                  {business.businessType === 'Mobile & Markets' ? 'Markets & events' : 'We come to you'}
+                </span>
               )}
               {business.emergency && (
                 <span style={{
@@ -1071,7 +1105,7 @@ export default function BusinessProfilePage() {
               <FadeIn delay={60}>
               {business.hours ? (
                 <div className="bp-section-card">
-                  <div className="bp-section-label">Hours</div>
+                  <div className="bp-section-label">{isServiceArea ? 'When we\u2019re reachable' : 'Hours'}</div>
                   <div className="bp-hours-grid">
                     {DAYS.map(day => {
                       const h = business.hours?.[day];
