@@ -34,7 +34,10 @@ const NOTION_VERSION = '2022-06-28';
 const MODEL = 'claude-haiku-4-5-20251001';
 
 // Confidence at or above this moves the listing. Below it, we only propose.
-const MOVE_THRESHOLD = 0.8;
+// Raised from 0.8 after the 2026-08-06 dry run: the agent's two worst calls
+// (Boot Jack -> Breweries & Wineries, Yacht Club -> Events & Venues) both came
+// in at 0.85, so 0.8 did not separate good judgement from bad.
+const MOVE_THRESHOLD = 0.9;
 // How many listings must share a theme before we suggest creating a category.
 const NEW_CATEGORY_QUORUM = 3;
 
@@ -100,7 +103,10 @@ export default async function handler(req, res) {
           confidence: verdict.confidence,
           reason: verdict.reason,
         };
-        if (verdict.confidence >= MOVE_THRESHOLD) {
+        // A listing carrying more than one Categories tag was cross-listed by
+        // hand, so its primary category is a considered choice. Propose, never move.
+        const curated = listing.categories.length > 1;
+        if (verdict.confidence >= MOVE_THRESHOLD && !curated) {
           if (!dry) await applyMove(listing, target);
           moved.push(entry);
           console.log(`category-qa: MOVED ${listing.name}: ${listing.category} -> ${target}`);
@@ -152,7 +158,7 @@ export default async function handler(req, res) {
 // Read from the schema every run so a category added or renamed in Notion is
 // picked up without a deploy, and so we can never write a dead option name.
 
-async function getLiveCategories() {
+export async function getLiveCategories() {
   const r = await fetch(`https://api.notion.com/v1/databases/${process.env.NOTION_DB_BUSINESS}`, { headers: HEADERS });
   if (!r.ok) throw new Error(`Notion schema fetch failed: ${await r.text()}`);
   const db = await r.json();
@@ -161,7 +167,7 @@ async function getLiveCategories() {
 
 // ─── NOTION: listed businesses ─────────────────────────────────────────────
 
-async function getListings() {
+export async function getListings() {
   const pages = [];
   let cursor;
   do {
@@ -195,14 +201,17 @@ async function getListings() {
         locked: p['Category Locked']?.checkbox ?? false,
         qaSignedOff: p['Category QA']?.rich_text?.[0]?.text?.content || '',
         hidden: p['Hidden']?.checkbox ?? false,
+        isDemo: p['Is Demo']?.checkbox ?? false,
       };
     })
-    .filter(l => l.name && !l.hidden);
+    // Demo rows are the tier showcases on /featured (selected by Is Demo, not by
+    // category), so their category is cosmetic and not worth an agent decision.
+    .filter(l => l.name && !l.hidden && !l.isDemo);
 }
 
 // ─── CLAUDE: evaluate one listing ──────────────────────────────────────────
 
-async function evaluate(listing, categories) {
+export async function evaluate(listing, categories) {
   const prompt = `You are a category QA agent for manitoubeachmichigan.com, a community directory for Manitou Beach and Devils Lake in the Irish Hills, Michigan.
 
 Decide whether this business is in the right directory category.
@@ -219,17 +228,20 @@ The ONLY categories that exist (you may not invent others):
 ${categories.map(c => `- ${c}`).join('\n')}
 
 How these categories are actually used on this site:
-- "Food & Drink" means places you go to eat or drink: restaurants, taverns, cafes. NOT food producers or market vendors.
+- "Food & Drink" means places you go to eat or drink: restaurants, taverns, bars, cafes. A tavern that serves craft beer is Food & Drink, NOT Breweries & Wineries.
+- "Breweries & Wineries" means PRODUCERS and their tasting rooms only (this category feeds the site's wine trail). A bar or restaurant that merely sells beer and wine does NOT belong here.
 - "Shopping & Gifts" covers retail and local goods, including makers who sell produce, honey, crafts at markets.
 - "Places to Stay" is lodging ONLY (cottages, rentals, Airbnb). Never equipment or watercraft rental.
-- "Rentals & Recreation" is equipment rental: watercraft, jet skis, golf carts, party equipment.
-- "Storage & Property Care" is self storage, boat/RV storage, winterizing, dock and lift work.
-- "Health & Wellness" is care and therapy: in-home senior care, home health, massage, chiropractic, fitness.
-- "Health & Beauty" is salons, barbers, nails, spa.
+- "Rentals & Recreation" is equipment rental: watercraft, jet skis, paddle boards, golf carts, party equipment.
+- "Storage & Property Care" is self storage, boat/RV storage, winterizing, dock and boat lift work.
+- "Health & Wellness" is care, therapy and treatment: in-home senior care, home health, IV therapy, massage, chiropractic, fitness. A combined wellness-and-aesthetics practice belongs here.
+- "Health & Beauty" is appearance services: salons, barbers, nails, spa.
+- "Events & Venues" is for businesses whose PRIMARY purpose is hosting events. A restaurant or club that happens to have live music is not one.
 - "Other" is a holding pen, never a correct destination.
 
 Rules:
-- Answer OK if the current category is reasonable. Prefer OK. Do not churn listings over a marginal preference.
+- Strong bias to leave things alone. Answer OK unless the current category is clearly WRONG. "Another category is arguably a better fit" is NOT a reason to move; that is churn and it is worse than doing nothing.
+- Many businesses do several things. A business keeps the category matching its PRIMARY purpose; the site handles the rest with separate cross-listing tags. Do not move a listing because a secondary activity fits elsewhere.
 - Answer MOVE only if a DIFFERENT category from the list above is clearly better. Set "category" to that exact string.
 - Answer NO_FIT only if nothing in the list fits. Set "theme" to a short 1-3 word label for the kind of business it is (e.g. "farm goods", "auto repair"). Do not propose a category name.
 - confidence is 0.0-1.0 for how sure you are. Use below 0.8 when it is a judgement call.
