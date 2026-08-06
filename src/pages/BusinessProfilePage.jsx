@@ -5,6 +5,7 @@ import { Footer, Navbar, GlobalStyles, compressImage } from '../components/Layou
 import { FadeIn, Btn } from '../components/Shared';
 import SEOHead from '../components/SEOHead';
 import { toSlug } from '../utils/slugify';
+import { buildOpeningHoursSpec } from '../utils/openingHours';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -383,6 +384,13 @@ export default function BusinessProfilePage() {
     ...(business.lat && business.lng && {
       geo: { '@type': 'GeoCoordinates', latitude: business.lat, longitude: business.lng },
     }),
+    // Hours are free text entered by owners, so only the days that parse cleanly
+    // are emitted. See utils/openingHours.js - a day we cannot read is skipped
+    // rather than guessed, because wrong hours in search send people to a closed door.
+    ...(() => {
+      const spec = buildOpeningHoursSpec(business.hours);
+      return spec.length ? { openingHoursSpecification: spec } : {};
+    })(),
     areaServed: { '@type': 'Place', name: 'Manitou Beach, Devils Lake, Michigan' },
     containedInPlace: {
       '@type': 'Place', name: 'Manitou Beach',
