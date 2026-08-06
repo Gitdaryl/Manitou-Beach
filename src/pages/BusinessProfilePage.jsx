@@ -364,6 +364,13 @@ export default function BusinessProfilePage() {
     setQuoteOpen(false);
   };
 
+  // A service-area business has no address the public should visit: contractors,
+  // photographers, mobile vendors. It must never be offered directions, even when
+  // its category would normally get them (a market honey seller is Shopping & Gifts).
+  const isServiceArea = business
+    ? business.businessType === 'Service Area' || business.businessType === 'Mobile & Markets'
+    : false;
+
   // Build schema
   const schema = business ? {
     '@context': 'https://schema.org',
@@ -411,12 +418,6 @@ export default function BusinessProfilePage() {
   // Category archetype → primary action. Services quote, hospitality books, retail/destination gets directions.
   const RETAIL_CATS = ['Food & Drink', 'Food Truck', 'Breweries & Wineries', 'Shopping & Gifts', 'Arts & Culture'];
   const HOSPITALITY_CATS = ['Places to Stay', 'Rentals & Recreation', 'Events & Venues', 'Activities', 'Health & Beauty'];
-  // A service-area business has no address the public should visit: contractors,
-  // photographers, mobile vendors. It must never be offered directions, even when
-  // its category would normally get them (a market honey seller is Shopping & Gifts).
-  const isServiceArea = business
-    ? business.businessType === 'Service Area' || business.businessType === 'Mobile & Markets'
-    : false;
   const actionType = business
     ? (isServiceArea ? 'quote'
       : RETAIL_CATS.includes(business.category) ? 'directions'
