@@ -2093,7 +2093,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
               Blog
             </button>
 
-            {/* Stays & Rentals */}
+            {/* Places to Stay */}
             <button
               onClick={() => { window.location.href = "/stays"; }}
               style={{
@@ -2106,7 +2106,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
               onMouseEnter={e => { e.currentTarget.style.color = solid ? C.dusk : C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
               onMouseLeave={e => { e.currentTarget.style.color = solid ? C.text : "rgba(255,255,255,0.7)"; e.currentTarget.style.background = "transparent"; }}
             >
-              Stays & Rentals
+              Places to Stay
             </button>
 
             {/* Community dropdown */}
@@ -2257,7 +2257,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
           background: "none", border: "none", fontFamily: "'Libre Baskerville', serif",
           fontSize: 24, fontWeight: 400, color: C.text, cursor: "pointer", padding: "12px 32px", letterSpacing: 0.5,
         }}>
-          Stays & Rentals
+          Places to Stay
         </button>
 
         {/* Community sub-links */}

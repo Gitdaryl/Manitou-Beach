@@ -1,12 +1,15 @@
 // Notion category values that already have pills in DISCOVER_CATS
 const KNOWN_NOTION_KEYS = new Set([
   'Food & Drink',
-  'Stays & Rentals',
+  'Places to Stay',
+  'Rentals & Recreation',
   'Breweries & Wineries',
   'Boating & Water',
   'Events & Venues',
   'Shopping & Gifts',
   'Home Services',
+  'Storage & Property Care',
+  'Health & Wellness',
 ]);
 
 export default async function handler(req, res) {

@@ -50,10 +50,14 @@ const TIERS = [
   },
 ];
 
+// Order matters - this is the dropdown order. "Places to Stay" is lodging only
+// (it routes to the Stays flow); equipment/watercraft rental belongs in
+// "Rentals & Recreation" and self storage in "Storage & Property Care".
 const CATEGORIES = [
   'Real Estate', 'Food & Drink', 'Boating & Water', 'Breweries & Wineries',
-  'Shopping & Gifts', 'Stays & Rentals', 'Creative Media', 'Home Services',
-  'Health & Beauty', 'Pet Services', 'Arts & Culture', 'Food Truck', 'Other',
+  'Shopping & Gifts', 'Places to Stay', 'Rentals & Recreation', 'Creative Media',
+  'Home Services', 'Storage & Property Care', 'Health & Wellness', 'Health & Beauty',
+  'Pet Services', 'Arts & Culture', 'Food Truck', 'Other',
 ];
 
 function TierCard({ tier, slots, onSelect }) {
@@ -431,7 +435,7 @@ function CheckoutForm({ tier, onBack, onSuccess }) {
     if (k === 'category' && v === 'Food Truck') {
       setShowFoodTruckRedirect(true);
     }
-    if (k === 'category' && v === 'Stays & Rentals') {
+    if (k === 'category' && v === 'Places to Stay') {
       setShowStaysRedirect(true);
     }
   };

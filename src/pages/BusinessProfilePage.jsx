@@ -395,7 +395,7 @@ export default function BusinessProfilePage() {
 
   // Category archetype → primary action. Services quote, hospitality books, retail/destination gets directions.
   const RETAIL_CATS = ['Food & Drink', 'Food Truck', 'Breweries & Wineries', 'Shopping & Gifts', 'Arts & Culture'];
-  const HOSPITALITY_CATS = ['Stays & Rentals', 'Events & Venues', 'Activities', 'Health & Beauty'];
+  const HOSPITALITY_CATS = ['Places to Stay', 'Rentals & Recreation', 'Events & Venues', 'Activities', 'Health & Beauty'];
   const actionType = business
     ? (RETAIL_CATS.includes(business.category) ? 'directions'
       : HOSPITALITY_CATS.includes(business.category) ? 'book'

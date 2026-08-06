@@ -165,7 +165,7 @@ function StaysHero() {
       <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 55% 45%, rgba(91,126,149,0.2) 0%, transparent 60%)', pointerEvents: 'none' }} />
       <FadeIn>
         <div style={{ position: 'relative', zIndex: 1, maxWidth: 720, margin: '0 auto' }}>
-          <SectionLabel light>Manitou Beach · Stays & Rentals</SectionLabel>
+          <SectionLabel light>Manitou Beach · Places to Stay</SectionLabel>
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(30px, 5vw, 56px)', fontWeight: 400, color: C.cream, margin: '20px 0 24px', lineHeight: 1.15 }}>
             Your property. On the map.<br /><em>Where lake visitors are already looking.</em>
           </h1>

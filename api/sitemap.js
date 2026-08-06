@@ -88,6 +88,11 @@ export default async function handler(req, res) {
                 { property: 'Status', status: { equals: 'Listed Premium' } },
               ],
             },
+            // Lodging lives in the separate Stays DB and renders on /stays, so it is
+            // kept out of the business directory. Both names are excluded because the
+            // Notion option was renamed 'Stays & Rentals' -> 'Places to Stay' (Aug 2026);
+            // excluding both makes the Notion rename and the deploy order-independent.
+            { property: 'Category', select: { does_not_equal: 'Places to Stay' } },
             { property: 'Category', select: { does_not_equal: 'Stays & Rentals' } },
           ],
         },
