@@ -271,11 +271,12 @@ export default async function handler(req, res) {
               ],
             },
             // Lodging lives in the separate Stays DB and renders on /stays, so it is
-            // kept out of the business directory. Both names are excluded because the
-            // Notion option was renamed 'Stays & Rentals' -> 'Places to Stay' (Aug 2026);
-            // excluding both makes the Notion rename and the deploy order-independent.
+            // kept out of the business directory.
+            // NOTE: Notion 400s the whole query if this names a select option that does
+            // not exist ("select option X not found for property Category"), which empties
+            // the directory. Only ever filter on an option that is live in Notion - do not
+            // leave a renamed/removed value here for back-compat.
             { property: 'Category', select: { does_not_equal: 'Places to Stay' } },
-            { property: 'Category', select: { does_not_equal: 'Stays & Rentals' } },
           ],
         },
       }),
