@@ -65,7 +65,15 @@ async function geocodeAndStore(pageId, address) {
 export default async function handler(req, res) {
   // POST - submit a new business listing
   if (req.method === 'POST') {
-    const { name, category, phone, website, email, description, address, newsletter, tier, duration, logoUrl, _hp } = req.body;
+    const { name, category, phone, website, email, description, address, newsletter, tier, duration, logoUrl, _hp,
+            businessType, serviceArea } = req.body;
+
+    // Only ever trust the three known values; anything else falls back to Storefront.
+    const type = ['Storefront', 'Service Area', 'Mobile & Markets'].includes(businessType)
+      ? businessType : 'Storefront';
+    // A business that travels to its customers is often run from home, so its
+    // address is held for our reference only and never published.
+    const keepAddressPrivate = type !== 'Storefront';
 
     // Honeypot - bots fill hidden fields, humans don't
     if (_hp) return res.status(200).json({ success: true });
@@ -106,6 +114,9 @@ export default async function handler(req, res) {
             'Email': { email: email || null },
             'Description': { rich_text: [{ text: { content: description || '' } }] },
             'Address': { rich_text: [{ text: { content: address || '' } }] },
+            'Business Type': { select: { name: type } },
+            'Service Area': { rich_text: [{ text: { content: (serviceArea || '').slice(0, 200) } }] },
+            ...(keepAddressPrivate && { 'Address Private': { checkbox: true } }),
             ...(normalizedLogoUrl && { 'Logo URL': { url: normalizedLogoUrl } }),
             ...(tier && { 'Requested Tier': { select: { name: tier } } }),
             ...((newsletter === true || newsletter === 'true') && { 'Newsletter': { checkbox: true } }),
@@ -121,8 +132,10 @@ export default async function handler(req, res) {
 
       const newPage = await response.json();
 
-      // Auto-geocode address and write lat/lng back to Notion (fire-and-forget, never blocks submission)
-      if (address && address.trim()) {
+      // Auto-geocode address and write lat/lng back to Notion (fire-and-forget, never blocks submission).
+      // Skipped when the address is private: coordinates reverse-geocode back to the
+      // same home, so storing them would defeat the point of withholding the address.
+      if (address && address.trim() && !keepAddressPrivate) {
         geocodeAndStore(newPage.id, address).catch(() => {});
       }
 

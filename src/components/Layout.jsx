@@ -1104,7 +1104,7 @@ export function SubmitSection() {
   const [logoFile, setLogoFile] = useState(null);
   const [logoPreview, setLogoPreview] = useState(null);
   const [isLogoDragging, setIsLogoDragging] = useState(false);
-  const [form, setForm] = useState({ name: "", category: "", phone: "", address: "", website: "", email: "", description: "", logoUrl: "", newsletter: true, tier: "Free", duration: "3", _hp: "" });
+  const [form, setForm] = useState({ name: "", category: "", phone: "", address: "", website: "", email: "", description: "", logoUrl: "", newsletter: true, tier: "Free", duration: "3", businessType: "Storefront", serviceArea: "", _hp: "" });
 
   // Preselect tier from ?tier=<id> and scroll into view
   useEffect(() => {
@@ -1421,8 +1421,62 @@ export function SubmitSection() {
                     </div>
                   )}
 
+                  {/* Where customers find you. Category cannot infer this - self storage
+                      is a place you drive to, an electrician is not - so we ask. */}
+                  <div>
+                    <div style={{
+                      fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase",
+                      color: C.textMuted, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif",
+                    }}>
+                      Where do customers find you?
+                    </div>
+                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                      {[
+                        { v: "Storefront",       label: "At my place",     hint: "They come to me" },
+                        { v: "Service Area",     label: "I go to them",    hint: "I travel to customers" },
+                        { v: "Mobile & Markets", label: "Markets & events", hint: "I set up around town" },
+                      ].map(opt => {
+                        const active = form.businessType === opt.v;
+                        return (
+                          <button
+                            key={opt.v}
+                            type="button"
+                            onClick={() => setForm(f => ({ ...f, businessType: opt.v }))}
+                            style={{
+                              flex: "1 1 150px", textAlign: "left", cursor: "pointer",
+                              padding: "10px 14px", borderRadius: 8,
+                              border: `1.5px solid ${active ? C.sage : C.sand}`,
+                              background: active ? `${C.sage}12` : C.cream,
+                              fontFamily: "'Libre Franklin', sans-serif", transition: "all 0.15s",
+                            }}
+                          >
+                            <div style={{ fontSize: 13, fontWeight: 700, color: active ? C.sageDark : C.text }}>{opt.label}</div>
+                            <div style={{ fontSize: 11, color: C.textMuted, marginTop: 2 }}>{opt.hint}</div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
                   {input("phone", "Phone Number *", "tel", true)}
-                  {input("address", "Address (optional)")}
+
+                  {form.businessType === "Storefront"
+                    ? input("address", "Address (optional)")
+                    : (
+                      <>
+                        {input("serviceArea", form.businessType === "Mobile & Markets"
+                          ? "Where and when do you set up? (e.g. Saturdays at the Crafters Market)"
+                          : "Which areas do you serve? (e.g. Devils Lake and the Irish Hills)")}
+                        {input("address", "Your address (optional, never shown publicly)")}
+                        <div style={{
+                          fontSize: 11, color: C.textMuted, marginTop: -8,
+                          fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.5,
+                        }}>
+                          We keep this for our records only. It is never displayed, never sent to
+                          Google, and you will not get a map pin at your home.
+                        </div>
+                      </>
+                    )}
                   {input("website", "Website (e.g. yetigroove.com)")}
                   {input("email", "Your Email *", "email", true)}
                   <textarea
