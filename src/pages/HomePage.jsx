@@ -2023,9 +2023,17 @@ function LiveFoodTruckStrip() {
       .then(r => r.json())
       .then(data => {
         const now = Date.now();
-        const live = (data.trucks || []).filter(t =>
-          t.lastCheckin && (now - new Date(t.lastCheckin).getTime()) < 12 * 60 * 60 * 1000
-        );
+        // Mirrors isLive() on the food trucks page: a stated departure time wins over the
+        // 12h window, so a truck that's done for the day drops off the strip on time.
+        const live = (data.trucks || []).filter(t => {
+          if (!t.lastCheckin) return false;
+          if ((now - new Date(t.lastCheckin).getTime()) >= 12 * 60 * 60 * 1000) return false;
+          if (t.departureTime) {
+            const dept = new Date(t.departureTime);
+            if (!isNaN(dept.getTime())) return now < dept.getTime();
+          }
+          return true;
+        });
         setLiveTrucks(live);
       })
       .catch(() => {});

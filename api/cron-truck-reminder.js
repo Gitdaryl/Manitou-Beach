@@ -10,6 +10,7 @@
 
 import { requireCron } from './lib/cronAuth.js';
 import { sendSMSFull, normalizePhone } from './lib/twilio.js';
+import { getAutoPinEntry, etParts } from './lib/autoPinSchedule.js';
 
 export const config = { maxDuration: 60 };
 
@@ -79,7 +80,17 @@ export default async function handler(req, res) {
       // ref=reminder tags visits/check-ins that came from the nudge, so attribution
       // (coupon codes, "your pin got N looks") can slot in later without a rebuild.
       const link = `${siteUrl}/food-trucks?truck=${encodeURIComponent(slug)}&token=${encodeURIComponent(tok)}&ref=reminder`;
-      const msg = `Good morning from Manitou Beach!\n\nOpen for business today, ${name}? Drop your pin so folks at the lake can find you, and we'll post you to Facebook automatically:\n${link}\n\nReply STOP to opt out.`;
+
+      // Trucks on the standing auto-pin schedule (api/lib/autoPinSchedule.js) don't need
+      // the "remember to check in" nudge - theirs drops itself. They get a heads-up
+      // instead, so a day off is one tap away rather than a surprise.
+      const auto = getAutoPinEntry(slug);
+      const autoToday = auto && auto.days.includes(etParts().weekday) &&
+        (!auto.until || etParts().dateStr <= auto.until);
+
+      const msg = autoToday
+        ? `Good morning from Manitou Beach!\n\nHeads up ${name}: your pin drops automatically at ${auto.startET} today and you'll be posted to Facebook.\n\nNot heading out, or sold out early? Tap here any time to pull the pin down or change your spot:\n${link}\n\nReply STOP to opt out.`
+        : `Good morning from Manitou Beach!\n\nOpen for business today, ${name}? Drop your pin so folks at the lake can find you, and we'll post you to Facebook automatically:\n${link}\n\nReply STOP to opt out.`;
 
       const ok = await sendSMSFull(`+1${digits}`, msg);
       if (ok) sent++; else skipped++;
