@@ -130,8 +130,23 @@ export default async function handler(req, res) {
         continue;
       }
 
-      report.push({ tag, pinned: true, departureTime });
-      console.log(`Auto-pin: dropped pin for ${name} until ${departureTime}`);
+      // The check-in endpoint fires the Facebook/Instagram announcement on the first
+      // check-in of the day and reports what happened. A pin nobody hears about is half
+      // the feature, so an announcement that didn't post is an alert, not a silent log.
+      const social = postBody.social || {};
+      report.push({ tag, pinned: true, departureTime, social });
+      console.log(`Auto-pin: dropped pin for ${name} until ${departureTime}; social=${JSON.stringify(social)}`);
+
+      if (social.facebook !== 'posted') {
+        console.error(`Auto-pin: Facebook announcement did not post for ${name}: ${social.facebook}`);
+        const adminPhone = process.env.ADMIN_PHONE;
+        if (adminPhone) {
+          await sendSMSFull(
+            adminPhone,
+            `⚠️ Manitou Beach: auto-pin dropped for ${name} but the Facebook post didn't go out (${social.facebook}). Instagram: ${social.instagram}. Check META_PAGE_ACCESS_TOKEN in Vercel.`
+          );
+        }
+      }
 
       // Tell the vendor it happened, and hand them the one tap that pulls it down early.
       if (entry.notify) {

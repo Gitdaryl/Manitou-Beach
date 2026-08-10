@@ -318,9 +318,15 @@ async function handlePost(req, res) {
     const todayStr = new Date().toISOString().slice(0, 10);
     const isFirstCheckinToday = !lastCheckin || !lastCheckin.startsWith(todayStr);
 
+    // Reported back to the caller so an automated check-in (cron-truck-autopin) can log
+    // whether the announcement actually went out, rather than assuming it did.
+    const social = { facebook: 'not-attempted', instagram: 'not-attempted' };
+
     if (isFirstCheckinToday) {
       if (!pageToken || !fbPageId) {
         // Previously a silent no-op. Surface it so a missing/rotated token is visible.
+        social.facebook = 'no-token';
+        social.instagram = 'no-token';
         await alertSocial('Skipped: no page token/ID set (META_PAGE_ACCESS_TOKEN/FB_PAGE_ACCESS_TOKEN + META_PAGE_ID/FB_PAGE_ID) in Vercel.');
       } else {
         try {
@@ -350,11 +356,17 @@ async function handlePost(req, res) {
           });
           if (!fbRes.ok) {
             const errText = await fbRes.text();
+            social.facebook = `failed-${fbRes.status}`;
             console.error('FB post failed:', errText);
             await alertSocial(`Facebook returned ${fbRes.status}. ${errText.slice(0, 100)}`);
+          } else {
+            social.facebook = 'posted';
           }
 
           // Post to Instagram (requires a public photo URL)
+          if (!igAccountId || !photoUrl) {
+            social.instagram = !igAccountId ? 'no-ig-account' : 'no-photo';
+          }
           if (igAccountId && photoUrl) {
             const containerRes = await fetch(`https://graph.facebook.com/v25.0/${igAccountId}/media`, {
               method: 'POST',
@@ -384,26 +396,36 @@ async function handlePost(req, res) {
                 });
                 if (!pubRes.ok) {
                   const pubErr = await pubRes.text();
+                  social.instagram = `failed-${pubRes.status}`;
                   console.error('IG publish failed:', pubErr);
                   await alertSocial(`Instagram publish returned ${pubRes.status}. ${pubErr.slice(0, 100)}`);
+                } else {
+                  social.instagram = 'posted';
                 }
               } else {
+                social.instagram = `stuck-${status}`;
                 console.error(`IG container never reached FINISHED (last status: ${status})`);
                 await alertSocial(`Instagram container stuck at status ${status} - not a token issue, likely a Meta-side processing delay.`);
               }
             } else {
+              social.instagram = 'container-failed';
               console.error('IG container failed:', JSON.stringify(containerData));
               await alertSocial(`Instagram media create failed. ${JSON.stringify(containerData).slice(0, 100)}`);
             }
           }
         } catch (postErr) {
+          if (social.facebook === 'not-attempted') social.facebook = `threw`;
+          if (social.instagram === 'not-attempted') social.instagram = `threw`;
           console.error('Check-in auto-post error:', postErr.message);
           await alertSocial(`Threw: ${postErr.message}`);
         }
       }
+    } else {
+      social.facebook = 'skipped-already-posted-today';
+      social.instagram = 'skipped-already-posted-today';
     }
 
-    return res.status(200).json({ ok: true, name: page.properties['Name']?.title?.[0]?.text?.content || slug });
+    return res.status(200).json({ ok: true, name: page.properties['Name']?.title?.[0]?.text?.content || slug, social });
   } catch (err) {
     console.error('Food Trucks POST error:', err.message);
     return res.status(500).json({ error: 'Server error' });

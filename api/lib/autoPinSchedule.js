@@ -32,7 +32,9 @@ export const AUTO_PIN_SCHEDULE = [
     endET: '17:00',
     lat: 41.97641336070263,
     lng: -84.28956004588389,
-    note: 'the middle of Devils Lake - look for the boat',
+    // Reads as "<Truck> just pulled up at <note>" in the Facebook post. Wording follows
+    // how the vendor describes the spot in his own check-ins.
+    note: 'the middle of the Devils Lake sandbar - look for the boat',
     todaysSpecial: '',
     until: null,
     notify: true,
