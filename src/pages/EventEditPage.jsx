@@ -52,6 +52,9 @@ export default function EventEditPage() {
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [token, setToken] = useState("");
+  const [baseline, setBaseline] = useState(null);
+  const [viewer, setViewer] = useState({ as: "", t: "" });
+  const [conflicts, setConflicts] = useState(null);
   const [eventPageId, setEventPageId] = useState("");
   const [form, setForm] = useState({
     name: "", date: "", time: "", timeEnd: "", location: "",
@@ -66,6 +69,7 @@ export default function EventEditPage() {
     const t = params.get("token");
     if (!t) { setNotFound(true); setLoading(false); return; }
     setToken(t);
+    setViewer({ as: params.get("as") || "", t: params.get("t") || "" });
 
     fetch(`/api/event-edit?token=${encodeURIComponent(t)}`)
       .then(r => r.json())
@@ -73,6 +77,16 @@ export default function EventEditPage() {
         if (data.error) { setNotFound(true); }
         else {
           if (data.id) setEventPageId(data.id);
+          // Remember exactly what we loaded - the save compares against this so
+          // we never silently overwrite an edit someone made in the meantime.
+          setBaseline({
+            name: data.name || "", date: data.date || "",
+            time: formatTime12h(parseTimeToHHMM(data.time || "")),
+            timeEnd: formatTime12h(parseTimeToHHMM(data.timeEnd || "")),
+            location: data.location || "", description: data.description || "",
+            cost: data.cost || "", eventUrl: data.eventUrl || "",
+            attendance: data.attendance || "", lifecycle: data.lifecycle || "Active",
+          });
           setForm({
             name: data.name || "",
             date: data.date || "",
@@ -101,8 +115,8 @@ export default function EventEditPage() {
     reader.readAsDataURL(file);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e, force = false) => {
+    if (e?.preventDefault) e.preventDefault();
     setSubmitting(true);
     setSubmitError("");
     try {
@@ -113,7 +127,14 @@ export default function EventEditPage() {
         const upData = await up.json();
         if (up.ok) imageUrl = upData.url;
       }
-      const body = { token, ...form, time: formatTime12h(form.time), timeEnd: formatTime12h(form.timeEnd) };
+      const body = {
+        token, ...form,
+        time: formatTime12h(form.time),
+        timeEnd: formatTime12h(form.timeEnd),
+        baseline,
+        as: viewer.as, t: viewer.t,
+        ...(force ? { force: true } : {}),
+      };
       if (imageUrl) body.imageUrl = imageUrl;
       const res = await fetch("/api/event-edit", {
         method: "POST",
@@ -121,6 +142,7 @@ export default function EventEditPage() {
         body: JSON.stringify(body),
       });
       const data = await res.json();
+      if (res.status === 409) { setConflicts(data); setSubmitting(false); return; }
       if (!res.ok) throw new Error(data.error || "Update failed");
       setSubmitted(true);
       celebrate();
@@ -129,6 +151,21 @@ export default function EventEditPage() {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  // "Use theirs" - reload their values into the form and let them re-check.
+  const takeTheirs = () => {
+    const c = conflicts?.current || {};
+    setForm(f => ({
+      ...f,
+      name: c.name ?? f.name, date: c.date ?? f.date,
+      time: parseTimeToHHMM(c.time || ""), timeEnd: parseTimeToHHMM(c.timeEnd || ""),
+      location: c.location ?? f.location, description: c.description ?? f.description,
+      cost: c.cost ?? f.cost, eventUrl: c.eventUrl ?? f.eventUrl,
+      attendance: c.attendance ?? f.attendance, lifecycle: c.lifecycle ?? f.lifecycle,
+    }));
+    setBaseline({ ...(conflicts?.current || {}) });
+    setConflicts(null);
   };
 
   const inputStyle = { width: "100%", padding: "11px 14px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.12)", fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", background: "rgba(255,255,255,0.06)", color: C.cream, outline: "none", boxSizing: "border-box" };
@@ -190,6 +227,38 @@ export default function EventEditPage() {
                   Change whatever you need - it goes live right away.
                 </p>
               </FadeIn>
+
+              {conflicts && (
+                <FadeIn>
+                  <div style={{ marginBottom: 28, padding: "20px 22px", borderRadius: 14, background: "rgba(212,132,90,0.12)", border: "1px solid rgba(212,132,90,0.4)" }}>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: C.cream, marginBottom: 8 }}>
+                      Someone else changed this while you had it open
+                    </div>
+                    <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)", lineHeight: 1.7, margin: "0 0 16px" }}>
+                      Nothing's been lost. Have a look at what's different and pick which version to keep.
+                    </p>
+                    {(conflicts.conflicts || []).map(c => (
+                      <div key={c.field} style={{ marginBottom: 14, paddingLeft: 14, borderLeft: "2px solid rgba(212,132,90,0.5)" }}>
+                        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 6 }}>{c.label}</div>
+                        <div style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", lineHeight: 1.6 }}>
+                          <div>Theirs: <strong style={{ color: C.cream }}>{c.theirs || "(empty)"}</strong></div>
+                          <div>Yours: <strong style={{ color: C.cream }}>{c.mine || "(empty)"}</strong></div>
+                        </div>
+                      </div>
+                    ))}
+                    <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 18 }}>
+                      <button type="button" onClick={() => handleSubmit(null, true)} disabled={submitting}
+                        style={{ flex: "1 1 160px", padding: "13px 18px", borderRadius: 9, border: "none", background: C.sunset, color: "#fff", fontSize: 14, fontWeight: 700, fontFamily: "'Libre Franklin', sans-serif", cursor: "pointer" }}>
+                        Keep mine
+                      </button>
+                      <button type="button" onClick={takeTheirs} disabled={submitting}
+                        style={{ flex: "1 1 160px", padding: "13px 18px", borderRadius: 9, border: "1px solid rgba(255,255,255,0.2)", background: "rgba(255,255,255,0.06)", color: C.cream, fontSize: 14, fontWeight: 700, fontFamily: "'Libre Franklin', sans-serif", cursor: "pointer" }}>
+                        Use theirs
+                      </button>
+                    </div>
+                  </div>
+                </FadeIn>
+              )}
 
               <FadeIn delay={80}>
                 <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 20 }}>

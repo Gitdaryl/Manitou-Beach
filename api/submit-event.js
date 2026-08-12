@@ -10,7 +10,7 @@
 
 import crypto from 'crypto';
 import { sendSMS, normalizePhone } from './lib/twilio.js';
-import { notifyLinkedOrganizers } from './lib/organizer-notify.js';
+import { notifyLinkedOrganizers, addedMessage } from './lib/organizer-notify.js';
 import { Resend } from 'resend';
 
 function generateCode() {
@@ -244,9 +244,12 @@ export default async function handler(req, res) {
       if (!modCheck.shouldHold) {
         await notifyLinkedOrganizers({
           fromPhone: digits,
-          eventName: eventName.trim(),
-          eventDate: date,
-          orgName: organizerName?.trim(),
+          message: addedMessage({
+            fromPhone: digits,
+            eventName: eventName.trim(),
+            eventDate: date,
+            orgName: organizerName?.trim(),
+          }),
         });
       }
       // Send welcome email to organizer

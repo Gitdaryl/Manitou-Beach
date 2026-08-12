@@ -1,19 +1,19 @@
-// Tells the rest of a business's crew when one of them posts an event.
+// Tells the rest of a business's crew what one of them just did.
 //
-// The problem it solves is duplicated work, not record-keeping: the owner asks
-// her daughter on Tuesday to get Saturday's band on the calendar, does it
-// herself on Wednesday, and the daughter posts it again on Thursday because
-// she has no way to know. The Events DB already has a pair of near-identical
-// submissions from one organizer on one day, so this isn't hypothetical.
+// The problem it solves is duplicated and contradicted work, not record-keeping:
+// the owner asks her daughter on Tuesday to get Saturday's band on the calendar,
+// does it herself on Wednesday, and the daughter posts it again on Thursday
+// because she has no way to know. The Events DB already holds a pair of
+// near-identical submissions from one organizer on one day.
 //
-// One text per submitting session, not one per event - an organizer logging a
-// month of gigs in a sitting would otherwise fire a dozen texts at their
-// partner, and the second one would already be ignored.
+// Deliberately domain-agnostic. Nothing here knows what an event is, so a
+// stays or food-truck flow can reuse it by passing its own line of copy and
+// its own link.
 
 import { sendSMS, normalizePhone } from './twilio.js';
 import { linkedPhones, recentlyNotified, markNotified, makeToken } from './organizer-links.js';
 
-function prettyDate(iso) {
+export function prettyDate(iso) {
   if (!iso) return '';
   const [y, m, d] = String(iso).slice(0, 10).split('-').map(Number);
   if (!y || !m || !d) return '';
@@ -21,9 +21,26 @@ function prettyDate(iso) {
     .toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' });
 }
 
-export async function notifyLinkedOrganizers({ fromPhone, eventName, eventDate, orgName }) {
+export function prettyPhone(digits) {
+  const d = normalizePhone(digits);
+  return d.length === 10 ? `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}` : 'someone';
+}
+
+/**
+ * Text everyone sharing a list with `fromPhone`, except `fromPhone` itself.
+ *
+ * @param {string}   fromPhone  who did the thing (never notified)
+ * @param {function} message    (recipientLink) => string - the SMS body
+ * @param {string}   linkPath   page the link should open, defaults to /my-events
+ * @param {boolean}  urgent     skip the anti-spam cooldown. For things that
+ *                              can't wait and don't repeat, like a cancellation.
+ *                              Routine adds must NOT set this: an organizer
+ *                              logging a month of gigs would fire a text per
+ *                              event and the second one would be ignored.
+ */
+export async function notifyLinkedOrganizers({ fromPhone, message, linkPath = '/my-events', urgent = false }) {
   const from = normalizePhone(fromPhone);
-  if (from.length !== 10) return;
+  if (from.length !== 10 || typeof message !== 'function') return;
 
   const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
 
@@ -36,20 +53,34 @@ export async function notifyLinkedOrganizers({ fromPhone, eventName, eventDate, 
   }
   if (others.length === 0) return;
 
-  const when = prettyDate(eventDate);
-  const who = orgName ? `the ${orgName}` : 'your';
-
   for (const to of others) {
     try {
-      if (await recentlyNotified(from, to)) continue;
-      await markNotified(from, to);
-      await sendSMS(
-        to,
-        `Manitou Beach Events\n\nHeads up - (${from.slice(0, 3)}) ${from.slice(3, 6)}-${from.slice(6)} just added "${eventName}"${when ? ` (${when})` : ''} to ${who} calendar, and may be adding more.\n\nWorth a look before you post the same thing:\n${siteUrl}/my-events?phone=${to}&token=${makeToken(to)}`
-      );
+      if (!urgent) {
+        if (await recentlyNotified(from, to)) continue;
+        await markNotified(from, to);
+      }
+      const link = `${siteUrl}${linkPath}?phone=${to}&token=${makeToken(to)}`;
+      await sendSMS(to, message(link));
     } catch (err) {
-      // A failed heads-up must never fail the submission that triggered it.
+      // A failed heads-up must never fail the action that triggered it.
       console.error('organizer-notify: send failed -', err.message);
     }
   }
+}
+
+// Someone added something to a shared calendar.
+export function addedMessage({ fromPhone, eventName, eventDate, orgName }) {
+  const when = prettyDate(eventDate);
+  const whose = orgName ? `the ${orgName}` : 'your';
+  return link =>
+    `Manitou Beach Events\n\nHeads up - ${prettyPhone(fromPhone)} just added "${eventName}"${when ? ` (${when})` : ''} to ${whose} calendar, and may be adding more.\n\nWorth a look before you post the same thing:\n${link}`;
+}
+
+// Someone cancelled or postponed something. Rare, and the one you can't
+// afford to miss - people turn up at the door otherwise.
+export function lifecycleMessage({ fromPhone, eventName, eventDate, lifecycle, changeNote }) {
+  const when = prettyDate(eventDate);
+  const verb = lifecycle === 'Cancelled' ? 'CANCELLED' : lifecycle.toUpperCase();
+  return link =>
+    `Manitou Beach Events\n\n${verb}: "${eventName}"${when ? ` (${when})` : ''}\n\n${prettyPhone(fromPhone)} made this change${changeNote ? `:\n"${changeNote}"` : '.'}\n\nIt's already updated on the calendar:\n${link}`;
 }

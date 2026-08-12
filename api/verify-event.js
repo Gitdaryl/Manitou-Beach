@@ -7,7 +7,7 @@
 
 import crypto from 'crypto';
 import { sendSMS, normalizePhone } from './lib/twilio.js';
-import { notifyLinkedOrganizers } from './lib/organizer-notify.js';
+import { notifyLinkedOrganizers, addedMessage } from './lib/organizer-notify.js';
 import { Resend } from 'resend';
 
 function generateToken() {
@@ -252,9 +252,12 @@ export default async function handler(req, res) {
     // Let anyone sharing this calendar know, so they don't post it twice.
     await notifyLinkedOrganizers({
       fromPhone: inputDigits,
-      eventName,
-      eventDate: match.properties['Event date']?.date?.start || '',
-      orgName: organizerName,
+      message: addedMessage({
+        fromPhone: inputDigits,
+        eventName,
+        eventDate: match.properties['Event date']?.date?.start || '',
+        orgName: organizerName,
+      }),
     });
 
     // Send welcome email to organizer

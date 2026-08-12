@@ -352,7 +352,7 @@ function EventList({ phone, token }) {
 
   const Card = ({ e, dim }) => (
     <Link
-      to={`/events/edit?token=${encodeURIComponent(e.editToken)}`}
+      to={`/events/edit?token=${encodeURIComponent(e.editToken)}&as=${encodeURIComponent(phone)}&t=${encodeURIComponent(token)}`}
       style={{
         display: 'block', padding: '18px 20px', marginBottom: 12, borderRadius: 12,
         background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)',

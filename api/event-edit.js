@@ -1,3 +1,19 @@
+// /api/event-edit.js
+// GET  ?token=X   → the event's current values, for the edit form
+// POST { token, ...fields, baseline, as, t }
+//                 → saves, refusing to silently clobber someone else's change
+//
+// Shared calendars made the clobber real: two people can now open the same
+// event, and Notion's last_edited_time is only minute-granular, so a timestamp
+// check would miss the case it exists for. Instead the form sends back the
+// values it originally loaded, and we only reject a field when the stored copy
+// has moved away from that baseline AND this editor is changing it. Two people
+// editing different fields both succeed, which is what you'd want.
+
+import { normalizePhone } from './lib/twilio.js';
+import { validToken } from './lib/organizer-links.js';
+import { notifyLinkedOrganizers, lifecycleMessage } from './lib/organizer-notify.js';
+
 function normalizeUrl(url) {
   if (!url || !url.trim()) return null;
   const u = url.trim();
@@ -32,6 +48,52 @@ async function findEventByToken(token) {
   return data.results?.[0] || null;
 }
 
+// Single source of truth for reading an event, so the values the form loads
+// and the values we compare against on save can never drift apart.
+function readEventFields(page) {
+  const p = page.properties;
+  const rawTime = p['Time End']?.rich_text?.[0]?.text?.content || '';
+  return {
+    name: p['Event Name']?.title?.[0]?.text?.content || '',
+    date: p['Event date']?.date?.start || '',
+    time: rawTime.includes('–') ? rawTime.split('–')[0].trim() : rawTime,
+    timeEnd: rawTime.includes('–') ? rawTime.split('–')[1].trim() : '',
+    location: p['Location']?.rich_text?.[0]?.text?.content || '',
+    description: p['Description']?.rich_text?.[0]?.text?.content || '',
+    cost: p['Cost']?.rich_text?.[0]?.text?.content || '',
+    eventUrl: p['Event URL']?.url || '',
+    imageUrl: p['Image URL']?.url || '',
+    attendance: p['Attendance']?.select?.name || '',
+    category: p['Category']?.rich_text?.[0]?.text?.content || '',
+    lifecycle: p['Lifecycle']?.select?.name || 'Active',
+    changeNote: p['Change Note']?.rich_text?.[0]?.text?.content || '',
+  };
+}
+
+const GUARDED = ['name', 'date', 'time', 'timeEnd', 'location', 'description', 'cost', 'eventUrl', 'attendance', 'lifecycle'];
+
+const FIELD_LABELS = {
+  name: 'Event name', date: 'Date', time: 'Start time', timeEnd: 'End time',
+  location: 'Location', description: 'Description', cost: 'Cost',
+  eventUrl: 'Ticket link', attendance: 'Attendance', lifecycle: 'Status',
+};
+
+// A conflict is only a conflict if BOTH of us touched the same field.
+function findConflicts(current, baseline, incoming) {
+  const conflicts = [];
+  for (const key of GUARDED) {
+    if (incoming[key] === undefined) continue;
+    const base = baseline[key] ?? '';
+    const mine = incoming[key] ?? '';
+    const theirs = current[key] ?? '';
+    if (String(mine) === String(base)) continue;   // I didn't change it
+    if (String(theirs) === String(base)) continue; // they didn't either
+    if (String(mine) === String(theirs)) continue; // we happened to agree
+    conflicts.push({ field: key, label: FIELD_LABELS[key] || key, theirs, mine });
+  }
+  return conflicts;
+}
+
 export default async function handler(req, res) {
   // GET - fetch event data by token
   if (req.method === 'GET') {
@@ -41,31 +103,7 @@ export default async function handler(req, res) {
     try {
       const page = await findEventByToken(token);
       if (!page) return res.status(404).json({ error: 'Event not found or token invalid' });
-
-      const p = page.properties;
-      return res.status(200).json({
-        id: page.id,
-        name: p['Event Name']?.title?.[0]?.text?.content || '',
-        date: p['Event date']?.date?.start || '',
-        // Time data is stored in 'Time End' as "start – end" or just "start"
-        time: (() => {
-          const raw = p['Time End']?.rich_text?.[0]?.text?.content || '';
-          return raw.includes('–') ? raw.split('–')[0].trim() : raw;
-        })(),
-        timeEnd: (() => {
-          const raw = p['Time End']?.rich_text?.[0]?.text?.content || '';
-          return raw.includes('–') ? raw.split('–')[1].trim() : '';
-        })(),
-        location: p['Location']?.rich_text?.[0]?.text?.content || '',
-        description: p['Description']?.rich_text?.[0]?.text?.content || '',
-        cost: p['Cost']?.rich_text?.[0]?.text?.content || '',
-        eventUrl: p['Event URL']?.url || '',
-        imageUrl: p['Image URL']?.url || '',
-        attendance: p['Attendance']?.select?.name || '',
-        category: p['Category']?.rich_text?.[0]?.text?.content || '',
-        lifecycle: p['Lifecycle']?.select?.name || 'Active',
-        changeNote: p['Change Note']?.rich_text?.[0]?.text?.content || '',
-      });
+      return res.status(200).json({ id: page.id, ...readEventFields(page) });
     } catch (err) {
       console.error('Event edit GET error:', err.message);
       return res.status(500).json({ error: 'Server error' });
@@ -74,12 +112,31 @@ export default async function handler(req, res) {
 
   // POST - update event fields by token
   if (req.method === 'POST') {
-    const { token, name, time, timeEnd, location, description, cost, eventUrl, imageUrl, attendance, date, lifecycle, changeNote } = req.body;
+    const {
+      token, name, time, timeEnd, location, description, cost, eventUrl, imageUrl,
+      attendance, date, lifecycle, changeNote,
+      baseline,     // what the form loaded, for conflict detection
+      force,        // "keep mine" after being shown the conflict
+      as, t,        // who's editing, when they came in from a shared list
+    } = req.body;
     if (!token) return res.status(400).json({ error: 'Token required' });
 
     try {
       const page = await findEventByToken(token);
       if (!page) return res.status(404).json({ error: 'Event not found or token invalid' });
+
+      const current = readEventFields(page);
+
+      if (baseline && !force) {
+        const conflicts = findConflicts(current, baseline, req.body);
+        if (conflicts.length) {
+          return res.status(409).json({
+            error: 'Someone else changed this while you had it open.',
+            conflicts,
+            current,
+          });
+        }
+      }
 
       const properties = { 'Updated': { checkbox: true } };
       // Organizers misspell performer names in the title more than anything else,
@@ -136,6 +193,30 @@ export default async function handler(req, res) {
           console.error('Notion update error:', JSON.stringify(err));
           return res.status(500).json({ error: 'Update failed', notionError: err?.message });
         }
+      }
+
+      // A cancellation is the one change the rest of the crew can't afford to
+      // miss - people turn up at the door otherwise. No cooldown on these.
+      if (lifecycle && lifecycle !== 'Active' && lifecycle !== current.lifecycle) {
+        // Who did it: the viewer's own number when they came from a shared
+        // list, otherwise the number the event was submitted under. Either way
+        // the actor is excluded from their own notification.
+        const viewer = normalizePhone(as || '');
+        const actor = (viewer.length === 10 && validToken(viewer, t))
+          ? viewer
+          : normalizePhone(page.properties['Phone']?.phone_number || '');
+
+        await notifyLinkedOrganizers({
+          fromPhone: actor,
+          urgent: true,
+          message: lifecycleMessage({
+            fromPhone: actor,
+            eventName: name?.trim() || current.name,
+            eventDate: date || current.date,
+            lifecycle,
+            changeNote,
+          }),
+        });
       }
 
       return res.status(200).json({ success: true });
