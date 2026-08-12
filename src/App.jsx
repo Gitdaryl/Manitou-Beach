@@ -190,6 +190,23 @@ function RefCapture() {
   return null;
 }
 
+// The concierge is a fixed button floating over the middle-right of the screen.
+// That's fine on discovery pages, but on the self-service pages it lands on top
+// of the instructions the organizer is trying to read (caught it covering the
+// "tap Share at the bottom of Safari" line on /my-events). Nobody visiting
+// their own edit form wants to ask a tourism bot a question anyway.
+const NO_CONCIERGE = ['/my-events', '/events/edit', '/submit-event'];
+
+function VoiceWhereItHelps() {
+  const { pathname } = useLocation();
+  if (NO_CONCIERGE.some(p => pathname.startsWith(p))) return null;
+  return (
+    <SafeVoice>
+      <Suspense fallback={null}><VoiceConcierge /></Suspense>
+    </SafeVoice>
+  );
+}
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -288,9 +305,7 @@ export default function App() {
         </Suspense>
       </ChunkErrorBoundary>
       {/* These load independently - they must NOT block page content */}
-      <SafeVoice>
-        <Suspense fallback={null}><VoiceConcierge /></Suspense>
-      </SafeVoice>
+      <VoiceWhereItHelps />
       <Suspense fallback={null}><BetaFeedbackStrip /></Suspense>
     </BrowserRouter>
   );
