@@ -17,7 +17,7 @@
 // guess the pathname already knows both numbers.
 
 import crypto from 'crypto';
-import { list, put } from '@vercel/blob';
+import { list, put, del } from '@vercel/blob';
 
 const PREFIX = 'organizer-links/';
 const NOTICE_PREFIX = 'organizer-notices/';
@@ -117,6 +117,53 @@ export async function recentlyNotified(from, to) {
 
 export async function markNotified(from, to) {
   await put(noticePath(from, to), '{}', {
+    access: 'public',
+    contentType: 'application/json',
+    addRandomSuffix: false,
+    allowOverwrite: true,
+  });
+}
+
+// ── DISPLAY NAMES ──
+// "Allie just added Back Porch Duo" reads like a person; "(419) 367-4607 just
+// added Back Porch Duo" reads like a system. For a mother-and-daughter
+// operation that difference is the whole point of the notification.
+//
+// The name lives in the pathname for the same reason the links do: list()
+// returns pathnames fresh, while blob content reads are CDN cached and a
+// rename would appear to do nothing. encodeURIComponent never emits "/", so
+// splitting the path back apart is unambiguous.
+
+const NAME_PREFIX = 'organizer-names/';
+
+export function cleanDisplayName(raw) {
+  return String(raw || '').replace(/[\r\n]+/g, ' ').trim().slice(0, 40);
+}
+
+export async function displayNames() {
+  const map = new Map();
+  try {
+    const { blobs } = await list({ prefix: NAME_PREFIX, limit: 1000 });
+    for (const b of blobs) {
+      const [phone, encoded] = b.pathname.slice(NAME_PREFIX.length).replace(/\.json$/, '').split('/');
+      if (!/^\d{10}$/.test(phone) || !encoded) continue;
+      try { map.set(phone, decodeURIComponent(encoded)); } catch { /* skip a malformed name */ }
+    }
+  } catch (err) {
+    // Falling back to phone numbers is ugly but harmless.
+    console.error('organizer-links: name lookup failed -', err.message);
+  }
+  return map;
+}
+
+export async function setDisplayName(phone, raw) {
+  const name = cleanDisplayName(raw);
+  if (!/^\d{10}$/.test(phone)) return;
+  // The name is the pathname, so a rename is a delete plus a write.
+  const { blobs } = await list({ prefix: `${NAME_PREFIX}${phone}/`, limit: 100 });
+  await Promise.all(blobs.map(b => del(b.url).catch(() => {})));
+  if (!name) return;
+  await put(`${NAME_PREFIX}${phone}/${encodeURIComponent(name)}.json`, '{}', {
     access: 'public',
     contentType: 'application/json',
     addRandomSuffix: false,

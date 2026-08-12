@@ -11,7 +11,7 @@
 // its own link.
 
 import { sendSMS, normalizePhone } from './twilio.js';
-import { linkedPhones, recentlyNotified, markNotified, makeToken } from './organizer-links.js';
+import { linkedPhones, recentlyNotified, markNotified, makeToken, displayNames } from './organizer-links.js';
 
 export function prettyDate(iso) {
   if (!iso) return '';
@@ -30,7 +30,9 @@ export function prettyPhone(digits) {
  * Text everyone sharing a list with `fromPhone`, except `fromPhone` itself.
  *
  * @param {string}   fromPhone  who did the thing (never notified)
- * @param {function} message    (recipientLink) => string - the SMS body
+ * @param {function} message    (recipientLink, fromLabel) => string - the SMS body.
+ *                              fromLabel is the sender's chosen display name
+ *                              when they've set one, their number otherwise.
  * @param {string}   linkPath   page the link should open, defaults to /my-events
  * @param {boolean}  urgent     skip the anti-spam cooldown. For things that
  *                              can't wait and don't repeat, like a cancellation.
@@ -53,6 +55,9 @@ export async function notifyLinkedOrganizers({ fromPhone, message, linkPath = '/
   }
   if (others.length === 0) return;
 
+  // A name if they've picked one, their number if not.
+  const fromLabel = (await displayNames()).get(from) || prettyPhone(from);
+
   for (const to of others) {
     try {
       if (!urgent) {
@@ -60,7 +65,7 @@ export async function notifyLinkedOrganizers({ fromPhone, message, linkPath = '/
         await markNotified(from, to);
       }
       const link = `${siteUrl}${linkPath}?phone=${to}&token=${makeToken(to)}`;
-      await sendSMS(to, message(link));
+      await sendSMS(to, message(link, fromLabel));
     } catch (err) {
       // A failed heads-up must never fail the action that triggered it.
       console.error('organizer-notify: send failed -', err.message);
@@ -69,18 +74,18 @@ export async function notifyLinkedOrganizers({ fromPhone, message, linkPath = '/
 }
 
 // Someone added something to a shared calendar.
-export function addedMessage({ fromPhone, eventName, eventDate, orgName }) {
+export function addedMessage({ eventName, eventDate, orgName }) {
   const when = prettyDate(eventDate);
   const whose = orgName ? `the ${orgName}` : 'your';
-  return link =>
-    `Manitou Beach Events\n\nHeads up - ${prettyPhone(fromPhone)} just added "${eventName}"${when ? ` (${when})` : ''} to ${whose} calendar, and may be adding more.\n\nWorth a look before you post the same thing:\n${link}`;
+  return (link, from) =>
+    `Manitou Beach Events\n\nHeads up - ${from} just added "${eventName}"${when ? ` (${when})` : ''} to ${whose} calendar, and may be adding more.\n\nWorth a look before you post the same thing:\n${link}`;
 }
 
 // Someone cancelled or postponed something. Rare, and the one you can't
 // afford to miss - people turn up at the door otherwise.
-export function lifecycleMessage({ fromPhone, eventName, eventDate, lifecycle, changeNote }) {
+export function lifecycleMessage({ eventName, eventDate, lifecycle, changeNote }) {
   const when = prettyDate(eventDate);
   const verb = lifecycle === 'Cancelled' ? 'CANCELLED' : lifecycle.toUpperCase();
-  return link =>
-    `Manitou Beach Events\n\n${verb}: "${eventName}"${when ? ` (${when})` : ''}\n\n${prettyPhone(fromPhone)} made this change${changeNote ? `:\n"${changeNote}"` : '.'}\n\nIt's already updated on the calendar:\n${link}`;
+  return (link, from) =>
+    `Manitou Beach Events\n\n${verb}: "${eventName}"${when ? ` (${when})` : ''}\n\n${from} made this change${changeNote ? `:\n"${changeNote}"` : '.'}\n\nIt's already updated on the calendar:\n${link}`;
 }

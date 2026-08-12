@@ -210,7 +210,6 @@ export default async function handler(req, res) {
           fromPhone: actor,
           urgent: true,
           message: lifecycleMessage({
-            fromPhone: actor,
             eventName: name?.trim() || current.name,
             eventDate: date || current.date,
             lifecycle,

@@ -14,7 +14,7 @@
 
 import crypto from 'crypto';
 import { sendSMS, normalizePhone } from './lib/twilio.js';
-import { linkedPhones, linkPhones, makeToken, validToken } from './lib/organizer-links.js';
+import { linkedPhones, linkPhones, makeToken, validToken, displayNames, setDisplayName } from './lib/organizer-links.js';
 
 const INVITE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -135,6 +135,9 @@ export default async function handler(req, res) {
     if (!parsed) return res.status(403).json({ error: 'That invite has expired. Ask them to send a new one.' });
     try {
       await linkPhones(parsed.from, parsed.to);
+      if (req.body.displayName !== undefined) {
+        await setDisplayName(parsed.to, req.body.displayName).catch(() => {});
+      }
       return res.status(200).json({ ok: true, phone: parsed.to, token: makeToken(parsed.to) });
     } catch (err) {
       console.error('my-events accept error:', err.message);
@@ -147,6 +150,20 @@ export default async function handler(req, res) {
     const digits = normalizePhone((req.body || {}).phone);
     if (digits.length !== 10) {
       return res.status(400).json({ error: 'Pop in the phone number you used when you added your events.' });
+    }
+
+    // ── NAME YOURSELF ──
+    if (req.body.displayName !== undefined && req.body.invite === undefined) {
+      if (!validToken(digits, (req.body || {}).token)) {
+        return res.status(403).json({ error: 'This link has expired. Request a fresh one and we\'ll text it over.' });
+      }
+      try {
+        await setDisplayName(digits, req.body.displayName);
+        return res.status(200).json({ ok: true });
+      } catch (err) {
+        console.error('my-events name error:', err.message);
+        return res.status(500).json({ error: 'Couldn\'t save that. Give it another go?' });
+      }
     }
 
     // ── INVITE THE OTHER PERSON TO SHARE THE LIST ──
@@ -164,6 +181,9 @@ export default async function handler(req, res) {
         const target = otherNumbersFor(pages, mine)[Number(invite)];
         if (!target) return res.status(404).json({ error: 'We couldn\'t find that number anymore.' });
 
+        if (req.body.displayName !== undefined) {
+          await setDisplayName(digits, req.body.displayName).catch(() => {});
+        }
         const org = orgNameFor(pages, mine);
         const link = `${siteUrl}/my-events?invite=${makeInvite(digits, target.phone)}`;
         // The inviter's full number is shown on purpose. It's how the person
@@ -206,6 +226,10 @@ export default async function handler(req, res) {
       const pages = await fetchAllEvents();
       return res.status(200).json({
         invite: {
+          // The number is always shown, never replaced by the name: a display
+          // name is chosen by the sender, so it's the number that proves who
+          // this actually is.
+          fromName: (await displayNames()).get(parsed.from) || '',
           fromMasked: `(${parsed.from.slice(0, 3)}) ${parsed.from.slice(3, 6)}-${parsed.from.slice(6)}`,
           org: orgNameFor(pages, [parsed.from, parsed.to]),
           count: eventsForPhones(pages, [parsed.from, parsed.to]).length,
@@ -227,11 +251,16 @@ export default async function handler(req, res) {
     try {
       const pages = await fetchAllEvents();
       const mine = await linkedPhones(digits);
+      const names = await displayNames();
       return res.status(200).json({
         events: eventsForPhones(pages, mine),
         shared: mine.length > 1,
+        displayName: names.get(digits) || '',
+        crew: mine.filter(p => p !== digits).map(p => names.get(p) || `(${p.slice(0, 3)}) •••-${p.slice(6)}`),
         // Masked only - the raw number never leaves the server.
-        otherNumbers: otherNumbersFor(pages, mine).map(({ masked, count }) => ({ masked, count })),
+        otherNumbers: otherNumbersFor(pages, mine).map(({ phone, masked, count }) => ({
+          masked, count, name: names.get(phone) || '',
+        })),
       });
     } catch (err) {
       console.error('my-events GET error:', err.message);

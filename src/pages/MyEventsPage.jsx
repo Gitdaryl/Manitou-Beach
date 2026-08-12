@@ -211,8 +211,9 @@ function AskForPhone() {
 // Sharing is by invitation because email isn't verified at submission - see
 // the note in api/my-events.js. The invite only ever goes to a phone already
 // on the records, and they have to accept it on that phone.
-function InviteToShareCard({ phone, token, index, other }) {
+function InviteToShareCard({ phone, token, index, other, myName }) {
   const [state, setState] = useState('idle'); // idle | sending | sent | error
+  const [name, setName] = useState(myName || '');
 
   const send = async () => {
     setState('sending');
@@ -220,7 +221,7 @@ function InviteToShareCard({ phone, token, index, other }) {
       const res = await fetch('/api/my-events', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, token, invite: index }),
+        body: JSON.stringify({ phone, token, invite: index, displayName: name }),
       });
       const d = await res.json();
       setState(d.error ? 'error' : 'sent');
@@ -239,12 +240,18 @@ function InviteToShareCard({ phone, token, index, other }) {
       </p>
       {state === 'sent' ? (
         <p style={{ fontSize: 14, color: C.sage, fontWeight: 600, margin: 0 }}>
-          Asked {other.masked}. As soon as they tap accept, their events show up here.
+          Asked {other.name || other.masked}. As soon as they tap accept, their events show up here.
         </p>
       ) : (
+        <>
+        <label style={{ display: 'block', fontSize: 11, fontWeight: 700, letterSpacing: 1.4, textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: 6 }}>
+          Your first name <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0, opacity: 0.7 }}>(so they know it's you)</span>
+        </label>
+        <input value={name} onChange={e => setName(e.target.value)} maxLength={40} placeholder="e.g. Sue" style={{ ...inp, marginBottom: 12 }} />
         <button onClick={send} disabled={state === 'sending'} style={{ ...btn, background: 'rgba(255,255,255,0.09)', opacity: state === 'sending' ? 0.6 : 1 }}>
-          {state === 'sending' ? 'Asking...' : `Share the list with ${other.masked}`}
+          {state === 'sending' ? 'Asking...' : `Share the list with ${other.name || other.masked}`}
         </button>
+        </>
       )}
       {state === 'error' && <p style={{ fontSize: 13, color: '#E8A87C', margin: '10px 0 0' }}>That didn't go through. Try again in a moment?</p>}
     </div>
@@ -256,6 +263,7 @@ function AcceptInvite({ invite }) {
   const [info, setInfo] = useState(null);
   const [error, setError] = useState('');
   const [joining, setJoining] = useState(false);
+  const [name, setName] = useState('');
 
   useEffect(() => {
     fetch(`/api/my-events?invite=${encodeURIComponent(invite)}`)
@@ -270,7 +278,7 @@ function AcceptInvite({ invite }) {
       const res = await fetch('/api/my-events', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ acceptInvite: invite }),
+        body: JSON.stringify({ acceptInvite: invite, displayName: name }),
       });
       const d = await res.json();
       if (d.error) { setError(d.error); setJoining(false); return; }
@@ -297,13 +305,17 @@ function AcceptInvite({ invite }) {
         Share the event list?
       </h1>
       <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.55)', lineHeight: 1.8, margin: '0 0 10px' }}>
-        <strong style={{ color: C.cream }}>{info.fromMasked}</strong> would like to share
+        <strong style={{ color: C.cream }}>{info.fromName ? `${info.fromName}, ${info.fromMasked}` : info.fromMasked}</strong> would like to share
         the {info.org ? <strong style={{ color: C.cream }}>{info.org}</strong> : 'business'} event list with you.
       </p>
       <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.55)', lineHeight: 1.8, margin: '0 0 24px' }}>
         You'd both see all {info.count} events, and either of you could fix a date, a time or a spelling on
         any of them. No more asking each other to make a change.
       </p>
+      <label style={{ display: 'block', fontSize: 11, fontWeight: 700, letterSpacing: 1.4, textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: 6 }}>
+        Your first name <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0, opacity: 0.7 }}>(so they know it's you)</span>
+      </label>
+      <input value={name} onChange={e => setName(e.target.value)} maxLength={40} placeholder="e.g. Allie" style={{ ...inp, marginBottom: 16 }} />
       <button onClick={accept} disabled={joining} style={{ ...btn, opacity: joining ? 0.6 : 1 }}>
         {joining ? 'Setting it up...' : 'Yes, share the list'}
       </button>
@@ -314,11 +326,61 @@ function AcceptInvite({ invite }) {
   );
 }
 
+// Only surfaced once a list is shared - on a solo list a display name has
+// nobody to be shown to, and would just be one more thing to fill in.
+function PostingAs({ phone, token, value, onSaved }) {
+  const [editing, setEditing] = useState(!value);
+  const [name, setName] = useState(value || '');
+  const [saving, setSaving] = useState(false);
+
+  const save = async () => {
+    setSaving(true);
+    try {
+      await fetch('/api/my-events', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone, token, displayName: name }),
+      });
+      onSaved(name.trim());
+      setEditing(false);
+    } finally { setSaving(false); }
+  };
+
+  if (!editing) {
+    return (
+      <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', marginBottom: 26 }}>
+        Posting as <strong style={{ color: C.cream }}>{value}</strong>
+        {' '}
+        <button onClick={() => setEditing(true)} style={{ background: 'none', border: 'none', color: C.sunsetLight, fontSize: 13, cursor: 'pointer', padding: 0, textDecoration: 'underline' }}>change</button>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ marginBottom: 26, padding: '16px 18px', borderRadius: 12, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)' }}>
+      <label style={{ display: 'block', fontSize: 11, fontWeight: 700, letterSpacing: 1.4, textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: 6 }}>
+        Your first name
+      </label>
+      <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.6, margin: '0 0 10px' }}>
+        Used when we let the others know you've added or cancelled something, so they see a name instead of a phone number.
+      </p>
+      <div style={{ display: 'flex', gap: 8 }}>
+        <input value={name} onChange={e => setName(e.target.value)} maxLength={40} placeholder="e.g. Sue" style={{ ...inp, flex: 1 }} />
+        <button onClick={save} disabled={saving} style={{ ...btn, width: 'auto', padding: '0 20px', opacity: saving ? 0.6 : 1 }}>
+          {saving ? '...' : 'Save'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ── The list itself ──
 function EventList({ phone, token }) {
   const [events, setEvents] = useState(null);
   const [others, setOthers] = useState([]);
   const [shared, setShared] = useState(false);
+  const [myName, setMyName] = useState('');
+  const [crew, setCrew] = useState([]);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -329,6 +391,8 @@ function EventList({ phone, token }) {
         setEvents(d.events || []);
         setOthers(d.otherNumbers || []);
         setShared(!!d.shared);
+        setMyName(d.displayName || '');
+        setCrew(d.crew || []);
       })
       .catch(() => setError(yeti.oops()));
   }, [phone, token]);
@@ -377,9 +441,13 @@ function EventList({ phone, token }) {
       </h1>
       <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.45)', lineHeight: 1.8, margin: '0 0 32px' }}>
         Tap any one to change the name, date, time, or anything else. Edits go live right away.
-        {shared ? ' This list is shared, so it includes everything your whole crew has posted.' : ''}
+        {shared ? ` This list is shared with ${crew.join(' and ') || 'your crew'}, so it has everything you've both posted.` : ''}
         {' '}Bookmark this page and you'll never have to hunt for a link again.
       </p>
+
+      {shared && (
+        <PostingAs phone={phone} token={token} value={myName} onSaved={setMyName} />
+      )}
 
       {upcoming.length === 0 && (
         <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.4)', marginBottom: 28 }}>
@@ -398,7 +466,7 @@ function EventList({ phone, token }) {
       )}
 
       {others.map((o, i) => (
-        <InviteToShareCard key={o.masked} phone={phone} token={token} index={i} other={o} />
+        <InviteToShareCard key={o.masked} phone={phone} token={token} index={i} other={o} myName={myName} />
       ))}
 
       <AddToHomeScreen />

@@ -245,7 +245,6 @@ export default async function handler(req, res) {
         await notifyLinkedOrganizers({
           fromPhone: digits,
           message: addedMessage({
-            fromPhone: digits,
             eventName: eventName.trim(),
             eventDate: date,
             orgName: organizerName?.trim(),
