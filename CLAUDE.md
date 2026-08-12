@@ -34,3 +34,10 @@ All other pages in this project use the standard Layout component and are not af
 ## Trail Partner Tier (wineries page)
 
 Paying trail partners get `partner: true` in wineries.js: top billing, Featured Trail Partner badge, glow border, logo, photos, profile link. Free trail listings render as compact one-line rows (intentional - the contrast sells the upgrade; upsell caption links to /featured). Gypsy Blue is the first paying partner (Aug 2026). When a winery pays, add the flag and move them up the array.
+
+## SMS Gotchas (learned 2026-08-11)
+
+- `sendSMS()` in `api/lib/twilio.js` normalizes any US phone format itself. Pass it raw values. Do NOT pre-format at the call site. It used to blindly prefix `+1`, and since `DARYL_PHONE` is stored E.164 every admin alert went to `+1+1XXXXXXXXXX` and failed silently for months.
+- Never fire-and-forget an SMS or email before returning from a Vercel function. The function is frozen the moment you return, so the send is a coin flip. `await` it, even in a "best effort" path.
+- Inbound texts to the Manitou number hit `api/sms-inbound.js`, which forwards to Daryl and auto-replies. If that endpoint 500s, organizers get silence.
+- Organizer edit tokens are per-event. `/my-events` is the front door: an organizer enters their phone and gets one texted magic link listing all of them. Send that, not individual edit links.
