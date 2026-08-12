@@ -317,8 +317,8 @@ export default function SubmitEventPage() {
                 <div style={{ fontSize: 14, fontWeight: 700, color: C.cream, marginBottom: 4 }}>Need to change something?</div>
                 <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>
                   {session
-                    ? 'Tap here to edit - and bookmark this link so you can come back anytime.'
-                    : 'We also emailed you an edit link. You can update your event anytime - no login needed.'}
+                    ? 'We texted and emailed you this link too - every event gets its own, so keep them handy.'
+                    : 'We also texted and emailed you an edit link. You can update your event anytime - no login needed.'}
                 </div>
               </a>
             )}

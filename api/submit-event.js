@@ -227,7 +227,17 @@ export default async function handler(req, res) {
         const prefix = modCheck.shouldHold ? '🚩 EVENT HELD:' : '⚠️ Flagged (live):';
         sms(process.env.DARYL_PHONE, `${prefix}\n${eventName.trim()}\n${organizerName || email}\nFlags: ${modCheck.flags.join('; ')}`).catch(() => {});
       }
-      // Send welcome email to organizer (session path - no SMS edit link sent)
+      // Text the edit link for THIS event. Every event gets its own token, so an
+      // organizer logging a whole month needs one link per event - not just the
+      // first one from verify-event.js.
+      if (editToken && !modCheck.shouldHold) {
+        const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
+        sendSMS(
+          digits,
+          `Manitou Beach Events\n\n${eventName.trim()} is live! 🎉\n\nEdit this event anytime:\n${siteUrl}/events/edit?token=${editToken}`
+        ).catch(() => {});
+      }
+      // Send welcome email to organizer
       if (editToken && email) {
         sendOrganizerWelcomeEmail({
           eventName: eventName.trim(),
