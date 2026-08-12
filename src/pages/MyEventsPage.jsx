@@ -247,7 +247,7 @@ function InviteToShareCard({ phone, token, index, other, myName }) {
         <label style={{ display: 'block', fontSize: 11, fontWeight: 700, letterSpacing: 1.4, textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: 6 }}>
           Your first name <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0, opacity: 0.7 }}>(so they know it's you)</span>
         </label>
-        <input value={name} onChange={e => setName(e.target.value)} maxLength={40} placeholder="e.g. Sue" style={{ ...inp, marginBottom: 12 }} />
+        <input value={name} onChange={e => setName(e.target.value)} maxLength={40} placeholder="Your name" style={{ ...inp, marginBottom: 12 }} />
         <button onClick={send} disabled={state === 'sending'} style={{ ...btn, background: 'rgba(255,255,255,0.09)', opacity: state === 'sending' ? 0.6 : 1 }}>
           {state === 'sending' ? 'Asking...' : `Share the list with ${other.name || other.masked}`}
         </button>
@@ -315,7 +315,7 @@ function AcceptInvite({ invite }) {
       <label style={{ display: 'block', fontSize: 11, fontWeight: 700, letterSpacing: 1.4, textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: 6 }}>
         Your first name <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0, opacity: 0.7 }}>(so they know it's you)</span>
       </label>
-      <input value={name} onChange={e => setName(e.target.value)} maxLength={40} placeholder="e.g. Allie" style={{ ...inp, marginBottom: 16 }} />
+      <input value={name} onChange={e => setName(e.target.value)} maxLength={40} placeholder="Your name" style={{ ...inp, marginBottom: 16 }} />
       <button onClick={accept} disabled={joining} style={{ ...btn, opacity: joining ? 0.6 : 1 }}>
         {joining ? 'Setting it up...' : 'Yes, share the list'}
       </button>
@@ -365,7 +365,7 @@ function PostingAs({ phone, token, value, onSaved }) {
         Used when we let the others know you've added or cancelled something, so they see a name instead of a phone number.
       </p>
       <div style={{ display: 'flex', gap: 8 }}>
-        <input value={name} onChange={e => setName(e.target.value)} maxLength={40} placeholder="e.g. Sue" style={{ ...inp, flex: 1 }} />
+        <input value={name} onChange={e => setName(e.target.value)} maxLength={40} placeholder="Your name" style={{ ...inp, flex: 1 }} />
         <button onClick={save} disabled={saving} style={{ ...btn, width: 'auto', padding: '0 20px', opacity: saving ? 0.6 : 1 }}>
           {saving ? '...' : 'Save'}
         </button>
