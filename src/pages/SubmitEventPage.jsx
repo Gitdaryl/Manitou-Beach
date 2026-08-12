@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Navbar, Footer } from '../components/Layout';
 import { C } from '../data/config';
 import yeti from '../data/errorMessages';
+import { dateBounds } from '../utils/dateSanity';
+import DateHint from '../components/DateHint';
 import { celebrate } from '../data/celebrate';
 
 const EVENT_TYPES = [
@@ -557,11 +559,13 @@ export default function SubmitEventPage() {
                   <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                     <div>
                       <label style={label}>Date *</label>
-                      <input style={input} type="date" value={form.date} onChange={set('date')} />
+                      <input style={input} type="date" value={form.date} onChange={set('date')} min={dateBounds().min} max={dateBounds().max} />
+                      <DateHint iso={form.date} />
                     </div>
                     <div>
                       <label style={label}>End Date <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>- if multi-day</span></label>
-                      <input style={input} type="date" value={form.dateEnd} onChange={set('dateEnd')} min={form.date || undefined} />
+                      <input style={input} type="date" value={form.dateEnd} onChange={set('dateEnd')} min={form.date || dateBounds().min} max={dateBounds().max} />
+                      <DateHint iso={form.dateEnd} />
                     </div>
                   </div>
                 ) : (
@@ -586,11 +590,13 @@ export default function SubmitEventPage() {
                     <div className="event-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                       <div>
                         <label style={label}>First date *</label>
-                        <input style={input} type="date" value={form.date} onChange={set('date')} />
+                        <input style={input} type="date" value={form.date} onChange={set('date')} min={dateBounds().min} max={dateBounds().max} />
+                        <DateHint iso={form.date} />
                       </div>
                       <div>
                         <label style={label}>Last date of series</label>
-                        <input style={input} type="date" value={form.recurringEndDate} onChange={set('recurringEndDate')} min={form.date || undefined} />
+                        <input style={input} type="date" value={form.recurringEndDate} onChange={set('recurringEndDate')} min={form.date || dateBounds().min} max={dateBounds().max} />
+                        <DateHint iso={form.recurringEndDate} />
                       </div>
                     </div>
                     <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)', lineHeight: 1.6, margin: 0 }}>

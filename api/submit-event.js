@@ -230,16 +230,18 @@ export default async function handler(req, res) {
       // Text the edit link for THIS event. Every event gets its own token, so an
       // organizer logging a whole month needs one link per event - not just the
       // first one from verify-event.js.
+      // These are awaited, not fire-and-forget: the serverless function is frozen
+      // the moment we return, so an un-awaited send is a coin flip.
       if (editToken && !modCheck.shouldHold) {
         const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
-        sendSMS(
+        await sendSMS(
           digits,
-          `Manitou Beach Events\n\n${eventName.trim()} is live! 🎉\n\nEdit this event anytime:\n${siteUrl}/events/edit?token=${editToken}`
-        ).catch(() => {});
+          `Manitou Beach Events\n\n${eventName.trim()} is live! 🎉\n\nEdit this event:\n${siteUrl}/events/edit?token=${editToken}\n\nAll your events: ${siteUrl}/my-events`
+        );
       }
       // Send welcome email to organizer
       if (editToken && email) {
-        sendOrganizerWelcomeEmail({
+        await sendOrganizerWelcomeEmail({
           eventName: eventName.trim(),
           email: email.trim(),
           editToken,

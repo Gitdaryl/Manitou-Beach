@@ -3,6 +3,8 @@ import { FadeIn, SectionTitle, SectionLabel, Btn } from '../components/Shared';
 import { C } from '../data/config';
 import { Footer, GlobalStyles, Navbar, compressImage } from '../components/Layout';
 import yeti from '../data/errorMessages';
+import DateHint from '../components/DateHint';
+import { dateBounds } from '../utils/dateSanity';
 import { celebrate } from '../data/celebrate';
 
 const EVENT_CATEGORIES = ["Live Music", "Food & Social", "Sports & Outdoors", "Community", "Arts & Culture", "Markets & Vendors", "Other"];
@@ -148,9 +150,10 @@ export default function EventEditPage() {
                 <div style={{ fontSize: 48, marginBottom: 16 }}>🔍</div>
                 <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, fontWeight: 400, color: C.cream, margin: "0 0 12px 0" }}>Hmm, can't find that one</h2>
                 <p style={{ fontSize: 15, color: "rgba(255,255,255,0.4)", lineHeight: 1.75, margin: "0 0 32px 0" }}>
-                  This link might be old or mistyped. Check your texts for the right one - we sent it when you submitted.
+                  This link might be old or mistyped. No bother - pop in your phone number and we'll text you a
+                  fresh link to every event you've added.
                 </p>
-                <Btn href="/events" variant="outlineLight">Back to Events</Btn>
+                <Btn href="/my-events" variant="sunset">Find My Events</Btn>
               </div>
             </FadeIn>
           </div>
@@ -247,7 +250,8 @@ export default function EventEditPage() {
                     </div>
                     <div>
                       <label style={labelStyle}>Date</label>
-                      <input type="date" value={form.date} onChange={e => set("date", e.target.value)} style={inputStyle} />
+                      <input type="date" value={form.date} onChange={e => set("date", e.target.value)} max={dateBounds().max} style={inputStyle} />
+                      <DateHint iso={form.date} />
                     </div>
                     <div />
                     <div>

@@ -56,6 +56,7 @@ const TicketServicesPage = lazy(() => import('./pages/TicketServicesPage'));
 const TicketSuccessPage = lazy(() => import('./pages/TicketSuccessPage'));
 const PartnerIntakePage = lazy(() => import('./pages/PartnerIntakePage'));
 const EventEditPage = lazy(() => import('./pages/EventEditPage'));
+const MyEventsPage = lazy(() => import('./pages/MyEventsPage'));
 const VendorRegisterPage = lazy(() => import('./pages/VendorRegisterPage'));
 const VendorPortalPage = lazy(() => import('./pages/VendorPortalPage'));
 const NightlifePage = lazy(() => import('./pages/NightlifePage'));
@@ -204,6 +205,7 @@ export default function App() {
           <Route path="/" element={<BetaGate><HomePage /></BetaGate>} />
           <Route path="/events" element={<HappeningPage />} />
           <Route path="/events/edit" element={<EventEditPage />} />
+          <Route path="/my-events" element={<MyEventsPage />} />
           <Route path="/events/:eventId" element={<EventDetailPage />} />
           <Route path="/happening/:eventId" element={<HappeningEventRedirect />} />
           <Route path="/happening" element={<Navigate to="/events" replace />} />

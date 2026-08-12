@@ -10,11 +10,21 @@ export function normalizePhone(raw) {
 }
 
 /**
- * Send an SMS to a 10-digit US phone number (adds +1 prefix).
- * Returns true on success, false on failure. Never throws.
+ * Send an SMS to a US phone number in any format - "5174350130",
+ * "(517) 435-0130", "+15174350130" all work. Returns true on success,
+ * false on failure. Never throws.
+ *
+ * Normalizing here rather than at the call site is deliberate: callers were
+ * passing E.164 values straight through (DARYL_PHONE is stored as +1XXXXXXXXXX),
+ * which produced "+1+1XXXXXXXXXX" and silently failed every admin alert.
  */
 export async function sendSMS(toDigits, body) {
-  return sendSMSFull(`+1${toDigits}`, body);
+  const digits = normalizePhone(toDigits);
+  if (digits.length !== 10) {
+    console.error(`twilio.js: refusing to send - "${toDigits}" is not a US number`);
+    return false;
+  }
+  return sendSMSFull(`+1${digits}`, body);
 }
 
 /**
