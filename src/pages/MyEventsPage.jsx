@@ -206,15 +206,60 @@ function AskForPhone() {
   );
 }
 
+// When two people at one business post events, each phone only sees its own.
+// Rather than merging (see the note in api/my-events.js - email isn't verified,
+// so merging would hand out edit links), we offer to text the other phone.
+function OtherPersonCard({ phone, token, index, other }) {
+  const [state, setState] = useState('idle'); // idle | sending | sent | error
+
+  const send = async () => {
+    setState('sending');
+    try {
+      const res = await fetch('/api/my-events', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone, token, sendTo: index }),
+      });
+      const d = await res.json();
+      setState(d.error ? 'error' : 'sent');
+    } catch { setState('error'); }
+  };
+
+  return (
+    <div style={{ marginTop: 28, padding: '20px 22px', borderRadius: 14, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)' }}>
+      <div style={{ fontSize: 16, fontWeight: 700, color: C.cream, marginBottom: 8 }}>
+        {other.count} more {other.count === 1 ? 'event was' : 'events were'} added from another number
+      </div>
+      <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, margin: '0 0 14px' }}>
+        Someone else at your business posts events too, from <strong>{other.masked}</strong>. Those stay on
+        their phone, not yours. We can text them their own list so you each manage what you added.
+      </p>
+      {state === 'sent' ? (
+        <p style={{ fontSize: 14, color: C.sage, fontWeight: 600, margin: 0 }}>Sent to {other.masked}.</p>
+      ) : (
+        <button onClick={send} disabled={state === 'sending'} style={{ ...btn, background: 'rgba(255,255,255,0.09)', opacity: state === 'sending' ? 0.6 : 1 }}>
+          {state === 'sending' ? 'Sending...' : `Text their list to ${other.masked}`}
+        </button>
+      )}
+      {state === 'error' && <p style={{ fontSize: 13, color: '#E8A87C', margin: '10px 0 0' }}>That didn't go through. Try again in a moment?</p>}
+    </div>
+  );
+}
+
 // ── The list itself ──
 function EventList({ phone, token }) {
   const [events, setEvents] = useState(null);
+  const [others, setOthers] = useState([]);
   const [error, setError] = useState('');
 
   useEffect(() => {
     fetch(`/api/my-events?phone=${encodeURIComponent(phone)}&token=${encodeURIComponent(token)}`)
       .then(r => r.json())
-      .then(d => (d.error ? setError(d.error) : setEvents(d.events || [])))
+      .then(d => {
+        if (d.error) return setError(d.error);
+        setEvents(d.events || []);
+        setOthers(d.otherNumbers || []);
+      })
       .catch(() => setError(yeti.oops()));
   }, [phone, token]);
 
@@ -280,6 +325,10 @@ function EventList({ phone, token }) {
           {past.slice().reverse().map(e => <Card key={e.id} e={e} dim />)}
         </>
       )}
+
+      {others.map((o, i) => (
+        <OtherPersonCard key={o.masked} phone={phone} token={token} index={i} other={o} />
+      ))}
 
       <AddToHomeScreen />
 

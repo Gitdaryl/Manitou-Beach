@@ -81,6 +81,43 @@ function eventsForPhone(pages, digits) {
     .sort((a, b) => (a.date || '').localeCompare(b.date || ''));
 }
 
+function orgNameFor(pages, digits) {
+  const page = pages.find(p => normalizePhone(p.properties['Phone']?.phone_number || '') === digits);
+  return (page?.properties['Organizer Name']?.rich_text || []).map(x => x.plain_text).join('') || '';
+}
+
+// A business often has more than one person posting - at Gypsy Blue the owner
+// and her daughter both submit, under their own phones. Each phone only ever
+// sees what it submitted, which looks like half the calendar went missing.
+//
+// We do NOT merge them automatically. Email isn't verified at submission, so
+// anyone who typed a business's address into the form could then look up their
+// own phone and walk away with edit links for that whole business. Instead we
+// notice the other number and offer to text IT - the link only ever lands on
+// the phone already on the record, so there's nothing to escalate.
+function otherNumbersFor(pages, digits) {
+  const emailOf = p => (p.properties['Email']?.email || '').trim().toLowerCase();
+  const myEmails = new Set(
+    pages
+      .filter(p => normalizePhone(p.properties['Phone']?.phone_number || '') === digits)
+      .map(emailOf)
+      .filter(Boolean)
+  );
+  if (myEmails.size === 0) return [];
+
+  const counts = new Map();
+  for (const p of pages) {
+    const phone = normalizePhone(p.properties['Phone']?.phone_number || '');
+    if (phone.length !== 10 || phone === digits) continue;
+    if (!myEmails.has(emailOf(p))) continue;
+    counts.set(phone, (counts.get(phone) || 0) + 1);
+  }
+
+  return [...counts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map(([phone, count]) => ({ phone, count, masked: `(${phone.slice(0, 3)}) •••-${phone.slice(6)}` }));
+}
+
 export default async function handler(req, res) {
   const siteUrl = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
 
@@ -89,6 +126,32 @@ export default async function handler(req, res) {
     const digits = normalizePhone((req.body || {}).phone);
     if (digits.length !== 10) {
       return res.status(400).json({ error: 'Pop in the phone number you used when you added your events.' });
+    }
+
+    // ── SEND A LINK TO THE OTHER PERSON AT THIS BUSINESS ──
+    // The target is recomputed server-side from the caller's own verified
+    // events. A client-supplied phone number is never used as the destination.
+    const { token, sendTo } = req.body || {};
+    if (sendTo !== undefined) {
+      if (!validToken(digits, token)) {
+        return res.status(403).json({ error: 'This link has expired. Request a fresh one and we\'ll text it over.' });
+      }
+      try {
+        const pages = await fetchAllEvents();
+        const target = otherNumbersFor(pages, digits)[Number(sendTo)];
+        if (!target) return res.status(404).json({ error: 'We couldn\'t find that number anymore.' });
+
+        const org = orgNameFor(pages, digits);
+        const link = `${siteUrl}/my-events?phone=${target.phone}&token=${makeToken(target.phone)}`;
+        const sent = await sendSMS(
+          target.phone,
+          `Manitou Beach Events\n\nSomeone at ${org || 'your business'} asked us to send you your event list (${target.count}):\n${link}\n\nTap to edit any of them, or add it to your home screen.`
+        );
+        return res.status(200).json({ ok: true, sent, masked: target.masked });
+      } catch (err) {
+        console.error('my-events sendTo error:', err.message);
+        return res.status(500).json({ error: 'Something went wrong on our end. Give it another go?' });
+      }
     }
 
     try {
@@ -118,7 +181,12 @@ export default async function handler(req, res) {
     }
 
     try {
-      return res.status(200).json({ events: eventsForPhone(await fetchAllEvents(), digits) });
+      const pages = await fetchAllEvents();
+      return res.status(200).json({
+        events: eventsForPhone(pages, digits),
+        // Masked only - the raw number never leaves the server.
+        otherNumbers: otherNumbersFor(pages, digits).map(({ masked, count }) => ({ masked, count })),
+      });
     } catch (err) {
       console.error('my-events GET error:', err.message);
       return res.status(500).json({ error: 'Something went wrong on our end.' });
