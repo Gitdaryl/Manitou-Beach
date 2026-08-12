@@ -74,7 +74,7 @@ export default async function handler(req, res) {
 
   // POST - update event fields by token
   if (req.method === 'POST') {
-    const { token, time, timeEnd, location, description, cost, eventUrl, imageUrl, attendance, date, lifecycle, changeNote } = req.body;
+    const { token, name, time, timeEnd, location, description, cost, eventUrl, imageUrl, attendance, date, lifecycle, changeNote } = req.body;
     if (!token) return res.status(400).json({ error: 'Token required' });
 
     try {
@@ -82,6 +82,11 @@ export default async function handler(req, res) {
       if (!page) return res.status(404).json({ error: 'Event not found or token invalid' });
 
       const properties = { 'Updated': { checkbox: true } };
+      // Organizers misspell performer names in the title more than anything else,
+      // so the name has to be editable. Ignore blanks - never wipe the title.
+      if (typeof name === 'string' && name.trim()) {
+        properties['Event Name'] = { title: [{ text: { content: name.trim().slice(0, 200) } }] };
+      }
       // Lifecycle = organizer-controlled status (Active / Postponed / Cancelled).
       // Tracked separately from the moderation Status so it never affects approval state.
       const LIFECYCLE_VALUES = ['Active', 'Paused', 'Postponed', 'Cancelled'];

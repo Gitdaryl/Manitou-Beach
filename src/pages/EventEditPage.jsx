@@ -241,6 +241,10 @@ export default function EventEditPage() {
                   </div>
 
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+                    <div style={{ gridColumn: "1 / -1" }}>
+                      <label style={labelStyle}>Event Name</label>
+                      <input value={form.name} onChange={e => set("name", e.target.value)} maxLength={200} placeholder="e.g. Al Wolfrum live!" style={inputStyle} />
+                    </div>
                     <div>
                       <label style={labelStyle}>Date</label>
                       <input type="date" value={form.date} onChange={e => set("date", e.target.value)} style={inputStyle} />
