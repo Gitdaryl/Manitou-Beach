@@ -206,10 +206,12 @@ function AskForPhone() {
   );
 }
 
-// When two people at one business post events, each phone only sees its own.
-// Rather than merging (see the note in api/my-events.js - email isn't verified,
-// so merging would hand out edit links), we offer to text the other phone.
-function OtherPersonCard({ phone, token, index, other }) {
+// When two people at one business post events, each phone only sees its own,
+// and the one who spots a typo in the other's event can't find it at all.
+// Sharing is by invitation because email isn't verified at submission - see
+// the note in api/my-events.js. The invite only ever goes to a phone already
+// on the records, and they have to accept it on that phone.
+function InviteToShareCard({ phone, token, index, other }) {
   const [state, setState] = useState('idle'); // idle | sending | sent | error
 
   const send = async () => {
@@ -218,7 +220,7 @@ function OtherPersonCard({ phone, token, index, other }) {
       const res = await fetch('/api/my-events', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, token, sendTo: index }),
+        body: JSON.stringify({ phone, token, invite: index }),
       });
       const d = await res.json();
       setState(d.error ? 'error' : 'sent');
@@ -231,17 +233,83 @@ function OtherPersonCard({ phone, token, index, other }) {
         {other.count} more {other.count === 1 ? 'event was' : 'events were'} added from another number
       </div>
       <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, margin: '0 0 14px' }}>
-        Someone else at your business posts events too, from <strong>{other.masked}</strong>. Those stay on
-        their phone, not yours. We can text them their own list so you each manage what you added.
+        Someone else at your business posts events too, from <strong>{other.masked}</strong>. Share the list
+        and you'll both see everything here, and either of you can fix a date or a spelling without having to
+        ask the other. We'll text them to check it's alright first.
       </p>
       {state === 'sent' ? (
-        <p style={{ fontSize: 14, color: C.sage, fontWeight: 600, margin: 0 }}>Sent to {other.masked}.</p>
+        <p style={{ fontSize: 14, color: C.sage, fontWeight: 600, margin: 0 }}>
+          Asked {other.masked}. As soon as they tap accept, their events show up here.
+        </p>
       ) : (
         <button onClick={send} disabled={state === 'sending'} style={{ ...btn, background: 'rgba(255,255,255,0.09)', opacity: state === 'sending' ? 0.6 : 1 }}>
-          {state === 'sending' ? 'Sending...' : `Text their list to ${other.masked}`}
+          {state === 'sending' ? 'Asking...' : `Share the list with ${other.masked}`}
         </button>
       )}
       {state === 'error' && <p style={{ fontSize: 13, color: '#E8A87C', margin: '10px 0 0' }}>That didn't go through. Try again in a moment?</p>}
+    </div>
+  );
+}
+
+// The other end of the invite: they tapped the link in their text.
+function AcceptInvite({ invite }) {
+  const [info, setInfo] = useState(null);
+  const [error, setError] = useState('');
+  const [joining, setJoining] = useState(false);
+
+  useEffect(() => {
+    fetch(`/api/my-events?invite=${encodeURIComponent(invite)}`)
+      .then(r => r.json())
+      .then(d => (d.error ? setError(d.error) : setInfo(d.invite)))
+      .catch(() => setError(yeti.oops()));
+  }, [invite]);
+
+  const accept = async () => {
+    setJoining(true);
+    try {
+      const res = await fetch('/api/my-events', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ acceptInvite: invite }),
+      });
+      const d = await res.json();
+      if (d.error) { setError(d.error); setJoining(false); return; }
+      window.location.href = `/my-events?phone=${encodeURIComponent(d.phone)}&token=${encodeURIComponent(d.token)}`;
+    } catch { setError(yeti.oops()); setJoining(false); }
+  };
+
+  if (error) {
+    return (
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ fontSize: 44, marginBottom: 14 }}>🔑</div>
+        <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, fontWeight: 400, color: C.cream, margin: '0 0 12px' }}>{error}</h2>
+        <a href="/my-events" style={{ color: C.sunsetLight, fontSize: 15 }}>Find my events →</a>
+      </div>
+    );
+  }
+  if (!info) {
+    return <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.3)', fontSize: 14, padding: '40px 0' }}>One moment...</div>;
+  }
+
+  return (
+    <div>
+      <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, fontWeight: 400, color: C.cream, margin: '0 0 14px' }}>
+        Share the event list?
+      </h1>
+      <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.55)', lineHeight: 1.8, margin: '0 0 10px' }}>
+        <strong style={{ color: C.cream }}>{info.fromMasked}</strong> would like to share
+        the {info.org ? <strong style={{ color: C.cream }}>{info.org}</strong> : 'business'} event list with you.
+      </p>
+      <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.55)', lineHeight: 1.8, margin: '0 0 24px' }}>
+        You'd both see all {info.count} events, and either of you could fix a date, a time or a spelling on
+        any of them. No more asking each other to make a change.
+      </p>
+      <button onClick={accept} disabled={joining} style={{ ...btn, opacity: joining ? 0.6 : 1 }}>
+        {joining ? 'Setting it up...' : 'Yes, share the list'}
+      </button>
+      <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)', lineHeight: 1.7, margin: '18px 0 0', textAlign: 'center' }}>
+        Don't recognise that number? Close this page and nothing happens.
+      </p>
     </div>
   );
 }
@@ -250,6 +318,7 @@ function OtherPersonCard({ phone, token, index, other }) {
 function EventList({ phone, token }) {
   const [events, setEvents] = useState(null);
   const [others, setOthers] = useState([]);
+  const [shared, setShared] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -259,6 +328,7 @@ function EventList({ phone, token }) {
         if (d.error) return setError(d.error);
         setEvents(d.events || []);
         setOthers(d.otherNumbers || []);
+        setShared(!!d.shared);
       })
       .catch(() => setError(yeti.oops()));
   }, [phone, token]);
@@ -307,7 +377,8 @@ function EventList({ phone, token }) {
       </h1>
       <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.45)', lineHeight: 1.8, margin: '0 0 32px' }}>
         Tap any one to change the name, date, time, or anything else. Edits go live right away.
-        Bookmark this page and you'll never have to hunt for a link again.
+        {shared ? ' This list is shared, so it includes everything your whole crew has posted.' : ''}
+        {' '}Bookmark this page and you'll never have to hunt for a link again.
       </p>
 
       {upcoming.length === 0 && (
@@ -327,7 +398,7 @@ function EventList({ phone, token }) {
       )}
 
       {others.map((o, i) => (
-        <OtherPersonCard key={o.masked} phone={phone} token={token} index={i} other={o} />
+        <InviteToShareCard key={o.masked} phone={phone} token={token} index={i} other={o} />
       ))}
 
       <AddToHomeScreen />
@@ -343,6 +414,7 @@ export default function MyEventsPage() {
   const params = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
   const phone = params.get('phone');
   const token = params.get('token');
+  const invite = params.get('invite');
 
   useInstallable(phone, token);
 
@@ -352,7 +424,11 @@ export default function MyEventsPage() {
       <Navbar />
       <main style={{ minHeight: '100vh', background: C.night, padding: '90px 24px 120px' }}>
         <div style={{ maxWidth: 560, margin: '0 auto' }}>
-          {phone && token ? <EventList phone={phone} token={token} /> : <AskForPhone />}
+          {invite
+            ? <AcceptInvite invite={invite} />
+            : phone && token
+              ? <EventList phone={phone} token={token} />
+              : <AskForPhone />}
         </div>
       </main>
       <Footer />
