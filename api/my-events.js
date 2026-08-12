@@ -12,7 +12,9 @@
 import crypto from 'crypto';
 import { sendSMS, normalizePhone } from './lib/twilio.js';
 
-const TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days - organizers plan a season ahead
+// A year, not a month: this link becomes a home screen icon, and an icon that
+// dies after 30 days is worse than no icon at all.
+const TTL_MS = 365 * 24 * 60 * 60 * 1000;
 
 function sign(phone, exp) {
   return crypto
@@ -98,7 +100,7 @@ export default async function handler(req, res) {
       const link = `${siteUrl}/my-events?phone=${digits}&token=${makeToken(digits)}`;
       const sent = await sendSMS(
         digits,
-        `Manitou Beach Events\n\nHere's everything you've got on the calendar (${mine.length}):\n${link}\n\nTap to edit any of them. This link keeps working, so hang onto it.`
+        `Manitou Beach Events\n\nHere's everything you've got on the calendar (${mine.length}):\n${link}\n\nTap to edit any of them, or add it to your home screen for one-tap access.`
       );
 
       return res.status(200).json({ ok: true, found: true, sent, count: mine.length });
