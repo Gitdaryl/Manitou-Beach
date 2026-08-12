@@ -14,32 +14,7 @@
 
 import crypto from 'crypto';
 import { sendSMS, normalizePhone } from './lib/twilio.js';
-import { linkedPhones, linkPhones } from './lib/organizer-links.js';
-
-// A year, not a month: this link becomes a home screen icon, and an icon that
-// dies after 30 days is worse than no icon at all.
-const TTL_MS = 365 * 24 * 60 * 60 * 1000;
-
-function sign(phone, exp) {
-  return crypto
-    .createHmac('sha256', process.env.NOTION_TOKEN_EVENTS)
-    .update(`my-events:${phone}:${exp}`)
-    .digest('hex');
-}
-
-function makeToken(phone) {
-  const exp = Date.now() + TTL_MS;
-  return `${exp}.${sign(phone, exp)}`;
-}
-
-function validToken(phone, token) {
-  const [expStr, sig] = String(token || '').split('.');
-  const exp = Number(expStr);
-  if (!exp || !sig || Date.now() > exp) return false;
-  const expected = sign(phone, exp);
-  if (sig.length !== expected.length) return false;
-  return crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(expected));
-}
+import { linkedPhones, linkPhones, makeToken, validToken } from './lib/organizer-links.js';
 
 const INVITE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 

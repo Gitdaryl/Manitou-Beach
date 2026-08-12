@@ -16,9 +16,40 @@
 // returns pathnames fresh. Contents are deliberately empty - anyone who could
 // guess the pathname already knows both numbers.
 
+import crypto from 'crypto';
 import { list, put } from '@vercel/blob';
 
 const PREFIX = 'organizer-links/';
+const NOTICE_PREFIX = 'organizer-notices/';
+
+// One heads-up per submitting session, not one per event. An organizer logging
+// a month of gigs in one sitting must not fire a dozen texts at their partner.
+const NOTICE_COOLDOWN_MS = 2 * 60 * 60 * 1000;
+
+// A year, not a month: this link becomes a home screen icon, and an icon that
+// dies after 30 days is worse than no icon at all.
+const TTL_MS = 365 * 24 * 60 * 60 * 1000;
+
+function sign(phone, exp) {
+  return crypto
+    .createHmac('sha256', process.env.NOTION_TOKEN_EVENTS)
+    .update(`my-events:${phone}:${exp}`)
+    .digest('hex');
+}
+
+export function makeToken(phone) {
+  const exp = Date.now() + TTL_MS;
+  return `${exp}.${sign(phone, exp)}`;
+}
+
+export function validToken(phone, token) {
+  const [expStr, sig] = String(token || '').split('.');
+  const exp = Number(expStr);
+  if (!exp || !sig || Date.now() > exp) return false;
+  const expected = sign(phone, exp);
+  if (sig.length !== expected.length) return false;
+  return crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(expected));
+}
 
 function pathFor(a, b) {
   const [x, y] = [a, b].sort();
@@ -58,6 +89,34 @@ export async function linkedPhones(digits) {
 
 export async function linkPhones(a, b) {
   await put(pathFor(a, b), '{}', {
+    access: 'public',
+    contentType: 'application/json',
+    addRandomSuffix: false,
+    allowOverwrite: true,
+  });
+}
+
+// Blob's own uploadedAt is the timestamp - no need to encode one in the
+// pathname, and list() returns fresh metadata even though content reads are
+// CDN cached.
+function noticePath(from, to) {
+  return `${NOTICE_PREFIX}${from}_${to}.json`;
+}
+
+export async function recentlyNotified(from, to) {
+  try {
+    const { blobs } = await list({ prefix: noticePath(from, to), limit: 1 });
+    if (!blobs.length) return false;
+    return Date.now() - new Date(blobs[0].uploadedAt).getTime() < NOTICE_COOLDOWN_MS;
+  } catch (err) {
+    // If we can't tell, stay quiet. A missed heads-up beats a text storm.
+    console.error('organizer-links: notice check failed -', err.message);
+    return true;
+  }
+}
+
+export async function markNotified(from, to) {
+  await put(noticePath(from, to), '{}', {
     access: 'public',
     contentType: 'application/json',
     addRandomSuffix: false,

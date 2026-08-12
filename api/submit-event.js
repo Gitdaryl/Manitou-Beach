@@ -10,6 +10,7 @@
 
 import crypto from 'crypto';
 import { sendSMS, normalizePhone } from './lib/twilio.js';
+import { notifyLinkedOrganizers } from './lib/organizer-notify.js';
 import { Resend } from 'resend';
 
 function generateCode() {
@@ -238,6 +239,15 @@ export default async function handler(req, res) {
           digits,
           `Manitou Beach Events\n\n${eventName.trim()} is live! 🎉\n\nEdit this event:\n${siteUrl}/events/edit?token=${editToken}\n\nAll your events: ${siteUrl}/my-events`
         );
+      }
+      // Let anyone sharing this calendar know, so they don't post it twice.
+      if (!modCheck.shouldHold) {
+        await notifyLinkedOrganizers({
+          fromPhone: digits,
+          eventName: eventName.trim(),
+          eventDate: date,
+          orgName: organizerName?.trim(),
+        });
       }
       // Send welcome email to organizer
       if (editToken && email) {
