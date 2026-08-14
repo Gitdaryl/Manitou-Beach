@@ -36,14 +36,27 @@ export function isAdminAuthorized(req) {
   return timingSafeEqual(token, secret);
 }
 
+// Heartbeat recording lives here because this is the one place every scheduled
+// job passes through, so all 18 crons get observability from a single hook
+// instead of 18 edits. recordFromRequest() is synchronous and swallows all
+// errors by contract, so these functions still return a plain boolean and a KV
+// outage cannot affect authorization. See cronHeartbeat.js for why that matters.
+import { recordFromRequest } from './cronHeartbeat.js';
+
 export function requireCron(req, res) {
-  if (isCronAuthorized(req)) return true;
+  if (isCronAuthorized(req)) {
+    recordFromRequest(req);
+    return true;
+  }
   res.status(401).json({ error: 'Unauthorized' });
   return false;
 }
 
 export function requireCronOrAdmin(req, res) {
-  if (isCronAuthorized(req) || isAdminAuthorized(req)) return true;
+  if (isCronAuthorized(req) || isAdminAuthorized(req)) {
+    recordFromRequest(req);
+    return true;
+  }
   res.status(401).json({ error: 'Unauthorized' });
   return false;
 }
