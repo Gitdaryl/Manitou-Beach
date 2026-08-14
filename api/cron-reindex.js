@@ -17,8 +17,14 @@
 // ============================================================
 
 import { requireCronOrAdmin } from './lib/cronAuth.js';
-import { indexAll } from './lib/corpus.js';
+import { indexAll, indexSource, SOURCES } from './lib/corpus.js';
 import { EMBEDDINGS_READY } from './lib/embeddings.js';
+
+// Seven databases, full pagination, embedding batches. This runs long and the
+// platform default would kill it partway. Shards are written per source as each
+// finishes, so even a timeout leaves completed sources indexed rather than
+// losing the whole run.
+export const config = { maxDuration: 300 };
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
@@ -36,7 +42,23 @@ export default async function handler(req, res) {
   }
 
   const started = Date.now();
+
+  // ?source=businesses indexes one source only. Useful for retrying a single
+  // database after a timeout, and for testing without rebuilding everything.
+  const only = (req.query?.source || '').toString().trim();
+
   try {
+    if (only) {
+      const source = SOURCES.find((s) => s.key === only);
+      if (!source) {
+        return res.status(400).json({ ok: false, error: `unknown source: ${only}`, valid: SOURCES.map((s) => s.key) });
+      }
+      const result = await indexSource(source);
+      const seconds = Math.round((Date.now() - started) / 100) / 10;
+      console.log(`[cron-reindex] ${only}:`, JSON.stringify(result));
+      return res.status(200).json({ ok: !result.error, seconds, results: [result] });
+    }
+
     const { total, results } = await indexAll();
     const seconds = Math.round((Date.now() - started) / 100) / 10;
     console.log(`[cron-reindex] ${total} passages in ${seconds}s`, JSON.stringify(results));
