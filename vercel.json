@@ -60,6 +60,7 @@
     { "path": "/api/cron-new-listing",       "schedule": "0 14 * * *" },
     { "path": "/api/cron-profile-report-card", "schedule": "0 14 1 * *" },
     { "path": "/api/cron-outreach-resolve",    "schedule": "0 9 * * *" },
-    { "path": "/api/sync-ical",                "schedule": "0 5 * * *" }
+    { "path": "/api/sync-ical",                "schedule": "0 5 * * *" },
+    { "path": "/api/cron-reindex",             "schedule": "0 4 * * *" }
   ]
 }
