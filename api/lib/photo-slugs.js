@@ -8,6 +8,7 @@
 // ============================================================
 
 export const GALLERY_SLUGS = new Set([
+  'auto-show-2026',
   'mens-club',
   'america-250',
   'ladies-club',

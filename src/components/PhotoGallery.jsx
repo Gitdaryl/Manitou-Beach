@@ -115,7 +115,7 @@ const NAV_BTN = { position: 'absolute', top: '50%', transform: 'translateY(-50%)
  *   onClose   : () => void
  *   shareUrl  : shareable deep link for the current photo
  */
-export function Lightbox({ photos, index, setIndex, onClose, title, shareUrl, shareText, onReport, reactions, onHeart }) {
+export function Lightbox({ photos, index, setIndex, onClose, title, shareUrl, shareText, onReport, onIdentify, reactions, onHeart }) {
   const n = photos.length;
   const cur = reactions ? reactions[photos[index]] : null;
   const [reported, setReported] = useState(!!cur?.flagged);
@@ -301,10 +301,92 @@ export function Lightbox({ photos, index, setIndex, onClose, title, shareUrl, sh
         {title} · {index + 1} / {n}
       </div>
 
+      {/* "Know this car?" — only where onIdentify is supplied. The photos went up
+          unlabelled because the paper entry forms were unreadable, so the people
+          who own the cars label them for us. */}
+      {onIdentify && (
+        <div onClick={(e) => e.stopPropagation()} style={{ position: 'absolute', bottom: 72, left: 0, right: 0, display: 'flex', justifyContent: 'center', padding: '0 16px', zIndex: 3 }}>
+          <IdentifyCar onIdentify={onIdentify} key={index} />
+        </div>
+      )}
+
       <div style={{ position: 'absolute', bottom: 22, left: 0, right: 0, display: 'flex', justifyContent: 'center', padding: '0 16px', zIndex: 2 }}>
         <ShareRow url={shareUrl} title={title} text={shareText} />
       </div>
     </div>
+  );
+}
+
+/**
+ * IdentifyCar — collapsed chip that opens a three-field form over the lightbox.
+ * Deliberately tiny: one required field, everything else optional. Asking a
+ * 70-year-old with a Chevelle to make an account would end the conversation.
+ */
+function IdentifyCar({ onIdentify }) {
+  const [open, setOpen] = useState(false);
+  const [car, setCar] = useState('');
+  const [owner, setOwner] = useState('');
+  const [contact, setContact] = useState('');
+  const [hp, setHp] = useState('');
+  const [state, setState] = useState('idle'); // idle | saving | done | error
+  const [err, setErr] = useState('');
+
+  const submit = async (ev) => {
+    ev.preventDefault();
+    if (!car.trim() || state === 'saving') return;
+    setState('saving'); setErr('');
+    try {
+      const r = await onIdentify({ car, owner, contact, _hp: hp });
+      if (r?.success) { setState('done'); }
+      else { setState('error'); setErr(r?.error || 'That did not save. Try again?'); }
+    } catch {
+      setState('error'); setErr('That did not save. Try again?');
+    }
+  };
+
+  if (state === 'done') {
+    return (
+      <div style={{ background: 'rgba(16,26,34,0.97)', border: '1px solid rgba(255,255,255,0.16)', borderRadius: 12, padding: '12px 16px', color: '#fff', fontSize: 13.5, fontFamily: "'Libre Franklin', sans-serif", maxWidth: 420, textAlign: 'center' }}>
+        Thank you. That is one more car we can put a name to next year.
+      </div>
+    );
+  }
+
+  if (!open) {
+    return (
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        style={{ background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: 18, height: 36, padding: '0 18px', cursor: 'pointer', color: 'rgba(255,255,255,0.9)', fontSize: 13, fontFamily: "'Libre Franklin', sans-serif" }}
+      >
+        Know this car?
+      </button>
+    );
+  }
+
+  const field = {
+    width: '100%', boxSizing: 'border-box', background: 'rgba(255,255,255,0.08)',
+    border: '1px solid rgba(255,255,255,0.18)', borderRadius: 8, color: '#fff',
+    fontSize: 14, padding: '9px 11px', marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif",
+  };
+
+  return (
+    <form onSubmit={submit} style={{ background: 'rgba(16,26,34,0.97)', border: '1px solid rgba(255,255,255,0.16)', borderRadius: 12, padding: 14, width: 'min(420px, 100%)', boxShadow: '0 8px 28px rgba(0,0,0,0.45)' }}>
+      <div style={{ color: '#fff', fontSize: 13.5, fontWeight: 600, marginBottom: 10, fontFamily: "'Libre Franklin', sans-serif" }}>
+        What is it, and whose is it?
+      </div>
+      <input style={field} value={car} onChange={(e) => setCar(e.target.value)} placeholder="Year, make and model (e.g. 1969 Camaro SS)" autoFocus maxLength={160} />
+      <input style={field} value={owner} onChange={(e) => setOwner(e.target.value)} placeholder="Owner's name (optional)" maxLength={120} />
+      <input style={field} value={contact} onChange={(e) => setContact(e.target.value)} placeholder="Email or phone, for next year's sign-up (optional)" maxLength={160} />
+      <input tabIndex={-1} autoComplete="off" value={hp} onChange={(e) => setHp(e.target.value)} style={{ position: 'absolute', left: -9999, width: 1, height: 1 }} aria-hidden="true" />
+      {err && <div style={{ color: '#ff9d9d', fontSize: 12.5, marginBottom: 8 }}>{err}</div>}
+      <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+        <button type="button" onClick={() => setOpen(false)} style={{ background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.55)', fontSize: 13, cursor: 'pointer', padding: '8px 10px', fontFamily: "'Libre Franklin', sans-serif" }}>Cancel</button>
+        <button type="submit" disabled={!car.trim() || state === 'saving'} style={{ background: car.trim() ? '#e0a32b' : 'rgba(255,255,255,0.15)', border: 'none', borderRadius: 8, color: car.trim() ? '#1b1a18' : 'rgba(255,255,255,0.5)', fontSize: 13.5, fontWeight: 700, padding: '9px 16px', cursor: car.trim() ? 'pointer' : 'default', fontFamily: "'Libre Franklin', sans-serif" }}>
+          {state === 'saving' ? 'Sending…' : 'Send it'}
+        </button>
+      </div>
+    </form>
   );
 }
 
@@ -315,7 +397,7 @@ export function Lightbox({ photos, index, setIndex, onClose, title, shareUrl, sh
  *   title     : gallery title
  *   shareText : optional custom share message
  */
-export function PhotoGallery({ photos, slug, title, shareText, thumbOf = thumbSrc, onReport, reactions, onHeart, urlSync = true, shareKeyOf }) {
+export function PhotoGallery({ photos, slug, title, shareText, thumbOf = thumbSrc, onReport, onIdentify, reactions, onHeart, urlSync = true, shareKeyOf }) {
   const [searchParams, setSearchParams] = useSearchParams();
   // Stable share key per photo. Curated photos use their 1-based position (files
   // never reorder); crowd photos pass shareKeyOf to use the photo's KV id, so a
@@ -400,6 +482,7 @@ export function PhotoGallery({ photos, slug, title, shareText, thumbOf = thumbSr
           shareUrl={shareUrl}
           shareText={shareText}
           onReport={onReport ? (reason) => onReport(photos[index], reason) : undefined}
+          onIdentify={onIdentify ? (fields) => onIdentify({ ...fields, photo: photos[index], photoKey: keyFor(index) }) : undefined}
           reactions={reactions}
           onHeart={onHeart ? () => onHeart(photos[index]) : undefined}
         />

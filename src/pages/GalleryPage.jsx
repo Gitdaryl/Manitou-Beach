@@ -33,6 +33,19 @@ export default function GalleryPage() {
   }
 
   const photos = galleryPhotos(g);
+
+  // "Know this car?" — galleries whose photos went up unlabelled let visitors
+  // name what they are looking at. Returns the API's JSON so the form can show
+  // a real message instead of a generic failure.
+  const identify = async (fields) => {
+    const r = await fetch('/api/car-identify', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ slug, ...fields }),
+    });
+    return r.json().catch(() => ({ error: 'That did not save. Please try again.' }));
+  };
+
   // Curated galleries preview their first photo; crowd galleries use their cover.
   const ogImage = g.folder && g.prefix && g.count > 0 ? `${g.folder}/${g.prefix}-01.jpg` : galleryCover(g);
 
@@ -65,6 +78,13 @@ export default function GalleryPage() {
           <p style={{ fontSize: 13, color: C.textLight, marginTop: 14, opacity: 0.85 }}>
             Tap any photo to view it larger — then share your favorites.
           </p>
+          {g.identify && (
+            <p style={{ fontSize: 14.5, color: C.text, marginTop: 16, lineHeight: 1.65, maxWidth: 520, marginLeft: 'auto', marginRight: 'auto', background: C.warmWhite, border: `1px solid ${(C.lakeBlue || '#456') + '22'}`, borderRadius: 12, padding: '14px 18px' }}>
+              <strong>Find your car.</strong> We have the photos but not the names, so open
+              yours and tap <em>Know this car?</em> to tell us what it is. That is how the
+              list gets built for next year.
+            </p>
+          )}
         </div>
       </section>
 
@@ -72,7 +92,7 @@ export default function GalleryPage() {
       {photos.length > 0 && (
         <section style={{ background: C.cream, padding: '16px 24px 40px' }}>
           <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-            <PhotoGallery photos={photos} slug={slug} title={g.title} shareText={`${g.title} — Manitou Beach, Devils Lake 🌅 See the whole gallery:`} />
+            <PhotoGallery photos={photos} slug={slug} title={g.title} shareText={`${g.title} — Manitou Beach, Devils Lake 🌅 See the whole gallery:`} onIdentify={g.identify ? identify : undefined} />
           </div>
         </section>
       )}

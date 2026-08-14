@@ -21,6 +21,22 @@
 // ============================================================
 
 export const GALLERIES = {
+  'auto-show-2026': {
+    title: 'Devils & Round Lake Auto Show',
+    subtitle: 'Classics and moderns on Walnut Street, and the trophies at the end',
+    date: 'August 8, 2026',
+    order: 5,
+    crowd: true,
+    folder: '/images/galleries/auto-show-2026',
+    prefix: 'dl-auto-show-2026',
+    count: 107,
+    // Photos went up unlabelled: the paper entry forms were largely illegible,
+    // so visitors identify their own cars and that becomes next year's list.
+    identify: true,
+    generalTitle: 'Your Shots',
+    ogDescription:
+      'Photos from the Devils & Round Lake Auto Show in Manitou Beach, Michigan, August 2026. Find your car, share it, and add your own shots.',
+  },
   'mens-club': {
     title: "Men's Club",
     subtitle: 'Devils Lake & Round Lake Men’s Club events and get-togethers',

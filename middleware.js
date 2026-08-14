@@ -516,6 +516,13 @@ export default async function middleware(request) {
 // /api/photos-list, so a shared link previews the exact submitted photo; the
 // static `cover` is the fallback for the bare gallery URL or a missing photo.
 const GALLERY_OG = {
+  'auto-show-2026': {
+    title: 'Devils & Round Lake Auto Show',
+    description: 'Photos from the Devils & Round Lake Auto Show in Manitou Beach, Michigan, August 2026. Find your car, share it, and add your own shots.',
+    folder: '/images/galleries/auto-show-2026',
+    prefix: 'dl-auto-show-2026',
+    crowd: true,
+  },
   'mens-club': {
     title: "Men's Club",
     description: 'Community photos from the Devils Lake & Round Lake Men’s Club in Manitou Beach, Michigan. Add yours and share.',
