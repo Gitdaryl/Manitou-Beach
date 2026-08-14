@@ -48,11 +48,21 @@ const JOBS = [
 // behind is not reported as a failure.
 const GRACE = 2.5;
 
-const ALLOWED_ORIGINS = new Set([
-  'https://work.yetigroove.com',
-  'https://yeti-positioning.vercel.app',
-  'https://yetigroove.com',
-]);
+// CORS is wide open on purpose.
+//
+// An origin allowlist was tried first and was actively harmful here. This
+// response is edge-cached, and the ACAO header varies by request origin, so the
+// first cache fill from a request with no Origin header (a curl, a monitor, a
+// crawler) got stored as the canonical response and then served to browsers,
+// which saw no ACAO header and blocked it. Vary: Origin fixes that only if it
+// is set on EVERY response including non-matching ones, which is easy to get
+// wrong and silently breaks again on the next edit.
+//
+// The allowlist also bought nothing: this payload is public operational
+// metadata with no credentials and no customer data, and anyone can read it
+// with a single curl regardless. It was friction pretending to be security.
+// A static "*" is cache-safe by construction.
+const ALLOW_ORIGIN = '*';
 
 function deriveStatus(lastRunIso, everySeconds) {
   if (!lastRunIso) return { status: 'unknown', ageSeconds: null };
@@ -63,11 +73,9 @@ function deriveStatus(lastRunIso, everySeconds) {
 }
 
 export default async function handler(req, res) {
-  const origin = req.headers?.origin;
-  if (origin && ALLOWED_ORIGINS.has(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-    res.setHeader('Vary', 'Origin');
-  }
+  // Set unconditionally so the header is identical on every response and is
+  // therefore safe to cache at the edge. See the ALLOW_ORIGIN note above.
+  res.setHeader('Access-Control-Allow-Origin', ALLOW_ORIGIN);
 
   if (req.method === 'OPTIONS') {
     res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -79,8 +87,11 @@ export default async function handler(req, res) {
     return res.status(405).json({ ok: false, error: 'Method not allowed' });
   }
 
-  // Cheap read, and the page tolerates staleness, so let the edge absorb traffic.
-  res.setHeader('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=600');
+  // Short window on purpose. `ageSeconds` is computed at generation time, so a
+  // long stale-while-revalidate would let the edge serve an age that drifts
+  // further from reality the longer it sits. Consumers should prefer `lastRun`
+  // (an absolute ISO timestamp, immune to caching) and derive age themselves.
+  res.setHeader('Cache-Control', 'public, s-maxage=30, stale-while-revalidate=60');
 
   const heartbeats = await readAll(JOBS.map((j) => j.job));
 
