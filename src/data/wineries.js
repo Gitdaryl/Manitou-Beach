@@ -183,7 +183,7 @@ export const WINERY_VENUES = [
     type: "Winery & Entertainment Venue",
     tagline: "Aviation-themed. All-weather Biergarten. Live tribute concerts every weekend. Michigan wine with more personality than most.",
     address: "12000 Pentecost Hwy, Onsted",
-    phone: "(517) 795-3620",
+    phone: "(517) 446-4052",
     website: "https://chateauaeronautiquewinery.com",
     logo: "/images/chateau_logo.png",
     accent: C.sunset,

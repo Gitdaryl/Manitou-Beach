@@ -9,6 +9,10 @@ const API_URL = 'https://api.notion.com/v1/pages';
 
 const LOCATION = 'Chateau Aeronautique Winery, 12000 Pentecost Hwy, Onsted MI';
 const PHONE = '(517) 446-4052';
+// These shows have a door cover. A blank Cost reads as free everywhere downstream
+// (no cost badge on the card, isAccessibleForFree:true in the Event schema), so it
+// must always be set. See scripts/set-chateau-cost.mjs for the backfill.
+const COST = '$25 cover';
 
 // Events from the 2026 schedule image — starting from upcoming dates (today is 2026-03-29)
 // * = Not a Tribute Band (original act / variety show)
@@ -139,6 +143,9 @@ function buildNotionPage(date, band, isOriginal = false) {
       },
       'Category': {
         rich_text: [{ text: { content: 'Live Music' } }],
+      },
+      'Cost': {
+        rich_text: [{ text: { content: COST } }],
       },
       'Phone': {
         phone_number: PHONE,
