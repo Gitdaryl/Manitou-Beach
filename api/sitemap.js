@@ -51,12 +51,33 @@ async function fetchAllNotionPages(dbId, token, filterBody) {
   do {
     const body = cursor ? { ...filterBody, start_cursor: cursor } : filterBody;
     const res = await fetch(url, { method: 'POST', headers, body: JSON.stringify(body) });
-    if (!res.ok) break;
+    // Throw rather than break. A silent break returned an empty list and the
+    // caller's catch never fired, so a broken query looked exactly like a
+    // database with nothing in it.
+    if (!res.ok) throw new Error(`Notion ${res.status}: ${(await res.text()).slice(0, 200)}`);
     const data = await res.json();
     results = results.concat(data.results);
     cursor = data.has_more ? data.next_cursor : null;
   } while (cursor);
   return results;
+}
+
+// Slug -> last edited date, used only to give each business URL an honest
+// <lastmod>. Unfiltered on purpose: this is a lookup table, and which slugs
+// actually ship is decided by /api/businesses.
+async function fetchBusinessEditDates() {
+  const pages = await fetchAllNotionPages(
+    process.env.NOTION_DB_BUSINESS,
+    process.env.NOTION_TOKEN_BUSINESS,
+    {}
+  );
+  const map = new Map();
+  for (const page of pages) {
+    const name = page.properties['Name']?.title?.[0]?.text?.content || '';
+    const date = page.last_edited_time?.split('T')[0];
+    if (name && date) map.set(toSlug(name), date);
+  }
+  return map;
 }
 
 export default async function handler(req, res) {
@@ -73,43 +94,42 @@ export default async function handler(req, res) {
   }
 
   // ── Business profile pages ──────────────────────────────────────────────
+  // Sourced from /api/businesses, not from Notion directly. Those were two
+  // parallel queries over the same database and they drifted: the sitemap was
+  // listing phoenix-rising-wellness, devils-lake-inn and the yeti-groove-* demo
+  // listings, none of which /business/:slug can render. Submitting those is a
+  // pile of soft 404s. Whatever the directory shows is now exactly what ships.
   try {
-    const pages = await fetchAllNotionPages(
-      process.env.NOTION_DB_BUSINESS,
-      process.env.NOTION_TOKEN_BUSINESS,
-      {
-        filter: {
-          and: [
-            {
-              or: [
-                { property: 'Status', status: { equals: 'Listed Free' } },
-                { property: 'Status', status: { equals: 'Listed Enhanced' } },
-                { property: 'Status', status: { equals: 'Listed Featured' } },
-                { property: 'Status', status: { equals: 'Listed Premium' } },
-              ],
-            },
-            // Lodging lives in the separate Stays DB and renders on /stays, so it is
-            // kept out of the business directory.
-            // NOTE: Notion 400s the whole query if this names a select option that does
-            // not exist ("select option X not found for property Category"), which empties
-            // the directory. Only ever filter on an option that is live in Notion - do not
-            // leave a renamed/removed value here for back-compat.
-            { property: 'Category', select: { does_not_equal: 'Places to Stay' } },
-          ],
-        },
-      }
-    );
+    const res = await fetch(`${siteUrl}/api/businesses`);
+    if (!res.ok) throw new Error(`/api/businesses ${res.status}`);
+    const data = await res.json();
 
-    for (const page of pages) {
-      const name = page.properties['Name']?.title?.[0]?.text?.content || '';
-      if (!name) continue;
-      const slug = toSlug(name);
-      const lastEdited = page.last_edited_time?.split('T')[0] || today;
+    // `samples` is deliberately excluded: those are the Yeti Groove demo tiers
+    // shown on /promote to sell an upgrade, not real listings.
+    const listed = [
+      ...(data.premium || []), ...(data.featured || []),
+      ...(data.enhanced || []), ...(data.free || []),
+    ];
+
+    // Notion carries the real edit dates; /api/businesses does not expose them.
+    // Best effort only, so a Notion failure costs accuracy on lastmod rather
+    // than dropping every business page again.
+    const lastEditedBySlug = await fetchBusinessEditDates().catch(err => {
+      console.error('sitemap: lastmod lookup failed, using today:', err.message);
+      return new Map();
+    });
+
+    const seen = new Set();
+    for (const biz of listed) {
+      if (!biz.name) continue;
+      const slug = toSlug(biz.name);
+      if (!slug || seen.has(slug)) continue; // duplicate Notion rows shared a slug
+      seen.add(slug);
       urls.push({
         loc: `${siteUrl}/business/${slug}`,
         changefreq: 'weekly',
         priority: '0.7',
-        lastmod: lastEdited,
+        lastmod: lastEditedBySlug.get(slug) || today,
       });
     }
   } catch (err) {

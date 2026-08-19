@@ -345,6 +345,15 @@ const DEFAULT_OG = {
   image: '/images/og-image.jpg',
 };
 
+// Escape owner-supplied text before it goes into an HTML attribute or a text
+// node. Every handler below needs this, so it lives here rather than being
+// redeclared per function.
+const esc = (s) => String(s || '')
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;');
+
 // ── Middleware entry point ────────────────────────────────────
 export default async function middleware(request) {
   const url = new URL(request.url);
@@ -585,9 +594,6 @@ async function handleGalleryOG(html, slug, url) {
   if (!g) return html; // unknown gallery → leave default OG
 
   const origin = url.origin;
-  const esc = (s) => String(s || '')
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-
   const photoParam = url.searchParams.get('photo') || '';
   const isNum = /^\d{1,3}$/.test(photoParam);
 
@@ -640,8 +646,99 @@ export async function handleBusinessSchema(html, slug, origin) {
     if (!schemas.length) return html;
 
     const schemaTag = schemas.map(s => `<script type="application/ld+json">${JSON.stringify(s)}</script>`).join('\n    ');
-    return html.replace('</head>', `    ${schemaTag}\n  </head>`);
+    html = html.replace('</head>', `    ${schemaTag}\n  </head>`);
+
+    // ── Per-listing title, description and OG ──────────────────
+    // This handler used to inject schema and nothing else, so all 31 profiles
+    // inherited index.html's homepage <title> and OG tags. Search results, AI
+    // crawlers and every shared link presented them as the same page.
+    // handleEventOG already did this for /events/:id; business pages never got it.
+    const locality = localityFromAddress(biz.address);
+    const category = biz.category && biz.category !== 'Other' ? biz.category : 'Local business';
+    // Names come straight from Notion and some carry stray whitespace.
+    const name = String(biz.name).replace(/\s+/g, ' ').trim();
+    const title = `${name} | ${category} in ${locality}, MI`;
+
+    const rawDesc = (biz.description || '').replace(/\s+/g, ' ').trim()
+      || `${name} - ${category} serving ${locality} in the Michigan Irish Hills.`;
+    const description = rawDesc.length > 200 ? rawDesc.slice(0, 197) + '…' : rawDesc;
+
+    const image = biz.heroPhoto || biz.logo || `${origin}${DEFAULT_OG.image}`;
+    const pageUrl = `${origin}/business/${slug}`;
+
+    const t = esc(title);
+    const d = esc(description);
+    const img = esc(image);
+
+    html = html
+      .replace(/<title>[^<]*<\/title>/, `<title>${t}</title>`)
+      .replace(/<meta name="description" content="[^"]*"/, `<meta name="description" content="${d}"`)
+      .replace(/<meta property="og:title" content="[^"]*"/, `<meta property="og:title" content="${t}"`)
+      .replace(/<meta property="og:description" content="[^"]*"/, `<meta property="og:description" content="${d}"`)
+      .replace(/<meta property="og:image" content="[^"]*"/, `<meta property="og:image" content="${img}"`)
+      .replace(/<meta property="og:url" content="[^"]*"/, `<meta property="og:url" content="${esc(pageUrl)}"`)
+      .replace(/<meta name="twitter:title" content="[^"]*"/, `<meta name="twitter:title" content="${t}"`)
+      .replace(/<meta name="twitter:description" content="[^"]*"/, `<meta name="twitter:description" content="${d}"`)
+      .replace(/<meta name="twitter:image" content="[^"]*"/, `<meta name="twitter:image" content="${img}"`);
+
+    // ── Readable body copy for crawlers that never run JS ──────
+    // The app renders into #root, so a text-only crawler saw an empty body and
+    // had nothing to quote even with the schema present. <noscript> is the honest
+    // place for this: browsers ignore it, Google renders the real page anyway,
+    // and it says the same thing the rendered page does, so it is not cloaking.
+    html = html.replace('</body>', `    ${buildBusinessNoscript(biz, name, locality, category)}\n  </body>`);
+
+    return html;
   } catch { return html; }
+}
+
+// Listing addresses are owner-entered free text and every shape shows up:
+//   "141 N. Lakeview Blvd., Manitou Beach"
+//   "6300 U.S. Hwy 127, Addison, MI 49220"
+//   "9555 Brooks Hwy, Onsted, MI, United States, 49265"
+//   "17250 Us Highway 223"                     (no town at all)
+// Walk the comma segments from the end, discarding zip, state and country, and
+// take the first real word left. Never take segment 0, which is the street.
+// Service-area businesses often have no address, so fall back to the village
+// rather than inventing a town.
+function localityFromAddress(address) {
+  const parts = String(address || '').split(',').map(s => s.trim()).filter(Boolean);
+  for (let i = parts.length - 1; i >= 1; i--) {
+    const cleaned = parts[i]
+      .replace(/\s*\b\d{5}(-\d{4})?\b\s*$/, '')
+      .replace(/\s*\bUnited States\b\.?\s*$/i, '')
+      .replace(/[,\s]*\b(MI|Michigan)\b\.?\s*$/i, '')
+      .trim();
+    if (cleaned && !/^\d+$/.test(cleaned)) return cleaned;
+  }
+  return 'Manitou Beach';
+}
+
+function buildBusinessNoscript(biz, name, locality, category) {
+  const facts = [
+    ['Category', category],
+    ['Location', biz.address || `${locality}, Michigan`],
+    ['Phone', biz.phone],
+    ['Website', biz.website],
+  ].filter(([, v]) => v);
+
+  // Only the village itself sits on Devils Lake. Addison, Onsted, Brooklyn and
+  // Tipton are Irish Hills but not lakefront, so do not claim it for them.
+  const place = locality === 'Manitou Beach'
+    ? 'Manitou Beach, Michigan, on Devils Lake in the Irish Hills'
+    : `${locality}, Michigan, in the Irish Hills`;
+
+  return [
+    '<noscript>',
+    `      <h1>${esc(name)}</h1>`,
+    `      <p>${esc(category)} in ${esc(place)}.</p>`,
+    biz.description ? `      <p>${esc(biz.description)}</p>` : '',
+    '      <ul>',
+    ...facts.map(([k, v]) => `        <li>${k}: ${esc(v)}</li>`),
+    '      </ul>',
+    '      <p>Listed on <a href="https://manitoubeachmichigan.com/business">Manitou Beach Michigan</a>.</p>',
+    '    </noscript>',
+  ].filter(Boolean).join('\n');
 }
 
 // ── Dynamic OG + schema handler for event detail pages ────────
@@ -654,13 +751,6 @@ export async function handleEventOG(html, id, origin) {
     const data = await res.json();
     const event = data.event;
     if (!event || !event.name) return html;
-
-    // Escape for safe insertion into HTML attribute values (user-supplied content)
-    const esc = (s) => String(s || '')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
 
     // Replicates formatFullDate() from EventDetailPage.jsx
     const fullDate = event.date
