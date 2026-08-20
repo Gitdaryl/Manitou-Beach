@@ -187,9 +187,11 @@ function applyPronunciation(spoken) {
   const applied = []
   let out = spoken
   for (const [from, to] of Object.entries(replacements)) {
-    const re = new RegExp(`\\b${from.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi')
+    // Capture a trailing plural so "rieslings" is fixed too, not just the
+    // singular, and the s survives into the respelling.
+    const re = new RegExp(`\\b${from.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(s?)\\b`, 'gi')
     const hits = (out.match(re) || []).length
-    if (hits) { out = out.replace(re, to); applied.push(`${from}->${to} x${hits}`) }
+    if (hits) { out = out.replace(re, (_, plural) => to + plural); applied.push(`${from}->${to} x${hits}`) }
   }
   return { out, applied }
 }
