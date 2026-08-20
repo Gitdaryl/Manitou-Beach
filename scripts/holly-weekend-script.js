@@ -79,7 +79,12 @@ function timeToMinutes(t) {
 }
 
 async function fetchEvents(days) {
-  const res = await fetch(`${siteUrl}/api/events`)
+  // Cache-bust. /api/events sets s-maxage=300, so a plain fetch can hand back a
+  // feed from five minutes ago. That is harmless on the normal Wednesday run and
+  // actively wrong when someone has just corrected an event and re-run this to
+  // pick the fix up, which is exactly what happened on 2026-08-20 with a paint
+  // and sip priced at $40 that went out captioned free.
+  const res = await fetch(`${siteUrl}/api/events?_cb=${Date.now()}`, { cache: 'no-store' })
   if (!res.ok) throw new Error(`events API ${res.status}: ${await res.text()}`)
   const body = await res.json()
   const all = Array.isArray(body) ? body : (body.events || body.results || [])

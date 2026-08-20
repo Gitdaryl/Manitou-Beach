@@ -2,9 +2,16 @@ name: AI Holly Weekly Video
 
 on:
   schedule:
-    # Wednesday 8 PM ET = Thursday 00:00 UTC while we are on EDT. Drifts to
-    # 7 PM ET in winter, same as every other cron in this repo.
-    - cron: '0 0 * * 4'
+    # Wednesday 5 PM ET = Wednesday 21:00 UTC while we are on EDT. Drifts to
+    # 4 PM ET in winter, same as every other cron in this repo.
+    #
+    # Note the day field is 3 (Wednesday), not 4. Anything before midnight UTC
+    # lands on the Wednesday UTC date; leaving it at 4 would fire a day late.
+    #
+    # Moved earlier from 8 PM so a slow HeyGen render still leaves the whole
+    # evening to overlay, review and get the reel to Holly the same night. She
+    # posts Thursday morning.
+    - cron: '0 21 * * 3'
   workflow_dispatch:
     inputs:
       week:

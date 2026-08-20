@@ -10,6 +10,8 @@
 //
 // Flags: --week=YYYY-MM-DD  the Thursday, otherwise the next one
 //        --dry-run          show what would be sent, call nothing
+//        --allow-raw        with --post, publish the plain HeyGen render
+//                           instead of the overlaid reel. Escape hatch only.
 
 import { readFileSync, writeFileSync, mkdirSync } from 'fs'
 import { join, dirname } from 'path'
@@ -41,10 +43,21 @@ const igId       = process.env.META_IG_ACCOUNT_ID || process.env.IG_BUSINESS_ACC
 
 const isPost   = process.argv.includes('--post')
 const isDryRun = process.argv.includes('--dry-run')
+// Post the plain HeyGen render instead of the overlaid reel. Deliberate escape
+// hatch, never the default.
+const allowRaw = process.argv.includes('--allow-raw')
 const weekArg  = (process.argv.find(a => a.startsWith('--week=')) || '').split('=')[1]
 
 const TZ = 'America/Detroit'
-const videoPath = thursday => `holly-weekend/holly-${thursday}.mp4`
+const videoPath   = thursday => `holly-weekend/holly-${thursday}.mp4`
+// The overlaid reel, produced afterwards by ~/Projects/holly-reel-kit. This is
+// what actually gets posted; the raw HeyGen render above is the source for it.
+const overlaidPath = thursday => `holly-weekend/overlaid/holly-${thursday}.mp4`
+// The exact text submitted to HeyGen, written at submit time so it always
+// matches the take even if the draft is regenerated afterwards. The overlay
+// step aligns captions against this instead of guessing from the audio, which
+// is how "Chateau Aeronautique" came back as "Chateau Aranautique".
+const spokenPath   = thursday => `holly-weekend/holly-${thursday}.spoken.md`
 
 // ---------------------------------------------------------------- dates
 
@@ -137,6 +150,22 @@ async function waitForRender(videoId) {
   throw new Error(`Render still not done after 20 minutes (video_id ${videoId})`)
 }
 
+async function mirrorSpokenScript(spoken, thursday) {
+  const md = `# AI Holly spoken script: ${thursday}\n\n`
+    + `Exactly what was sent to HeyGen for this take. Written at submit time.\n`
+    + `Do not hand-edit: the overlay step aligns captions against it.\n\n`
+    + `<!-- HEYGEN:START -->\n${spoken.trim()}\n<!-- HEYGEN:END -->\n`
+  const blob = await put(spokenPath(thursday), md, {
+    access: 'public',
+    token: blobToken,
+    contentType: 'text/markdown',
+    addRandomSuffix: false,
+    allowOverwrite: true,
+  })
+  console.log(`Spoken script: ${blob.url}`)
+  return blob.url
+}
+
 // HeyGen's own URLs expire, so re-host the file. Facebook and Instagram fetch
 // the URL themselves and may do it long after we hand it over.
 async function mirrorToBlob(heygenUrl, thursday) {
@@ -162,12 +191,30 @@ async function mirrorToBlob(heygenUrl, thursday) {
 }
 
 async function findExistingVideo(thursday) {
+  // The overlaid reel is the deliverable. Prefer it always.
+  const overlaid = await list({ prefix: overlaidPath(thursday), token: blobToken })
+  if (overlaid.blobs.length) {
+    console.log('Posting the overlaid reel.')
+    return overlaid.blobs[0].url
+  }
+
+  // Falling through to the raw HeyGen render would publish a video with no
+  // captions, no venue logos and no times, and it would look like a success.
+  // Silence is the failure mode that costs the most here, so stop instead.
+  if (!allowRaw) {
+    throw new Error(
+      `No overlaid reel for ${thursday}. Run the overlay in ~/Projects/holly-reel-kit:\n` +
+      `  node run.mjs --video=<the HeyGen mp4> --publish\n` +
+      `To post the plain HeyGen render on purpose, pass --allow-raw.`)
+  }
+
   const { blobs } = await list({ prefix: videoPath(thursday), token: blobToken })
   if (!blobs.length) {
     throw new Error(
       `No rendered video for ${thursday}. The Wednesday job renders it; run ` +
       `this without --post to render one now.`)
   }
+  console.warn('--allow-raw: posting the plain HeyGen render, no overlays.')
   return blobs[0].url
 }
 
@@ -247,6 +294,9 @@ async function doRender(thursday) {
 
   const videoId = await submitRender(spoken)
   console.log(`Submitted to HeyGen. video_id ${videoId}`)
+  // Written before the render finishes on purpose. If HeyGen stalls or dies,
+  // the record of what was actually submitted still exists.
+  await mirrorSpokenScript(spoken, thursday)
   const videoUrl = await mirrorToBlob(await waitForRender(videoId), thursday)
 
   // The text is about the video. Daryl already knows what is on around the
@@ -257,7 +307,7 @@ async function doRender(thursday) {
     for (const f of flags.slice(0, 2)) lines.push(`- ${f.slice(0, 120)}`)
     if (flags.length > 2) lines.push(`- plus ${flags.length - 2} more in the script`)
   }
-  lines.push('Nothing is posted. Run the AI Holly Post workflow when you are happy.')
+  lines.push('Nothing is posted. Overlay it in holly-reel-kit, then run the AI Holly Post workflow.')
   await notify(lines.join('\n'))
 
   console.log('\nRendered and delivered. Nothing posted.')
