@@ -2,84 +2,90 @@
 
 **Window:** Thursday through Sunday
 **Source:** https://manitoubeachmichigan.com/api/events, 8 published events
-**Generated:** 2026-08-20T19:24:23.976Z
+**Generated:** 2026-08-20T19:32:48.933Z
 **Status:** DRAFT, not yet approved
 
 ---
 
 ## SCRIPT
 
-[Holly on camera, sunny lakefront b-roll behind her]
+[Open on Holly, dock or office, Devils Lake behind her]
 
-Little heads up before we get rolling. I'm not the real Holly. I'm the AI one, which means I do the talking and she does the living. She's out there hugging necks and swirling a glass of something nice, and I'm in here. Totally fine with it. Totally.
+Okay, small disclaimer before we start. I'm not the real Holly. I'm the AI one, built out of pixels and a calendar app. The real Holly's out shaking hands and enjoying a nice glass at the winery while I sit here in a box. Nope. Not jealous. Moving on.
 
-[B-roll: winery patio, string lights, stage setup]
+[B-roll: Chateau Aeronautique Biergarten, string lights, stage]
 
-So here's the big one. Chateau Aeronautique Winery has tribute nights both Friday and Saturday. Friday it's the Led Zeppelin tribute, eight to eleven, twenty five dollar cover. Saturday it's the ELO tribute, same hours, same cover. Out on Pentecost Highway in Onsted.
+Biggest thing this weekend, Chateau Aeronautique Winery's got tribute bands both Friday and Saturday out in that all weather Biergarten. Hang on, I'll get there.
 
-[B-roll: paint brushes, canvases, vineyard rows]
+[B-roll: paint brushes, easels, vineyard rows at Gypsy Blue]
 
-Backing up to Thursday. Paint and Sip Night at Gypsy Blue Vineyards kicks off at six. Forty dollars to join in.
+Thursday, Gypsy Blue Vineyards has Paint and Sip Night at six. Forty dollars, bring your creativity.
 
-[B-roll: Two Lakes Tavern exterior, Devils Lake at dusk]
+[B-roll: Two Lakes Tavern exterior, lake at sunset]
 
-Friday, Two Lakes Tavern has the Tipsy Doctors, eight to eleven, free, no cover, right there on Devils Lake.
+Friday, that Led Zeppelin tribute hits the stage at Chateau Aeronautique from eight to eleven, twenty five dollar cover. And over at Two Lakes Tavern, the Tipsy Doctors play eight to eleven. Free, no cover, right there on Devils Lake.
 
-[B-roll: lake, boats, live music crowd]
+[B-roll: Saturday montage, vineyard patio, crowd, boats]
 
-Saturday is stacked. Back Porch Duo plays Gypsy Blue Vineyards from two to five, and that one's free. Then at eight, The Band The Group takes over Two Lakes Tavern until eleven, also free. And Johnny and Lighting The Storm Bandits are at Devils Lake Bar and Grill on the north shore. No start time listed yet, so give them a shout before you head over.
+Saturday's stacked. Back Porch Duo at Gypsy Blue Vineyards, two to five, no cover. Then the ELO tribute at Chateau Aeronautique, eight to eleven, twenty five dollars at the door. Same hours at Two Lakes Tavern with The Band The Group, and that one's free.
 
-[B-roll: camera gear, studio lighting]
+[B-roll: north shore, Devils Lake Bar and Grill deck]
 
-Sunday, Suite 223 Studio in Addison hosts a photographer meet up and headshot swap, eleven to three, twenty dollars a person. Bring your camera and your business cards.
+And Devils Lake Bar and Grill has Johnny and Lighting The Storm Bandits, free to get in. There's no start time listed, so give them a quick call before you head over.
 
-[Back on Holly]
+[B-roll: studio lights, camera on tripod]
 
-Running something around the lakes? List it free at Manitou Beach Michigan dot com and I'll read it out next week. That's your weekend. Go enjoy it for me.
+Sunday, Suite 223 Studio in Addison hosts a Photographer Meet Up and Headshot Swap, eleven to three, twenty dollars a person. Bring your camera and your business cards.
+
+[Back to Holly, smile]
+
+Running something around the lakes? List it free at Manitou Beach Michigan dot com and I'll read it out next week. That's your weekend. Go enjoy it.
 
 ## SPOKEN SCRIPT
 
 <!-- HEYGEN:START -->
-Little heads up before we get rolling. I'm not the real Holly. I'm the AI one, which means I do the talking and she does the living. She's out there hugging necks and swirling a glass of something nice, and I'm in here. Totally fine with it. Totally.
+Okay, small disclaimer before we start. I'm not the real Holly. I'm the AI one, built out of pixels and a calendar app. The real Holly's out shaking hands and enjoying a nice glass at the winery while I sit here in a box. Nope. Not jealous. Moving on.
 
-So here's the big one. Chateau Aeronautique Winery has tribute nights both Friday and Saturday. Friday it's the Led Zeppelin tribute, eight to eleven, twenty five dollar cover. Saturday it's the ELO tribute, same hours, same cover. Out on Pentecost Highway in Onsted.
+Biggest thing this weekend, Chateau Aeronautique Winery's got tribute bands both Friday and Saturday out in that all weather Biergarten. Hang on, I'll get there.
 
-Backing up to Thursday. Paint and Sip Night at Gypsy Blue Vineyards kicks off at six. Forty dollars to join in.
+Thursday, Gypsy Blue Vineyards has Paint and Sip Night at six. Forty dollars, bring your creativity.
 
-Friday, Two Lakes Tavern has the Tipsy Doctors, eight to eleven, free, no cover, right there on Devils Lake.
+Friday, that Led Zeppelin tribute hits the stage at Chateau Aeronautique from eight to eleven, twenty five dollar cover. And over at Two Lakes Tavern, the Tipsy Doctors play eight to eleven. Free, no cover, right there on Devils Lake.
 
-Saturday is stacked. Back Porch Duo plays Gypsy Blue Vineyards from two to five, and that one's free. Then at eight, The Band The Group takes over Two Lakes Tavern until eleven, also free. And Johnny and Lighting The Storm Bandits are at Devils Lake Bar and Grill on the north shore. No start time listed yet, so give them a shout before you head over.
+Saturday's stacked. Back Porch Duo at Gypsy Blue Vineyards, two to five, no cover. Then the ELO tribute at Chateau Aeronautique, eight to eleven, twenty five dollars at the door. Same hours at Two Lakes Tavern with The Band The Group, and that one's free.
 
-Sunday, Suite two twenty three Studio in Addison hosts a photographer meet up and headshot swap, eleven to three, twenty dollars a person. Bring your camera and your business cards.
+And Devils Lake Bar and Grill has Johnny and Lighting The Storm Bandits, free to get in. There's no start time listed, so give them a quick call before you head over.
 
-Running something around the lakes? List it free at Manitaw Beach Michigan dot com and I'll read it out next week. That's your weekend. Go enjoy it for me.
+Sunday, Suite two twenty three Studio in Addison hosts a Photographer Meet Up and Headshot Swap, eleven to three, twenty dollars a person. Bring your camera and your business cards.
+
+Running something around the lakes? List it free at Manitaw Beach Michigan dot com and I'll read it out next week. That's your weekend. Go enjoy it.
 <!-- HEYGEN:END -->
 
 ## CAPTION
 
-Your Manitou Beach weekend, August 20 to 23
+THIS WEEKEND AROUND THE LAKES, AUGUST 20 to 23
 
 THURSDAY
 - Paint and Sip Night, Gypsy Blue Vineyards, 6:00 PM, $40
 
 FRIDAY
-- Led Zeppelin Tribute, Chateau Aeronautique Winery, 12000 Pentecost Hwy, Onsted, 8:00 to 11:00 PM, $25 cover
-- Tipsy Doctors, Two Lakes Tavern, 110 Walnut St, Manitou Beach, 8:00 to 11:00 PM, free
+- Led Zeppelin Tribute, Chateau Aeronautique Winery, 8:00 to 11:00 PM, $25 cover
+- Tipsy Doctors, Two Lakes Tavern, 8:00 to 11:00 PM, free
 
 SATURDAY
 - Back Porch Duo, Gypsy Blue Vineyards, 2:00 to 5:00 PM, free
 - ELO Tribute, Chateau Aeronautique Winery, 8:00 to 11:00 PM, $25 cover
 - The Band The Group, Two Lakes Tavern, 8:00 to 11:00 PM, free
-- Johnny and Lighting The Storm Bandits, Devils Lake Bar and Grill, 6365 US-223, Addison, north shore of Devils Lake, start time TBA, free
+- Johnny and Lighting The Storm Bandits, Devils Lake Bar and Grill, time not listed, free
 
 SUNDAY
-- Photographer Meet-Up and Headshot Swap, Suite 223 Studio, 17250 US Highway 223, Addison, 11:00 AM to 3:00 PM, $20 per person
+- Photographer Meet-Up and Headshot Swap, Suite 223 Studio, Addison, 11:00 AM to 3:00 PM, $20 per person
 
 Got an event? List it free at manitoubeachmichigan.com
 
 ## VERIFY BEFORE POSTING
 
-- Johnny and Lighting The Storm Bandits at Devils Lake Bar and Grill, Saturday: no start time in the data. Confirm with the venue before posting, or the caption stays as start time TBA.
-- Band name "Johnny & Lighting The Storm Bandits" looks like it may be a typo for "Lightning." Confirm the correct spelling with the venue.
-- Paint and Sip Night at Gypsy Blue Vineyards, Thursday: no end time listed, and no street address on file for Gypsy Blue Vineyards. Worth adding for anyone driving in.
-- Chateau Aeronautique Winery lists tribute shows every Friday and Saturday but the performer names are given only as "Led Zeppelin tribute" and "ELO tribute." If the actual band names are known, they should be credited.
+- Johnny and Lighting The Storm Bandits at Devils Lake Bar and Grill, Saturday: no start time in the data, so the script sends people to call ahead. Get a time from the venue if you can.
+- "Johnny & Lighting The Storm Bandits" may be a typo for "Lightning". Confirm the band's spelling before this goes out.
+- Paint and Sip Night at Gypsy Blue Vineyards has no end time listed. Not a blocker, but worth adding.
+- Gypsy Blue Vineyards has no street address in the listing for either Thursday or Saturday.
