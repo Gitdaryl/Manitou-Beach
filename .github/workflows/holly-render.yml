@@ -1,8 +1,9 @@
-name: AI Holly Render and Post
+name: AI Holly Post
 
-# No schedule on purpose. This workflow IS the approval gate: the Wednesday job
-# writes the draft and texts Daryl, he reads it, and running this is how he says
-# yes. Nothing goes out in Holly's voice without a human pressing something.
+# No schedule. The Wednesday job makes the video and texts it to Daryl; running
+# this is how he says yes. It posts the video that already exists and never
+# re-renders, so approving does not cost a second HeyGen charge or produce a
+# different take than the one he approved.
 on:
   workflow_dispatch:
     inputs:
@@ -10,17 +11,11 @@ on:
         description: 'Thursday of the weekend (YYYY-MM-DD), blank = the next one'
         required: false
         default: ''
-      no_post:
-        description: 'Render only, do not post to Facebook or Instagram'
-        required: false
-        default: 'false'
-        type: choice
-        options: ['false', 'true']
 
 jobs:
-  render:
+  post:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
 
     steps:
       - name: Checkout
@@ -35,18 +30,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Render and post
+      - name: Post to Facebook and Instagram
         run: |
-          FLAGS=""
+          FLAGS="--post"
           if [ -n "${{ github.event.inputs.week }}" ]; then
-            FLAGS="--week=${{ github.event.inputs.week }}"
-          fi
-          if [ "${{ github.event.inputs.no_post }}" = "true" ]; then
-            FLAGS="$FLAGS --no-post"
+            FLAGS="$FLAGS --week=${{ github.event.inputs.week }}"
           fi
           node scripts/holly-render.js $FLAGS
         env:
-          HEYGEN_API_KEY:         ${{ secrets.HEYGEN_API_KEY }}
           BLOB_READ_WRITE_TOKEN:  ${{ secrets.BLOB_READ_WRITE_TOKEN }}
           META_PAGE_ID:           ${{ secrets.META_PAGE_ID }}
           META_PAGE_ACCESS_TOKEN: ${{ secrets.META_PAGE_ACCESS_TOKEN }}

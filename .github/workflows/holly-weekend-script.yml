@@ -1,28 +1,28 @@
-name: AI Holly Weekend Script
+name: AI Holly Weekly Video
 
 on:
   schedule:
-    # Wednesday 8 PM ET = Thursday 00:00 UTC (EDT). Drifts to 7 PM ET in winter,
-    # same as the other workflows in this repo. Early enough that Daryl can read
-    # the draft before bed and approve it Thursday morning.
+    # Wednesday 8 PM ET = Thursday 00:00 UTC while we are on EDT. Drifts to
+    # 7 PM ET in winter, same as every other cron in this repo.
     - cron: '0 0 * * 4'
   workflow_dispatch:
     inputs:
-      dry_run:
-        description: 'Generate and print only, do not save or text'
+      week:
+        description: 'Thursday of the weekend (YYYY-MM-DD), blank = the next one'
+        required: false
+        default: ''
+      script_only:
+        description: 'Write the script but skip the HeyGen render'
         required: false
         default: 'false'
         type: choice
         options: ['false', 'true']
-      week:
-        description: 'Force a Thursday (YYYY-MM-DD), otherwise the next one'
-        required: false
-        default: ''
 
 jobs:
-  write-script:
+  make-video:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # The render is the long pole: usually ~2 minutes, occasionally much longer.
+    timeout-minutes: 40
 
     permissions:
       contents: write
@@ -40,12 +40,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Writes the script only. It stays quiet on purpose: the render step
+      # below sends the one text, so Daryl gets a video, not a homework list.
       - name: Write the script
         run: |
-          FLAGS=""
-          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
-            FLAGS="--dry-run"
-          fi
+          FLAGS="--no-notify"
           if [ -n "${{ github.event.inputs.week }}" ]; then
             FLAGS="$FLAGS --week=${{ github.event.inputs.week }}"
           fi
@@ -53,24 +52,47 @@ jobs:
         env:
           ANTHROPIC_API_KEY:     ${{ secrets.ANTHROPIC_API_KEY }}
           BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          SITE_URL:              https://manitoubeachmichigan.com
+
+      - name: Render the video
+        if: github.event.inputs.script_only != 'true'
+        run: |
+          FLAGS=""
+          if [ -n "${{ github.event.inputs.week }}" ]; then
+            FLAGS="--week=${{ github.event.inputs.week }}"
+          fi
+          node scripts/holly-render.js $FLAGS
+        env:
+          HEYGEN_API_KEY:        ${{ secrets.HEYGEN_API_KEY }}
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
           ALERT_TOKEN:           ${{ secrets.ALERT_TOKEN }}
           SITE_URL:              https://manitoubeachmichigan.com
 
-      # The slideshow this replaced failed every week from May to August and
-      # nobody knew, because a dead scheduled job is silent. Text on failure.
+      # Second way to get the file, for when Daryl is at the desk rather than
+      # on his phone. Downloadable from the run page for 30 days.
+      - name: Attach the video to this run
+        if: github.event.inputs.script_only != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-holly-video
+          path: video-templates/holly-weekend/renders/*.mp4
+          if-no-files-found: warn
+          retention-days: 30
+
+      # A dead scheduled job is silent. The slideshow this replaced failed
+      # every week from May to August and nothing said a word.
       - name: Say so if it broke
         if: failure()
         run: |
           curl -s -X POST "$SITE_URL/api/internal-alert" \
             -H 'Content-Type: application/json' \
-            -d "{\"token\":\"$ALERT_TOKEN\",\"message\":\"AI Holly weekend script FAILED tonight. No draft was written. Logs: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" \
+            -d "{\"token\":\"$ALERT_TOKEN\",\"message\":\"AI Holly weekly video FAILED tonight. No video was made. Logs: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" \
             || echo "Could not send the failure alert either."
         env:
           ALERT_TOKEN: ${{ secrets.ALERT_TOKEN }}
-          SITE_URL:     https://manitoubeachmichigan.com
+          SITE_URL:    https://manitoubeachmichigan.com
 
-      - name: Commit the draft
-        if: github.event.inputs.dry_run != 'true'
+      - name: Commit the script
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -78,6 +100,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "Nothing new to commit."
           else
-            git commit -m "AI Holly weekend script draft"
+            git commit -m "AI Holly weekend script"
             git push
           fi
