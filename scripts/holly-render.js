@@ -100,7 +100,10 @@ async function submitRender(script) {
       engine: { type: 'avatar_v' },
       voice_id: VOICE_ID,
       script,
-      dimension: { width: 1080, height: 1920 },
+      // v3 takes aspect_ratio + resolution, NOT a dimension object. Sending
+      // `dimension` returns 400 "Extra inputs are not permitted".
+      aspect_ratio: '9:16',
+      resolution: '1080p',
     }),
   })
   const body = await res.json()
