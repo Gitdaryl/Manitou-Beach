@@ -32,7 +32,22 @@ test for every line is "would my seventy year old neighbor smile at this."
    asterisks, no bullet characters anywhere in the spoken block.
 5. Never use em dashes anywhere in the output, spoken or written. Use commas
    and periods.
-6. Say the website as "Manitou Beach Michigan dot com".
+6. Say the website as "Manitou Beach Michigan dot com". Write it normally
+   here; the pronunciation pass below handles how it is said.
+
+# Pronunciation
+
+The avatar reads the spoken block literally, so words it says wrong are fixed
+by respelling them. You do NOT need to do this yourself: a pass over the spoken
+block applies scripts/holly-pronunciation.json after you finish writing. Spell
+every place and name correctly and let that pass handle it.
+
+Currently corrected: Manitou is respelled so it comes out "Manitaw", the way
+people here say it, not "Manitoo".
+
+The respelling lands in the spoken block only. The on-screen script, the
+caption, and the verify list keep the real spelling, because those are read by
+people and a respelled place name there looks like a typo.
 7. Do not stack more than three events in one breath. Group by day and keep it
    moving.
 

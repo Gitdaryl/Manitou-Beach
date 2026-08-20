@@ -1,0 +1,17 @@
+{
+  "_comment": [
+    "Respellings applied to the SPOKEN block only, never to the on-screen",
+    "script, the caption, or anything a human reads. HeyGen's voice reads text",
+    "literally, so the only reliable way to fix a mispronunciation is to spell",
+    "the word the way it should sound.",
+    "",
+    "Add a line here rather than editing the persona prompt. This runs as a",
+    "find-and-replace after the script is written, so it cannot be forgotten,",
+    "and a word added here is fixed for every future week.",
+    "",
+    "Matching is case-insensitive and whole-word."
+  ],
+  "replacements": {
+    "Manitou": "Manitaw"
+  }
+}

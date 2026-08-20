@@ -177,6 +177,23 @@ async function generateScript(digest, days) {
   return text
 }
 
+// HeyGen reads the script literally, so a word it says wrong is fixed by
+// respelling it. Done in code rather than left to the prompt: the model would
+// have to remember every rule every week, and a silent regression here ships
+// straight into Holly's mouth. See scripts/holly-pronunciation.json.
+function applyPronunciation(spoken) {
+  const { replacements } = JSON.parse(
+    readFileSync(join(__dirname, 'holly-pronunciation.json'), 'utf8'))
+  const applied = []
+  let out = spoken
+  for (const [from, to] of Object.entries(replacements)) {
+    const re = new RegExp(`\\b${from.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi')
+    const hits = (out.match(re) || []).length
+    if (hits) { out = out.replace(re, to); applied.push(`${from}->${to} x${hits}`) }
+  }
+  return { out, applied }
+}
+
 function extractVerify(markdown) {
   const body = (/##\s*VERIFY BEFORE POSTING\s*\n([\s\S]*?)(?=\n##\s|\s*$)/
     .exec(markdown) || [])[1]?.trim() || ''
@@ -251,8 +268,18 @@ async function main() {
       noTime.map(e => e.name).join(', '))
   }
 
-  const script = await generateScript(digest, days)
-  const spoken = extractSpoken(script)
+  let script = await generateScript(digest, days)
+  let spoken = extractSpoken(script)
+  if (spoken) {
+    const { out, applied } = applyPronunciation(spoken)
+    if (applied.length) {
+      console.log(`Pronunciation fixes: ${applied.join(', ')}`)
+      // Rewrite the block in place so the file the render step reads is the
+      // corrected one. The on-screen script and caption keep real spellings.
+      script = script.replace(spoken, out)
+      spoken = out
+    }
+  }
   const words = spoken ? spoken.split(/\s+/).length : 0
   const seconds = Math.round(words / 2.7)  // ~2.7 spoken words per second
   if (!spoken) {
