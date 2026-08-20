@@ -1,0 +1,83 @@
+name: AI Holly Weekend Script
+
+on:
+  schedule:
+    # Wednesday 8 PM ET = Thursday 00:00 UTC (EDT). Drifts to 7 PM ET in winter,
+    # same as the other workflows in this repo. Early enough that Daryl can read
+    # the draft before bed and approve it Thursday morning.
+    - cron: '0 0 * * 4'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Generate and print only, do not save or text'
+        required: false
+        default: 'false'
+        type: choice
+        options: ['false', 'true']
+      week:
+        description: 'Force a Thursday (YYYY-MM-DD), otherwise the next one'
+        required: false
+        default: ''
+
+jobs:
+  write-script:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Write the script
+        run: |
+          FLAGS=""
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            FLAGS="--dry-run"
+          fi
+          if [ -n "${{ github.event.inputs.week }}" ]; then
+            FLAGS="$FLAGS --week=${{ github.event.inputs.week }}"
+          fi
+          node scripts/holly-weekend-script.js $FLAGS
+        env:
+          ANTHROPIC_API_KEY:     ${{ secrets.ANTHROPIC_API_KEY }}
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          ALERT_TOKEN:           ${{ secrets.ALERT_TOKEN }}
+          SITE_URL:              https://manitoubeachmichigan.com
+
+      # The slideshow this replaced failed every week from May to August and
+      # nobody knew, because a dead scheduled job is silent. Text on failure.
+      - name: Say so if it broke
+        if: failure()
+        run: |
+          curl -s -X POST "$SITE_URL/api/internal-alert" \
+            -H 'Content-Type: application/json' \
+            -d "{\"token\":\"$ALERT_TOKEN\",\"message\":\"AI Holly weekend script FAILED tonight. No draft was written. Logs: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" \
+            || echo "Could not send the failure alert either."
+        env:
+          ALERT_TOKEN: ${{ secrets.ALERT_TOKEN }}
+          SITE_URL:     https://manitoubeachmichigan.com
+
+      - name: Commit the draft
+        if: github.event.inputs.dry_run != 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add marketing/ai-holly-weekend-*.md
+          if git diff --staged --quiet; then
+            echo "Nothing new to commit."
+          else
+            git commit -m "AI Holly weekend script draft"
+            git push
+          fi

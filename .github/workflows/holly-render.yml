@@ -1,0 +1,55 @@
+name: AI Holly Render and Post
+
+# No schedule on purpose. This workflow IS the approval gate: the Wednesday job
+# writes the draft and texts Daryl, he reads it, and running this is how he says
+# yes. Nothing goes out in Holly's voice without a human pressing something.
+on:
+  workflow_dispatch:
+    inputs:
+      week:
+        description: 'Thursday of the weekend (YYYY-MM-DD), blank = the next one'
+        required: false
+        default: ''
+      no_post:
+        description: 'Render only, do not post to Facebook or Instagram'
+        required: false
+        default: 'false'
+        type: choice
+        options: ['false', 'true']
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Render and post
+        run: |
+          FLAGS=""
+          if [ -n "${{ github.event.inputs.week }}" ]; then
+            FLAGS="--week=${{ github.event.inputs.week }}"
+          fi
+          if [ "${{ github.event.inputs.no_post }}" = "true" ]; then
+            FLAGS="$FLAGS --no-post"
+          fi
+          node scripts/holly-render.js $FLAGS
+        env:
+          HEYGEN_API_KEY:         ${{ secrets.HEYGEN_API_KEY }}
+          BLOB_READ_WRITE_TOKEN:  ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          META_PAGE_ID:           ${{ secrets.META_PAGE_ID }}
+          META_PAGE_ACCESS_TOKEN: ${{ secrets.META_PAGE_ACCESS_TOKEN }}
+          META_IG_ACCOUNT_ID:     ${{ secrets.META_IG_ACCOUNT_ID }}
+          ALERT_TOKEN:            ${{ secrets.ALERT_TOKEN }}
+          SITE_URL:               https://manitoubeachmichigan.com

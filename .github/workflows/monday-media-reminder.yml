@@ -1,9 +1,9 @@
 name: Monday Media Reminder
 
+# RETIRED 2026-08-19 alongside thursday-roundup.yml. This job existed only to
+# nag about background images for that slideshow, so it is noise until the
+# slideshow comes back.
 on:
-  schedule:
-    # Every Monday 9am ET = 1pm UTC
-    - cron: '7 13 * * 1'
   workflow_dispatch:
 
 jobs:

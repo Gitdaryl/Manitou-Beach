@@ -2,7 +2,14 @@
 // Internal-only: sends an SMS alert to the admin phone (ADMIN_PHONE env var).
 // Used by automated systems (e.g. Sunny Skies dispatcher) to surface operational warnings.
 // Body: { token, message }
-// token = ADMIN_SECRET env var
+// token = either ADMIN_SECRET or ALERT_TOKEN.
+//
+// ALERT_TOKEN is a lower-privilege ops token that only opens this endpoint,
+// same idea as FUEL_ALERT_TOKEN in fuel-alert.js. Callers that can only ever
+// need to send a text should use it rather than ADMIN_SECRET, which also
+// unlocks image and video upload, article generation, and the winery admin
+// endpoints. The GitHub Actions runner that writes the AI Holly draft uses it.
+// ADMIN_SECRET is still accepted so existing callers keep working unchanged.
 
 import { sendSMSFull } from './lib/twilio.js';
 
@@ -11,7 +18,8 @@ export default async function handler(req, res) {
 
   const { token, message } = req.body || {};
 
-  if (!token || token !== process.env.ADMIN_SECRET) {
+  const accepted = [process.env.ADMIN_SECRET, process.env.ALERT_TOKEN].filter(Boolean);
+  if (!token || !accepted.includes(token)) {
     return res.status(403).json({ error: 'Unauthorized' });
   }
 

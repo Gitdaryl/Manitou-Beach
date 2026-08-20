@@ -1,10 +1,13 @@
 name: Thursday Roundup Video
 
+# RETIRED 2026-08-19. The schedule is removed, not the workflow, because Yeti is
+# rebuilding the slideshow with a new design. Read this before you revive it: it
+# had failed on every scheduled run since at least 2026-05-28, always the same
+# way - NOTION_TOKEN_EVENTS returns 401 "API token is invalid". Nothing alerted,
+# so it looked alive for three months. Fix the token AND add a failure alert
+# before putting a cron back on it. The AI Holly job that replaced it reads the
+# public /api/events instead, so it is not exposed to that token at all.
 on:
-  schedule:
-    # Wednesday 11 PM ET = Thursday 3 AM UTC
-    # Posts before the 9 AM ET fallback Vercel cron
-    - cron: '0 3 * * 4'
   workflow_dispatch:
     inputs:
       preview:
