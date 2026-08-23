@@ -1984,7 +1984,7 @@ export function Footer({ scrollTo }) {
           <div style={{ fontSize: 11, color: "rgba(255,255,255,0.15)", fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>
             Powered by{" "}
             <a
-              href="https://yetigroovemedia.com"
+              href="https://yetigroove.com"
               target="_blank"
               rel="noopener noreferrer"
               style={{ color: "rgba(255,255,255,0.3)", textDecoration: "none", transition: "color 0.2s" }}
