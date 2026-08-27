@@ -801,6 +801,22 @@ export default function SubmitEventPage() {
                   </div>
                 </div>
 
+                {/* Charging at the door but not ticketed: offer to sell advance tickets.
+                    Only once they have typed a price, so a genuinely free event is never nagged. */}
+                {form.eventType === 'free' && form.cost.trim() && (
+                  <div style={{ background: 'rgba(122,142,114,0.1)', border: '1px solid rgba(122,142,114,0.25)', borderRadius: 8, padding: '12px 14px' }}>
+                    <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, margin: '0 0 6px' }}>
+                      <strong style={{ color: 'rgba(255,255,255,0.75)' }}>Taking money at the door?</strong> We can sell advance tickets for you instead. Buyers pay right on this site, the money goes straight to your bank, and you know your numbers before the day. Pick "Ticketed - we'll handle it for you" above.
+                    </p>
+                    <button
+                      onClick={() => setTicketInfoOpen(true)}
+                      style={{ fontSize: 12, color: '#7A8E72', fontWeight: 700, background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", textAlign: 'left' }}
+                    >
+                      See what you and your attendees get →
+                    </button>
+                  </div>
+                )}
+
                 {/* Image Upload */}
                 <div>
                   <label style={label}>Event Image / Logo <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>- optional</span></label>
