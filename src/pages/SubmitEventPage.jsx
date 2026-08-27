@@ -794,8 +794,11 @@ export default function SubmitEventPage() {
 
                 {/* Cost */}
                 <div>
-                  <label style={label}>Cost {form.eventType === 'free' ? '' : 'description '}<span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>- {form.eventType === 'free' ? 'leave blank if free' : 'shown on the event card'}</span></label>
-                  <input style={input} type="text" value={form.cost} onChange={set('cost')} placeholder={form.eventType === 'free' ? 'e.g. "$5 at the door" - or leave blank for free' : 'e.g. "Free", "$10 at the door", "Tickets from $25"'} />
+                  <label style={label}>Cost {form.eventType === 'free' ? '' : 'description '}<span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>- {form.eventType === 'free' ? 'leave blank if free' : 'shown as a short badge on the event card'}</span></label>
+                  <input style={input} type="text" maxLength={40} value={form.cost} onChange={set('cost')} placeholder={form.eventType === 'free' ? 'Price only, like $5 at the door - or leave blank for free' : 'Price only, like $10 advance / $12 door'} />
+                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', marginTop: 6, lineHeight: 1.5 }}>
+                    Keep it to the price. Put anything longer - who gets in free, refund rules, group rates - in the description below.
+                  </div>
                 </div>
 
                 {/* Image Upload */}

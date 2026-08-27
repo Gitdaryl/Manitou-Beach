@@ -240,15 +240,16 @@ function WeeklyEventsSection({ events, onEventClick }) {
 
                   {/* Cost badge + share */}
                   <div style={{ paddingTop: 8, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8 }}>
-                    <span style={{
+                    <span title={event.cost || undefined} style={{
                       fontFamily: "'Libre Franklin', sans-serif",
                       fontSize: 11, fontWeight: 600, letterSpacing: 1,
                       color: event.cost === "Free" || event.cost === "Free to watch" ? C.sage : C.sunset,
                       background: event.cost === "Free" || event.cost === "Free to watch" ? `${C.sage}15` : `${C.sunset}15`,
                       padding: "5px 12px", borderRadius: 20,
                       textTransform: "uppercase",
+                      maxWidth: 220, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
                     }}>
-                      {event.cost || "Free"}
+                      {costBadgeLabel(event.cost)}
                     </span>
                     <EventShareBtn event={event} color={color} />
                   </div>
@@ -396,6 +397,15 @@ function parseTimeMins(str) {
   return h * 60 + min;
 }
 
+// Cost is optional free text and organizers sometimes paste a whole paragraph
+// into it. The card badge is a price chip, not a policy note: show the first
+// sentence, cap it, and let the lightbox carry the full wording.
+function costBadgeLabel(cost) {
+  if (!cost) return "Free";
+  const first = cost.trim().split(". ")[0].replace(/\.$/, "").trim();
+  return first.length > 38 ? `${first.slice(0, 37).trimEnd()}…` : first;
+}
+
 // ============================================================
 // 🗓️  REUSABLE EVENT ROW - used across all time-horizon sections
 // ============================================================
@@ -412,7 +422,7 @@ function EventRow({ event, onEventClick, isLast, variant = "default" }) {
       className="calendar-event-row"
       style={{
         display: "grid",
-        gridTemplateColumns: isHero ? "130px 1fr auto" : "120px 1fr auto",
+        gridTemplateColumns: isHero ? "130px minmax(0, 1fr) minmax(0, auto)" : "120px minmax(0, 1fr) minmax(0, auto)",
         gap: isHero ? "0 28px" : "0 24px",
         alignItems: "center",
         padding: isHero ? "28px 0" : "24px 0",
@@ -488,7 +498,7 @@ function EventRow({ event, onEventClick, isLast, variant = "default" }) {
       </div>
 
       <div className="calendar-cost-badge" style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
-        <span style={{
+        <span title={event.cost || undefined} style={{
           fontFamily: "'Libre Franklin', sans-serif",
           fontSize: 11, fontWeight: 600, letterSpacing: 1,
           color: event.cost === "Free" || event.cost === "Free to attend" || event.cost === "Free to watch" ? C.sage : C.sunset,
@@ -496,8 +506,9 @@ function EventRow({ event, onEventClick, isLast, variant = "default" }) {
           padding: "5px 12px", borderRadius: 20,
           textTransform: "uppercase",
           whiteSpace: "nowrap",
+          maxWidth: 220, overflow: "hidden", textOverflow: "ellipsis",
         }}>
-          {event.cost || "Free"}
+          {costBadgeLabel(event.cost)}
         </span>
         {event.ticketsEnabled && (
           <span style={{
