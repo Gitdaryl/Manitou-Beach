@@ -225,3 +225,23 @@ jobs:
             || echo "Could not send the failure alert either."
         env:
           ALERT_TOKEN: ${{ secrets.ALERT_TOKEN }}
+
+  # ---------------------------------------------------------------------------
+  # The overlay job alerts on its own failures, but that step runs ON the Mac.
+  # If the Mac is the problem, that alert cannot fire either, and the failure
+  # mode is a silent Wednesday. This runs on GitHub's own hardware so there is
+  # always something left alive to say the reel did not get made.
+  watchdog:
+    needs: [make-video, overlay]
+    if: always() && needs.overlay.result != 'success' && github.event.inputs.script_only != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Say the reel did not land
+        run: |
+          curl -s -X POST "$SITE_URL/api/internal-alert" \
+            -H 'Content-Type: application/json' \
+            -d "{\"token\":\"$ALERT_TOKEN\",\"message\":\"AI Holly: no finished reel this week. The overlay job on the Mac ended as '${{ needs.overlay.result }}'. Check the Mac is on and the runner is up. Logs: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" \
+            || echo "Could not send the alert."
+        env:
+          ALERT_TOKEN: ${{ secrets.ALERT_TOKEN }}
+          SITE_URL:    https://manitoubeachmichigan.com
