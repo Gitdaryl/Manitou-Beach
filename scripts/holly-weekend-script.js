@@ -115,7 +115,23 @@ function describeCost(e) {
 function buildDigest(events, days) {
   const byDay = days.map(d => ({ date: d, day: dayName(d), items: [] }))
   for (const e of events) {
-    const end = e.dateEnd || e.date
+    // dateEnd carries two different meanings in this data and only one of them
+    // should spread an event across days. A festival that genuinely runs Friday
+    // to Sunday belongs on all three. A weekly series whose organiser typed the
+    // last date of the season into dateEnd does NOT: Cherry Creek's Vineyard
+    // Jams runs to Oct 24, and expanding that put it on every day of the
+    // weekend, so Holly announced a Sunday Vineyard Jams that does not happen
+    // while the real Sunday listing is Acoustic Sundays.
+    //
+    // Nothing in the feed distinguishes the two, so use the span: four days is
+    // a long festival, six weeks is a season. Anything longer sits on its start
+    // date only. Wrong on a genuinely month-long exhibition, which is the
+    // cheaper mistake, because that one is still announced, just once.
+    const SPAN_LIMIT = 4
+    const rawEnd = e.dateEnd || e.date
+    const span = Math.round(
+      (new Date(rawEnd + 'T12:00:00Z') - new Date(e.date + 'T12:00:00Z')) / 86400000) + 1
+    const end = span > SPAN_LIMIT ? e.date : rawEnd
     for (const slot of byDay) {
       if (e.date <= slot.date && end >= slot.date) slot.items.push(e)
     }
