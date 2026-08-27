@@ -2,90 +2,88 @@
 
 **Window:** Thursday through Sunday
 **Source:** https://manitoubeachmichigan.com/api/events, 11 published events
-**Generated:** 2026-08-27T19:04:50.852Z
+**Generated:** 2026-08-27T19:28:33.105Z
 **Status:** DRAFT, not yet approved
 
 ---
 
 ## SCRIPT
 
-[Open on Holly, waterfront b-roll behind her]
+[Open on Holly, lakeside b-roll behind her]
 
-Some folks still think there's a real person in here. Nope. I'm the AI one. The real Holly has the better laugh, the better personality, and she's the one who gets to actually taste the wine. Me? I get pixels. Totally fine.
+Every week somebody tells me they saw me around town. Wasn't me. I'm the AI Holly, the copy that lives in your phone. Real Holly's the one with the actual personality, and she's the one holding the wine glass. I'm fine. Totally fine.
 
-Nothing on the books for Thursday, so let's start Friday.
+[Card: Coffee and Connections, Meckley's Flavor Fruit Farms]
 
-[B-roll: Meckley's Flavor Fruit Farms]
+Nothing on the calendar Thursday, so let's start Friday morning. Coffee and Connections with the Irish Hills Chamber at Meckley's Flavor Fruit Farms, nine thirty in the morning. Free for chamber members, ten dollars if you're just checking it out.
 
-Friday morning, Coffee and Connections with the Irish Hills Regional Chamber at Meckley's Flavor Fruit Farms, nine thirty. Free if you're a chamber member, ten dollars if you're not one yet.
+[Card: Cherry Creek Cellars Vineyard Jams]
 
-[B-roll: Cherry Creek Cellars tent, then Chateau Aeronautique Biergarten, then Two Lakes Tavern]
+Friday night, Vineyard Jams at Cherry Creek Cellars, six to ten, five dollar cover at the tent. Then at eight, two options. A Foreigner tribute at Chateau Aeronautique Winery in the Biergarten, eight to eleven, twenty five dollar cover. Or Dan Bickel at Two Lakes Tavern, eight to eleven, no cover.
 
-Then Vineyard Jams at Cherry Creek Cellars, six to ten, five dollar cover at the tent, food truck and live music. At eight, a Foreigner tribute band at Chateau Aeronautique Winery in the Biergarten, twenty five dollar cover. Also at eight, Dan Bickel at Two Lakes Tavern, eight to eleven, no cover.
+[Card: Wine and Flower Fest, Gypsy Blue Vineyards]
 
-[B-roll: Gypsy Blue Vineyards, flowers]
+Saturday starts big. The Wine and Flower Fest at Gypsy Blue Vineyards, eleven in the morning until seven. Ten dollars in advance, twelve at the door, kids under eighteen free with a paying adult. Live music all day, vendors, food, flower crowns and fairy wings. Flower crowns. And I'm sitting here being a video file. Bring me back a picture, that's all I ask.
 
-Saturday's stacked. Wine and Flower Fest at Gypsy Blue Vineyards, eleven in the morning to seven at night. Ten dollars in advance, twelve at the door, and kids under eighteen are free with a paying adult. Flower crowns, fairy wings, glitter tattoos, vendors and music all day. Real Holly gets a flower crown. I get a file name. Bring me back a picture, that's all I ask.
+[Card: Saturday night lineup]
 
-[B-roll: Cherry Creek, Chateau Aeronautique, Two Lakes, Devils Lake Bar and Grill]
+Saturday night, Vineyard Jams again at Cherry Creek, six to nine, five dollars. Dueling Pianos at Chateau Aeronautique, eight to eleven, twenty five dollar cover. Ryan Groth at Two Lakes Tavern, eight to eleven, free. And FLYTE plays Devils Lake Bar and Grill in the evening, also free.
 
-Then Vineyard Jams again at Cherry Creek at six. Dueling Pianos at Chateau Aeronautique, eight to eleven, twenty five dollars. Ryan Groth at Two Lakes Tavern, eight to eleven, free. And FLYTE at Devils Lake Bar and Grill in the evening, free.
+[Card: Sunday]
 
-[B-roll: quiet Sunday lake shots]
+Sunday, ease into it. Acoustic Sundays at Cherry Creek Cellars, two to five, free. And Frankly Jack at Two Lakes Tavern, four to seven, free, right at sunset.
 
-Sunday, wind it down. Acoustic Sundays at Cherry Creek in the Schoolhouse, two to five, free. Vineyard Jams again at six. And Frankly Jack at Two Lakes Tavern at seven, no cover.
+[Holly to camera, CTA]
 
-[Back to Holly]
-
-Running something around the lakes? List it free at Manitou Beach Michigan dot com and I'll read it out next week. All the details are on the site. See you out there. Sort of.
+Running something around the lakes? List it free at Manitou Beach Michigan dot com and I'll read it out next week. Addresses and details are all on the site. Have a good weekend, everybody.
 
 ## SPOKEN SCRIPT
 
 <!-- HEYGEN:START -->
-Some folks still think there's a real person in here. Nope. I'm the AI one. The real Holly has the better laugh, the better personality, and she's the one who gets to actually taste the wine. Me? I get pixels. Totally fine.
+Every week somebody tells me they saw me around town. Wasn't me. I'm the AI Holly, the copy that lives in your phone. Real Holly's the one with the actual personality, and she's the one holding the wine glass. I'm fine. Totally fine.
 
-Nothing on the books for Thursday, so let's start Friday.
+Nothing on the calendar Thursday, so let's start Friday morning. Coffee and Connections with the Irish Hills Chamber at Meckley's Flavor Fruit Farms, nine thirty in the morning. Free for chamber members, ten dollars if you're just checking it out.
 
-Friday morning, Coffee and Connections with the Irish Hills Regional Chamber at Meckley's Flavor Fruit Farms, nine thirty. Free if you're a chamber member, ten dollars if you're not one yet. Then Vineyard Jams at Cherry Creek Cellars, six to ten, five dollar cover at the tent, food truck and live music. At eight, a Foreigner tribute band at Chateau Aeronautique Winery in the Biergarten, twenty five dollar cover. Also at eight, Dan Bickel at Two Lakes Tavern, eight to eleven, no cover.
+Friday night, Vineyard Jams at Cherry Creek Cellars, six to ten, five dollar cover at the tent. Then at eight, two options. A Foreigner tribute at Chateau Aeronautique Winery in the Biergarten, eight to eleven, twenty five dollar cover. Or Dan Bickel at Two Lakes Tavern, eight to eleven, no cover.
 
-Saturday's stacked. Wine and Flower Fest at Gypsy Blue Vineyards, eleven in the morning to seven at night. Ten dollars in advance, twelve at the door, and kids under eighteen are free with a paying adult. Flower crowns, fairy wings, glitter tattoos, vendors and music all day. Real Holly gets a flower crown. I get a file name. Bring me back a picture, that's all I ask.
+Saturday starts big. The Wine and Flower Fest at Gypsy Blue Vineyards, eleven in the morning until seven. Ten dollars in advance, twelve at the door, kids under eighteen free with a paying adult. Live music all day, vendors, food, flower crowns and fairy wings. Flower crowns. And I'm sitting here being a video file. Bring me back a picture, that's all I ask.
 
-Then Vineyard Jams again at Cherry Creek at six. Dueling Pianos at Chateau Aeronautique, eight to eleven, twenty five dollars. Ryan Groth at Two Lakes Tavern, eight to eleven, free. And FLYTE at Devils Lake Bar and Grill in the evening, free.
+Saturday night, Vineyard Jams again at Cherry Creek, six to nine, five dollars. Dueling Pianos at Chateau Aeronautique, eight to eleven, twenty five dollar cover. Ryan Groth at Two Lakes Tavern, eight to eleven, free. And FLYTE plays Devils Lake Bar and Grill in the evening, also free.
 
-Sunday, wind it down. Acoustic Sundays at Cherry Creek in the Schoolhouse, two to five, free. Vineyard Jams again at six. And Frankly Jack at Two Lakes Tavern at seven, no cover.
+Sunday, ease into it. Acoustic Sundays at Cherry Creek Cellars, two to five, free. And Frankly Jack at Two Lakes Tavern, four to seven, free, right at sunset.
 
-Running something around the lakes? List it free at Manitaw Beach Michigan dot com and I'll read it out next week. All the details are on the site. See you out there. Sort of.
+Running something around the lakes? List it free at Manitaw Beach Michigan dot com and I'll read it out next week. Addresses and details are all on the site. Have a good weekend, everybody.
 <!-- HEYGEN:END -->
 
 ## CAPTION
 
-WEEKEND RUNDOWN, August 27 to 30
+Weekend rundown, August 27 through 30.
 
-FRIDAY 8/28
-- Coffee & Connections, Irish Hills Regional Chamber at Meckley's Flavor Fruit Farms, 9:30 AM, free for IHRCC members / $10 for potential members
-- Vineyard Jams at Cherry Creek Cellars, 6 to 10 PM, $5 cover at the tent
-- Foreigner Tribute at Chateau Aeronautique Winery, 8 to 11 PM, $25 cover
-- Dan Bickel at Two Lakes Tavern, 8 to 11 PM, free
+THURSDAY
+- Nothing listed
 
-SATURDAY 8/29
-- Wine and Flower Fest at Gypsy Blue Vineyards, 11 AM to 7 PM, $10 advance / $12 at the door, under 18 free with a paying adult
-- Vineyard Jams at Cherry Creek Cellars, 6 PM, $5 at the tent
-- Dueling Pianos at Chateau Aeronautique Winery, 8 to 11 PM, $25 cover
-- Ryan Groth at Two Lakes Tavern, 8 to 11 PM, free
-- FLYTE at Devils Lake Bar & Grill, evening, free
+FRIDAY
+- Coffee & Connections, Irish Hills Chamber at Meckley's Flavor Fruit Farms, 9:30 AM, free for IHRCC members / $10 for potential members
+- Vineyard Jams at Cherry Creek Cellars, 6-10 PM, $5 cover at the tent
+- Foreigner Tribute at Chateau Aeronautique Winery, 8-11 PM, $25 cover
+- Dan Bickel at Two Lakes Tavern, 8-11 PM, free
 
-SUNDAY 8/30
-- Acoustic Sundays at Cherry Creek Cellars, 2 to 5 PM, free
-- Vineyard Jams at Cherry Creek Cellars, 6 PM, $5 at the tent
-- Frankly Jack at Two Lakes Tavern, 7 PM, free
+SATURDAY
+- Wine and Flower Fest at Gypsy Blue Vineyards, 11 AM-7 PM, $10 advance / $12 at the door, under 18 free with a paying adult
+- Vineyard Jams at Cherry Creek Cellars, 6-9 PM, $5 at the tent
+- Dueling Pianos at Chateau Aeronautique Winery, 8-11 PM, $25 cover
+- Ryan Groth at Two Lakes Tavern, 8-11 PM, free
+- FLYTE at Devils Lake Bar and Grill, evening, free
+
+SUNDAY
+- Acoustic Sundays at Cherry Creek Cellars, 2-5 PM, free
+- Frankly Jack at Two Lakes Tavern, 4-7 PM, free
 
 Got an event? List it free at manitoubeachmichigan.com
 
 ## VERIFY BEFORE POSTING
 
-- Live Music: FLYTE, Devils Lake Bar & Grill, Saturday: no start time in the data. Spoken as "in the evening." Confirm a time with the venue if possible.
-- Live Music: Frankly Jack, Two Lakes Tavern, Sunday: start time field says 7:00 PM but the description says a 4 to 7 PM sunset show. Script uses 7 o'clock. Needs a human to confirm which is right.
-- Cherry Creek Cellars Vineyard Jams, Saturday: listed twice, once 6 to 10 PM and once 6 to 9 PM, both $5. Looks like a duplicate with conflicting end times.
-- Cherry Creek Cellars Vineyard Jams, Sunday: same duplicate, 6 to 10 PM and 6 to 9 PM.
-- Cherry Creek Cellars Vineyard Jams, all days: event start listed as 6 PM but the description says live music 7 to 10 PM. Confirm which time to promote.
-- Wine and Flower Fest: Gypsy Blue Vineyards has no address or city in the listing.
+- FLYTE at Devils Lake Bar and Grill, Saturday: no start time in the data. Spoken as "in the evening." Worth getting a real time from the venue.
+- Cherry Creek Cellars Vineyard Jams, Saturday: listed as 6:00 PM to 9:00 PM, but the description says live music runs 7 to 10 PM. Friday's listing is 6 to 10 PM. One of the two Saturday times is likely wrong.
+- Wine and Flower Fest: location is listed only as "Gypsy Blue Vineyards" with no street address, so nothing to point people to on the site listing.
+- Coffee and Connections cost is a two-tier price, free for IHRCC members and $10 for potential members. Confirm that's still current before it goes out.
