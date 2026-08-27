@@ -24,9 +24,18 @@ on:
         default: 'false'
         type: choice
         options: ['false', 'true']
+      overlay_only:
+        description: 'Redo the graphics on an EXISTING render. Needs week. Never re-renders, so it cannot bill HeyGen again.'
+        required: false
+        default: 'false'
+        type: choice
+        options: ['false', 'true']
 
 jobs:
   make-video:
+    # Skipped entirely for an overlay_only run. Re-rendering to fix a caption or
+    # a chip image would bill HeyGen a second time for a take already approved.
+    if: github.event.inputs.overlay_only != 'true'
     runs-on: ubuntu-latest
     # The render is the long pole: usually ~2 minutes, occasionally much longer.
     timeout-minutes: 40
@@ -145,13 +154,21 @@ jobs:
   # is no guess about how long HeyGen took.
   overlay:
     needs: make-video
-    if: github.event.inputs.script_only != 'true'
+    # always(), because on an overlay_only run make-video is skipped and a
+    # skipped dependency would otherwise take this job down with it.
+    if: >-
+      always()
+      && github.event.inputs.script_only != 'true'
+      && (needs.make-video.result == 'success'
+          || github.event.inputs.overlay_only == 'true')
     runs-on: [self-hosted, macOS, ARM64]
     timeout-minutes: 45
 
     env:
       REEL_KIT:  /Users/darylyoung/Projects/holly-reel-kit
       SITE_URL:  https://manitoubeachmichigan.com
+      # From make-video normally, straight from the input on an overlay_only run.
+      THURSDAY:  ${{ needs.make-video.outputs.thursday || github.event.inputs.week }}
 
     steps:
       - name: Setup Node 22
@@ -167,6 +184,7 @@ jobs:
 
       - name: Check the tools are here
         run: |
+          test -n "$THURSDAY" || { echo "overlay_only needs the week input"; exit 1; }
           for t in ffmpeg ffprobe whisper-cli; do
             command -v $t >/dev/null || { echo "missing: $t"; exit 1; }
           done
@@ -181,7 +199,7 @@ jobs:
         working-directory: ${{ env.REEL_KIT }}/reel
         run: |
           node run.mjs \
-            --thursday="${{ needs.make-video.outputs.thursday }}" \
+            --thursday="$THURSDAY" \
             --from-blob --upload --publish --deliver
         env:
           BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
@@ -203,7 +221,7 @@ jobs:
         run: |
           curl -s -X POST "$SITE_URL/api/internal-alert" \
             -H 'Content-Type: application/json' \
-            -d "{\"token\":\"$ALERT_TOKEN\",\"message\":\"AI Holly OVERLAY failed for ${{ needs.make-video.outputs.thursday }}. The HeyGen render exists but there is no finished reel. Logs: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" \
+            -d "{\"token\":\"$ALERT_TOKEN\",\"message\":\"AI Holly OVERLAY failed for $THURSDAY. The HeyGen render exists but there is no finished reel. Logs: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" \
             || echo "Could not send the failure alert either."
         env:
           ALERT_TOKEN: ${{ secrets.ALERT_TOKEN }}
