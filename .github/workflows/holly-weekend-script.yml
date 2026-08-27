@@ -34,9 +34,33 @@ jobs:
     permissions:
       contents: write
 
+    outputs:
+      thursday: ${{ steps.week.outputs.thursday }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      # The overlay job runs on a different machine and must not work this out
+      # for itself. This job takes the UPCOMING Thursday; holly-reel-kit takes
+      # the PREVIOUS one, which is the same day only when you run it on a
+      # Thursday. Left to guess on a Wednesday the two are seven days apart and
+      # the overlay would quietly rebuild last weekend's reel.
+      - name: Work out which weekend this is
+        id: week
+        run: |
+          if [ -n "${{ github.event.inputs.week }}" ]; then
+            echo "thursday=${{ github.event.inputs.week }}" >> "$GITHUB_OUTPUT"
+          else
+            node -e '
+              const f = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Detroit",
+                year: "numeric", month: "2-digit", day: "2-digit" });
+              const d = new Date(f.format(new Date()) + "T12:00:00Z");
+              d.setUTCDate(d.getUTCDate() + ((4 - d.getUTCDay() + 7) % 7));
+              console.log("thursday=" + d.toISOString().slice(0, 10));
+            ' >> "$GITHUB_OUTPUT"
+          fi
+          echo "Weekend: $(grep thursday "$GITHUB_OUTPUT" | tail -1)"
 
       - name: Setup Node 22
         uses: actions/setup-node@v4
@@ -110,3 +134,76 @@ jobs:
             git commit -m "AI Holly weekend script"
             git push
           fi
+
+  # ---------------------------------------------------------------------------
+  # The graphics pass. Runs on the Mac Studio through a self-hosted runner,
+  # because HyperFrames needs a real GPU and whisper needs real cores: 56s there
+  # against tens of minutes of software rendering on a hosted runner. The Studio
+  # is on AC with sleep disabled, so "not home" does not mean "not running".
+  #
+  # It chains off make-video rather than running on its own schedule, so there
+  # is no guess about how long HeyGen took.
+  overlay:
+    needs: make-video
+    if: github.event.inputs.script_only != 'true'
+    runs-on: [self-hosted, macOS, ARM64]
+    timeout-minutes: 45
+
+    env:
+      REEL_KIT:  /Users/darylyoung/Projects/holly-reel-kit
+      SITE_URL:  https://manitoubeachmichigan.com
+
+    steps:
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # Homebrew, via GITHUB_PATH rather than a job-level PATH. Setting PATH in
+      # the job env replaces it outright and drops the directory setup-node adds
+      # for its own toolchain, so node would go missing on a machine that has it.
+      - name: Put Homebrew on PATH
+        run: echo "/opt/homebrew/bin" >> "$GITHUB_PATH"
+
+      - name: Check the tools are here
+        run: |
+          for t in ffmpeg ffprobe whisper-cli; do
+            command -v $t >/dev/null || { echo "missing: $t"; exit 1; }
+          done
+          test -d "$REEL_KIT/reel" || { echo "no reel kit at $REEL_KIT"; exit 1; }
+          node -v
+
+      # --deliver is the whole point of this job. It texts Holly only when the
+      # reel is clean, and texts Yeti with the reason when it is not, so an
+      # unattended Wednesday can never put a half-right reel in front of a
+      # client. --publish arms "AI Holly Post"; it does not post anything.
+      - name: Overlay the graphics and deliver
+        working-directory: ${{ env.REEL_KIT }}/reel
+        run: |
+          node run.mjs \
+            --thursday="${{ needs.make-video.outputs.thursday }}" \
+            --from-blob --upload --publish --deliver
+        env:
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          ALERT_TOKEN:           ${{ secrets.ALERT_TOKEN }}
+
+      - name: Attach the finished reel to this run
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-holly-reel-overlaid
+          path: ${{ env.REEL_KIT }}/holly-*-OVERLAID-web.mp4
+          if-no-files-found: warn
+          retention-days: 30
+
+      # Same reasoning as the render job: a dead scheduled job is silent, and
+      # silence here means Holly gets nothing on Thursday morning and nobody
+      # finds out until she asks.
+      - name: Say so if it broke
+        if: failure()
+        run: |
+          curl -s -X POST "$SITE_URL/api/internal-alert" \
+            -H 'Content-Type: application/json' \
+            -d "{\"token\":\"$ALERT_TOKEN\",\"message\":\"AI Holly OVERLAY failed for ${{ needs.make-video.outputs.thursday }}. The HeyGen render exists but there is no finished reel. Logs: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" \
+            || echo "Could not send the failure alert either."
+        env:
+          ALERT_TOKEN: ${{ secrets.ALERT_TOKEN }}
