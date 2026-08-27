@@ -171,20 +171,23 @@ jobs:
       THURSDAY:  ${{ needs.make-video.outputs.thursday || github.event.inputs.week }}
 
     steps:
+      # Homebrew first, on purpose. GITHUB_PATH PREPENDS, so whichever step runs
+      # last wins the lookup. With this after setup-node, Homebrew's node beat
+      # the toolchain one and the kit ran on node 23 instead of the pinned 22.
+      # Not a job-level PATH either: that replaces PATH outright and drops the
+      # directory setup-node adds for itself.
+      - name: Put Homebrew on PATH
+        run: echo "/opt/homebrew/bin" >> "$GITHUB_PATH"
+
       - name: Setup Node 22
         uses: actions/setup-node@v4
         with:
           node-version: '22'
 
-      # Homebrew, via GITHUB_PATH rather than a job-level PATH. Setting PATH in
-      # the job env replaces it outright and drops the directory setup-node adds
-      # for its own toolchain, so node would go missing on a machine that has it.
-      - name: Put Homebrew on PATH
-        run: echo "/opt/homebrew/bin" >> "$GITHUB_PATH"
-
       - name: Check the tools are here
         run: |
           test -n "$THURSDAY" || { echo "overlay_only needs the week input"; exit 1; }
+          case "$(node -v)" in v22.*) ;; *) echo "expected node 22, got $(node -v)"; exit 1;; esac
           for t in ffmpeg ffprobe whisper-cli; do
             command -v $t >/dev/null || { echo "missing: $t"; exit 1; }
           done
