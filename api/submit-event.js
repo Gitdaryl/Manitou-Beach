@@ -12,6 +12,7 @@ import crypto from 'crypto';
 import { sendSMS, normalizePhone } from './lib/twilio.js';
 import { notifyLinkedOrganizers, addedMessage } from './lib/organizer-notify.js';
 import { Resend } from 'resend';
+import { lineupProperties } from './lib/lineup.js';
 
 function generateCode() {
   return String(Math.floor(100000 + Math.random() * 900000));
@@ -80,6 +81,7 @@ export default async function handler(req, res) {
     recurringDay,       // 'Monday' … 'Sunday'
     recurringEndDate,   // last date in the recurring series (stored in description metadata)
     outdoors,           // true if the event is held outdoors (drives weather change-risk)
+    lineup,             // { trucks, entertainment, vendors } - who else is working this event
     sessionToken,       // HMAC token from a prior verify - skip SMS if valid
     _hp,                // honeypot
   } = req.body || {};
@@ -138,6 +140,11 @@ export default async function handler(req, res) {
   if (recurring && recurring !== 'None') properties['Recurring'] = { select: { name: recurring } };
   if (recurringDay) properties['Recurring Day'] = { select: { name: recurringDay } };
   if (outdoors) properties['Outdoors'] = { checkbox: true };
+
+  // Who else is working this event. Deliberately outside the eventType switch below:
+  // a lineup is an attribute of any event, not a kind of event. A wine tasting with two
+  // trucks parked outside is the common case and had nowhere to live before this.
+  Object.assign(properties, lineupProperties(lineup));
 
   // Event type → set the right flags
   switch (eventType) {

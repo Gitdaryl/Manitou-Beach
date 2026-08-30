@@ -1,6 +1,8 @@
 // GET /api/event-detail?id=[notion-page-id]
 // Returns a single event by Notion page ID with full field set.
 
+import { readLineup } from './lib/lineup.js';
+
 const HEADERS = {
   'Authorization': `Bearer ${process.env.NOTION_TOKEN_EVENTS}`,
   'Notion-Version': '2022-06-28',
@@ -69,6 +71,7 @@ export default async function handler(req, res) {
       description,
       detailBlocks,
       cost: p['Cost']?.rich_text?.[0]?.text?.content || null,
+      lineup: readLineup(p),
       imageUrl: normalizeUrl(p['Image URL']?.url || null),
       eventUrl: normalizeUrl(p['Event URL']?.url || null),
       organizerName: p['Organizer Name']?.rich_text?.[0]?.text?.content || null,

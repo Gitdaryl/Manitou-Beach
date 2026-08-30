@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import LineupPicker from '../components/LineupPicker';
 import { Navbar, Footer } from '../components/Layout';
 import { C } from '../data/config';
 import yeti from '../data/errorMessages';
@@ -63,6 +64,7 @@ const EMPTY_FORM = {
   recurring: 'None', recurringDay: '', recurringEndDate: '',
   eventType: 'free',
   outdoors: false,
+  lineup: { trucks: [], entertainment: [], vendors: [] },
 };
 
 const GUIDE_KEY = 'mb_event_guide_dismissed';
@@ -782,6 +784,24 @@ export default function SubmitEventPage() {
                     </div>
                   </div>
                 )}
+
+                {/* Lineup - every event type. A wine tasting with two trucks outside is
+                    the common case, and there was nowhere to say so. */}
+                <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 20, display: 'flex', flexDirection: 'column', gap: 14 }}>
+                  <div>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: C.cream, marginBottom: 4 }}>
+                      Who else is going to be there?
+                    </div>
+                    <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.6 }}>
+                      Food trucks, a band, other vendors. They'll show on your event page, and
+                      the ones already on our locator get put on the map that day.
+                    </div>
+                  </div>
+                  <LineupPicker
+                    value={form.lineup}
+                    onChange={next => setForm(f => ({ ...f, lineup: next }))}
+                  />
+                </div>
 
                 {/* Stripe info banner for money types */}
                 {needsStripe && (

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import LineupPicker from "../components/LineupPicker";
 import { FadeIn, SectionTitle, SectionLabel, Btn } from '../components/Shared';
 import { C } from '../data/config';
 import { Footer, GlobalStyles, Navbar, compressImage } from '../components/Layout';
@@ -60,6 +61,7 @@ export default function EventEditPage() {
     name: "", date: "", time: "", timeEnd: "", location: "",
     description: "", cost: "", eventUrl: "", attendance: "",
     lifecycle: "Active", changeNote: "",
+    lineup: { trucks: [], entertainment: [], vendors: [] },
   });
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
@@ -99,6 +101,7 @@ export default function EventEditPage() {
             attendance: data.attendance || "",
             lifecycle: data.lifecycle || "Active",
             changeNote: data.changeNote || "",
+            lineup: data.lineup || { trucks: [], entertainment: [], vendors: [] },
           });
           if (data.imageUrl) setImagePreview(data.imageUrl);
         }
@@ -338,6 +341,19 @@ export default function EventEditPage() {
                     <div>
                       <label style={labelStyle}>Cost / Admission</label>
                       <input value={form.cost} onChange={e => set("cost", e.target.value)} placeholder="e.g. Free · $10 at the door" style={inputStyle} />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Who else is going to be there?</label>
+                      <p style={{ fontSize: 13, color: "#6B6052", lineHeight: 1.6, margin: "0 0 12px" }}>
+                        Trucks and bands usually get booked after the event goes up, so add them
+                        whenever you know. Anyone already on our food truck locator gets put on the
+                        map that day.
+                      </p>
+                      <LineupPicker
+                        theme="light"
+                        value={form.lineup}
+                        onChange={next => set("lineup", next)}
+                      />
                     </div>
                     <div style={{ gridColumn: "1 / -1" }}>
                       <label style={labelStyle}>Attendance / RSVP</label>

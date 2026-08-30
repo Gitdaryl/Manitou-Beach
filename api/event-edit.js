@@ -11,6 +11,7 @@
 // editing different fields both succeed, which is what you'd want.
 
 import { normalizePhone } from './lib/twilio.js';
+import { lineupProperties, readLineup } from './lib/lineup.js';
 import { validToken } from './lib/organizer-links.js';
 import { notifyLinkedOrganizers, lifecycleMessage } from './lib/organizer-notify.js';
 
@@ -67,6 +68,7 @@ function readEventFields(page) {
     category: p['Category']?.rich_text?.[0]?.text?.content || '',
     lifecycle: p['Lifecycle']?.select?.name || 'Active',
     changeNote: p['Change Note']?.rich_text?.[0]?.text?.content || '',
+    lineup: readLineup(p),
   };
 }
 
@@ -114,6 +116,7 @@ export default async function handler(req, res) {
   if (req.method === 'POST') {
     const {
       token, name, time, timeEnd, location, description, cost, eventUrl, imageUrl,
+      lineup,       // { trucks, entertainment, vendors }, any subset
       attendance, date, lifecycle, changeNote,
       baseline,     // what the form loaded, for conflict detection
       force,        // "keep mine" after being shown the conflict
@@ -161,6 +164,9 @@ export default async function handler(req, res) {
       if (location !== undefined) properties['Location'] = { rich_text: [{ text: { content: location || '' } }] };
       if (description !== undefined) properties['Description'] = { rich_text: [{ text: { content: description || '' } }] };
       if (cost !== undefined) properties['Cost'] = { rich_text: [{ text: { content: cost || '' } }] };
+      // Lineups firm up after an event is posted - the trucks often aren't booked when
+      // the organizer first submits - so this is editable, per category.
+      Object.assign(properties, lineupProperties(lineup));
       if (date) properties['Event date'] = { date: { start: date } };
       if (attendance !== undefined) properties['Attendance'] = attendance ? { select: { name: attendance } } : { select: null };
 

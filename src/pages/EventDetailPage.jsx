@@ -499,6 +499,61 @@ export default function EventDetailPage() {
                 </FadeIn>
               )}
 
+              {/* Who else is working this event. Entries with a slug are already on the
+                  food truck locator, so their name links straight to their profile. An
+                  entry with no slug is a business we don't have yet - it still shows,
+                  because the reader cares who's there, not whose directory they're in. */}
+              {(() => {
+                const groups = [
+                  { key: 'trucks', label: 'Food trucks', link: slug => `/food-trucks/${slug}` },
+                  { key: 'entertainment', label: 'Live music', link: null },
+                  { key: 'vendors', label: 'Vendors', link: null },
+                ].map(g => ({ ...g, items: event.lineup?.[g.key] || [] })).filter(g => g.items.length);
+
+                if (!groups.length) return null;
+
+                return (
+                  <FadeIn delay={90}>
+                  <div style={{ marginBottom: 32 }}>
+                    <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.dusk, margin: '0 0 14px' }}>
+                      Who's there
+                    </h2>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+                      {groups.map(g => (
+                        <div key={g.key}>
+                          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 8 }}>
+                            {g.label}
+                          </div>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                            {g.items.map((item, i) => {
+                              const inner = (
+                                <>
+                                  <span style={{ fontWeight: 600 }}>{item.name}</span>
+                                  {item.times && (
+                                    <span style={{ color: C.textMuted, fontWeight: 500, marginLeft: 7 }}>{item.times}</span>
+                                  )}
+                                </>
+                              );
+                              const chip = {
+                                display: 'inline-flex', alignItems: 'center',
+                                background: item.slug ? `${C.sage}12` : C.warmWhite,
+                                border: `1px solid ${item.slug ? `${C.sage}44` : C.sand}`,
+                                borderRadius: 20, padding: '8px 15px', fontSize: 14,
+                                color: C.text, textDecoration: 'none',
+                              };
+                              return g.link && item.slug
+                                ? <a key={i} href={g.link(item.slug)} style={chip}>{inner}</a>
+                                : <span key={i} style={chip}>{inner}</span>;
+                            })}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  </FadeIn>
+                );
+              })()}
+
               {/* CTAs */}
               {!past && (event.ticketsEnabled || event.rsvpEnabled || event.eventUrl) && (
                 <FadeIn delay={120}>

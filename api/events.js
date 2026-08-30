@@ -1,4 +1,5 @@
 import { sendSMSFull } from './lib/twilio.js';
+import { readLineup } from './lib/lineup.js';
 
 // Fetch all pages from a Notion database query, following cursors past the 100-record limit
 async function queryAllNotionPages(dbId, token, body) {
@@ -138,6 +139,7 @@ export default async function handler(req, res) {
           attendance: p['Attendance']?.select?.name || null,
           lifecycle: p['Lifecycle']?.select?.name || 'Active',
           outdoors: p['Outdoors']?.checkbox || false,
+          lineup: readLineup(p),
           changeNote: p['Change Note']?.rich_text?.[0]?.text?.content || '',
           changeRisk: deriveChangeRisk(
             p['Category']?.rich_text?.[0]?.text?.content || 'Community',
