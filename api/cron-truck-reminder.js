@@ -89,8 +89,8 @@ export default async function handler(req, res) {
         (!auto.until || etParts().dateStr <= auto.until);
 
       const msg = autoToday
-        ? `Good morning from Manitou Beach!\n\nHeads up ${name}: your pin drops automatically at ${auto.startET} today and you'll be posted to Facebook.\n\nNot heading out, or sold out early? Tap here any time to pull the pin down or change your spot:\n${link}\n\nReply STOP to opt out.`
-        : `Good morning from Manitou Beach!\n\nOpen for business today, ${name}? Drop your pin so folks at the lake can find you, and we'll post you to Facebook automatically:\n${link}\n\nReply STOP to opt out.`;
+        ? `Good morning from Manitou Beach!\n\nHeads up ${name}: your pin drops automatically at ${auto.startET} today and you'll be posted to Facebook.\n\nNot heading out, or sold out early? Tap here any time to pull the pin down or change your spot:\n${link}\n\nTip: open that link once and add it to your home screen - then it's an icon on your phone, one tap.\n\nReply STOP to opt out.`
+        : `Good morning from Manitou Beach!\n\nOpen for business today, ${name}? Drop your pin so folks at the lake can find you, and we'll post you to Facebook automatically:\n${link}\n\nTip: open that link once and add it to your home screen - then it's an icon on your phone, one tap, no digging for this text.\n\nReply STOP to opt out.`;
 
       const ok = await sendSMSFull(`+1${digits}`, msg);
       if (ok) sent++; else skipped++;
