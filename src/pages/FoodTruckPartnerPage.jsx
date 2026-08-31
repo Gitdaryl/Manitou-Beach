@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ControlHandoff from '../components/ControlHandoff';
 import { Btn, FadeIn, ScrollProgress, SectionLabel, SectionTitle, WaveDivider } from '../components/Shared';
 import { C } from '../data/config';
 import { BASE_PRICES } from '../data/pricing';
@@ -78,6 +79,12 @@ export default function FoodTruckPartnerPage() {
   const [verifyLoading, setVerifyLoading] = useState(false);
   const [verifyError, setVerifyError] = useState('');
   const [activationData, setActivationData] = useState(null); // { slug, checkinUrl, truckName }
+  // The check-in URL already carries the token; pulling it back out avoids widening the
+  // activation payload just to build a manifest href.
+  const checkinToken = (() => {
+    try { return new URL(activationData?.checkinUrl, window.location.origin).searchParams.get('token') || ''; }
+    catch { return ''; }
+  })();
   const [resending, setResending] = useState(false);
 
   const compressImage = (file, maxWidth = 1200, quality = 0.8) => new Promise((resolve) => {
@@ -454,24 +461,29 @@ export default function FoodTruckPartnerPage() {
 
             {step === 'activated' ? (
               /* ── ACTIVATED SUCCESS ── */
-              <div style={{ textAlign: "center", padding: "48px 24px", background: "rgba(255,255,255,0.04)", borderRadius: 16, border: "1px solid rgba(255,255,255,0.1)" }}>
-                <div style={{ fontSize: 56, marginBottom: 16, animation: "foodTruckPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)" }}>🎉</div>
-                <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, color: C.cream, fontWeight: 400, margin: "0 0 8px" }}>
-                  {activationData?.truckName || 'Your truck'} is live!
-                </h3>
-                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: C.sunsetLight, marginBottom: 20 }}>
-                  You're a founding truck - check your texts for your personal check-in link.
+              <div style={{ padding: "40px 26px", background: "rgba(255,255,255,0.04)", borderRadius: 16, border: "1px solid rgba(255,255,255,0.1)" }}>
+                <div style={{ textAlign: "center", marginBottom: 26 }}>
+                  <div style={{ fontSize: 52, marginBottom: 6, animation: "foodTruckPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)" }}>🎉</div>
+                  <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: C.sunsetLight }}>
+                    You're a founding truck
+                  </div>
                 </div>
-                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.8, margin: "0 0 28px", maxWidth: 400, marginLeft: "auto", marginRight: "auto" }}>
-                  Open that link every time you head to Manitou Beach. Drop your pin, add today's special, and you're live on the map in seconds.
-                </p>
-                <a href="/food-trucks" style={{
-                  display: "inline-block", padding: "14px 32px", background: C.sunset, color: C.cream, borderRadius: 28,
-                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5,
-                  textTransform: "uppercase", textDecoration: "none",
-                }}>
-                  See the Locator →
-                </a>
+
+                {/* The end of the flow belongs to them, not to us. The old version
+                    celebrated and then sent them to the public locator to look at other
+                    people's trucks - the one thing they have no stake in yet. */}
+                <ControlHandoff
+                  surface="truck"
+                  name={activationData?.truckName}
+                  identity={{ slug: activationData?.slug, token: checkinToken }}
+                  primaryHref={activationData?.checkinUrl}
+                >
+                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, margin: 0 }}>
+                    We texted you that link as well, so it is on your phone either way.{' '}
+                    <a href="/food-trucks" style={{ color: C.sunsetLight }}>See the locator</a>.
+                  </p>
+                </ControlHandoff>
+
                 <style>{`@keyframes foodTruckPop { 0% { transform: scale(0); } 60% { transform: scale(1.2); } 100% { transform: scale(1); } }`}</style>
               </div>
 

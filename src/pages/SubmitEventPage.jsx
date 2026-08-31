@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ControlHandoff from '../components/ControlHandoff';
 import LineupPicker from '../components/LineupPicker';
 import { Navbar, Footer } from '../components/Layout';
 import { C } from '../data/config';
@@ -292,10 +293,21 @@ export default function SubmitEventPage() {
               <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, fontWeight: 400, color: C.cream, margin: '0 0 12px' }}>
                 {activatedData?.eventName || 'Your event'} is live!
               </h1>
-              <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.55)', lineHeight: 1.8, margin: 0 }}>
-                This sounds fun - want to see what it looks like on the calendar?
-              </p>
             </div>
+
+            {/* Their controls come before our links. The event is theirs to change, and
+                saying so at the end is what makes the next edit feel like a right rather
+                than a favour we do for them. */}
+            {activatedData?.editToken && (
+              <div style={{ padding: '24px 22px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 14, marginBottom: 22 }}>
+                <ControlHandoff
+                  surface="organizer"
+                  showHeading={false}
+                  name={activatedData?.eventName}
+                  primaryHref={`/events/edit?token=${activatedData.editToken}`}
+                />
+              </div>
+            )}
 
             {/* See it live */}
             <a
@@ -309,23 +321,6 @@ export default function SubmitEventPage() {
                 Check out how it looks on the community calendar - make sure everything reads right.
               </div>
             </a>
-
-            {/* Edit */}
-            {activatedData?.editToken && (
-              <a
-                href={`/events/edit?token=${activatedData.editToken}`}
-                style={{ display: 'block', padding: '18px 22px', background: 'rgba(212,132,90,0.08)', border: '1px solid rgba(212,132,90,0.2)', borderRadius: 12, textDecoration: 'none', marginBottom: 14, transition: 'background 0.15s' }}
-                onMouseEnter={e => e.currentTarget.style.background = 'rgba(212,132,90,0.15)'}
-                onMouseLeave={e => e.currentTarget.style.background = 'rgba(212,132,90,0.08)'}
-              >
-                <div style={{ fontSize: 14, fontWeight: 700, color: C.cream, marginBottom: 4 }}>Need to change something?</div>
-                <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>
-                  {session
-                    ? 'We texted and emailed you this link too - every event gets its own, so keep them handy.'
-                    : 'We also texted and emailed you an edit link. You can update your event anytime - no login needed.'}
-                </div>
-              </a>
-            )}
 
             {/* Share to Facebook */}
             <a

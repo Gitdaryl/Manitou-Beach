@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { AddToHomeScreen, useInstallable } from '../components/HomeScreenInstall';
+import { CONTROL_SURFACES } from '../data/controlSurfaces';
 import { Btn, FadeIn, PageSponsorBanner, ScrollProgress, SectionLabel, SectionTitle, WaveDivider } from '../components/Shared';
 import { C, GEO } from '../data/config';
 import { Footer, GlobalStyles, Navbar, NewsletterInline } from '../components/Layout';
@@ -14,98 +16,6 @@ function formatDeparture(dt) {
   const d = new Date(dt);
   if (!isNaN(d.getTime())) return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
   return dt;
-}
-
-// Tells the browser this vendor's check-in page is installable, and points the launcher
-// at THIS truck's tokenized link so the icon opens their own "Go Live" button rather
-// than the public locator. iOS reads these tags from the live DOM at "Add to Home
-// Screen" time, which is why they're injected here rather than sitting in index.html.
-function useTruckInstallable(slug, token, name) {
-  useEffect(() => {
-    if (!slug || !token) return;
-    const q = `?truck=${encodeURIComponent(slug)}&token=${encodeURIComponent(token)}`
-      + (name ? `&name=${encodeURIComponent(name)}` : '');
-    const added = [];
-    const add = (tag, attrs) => {
-      const el = document.createElement(tag);
-      Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
-      document.head.appendChild(el);
-      added.push(el);
-    };
-
-    add('link', { rel: 'manifest', href: `/api/truck-manifest${q}` });
-    add('link', { rel: 'apple-touch-icon', href: '/images/truck-pin-192.png' });
-    add('meta', { name: 'apple-mobile-web-app-capable', content: 'yes' });
-    add('meta', { name: 'apple-mobile-web-app-title', content: 'Drop Pin' });
-    add('meta', { name: 'apple-mobile-web-app-status-bar-style', content: 'default' });
-    add('meta', { name: 'theme-color', content: '#D4845A' });
-
-    return () => { added.forEach(el => el.remove()); };
-  }, [slug, token, name]);
-}
-
-// The whole adoption problem in one card: vendors don't forget to check in because the
-// form is hard, they forget because there's nothing on their phone to remind them the
-// tool exists. An icon on the home screen is the reminder. "Add to Home Screen" lives in
-// a different menu on every platform, and the one thing worse than no instructions is
-// instructions for the wrong phone.
-function TruckAddToHomeScreen({ truckName }) {
-  const [prompt, setPrompt] = useState(null);
-  const [dismissed, setDismissed] = useState(() => {
-    try { return localStorage.getItem('mb-truck-a2hs-dismissed') === '1'; } catch { return false; }
-  });
-
-  useEffect(() => {
-    const onPrompt = (e) => { e.preventDefault(); setPrompt(e); };
-    window.addEventListener('beforeinstallprompt', onPrompt);
-    return () => window.removeEventListener('beforeinstallprompt', onPrompt);
-  }, []);
-
-  const standalone = typeof window !== 'undefined' &&
-    (window.matchMedia?.('(display-mode: standalone)').matches || window.navigator.standalone === true);
-  if (standalone || dismissed) return null;
-
-  const ua = typeof navigator !== 'undefined' ? navigator.userAgent : '';
-  const isIOS = /iPad|iPhone|iPod/.test(ua);
-
-  const close = () => {
-    setDismissed(true);
-    try { localStorage.setItem('mb-truck-a2hs-dismissed', '1'); } catch { /* private mode */ }
-  };
-
-  return (
-    <div style={{ position: 'relative', marginBottom: 28, padding: '18px 20px', borderRadius: 14, background: `${C.sunset}12`, border: `1px solid ${C.sunset}44` }}>
-      <button onClick={close} aria-label="Dismiss" style={{ position: 'absolute', top: 8, right: 10, background: 'none', border: 'none', color: C.textMuted, fontSize: 20, cursor: 'pointer', lineHeight: 1 }}>×</button>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
-        <img src="/images/truck-pin-192.png" alt="" width={40} height={40} style={{ borderRadius: 9, flexShrink: 0 }} />
-        <div style={{ fontSize: 15, fontWeight: 700, color: C.text, lineHeight: 1.3 }}>
-          Put this on your phone
-        </div>
-      </div>
-      <p style={{ fontSize: 13.5, color: C.textLight, lineHeight: 1.65, margin: '0 0 12px' }}>
-        Add it to your home screen and dropping your pin is one tap, like any other app.
-        No text to dig up, no link to find{truckName ? `, just ${truckName} and a button` : ''}.
-      </p>
-      {prompt ? (
-        <button
-          onClick={async () => { prompt.prompt(); await prompt.userChoice; setPrompt(null); }}
-          style={{ background: C.sunset, color: '#fff', border: 'none', borderRadius: 9, padding: '12px 20px', fontSize: 14, fontWeight: 700, fontFamily: "'Libre Franklin', sans-serif", cursor: 'pointer' }}
-        >
-          Add to home screen
-        </button>
-      ) : isIOS ? (
-        <p style={{ fontSize: 13.5, color: C.text, lineHeight: 1.75, margin: 0 }}>
-          Tap <strong>Share</strong> at the bottom of Safari (the square with the arrow up),
-          scroll down, and tap <strong>Add to Home Screen</strong>.
-        </p>
-      ) : (
-        <p style={{ fontSize: 13.5, color: C.text, lineHeight: 1.75, margin: 0 }}>
-          Open your browser's menu (the three dots) and choose <strong>Add to Home screen</strong>
-          {' '}or <strong>Install app</strong>.
-        </p>
-      )}
-    </div>
-  );
 }
 
 // Quick-pick preset colors (shown as swatches) - stored as hex
@@ -364,10 +274,18 @@ export default function FoodTrucksPage() {
   const [checkinStatus, setCheckinStatus] = useState("");
   const [checkinMsg, setCheckinMsg] = useState("");
 
-  // Home-screen install (vendor mode only). Passing the truck name gives the icon a
-  // label the vendor recognises; it's blank until /api/food-trucks resolves, and the
-  // manifest link simply re-renders when it arrives.
-  useTruckInstallable(isCheckinMode ? truckSlug : '', isCheckinMode ? truckToken : '', checkinTruck?.name || '');
+  // Home-screen install (vendor mode only). The truck name gives the icon a label the
+  // vendor recognises; it's blank until /api/food-trucks resolves and the manifest link
+  // simply re-renders when it arrives.
+  const truckInstall = CONTROL_SURFACES.truck.install;
+  useInstallable({
+    manifestHref: isCheckinMode
+      ? truckInstall.manifest({ slug: truckSlug, token: truckToken, name: checkinTruck?.name || '' })
+      : null,
+    icon: truckInstall.icon,
+    appTitle: truckInstall.appTitle,
+    themeColor: truckInstall.themeColor,
+  });
 
   // Vendor mode: captured location for map preview
   const [checkinLat, setCheckinLat] = useState(null);
@@ -1006,7 +924,14 @@ export default function FoodTrucksPage() {
           </div>
 
           {/* One tap on the home screen beats remembering a text message. */}
-          <TruckAddToHomeScreen truckName={checkinTruck?.name || ''} />
+          <AddToHomeScreen
+            theme="light"
+            icon={CONTROL_SURFACES.truck.install.icon}
+            heading={CONTROL_SURFACES.truck.install.heading}
+            body={CONTROL_SURFACES.truck.install.body}
+            storageKey={CONTROL_SURFACES.truck.install.storageKey}
+            style={{ marginBottom: 28 }}
+          />
 
           {/* Loading state */}
           {trucks === null ? (
