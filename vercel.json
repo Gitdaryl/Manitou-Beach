@@ -2,7 +2,12 @@
   "redirects": [
     {
       "source": "/(.*)",
-      "has": [{ "type": "host", "value": "www.manitoubeachmichigan.com" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.manitoubeachmichigan.com"
+        }
+      ],
       "destination": "https://manitoubeachmichigan.com/$1",
       "permanent": true
     },
@@ -21,46 +26,132 @@
     {
       "source": "/assets/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
     },
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(self)" }
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(self)"
+        }
       ]
     }
   ],
   "functions": {
-    "api/seed-outreach.js":         { "maxDuration": 60 },
-    "api/cron-outreach-resolve.js": { "maxDuration": 60 }
+    "api/seed-outreach.js": {
+      "maxDuration": 60
+    },
+    "api/cron-outreach-resolve.js": {
+      "maxDuration": 60
+    }
   },
   "rewrites": [
-    { "source": "/sitemap.xml", "destination": "/api/sitemap" },
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/sitemap"
+    },
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
+    }
   ],
   "crons": [
-    { "path": "/api/qa-agent",               "schedule": "*/30 * * * *" },
-    { "path": "/api/cron-expire-featured",   "schedule": "0 6 * * *" },
-    { "path": "/api/cron-event-reminders",   "schedule": "0 8 * * *" },
-    { "path": "/api/cron-sponsor-expiry",    "schedule": "0 9 * * *" },
-    { "path": "/api/cron-beta-trial-expiry", "schedule": "0 10 * * *" },
-    { "path": "/api/cron-expire-promotions", "schedule": "0 7 * * *" },
-    { "path": "/api/cron-review-digest",    "schedule": "0 13 * * *" },
-    { "path": "/api/cron-site-audit",      "schedule": "0 9 1 * *" },
-    { "path": "/api/cron-archive-events",  "schedule": "0 3 * * *" },
-    { "path": "/api/cron-social-post",       "schedule": "0 13 * * 4" },
-    { "path": "/api/cron-truck-reminder",    "schedule": "0 14 * * 6,0" },
-    { "path": "/api/cron-truck-autopin",     "schedule": "30 16,17 * * 6,0" },
-    { "path": "/api/cron-newsletter-draft",  "schedule": "0 23 * * 3" },
-    { "path": "/api/cron-category-qa",       "schedule": "30 13 * * *" },
-    { "path": "/api/cron-new-listing",       "schedule": "0 14 * * *" },
-    { "path": "/api/cron-profile-report-card", "schedule": "0 14 1 * *" },
-    { "path": "/api/cron-outreach-resolve",    "schedule": "0 9 * * *" },
-    { "path": "/api/sync-ical",                "schedule": "0 5 * * *" },
-    { "path": "/api/cron-reindex",             "schedule": "0 4 * * *" }
+    {
+      "path": "/api/qa-agent",
+      "schedule": "*/30 * * * *"
+    },
+    {
+      "path": "/api/cron-expire-featured",
+      "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron-event-reminders",
+      "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/cron-sponsor-expiry",
+      "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/cron-beta-trial-expiry",
+      "schedule": "0 10 * * *"
+    },
+    {
+      "path": "/api/cron-expire-promotions",
+      "schedule": "0 7 * * *"
+    },
+    {
+      "path": "/api/cron-review-digest",
+      "schedule": "0 13 * * *"
+    },
+    {
+      "path": "/api/cron-site-audit",
+      "schedule": "0 9 1 * *"
+    },
+    {
+      "path": "/api/cron-archive-events",
+      "schedule": "0 3 * * *"
+    },
+    {
+      "path": "/api/cron-social-post",
+      "schedule": "0 13 * * 4"
+    },
+    {
+      "path": "/api/cron-truck-reminder",
+      "schedule": "0 14 * * 6,0"
+    },
+    {
+      "path": "/api/cron-truck-autopin",
+      "schedule": "30 16,17 * * 6,0"
+    },
+    {
+      "path": "/api/cron-newsletter-draft",
+      "schedule": "0 23 * * 3"
+    },
+    {
+      "path": "/api/cron-category-qa",
+      "schedule": "30 13 * * *"
+    },
+    {
+      "path": "/api/cron-new-listing",
+      "schedule": "0 14 * * *"
+    },
+    {
+      "path": "/api/cron-profile-report-card",
+      "schedule": "0 14 1 * *"
+    },
+    {
+      "path": "/api/cron-outreach-resolve",
+      "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/sync-ical",
+      "schedule": "0 5 * * *"
+    },
+    {
+      "path": "/api/cron-reindex",
+      "schedule": "0 4 * * *"
+    },
+    {
+      "path": "/api/cron-health-check",
+      "schedule": "0 12 * * 1"
+    }
   ]
 }
