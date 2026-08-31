@@ -273,6 +273,8 @@ export default function FoodTrucksPage() {
   const [checkinPinColor, setCheckinPinColor] = useState("#7A8E72");
   const [checkinStatus, setCheckinStatus] = useState("");
   const [checkinMsg, setCheckinMsg] = useState("");
+  const [settingsSaving, setSettingsSaving] = useState('');
+  const [settingsMsg, setSettingsMsg] = useState('');
 
   // Home-screen install (vendor mode only). The truck name gives the icon a label the
   // vendor recognises; it's blank until /api/food-trucks resolves and the manifest link
@@ -862,6 +864,28 @@ export default function FoodTrucksPage() {
   // No Navbar, no public sections, no Footer. Just their tool.
   if (isCheckinMode) {
     const truckName = checkinTruck?.name || truckSlug;
+
+    // Preferences are saved on their own action so changing one never disturbs a live pin.
+    const saveSettings = async (patch) => {
+      setSettingsSaving(Object.keys(patch)[0]);
+      setSettingsMsg('');
+      try {
+        const res = await fetch('/api/food-trucks', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ slug: truckSlug, token: truckToken, action: 'update-settings', ...patch }),
+        });
+        const data = await res.json();
+        if (!res.ok || data.error) throw new Error(data.error || 'failed');
+        setCheckinTruck(t => (t ? { ...t, ...patch } : t));
+        setSettingsMsg('Saved.');
+        setTimeout(() => setSettingsMsg(''), 2600);
+      } catch {
+        setSettingsMsg(yeti.oops());
+      } finally {
+        setSettingsSaving('');
+      }
+    };
 
     const handleVendorShare = () => {
       const text = `🚚 ${truckName} is open at Manitou Beach! See all the food trucks out today →`;
@@ -1516,6 +1540,100 @@ export default function FoodTrucksPage() {
             </div>
           )}
 
+
+          {/* ── YOUR SETTINGS ──
+              Every switch here does something real. The signup screen tells vendors they
+              are in control, so a decorative toggle would be worse than none. */}
+          {trucks !== null && checkinTruck && (
+            <div style={{ marginTop: 24 }}>
+              <div style={{ background: "#fff", borderRadius: 16, border: `1px solid ${C.sand}`, padding: "24px", boxShadow: "0 4px 20px rgba(0,0,0,0.04)" }}>
+                <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text, margin: "0 0 4px" }}>
+                  Your settings
+                </h3>
+                <p style={{ fontSize: 12, color: C.textMuted, margin: "0 0 18px", lineHeight: 1.5 }}>
+                  You decide how much of this happens on its own. Change it whenever you like.
+                </p>
+
+                {checkinTruck.autoPin && (
+                  <div style={{ marginBottom: 20 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 4 }}>
+                      On your regular days
+                    </div>
+                    <p style={{ fontSize: 12.5, color: C.textMuted, margin: "0 0 10px", lineHeight: 1.6 }}>
+                      We know your usual spot and hours. How would you like us to handle it?
+                    </p>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                      {[
+                        { v: 'Ask each time', label: 'Ask me first', hint: "We text you in the morning. Reply Y and you go up. Say nothing and nothing happens." },
+                        { v: 'Automatic', label: 'Just do it', hint: "Your pin drops on schedule without asking. We still text you so you can pull it down." },
+                        { v: 'Manual only', label: 'Leave it to me', hint: "No texts, no automatic pin. You put yourself up when you want to." },
+                      ].map(opt => {
+                        const on = (checkinTruck.pinConsent || 'Ask each time') === opt.v;
+                        return (
+                          <button
+                            key={opt.v}
+                            type="button"
+                            disabled={settingsSaving === 'pinConsent'}
+                            onClick={() => !on && saveSettings({ pinConsent: opt.v })}
+                            style={{
+                              textAlign: "left", padding: "12px 14px", borderRadius: 10, cursor: on ? "default" : "pointer",
+                              border: `1.5px solid ${on ? C.sage : C.sand}`,
+                              background: on ? `${C.sage}12` : C.warmWhite,
+                              fontFamily: "'Libre Franklin', sans-serif",
+                            }}
+                          >
+                            <div style={{ fontSize: 13.5, fontWeight: 700, color: on ? C.sageDark : C.text, marginBottom: 2 }}>
+                              {on ? '✓ ' : ''}{opt.label}
+                            </div>
+                            <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.55 }}>{opt.hint}</div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                <div style={{ borderTop: `1px solid ${C.sand}`, paddingTop: 18 }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 4 }}>
+                    Facebook and Instagram
+                  </div>
+                  <p style={{ fontSize: 12.5, color: C.textMuted, margin: "0 0 10px", lineHeight: 1.6 }}>
+                    When you drop your pin we announce you on the Manitou Beach pages. You can be on
+                    the map without that.
+                  </p>
+                  <button
+                    type="button"
+                    disabled={settingsSaving === 'skipSocial'}
+                    onClick={() => saveSettings({ skipSocial: !checkinTruck.skipSocial })}
+                    style={{
+                      display: "inline-flex", alignItems: "center", gap: 10, padding: "11px 16px", borderRadius: 24,
+                      border: `1.5px solid ${checkinTruck.skipSocial ? C.sand : C.sage}`,
+                      background: checkinTruck.skipSocial ? C.warmWhite : `${C.sage}12`,
+                      cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600,
+                      color: checkinTruck.skipSocial ? C.textMuted : C.sageDark,
+                    }}
+                  >
+                    <span style={{
+                      width: 34, height: 20, borderRadius: 12, flexShrink: 0, position: "relative",
+                      background: checkinTruck.skipSocial ? C.sand : C.sage, transition: "background 0.15s",
+                    }}>
+                      <span style={{
+                        position: "absolute", top: 3, left: checkinTruck.skipSocial ? 3 : 17,
+                        width: 14, height: 14, borderRadius: "50%", background: "#fff", transition: "left 0.15s",
+                      }} />
+                    </span>
+                    {checkinTruck.skipSocial ? "Not posting me - map only" : "Post me when I go live"}
+                  </button>
+                </div>
+
+                {settingsMsg && (
+                  <p style={{ fontSize: 12, color: settingsMsg === 'Saved.' ? C.sage : "#c05a5a", fontWeight: 600, margin: "14px 0 0" }}>
+                    {settingsMsg}
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Vendor Footer */}

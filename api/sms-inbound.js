@@ -9,6 +9,75 @@
 
 import { sendSMS, normalizePhone } from './lib/twilio.js';
 import { Resend } from 'resend';
+import {
+  parseConsentReply, consentAnswerProperties, consentMode, PIN_CONSENT,
+} from './lib/pinConsent.js';
+
+// A vendor answering the morning permission text should not have to open a browser.
+// One character back is the lowest-friction thing a person with one free hand can do,
+// so Y and N are handled here before anything else looks at the message.
+//
+// Returns a reply string when this was a vendor answering, or null to fall through to
+// the normal "forward it to Daryl" path. Falling through is the safe default: a message
+// we can't confidently read is a message for a human, never a guess that publishes
+// somebody's location.
+async function handleVendorConsent(fromDigits, text) {
+  const answer = parseConsentReply(text);
+  if (answer === null) return null;
+
+  const token = process.env.NOTION_TOKEN_BUSINESS;
+  const dbId = process.env.NOTION_DB_FOOD_TRUCKS;
+  if (!token || !dbId) return null;
+
+  const res = await fetch(`https://api.notion.com/v1/databases/${dbId}/query`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      'Notion-Version': '2022-06-28',
+    },
+    body: JSON.stringify({
+      filter: { property: 'Status', select: { equals: 'Active' } },
+      page_size: 100,
+    }),
+  });
+  if (!res.ok) return null;
+  const data = await res.json();
+
+  // Match on the phone number they texted from. Notion stores these in whatever shape
+  // they were typed, so compare normalised digits rather than raw strings.
+  const page = (data.results || []).find(
+    pg => normalizePhone(pg.properties?.['Phone']?.phone_number || '') === fromDigits
+  );
+  if (!page) return null;
+
+  const props = page.properties;
+  const name = props['Name']?.title?.[0]?.text?.content || 'your truck';
+  // Only trucks that are actually being asked can answer. A truck on Automatic texting
+  // "yes" is answering a question nobody put to them, so hand it to Daryl instead.
+  if (consentMode(props) !== PIN_CONSENT.ASK) return null;
+
+  await fetch(`https://api.notion.com/v1/pages/${page.id}`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      'Notion-Version': '2022-06-28',
+    },
+    body: JSON.stringify({ properties: consentAnswerProperties(answer) }),
+  });
+
+  const slug = props['Slug']?.rich_text?.[0]?.text?.content || '';
+  const tok = props['Checkin Token']?.rich_text?.[0]?.text?.content || '';
+  const site = process.env.SITE_URL || 'https://manitoubeachmichigan.com';
+  const link = slug && tok
+    ? `\n\n${site}/food-trucks?truck=${encodeURIComponent(slug)}&token=${encodeURIComponent(tok)}&ref=consent`
+    : '';
+
+  return answer
+    ? `Got it - ${name} goes on the map today, and we'll post you to Facebook when the pin drops.\n\nChanged your mind, or want a different spot? Tap here any time:${link}`
+    : `No problem - ${name} stays off the map today. Nothing gets posted.\n\nIf that changes, you can put yourself up in one tap:${link}`;
+}
 
 function twiml(message) {
   const esc = String(message)
@@ -27,6 +96,19 @@ export default async function handler(req, res) {
   // Twilio retries on non-200, and a duplicate forward is better than a lost
   // message, but a 500 here would also drop the organizer's auto-reply. So we
   // always answer 200 with TwiML and let the forwarding be best-effort.
+  // Vendor answering the morning permission text? Handle it and stop - Daryl does not
+  // need a forwarded "Y" every Saturday morning.
+  try {
+    const consentReply = from ? await handleVendorConsent(from, text) : null;
+    if (consentReply) {
+      res.setHeader('Content-Type', 'text/xml');
+      return res.status(200).send(twiml(consentReply));
+    }
+  } catch (err) {
+    // A failure here must never swallow the message. Fall through and forward it.
+    console.error('sms-inbound consent handling failed:', err.message);
+  }
+
   try {
     const pretty = from ? `(${from.slice(0, 3)}) ${from.slice(3, 6)}-${from.slice(6)}` : 'unknown number';
 

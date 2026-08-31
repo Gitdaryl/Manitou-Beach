@@ -15,6 +15,7 @@
 import { requireCronOrAdmin, isAdminAuthorized } from './lib/cronAuth.js';
 import { sendSMSFull, normalizePhone } from './lib/twilio.js';
 import { AUTO_PIN_SCHEDULE, etParts, etTimeToISO, parseHHMM } from './lib/autoPinSchedule.js';
+import { autoPinDecision, consentMode, PIN_CONSENT } from './lib/pinConsent.js';
 
 export const config = { maxDuration: 60 };
 
@@ -96,6 +97,16 @@ export default async function handler(req, res) {
       const name = props['Name']?.title?.[0]?.text?.content || entry.slug;
       if (!token) { report.push({ tag, skipped: 'no-checkin-token' }); continue; }
 
+      // Permission gate. The vendor is asked on the morning of and silence means no, so a
+      // truck that never replied simply doesn't get published. This is what makes the
+      // rain-day case a non-event: he doesn't answer, nothing happens, nobody is told he
+      // is on the sandbar. See lib/pinConsent.js.
+      const decision = autoPinDecision(props);
+      if (!decision.pin) {
+        report.push({ tag, skipped: decision.reason, consent: consentMode(props) });
+        continue;
+      }
+
       const last = props['Last Checkin']?.date?.start;
       if (last && now.getTime() - new Date(last).getTime() < RECENT_CHECKIN_MS) {
         report.push({ tag, skipped: 'already-checked-in', lastCheckin: last });
@@ -158,7 +169,9 @@ export default async function handler(req, res) {
           });
           await sendSMSFull(
             `+1${digits}`,
-            `Manitou Beach: your pin just dropped automatically for ${name} - folks at the lake can see you now, and you're posted to Facebook.\n\nShowing until ${endLabel}. Sold out early or not out today? Tap here to pull the pin or update your spot:\n${link}\n\nReply STOP to opt out.`
+            consentMode(props) === PIN_CONSENT.AUTOMATIC
+              ? `Manitou Beach: your pin just dropped automatically for ${name} - folks at the lake can see you now, and you're posted to Facebook.\n\nShowing until ${endLabel}. Sold out early? Tap here to pull the pin or change your spot:\n${link}\n\nReply STOP to opt out.`
+              : `Manitou Beach: you're on the map, ${name}. Thanks for the go-ahead - you're posted to Facebook too.\n\nShowing until ${endLabel}. Sold out early or moved? Tap here:\n${link}\n\nReply STOP to opt out.`
           );
         }
       }

@@ -1,4 +1,5 @@
 import { alertOutage } from './lib/notionGuard.js';
+import { getAutoPinEntry } from './lib/autoPinSchedule.js';
 import { sendSMSFull } from './lib/twilio.js';
 // /api/food-trucks.js
 // GET  - returns all Active food trucks (with last check-in time)
@@ -97,6 +98,12 @@ async function handleGet(req, res) {
           todaysSpecial: p['Todays Special']?.rich_text?.[0]?.text?.content || '',
           departureTime: p['Departure Time']?.rich_text?.[0]?.text?.content || '',
           comingDate: p['Coming Date']?.date?.start || null,
+          // Only meaningful for trucks with a standing auto-pin entry. The vendor page
+          // hides the consent control otherwise rather than showing a switch that is
+          // wired to nothing.
+          autoPin: !!getAutoPinEntry(p['Slug']?.rich_text?.[0]?.text?.content || ''),
+          pinConsent: p['Pin Consent']?.select?.name || 'Ask each time',
+          skipSocial: p['Skip Social']?.checkbox || false,
           comingEventId: p['Coming Event ID']?.rich_text?.[0]?.text?.content || null,
           comingEventName: p['Coming Event Name']?.rich_text?.[0]?.text?.content || null,
           pinColor: p['Pin Color']?.rich_text?.[0]?.text?.content || '',
@@ -122,7 +129,7 @@ async function handleGet(req, res) {
 
 async function handlePost(req, res) {
   try {
-    const { slug, token, action, comingDate, scheduleNote, lat, lng, note, todaysSpecial, departureTime, pinColor } = req.body || {};
+    const { slug, token, action, comingDate, scheduleNote, lat, lng, note, todaysSpecial, departureTime, pinColor, pinConsent, skipSocial } = req.body || {};
 
     if (!slug || !token) {
       return res.status(400).json({ error: 'slug and token are required' });
@@ -191,6 +198,41 @@ async function handlePost(req, res) {
         if (!patchRes.ok) console.error('Checkout PATCH failed:', await patchRes.text());
       } catch (err) {
         console.error('Checkout error:', err.message);
+      }
+      return res.status(200).json({ ok: true });
+    }
+
+    // ── SETTINGS - the vendor's own choices about being published ──
+    // Kept as its own action so changing a preference never touches the live pin.
+    if (action === 'update-settings') {
+      const allowedConsent = ['Ask each time', 'Automatic', 'Manual only'];
+      const properties = {};
+      if (allowedConsent.includes(pinConsent)) {
+        properties['Pin Consent'] = { select: { name: pinConsent } };
+        // Switching modes clears any standing answer, so a stale "yes" from this morning
+        // can't publish someone who has just asked to be left alone.
+        properties['Consent Answer'] = { select: null };
+        properties['Unanswered Asks'] = { number: 0 };
+      }
+      if (typeof skipSocial === 'boolean') properties['Skip Social'] = { checkbox: skipSocial };
+      if (!Object.keys(properties).length) return res.status(400).json({ error: 'Nothing to update' });
+      try {
+        const sRes = await fetch(`https://api.notion.com/v1/pages/${page.id}`, {
+          method: 'PATCH',
+          headers: {
+            Authorization: `Bearer ${process.env.NOTION_TOKEN_BUSINESS}`,
+            'Content-Type': 'application/json',
+            'Notion-Version': '2022-06-28',
+          },
+          body: JSON.stringify({ properties }),
+        });
+        if (!sRes.ok) {
+          console.error('Settings PATCH failed:', await sRes.text());
+          return res.status(500).json({ error: 'Could not save that' });
+        }
+      } catch (err) {
+        console.error('Settings update error:', err.message);
+        return res.status(500).json({ error: 'Could not save that' });
       }
       return res.status(200).json({ ok: true });
     }
@@ -322,7 +364,15 @@ async function handlePost(req, res) {
     // whether the announcement actually went out, rather than assuming it did.
     const social = { facebook: 'not-attempted', instagram: 'not-attempted' };
 
-    if (isFirstCheckinToday) {
+    // A vendor can be on the map and off social. The signup screen promises them control
+    // over this, so the switch has to be real: see 'Skip Social' on the truck record.
+    const socialOptedOut = page.properties['Skip Social']?.checkbox === true;
+    if (socialOptedOut) {
+      social.facebook = 'vendor-opted-out';
+      social.instagram = 'vendor-opted-out';
+    }
+
+    if (isFirstCheckinToday && !socialOptedOut) {
       if (!pageToken || !fbPageId) {
         // Previously a silent no-op. Surface it so a missing/rotated token is visible.
         social.facebook = 'no-token';

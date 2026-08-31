@@ -32,7 +32,11 @@ export const CONTROL_SURFACES = {
       },
       {
         title: 'Nothing gets posted without you',
-        body: 'Dropping your pin is what posts you to Facebook. No pin, no post.',
+        body: 'Dropping your pin is what posts you to Facebook, so no pin means no post. Want the map but not the posts? There is a switch for that on your page.',
+      },
+      {
+        title: 'We ask before we ever speak for you',
+        body: 'If you keep regular days we can put you up automatically, but only if you tell us to. Otherwise we text you first and wait for a yes.',
       },
     ],
     install: {
