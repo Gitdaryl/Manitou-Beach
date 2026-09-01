@@ -299,8 +299,11 @@ function Hero({ scrollTo }) {
               {heroEvent.time && ` · ${heroEvent.time}`}
             </div>
 
-            {/* Event image/video - wide, contained, below the date */}
-            {heroEvent.imageUrl && (() => {
+            {/* Event image/video - wide, contained, below the date.
+                Skipped when the event also has a full-bleed hero background:
+                the two are almost always the same subject, and stacking them
+                pushed the event CTA to the bottom edge of the fold. */}
+            {heroEvent.imageUrl && !heroEvent.heroImageUrl && (() => {
               const isVideo = /\.(mp4|webm|mov|m4v)/i.test(heroEvent.imageUrl);
               const mediaStyle = {
                 width: "100%", height: "auto", maxHeight: 320,
