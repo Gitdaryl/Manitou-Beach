@@ -65,7 +65,14 @@ export default async function handler(req, res) {
           imageUrl: p['Image URL']?.url || null,           // Small event image - shown inline below date
           eventUrl: p['Event URL']?.url || null,
           ctaLabel: p['CTA Label']?.select?.name || null,  // e.g. "Get Tickets", "Learn More"
-          time: p['Time']?.rich_text?.[0]?.text?.content || '',
+          // 'Time' is a created_time system field in this DB, so it never holds a
+          // clock time. The real times live in 'Time End' split on an EN DASH,
+          // which is what api/events.js reads. Without this the hero silently
+          // printed a date with no time on every featured event.
+          time: (() => {
+            const raw = p['Time End']?.rich_text?.[0]?.text?.content || '';
+            return raw.includes(' – ') ? raw.split(' – ')[0].trim() : raw;
+          })(),
           location: p['Location']?.rich_text?.[0]?.text?.content || '',
           cost: p['Cost']?.rich_text?.[0]?.text?.content || null,
         };
