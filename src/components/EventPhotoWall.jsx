@@ -79,13 +79,20 @@ const setLocal = (key, id, on) => {
   } catch { /* private mode etc. */ }
 };
 
-export default function EventPhotoWall({ slug, title, compact = false }) {
+// `initialEvent` pre-picks an event tag (a scanned poster resolving to what is on
+// today); `hideEventPicker` suppresses the dropdown when the caller already owns
+// the chooser, so the visitor never sees two ways to answer the same question.
+export default function EventPhotoWall({ slug, title, compact = false, initialEvent = '', hideEventPicker = false }) {
   const [photos, setPhotos] = useState([]);
   const [loaded, setLoaded] = useState(false);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState(null);
-  const [selEvent, setSelEvent] = useState('');
+  const [selEvent, setSelEvent] = useState(initialEvent);
   const inputRef = useRef(null);
+
+  // The poster router resolves after this mounts, and can change its mind when
+  // the visitor corrects it, so follow the prop rather than only seeding once.
+  useEffect(() => { setSelEvent(initialEvent); }, [initialEvent]);
   const eventDefs = GALLERIES[slug]?.events || [];
   const generalTitle = GALLERIES[slug]?.generalTitle || 'General';
 
@@ -232,7 +239,7 @@ export default function EventPhotoWall({ slug, title, compact = false }) {
           Snap a photo or pick from your camera roll. It goes straight to the community gallery below.
         </p>
 
-        {eventDefs.length > 0 && (
+        {eventDefs.length > 0 && !hideEventPicker && (
           <div style={{ margin: '0 auto 16px', maxWidth: 320, textAlign: 'left' }}>
             <label htmlFor={`photo-event-${slug}`} style={{ display: 'block', fontSize: 12, fontWeight: 600, color: C.textMuted, margin: '0 0 6px 2px', fontFamily: "'Libre Franklin', sans-serif" }}>
               Which event are these from?

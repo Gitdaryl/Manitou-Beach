@@ -37,6 +37,7 @@ const LadiesClubPage = lazy(() => import('./pages/LadiesClubPage'));
 const GalleryPage = lazy(() => import('./pages/GalleryPage'));
 const GalleryHubPage = lazy(() => import('./pages/GalleryHubPage'));
 const GalleryAdminPage = lazy(() => import('./pages/GalleryAdminPage'));
+const SnapPage = lazy(() => import('./pages/SnapPage'));
 const LadiesClubVendorPage = lazy(() => import('./pages/LadiesClubVendorPage'));
 const LadiesClubJoinPage = lazy(() => import('./pages/LadiesClubJoinPage'));
 const DevilsLakePage = lazy(() => import('./pages/DevilsLakePage'));
@@ -244,6 +245,8 @@ export default function App() {
           <Route path="/gallery" element={<GalleryHubPage />} />
           <Route path="/gallery/:slug" element={<GalleryPage />} />
           <Route path="/gallery-admin" element={<GalleryAdminPage />} />
+          {/* Printed poster QR codes land here — see api/lib/snap-keys.js */}
+          <Route path="/snap/:key" element={<SnapPage />} />
           <Route path="/ladies-club/vendor" element={<LadiesClubVendorPage />} />
           <Route path="/ladies-club/join" element={<LadiesClubJoinPage />} />
           <Route path="/historical-society" element={<HistoricalSocietyPage />} />
