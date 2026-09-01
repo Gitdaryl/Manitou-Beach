@@ -10,3 +10,6 @@ out/
 video-templates/*/renders/
 .env.vercel-preview
 .env*.tmp
+
+# Poster build intermediate (logo is inlined as base64; regenerate with scripts/make-poster.mjs)
+marketing/posters/*.html
