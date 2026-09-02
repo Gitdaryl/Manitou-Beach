@@ -68,7 +68,7 @@ const prettyUrl = url.replace(/^https:\/\//, '');
 // so Q's stronger error correction is free, while H would push to 41x41 and
 // shrink every module. Fatter modules scan from further away, which matters
 // more on a board in a field than resilience does. At 12.2in across, 33
-// modules plus an 8-module quiet zone give 0.29in each, scannable from
+// modules plus an 8-module quiet zone give 0.28in each, scannable from
 // roughly seven feet.
 // margin: 4 puts the spec-required 4-module quiet zone inside the SVG itself.
 // With margin 0 the only quiet zone was the white panel's padding, about 2.6
@@ -107,7 +107,7 @@ const html = `<!doctype html>
   .bleed { width: 24.25in; height: 36.25in; background: var(--cream); padding: 0.125in; }
   .trim  { width: 24in; height: 36in; position: relative; overflow: hidden;
            display: flex; flex-direction: column; align-items: center;
-           padding: 1.5in 1.5in 1.35in; }
+           padding: 1.5in 1.5in 1.6in; }
 
   /* A thin sunset rule top and bottom keeps the cream from reading as blank. */
   .trim::before, .trim::after {
@@ -117,10 +117,18 @@ const html = `<!doctype html>
   .trim::before { top: 0.85in; }
   .trim::after  { bottom: 0.85in; }
 
-  .eyebrow {
+  .brand {
+    display: flex; align-items: center; justify-content: center; gap: 0.45in;
+  }
+  .logocard {
+    background: #fff; border: 0.03in solid rgba(61,90,110,0.28);
+    border-radius: 0.17in; padding: 0.13in; display: block; flex: none;
+  }
+  .logo { width: 1.75in; height: 1.75in; border-radius: 0.07in; display: block; }
+  .brandname {
     font-family: 'Libre Franklin', sans-serif; font-weight: 700;
-    font-size: 0.46in; letter-spacing: 0.055em; color: var(--sunset);
-    text-transform: uppercase; text-align: center; line-height: 1.2;
+    font-size: 0.5in; letter-spacing: 0.05em; color: var(--sunset);
+    text-transform: uppercase; text-align: left; line-height: 1.2;
   }
 
   h1 {
@@ -138,12 +146,12 @@ const html = `<!doctype html>
   /* QR panel. White ground, not cream: scanners want maximum contrast and
      the panel also tells people at a glance that this is the thing to point at. */
   .qrpanel {
-    margin-top: 0.5in; width: 12.6in; height: 12.6in; background: #fff;
+    margin-top: 0.6in; width: 12.2in; height: 12.2in; flex: none; background: #fff;
     border: 0.055in solid var(--navy); border-radius: 0.35in;
     display: flex; align-items: center; justify-content: center;
     box-shadow: 0 0.09in 0 rgba(61,90,110,0.16);
   }
-  .qrpanel svg { width: 12in; height: 12in; display: block; shape-rendering: crispEdges; }
+  .qrpanel svg { width: 11.6in; height: 11.6in; display: block; shape-rendering: crispEdges; }
 
   .url {
     font-family: 'Libre Franklin', sans-serif; font-weight: 800;
@@ -185,28 +193,13 @@ const html = `<!doctype html>
   .sponsors .names span { white-space: nowrap; }
   .sponsors .names i { font-style: normal; color: var(--sunset); opacity: 0.55; }
 
-  .foot {
-    margin-top: 0.7in; display: flex; align-items: center;
-    justify-content: center; gap: 0.5in;
-  }
-  .logocard {
-    background: #fff; border: 0.035in solid rgba(61,90,110,0.3);
-    border-radius: 0.2in; padding: 0.16in; display: block;
-  }
-  .logo { width: 2.3in; height: 2.3in; border-radius: 0.08in; display: block; }
-  .footwords { text-align: left; }
-  .footwords .site {
-    font-family: 'Libre Franklin', sans-serif; font-weight: 800; font-size: 0.5in;
-    color: var(--navy); line-height: 1.3; letter-spacing: -0.004em;
-  }
-  .footwords .site em {
-    display: block; font-style: normal; font-weight: 600; font-size: 0.34in;
-    color: var(--muted); margin-top: 0.09in; letter-spacing: 0.02em;
-  }
 </style></head>
 <body><div class="bleed"><div class="trim">
 
-  <div class="eyebrow">${cfg.org}</div>
+  <div class="brand">
+    ${logoTag}
+    <div class="brandname">${cfg.org}</div>
+  </div>
 
   <h1>${cfg.headline.map((l) => `<span style="display:block">${l}</span>`).join('')}</h1>
 
@@ -232,12 +225,6 @@ const html = `<!doctype html>
     <div class="names">${cfg.sponsors.map((n) => `<span>${n.replace(/&/g, '&amp;')}</span>`).join(' <i>·</i> ')}</div>
   </div>` : ''}
 
-  <div class="foot">
-    ${logoTag}
-    <div class="footwords">
-      <div class="site">Your photos live here<em>${prettyUrl.split('/')[0]}</em></div>
-    </div>
-  </div>
 
 </div></div></body></html>`;
 
@@ -274,6 +261,29 @@ const page = await browser.newPage({ viewport: { width: 1600, height: 2400 } });
 await page.goto(`file://${htmlPath}`, { waitUntil: 'networkidle' });
 await page.evaluate(() => document.fonts.ready);
 
+// Fit check before anything is written. `.trim` clips its overflow, so a poster
+// that is too tall does not look broken in code, it looks fine right up until
+// the bottom rule crosses the last line of type. This caught exactly that.
+const fit = await page.evaluate(() => {
+  const inches = (px) => +(px / 96).toFixed(2);
+  const trim = document.querySelector('.trim');
+  const kids = [...trim.children];
+  const last = kids[kids.length - 1];
+  return {
+    overflow: inches(trim.scrollHeight - trim.getBoundingClientRect().height),
+    contentEnd: inches(last.offsetTop + last.getBoundingClientRect().height),
+    ruleAt: 36 - 0.85,
+  };
+});
+const clearance = +(fit.ruleAt - fit.contentEnd).toFixed(2);
+if (fit.overflow > 0 || clearance < 0.3) {
+  await browser.close();
+  console.error(`✗ ${key}: content does not fit the trim box.`);
+  console.error(`  overflow ${fit.overflow}in, content ends ${fit.contentEnd}in, bottom rule ${fit.ruleAt}in (clearance ${clearance}in).`);
+  console.error('  Shrink .qrpanel or the type; nothing was written.');
+  process.exit(1);
+}
+
 await page.pdf({
   path: join(OUT, `${key}-poster.pdf`),
   width: '24.25in', height: '36.25in',
@@ -290,4 +300,5 @@ await page.screenshot({ path: join(OUT, `${key}-poster.png`), fullPage: false })
 
 await browser.close();
 console.log(`✓ ${key}: PDF + PNG proof in marketing/posters/`);
+console.log(`  fit: content ends ${fit.contentEnd}in, ${clearance}in clear of the bottom rule`);
 console.log(`  QR target: ${url}`);
