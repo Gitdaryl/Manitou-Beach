@@ -55,6 +55,12 @@ const POSTERS = {
 };
 
 const key = process.argv[2] || 'mensclub';
+const theme = (process.argv[3] || 'light').toLowerCase();
+if (!['light', 'dark'].includes(theme)) {
+  console.error(`Unknown theme "${theme}". Use light or dark.`);
+  process.exit(1);
+}
+const suffix = theme === 'dark' ? '-dark' : '';
 const cfg = POSTERS[key];
 if (!cfg) {
   console.error(`No poster copy for "${key}". Known: ${Object.keys(POSTERS).join(', ')}`);
@@ -91,20 +97,36 @@ const html = `<!doctype html>
   @page { size: 24.25in 36.25in; margin: 0; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
+  /* Semantic tokens so the two themes are the same layout, not two designs.
+     The QR panel stays white in both: the code needs maximum contrast and a
+     white block is also what tells people across a field where to point. */
   :root {
-    --cream:    #FAF6EF;
-    --navy:     #3D5A6E;
-    --dusk:     #2D3B45;
-    --sunset:   #D4845A;
-    --text:     #3B3228;
-    --light:    #6B6052;
-    --muted:    #9A8E7E;
-  }
+${theme === 'dark' ? `
+    --ground:       #1A2830;
+    --ink:          #FAF6EF;
+    --ink-strong:   #FAF6EF;
+    --ink-soft:     rgba(250,246,239,0.74);
+    --ink-faint:    rgba(250,246,239,0.46);
+    --accent:       #E8A87C;
+    --panel-edge:   rgba(250,246,239,0.30);
+    --panel-shadow: rgba(0,0,0,0.38);
+    --logo-edge:    rgba(250,246,239,0.28);
+` : `
+    --ground:       #FAF6EF;
+    --ink:          #3D5A6E;
+    --ink-strong:   #2D3B45;
+    --ink-soft:     #6B6052;
+    --ink-faint:    #9A8E7E;
+    --accent:       #D4845A;
+    --panel-edge:   rgba(61,90,110,0.55);
+    --panel-shadow: rgba(61,90,110,0.16);
+    --logo-edge:    rgba(61,90,110,0.28);
+`}  }
 
-  body { width: 24.25in; height: 36.25in; background: var(--cream); }
+  body { width: 24.25in; height: 36.25in; background: var(--ground); }
 
   /* Bleed wrapper: art runs to the edge, trim line sits 0.125in in. */
-  .bleed { width: 24.25in; height: 36.25in; background: var(--cream); padding: 0.125in; }
+  .bleed { width: 24.25in; height: 36.25in; background: var(--ground); padding: 0.125in; }
   .trim  { width: 24in; height: 36in; position: relative; overflow: hidden;
            display: flex; flex-direction: column; align-items: center;
            padding: 1.5in 1.5in 1.6in; }
@@ -112,7 +134,7 @@ const html = `<!doctype html>
   /* A thin sunset rule top and bottom keeps the cream from reading as blank. */
   .trim::before, .trim::after {
     content: ''; position: absolute; left: 1.5in; right: 1.5in; height: 0.05in;
-    background: var(--sunset);
+    background: var(--accent);
   }
   .trim::before { top: 0.85in; }
   .trim::after  { bottom: 0.85in; }
@@ -121,47 +143,47 @@ const html = `<!doctype html>
     display: flex; align-items: center; justify-content: center; gap: 0.45in;
   }
   .logocard {
-    background: #fff; border: 0.03in solid rgba(61,90,110,0.28);
+    background: #fff; border: 0.03in solid var(--logo-edge);
     border-radius: 0.17in; padding: 0.13in; display: block; flex: none;
   }
   .logo { width: 1.75in; height: 1.75in; border-radius: 0.07in; display: block; }
   .brandname {
     font-family: 'Libre Franklin', sans-serif; font-weight: 700;
-    font-size: 0.5in; letter-spacing: 0.05em; color: var(--sunset);
+    font-size: 0.5in; letter-spacing: 0.05em; color: var(--accent);
     text-transform: uppercase; text-align: left; line-height: 1.2;
   }
 
   h1 {
     font-family: 'Libre Franklin', sans-serif; font-weight: 900;
     font-size: 3.1in; line-height: 0.92; letter-spacing: -0.018em;
-    color: var(--navy); text-align: center; text-transform: uppercase;
+    color: var(--ink); text-align: center; text-transform: uppercase;
     margin-top: 0.5in;
   }
 
   .sub {
     font-family: 'Libre Baskerville', serif; font-size: 0.6in; line-height: 1.5;
-    color: var(--light); text-align: center; max-width: 17in; margin-top: 0.45in;
+    color: var(--ink-soft); text-align: center; max-width: 17in; margin-top: 0.45in;
   }
 
   /* QR panel. White ground, not cream: scanners want maximum contrast and
      the panel also tells people at a glance that this is the thing to point at. */
   .qrpanel {
     margin-top: 0.6in; width: 12.2in; height: 12.2in; flex: none; background: #fff;
-    border: 0.055in solid var(--navy); border-radius: 0.35in;
+    border: 0.055in solid var(--panel-edge); border-radius: 0.35in;
     display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 0.09in 0 rgba(61,90,110,0.16);
+    box-shadow: 0 0.09in 0 var(--panel-shadow);
   }
   .qrpanel svg { width: 11.6in; height: 11.6in; display: block; shape-rendering: crispEdges; }
 
   .url {
     font-family: 'Libre Franklin', sans-serif; font-weight: 800;
-    font-size: 0.72in; letter-spacing: -0.005em; color: var(--dusk);
+    font-size: 0.72in; letter-spacing: -0.005em; color: var(--ink-strong);
     text-align: center; margin-top: 0.55in; line-height: 1.25;
   }
-  .url .slug { color: var(--sunset); }
+  .url .slug { color: var(--accent); }
   .url .typeit {
     display: block; font-weight: 600; font-size: 0.34in; letter-spacing: 0.02em;
-    color: var(--muted); text-transform: uppercase; margin-top: 0.14in;
+    color: var(--ink-faint); text-transform: uppercase; margin-top: 0.14in;
   }
 
   .steps {
@@ -172,26 +194,26 @@ const html = `<!doctype html>
   .step { text-align: center; width: 5.6in; }
   .step .n {
     font-family: 'Libre Franklin', sans-serif; font-weight: 900; font-size: 0.86in;
-    color: var(--sunset); line-height: 1; display: block;
+    color: var(--accent); line-height: 1; display: block;
   }
   .step .t {
     font-family: 'Libre Baskerville', serif; font-size: 0.45in; line-height: 1.35;
-    color: var(--light); margin-top: 0.16in; display: block;
+    color: var(--ink-soft); margin-top: 0.16in; display: block;
   }
 
   .sponsors { margin-top: 0.7in; width: 100%; text-align: center; }
   .sponsors .head {
     font-family: 'Libre Franklin', sans-serif; font-weight: 700; font-size: 0.3in;
-    letter-spacing: 0.09em; text-transform: uppercase; color: var(--sunset);
+    letter-spacing: 0.09em; text-transform: uppercase; color: var(--accent);
     margin-bottom: 0.22in;
   }
-  .sponsors .head span { color: var(--muted); letter-spacing: 0.04em; }
+  .sponsors .head span { color: var(--ink-faint); letter-spacing: 0.04em; }
   .sponsors .names {
     font-family: 'Libre Franklin', sans-serif; font-weight: 600; font-size: 0.26in;
-    line-height: 1.55; color: var(--light); max-width: 20.2in; margin: 0 auto;
+    line-height: 1.55; color: var(--ink-soft); max-width: 20.2in; margin: 0 auto;
   }
   .sponsors .names span { white-space: nowrap; }
-  .sponsors .names i { font-style: normal; color: var(--sunset); opacity: 0.55; }
+  .sponsors .names i { font-style: normal; color: var(--accent); opacity: 0.55; }
 
 </style></head>
 <body><div class="bleed"><div class="trim">
@@ -229,7 +251,7 @@ const html = `<!doctype html>
 </div></div></body></html>`;
 
 mkdirSync(OUT, { recursive: true });
-const htmlPath = join(OUT, `${key}-poster.html`);
+const htmlPath = join(OUT, `${key}-poster${suffix}.html`);
 writeFileSync(htmlPath, html);
 
 // Playwright lives in the npx cache on this machine rather than as a dep here.
@@ -285,7 +307,7 @@ if (fit.overflow > 0 || clearance < 0.3) {
 }
 
 await page.pdf({
-  path: join(OUT, `${key}-poster.pdf`),
+  path: join(OUT, `${key}-poster${suffix}.pdf`),
   width: '24.25in', height: '36.25in',
   printBackground: true, pageRanges: '1',
 });
@@ -296,9 +318,9 @@ await page.pdf({
 const PROOF_W = 1800;
 await page.setViewportSize({ width: PROOF_W, height: Math.round(PROOF_W * 36.25 / 24.25) });
 await page.evaluate((w) => { document.body.style.zoom = String(w / (24.25 * 96)); }, PROOF_W);
-await page.screenshot({ path: join(OUT, `${key}-poster.png`), fullPage: false });
+await page.screenshot({ path: join(OUT, `${key}-poster${suffix}.png`), fullPage: false });
 
 await browser.close();
-console.log(`✓ ${key}: PDF + PNG proof in marketing/posters/`);
+console.log(`✓ ${key} (${theme}): PDF + PNG proof in marketing/posters/`);
 console.log(`  fit: content ends ${fit.contentEnd}in, ${clearance}in clear of the bottom rule`);
 console.log(`  QR target: ${url}`);
