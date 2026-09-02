@@ -87,21 +87,60 @@ async function fetchEvents(days) {
   const res = await fetch(`${siteUrl}/api/events?_cb=${Date.now()}`, { cache: 'no-store' })
   if (!res.ok) throw new Error(`events API ${res.status}: ${await res.text()}`)
   const body = await res.json()
-  const all = Array.isArray(body) ? body : (body.events || body.results || [])
+  const oneOff = Array.isArray(body) ? body : (body.events || body.results || [])
+
+  // /api/events answers { events, recurring }, and this only ever read events.
+  // The recurring array holds the weekly series (Saturday Farmers and Crafters
+  // Market, Thursday bike night, the two Wednesday ones) and was being dropped
+  // on the floor, so Holly has never once been able to mention any of them even
+  // though the site renders them with an EVERY SATURDAY badge. Found 2026-09-02
+  // when Yeti asked why the market was missing.
+  const repeats = Array.isArray(body) ? [] : (body.recurring || [])
 
   const first = days[0]
   const last  = days[days.length - 1]
 
-  return all
-    .filter(e => {
-      if (!e?.name || !e.date) return false
-      // A multi day event counts if any part of it lands in the window.
-      const start = e.date
-      const end   = e.dateEnd || e.date
-      return start <= last && end >= first
-    })
+  const windowed = oneOff.filter(e => {
+    if (!e?.name || !e.date) return false
+    // A multi day event counts if any part of it lands in the window.
+    const start = e.date
+    const end   = e.dateEnd || e.date
+    return start <= last && end >= first
+  })
+
+  // Expand each weekly series onto the matching weekday inside the window. date
+  // is the season start and dateEnd, when set, is the season end, so a series
+  // that has not started or has finished must not be announced.
+  const expanded = []
+  for (const e of repeats) {
+    if (!e?.name || !e.recurringDay) continue
+    for (const d of days) {
+      if (dayName(d) !== e.recurringDay) continue
+      if (e.date && d < e.date) continue
+      if (e.dateEnd && d > e.dateEnd) continue
+      expanded.push({ ...e, date: d, dateEnd: null })
+    }
+  }
+
+  // If an organiser also entered a one off for the same night, theirs wins: it
+  // carries the real time and any note specific to that week.
+  const taken = new Set(windowed.map(e => `${e.date}|${e.name}`))
+
+  return windowed
+    .concat(expanded.filter(e => !taken.has(`${e.date}|${e.name}`)))
     .sort((a, b) =>
       a.date.localeCompare(b.date) || timeToMinutes(a.time) - timeToMinutes(b.time))
+}
+
+// A timeless listing defaults to "in the evening", which is right for a bar band
+// and wrong for a morning market. Until the Events DB carries a daypart field,
+// these are Yeti's call, exactly as the evening default is. Matched on name.
+const DAYPARTS = {
+  'Farmers & Crafters Market': 'Saturday morning',
+}
+
+function daypartFor(e) {
+  return DAYPARTS[(e.name || '').trim()] || null
 }
 
 // Blank cost is not unknown, it means free. See CLAUDE.md, this bit has bitten
@@ -144,7 +183,10 @@ function buildDigest(events, days) {
     for (const e of slot.items) {
       const parts = [`  - ${e.name}`]
       parts.push(`    location: ${e.location || 'NOT GIVEN'}`)
-      parts.push(`    start time: ${e.time || 'NOT GIVEN'}`)
+      const daypart = e.time ? null : daypartFor(e)
+      parts.push(`    start time: ${e.time || (daypart
+        ? `NOT GIVEN, say "${daypart}"`
+        : 'NOT GIVEN')}`)
       if (e.timeEnd) parts.push(`    end time: ${e.timeEnd}`)
       parts.push(`    cost: ${describeCost(e)}`)
       if (e.category) parts.push(`    category: ${e.category}`)
