@@ -27,6 +27,7 @@ import { writeFileSync, readFileSync, mkdirSync, readdirSync, existsSync } from 
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import QRCode from 'qrcode';
+import { MENS_CLUB_YEARLY_SPONSORS } from '../src/data/mensClubSponsors.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = join(ROOT, 'marketing', 'posters');
@@ -42,6 +43,8 @@ const POSTERS = {
     headline: ['SHARE YOUR', 'SHOTS'],
     sub: 'Straight to the Men’s Club page, where everyone can find them.',
     logo: 'public/images/mens_club_logo.png',
+    sponsorTitle: '2026 – 2027 Yearly Sponsors',
+    sponsors: MENS_CLUB_YEARLY_SPONSORS.map((s) => s.name),
   },
   ladiesclub: {
     org: 'Manitou Beach Ladies Club',
@@ -65,8 +68,13 @@ const prettyUrl = url.replace(/^https:\/\//, '');
 // so Q's stronger error correction is free, while H would push to 41x41 and
 // shrink every module. Fatter modules scan from further away, which matters
 // more on a board in a field than resilience does. At 12.2in across, 33
-// modules give 0.37in each, which scans from roughly ten feet.
-const qrSvg = await QRCode.toString(url, { type: 'svg', errorCorrectionLevel: 'Q', margin: 0 });
+// modules plus an 8-module quiet zone give 0.29in each, scannable from
+// roughly seven feet.
+// margin: 4 puts the spec-required 4-module quiet zone inside the SVG itself.
+// With margin 0 the only quiet zone was the white panel's padding, about 2.6
+// modules, which is under spec and makes a printed code flaky for no visible
+// reason. The quiet zone costs module size, and that is the right trade.
+const qrSvg = await QRCode.toString(url, { type: 'svg', errorCorrectionLevel: 'Q', margin: 4 });
 
 let logoTag = '';
 if (cfg.logo) {
@@ -130,12 +138,12 @@ const html = `<!doctype html>
   /* QR panel. White ground, not cream: scanners want maximum contrast and
      the panel also tells people at a glance that this is the thing to point at. */
   .qrpanel {
-    margin-top: 0.6in; width: 14in; height: 14in; background: #fff;
+    margin-top: 0.5in; width: 12.6in; height: 12.6in; background: #fff;
     border: 0.055in solid var(--navy); border-radius: 0.35in;
     display: flex; align-items: center; justify-content: center;
     box-shadow: 0 0.09in 0 rgba(61,90,110,0.16);
   }
-  .qrpanel svg { width: 12.2in; height: 12.2in; display: block; shape-rendering: crispEdges; }
+  .qrpanel svg { width: 12in; height: 12in; display: block; shape-rendering: crispEdges; }
 
   .url {
     font-family: 'Libre Franklin', sans-serif; font-weight: 800;
@@ -152,7 +160,7 @@ const html = `<!doctype html>
     margin-top: 0.6in; display: flex; align-items: flex-start;
     justify-content: center; gap: 0.9in;
   }
-  .spacer { flex: 1 1 auto; min-height: 0.3in; }
+  .spacer { flex: 1 1 auto; min-height: 0.2in; }
   .step { text-align: center; width: 5.6in; }
   .step .n {
     font-family: 'Libre Franklin', sans-serif; font-weight: 900; font-size: 0.86in;
@@ -163,8 +171,22 @@ const html = `<!doctype html>
     color: var(--light); margin-top: 0.16in; display: block;
   }
 
+  .sponsors { margin-top: 0.7in; width: 100%; text-align: center; }
+  .sponsors .head {
+    font-family: 'Libre Franklin', sans-serif; font-weight: 700; font-size: 0.3in;
+    letter-spacing: 0.09em; text-transform: uppercase; color: var(--sunset);
+    margin-bottom: 0.22in;
+  }
+  .sponsors .head span { color: var(--muted); letter-spacing: 0.04em; }
+  .sponsors .names {
+    font-family: 'Libre Franklin', sans-serif; font-weight: 600; font-size: 0.26in;
+    line-height: 1.55; color: var(--light); max-width: 20.2in; margin: 0 auto;
+  }
+  .sponsors .names span { white-space: nowrap; }
+  .sponsors .names i { font-style: normal; color: var(--sunset); opacity: 0.55; }
+
   .foot {
-    margin-top: 0; display: flex; align-items: center;
+    margin-top: 0.7in; display: flex; align-items: center;
     justify-content: center; gap: 0.5in;
   }
   .logocard {
@@ -204,6 +226,11 @@ const html = `<!doctype html>
   </div>
 
   <div class="spacer"></div>
+
+  ${cfg.sponsors ? `<div class="sponsors">
+    <div class="head">${cfg.sponsorTitle} <span>· thank you</span></div>
+    <div class="names">${cfg.sponsors.map((n) => `<span>${n.replace(/&/g, '&amp;')}</span>`).join(' <i>·</i> ')}</div>
+  </div>` : ''}
 
   <div class="foot">
     ${logoTag}
@@ -253,9 +280,12 @@ await page.pdf({
   printBackground: true, pageRanges: '1',
 });
 
-// Proof render at a screen-friendly size so the layout can be eyeballed.
-await page.setViewportSize({ width: 1212, height: 1812 });
-await page.evaluate(() => { document.body.style.zoom = String(1212 / (24.25 * 96)); });
+// Proof render. Wide enough that the QR in the PNG still decodes: at 1212px
+// the modules softened past the point a scanner could read them, and the proof
+// is the thing you point a phone at to test before paying a printer.
+const PROOF_W = 1800;
+await page.setViewportSize({ width: PROOF_W, height: Math.round(PROOF_W * 36.25 / 24.25) });
+await page.evaluate((w) => { document.body.style.zoom = String(w / (24.25 * 96)); }, PROOF_W);
 await page.screenshot({ path: join(OUT, `${key}-poster.png`), fullPage: false });
 
 await browser.close();

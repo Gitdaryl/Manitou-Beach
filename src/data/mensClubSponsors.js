@@ -1,0 +1,58 @@
+// ============================================================
+// Devils Lake & Round Lake Men's Club yearly sponsors
+// ------------------------------------------------------------
+// Shared by the /mens-club sponsor wall and the printed A-frame
+// poster (scripts/make-poster.mjs). Kept in one place so the
+// board and the page can never disagree about who paid.
+// ============================================================
+
+export const MENS_CLUB_YEARLY_SPONSORS = [
+  { name: "Addison Gun Club", url: "https://www.facebook.com/p/Addison-Defense-and-Gun-Club-61573124099438/" },
+  { name: "Addison Kiwanis", url: "https://www.facebook.com/addison.kiwanis.2025/" },
+  { name: "Alumi-Span Docks", url: "https://www.alumi-span.com/" },
+  { name: "American 1 Towing", url: "https://american1-towing.com/" },
+  { name: "Ashby Lift Truck Service", url: "https://www.facebook.com/people/Ashby-Lift-Truck-Service/100054264891286/" },
+  { name: "Batko Family", url: null },
+  { name: "Benny D's on 223", url: "https://www.facebook.com/BennyD223" },
+  { name: "Blackbird Cafe", url: "https://blackbirdcafedevils.com" },
+  { name: "Boot Jack Tavern", url: "https://bootjacktavern.com" },
+  { name: "Bow to Stern Marine", url: "https://www.facebook.com/p/Bow-To-Stern-Marine-61576982261903/" },
+  { name: "Carrie Lynn Wellness", url: "https://www.carrielynnwellness.com" },
+  { name: "CDs Party Rental", url: "https://cdspartyrental.com/" },
+  { name: "County National Bank - Hudson", url: "https://www.cnbb.bank/About-CNB/Locations-Hours/Hudson" },
+  { name: "Decker & Sons Insurance", url: "https://www.deckerandsonsinsurance.com/" },
+  { name: "Dempsey & Dempsey Accounting", url: "https://www.dempseycpa.com/" },
+  { name: "Devils Lake Bar & Grill", url: "https://www.facebook.com/Thecovedevilslake/" },
+  { name: "Devils Lake Golf Course", url: "https://www.devilslakegolfcourse.com/" },
+  { name: "Devils Lake View Living", url: "http://devilslakeviewliving.com" },
+  { name: "Devils Lake Water Sports", url: "https://dlwatersports.com" },
+  { name: "Down 2 Earth Custom Logging", url: "https://d2elogging.com/" },
+  { name: "Edison Builders", url: null },
+  { name: "Faust House Scrap & Craft / Ice Cream", url: "https://fausthousescrapncraft.com" },
+  { name: "Gil Henry & Assoc. Inc", url: "https://www.gilhenryandassociates.com/" },
+  { name: "Glamour Auto Shop", url: "https://www.facebook.com/p/Glamour-Auto-Shop-100092441275673/" },
+  { name: "Harper Landscaping & Patio", url: "https://www.facebook.com/HarperLandscapePatioLlc/" },
+  { name: "Highland Inn", url: "https://thewellstavern.net/highland-inn" },
+  { name: "Jeff Jackson Farm Bureau Ins", url: "https://www.michfb.com/insurance/find-an-agent/jeff-jackson-4025-s-adrian-hwy" },
+  { name: "Lakeside Construction", url: null },
+  { name: "Lakes Preservation League - Devils & Round Lake", url: "https://lakespreservationleague.org/" },
+  { name: "Lightning Quick Gas N Go", url: null },
+  { name: "Manitou Beach Marina", url: "https://manitoubeachmarina.com/" },
+  { name: "Manitou Storage Co.", url: "https://www.manitoustorageco.com/" },
+  { name: "McAuliffe's Meats", url: "https://www.facebook.com/McauliffesMeats/" },
+  { name: "MonsterMotors.com", url: "https://www.monstermotors.com/" },
+  { name: "National Transportation Associates", url: "https://www.ntains.com/" },
+  { name: "Poppas Place Inc", url: "https://www.facebook.com/poppasplacedos/" },
+  { name: "Printed on a Lark", url: "https://printedonalark.com/" },
+  { name: "Rock Hard Concrete - Adrian", url: null },
+  { name: "Sam & Jeryl Cepida - Foundation Realty", url: "https://www.foundationlenawee.com/" },
+  { name: "Mark Scarlato Family", url: null },
+  { name: "Scotty's Body Shop", url: "https://scottysbodyshopmi.com/" },
+  { name: "Shea'Nanigans", url: "https://sheananigansmi.com/" },
+  { name: "South Shore Marine Services", url: "https://www.facebook.com/p/South-Shore-Marine-Services-LLC-100092384540558/" },
+  { name: "Sterling Market & Pizzeria", url: "https://www.sterlingmarketandpizzeria.com/" },
+  { name: "The Lakes Print Shop", url: "https://thelakesprintshop.com/" },
+  { name: "The Springs BP", url: null },
+  { name: "The Tavern on 223", url: "https://www.facebook.com/CheeseHouse1/" },
+  { name: "Trends Salon & Spa", url: "https://trendssalonmi.wixsite.com/salon" },
+];
