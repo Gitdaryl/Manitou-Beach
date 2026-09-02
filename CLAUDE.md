@@ -57,3 +57,7 @@ Lives in `src/data/wineries.js`, `src/data/discover.js` (POI + `SITE_KNOWLEDGE`)
 - Never fire-and-forget an SMS or email before returning from a Vercel function. The function is frozen the moment you return, so the send is a coin flip. `await` it, even in a "best effort" path.
 - Inbound texts to the Manitou number hit `api/sms-inbound.js`, which forwards to Daryl and auto-replies. If that endpoint 500s, organizers get silence.
 - Organizer edit tokens are per-event. `/my-events` is the front door: an organizer enters their phone and gets one texted magic link listing all of them. Send that, not individual edit links.
+
+## Alcohol content (learned 2026-09-02)
+
+Meta age-restricted the Holly & the Yeti Page to 18+ on 2026-08-28 after ~10 flagged posts. The trigger is the commercial OFFER, not the depiction: Meta restricts posts "offering to sell ... alcohol ... when shared by a legitimate brick-and-mortar business". Wineries and bars stay coverable as venues; tasting-room launches and drink pricing move to the website or the client's own Page. Never make a drinking vessel the subject of a frame, generated graphics included. Full rules and the red/amber/green table: `docs/ALCOHOL-CONTENT-POLICY.md`. Do NOT set the Page age restriction to "Alcohol-related" - it auto-removes the Page from every Group.

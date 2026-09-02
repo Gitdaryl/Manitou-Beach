@@ -50,22 +50,31 @@ const toSlug = name => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^
 
 // ── Category → gradient + bloom + SVG icon ──────────────────────────────────
 const ICONS = {
+  // Grapes, not a glass. A drinking vessel makes the post's subject alcohol,
+  // which age-restricts it to 18+ under Meta's age-appropriate content policy
+  // and stacks a strike against the Page. See docs/ALCOHOL-CONTENT-POLICY.md.
   winery: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 200" width="520" height="867"
     fill="none" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M 18,10 C 16,52 36,86 46,94 L 46,158 M 74,94 C 84,86 104,52 102,10 M 46,94 Q 60,100 74,94"/>
-    <line x1="60" y1="158" x2="60" y2="158"/>
-    <path d="M 46,158 L 74,158"/>
-    <path d="M 28,168 Q 60,156 92,168"/>
+    <path d="M 60,68 C 58,50 60,32 60,18"/>
+    <path d="M 60,36 C 74,24 92,28 96,42 C 82,52 66,48 60,38"/>
+    <circle cx="32" cy="82" r="14"/>
+    <circle cx="60" cy="82" r="14"/>
+    <circle cx="88" cy="82" r="14"/>
+    <circle cx="46" cy="110" r="14"/>
+    <circle cx="74" cy="110" r="14"/>
+    <circle cx="60" cy="138" r="14"/>
   </svg>`,
 
+  // A stool, not a glass. Same reason as winery above: this regex also catches
+  // "Bar and Grill", so a family restaurant was rendering a pint glass.
   bar: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 180" width="560" height="840"
     fill="none" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M 22,14 L 98,14 L 90,158 L 30,158 Z"/>
-    <line x1="22" y1="14" x2="98" y2="14"/>
-    <path d="M 18,8 L 102,8"/>
-    <line x1="55" y1="60" x2="65" y2="60"/>
-    <line x1="52" y1="90" x2="68" y2="90"/>
-    <line x1="50" y1="120" x2="70" y2="120"/>
+    <path d="M 26,46 Q 60,34 94,46 Q 60,58 26,46 Z"/>
+    <path d="M 34,54 L 26,152"/>
+    <path d="M 86,54 L 94,152"/>
+    <path d="M 60,58 L 60,152"/>
+    <path d="M 30,104 L 90,104"/>
+    <path d="M 16,160 L 104,160"/>
   </svg>`,
 
   water: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 160" width="900" height="450"
