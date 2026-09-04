@@ -66,7 +66,10 @@ export default async function handler(req, res) {
         store: CORPUS_READY,
         indexedAt,
         ageHours: ageHours == null ? null : Math.round(ageHours * 10) / 10,
-        stale: ageHours == null ? true : ageHours > STALE_AFTER_HOURS,
+        // An index with zero passages is stale no matter how recently the cron
+      // ran. Freshness was measured on the ATTEMPT, so a reindex that failed
+      // every source still reported stale:false and looked healthy for a week.
+      stale: (meta?.total ?? 0) === 0 || ageHours == null || ageHours > STALE_AFTER_HOURS,
         passages: meta?.total ?? 0,
         sources: meta?.results ?? [],
         embedCallsByDay: await readUsage(7),

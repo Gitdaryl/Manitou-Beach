@@ -23,7 +23,12 @@
 
 import { Redis } from '@upstash/redis';
 
-const MODEL = 'text-embedding-004';
+// text-embedding-004 was retired by Google. From 2026-08-29 to 2026-09-04 every
+// call returned 404 "not found for API version v1beta", the daily reindex wrote
+// zero passages, and nothing said so. gemini-embedding-001 is the replacement and
+// is also Matryoshka-trained, so the 256-dim truncation below still holds.
+// Verified against the live manitou-retrieval key before switching.
+const MODEL = 'gemini-embedding-001';
 const DIMS = 256;
 const BATCH_LIMIT = 100; // Gemini's cap per batchEmbedContents call
 const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}`;
