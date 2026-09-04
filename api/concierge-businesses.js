@@ -134,7 +134,13 @@ export default async function handler(req, res) {
           { property: 'Status', status: { equals: 'Listed Enhanced' } },
           { property: 'Status', status: { equals: 'Listed Featured' } },
           { property: 'Status', status: { equals: 'Listed Premium' } },
-          { property: 'Status', status: { equals: 'Listed Comp' } },
+          // Do NOT add a status here that is not a live option in Notion. One
+          // unknown value 400s the ENTIRE query, so the concierge answers "I'm
+          // having trouble pulling up the business directory" for every question
+          // about every business. That is what 'Listed Comp' did, silently, and
+          // businesses.js already carries the same warning about Category.
+          // Live options are: New, Listed Free, Listed Enhanced, Listed Featured,
+          // Listed Premium.
         ],
       },
     });
