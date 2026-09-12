@@ -150,7 +150,11 @@ export function FadeIn({ children, delay = 0, direction = "up", style = {} }) {
       ref={ref}
       style={{
         opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0) translateX(0) scale(1)" : transforms[direction] || transforms.up,
+        // "none" (not an identity transform string) once settled - any non-"none" transform
+        // creates a new stacking context, which traps this row's z-index and lets the next
+        // row in the list (painted later in DOM order) intercept clicks on things like an
+        // open share dropdown that visually overlaps it.
+        transform: visible ? "none" : transforms[direction] || transforms.up,
         transition: instant
           ? "none"
           : `opacity 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${cappedDelay}ms, transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${cappedDelay}ms`,
