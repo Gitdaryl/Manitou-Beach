@@ -1,13 +1,14 @@
 // /api/photos-admin   (admin only — x-admin-token OR body.token === ADMIN_SECRET)
 //
-// GET  ?slug=<slug>            → every photo for the gallery, flagged floated to top
-// POST { action, id }          → action: 'hide' (take down) | 'restore' (back to live)
-//                                       | 'delete' (permanent: KV index + Blob file)
+// GET  ?slug=<slug>                     → every photo for the gallery, flagged floated to top
+// POST { action, id }                   → action: 'hide' (take down) | 'restore' (back to live)
+//                                                | 'delete' (permanent: KV index + Blob file)
+// POST { action: 'retag', id, event }   → moves a photo to a different event tag (or '' for Club Life)
 //
 // Reuses the same ADMIN_SECRET pattern as the rest of the API.
 
-import { listAll, setStatus, deletePhoto, KV_READY } from './lib/photos.js';
-import { GALLERY_SLUGS } from './lib/photo-slugs.js';
+import { listAll, setStatus, deletePhoto, setEvent, getPhoto, KV_READY } from './lib/photos.js';
+import { GALLERY_SLUGS, cleanEvent } from './lib/photo-slugs.js';
 
 function authed(req) {
   const token = req.headers['x-admin-token'] || req.body?.token || req.query?.token;
@@ -34,6 +35,13 @@ export default async function handler(req, res) {
         const ok = await deletePhoto(id);
         if (!ok) return res.status(404).json({ error: 'Photo not found' });
         return res.status(200).json({ ok: true, status: 'deleted' });
+      }
+      if (action === 'retag') {
+        const rec = await getPhoto(id);
+        if (!rec) return res.status(404).json({ error: 'Photo not found' });
+        const event = cleanEvent(rec.slug, req.body?.event);
+        await setEvent(id, event);
+        return res.status(200).json({ ok: true, event });
       }
       const statusMap = { hide: 'hidden', restore: 'live' };
       const next = statusMap[action];

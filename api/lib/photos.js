@@ -179,3 +179,13 @@ export async function setStatus(id, status) {
   await kv.hset(pKey(id), patch);
   return true;
 }
+
+// Admin action: retag a photo to a different event within its own gallery.
+// Caller (photos-admin.js) is responsible for validating `event` against the
+// gallery's allowed tags — this just patches the field. '' moves it to "Club Life".
+export async function setEvent(id, event) {
+  const exists = await kv.hget(pKey(id), 'id');
+  if (!exists) return false;
+  await kv.hset(pKey(id), { event: event || '' });
+  return true;
+}

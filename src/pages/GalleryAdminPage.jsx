@@ -10,7 +10,8 @@ import SEOHead from '../components/SEOHead';
 // ------------------------------------------------------------
 // Your one-tap takedown view. Enter the admin token once (stored on
 // this device). Pick an event, see every photo with flagged ones
-// floated to the top, and take anything down (or restore it).
+// floated to the top, and take anything down (or restore it), or
+// retag it to a different event if it landed in the wrong one.
 // Also prints a QR board for the event so people can scan and submit.
 // noindex — never surfaced to the public.
 // ============================================================
@@ -25,6 +26,8 @@ export default function GalleryAdminPage() {
   const [err, setErr] = useState(null);
   const [authed, setAuthed] = useState(false);
   const galleries = crowdGalleries();
+  const gallery = galleries.find((g) => g.slug === slug);
+  const eventOptions = [{ key: '', title: gallery?.generalTitle || 'General' }, ...(gallery?.events || [])];
   const subScrollTo = () => { window.location.href = '/'; };
 
   const load = useCallback(async () => {
@@ -60,6 +63,19 @@ export default function GalleryAdminPage() {
     } catch { setErr('Network error.'); }
   };
 
+  const retag = async (id, event) => {
+    try {
+      const r = await fetch('/api/photos-admin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-token': token },
+        body: JSON.stringify({ action: 'retag', id, event }),
+      });
+      const d = await r.json();
+      if (!r.ok) { setErr(d.error || 'Retag failed.'); return; }
+      setPhotos((prev) => prev.map((p) => (p.id === id ? { ...p, event: d.event } : p)));
+    } catch { setErr('Network error.'); }
+  };
+
   const boardUrl = typeof window !== 'undefined' ? `${window.location.origin}/gallery/${slug}` : `/gallery/${slug}`;
 
   const input = { width: '100%', boxSizing: 'border-box', padding: '12px 14px', fontSize: 16, borderRadius: 10, border: `1px solid ${C.lakeBlue}44`, background: '#fff', color: C.text, fontFamily: "'Libre Franklin', sans-serif" };
@@ -73,7 +89,7 @@ export default function GalleryAdminPage() {
 
       <section style={{ maxWidth: 900, margin: '0 auto', padding: '110px 20px 64px' }}>
         <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, margin: '0 0 6px' }}>Gallery admin</h1>
-        <p style={{ color: C.textLight, fontSize: 14, margin: '0 0 20px' }}>Take down anything that shouldn’t be up. Flagged photos show first.</p>
+        <p style={{ color: C.textLight, fontSize: 14, margin: '0 0 20px' }}>Take down anything that shouldn’t be up, or retag it if it landed in the wrong event. Flagged photos show first.</p>
 
         {/* Controls */}
         <div style={{ display: 'grid', gap: 12, maxWidth: 420, marginBottom: 24 }}>
@@ -119,10 +135,19 @@ export default function GalleryAdminPage() {
                       {flagged && <span style={{ position: 'absolute', top: 6, left: 6, background: C.sunset, color: '#fff', fontSize: 10.5, fontWeight: 700, padding: '3px 8px', borderRadius: 12 }}>⚑ {p.flags}</span>}
                       {down && <span style={{ position: 'absolute', top: 6, left: 6, background: C.night, color: '#fff', fontSize: 10.5, fontWeight: 700, padding: '3px 8px', borderRadius: 12 }}>Down</span>}
                     </div>
-                    <div style={{ padding: 8, display: 'flex', gap: 6 }}>
+                    <div style={{ padding: 8, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                      {eventOptions.length > 1 && (
+                        <select
+                          value={p.event || ''}
+                          onChange={(e) => retag(p.id, e.target.value)}
+                          style={{ ...input, padding: '6px 8px', fontSize: 12.5, borderRadius: 8 }}
+                        >
+                          {eventOptions.map((o) => <option key={o.key} value={o.key}>{o.title}</option>)}
+                        </select>
+                      )}
                       {down
-                        ? <button onClick={() => act(p.id, 'restore')} style={{ ...btn(C.lakeBlue), flex: 1, padding: '7px 0', fontSize: 12.5 }}>Restore</button>
-                        : <button onClick={() => act(p.id, 'hide')} style={{ ...btn(C.sunset), flex: 1, padding: '7px 0', fontSize: 12.5 }}>Take down</button>}
+                        ? <button onClick={() => act(p.id, 'restore')} style={{ ...btn(C.lakeBlue), padding: '7px 0', fontSize: 12.5 }}>Restore</button>
+                        : <button onClick={() => act(p.id, 'hide')} style={{ ...btn(C.sunset), padding: '7px 0', fontSize: 12.5 }}>Take down</button>}
                     </div>
                   </div>
                 );
