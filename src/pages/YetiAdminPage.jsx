@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { C, DISPATCH_CARD_SPONSORS, DISPATCH_CATEGORIES, USA250_PUBLIC } from '../data/config';
 import { Footer, GlobalStyles } from '../components/Layout';
 import { DispatchArticleContent, SponsorStrip } from './DispatchPage';
+import { GALLERIES } from '../data/galleries';
 
 function WheelAdminPanel({ authToken }) {
   const [loading, setLoading] = useState(true);
@@ -1211,6 +1212,20 @@ export default function YetiAdminPage() {
     setModBusy(null); setModConfirm(null);
   };
 
+  const modRetag = async (id, event) => {
+    setModBusy(id);
+    try {
+      const res = await fetch('/api/photos-admin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-token': authToken },
+        body: JSON.stringify({ action: 'retag', id, event }),
+      });
+      const data = await res.json();
+      if (res.ok) setModPhotos(prev => prev.map(p => p.id === id ? { ...p, event: data.event } : p));
+    } catch { /* leave list as-is; admin can retry */ }
+    setModBusy(null);
+  };
+
   useEffect(() => {
     if (authed && activeTab === 'photos') fetchModPhotos(modSlug);
   }, [activeTab, authed, modSlug]);
@@ -1541,6 +1556,21 @@ export default function YetiAdminPage() {
                             "{p.reasons[p.reasons.length - 1]}"
                           </div>
                         )}
+                        {(() => {
+                          const modGallery = GALLERIES[modSlug];
+                          const modEventOptions = [{ key: '', title: modGallery?.generalTitle || 'General' }, ...(modGallery?.events || [])];
+                          if (modEventOptions.length <= 1) return null;
+                          return (
+                            <select
+                              value={p.event || ''}
+                              disabled={busy}
+                              onChange={(e) => modRetag(p.id, e.target.value)}
+                              style={{ width: '100%', marginBottom: 6, padding: '5px 6px', borderRadius: 6, fontSize: 11, border: `1px solid ${C.sand}`, background: '#fff', color: C.textLight, fontFamily: 'Libre Franklin, sans-serif' }}
+                            >
+                              {modEventOptions.map(o => <option key={o.key} value={o.key}>{o.title}</option>)}
+                            </select>
+                          );
+                        })()}
                         <div style={{ display: 'flex', gap: 6 }}>
                           {p.status !== 'hidden' && (
                             <button disabled={busy} onClick={() => modAction(p.id, 'hide')} style={{ flex: 1, padding: '6px 0', borderRadius: 6, fontSize: 11, fontWeight: 700, cursor: 'pointer', border: `1px solid ${C.sand}`, background: '#fff', color: C.textLight, fontFamily: 'Libre Franklin, sans-serif' }}>
