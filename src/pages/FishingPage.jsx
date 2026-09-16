@@ -11,7 +11,7 @@ export const DEVILS_LAKE_FISH = [
   {
     name: "Largemouth Bass",
     latin: "Micropterus salmoides",
-    image: "/images/fish/largemouth-bass.jpg",
+    image: "/images/fish/largemouth-bass.webp",
     accentColor: C.sage,
     desc: "The king of Devils Lake. Ambush predators that hang tight to structure - docks, fallen timber, weed edges. Aggressive fighters that will have you coming back every weekend.",
     bait: ["Plastic worms (Texas rig)", "Jigs with crawfish trailer", "Topwater frogs over weeds", "Spinnerbaits", "Crankbaits in early spring"],
@@ -23,7 +23,7 @@ export const DEVILS_LAKE_FISH = [
   {
     name: "Smallmouth Bass",
     latin: "Micropterus dolomieu",
-    image: "/images/fish/smallmouth-bass.jpg",
+    image: "/images/fish/smallmouth-bass.webp",
     accentColor: C.sage,
     desc: "Pound-for-pound one of the hardest-fighting fish in freshwater. Found along rocky shoreline areas and gravelly points. Smaller than largemouth but will test your drag.",
     bait: ["Tube jigs", "Drop shot with finesse worm", "Small crankbaits", "Live crayfish", "Ned rig"],
@@ -35,7 +35,7 @@ export const DEVILS_LAKE_FISH = [
   {
     name: "Bluegill",
     latin: "Lepomis macrochirus",
-    image: "/images/fish/bluegill.jpg",
+    image: "/images/fish/bluegill.webp",
     accentColor: C.lakeBlue,
     desc: "The ultimate family fish and the best eating in the lake. Devils Lake has excellent bluegill numbers - beds are visible from shore in 2–4 feet of water during the June spawn. Great for kids and beginners.",
     bait: ["Small worms on #8 hook", "Crickets", "Small jigs (1/32 oz)", "Wax worms", "Bread balls"],
@@ -47,7 +47,7 @@ export const DEVILS_LAKE_FISH = [
   {
     name: "Northern Pike",
     latin: "Esox lucius",
-    image: "/images/fish/northern-pike.jpg",
+    image: "/images/fish/northern-pike.webp",
     accentColor: C.sunset,
     desc: "The Tip-Up Festival star. Aggressive ambush predators with a mouth full of teeth - use a wire leader. Through the ice in February they're at their most accessible. Summer pike hit big lures and live bait near weed beds.",
     bait: ["Large swimbaits", "Live suckers or shiners (ice fishing)", "Tip-ups with sucker minnow", "Big spinnerbaits", "Johnson Silver Minnow over weeds"],
@@ -59,7 +59,7 @@ export const DEVILS_LAKE_FISH = [
   {
     name: "Black Crappie",
     latin: "Pomoxis nigromaculatus",
-    image: "/images/fish/black-crappie.jpg",
+    image: "/images/fish/black-crappie.webp",
     accentColor: C.lakeDark,
     desc: "Light flaky meat that fries up beautifully. Crappie school up in spring near submerged structure - brush piles, dock pilings, and fallen trees. Patient fishing pays off.",
     bait: ["Small tube jigs (1/16–1/8 oz)", "Crappie jigs with marabou", "Small minnows under bobber", "Tiny swimbaits", "Wax worms"],
@@ -71,7 +71,7 @@ export const DEVILS_LAKE_FISH = [
   {
     name: "Yellow Perch",
     latin: "Perca flavescens",
-    image: "/images/fish/yellow-perch.jpg",
+    image: "/images/fish/yellow-perch.webp",
     accentColor: "#D4A017",
     desc: "Michigan's favorite panfish. Yellow perch school in large numbers and tend to be where you find one, you find a hundred. Sweet, firm white meat. A Devils Lake winter staple through the ice.",
     bait: ["Small jigs tipped with wax worm", "Live minnows", "Perch rigs with small hooks", "Gulp minnow tails", "Emerald shiners"],
@@ -83,7 +83,7 @@ export const DEVILS_LAKE_FISH = [
   {
     name: "Pumpkinseed Sunfish",
     latin: "Lepomis gibbosus",
-    image: "/images/fish/pumpkinseed.jpg",
+    image: "/images/fish/pumpkinseed.webp",
     accentColor: "#E8A030",
     desc: "One of the most colorful freshwater fish in Michigan - orange and blue markings that look almost tropical. Abundant near weed beds and shoreline structure. A favorite for kids and great on ultralight tackle.",
     bait: ["Small worms", "Wax worms", "Tiny jigs", "Crickets", "Small meal worms"],
@@ -95,7 +95,7 @@ export const DEVILS_LAKE_FISH = [
   {
     name: "Brown Bullhead",
     latin: "Ameiurus nebulosus",
-    image: "/images/fish/brown-bullhead.jpg",
+    image: "/images/fish/brown-bullhead.webp",
     accentColor: C.warmGray,
     desc: "Michigan's classic catfish. Whiskers, no scales, and a fighter at the end of the line. Night fishing for bullheads on warm summer evenings is a Manitou Beach tradition - cast and wait.",
     bait: ["Night crawlers", "Chicken liver", "Stink bait", "Dough balls", "Cut bait"],
@@ -139,7 +139,7 @@ function FishingHero() {
 
   return (
     <section style={{
-      backgroundImage: "url(/images/explore-fishing.jpg)",
+      backgroundImage: "url(/images/explore-fishing.webp)",
       backgroundSize: "cover",
       backgroundPosition: "center 40%",
       backgroundAttachment: "fixed",

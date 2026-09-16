@@ -148,8 +148,8 @@ export default function YetiAdminPage() {
   const [weekendError, setWeekendError] = useState('');
 
   // ── Image Composer ────────────────────────────────────────────
-  const [composeBg, setComposeBg] = useState('happening-hero.jpg');
-  const [composeYeti, setComposeYeti] = useState('yeti/yeti-celebrates.png');
+  const [composeBg, setComposeBg] = useState('happening-hero.webp');
+  const [composeYeti, setComposeYeti] = useState('yeti/yeti-celebrates.webp');
   const [composeSize, setComposeSize] = useState(55);
   const [composePos, setComposePos] = useState('bottom-right');
   const [composeLoading, setComposeLoading] = useState(false);
@@ -721,37 +721,37 @@ export default function YetiAdminPage() {
   const composeCanvasRef = useRef(null);
 
   const COMPOSE_BGS = [
-    { file: 'happening-hero.jpg', label: 'Events Hero' },
-    { file: 'explore-Irish-hills.jpg', label: 'Irish Hills' },
-    { file: 'community-bg.jpg', label: 'Community' },
-    { file: 'dispatch-header-web.jpg', label: 'Lake Header' },
-    { file: 'landlakes-hero.jpg', label: 'Land & Lakes' },
-    { file: 'foodtruck_hero.jpg', label: 'Food Truck' },
-    { file: 'corks-kegs-hero.jpg', label: 'Wine & Beer' },
-    { file: 'holly-yeti-bg.jpg', label: 'Holly & Yeti BG' },
-    { file: 'explore-devils-lake.jpg', label: "Devil's Lake" },
-    { file: 'explore-lighthouse.jpg', label: 'Lighthouse' },
-    { file: 'explore-nightlife.jpg', label: 'Nightlife' },
-    { file: 'irish-hills-hero.jpg', label: 'Irish Hills Hero' },
-    { file: 'yeti/yeti-jetski-realism.png', label: 'Yeti Jetski' },
-    { file: 'yeti/yeti-deck-sunset-realism.png', label: 'Yeti Deck Sunset' },
-    { file: 'yeti/yeti-lighthouse-realism.png', label: 'Yeti Lighthouse' },
-    { file: 'yeti/yeti-cabin-2.jpg', label: 'Yeti Cabin' },
+    { file: 'happening-hero.webp', label: 'Events Hero' },
+    { file: 'explore-Irish-hills.webp', label: 'Irish Hills' },
+    { file: 'community-bg.webp', label: 'Community' },
+    { file: 'dispatch-header-web.webp', label: 'Lake Header' },
+    { file: 'landlakes-hero.webp', label: 'Land & Lakes' },
+    { file: 'foodtruck_hero.webp', label: 'Food Truck' },
+    { file: 'corks-kegs-hero.webp', label: 'Wine & Beer' },
+    { file: 'holly-yeti-bg.webp', label: 'Holly & Yeti BG' },
+    { file: 'explore-devils-lake.webp', label: "Devil's Lake" },
+    { file: 'explore-lighthouse.webp', label: 'Lighthouse' },
+    { file: 'explore-nightlife.webp', label: 'Nightlife' },
+    { file: 'irish-hills-hero.webp', label: 'Irish Hills Hero' },
+    { file: 'yeti/yeti-jetski-realism.webp', label: 'Yeti Jetski' },
+    { file: 'yeti/yeti-deck-sunset-realism.webp', label: 'Yeti Deck Sunset' },
+    { file: 'yeti/yeti-lighthouse-realism.webp', label: 'Yeti Lighthouse' },
+    { file: 'yeti/yeti-cabin-2.webp', label: 'Yeti Cabin' },
   ];
 
   const COMPOSE_YETIS = [
     { file: 'none', label: 'No overlay' },
-    { file: 'yeti/yeti-celebrates.png', label: 'Celebrates' },
-    { file: 'yeti/yeti-camera.png', label: 'Camera' },
-    { file: 'yeti/yeti-selfie.png', label: 'Selfie' },
-    { file: 'yeti/yeti-front-profile.png', label: 'Profile' },
-    { file: 'yeti/yeti-influencer.png', label: 'Influencer' },
-    { file: 'yeti/yeti-drone.png', label: 'Drone' },
-    { file: 'yeti/yeti-painting.png', label: 'Painting' },
-    { file: 'yeti/yeti-aviator.png', label: 'Aviator' },
-    { file: 'yeti/yeti-futurist.png', label: 'Futurist' },
-    { file: 'yeti/yeti-director.png', label: 'Director' },
-    { file: 'yeti/yeti-camera-reverse.png', label: 'Camera Reverse' },
+    { file: 'yeti/yeti-celebrates.webp', label: 'Celebrates' },
+    { file: 'yeti/yeti-camera.webp', label: 'Camera' },
+    { file: 'yeti/yeti-selfie.webp', label: 'Selfie' },
+    { file: 'yeti/yeti-front-profile.webp', label: 'Profile' },
+    { file: 'yeti/yeti-influencer.webp', label: 'Influencer' },
+    { file: 'yeti/yeti-drone.webp', label: 'Drone' },
+    { file: 'yeti/yeti-painting.webp', label: 'Painting' },
+    { file: 'yeti/yeti-aviator.webp', label: 'Aviator' },
+    { file: 'yeti/yeti-futurist.webp', label: 'Futurist' },
+    { file: 'yeti/yeti-director.webp', label: 'Director' },
+    { file: 'yeti/yeti-camera-reverse.webp', label: 'Camera Reverse' },
   ];
 
   const handleCompose = async () => {
@@ -1330,7 +1330,7 @@ export default function YetiAdminPage() {
     return (
       <div style={{ minHeight: '100vh', background: C.night, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
         <div style={{ width: '100%', maxWidth: 360, textAlign: 'center' }}>
-          <img src="/images/yeti/yeti-front-profile.png" alt="" onError={e => { e.target.style.display = 'none'; }} style={{ width: 96, height: 96, objectFit: 'contain', marginBottom: 20 }} />
+          <img src="/images/yeti/yeti-front-profile.webp" alt="" onError={e => { e.target.style.display = 'none'; }} style={{ width: 96, height: 96, objectFit: 'contain', marginBottom: 20 }} />
           <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.12em', color: C.sage, marginBottom: 6, fontFamily: 'Libre Franklin, sans-serif' }}>The Manitou Dispatch</div>
           <h1 style={{ fontFamily: 'Libre Baskerville, serif', fontSize: 28, color: C.cream, margin: '0 0 32px' }}>The Yeti Desk</h1>
           <form onSubmit={handleLogin}>

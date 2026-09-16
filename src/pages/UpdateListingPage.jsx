@@ -225,7 +225,7 @@ export default function UpdateListingPage() {
               {step === 'food_truck' && business && (
                 <div style={{ background: `linear-gradient(135deg, #1A2830 0%, #2D4A3E 100%)`, borderRadius: 12, padding: '28px 24px', border: '1px solid rgba(255,255,255,0.08)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 14 }}>
-                    <img src="/images/icons/food-truck-icon.png" alt="Food truck" style={{ width: 52, height: 52, objectFit: 'contain', flexShrink: 0 }} />
+                    <img src="/images/icons/food-truck-icon.webp" alt="Food truck" style={{ width: 52, height: 52, objectFit: 'contain', flexShrink: 0 }} />
                     <div>
                       <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 19, color: '#F5F0E8', fontWeight: 400, lineHeight: 1.3 }}>
                         Hey - you've got a dedicated truck page!
@@ -335,7 +335,7 @@ export default function UpdateListingPage() {
                   {form.category === 'Food Truck' && (
                     <div style={{ background: `linear-gradient(135deg, #1A2830 0%, #2D4A3E 100%)`, borderRadius: 12, padding: '20px 18px', border: '1px solid rgba(255,255,255,0.08)' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
-                        <img src="/images/icons/food-truck-icon.png" alt="Food truck" style={{ width: 36, height: 36, objectFit: 'contain', flexShrink: 0 }} />
+                        <img src="/images/icons/food-truck-icon.webp" alt="Food truck" style={{ width: 36, height: 36, objectFit: 'contain', flexShrink: 0 }} />
                         <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: '#F5F0E8', fontWeight: 600, lineHeight: 1.3 }}>
                           Food trucks get their own special page
                         </div>

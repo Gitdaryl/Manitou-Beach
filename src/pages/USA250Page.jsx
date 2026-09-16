@@ -514,7 +514,7 @@ function FilmSection() {
               }} />
               <div style={{
                 position: "absolute", inset: 0,
-                backgroundImage: "url(/images/fireworks/devilslake-dlyc-bg2.jpg)",
+                backgroundImage: "url(/images/fireworks/devilslake-dlyc-bg2.webp)",
                 backgroundSize: "cover", backgroundPosition: "center",
                 opacity: 0.28,
               }} />
@@ -580,7 +580,7 @@ function Fireworks2026Section() {
     <section style={{ background: C.night, padding: "100px 24px", position: "relative", overflow: "hidden" }}>
       <div style={{
         position: "absolute", inset: 0,
-        backgroundImage: "url(/images/fireworks/devilslake-dlyc-bg1.jpg)",
+        backgroundImage: "url(/images/fireworks/devilslake-dlyc-bg1.webp)",
         backgroundSize: "cover", backgroundPosition: "center",
         backgroundAttachment: "fixed",
         opacity: 0.22,
@@ -712,12 +712,12 @@ function GalleryTile({ src, alt }) {
 
 function FireworksGallerySection() {
   const archiveImages = [
-    "/images/fireworks/devilslake-fireworks-1.jpg",
-    "/images/fireworks/devilslake-fireworks-2.jpg",
-    "/images/fireworks/devilslake-fireworks-3.jpg",
-    "/images/fireworks/devilslake-fireworks-4.jpg",
-    "/images/fireworks/devilslake-fireworks-5.jpg",
-    "/images/fireworks/devilslake-fireworks-6.jpg",
+    "/images/fireworks/devilslake-fireworks-1.webp",
+    "/images/fireworks/devilslake-fireworks-2.webp",
+    "/images/fireworks/devilslake-fireworks-3.webp",
+    "/images/fireworks/devilslake-fireworks-4.webp",
+    "/images/fireworks/devilslake-fireworks-5.webp",
+    "/images/fireworks/devilslake-fireworks-6.webp",
   ];
 
   return (

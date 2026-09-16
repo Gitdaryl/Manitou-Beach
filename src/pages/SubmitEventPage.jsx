@@ -289,7 +289,7 @@ export default function SubmitEventPage() {
           /* ── DONE - MAGIC MOMENT ── */
           <div style={{ paddingTop: 40 }}>
             <div style={{ textAlign: 'center', marginBottom: 32 }}>
-              <img src="/images/yeti/yeti-celebrates.png" alt="Yeti celebrating your event" style={{ width: 'clamp(140px, 28vw, 220px)', height: 'auto', marginBottom: 16, filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.3))' }} />
+              <img src="/images/yeti/yeti-celebrates.webp" alt="Yeti celebrating your event" style={{ width: 'clamp(140px, 28vw, 220px)', height: 'auto', marginBottom: 16, filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.3))' }} />
               <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, fontWeight: 400, color: C.cream, margin: '0 0 12px' }}>
                 {activatedData?.eventName || 'Your event'} is live!
               </h1>
@@ -427,7 +427,7 @@ export default function SubmitEventPage() {
                     </div>
                   </div>
                 </div>
-                <img src="/images/yeti/yeti-celebrates.png" alt="Yeti celebrating" style={{ width: 'clamp(100px, 20vw, 180px)', height: 'auto', flexShrink: 0, filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.3))' }} />
+                <img src="/images/yeti/yeti-celebrates.webp" alt="Yeti celebrating" style={{ width: 'clamp(100px, 20vw, 180px)', height: 'auto', flexShrink: 0, filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.3))' }} />
               </div>
               <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)', margin: '0 0 8px' }}>Manitou Beach · Submit an Event</p>
               <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 400, color: C.cream, margin: '0 0 12px', lineHeight: 1.2 }}>

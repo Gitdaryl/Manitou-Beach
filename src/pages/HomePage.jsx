@@ -619,7 +619,7 @@ function HappeningSection() {
     <section id="happening" style={{
       position: "relative",
       padding: "100px 24px",
-      backgroundImage: "url(/images/happening-bg.jpg)",
+      backgroundImage: "url(/images/happening-bg.webp)",
       backgroundSize: "cover",
       backgroundPosition: "center",
       backgroundColor: C.dusk, /* fallback until image is added */
@@ -797,13 +797,13 @@ function ExploreCard({ place, large = false, delay = 0 }) {
 
 function ExploreSection() {
   const places = [
-    { icon: "⛵", name: "Devils Lake", desc: "1,330 acres of water for boating, fishing, and kayaking. The party lake.", image: "/images/explore-devils-lake.jpg", action: () => window.location.href = "/devils-lake", actionLabel: "Explore Devils Lake" },
-    { icon: "🏘️", name: "The Village", desc: "Boutique shops, a handmade cafe, wine tasting, and the lighthouse. The walkable heart of Manitou Beach.", image: "/images/explore-lighthouse.jpg", action: () => window.location.href = "/village" },
-    { icon: "🌿", name: "Irish Hills", desc: "Rolling hills, hidden trails, and enough nature to justify the drive.", image: "/images/explore-Irish-hills.jpg", action: () => window.open("https://www.irishhills.com", "_blank"), actionLabel: "Explore Irish Hills" },
-    { icon: "🍺", name: "Nightlife", desc: "Year-round bars and restaurants with a dock-side state of mind.", image: "/images/explore-nightlife.jpg", action: () => window.location.href = "/nightlife", actionLabel: "Explore Nightlife" },
-    { icon: "🎣", name: "Fishing", desc: "Bass, pike, bluegill, and walleye. Two lakes, twelve months of catching.", image: "/images/explore-fishing.jpg", action: () => window.location.href = "/fishing", actionLabel: "Fishing Guide" },
-    { icon: "🍷", name: "Wineries", desc: "Michigan wine and craft beverages, right in the Irish Hills.", image: "/images/Explore-wineries.jpg", action: () => window.location.href = "/wineries", actionLabel: "Wine Trail" },
-    { icon: "🌊", name: "Round Lake", desc: "515 acres of clear water. The quieter side of lake life.", image: "/images/explore-round-lake.jpg", action: () => window.location.href = "/round-lake", actionLabel: "Explore" },
+    { icon: "⛵", name: "Devils Lake", desc: "1,330 acres of water for boating, fishing, and kayaking. The party lake.", image: "/images/explore-devils-lake.webp", action: () => window.location.href = "/devils-lake", actionLabel: "Explore Devils Lake" },
+    { icon: "🏘️", name: "The Village", desc: "Boutique shops, a handmade cafe, wine tasting, and the lighthouse. The walkable heart of Manitou Beach.", image: "/images/explore-lighthouse.webp", action: () => window.location.href = "/village" },
+    { icon: "🌿", name: "Irish Hills", desc: "Rolling hills, hidden trails, and enough nature to justify the drive.", image: "/images/explore-Irish-hills.webp", action: () => window.open("https://www.irishhills.com", "_blank"), actionLabel: "Explore Irish Hills" },
+    { icon: "🍺", name: "Nightlife", desc: "Year-round bars and restaurants with a dock-side state of mind.", image: "/images/explore-nightlife.webp", action: () => window.location.href = "/nightlife", actionLabel: "Explore Nightlife" },
+    { icon: "🎣", name: "Fishing", desc: "Bass, pike, bluegill, and walleye. Two lakes, twelve months of catching.", image: "/images/explore-fishing.webp", action: () => window.location.href = "/fishing", actionLabel: "Fishing Guide" },
+    { icon: "🍷", name: "Wineries", desc: "Michigan wine and craft beverages, right in the Irish Hills.", image: "/images/Explore-wineries.webp", action: () => window.location.href = "/wineries", actionLabel: "Wine Trail" },
+    { icon: "🌊", name: "Round Lake", desc: "515 acres of clear water. The quieter side of lake life.", image: "/images/explore-round-lake.webp", action: () => window.location.href = "/round-lake", actionLabel: "Explore" },
   ];
 
   return (

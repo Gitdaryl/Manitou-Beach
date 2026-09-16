@@ -65,32 +65,32 @@ DEVILS LAKE YACHT CLUB: Fine dining overlooking Devils Lake, sailing races, and 
 export const DISCOVER_MAP_CENTER = { lat: 42.0160, lng: -84.2888 };
 
 export const DISCOVER_CATS = [
-  { id: 'all',        label: 'All',               icon: '/images/icons/plan-map-icon-dark.png',      color: '#7A8E72' },
-  { id: 'food',       label: 'Food & Drink',       icon: '/images/icons/food-drink-icon-dark.png',    color: '#D4845A', notionKey: 'Food & Drink' },
-  { id: 'stays',      label: 'Places to Stay',     icon: '/images/icons/stays-icon-dark.png',         color: '#2D3B45', notionKey: 'Places to Stay' },
-  { id: 'rentals',    label: 'Rentals & Rec',      icon: '/images/icons/rentals-icon-dark.png',       color: '#2F8F83', notionKey: 'Rentals & Recreation' },
-  { id: 'wineries',   label: 'Wineries',           icon: '/images/icons/wine-rating-dark.png',        color: '#7B4F2E', notionKey: 'Breweries & Wineries' },
-  { id: 'water',      label: 'Boat & Water',       icon: '/images/icons/boat-icon-dark.png',          color: '#3A6B85', notionKey: 'Boating & Water' },
-  { id: 'events',     label: 'Events & Venues',    icon: '/images/icons/events-icon-dark.png',        color: '#8B6BA8', notionKey: 'Events & Venues' },
-  { id: 'shopping',   label: 'Shopping',           icon: '/images/icons/shopping-icon-dark.png',      color: '#B07D62', notionKey: 'Shopping & Gifts' },
-  { id: 'services',   label: 'Home Services',      icon: '/images/icons/home-services-icon-dark.png', color: '#5B6E5A', notionKey: 'Home Services' },
-  { id: 'storage',    label: 'Storage & Property', icon: '/images/icons/storage-icon-dark.png',       color: '#8A7A5B', notionKey: 'Storage & Property Care' },
-  { id: 'healthcare', label: 'Health & Wellness',  icon: '/images/icons/medical-icon-dark.png',       color: '#c05a5a', notionKey: 'Health & Wellness' },
-  { id: 'grocery',    label: 'Grocery & Pharmacy', icon: '/images/icons/grocery-icon-dark.png',       color: '#5B7E95' },
-  { id: 'schools',    label: 'Schools',            icon: '/images/icons/school-icon-dark.png',        color: '#6B7EC8' },
-  { id: 'community',  label: 'Community',          icon: '/images/icons/community-icon-dark.png',     color: '#7A8E72' },
-  { id: 'gas',        label: 'Gas Stations',       icon: '/images/icons/gas-station-icon-dark.png',   color: '#B8860B' },
+  { id: 'all',        label: 'All',               icon: '/images/icons/plan-map-icon-dark.webp',      color: '#7A8E72' },
+  { id: 'food',       label: 'Food & Drink',       icon: '/images/icons/food-drink-icon-dark.webp',    color: '#D4845A', notionKey: 'Food & Drink' },
+  { id: 'stays',      label: 'Places to Stay',     icon: '/images/icons/stays-icon-dark.webp',         color: '#2D3B45', notionKey: 'Places to Stay' },
+  { id: 'rentals',    label: 'Rentals & Rec',      icon: '/images/icons/rentals-icon-dark.webp',       color: '#2F8F83', notionKey: 'Rentals & Recreation' },
+  { id: 'wineries',   label: 'Wineries',           icon: '/images/icons/wine-rating-dark.webp',        color: '#7B4F2E', notionKey: 'Breweries & Wineries' },
+  { id: 'water',      label: 'Boat & Water',       icon: '/images/icons/boat-icon-dark.webp',          color: '#3A6B85', notionKey: 'Boating & Water' },
+  { id: 'events',     label: 'Events & Venues',    icon: '/images/icons/events-icon-dark.webp',        color: '#8B6BA8', notionKey: 'Events & Venues' },
+  { id: 'shopping',   label: 'Shopping',           icon: '/images/icons/shopping-icon-dark.webp',      color: '#B07D62', notionKey: 'Shopping & Gifts' },
+  { id: 'services',   label: 'Home Services',      icon: '/images/icons/home-services-icon-dark.webp', color: '#5B6E5A', notionKey: 'Home Services' },
+  { id: 'storage',    label: 'Storage & Property', icon: '/images/icons/storage-icon-dark.webp',       color: '#8A7A5B', notionKey: 'Storage & Property Care' },
+  { id: 'healthcare', label: 'Health & Wellness',  icon: '/images/icons/medical-icon-dark.webp',       color: '#c05a5a', notionKey: 'Health & Wellness' },
+  { id: 'grocery',    label: 'Grocery & Pharmacy', icon: '/images/icons/grocery-icon-dark.webp',       color: '#5B7E95' },
+  { id: 'schools',    label: 'Schools',            icon: '/images/icons/school-icon-dark.webp',        color: '#6B7EC8' },
+  { id: 'community',  label: 'Community',          icon: '/images/icons/community-icon-dark.webp',     color: '#7A8E72' },
+  { id: 'gas',        label: 'Gas Stations',       icon: '/images/icons/gas-station-icon-dark.webp',   color: '#B8860B' },
 ];
 
 // Icon/color overrides for dynamic categories detected in Notion but not yet in DISCOVER_CATS.
 // When admin creates an icon for a new category, add it here to wire it up.
 // Key = exact Notion Category select value.
 export const DISCOVER_DYNAMIC_CAT_ICONS = {
-  'Activities':     { icon: '/images/icons/activities-icon-dark.png',  color: '#8B7355' },
-  'Real Estate':    { icon: '/images/icons/realestate-icon-dark.png',  color: '#5B6E8A' },
-  'Creative Media': { icon: '/images/icons/creative-icon-dark.png',    color: '#8B5E8B' },
-  'Health & Beauty':{ icon: '/images/icons/beauty-icon-dark.png',      color: '#C07080' },
-  'Pet Services':   { icon: '/images/icons/pets-icon-dark.png',        color: '#7A8E5A' },
+  'Activities':     { icon: '/images/icons/activities-icon-dark.webp',  color: '#8B7355' },
+  'Real Estate':    { icon: '/images/icons/realestate-icon-dark.webp',  color: '#5B6E8A' },
+  'Creative Media': { icon: '/images/icons/creative-icon-dark.webp',    color: '#8B5E8B' },
+  'Health & Beauty':{ icon: '/images/icons/beauty-icon-dark.webp',      color: '#C07080' },
+  'Pet Services':   { icon: '/images/icons/pets-icon-dark.webp',        color: '#7A8E5A' },
 };
 
 export const DISCOVER_POIS = [

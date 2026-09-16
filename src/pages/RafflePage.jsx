@@ -19,7 +19,7 @@ const BASKET_DATA = [
     fullName: 'The Lakes Print Shop',
     value: '$100',
     color: '#3a7bd5',
-    image: '/images/ladies-club/Festival-raffle/The Lakes Print Shop.jpg',
+    image: '/images/ladies-club/Festival-raffle/The Lakes Print Shop.webp',
     items: ['Devils Lake & Round Lake hats', 'Americans T-shirts', 'Devils Lake & Round Lake glass mugs', 'Koozies'],
   },
   {
@@ -27,7 +27,7 @@ const BASKET_DATA = [
     fullName: 'Lake Toys and Big Joys',
     value: '$75',
     color: '#e07b2a',
-    image: '/images/ladies-club/Festival-raffle/Lake Toys Big Joys.jpg',
+    image: '/images/ladies-club/Festival-raffle/Lake Toys Big Joys.webp',
     items: ['Versatile tote loaded with toys for all ages', 'Beach towel', 'Sunscreen', 'Table cover'],
   },
   {
@@ -35,7 +35,7 @@ const BASKET_DATA = [
     fullName: 'Michael Glen Monroe',
     value: '$100',
     color: '#8e44ad',
-    image: '/images/ladies-club/Festival-raffle/Michael Glen Monroe.jpg',
+    image: '/images/ladies-club/Festival-raffle/Michael Glen Monroe.webp',
     items: ['Children\'s Author and Award-Winning Artist', '2 hardcover books', '3 original paintings'],
   },
   {
@@ -43,7 +43,7 @@ const BASKET_DATA = [
     fullName: 'Stars, Stripes and Lake Nights',
     value: '$125',
     color: '#c0392b',
-    image: '/images/ladies-club/Festival-raffle/Stars and Stripes and Late nights.jpg',
+    image: '/images/ladies-club/Festival-raffle/Stars and Stripes and Late nights.webp',
     items: ['Red, white and blue themed drink bucket', 'Party supplies'],
   },
   {
@@ -51,7 +51,7 @@ const BASKET_DATA = [
     fullName: 'Lakeside Escape',
     value: '$200',
     color: '#219a52',
-    image: '/images/ladies-club/Festival-raffle/Lakeside escapes.jpg',
+    image: '/images/ladies-club/Festival-raffle/Lakeside escapes.webp',
     items: ['Cooler/Tote', 'Sun Hat', 'Beach Blanket', "S'mores", 'Mug', 'Drink Mix', 'Wipes', 'Pickleball Set and more'],
   },
   {
@@ -59,7 +59,7 @@ const BASKET_DATA = [
     fullName: 'Hooked on Fun',
     value: '$200-$250',
     color: '#2472a4',
-    image: '/images/ladies-club/Festival-raffle/Hooked on Fun.jpg',
+    image: '/images/ladies-club/Festival-raffle/Hooked on Fun.webp',
     items: ['$50 Gift Certificate to Manitou Beach Marina', '2 fishing poles', 'Yeti', 'Waist/Backpack Carry All and more'],
   },
   {
@@ -67,7 +67,7 @@ const BASKET_DATA = [
     fullName: 'Lake Life and Long Drives',
     value: '$250-$300',
     color: '#15816d',
-    image: '/images/ladies-club/Festival-raffle/Lake Life and Long Drives.jpg',
+    image: '/images/ladies-club/Festival-raffle/Lake Life and Long Drives.webp',
     items: ['4 rounds 18-hole golf + cart at Devil\'s Lake Golf Course', 'Beverage Cooler', 'Hat', 'Balls and more'],
   },
   {
@@ -75,7 +75,7 @@ const BASKET_DATA = [
     fullName: 'Summer Fun Explosion',
     value: '$75',
     color: '#d4845a',
-    image: '/images/ladies-club/Festival-raffle/Summer Fun Explosion.jpg',
+    image: '/images/ladies-club/Festival-raffle/Summer Fun Explosion.webp',
     items: ['Versatile tote loaded with toys for all ages', 'Beach towel', 'Sunscreen', 'Table cover'],
   },
   {
@@ -83,7 +83,7 @@ const BASKET_DATA = [
     fullName: "Party Like It's the 4th",
     value: '$125',
     color: '#a93226',
-    image: '/images/ladies-club/Festival-raffle/Party Like its the 4th.jpg',
+    image: '/images/ladies-club/Festival-raffle/Party Like its the 4th.webp',
     items: ['Beautiful collection of red, white and blue supplies', 'Celebrate 250 Years of America'],
   },
   {
@@ -91,7 +91,7 @@ const BASKET_DATA = [
     fullName: "Devil's Lake View Living",
     value: '$200',
     color: '#5b7e95',
-    image: '/images/ladies-club/Festival-raffle/Devils Lake View living.jpg',
+    image: '/images/ladies-club/Festival-raffle/Devils Lake View living.webp',
     items: ['Devils Lake Tote', 'Inis skincare collection', '$100 Gift Certificate'],
   },
   {
@@ -99,7 +99,7 @@ const BASKET_DATA = [
     fullName: 'Pontoon Party Pack',
     value: '$250-$300',
     color: '#1c4f6e',
-    image: '/images/ladies-club/Festival-raffle/Pontoon Party Pack.jpg',
+    image: '/images/ladies-club/Festival-raffle/Pontoon Party Pack.webp',
     items: ['Premium tote', '2 high-end beach towels', 'Bluetooth Speaker', 'Sunscreen', '$200 Chauffeured Evening Cruise'],
   },
   {

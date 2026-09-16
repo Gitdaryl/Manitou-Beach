@@ -255,7 +255,7 @@ export function PageSponsorBanner({ pageName }) {
             </a>
           ) : (
             <>
-              <img src="/images/yeti/yeti-groove-full-logo.png" alt="Holly & The Yeti" style={{ maxWidth: 520, width: "90%", opacity: 0.9, display: "block", margin: "0 auto" }} />
+              <img src="/images/yeti/yeti-groove-full-logo.webp" alt="Holly & The Yeti" style={{ maxWidth: 520, width: "90%", opacity: 0.9, display: "block", margin: "0 auto" }} />
               <div style={{ marginTop: 36, marginBottom: 12 }}>
                 <p style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(18px, 3vw, 28px)", color: C.cream, fontWeight: 400, margin: "0 0 10px", lineHeight: 1.3 }}>
                   Your business deserves a billboard like this.

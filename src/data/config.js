@@ -119,7 +119,7 @@ export const CAT_COLORS = {
 
 // ── Dispatch Card Sponsors ──────────────────────────────────────────────────────
 // Add/remove sponsors here. Rotates across cards by index.
-// logo: path in /public (e.g. '/images/blackbird-logo.png'), or null → shows 📷 placeholder
+// logo: path in /public (e.g. '/images/blackbird-logo.webp'), or null → shows 📷 placeholder
 // Set array to [] to hide all sponsor strips.
 export const DISPATCH_CARD_SPONSORS = [];
 

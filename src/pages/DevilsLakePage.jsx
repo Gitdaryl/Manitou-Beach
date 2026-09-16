@@ -42,7 +42,7 @@ function DevilsLakeHero() {
 
   return (
     <section style={{
-      backgroundImage: "url(/images/explore-devils-lake.jpg)",
+      backgroundImage: "url(/images/explore-devils-lake.webp)",
       backgroundSize: "cover",
       backgroundPosition: "center 35%",
       backgroundAttachment: "fixed",
@@ -211,7 +211,7 @@ function DevilsLakeFishingSection() {
 function DevilsLakeCommunitySection() {
   return (
     <section style={{
-      backgroundImage: "url(/images/community-bg.jpg)",
+      backgroundImage: "url(/images/community-bg.webp)",
       backgroundSize: "cover",
       backgroundPosition: "center",
       backgroundAttachment: "fixed",
@@ -322,7 +322,7 @@ export default function DevilsLakePage() {
       <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
       <DevilsLakeHistorySection />
       <section style={{
-        backgroundImage: "url(/images/DL-boat.jpg)",
+        backgroundImage: "url(/images/DL-boat.webp)",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundAttachment: "fixed",

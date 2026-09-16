@@ -52,7 +52,7 @@ Currently in `LadiesClubPage.jsx`:
 - Gallery: `Array.from({ length: 16 }, ...)` - cannot change without code deploy
 - Sponsors: `const PLATINUM = [...]` - hardcoded array
 - Event date: `"2026-06-20T13:00:00.000Z"` - hardcoded string
-- Map: `/images/ladies-club/summerfest-map.jpg` - hardcoded path
+- Map: `/images/ladies-club/summerfest-map.webp` - hardcoded path
 
 ### The Solution: Org Data JSON in Vercel Blob
 
@@ -77,7 +77,7 @@ Each org gets a JSON config file in Vercel Blob: `org-data/[slug].json`
     "name": "Summerfest 2026",
     "date": "2026-06-20T13:00:00.000Z",
     "description": "A full day of live music, arts, crafts, food, and family fun.",
-    "mapUrl": "https://[blob-url]/lllc/map/summerfest-map.jpg"
+    "mapUrl": "https://[blob-url]/lllc/map/summerfest-map.webp"
   },
   "meta": {
     "lastUpdated": "2026-04-04T18:00:00Z",
@@ -206,7 +206,7 @@ export const ORG_CONFIGS = {
     dashboardPath: "/ladies-club/dashboard",
     livePath: "/ladies-club",
     color: "#5B8B5A",
-    logo: "/images/landlake-club-logo.png",
+    logo: "/images/landlake-club-logo.webp",
     passwordEnvVar: "LLLC_DASHBOARD_PASS",
     sections: ["eventDetails", "map", "gallery", "sponsors"],
     sponsorTiers: ["platinum", "gold"],

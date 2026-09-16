@@ -534,7 +534,7 @@ export default function FeaturedPage() {
                     </div>
                   </div>
                   <div style={{ padding: "14px 18px 18px", borderTop: `1px solid ${C.sand}`, display: "flex", gap: 14, alignItems: "flex-start" }}>
-                    <img src="/images/yeti_logo.png" alt="Yeti Groove Media" style={{ width: 64, height: 64, borderRadius: 8, objectFit: "cover", flexShrink: 0 }} />
+                    <img src="/images/yeti_logo.webp" alt="Yeti Groove Media" style={{ width: 64, height: 64, borderRadius: 8, objectFit: "cover", flexShrink: 0 }} />
                     <div style={{ flex: 1 }}>
                       <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textLight, lineHeight: 1.65, margin: "0 0 12px 0" }}>
                         Manitou Beach's community web studio. Websites, marketing videos, and social media for Irish Hills businesses ready to grow online.
@@ -570,7 +570,7 @@ export default function FeaturedPage() {
                     </div>
                   </div>
                   <div style={{ padding: "14px 18px 18px", borderTop: "1px solid rgba(255,255,255,0.12)", display: "flex", gap: 14, alignItems: "flex-start" }}>
-                    <img src="/images/yeti_logo.png" alt="Yeti Groove Media" style={{ width: 80, height: 80, borderRadius: 10, objectFit: "cover", flexShrink: 0 }} />
+                    <img src="/images/yeti_logo.webp" alt="Yeti Groove Media" style={{ width: 80, height: 80, borderRadius: 10, objectFit: "cover", flexShrink: 0 }} />
                     <div style={{ flex: 1 }}>
                       <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,191,36,0.25)", borderRadius: 10, padding: "8px 14px", marginBottom: 12 }}>
                         <span style={{ color: "#FBBF24", fontSize: 22, letterSpacing: -1, lineHeight: 1 }}>★★★★★</span>
@@ -600,7 +600,7 @@ export default function FeaturedPage() {
                 </div>
                 <div style={{ background: `linear-gradient(135deg, ${C.night} 0%, ${C.dusk} 55%, #1A3A4A 100%)`, border: `1.5px solid ${C.sunsetLight}50`, borderRadius: 14, padding: "20px 20px", boxShadow: `0 6px 32px rgba(0,0,0,0.30), 0 0 0 1px rgba(232,168,124,0.12)` }}>
                   <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
-                    <img src="/images/yeti_logo.png" alt="Yeti Groove Media" style={{ width: 110, height: 110, borderRadius: 12, objectFit: "cover", flexShrink: 0 }} />
+                    <img src="/images/yeti_logo.webp" alt="Yeti Groove Media" style={{ width: 110, height: 110, borderRadius: 12, objectFit: "cover", flexShrink: 0 }} />
                     <div style={{ flex: 1 }}>
                       <div style={{ display: "flex", gap: 8, marginBottom: 10, flexWrap: "wrap", alignItems: "center" }}>
                         <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.cream }}>Yeti Groove Media</span>

@@ -196,7 +196,7 @@ export default function BuildPage() {
         <div style={{ maxWidth: 960, margin: "0 auto", display: "flex", gap: 60, alignItems: "center", flexWrap: "wrap", justifyContent: "center" }}>
           <FadeIn>
             <img
-              src="/images/yeti/yeti-camera.png"
+              src="/images/yeti/yeti-camera.webp"
               alt="Yeti with camera"
               style={{ width: "clamp(220px, 30vw, 340px)", flexShrink: 0, filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.4))" }}
             />

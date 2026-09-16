@@ -30,7 +30,7 @@ function LadiesClubHero() {
       {/* Content */}
       <div style={{ width: "100%", padding: "160px 24px 120px", position: "relative", zIndex: 2, opacity: loaded ? 1 : 0, transform: loaded ? "translateY(0)" : "translateY(20px)", transition: "all 0.9s ease" }}>
         <div style={{ maxWidth: 800, margin: "0 auto" }}>
-          <img src="/images/landlake-club-logo.png" alt="Land & Lake Ladies Club" style={{ width: 192, height: 192, objectFit: "contain", marginBottom: 20 }} />
+          <img src="/images/landlake-club-logo.webp" alt="Land & Lake Ladies Club" style={{ width: 192, height: 192, objectFit: "contain", marginBottom: 20 }} />
           <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunsetLight, marginBottom: 12 }}>
             Where Community Comes Together
           </div>
@@ -294,17 +294,17 @@ function LadiesClubEventsSection() {
   const [lightbox, setLightbox] = useState(null);
 
   const features = [
-    { label: "35+ Crafters & Vendors", desc: "Local makers, artisan goods, handmade creations, and the Farmer's Craft Market", img: "/images/ladies-club/crafters.jpg" },
-    { label: "Fine Artists Area", desc: "Original work from talented local and regional artists", img: "/images/ladies-club/artists.jpg" },
-    { label: "Local Author Lisa Wheeler", desc: "Books, signings, and story time near the Children's Area", img: "/images/ladies-club/lisa.jpg", link: { label: "lisawheelerbooks.com", url: "https://www.lisawheelerbooks.com/" } },
-    { label: "Amazing Raffle Baskets", desc: "8 baskets, each valued at over $150 - always a festival favorite", img: "/images/ladies-club/raffle.jpg" },
+    { label: "35+ Crafters & Vendors", desc: "Local makers, artisan goods, handmade creations, and the Farmer's Craft Market", img: "/images/ladies-club/crafters.webp" },
+    { label: "Fine Artists Area", desc: "Original work from talented local and regional artists", img: "/images/ladies-club/artists.webp" },
+    { label: "Local Author Lisa Wheeler", desc: "Books, signings, and story time near the Children's Area", img: "/images/ladies-club/lisa.webp", link: { label: "lisawheelerbooks.com", url: "https://www.lisawheelerbooks.com/" } },
+    { label: "Amazing Raffle Baskets", desc: "8 baskets, each valued at over $150 - always a festival favorite", img: "/images/ladies-club/raffle.webp" },
   ];
 
   // Children's Area sits first, then the 2x2 grid features - one shared swipeable gallery
   const childrensArea = {
     label: "Children's Area",
     desc: "Create-a-Boat & Float It, carnival games, face painting, and pony rides",
-    img: "/images/ladies-club/childrens-area.jpg",
+    img: "/images/ladies-club/childrens-area.webp",
     link: { label: "Seriously Funny Biz", url: "https://seriouslyfunnybiz.com/" },
   };
   const galleryItems = [childrensArea, ...features];
@@ -314,7 +314,7 @@ function LadiesClubEventsSection() {
       background: C.night, padding: "100px 24px", position: "relative", overflow: "hidden",
     }}>
       {/* Subtle background texture */}
-      <div style={{ position: "absolute", inset: 0, backgroundImage: "url(/images/community-bg.jpg)", backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed", opacity: 0.12 }} />
+      <div style={{ position: "absolute", inset: 0, backgroundImage: "url(/images/community-bg.webp)", backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed", opacity: 0.12 }} />
       <div style={{ maxWidth: 1000, margin: "0 auto", position: "relative", zIndex: 1 }}>
 
         {/* Header */}
@@ -349,7 +349,7 @@ function LadiesClubEventsSection() {
 
               {/* Info side */}
               <div style={{ padding: "44px 40px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                <img src="/images/landlake-club-logo.png" alt="LLLC Logo" style={{ width: 60, height: 60, borderRadius: "50%", objectFit: "cover", marginBottom: 20, border: "2px solid rgba(255,255,255,0.15)" }} />
+                <img src="/images/landlake-club-logo.webp" alt="LLLC Logo" style={{ width: 60, height: 60, borderRadius: "50%", objectFit: "cover", marginBottom: 20, border: "2px solid rgba(255,255,255,0.15)" }} />
 
                 {/* Date badge */}
                 <div style={{
@@ -421,7 +421,7 @@ function LadiesClubEventsSection() {
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 0 }} className="mobile-col-1">
               <div style={{ position: "relative", minHeight: 280, overflow: "hidden" }}>
                 <img
-                  src="/images/ladies-club/martindales.jpg"
+                  src="/images/ladies-club/martindales.webp"
                   alt="Brian Brickley and The Martindales"
                   style={{ width: "100%", height: "100%", objectFit: "cover", minHeight: 280, display: "block" }}
                 />
@@ -456,7 +456,7 @@ function LadiesClubEventsSection() {
         <FadeIn delay={155}>
           <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 14, overflow: "hidden", marginBottom: 16 }}>
             <div onClick={() => setLightbox(0)} style={{ cursor: "zoom-in", position: "relative", overflow: "hidden" }}>
-              <img src="/images/ladies-club/childrens-area.jpg" alt="Children's Area" loading="lazy"
+              <img src="/images/ladies-club/childrens-area.webp" alt="Children's Area" loading="lazy"
                 style={{ width: "100%", height: "auto", display: "block", transition: "transform 0.35s ease" }}
                 onMouseEnter={e => e.currentTarget.style.transform = "scale(1.03)"}
                 onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
@@ -510,9 +510,9 @@ function LadiesClubEventsSection() {
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 40 }}>
             {[
-              { name: "Brenda's Little Taste of Texas", url: "https://brendas-little-taste-of-texas.weeblyte.com/", img: "/images/ladies-club/brendas.png" },
-              { name: "Hannah's Hawaiian Shaved Ice", url: "https://www.facebook.com/p/Hannahs-Hawaiian-Shaved-Ice-100086661759892/", img: "/images/ladies-club/hannas.png" },
-              { name: "Sips and Sweets", url: "https://www.facebook.com/profile.php?id=61557431462745", img: "/images/ladies-club/sip-sweets.png" },
+              { name: "Brenda's Little Taste of Texas", url: "https://brendas-little-taste-of-texas.weeblyte.com/", img: "/images/ladies-club/brendas.webp" },
+              { name: "Hannah's Hawaiian Shaved Ice", url: "https://www.facebook.com/p/Hannahs-Hawaiian-Shaved-Ice-100086661759892/", img: "/images/ladies-club/hannas.webp" },
+              { name: "Sips and Sweets", url: "https://www.facebook.com/profile.php?id=61557431462745", img: "/images/ladies-club/sip-sweets.webp" },
             ].map((v, i) => (
               <a
                 key={i}
@@ -544,13 +544,13 @@ function LadiesClubEventsSection() {
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 40 }} className="mobile-col-2">
             {[
-              { name: "Blackbird Cafe",             logo: "/images/blackbird-logo.png" },
-              { name: "Two Lakes Tavern",            logo: "/images/two_lakes_logo.jpg" },
-              { name: "Michigan Gypsy",              logo: "/images/michigan-gypsy-logo.png" },
-              { name: "Devils Lake View Living",     logo: "/images/dl-view-living-logo.png" },
-              { name: "Ang & Co",                    logo: "/images/ang_co_logo.png" },
-              { name: "Trends Salon & Spa",          logo: "/images/trends-logo.png" },
-              { name: "Faust House Scrap & Craft",   logo: "/images/faust_house_logo.png" },
+              { name: "Blackbird Cafe",             logo: "/images/blackbird-logo.webp" },
+              { name: "Two Lakes Tavern",            logo: "/images/two_lakes_logo.webp" },
+              { name: "Michigan Gypsy",              logo: "/images/michigan-gypsy-logo.webp" },
+              { name: "Devils Lake View Living",     logo: "/images/dl-view-living-logo.webp" },
+              { name: "Ang & Co",                    logo: "/images/ang_co_logo.webp" },
+              { name: "Trends Salon & Spa",          logo: "/images/trends-logo.webp" },
+              { name: "Faust House Scrap & Craft",   logo: "/images/faust_house_logo.webp" },
               { name: "Rob's Rental",               logo: "/images/ladies-club/sponsors/robs-rentals-logo.jpg" },
               { name: "Paula's Poop Deck",           logo: "/images/ladies-club/sponsors/paulas%20poop%20deck.png" },
             ].map((s, i) => (
@@ -876,29 +876,29 @@ function LadiesClubGallerySection() {
 
 // Hardcoded fallback sponsors — used when Notion fetch fails or has no active sponsors
 const DEFAULT_PLATINUM = [
-  { name: "Adrian Steel",                      logo: "/images/ladies-club/sponsors/adrian-logo.jpg",        url: "https://adriansteel.com" },
+  { name: "Adrian Steel",                      logo: "/images/ladies-club/sponsors/adrian-logo.webp",        url: "https://adriansteel.com" },
 { name: "Dave/Jose",                         logo: null,                                                    url: null },
-  { name: "Devils Lake & Round Lake Men's Club", logo: "/images/mens_club_logo.png",                           url: "/mens-club" },
-  { name: "Decker and Sons Insurance",         logo: "/images/ladies-club/sponsors/decker-logo.jpg",        url: "https://deckerandsonsinsurance.com" },
-  { name: "Devil's Lake Water Sports",         logo: "/images/ladies-club/sponsors/dl_watersports_logo.png", url: "https://dlwatersports.com/" },
+  { name: "Devils Lake & Round Lake Men's Club", logo: "/images/mens_club_logo.webp",                           url: "/mens-club" },
+  { name: "Decker and Sons Insurance",         logo: "/images/ladies-club/sponsors/decker-logo.webp",        url: "https://deckerandsonsinsurance.com" },
+  { name: "Devil's Lake Water Sports",         logo: "/images/ladies-club/sponsors/dl_watersports_logo.webp", url: "https://dlwatersports.com/" },
   { name: "Foundation Realty",                 logo: "/images/ladies-club/sponsors/foundation-logo.jpg",    url: "https://foundationlenawee.com" },
   { name: "Kapnick Insurance",                 logo: "/images/ladies-club/sponsors/kapnick-logo.jpg",       url: "https://kapnick.com/" },
-  { name: "Lakeside Construction",             logo: "/images/ladies-club/sponsors/lakeside-logo.jpg",      url: null },
-  { name: "Land To Lakes",                     logo: "/images/ladies-club/sponsors/landtolakes-logo.jpg",   url: "https://landtolakes.com" },
-  { name: "Manitou Beach Marina",              logo: "/images/ladies-club/sponsors/marina_logo.png",        url: "https://manitoubeachmarina.com/" },
+  { name: "Lakeside Construction",             logo: "/images/ladies-club/sponsors/lakeside-logo.webp",      url: null },
+  { name: "Land To Lakes",                     logo: "/images/ladies-club/sponsors/landtolakes-logo.webp",   url: "https://landtolakes.com" },
+  { name: "Manitou Beach Marina",              logo: "/images/ladies-club/sponsors/marina_logo.webp",        url: "https://manitoubeachmarina.com/" },
   { name: "Black Oak Building Company",        logo: "/images/ladies-club/sponsors/black-oak-building-company-logo-300w.jpeg", url: "https://www.blackoakbuildingcompany.com/" },
 ];
 const DEFAULT_GOLD = [
-  { name: "Devil's Lake Bar and Grill",  logo: "/images/ladies-club/sponsors/DL-bar-and-grill-logo.jpg" },
-  { name: "Devils Lake Yacht Club",      logo: "/images/ladies-club/sponsors/yacht_club_logo.png", url: "https://www.devilslakeyachtclub.com/" },
+  { name: "Devil's Lake Bar and Grill",  logo: "/images/ladies-club/sponsors/DL-bar-and-grill-logo.webp" },
+  { name: "Devils Lake Yacht Club",      logo: "/images/ladies-club/sponsors/yacht_club_logo.webp", url: "https://www.devilslakeyachtclub.com/" },
   { name: "Edison Builders",             logo: "/images/ladies-club/sponsors/edison-logo.jpg" },
   { name: "Henson Family",              logo: null },
   { name: "Karabetsos Family",          logo: null },
   { name: "Kerentoff Family",           logo: null },
-  { name: "Mark Riggle Real Estate",    logo: "/images/ladies-club/sponsors/riggle-logo.jpg" },
+  { name: "Mark Riggle Real Estate",    logo: "/images/ladies-club/sponsors/riggle-logo.webp" },
   { name: "Michelle Construction",      logo: "/images/ladies-club/sponsors/michelle-construction-logo.jpg" },
-  { name: "North Shore Pontoon",        logo: "/images/ladies-club/sponsors/northshore-logo.jpg" },
-  { name: "Sterling Market",            logo: "/images/ladies-club/sponsors/sterling-logo.jpg" },
+  { name: "North Shore Pontoon",        logo: "/images/ladies-club/sponsors/northshore-logo.webp" },
+  { name: "Sterling Market",            logo: "/images/ladies-club/sponsors/sterling-logo.webp" },
 ];
 const DEFAULT_SILVER = [
   { name: "Boot Jack Tavern" }, { name: "Devil's Lake Golf Course" }, { name: "Devil's Lake View Living" },
@@ -1083,7 +1083,7 @@ function LadiesClubSponsorsSection() {
           <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 20px", justifyContent: "center", padding: "4px 0 8px" }}>
             {FRIENDS.map(s => (
               <div key={s.name} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <img src="/images/landlake-club-logo.png" alt="LLLC" style={{ width: 16, height: 16, objectFit: "contain", opacity: 0.6 }} />
+                <img src="/images/landlake-club-logo.webp" alt="LLLC" style={{ width: 16, height: 16, objectFit: "contain", opacity: 0.6 }} />
                 <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted }}>{s.name}</span>
               </div>
             ))}
@@ -1167,7 +1167,7 @@ function MensClubSponsorsSection() {
           <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 24px", justifyContent: "center", padding: "4px 0 8px" }}>
             {["Friend", "Friend", "Friend", "Friend", "Friend", "Friend", "Friend", "Friend"].map((_, i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <img src="/images/mens_club_logo.png" alt="DRLMC" style={{ width: 16, height: 16, objectFit: "contain", opacity: 0.7 }} />
+                <img src="/images/mens_club_logo.webp" alt="DRLMC" style={{ width: 16, height: 16, objectFit: "contain", opacity: 0.7 }} />
                 <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted }}>Friend Name</span>
               </div>
             ))}

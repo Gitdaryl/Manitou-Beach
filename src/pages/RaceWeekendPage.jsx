@@ -80,7 +80,7 @@ function RaceWeekendHero() {
 
   return (
     <section style={{
-      backgroundImage: "url(/images/explore-devils-lake.jpg)",
+      backgroundImage: "url(/images/explore-devils-lake.webp)",
       backgroundSize: "cover",
       backgroundPosition: "center 40%",
       backgroundAttachment: "fixed",

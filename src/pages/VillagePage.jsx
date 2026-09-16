@@ -15,7 +15,7 @@ function VillageHero() {
 
   return (
     <section style={{
-      backgroundImage: "url(/images/explore-lighthouse.jpg)",
+      backgroundImage: "url(/images/explore-lighthouse.webp)",
       backgroundSize: "cover",
       backgroundPosition: "center 40%",
       backgroundColor: C.dusk,

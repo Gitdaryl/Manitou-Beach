@@ -255,7 +255,7 @@ export default function WinePartnerPage() {
           </FadeIn>
           <FadeIn delay={100}>
             <div style={{ textAlign: "center", margin: "32px 0 44px" }}>
-              <img src="/images/passport-review-illustration.png" alt="" aria-hidden="true" style={{ width: "min(760px, 90vw)", opacity: 0.93 }} />
+              <img src="/images/passport-review-illustration.webp" alt="" aria-hidden="true" style={{ width: "min(760px, 90vw)", opacity: 0.93 }} />
             </div>
           </FadeIn>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(420px, 1fr))", gap: 24 }}>
@@ -307,7 +307,7 @@ export default function WinePartnerPage() {
               The 2026 Manitou Beach<br /><em style={{ color: C.sunsetLight }}>Wine Trail Awards</em>
             </h2>
             <div style={{ margin: "0 0 24px" }}>
-              <img src="/images/award-illustration.png" alt="" aria-hidden="true" style={{ width: "min(620px, 92vw)", opacity: 0.93 }} />
+              <img src="/images/award-illustration.webp" alt="" aria-hidden="true" style={{ width: "min(620px, 92vw)", opacity: 0.93 }} />
             </div>
             <p style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.sunsetLight, margin: "0 0 6px" }}>
               7 awards up for grabs
@@ -352,7 +352,7 @@ export default function WinePartnerPage() {
           <FadeIn delay={400}>
             <div style={{ background: "rgba(212,132,90,0.1)", border: "1px solid rgba(212,132,90,0.22)", borderRadius: 14, padding: "24px 32px", maxWidth: 500, margin: "0 auto" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 14 }}>
-                <img src="/images/yeti/yeti-camera.png" alt="The Yeti" style={{ width: 64, height: 64, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "2px solid rgba(212,132,90,0.3)" }} />
+                <img src="/images/yeti/yeti-camera.webp" alt="The Yeti" style={{ width: 64, height: 64, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "2px solid rgba(212,132,90,0.3)" }} />
                 <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunsetLight }}>A note from The Yeti</div>
               </div>
               <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.85, margin: 0 }}>

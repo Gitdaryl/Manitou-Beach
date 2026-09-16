@@ -277,7 +277,7 @@ export default function FoundingPage() {
         <div style={{ maxWidth: 960, margin: "0 auto" }}>
           <div style={{ display: "flex", gap: 56, alignItems: "center", flexWrap: "wrap" }}>
             <FadeIn delay={120} style={{ flex: "0 0 auto", textAlign: "center" }}>
-              <img src="/images/community-illustration.png" alt="" aria-hidden="true" style={{ width: "min(520px, 80vw)", opacity: 0.92 }} />
+              <img src="/images/community-illustration.webp" alt="" aria-hidden="true" style={{ width: "min(520px, 80vw)", opacity: 0.92 }} />
             </FadeIn>
             <FadeIn style={{ flex: "1 1 300px" }}>
               <SectionLabel>Founders Bonus</SectionLabel>

@@ -24,7 +24,7 @@ function NightlifeHero() {
 
   return (
     <section style={{
-      backgroundImage: "url(/images/explore-nightlife.jpg)",
+      backgroundImage: "url(/images/explore-nightlife.webp)",
       backgroundSize: "cover",
       backgroundPosition: "center 40%",
       padding: "180px 24px 140px",

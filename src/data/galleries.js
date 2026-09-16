@@ -72,7 +72,7 @@ export const GALLERIES = {
     ],
     generalTitle: 'Random Fun',
     count: 0,
-    cover: '/images/happening-hero.jpg',
+    cover: '/images/happening-hero.webp',
     ogDescription:
       'Community photos from the America 250 celebration in Manitou Beach, Michigan. Add yours and share the day.',
   },
@@ -83,7 +83,7 @@ export const GALLERIES = {
     order: 2,
     crowd: true,
     count: 0,
-    cover: '/images/ladies-club/artists.jpg',
+    cover: '/images/ladies-club/artists.webp',
     ogDescription:
       'Community photos from Manitou Beach Ladies Club events on Devils Lake, Michigan. Add yours and share.',
   },

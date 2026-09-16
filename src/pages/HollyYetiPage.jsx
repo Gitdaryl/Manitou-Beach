@@ -26,7 +26,7 @@ function HYHero() {
       <div style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translate(-50%,-50%)', width: 600, height: 600, borderRadius: '50%', background: `radial-gradient(circle, ${HOLLY_CORNER_COLOR}12 0%, transparent 60%)` }} />
 
       <div style={{ position: 'relative', zIndex: 1, maxWidth: 720, margin: '0 auto' }}>
-        <img src="/images/yeti/yeti-influencer.png" alt="" style={{ height: 120, marginBottom: 20, filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.4))' }} />
+        <img src="/images/yeti/yeti-influencer.webp" alt="" style={{ height: 120, marginBottom: 20, filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.4))' }} />
         <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(38px, 7vw, 60px)', fontWeight: 400, color: C.cream, margin: '0 0 16px', lineHeight: 1.1 }}>
           Holly & The Yeti
         </h1>
@@ -63,7 +63,7 @@ function MeetTheHosts() {
     {
       name: 'Holly Griewahn',
       role: 'Real Estate Expert · Co-Host',
-      image: '/images/holly_logo.jpg',
+      image: '/images/holly_logo.webp',
       accent: C.sunset,
       bio: "Holly knows every street, every lake lot, and every neighbor's dog by name. A straight-shooting realtor with Foundation Realty who's been selling lakefront dreams for decades - and the voice of reason when The Yeti gets too creative.",
       traits: ['Lakefront Expert', 'Community Builder', 'Voice of Reason'],
@@ -71,7 +71,7 @@ function MeetTheHosts() {
     {
       name: 'Daryl AKA The Yeti',
       role: 'Creator · Filmmaker · Co-Host',
-      image: '/images/yeti/yeti-director.png',
+      image: '/images/yeti/yeti-director.webp',
       accent: HOLLY_CORNER_COLOR,
       bio: "An AI-generated, Australian-accented cryptid who wandered out of the woods and into a podcast. The Yeti brings the comedy, the unexpected camera angles, and the community stories that make Manitou Beach feel like the place it actually is.",
       traits: ['Filmmaker', 'Storyteller', 'Professional Cryptid'],
@@ -259,7 +259,7 @@ function BookSection() {
           ))}
         </div>
 
-        <img src="/images/yeti/yeti-camera.png" alt="" style={{ height: 80, marginTop: 32, opacity: 0.3, filter: 'brightness(2)' }} />
+        <img src="/images/yeti/yeti-camera.webp" alt="" style={{ height: 80, marginTop: 32, opacity: 0.3, filter: 'brightness(2)' }} />
       </div>
     </section>
   );
@@ -292,7 +292,7 @@ function HollysCorner() {
         ) : articles.length === 0 ? (
           <FadeIn>
             <div style={{ textAlign: 'center', padding: '48px 24px', background: C.warmWhite, borderRadius: 18, border: `1px solid ${C.sand}` }}>
-              <img src="/images/yeti/yeti-painting.png" alt="" style={{ height: 80, marginBottom: 16, opacity: 0.6 }} />
+              <img src="/images/yeti/yeti-painting.webp" alt="" style={{ height: 80, marginBottom: 16, opacity: 0.6 }} />
               <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.text, margin: '0 0 8px' }}>Coming Soon</h3>
               <p style={{ fontSize: 14, color: C.textMuted, lineHeight: 1.6 }}>
                 Holly's first column drops this season. Real estate tips, lake life stories, and the kind of local insight you can't Google.

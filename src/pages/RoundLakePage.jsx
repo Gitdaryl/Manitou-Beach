@@ -15,14 +15,14 @@ const ROUND_LAKE_STATS = [
 ];
 
 const ROUND_LAKE_FISH = [
-  { name: "Largemouth Bass", image: "/images/fish/largemouth-bass.jpg", note: "Healthy population - best early morning before boat traffic" },
-  { name: "Smallmouth Bass", image: "/images/fish/smallmouth-bass.jpg", note: "Rocky structure near shore" },
-  { name: "Bluegill", image: "/images/fish/bluegill.jpg", note: "Excellent numbers - averaged 7\" in DNR surveys, 70% legal size" },
-  { name: "Northern Pike", image: "/images/fish/northern-pike.jpg", note: "Tip Up Festival favorite - ice fishing in February" },
-  { name: "Walleye", image: "/images/fish/walleye.jpg", note: "DNR stocked - trolling at 10–15 ft depths in summer" },
-  { name: "Black Crappie", image: "/images/fish/black-crappie.jpg", note: "Good catches, especially through the ice" },
-  { name: "Yellow Perch", image: "/images/fish/yellow-perch.jpg", note: "Averaged 9\"+ in surveys - above state average" },
-  { name: "Pumpkinseed Sunfish", image: "/images/fish/pumpkinseed.jpg", note: "Abundant near weed beds" },
+  { name: "Largemouth Bass", image: "/images/fish/largemouth-bass.webp", note: "Healthy population - best early morning before boat traffic" },
+  { name: "Smallmouth Bass", image: "/images/fish/smallmouth-bass.webp", note: "Rocky structure near shore" },
+  { name: "Bluegill", image: "/images/fish/bluegill.webp", note: "Excellent numbers - averaged 7\" in DNR surveys, 70% legal size" },
+  { name: "Northern Pike", image: "/images/fish/northern-pike.webp", note: "Tip Up Festival favorite - ice fishing in February" },
+  { name: "Walleye", image: "/images/fish/walleye.webp", note: "DNR stocked - trolling at 10–15 ft depths in summer" },
+  { name: "Black Crappie", image: "/images/fish/black-crappie.webp", note: "Good catches, especially through the ice" },
+  { name: "Yellow Perch", image: "/images/fish/yellow-perch.webp", note: "Averaged 9\"+ in surveys - above state average" },
+  { name: "Pumpkinseed Sunfish", image: "/images/fish/pumpkinseed.webp", note: "Abundant near weed beds" },
 ];
 
 const ROUND_LAKE_TIMELINE = [
@@ -42,7 +42,7 @@ function RoundLakeHero() {
 
   return (
     <section style={{
-      backgroundImage: "url(/images/explore-round-lake.jpg)",
+      backgroundImage: "url(/images/explore-round-lake.webp)",
       backgroundSize: "cover",
       backgroundPosition: "center 40%",
       backgroundAttachment: "fixed",

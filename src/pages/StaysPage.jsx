@@ -1628,7 +1628,7 @@ function ListYourPropertySection({ stays = [] }) {
               boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
             }}>
               <div style={{ position: 'absolute', top: 0, left: 0, width: 4, height: '100%', background: C.lakeBlue, borderRadius: '16px 0 0 16px' }} />
-              <img className="sample-card-img" src="/images/yeti/yeti-cabin.jpg" alt="" style={{ width: 120, height: 120, borderRadius: 16, objectFit: 'cover', flexShrink: 0, background: C.sand }} />
+              <img className="sample-card-img" src="/images/yeti/yeti-cabin.webp" alt="" style={{ width: 120, height: 120, borderRadius: 16, objectFit: 'cover', flexShrink: 0, background: C.sand }} />
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 8, marginBottom: 6 }}>
                   <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.text, margin: 0 }}>Yeti's Cozy Cabin</h3>
@@ -1656,7 +1656,7 @@ function ListYourPropertySection({ stays = [] }) {
 
           {/* Featured ($25) sample - same cabin, premium treatment */}
           {tier === 'featured' && (() => {
-            const samplePhotos = ['/images/yeti/yeti-cabin.jpg', '/images/yeti/yeti-cabin-2.jpg', '/images/yeti/yeti-cabin-3.jpg'];
+            const samplePhotos = ['/images/yeti/yeti-cabin.webp', '/images/yeti/yeti-cabin-2.webp', '/images/yeti/yeti-cabin-3.webp'];
             return (
               <div style={{
                 background: C.dusk, border: `1px solid ${C.lakeDark}`, borderRadius: 16,

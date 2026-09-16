@@ -917,7 +917,7 @@ export function HollyYetiSection() {
 
   return (
     <section id="holly" style={{
-      backgroundImage: "url(/images/holly-yeti-bg.jpg)",
+      backgroundImage: "url(/images/holly-yeti-bg.webp)",
       backgroundSize: "cover",
       backgroundPosition: "center",
       padding: "100px 24px",
@@ -977,7 +977,7 @@ export function HollyYetiSection() {
           <FadeIn delay={80} direction="right">
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", height: "100%" }}>
               <img
-                src="/images/holly_yeti.png"
+                src="/images/holly_yeti.webp"
                 alt="Holly and The Yeti"
                 style={{ width: "100%", maxWidth: 300, display: "block", objectFit: "contain" }}
               />
@@ -1388,7 +1388,7 @@ export function SubmitSection() {
                   {form.category === 'Food Truck' && (
                     <div style={{ background: 'linear-gradient(135deg, #1A2830 0%, #2D4A3E 100%)', borderRadius: 12, padding: '24px 20px', border: '1px solid rgba(255,255,255,0.08)' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-                        <img src="/images/icons/food-truck-icon.png" alt="Food truck" style={{ width: 44, height: 44, objectFit: 'contain', flexShrink: 0 }} />
+                        <img src="/images/icons/food-truck-icon.webp" alt="Food truck" style={{ width: 44, height: 44, objectFit: 'contain', flexShrink: 0 }} />
                         <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, color: '#F5F0E8', fontWeight: 400, lineHeight: 1.3 }}>
                           Hold on - you qualify for something better
                         </div>

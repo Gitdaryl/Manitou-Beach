@@ -79,7 +79,7 @@ Build a dedicated fishing page for the two lakes. Content direction:
 - Seasonal guide (spring/summer/fall/winter + ice fishing)
 - Use same page structure as RoundLakePage (hero, stats, sections, dividers)
 
-Images: Check `public/images/` for any fishing-related images. Use explore-fishing.jpg if available for hero.
+Images: Check `public/images/` for any fishing-related images. Use explore-fishing.webp if available for hero.
 
 ---
 
@@ -102,7 +102,7 @@ Link from the Wineries explore card on homepage.
 **Priority: MEDIUM**
 
 Build "The Manitou Beach Dispatch" - a simple blog section.
-- Image exists: `public/images/dispatch-header.jpg` - use as the blog header
+- Image exists: `public/images/dispatch-header.webp` - use as the blog header
 - Initially can be static content (hardcoded blog posts in App.jsx)
 - Later: fetch from a Notion database (similar pattern to events.js)
 - Route: `/dispatch` or section on homepage

@@ -21,25 +21,25 @@ const CAT_COLORS = {
 // Priority: venue keyword → category → generic fallback
 
 const VENUE_IMAGES = [
-  { keys: ['aeronautique', 'winery', 'wine', 'corks', 'kegs', 'highland', 'cherry creek', 'chateau', 'vineyard'], img: '/images/Explore-wineries.jpg' },
-  { keys: ['nightlife', 'tavern', 'bar & grill', 'bar and grill', 'saloon', 'pub'], img: '/images/explore-nightlife.jpg' },
-  { keys: ['food truck', 'foodtruck', 'wieners', 'taco', 'bbq truck'], img: '/images/foodtruck_hero.jpg' },
-  { keys: ['lighthouse'], img: '/images/explore-lighthouse.jpg' },
-  { keys: ['fishing', 'fish', 'bass', 'walleye', 'bluegill', 'ice fish'], img: '/images/explore-fishing.jpg' },
-  { keys: ['irish hills', 'explore'], img: '/images/explore-Irish-hills.jpg' },
-  { keys: ['devils lake', 'round lake', 'kayak', 'swim', 'boat', 'pontoon', 'waterski', 'jetski', 'paddle'], img: '/images/explore-devils-lake.jpg' },
-  { keys: ['historic', 'museum', 'history', 'heritage', 'historical'], img: '/images/historic-hero.jpg' },
-  { keys: ['village', 'community', 'festival', 'fair', 'flea market', 'vendor show', 'open house'], img: '/images/landlakes-hero.jpg' },
-  { keys: ['music', 'concert', 'band', 'tribute', 'dj ', 'live at', 'performs'], img: '/images/happening-hero.jpg' },
+  { keys: ['aeronautique', 'winery', 'wine', 'corks', 'kegs', 'highland', 'cherry creek', 'chateau', 'vineyard'], img: '/images/Explore-wineries.webp' },
+  { keys: ['nightlife', 'tavern', 'bar & grill', 'bar and grill', 'saloon', 'pub'], img: '/images/explore-nightlife.webp' },
+  { keys: ['food truck', 'foodtruck', 'wieners', 'taco', 'bbq truck'], img: '/images/foodtruck_hero.webp' },
+  { keys: ['lighthouse'], img: '/images/explore-lighthouse.webp' },
+  { keys: ['fishing', 'fish', 'bass', 'walleye', 'bluegill', 'ice fish'], img: '/images/explore-fishing.webp' },
+  { keys: ['irish hills', 'explore'], img: '/images/explore-Irish-hills.webp' },
+  { keys: ['devils lake', 'round lake', 'kayak', 'swim', 'boat', 'pontoon', 'waterski', 'jetski', 'paddle'], img: '/images/explore-devils-lake.webp' },
+  { keys: ['historic', 'museum', 'history', 'heritage', 'historical'], img: '/images/historic-hero.webp' },
+  { keys: ['village', 'community', 'festival', 'fair', 'flea market', 'vendor show', 'open house'], img: '/images/landlakes-hero.webp' },
+  { keys: ['music', 'concert', 'band', 'tribute', 'dj ', 'live at', 'performs'], img: '/images/happening-hero.webp' },
 ];
 
 const CAT_IMAGES = {
-  'Live Music': '/images/explore-nightlife.jpg',
-  'Food & Social': '/images/foodtruck_hero.jpg',
-  'Sports & Outdoors': '/images/explore-devils-lake.jpg',
-  'Community': '/images/community-bg.jpg',
-  'Arts & Culture': '/images/dispatch-header-web.jpg',
-  'Markets & Vendors': '/images/landlakes-hero.jpg',
+  'Live Music': '/images/explore-nightlife.webp',
+  'Food & Social': '/images/foodtruck_hero.webp',
+  'Sports & Outdoors': '/images/explore-devils-lake.webp',
+  'Community': '/images/community-bg.webp',
+  'Arts & Culture': '/images/dispatch-header-web.webp',
+  'Markets & Vendors': '/images/landlakes-hero.webp',
 };
 
 function getSmartImage(event) {
@@ -48,7 +48,7 @@ function getSmartImage(event) {
   for (const { keys, img } of VENUE_IMAGES) {
     if (keys.some(k => haystack.includes(k))) return img;
   }
-  return CAT_IMAGES[event.category] || '/images/happening-hero.jpg';
+  return CAT_IMAGES[event.category] || '/images/happening-hero.webp';
 }
 
 // ── Date helpers ──────────────────────────────────────────────────────────────
@@ -173,7 +173,7 @@ function RelatedCard({ event }) {
       onMouseLeave={e => e.currentTarget.style.boxShadow = 'none'}
     >
       <div style={{ height: 110, position: 'relative', overflow: 'hidden', background: C.dusk }}>
-        <img src={img} alt={event.name} style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.75 }} onError={e => { e.target.src = '/images/happening-hero.jpg'; }} />
+        <img src={img} alt={event.name} style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.75 }} onError={e => { e.target.src = '/images/happening-hero.webp'; }} />
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 40%, rgba(10,18,24,0.7))' }} />
         <div style={{ position: 'absolute', top: 8, left: 10, background: '#fff', borderRadius: 6, padding: '3px 8px', textAlign: 'center', minWidth: 38 }}>
           <div style={{ fontSize: 9, fontWeight: 700, color: color, textTransform: 'uppercase', letterSpacing: 1, fontFamily: "'Libre Franklin', sans-serif" }}>{month}</div>
@@ -235,7 +235,7 @@ export default function EventDetailPage() {
   const scrollTo = (id) => { window.location.href = '/#' + id; };
   const past = event ? isPast(event.date) : false;
   const catColor = event ? (CAT_COLORS[event.category] || C.sage) : C.sage;
-  const heroImage = event ? getSmartImage(event) : '/images/happening-hero.jpg';
+  const heroImage = event ? getSmartImage(event) : '/images/happening-hero.webp';
   const hasOrganizerImage = event?.imageUrl;
 
   // Match the event's free-text venue/location string to a business listing, if any.
@@ -350,7 +350,7 @@ export default function EventDetailPage() {
                 src={heroImage}
                 alt={event.name}
                 style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: past ? 0.4 : 0.72, position: 'absolute', inset: 0 }}
-                onError={e => { e.target.src = '/images/happening-hero.jpg'; }}
+                onError={e => { e.target.src = '/images/happening-hero.webp'; }}
               />
               <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(160deg, rgba(10,18,24,0.25) 0%, rgba(10,18,24,0.82) 100%)' }} />
 

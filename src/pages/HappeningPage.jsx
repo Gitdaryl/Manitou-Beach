@@ -37,7 +37,7 @@ function HappeningHero() {
       <video
         autoPlay muted loop playsInline
         preload="metadata"
-        poster="/images/happening-hero.jpg"
+        poster="/images/happening-hero.webp"
         style={{
           position: "absolute", inset: 0, width: "100%", height: "100%",
           objectFit: "cover", zIndex: 0,
@@ -918,7 +918,7 @@ export function HappeningSubmitCTA({ simple = false }) {
     return (
       <section id="submit-event" style={{ background: C.night, padding: "72px 24px", textAlign: "center" }}>
         <FadeIn>
-          <img src="/images/yeti/yeti-clapper.png" alt="Yeti with clapperboard" width="200" height="200" loading="lazy" style={{ width: 'clamp(120px, 22vw, 200px)', height: 'auto', marginBottom: 20, filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.3))' }} />
+          <img src="/images/yeti/yeti-clapper.webp" alt="Yeti with clapperboard" width="200" height="200" loading="lazy" style={{ width: 'clamp(120px, 22vw, 200px)', height: 'auto', marginBottom: 20, filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.3))' }} />
           <SectionLabel light>Get Involved</SectionLabel>
           <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 38px)", fontWeight: 400, color: C.cream, margin: "0 0 12px 0" }}>
             Got something good happening?
@@ -936,7 +936,7 @@ export function HappeningSubmitCTA({ simple = false }) {
     <section id="submit-event" style={{ background: C.night, padding: "80px 24px" }}>
       <div style={{ maxWidth: 680, margin: "0 auto", textAlign: "center" }}>
         <FadeIn>
-          <img src="/images/yeti/yeti-clapper.png" alt="Yeti with clapperboard" width="220" height="220" loading="lazy" style={{ width: 'clamp(140px, 25vw, 220px)', height: 'auto', marginBottom: 20, filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.3))' }} />
+          <img src="/images/yeti/yeti-clapper.webp" alt="Yeti with clapperboard" width="220" height="220" loading="lazy" style={{ width: 'clamp(140px, 25vw, 220px)', height: 'auto', marginBottom: 20, filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.3))' }} />
           <SectionLabel light>Get Involved</SectionLabel>
           <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 40px)", fontWeight: 400, color: C.cream, margin: "0 0 16px 0" }}>
             Got something good happening?

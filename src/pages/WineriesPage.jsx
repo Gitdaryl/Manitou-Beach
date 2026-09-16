@@ -194,7 +194,7 @@ function WineriesHero() {
     }}>
       <div ref={bgRef} style={{
         position: "absolute", inset: 0,
-        backgroundImage: "url(/images/Explore-wineries.jpg)",
+        backgroundImage: "url(/images/Explore-wineries.webp)",
         backgroundSize: "cover",
         backgroundPosition: "center 40%",
         transform: "scale(1.08)",
@@ -1693,7 +1693,7 @@ function WineScoreboardSection() {
 
 const WINE_PASSPORT_HOW = [
   { icon: '/images/icons/plan-map-icon.png',    title: 'Plan your stops',     desc: 'Seven venues open across the Village and the Trail - one more on the way. One afternoon or a full day.' },
-  { icon: '/images/icons/passport-icon.png',    title: 'Grab a passport card', desc: 'Pick one up at any tasting room counter. Grid on the back - one square per stop.' },
+  { icon: '/images/icons/passport-icon.webp',    title: 'Grab a passport card', desc: 'Pick one up at any tasting room counter. Grid on the back - one square per stop.' },
   { icon: '/images/icons/wine-rating.png',      title: 'Taste & scan',         desc: 'Scan the QR, name your pour, leave a star rating. Takes 30 seconds.' },
   { icon: '/images/icons/stamp-offer-icon.png', title: 'Stamp + 10% off',      desc: 'Staff signs your card square. Each stamp earns 10% off a bottle - buy before you leave.' },
   { icon: '/images/icons/trophy-icon.png',      title: 'Live standings',       desc: 'Ratings post live as they come in. Scores go dark for the final 30 days - winners revealed at an October awards ceremony.' },
@@ -1775,7 +1775,7 @@ function WineAwardCeremonySection() {
           {/* Yeti note */}
           <div style={{ background: 'rgba(212,132,90,0.1)', border: '1px solid rgba(212,132,90,0.22)', borderRadius: 14, padding: '24px 28px', maxWidth: 480, margin: '0 auto 44px', textAlign: 'left' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-              <img src="/images/yeti/yeti-camera.png" alt="The Yeti" style={{ width: 52, height: 52, borderRadius: '50%', objectFit: 'cover', flexShrink: 0, border: '2px solid rgba(212,132,90,0.3)' }} />
+              <img src="/images/yeti/yeti-camera.webp" alt="The Yeti" style={{ width: 52, height: 52, borderRadius: '50%', objectFit: 'cover', flexShrink: 0, border: '2px solid rgba(212,132,90,0.3)' }} />
               <div style={{ fontFamily: "'Caveat', cursive", fontSize: 19, color: C.sunsetLight }}>A note from The Yeti</div>
             </div>
             <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', lineHeight: 1.85, margin: 0, fontFamily: "'Libre Franklin', sans-serif" }}>
@@ -1832,7 +1832,7 @@ export default function WineriesPage() {
       <WaveDivider topColor={C.night} bottomColor={C.cream} flip />
       <WineTrailNotifySection />
       <WineParallaxBreak
-        image="/images/wineries/ang_co_fontaine_02.jpg"
+        image="/images/wineries/ang_co_fontaine_02.webp"
         quote="Walk the village. Follow the pour."
         sub="Now Pouring · Manitou Beach Village"
       />
@@ -1854,7 +1854,7 @@ export default function WineriesPage() {
         </>
       ) : (
         <WineParallaxBreak
-          image="/images/wineries/dlv_brengman_02.jpg"
+          image="/images/wineries/dlv_brengman_02.webp"
           quote="Ask Darlene where to start."
           sub="Devils Lake View Living · 11 Organic Brengman Wines"
         />

@@ -19,7 +19,7 @@ const GOLF_OUTING = {
   address: "14600 U.S. 223, Manitou Beach, MI 49253",
   phone: "(517) 547-3653",
   video: "/images/mens-club/video/golf-hero-loop.mp4",
-  poster: "/images/mens-club/golf.jpg",
+  poster: "/images/mens-club/golf.webp",
 };
 
 const GOLF_SPONSOR_TIERS = [
@@ -76,43 +76,43 @@ const MENS_CLUB_EVENTS = [
     title: "Tip-Up Festival",
     date: "First weekend of February",
     desc: "The crown jewel - 70+ years of ice fishing, snowmobile racing, outhouse races, hovercraft rides, poker runs, and the benefit auction. Held on frozen Devils Lake, it's the longest-running winter festival in the Irish Hills.",
-    image: "/images/mens-club/tip-up-1.jpg",
+    image: "/images/mens-club/tip-up-1.webp",
   },
   {
     title: "Firecracker 7K Run/Walk",
     date: "July 4th - 8:00 AM",
     desc: "A Fourth of July tradition starting at 3171 Round Lake Hwy. Choose the 7K run/walk or 1-mile family fun run. Proceeds fund the Devils Lake fireworks display.",
-    image: "/images/mens-club/firecracker-7k.jpg",
+    image: "/images/mens-club/firecracker-7k.webp",
   },
   {
     title: "Golf Outing",
     date: "September 13, 2026 - Shotgun start 8:30 AM",
     desc: "18 holes plus cart at Devils Lake Golf Course - $75 per person or $300 per foursome. Check in at 8:00 am, hot dogs at the turn, a chance at a Yeti cooler, and a hole-in-one contest where an ace wins a 2-year lease on a Ford Bronco Sport. All proceeds benefit the club's charitable programs.",
-    image: "/images/mens-club/golf.jpg",
+    image: "/images/mens-club/golf.webp",
   },
   {
     title: "Halloween Hot Dog Roast",
     date: "Late October",
     desc: "A fall tradition for the whole family - hot dogs over the fire, costumes, and neighbors gathering one more time before the lake freezes and Tip-Up season begins.",
-    image: "/images/mens-club/halloween-hot-dog-roast.jpg",
+    image: "/images/mens-club/halloween-hot-dog-roast.webp",
   },
   {
     title: "Benefit Auction & Raffle",
     date: "During Tip-Up Festival",
     desc: "The auction is the club's biggest fundraiser - local businesses and community members donate items. Proceeds support laptops for students, Toys for Tots, Shop with a Hero, and food pantries.",
-    image: "/images/mens-club/auction.jpg",
+    image: "/images/mens-club/auction.webp",
   },
   {
     title: "Fireworks Display",
     date: "July 4th & Special Events",
     desc: "Working with the Devils & Round Lake Fireworks Association, the club helps fund and organize the summer fireworks display over Devils Lake.",
-    image: "/images/mens-club/fireworks.jpg",
+    image: "/images/mens-club/fireworks.webp",
   },
   {
     title: "Community Service Days",
     date: "Year-round",
     desc: "Throughout the year, club members volunteer for lake cleanups, food drives, Christmas gift baskets, and support for families in need through the Community for People in Need program.",
-    image: "/images/mens-club/shop-with-a-hero.jpg",
+    image: "/images/mens-club/shop-with-a-hero.webp",
   },
 ];
 
@@ -162,7 +162,7 @@ function MensClubHero() {
 
   return (
     <section style={{
-      backgroundImage: golfMode ? `url(${GOLF_OUTING.poster})` : "url(/images/mens-club-hero.jpg)",
+      backgroundImage: golfMode ? `url(${GOLF_OUTING.poster})` : "url(/images/mens-club-hero.webp)",
       backgroundSize: "cover",
       backgroundPosition: "center",
       backgroundColor: C.night,
@@ -180,7 +180,7 @@ function MensClubHero() {
       )}
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(170deg, rgba(10,18,24,0.72) 0%, rgba(10,18,24,0.45) 50%, rgba(10,18,24,0.85) 100%)" }} />
       <div style={{ maxWidth: 800, margin: "0 auto", position: "relative", zIndex: 1, opacity: loaded ? 1 : 0, transform: loaded ? "translateY(0)" : "translateY(20px)", transition: "all 0.8s ease" }}>
-        <img src="/images/mens_club_logo.png" alt="Men's Club Logo" style={{ width: golfMode ? 180 : 96, height: golfMode ? 180 : 96, borderRadius: "50%", objectFit: "cover", marginBottom: 20, border: `3px solid rgba(255,255,255,0.18)`, boxShadow: "0 4px 24px rgba(0,0,0,0.4)" }} />
+        <img src="/images/mens_club_logo.webp" alt="Men's Club Logo" style={{ width: golfMode ? 180 : 96, height: golfMode ? 180 : 96, borderRadius: "50%", objectFit: "cover", marginBottom: 20, border: `3px solid rgba(255,255,255,0.18)`, boxShadow: "0 4px 24px rgba(0,0,0,0.4)" }} />
         {golfMode ? (
           <>
             <div style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.sunsetLight, marginBottom: 12 }}>
@@ -560,19 +560,19 @@ function MensClubEventsSection() {
 function MensClubGallerySection() {
   // Gallery photos - add image paths here as they become available
   const galleryPhotos = [
-    { src: "/images/mens-club/tip-up-1.jpg", caption: "Tip-Up Festival" },
-    { src: "/images/mens-club/tip-up-2.jpg", caption: "Tip-Up Festival" },
-    { src: "/images/mens-club/tip-up-3.jpg", caption: "Tip-Up Festival" },
-    { src: "/images/mens-club/tip-up-4.jpg", caption: "Tip-Up Festival" },
-    { src: "/images/mens-club/tip-up-5.jpg", caption: "Tip-Up Festival" },
-    { src: "/images/mens-club/tip-up-6.jpg", caption: "Tip-Up Festival" },
-    { src: "/images/mens-club/tip-up-7.jpg", caption: "Tip-Up Festival" },
-    { src: "/images/mens-club/firecracker-7k.jpg", caption: "Firecracker 7K" },
-    { src: "/images/mens-club/firecracker-7k-2.jpg", caption: "Firecracker 7K" },
-    { src: "/images/mens-club/auction.jpg", caption: "Benefit Auction" },
-    { src: "/images/mens-club/fireworks.jpg", caption: "July 4th Fireworks" },
-    { src: "/images/mens-club/shop-with-a-hero.jpg", caption: "Shop with a Hero" },
-    { src: "/images/mens-club/toys-for-tots.jpg", caption: "Toys for Tots" },
+    { src: "/images/mens-club/tip-up-1.webp", caption: "Tip-Up Festival" },
+    { src: "/images/mens-club/tip-up-2.webp", caption: "Tip-Up Festival" },
+    { src: "/images/mens-club/tip-up-3.webp", caption: "Tip-Up Festival" },
+    { src: "/images/mens-club/tip-up-4.webp", caption: "Tip-Up Festival" },
+    { src: "/images/mens-club/tip-up-5.webp", caption: "Tip-Up Festival" },
+    { src: "/images/mens-club/tip-up-6.webp", caption: "Tip-Up Festival" },
+    { src: "/images/mens-club/tip-up-7.webp", caption: "Tip-Up Festival" },
+    { src: "/images/mens-club/firecracker-7k.webp", caption: "Firecracker 7K" },
+    { src: "/images/mens-club/firecracker-7k-2.webp", caption: "Firecracker 7K" },
+    { src: "/images/mens-club/auction.webp", caption: "Benefit Auction" },
+    { src: "/images/mens-club/fireworks.webp", caption: "July 4th Fireworks" },
+    { src: "/images/mens-club/shop-with-a-hero.webp", caption: "Shop with a Hero" },
+    { src: "/images/mens-club/toys-for-tots.webp", caption: "Toys for Tots" },
   ];
 
   return galleryPhotos.length > 0 ? (

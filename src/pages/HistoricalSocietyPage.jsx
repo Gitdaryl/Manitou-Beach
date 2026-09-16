@@ -9,7 +9,7 @@ import SEOHead from '../components/SEOHead';
 // ============================================================
 const MBHRS_PROGRAMS = [
   {
-    image: "/images/historical/art-gallery.jpg",
+    image: "/images/historical/art-gallery.webp",
     title: "Boat House Art Gallery",
     desc: "The largest nonprofit art gallery in Lenawee County, featuring work from over 50 artists. Located at 138 N. Lakeview Blvd - curating fine art from Michigan's Irish Hills community.",
     address: "138 North Lakeview Boulevard, Manitou Beach, MI 49253",
@@ -17,35 +17,35 @@ const MBHRS_PROGRAMS = [
     email: "mbboathouseartgallery@gmail.com",
   },
   {
-    image: "/images/historical/art-festival.jpg",
+    image: "/images/historical/art-festival.webp",
     title: "Devils Lake Festival of the Arts",
     desc: "An annual summer art festival in the Village - 50 fine artists, 50 crafters, children's activities, live music, and food trucks. Free shuttle buses run all day between parking lots.",
     date: "Annual - Summer (10 AM – 6 PM)",
     link: "https://www.facebook.com/ManitouBeachBoathouseArtGallery/",
   },
   {
-    image: "/images/historical/car-show.jpg",
+    image: "/images/historical/car-show.webp",
     title: "Classic Car Shows",
     desc: "Bringing car show enthusiasts together in the Village for community celebrations of automotive history and local culture.",
     phone: "(517) 224-1984",
     email: "mbboathouseartgallery@gmail.com",
   },
   {
-    image: "/images/historical/conservation.jpg",
+    image: "/images/historical/conservation.webp",
     title: "Land & Water Conservation",
     desc: "Active stewardship projects to protect and restore the natural environment around Devils Lake and the surrounding watershed.",
     phone: "(517) 224-1984",
     email: "mbboathouseartgallery@gmail.com",
   },
   {
-    image: "/images/historical/restoration.jpg",
+    image: "/images/historical/restoration.webp",
     title: "Village Restoration",
     desc: "Ongoing renovation projects to restore historic buildings and infrastructure in Manitou Beach Village, preserving the area's architectural heritage.",
     phone: "(517) 224-1984",
     email: "mbboathouseartgallery@gmail.com",
   },
   {
-    image: "/images/historical/childresn-art.jpg",
+    image: "/images/historical/childresn-art.webp",
     title: "Children's Arts Programs",
     desc: "Arts education and creative programs for young people, fostering the next generation of artists and community members.",
     link: "https://manitoubeachcreative.org",
@@ -67,7 +67,7 @@ function HistoricalSocietyHero() {
 
   return (
     <section style={{
-      backgroundImage: "url(/images/historic-hero.jpg)",
+      backgroundImage: "url(/images/historic-hero.webp)",
       backgroundSize: "cover",
       backgroundPosition: "center 40%",
       backgroundAttachment: "fixed",
@@ -77,7 +77,7 @@ function HistoricalSocietyHero() {
     }}>
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg, rgba(10,18,24,0.82) 0%, rgba(10,18,24,0.65) 50%, rgba(10,18,24,0.88) 100%)" }} />
       <div style={{ maxWidth: 800, margin: "0 auto", position: "relative", zIndex: 1, opacity: loaded ? 1 : 0, transform: loaded ? "translateY(0)" : "translateY(20px)", transition: "all 0.8s ease" }}>
-        <img src="/images/mbhrs_logo.png" alt="MBHRS Logo" style={{ width: 96, height: 96, borderRadius: "50%", objectFit: "cover", marginBottom: 20, border: `3px solid rgba(255,255,255,0.12)` }} />
+        <img src="/images/mbhrs_logo.webp" alt="MBHRS Logo" style={{ width: 96, height: 96, borderRadius: "50%", objectFit: "cover", marginBottom: 20, border: `3px solid rgba(255,255,255,0.12)` }} />
         <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sunsetLight, marginBottom: 12 }}>
           Investing in the Future by Preserving the Past
         </div>
@@ -215,7 +215,7 @@ function MBHRSProgramsSection() {
 function MBHRSBoatHouseFeature() {
   return (
     <section style={{
-      backgroundImage: "url(/images/boathouse-background.jpg)",
+      backgroundImage: "url(/images/boathouse-background.webp)",
       backgroundSize: "cover",
       backgroundPosition: "center",
       backgroundAttachment: "fixed",

@@ -111,7 +111,7 @@ export default function PartnerIntakePage() {
         <Navbar activeSection="" scrollTo={scrollTo} isSubPage={true} />
         <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '120px 24px 80px' }}>
           <div style={{ maxWidth: 520, width: '100%', textAlign: 'center' }}>
-            <img src="/images/yeti/yetickets_sign.png" alt="Yetickets" style={{ width: '100%', maxWidth: 420, marginBottom: 24 }} />
+            <img src="/images/yeti/yetickets_sign.webp" alt="Yetickets" style={{ width: '100%', maxWidth: 420, marginBottom: 24 }} />
             <div style={{
               width: 64, height: 64, borderRadius: '50%',
               background: 'linear-gradient(135deg, #7bba6e, #5a9e4e)',
@@ -145,7 +145,7 @@ export default function PartnerIntakePage() {
       <div style={{ maxWidth: 680, margin: '0 auto', padding: '120px 24px 80px' }}>
         <FadeIn>
           <div style={{ textAlign: 'center', marginBottom: 40 }}>
-            <img src="/images/yeti/yetickets_sign.png" alt="Yetickets" style={{ width: '100%', maxWidth: 400, marginBottom: 24 }} />
+            <img src="/images/yeti/yetickets_sign.webp" alt="Yetickets" style={{ width: '100%', maxWidth: 400, marginBottom: 24 }} />
             <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: C.textMuted, marginBottom: 12 }}>
               Partner Setup
             </div>

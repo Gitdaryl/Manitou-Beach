@@ -758,7 +758,7 @@ export default function BusinessProfilePage() {
                 <div
                   className="ken-burns-bg"
                   style={{
-                    position: 'absolute', inset: '-4%', backgroundImage: 'url(/images/explore-devils-lake.jpg)',
+                    position: 'absolute', inset: '-4%', backgroundImage: 'url(/images/explore-devils-lake.webp)',
                     backgroundSize: 'cover', backgroundPosition: 'center 55%', opacity: 0.4,
                   }}
                 />

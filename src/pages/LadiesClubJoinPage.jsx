@@ -159,7 +159,7 @@ export default function LadiesClubJoinPage() {
           ← Ladies Club
         </a>
         <div style={{ position: 'relative', zIndex: 1, maxWidth: 600, margin: '0 auto' }}>
-          <img src="/images/landlake-club-logo.png" alt="LLLC" style={{ width: 160, height: 160, objectFit: 'contain', marginBottom: 20 }} />
+          <img src="/images/landlake-club-logo.webp" alt="LLLC" style={{ width: 160, height: 160, objectFit: 'contain', marginBottom: 20 }} />
           <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: C.sunsetLight, marginBottom: 10 }}>
             Where Community Comes Together
           </div>

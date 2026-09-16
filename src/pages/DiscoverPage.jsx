@@ -219,7 +219,7 @@ export default function DiscoverPage() {
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
 
       {/* ── Compact Title Bar ── */}
-      <div style={{ backgroundImage: 'url(/images/DL-boat.jpg)', backgroundSize: 'cover', backgroundPosition: 'center 40%', position: 'relative', minHeight: 'clamp(280px, 40vh, 380px)', display: 'flex', alignItems: 'flex-end' }}>
+      <div style={{ backgroundImage: 'url(/images/DL-boat.webp)', backgroundSize: 'cover', backgroundPosition: 'center 40%', position: 'relative', minHeight: 'clamp(280px, 40vh, 380px)', display: 'flex', alignItems: 'flex-end' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(10,18,24,0.55) 0%, rgba(10,18,24,0.88) 100%)' }} />
         <div className="discover-hero-inner" style={{ position: 'relative', zIndex: 1, maxWidth: 960, margin: '0 auto', width: '100%' }}>
           <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 5, textTransform: 'uppercase', color: 'rgba(255,255,255,0.32)', marginBottom: 10 }}>
@@ -263,7 +263,7 @@ export default function DiscoverPage() {
             cursor: 'pointer', transition: 'all 0.18s', whiteSpace: 'nowrap',
             display: 'flex', alignItems: 'center', gap: 6, textDecoration: 'none',
           }}>
-            <CatIcon icon="/images/icons/food-truck-icon-dark.png" size={28} />
+            <CatIcon icon="/images/icons/food-truck-icon-dark.webp" size={28} />
             Food Trucks
           </a>
         </div>

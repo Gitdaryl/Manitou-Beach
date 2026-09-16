@@ -286,7 +286,7 @@ export function DispatchArticlePage() {
               <div style={{ margin: '56px 0 40px', borderTop: `2px solid ${C.sand}`, paddingTop: 36 }}>
                 <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start' }}>
                   <img
-                    src="/images/yeti/yeti-camera.png"
+                    src="/images/yeti/yeti-camera.webp"
                     alt="The Yeti"
                     onError={e => { e.target.style.display = 'none'; }}
                     style={{ width: 72, height: 72, objectFit: 'contain', flexShrink: 0 }}
@@ -326,7 +326,7 @@ export function DispatchArticlePage() {
                         {a.coverImage ? (
                           <img src={a.coverImage} alt={a.title} style={{ width: 84, height: 62, objectFit: 'cover', flexShrink: 0 }} />
                         ) : (
-                          <div style={{ width: 84, height: 62, background: `url(/images/dispatch-header-web.jpg) center/cover`, flexShrink: 0, position: 'relative', overflow: 'hidden' }}>
+                          <div style={{ width: 84, height: 62, background: `url(/images/dispatch-header-web.webp) center/cover`, flexShrink: 0, position: 'relative', overflow: 'hidden' }}>
                             <div style={{ position: 'absolute', inset: 0, background: `${C.dusk}99` }} />
                           </div>
                         )}
@@ -447,7 +447,7 @@ export function DispatchPreviewSection() {
                   {article.coverImage ? (
                     <img src={article.coverImage} alt={article.title} style={{ width: '100%', height: 180, objectFit: 'cover', display: 'block' }} />
                   ) : (
-                    <div style={{ width: '100%', height: 180, background: 'url(/images/dispatch-header-web.jpg) center/cover', position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ width: '100%', height: 180, background: 'url(/images/dispatch-header-web.webp) center/cover', position: 'relative', overflow: 'hidden' }}>
                       <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(135deg, ${C.dusk}cc, ${C.lakeBlue}99)` }} />
                       <span style={{ position: 'absolute', bottom: 12, left: 16, fontFamily: "'Caveat', cursive", fontSize: 22, color: 'rgba(255,255,255,0.75)' }}>The Dispatch</span>
                     </div>
@@ -522,7 +522,7 @@ export default function DispatchPage() {
 
       {/* Hero */}
       <section style={{
-        backgroundImage: 'url(/images/dispatch-header-web.jpg)',
+        backgroundImage: 'url(/images/dispatch-header-web.webp)',
         backgroundSize: 'cover',
         backgroundPosition: 'center 40%',
         minHeight: 380,
@@ -574,7 +574,7 @@ export default function DispatchPage() {
                   {article.coverImage ? (
                     <img src={article.coverImage} alt={article.title} style={{ width: '100%', height: 200, objectFit: 'cover', display: 'block' }} />
                   ) : (
-                    <div style={{ width: '100%', height: 200, background: 'url(/images/dispatch-header-web.jpg) center/cover', position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ width: '100%', height: 200, background: 'url(/images/dispatch-header-web.webp) center/cover', position: 'relative', overflow: 'hidden' }}>
                       <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(135deg, ${C.dusk}cc, ${C.lakeBlue}99)` }} />
                       <span style={{ position: 'absolute', bottom: 14, left: 18, fontFamily: "'Caveat', cursive", fontSize: 28, color: 'rgba(255,255,255,0.75)' }}>The Dispatch</span>
                     </div>

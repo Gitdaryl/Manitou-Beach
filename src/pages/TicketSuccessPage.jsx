@@ -67,7 +67,7 @@ export default function TicketSuccessPage() {
 
           {loading && (
             <div>
-              <img src="/images/yeti/yetickets_doorman.png" alt="Yetickets" style={{ width: 320, height: 320, marginBottom: 24 }} />
+              <img src="/images/yeti/yetickets_doorman.webp" alt="Yetickets" style={{ width: 320, height: 320, marginBottom: 24 }} />
               <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, letterSpacing: 1 }}>
                 Preparing your ticket…
               </div>
@@ -97,7 +97,7 @@ export default function TicketSuccessPage() {
           {ticket && !loading && (
             <div>
               {/* Logo */}
-              <img src="/images/yeti/yetickets_sign.png" alt="Yetickets" style={{ width: '100%', maxWidth: 420, marginBottom: 16 }} />
+              <img src="/images/yeti/yetickets_sign.webp" alt="Yetickets" style={{ width: '100%', maxWidth: 420, marginBottom: 16 }} />
 
               {/* Big checkmark */}
               <div style={{

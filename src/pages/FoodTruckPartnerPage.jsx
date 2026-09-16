@@ -276,7 +276,7 @@ export default function FoodTruckPartnerPage() {
             Live on the map the moment you check in - customers heart your truck, rate their favourite dishes, and push you to the top of the Most Loved rankings.
           </p>
           <div style={{ marginBottom: 20 }}>
-            <img src="/images/yeti/yeti-celebrates.png" alt="The Yeti" style={{ width: 200, height: 200, objectFit: "contain" }} />
+            <img src="/images/yeti/yeti-celebrates.webp" alt="The Yeti" style={{ width: 200, height: 200, objectFit: "contain" }} />
           </div>
           <div style={{ display: "inline-block", background: "rgba(212,132,90,0.15)", border: "1px solid rgba(212,132,90,0.3)", borderRadius: 12, padding: "12px 24px", marginBottom: 28 }}>
             <span style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: C.sunsetLight }}>Founding trucks get everything free through July 4th</span>
@@ -298,7 +298,7 @@ export default function FoodTruckPartnerPage() {
             <SectionLabel style={{ textAlign: "center", display: "block" }}>How It Works</SectionLabel>
             <SectionTitle center>On the map in under a minute.</SectionTitle>
             <div style={{ textAlign: "center", margin: "24px 0 12px" }}>
-              <img src="/images/foodtruck-2-illustration.png" alt="" aria-hidden="true" style={{ width: "min(320px, 80vw)", opacity: 0.92 }} />
+              <img src="/images/foodtruck-2-illustration.webp" alt="" aria-hidden="true" style={{ width: "min(320px, 80vw)", opacity: 0.92 }} />
             </div>
           </FadeIn>
           <div className="ft-how-grid" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 24, marginTop: 32 }}>
@@ -330,7 +330,7 @@ export default function FoodTruckPartnerPage() {
               </p>
             </FadeIn>
             <FadeIn delay={120} style={{ flex: "0 0 auto", textAlign: "center" }}>
-              <img src="/images/community-illustration.png" alt="" aria-hidden="true" style={{ width: "min(360px, 78vw)", opacity: 0.93 }} />
+              <img src="/images/community-illustration.webp" alt="" aria-hidden="true" style={{ width: "min(360px, 78vw)", opacity: 0.93 }} />
             </FadeIn>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 20 }}>
@@ -403,7 +403,7 @@ export default function FoodTruckPartnerPage() {
           {/* Illustration */}
           <FadeIn delay={80}>
             <div style={{ textAlign: "center", marginBottom: 44 }}>
-              <img src="/images/foodtruck-1-illustration.png" alt="" aria-hidden="true" style={{ width: "min(420px, 88vw)", opacity: 0.92 }} />
+              <img src="/images/foodtruck-1-illustration.webp" alt="" aria-hidden="true" style={{ width: "min(420px, 88vw)", opacity: 0.92 }} />
             </div>
           </FadeIn>
 
