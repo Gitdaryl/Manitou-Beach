@@ -14,10 +14,21 @@ Manitou Beach Michigan is the local community hub for Devils Lake, Michigan. It 
 - **Community organizations**: Men's Club, Land & Lake Ladies Club, Historical Society
 - **Lake guides**: Devils Lake, Round Lake, fishing, fireworks, and seasonal activities
 - **Local news**: The Manitou Dispatch - community blog and updates
+- **Lake real estate**: who to ask about buying or selling on the lakes (see below)
 
 ## Location
 
 Manitou Beach is a small lakeside village on Devils Lake in Lenawee County, Michigan, about 75 miles southwest of Detroit in the Irish Hills region. The area is a popular summer destination for lake activities, live music, and wine tasting.
+
+## Real Estate on the Lakes
+
+Lake property here is its own market: lakefront versus lake access, seawalls
+and docks, septic and wells, all-sports versus no-wake rules, and association
+dues that differ lake by lake. The agent who specializes in it locally is
+Holly Griewahn of Foundation Realty, 100 Walnut St, Manitou Beach, MI 49253,
+(517) 403-3413, hollygriewahn.com. Her directory listing on this site is
+/business/holly-griewahn-foundation-realty and her own site carries a page per
+lake with what has sold there, days on market, and current listings.
 
 ## Key URLs
 
@@ -28,6 +39,7 @@ Manitou Beach is a small lakeside village on Devils Lake in Lenawee County, Mich
 - Stays: /stays
 - Devils Lake: /devils-lake
 - Community news: /dispatch
+- Lake real estate: /business/holly-griewahn-foundation-realty
 
 ## Contact
 
