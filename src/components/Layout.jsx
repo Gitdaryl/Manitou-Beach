@@ -456,14 +456,14 @@ export function PromoBanner({ page }) {
           />
         )}
         <div style={{ flex: 1, minWidth: 200 }}>
-          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 6 }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 6 }}>
             {banner.sponsorBadge ? "Sponsored" : "Featured Event"}
           </div>
           <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(17px, 2.5vw, 22px)", color: C.cream, lineHeight: 1.2, marginBottom: 4 }}>
             {banner.promoHeadline || banner.name}
           </div>
           {(banner.date || banner.location) && (
-            <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: "rgba(255,255,255,0.5)" }}>
+            <div style={{ fontFamily: "'Caveat', cursive", fontSize: 17, color: "rgba(255,255,255,0.75)" }}>
               {banner.date && new Date(banner.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
               {banner.date && banner.location && " · "}
               {banner.location}
@@ -478,7 +478,7 @@ export function PromoBanner({ page }) {
             style={{
               display: "inline-block", padding: "11px 28px",
               background: "#4A9B6F", color: "#fff", borderRadius: 6,
-              fontFamily: "'Libre Franklin', sans-serif", fontSize: 13,
+              fontFamily: "'Libre Franklin', sans-serif", fontSize: 15,
               fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase",
               textDecoration: "none", flexShrink: 0, whiteSpace: "nowrap",
             }}
@@ -580,7 +580,7 @@ function SubscribeModal({ alreadySubscribed, onClose }) {
         ) : (
           <>
             <div style={{ fontSize: 48, marginBottom: 12 }}>🌊</div>
-            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunset, marginBottom: 10 }}>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunset, marginBottom: 10 }}>
               Welcome to the Community
             </div>
             <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, color: C.dusk, margin: '0 0 20px' }}>
@@ -591,15 +591,15 @@ function SubscribeModal({ alreadySubscribed, onClose }) {
               background: `linear-gradient(135deg, ${C.sage}10 0%, ${C.lakeBlue}10 100%)`,
               border: `1px solid ${C.sage}30`, borderRadius: 12, padding: '24px 20px', marginBottom: 28,
             }}>
-              <p style={{ color: C.text, fontSize: 15, lineHeight: 1.6, margin: '0 0 8px', fontWeight: 600 }}>
+              <p style={{ color: C.text, fontSize: 17, lineHeight: 1.6, margin: '0 0 8px', fontWeight: 600 }}>
                 Click confirm in your email to get started.
               </p>
-              <p style={{ color: C.textLight, fontSize: 14, lineHeight: 1.6, margin: 0 }}>
+              <p style={{ color: C.textLight, fontSize: 16, lineHeight: 1.6, margin: 0 }}>
                 You'll get the next Dispatch in your inbox and be first to hear about events, deals, and what's happening around the lake.
               </p>
             </div>
 
-            <p style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.6, marginBottom: 24 }}>
+            <p style={{ fontSize: 14, color: C.textMuted, lineHeight: 1.6, marginBottom: 24 }}>
               Check your <strong>spam/junk</strong> folder if you don't see the confirmation email within a few minutes.
             </p>
           </>
@@ -608,7 +608,7 @@ function SubscribeModal({ alreadySubscribed, onClose }) {
           onClick={onClose}
           style={{
             background: C.sage, color: '#fff', border: 'none', borderRadius: 8,
-            padding: '14px 32px', fontSize: 15, fontWeight: 700, cursor: 'pointer',
+            padding: '14px 32px', fontSize: 17, fontWeight: 700, cursor: 'pointer',
             fontFamily: "'Libre Franklin', sans-serif", width: '100%',
             letterSpacing: 1, textTransform: 'uppercase', transition: 'all 0.2s ease',
             position: 'relative', zIndex: 1
@@ -694,7 +694,7 @@ export function NewsletterInline() {
         <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sage, marginBottom: 2 }}>
           The Manitou Beach Dispatch
         </div>
-        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, lineHeight: 1.55 }}>
+        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.textMuted, lineHeight: 1.55 }}>
           <strong style={{ color: C.text }}>Free newsletter delivered to your email inbox.</strong><br />
           Events, local businesses &amp; community news - every week. No cost, ever.{subCount ? ` Join ${subCount.toLocaleString()}+ neighbors already subscribed.` : ''}
         </div>
@@ -706,7 +706,7 @@ export function NewsletterInline() {
             onChange={e => setEmail(e.target.value)} required disabled={submitting}
             style={{
               padding: "10px 16px", borderRadius: 6, border: `1.5px solid ${C.sand}`,
-              background: C.cream, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif",
+              background: C.cream, fontSize: 15, fontFamily: "'Libre Franklin', sans-serif",
               color: C.text, outline: "none", minWidth: 200,
             }}
           />
@@ -715,7 +715,7 @@ export function NewsletterInline() {
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginTop: 8, flexBasis: '100%' }}>
           <input type="checkbox" id="nl-sms" checked={wantSMS} onChange={e => setWantSMS(e.target.checked)}
             style={{ marginTop: 2, flexShrink: 0, cursor: 'pointer' }} />
-          <label htmlFor="nl-sms" style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", cursor: 'pointer', lineHeight: 1.4 }}>
+          <label htmlFor="nl-sms" style={{ fontSize: 14, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", cursor: 'pointer', lineHeight: 1.4 }}>
             Also text me weekend highlights
           </label>
         </div>
@@ -725,13 +725,13 @@ export function NewsletterInline() {
             onChange={e => setPhone(e.target.value)} inputMode="numeric" autoComplete="tel"
             style={{
               padding: "10px 16px", borderRadius: 6, border: `1.5px solid ${C.sand}`,
-              background: C.cream, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif",
+              background: C.cream, fontSize: 15, fontFamily: "'Libre Franklin', sans-serif",
               color: C.text, outline: "none", minWidth: 200, marginTop: 4,
             }}
           />
         )}
-        {error && <p style={{ margin: '6px 0 0', fontSize: 12, color: C.sunset }}>{error}</p>}
-        <p style={{ margin: '6px 0 0', fontSize: 11, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
+        {error && <p style={{ margin: '6px 0 0', fontSize: 14, color: C.sunset }}>{error}</p>}
+        <p style={{ margin: '6px 0 0', fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
           No spam. No tracking cookies. Unsubscribe anytime.{wantSMS ? ' SMS: reply STOP to opt out.' : ''}
         </p>
       </div>
@@ -740,13 +740,13 @@ export function NewsletterInline() {
           {DISPATCH_CARD_SPONSORS[0].logo ? (
             <img src={DISPATCH_CARD_SPONSORS[0].logo} alt={DISPATCH_CARD_SPONSORS[0].name} style={{ width: 28, height: 28, borderRadius: 4, objectFit: 'contain', border: '1px solid rgba(0,0,0,0.1)', background: '#fff', padding: 2, flexShrink: 0 }} />
           ) : (
-            <div style={{ width: 28, height: 28, borderRadius: 4, border: '1.5px dashed #c4b09a', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 12 }}>📷</div>
+            <div style={{ width: 28, height: 28, borderRadius: 4, border: '1.5px dashed #c4b09a', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 14 }}>📷</div>
           )}
-          <div style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
-            <span style={{ textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, fontSize: 9 }}>Sponsored by </span>
+          <div style={{ fontSize: 14, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
+            <span style={{ textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, fontSize: 12 }}>Sponsored by </span>
             <span style={{ fontWeight: 600, color: C.text }}>{DISPATCH_CARD_SPONSORS[0].name}</span>
             {DISPATCH_CARD_SPONSORS[0].offerText && <span> · {DISPATCH_CARD_SPONSORS[0].offerText}</span>}
-            {DISPATCH_CARD_SPONSORS[0].smallPrint && <div style={{ fontSize: 10, color: C.textMuted, marginTop: 2 }}>{DISPATCH_CARD_SPONSORS[0].smallPrint}</div>}
+            {DISPATCH_CARD_SPONSORS[0].smallPrint && <div style={{ fontSize: 13, color: C.textMuted, marginTop: 2 }}>{DISPATCH_CARD_SPONSORS[0].smallPrint}</div>}
           </div>
         </div>
       )}
@@ -804,7 +804,7 @@ export function EventTimeline({ stripPin = null }) {
         <FadeIn>
           <SectionLabel light>Coming Up</SectionLabel>
           <SectionTitle light>Next 3 Months</SectionTitle>
-          <p style={{ fontSize: 14, color: "rgba(255,255,255,0.35)", lineHeight: 1.7, maxWidth: 480, marginBottom: 48 }}>
+          <p style={{ fontSize: 16, color: "rgba(255,255,255,0.75)", lineHeight: 1.7, maxWidth: 480, marginBottom: 48 }}>
             What's on around the lakes - updated as events are confirmed.
           </p>
         </FadeIn>
@@ -812,7 +812,7 @@ export function EventTimeline({ stripPin = null }) {
         {allEvents.length === 0 ? (
           <FadeIn delay={100}>
             <div style={{ padding: "48px 32px", background: "rgba(255,255,255,0.03)", borderRadius: 16, border: "1px solid rgba(255,255,255,0.06)", textAlign: "center" }}>
-              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.25)", fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.7 }}>
+              <div style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.7 }}>
                 No events confirmed for the next 3 months yet.<br />Check back soon - the lake never stays quiet for long.
               </div>
             </div>
@@ -821,7 +821,7 @@ export function EventTimeline({ stripPin = null }) {
           Object.entries(grouped).map(([monthLabel, events], gi) => (
             <div key={gi} style={{ marginBottom: 48 }}>
               <FadeIn delay={gi * 60}>
-                <div style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: 24 }}>
+                <div style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.75)", marginBottom: 24 }}>
                   {monthLabel}
                 </div>
               </FadeIn>
@@ -853,7 +853,7 @@ export function EventTimeline({ stripPin = null }) {
 
                         {/* Date block */}
                         <div style={{ minWidth: 40, textAlign: "center", flexShrink: 0 }}>
-                          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, color: "rgba(255,255,255,0.3)", textTransform: "uppercase", letterSpacing: 1 }}>{weekday}</div>
+                          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.75)", textTransform: "uppercase", letterSpacing: 1 }}>{weekday}</div>
                           <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, color: color, lineHeight: 1 }}>{day}</div>
                         </div>
 
@@ -866,13 +866,13 @@ export function EventTimeline({ stripPin = null }) {
                           onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.03)"}
                         >
                           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                            <span style={{ fontSize: 10, color, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase" }}>{event.category}</span>
+                            <span style={{ fontSize: 13, color, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase" }}>{event.category}</span>
                             {stripPin && event.id === stripPin.id && (
                               <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunsetLight, background: "rgba(212,132,90,0.2)", padding: "2px 8px", borderRadius: 8, fontFamily: "'Libre Franklin', sans-serif" }}>Featured</span>
                             )}
                           </div>
                           <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.cream, lineHeight: 1.3, marginBottom: 4 }}>{event.name}</div>
-                          <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif" }}>
+                          <div style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", fontFamily: "'Libre Franklin', sans-serif" }}>
                             {event.time}{event.location ? ` · ${event.location}` : ""}
                           </div>
                         </div>
@@ -959,10 +959,10 @@ export function HollyYetiSection() {
               }}>
                 Holly &<br />The Yeti
               </h2>
-              <p style={{ fontSize: 15, color: "rgba(255,255,255,0.62)", lineHeight: 1.85, marginBottom: 14 }}>
+              <p style={{ fontSize: 17, color: "rgba(255,255,255,0.62)", lineHeight: 1.85, marginBottom: 14 }}>
                 A local realtor with straight-shooter expertise and an Australian-accented community cryptid with a flair for comedy walk into a podcast...
               </p>
-              <p style={{ fontSize: 15, color: "rgba(255,255,255,0.62)", lineHeight: 1.85, marginBottom: 32 }}>
+              <p style={{ fontSize: 17, color: "rgba(255,255,255,0.62)", lineHeight: 1.85, marginBottom: 32 }}>
                 Holly Griewahn brings the real estate knowledge and market insight. Daryl - AKA The Yeti - brings the AI-generated videos, the unexpected camera angles, and the community stories that make Manitou Beach feel like the place it actually is.
               </p>
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
@@ -981,7 +981,7 @@ export function HollyYetiSection() {
                 alt="Holly and The Yeti"
                 style={{ width: "100%", maxWidth: 300, display: "block", objectFit: "contain" }}
               />
-              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: "rgba(255,255,255,0.3)", marginTop: 10, textAlign: "center" }}>
+              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 17, color: "rgba(255,255,255,0.75)", marginTop: 10, textAlign: "center" }}>
                 Real estate meets cryptid comedy
               </div>
             </div>
@@ -990,7 +990,7 @@ export function HollyYetiSection() {
           {/* BOTTOM LEFT - YouTube video (supports Sponsored Video Spotlight promo) */}
           <FadeIn delay={160} direction="left">
             <div>
-              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: videoSpotlight ? C.sunsetLight : "rgba(255,255,255,0.25)", marginBottom: 12 }}>
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: videoSpotlight ? C.sunsetLight : "rgba(255,255,255,0.75)", marginBottom: 12 }}>
                 {videoSpotlight ? "Sponsored Content" : "Watch"}
               </div>
               <div style={{ position: "relative", paddingTop: "56.25%", borderRadius: 12, overflow: "hidden", boxShadow: "0 16px 60px rgba(0,0,0,0.55)", border: videoSpotlight ? `2px solid ${C.sunset}40` : "none" }}>
@@ -1002,12 +1002,12 @@ export function HollyYetiSection() {
                     allowFullScreen
                   />
                 ) : (
-                  <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif", fontSize: 13 }}>
+                  <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.75)", fontFamily: "'Libre Franklin', sans-serif", fontSize: 15 }}>
                     Video coming soon
                   </div>
                 )}
               </div>
-              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 14, color: "rgba(255,255,255,0.3)", marginTop: 10 }}>
+              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 16, color: "rgba(255,255,255,0.75)", marginTop: 10 }}>
                 {videoLabel}
               </div>
             </div>
@@ -1016,7 +1016,7 @@ export function HollyYetiSection() {
           {/* BOTTOM RIGHT - Social cards (frosted glass) */}
           <FadeIn delay={200} direction="right">
             <div>
-              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: 16 }}>
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.75)", marginBottom: 16 }}>
                 Follow Along
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -1043,14 +1043,14 @@ export function HollyYetiSection() {
                       width: 38, height: 38, borderRadius: 9, flexShrink: 0,
                       background: `${s.color}22`,
                       display: "flex", alignItems: "center", justifyContent: "center",
-                      fontSize: 15, color: s.color,
+                      fontSize: 17, color: s.color,
                     }}>
                       {s.icon}
                     </div>
                     <div>
-                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, fontSize: 13, color: C.cream }}>{s.platform}</div>
-                      <div style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", marginBottom: 3 }}>{s.handle}</div>
-                      <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", lineHeight: 1.5 }}>{s.desc}</div>
+                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, fontSize: 15, color: C.cream }}>{s.platform}</div>
+                      <div style={{ fontSize: 13, color: "rgba(255,255,255,0.75)", marginBottom: 3 }}>{s.handle}</div>
+                      <div style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", lineHeight: 1.5 }}>{s.desc}</div>
                     </div>
                   </a>
                 ))}
@@ -1062,7 +1062,7 @@ export function HollyYetiSection() {
 
         {/* Scroll continuation hint */}
         <div style={{ textAlign: "center", marginTop: 40, opacity: 0.3 }}>
-          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: C.cream, marginBottom: 6 }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 3, textTransform: "uppercase", color: C.cream, marginBottom: 6 }}>
             More below
           </div>
           <div style={{ fontSize: 16, color: C.cream, animation: "float 2s ease-in-out infinite" }}>↓</div>
@@ -1208,7 +1208,7 @@ export function SubmitSection() {
         borderRadius: 6,
         border: `1.5px solid ${C.sand}`,
         fontFamily: "'Libre Franklin', sans-serif",
-        fontSize: 14,
+        fontSize: 16,
         color: C.text,
         background: C.cream,
         boxSizing: "border-box",
@@ -1229,7 +1229,7 @@ export function SubmitSection() {
         <FadeIn>
           <SectionLabel>Join the Directory</SectionLabel>
           <SectionTitle>Your Neighbors Are Looking for You</SectionTitle>
-          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.75, marginBottom: 36 }}>
+          <p style={{ fontSize: 17, color: C.textLight, lineHeight: 1.75, marginBottom: 36 }}>
             Every local business belongs here. List for free in 60 seconds - upgrade anytime for more visibility.
           </p>
 
@@ -1277,7 +1277,7 @@ export function SubmitSection() {
               <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream, marginBottom: 8, fontWeight: 400 }}>
                 Check your phone - one tap and you're live.
               </div>
-              <p style={{ fontSize: 14, color: C.sunsetLight, margin: "0 0 20px 0", fontFamily: "'Libre Franklin', sans-serif", fontStyle: "italic" }}>
+              <p style={{ fontSize: 16, color: C.sunsetLight, margin: "0 0 20px 0", fontFamily: "'Libre Franklin', sans-serif", fontStyle: "italic" }}>
                 We texted you a confirmation link. Takes two seconds.
               </p>
 
@@ -1286,17 +1286,17 @@ export function SubmitSection() {
                 background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)",
                 borderRadius: 8, padding: "14px 18px", maxWidth: 380, margin: "0 auto 24px", textAlign: "left",
               }}>
-                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.85)", margin: "0 0 6px", fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600 }}>
+                <p style={{ fontSize: 15, color: "rgba(255,255,255,0.85)", margin: "0 0 6px", fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600 }}>
                   We sent a text to {form.phone || "your phone"}
                 </p>
-                <p style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", margin: 0, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.6 }}>
+                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", margin: 0, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.6 }}>
                   Can't find it? Check your email - we sent the confirm link there too.
                 </p>
               </div>
 
               {/* What happens next */}
               <div style={{ textAlign: "left", maxWidth: 380, margin: "0 auto 24px" }}>
-                <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
+                <p style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: "rgba(255,255,255,0.75)", marginBottom: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
                   What happens next
                 </p>
                 {[
@@ -1309,9 +1309,9 @@ export function SubmitSection() {
                       flexShrink: 0, width: 22, height: 22, borderRadius: "50%",
                       background: `${C.sage}30`, border: `1px solid ${C.sage}60`,
                       display: "flex", alignItems: "center", justifyContent: "center",
-                      fontSize: 11, fontWeight: 700, color: C.sage, fontFamily: "'Libre Franklin', sans-serif",
+                      fontSize: 13, fontWeight: 700, color: C.sage, fontFamily: "'Libre Franklin', sans-serif",
                     }}>{i + 1}</span>
-                    <span style={{ fontSize: 14, color: "rgba(255,255,255,0.7)", lineHeight: 1.6, fontFamily: "'Libre Franklin', sans-serif" }}>{step}</span>
+                    <span style={{ fontSize: 16, color: "rgba(255,255,255,0.7)", lineHeight: 1.6, fontFamily: "'Libre Franklin', sans-serif" }}>{step}</span>
                   </div>
                 ))}
               </div>
@@ -1321,27 +1321,27 @@ export function SubmitSection() {
                 background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)",
                 borderRadius: 8, padding: "16px 20px", maxWidth: 380, margin: "0 auto 20px", textAlign: "left",
               }}>
-                <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>
+                <p style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>
                   Whenever you're ready
                 </p>
-                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.6)", marginBottom: 10, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.6 }}>
+                <p style={{ fontSize: 15, color: "rgba(255,255,255,0.6)", marginBottom: 10, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.6 }}>
                   If you ever want a bit more visibility, the Showcased listing adds:
                 </p>
                 <ul style={{ margin: 0, paddingLeft: 0, listStyle: "none" }}>
                   {["Clickable website link", "Business description", "Expandable card", "Category search placement", "Pin on the Discover map"].map(b => (
-                    <li key={b} style={{ fontSize: 13, color: "rgba(255,255,255,0.55)", paddingLeft: 14, position: "relative", marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>
+                    <li key={b} style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", paddingLeft: 14, position: "relative", marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>
                       <span style={{ position: "absolute", left: 0, color: C.sage }}>·</span>{b}
                     </li>
                   ))}
                 </ul>
-                <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginTop: 12, marginBottom: 0, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.5 }}>
+                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", marginTop: 12, marginBottom: 0, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.5 }}>
                   No pressure - it's always here when you want it.{" "}
                   <a href="/business#pricing" style={{ color: C.sunsetLight, textDecoration: "underline" }}>See pricing →</a>
                 </p>
               </div>
 
               {/* Update listing link */}
-              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", marginBottom: 24, fontFamily: "'Libre Franklin', sans-serif" }}>
+              <p style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", marginBottom: 24, fontFamily: "'Libre Franklin', sans-serif" }}>
                 Need to add your logo or contact details?{" "}
                 <a href="/update-listing" style={{ color: "rgba(255,255,255,0.6)", textDecoration: "underline" }}>Update your listing →</a>
               </p>
@@ -1351,10 +1351,10 @@ export function SubmitSection() {
                 className="btn-animated"
                 style={{
                   fontFamily: "'Libre Franklin', sans-serif",
-                  fontSize: 12, fontWeight: 600, letterSpacing: 1.5,
+                  fontSize: 14, fontWeight: 600, letterSpacing: 1.5,
                   textTransform: "uppercase", padding: "10px 24px",
                   borderRadius: 4, border: `1.5px solid rgba(255,255,255,0.2)`,
-                  background: "transparent", color: "rgba(255,255,255,0.5)",
+                  background: "transparent", color: "rgba(255,255,255,0.75)",
                   cursor: "pointer",
                 }}
               >
@@ -1375,7 +1375,7 @@ export function SubmitSection() {
                     style={{
                       width: "100%", padding: "12px 16px", borderRadius: 6,
                       border: `1.5px solid ${C.sand}`, fontFamily: "'Libre Franklin', sans-serif",
-                      fontSize: 14, color: form.category ? C.text : C.textMuted,
+                      fontSize: 16, color: form.category ? C.text : C.textMuted,
                       background: C.cream, boxSizing: "border-box", outline: "none",
                       appearance: "none", cursor: "pointer", transition: "border-color 0.2s",
                     }}
@@ -1393,7 +1393,7 @@ export function SubmitSection() {
                           Hold on - you qualify for something better
                         </div>
                       </div>
-                      <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.65)', lineHeight: 1.7, margin: '0 0 18px', fontFamily: "'Libre Franklin', sans-serif" }}>
+                      <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.65)', lineHeight: 1.7, margin: '0 0 18px', fontFamily: "'Libre Franklin', sans-serif" }}>
                         Manitou Beach has a whole special section just for food trucks - way more than a basic listing. You get your own personal page you tap when you're parked and open. Anyone following your truck gets a text message the moment you're there. Takes about two minutes to finish.
                       </p>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
@@ -1407,14 +1407,14 @@ export function SubmitSection() {
                             if (form.website) params.set('website', form.website);
                             window.location.href = `/food-truck-partner?${params.toString()}`;
                           }}
-                          style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, padding: '12px 24px', borderRadius: 8, border: 'none', background: '#4A7A5A', color: '#fff', cursor: 'pointer' }}
+                          style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 700, padding: '12px 24px', borderRadius: 8, border: 'none', background: '#4A7A5A', color: '#fff', cursor: 'pointer' }}
                         >
                           Set up my truck →
                         </button>
                         <button
                           type="button"
                           onClick={() => setForm(f => ({ ...f, category: '' }))}
-                          style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.4)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                          style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: 'rgba(255,255,255,0.75)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
                         >
                           ← Start over
                         </button>
@@ -1426,7 +1426,7 @@ export function SubmitSection() {
                       is a place you drive to, an electrician is not - so we ask. */}
                   <div>
                     <div style={{
-                      fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase",
+                      fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase",
                       color: C.textMuted, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif",
                     }}>
                       Where do customers find you?
@@ -1451,8 +1451,8 @@ export function SubmitSection() {
                               fontFamily: "'Libre Franklin', sans-serif", transition: "all 0.15s",
                             }}
                           >
-                            <div style={{ fontSize: 13, fontWeight: 700, color: active ? C.sageDark : C.text }}>{opt.label}</div>
-                            <div style={{ fontSize: 11, color: C.textMuted, marginTop: 2 }}>{opt.hint}</div>
+                            <div style={{ fontSize: 15, fontWeight: 700, color: active ? C.sageDark : C.text }}>{opt.label}</div>
+                            <div style={{ fontSize: 13, color: C.textMuted, marginTop: 2 }}>{opt.hint}</div>
                           </button>
                         );
                       })}
@@ -1468,7 +1468,7 @@ export function SubmitSection() {
                         {form.businessType === "Service Area" && (
                           <div>
                             <div style={{
-                              fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase",
+                              fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase",
                               color: C.textMuted, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif",
                             }}>
                               Which areas do you serve?
@@ -1489,7 +1489,7 @@ export function SubmitSection() {
                                       border: `1.5px solid ${on ? C.sage : C.sand}`,
                                       background: on ? C.sage : C.cream,
                                       color: on ? "#fff" : C.textMuted,
-                                      fontSize: 12, fontWeight: 700,
+                                      fontSize: 14, fontWeight: 700,
                                       fontFamily: "'Libre Franklin', sans-serif", transition: "all 0.15s",
                                     }}
                                   >
@@ -1505,7 +1505,7 @@ export function SubmitSection() {
                           : "Anywhere else? (optional)")}
                         {input("address", "Your address (optional, never shown publicly)")}
                         <div style={{
-                          fontSize: 11, color: C.textMuted, marginTop: -8,
+                          fontSize: 13, color: C.textMuted, marginTop: -8,
                           fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.5,
                         }}>
                           We keep this for our records only. It is never displayed, never sent to
@@ -1526,7 +1526,7 @@ export function SubmitSection() {
                       borderRadius: 6,
                       border: `1.5px solid ${C.sand}`,
                       fontFamily: "'Libre Franklin', sans-serif",
-                      fontSize: 14,
+                      fontSize: 16,
                       color: C.text,
                       background: C.cream,
                       resize: "vertical",
@@ -1544,7 +1544,7 @@ export function SubmitSection() {
                       style={{
                         width: "100%", padding: "12px 16px", borderRadius: 6,
                         border: `1.5px solid ${C.sand}`, fontFamily: "'Libre Franklin', sans-serif",
-                        fontSize: 14, color: C.text, background: C.cream,
+                        fontSize: 16, color: C.text, background: C.cream,
                         boxSizing: "border-box", outline: "none", appearance: "none", cursor: "pointer",
                       }}
                       onFocus={e => e.target.style.borderColor = C.sage}
@@ -1566,7 +1566,7 @@ export function SubmitSection() {
                         style={{
                           width: "100%", padding: "12px 16px", borderRadius: 6,
                           border: `1.5px solid ${C.sand}`, fontFamily: "'Libre Franklin', sans-serif",
-                          fontSize: 14, color: C.text, background: C.cream,
+                          fontSize: 16, color: C.text, background: C.cream,
                           boxSizing: "border-box", outline: "none", appearance: "none", cursor: "pointer",
                         }}
                         onFocus={e => e.target.style.borderColor = C.sage}
@@ -1578,7 +1578,7 @@ export function SubmitSection() {
                           </option>
                         ))}
                       </select>
-                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, marginTop: 6, paddingLeft: 2 }}>
+                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, marginTop: 6, paddingLeft: 2 }}>
                         Total: ${(({ Free: 0, Enhanced: 9, Featured: 25, Premium: 49 }[form.tier] || 0) * (parseInt(form.duration) || 1)).toLocaleString()} · you'll be taken to secure Stripe checkout after submit
                       </div>
                     </div>
@@ -1586,7 +1586,7 @@ export function SubmitSection() {
 
                   {/* Logo upload - drag & drop, compressed, Vercel Blob */}
                   <div>
-                    <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 600, color: C.textLight, marginBottom: 8, letterSpacing: 0.5 }}>
+                    <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 600, color: C.textLight, marginBottom: 8, letterSpacing: 0.5 }}>
                       Logo (optional · displayed on Highlighted & Front and Center tiers)
                     </div>
                     <div
@@ -1616,15 +1616,15 @@ export function SubmitSection() {
                           <button
                             type="button"
                             onClick={() => { setLogoFile(null); setLogoPreview(null); }}
-                            style={{ position: "absolute", top: 4, right: 4, background: "rgba(0,0,0,0.6)", color: "#fff", border: "none", borderRadius: "50%", width: 22, height: 22, cursor: "pointer", fontSize: 12, lineHeight: 1 }}
+                            style={{ position: "absolute", top: 4, right: 4, background: "rgba(0,0,0,0.6)", color: "#fff", border: "none", borderRadius: "50%", width: 22, height: 22, cursor: "pointer", fontSize: 14, lineHeight: 1 }}
                           >×</button>
                         </div>
                       ) : (
                         <label style={{ cursor: "pointer", display: "block" }}>
-                          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, marginBottom: 4 }}>
+                          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.textMuted, marginBottom: 4 }}>
                             {isLogoDragging ? "Drop to upload" : "Drag & drop logo or click to upload"}
                           </div>
-                          <div style={{ fontSize: 11, color: C.textMuted, opacity: 0.6 }}>
+                          <div style={{ fontSize: 13, color: C.textMuted, opacity: 0.6 }}>
                             Square image recommended · JPG or PNG · auto-compressed
                           </div>
                           <input
@@ -1651,7 +1651,7 @@ export function SubmitSection() {
                       onChange={e => setForm(f => ({ ...f, newsletter: e.target.checked }))}
                       style={{ marginTop: 2, accentColor: C.sage }}
                     />
-                    <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.text, lineHeight: 1.5 }}>
+                    <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.text, lineHeight: 1.5 }}>
                       Keep me in the loop - weekly events, business spotlights & lake life delivered free
                     </div>
                   </label>
@@ -1665,7 +1665,7 @@ export function SubmitSection() {
                 style={{
                   fontFamily: "'Libre Franklin', sans-serif",
                   fontWeight: 700,
-                  fontSize: 13,
+                  fontSize: 15,
                   letterSpacing: 2,
                   textTransform: "uppercase",
                   padding: "15px 32px",
@@ -1687,13 +1687,13 @@ export function SubmitSection() {
               <input aria-hidden="true" tabIndex={-1} autoComplete="off" value={form._hp} onChange={e => setForm(f => ({ ...f, _hp: e.target.value }))} style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0, pointerEvents: "none" }} />
 
               {submitError && (
-                <p style={{ fontSize: 13, color: "#c0392b", textAlign: "center", margin: 0 }}>{submitError}</p>
+                <p style={{ fontSize: 15, color: "#c0392b", textAlign: "center", margin: 0 }}>{submitError}</p>
               )}
 
-              <p style={{ fontSize: 11, color: C.textMuted, textAlign: "center", margin: 0, lineHeight: 1.6 }}>
+              <p style={{ fontSize: 13, color: C.textMuted, textAlign: "center", margin: 0, lineHeight: 1.6 }}>
                 Free forever. No fees unless you choose to upgrade.
               </p>
-              <p style={{ fontSize: 12, color: C.textMuted, textAlign: "center", margin: 0 }}>
+              <p style={{ fontSize: 14, color: C.textMuted, textAlign: "center", margin: 0 }}>
                 Have an event? <a href="/submit-event" style={{ color: C.sage, textDecoration: "none", fontWeight: 600 }}>List it free →</a>
               </p>
               </>
@@ -1744,29 +1744,29 @@ export function FooterNewsletterModal({ onClose }) {
   return (
     <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
       <div onClick={e => e.stopPropagation()} style={{ background: C.dusk, borderRadius: 16, padding: "40px 36px", maxWidth: 440, width: "100%", border: "1px solid rgba(255,255,255,0.08)", position: "relative" }}>
-        <button onClick={onClose} style={{ position: "absolute", top: 16, right: 16, background: "none", border: "none", color: "rgba(255,255,255,0.4)", fontSize: 20, cursor: "pointer", lineHeight: 1 }}>×</button>
+        <button onClick={onClose} style={{ position: "absolute", top: 16, right: 16, background: "none", border: "none", color: "rgba(255,255,255,0.75)", fontSize: 20, cursor: "pointer", lineHeight: 1 }}>×</button>
         <div style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.sage, marginBottom: 6 }}>The Manitou Beach Dispatch</div>
-        <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.7, margin: "0 0 24px 0" }}>Weekly events, local businesses, and community news - straight to your inbox. Free.</p>
+        <p style={{ fontSize: 16, color: "rgba(255,255,255,0.75)", lineHeight: 1.7, margin: "0 0 24px 0" }}>Weekly events, local businesses, and community news - straight to your inbox. Free.</p>
         {done ? (
           <div style={{ textAlign: "center", padding: "16px 0" }}>
             <div style={{ fontSize: 28, marginBottom: 10 }}>✓</div>
             <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.cream, marginBottom: 6 }}>You're in!</div>
-            <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", margin: 0 }}>Check your inbox for a confirmation email.</p>
+            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", margin: 0 }}>Check your inbox for a confirmation email.</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            <input type="email" placeholder="your@email.com" value={email} onChange={e => setEmail(e.target.value)} required style={{ flex: 1, minWidth: 180, padding: "11px 16px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.07)", color: C.cream, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", outline: "none" }} />
-            <button type="submit" disabled={submitting} style={{ padding: "11px 22px", background: C.sage, color: C.cream, border: "none", borderRadius: 6, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: submitting ? "wait" : "pointer" }}>
+            <input type="email" placeholder="your@email.com" value={email} onChange={e => setEmail(e.target.value)} required style={{ flex: 1, minWidth: 180, padding: "11px 16px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.07)", color: C.cream, fontSize: 16, fontFamily: "'Libre Franklin', sans-serif", outline: "none" }} />
+            <button type="submit" disabled={submitting} style={{ padding: "11px 22px", background: C.sage, color: C.cream, border: "none", borderRadius: 6, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: submitting ? "wait" : "pointer" }}>
               {submitting ? "..." : "Subscribe"}
             </button>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', marginTop: 4 }}>
               <input type="checkbox" id="fnl-sms" checked={wantSMS} onChange={e => setWantSMS(e.target.checked)} style={{ flexShrink: 0, cursor: 'pointer' }} />
-              <label htmlFor="fnl-sms" style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', fontFamily: "'Libre Franklin', sans-serif", cursor: 'pointer' }}>Also text me weekend highlights</label>
+              <label htmlFor="fnl-sms" style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)', fontFamily: "'Libre Franklin', sans-serif", cursor: 'pointer' }}>Also text me weekend highlights</label>
             </div>
             {wantSMS && (
-              <input type="tel" placeholder="(555) 555-5555" value={phone} onChange={e => setPhone(e.target.value)} inputMode="numeric" autoComplete="tel" style={{ flex: 1, minWidth: 180, padding: "11px 16px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.07)", color: C.cream, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", outline: "none" }} />
+              <input type="tel" placeholder="(555) 555-5555" value={phone} onChange={e => setPhone(e.target.value)} inputMode="numeric" autoComplete="tel" style={{ flex: 1, minWidth: 180, padding: "11px 16px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.07)", color: C.cream, fontSize: 16, fontFamily: "'Libre Franklin', sans-serif", outline: "none" }} />
             )}
-            {error && <div style={{ width: "100%", fontSize: 12, color: C.sunset, marginTop: 4 }}>{error}</div>}
+            {error && <div style={{ width: "100%", fontSize: 14, color: C.sunset, marginTop: 4 }}>{error}</div>}
           </form>
         )}
       </div>
@@ -1797,18 +1797,18 @@ export function ContactModal({ onClose, defaultCategory = 'General Question' }) 
     } catch { setError(yeti.oops()); }
     finally { setSubmitting(false); }
   };
-  const inp = { padding: '11px 14px', borderRadius: 6, border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.07)', color: C.cream, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", outline: 'none', width: '100%', boxSizing: 'border-box' };
+  const inp = { padding: '11px 14px', borderRadius: 6, border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.07)', color: C.cream, fontSize: 16, fontFamily: "'Libre Franklin', sans-serif", outline: 'none', width: '100%', boxSizing: 'border-box' };
   return (
     <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
       <div onClick={e => e.stopPropagation()} style={{ background: C.dusk, borderRadius: 16, padding: '40px 36px', maxWidth: 480, width: '100%', border: '1px solid rgba(255,255,255,0.08)', position: 'relative', maxHeight: '90vh', overflowY: 'auto' }}>
-        <button onClick={onClose} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', fontSize: 20, cursor: 'pointer', lineHeight: 1 }}>×</button>
+        <button onClick={onClose} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: 'none', color: 'rgba(255,255,255,0.75)', fontSize: 20, cursor: 'pointer', lineHeight: 1 }}>×</button>
         <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.cream, marginBottom: 4 }}>Contact Us</div>
-        <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.7, margin: '0 0 24px 0' }}>Send us a message - we read every one.</p>
+        <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)', lineHeight: 1.7, margin: '0 0 24px 0' }}>Send us a message - we read every one.</p>
         {done ? (
           <div style={{ textAlign: 'center', padding: '16px 0' }}>
             <div style={{ fontSize: 28, marginBottom: 10 }}>✓</div>
             <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.cream, marginBottom: 6 }}>Message received!</div>
-            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', margin: 0 }}>We'll get back to you shortly.</p>
+            <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)', margin: 0 }}>We'll get back to you shortly.</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -1818,8 +1818,8 @@ export function ContactModal({ onClose, defaultCategory = 'General Question' }) 
               {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
             <textarea placeholder="How can we help?" value={form.message} onChange={e => setForm(f => ({ ...f, message: e.target.value }))} required rows={4} style={{ ...inp, resize: 'vertical' }} />
-            {error && <div style={{ fontSize: 12, color: C.sunset }}>{error}</div>}
-            <button type="submit" disabled={submitting} style={{ padding: '12px 24px', background: C.sage, color: C.cream, border: 'none', borderRadius: 6, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', cursor: submitting ? 'wait' : 'pointer' }}>
+            {error && <div style={{ fontSize: 14, color: C.sunset }}>{error}</div>}
+            <button type="submit" disabled={submitting} style={{ padding: '12px 24px', background: C.sage, color: C.cream, border: 'none', borderRadius: 6, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', cursor: submitting ? 'wait' : 'pointer' }}>
               {submitting ? 'Sending…' : 'Send Message'}
             </button>
           </form>
@@ -1845,15 +1845,15 @@ export function Footer({ scrollTo }) {
             <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.cream, marginBottom: 4 }}>
               Manitou Beach
             </div>
-            <div style={{ fontFamily: "'Caveat', cursive", fontSize: 14, color: "rgba(255,255,255,0.3)", marginBottom: 16 }}>
+            <div style={{ fontFamily: "'Caveat', cursive", fontSize: 16, color: "rgba(255,255,255,0.75)", marginBottom: 16 }}>
               on Devils Lake, Michigan
             </div>
-            <p style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", lineHeight: 1.7, margin: 0 }}>
+            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", lineHeight: 1.7, margin: 0 }}>
               Community platform for Manitou Beach and the Devils Lake area.
             </p>
           </div>
           <div>
-            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 2.5, textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: 16 }}>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 2.5, textTransform: "uppercase", color: "rgba(255,255,255,0.75)", marginBottom: 16 }}>
               Navigate
             </div>
             {SECTIONS.map(({ id, label }) => (
@@ -1862,8 +1862,8 @@ export function Footer({ scrollTo }) {
                   onClick={() => scrollTo(id)}
                   style={{
                     background: "none", border: "none",
-                    color: "rgba(255,255,255,0.4)",
-                    fontSize: 13, cursor: "pointer", padding: 0,
+                    color: "rgba(255,255,255,0.75)",
+                    fontSize: 15, cursor: "pointer", padding: 0,
                     fontFamily: "'Libre Franklin', sans-serif",
                     transition: "color 0.2s",
                   }}
@@ -1876,7 +1876,7 @@ export function Footer({ scrollTo }) {
             ))}
           </div>
           <div>
-            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 2.5, textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: 16 }}>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 2.5, textTransform: "uppercase", color: "rgba(255,255,255,0.75)", marginBottom: 16 }}>
               Connect
             </div>
             {[
@@ -1889,7 +1889,7 @@ export function Footer({ scrollTo }) {
                   href={l.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{ color: "rgba(255,255,255,0.4)", fontSize: 13, textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif", transition: "color 0.2s" }}
+                  style={{ color: "rgba(255,255,255,0.75)", fontSize: 15, textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif", transition: "color 0.2s" }}
                   onMouseEnter={e => e.target.style.color = C.sunsetLight}
                   onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.4)"}
                 >
@@ -1900,7 +1900,7 @@ export function Footer({ scrollTo }) {
             <div style={{ marginBottom: 8 }}>
               <button
                 onClick={() => setShowNewsletter(true)}
-                style={{ background: "none", border: "none", padding: 0, color: "rgba(255,255,255,0.4)", fontSize: 13, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", transition: "color 0.2s" }}
+                style={{ background: "none", border: "none", padding: 0, color: "rgba(255,255,255,0.75)", fontSize: 15, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", transition: "color 0.2s" }}
                 onMouseEnter={e => e.target.style.color = C.sunsetLight}
                 onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.4)"}
               >
@@ -1910,7 +1910,7 @@ export function Footer({ scrollTo }) {
             <div style={{ marginBottom: 8 }}>
               <button
                 onClick={() => openContact('General Question')}
-                style={{ background: "none", border: "none", padding: 0, color: "rgba(255,255,255,0.4)", fontSize: 13, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", transition: "color 0.2s" }}
+                style={{ background: "none", border: "none", padding: 0, color: "rgba(255,255,255,0.75)", fontSize: 15, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", transition: "color 0.2s" }}
                 onMouseEnter={e => e.target.style.color = C.sunsetLight}
                 onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.4)"}
               >
@@ -1920,7 +1920,7 @@ export function Footer({ scrollTo }) {
             <div style={{ marginBottom: 8 }}>
               <button
                 onClick={() => openContact('Bug Report')}
-                style={{ background: "none", border: "none", padding: 0, color: "rgba(255,255,255,0.4)", fontSize: 13, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", transition: "color 0.2s" }}
+                style={{ background: "none", border: "none", padding: 0, color: "rgba(255,255,255,0.75)", fontSize: 15, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", transition: "color 0.2s" }}
                 onMouseEnter={e => e.target.style.color = C.sunsetLight}
                 onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.4)"}
               >
@@ -1929,10 +1929,10 @@ export function Footer({ scrollTo }) {
             </div>
           </div>
           <div>
-            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 2.5, textTransform: "uppercase", color: "rgba(255,255,255,0.25)", marginBottom: 16 }}>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 2.5, textTransform: "uppercase", color: "rgba(255,255,255,0.75)", marginBottom: 16 }}>
               For Businesses
             </div>
-            <p style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", lineHeight: 1.75, margin: "0 0 16px 0" }}>
+            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", lineHeight: 1.75, margin: "0 0 16px 0" }}>
               Free directory listing. Upgrade for featured placement, newsletter mentions, and video content.
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -1941,7 +1941,7 @@ export function Footer({ scrollTo }) {
                 style={{
                   display: "inline-block",
                   fontFamily: "'Libre Franklin', sans-serif",
-                  fontSize: 11, fontWeight: 700, letterSpacing: 2,
+                  fontSize: 13, fontWeight: 700, letterSpacing: 2,
                   textTransform: "uppercase",
                   padding: "9px 20px",
                   borderRadius: 4,
@@ -1968,26 +1968,26 @@ export function Footer({ scrollTo }) {
           alignItems: "center",
         }}>
           <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
-            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.2)", fontFamily: "'Libre Franklin', sans-serif" }}>
+            <div style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", fontFamily: "'Libre Franklin', sans-serif" }}>
               © {new Date().getFullYear()} Yeti Groove Media LLC
             </div>
-            <a href="/privacy" style={{ fontSize: 12, color: "rgba(255,255,255,0.2)", fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'none' }}
+            <a href="/privacy" style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'none' }}
               onMouseEnter={e => e.target.style.color = 'rgba(255,255,255,0.5)'}
               onMouseLeave={e => e.target.style.color = 'rgba(255,255,255,0.2)'}>Privacy</a>
-            <a href="/terms" style={{ fontSize: 12, color: "rgba(255,255,255,0.2)", fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'none' }}
+            <a href="/terms" style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'none' }}
               onMouseEnter={e => e.target.style.color = 'rgba(255,255,255,0.5)'}
               onMouseLeave={e => e.target.style.color = 'rgba(255,255,255,0.2)'}>Terms</a>
           </div>
-          <div style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: "rgba(255,255,255,0.15)" }}>
+          <div style={{ fontFamily: "'Caveat', cursive", fontSize: 17, color: "rgba(255,255,255,0.75)" }}>
             No beach. Still worth it. 🏕️
           </div>
-          <div style={{ fontSize: 11, color: "rgba(255,255,255,0.15)", fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>
+          <div style={{ fontSize: 13, color: "rgba(255,255,255,0.75)", fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>
             Powered by{" "}
             <a
               href="https://yetigroove.com"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: "rgba(255,255,255,0.3)", textDecoration: "none", transition: "color 0.2s" }}
+              style={{ color: "rgba(255,255,255,0.75)", textDecoration: "none", transition: "color 0.2s" }}
               onMouseEnter={e => e.target.style.color = C.sunsetLight}
               onMouseLeave={e => e.target.style.color = "rgba(255,255,255,0.3)"}
             >
@@ -2077,10 +2077,10 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
           <div style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 10 }} onClick={() => handleNavClick("home")}>
             <img src="/images/manitou_beach_icon.png" alt="Manitou Beach" width="32" height="32" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", opacity: solid ? 1 : 0.85, transition: "opacity 0.35s" }} />
             <div>
-              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 700, color: solid ? C.dusk : C.cream, transition: "color 0.35s" }}>
+              <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 700, color: solid ? C.dusk : C.cream, transition: "color 0.35s", whiteSpace: "nowrap" }}>
                 Manitou Beach
               </div>
-              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 12, color: solid ? C.textMuted : "rgba(255,255,255,0.5)", marginTop: -2, transition: "color 0.35s" }}>
+              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 14, color: solid ? C.textMuted : "rgba(255,255,255,0.75)", marginTop: -2, transition: "color 0.35s" }}>
                 on Devils Lake
               </div>
             </div>
@@ -2096,8 +2096,8 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
                 style={{
                   background: homeOpen ? `${C.sage}18` : "transparent",
                   border: "none", color: solid ? C.text : "rgba(255,255,255,0.7)",
-                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 500, letterSpacing: 0.5,
-                  padding: "7px 13px", borderRadius: 6, cursor: "pointer", transition: "all 0.2s", whiteSpace: "nowrap",
+                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 500, letterSpacing: 0.5,
+                  padding: "7px 10px", borderRadius: 6, cursor: "pointer", transition: "all 0.2s", whiteSpace: "nowrap",
                 }}
                 onMouseEnter={e => { e.currentTarget.style.color = solid ? C.dusk : C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
                 onMouseLeave={e => { if (!homeOpen) { e.currentTarget.style.color = solid ? C.text : "rgba(255,255,255,0.7)"; e.currentTarget.style.background = "transparent"; } }}
@@ -2112,7 +2112,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
                   padding: "8px 0", minWidth: 180, zIndex: 1001,
                 }}>
                   <a href="/" onClick={() => setHomeOpen(false)} style={{
-                    display: "block", padding: "10px 18px", fontSize: 13, color: C.text, fontWeight: 600,
+                    display: "block", padding: "10px 18px", fontSize: 15, color: C.text, fontWeight: 600,
                     textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif", transition: "background 0.15s",
                     borderBottom: `1px solid ${C.sand}`, marginBottom: 4,
                   }} onMouseEnter={e => e.currentTarget.style.background = `${C.sage}10`} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
@@ -2125,7 +2125,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
                     { id: "about",      label: "About" },
                   ].map(({ id, label }) => (
                     <button key={id} onClick={() => { setHomeOpen(false); handleNavClick(id); }} style={{
-                      display: "block", width: "100%", textAlign: "left", padding: "10px 18px", fontSize: 13, color: C.text,
+                      display: "block", width: "100%", textAlign: "left", padding: "10px 18px", fontSize: 15, color: C.text,
                       background: "none", border: "none", cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", transition: "background 0.15s",
                     }} onMouseEnter={e => e.currentTarget.style.background = `${C.sage}10`} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
                       {label}
@@ -2141,8 +2141,8 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
               style={{
                 background: "transparent", border: "none",
                 color: solid ? C.text : "rgba(255,255,255,0.7)",
-                fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 500,
-                letterSpacing: 0.5, padding: "7px 13px", borderRadius: 6, cursor: "pointer",
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 500,
+                letterSpacing: 0.5, padding: "7px 10px", borderRadius: 6, cursor: "pointer",
                 transition: "all 0.2s", whiteSpace: "nowrap",
               }}
               onMouseEnter={e => { e.currentTarget.style.color = solid ? C.dusk : C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
@@ -2157,8 +2157,8 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
               style={{
                 background: "transparent", border: "none",
                 color: solid ? C.text : "rgba(255,255,255,0.7)",
-                fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 500,
-                letterSpacing: 0.5, padding: "7px 13px", borderRadius: 6, cursor: "pointer",
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 500,
+                letterSpacing: 0.5, padding: "7px 10px", borderRadius: 6, cursor: "pointer",
                 transition: "all 0.2s", whiteSpace: "nowrap",
               }}
               onMouseEnter={e => { e.currentTarget.style.color = solid ? C.dusk : C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
@@ -2173,8 +2173,8 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
               style={{
                 background: "transparent", border: "none",
                 color: solid ? C.text : "rgba(255,255,255,0.7)",
-                fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 500,
-                letterSpacing: 0.5, padding: "7px 13px", borderRadius: 6, cursor: "pointer",
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 500,
+                letterSpacing: 0.5, padding: "7px 10px", borderRadius: 6, cursor: "pointer",
                 transition: "all 0.2s", whiteSpace: "nowrap",
               }}
               onMouseEnter={e => { e.currentTarget.style.color = solid ? C.dusk : C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
@@ -2189,8 +2189,8 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
               style={{
                 background: "transparent", border: "none",
                 color: solid ? C.text : "rgba(255,255,255,0.7)",
-                fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 500,
-                letterSpacing: 0.5, padding: "7px 13px", borderRadius: 6, cursor: "pointer",
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 500,
+                letterSpacing: 0.5, padding: "7px 10px", borderRadius: 6, cursor: "pointer",
                 transition: "all 0.2s", whiteSpace: "nowrap",
               }}
               onMouseEnter={e => { e.currentTarget.style.color = solid ? C.dusk : C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
@@ -2206,8 +2206,8 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
                 style={{
                   background: comOpen ? `${C.sage}18` : "transparent",
                   border: "none", color: solid ? C.text : "rgba(255,255,255,0.7)",
-                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 500, letterSpacing: 0.5,
-                  padding: "7px 13px", borderRadius: 6, cursor: "pointer", transition: "all 0.2s", whiteSpace: "nowrap",
+                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 500, letterSpacing: 0.5,
+                  padding: "7px 10px", borderRadius: 6, cursor: "pointer", transition: "all 0.2s", whiteSpace: "nowrap",
                 }}
                 onMouseEnter={e => { e.currentTarget.style.color = solid ? C.dusk : C.cream; e.currentTarget.style.background = `${C.sage}15`; }}
                 onMouseLeave={e => { if (!comOpen) { e.currentTarget.style.color = solid ? C.text : "rgba(255,255,255,0.7)"; e.currentTarget.style.background = "transparent"; } }}
@@ -2237,14 +2237,14 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
                   ].map((link, i) => (
                     link.href ? (
                       <a key={i} href={link.href} {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={{
-                        display: "block", padding: "10px 18px", fontSize: 13, color: C.text,
+                        display: "block", padding: "10px 18px", fontSize: 15, color: C.text,
                         textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif", transition: "background 0.15s",
                       }} onMouseEnter={e => e.currentTarget.style.background = `${C.sage}10`} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
                         {link.label}
                       </a>
                     ) : (
                       <button key={i} onClick={() => { setComOpen(false); handleNavClick(link.id); }} style={{
-                        display: "block", width: "100%", textAlign: "left", padding: "10px 18px", fontSize: 13, color: C.text,
+                        display: "block", width: "100%", textAlign: "left", padding: "10px 18px", fontSize: 15, color: C.text,
                         background: "none", border: "none", cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", transition: "background 0.15s",
                       }} onMouseEnter={e => e.currentTarget.style.background = `${C.sage}10`} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
                         {link.label}
@@ -2255,8 +2255,8 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
               )}
             </div>
             <div style={{ marginLeft: 8, display: "flex", gap: 8 }}>
-              <Btn href="/business" variant="primary" small style={{ minWidth: 130, textAlign: "center", fontSize: 12, padding: "8px 12px" }}>List Your Business</Btn>
-              <Btn href="/submit-event" variant="sunset" small style={{ minWidth: 130, textAlign: "center", fontSize: 12, padding: "8px 12px" }}>List Your Event</Btn>
+              <Btn href="/business" variant="primary" small style={{ textAlign: "center", fontSize: 13, letterSpacing: 1, padding: "9px 14px", whiteSpace: "nowrap" }}>List Your Business</Btn>
+              <Btn href="/submit-event" variant="sunset" small style={{ textAlign: "center", fontSize: 13, letterSpacing: 1, padding: "9px 14px", whiteSpace: "nowrap" }}>List Your Event</Btn>
             </div>
           </div>
 
@@ -2351,7 +2351,7 @@ export function Navbar({ activeSection, scrollTo, isSubPage = false }) {
         </button>
 
         {/* Community sub-links */}
-        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.textMuted, marginTop: 8, fontFamily: "'Libre Franklin', sans-serif" }}>Community</div>
+        <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.textMuted, marginTop: 8, fontFamily: "'Libre Franklin', sans-serif" }}>Community</div>
         {[
           { label: "Holly & The Yeti", href: "/holly-yeti" },
           { label: "Food Truck Locator", href: "/food-trucks" },
@@ -2542,7 +2542,7 @@ export function EventLightbox({ event, onClose }) {
       >
         <button
           onClick={onClose}
-          style={{ position: "absolute", top: 16, right: 20, background: "none", border: "none", color: "rgba(255,255,255,0.4)", fontSize: 24, cursor: "pointer" }}
+          style={{ position: "absolute", top: 16, right: 20, background: "none", border: "none", color: "rgba(255,255,255,0.75)", fontSize: 24, cursor: "pointer" }}
         >×</button>
 
         {event.videoUrl && (
@@ -2569,7 +2569,7 @@ export function EventLightbox({ event, onClose }) {
           {event.cost && (
             <span style={{
               fontFamily: "'Libre Franklin', sans-serif",
-              fontSize: 11, fontWeight: 600, letterSpacing: 1,
+              fontSize: 13, fontWeight: 600, letterSpacing: 1,
               color: event.cost === "Free" || event.cost === "Free to watch" ? C.sage : C.sunsetLight,
               textTransform: "uppercase",
             }}>
@@ -2577,12 +2577,12 @@ export function EventLightbox({ event, onClose }) {
             </span>
           )}
           {isAnnual && (
-            <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: 1, color: C.lakeBlue, textTransform: "uppercase" }}>
+            <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 1, color: C.lakeBlue, textTransform: "uppercase" }}>
               ● Annual Event
             </span>
           )}
           {event.updated && (
-            <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: 1, color: C.sunsetLight, textTransform: "uppercase", fontStyle: "italic" }}>
+            <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 1, color: C.sunsetLight, textTransform: "uppercase", fontStyle: "italic" }}>
               ↻ Details recently updated
             </span>
           )}
@@ -2600,12 +2600,12 @@ export function EventLightbox({ event, onClose }) {
         {(event.time || event.location || event.attendance) && (
           <div style={{ display: "flex", gap: 16, marginBottom: 16, flexWrap: "wrap", alignItems: "center" }}>
             {event.time && (
-              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", fontFamily: "'Libre Franklin', sans-serif" }}>
+              <div style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", fontFamily: "'Libre Franklin', sans-serif" }}>
                 🕐 {event.time}{event.timeEnd ? ` – ${event.timeEnd}` : ""}
               </div>
             )}
             {event.location && (
-              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", fontFamily: "'Libre Franklin', sans-serif" }}>
+              <div style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", fontFamily: "'Libre Franklin', sans-serif" }}>
                 📍 {event.location}
               </div>
             )}
@@ -2615,7 +2615,7 @@ export function EventLightbox({ event, onClose }) {
               const ICONS = { just_show_up: "✓", rsvp_appreciated: "📋", rsvp_required: "📋", limited_spots: "⚡", registration_required: "📝" };
               const aColor = COLORS[event.attendance] || C.sage;
               return (
-                <div style={{ fontSize: 12, color: aColor, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 0.5, background: `${aColor}15`, padding: "3px 10px", borderRadius: 12 }}>
+                <div style={{ fontSize: 14, color: aColor, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 0.5, background: `${aColor}15`, padding: "3px 10px", borderRadius: 12 }}>
                   {ICONS[event.attendance]} {LABELS[event.attendance]}
                 </div>
               );
@@ -2623,7 +2623,7 @@ export function EventLightbox({ event, onClose }) {
           </div>
         )}
 
-        <p style={{ fontSize: 15, color: "rgba(255,255,255,0.55)", lineHeight: 1.8, margin: "0 0 20px 0", whiteSpace: "pre-line" }}>
+        <p style={{ fontSize: 17, color: "rgba(255,255,255,0.75)", lineHeight: 1.8, margin: "0 0 20px 0", whiteSpace: "pre-line" }}>
           {event.description?.replace(/\.?\s*Runs until:?\s*\d{4}-\d{2}-\d{2}\.?/i, "").trim()}
         </p>
 
@@ -2632,7 +2632,7 @@ export function EventLightbox({ event, onClose }) {
           <div style={{ marginBottom: 20 }}>
             {/* Spots-left pill - only show when ≤5 remain and not yet sold out */}
             {!rsvpSoldOut && rsvpSpotsLeft !== null && rsvpSpotsLeft <= 5 && (
-              <div style={{ display: "inline-flex", alignItems: "center", gap: 5, background: "rgba(255,107,107,0.12)", border: "1px solid rgba(255,107,107,0.3)", borderRadius: 20, padding: "4px 12px", marginBottom: 12, fontSize: 12, fontWeight: 700, color: rsvpSpotsLeft <= 2 ? "#ff6b6b" : C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1 }}>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 5, background: "rgba(255,107,107,0.12)", border: "1px solid rgba(255,107,107,0.3)", borderRadius: 20, padding: "4px 12px", marginBottom: 12, fontSize: 14, fontWeight: 700, color: rsvpSpotsLeft <= 2 ? "#ff6b6b" : C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1 }}>
                 🔴 {rsvpSpotsLeft} spot{rsvpSpotsLeft === 1 ? "" : "s"} left
               </div>
             )}
@@ -2640,7 +2640,7 @@ export function EventLightbox({ event, onClose }) {
               rsvpSoldOut ? (
                 /* Sold out state + notify-me form */
                 waitlistSubmitted ? (
-                  <div style={{ background: `${C.sage}18`, border: `1px solid ${C.sage}40`, borderRadius: 10, padding: "14px 18px", fontSize: 14, color: C.sage, fontFamily: "'Libre Franklin', sans-serif" }}>
+                  <div style={{ background: `${C.sage}18`, border: `1px solid ${C.sage}40`, borderRadius: 10, padding: "14px 18px", fontSize: 16, color: C.sage, fontFamily: "'Libre Franklin', sans-serif" }}>
                     ✓ You're on the list! We'll let you know if a spot opens.
                   </div>
                 ) : (
@@ -2648,8 +2648,8 @@ export function EventLightbox({ event, onClose }) {
                     <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
                       <div style={{ fontSize: 28 }}>🎟️</div>
                       <div>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: "#ff6b6b", fontFamily: "'Libre Franklin', sans-serif", marginBottom: 2 }}>This event is full</div>
-                        <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", fontFamily: "'Libre Franklin', sans-serif" }}>Join the waitlist - we'll notify you if a spot opens up.</div>
+                        <div style={{ fontSize: 16, fontWeight: 700, color: "#ff6b6b", fontFamily: "'Libre Franklin', sans-serif", marginBottom: 2 }}>This event is full</div>
+                        <div style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", fontFamily: "'Libre Franklin', sans-serif" }}>Join the waitlist - we'll notify you if a spot opens up.</div>
                       </div>
                     </div>
                     <form onSubmit={handleWaitlist} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -2657,23 +2657,23 @@ export function EventLightbox({ event, onClose }) {
                         {[{ key: 'name', placeholder: 'Your name', type: 'text' }, { key: 'email', placeholder: 'Email *', type: 'email' }].map(f => (
                           <input key={f.key} type={f.type} value={waitlistForm[f.key]} onChange={e => setWaitlistForm(p => ({ ...p, [f.key]: e.target.value }))}
                             placeholder={f.placeholder} required={f.key === 'email'}
-                            style={{ padding: "9px 12px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.06)", color: C.cream, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", outline: "none", boxSizing: "border-box", width: "100%" }} />
+                            style={{ padding: "9px 12px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.06)", color: C.cream, fontSize: 15, fontFamily: "'Libre Franklin', sans-serif", outline: "none", boxSizing: "border-box", width: "100%" }} />
                         ))}
                       </div>
                       <button type="submit" disabled={waitlistLoading}
-                        style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.cream, background: "rgba(255,107,107,0.2)", border: "1px solid rgba(255,107,107,0.4)", padding: "10px 24px", borderRadius: 6, cursor: waitlistLoading ? "not-allowed" : "pointer", opacity: waitlistLoading ? 0.6 : 1, alignSelf: "flex-start" }}>
+                        style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.cream, background: "rgba(255,107,107,0.2)", border: "1px solid rgba(255,107,107,0.4)", padding: "10px 24px", borderRadius: 6, cursor: waitlistLoading ? "not-allowed" : "pointer", opacity: waitlistLoading ? 0.6 : 1, alignSelf: "flex-start" }}>
                         {waitlistLoading ? "Saving..." : "Notify Me →"}
                       </button>
                     </form>
                   </div>
                 )
               ) : rsvpSubmitted ? (
-                <div style={{ background: `${C.sage}18`, border: `1px solid ${C.sage}40`, borderRadius: 10, padding: "14px 18px", fontSize: 14, color: C.sage, fontFamily: "'Libre Franklin', sans-serif" }}>
+                <div style={{ background: `${C.sage}18`, border: `1px solid ${C.sage}40`, borderRadius: 10, padding: "14px 18px", fontSize: 16, color: C.sage, fontFamily: "'Libre Franklin', sans-serif" }}>
                   ✓ You're registered! We'll send a reminder the day before.
                 </div>
               ) : (
                 <form onSubmit={handleRsvp} style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "20px" }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.lakeBlue, marginBottom: 14, fontFamily: "'Libre Franklin', sans-serif" }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.lakeBlue, marginBottom: 14, fontFamily: "'Libre Franklin', sans-serif" }}>
                     RSVP - It's Free
                   </div>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10 }}>
@@ -2684,17 +2684,17 @@ export function EventLightbox({ event, onClose }) {
                     ].map(f => (
                       <input key={f.key} type={f.type} value={rsvpForm[f.key]} onChange={e => setRsvpForm(p => ({ ...p, [f.key]: e.target.value }))}
                         placeholder={f.placeholder} required={f.required}
-                        style={{ width: "100%", padding: "10px 12px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.06)", color: C.cream, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", outline: "none", boxSizing: "border-box" }}
+                        style={{ width: "100%", padding: "10px 12px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.06)", color: C.cream, fontSize: 15, fontFamily: "'Libre Franklin', sans-serif", outline: "none", boxSizing: "border-box" }}
                       />
                     ))}
                     <select value={rsvpForm.guests} onChange={e => setRsvpForm(p => ({ ...p, guests: parseInt(e.target.value, 10) }))}
-                      style={{ padding: "10px 12px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.06)", color: C.cream, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", outline: "none" }}>
+                      style={{ padding: "10px 12px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.06)", color: C.cream, fontSize: 15, fontFamily: "'Libre Franklin', sans-serif", outline: "none" }}>
                       {[1,2,3,4,5,6,7,8].map(n => <option key={n} value={n}>{n} {n === 1 ? 'person' : 'people'}</option>)}
                     </select>
                   </div>
-                  {rsvpError && <div style={{ fontSize: 12, color: "#ff6b6b", marginBottom: 10, fontFamily: "'Libre Franklin', sans-serif" }}>{rsvpError}</div>}
+                  {rsvpError && <div style={{ fontSize: 14, color: "#ff6b6b", marginBottom: 10, fontFamily: "'Libre Franklin', sans-serif" }}>{rsvpError}</div>}
                   <button type="submit" disabled={rsvpLoading}
-                    style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.cream, background: C.lakeBlue, padding: "12px 28px", borderRadius: 6, border: "none", cursor: rsvpLoading ? "not-allowed" : "pointer", opacity: rsvpLoading ? 0.6 : 1 }}>
+                    style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.cream, background: C.lakeBlue, padding: "12px 28px", borderRadius: 6, border: "none", cursor: rsvpLoading ? "not-allowed" : "pointer", opacity: rsvpLoading ? 0.6 : 1 }}>
                     {rsvpLoading ? "Registering..." : "RSVP Now →"}
                   </button>
                 </form>
@@ -2704,16 +2704,16 @@ export function EventLightbox({ event, onClose }) {
               <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
                 {event.eventUrl ? (
                   <a href={event.eventUrl} target="_blank" rel="noopener noreferrer"
-                    style={{ display: "inline-block", fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.cream, background: C.sunset, padding: "10px 22px", borderRadius: 6, textDecoration: "none" }}>
+                    style={{ display: "inline-block", fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.cream, background: C.sunset, padding: "10px 22px", borderRadius: 6, textDecoration: "none" }}>
                     Register / RSVP →
                   </a>
                 ) : event.email ? (
                   <a href={`mailto:${event.email}?subject=RSVP: ${encodeURIComponent(event.name)}`}
-                    style={{ display: "inline-block", fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunset, border: `1px solid ${C.sunset}60`, padding: "10px 22px", borderRadius: 6, textDecoration: "none" }}>
+                    style={{ display: "inline-block", fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunset, border: `1px solid ${C.sunset}60`, padding: "10px 22px", borderRadius: 6, textDecoration: "none" }}>
                     Email to Register →
                   </a>
                 ) : (
-                  <div style={{ fontSize: 13, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif", fontStyle: "italic" }}>
+                  <div style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", fontFamily: "'Libre Franklin', sans-serif", fontStyle: "italic" }}>
                     Contact the organizer to register.
                   </div>
                 )}
@@ -2729,7 +2729,7 @@ export function EventLightbox({ event, onClose }) {
               <div style={{
                 display: "inline-block",
                 fontFamily: "'Libre Franklin', sans-serif",
-                fontSize: 12, fontWeight: 700, letterSpacing: 1.5,
+                fontSize: 14, fontWeight: 700, letterSpacing: 1.5,
                 textTransform: "uppercase", color: "#ff6b6b",
                 background: "rgba(255,80,80,0.12)",
                 padding: "10px 22px", borderRadius: 6,
@@ -2742,7 +2742,7 @@ export function EventLightbox({ event, onClose }) {
                   onClick={() => setShowTicketForm(true)}
                   style={{
                     fontFamily: "'Libre Franklin', sans-serif",
-                    fontSize: 13, fontWeight: 700, letterSpacing: 1.5,
+                    fontSize: 15, fontWeight: 700, letterSpacing: 1.5,
                     textTransform: "uppercase", color: C.cream,
                     background: C.sage, padding: "12px 28px",
                     borderRadius: 6, border: "none", cursor: "pointer",
@@ -2752,48 +2752,48 @@ export function EventLightbox({ event, onClose }) {
                   Get Tickets - ${event.ticketPrice}
                 </button>
                 {ticketsRemaining !== null && ticketsRemaining <= 20 && (
-                  <span style={{ fontSize: 12, color: C.sunsetLight, marginLeft: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
+                  <span style={{ fontSize: 14, color: C.sunsetLight, marginLeft: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
                     {ticketsRemaining} left
                   </span>
                 )}
               </div>
             ) : (
               <form onSubmit={handleTicketPurchase} style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "20px" }}>
-                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 14, fontFamily: "'Libre Franklin', sans-serif" }}>
+                <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 14, fontFamily: "'Libre Franklin', sans-serif" }}>
                   Ticket Details - ${event.ticketPrice}/ticket
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10 }}>
                   <input
                     value={ticketForm.buyerName} onChange={e => setTicketForm(f => ({ ...f, buyerName: e.target.value }))}
                     placeholder="Your name *" required
-                    style={{ width: "100%", padding: "10px 12px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.06)", color: C.cream, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", outline: "none", boxSizing: "border-box" }}
+                    style={{ width: "100%", padding: "10px 12px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.06)", color: C.cream, fontSize: 15, fontFamily: "'Libre Franklin', sans-serif", outline: "none", boxSizing: "border-box" }}
                   />
                   <input
                     type="email" value={ticketForm.email} onChange={e => setTicketForm(f => ({ ...f, email: e.target.value }))}
                     placeholder="Email *" required
-                    style={{ width: "100%", padding: "10px 12px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.06)", color: C.cream, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", outline: "none", boxSizing: "border-box" }}
+                    style={{ width: "100%", padding: "10px 12px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.06)", color: C.cream, fontSize: 15, fontFamily: "'Libre Franklin', sans-serif", outline: "none", boxSizing: "border-box" }}
                   />
                   <input
                     value={ticketForm.phone} onChange={e => setTicketForm(f => ({ ...f, phone: e.target.value }))}
                     placeholder="Phone (optional)"
-                    style={{ width: "100%", padding: "10px 12px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.06)", color: C.cream, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", outline: "none", boxSizing: "border-box" }}
+                    style={{ width: "100%", padding: "10px 12px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.06)", color: C.cream, fontSize: 15, fontFamily: "'Libre Franklin', sans-serif", outline: "none", boxSizing: "border-box" }}
                   />
                   <select
                     value={ticketForm.quantity} onChange={e => setTicketForm(f => ({ ...f, quantity: parseInt(e.target.value, 10) }))}
-                    style={{ width: "100%", padding: "10px 12px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.06)", color: C.cream, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", outline: "none", boxSizing: "border-box", appearance: "none" }}
+                    style={{ width: "100%", padding: "10px 12px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.06)", color: C.cream, fontSize: 15, fontFamily: "'Libre Franklin', sans-serif", outline: "none", boxSizing: "border-box", appearance: "none" }}
                   >
                     {Array.from({ length: Math.min(10, ticketsRemaining || 10) }, (_, i) => i + 1).map(n => (
                       <option key={n} value={n}>{n} ticket{n > 1 ? 's' : ''}</option>
                     ))}
                   </select>
                 </div>
-                {ticketError && <div style={{ fontSize: 12, color: "#ff6b6b", marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>{ticketError}</div>}
+                {ticketError && <div style={{ fontSize: 14, color: "#ff6b6b", marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>{ticketError}</div>}
                 <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
                   <button
                     type="submit" disabled={ticketLoading}
                     style={{
                       padding: "10px 24px", background: C.sage, color: C.cream, border: "none", borderRadius: 6,
-                      fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase",
+                      fontSize: 14, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase",
                       cursor: ticketLoading ? "not-allowed" : "pointer", opacity: ticketLoading ? 0.6 : 1,
                       fontFamily: "'Libre Franklin', sans-serif", transition: "all 0.2s",
                     }}
@@ -2802,7 +2802,7 @@ export function EventLightbox({ event, onClose }) {
                   </button>
                   <button
                     type="button" onClick={() => setShowTicketForm(false)}
-                    style={{ background: "none", border: "none", color: C.textMuted, fontSize: 12, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif" }}
+                    style={{ background: "none", border: "none", color: C.textMuted, fontSize: 14, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif" }}
                   >
                     Cancel
                   </button>
@@ -2819,7 +2819,7 @@ export function EventLightbox({ event, onClose }) {
               style={{
                 display: "inline-block",
                 fontFamily: "'Libre Franklin', sans-serif",
-                fontSize: 12, fontWeight: 700, letterSpacing: 1.5,
+                fontSize: 14, fontWeight: 700, letterSpacing: 1.5,
                 textTransform: "uppercase", color: C.cream,
                 background: C.lakeBlue, padding: "10px 22px",
                 borderRadius: 6, textDecoration: "none",
@@ -2838,7 +2838,7 @@ export function EventLightbox({ event, onClose }) {
             style={{
               display: "inline-block",
               fontFamily: "'Libre Franklin', sans-serif",
-              fontSize: 12, fontWeight: 700, letterSpacing: 1.5,
+              fontSize: 14, fontWeight: 700, letterSpacing: 1.5,
               textTransform: "uppercase", color: C.cream,
               background: event.ticketsEnabled ? 'transparent' : C.sunset,
               border: event.ticketsEnabled ? `1px solid rgba(255,255,255,0.2)` : 'none',
@@ -3018,7 +3018,7 @@ export function BetaFeedbackStrip() {
     justifyContent: 'space-between',
     gap: 12,
     fontFamily: "'Libre Franklin', sans-serif",
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: 600,
     boxShadow: '0 -2px 12px rgba(0,0,0,0.25)',
   };
@@ -3030,7 +3030,7 @@ export function BetaFeedbackStrip() {
     borderRadius: 4,
     padding: '5px 12px',
     fontFamily: "'Libre Franklin', sans-serif",
-    fontSize: 11,
+    fontSize: 13,
     fontWeight: 700,
     letterSpacing: 1,
     textTransform: 'uppercase',
@@ -3063,7 +3063,7 @@ export function BetaFeedbackStrip() {
     padding: '10px 12px',
     borderRadius: 5,
     border: '1px solid #C4B498',
-    fontSize: 14,
+    fontSize: 16,
     fontFamily: "'Libre Franklin', sans-serif",
     color: C.text,
     background: '#FAF6EF',
@@ -3073,7 +3073,7 @@ export function BetaFeedbackStrip() {
 
   const labelStyle = {
     display: 'block',
-    fontSize: 10,
+    fontSize: 13,
     fontWeight: 700,
     letterSpacing: 2.5,
     textTransform: 'uppercase',
@@ -3091,7 +3091,7 @@ export function BetaFeedbackStrip() {
             background: 'rgba(26,40,48,0.2)',
             borderRadius: 3,
             padding: '2px 7px',
-            fontSize: 9,
+            fontSize: 12,
             fontWeight: 800,
             letterSpacing: 2,
             textTransform: 'uppercase',
@@ -3127,7 +3127,7 @@ export function BetaFeedbackStrip() {
             {submitState === 'done' ? (
               <div style={{ textAlign: 'center', padding: '16px 0' }}>
                 <p style={{ fontFamily: "'Caveat', cursive", fontSize: 28, color: C.sunset, margin: '0 0 8px' }}>Thanks!</p>
-                <p style={{ fontSize: 14, color: C.textLight, margin: 0 }}>Your feedback was sent.</p>
+                <p style={{ fontSize: 16, color: C.textLight, margin: 0 }}>Your feedback was sent.</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit}>
@@ -3160,8 +3160,8 @@ export function BetaFeedbackStrip() {
                     style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.5 }}
                     required
                   />
-                  <p style={{ fontSize: 11, color: C.textMuted, margin: '4px 0 0', fontFamily: "'Libre Franklin', sans-serif" }}>
-                    Page: <code style={{ fontSize: 11 }}>{typeof window !== 'undefined' ? window.location.pathname : ''}</code>
+                  <p style={{ fontSize: 13, color: C.textMuted, margin: '4px 0 0', fontFamily: "'Libre Franklin', sans-serif" }}>
+                    Page: <code style={{ fontSize: 13 }}>{typeof window !== 'undefined' ? window.location.pathname : ''}</code>
                   </p>
                 </div>
 
@@ -3188,7 +3188,7 @@ export function BetaFeedbackStrip() {
                     borderRadius: 4,
                     fontFamily: "'Libre Franklin', sans-serif",
                     fontWeight: 700,
-                    fontSize: 13,
+                    fontSize: 15,
                     letterSpacing: 2,
                     textTransform: 'uppercase',
                     cursor: submitState === 'submitting' ? 'not-allowed' : 'pointer',

@@ -30,7 +30,7 @@ export function ShareBar({ url, title }) {
     display: "inline-flex", alignItems: "center", gap: 5,
     padding: "6px 14px", borderRadius: 20, border: "1px solid rgba(255,255,255,0.15)",
     background: "rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.65)",
-    fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600,
+    fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600,
     letterSpacing: 0.5, cursor: "pointer", textDecoration: "none",
     transition: "all 0.2s",
   };
@@ -40,7 +40,7 @@ export function ShareBar({ url, title }) {
 
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginTop: 20 }}>
-      <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.25)" }}>Share</span>
+      <span style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.75)" }}>Share</span>
       {navigator.share ? (
         <button onClick={handleNativeShare} style={btnStyle} onMouseEnter={hoverIn} onMouseLeave={hoverOut}>
           ↑ Share This Page
@@ -74,10 +74,10 @@ export function SectionLabel({ children, light = false, style: styleProp = {} })
   return (
     <div style={{
       fontFamily: "'Libre Franklin', sans-serif",
-      fontSize: 11,
+      fontSize: 13,
       letterSpacing: 5,
       textTransform: "uppercase",
-      color: light ? "rgba(255,255,255,0.5)" : "var(--page-eyebrow)",
+      color: light ? "rgba(255,255,255,0.75)" : "var(--page-eyebrow)",
       marginBottom: 14,
       fontWeight: 600,
       ...styleProp,
@@ -243,14 +243,14 @@ export function PageSponsorBanner({ pageName }) {
       <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 70% 90% at 50% 50%, rgba(91,126,149,0.14) 0%, transparent 70%)", pointerEvents: "none" }} />
       <div style={{ maxWidth: 960, margin: "0 auto", position: "relative" }}>
         <FadeIn>
-          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 4, textTransform: "uppercase", color: "rgba(255,255,255,0.28)", marginBottom: 32 }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 4, textTransform: "uppercase", color: "rgba(255,255,255,0.75)", marginBottom: 32 }}>
             Brought to you by
           </div>
           {sponsor ? (
             <a href={sponsor.url} target="_blank" rel="noopener noreferrer" style={{ display: "inline-block", textDecoration: "none" }}>
               <img src={sponsor.logo} alt={sponsor.name} style={{ maxWidth: 460, width: "100%", maxHeight: 140, objectFit: "contain", filter: "brightness(0) invert(1)", opacity: 0.92 }} />
               {sponsor.tagline && (
-                <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, color: "rgba(255,255,255,0.5)", marginTop: 20, lineHeight: 1.6 }}>{sponsor.tagline}</p>
+                <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, color: "rgba(255,255,255,0.75)", marginTop: 20, lineHeight: 1.6 }}>{sponsor.tagline}</p>
               )}
             </a>
           ) : (
@@ -260,7 +260,7 @@ export function PageSponsorBanner({ pageName }) {
                 <p style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(18px, 3vw, 28px)", color: C.cream, fontWeight: 400, margin: "0 0 10px", lineHeight: 1.3 }}>
                   Your business deserves a billboard like this.
                 </p>
-                <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: "rgba(255,255,255,0.36)", margin: "0 0 32px", letterSpacing: 0.5 }}>
+                <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, color: "rgba(255,255,255,0.75)", margin: "0 0 32px", letterSpacing: 0.5 }}>
                   Exclusive · One brand per page · Seen all year long
                 </p>
               </div>
@@ -268,7 +268,7 @@ export function PageSponsorBanner({ pageName }) {
                 display: "inline-flex", alignItems: "center", gap: 10,
                 padding: "18px 48px", borderRadius: 8,
                 background: C.sunset, color: C.cream,
-                fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700,
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, fontWeight: 700,
                 letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none",
                 boxShadow: "0 8px 36px rgba(212,132,90,0.40)",
               }}>
@@ -299,7 +299,7 @@ export function Btn({ children, onClick, href, variant = "primary", small = fals
     display: "inline-block",
     fontFamily: "'Libre Franklin', sans-serif",
     fontWeight: 600,
-    fontSize: small ? 12 : 14,
+    fontSize: small ? 14 : 16,
     letterSpacing: 1.5,
     textTransform: "uppercase",
     textDecoration: "none",
@@ -368,10 +368,10 @@ export function CommunityDonationForm({ orgName, orgPageId, submitEndpoint, tier
   const inputStyle = {
     width: '100%', boxSizing: 'border-box', padding: '12px 16px',
     border: inputBorder, borderRadius: 8, background: inputBg,
-    color: textColor, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: 'none',
+    color: textColor, fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, outline: 'none',
   };
   const labelStyle = {
-    display: 'block', fontSize: 11, fontWeight: 700, letterSpacing: 1,
+    display: 'block', fontSize: 13, fontWeight: 700, letterSpacing: 1,
     textTransform: 'uppercase', color: textMuted, marginBottom: 6,
     fontFamily: "'Libre Franklin', sans-serif",
   };
@@ -494,7 +494,7 @@ export function CommunityDonationForm({ orgName, orgPageId, submitEndpoint, tier
           </div>
         )}
         <div style={{ display: 'inline-block', background: darkBg ? 'rgba(255,255,255,0.06)' : '#fff', border: `1px solid ${cardBorder}`, borderRadius: 12, padding: '20px 32px', marginBottom: confirmId ? 20 : 0 }}>
-          <p style={{ margin: 0, fontSize: 13, color: textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
+          <p style={{ margin: 0, fontSize: 15, color: textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
             {confirmedTier}
             {amount > 0 && !paidReturn && (
               <>
@@ -505,7 +505,7 @@ export function CommunityDonationForm({ orgName, orgPageId, submitEndpoint, tier
           </p>
         </div>
         {confirmId && (
-          <p style={{ fontSize: 11, color: textMuted, margin: '16px 0 0', fontFamily: "'Libre Franklin', sans-serif" }}>
+          <p style={{ fontSize: 13, color: textMuted, margin: '16px 0 0', fontFamily: "'Libre Franklin', sans-serif" }}>
             Confirmation ID: <strong style={{ color: textColor, letterSpacing: 1 }}>{confirmId}</strong>
           </p>
         )}
@@ -527,7 +527,7 @@ export function CommunityDonationForm({ orgName, orgPageId, submitEndpoint, tier
                 background: active ? `${accent}18` : cardBg,
                 transition: 'all 0.15s',
               }}>
-                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', color: textMuted, marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>{tier.level}</div>
+                <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', color: textMuted, marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>{tier.level}</div>
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: active ? accent : textColor }}>${tier.amount.toLocaleString()}</div>
               </button>
             );
@@ -538,7 +538,7 @@ export function CommunityDonationForm({ orgName, orgPageId, submitEndpoint, tier
             background: selectedTier === null ? `${accent}18` : cardBg,
             transition: 'all 0.15s',
           }}>
-            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', color: textMuted, marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>Custom</div>
+            <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', color: textMuted, marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>Custom</div>
             <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: selectedTier === null ? accent : textColor }}>Any amount</div>
           </button>
         </div>
@@ -556,10 +556,10 @@ export function CommunityDonationForm({ orgName, orgPageId, submitEndpoint, tier
       {/* Selected tier perks */}
       {selectedTier?.perks?.length > 0 && (
         <div style={{ marginBottom: 20, padding: '14px 18px', borderRadius: 10, background: darkBg ? 'rgba(255,255,255,0.04)' : `${C.sage}0D`, border: `1px solid ${darkBg ? 'rgba(255,255,255,0.08)' : `${C.sage}25`}` }}>
-          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: textMuted, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>What's Included</div>
+          <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: textMuted, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>What's Included</div>
           <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 4 }}>
             {selectedTier.perks.map((perk, i) => (
-              <li key={i} style={{ display: 'flex', gap: 8, fontSize: 13, color: textMuted, lineHeight: 1.5 }}>
+              <li key={i} style={{ display: 'flex', gap: 8, fontSize: 15, color: textMuted, lineHeight: 1.5 }}>
                 <span style={{ color: C.sage, flexShrink: 0 }}>✓</span>
                 {perk}
               </li>
@@ -576,8 +576,8 @@ export function CommunityDonationForm({ orgName, orgPageId, submitEndpoint, tier
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderRadius: 8, background: darkBg ? 'rgba(255,255,255,0.04)' : `${C.sage}10`, border: `1px solid ${darkBg ? 'rgba(255,255,255,0.08)' : `${C.sage}28`}` }}>
               <img src={logoPreview} alt="Logo" style={{ width: 64, height: 64, objectFit: 'contain', borderRadius: 6, background: '#fff', padding: 4, border: `1px solid ${C.sand}` }} />
               <div>
-                <div style={{ fontWeight: 700, color: C.sage, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif" }}>✓ Logo uploaded</div>
-                <button onClick={() => { setLogoPreview(null); setLogoUrl(null); setLogoUploadStatus('idle'); }} style={{ fontSize: 11, color: textMuted, background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", marginTop: 2 }}>
+                <div style={{ fontWeight: 700, color: C.sage, fontSize: 15, fontFamily: "'Libre Franklin', sans-serif" }}>✓ Logo uploaded</div>
+                <button onClick={() => { setLogoPreview(null); setLogoUrl(null); setLogoUploadStatus('idle'); }} style={{ fontSize: 13, color: textMuted, background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", marginTop: 2 }}>
                   Remove
                 </button>
               </div>
@@ -596,18 +596,18 @@ export function CommunityDonationForm({ orgName, orgPageId, submitEndpoint, tier
             >
               <input id="sponsor-logo-input" type="file" accept="image/*" style={{ display: 'none' }} onChange={e => handleLogoSelect(e.target.files[0])} />
               {logoUploadStatus === 'uploading' ? (
-                <p style={{ margin: 0, fontSize: 13, color: textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>Uploading…</p>
+                <p style={{ margin: 0, fontSize: 15, color: textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>Uploading…</p>
               ) : (
                 <>
-                  <p style={{ margin: '0 0 4px', fontSize: 14, color: textColor, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif" }}>
+                  <p style={{ margin: '0 0 4px', fontSize: 16, color: textColor, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif" }}>
                     {isDraggingLogo ? 'Drop it!' : 'Drop your logo here'}
                   </p>
-                  <p style={{ margin: 0, fontSize: 11, color: textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
+                  <p style={{ margin: 0, fontSize: 13, color: textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
                     or click to browse · PNG, JPG, SVG
                   </p>
                 </>
               )}
-              {logoUploadStatus === 'error' && <p style={{ margin: '6px 0 0', color: '#c0392b', fontSize: 12 }}>Upload failed - try again</p>}
+              {logoUploadStatus === 'error' && <p style={{ margin: '6px 0 0', color: '#c0392b', fontSize: 14 }}>Upload failed - try again</p>}
             </div>
           )}
         </div>
@@ -641,19 +641,19 @@ export function CommunityDonationForm({ orgName, orgPageId, submitEndpoint, tier
             placeholder="Optional - any questions, notes, or special requests"
             style={{ ...inputStyle, resize: 'vertical' }} />
         </div>
-        {error && <p style={{ fontSize: 13, color: '#c0392b', margin: 0, fontFamily: "'Libre Franklin', sans-serif" }}>{error}</p>}
+        {error && <p style={{ fontSize: 15, color: '#c0392b', margin: 0, fontFamily: "'Libre Franklin', sans-serif" }}>{error}</p>}
         <button onClick={handleSubmit} disabled={checkoutLoading} style={{
           padding: '15px 28px', borderRadius: 8,
           background: checkoutLoading ? C.textMuted : accent,
           color: C.cream, border: 'none',
-          fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700,
+          fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 700,
           letterSpacing: 1.5, textTransform: 'uppercase',
           cursor: checkoutLoading ? 'not-allowed' : 'pointer',
           transition: 'background 0.2s',
         }}>
           {checkoutLoading ? 'Redirecting to payment…' : orgPageId ? 'Sponsor Now →' : 'Submit Application →'}
         </button>
-        {note && <p style={{ fontSize: 11, color: textMuted, textAlign: 'center', lineHeight: 1.7, margin: '4px 0 0', fontFamily: "'Libre Franklin', sans-serif" }}>{note}</p>}
+        {note && <p style={{ fontSize: 13, color: textMuted, textAlign: 'center', lineHeight: 1.7, margin: '4px 0 0', fontFamily: "'Libre Franklin', sans-serif" }}>{note}</p>}
       </div>
     </div>
   );
@@ -664,7 +664,7 @@ export function CategoryPill({ children, dark = false }) {
     <span style={{
       display: "inline-block",
       fontFamily: "'Libre Franklin', sans-serif",
-      fontSize: 10,
+      fontSize: 13,
       fontWeight: 700,
       letterSpacing: 2,
       textTransform: "uppercase",

@@ -64,7 +64,7 @@ function EventTicker() {
           {repeated.map((item, i) => (
             <span key={i} style={{
               fontFamily: "'Libre Franklin', sans-serif",
-              fontSize: 12, fontWeight: 500, letterSpacing: 1,
+              fontSize: 14, fontWeight: 500, letterSpacing: 1,
               textTransform: "uppercase", color: C.sunsetLight,
               padding: "0 24px", display: "inline-flex", alignItems: "center", gap: 24,
             }}>
@@ -132,10 +132,10 @@ function WeatherWidget() {
       borderRadius: 20, padding: "7px 14px",
       fontFamily: "'Libre Franklin', sans-serif",
     }}>
-      <span style={{ fontSize: 15, lineHeight: 1 }}>{icon}</span>
-      <span style={{ fontSize: 14, fontWeight: 700, color: C.cream }}>{weather.temp}°F</span>
-      <span style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", letterSpacing: 0.3 }}>{label}</span>
-      <span style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", letterSpacing: 0.5 }}>· Devils Lake right now</span>
+      <span style={{ fontSize: 17, lineHeight: 1 }}>{icon}</span>
+      <span style={{ fontSize: 16, fontWeight: 700, color: C.cream }}>{weather.temp}°F</span>
+      <span style={{ fontSize: 13, color: "rgba(255,255,255,0.75)", letterSpacing: 0.3 }}>{label}</span>
+      <span style={{ fontSize: 13, color: "rgba(255,255,255,0.75)", letterSpacing: 0.5 }}>· Devils Lake right now</span>
     </div>
   );
 }
@@ -216,7 +216,7 @@ function Hero({ scrollTo }) {
       zIndex: 2, display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
     }}>
       <div style={{ width: 1, height: 48, background: "rgba(255,255,255,0.2)" }} />
-      <div style={{ fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif" }}>
+      <div style={{ fontSize: 13, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.75)", fontFamily: "'Libre Franklin', sans-serif" }}>
         Scroll
       </div>
     </div>
@@ -278,7 +278,7 @@ function Hero({ scrollTo }) {
             background: isSponsored ? `${C.sage}22` : `${C.sunset}22`,
             border: `1px solid ${isSponsored ? C.sage : C.sunset}50`,
             borderRadius: 4, padding: "6px 16px", fontFamily: "'Libre Franklin', sans-serif",
-            fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase",
+            fontSize: 13, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase",
             color: isSponsored ? C.sage : C.sunsetLight,
           }}>
             {isSponsored ? "Sponsored" : "Coming Up"}
@@ -288,7 +288,7 @@ function Hero({ scrollTo }) {
 
         <div style={{ position: "relative", zIndex: 2, maxWidth: 960, margin: "0 auto", padding: "120px 48px 100px" }}>
           <div style={{ opacity: loaded && heroFade ? 1 : 0, transform: loaded && heroFade ? "translateY(0)" : "translateY(12px)", transition: "opacity 0.8s ease, transform 0.8s ease" }}>
-            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 20 }}>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.75)", marginBottom: 20 }}>
               Manitou Beach · Devils Lake, Michigan
             </div>
             <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(36px, 6vw, 72px)", fontWeight: 400, color: C.cream, lineHeight: 1.1, margin: "0 0 12px 0", maxWidth: 700 }}>
@@ -346,7 +346,7 @@ function Hero({ scrollTo }) {
                   style={{
                     display: "inline-block", padding: "13px 32px",
                     background: "#4A9B6F", color: "#fff", borderRadius: 6,
-                    fontFamily: "'Libre Franklin', sans-serif", fontSize: 14,
+                    fontFamily: "'Libre Franklin', sans-serif", fontSize: 16,
                     fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase",
                     textDecoration: "none", transition: "all 0.25s ease",
                   }}
@@ -414,7 +414,7 @@ function Hero({ scrollTo }) {
           position: "relative", zIndex: 2, textAlign: "center", padding: "120px 24px 80px", maxWidth: 840,
           opacity: loaded ? 1 : 0, transform: loaded ? "translateY(0)" : "translateY(28px)", transition: "all 0.9s ease",
         }}>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 14, marginBottom: 28, fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 4.5, textTransform: "uppercase", color: FW.gold }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 14, marginBottom: 28, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 4.5, textTransform: "uppercase", color: FW.gold }}>
             <span style={{ width: 36, height: 1, background: `${FW.gold}55`, display: "block" }} />
             Devils &amp; Round Lake · Manitou Beach
             <span style={{ width: 36, height: 1, background: `${FW.gold}55`, display: "block" }} />
@@ -436,7 +436,7 @@ function Hero({ scrollTo }) {
             .fw-countdown { display:flex; gap:clamp(8px,2vw,20px); justify-content:center; flex-wrap:nowrap; align-items:stretch; margin-bottom:56px; width:100%; max-width:720px; margin-left:auto; margin-right:auto; }
             .fw-card { text-align:center; background:rgba(255,255,255,0.06); backdrop-filter:blur(12px); border:1px solid rgba(201,168,76,0.25); border-radius:16px; padding:clamp(16px,2.5vw,32px) clamp(12px,2.5vw,36px); box-shadow:0 0 32px rgba(201,168,76,0.09), inset 0 1px 0 rgba(255,255,255,0.08); flex:1; min-width:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
             .fw-num { font-family:'Libre Baskerville',serif; font-size:clamp(36px,6vw,80px); font-weight:700; color:#C9A84C; line-height:1; letter-spacing:-2px; font-variant-numeric:tabular-nums; text-shadow:0 0 40px rgba(201,168,76,0.33); }
-            .fw-unit { font-size:clamp(8px,1.1vw,11px); letter-spacing:4px; text-transform:uppercase; color:rgba(255,255,255,0.45); margin-top:10px; font-weight:700; font-family:'Libre Franklin',sans-serif; }
+            .fw-unit { font-size:clamp(8px,1.1vw,11px); letter-spacing:4px; text-transform:uppercase; color:rgba(255,255,255,0.75); margin-top:10px; font-weight:700; font-family:'Libre Franklin',sans-serif; }
             .fw-colon { font-size:clamp(24px,4vw,56px); color:#C9A84C; font-family:'Libre Baskerville',serif; line-height:1; opacity:0.4; align-self:center; margin-top:-16px; animation:fw-colon-pulse 1s steps(1) infinite; flex-shrink:0; }
           `}</style>
           <div className="fw-countdown">
@@ -460,7 +460,7 @@ function Hero({ scrollTo }) {
             <a href="/america-250" className="btn-animated" style={{
               display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 32px", borderRadius: 6,
               background: FW.gold, color: FW.navy, fontFamily: "'Libre Franklin', sans-serif",
-              fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none",
+              fontSize: 14, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none",
             }}>
               See What's Happening →
             </a>
@@ -495,7 +495,7 @@ function Hero({ scrollTo }) {
       <div style={{ position: "relative", zIndex: 3, maxWidth: 960, margin: "0 auto", padding: "160px 48px 120px", transform: `translateY(${scrollY * 0.08}px)` }}>
         <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? "none" : "translateY(24px)", transition: "all 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94)" }}>
           <div style={{ marginBottom: 20 }}><WeatherWidget /></div>
-          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 24, animation: loaded ? "tracking-in 0.8s ease forwards" : "none" }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.75)", marginBottom: 24, animation: loaded ? "tracking-in 0.8s ease forwards" : "none" }}>
             Welcome to
           </div>
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(48px, 8vw, 96px)", fontWeight: 400, color: C.cream, lineHeight: 1.0, margin: "0 0 16px 0" }}>
@@ -568,10 +568,10 @@ function NewsletterBar() {
         }}>
           The Manitou Beach Dispatch
         </h3>
-        <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", margin: "0 0 12px 0", lineHeight: 1.7 }}>
+        <p style={{ fontSize: 16, color: "rgba(255,255,255,0.75)", margin: "0 0 12px 0", lineHeight: 1.7 }}>
           {subCount ? `${subCount.toLocaleString()}+ lake neighbors already subscribe.` : 'Your lake neighbors are already here.'} Weekly events, featured businesses, and everything happening on the water.
         </p>
-        <p style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", margin: "0 0 28px 0", fontFamily: "'Libre Franklin', sans-serif" }}>
+        <p style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", margin: "0 0 28px 0", fontFamily: "'Libre Franklin', sans-serif" }}>
           Free. Unsubscribe anytime.
         </p>
         <form onSubmit={handleSubmit} style={{ display: "flex", gap: 10, maxWidth: 440, margin: "0 auto", flexWrap: "wrap", justifyContent: "center" }}>
@@ -586,12 +586,12 @@ function NewsletterBar() {
               flex: 1, minWidth: 200, padding: "12px 18px", borderRadius: 4,
               border: `1px solid rgba(255,255,255,0.15)`,
               background: "rgba(255,255,255,0.08)", color: C.cream,
-              fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", outline: "none",
+              fontSize: 16, fontFamily: "'Libre Franklin', sans-serif", outline: "none",
             }}
           />
           <Btn variant="sage" disabled={submitting}>{submitting ? 'Joining…' : 'Subscribe'}</Btn>
         </form>
-        {error && <p style={{ color: C.sunset, fontSize: 13, marginTop: 10 }}>{error}</p>}
+        {error && <p style={{ color: C.sunset, fontSize: 15, marginTop: 10 }}>{error}</p>}
         {showModal && <SubscribeModal alreadySubscribed={alreadySubscribed} onClose={() => setShowModal(false)} />}
       </div>
     </div>
@@ -644,7 +644,7 @@ function HappeningSection() {
             width: 1, background: "rgba(255,255,255,0.08)",
           }} />
           {preview.length === 0 ? (
-            <div style={{ padding: "32px 0", fontSize: 14, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif" }}>
+            <div style={{ padding: "32px 0", fontSize: 16, color: "rgba(255,255,255,0.75)", fontFamily: "'Libre Franklin', sans-serif" }}>
               Adding events soon - check back!
             </div>
           ) : preview.map((event, i) => {
@@ -671,7 +671,7 @@ function HappeningSection() {
                       {dateLabel}
                     </div>
                     {event.time && (
-                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.3)", letterSpacing: 1, marginTop: 3 }}>
+                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.75)", letterSpacing: 1, marginTop: 3 }}>
                         {event.time}
                       </div>
                     )}
@@ -684,12 +684,12 @@ function HappeningSection() {
                     <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(18px, 2.5vw, 24px)", fontWeight: 400, color: C.cream, margin: "0 0 10px 0", lineHeight: 1.2 }}>
                       {event.name}
                     </h3>
-                    <p style={{ fontSize: 14, color: "rgba(255,255,255,0.45)", lineHeight: 1.75, margin: "0 0 6px 0", maxWidth: 560, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                    <p style={{ fontSize: 16, color: "rgba(255,255,255,0.75)", lineHeight: 1.75, margin: "0 0 6px 0", maxWidth: 560, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                       {event.description}
                     </p>
                     {event.description && (
-                      <span style={{ fontSize: 11, color: "rgba(255,255,255,0.22)", fontFamily: "'Libre Franklin', sans-serif", fontStyle: "italic", letterSpacing: 0.5 }}>
-                        click to see more...
+                      <span style={{ fontSize: 14, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 0.5 }}>
+                        Tap for details →
                       </span>
                     )}
                   </div>
@@ -706,7 +706,7 @@ function HappeningSection() {
               <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: "rgba(255,255,255,0.6)", fontWeight: 400 }}>
                 {notionEvents.length > 3 ? `+ ${notionEvents.length - 3} more events on the calendar` : "See the full calendar"}
               </div>
-              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 16, color: "rgba(255,255,255,0.3)", marginTop: 4 }}>
+              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 16, color: "rgba(255,255,255,0.75)", marginTop: 4 }}>
                 weekly regulars, seasonal events & more
               </div>
             </div>
@@ -767,12 +767,12 @@ function ExploreCard({ place, large = false, delay = 0 }) {
           {large && <div className="mono-icon" style={{ fontSize: 36, marginBottom: 14 }}>{place.icon}</div>}
           <div style={{
             fontFamily: "'Libre Baskerville', serif",
-            fontSize: large ? 22 : 15, fontWeight: 700,
+            fontSize: large ? 22 : 17, fontWeight: 700,
             color: (large || hasImage) ? C.cream : C.text,
             marginBottom: 5,
           }}>{place.name}</div>
           <div style={{
-            fontSize: large ? 14 : 12,
+            fontSize: large ? 16 : 14,
             color: (large || hasImage) ? "rgba(255,255,255,0.6)" : C.textMuted,
             lineHeight: 1.55, marginBottom: large ? 16 : 10,
             display: "-webkit-box",
@@ -782,7 +782,7 @@ function ExploreCard({ place, large = false, delay = 0 }) {
           }}>{place.desc}</div>
           {place.actionLabel && (
             <div className="link-hover-underline" style={{
-              fontSize: 10, fontFamily: "'Libre Franklin', sans-serif",
+              fontSize: 13, fontFamily: "'Libre Franklin', sans-serif",
               fontWeight: 700, letterSpacing: 1.2, paddingTop: 5,
               color: C.sunsetLight, textTransform: "uppercase",
             }}>
@@ -889,13 +889,13 @@ function PricingSection() {
 
           {/* Header */}
           <div style={{ textAlign: "center", marginBottom: 52 }}>
-            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 4, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 14 }}>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 4, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 14 }}>
               List Your Business
             </div>
             <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 4vw, 42px)", fontWeight: 400, color: C.cream, margin: "0 0 14px 0" }}>
               Choose Your Visibility
             </h2>
-            <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 16, maxWidth: 520, margin: "0 auto 32px" }}>
+            <p style={{ color: "rgba(255,255,255,0.75)", fontSize: 16, maxWidth: 520, margin: "0 auto 32px" }}>
               When visitors search for what's here, your business shows up. Simple as that. Pick a tier, get listed, and let the lake do the rest.
             </p>
           </div>
@@ -905,18 +905,18 @@ function PricingSection() {
             <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "18px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
               <div style={{ display: "flex", gap: 28, alignItems: "center", flexWrap: "wrap" }}>
                 <div>
-                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.driftwood, marginBottom: 3 }}>Free</div>
-                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream }}>$0 <span style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif" }}>forever</span></div>
+                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.driftwood, marginBottom: 3 }}>Free</div>
+                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream }}>$0 <span style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", fontFamily: "'Libre Franklin', sans-serif" }}>forever</span></div>
                 </div>
                 <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
                   {["Name in directory", "Category & phone", "Community visibility"].map(f => (
-                    <span key={f} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "rgba(255,255,255,0.4)" }}>
+                    <span key={f} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 15, color: "rgba(255,255,255,0.75)" }}>
                       <span style={{ color: C.driftwood, fontWeight: 700 }}>✓</span>{f}
                     </span>
                   ))}
                 </div>
               </div>
-              <a href="/#submit" style={{ padding: "9px 22px", borderRadius: 8, border: `1.5px solid ${C.driftwood}55`, color: C.driftwood, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none", whiteSpace: "nowrap" }}>
+              <a href="/#submit" style={{ padding: "9px 22px", borderRadius: 8, border: `1.5px solid ${C.driftwood}55`, color: C.driftwood, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none", whiteSpace: "nowrap" }}>
                 Get Listed Free
               </a>
             </div>
@@ -927,29 +927,29 @@ function PricingSection() {
             {PAID_TIERS.map(tier => (
               <div key={tier.id} style={{ background: tier.badge ? "rgba(255,255,255,0.07)" : "rgba(255,255,255,0.04)", border: `1px solid ${tier.badge ? tier.color + "45" : "rgba(255,255,255,0.09)"}`, borderRadius: 16, padding: "28px 22px", position: "relative", display: "flex", flexDirection: "column" }}>
                 {tier.badge && (
-                  <div style={{ position: "absolute", top: -13, left: "50%", transform: "translateX(-50%)", background: tier.color, color: C.night, fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", padding: "4px 14px", borderRadius: 20, whiteSpace: "nowrap" }}>
+                  <div style={{ position: "absolute", top: -13, left: "50%", transform: "translateX(-50%)", background: tier.color, color: C.night, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", padding: "4px 14px", borderRadius: 20, whiteSpace: "nowrap" }}>
                     {tier.badge}
                   </div>
                 )}
-                <div style={{ color: tier.color, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", marginBottom: 10 }}>{tier.name}</div>
+                <div style={{ color: tier.color, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", marginBottom: 10 }}>{tier.name}</div>
                 <div style={{ marginBottom: 4 }}>
                   <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 36, color: C.cream, fontWeight: 700 }}>${tier.price}</span>
-                  <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 14, fontFamily: "'Libre Franklin', sans-serif" }}>/mo</span>
+                  <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 16, fontFamily: "'Libre Franklin', sans-serif" }}>/mo</span>
                 </div>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.35)", marginBottom: 16, letterSpacing: 0.3 }}>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.75)", marginBottom: 16, letterSpacing: 0.3 }}>
                   Cancel anytime · no contracts
                 </div>
                 <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px 0", flexGrow: 1, display: "flex", flexDirection: "column", gap: 9 }}>
                   {tier.features.map(f => (
                     <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 9 }}>
-                      <span style={{ color: tier.color, fontSize: 13, marginTop: 2, flexShrink: 0, fontWeight: 700 }}>✓</span>
-                      <span style={{ color: "rgba(255,255,255,0.58)", fontSize: 13, lineHeight: 1.45 }}>{f}</span>
+                      <span style={{ color: tier.color, fontSize: 15, marginTop: 2, flexShrink: 0, fontWeight: 700 }}>✓</span>
+                      <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 15, lineHeight: 1.45 }}>{f}</span>
                     </li>
                   ))}
                 </ul>
                 <button
                   onClick={() => { setModal({ tierId: tier.id, tierName: tier.name, price: tier.price, priceInCents: tier.priceInCents, color: tier.color }); setForm({ businessName: '', email: '' }); setCheckoutError(''); }}
-                  style={{ display: "block", width: "100%", padding: "11px 0", borderRadius: 8, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: "pointer", border: "none", background: tier.id === "premium" ? C.sunset : "transparent", color: tier.id === "premium" ? C.cream : tier.color, outline: tier.id === "premium" ? "none" : `1.5px solid ${tier.color}55`, transition: "all 0.22s" }}
+                  style={{ display: "block", width: "100%", padding: "11px 0", borderRadius: 8, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: "pointer", border: "none", background: tier.id === "premium" ? C.sunset : "transparent", color: tier.id === "premium" ? C.cream : tier.color, outline: tier.id === "premium" ? "none" : `1.5px solid ${tier.color}55`, transition: "all 0.22s" }}
                 >
                   Get Started
                 </button>
@@ -961,9 +961,9 @@ function PricingSection() {
           <div style={{ marginTop: 32, background: "rgba(91,126,149,0.1)", border: "1px solid rgba(91,126,149,0.22)", borderRadius: 14, padding: "28px 28px 24px" }}>
             <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 24 }}>
               <div style={{ maxWidth: 480 }}>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: C.lakeBlue, marginBottom: 8 }}>Newsletter Add-On</div>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 3, textTransform: "uppercase", color: C.lakeBlue, marginBottom: 8 }}>Newsletter Add-On</div>
                 <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.cream, margin: "0 0 10px 0" }}>Reach the inbox, not just the directory</h3>
-                <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 14, lineHeight: 1.75, margin: 0 }}>
+                <p style={{ color: "rgba(255,255,255,0.75)", fontSize: 16, lineHeight: 1.75, margin: 0 }}>
                   The Manitou Dispatch lands directly in the inboxes of people already invested in this community. Event organizers know they can't get 2,000 engaged local eyes in a single drop - your business can.
                 </p>
               </div>
@@ -975,20 +975,20 @@ function PricingSection() {
                 ].map(item => (
                   <div key={item.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, background: "rgba(255,255,255,0.04)", borderRadius: 8, padding: "10px 14px" }}>
                     <div>
-                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 600, color: C.cream }}>{item.label}</div>
-                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.35)" }}>{item.desc}</div>
+                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 600, color: C.cream }}>{item.label}</div>
+                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.75)" }}>{item.desc}</div>
                     </div>
-                    <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, color: C.lakeBlue, whiteSpace: "nowrap" }}>{item.price}</div>
+                    <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.lakeBlue, whiteSpace: "nowrap" }}>{item.price}</div>
                   </div>
                 ))}
-                <button onClick={() => setShowContact(true)} style={{ textAlign: "center", padding: "10px", borderRadius: 8, background: "transparent", border: `1.5px solid ${C.lakeBlue}55`, color: C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: "pointer", marginTop: 4, display: "block", width: "100%" }}>
+                <button onClick={() => setShowContact(true)} style={{ textAlign: "center", padding: "10px", borderRadius: 8, background: "transparent", border: `1.5px solid ${C.lakeBlue}55`, color: C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: "pointer", marginTop: 4, display: "block", width: "100%" }}>
                   Inquire →
                 </button>
               </div>
             </div>
           </div>
 
-          <p style={{ textAlign: "center", color: "rgba(255,255,255,0.18)", fontSize: 12, marginTop: 24, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>
+          <p style={{ textAlign: "center", color: "rgba(255,255,255,0.75)", fontSize: 14, marginTop: 24, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>
             Monthly subscriptions · Cancel anytime · Rate held while subscribed
           </p>
         </div>
@@ -1000,19 +1000,19 @@ function PricingSection() {
         return (
         <div role="dialog" aria-modal="true" aria-label={`${modal.tierName} listing checkout`} style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: 24, background: "rgba(10,18,24,0.88)", backdropFilter: "blur(8px)" }} onClick={() => setModal(null)}>
           <div style={{ background: C.dusk, borderRadius: 20, padding: "36px 32px", maxWidth: 440, width: "100%", boxShadow: "0 24px 80px rgba(0,0,0,0.5)", border: `1px solid ${modal.color}30` }} onClick={e => e.stopPropagation()}>
-            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: modal.color, marginBottom: 6 }}>{modal.tierName} Listing</div>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 3, textTransform: "uppercase", color: modal.color, marginBottom: 6 }}>{modal.tierName} Listing</div>
             <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, fontWeight: 400, color: C.cream, margin: "0 0 4px 0" }}>
-              ${modal.price}<span style={{ fontSize: 14, color: "rgba(255,255,255,0.35)", fontFamily: "'Libre Franklin', sans-serif" }}>/mo</span>
+              ${modal.price}<span style={{ fontSize: 16, color: "rgba(255,255,255,0.75)", fontFamily: "'Libre Franklin', sans-serif" }}>/mo</span>
             </h3>
-            <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 13, margin: "0 0 20px 0" }}>Monthly subscription · Cancel or pause anytime</p>
+            <p style={{ color: "rgba(255,255,255,0.75)", fontSize: 15, margin: "0 0 20px 0" }}>Monthly subscription · Cancel or pause anytime</p>
 
             {/* What's included - tier feature summary */}
             <div style={{ background: "rgba(255,255,255,0.04)", borderRadius: 10, padding: "14px 16px", marginBottom: 20, border: "1px solid rgba(255,255,255,0.06)" }}>
-              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 10 }}>What you get</div>
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.75)", marginBottom: 10 }}>What you get</div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                 {tierFeatures.filter(f => !f.startsWith('Everything')).map(f => (
-                  <span key={f} style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 12, color: "rgba(255,255,255,0.55)", fontFamily: "'Libre Franklin', sans-serif" }}>
-                    <span style={{ color: modal.color, fontWeight: 700, fontSize: 11 }}>+</span>{f}
+                  <span key={f} style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 14, color: "rgba(255,255,255,0.75)", fontFamily: "'Libre Franklin', sans-serif" }}>
+                    <span style={{ color: modal.color, fontWeight: 700, fontSize: 13 }}>+</span>{f}
                   </span>
                 ))}
               </div>
@@ -1020,14 +1020,14 @@ function PricingSection() {
 
             {/* Contract terms - clear and upfront */}
             <div style={{ background: `${modal.color}0A`, borderRadius: 10, padding: "14px 16px", marginBottom: 22, border: `1px solid ${modal.color}15` }}>
-              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 10 }}>How it works</div>
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.75)", marginBottom: 10 }}>How it works</div>
               {[
                 { icon: "↻", text: "Billed monthly - no long-term contract" },
                 { icon: "⚡", text: `Your $${modal.price}/mo rate is locked while subscribed` },
                 { icon: "✕", text: "Cancel anytime - listing reverts to Free tier" },
                 { icon: "↩", text: "Re-subscribe later at whatever the current rate is" },
               ].map(item => (
-                <div key={item.text} style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 7, fontSize: 12, color: "rgba(255,255,255,0.5)", fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.45 }}>
+                <div key={item.text} style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 7, fontSize: 14, color: "rgba(255,255,255,0.75)", fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.45 }}>
                   <span style={{ color: modal.color, flexShrink: 0, width: 16, textAlign: "center" }}>{item.icon}</span>
                   {item.text}
                 </div>
@@ -1036,39 +1036,39 @@ function PricingSection() {
 
             <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 20 }}>
               <div>
-                <label style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.35)", marginBottom: 5, display: "block" }}>Business name</label>
+                <label style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.75)", marginBottom: 5, display: "block" }}>Business name</label>
                 <input
                   placeholder="e.g. Lake House Grill"
                   value={form.businessName}
                   onChange={e => setForm(f => ({ ...f, businessName: e.target.value }))}
-                  style={{ width: "100%", padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none", boxSizing: "border-box", transition: "border-color 0.2s" }}
+                  style={{ width: "100%", padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, outline: "none", boxSizing: "border-box", transition: "border-color 0.2s" }}
                   onFocus={e => e.target.style.borderColor = `${modal.color}60`}
                   onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.12)"}
                 />
               </div>
               <div>
-                <label style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.35)", marginBottom: 5, display: "block" }}>Email address</label>
+                <label style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.75)", marginBottom: 5, display: "block" }}>Email address</label>
                 <input
                   placeholder="you@business.com"
                   type="email"
                   value={form.email}
                   onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                  style={{ width: "100%", padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none", boxSizing: "border-box", transition: "border-color 0.2s" }}
+                  style={{ width: "100%", padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, outline: "none", boxSizing: "border-box", transition: "border-color 0.2s" }}
                   onFocus={e => e.target.style.borderColor = `${modal.color}60`}
                   onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.12)"}
                 />
               </div>
             </div>
-            {checkoutError && <p style={{ color: "#ff6b5b", fontSize: 13, marginBottom: 14 }}>{checkoutError}</p>}
+            {checkoutError && <p style={{ color: "#ff6b5b", fontSize: 15, marginBottom: 14 }}>{checkoutError}</p>}
             <button
               onClick={handleCheckout}
               disabled={loading}
               className="btn-animated"
-              style={{ width: "100%", padding: "14px", borderRadius: 10, border: "none", background: modal.tierId === "premium" ? C.sunset : modal.color, color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: loading ? "wait" : "pointer", opacity: loading ? 0.7 : 1, transition: "opacity 0.2s" }}
+              style={{ width: "100%", padding: "14px", borderRadius: 10, border: "none", background: modal.tierId === "premium" ? C.sunset : modal.color, color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: loading ? "wait" : "pointer", opacity: loading ? 0.7 : 1, transition: "opacity 0.2s" }}
             >
               {loading ? "Redirecting to Stripe…" : `Start ${modal.tierName} · $${modal.price}/mo →`}
             </button>
-            <p style={{ textAlign: "center", fontSize: 11, color: "rgba(255,255,255,0.22)", marginTop: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
+            <p style={{ textAlign: "center", fontSize: 13, color: "rgba(255,255,255,0.75)", marginTop: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
               Secure checkout by Stripe · No card details stored on our servers
             </p>
           </div>
@@ -1179,7 +1179,7 @@ function BusinessDirectory() {
                 width: "100%", padding: "14px 20px 14px 46px",
                 borderRadius: 8, border: `1.5px solid ${C.sand}`,
                 background: C.cream, fontFamily: "'Libre Franklin', sans-serif",
-                fontSize: 14, color: C.text, boxSizing: "border-box",
+                fontSize: 16, color: C.text, boxSizing: "border-box",
                 outline: "none", transition: "border-color 0.2s",
               }}
               onFocus={e => e.target.style.borderColor = C.sage}
@@ -1197,7 +1197,7 @@ function BusinessDirectory() {
                 onClick={() => setActiveCategory(cat)}
                 style={{
                   fontFamily: "'Libre Franklin', sans-serif",
-                  fontSize: 12, fontWeight: 600, letterSpacing: 1,
+                  fontSize: 14, fontWeight: 600, letterSpacing: 1,
                   textTransform: "uppercase", padding: "7px 16px", borderRadius: 4,
                   border: `1.5px solid ${activeCategory === cat ? (CAT_COLORS[cat] || C.sage) : C.sand}`,
                   background: activeCategory === cat ? (CAT_COLORS[cat] || C.sage) : "transparent",
@@ -1219,11 +1219,11 @@ function BusinessDirectory() {
             <FadeIn key={category} delay={120 + i * 10}>
               <div style={{ marginBottom: 40 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 14, margin: "0 0 12px 0" }}>
-                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3.5, textTransform: "uppercase", color: CAT_COLORS[category] || C.textMuted, whiteSpace: "nowrap" }}>
+                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 3.5, textTransform: "uppercase", color: CAT_COLORS[category] || C.textMuted, whiteSpace: "nowrap" }}>
                     {category}
                   </div>
                   <div style={{ flex: 1, height: 1, background: C.sand }} />
-                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted }}>
+                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted }}>
                     {catAll.length}
                   </div>
                 </div>
@@ -1250,10 +1250,10 @@ function BusinessDirectory() {
             <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.text, marginBottom: 8 }}>
               No results for "{search}"
             </div>
-            <div style={{ fontSize: 14, color: C.textMuted, marginBottom: 24 }}>Try a different search or browse all categories</div>
+            <div style={{ fontSize: 16, color: C.textMuted, marginBottom: 24 }}>Try a different search or browse all categories</div>
             <button
               onClick={() => { setSearch(""); setActiveCategory("All"); }}
-              style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 600, padding: "9px 22px", borderRadius: 4, border: `1.5px solid ${C.sand}`, background: "transparent", color: C.textMuted, cursor: "pointer" }}
+              style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 600, padding: "9px 22px", borderRadius: 4, border: `1.5px solid ${C.sand}`, background: "transparent", color: C.textMuted, cursor: "pointer" }}
             >
               Clear search
             </button>
@@ -1270,13 +1270,13 @@ function BusinessDirectory() {
             alignItems: "center", flexWrap: "wrap", gap: 24,
           }}>
             <div>
-              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 4, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 10 }}>
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 4, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 10 }}>
                 Get Noticed
               </div>
               <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(20px, 3vw, 28px)", color: C.cream, margin: "0 0 8px 0", fontWeight: 400 }}>
                 Get Your Own Profile Page
               </h3>
-              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", margin: 0, maxWidth: 400, lineHeight: 1.7 }}>
+              <p style={{ fontSize: 16, color: "rgba(255,255,255,0.75)", margin: 0, maxWidth: 400, lineHeight: 1.7 }}>
                 A real URL you can share. Photos, hours, Google reviews, a call button, and a quote form, all in one place. Starts at $9 a month.
               </p>
             </div>
@@ -1329,11 +1329,11 @@ function FeaturedBusinessCard({ business }) {
         }}>
           {business.logo
             ? <img src={business.logo} alt={business.name} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
-            : <span style={{ fontSize: 7, fontWeight: 700, color: "rgba(255,255,255,0.22)", textTransform: "uppercase", letterSpacing: 1, textAlign: "center", lineHeight: 1.4 }}>Add<br/>Logo</span>
+            : <span style={{ fontSize: 7, fontWeight: 700, color: "rgba(255,255,255,0.75)", textTransform: "uppercase", letterSpacing: 1, textAlign: "center", lineHeight: 1.4 }}>Add<br/>Logo</span>
           }
         </div>
         <div>
-          <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, fontWeight: 400, color: C.cream, margin: 0, lineHeight: 1.3 }}>
+          <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.cream, margin: 0, lineHeight: 1.3 }}>
             {business.name}
           </h3>
         </div>
@@ -1341,7 +1341,7 @@ function FeaturedBusinessCard({ business }) {
       {/* Description */}
       {business.description && (
         <p style={{
-          fontSize: 12, color: "rgba(255,255,255,0.5)", lineHeight: 1.6, margin: 0, flex: 1,
+          fontSize: 14, color: "rgba(255,255,255,0.75)", lineHeight: 1.6, margin: 0, flex: 1,
           position: "relative", zIndex: 1,
           ...(expanded ? {} : { display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }),
         }}>
@@ -1352,12 +1352,12 @@ function FeaturedBusinessCard({ business }) {
       <div style={{ maxHeight: expanded ? 120 : 0, overflow: "hidden", transition: "max-height 0.35s ease-out", position: "relative", zIndex: 1 }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 6, paddingTop: 2 }}>
           {business.address && (
-            <div style={{ fontSize: 11, color: "rgba(255,255,255,0.28)", fontFamily: "'Libre Franklin', sans-serif", fontStyle: "italic" }}>
+            <div style={{ fontSize: 13, color: "rgba(255,255,255,0.75)", fontFamily: "'Libre Franklin', sans-serif", fontStyle: "italic" }}>
               {business.address}
             </div>
           )}
           {business.email && (
-            <a href={`mailto:${business.email}`} onClick={e => e.stopPropagation()} style={{ fontSize: 12, color, textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif" }}>
+            <a href={`mailto:${business.email}`} onClick={e => e.stopPropagation()} style={{ fontSize: 14, color, textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif" }}>
               {business.email}
             </a>
           )}
@@ -1367,15 +1367,15 @@ function FeaturedBusinessCard({ business }) {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 6, position: "relative", zIndex: 1 }}>
         <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
           {business.phone && (
-            <a href={`tel:${business.phone}`} onClick={e => e.stopPropagation()} style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif" }}>{formatPhone(business.phone)}</a>
+            <a href={`tel:${business.phone}`} onClick={e => e.stopPropagation()} style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif" }}>{formatPhone(business.phone)}</a>
           )}
           {business.website && (
-            <a href={business.website} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color, textDecoration: "none" }}>Visit →</a>
+            <a href={business.website} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color, textDecoration: "none" }}>Visit →</a>
           )}
-          <a href={`/business/${toSlug(business.name)}`} onClick={e => e.stopPropagation()} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: 0.5, color: "rgba(255,255,255,0.35)", textDecoration: "none" }}>Profile →</a>
+          <a href={`/business/${toSlug(business.name)}`} onClick={e => e.stopPropagation()} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5, color: "rgba(255,255,255,0.75)", textDecoration: "none" }}>Profile →</a>
         </div>
         {expandable && (
-          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.3)", whiteSpace: "nowrap" }}>
+          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, color: "rgba(255,255,255,0.75)", whiteSpace: "nowrap" }}>
             {expanded ? "Less ↑" : "More ↓"}
           </span>
         )}
@@ -1401,19 +1401,19 @@ function PremiumBanner({ business }) {
         {business.logo ? (
           <img src={business.logo} alt={business.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         ) : (
-          <span style={{ fontSize: 30, color: "rgba(255,255,255,0.2)" }}>{business.name[0]}</span>
+          <span style={{ fontSize: 30, color: "rgba(255,255,255,0.75)" }}>{business.name[0]}</span>
         )}
       </div>
       {/* Info */}
       <div style={{ flex: 1, minWidth: 200 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8, flexWrap: "wrap" }}>
-          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.35)", textTransform: "uppercase", letterSpacing: 1 }}>{business.category}</span>
+          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.75)", textTransform: "uppercase", letterSpacing: 1 }}>{business.category}</span>
         </div>
         <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.cream, marginBottom: 8 }}>{business.name}</div>
         {business.description && (
           <div>
             <div style={{
-              fontSize: 13, color: "rgba(255,255,255,0.6)", lineHeight: 1.65,
+              fontSize: 15, color: "rgba(255,255,255,0.6)", lineHeight: 1.65,
               ...(!descExpanded && isLong ? { display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" } : {}),
             }}>
               {business.description}
@@ -1421,26 +1421,26 @@ function PremiumBanner({ business }) {
             {isLong && (
               <button
                 onClick={() => setDescExpanded(e => !e)}
-                style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.4)", padding: "4px 0 0", marginTop: 2 }}
+                style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 600, color: "rgba(255,255,255,0.75)", padding: "4px 0 0", marginTop: 2 }}
               >
                 {descExpanded ? "Less ↑" : "More ↓"}
               </button>
             )}
           </div>
         )}
-        {business.address && <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", marginTop: 8, fontStyle: "italic" }}>{business.address}</div>}
+        {business.address && <div style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", marginTop: 8, fontStyle: "italic" }}>{business.address}</div>}
       </div>
       {/* CTAs */}
       <div style={{ flexShrink: 0, display: "flex", flexDirection: "column", gap: 10, alignItems: "flex-end" }}>
         {business.website && (
-          <a href={business.website} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.cream, background: C.sunset, padding: "10px 22px", borderRadius: 6, textDecoration: "none", whiteSpace: "nowrap" }}>
+          <a href={business.website} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.cream, background: C.sunset, padding: "10px 22px", borderRadius: 6, textDecoration: "none", whiteSpace: "nowrap" }}>
             Visit Website
           </a>
         )}
         {business.phone && (
-          <a href={`tel:${business.phone}`} style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", textDecoration: "none" }}>{formatPhone(business.phone)}</a>
+          <a href={`tel:${business.phone}`} style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", textDecoration: "none" }}>{formatPhone(business.phone)}</a>
         )}
-        <a href={`/business/${toSlug(business.name)}`} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.35)", textDecoration: "none" }}>View Profile →</a>
+        <a href={`/business/${toSlug(business.name)}`} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: "rgba(255,255,255,0.75)", textDecoration: "none" }}>View Profile →</a>
       </div>
     </div>
   );
@@ -1492,22 +1492,22 @@ function EnhancedBusinessRow({ business, highlighted = false }) {
         {/* Name + phone + address */}
         <div style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-            <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: C.text, fontWeight: 400 }}>{business.name}</span>
+            <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, color: C.text, fontWeight: 400 }}>{business.name}</span>
             {highlighted && (
-              <span style={{ fontSize: 9, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", color: C.lakeBlue, background: "rgba(91,126,149,0.12)", border: "1px solid rgba(91,126,149,0.25)", borderRadius: 20, padding: "2px 8px", flexShrink: 0 }}>
+              <span style={{ fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", color: C.lakeBlue, background: "rgba(91,126,149,0.12)", border: "1px solid rgba(91,126,149,0.25)", borderRadius: 20, padding: "2px 8px", flexShrink: 0 }}>
                 Highlighted
               </span>
             )}
             {business.phone && (
-              <span style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", whiteSpace: "nowrap" }}>{formatPhone(business.phone)}</span>
+              <a href={`tel:${business.phone}`} onClick={e => e.stopPropagation()} style={{ fontSize: 15, color: C.textLight, fontFamily: "'Libre Franklin', sans-serif", whiteSpace: "nowrap", textDecoration: "none", borderBottom: `1px dotted ${C.driftwood}` }}>{formatPhone(business.phone)}</a>
             )}
           </div>
           {business.address && (
-            <span style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", opacity: 0.7 }}>{business.address}</span>
+            <span style={{ fontSize: 14, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", opacity: 0.7 }}>{business.address}</span>
           )}
         </div>
         {/* Expand toggle */}
-        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600, color: dotColor, whiteSpace: "nowrap" }}>
+        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, color: dotColor, whiteSpace: "nowrap" }}>
           {expanded ? "Less ↑" : "More ↓"}
         </span>
       </div>
@@ -1541,16 +1541,16 @@ function EnhancedBusinessRow({ business, highlighted = false }) {
             )}
             <div style={{ flex: 1, minWidth: 0 }}>
               {business.description && (
-                <p style={{ fontSize: highlighted ? 14 : 13, color: highlighted ? C.textLight : C.textMuted, lineHeight: 1.7, margin: "0 0 10px 0", fontFamily: "'Libre Franklin', sans-serif" }}>{business.description}</p>
+                <p style={{ fontSize: highlighted ? 16 : 15, color: highlighted ? C.textLight : C.textMuted, lineHeight: 1.7, margin: "0 0 10px 0", fontFamily: "'Libre Franklin', sans-serif" }}>{business.description}</p>
               )}
               <div style={{ display: "flex", gap: 16, flexWrap: "wrap", alignItems: "center" }}>
                 {business.website && (
-                  <a href={business.website} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: highlighted ? C.lakeBlue : C.sage, textDecoration: "none" }}>Visit Website →</a>
+                  <a href={business.website} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: highlighted ? C.lakeBlue : C.sage, textDecoration: "none" }}>Visit Website →</a>
                 )}
                 {business.email && (
-                  <a href={`mailto:${business.email}`} onClick={e => e.stopPropagation()} style={{ fontSize: 12, color: C.textMuted, textDecoration: "none" }}>{business.email}</a>
+                  <a href={`mailto:${business.email}`} onClick={e => e.stopPropagation()} style={{ fontSize: 14, color: C.textMuted, textDecoration: "none" }}>{business.email}</a>
                 )}
-                <a href={`/business/${toSlug(business.name)}`} onClick={e => e.stopPropagation()} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: highlighted ? 600 : 400, color: highlighted ? C.lakeBlue : C.textMuted, textDecoration: "none", opacity: highlighted ? 1 : 0.7 }}>View Profile →</a>
+                <a href={`/business/${toSlug(business.name)}`} onClick={e => e.stopPropagation()} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: highlighted ? 600 : 400, color: highlighted ? C.lakeBlue : C.textMuted, textDecoration: "none", opacity: highlighted ? 1 : 0.7 }}>View Profile →</a>
               </div>
             </div>
           </div>
@@ -1587,26 +1587,23 @@ function BusinessRow({ business }) {
       {/* Name + phone + address */}
       <div style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 16, flexWrap: "wrap" }}>
-          <a href={`/business/${toSlug(business.name)}`} style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: C.text, fontWeight: 400, textDecoration: "none" }}>
+          <a href={`/business/${toSlug(business.name)}`} style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, color: C.text, fontWeight: 400, textDecoration: "none" }}>
             {business.name}
           </a>
           {business.phone && (
-            <span style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", whiteSpace: "nowrap" }}>
+            <a href={`tel:${business.phone}`} style={{ fontSize: 15, color: C.textLight, fontFamily: "'Libre Franklin', sans-serif", whiteSpace: "nowrap", textDecoration: "none", borderBottom: `1px dotted ${C.driftwood}` }}>
               {formatPhone(business.phone)}
-            </span>
+            </a>
           )}
         </div>
         {business.address && (
-          <span style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", opacity: 0.7 }}>
+          <span style={{ fontSize: 14, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", opacity: 0.7 }}>
             {business.address}
           </span>
         )}
       </div>
 
-      {/* Free tier - no website link. Upgrade to Enhanced+ to unlock. */}
-      <a href="#listing-tiers" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 600, letterSpacing: 1, color: C.driftwood, textDecoration: "none", whiteSpace: "nowrap", opacity: 0.65 }}>
-        Upgrade →
-      </a>
+      <span />
     </div>
   );
 }
@@ -1649,8 +1646,8 @@ function LivingSection() {
                 onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.07)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)"; }}
               >
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.cream, marginBottom: 6 }}>Buying or Selling?</div>
-                <div style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.5, marginBottom: 10 }}>Holly Griewahn at Foundation Realty knows this lake like the back of her hand.</div>
-                <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunsetLight }}>Talk to Holly →</span>
+                <div style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", lineHeight: 1.5, marginBottom: 10 }}>Holly Griewahn at Foundation Realty knows this lake like the back of her hand.</div>
+                <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunsetLight }}>Talk to Holly →</span>
               </a>
               <a href="/stays" style={{
                 display: "block", textDecoration: "none",
@@ -1662,8 +1659,8 @@ function LivingSection() {
                 onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.07)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)"; }}
               >
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.cream, marginBottom: 6 }}>Just Visiting?</div>
-                <div style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.5, marginBottom: 10 }}>Lakefront cottages, village apartments, and the kind of view that makes you forget what day it is.</div>
-                <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.lakeBlue }}>Browse Stays →</span>
+                <div style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", lineHeight: 1.5, marginBottom: 10 }}>Lakefront cottages, village apartments, and the kind of view that makes you forget what day it is.</div>
+                <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunsetLight }}>Browse Stays →</span>
               </a>
             </div>
           </div>
@@ -1676,7 +1673,7 @@ function LivingSection() {
               <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(20px, 2.5vw, 28px)", color: C.text, margin: "0 0 16px 0", fontWeight: 400 }}>
                 Short-Term Rentals
               </h3>
-              <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, margin: "0 0 20px 0" }}>
+              <p style={{ fontSize: 17, color: C.textLight, lineHeight: 1.8, margin: "0 0 20px 0" }}>
                 Lakefront cottages, village apartments, and the kind of view that makes you forget what day it is. Whether you're here for a weekend or a whole season - we'll help you find your spot.
               </p>
               <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
@@ -1696,7 +1693,7 @@ function LivingSection() {
               <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.lakeDark, marginBottom: 8 }}>
                 "We came for the weekend..."
               </div>
-              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, lineHeight: 1.6 }}>
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.textMuted, lineHeight: 1.6 }}>
                 Inns · Cottages · Campgrounds · Airbnb
               </div>
             </div>
@@ -1716,7 +1713,7 @@ function LivingSection() {
               <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sageDark, marginBottom: 8 }}>
                 "Not just a summer thing."
               </div>
-              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, lineHeight: 1.6 }}>
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.textMuted, lineHeight: 1.6 }}>
                 Ice fishing · Quiet winters · Year-round community
               </div>
             </div>
@@ -1726,7 +1723,7 @@ function LivingSection() {
               <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(20px, 2.5vw, 28px)", color: C.text, margin: "0 0 16px 0", fontWeight: 400 }}>
                 Year-Round Life
               </h3>
-              <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, margin: "0 0 20px 0" }}>
+              <p style={{ fontSize: 17, color: C.textLight, lineHeight: 1.8, margin: "0 0 20px 0" }}>
                 Manitou Beach isn't a summer fling. Ice fishing on frozen Devils Lake. Quiet mornings with coffee and fog on the water. Neighbors who wave whether it's July or January. This is year-round life.
               </p>
               <Btn href="/devils-lake" variant="outline" small>Explore Devils Lake →</Btn>
@@ -1747,7 +1744,7 @@ function LivingSection() {
             <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 3vw, 34px)", color: C.cream, margin: "12px 0 16px 0", fontWeight: 400 }}>
               Lake Access Magazine
             </h3>
-            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.5)", lineHeight: 1.75, maxWidth: 520, margin: "0 auto 24px" }}>
+            <p style={{ fontSize: 17, color: "rgba(255,255,255,0.75)", lineHeight: 1.75, maxWidth: 520, margin: "0 auto 24px" }}>
               Covering lake communities across Michigan. Manitou Beach is proud to be part of the story.
             </p>
             <div style={{
@@ -1761,7 +1758,7 @@ function LivingSection() {
             <div style={{ marginBottom: 16 }}>
               <Btn href="https://lake-access.com/" variant="sunset" target="_blank" rel="noopener noreferrer">Visit Lake Access Magazine</Btn>
             </div>
-            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif", margin: 0 }}>
+            <p style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", fontFamily: "'Libre Franklin', sans-serif", margin: 0 }}>
               Watch for upcoming Yeti-produced video features for Lake Access advertising clients
             </p>
           </div>
@@ -1801,7 +1798,7 @@ function AboutSection() {
 
   const inputStyle = {
     width: "100%", boxSizing: "border-box", padding: "12px 14px",
-    fontFamily: "'Libre Franklin', sans-serif", fontSize: 14,
+    fontFamily: "'Libre Franklin', sans-serif", fontSize: 16,
     background: "rgba(255,255,255,0.06)", border: `1px solid rgba(255,255,255,0.15)`,
     borderRadius: 8, color: C.cream, outline: "none",
     transition: "border-color 0.2s",
@@ -1846,7 +1843,7 @@ function AboutSection() {
                   padding: "8px 12px",
                 }}>
                   <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 4vw, 28px)", color: C.sage, fontWeight: 700, lineHeight: 1.1 }}>{s.num}</div>
-                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, color: C.textMuted, letterSpacing: 1.5, textTransform: "uppercase", marginTop: 4 }}>{s.label}</div>
+                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, letterSpacing: 1.5, textTransform: "uppercase", marginTop: 4 }}>{s.label}</div>
                 </div>
               ))}
             </div>
@@ -1864,13 +1861,13 @@ function AboutSection() {
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, color: C.text, marginBottom: 10, fontWeight: 700 }}>
                   Holly Griewahn
                 </div>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 2, textTransform: "uppercase", color: C.sage, marginBottom: 12, fontWeight: 600 }}>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 2, textTransform: "uppercase", color: C.sage, marginBottom: 12, fontWeight: 600 }}>
                   Foundation Realty · Manitou Beach
                 </div>
-                <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: "0 0 16px 0" }}>
+                <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.7, margin: "0 0 16px 0" }}>
                   Local real estate expert and co-host of Holly & The Yeti. If you're buying or selling on Devils Lake, she's the person with the keys.
                 </p>
-                <a href="#businesses" style={{ fontSize: 12, fontWeight: 700, color: C.sage, textDecoration: "none", letterSpacing: 1, textTransform: "uppercase", fontFamily: "'Libre Franklin', sans-serif" }}>
+                <a href="#businesses" style={{ fontSize: 14, fontWeight: 700, color: C.sage, textDecoration: "none", letterSpacing: 1, textTransform: "uppercase", fontFamily: "'Libre Franklin', sans-serif" }}>
                   View Profiles →
                 </a>
               </div>
@@ -1883,13 +1880,13 @@ function AboutSection() {
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, color: C.text, marginBottom: 10, fontWeight: 700 }}>
                   Lake Access Magazine
                 </div>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 2, textTransform: "uppercase", color: C.lakeBlue, marginBottom: 12, fontWeight: 600 }}>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 2, textTransform: "uppercase", color: C.lakeBlue, marginBottom: 12, fontWeight: 600 }}>
                   Regional Media Partner
                 </div>
-                <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: "0 0 16px 0" }}>
+                <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.7, margin: "0 0 16px 0" }}>
                   Covering lake communities across Michigan. Manitou Beach is one part of a much bigger lake life story.
                 </p>
-                <a href="https://lake-access.com/" target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, fontWeight: 700, color: C.lakeBlue, textDecoration: "none", letterSpacing: 1, textTransform: "uppercase", fontFamily: "'Libre Franklin', sans-serif" }}>
+                <a href="https://lake-access.com/" target="_blank" rel="noopener noreferrer" style={{ fontSize: 14, fontWeight: 700, color: C.lakeBlue, textDecoration: "none", letterSpacing: 1, textTransform: "uppercase", fontFamily: "'Libre Franklin', sans-serif" }}>
                   Visit Lake Access →
                 </a>
               </div>
@@ -1903,13 +1900,13 @@ function AboutSection() {
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, color: C.text, marginBottom: 10, fontWeight: 700 }}>
                   The Manitou Dispatch
                 </div>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 2, textTransform: "uppercase", color: C.sunset, marginBottom: 12, fontWeight: 600 }}>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 2, textTransform: "uppercase", color: C.sunset, marginBottom: 12, fontWeight: 600 }}>
                   Community Newsletter
                 </div>
-                <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: "0 0 16px 0" }}>
+                <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.7, margin: "0 0 16px 0" }}>
                   Lake news, events, and stories delivered to your inbox. The dispatch that keeps this community connected.
                 </p>
-                <a href="/dispatch" style={{ fontSize: 12, fontWeight: 700, color: C.sunset, textDecoration: "none", letterSpacing: 1, textTransform: "uppercase", fontFamily: "'Libre Franklin', sans-serif" }}>
+                <a href="/dispatch" style={{ fontSize: 14, fontWeight: 700, color: C.sunset, textDecoration: "none", letterSpacing: 1, textTransform: "uppercase", fontFamily: "'Libre Franklin', sans-serif" }}>
                   Read the Dispatch →
                 </a>
               </div>
@@ -1936,7 +1933,7 @@ function AboutSection() {
           }}>
             <button onClick={() => setShowContact(false)} style={{
               position: "absolute", top: 16, right: 16, background: "none", border: "none",
-              color: "rgba(255,255,255,0.4)", fontSize: 20, cursor: "pointer", padding: 4,
+              color: "rgba(255,255,255,0.75)", fontSize: 20, cursor: "pointer", padding: 4,
             }} aria-label="Close">×</button>
 
             {contactStatus === 'success' ? (
@@ -1945,7 +1942,7 @@ function AboutSection() {
                 <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream, marginBottom: 12 }}>
                   Message Sent
                 </h3>
-                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.7 }}>
+                <p style={{ fontSize: 16, color: "rgba(255,255,255,0.75)", lineHeight: 1.7 }}>
                   Thanks for reaching out - we'll get back to you soon.
                 </p>
               </div>
@@ -1954,7 +1951,7 @@ function AboutSection() {
                 <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.cream, margin: "0 0 8px 0" }}>
                   Get in Touch
                 </h3>
-                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", margin: "0 0 28px 0", lineHeight: 1.5 }}>
+                <p style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", margin: "0 0 28px 0", lineHeight: 1.5 }}>
                   Question, feedback, partnership, or just want to say hey.
                 </p>
 
@@ -1965,7 +1962,7 @@ function AboutSection() {
 
                 <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                   <div>
-                    <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.4)", letterSpacing: 1, textTransform: "uppercase", marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>Name *</label>
+                    <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "rgba(255,255,255,0.75)", letterSpacing: 1, textTransform: "uppercase", marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>Name *</label>
                     <input required value={contactForm.name} onChange={e => setContactForm(f => ({ ...f, name: e.target.value }))}
                       style={inputStyle}
                       onFocus={e => e.target.style.borderColor = C.sage}
@@ -1973,7 +1970,7 @@ function AboutSection() {
                     />
                   </div>
                   <div>
-                    <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.4)", letterSpacing: 1, textTransform: "uppercase", marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>Email *</label>
+                    <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "rgba(255,255,255,0.75)", letterSpacing: 1, textTransform: "uppercase", marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>Email *</label>
                     <input required type="email" value={contactForm.email} onChange={e => setContactForm(f => ({ ...f, email: e.target.value }))}
                       style={inputStyle}
                       onFocus={e => e.target.style.borderColor = C.sage}
@@ -1981,7 +1978,7 @@ function AboutSection() {
                     />
                   </div>
                   <div>
-                    <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.4)", letterSpacing: 1, textTransform: "uppercase", marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>Category</label>
+                    <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "rgba(255,255,255,0.75)", letterSpacing: 1, textTransform: "uppercase", marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>Category</label>
                     <select value={contactForm.category} onChange={e => setContactForm(f => ({ ...f, category: e.target.value }))}
                       style={{ ...inputStyle, appearance: "none", cursor: "pointer", background: C.dusk, color: C.cream }}
                     >
@@ -1993,7 +1990,7 @@ function AboutSection() {
                     </select>
                   </div>
                   <div>
-                    <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.4)", letterSpacing: 1, textTransform: "uppercase", marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>Message *</label>
+                    <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "rgba(255,255,255,0.75)", letterSpacing: 1, textTransform: "uppercase", marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>Message *</label>
                     <textarea required rows={4} value={contactForm.message} onChange={e => setContactForm(f => ({ ...f, message: e.target.value }))}
                       style={{ ...inputStyle, resize: "vertical" }}
                       onFocus={e => e.target.style.borderColor = C.sage}
@@ -2003,7 +2000,7 @@ function AboutSection() {
                 </div>
 
                 {contactStatus === 'error' && (
-                  <p style={{ fontSize: 13, color: "#E87461", marginTop: 12 }}>{yeti.oops()}</p>
+                  <p style={{ fontSize: 15, color: "#E87461", marginTop: 12 }}>{yeti.oops()}</p>
                 )}
 
                 <div style={{ marginTop: 24 }}>
@@ -2049,12 +2046,12 @@ function LiveFoodTruckStrip() {
       <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
           <div style={{ width: 8, height: 8, borderRadius: "50%", background: "rgba(255,255,255,0.9)", animation: "dot-breathe 2s ease-in-out infinite", color: "#fff" }} />
-          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: "rgba(255,255,255,0.85)" }}>Live nearby</span>
+          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: "rgba(255,255,255,0.85)" }}>Live nearby</span>
         </div>
-        <span style={{ color: "#fff", fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 500 }}>
+        <span style={{ color: "#fff", fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, fontWeight: 500 }}>
           {liveTrucks.map(t => t.name).join(' · ')}
         </span>
-        <a href="/food-trucks" style={{ marginLeft: "auto", color: "#fff", fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 0.5, textDecoration: "none", opacity: 0.85, whiteSpace: "nowrap", flexShrink: 0 }}>
+        <a href="/food-trucks" style={{ marginLeft: "auto", color: "#fff", fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700, letterSpacing: 0.5, textDecoration: "none", opacity: 0.85, whiteSpace: "nowrap", flexShrink: 0 }}>
           Find them →
         </a>
       </div>

@@ -17,7 +17,7 @@ export const C = {
   rose:        "#C97B9A",
   text:        "#3B3228",
   textLight:   "#6B6052",
-  textMuted:   "#9A8E7E",
+  textMuted:   "#74685A",
 };
 
 // Community geo-center + map radius (miles) - used for food truck map bounds
