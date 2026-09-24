@@ -64,6 +64,10 @@
   },
   "rewrites": [
     {
+      "source": "/images/:file(.*)\\.(png|jpg|jpeg|PNG|JPG|JPEG)",
+      "destination": "/images/:file.webp"
+    },
+    {
       "source": "/sitemap.xml",
       "destination": "/api/sitemap"
     },
