@@ -7,6 +7,23 @@ import { useDispatchAds, pickAd } from '../data/discover';
 import SEOHead from '../components/SEOHead';
 import yeti from '../data/errorMessages';
 
+// Seasonal fallback covers for stories with no "Cover Image URL" (Higgsfield FLUX.2, Sep 2026).
+// Season follows the publish date; the variant alternates by week so back-to-back weekly guides differ.
+const SEASON_COVERS = {
+  winter: ['/images/dispatch/dispatch-winter-1.webp', '/images/dispatch/dispatch-winter-2.webp'],
+  spring: ['/images/dispatch/dispatch-spring-1.webp', '/images/dispatch/dispatch-spring-2.webp'],
+  summer: ['/images/dispatch/dispatch-summer-1.webp', '/images/dispatch/dispatch-summer-2.webp'],
+  autumn: ['/images/dispatch/dispatch-autumn-1.webp', '/images/dispatch/dispatch-autumn-2.webp'],
+};
+function fallbackCover(article) {
+  const d = new Date(article?.publishedDate || Date.now());
+  const date = isNaN(d) ? new Date() : d;
+  const m = date.getMonth();
+  const season = m === 11 || m <= 1 ? 'winter' : m <= 4 ? 'spring' : m <= 7 ? 'summer' : 'autumn';
+  const week = Math.floor((date - new Date(date.getFullYear(), 0, 1)) / 604800000);
+  return SEASON_COVERS[season][week % 2];
+}
+
 
 // ============================================================
 // Ad slot renderer - picks a random ad from the slot array
@@ -326,8 +343,7 @@ export function DispatchArticlePage() {
                         {a.coverImage ? (
                           <img src={a.coverImage} alt={a.title} style={{ width: 84, height: 62, objectFit: 'cover', flexShrink: 0 }} />
                         ) : (
-                          <div style={{ width: 84, height: 62, background: `url(/images/dispatch-header-web.webp) center/cover`, flexShrink: 0, position: 'relative', overflow: 'hidden' }}>
-                            <div style={{ position: 'absolute', inset: 0, background: `${C.dusk}99` }} />
+                          <div style={{ width: 84, height: 62, background: `url(${fallbackCover(a)}) center/cover`, flexShrink: 0, position: 'relative', overflow: 'hidden' }}>
                           </div>
                         )}
                         <div style={{ padding: '10px 14px 10px 0', flex: 1, minWidth: 0 }}>
@@ -447,9 +463,9 @@ export function DispatchPreviewSection() {
                   {article.coverImage ? (
                     <img src={article.coverImage} alt={article.title} style={{ width: '100%', height: 180, objectFit: 'cover', display: 'block' }} />
                   ) : (
-                    <div style={{ width: '100%', height: 180, background: 'url(/images/dispatch-header-web.webp) center/cover', position: 'relative', overflow: 'hidden' }}>
-                      <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(135deg, ${C.dusk}cc, ${C.lakeBlue}99)` }} />
-                      <span style={{ position: 'absolute', bottom: 12, left: 16, fontFamily: "'Caveat', cursive", fontSize: 22, color: 'rgba(255,255,255,0.75)' }}>The Dispatch</span>
+                    <div style={{ width: '100%', height: 180, background: `url(${fallbackCover(article)}) center/cover`, position: 'relative', overflow: 'hidden' }}>
+                      <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to top, ${C.dusk}d9 0%, ${C.dusk}00 55%)` }} />
+                      <span style={{ position: 'absolute', bottom: 12, left: 16, fontFamily: "'Caveat', cursive", fontSize: 22, color: '#fff', textShadow: '0 1px 6px rgba(0,0,0,0.4)' }}>The Dispatch</span>
                     </div>
                   )}
                   <div style={{ padding: '18px 20px 22px' }}>
@@ -574,9 +590,9 @@ export default function DispatchPage() {
                   {article.coverImage ? (
                     <img src={article.coverImage} alt={article.title} style={{ width: '100%', height: 200, objectFit: 'cover', display: 'block' }} />
                   ) : (
-                    <div style={{ width: '100%', height: 200, background: 'url(/images/dispatch-header-web.webp) center/cover', position: 'relative', overflow: 'hidden' }}>
-                      <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(135deg, ${C.dusk}cc, ${C.lakeBlue}99)` }} />
-                      <span style={{ position: 'absolute', bottom: 14, left: 18, fontFamily: "'Caveat', cursive", fontSize: 28, color: 'rgba(255,255,255,0.75)' }}>The Dispatch</span>
+                    <div style={{ width: '100%', height: 200, background: `url(${fallbackCover(article)}) center/cover`, position: 'relative', overflow: 'hidden' }}>
+                      <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to top, ${C.dusk}d9 0%, ${C.dusk}00 55%)` }} />
+                      <span style={{ position: 'absolute', bottom: 14, left: 18, fontFamily: "'Caveat', cursive", fontSize: 28, color: '#fff', textShadow: '0 1px 6px rgba(0,0,0,0.4)' }}>The Dispatch</span>
                     </div>
                   )}
                   <div style={{ padding: '20px 22px 24px' }}>

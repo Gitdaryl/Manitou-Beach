@@ -1678,16 +1678,15 @@ function LivingSection() {
           </FadeIn>
           <FadeIn delay={120} direction="right">
             <div style={{
-              background: `linear-gradient(145deg, ${C.lakeBlue}12, ${C.sage}10)`,
-              border: `1px solid ${C.sand}`,
-              borderRadius: 16, padding: "36px 32px",
-              textAlign: "center",
+              background: `linear-gradient(to top, rgba(26,40,48,0.88) 0%, rgba(26,40,48,0.35) 45%, rgba(26,40,48,0) 70%), url(/images/living/stays-weekend.webp) center/cover`,
+              borderRadius: 16, padding: "28px 30px", minHeight: 300,
+              display: "flex", flexDirection: "column", justifyContent: "flex-end",
+              boxShadow: "0 10px 30px rgba(26,40,48,0.18)",
             }}>
-              <div style={{ fontSize: 48, marginBottom: 16, filter: "grayscale(0.2)" }}>🏡</div>
-              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.lakeDark, marginBottom: 8 }}>
+              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 28, color: C.cream, marginBottom: 6 }}>
                 "We came for the weekend..."
               </div>
-              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.textMuted, lineHeight: 1.6 }}>
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: "rgba(255,255,255,0.88)", lineHeight: 1.6 }}>
                 Inns · Cottages · Campgrounds · Airbnb
               </div>
             </div>
@@ -1698,16 +1697,15 @@ function LivingSection() {
         <div className="mobile-col-1" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 28, marginBottom: 28, alignItems: "center" }}>
           <FadeIn direction="left">
             <div style={{
-              background: `linear-gradient(145deg, ${C.sage}10, ${C.dusk}08)`,
-              border: `1px solid ${C.sand}`,
-              borderRadius: 16, padding: "36px 32px",
-              textAlign: "center",
+              background: `linear-gradient(to top, rgba(26,40,48,0.88) 0%, rgba(26,40,48,0.35) 45%, rgba(26,40,48,0) 70%), url(/images/living/yearround-winter.webp) center/cover`,
+              borderRadius: 16, padding: "28px 30px", minHeight: 300,
+              display: "flex", flexDirection: "column", justifyContent: "flex-end",
+              boxShadow: "0 10px 30px rgba(26,40,48,0.18)",
             }}>
-              <div style={{ fontSize: 48, marginBottom: 16, filter: "grayscale(0.2)" }}>❄️</div>
-              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sageDark, marginBottom: 8 }}>
+              <div style={{ fontFamily: "'Caveat', cursive", fontSize: 28, color: C.cream, marginBottom: 6 }}>
                 "Not just a summer thing."
               </div>
-              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.textMuted, lineHeight: 1.6 }}>
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: "rgba(255,255,255,0.88)", lineHeight: 1.6 }}>
                 Ice fishing · Quiet winters · Year-round community
               </div>
             </div>
