@@ -347,8 +347,17 @@ export function GlobalStyles() {
       .mb-wake.is-in::before { transform: scaleX(1); opacity: 0.35; }
       .mb-wake.is-in::after { animation: mb-boat 1.3s cubic-bezier(0.2, 0.7, 0.2, 1) forwards; }
       @keyframes mb-boat { 0% { left: 0; opacity: 1; } 85% { opacity: 1; } 100% { left: calc(100% - 5px); opacity: 0; } }
+      .mb-bobber { position: relative; display: inline-block; }
+      .mb-bobber.is-dunk { animation: mb-bob 1.1s cubic-bezier(0.3, 0.6, 0.3, 1); }
+      .mb-bobber.is-dunk::after {
+        content: ""; position: absolute; left: 50%; bottom: -3px; width: 18px; height: 6px; margin-left: -9px;
+        border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.85); pointer-events: none;
+        animation: mb-splash 0.9s ease-out 0.18s both;
+      }
+      @keyframes mb-bob { 0% { transform: translateY(0); } 18% { transform: translateY(6px); } 38% { transform: translateY(-3px); } 56% { transform: translateY(2px); } 74% { transform: translateY(-1px); } 100% { transform: translateY(0); } }
+      @keyframes mb-splash { 0% { transform: scale(0.3); opacity: 0.9; } 100% { transform: scale(2.6); opacity: 0; } }
       @media (prefers-reduced-motion: reduce) {
-        .mb-ripple::after, .mb-beam::after, .mb-wake::after { animation: none !important; display: none; }
+        .mb-bobber.is-dunk, .mb-bobber.is-dunk::after, .mb-ripple::after, .mb-beam::after, .mb-wake::after { animation: none !important; display: none; }
         .mb-flip > .mb-flip-page { transform: none !important; opacity: 1 !important; }
         .mb-wake::before { transform: scaleX(1) !important; opacity: 0.35 !important; }
         .mb-tel::before { transition: none !important; }

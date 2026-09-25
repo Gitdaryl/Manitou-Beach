@@ -250,7 +250,7 @@ export default function FeaturedPage() {
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(36px, 7vw, 72px)", fontWeight: 400, color: C.cream, lineHeight: 1, margin: "0 0 20px 0" }}>
             {isFull ? <>Join the Waitlist</> : <>Your neighbors are already<br />looking for you.</>}
           </h1>
-          <p style={{ fontSize: "clamp(14px, 1.5vw, 17px)", color: "rgba(255,255,255,0.45)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto 0" }}>
+          <p style={{ fontSize: "clamp(14px, 1.5vw, 17px)", color: "rgba(255,255,255,0.75)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto 0" }}>
             {isFull
               ? "All spots are claimed for now - join the waitlist and you'll be first to know when your category opens up."
               : "This is where Manitou Beach looks first. Make sure you're here when they do."}
@@ -262,7 +262,7 @@ export default function FeaturedPage() {
       <section style={{ background: C.cream, padding: '52px 24px' }}>
         <div style={{ maxWidth: 900, margin: '0 auto' }}>
           <FadeIn>
-            <p style={{ textAlign: 'center', fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: C.textMuted, marginBottom: 32 }}>
+            <p style={{ textAlign: 'center', fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: C.textMuted, marginBottom: 32 }}>
               Sound familiar?
             </p>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20 }}>
@@ -291,7 +291,7 @@ export default function FeaturedPage() {
                     {q}
                   </div>
                   <p style={{
-                    fontFamily: "'Libre Franklin', sans-serif", fontSize: 13,
+                    fontFamily: "'Libre Franklin', sans-serif", fontSize: 15,
                     color: C.textLight, lineHeight: 1.7, margin: 0,
                   }}>
                     {a}
@@ -311,14 +311,14 @@ export default function FeaturedPage() {
       {status?.type === "success" && (
         <div style={{ background: `${C.sage}20`, borderBottom: `2px solid ${C.sage}`, padding: "24px", textAlign: "center" }}>
           <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.sage, marginBottom: 6 }}>You're in!</div>
-          <p style={{ fontSize: 14, color: C.textLight, margin: 0 }}>
+          <p style={{ fontSize: 16, color: C.textLight, margin: 0 }}>
             {status.business ? `${decodeURIComponent(status.business)} - ` : ""}Your featured listing will be live within 24 hours. Check your inbox for a confirmation with all the details.
           </p>
         </div>
       )}
       {status?.type === "cancelled" && (
         <div style={{ background: `${C.sunset}15`, borderBottom: `2px solid ${C.sunset}40`, padding: "16px 24px", textAlign: "center" }}>
-          <p style={{ fontSize: 14, color: C.textLight, margin: 0 }}>No worries - no charge was made. Your spot is still available.</p>
+          <p style={{ fontSize: 16, color: C.textLight, margin: 0 }}>No worries - no charge was made. Your spot is still available.</p>
         </div>
       )}
 
@@ -338,10 +338,10 @@ export default function FeaturedPage() {
                   <div style={{ padding: "24px 20px", background: C.warmWhite, borderRadius: 12, border: `1px solid ${C.sand}` }}>
                     <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginBottom: 10 }}>
                       <div style={{ fontSize: 28 }}>{b.icon}</div>
-                      {b.tier && <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: `${C.sunsetLight}18`, color: C.sunsetLight, border: `1px solid ${C.sunsetLight}30`, flexShrink: 0 }}>{b.tier}</span>}
+                      {b.tier && <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: `${C.sunsetLight}18`, color: C.sunsetLight, border: `1px solid ${C.sunsetLight}30`, flexShrink: 0 }}>{b.tier}</span>}
                     </div>
                     <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text, margin: "0 0 6px 0" }}>{b.title}</h3>
-                    <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: 0 }}>{b.desc}</p>
+                    <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.6, margin: 0 }}>{b.desc}</p>
                   </div>
                 </FadeIn>
               ))}
@@ -353,10 +353,10 @@ export default function FeaturedPage() {
                   <div style={{ padding: "24px 20px", background: C.warmWhite, borderRadius: 12, border: `1px solid ${C.sand}`, height: "100%", boxSizing: "border-box" }}>
                     <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginBottom: 10 }}>
                       <div style={{ fontSize: 28 }}>{b.icon}</div>
-                      {b.tier && <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: `${C.sunsetLight}18`, color: C.sunsetLight, border: `1px solid ${C.sunsetLight}30`, flexShrink: 0, whiteSpace: "nowrap" }}>{b.tier}</span>}
+                      {b.tier && <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: `${C.sunsetLight}18`, color: C.sunsetLight, border: `1px solid ${C.sunsetLight}30`, flexShrink: 0, whiteSpace: "nowrap" }}>{b.tier}</span>}
                     </div>
                     <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text, margin: "0 0 6px 0" }}>{b.title}</h3>
-                    <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: 0 }}>{b.desc}</p>
+                    <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.6, margin: 0 }}>{b.desc}</p>
                   </div>
                 </FadeIn>
               ))}
@@ -371,21 +371,21 @@ export default function FeaturedPage() {
           <div style={{ maxWidth: 1100, margin: "0 auto" }}>
             <FadeIn>
               <div style={{ textAlign: "center", marginBottom: 52 }}>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 4, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 14 }}>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 4, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 14 }}>
                   Your Profile, Your Way
                 </div>
                 <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 4vw, 42px)", fontWeight: 400, color: C.cream, margin: "0 0 14px 0" }}>
                   Your own page. Go as deep as you like.
                 </h2>
-                <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 16, maxWidth: 600, margin: "0 auto 32px", lineHeight: 1.65 }}>
+                <p style={{ color: "rgba(255,255,255,0.75)", fontSize: 16, maxWidth: 600, margin: "0 auto 32px", lineHeight: 1.65 }}>
                   Every paid tier includes a profile page with a real URL you can share. Showcased covers the essentials: photos, hours, a call button, a quote form, a map pin. Highlighted pulls your Google reviews in. Front and Center turns it into a full photo showcase with a big feature photo, a gallery, and a gold accent. Pick the depth that fits your story.
                 </p>
                 <div style={{ maxWidth: 460, margin: "0 auto", background: "rgba(255,255,255,0.05)", borderRadius: 14, padding: "20px 24px", border: "1px solid rgba(255,255,255,0.1)" }}>
-                  <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.55)", margin: 0, lineHeight: 1.65, textAlign: "center" }}>
+                  <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: "rgba(255,255,255,0.75)", margin: 0, lineHeight: 1.65, textAlign: "center" }}>
                     Not sure which one fits? Start with Showcased at $9/mo. You can upgrade whenever you're ready, and your page stays yours either way.
                   </p>
-                  <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, margin: "12px 0 0", textAlign: "center" }}>
-                    <a href="/listing-finder" style={{ color: "rgba(255,255,255,0.45)", textDecoration: "underline", textUnderlineOffset: 3 }}>
+                  <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, margin: "12px 0 0", textAlign: "center" }}>
+                    <a href="/listing-finder" style={{ color: "rgba(255,255,255,0.75)", textDecoration: "underline", textUnderlineOffset: 3 }}>
                       Answer 4 quick questions and we'll point you to the right one →
                     </a>
                   </p>
@@ -397,29 +397,29 @@ export default function FeaturedPage() {
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16 }}>
               {/* Free tier card */}
               <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, padding: "28px 22px", display: "flex", flexDirection: "column" }}>
-                <div style={{ color: C.driftwood, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", marginBottom: 10 }}>Free</div>
+                <div style={{ color: C.driftwood, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", marginBottom: 10 }}>Free</div>
                 <div style={{ marginBottom: 4 }}>
                   <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 36, color: C.cream, fontWeight: 700 }}>$0</span>
-                  <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 14, fontFamily: "'Libre Franklin', sans-serif" }}> forever</span>
+                  <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 16, fontFamily: "'Libre Franklin', sans-serif" }}> forever</span>
                 </div>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.3)", marginBottom: 16, letterSpacing: 0.3 }}>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.75)", marginBottom: 16, letterSpacing: 0.3 }}>
                   Always free · no credit card
                 </div>
                 <ul style={{ listStyle: "none", padding: 0, margin: "0 0 16px 0", flexGrow: 1, display: "flex", flexDirection: "column", gap: 9 }}>
                   {["Name in directory", "Category & phone", "Community visibility"].map(f => (
                     <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 9 }}>
-                      <span style={{ color: C.driftwood, fontSize: 13, marginTop: 2, flexShrink: 0, fontWeight: 700 }}>✓</span>
-                      <span style={{ color: "rgba(255,255,255,0.45)", fontSize: 13, lineHeight: 1.45 }}>{f}</span>
+                      <span style={{ color: C.driftwood, fontSize: 15, marginTop: 2, flexShrink: 0, fontWeight: 700 }}>✓</span>
+                      <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 15, lineHeight: 1.45 }}>{f}</span>
                     </li>
                   ))}
                   {["No website link", "No map pin", "No description or logo"].map(f => (
                     <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 9 }}>
-                      <span style={{ color: "rgba(255,255,255,0.18)", fontSize: 13, marginTop: 2, flexShrink: 0 }}>-</span>
-                      <span style={{ color: "rgba(255,255,255,0.22)", fontSize: 13, lineHeight: 1.45 }}>{f}</span>
+                      <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 15, marginTop: 2, flexShrink: 0 }}>-</span>
+                      <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 15, lineHeight: 1.45 }}>{f}</span>
                     </li>
                   ))}
                 </ul>
-                <a href="#submit" style={{ display: "block", width: "100%", padding: "11px 0", borderRadius: 8, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none", textAlign: "center", border: `1.5px solid ${C.driftwood}55`, color: C.driftwood }}>
+                <a href="#submit" style={{ display: "block", width: "100%", padding: "11px 0", borderRadius: 8, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", textDecoration: "none", textAlign: "center", border: `1.5px solid ${C.driftwood}55`, color: C.driftwood }}>
                   Get Listed Free
                 </a>
               </div>
@@ -428,34 +428,34 @@ export default function FeaturedPage() {
               {PAID_TIERS.map(tier => (
                 <div key={tier.id} style={{ background: tier.badge ? "rgba(255,255,255,0.07)" : "rgba(255,255,255,0.04)", border: `1px solid ${tier.badge ? tier.color + "45" : "rgba(255,255,255,0.09)"}`, borderRadius: 16, padding: "28px 22px", position: "relative", display: "flex", flexDirection: "column" }}>
                   {tier.badge && (
-                    <div style={{ position: "absolute", top: -13, left: "50%", transform: "translateX(-50%)", background: tier.color, color: C.night, fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", padding: "4px 14px", borderRadius: 20, whiteSpace: "nowrap" }}>
+                    <div style={{ position: "absolute", top: -13, left: "50%", transform: "translateX(-50%)", background: tier.color, color: C.night, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", padding: "4px 14px", borderRadius: 20, whiteSpace: "nowrap" }}>
                       {tier.badge}
                     </div>
                   )}
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10, flexWrap: "wrap" }}>
-                    <div style={{ color: tier.color, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase" }}>{tier.name}</div>
+                    <div style={{ color: tier.color, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase" }}>{tier.name}</div>
                     {SLOT_CAPS[tier.id] && (
-                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", padding: "2px 8px", borderRadius: 20, background: `${tier.color}18`, color: tier.color, border: `1px solid ${tier.color}35`, whiteSpace: "nowrap" }}>
+                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", padding: "2px 8px", borderRadius: 20, background: `${tier.color}18`, color: tier.color, border: `1px solid ${tier.color}35`, whiteSpace: "nowrap" }}>
                         {SLOT_CAPS[tier.id] === 1 ? 'Exclusive · 1 per category' : `${SLOT_CAPS[tier.id]} spots per category`}
                       </span>
                     )}
                   </div>
                   <div style={{ marginBottom: 4 }}>
                     <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 36, color: C.cream, fontWeight: 700 }}>${tier.price}</span>
-                    <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 14, fontFamily: "'Libre Franklin', sans-serif" }}>/mo</span>
+                    <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 16, fontFamily: "'Libre Franklin', sans-serif" }}>/mo</span>
                   </div>
 
                   <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px 0", flexGrow: 1, display: "flex", flexDirection: "column", gap: 9 }}>
                     {tier.features.map(f => (
                       <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 9 }}>
-                        <span style={{ color: tier.color, fontSize: 13, marginTop: 2, flexShrink: 0, fontWeight: 700 }}>✓</span>
-                        <span style={{ color: "rgba(255,255,255,0.58)", fontSize: 13, lineHeight: 1.45 }}>{f}</span>
+                        <span style={{ color: tier.color, fontSize: 15, marginTop: 2, flexShrink: 0, fontWeight: 700 }}>✓</span>
+                        <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 15, lineHeight: 1.45 }}>{f}</span>
                       </li>
                     ))}
                   </ul>
                   <button
                     onClick={() => handleTierSelect(tier.id)}
-                    style={{ display: "block", width: "100%", padding: "11px 0", borderRadius: 8, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: "pointer", border: "none", background: tier.id === "premium" ? C.sunset : "transparent", color: tier.id === "premium" ? C.cream : tier.color, outline: tier.id === "premium" ? "none" : `1.5px solid ${tier.color}55`, transition: "all 0.22s" }}
+                    style={{ display: "block", width: "100%", padding: "11px 0", borderRadius: 8, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: "pointer", border: "none", background: tier.id === "premium" ? C.sunset : "transparent", color: tier.id === "premium" ? C.cream : tier.color, outline: tier.id === "premium" ? "none" : `1.5px solid ${tier.color}55`, transition: "all 0.22s" }}
                   >
                     Get Started
                   </button>
@@ -466,7 +466,7 @@ export default function FeaturedPage() {
                     if (fullCats === 0) return null;
                     const openCats = LISTING_CATEGORIES.length - fullCats;
                     return (
-                      <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, color: openCats === 0 ? C.sunset : C.driftwood, margin: "8px 0 0", textAlign: "center", letterSpacing: 0.3 }}>
+                      <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: openCats === 0 ? C.sunset : C.driftwood, margin: "8px 0 0", textAlign: "center", letterSpacing: 0.3 }}>
                         {openCats === 0 ? `All ${tier.name} spots filled` : `${openCats} of ${LISTING_CATEGORIES.length} categories open`}
                       </p>
                     );
@@ -475,7 +475,7 @@ export default function FeaturedPage() {
               ))}
             </div>
 
-            <p style={{ textAlign: "center", color: "rgba(255,255,255,0.18)", fontSize: 12, marginTop: 24, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>
+            <p style={{ textAlign: "center", color: "rgba(255,255,255,0.75)", fontSize: 14, marginTop: 24, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>
               Monthly subscriptions · Cancel anytime · Rate held while subscribed
             </p>
           </div>
@@ -490,7 +490,7 @@ export default function FeaturedPage() {
               <div style={{ textAlign: "center", marginBottom: 52 }}>
                 <SectionLabel>See It In Action</SectionLabel>
                 <SectionTitle center>Here's exactly what each tier looks like</SectionTitle>
-                <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.7, maxWidth: 560, margin: "16px auto 0" }}>
+                <p style={{ fontSize: 17, color: C.textLight, lineHeight: 1.7, maxWidth: 560, margin: "16px auto 0" }}>
                   Four tiers, four different ways to show up in the community directory. What your neighbors see when they search for you.
                 </p>
               </div>
@@ -501,72 +501,72 @@ export default function FeaturedPage() {
               {/* Free */}
               <FadeIn>
                 <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
-                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.driftwood }}>Free</span>
-                  <span style={{ color: C.sand, fontSize: 13 }}>·</span>
-                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted }}>$0 - always included</span>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.driftwood }}>Free</span>
+                  <span style={{ color: C.sand, fontSize: 15 }}>·</span>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.textMuted }}>$0 - always included</span>
                 </div>
                 <div style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 10, padding: "13px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, boxShadow: "0 2px 14px rgba(0,0,0,0.08)" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1, minWidth: 0 }}>
-                    <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: C.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Yeti Groove Media</span>
-                    <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: `${C.sage}18`, color: C.sageDark, border: `1px solid ${C.sage}35`, flexShrink: 0 }}>Creative Services</span>
+                    <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, color: C.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Yeti Groove Media</span>
+                    <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: `${C.sage}18`, color: C.sageDark, border: `1px solid ${C.sage}35`, flexShrink: 0 }}>Creative Services</span>
                   </div>
-                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, flexShrink: 0 }}>(517) 555-5555</span>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.textMuted, flexShrink: 0 }}>(517) 555-5555</span>
                 </div>
-                <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, margin: "8px 0 0 2px", lineHeight: 1.5 }}>Name, category, and phone. That's it - no profile page, no expand, no description.</p>
+                <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, margin: "8px 0 0 2px", lineHeight: 1.5 }}>Name, category, and phone. That's it - no profile page, no expand, no description.</p>
               </FadeIn>
 
               {/* $9 Showcased */}
               <FadeIn delay={60}>
                 <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
-                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.lakeBlue }}>Showcased</span>
-                  <span style={{ color: C.sand, fontSize: 13 }}>·</span>
-                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted }}>$9/mo</span>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.lakeBlue }}>Showcased</span>
+                  <span style={{ color: C.sand, fontSize: 15 }}>·</span>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.textMuted }}>$9/mo</span>
                 </div>
                 <div style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 10, overflow: "hidden", boxShadow: "0 2px 16px rgba(0,0,0,0.09)" }}>
                   <div style={{ padding: "13px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1, minWidth: 0 }}>
-                      <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: C.text }}>Yeti Groove Media</span>
-                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: `${C.sage}18`, color: C.sageDark, border: `1px solid ${C.sage}35`, flexShrink: 0 }}>Creative Services</span>
+                      <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, color: C.text }}>Yeti Groove Media</span>
+                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: `${C.sage}18`, color: C.sageDark, border: `1px solid ${C.sage}35`, flexShrink: 0 }}>Creative Services</span>
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: 14, flexShrink: 0 }}>
-                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted }}>(517) 555-5555</span>
-                      <span style={{ color: C.lakeBlue, fontSize: 15, fontWeight: 700 }}>▾</span>
+                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.textMuted }}>(517) 555-5555</span>
+                      <span style={{ color: C.lakeBlue, fontSize: 17, fontWeight: 700 }}>▾</span>
                     </div>
                   </div>
                   <div style={{ padding: "14px 18px 18px", borderTop: `1px solid ${C.sand}`, display: "flex", gap: 14, alignItems: "flex-start" }}>
                     <img src="/images/yeti_logo.webp" alt="Yeti Groove Media" style={{ width: 64, height: 64, borderRadius: 8, objectFit: "cover", flexShrink: 0 }} />
                     <div style={{ flex: 1 }}>
-                      <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textLight, lineHeight: 1.65, margin: "0 0 12px 0" }}>
+                      <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.textLight, lineHeight: 1.65, margin: "0 0 12px 0" }}>
                         Manitou Beach's community web studio. Websites, marketing videos, and social media for Irish Hills businesses ready to grow online.
                       </p>
                       <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.lakeBlue }}>Visit Website →</span>
-                        <a href="/business/yeti-groove-showcased" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sage, textDecoration: "none" }}>View Profile →</a>
+                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.lakeBlue }}>Visit Website →</span>
+                        <a href="/business/yeti-groove-showcased" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sage, textDecoration: "none" }}>View Profile →</a>
                       </div>
                     </div>
                   </div>
                 </div>
-                <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, margin: "8px 0 0 2px", lineHeight: 1.5 }}>Expandable strip with logo, description, and links. Your own profile page at a real URL.</p>
+                <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, margin: "8px 0 0 2px", lineHeight: 1.5 }}>Expandable strip with logo, description, and links. Your own profile page at a real URL.</p>
               </FadeIn>
 
               {/* $25 Highlighted */}
               <FadeIn delay={120}>
                 <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
-                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.lakeBlue }}>Highlighted</span>
-                  <span style={{ color: C.sand, fontSize: 13 }}>·</span>
-                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted }}>$25/mo</span>
-                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "2px 8px", borderRadius: 12, background: `${C.sage}18`, color: C.sage, border: `1px solid ${C.sage}35` }}>Most Popular</span>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.lakeBlue }}>Highlighted</span>
+                  <span style={{ color: C.sand, fontSize: 15 }}>·</span>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.textMuted }}>$25/mo</span>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "2px 8px", borderRadius: 12, background: `${C.sage}18`, color: C.sage, border: `1px solid ${C.sage}35` }}>Most Popular</span>
                 </div>
                 <div style={{ background: `linear-gradient(135deg, ${C.lakeDark} 0%, ${C.lakeBlue} 100%)`, borderRadius: 10, overflow: "hidden", boxShadow: "0 4px 24px rgba(61,90,110,0.45)" }}>
                   <div style={{ padding: "13px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1, minWidth: 0, flexWrap: "wrap" }}>
-                      <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: "rgba(255,255,255,0.95)" }}>Yeti Groove Media</span>
-                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: "rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.8)", border: "1px solid rgba(255,255,255,0.22)", flexShrink: 0 }}>Creative Services</span>
-                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: `${C.sunsetLight}28`, color: C.sunsetLight, border: `1px solid ${C.sunsetLight}45`, flexShrink: 0 }}>Highlighted</span>
+                      <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, color: "rgba(255,255,255,0.95)" }}>Yeti Groove Media</span>
+                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: "rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.8)", border: "1px solid rgba(255,255,255,0.22)", flexShrink: 0 }}>Creative Services</span>
+                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: `${C.sunsetLight}28`, color: C.sunsetLight, border: `1px solid ${C.sunsetLight}45`, flexShrink: 0 }}>Highlighted</span>
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
-                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.45)" }}>(517) 555-5555</span>
-                      <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 15, fontWeight: 700 }}>▾</span>
+                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: "rgba(255,255,255,0.75)" }}>(517) 555-5555</span>
+                      <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 17, fontWeight: 700 }}>▾</span>
                     </div>
                   </div>
                   <div style={{ padding: "14px 18px 18px", borderTop: "1px solid rgba(255,255,255,0.12)", display: "flex", gap: 14, alignItems: "flex-start" }}>
@@ -575,28 +575,28 @@ export default function FeaturedPage() {
                       <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,191,36,0.25)", borderRadius: 10, padding: "8px 14px", marginBottom: 12 }}>
                         <span style={{ color: "#FBBF24", fontSize: 22, letterSpacing: -1, lineHeight: 1 }}>★★★★★</span>
                         <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, fontWeight: 700, color: "#fff", lineHeight: 1 }}>4.8</span>
-                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.45)", lineHeight: 1 }}>· 47 Google reviews</span>
+                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: "rgba(255,255,255,0.75)", lineHeight: 1 }}>· 47 Google reviews</span>
                       </div>
-                      <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.72)", lineHeight: 1.65, margin: "0 0 12px 0" }}>
+                      <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: "rgba(255,255,255,0.72)", lineHeight: 1.65, margin: "0 0 12px 0" }}>
                         Manitou Beach's community web studio. Websites, marketing videos, and social media for Irish Hills businesses ready to grow online.
                       </p>
                       <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.88)" }}>Visit Website →</span>
-                        <a href="/business/yeti-groove-highlighted" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.88)", textDecoration: "none" }}>View Profile →</a>
+                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.88)" }}>Visit Website →</span>
+                        <a href="/business/yeti-groove-highlighted" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.88)", textDecoration: "none" }}>View Profile →</a>
                       </div>
                     </div>
                   </div>
                 </div>
-                <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, margin: "8px 0 0 2px", lineHeight: 1.5 }}>Same expandable strip, but highlighted with a blue gradient so it stands out in the directory. Gets noticed first.</p>
+                <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, margin: "8px 0 0 2px", lineHeight: 1.5 }}>Same expandable strip, but highlighted with a blue gradient so it stands out in the directory. Gets noticed first.</p>
               </FadeIn>
 
               {/* $49 Front and Center */}
               <FadeIn delay={180}>
                 <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
-                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunsetLight }}>Front and Center</span>
-                  <span style={{ color: C.sand, fontSize: 13 }}>·</span>
-                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted }}>$49/mo</span>
-                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "2px 8px", borderRadius: 12, background: `${C.sunsetLight}18`, color: C.sunsetLight, border: `1px solid ${C.sunsetLight}35` }}>Most Features</span>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunsetLight }}>Front and Center</span>
+                  <span style={{ color: C.sand, fontSize: 15 }}>·</span>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.textMuted }}>$49/mo</span>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "2px 8px", borderRadius: 12, background: `${C.sunsetLight}18`, color: C.sunsetLight, border: `1px solid ${C.sunsetLight}35` }}>Most Features</span>
                 </div>
                 <div style={{ background: `linear-gradient(135deg, ${C.night} 0%, ${C.dusk} 55%, #1A3A4A 100%)`, border: `1.5px solid ${C.sunsetLight}50`, borderRadius: 14, padding: "20px 20px", boxShadow: `0 6px 32px rgba(0,0,0,0.30), 0 0 0 1px rgba(232,168,124,0.12)` }}>
                   <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
@@ -604,33 +604,33 @@ export default function FeaturedPage() {
                     <div style={{ flex: 1 }}>
                       <div style={{ display: "flex", gap: 8, marginBottom: 10, flexWrap: "wrap", alignItems: "center" }}>
                         <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.cream }}>Yeti Groove Media</span>
-                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: `${C.sunsetLight}22`, color: C.sunsetLight, border: `1px solid ${C.sunsetLight}45` }}>Front and Center</span>
+                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: `${C.sunsetLight}22`, color: C.sunsetLight, border: `1px solid ${C.sunsetLight}45` }}>Front and Center</span>
                       </div>
                       <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(251,191,36,0.1)", border: "1px solid rgba(251,191,36,0.3)", borderRadius: 10, padding: "8px 14px", marginBottom: 10 }}>
                         <span style={{ color: "#FBBF24", fontSize: 24, letterSpacing: -1, lineHeight: 1 }}>★★★★★</span>
                         <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, fontWeight: 700, color: "#fff", lineHeight: 1 }}>4.9</span>
-                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.45)", lineHeight: 1 }}>· 83 Google reviews</span>
+                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: "rgba(255,255,255,0.75)", lineHeight: 1 }}>· 83 Google reviews</span>
                       </div>
                       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10, flexWrap: "wrap" }}>
-                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.55)", border: "1px solid rgba(255,255,255,0.15)" }}>Creative Services</span>
-                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.4)" }}>(517) 555-5555</span>
+                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", padding: "3px 8px", borderRadius: 20, background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.75)", border: "1px solid rgba(255,255,255,0.15)" }}>Creative Services</span>
+                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: "rgba(255,255,255,0.75)" }}>(517) 555-5555</span>
                       </div>
-                      <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 1.65, margin: "0 0 14px 0" }}>
+                      <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: "rgba(255,255,255,0.65)", lineHeight: 1.65, margin: "0 0 14px 0" }}>
                         Manitou Beach's community web studio. Websites, marketing videos, and social media for Irish Hills businesses ready to grow online.
                       </p>
                       <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sunsetLight }}>Visit Website →</span>
-                        <a href="/business/yeti-groove-media" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sunsetLight, textDecoration: "none" }}>View Full Profile →</a>
+                        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sunsetLight }}>Visit Website →</span>
+                        <a href="/business/yeti-groove-media" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sunsetLight, textDecoration: "none" }}>View Full Profile →</a>
                       </div>
                     </div>
                   </div>
                 </div>
-                <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, margin: "8px 0 0 2px", lineHeight: 1.5 }}>Always-on dark banner - no clicking to expand. Stands apart from everything else in the directory. Clicking goes straight to the full profile page.</p>
+                <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, margin: "8px 0 0 2px", lineHeight: 1.5 }}>Always-on dark banner - no clicking to expand. Stands apart from everything else in the directory. Clicking goes straight to the full profile page.</p>
               </FadeIn>
 
             </div>
 
-            <p style={{ textAlign: "center", fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted, marginTop: 40 }}>
+            <p style={{ textAlign: "center", fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.textMuted, marginTop: 40 }}>
               These previews show how your business appears on the home page directory. Every paid tier also includes a full profile page at your own URL.
             </p>
           </div>
@@ -678,7 +678,7 @@ export default function FeaturedPage() {
                     <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 36, color: C.sand, fontWeight: 400, lineHeight: 1, flexShrink: 0, minWidth: 48 }}>{step.num}</div>
                     <div>
                       <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.text, margin: "0 0 10px 0" }}>{step.title}</h3>
-                      <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.75, margin: 0 }}>{step.body}</p>
+                      <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.75, margin: 0 }}>{step.body}</p>
                     </div>
                   </div>
                 </FadeIn>
@@ -741,7 +741,7 @@ export default function FeaturedPage() {
                       <span style={{ fontSize: 20, color: C.textMuted, flexShrink: 0, lineHeight: 1 }}>+</span>
                     </summary>
                     <p style={{
-                      fontFamily: "'Libre Franklin', sans-serif", fontSize: 14,
+                      fontFamily: "'Libre Franklin', sans-serif", fontSize: 16,
                       color: C.textLight, lineHeight: 1.8, margin: "0 0 22px",
                       maxWidth: 680,
                     }}>
@@ -765,7 +765,7 @@ export default function FeaturedPage() {
             <FadeIn>
               <SectionLabel>Waitlist</SectionLabel>
               <SectionTitle>Hold Your Rate</SectionTitle>
-              <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, marginBottom: 32 }}>
+              <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.7, marginBottom: 32 }}>
                 Join the waitlist and we'll contact you the moment a spot opens. No obligation until you're ready.
               </p>
             </FadeIn>
@@ -775,7 +775,7 @@ export default function FeaturedPage() {
                 <div style={{ background: `${C.sage}15`, border: `1px solid ${C.sage}40`, borderRadius: 12, padding: "32px 28px", textAlign: "center" }}>
                   <div style={{ fontSize: 32, marginBottom: 12 }}>🎉</div>
                   <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.sage, marginBottom: 8 }}>You're on the list!</div>
-                  <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: 0 }}>
+                  <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.7, margin: 0 }}>
                     We'll reach out as soon as a spot opens and hold your rate. Keep an eye on your inbox.
                   </p>
                 </div>
@@ -788,7 +788,7 @@ export default function FeaturedPage() {
                   { key: "businessName", label: "Business Name", type: "text", placeholder: "e.g. Boot Jack Tavern" },
                 ].map(field => (
                   <div key={field.key}>
-                    <label style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.textMuted, display: "block", marginBottom: 6 }}>
+                    <label style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.textMuted, display: "block", marginBottom: 6 }}>
                       {field.label} <span style={{ color: C.sunset }}>*</span>
                     </label>
                     <input
@@ -797,7 +797,7 @@ export default function FeaturedPage() {
                       style={{
                         width: "100%", padding: "12px 16px", borderRadius: 8,
                         border: `1px solid ${C.sand}`, background: C.warmWhite,
-                        fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.text,
+                        fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, color: C.text,
                         outline: "none", transition: "border 0.2s", boxSizing: "border-box",
                       }}
                       onFocus={e => { e.target.style.borderColor = C.sage; }}
@@ -806,7 +806,7 @@ export default function FeaturedPage() {
                   </div>
                 ))}
                 <div>
-                  <label style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.textMuted, display: "block", marginBottom: 6 }}>
+                  <label style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: C.textMuted, display: "block", marginBottom: 6 }}>
                     Preferred Tier
                   </label>
                   <select
@@ -815,7 +815,7 @@ export default function FeaturedPage() {
                     style={{
                       width: "100%", padding: "12px 16px", borderRadius: 8,
                       border: `1px solid ${C.sand}`, background: C.warmWhite,
-                      fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.text,
+                      fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, color: C.text,
                       outline: "none", boxSizing: "border-box",
                     }}
                   >
@@ -829,7 +829,7 @@ export default function FeaturedPage() {
                 <input aria-hidden="true" tabIndex={-1} autoComplete="off" value={wl._hp} onChange={e => setWl(prev => ({ ...prev, _hp: e.target.value }))} style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0, pointerEvents: "none" }} />
 
                 {wlStatus === "error" && (
-                  <div style={{ background: `${C.sunset}15`, border: `1px solid ${C.sunset}40`, borderRadius: 8, padding: "12px 16px", fontSize: 13, color: C.sunset }}>
+                  <div style={{ background: `${C.sunset}15`, border: `1px solid ${C.sunset}40`, borderRadius: 8, padding: "12px 16px", fontSize: 15, color: C.sunset }}>
                     {yeti.oops()}
                   </div>
                 )}
@@ -842,14 +842,14 @@ export default function FeaturedPage() {
                     width: "100%", marginTop: 8, padding: "14px 0", borderRadius: 8,
                     background: wlStatus === "loading" ? C.textMuted : C.sunset,
                     color: C.cream, border: "none", cursor: wlStatus === "loading" ? "default" : "pointer",
-                    fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700,
+                    fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 700,
                     letterSpacing: 1, textTransform: "uppercase", transition: "background 0.2s",
                   }}
                 >
                   {wlStatus === "loading" ? "Joining..." : "Join the Waitlist"}
                 </button>
 
-                <p style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.6, textAlign: "center", margin: 0 }}>
+                <p style={{ fontSize: 14, color: C.textMuted, lineHeight: 1.6, textAlign: "center", margin: 0 }}>
                   No obligation. We'll contact you when a spot opens and confirm before any charge.
                 </p>
               </form>
@@ -865,13 +865,13 @@ export default function FeaturedPage() {
             <div style={{ textAlign: "center", marginBottom: 48 }}>
               <SectionLabel light>Page Sponsorship</SectionLabel>
               <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 4vw, 40px)", fontWeight: 400, color: C.cream, margin: "0 0 12px 0" }}>Own a Page All Year</h2>
-              <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: "rgba(255,255,255,0.5)", lineHeight: 1.75, maxWidth: 520, margin: "0 auto 12px" }}>
+              <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 17, color: "rgba(255,255,255,0.75)", lineHeight: 1.75, maxWidth: 520, margin: "0 auto 12px" }}>
                 One exclusive sponsor per page. Your logo, your tagline, your brand - seen by everyone who visits that page, all year long.
               </p>
               <div style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap", marginTop: 10 }}>
                 <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, fontWeight: 700, color: C.sunsetLight }}>$97 / month</span>
-                <span style={{ color: "rgba(255,255,255,0.2)", fontSize: 16 }}>·</span>
-                <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, fontWeight: 700, color: C.sage }}>$970 / year <span style={{ fontWeight: 400, fontSize: 12, color: "rgba(255,255,255,0.35)" }}>(2 months free)</span></span>
+                <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 16 }}>·</span>
+                <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, fontWeight: 700, color: C.sage }}>$970 / year <span style={{ fontWeight: 400, fontSize: 14, color: "rgba(255,255,255,0.75)" }}>(2 months free)</span></span>
               </div>
             </div>
           </FadeIn>
@@ -898,19 +898,19 @@ export default function FeaturedPage() {
                     }}
                   >
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: taken ? "rgba(255,255,255,0.3)" : isSelected ? C.sage : C.cream, fontWeight: isSelected ? 600 : 400 }}>{pg.label}</span>
+                      <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: taken ? "rgba(255,255,255,0.75)" : isSelected ? C.sage : C.cream, fontWeight: isSelected ? 600 : 400 }}>{pg.label}</span>
                       <span style={{
-                        fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700,
+                        fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700,
                         letterSpacing: 1.2, textTransform: "uppercase", padding: "2px 7px", borderRadius: 4, marginLeft: 6, flexShrink: 0,
                         background: taken ? `${C.sunset}20` : `${C.sage}20`,
                         color: taken ? C.sunsetLight : C.sage,
                       }}>{taken ? "Taken" : "Open"}</span>
                     </div>
                     {taken && sponsor?.expiresAt && (
-                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, color: "rgba(255,255,255,0.22)", marginTop: 5 }}>Runs until {sponsor.expiresAt}</div>
+                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.75)", marginTop: 5 }}>Runs until {sponsor.expiresAt}</div>
                     )}
                     {taken && (
-                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, color: isWlActive ? C.sunsetLight : "rgba(255,255,255,0.28)", marginTop: 4, textDecoration: "underline" }}>
+                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: isWlActive ? C.sunsetLight : "rgba(255,255,255,0.75)", marginTop: 4, textDecoration: "underline" }}>
                         {isWlActive ? "Hide ↑" : "Join waitlist →"}
                       </div>
                     )}
@@ -929,18 +929,18 @@ export default function FeaturedPage() {
                     <div style={{ textAlign: "center", padding: "12px 0" }}>
                       <div style={{ fontSize: 28, marginBottom: 10, color: C.sage }}>✓</div>
                       <h4 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.cream, margin: "0 0 8px" }}>You're on the list</h4>
-                      <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", lineHeight: 1.6, margin: 0 }}>
+                      <p style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", lineHeight: 1.6, margin: 0 }}>
                         When the <strong style={{ color: "rgba(255,255,255,0.6)" }}>{pg?.label}</strong> spot opens, you'll get an email. First in line gets first offer.
                       </p>
                     </div>
                   ) : (
                     <>
-                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 8 }}>
+                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 8 }}>
                         Waitlist - {pg?.label}
                       </div>
-                      <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginBottom: 14, lineHeight: 1.6 }}>
+                      <p style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", marginBottom: 14, lineHeight: 1.6 }}>
                         {sponsor?.expiresAt
-                          ? <>Current sponsor runs until <strong style={{ color: "rgba(255,255,255,0.55)" }}>{sponsor.expiresAt}</strong>. If they don't renew, you're first to know.</>
+                          ? <>Current sponsor runs until <strong style={{ color: "rgba(255,255,255,0.75)" }}>{sponsor.expiresAt}</strong>. If they don't renew, you're first to know.</>
                           : "When this spot opens, we'll notify you by email. No obligation - you choose whether to claim it."
                         }
                       </p>
@@ -952,14 +952,14 @@ export default function FeaturedPage() {
                         ].map(({ k, placeholder, type, required }) => (
                           <input key={k} type={type} placeholder={placeholder} required={required}
                             value={pageWlForm[k]} onChange={e => setPageWlForm(f => ({ ...f, [k]: e.target.value }))}
-                            style={{ padding: "11px 14px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, outline: "none" }}
+                            style={{ padding: "11px 14px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, outline: "none" }}
                           />
                         ))}
                         <input aria-hidden="true" tabIndex={-1} autoComplete="off" value={pageWlForm._hp} onChange={e => setPageWlForm(f => ({ ...f, _hp: e.target.value }))} style={{ position: "absolute", left: "-9999px", opacity: 0 }} />
                         <button type="submit" style={{
                           padding: "11px 0", borderRadius: 8, border: "none",
                           background: C.sunsetLight, color: C.night,
-                          fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", cursor: "pointer",
+                          fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", cursor: "pointer",
                         }}>Notify Me When It Opens</button>
                       </form>
                     </>
@@ -978,19 +978,19 @@ export default function FeaturedPage() {
                   <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, fontWeight: 400, color: C.cream, margin: "0 0 10px" }}>
                     {sponsorReturnData?.businessName ? `${sponsorReturnData.businessName} is going live` : "Your page is being set up"}
                   </h3>
-                  <p style={{ fontSize: 14, color: "rgba(255,255,255,0.55)", lineHeight: 1.8, maxWidth: 440, margin: "0 auto 12px" }}>
+                  <p style={{ fontSize: 16, color: "rgba(255,255,255,0.75)", lineHeight: 1.8, maxWidth: 440, margin: "0 auto 12px" }}>
                     Your sponsor banner for the <strong style={{ color: C.cream }}>{sponsorReturnData?.pageName || 'selected'}</strong> page goes live within 24 hours of payment confirmation.
                   </p>
                   {sponsorReturnData?.expiresAt && (
-                    <p style={{ fontSize: 13, color: "rgba(255,255,255,0.35)", margin: "0 auto 12px" }}>
+                    <p style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", margin: "0 auto 12px" }}>
                       Sponsorship runs until <strong style={{ color: C.sunsetLight }}>{new Date(sponsorReturnData.expiresAt + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</strong>
                     </p>
                   )}
-                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.35)", margin: "0 auto 24px" }}>
+                  <p style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", margin: "0 auto 24px" }}>
                     A confirmation email is on its way to your inbox.
                   </p>
                   <div style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 14, padding: "24px 28px", textAlign: "left", marginBottom: 20, maxWidth: 460, margin: "0 auto 20px" }}>
-                    <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: "rgba(255,255,255,0.3)", marginBottom: 14 }}>What to expect</div>
+                    <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: "rgba(255,255,255,0.75)", marginBottom: 14 }}>What to expect</div>
                     {[
                       "Your logo and tagline appear at the bottom of the page, seen by every visitor",
                       `Subscription: ${sponsorReturnData?.term === 'annual' ? '$970/year - renews in 12 months' : '$97/month - renews monthly'}`,
@@ -1000,17 +1000,17 @@ export default function FeaturedPage() {
                     ].map((line, i) => (
                       <div key={i} style={{ display: "flex", gap: 10, marginBottom: i < 4 ? 10 : 0, alignItems: "flex-start" }}>
                         <span style={{ color: C.sage, fontSize: 8, marginTop: 5, flexShrink: 0 }}>◆</span>
-                        <span style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", lineHeight: 1.6 }}>{line}</span>
+                        <span style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", lineHeight: 1.6 }}>{line}</span>
                       </div>
                     ))}
                   </div>
-                  <p style={{ fontSize: 12, color: "rgba(255,255,255,0.22)", lineHeight: 1.6, maxWidth: 400, margin: "0 auto" }}>
+                  <p style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", lineHeight: 1.6, maxWidth: 400, margin: "0 auto" }}>
                     Questions? Email hello@manitoubeachmichigan.com and we'll be in touch within a few hours.
                   </p>
                 </div>
               ) : (
                 <form onSubmit={handleSponsorClaim} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 4, textAlign: "center" }}>
+                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.75)", marginBottom: 4, textAlign: "center" }}>
                     Claim a page
                   </div>
                   {[
@@ -1021,13 +1021,13 @@ export default function FeaturedPage() {
                   ].map(({ key, placeholder, type, required }) => (
                     <input key={key} type={type} placeholder={placeholder} required={required}
                       value={sponsorForm[key]} onChange={e => setSF(key, e.target.value)}
-                      style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}
+                      style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, outline: "none" }}
                     />
                   ))}
 
                   {/* Page select */}
                   <select value={sponsorForm.page} onChange={e => setSF('page', e.target.value)}
-                    style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "#2D3B45", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}>
+                    style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "#2D3B45", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, outline: "none" }}>
                     {SPONSORABLE_PAGES.filter(p => !takenPageIds.has(p.id)).map(p => (
                       <option key={p.id} value={p.id}>{p.label}</option>
                     ))}
@@ -1036,26 +1036,26 @@ export default function FeaturedPage() {
                   {/* Tagline */}
                   <input type="text" placeholder="Your slogan or short description (optional)" maxLength={80}
                     value={sponsorForm.tagline} onChange={e => setSF('tagline', e.target.value)}
-                    style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: "none" }}
+                    style={{ padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: C.cream, fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, outline: "none" }}
                   />
 
                   {/* Logo upload */}
                   <div>
-                    <label style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.35)", letterSpacing: 0.5, display: "block", marginBottom: 8 }}>
+                    <label style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.75)", letterSpacing: 0.5, display: "block", marginBottom: 8 }}>
                       Logo or brand image (optional - you can send it after)
                     </label>
                     {logoPreview ? (
                       <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", background: "rgba(255,255,255,0.06)", borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)" }}>
                         <img src={logoPreview} alt="Logo preview" style={{ height: 40, maxWidth: 100, objectFit: "contain", filter: "brightness(2)" }} />
-                        <span style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{logoFile?.name}</span>
-                        <button type="button" onClick={() => { setLogoFile(null); setLogoPreview(''); }} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.35)", cursor: "pointer", fontSize: 20, padding: 0, lineHeight: 1 }}>×</button>
+                        <span style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{logoFile?.name}</span>
+                        <button type="button" onClick={() => { setLogoFile(null); setLogoPreview(''); }} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.75)", cursor: "pointer", fontSize: 20, padding: 0, lineHeight: 1 }}>×</button>
                       </div>
                     ) : (
                       <label style={{
                         display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
                         padding: "16px", borderRadius: 10, border: "1px dashed rgba(255,255,255,0.18)",
                         background: "rgba(255,255,255,0.03)", cursor: "pointer",
-                        fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.3)",
+                        fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: "rgba(255,255,255,0.75)",
                         transition: "all 0.18s",
                       }}
                         onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)"; e.currentTarget.style.color = "rgba(255,255,255,0.5)"; }}
@@ -1080,8 +1080,8 @@ export default function FeaturedPage() {
                         flex: 1, minWidth: 130, padding: "11px 8px", borderRadius: 8,
                         border: `1px solid ${sponsorForm.term === val ? C.sage : "rgba(255,255,255,0.12)"}`,
                         background: sponsorForm.term === val ? `${C.sage}22` : "rgba(255,255,255,0.04)",
-                        color: sponsorForm.term === val ? C.sage : "rgba(255,255,255,0.4)",
-                        fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: sponsorForm.term === val ? 700 : 400,
+                        color: sponsorForm.term === val ? C.sage : "rgba(255,255,255,0.75)",
+                        fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: sponsorForm.term === val ? 700 : 400,
                         cursor: "pointer", transition: "all 0.18s",
                       }}>{label}</button>
                     ))}
@@ -1091,18 +1091,18 @@ export default function FeaturedPage() {
                   <input aria-hidden="true" tabIndex={-1} autoComplete="off" value={sponsorForm._hp} onChange={e => setSF('_hp', e.target.value)} style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0, pointerEvents: "none" }} />
 
                   {/* Error */}
-                  {sponsorError && <p style={{ fontSize: 13, color: C.sunsetLight, textAlign: "center", margin: 0 }}>{sponsorError}</p>}
+                  {sponsorError && <p style={{ fontSize: 15, color: C.sunsetLight, textAlign: "center", margin: 0 }}>{sponsorError}</p>}
 
                   {/* Submit */}
                   <button type="submit" disabled={sponsorLoading} className="btn-animated" style={{
                     padding: "15px 0", borderRadius: 8, border: "none",
                     background: sponsorLoading ? C.textMuted : C.sage, color: C.cream,
-                    fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase",
+                    fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase",
                     cursor: sponsorLoading ? "default" : "pointer", transition: "background 0.2s",
                   }}>
                     {sponsorLoading ? "Processing…" : `Claim This Page - ${sponsorForm.term === 'annual' ? '$970/yr' : '$97/mo'}`}
                   </button>
-                  <p style={{ fontSize: 12, color: "rgba(255,255,255,0.28)", lineHeight: 1.6, textAlign: "center", margin: 0 }}>
+                  <p style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", lineHeight: 1.6, textAlign: "center", margin: 0 }}>
                     You'll be taken to secure checkout. Sponsor banner goes live within 24 hours. Cancel anytime.
                   </p>
                 </form>
@@ -1134,7 +1134,7 @@ export default function FeaturedPage() {
             <FadeIn key={i} delay={i * 60}>
               <div style={{ padding: "24px 0", borderBottom: `1px solid ${C.sand}` }}>
                 <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text, margin: "0 0 8px 0" }}>{faq.q}</h3>
-                <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: 0 }}>{faq.a}</p>
+                <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.7, margin: 0 }}>{faq.a}</p>
               </div>
             </FadeIn>
           ))}
@@ -1148,7 +1148,7 @@ export default function FeaturedPage() {
             <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.text, marginBottom: 6 }}>
               Customers are looking for you. Are you showing up?
             </div>
-            <div style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6 }}>
+            <div style={{ fontSize: 15, color: C.textLight, lineHeight: 1.6 }}>
               If you don't have a proper web presence, people move on to whoever does. We help local businesses get found - no tech knowledge needed.
             </div>
           </div>
@@ -1163,7 +1163,7 @@ export default function FeaturedPage() {
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: 28 }}>
             <SectionLabel light style={{ textAlign: "center", display: "block" }}>Want Even More Reach?</SectionLabel>
-            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.55)", margin: 0, fontFamily: "'Libre Franklin', sans-serif" }}>
+            <p style={{ fontSize: 17, color: "rgba(255,255,255,0.75)", margin: 0, fontFamily: "'Libre Franklin', sans-serif" }}>
               Beyond your listing - put your brand in front of the community through newsletters, page banners, and more.
             </p>
           </div>
@@ -1179,8 +1179,8 @@ export default function FeaturedPage() {
               >
                 <div style={{ fontSize: 22, marginBottom: 8 }}>{icon}</div>
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.cream, marginBottom: 6 }}>{title}</div>
-                <div style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.6, marginBottom: 10 }}>{desc}</div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>{price} →</div>
+                <div style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", lineHeight: 1.6, marginBottom: 10 }}>{desc}</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>{price} →</div>
               </a>
             ))}
           </div>

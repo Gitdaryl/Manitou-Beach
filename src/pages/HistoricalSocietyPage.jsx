@@ -84,7 +84,7 @@ function HistoricalSocietyHero() {
         <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(28px, 5.5vw, 56px)", fontWeight: 400, color: C.cream, lineHeight: 1.1, margin: "0 0 20px 0" }}>
           Manitou Beach Historic<br />Renovation Society
         </h1>
-        <p style={{ fontSize: "clamp(14px, 1.5vw, 17px)", color: "rgba(255,255,255,0.45)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto 32px" }}>
+        <p style={{ fontSize: "clamp(14px, 1.5vw, 17px)", color: "rgba(255,255,255,0.75)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto 32px" }}>
           Restoring the Village, cultivating the arts, conserving the land and water - MBHRS is the steward of Manitou Beach's past, present, and future.
         </p>
         <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
@@ -92,7 +92,7 @@ function HistoricalSocietyHero() {
             display: "inline-flex", alignItems: "center", gap: 8,
             padding: "12px 28px", borderRadius: 8,
             background: C.sunset, color: C.cream,
-            fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+            fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
           }}>
             Our Programs
           </a>
@@ -100,7 +100,7 @@ function HistoricalSocietyHero() {
             display: "inline-flex", alignItems: "center", gap: 8,
             padding: "12px 28px", borderRadius: 8,
             background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", color: C.cream,
-            fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+            fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
           }}>
             Gallery on Facebook
           </a>
@@ -131,18 +131,18 @@ function MBHRSTimelineSection() {
                   width: 42, height: 42, borderRadius: "50%",
                   background: `linear-gradient(135deg, ${C.sage}, ${C.sageDark})`,
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: 10, fontWeight: 700, color: C.cream, letterSpacing: 0.5,
+                  fontSize: 13, fontWeight: 700, color: C.cream, letterSpacing: 0.5,
                   fontFamily: "'Libre Franklin', sans-serif",
                   flexShrink: 0, zIndex: 1,
                 }}>
                   {item.year.length <= 4 ? item.year : "•"}
                 </div>
                 <div style={{ flex: 1, paddingTop: 4 }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sage, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 4 }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sage, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 4 }}>
                     {item.year}
                   </div>
                   <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.text, margin: "0 0 6px 0" }}>{item.title}</h3>
-                  <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.7, margin: 0 }}>{item.desc}</p>
+                  <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.7, margin: 0 }}>{item.desc}</p>
                 </div>
               </div>
             </FadeIn>
@@ -174,31 +174,31 @@ function MBHRSProgramsSection() {
                     <img src={prog.image} alt={prog.title} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
                   ) : (
                     <div style={{ position: "absolute", inset: 0, background: C.sand, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 2, textTransform: "uppercase", color: C.driftwood }}>Photo Coming</span>
+                      <span style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 2, textTransform: "uppercase", color: C.driftwood }}>Photo Coming</span>
                     </div>
                   )}
                 </div>
                 <div style={{ padding: "22px 24px" }}>
                 <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.text, margin: "0 0 8px 0" }}>{prog.title}</h3>
-                <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.7, margin: "0 0 12px 0" }}>{prog.desc}</p>
-                {prog.date && <div style={{ fontSize: 11, color: C.sage, fontWeight: 600, letterSpacing: 0.5 }}>{prog.date}</div>}
+                <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.7, margin: "0 0 12px 0" }}>{prog.desc}</p>
+                {prog.date && <div style={{ fontSize: 13, color: C.sage, fontWeight: 600, letterSpacing: 0.5 }}>{prog.date}</div>}
                 {prog.address && (
-                  <div style={{ fontSize: 12, color: C.textMuted, marginTop: 4 }}>
+                  <div style={{ fontSize: 14, color: C.textMuted, marginTop: 4 }}>
                     📍 {prog.address}
                   </div>
                 )}
                 {prog.phone && (
-                  <a href={`tel:${prog.phone}`} style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", display: "block", marginTop: 4 }}>
+                  <a href={`tel:${prog.phone}`} style={{ fontSize: 14, color: C.lakeBlue, textDecoration: "none", display: "block", marginTop: 4 }}>
                     📱 {prog.phone}
                   </a>
                 )}
                 {prog.email && (
-                  <a href={`mailto:${prog.email}`} style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", display: "block", marginTop: 4 }}>
+                  <a href={`mailto:${prog.email}`} style={{ fontSize: 14, color: C.lakeBlue, textDecoration: "none", display: "block", marginTop: 4 }}>
                     ✉️ {prog.email}
                   </a>
                 )}
                 {prog.link && (
-                  <a href={prog.link} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", display: "inline-block", marginTop: 6, fontWeight: 600 }}>
+                  <a href={prog.link} target="_blank" rel="noopener noreferrer" style={{ fontSize: 14, color: C.lakeBlue, textDecoration: "none", display: "inline-block", marginTop: 6, fontWeight: 600 }}>
                     Visit Website →
                   </a>
                 )}
@@ -231,7 +231,7 @@ function MBHRSBoatHouseFeature() {
           <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 5vw, 42px)", fontWeight: 400, color: C.cream, margin: "0 0 16px 0" }}>
             The Boat House Art Gallery
           </h2>
-          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 600, margin: "0 auto 24px" }}>
+          <p style={{ fontSize: 17, color: "rgba(255,255,255,0.75)", lineHeight: 1.8, maxWidth: 600, margin: "0 auto 24px" }}>
             The largest nonprofit art gallery in Lenawee County. Over 50 Michigan artists showcasing paintings, sculptures, photography, and mixed media. Located in the heart of the Village at 138 N. Lakeview Blvd.
           </p>
           <div style={{ display: "flex", gap: 24, justifyContent: "center", flexWrap: "wrap", marginBottom: 28 }}>
@@ -242,7 +242,7 @@ function MBHRSBoatHouseFeature() {
             ].map((s, i) => (
               <div key={i} style={{ textAlign: "center" }}>
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, color: C.cream }}>{s.value}</div>
-                <div style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", letterSpacing: 1, textTransform: "uppercase", fontFamily: "'Libre Franklin', sans-serif" }}>{s.label}</div>
+                <div style={{ fontSize: 13, color: "rgba(255,255,255,0.75)", letterSpacing: 1, textTransform: "uppercase", fontFamily: "'Libre Franklin', sans-serif" }}>{s.label}</div>
               </div>
             ))}
           </div>
@@ -251,7 +251,7 @@ function MBHRSBoatHouseFeature() {
               display: "inline-flex", alignItems: "center", gap: 8,
               padding: "12px 28px", borderRadius: 8,
               background: C.sunset, color: C.cream,
-              fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+              fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
             }}>
               Call (517) 224-1984
             </a>
@@ -259,7 +259,7 @@ function MBHRSBoatHouseFeature() {
               display: "inline-flex", alignItems: "center", gap: 8,
               padding: "12px 28px", borderRadius: 8,
               background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", color: C.cream,
-              fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+              fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
             }}>
               Email the Gallery
             </a>
@@ -277,7 +277,7 @@ function MBHRSSupportSection() {
         <FadeIn>
           <SectionLabel>Support the Mission</SectionLabel>
           <SectionTitle center>Help Preserve Manitou Beach</SectionTitle>
-          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, marginBottom: 32 }}>
+          <p style={{ fontSize: 17, color: C.textLight, lineHeight: 1.8, marginBottom: 32 }}>
             MBHRS is a volunteer-driven nonprofit. Every dollar goes toward restoring the Village, supporting the arts, and conserving our natural resources. Your support makes a direct impact.
           </p>
           <div style={{
@@ -293,14 +293,14 @@ function MBHRSSupportSection() {
                 "Attend events and spread the word",
                 "Connect local businesses with MBHRS programs",
               ].map((item, i) => (
-                <li key={i} style={{ fontSize: 14, color: C.textLight, lineHeight: 1.6, padding: "6px 0", paddingLeft: 20, position: "relative" }}>
+                <li key={i} style={{ fontSize: 16, color: C.textLight, lineHeight: 1.6, padding: "6px 0", paddingLeft: 20, position: "relative" }}>
                   <span style={{ position: "absolute", left: 0, color: C.sage }}>✓</span>
                   {item}
                 </li>
               ))}
             </ul>
           </div>
-          <p style={{ fontSize: 12, color: C.textMuted }}>
+          <p style={{ fontSize: 14, color: C.textMuted }}>
             MBHRS - 762 Manitou Road, Manitou Beach, MI 49253
           </p>
         </FadeIn>
@@ -324,7 +324,7 @@ function MBHRSSponsorForm() {
           <div style={{ textAlign: "center", marginBottom: 48 }}>
             <SectionLabel>Support Preservation</SectionLabel>
             <SectionTitle center>Become a Sponsor</SectionTitle>
-            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 520, margin: "0 auto" }}>
+            <p style={{ fontSize: 17, color: C.textLight, lineHeight: 1.8, maxWidth: 520, margin: "0 auto" }}>
               Your sponsorship preserves Manitou Beach history, supports the Boat House Art Gallery, and funds the Festival of the Arts - keeping our cultural heritage alive for the next generation.
             </p>
           </div>

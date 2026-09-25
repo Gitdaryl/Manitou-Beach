@@ -146,7 +146,7 @@ function GolfCountdown() {
           <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 5vw, 40px)", color: C.cream, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>
             {String(u.value).padStart(2, "0")}
           </div>
-          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunsetLight, marginTop: 6, fontFamily: "'Libre Franklin', sans-serif" }}>
+          <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunsetLight, marginTop: 6, fontFamily: "'Libre Franklin', sans-serif" }}>
             {u.label}
           </div>
         </div>
@@ -199,7 +199,7 @@ function MensClubHero() {
                 display: "inline-flex", alignItems: "center", gap: 8,
                 padding: "12px 28px", borderRadius: 8,
                 background: C.sunset, color: C.cream,
-                fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
               }}>
                 Event Details
               </a>
@@ -207,7 +207,7 @@ function MensClubHero() {
                 display: "inline-flex", alignItems: "center", gap: 8,
                 padding: "12px 28px", borderRadius: 8,
                 background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", color: C.cream,
-                fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
               }}>
                 Call to Sign Up
               </a>
@@ -222,7 +222,7 @@ function MensClubHero() {
             <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(32px, 6vw, 64px)", fontWeight: 400, color: C.cream, lineHeight: 1.05, margin: "0 0 20px 0" }}>
               Devils Lake & Round Lake<br />Men's Club
             </h1>
-            <p style={{ fontSize: "clamp(14px, 1.5vw, 17px)", color: "rgba(255,255,255,0.5)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto 32px" }}>
+            <p style={{ fontSize: "clamp(14px, 1.5vw, 17px)", color: "rgba(255,255,255,0.75)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto 32px" }}>
               Service, leadership, tradition, fellowship, and fun. Supporting needy families and community events across Manitou Beach since the days our grandfathers fished these lakes.
             </p>
             <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
@@ -230,7 +230,7 @@ function MensClubHero() {
                 display: "inline-flex", alignItems: "center", gap: 8,
                 padding: "12px 28px", borderRadius: 8,
                 background: C.sunset, color: C.cream,
-                fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
               }}>
                 Follow on Facebook
               </a>
@@ -238,7 +238,7 @@ function MensClubHero() {
                 display: "inline-flex", alignItems: "center", gap: 8,
                 padding: "12px 28px", borderRadius: 8,
                 background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", color: C.cream,
-                fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
               }}>
                 View Events
               </a>
@@ -268,7 +268,7 @@ function MensClubSponsorTicker() {
           {repeated.map((s, i) => (
             <span key={i} style={{
               fontFamily: "'Libre Franklin', sans-serif",
-              fontSize: 12, fontWeight: s.badge ? 700 : 500, letterSpacing: 1,
+              fontSize: 14, fontWeight: s.badge ? 700 : 500, letterSpacing: 1,
               textTransform: "uppercase", color: s.badge ? C.sunsetLight : "rgba(255,255,255,0.75)",
               padding: "0 20px", display: "inline-flex", alignItems: "center", gap: 20,
             }}>
@@ -299,7 +299,7 @@ function GolfOutingSection() {
           <div style={{ textAlign: "center", marginBottom: 40 }}>
             <SectionLabel>September 13, 2026</SectionLabel>
             <SectionTitle center>Golf Outing at Devils Lake Golf Course</SectionTitle>
-            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 560, margin: "0 auto" }}>
+            <p style={{ fontSize: 17, color: C.textLight, lineHeight: 1.8, maxWidth: 560, margin: "0 auto" }}>
               Grab your foursome and join us for 18 holes, cart included, on the shore of Devils Lake. Every dollar raised goes right back into the community through the club's charitable programs.
             </p>
           </div>
@@ -309,10 +309,10 @@ function GolfOutingSection() {
           {details.map((d, i) => (
             <FadeIn key={d.label} delay={i * 60} direction="scale">
               <div style={{ background: C.cream, borderRadius: 12, padding: "20px 12px", textAlign: "center", border: `1px solid ${C.sand}`, height: "100%" }}>
-                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sage, marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>
+                <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sage, marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>
                   {d.label}
                 </div>
-                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: C.text }}>{d.value}</div>
+                <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, color: C.text }}>{d.value}</div>
               </div>
             </FadeIn>
           ))}
@@ -328,7 +328,7 @@ function GolfOutingSection() {
               <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.cream, marginBottom: 6 }}>
                 Hole-in-One: Win a 2-Year Lease on a Ford Bronco Sport
               </div>
-              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", lineHeight: 1.6 }}>
+              <div style={{ fontSize: 15, color: "rgba(255,255,255,0.7)", lineHeight: 1.6 }}>
                 Hole-in-one prize packages courtesy of Ford / Lincoln and Bell. Ace the contest hole and drive home a Bronco Sport. Plus a chance to win a Yeti cooler on the course.
               </div>
             </div>
@@ -347,7 +347,7 @@ function GolfOutingSection() {
               <div style={{ background: C.cream, borderRadius: 14, border: `1px solid ${C.sand}`, padding: "20px 22px" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
                   <span style={{ width: 10, height: 10, borderRadius: "50%", background: tier.accent, flexShrink: 0 }} />
-                  <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.textLight, fontFamily: "'Libre Franklin', sans-serif" }}>
+                  <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.textLight, fontFamily: "'Libre Franklin', sans-serif" }}>
                     {tier.tier} Sponsor
                   </span>
                 </div>
@@ -367,7 +367,7 @@ function GolfOutingSection() {
                       )}
                       <div>
                         <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.text }}>{s.name}</div>
-                        {s.sub && <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.5, marginTop: 2 }}>{s.sub}</div>}
+                        {s.sub && <div style={{ fontSize: 14, color: C.textMuted, lineHeight: 1.5, marginTop: 2 }}>{s.sub}</div>}
                       </div>
                     </Tag>
                   );})}
@@ -383,11 +383,11 @@ function GolfOutingSection() {
               display: "inline-flex", alignItems: "center", gap: 8,
               padding: "14px 32px", borderRadius: 8,
               background: C.sunset, color: C.cream,
-              fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+              fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
             }}>
               Put Your Business on the Course
             </a>
-            <div style={{ fontSize: 13, color: C.textMuted, marginTop: 10 }}>
+            <div style={{ fontSize: 15, color: C.textMuted, marginTop: 10 }}>
               Join these sponsors and support the club's charitable programs
             </div>
           </div>
@@ -406,7 +406,7 @@ function GolfOutingSection() {
                 display: "inline-flex", alignItems: "center", gap: 8,
                 padding: "11px 22px", borderRadius: 8,
                 background: C.sage, color: C.cream,
-                fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 0.5, textDecoration: "none",
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700, letterSpacing: 0.5, textDecoration: "none",
               }}>
                 Call {GOLF_OUTING.venue} · {GOLF_OUTING.phone}
               </a>
@@ -422,7 +422,7 @@ function GolfOutingSection() {
                 display: "inline-flex", alignItems: "center", gap: 8,
                 padding: "11px 22px", borderRadius: 8,
                 background: C.sunset, color: C.cream,
-                fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 0.5, textDecoration: "none",
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700, letterSpacing: 0.5, textDecoration: "none",
               }}>
                 Email jborton1031@gmail.com
               </a>
@@ -432,7 +432,7 @@ function GolfOutingSection() {
 
         <FadeIn delay={240}>
           <div style={{ textAlign: "center" }}>
-            <p style={{ fontSize: 13, color: C.textMuted, lineHeight: 1.7, marginBottom: 12 }}>
+            <p style={{ fontSize: 15, color: C.textMuted, lineHeight: 1.7, marginBottom: 12 }}>
               {GOLF_OUTING.venue} · {GOLF_OUTING.address}
             </p>
             <p style={{ fontFamily: "'Caveat', cursive", fontSize: 19, color: C.sage, margin: 0 }}>
@@ -462,13 +462,13 @@ function MensClubStatsSection() {
                 background: C.warmWhite, borderRadius: 12, padding: "22px 16px", textAlign: "center",
                 border: `1px solid ${C.sand}`,
               }}>
-                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sage, marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>
+                <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sage, marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>
                   {stat.label}
                 </div>
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text, whiteSpace: "nowrap" }}>
                   {stat.value}
                 </div>
-                <div style={{ fontSize: 11, color: C.textMuted, marginTop: 2 }}>{stat.sub}</div>
+                <div style={{ fontSize: 13, color: C.textMuted, marginTop: 2 }}>{stat.sub}</div>
               </div>
             </FadeIn>
           ))}
@@ -489,10 +489,10 @@ function MensClubMissionSection() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 32, marginTop: 40 }}>
           <FadeIn delay={100} direction="left">
             <div>
-              <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, margin: "0 0 18px 0" }}>
+              <p style={{ fontSize: 17, color: C.textLight, lineHeight: 1.8, margin: "0 0 18px 0" }}>
                 The Devils Lake & Round Lake Men's Club is a 501(c)(3) nonprofit dedicated to improving life in the Manitou Beach community. Through the legendary Tip-Up Festival, the Fourth of July Firecracker 7K, the September Golf Outing, and the Halloween Hot Dog Roast, the club raises funds that go directly back to the people who need it most.
               </p>
-              <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, margin: 0 }}>
+              <p style={{ fontSize: 17, color: C.textLight, lineHeight: 1.8, margin: 0 }}>
                 From buying laptops for college-bound students to donating thousands in toys through Toys for Tots, partnering with law enforcement for Shop with a Hero, and delivering Christmas gift baskets to families in need - the Men's Club is the backbone of Manitou Beach's charitable community.
               </p>
             </div>
@@ -503,8 +503,8 @@ function MensClubMissionSection() {
                 <div key={i} style={{ display: "flex", gap: 14, alignItems: "flex-start", padding: "14px 16px", background: C.cream, borderRadius: 10, border: `1px solid ${C.sand}` }}>
                   <span className="mono-icon" style={{ fontSize: 24, lineHeight: 1, flexShrink: 0 }}>{p.icon}</span>
                   <div>
-                    <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, fontWeight: 400, color: C.text }}>{p.title}</div>
-                    <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.5, marginTop: 2 }}>{p.desc}</div>
+                    <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text }}>{p.title}</div>
+                    <div style={{ fontSize: 14, color: C.textMuted, lineHeight: 1.5, marginTop: 2 }}>{p.desc}</div>
                   </div>
                 </div>
               ))}
@@ -545,8 +545,8 @@ function MensClubEventsSection() {
                 )}
                 <div style={{ flex: 1, padding: "22px 22px" }}>
                   <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.cream, margin: "0 0 4px 0" }}>{evt.title}</h3>
-                  <div style={{ fontSize: 12, color: C.sunsetLight, fontWeight: 600, letterSpacing: 0.5, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>{evt.date}</div>
-                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.78)", lineHeight: 1.7, margin: 0 }}>{evt.desc}</p>
+                  <div style={{ fontSize: 14, color: C.sunsetLight, fontWeight: 600, letterSpacing: 0.5, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>{evt.date}</div>
+                  <p style={{ fontSize: 15, color: "rgba(255,255,255,0.78)", lineHeight: 1.7, margin: 0 }}>{evt.desc}</p>
                 </div>
               </div>
             </FadeIn>
@@ -593,7 +593,7 @@ function MensClubGallerySection() {
                   <div style={{
                     position: "absolute", bottom: 0, left: 0, right: 0,
                     padding: "10px 14px", background: "linear-gradient(transparent, rgba(10,18,24,0.8))",
-                    fontSize: 12, color: C.cream, fontFamily: "'Libre Franklin', sans-serif",
+                    fontSize: 14, color: C.cream, fontFamily: "'Libre Franklin', sans-serif",
                   }}>
                     {photo.caption}
                   </div>
@@ -647,7 +647,7 @@ function MensClubSponsorWall() {
           <div style={{ textAlign: "center", marginBottom: 40 }}>
             <SectionLabel>Thank You</SectionLabel>
             <SectionTitle center>2026-2027 Yearly Sponsors</SectionTitle>
-            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 560, margin: "0 auto" }}>
+            <p style={{ fontSize: 17, color: C.textLight, lineHeight: 1.8, maxWidth: 560, margin: "0 auto" }}>
               These {MENS_CLUB_YEARLY_SPONSORS.length} businesses and families fund everything the club does - from student laptops to the fireworks over the lake. When you see their name, thank them.
             </p>
           </div>
@@ -658,7 +658,7 @@ function MensClubSponsorWall() {
             background: C.cream, border: `1px solid ${C.sand}`, borderRadius: 16, padding: "28px 28px",
           }}>
             {MENS_CLUB_YEARLY_SPONSORS.map((s) => (
-              <div key={s.name} style={{ display: "flex", gap: 9, alignItems: "flex-start", padding: "5px 0", fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, lineHeight: 1.45 }}>
+              <div key={s.name} style={{ display: "flex", gap: 9, alignItems: "flex-start", padding: "5px 0", fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, lineHeight: 1.45 }}>
                 <span style={{ width: 5, height: 5, borderRadius: "50%", background: C.sunset, flexShrink: 0, marginTop: 6 }} />
                 {s.url ? (
                   <a href={s.url} target="_blank" rel="noopener noreferrer" className="link-hover-underline" style={{ color: C.lakeDark, textDecoration: "none" }}>
@@ -672,7 +672,7 @@ function MensClubSponsorWall() {
           </div>
         </FadeIn>
         <FadeIn delay={150}>
-          <p style={{ textAlign: "center", fontSize: 14, color: C.textLight, marginTop: 24, marginBottom: 0 }}>
+          <p style={{ textAlign: "center", fontSize: 16, color: C.textLight, marginTop: 24, marginBottom: 0 }}>
             Want your name on this wall, the race shirts, and the event banner?{" "}
             <a href="#become-a-sponsor" style={{ color: C.sunset, fontWeight: 600, textDecoration: "none" }}>Become a Yearly Sponsor for $130 →</a>
           </p>
@@ -690,7 +690,7 @@ function MensClubSponsorForm() {
           <div style={{ textAlign: "center", marginBottom: 40 }}>
             <SectionLabel>Support the Mission</SectionLabel>
             <SectionTitle center>Become a Yearly Sponsor</SectionTitle>
-            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 560, margin: "0 auto" }}>
+            <p style={{ fontSize: 17, color: C.textLight, lineHeight: 1.8, maxWidth: 560, margin: "0 auto" }}>
               For <strong style={{ color: C.text }}>$130 a year</strong>, your name travels with the club through every season - and every dollar funds laptops for students, Toys for Tots, Shop with a Hero, and families in need right here at the lakes.
             </p>
           </div>
@@ -702,7 +702,7 @@ function MensClubSponsorForm() {
               <div style={{ display: "flex", gap: 14, alignItems: "flex-start", padding: "18px 20px", background: C.warmWhite, borderRadius: 12, border: `1px solid ${C.sand}`, height: "100%" }}>
                 <span className="mono-icon" style={{ fontSize: 26, lineHeight: 1, flexShrink: 0 }}>{p.icon}</span>
                 <div>
-                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: C.text }}>{p.title}</div>
+                  <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, color: C.text }}>{p.title}</div>
                   <div style={{ fontSize: 12.5, color: C.textLight, lineHeight: 1.6, marginTop: 3 }}>{p.desc}</div>
                 </div>
               </div>
@@ -720,7 +720,7 @@ function MensClubSponsorForm() {
               <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.cream, marginBottom: 4 }}>
                 Sponsorships are due by May 1st
               </div>
-              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", lineHeight: 1.6 }}>
+              <div style={{ fontSize: 15, color: "rgba(255,255,255,0.7)", lineHeight: 1.6 }}>
                 That's the cutoff to get your name on the 7K shirts, your golf hole sign, and the event banner for the year.
               </div>
             </div>
@@ -732,7 +732,7 @@ function MensClubSponsorForm() {
             <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.text, marginBottom: 6 }}>
               Apply online
             </div>
-            <p style={{ fontSize: 13, color: C.textMuted, lineHeight: 1.7, maxWidth: 520, margin: "0 auto" }}>
+            <p style={{ fontSize: 15, color: C.textMuted, lineHeight: 1.7, maxWidth: 520, margin: "0 auto" }}>
               Enter your name <em>exactly as you want it to appear</em> on the banner and t-shirt. Prefer paper? Mail your form and check, payable to <strong style={{ color: C.textLight }}>The Devils Lake & Round Lake Men's Club</strong>, to 3171 Round Lake Hwy., Manitou Beach, MI 49253.
             </p>
           </div>
@@ -756,7 +756,7 @@ function MensClubGetInvolved() {
         <FadeIn>
           <SectionLabel>Get Involved</SectionLabel>
           <SectionTitle center>Join the Club</SectionTitle>
-          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, marginBottom: 32 }}>
+          <p style={{ fontSize: 17, color: C.textLight, lineHeight: 1.8, marginBottom: 32 }}>
             Whether you want to volunteer at Tip-Up, help with the fireworks, or just meet good people who care about this community - the Men's Club is always looking for new members.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
@@ -764,7 +764,7 @@ function MensClubGetInvolved() {
               display: "inline-flex", alignItems: "center", gap: 8,
               padding: "14px 32px", borderRadius: 8,
               background: C.sunset, color: C.cream,
-              fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+              fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
             }}>
               Message on Facebook
             </a>
@@ -772,12 +772,12 @@ function MensClubGetInvolved() {
               display: "inline-flex", alignItems: "center", gap: 8,
               padding: "14px 32px", borderRadius: 8,
               background: "transparent", border: `1.5px solid ${C.sand}`, color: C.text,
-              fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+              fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
             }}>
               Get Directions
             </a>
           </div>
-          <p style={{ fontSize: 12, color: C.textMuted, marginTop: 20 }}>
+          <p style={{ fontSize: 14, color: C.textMuted, marginTop: 20 }}>
             3171 Round Lake Hwy, Manitou Beach, MI 49253
           </p>
         </FadeIn>

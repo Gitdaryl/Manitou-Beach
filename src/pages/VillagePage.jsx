@@ -30,7 +30,7 @@ function VillageHero() {
 
       <div style={{ maxWidth: 960, margin: "0 auto", position: "relative", zIndex: 1 }}>
         <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? "none" : "translateY(24px)", transition: "all 0.9s ease" }}>
-          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 28 }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.75)", marginBottom: 28 }}>
             Shops · Cafes · Gifts · Wine Tasting
           </div>
           <h1 style={{
@@ -42,7 +42,7 @@ function VillageHero() {
           </h1>
           <p style={{
             fontFamily: "'Libre Franklin', sans-serif", fontSize: "clamp(14px, 1.6vw, 17px)",
-            color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 480, margin: "0 0 28px 0",
+            color: "rgba(255,255,255,0.75)", lineHeight: 1.8, maxWidth: 480, margin: "0 0 28px 0",
           }}>
             A walkable strip of boutique shops, a from-scratch cafe, satellite wine tasting rooms, and the iconic lighthouse replica. This is where Manitou Beach comes to life on foot.
           </p>
@@ -88,14 +88,14 @@ function BizCard({ biz, i }) {
             <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.cream, margin: "0 0 4px 0", lineHeight: 1.3 }}>
               {biz.name}
             </h3>
-            <div style={{ fontSize: 11, color: color, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", marginBottom: 8 }}>
+            <div style={{ fontSize: 13, color: color, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", marginBottom: 8 }}>
               {biz.category}
             </div>
           </div>
         </div>
 
         {/* Description with clamp */}
-        <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, margin: "10px 0 0 0", whiteSpace: "pre-line" }}>
+        <p style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", lineHeight: 1.7, margin: "10px 0 0 0", whiteSpace: "pre-line" }}>
           {isLong && !expanded ? biz.description.slice(0, DESC_CLAMP_CHARS).trimEnd() + '...' : biz.description}
         </p>
         {isLong && (
@@ -103,7 +103,7 @@ function BizCard({ biz, i }) {
             onClick={() => setExpanded(v => !v)}
             style={{
               background: "none", border: "none", padding: 0, marginTop: 4, cursor: "pointer",
-              fontSize: 11, color: color, fontFamily: "'Libre Franklin', sans-serif",
+              fontSize: 13, color: color, fontFamily: "'Libre Franklin', sans-serif",
               fontWeight: 600, letterSpacing: 0.5, textAlign: "left",
             }}
           >
@@ -114,12 +114,12 @@ function BizCard({ biz, i }) {
         {/* Footer — address, phone, website link */}
         <div style={{ marginTop: "auto", paddingTop: 14 }}>
           {biz.address && (
-            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", marginBottom: 4 }}>
+            <div style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", marginBottom: 4 }}>
               📍 {biz.address}
             </div>
           )}
           {biz.phone && (
-            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", marginBottom: biz.website ? 10 : 0 }}>
+            <div style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", marginBottom: biz.website ? 10 : 0 }}>
               📞 {formatPhone(biz.phone)}
             </div>
           )}
@@ -128,7 +128,7 @@ function BizCard({ biz, i }) {
               className="link-hover-underline"
               onClick={() => window.open(biz.website, "_blank")}
               style={{
-                fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700,
+                fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700,
                 letterSpacing: 1.5, color: C.sunsetLight, textTransform: "uppercase", cursor: "pointer",
               }}
             >
@@ -158,13 +158,13 @@ function VillageMapSection() {
         <FadeIn>
           <SectionLabel light>The Strip</SectionLabel>
           <SectionTitle light>Walk the Village</SectionTitle>
-          <p style={{ fontSize: 14, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, maxWidth: 520, marginBottom: 48 }}>
+          <p style={{ fontSize: 16, color: "rgba(255,255,255,0.75)", lineHeight: 1.7, maxWidth: 520, marginBottom: 48 }}>
             Everything's within a five-minute walk. Park once, stroll the Village, and hit every shop. That's the beauty of a village built to human scale.
           </p>
         </FadeIn>
 
         {loading && (
-          <div style={{ textAlign: "center", padding: "40px 0", color: "rgba(255,255,255,0.3)", fontSize: 14 }}>
+          <div style={{ textAlign: "center", padding: "40px 0", color: "rgba(255,255,255,0.75)", fontSize: 16 }}>
             Loading village businesses...
           </div>
         )}
@@ -192,7 +192,7 @@ function VillageHistorySection() {
           <FadeIn delay={100} direction="left">
             <div style={{ background: C.warmWhite, borderRadius: 14, padding: "32px 28px", border: `1px solid ${C.sand}` }}>
               <div style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.sage, marginBottom: 10 }}>The Resort Era</div>
-              <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: 0 }}>
+              <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.7, margin: 0 }}>
                 By the 1870s, Manitou Beach had hotels, bathhouses, a dance pavilion, and two railroad stations bringing tourists from Detroit and beyond. Steam launches carried passengers between Devils Lake and Round Lake through a dredged channel. The village was the social centre of it all.
               </p>
             </div>
@@ -200,7 +200,7 @@ function VillageHistorySection() {
           <FadeIn delay={200} direction="right">
             <div style={{ background: C.warmWhite, borderRadius: 14, padding: "32px 28px", border: `1px solid ${C.sand}` }}>
               <div style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.sunset, marginBottom: 10 }}>The Revival</div>
-              <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: 0 }}>
+              <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.7, margin: 0 }}>
                 After decades of quiet, the village is finding its rhythm again. Independent shop owners - many of them locals who grew up on the lake - are filling storefronts with boutiques, cafes, and creative businesses. The lighthouse replica stands as a reminder: this place was always meant to draw people in.
               </p>
             </div>
@@ -208,7 +208,7 @@ function VillageHistorySection() {
           <FadeIn delay={300} direction="left">
             <div style={{ background: C.warmWhite, borderRadius: 14, padding: "32px 28px", border: `1px solid ${C.sand}` }}>
               <div style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.lakeBlue, marginBottom: 10 }}>The Lighthouse</div>
-              <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: 0 }}>
+              <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.7, margin: 0 }}>
                 Yes, it's landlocked. No, it never guided ships. But the lighthouse replica at Devils Lake View Living has become the most photographed landmark in Manitou Beach - a beacon for the village and a symbol of a community that builds things worth looking at.
               </p>
             </div>
@@ -216,7 +216,7 @@ function VillageHistorySection() {
           <FadeIn delay={400} direction="right">
             <div style={{ background: C.warmWhite, borderRadius: 14, padding: "32px 28px", border: `1px solid ${C.sand}` }}>
               <div style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: "#8B5E3C", marginBottom: 10 }}>Wine Country Meets Lake Country</div>
-              <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: 0 }}>
+              <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.7, margin: 0 }}>
                 Three village shops are now pouring as satellite tasting rooms for Michigan wineries. Devils Lake View Living pours organic Brengman Family Wines from Traverse City, Ang & Co pours Chateau Fontaine from the Leelanau Peninsula, and The Boathouse at Michigan Gypsy pours Amoritas Vineyards - with Faust House and Cherry Creek Cellars joining soon. A new chapter for the village, and a reason to visit every weekend.
               </p>
             </div>
@@ -240,7 +240,7 @@ function VillageVisitCTA() {
           <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(26px, 4vw, 42px)", fontWeight: 400, color: C.cream, margin: "0 0 16px 0", lineHeight: 1.2 }}>
             Come See It for Yourself
           </h2>
-          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, margin: "0 0 32px 0" }}>
+          <p style={{ fontSize: 17, color: "rgba(255,255,255,0.75)", lineHeight: 1.7, margin: "0 0 32px 0" }}>
             The village is on Devils Lake Highway and Lakeview Boulevard in Manitou Beach. Most shops are open Thursday through Sunday - but check individual hours before making the trip.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>

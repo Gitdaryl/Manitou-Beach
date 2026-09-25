@@ -144,12 +144,12 @@ export default function WineryProfilePage() {
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, color: C.dusk, marginBottom: 10 }}>
             Venue not found
           </h1>
-          <p style={{ color: C.textMuted, fontSize: 15, marginBottom: 32, maxWidth: 360, margin: '0 auto 32px' }}>
+          <p style={{ color: C.textMuted, fontSize: 17, marginBottom: 32, maxWidth: 360, margin: '0 auto 32px' }}>
             Head back to browse all wineries and trail stops.
           </p>
           <button
             onClick={() => navigate('/wineries')}
-            style={{ background: C.sage, color: '#fff', border: 'none', borderRadius: 10, padding: '13px 28px', cursor: 'pointer', fontSize: 15, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif" }}
+            style={{ background: C.sage, color: '#fff', border: 'none', borderRadius: 10, padding: '13px 28px', cursor: 'pointer', fontSize: 17, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif" }}
           >
             Back to Wine Trail
           </button>
@@ -180,7 +180,7 @@ export default function WineryProfilePage() {
                 }}>
                   🍷
                 </div>
-                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', letterSpacing: 1 }}>
+                <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)', letterSpacing: 1 }}>
                   {venue.name}
                 </div>
               </div>
@@ -199,7 +199,7 @@ export default function WineryProfilePage() {
                 background: 'rgba(0,0,0,0.35)', backdropFilter: 'blur(8px)',
                 border: '1px solid rgba(255,255,255,0.2)', color: '#fff',
                 borderRadius: 20, padding: '7px 14px 7px 10px',
-                cursor: 'pointer', fontSize: 13, fontWeight: 600,
+                cursor: 'pointer', fontSize: 15, fontWeight: 600,
                 display: 'flex', alignItems: 'center', gap: 5,
                 fontFamily: "'Libre Franklin', sans-serif",
               }}
@@ -217,7 +217,7 @@ export default function WineryProfilePage() {
                 <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap', marginBottom: 8 }}>
                   <span style={{
                     background: `${accent}18`, color: accent,
-                    borderRadius: 20, padding: '3px 11px', fontSize: 11, fontWeight: 700,
+                    borderRadius: 20, padding: '3px 11px', fontSize: 13, fontWeight: 700,
                     letterSpacing: 0.5, textTransform: 'uppercase',
                   }}>
                     {venue.type}
@@ -225,7 +225,7 @@ export default function WineryProfilePage() {
                   {venue.section && SECTION_LABELS[venue.section] && (
                     <span style={{
                       background: `${C.driftwood}18`, color: C.driftwood,
-                      borderRadius: 20, padding: '3px 11px', fontSize: 11, fontWeight: 700, letterSpacing: 0.5,
+                      borderRadius: 20, padding: '3px 11px', fontSize: 13, fontWeight: 700, letterSpacing: 0.5,
                     }}>
                       {SECTION_LABELS[venue.section]}
                     </span>
@@ -242,7 +242,7 @@ export default function WineryProfilePage() {
                 </h1>
 
                 {/* Location */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: C.textMuted, fontSize: 13, flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: C.textMuted, fontSize: 15, flexWrap: 'wrap' }}>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
                   </svg>
@@ -317,7 +317,7 @@ export default function WineryProfilePage() {
                     background: `${accent}10`, borderRadius: 8, padding: '10px 14px',
                   }}>
                     <span style={{ fontSize: 16, flexShrink: 0 }}>✨</span>
-                    <span style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6 }}>{venue.highlight}</span>
+                    <span style={{ fontSize: 15, color: C.textLight, lineHeight: 1.6 }}>{venue.highlight}</span>
                   </div>
                 )}
               </div>
@@ -336,9 +336,9 @@ export default function WineryProfilePage() {
                       </svg>
                     </div>
                     <div>
-                      <div style={{ fontSize: 15, fontWeight: 600, color: C.text }}>{venue.hours}</div>
+                      <div style={{ fontSize: 17, fontWeight: 600, color: C.text }}>{venue.hours}</div>
                       {venue.openingDate && (
-                        <div style={{ fontSize: 12, color: C.textMuted, marginTop: 2 }}>
+                        <div style={{ fontSize: 14, color: C.textMuted, marginTop: 2 }}>
                           Opening {venue.openingDate}
                         </div>
                       )}
@@ -365,10 +365,10 @@ export default function WineryProfilePage() {
                         }}>
                           🍷
                         </div>
-                        <div style={{ fontSize: 15, fontWeight: 700, color: C.dusk }}>{brand.name}</div>
+                        <div style={{ fontSize: 17, fontWeight: 700, color: C.dusk }}>{brand.name}</div>
                       </div>
                       {brand.description && (
-                        <p style={{ margin: 0, fontSize: 13, color: C.textLight, lineHeight: 1.65 }}>
+                        <p style={{ margin: 0, fontSize: 15, color: C.textLight, lineHeight: 1.65 }}>
                           {brand.description}
                         </p>
                       )}
@@ -426,9 +426,9 @@ export default function WineryProfilePage() {
                           </svg>
                         </div>
                         <div>
-                          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 2 }}>Address</div>
-                          <div style={{ fontSize: 14, color: C.lakeBlue, fontWeight: 500 }}>
-                            {venue.address} <span style={{ fontSize: 11, opacity: 0.7 }}>↗</span>
+                          <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 2 }}>Address</div>
+                          <div style={{ fontSize: 16, color: C.lakeBlue, fontWeight: 500 }}>
+                            {venue.address} <span style={{ fontSize: 13, opacity: 0.7 }}>↗</span>
                           </div>
                         </div>
                       </a>
@@ -446,8 +446,8 @@ export default function WineryProfilePage() {
                           </svg>
                         </div>
                         <div>
-                          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 2 }}>Phone</div>
-                          <div style={{ fontSize: 14, color: C.lakeBlue, fontWeight: 500 }}>{venue.phone}</div>
+                          <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 2 }}>Phone</div>
+                          <div style={{ fontSize: 16, color: C.lakeBlue, fontWeight: 500 }}>{venue.phone}</div>
                         </div>
                       </a>
                     )}
@@ -465,9 +465,9 @@ export default function WineryProfilePage() {
                           </svg>
                         </div>
                         <div>
-                          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 2 }}>Website</div>
-                          <div style={{ fontSize: 14, color: C.lakeBlue, fontWeight: 500 }}>
-                            {venue.website.replace(/^https?:\/\//, '').replace(/\/$/, '')} <span style={{ fontSize: 11, opacity: 0.7 }}>↗</span>
+                          <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 2 }}>Website</div>
+                          <div style={{ fontSize: 16, color: C.lakeBlue, fontWeight: 500 }}>
+                            {venue.website.replace(/^https?:\/\//, '').replace(/\/$/, '')} <span style={{ fontSize: 13, opacity: 0.7 }}>↗</span>
                           </div>
                         </div>
                       </a>
@@ -487,13 +487,13 @@ export default function WineryProfilePage() {
                 <div style={{ position: 'relative', display: 'flex', gap: 14, alignItems: 'flex-start' }}>
                   <div style={{ fontSize: 28, flexShrink: 0, lineHeight: 1 }}>🍷</div>
                   <div>
-                    <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, fontWeight: 700, color: '#fff', marginBottom: 5 }}>
+                    <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 700, color: '#fff', marginBottom: 5 }}>
                       Irish Hills Wine Trail
                     </div>
-                    <p style={{ margin: '0 0 12px', fontSize: 13, color: 'rgba(255,255,255,0.6)', lineHeight: 1.65 }}>
+                    <p style={{ margin: '0 0 12px', fontSize: 15, color: 'rgba(255,255,255,0.6)', lineHeight: 1.65 }}>
                       {venue.name} is part of the Manitou Beach Michigan wine and brewery trail - Michigan wine country meets lake country in the Irish Hills.
                     </p>
-                    <a href="/wineries" style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.5)', textDecoration: 'none', letterSpacing: 0.3 }}>
+                    <a href="/wineries" style={{ fontSize: 14, fontWeight: 700, color: 'rgba(255,255,255,0.75)', textDecoration: 'none', letterSpacing: 0.3 }}>
                       Explore the full trail →
                     </a>
                   </div>

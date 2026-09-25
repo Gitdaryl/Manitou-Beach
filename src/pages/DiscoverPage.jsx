@@ -222,13 +222,13 @@ export default function DiscoverPage() {
       <div style={{ backgroundImage: 'url(/images/DL-boat.webp)', backgroundSize: 'cover', backgroundPosition: 'center 40%', position: 'relative', minHeight: 'clamp(280px, 40vh, 380px)', display: 'flex', alignItems: 'flex-end' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(10,18,24,0.55) 0%, rgba(10,18,24,0.88) 100%)' }} />
         <div className="discover-hero-inner" style={{ position: 'relative', zIndex: 1, maxWidth: 960, margin: '0 auto', width: '100%' }}>
-          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 5, textTransform: 'uppercase', color: 'rgba(255,255,255,0.32)', marginBottom: 10 }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 5, textTransform: 'uppercase', color: 'rgba(255,255,255,0.75)', marginBottom: 10 }}>
             Manitou Beach · Devils Lake · Michigan
           </div>
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(28px, 5vw, 52px)', fontWeight: 400, color: C.cream, margin: '0 0 8px 0', lineHeight: 1.1 }}>
             Discover Manitou Beach
           </h1>
-          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: 'rgba(255,255,255,0.6)', margin: 0 }}>
+          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, color: 'rgba(255,255,255,0.6)', margin: 0 }}>
             Food, healthcare, schools, water access, wineries, community - all in one place.
           </p>
         </div>
@@ -243,7 +243,7 @@ export default function DiscoverPage() {
               <button key={cat.id} data-chip-active={active || undefined} onClick={() => cat.id === 'stays' ? window.location.href = '/stays' : setActiveCategory(cat.id)} style={{
                 flexShrink: 0, background: active ? cat.color : '#fff', color: active ? '#fff' : C.text,
                 border: `1.5px solid ${active ? cat.color : C.sand}`, borderRadius: 24, padding: '6px 14px',
-                fontSize: 13, fontWeight: active ? 700 : 500, fontFamily: "'Libre Franklin', sans-serif",
+                fontSize: 15, fontWeight: active ? 700 : 500, fontFamily: "'Libre Franklin', sans-serif",
                 cursor: 'pointer', transition: 'all 0.18s', whiteSpace: 'nowrap',
                 display: 'flex', alignItems: 'center', gap: 6,
                 boxShadow: active ? `0 2px 8px ${cat.color}40` : 'none',
@@ -259,7 +259,7 @@ export default function DiscoverPage() {
           <a href="/food-trucks" style={{
             flexShrink: 0, background: '#fff', color: C.text,
             border: `1.5px solid ${C.sand}`, borderRadius: 24, padding: '6px 14px',
-            fontSize: 13, fontWeight: 500, fontFamily: "'Libre Franklin', sans-serif",
+            fontSize: 15, fontWeight: 500, fontFamily: "'Libre Franklin', sans-serif",
             cursor: 'pointer', transition: 'all 0.18s', whiteSpace: 'nowrap',
             display: 'flex', alignItems: 'center', gap: 6, textDecoration: 'none',
           }}>
@@ -275,20 +275,20 @@ export default function DiscoverPage() {
         {!mapReady && !mapError && (
           <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f2ede3', flexDirection: 'column', gap: 12 }}>
             <div style={{ width: 36, height: 36, borderRadius: '50%', border: `3px solid ${C.sage}`, borderTopColor: 'transparent', animation: 'discspin 0.8s linear infinite' }} />
-            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted }}>Loading map…</div>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.textMuted }}>Loading map…</div>
           </div>
         )}
         {mapError && (
           <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f2ede3', flexDirection: 'column', gap: 10, padding: 24, textAlign: 'center' }}>
             <div style={{ fontSize: 28 }}>🗺️</div>
-            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: '#c05a5a', fontWeight: 600, maxWidth: 440 }}>{mapError}</div>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: '#c05a5a', fontWeight: 600, maxWidth: 440 }}>{mapError}</div>
           </div>
         )}
         {activeCategory !== 'all' && (
           <div style={{ position: 'absolute', top: 12, left: 12, background: 'rgba(250,246,239,0.96)', backdropFilter: 'blur(8px)', borderRadius: 8, padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 2px 12px rgba(0,0,0,0.12)' }}>
             <div style={{ width: 10, height: 10, borderRadius: '50%', background: activeCat.color, flexShrink: 0 }} />
-            <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, color: C.dusk }}>{activeCat.label}</span>
-            <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted }}>· {filteredPois.length} location{filteredPois.length !== 1 ? 's' : ''}</span>
+            <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700, color: C.dusk }}>{activeCat.label}</span>
+            <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted }}>· {filteredPois.length} location{filteredPois.length !== 1 ? 's' : ''}</span>
           </div>
         )}
       </div>
@@ -299,7 +299,7 @@ export default function DiscoverPage() {
           <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(20px, 3vw, 28px)', fontWeight: 400, color: C.dusk, margin: 0 }}>
             {activeCategory === 'all' ? 'Everything nearby' : activeCat.label}
           </h2>
-          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted }}>
+          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.textMuted }}>
             {filteredPois.length + filteredBizzes.length} place{filteredPois.length + filteredBizzes.length !== 1 ? 's' : ''}
           </span>
           {activeCategory === 'food' && (
@@ -312,13 +312,13 @@ export default function DiscoverPage() {
               onMouseLeave={e => e.currentTarget.style.background = 'rgba(212,132,90,0.08)'}
             >
               <span style={{ fontSize: 20, flexShrink: 0 }}>🔥</span>
-              <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.text, lineHeight: 1.5 }}>
+              <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.text, lineHeight: 1.5 }}>
                 <strong style={{ color: C.sunset }}>Looking for food trucks?</strong> They have their own live locator - see who's here right now, where they're parked, and what they're serving. <span style={{ color: C.sunset, fontWeight: 600 }}>Open the locator →</span>
               </span>
             </a>
           )}
           {activeCategory === 'healthcare' && (
-            <div style={{ background: '#c05a5a10', border: '1px solid #c05a5a28', borderRadius: 8, padding: '6px 14px', fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: '#c05a5a', lineHeight: 1.45, maxWidth: 500 }}>
+            <div style={{ background: '#c05a5a10', border: '1px solid #c05a5a28', borderRadius: 8, padding: '6px 14px', fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: '#c05a5a', lineHeight: 1.45, maxWidth: 500 }}>
               <strong>Tip:</strong> Always call your insurance first - network coverage varies by plan. Use the number on your card or your insurer's provider finder.
             </div>
           )}
@@ -338,17 +338,17 @@ export default function DiscoverPage() {
                   <div style={{ width: 4, background: color, flexShrink: 0 }} />
                   <div style={{ padding: '15px 18px', flex: 1 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4, gap: 8 }}>
-                      <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, fontWeight: 400, color: C.dusk, lineHeight: 1.3 }}>{poi.name}</div>
+                      <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.dusk, lineHeight: 1.3 }}>{poi.name}</div>
                       <CatIcon icon={catInfo?.icon} size={28} style={{ flexShrink: 0, opacity: 0.75 }} />
                     </div>
-                    <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: C.textMuted, marginBottom: 5 }}>{poi.sub}</div>
-                    {poi.address && <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.text, marginBottom: 3 }}>{poi.address}</div>}
-                    {poi.note && <div style={{ fontFamily: "'Caveat', cursive", fontSize: 14, color: C.textMuted, marginBottom: 8, fontStyle: 'italic' }}>{poi.note}</div>}
+                    <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, marginBottom: 5 }}>{poi.sub}</div>
+                    {poi.address && <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.text, marginBottom: 3 }}>{poi.address}</div>}
+                    {poi.note && <div style={{ fontFamily: "'Caveat', cursive", fontSize: 16, color: C.textMuted, marginBottom: 8, fontStyle: 'italic' }}>{poi.note}</div>}
                     <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginTop: 8 }}>
-                      {poi.phone && <a href={`tel:${poi.phone.replace(/\D/g, '')}`} style={{ fontSize: 12, fontWeight: 600, color: C.sage, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>{formatPhone(poi.phone)}</a>}
-                      <a href={dir} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, fontWeight: 600, color: C.lakeBlue, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>Get Directions →</a>
-                      {poi.website && <a href={poi.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, fontWeight: 600, color: C.sunset, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>Website →</a>}
-                      {poi.href && <a href={poi.href} style={{ fontSize: 12, fontWeight: 600, color: C.sunset, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>Learn More →</a>}
+                      {poi.phone && <a href={`tel:${poi.phone.replace(/\D/g, '')}`} style={{ fontSize: 14, fontWeight: 600, color: C.sage, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>{formatPhone(poi.phone)}</a>}
+                      <a href={dir} target="_blank" rel="noopener noreferrer" style={{ fontSize: 14, fontWeight: 600, color: C.lakeBlue, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>Get Directions →</a>
+                      {poi.website && <a href={poi.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 14, fontWeight: 600, color: C.sunset, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>Website →</a>}
+                      {poi.href && <a href={poi.href} style={{ fontSize: 14, fontWeight: 600, color: C.sunset, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>Learn More →</a>}
                     </div>
                   </div>
                 </div>
@@ -359,7 +359,7 @@ export default function DiscoverPage() {
 
         {filteredBizzes.length > 0 && (
           <>
-            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: C.textMuted, marginBottom: 16 }}>Local Businesses</div>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: C.textMuted, marginBottom: 16 }}>Local Businesses</div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 14 }}>
               {filteredBizzes.map((biz, i) => (
                 <div key={biz.id || i} style={{ background: '#fff', border: `1px solid ${C.sand}`, borderRadius: 12, padding: '18px 20px', display: 'flex', gap: 14, alignItems: 'flex-start' }}>
@@ -371,13 +371,13 @@ export default function DiscoverPage() {
                   }
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 3, flexWrap: 'wrap' }}>
-                      <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, color: C.dusk }}>{biz.name}</div>
-                      {biz.emergency && <span style={{ fontSize: 10, fontWeight: 700, fontFamily: "'Libre Franklin', sans-serif", background: '#c05a5a', color: '#fff', borderRadius: 4, padding: '2px 6px', letterSpacing: 1, textTransform: 'uppercase', flexShrink: 0 }}>24hr / Emergency</span>}
+                      <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.dusk }}>{biz.name}</div>
+                      {biz.emergency && <span style={{ fontSize: 13, fontWeight: 700, fontFamily: "'Libre Franklin', sans-serif", background: '#c05a5a', color: '#fff', borderRadius: 4, padding: '2px 6px', letterSpacing: 1, textTransform: 'uppercase', flexShrink: 0 }}>24hr / Emergency</span>}
                     </div>
-                    {biz.tagline && <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted, lineHeight: 1.4, marginBottom: 8 }}>{biz.tagline}</div>}
+                    {biz.tagline && <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.textMuted, lineHeight: 1.4, marginBottom: 8 }}>{biz.tagline}</div>}
                     <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                      {biz.phone && <a href={`tel:${biz.phone}`} style={{ fontSize: biz.emergency ? 14 : 12, fontWeight: 700, color: biz.emergency ? '#c05a5a' : C.sage, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>{formatPhone(biz.phone)}</a>}
-                      {biz.website && <a href={biz.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, fontWeight: 600, color: C.lakeBlue, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>Visit →</a>}
+                      {biz.phone && <a href={`tel:${biz.phone}`} style={{ fontSize: biz.emergency ? 16 : 14, fontWeight: 700, color: biz.emergency ? '#c05a5a' : C.sage, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>{formatPhone(biz.phone)}</a>}
+                      {biz.website && <a href={biz.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 14, fontWeight: 600, color: C.lakeBlue, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>Visit →</a>}
                     </div>
                   </div>
                 </div>
@@ -394,7 +394,7 @@ export default function DiscoverPage() {
             <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.dusk, marginBottom: 8 }}>
               No {activeCat.label} businesses listed yet.
             </div>
-            <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.textMuted, maxWidth: 380, margin: '0 auto 24px' }}>
+            <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, color: C.textMuted, maxWidth: 380, margin: '0 auto 24px' }}>
               Own a {activeCat.label.toLowerCase()} business near Manitou Beach? This is where locals and visitors look.
             </p>
             <Btn href="/business" variant="primary" small>Get Listed - from $9/mo</Btn>
@@ -404,7 +404,7 @@ export default function DiscoverPage() {
 
       {/* ── Explore More ── */}
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 20px 52px' }}>
-        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: C.textMuted, marginBottom: 14 }}>Explore More</div>
+        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 3, textTransform: 'uppercase', color: C.textMuted, marginBottom: 14 }}>Explore More</div>
         <div style={{ display: 'flex', gap: 10, overflowX: 'auto', scrollbarWidth: 'none', paddingBottom: 4 }}>
           {[
             { icon: '🎣', label: 'Fishing Guide', href: '/fishing' },
@@ -420,7 +420,7 @@ export default function DiscoverPage() {
               onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'none'; }}
             >
               <span style={{ fontSize: 18 }}>{tile.icon}</span>
-              <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, color: C.dusk, whiteSpace: 'nowrap' }}>{tile.label}</span>
+              <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 600, color: C.dusk, whiteSpace: 'nowrap' }}>{tile.label}</span>
             </a>
           ))}
         </div>
@@ -429,21 +429,21 @@ export default function DiscoverPage() {
       {/* ── Drive Times ── */}
       <section style={{ background: C.dusk }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', padding: '64px 20px' }}>
-          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, letterSpacing: 4, textTransform: 'uppercase', color: 'rgba(255,255,255,0.28)', marginBottom: 10 }}>Location</div>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 4, textTransform: 'uppercase', color: 'rgba(255,255,255,0.75)', marginBottom: 10 }}>Location</div>
           <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 400, color: C.cream, margin: '0 0 10px 0' }}>Closer than you think.</h2>
-          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: 'rgba(255,255,255,0.48)', margin: '0 0 40px 0', maxWidth: 480 }}>
+          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, color: 'rgba(255,255,255,0.75)', margin: '0 0 40px 0', maxWidth: 480 }}>
             You're not in the middle of nowhere. You're in the middle of everything that matters - just far enough from the noise.
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 12, overflow: 'hidden' }}>
             {DRIVE_TIMES.map((row, i) => (
               <div key={i} style={{ background: 'rgba(255,255,255,0.04)', padding: '20px 22px', borderRight: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, fontWeight: 400, color: C.cream, lineHeight: 1 }}>{row.time}</div>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, color: C.sage, marginTop: 6 }}>{row.city}</div>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: 'rgba(255,255,255,0.32)', marginTop: 4 }}>{row.note}</div>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 600, color: C.sage, marginTop: 6 }}>{row.city}</div>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.75)', marginTop: 4 }}>{row.note}</div>
               </div>
             ))}
           </div>
-          <p style={{ fontFamily: "'Caveat', cursive", fontSize: 16, color: 'rgba(255,255,255,0.32)', marginTop: 20, fontStyle: 'italic' }}>
+          <p style={{ fontFamily: "'Caveat', cursive", fontSize: 16, color: 'rgba(255,255,255,0.75)', marginTop: 20, fontStyle: 'italic' }}>
             Year-round community. Quiet winters. Summers on the water.
           </p>
         </div>
@@ -454,7 +454,7 @@ export default function DiscoverPage() {
         <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(20px, 3vw, 30px)', fontWeight: 400, color: C.dusk, marginBottom: 10 }}>
           This is your community too.
         </div>
-        <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.textMuted, maxWidth: 420, margin: '0 auto 28px' }}>
+        <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, color: C.textMuted, maxWidth: 420, margin: '0 auto 28px' }}>
           Get your business in front of the people who live here, visit here, and move here.
         </p>
         <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>

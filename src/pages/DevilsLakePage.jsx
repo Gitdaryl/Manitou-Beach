@@ -54,7 +54,7 @@ function DevilsLakeHero() {
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg, rgba(10,18,24,0.72) 0%, rgba(10,18,24,0.42) 50%, rgba(10,18,24,0.88) 100%)" }} />
       <div style={{ maxWidth: 960, margin: "0 auto", padding: "140px 24px 100px", position: "relative", zIndex: 1, width: "100%" }}>
         <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? "none" : "translateY(24px)", transition: "all 0.9s ease" }}>
-          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 28 }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.75)", marginBottom: 28 }}>
             Manitou Beach · Irish Hills · Michigan
           </div>
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(48px, 9vw, 110px)", fontWeight: 400, color: C.cream, lineHeight: 0.95, margin: "0 0 12px 0" }}>
@@ -63,7 +63,7 @@ function DevilsLakeHero() {
           <div style={{ fontFamily: "'Caveat', cursive", fontSize: "clamp(20px, 2.5vw, 28px)", color: C.sunsetLight, marginBottom: 20 }}>
             The Party Lake
           </div>
-          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: "clamp(14px, 1.6vw, 17px)", color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 520, margin: "0 0 32px 0" }}>
+          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: "clamp(14px, 1.6vw, 17px)", color: "rgba(255,255,255,0.75)", lineHeight: 1.8, maxWidth: 520, margin: "0 0 32px 0" }}>
             1,330 acres of warm water, 600+ boat slips, and a community that has been coming back every summer since the 1870s. Devils Lake is the beating heart of Manitou Beach.
           </p>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
@@ -91,12 +91,12 @@ function DevilsLakeStatsSection() {
             <FadeIn key={i} delay={i * 60}>
               <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 12, padding: "24px 20px", textAlign: "center" }}>
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.cream, marginBottom: 6 }}>{stat.value}</div>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.3)" }}>{stat.label}</div>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.75)" }}>{stat.label}</div>
               </div>
             </FadeIn>
           ))}
         </div>
-        <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.2)", marginTop: 24, textAlign: "right" }}>
+        <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.75)", marginTop: 24, textAlign: "right" }}>
           Source: fisherman.org
         </p>
       </div>
@@ -111,10 +111,10 @@ function DevilsLakeHistorySection() {
         <FadeIn>
           <SectionLabel>Deep Roots</SectionLabel>
           <SectionTitle>A Lake With a Story</SectionTitle>
-          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 560, margin: "0 0 16px 0" }}>
+          <p style={{ fontSize: 17, color: C.textLight, lineHeight: 1.8, maxWidth: 560, margin: "0 0 16px 0" }}>
             Devils Lake has been drawing people in for over 150 years. From railroad-era grand hotels to the annual Tip-Up Festival on the ice - the history runs deep.
           </p>
-          <p style={{ fontSize: 13, color: C.textMuted, lineHeight: 1.7, maxWidth: 560, margin: "0 0 48px 0", fontStyle: "italic" }}>
+          <p style={{ fontSize: 15, color: C.textMuted, lineHeight: 1.7, maxWidth: 560, margin: "0 0 48px 0", fontStyle: "italic" }}>
             Some say Manitow. Some say Manitaw. Some say Manitoo. However you say it - you know the place.
           </p>
         </FadeIn>
@@ -127,8 +127,8 @@ function DevilsLakeHistorySection() {
                 <div style={{ position: "relative" }}>
                   {/* Dot */}
                   <div style={{ position: "absolute", left: -42, top: 4, width: 12, height: 12, borderRadius: "50%", background: i === DEVILS_LAKE_TIMELINE.length - 1 ? C.sunset : C.lakeBlue, border: `3px solid ${C.cream}`, boxShadow: `0 0 0 2px ${i === DEVILS_LAKE_TIMELINE.length - 1 ? C.sunset : C.lakeBlue}` }} />
-                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunset, marginBottom: 6 }}>{item.year}</div>
-                  <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.75, margin: 0 }}>{item.event}</p>
+                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunset, marginBottom: 6 }}>{item.year}</div>
+                  <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.75, margin: 0 }}>{item.event}</p>
                 </div>
               </FadeIn>
             ))}
@@ -146,7 +146,7 @@ function DevilsLakeFishingSection() {
         <FadeIn>
           <SectionLabel>On the Line</SectionLabel>
           <SectionTitle>Fishing Devils Lake</SectionTitle>
-          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 560, margin: "0 0 20px 0" }}>
+          <p style={{ fontSize: 17, color: C.textLight, lineHeight: 1.8, maxWidth: 560, margin: "0 0 20px 0" }}>
             A warm-water fishery with healthy bass, bluegill, pike, and perch. Year-round access - summer dock fishing and the legendary February Tip-Up Festival on the ice.
           </p>
         </FadeIn>
@@ -163,7 +163,7 @@ function DevilsLakeFishingSection() {
                 </div>
                 <div style={{ padding: "16px 18px" }}>
                   <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text, margin: "0 0 6px 0" }}>{fish.name}</h3>
-                  <p style={{ fontSize: 12, color: C.textLight, lineHeight: 1.6, margin: 0 }}>{fish.desc}</p>
+                  <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.6, margin: 0 }}>{fish.desc}</p>
                 </div>
               </div>
             </FadeIn>
@@ -187,15 +187,15 @@ function DevilsLakeFishingSection() {
             <FadeIn delay={200}>
               <div style={{ marginTop: 48, background: `linear-gradient(135deg, ${C.dusk} 0%, ${C.lakeDark} 100%)`, borderRadius: 16, padding: "32px 36px", display: "flex", gap: 24, alignItems: "center", flexWrap: "wrap", border: "1px solid rgba(255,255,255,0.07)" }}>
                 <div style={{ flex: 1, minWidth: 240 }}>
-                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 10 }}>{nextEvent.label}</div>
+                  <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 10 }}>{nextEvent.label}</div>
                   <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(20px, 3vw, 28px)", fontWeight: 400, color: C.cream, margin: "0 0 6px 0" }}>{nextEvent.title}</h3>
-                  <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: "rgba(255,255,255,0.5)", marginBottom: 6 }}>{nextEvent.date} · {nextEvent.location}</div>
+                  <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: "rgba(255,255,255,0.75)", marginBottom: 6 }}>{nextEvent.date} · {nextEvent.location}</div>
                 </div>
                 <a href={nextEvent.href} target="_blank" rel="noopener noreferrer" className="btn-animated" style={{
                   display: "inline-flex", alignItems: "center", gap: 8,
                   padding: "12px 28px", borderRadius: 8, flexShrink: 0,
                   background: C.sunset, color: C.cream,
-                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
                 }}>
                   Event Details →
                 </a>
@@ -223,7 +223,7 @@ function DevilsLakeCommunitySection() {
         <FadeIn>
           <SectionLabel light>Life on the Lake</SectionLabel>
           <SectionTitle light>The Community</SectionTitle>
-          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 540, margin: "0 0 56px 0" }}>
+          <p style={{ fontSize: 17, color: "rgba(255,255,255,0.75)", lineHeight: 1.8, maxWidth: 540, margin: "0 0 56px 0" }}>
             Devils Lake isn't just a place to visit - it's a community. Generations of families have built their summers, and often their lives, around this water.
           </p>
         </FadeIn>
@@ -250,7 +250,7 @@ function DevilsLakeCommunitySection() {
                   </div>
                   {/* Description */}
                   <div style={{ padding: "16px 22px 22px" }}>
-                    <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, margin: 0 }}>{item.desc}</p>
+                    <p style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", lineHeight: 1.7, margin: 0 }}>{item.desc}</p>
                   </div>
                 </div>
               </a>
@@ -265,7 +265,7 @@ function DevilsLakeCommunitySection() {
             <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(18px, 2.5vw, 26px)", fontWeight: 400, color: C.cream, margin: "0 0 12px 0" }}>
               Ready to call Devils Lake home?
             </h3>
-            <p style={{ fontSize: 14, color: "rgba(255,255,255,0.35)", lineHeight: 1.7, maxWidth: 480, margin: "0 auto 24px" }}>
+            <p style={{ fontSize: 16, color: "rgba(255,255,255,0.75)", lineHeight: 1.7, maxWidth: 480, margin: "0 auto 24px" }}>
               Holly Griewahn at Foundation Realty knows this lake like the back of her hand. Lakefront, cottage, or year-round - she's your person.
             </p>
           </div>
@@ -337,7 +337,7 @@ export default function DevilsLakePage() {
           <p style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 3.5vw, 38px)", fontWeight: 400, fontStyle: "italic", color: C.cream, margin: 0, lineHeight: 1.4, maxWidth: 640 }}>
             "The party lake."
           </p>
-          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginTop: 18 }}>Devils Lake · Manitou Beach, Michigan</p>
+          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.75)", marginTop: 18 }}>Devils Lake · Manitou Beach, Michigan</p>
         </div>
       </section>
       <PromoBanner page="Devils Lake" />

@@ -176,14 +176,14 @@ function RelatedCard({ event }) {
         <img src={img} alt={event.name} style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.75 }} onError={e => { e.target.src = '/images/happening-hero.webp'; }} />
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 40%, rgba(10,18,24,0.7))' }} />
         <div style={{ position: 'absolute', top: 8, left: 10, background: '#fff', borderRadius: 6, padding: '3px 8px', textAlign: 'center', minWidth: 38 }}>
-          <div style={{ fontSize: 9, fontWeight: 700, color: color, textTransform: 'uppercase', letterSpacing: 1, fontFamily: "'Libre Franklin', sans-serif" }}>{month}</div>
+          <div style={{ fontSize: 12, fontWeight: 700, color: color, textTransform: 'uppercase', letterSpacing: 1, fontFamily: "'Libre Franklin', sans-serif" }}>{month}</div>
           <div style={{ fontSize: 17, fontWeight: 700, color: C.dusk, lineHeight: 1, fontFamily: "'Libre Baskerville', serif" }}>{day}</div>
         </div>
       </div>
       <div style={{ padding: '10px 12px 12px' }}>
-        <div style={{ fontSize: 10, color, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 3, fontFamily: "'Libre Franklin', sans-serif" }}>{event.category}</div>
-        <div style={{ fontSize: 13, fontWeight: 600, color: C.dusk, lineHeight: 1.3, marginBottom: 4, fontFamily: "'Libre Baskerville', serif" }}>{event.name}</div>
-        {event.location && <div style={{ fontSize: 11, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>{event.location}</div>}
+        <div style={{ fontSize: 13, color, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 3, fontFamily: "'Libre Franklin', sans-serif" }}>{event.category}</div>
+        <div style={{ fontSize: 15, fontWeight: 600, color: C.dusk, lineHeight: 1.3, marginBottom: 4, fontFamily: "'Libre Baskerville', serif" }}>{event.name}</div>
+        {event.location && <div style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>{event.location}</div>}
       </div>
     </Link>
   );
@@ -192,6 +192,7 @@ function RelatedCard({ event }) {
 // ── Main page ─────────────────────────────────────────────────────────────────
 
 export default function EventDetailPage() {
+  const [calDunk, setCalDunk] = useState(0);
   const { eventId } = useParams();
   const [event, setEvent] = useState(null);
   const [related, setRelated] = useState([]);
@@ -335,7 +336,7 @@ export default function EventDetailPage() {
             <div style={{ fontSize: 48, marginBottom: 16 }}>🏖️</div>
             <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, color: C.dusk, margin: '0 0 12px' }}>Event not found</h1>
             <p style={{ color: C.textMuted, lineHeight: 1.7, marginBottom: 28 }}>This event may have been removed or the link might be wrong.</p>
-            <Link to="/events" style={{ display: 'inline-block', background: C.dusk, color: C.cream, padding: '12px 28px', borderRadius: 8, textDecoration: 'none', fontWeight: 600, fontSize: 14 }}>
+            <Link to="/events" style={{ display: 'inline-block', background: C.dusk, color: C.cream, padding: '12px 28px', borderRadius: 8, textDecoration: 'none', fontWeight: 600, fontSize: 16 }}>
               See All Events
             </Link>
           </div>
@@ -358,16 +359,16 @@ export default function EventDetailPage() {
 
                 {/* Badges row */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
-                  <span style={{ background: catColor, color: '#fff', padding: '4px 14px', borderRadius: 20, fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', fontFamily: "'Libre Franklin', sans-serif" }}>
+                  <span style={{ background: catColor, color: '#fff', padding: '4px 14px', borderRadius: 20, fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', fontFamily: "'Libre Franklin', sans-serif" }}>
                     {event.category}
                   </span>
                   {LIFECYCLE_BADGES[event.lifecycle] && (
-                    <span style={{ background: LIFECYCLE_BADGES[event.lifecycle].color, color: '#fff', padding: '4px 14px', borderRadius: 20, fontSize: 11, fontWeight: 800, letterSpacing: 1.5, textTransform: 'uppercase', fontFamily: "'Libre Franklin', sans-serif" }}>
+                    <span style={{ background: LIFECYCLE_BADGES[event.lifecycle].color, color: '#fff', padding: '4px 14px', borderRadius: 20, fontSize: 13, fontWeight: 800, letterSpacing: 1.5, textTransform: 'uppercase', fontFamily: "'Libre Franklin', sans-serif" }}>
                       {LIFECYCLE_BADGES[event.lifecycle].label}
                     </span>
                   )}
                   {past && (
-                    <span style={{ background: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.8)', padding: '4px 14px', borderRadius: 20, fontSize: 11, letterSpacing: 1.5, textTransform: 'uppercase', fontFamily: "'Libre Franklin', sans-serif" }}>
+                    <span style={{ background: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.8)', padding: '4px 14px', borderRadius: 20, fontSize: 13, letterSpacing: 1.5, textTransform: 'uppercase', fontFamily: "'Libre Franklin', sans-serif" }}>
                       Past Event
                     </span>
                   )}
@@ -379,13 +380,13 @@ export default function EventDetailPage() {
                 </h1>
 
                 {LIFECYCLE_BADGES[event.lifecycle] && event.changeNote && (
-                  <p style={{ margin: '0 0 16px', padding: '12px 16px', borderRadius: 10, background: 'rgba(255,255,255,0.1)', borderLeft: `3px solid ${LIFECYCLE_BADGES[event.lifecycle].color}`, color: '#fff', fontSize: 15, lineHeight: 1.6, fontFamily: "'Libre Franklin', sans-serif" }}>
+                  <p style={{ margin: '0 0 16px', padding: '12px 16px', borderRadius: 10, background: 'rgba(255,255,255,0.1)', borderLeft: `3px solid ${LIFECYCLE_BADGES[event.lifecycle].color}`, color: '#fff', fontSize: 17, lineHeight: 1.6, fontFamily: "'Libre Franklin', sans-serif" }}>
                     {event.changeNote}
                   </p>
                 )}
 
                 {event.organizerName && (
-                  <p style={{ margin: '0 0 24px', color: 'rgba(255,255,255,0.72)', fontSize: 15, fontFamily: "'Libre Franklin', sans-serif" }}>
+                  <p style={{ margin: '0 0 24px', color: 'rgba(255,255,255,0.72)', fontSize: 17, fontFamily: "'Libre Franklin', sans-serif" }}>
                     Hosted by {event.organizerName}
                   </p>
                 )}
@@ -393,22 +394,24 @@ export default function EventDetailPage() {
                 {/* Quick date + share row */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
                   {event.date && (
-                    <span style={{ color: 'rgba(255,255,255,0.85)', fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 500 }}>
+                    <span style={{ color: 'rgba(255,255,255,0.85)', fontSize: 16, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 500 }}>
                       📅 {formatFullDate(event.date)}{event.timeStart ? ` · ${event.timeStart}` : ''}
                     </span>
                   )}
                   <button
                     onClick={handleShare}
-                    style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)', color: '#fff', padding: '6px 16px', borderRadius: 20, fontSize: 12, fontWeight: 600, cursor: 'pointer', backdropFilter: 'blur(8px)', fontFamily: "'Libre Franklin', sans-serif" }}
+                    style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)', color: '#fff', padding: '6px 16px', borderRadius: 20, fontSize: 14, fontWeight: 600, cursor: 'pointer', backdropFilter: 'blur(8px)', fontFamily: "'Libre Franklin', sans-serif" }}
                   >
                     {copied ? '✓ Copied' : '↗ Share'}
                   </button>
                   {event.date && (
                     <button
-                      onClick={() => downloadEventIcs(event, eventId, siteUrl)}
-                      style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)', color: '#fff', padding: '6px 16px', borderRadius: 20, fontSize: 12, fontWeight: 600, cursor: 'pointer', backdropFilter: 'blur(8px)', fontFamily: "'Libre Franklin', sans-serif" }}
+                      onClick={() => { downloadEventIcs(event, eventId, siteUrl); setCalDunk(n => n + 1); clearTimeout(window.__mbCalT); window.__mbCalT = setTimeout(() => setCalDunk(0), 2600); }}
+                      style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)', color: '#fff', padding: '6px 16px', borderRadius: 20, fontSize: 14, fontWeight: 600, cursor: 'pointer', backdropFilter: 'blur(8px)', fontFamily: "'Libre Franklin', sans-serif" }}
                     >
-                      📅 Add to Calendar
+                      {/* the icon bobs like a fishing bobber taking a nibble - confirms the tap */}
+                      <span key={calDunk} className={calDunk ? 'mb-bobber is-dunk' : 'mb-bobber'}>📅</span>{' '}
+                      {calDunk ? 'Added to your calendar' : 'Add to Calendar'}
                     </button>
                   )}
                 </div>
@@ -422,10 +425,10 @@ export default function EventDetailPage() {
               {past && (
                 <div style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 10, padding: '16px 20px', marginBottom: 28, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
                   <div>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: C.dusk, marginBottom: 2, fontFamily: "'Libre Baskerville', serif" }}>This event has passed</div>
-                    <div style={{ fontSize: 13, color: C.textMuted }}>It happened {formatShortDate(event.date)}. Catch what's coming up next.</div>
+                    <div style={{ fontSize: 16, fontWeight: 600, color: C.dusk, marginBottom: 2, fontFamily: "'Libre Baskerville', serif" }}>This event has passed</div>
+                    <div style={{ fontSize: 15, color: C.textMuted }}>It happened {formatShortDate(event.date)}. Catch what's coming up next.</div>
                   </div>
-                  <Link to="/events" style={{ background: C.dusk, color: C.cream, padding: '9px 18px', borderRadius: 8, textDecoration: 'none', fontWeight: 600, fontSize: 13, whiteSpace: 'nowrap' }}>
+                  <Link to="/events" style={{ background: C.dusk, color: C.cream, padding: '9px 18px', borderRadius: 8, textDecoration: 'none', fontWeight: 600, fontSize: 15, whiteSpace: 'nowrap' }}>
                     Upcoming Events →
                   </Link>
                 </div>
@@ -436,10 +439,10 @@ export default function EventDetailPage() {
               <div style={{ display: 'grid', gap: 14, marginBottom: 28 }} className="event-detail-grid">
                 {event.date && (
                   <div style={{ background: '#fff', border: `1px solid ${C.sand}`, borderRadius: 10, padding: '14px 18px' }}>
-                    <div style={{ fontSize: 10, color: C.textMuted, textTransform: 'uppercase', letterSpacing: 1.8, marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>Date</div>
+                    <div style={{ fontSize: 13, color: C.textMuted, textTransform: 'uppercase', letterSpacing: 1.8, marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>Date</div>
                     <div style={{ fontSize: 16, fontWeight: 600, color: C.dusk, fontFamily: "'Libre Baskerville', serif" }}>{formatFullDate(event.date)}</div>
                     {event.dateEnd && event.dateEnd !== event.date && (
-                      <div style={{ fontSize: 13, color: C.textMuted, marginTop: 2 }}>through {formatShortDate(event.dateEnd)}</div>
+                      <div style={{ fontSize: 15, color: C.textMuted, marginTop: 2 }}>through {formatShortDate(event.dateEnd)}</div>
                     )}
                   </div>
                 )}
@@ -447,7 +450,7 @@ export default function EventDetailPage() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }} className="event-detail-subgrid">
                   {(event.timeStart || event.timeEnd) && (
                     <div style={{ background: '#fff', border: `1px solid ${C.sand}`, borderRadius: 10, padding: '14px 18px' }}>
-                      <div style={{ fontSize: 10, color: C.textMuted, textTransform: 'uppercase', letterSpacing: 1.8, marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>Time</div>
+                      <div style={{ fontSize: 13, color: C.textMuted, textTransform: 'uppercase', letterSpacing: 1.8, marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>Time</div>
                       <div style={{ fontSize: 16, fontWeight: 600, color: C.dusk, fontFamily: "'Libre Baskerville', serif" }}>
                         {event.timeStart}{event.timeEnd ? ` - ${event.timeEnd}` : ''}
                       </div>
@@ -455,7 +458,7 @@ export default function EventDetailPage() {
                   )}
                   {event.cost && (
                     <div style={{ background: '#fff', border: `1px solid ${C.sand}`, borderRadius: 10, padding: '14px 18px' }}>
-                      <div style={{ fontSize: 10, color: C.textMuted, textTransform: 'uppercase', letterSpacing: 1.8, marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>Cost</div>
+                      <div style={{ fontSize: 13, color: C.textMuted, textTransform: 'uppercase', letterSpacing: 1.8, marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>Cost</div>
                       <div style={{ fontSize: 16, fontWeight: 600, color: C.dusk, fontFamily: "'Libre Baskerville', serif" }}>{event.cost}</div>
                     </div>
                   )}
@@ -464,10 +467,10 @@ export default function EventDetailPage() {
                 {event.location && (
                   <div style={{ background: '#fff', border: `1px solid ${C.sand}`, borderRadius: 10, padding: '14px 18px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
                     <div>
-                      <div style={{ fontSize: 10, color: C.textMuted, textTransform: 'uppercase', letterSpacing: 1.8, marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>Location</div>
+                      <div style={{ fontSize: 13, color: C.textMuted, textTransform: 'uppercase', letterSpacing: 1.8, marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>Location</div>
                       {matchedVenue ? (
                         <Link to={`/business/${matchedVenue.slug}`} style={{ fontSize: 16, fontWeight: 600, color: C.lakeBlue, fontFamily: "'Libre Baskerville', serif", lineHeight: 1.3, textDecoration: 'none' }}>
-                          {event.location} <span style={{ fontSize: 12, fontWeight: 500 }}>↗</span>
+                          {event.location} <span style={{ fontSize: 14, fontWeight: 500 }}>↗</span>
                         </Link>
                       ) : (
                         <div style={{ fontSize: 16, fontWeight: 600, color: C.dusk, fontFamily: "'Libre Baskerville', serif", lineHeight: 1.3 }}>{event.location}</div>
@@ -477,7 +480,7 @@ export default function EventDetailPage() {
                       href={`https://maps.google.com/?q=${encodeURIComponent(event.location + ' Manitou Beach Michigan')}`}
                       target="_blank"
                       rel="noreferrer"
-                      style={{ background: C.lakeBlue, color: '#fff', padding: '8px 14px', borderRadius: 8, textDecoration: 'none', fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap', flexShrink: 0 }}
+                      style={{ background: C.lakeBlue, color: '#fff', padding: '8px 14px', borderRadius: 8, textDecoration: 'none', fontSize: 14, fontWeight: 600, whiteSpace: 'nowrap', flexShrink: 0 }}
                     >
                       Get directions
                     </a>
@@ -521,7 +524,7 @@ export default function EventDetailPage() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
                       {groups.map(g => (
                         <div key={g.key}>
-                          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 8 }}>
+                          <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 8 }}>
                             {g.label}
                           </div>
                           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
@@ -538,7 +541,7 @@ export default function EventDetailPage() {
                                 display: 'inline-flex', alignItems: 'center',
                                 background: item.slug ? `${C.sage}12` : C.warmWhite,
                                 border: `1px solid ${item.slug ? `${C.sage}44` : C.sand}`,
-                                borderRadius: 20, padding: '8px 15px', fontSize: 14,
+                                borderRadius: 20, padding: '8px 15px', fontSize: 16,
                                 color: C.text, textDecoration: 'none',
                               };
                               return g.link && item.slug
@@ -560,19 +563,19 @@ export default function EventDetailPage() {
                 <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 36 }}>
                   {event.ticketsEnabled && event.eventUrl && (
                     <a href={event.eventUrl} target="_blank" rel="noreferrer"
-                      style={{ background: C.sunset, color: '#fff', padding: '13px 28px', borderRadius: 8, textDecoration: 'none', fontWeight: 700, fontSize: 15 }}>
+                      style={{ background: C.sunset, color: '#fff', padding: '13px 28px', borderRadius: 8, textDecoration: 'none', fontWeight: 700, fontSize: 17 }}>
                       {event.ctaLabel || 'Get Tickets'}{event.ticketPrice ? ` · $${event.ticketPrice}` : ''}
                     </a>
                   )}
                   {event.rsvpEnabled && (
                     <a href={event.eventUrl || '#'} target="_blank" rel="noreferrer"
-                      style={{ background: C.dusk, color: '#fff', padding: '13px 28px', borderRadius: 8, textDecoration: 'none', fontWeight: 700, fontSize: 15 }}>
+                      style={{ background: C.dusk, color: '#fff', padding: '13px 28px', borderRadius: 8, textDecoration: 'none', fontWeight: 700, fontSize: 17 }}>
                       {event.ctaLabel || 'RSVP'}
                     </a>
                   )}
                   {event.eventUrl && !event.ticketsEnabled && !event.rsvpEnabled && (
                     <a href={event.eventUrl} target="_blank" rel="noreferrer"
-                      style={{ background: C.lakeBlue, color: '#fff', padding: '13px 28px', borderRadius: 8, textDecoration: 'none', fontWeight: 700, fontSize: 15 }}>
+                      style={{ background: C.lakeBlue, color: '#fff', padding: '13px 28px', borderRadius: 8, textDecoration: 'none', fontWeight: 700, fontSize: 17 }}>
                       {event.ctaLabel || 'More Info'}
                     </a>
                   )}
@@ -588,7 +591,7 @@ export default function EventDetailPage() {
                 <div style={{ maxWidth: 760, margin: '0 auto', padding: '0 24px' }}>
                   <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 8 }}>
                     <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.dusk, margin: 0 }}>More coming up at Manitou Beach</h2>
-                    <Link to="/events" style={{ fontSize: 13, color: C.lakeBlue, textDecoration: 'none', fontWeight: 600 }}>See all events →</Link>
+                    <Link to="/events" style={{ fontSize: 15, color: C.lakeBlue, textDecoration: 'none', fontWeight: 600 }}>See all events →</Link>
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14 }} className="event-related-grid">
                     {related.filter(e => !isPast(e.date)).map(e => <RelatedCard key={e.id} event={e} />)}
@@ -601,7 +604,7 @@ export default function EventDetailPage() {
             {/* Ops nudge - demoted to a small link, never the first thing a visitor sees */}
             {!hasOrganizerImage && !past && (
               <div style={{ maxWidth: 760, margin: '0 auto', padding: '0 24px' }}>
-                <Link to="/submit-event" style={{ fontSize: 12, color: C.textMuted, textDecoration: 'none' }}>
+                <Link to="/submit-event" style={{ fontSize: 14, color: C.textMuted, textDecoration: 'none' }}>
                   Is this your event? Add a photo & update details →
                 </Link>
               </div>
@@ -609,8 +612,8 @@ export default function EventDetailPage() {
 
             {/* Footer nav */}
             <div style={{ maxWidth: 760, margin: '0 auto', padding: '12px 24px 60px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-              <Link to="/events" style={{ color: C.lakeBlue, textDecoration: 'none', fontSize: 14, fontWeight: 600 }}>← All events</Link>
-              <Link to="/submit-event" style={{ color: C.textMuted, textDecoration: 'none', fontSize: 13 }}>Got an event? List it free →</Link>
+              <Link to="/events" style={{ color: C.lakeBlue, textDecoration: 'none', fontSize: 16, fontWeight: 600 }}>← All events</Link>
+              <Link to="/submit-event" style={{ color: C.textMuted, textDecoration: 'none', fontSize: 15 }}>Got an event? List it free →</Link>
             </div>
           </>
         )}

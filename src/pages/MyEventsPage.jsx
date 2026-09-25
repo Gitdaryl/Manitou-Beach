@@ -15,7 +15,7 @@ const inp = {
 
 const btn = {
   width: '100%', padding: '15px 20px', borderRadius: 10, border: 'none',
-  background: C.sunset, color: '#fff', fontSize: 15, fontWeight: 700,
+  background: C.sunset, color: '#fff', fontSize: 17, fontWeight: 700,
   fontFamily: "'Libre Franklin', sans-serif", cursor: 'pointer',
 };
 
@@ -66,7 +66,7 @@ function AskForPhone() {
         <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, fontWeight: 400, color: C.cream, margin: '0 0 12px' }}>
           Sent! Check your texts.
         </h2>
-        <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', lineHeight: 1.8, margin: 0 }}>
+        <p style={{ fontSize: 17, color: 'rgba(255,255,255,0.75)', lineHeight: 1.8, margin: 0 }}>
           Tap the link we just sent and you'll see everything you've put on the calendar, all in one place.
           That link keeps working, so save it somewhere handy.
         </p>
@@ -81,7 +81,7 @@ function AskForPhone() {
         <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, fontWeight: 400, color: C.cream, margin: '0 0 12px' }}>
           Nothing under that number
         </h2>
-        <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', lineHeight: 1.8, margin: '0 0 28px' }}>
+        <p style={{ fontSize: 17, color: 'rgba(255,255,255,0.75)', lineHeight: 1.8, margin: '0 0 28px' }}>
           It might be under a different phone. Try another number, or if you're stuck, just email
           {' '}<a href="mailto:daryl@manitoubeachmichigan.com" style={{ color: C.sunsetLight }}>daryl@manitoubeachmichigan.com</a>
           {' '}and we'll dig it out for you.
@@ -96,11 +96,11 @@ function AskForPhone() {
       <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 30, fontWeight: 400, color: C.cream, margin: '0 0 14px' }}>
         Your events, all in one place
       </h1>
-      <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', lineHeight: 1.8, margin: '0 0 32px' }}>
+      <p style={{ fontSize: 17, color: 'rgba(255,255,255,0.75)', lineHeight: 1.8, margin: '0 0 32px' }}>
         No password, no account. Pop in the phone number you used when you added your events and we'll text
         you a link to the whole list.
       </p>
-      <label style={{ display: 'block', fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: 8 }}>
+      <label style={{ display: 'block', fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: 'rgba(255,255,255,0.75)', marginBottom: 8 }}>
         Your phone number
       </label>
       <input
@@ -112,7 +112,7 @@ function AskForPhone() {
         placeholder="(517) 555-0130"
         style={inp}
       />
-      {error && <p style={{ color: '#E8A87C', fontSize: 14, margin: '10px 0 0' }}>{error}</p>}
+      {error && <p style={{ color: '#E8A87C', fontSize: 16, margin: '10px 0 0' }}>{error}</p>}
       <button type="submit" disabled={state === 'sending'} style={{ ...btn, marginTop: 18, opacity: state === 'sending' ? 0.6 : 1 }}>
         {state === 'sending' ? 'Looking...' : 'Text me my events'}
       </button>
@@ -147,18 +147,18 @@ function InviteToShareCard({ phone, token, index, other, myName }) {
       <div style={{ fontSize: 16, fontWeight: 700, color: C.cream, marginBottom: 8 }}>
         {other.count} more {other.count === 1 ? 'event was' : 'events were'} added from another number
       </div>
-      <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, margin: '0 0 14px' }}>
+      <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.75)', lineHeight: 1.7, margin: '0 0 14px' }}>
         Someone else at your business posts events too, from <strong>{other.masked}</strong>. Share the list
         and you'll both see everything here, and either of you can fix a date or a spelling without having to
         ask the other. We'll text them to check it's alright first.
       </p>
       {state === 'sent' ? (
-        <p style={{ fontSize: 14, color: C.sage, fontWeight: 600, margin: 0 }}>
+        <p style={{ fontSize: 16, color: C.sage, fontWeight: 600, margin: 0 }}>
           Asked {other.name || other.masked}. As soon as they tap accept, their events show up here.
         </p>
       ) : (
         <>
-        <label style={{ display: 'block', fontSize: 11, fontWeight: 700, letterSpacing: 1.4, textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: 6 }}>
+        <label style={{ display: 'block', fontSize: 13, fontWeight: 700, letterSpacing: 1.4, textTransform: 'uppercase', color: 'rgba(255,255,255,0.75)', marginBottom: 6 }}>
           Your first name <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0, opacity: 0.7 }}>(so they know it's you)</span>
         </label>
         <input value={name} onChange={e => setName(e.target.value)} maxLength={40} placeholder="Your name" style={{ ...inp, marginBottom: 12 }} />
@@ -167,7 +167,7 @@ function InviteToShareCard({ phone, token, index, other, myName }) {
         </button>
         </>
       )}
-      {state === 'error' && <p style={{ fontSize: 13, color: '#E8A87C', margin: '10px 0 0' }}>That didn't go through. Try again in a moment?</p>}
+      {state === 'error' && <p style={{ fontSize: 15, color: '#E8A87C', margin: '10px 0 0' }}>That didn't go through. Try again in a moment?</p>}
     </div>
   );
 }
@@ -205,12 +205,12 @@ function AcceptInvite({ invite }) {
       <div style={{ textAlign: 'center' }}>
         <div style={{ fontSize: 44, marginBottom: 14 }}>🔑</div>
         <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, fontWeight: 400, color: C.cream, margin: '0 0 12px' }}>{error}</h2>
-        <a href="/my-events" style={{ color: C.sunsetLight, fontSize: 15 }}>Find my events →</a>
+        <a href="/my-events" style={{ color: C.sunsetLight, fontSize: 17 }}>Find my events →</a>
       </div>
     );
   }
   if (!info) {
-    return <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.3)', fontSize: 14, padding: '40px 0' }}>One moment...</div>;
+    return <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.75)', fontSize: 16, padding: '40px 0' }}>One moment...</div>;
   }
 
   return (
@@ -218,22 +218,22 @@ function AcceptInvite({ invite }) {
       <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 28, fontWeight: 400, color: C.cream, margin: '0 0 14px' }}>
         Share the event list?
       </h1>
-      <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.55)', lineHeight: 1.8, margin: '0 0 10px' }}>
+      <p style={{ fontSize: 17, color: 'rgba(255,255,255,0.75)', lineHeight: 1.8, margin: '0 0 10px' }}>
         <strong style={{ color: C.cream }}>{info.fromName ? `${info.fromName}, ${info.fromMasked}` : info.fromMasked}</strong> would like to share
         the {info.org ? <strong style={{ color: C.cream }}>{info.org}</strong> : 'business'} event list with you.
       </p>
-      <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.55)', lineHeight: 1.8, margin: '0 0 24px' }}>
+      <p style={{ fontSize: 17, color: 'rgba(255,255,255,0.75)', lineHeight: 1.8, margin: '0 0 24px' }}>
         You'd both see all {info.count} events, and either of you could fix a date, a time or a spelling on
         any of them. No more asking each other to make a change.
       </p>
-      <label style={{ display: 'block', fontSize: 11, fontWeight: 700, letterSpacing: 1.4, textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: 6 }}>
+      <label style={{ display: 'block', fontSize: 13, fontWeight: 700, letterSpacing: 1.4, textTransform: 'uppercase', color: 'rgba(255,255,255,0.75)', marginBottom: 6 }}>
         Your first name <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0, opacity: 0.7 }}>(so they know it's you)</span>
       </label>
       <input value={name} onChange={e => setName(e.target.value)} maxLength={40} placeholder="Your name" style={{ ...inp, marginBottom: 16 }} />
       <button onClick={accept} disabled={joining} style={{ ...btn, opacity: joining ? 0.6 : 1 }}>
         {joining ? 'Setting it up...' : 'Yes, share the list'}
       </button>
-      <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)', lineHeight: 1.7, margin: '18px 0 0', textAlign: 'center' }}>
+      <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)', lineHeight: 1.7, margin: '18px 0 0', textAlign: 'center' }}>
         Don't recognise that number? Close this page and nothing happens.
       </p>
     </div>
@@ -262,20 +262,20 @@ function PostingAs({ phone, token, value, onSaved }) {
 
   if (!editing) {
     return (
-      <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', marginBottom: 26 }}>
+      <div style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)', marginBottom: 26 }}>
         Posting as <strong style={{ color: C.cream }}>{value}</strong>
         {' '}
-        <button onClick={() => setEditing(true)} style={{ background: 'none', border: 'none', color: C.sunsetLight, fontSize: 13, cursor: 'pointer', padding: 0, textDecoration: 'underline' }}>change</button>
+        <button onClick={() => setEditing(true)} style={{ background: 'none', border: 'none', color: C.sunsetLight, fontSize: 15, cursor: 'pointer', padding: 0, textDecoration: 'underline' }}>change</button>
       </div>
     );
   }
 
   return (
     <div style={{ marginBottom: 26, padding: '16px 18px', borderRadius: 12, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)' }}>
-      <label style={{ display: 'block', fontSize: 11, fontWeight: 700, letterSpacing: 1.4, textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: 6 }}>
+      <label style={{ display: 'block', fontSize: 13, fontWeight: 700, letterSpacing: 1.4, textTransform: 'uppercase', color: 'rgba(255,255,255,0.75)', marginBottom: 6 }}>
         Your first name
       </label>
-      <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.6, margin: '0 0 10px' }}>
+      <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)', lineHeight: 1.6, margin: '0 0 10px' }}>
         Used when we let the others know you've added or cancelled something, so they see a name instead of a phone number.
       </p>
       <div style={{ display: 'flex', gap: 8 }}>
@@ -316,13 +316,13 @@ function EventList({ phone, token }) {
       <div style={{ textAlign: 'center' }}>
         <div style={{ fontSize: 44, marginBottom: 14 }}>🔑</div>
         <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, fontWeight: 400, color: C.cream, margin: '0 0 12px' }}>{error}</h2>
-        <a href="/my-events" style={{ color: C.sunsetLight, fontSize: 15 }}>Get a new link →</a>
+        <a href="/my-events" style={{ color: C.sunsetLight, fontSize: 17 }}>Get a new link →</a>
       </div>
     );
   }
 
   if (!events) {
-    return <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.3)', fontSize: 14, padding: '40px 0' }}>Getting your events...</div>;
+    return <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.75)', fontSize: 16, padding: '40px 0' }}>Getting your events...</div>;
   }
 
   const upcoming = events.filter(e => !isPast(e.date));
@@ -337,11 +337,11 @@ function EventList({ phone, token }) {
         textDecoration: 'none', opacity: dim ? 0.45 : 1,
       }}
     >
-      <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.sunsetLight, marginBottom: 6 }}>
+      <div style={{ fontSize: 14, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.sunsetLight, marginBottom: 6 }}>
         {prettyDate(e.date)}{e.time ? ` · ${e.time}` : ''}
       </div>
       <div style={{ fontSize: 17, fontWeight: 600, color: C.cream, marginBottom: 4 }}>{e.name}</div>
-      <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)' }}>
+      <div style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)' }}>
         {e.lifecycle && e.lifecycle !== 'Active' ? `${e.lifecycle} · ` : ''}
         {e.location || 'Manitou Beach'} · <span style={{ color: C.sunsetLight, fontWeight: 600 }}>Edit →</span>
       </div>
@@ -353,7 +353,7 @@ function EventList({ phone, token }) {
       <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 30, fontWeight: 400, color: C.cream, margin: '0 0 10px' }}>
         Your events
       </h1>
-      <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.45)', lineHeight: 1.8, margin: '0 0 32px' }}>
+      <p style={{ fontSize: 17, color: 'rgba(255,255,255,0.75)', lineHeight: 1.8, margin: '0 0 32px' }}>
         Tap any one to change the name, date, time, or anything else. Edits go live right away.
         {shared ? ` This list is shared with ${crew.join(' and ') || 'your crew'}, so it has everything you've both posted.` : ''}
         {' '}Bookmark this page and you'll never have to hunt for a link again.
@@ -364,7 +364,7 @@ function EventList({ phone, token }) {
       )}
 
       {upcoming.length === 0 && (
-        <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.4)', marginBottom: 28 }}>
+        <p style={{ fontSize: 17, color: 'rgba(255,255,255,0.75)', marginBottom: 28 }}>
           Nothing coming up right now. <a href="/submit-event" style={{ color: C.sunsetLight }}>Add an event →</a>
         </p>
       )}
@@ -372,7 +372,7 @@ function EventList({ phone, token }) {
 
       {past.length > 0 && (
         <>
-          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', margin: '36px 0 14px' }}>
+          <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: 'rgba(255,255,255,0.75)', margin: '36px 0 14px' }}>
             Already happened
           </div>
           {past.slice().reverse().map(e => <Card key={e.id} e={e} dim />)}
@@ -391,7 +391,7 @@ function EventList({ phone, token }) {
         style={{ marginTop: 28 }}
       />
 
-      <a href="/submit-event" style={{ display: 'block', textAlign: 'center', marginTop: 32, padding: '15px 20px', borderRadius: 10, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: C.cream, textDecoration: 'none', fontSize: 15, fontWeight: 600 }}>
+      <a href="/submit-event" style={{ display: 'block', textAlign: 'center', marginTop: 32, padding: '15px 20px', borderRadius: 10, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: C.cream, textDecoration: 'none', fontSize: 17, fontWeight: 600 }}>
         + Add another event
       </a>
     </div>

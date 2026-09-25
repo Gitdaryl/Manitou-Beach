@@ -70,7 +70,7 @@ function PhotoLightbox({ images, startIndex = 0, onClose }) {
       {/* Counter */}
       <div style={{
         position: 'absolute', top: 24, left: '50%', transform: 'translateX(-50%)',
-        fontSize: 12, color: 'rgba(255,255,255,0.4)', fontFamily: "'Libre Franklin', sans-serif",
+        fontSize: 14, color: 'rgba(255,255,255,0.75)', fontFamily: "'Libre Franklin', sans-serif",
         letterSpacing: 2,
       }}>
         {idx + 1} / {images.length}
@@ -169,10 +169,10 @@ function StaysHero() {
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(30px, 5vw, 56px)', fontWeight: 400, color: C.cream, margin: '20px 0 24px', lineHeight: 1.15 }}>
             Your property. On the map.<br /><em>Where lake visitors are already looking.</em>
           </h1>
-          <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.5)', maxWidth: 540, margin: '0 auto 12px', lineHeight: 1.85 }}>
+          <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.75)', maxWidth: 540, margin: '0 auto 12px', lineHeight: 1.85 }}>
             Cottages, cabins, Airbnbs, and camping - all in one place. Visitors browse the map, see your photos, and click through to book on your site. We're not a booking platform - we just send guests your way.
           </p>
-          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)', maxWidth: 480, margin: '0 auto 20px', lineHeight: 1.7, fontStyle: 'italic' }}>
+          <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)', maxWidth: 480, margin: '0 auto 20px', lineHeight: 1.7, fontStyle: 'italic' }}>
             Your Airbnb link, your VRBO page, your own website - wherever you take bookings, that's where we send them.
           </p>
           <div style={{ display: 'inline-block', background: 'rgba(91,126,149,0.15)', border: '1px solid rgba(91,126,149,0.3)', borderRadius: 12, padding: '12px 24px', marginBottom: 28 }}>
@@ -183,7 +183,7 @@ function StaysHero() {
               Get on the Map - Free Through July 4 →
             </Btn>
             <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
-              <a href="/" style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'none' }}>← Back to Home</a>
+              <a href="/" style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)', fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'none' }}>← Back to Home</a>
               <ShareBar />
             </div>
           </div>
@@ -281,8 +281,8 @@ function GuestCalendar({ stay, onClose }) {
   };
 
   const nextM = viewMonth.month === 11 ? { year: viewMonth.year + 1, month: 0 } : { year: viewMonth.year, month: viewMonth.month + 1 };
-  const navBtn = { background: 'none', border: 'none', cursor: 'pointer', fontSize: 18, color: isFeatured ? 'rgba(255,255,255,0.35)' : C.textMuted, padding: '2px 10px', borderRadius: 6, lineHeight: 1 };
-  const inp = { width: '100%', padding: '10px 13px', borderRadius: 8, border: `1px solid ${isFeatured ? 'rgba(255,255,255,0.12)' : C.sand}`, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, background: isFeatured ? 'rgba(255,255,255,0.05)' : '#fff', color: isFeatured ? C.cream : C.text, outline: 'none', boxSizing: 'border-box' };
+  const navBtn = { background: 'none', border: 'none', cursor: 'pointer', fontSize: 18, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted, padding: '2px 10px', borderRadius: 6, lineHeight: 1 };
+  const inp = { width: '100%', padding: '10px 13px', borderRadius: 8, border: `1px solid ${isFeatured ? 'rgba(255,255,255,0.12)' : C.sand}`, fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, background: isFeatured ? 'rgba(255,255,255,0.05)' : '#fff', color: isFeatured ? C.cream : C.text, outline: 'none', boxSizing: 'border-box' };
 
   const renderMonth = (year, month) => {
     const firstDay = new Date(year, month, 1).getDay();
@@ -295,10 +295,10 @@ function GuestCalendar({ stay, onClose }) {
     }
     return (
       <div key={`${year}-${month}`} style={{ flex: 1, minWidth: 200 }}>
-        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 0.5, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif", color: isFeatured ? 'rgba(255,255,255,0.45)' : C.textMuted }}>{label}</div>
+        <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 0.5, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif", color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted }}>{label}</div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 2 }}>
           {['Su','Mo','Tu','We','Th','Fr','Sa'].map((d, i) => (
-            <div key={i} style={{ fontSize: 9, textAlign: 'center', padding: '3px 0', fontFamily: "'Libre Franklin', sans-serif", color: isFeatured ? 'rgba(255,255,255,0.25)' : C.textMuted }}>{d}</div>
+            <div key={i} style={{ fontSize: 12, textAlign: 'center', padding: '3px 0', fontFamily: "'Libre Franklin', sans-serif", color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted }}>{d}</div>
           ))}
           {cells.map((ds, ci) => {
             if (!ds) return <div key={`e${ci}`} />;
@@ -316,7 +316,7 @@ function GuestCalendar({ stay, onClose }) {
                 onClick={() => handleDay(ds)}
                 onMouseEnter={() => { if (pickStep === 'out' && checkIn) setHovered(ds); }}
                 onMouseLeave={() => setHovered(null)}
-                style={{ padding: '5px 2px', borderRadius: 5, border: 'none', textAlign: 'center', fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", cursor: (isPast || isBooked) ? 'default' : 'pointer', background: bg, color, opacity, fontWeight: fw, transition: 'background 0.1s' }}>
+                style={{ padding: '5px 2px', borderRadius: 5, border: 'none', textAlign: 'center', fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", cursor: (isPast || isBooked) ? 'default' : 'pointer', background: bg, color, opacity, fontWeight: fw, transition: 'background 0.1s' }}>
                 {parseInt(ds.split('-')[2])}
               </button>
             );
@@ -331,30 +331,30 @@ function GuestCalendar({ stay, onClose }) {
       {/* How this stay takes bookings */}
       {(stay.paymentMethod || stay.cancellationPolicy || stay.bookingConfirmation) && (
         <div style={{ background: isFeatured ? 'rgba(255,255,255,0.04)' : `${C.lakeBlue}06`, borderRadius: 10, padding: '11px 14px', marginBottom: 14, border: `1px solid ${isFeatured ? 'rgba(255,255,255,0.07)' : `${C.lakeBlue}12`}` }}>
-          <div style={{ fontSize: 10, fontWeight: 700, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1, textTransform: 'uppercase', marginBottom: 7 }}>How {stay.name} takes bookings</div>
-          {stay.paymentMethod    && <div style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.55)' : C.textLight, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 3 }}><strong style={{ color: isFeatured ? 'rgba(255,255,255,0.35)' : C.textMuted, fontWeight: 600 }}>Payment</strong> · {stay.paymentMethod}</div>}
-          {stay.cancellationPolicy && <div style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.55)' : C.textLight, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 3 }}><strong style={{ color: isFeatured ? 'rgba(255,255,255,0.35)' : C.textMuted, fontWeight: 600 }}>Cancellation</strong> · {stay.cancellationPolicy}</div>}
-          {stay.bookingConfirmation && <div style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.55)' : C.textLight, fontFamily: "'Libre Franklin', sans-serif" }}><strong style={{ color: isFeatured ? 'rgba(255,255,255,0.35)' : C.textMuted, fontWeight: 600 }}>Confirmation</strong> · {stay.bookingConfirmation}</div>}
+          <div style={{ fontSize: 13, fontWeight: 700, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1, textTransform: 'uppercase', marginBottom: 7 }}>How {stay.name} takes bookings</div>
+          {stay.paymentMethod    && <div style={{ fontSize: 14, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textLight, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 3 }}><strong style={{ color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted, fontWeight: 600 }}>Payment</strong> · {stay.paymentMethod}</div>}
+          {stay.cancellationPolicy && <div style={{ fontSize: 14, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textLight, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 3 }}><strong style={{ color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted, fontWeight: 600 }}>Cancellation</strong> · {stay.cancellationPolicy}</div>}
+          {stay.bookingConfirmation && <div style={{ fontSize: 14, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textLight, fontFamily: "'Libre Franklin', sans-serif" }}><strong style={{ color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted, fontWeight: 600 }}>Confirmation</strong> · {stay.bookingConfirmation}</div>}
         </div>
       )}
 
       {/* Header row */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', fontFamily: "'Libre Franklin', sans-serif", color: isFeatured ? 'rgba(255,255,255,0.35)' : C.textMuted }}>
+        <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', fontFamily: "'Libre Franklin', sans-serif", color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted }}>
           {pickStep === 'in' && 'Pick a check-in date'}
           {pickStep === 'out' && 'Now pick check-out'}
           {pickStep === 'done' && checkIn && checkOut && `${fmtDate(checkIn)} → ${fmtDate(checkOut)}`}
         </div>
         <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
           {(checkIn || checkOut) && (
-            <button type="button" onClick={() => { setCheckIn(null); setCheckOut(null); setPickStep('in'); setReqStatus(null); setWaitStatus(null); }} style={{ fontSize: 11, color: C.textMuted, background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontFamily: "'Libre Franklin', sans-serif" }}>Clear</button>
+            <button type="button" onClick={() => { setCheckIn(null); setCheckOut(null); setPickStep('in'); setReqStatus(null); setWaitStatus(null); }} style={{ fontSize: 13, color: C.textMuted, background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontFamily: "'Libre Franklin', sans-serif" }}>Clear</button>
           )}
           <button type="button" onClick={onClose} style={{ border: 'none', background: 'none', cursor: 'pointer', color: C.textMuted, fontSize: 20, padding: 0, lineHeight: 1 }}>×</button>
         </div>
       </div>
 
       {blocked === null ? (
-        <div style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", padding: '12px 0' }}>Loading availability...</div>
+        <div style={{ fontSize: 14, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", padding: '12px 0' }}>Loading availability...</div>
       ) : (
         <>
           {/* Month nav */}
@@ -371,11 +371,11 @@ function GuestCalendar({ stay, onClose }) {
 
           {/* Legend */}
           <div style={{ display: 'flex', gap: 14, marginBottom: 14, flexWrap: 'wrap' }}>
-            <span style={{ fontSize: 10, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", display: 'flex', alignItems: 'center', gap: 4 }}>
+            <span style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", display: 'flex', alignItems: 'center', gap: 4 }}>
               <span style={{ width: 10, height: 10, borderRadius: 2, background: '#FECACA', display: 'inline-block' }} /> Booked
             </span>
             {checkIn && (
-              <span style={{ fontSize: 10, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", display: 'flex', alignItems: 'center', gap: 4 }}>
+              <span style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", display: 'flex', alignItems: 'center', gap: 4 }}>
                 <span style={{ width: 10, height: 10, borderRadius: 2, background: accent, display: 'inline-block' }} /> Your selection
               </span>
             )}
@@ -384,33 +384,33 @@ function GuestCalendar({ stay, onClose }) {
           {/* Availability result */}
           {checkIn && checkOut && (
             <div style={{ padding: '10px 14px', borderRadius: 10, marginBottom: 14, background: isAvailable ? (isFeatured ? 'rgba(16,185,129,0.12)' : '#F0FDF4') : (isFeatured ? 'rgba(220,38,38,0.12)' : '#FEF2F2'), border: `1px solid ${isAvailable ? '#86EFAC' : '#FECACA'}` }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: isAvailable ? '#166534' : '#B91C1C', fontFamily: "'Libre Franklin', sans-serif" }}>
+              <div style={{ fontSize: 15, fontWeight: 600, color: isAvailable ? '#166534' : '#B91C1C', fontFamily: "'Libre Franklin', sans-serif" }}>
                 {isAvailable ? `✓ ${fmtDate(checkIn)} to ${fmtDate(checkOut)} looks available` : '✗ Those dates overlap with a booking'}
               </div>
-              {!isAvailable && <div style={{ fontSize: 11, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginTop: 4 }}>Try different dates, or join the waitlist below.</div>}
+              {!isAvailable && <div style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginTop: 4 }}>Try different dates, or join the waitlist below.</div>}
             </div>
           )}
 
           {/* Request form — only when available */}
           {checkIn && checkOut && isAvailable && reqStatus !== 'done' && (
             <div style={{ display: 'grid', gap: 10 }}>
-              {reqStatus === 'error' && <div style={{ fontSize: 12, color: '#B91C1C', fontFamily: "'Libre Franklin', sans-serif" }}>Name and phone are required.</div>}
+              {reqStatus === 'error' && <div style={{ fontSize: 14, color: '#B91C1C', fontFamily: "'Libre Franklin', sans-serif" }}>Name and phone are required.</div>}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 <input style={inp} placeholder="Your name" value={form.name} onChange={e => setF('name', e.target.value)} />
                 <input style={inp} placeholder="Phone number" value={form.phone} onChange={e => setF('phone', e.target.value)} />
               </div>
               <textarea style={{ ...inp, minHeight: 52, resize: 'none' }} placeholder="Message to owner (optional)" value={form.message} onChange={e => setF('message', e.target.value)} />
-              <p style={{ fontSize: 11, color: isFeatured ? 'rgba(255,255,255,0.3)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif", margin: 0, lineHeight: 1.6 }}>
+              <p style={{ fontSize: 13, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif", margin: 0, lineHeight: 1.6 }}>
                 Manitou Beach is a local discovery platform. Bookings, payments, and all arrangements are directly between you and the property owner. We take no responsibility for transactions or disputes.
               </p>
               <button type="button" onClick={submitRequest} disabled={reqStatus === 'loading'}
-                style={{ alignSelf: 'flex-start', padding: '11px 26px', borderRadius: 22, border: 'none', background: isFeatured ? C.sunset : accent, color: '#fff', fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: reqStatus === 'loading' ? 'default' : 'pointer' }}>
+                style={{ alignSelf: 'flex-start', padding: '11px 26px', borderRadius: 22, border: 'none', background: isFeatured ? C.sunset : accent, color: '#fff', fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: reqStatus === 'loading' ? 'default' : 'pointer' }}>
                 {reqStatus === 'loading' ? 'Sending...' : `Request ${fmtDate(checkIn)} → ${fmtDate(checkOut)} →`}
               </button>
             </div>
           )}
           {reqStatus === 'done' && (
-            <div style={{ background: '#F0FDF4', border: '1px solid #86EFAC', borderRadius: 10, padding: '12px 14px', fontSize: 13, color: '#166534', fontFamily: "'Libre Franklin', sans-serif" }}>
+            <div style={{ background: '#F0FDF4', border: '1px solid #86EFAC', borderRadius: 10, padding: '12px 14px', fontSize: 15, color: '#166534', fontFamily: "'Libre Franklin', sans-serif" }}>
               Request sent! The owner will contact you directly to confirm.
             </div>
           )}
@@ -418,20 +418,20 @@ function GuestCalendar({ stay, onClose }) {
           {/* Waitlist — when dates blocked */}
           {checkIn && checkOut && !isAvailable && waitStatus !== 'done' && (
             <div style={{ display: 'grid', gap: 10, marginTop: 4 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 0.5, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>Notify me if those dates open up</div>
-              {waitStatus === 'error' && <div style={{ fontSize: 12, color: '#B91C1C', fontFamily: "'Libre Franklin', sans-serif" }}>Name and phone are required.</div>}
+              <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 0.5, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>Notify me if those dates open up</div>
+              {waitStatus === 'error' && <div style={{ fontSize: 14, color: '#B91C1C', fontFamily: "'Libre Franklin', sans-serif" }}>Name and phone are required.</div>}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 <input style={inp} placeholder="Your name" value={form.name} onChange={e => setF('name', e.target.value)} />
                 <input style={inp} placeholder="Phone number" value={form.phone} onChange={e => setF('phone', e.target.value)} />
               </div>
               <button type="button" onClick={joinWaitlist} disabled={waitStatus === 'loading'}
-                style={{ alignSelf: 'flex-start', padding: '11px 26px', borderRadius: 22, border: `1px solid ${isFeatured ? C.sunset + '50' : accent + '50'}`, background: 'transparent', color: isFeatured ? C.sunsetLight : accent, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: waitStatus === 'loading' ? 'default' : 'pointer' }}>
+                style={{ alignSelf: 'flex-start', padding: '11px 26px', borderRadius: 22, border: `1px solid ${isFeatured ? C.sunset + '50' : accent + '50'}`, background: 'transparent', color: isFeatured ? C.sunsetLight : accent, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: waitStatus === 'loading' ? 'default' : 'pointer' }}>
                 {waitStatus === 'loading' ? 'Adding...' : 'Join Waitlist →'}
               </button>
             </div>
           )}
           {waitStatus === 'done' && (
-            <div style={{ background: '#F0FDF4', border: '1px solid #86EFAC', borderRadius: 10, padding: '12px 14px', fontSize: 13, color: '#166534', fontFamily: "'Libre Franklin', sans-serif", marginTop: 4 }}>
+            <div style={{ background: '#F0FDF4', border: '1px solid #86EFAC', borderRadius: 10, padding: '12px 14px', fontSize: 15, color: '#166534', fontFamily: "'Libre Franklin', sans-serif", marginTop: 4 }}>
               You're on the waitlist. We'll text if those dates open up.
             </div>
           )}
@@ -496,7 +496,7 @@ function StayCard({ stay, i }) {
                 {stay.photos?.length > 1 && (
                   <button type="button"
                     onClick={e => { e.stopPropagation(); setLightbox({ images: stay.photos, startIndex: 0 }); }}
-                    style={{ fontSize: 10, fontWeight: 600, letterSpacing: 0.3, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif", background: 'none', border: 'none', cursor: 'pointer', padding: 0, textAlign: 'center', whiteSpace: 'nowrap' }}>
+                    style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.3, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif", background: 'none', border: 'none', cursor: 'pointer', padding: 0, textAlign: 'center', whiteSpace: 'nowrap' }}>
                     📷 {stay.photos.length} photos
                   </button>
                 )}
@@ -511,12 +511,12 @@ function StayCard({ stay, i }) {
                 </h3>
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
                   {isFeatured && (
-                    <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.cream, background: C.sunset, padding: '4px 10px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>
+                    <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.cream, background: C.sunset, padding: '4px 10px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>
                       ✦ Staff Pick
                     </span>
                   )}
                   {stay.stayType && (
-                    <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: isFeatured ? C.cream : accent, background: isFeatured ? `${accent}40` : `${accent}15`, padding: '4px 10px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>
+                    <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: isFeatured ? C.cream : accent, background: isFeatured ? `${accent}40` : `${accent}15`, padding: '4px 10px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>
                       {stay.stayType}
                     </span>
                   )}
@@ -526,21 +526,21 @@ function StayCard({ stay, i }) {
               {/* Beds, Guests & Price */}
               {(stay.beds || stay.guests || stay.pricePerNight || stay.minStay) && (
                 <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center', marginBottom: 8 }}>
-                  {stay.beds && <span style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.5)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>🛏 {stay.beds} bed{stay.beds !== 1 ? 's' : ''}</span>}
-                  {stay.guests && <span style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.5)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>👥 Sleeps {stay.guests}</span>}
-                  {stay.pricePerNight && <span style={{ fontSize: 12, fontWeight: 700, color: isFeatured ? C.sunsetLight : C.sunset, fontFamily: "'Libre Franklin', sans-serif", background: isFeatured ? `${C.sunset}20` : `${C.sunset}10`, padding: '2px 8px', borderRadius: 10 }}>{stay.pricePerNight}</span>}
-                  {stay.minStay && <span style={{ fontSize: 11, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>{stay.minStay}+ nights</span>}
+                  {stay.beds && <span style={{ fontSize: 14, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>🛏 {stay.beds} bed{stay.beds !== 1 ? 's' : ''}</span>}
+                  {stay.guests && <span style={{ fontSize: 14, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>👥 Sleeps {stay.guests}</span>}
+                  {stay.pricePerNight && <span style={{ fontSize: 14, fontWeight: 700, color: isFeatured ? C.sunsetLight : C.sunset, fontFamily: "'Libre Franklin', sans-serif", background: isFeatured ? `${C.sunset}20` : `${C.sunset}10`, padding: '2px 8px', borderRadius: 10 }}>{stay.pricePerNight}</span>}
+                  {stay.minStay && <span style={{ fontSize: 13, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>{stay.minStay}+ nights</span>}
                 </div>
               )}
 
               {/* Description */}
               {stay.description && (
                 <div style={{ marginBottom: 14 }}>
-                  <p style={{ fontSize: 14, color: isFeatured ? 'rgba(255,255,255,0.7)' : C.textLight, lineHeight: 1.7, margin: 0 }}>
+                  <p style={{ fontSize: 16, color: isFeatured ? 'rgba(255,255,255,0.7)' : C.textLight, lineHeight: 1.7, margin: 0 }}>
                     {descLong && !descExpanded ? stay.description.slice(0, DESC_LIMIT).trimEnd() + '...' : stay.description}
                   </p>
                   {descLong && (
-                    <button type="button" onClick={e => { e.stopPropagation(); setDescExpanded(v => !v); }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: isFeatured ? C.sunsetLight : accent, fontFamily: "'Libre Franklin', sans-serif", padding: '4px 0 0', display: 'block' }}>
+                    <button type="button" onClick={e => { e.stopPropagation(); setDescExpanded(v => !v); }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: isFeatured ? C.sunsetLight : accent, fontFamily: "'Libre Franklin', sans-serif", padding: '4px 0 0', display: 'block' }}>
                       {descExpanded ? 'Show less ↑' : 'Read more ↓'}
                     </button>
                   )}
@@ -552,7 +552,7 @@ function StayCard({ stay, i }) {
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 14 }}>
                   {stay.amenities.map(a => (
                     <span key={a} style={{
-                      fontSize: 11, padding: '4px 10px', borderRadius: 12,
+                      fontSize: 13, padding: '4px 10px', borderRadius: 12,
                       background: isFeatured ? 'rgba(255,255,255,0.1)' : `${accent}10`,
                       color: isFeatured ? 'rgba(255,255,255,0.6)' : accent,
                       fontFamily: "'Libre Franklin', sans-serif",
@@ -567,14 +567,14 @@ function StayCard({ stay, i }) {
 
               {/* Address, Phone & Email */}
               <div className="stay-card-meta" style={{ display: 'flex', gap: 20, flexWrap: 'wrap', marginBottom: 12 }}>
-                {stay.address && <span style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted }}>📍 {stay.address}</span>}
-                {stay.phone && <a href={`tel:${stay.phone}`} onClick={e => e.stopPropagation()} style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted, textDecoration: 'none' }}>📞 {stay.phone}</a>}
-                {stay.email && <a href={`mailto:${stay.email}?subject=Inquiry about ${encodeURIComponent(stay.name)}`} onClick={e => e.stopPropagation()} style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted, textDecoration: 'none' }}>✉️ {stay.email}</a>}
+                {stay.address && <span style={{ fontSize: 14, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted }}>📍 {stay.address}</span>}
+                {stay.phone && <a href={`tel:${stay.phone}`} onClick={e => e.stopPropagation()} style={{ fontSize: 14, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted, textDecoration: 'none' }}>📞 {stay.phone}</a>}
+                {stay.email && <a href={`mailto:${stay.email}?subject=Inquiry about ${encodeURIComponent(stay.name)}`} onClick={e => e.stopPropagation()} style={{ fontSize: 14, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted, textDecoration: 'none' }}>✉️ {stay.email}</a>}
               </div>
 
               {/* Book Now / Visit Website */}
               {(stay.bookingUrl || stay.website) && (() => {
-                const ctaStyle = { fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: isFeatured ? C.sunset : accent, textDecoration: 'none' };
+                const ctaStyle = { fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: isFeatured ? C.sunset : accent, textDecoration: 'none' };
                 if (stay.bookingUrl) return <a href={stay.bookingUrl} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={ctaStyle}>Book Now →</a>;
                 if (stay.website) return <a href={stay.website} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={ctaStyle}>Visit Website →</a>;
               })()}
@@ -595,7 +595,7 @@ function StayCard({ stay, i }) {
           <button
             type="button"
             onClick={() => setExpanded(v => !v)}
-            style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: isFeatured ? 'rgba(255,255,255,0.35)' : C.textMuted, background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0 }}
+            style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted, background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0 }}
           >
             {expanded ? 'Show less ↑' : 'Show more ↓'}
           </button>
@@ -603,7 +603,7 @@ function StayCard({ stay, i }) {
             <button
               type="button"
               onClick={() => { setExpanded(true); setShowCalendar(v => !v); }}
-              style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: isFeatured ? C.sunsetLight : accent, background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0 }}
+              style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: isFeatured ? C.sunsetLight : accent, background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0 }}
             >
               {showCalendar ? 'Close Calendar' : 'Check Availability →'}
             </button>
@@ -611,7 +611,7 @@ function StayCard({ stay, i }) {
             <a
               href={stay.email ? `mailto:${stay.email}?subject=Inquiry about ${encodeURIComponent(stay.name)}` : `tel:${stay.phone}`}
               onClick={e => e.stopPropagation()}
-              style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: accent, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}
+              style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: accent, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}
             >
               Contact Owner →
             </a>
@@ -673,7 +673,7 @@ function MapDetailPanel({ stay, onBack }) {
       {/* Back bar */}
       <div style={{ padding: '12px 20px', borderBottom: `1px solid ${isFeatured ? 'rgba(255,255,255,0.08)' : C.sand}`, display: 'flex', alignItems: 'center', background: isFeatured ? C.dusk : '#fff', position: 'sticky', top: 0, zIndex: 2 }}>
         <button type="button" onClick={onBack}
-          style={{ fontSize: 12, fontWeight: 700, letterSpacing: 0.5, color: isFeatured ? 'rgba(255,255,255,0.5)' : C.textMuted, background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0, display: 'flex', alignItems: 'center', gap: 6 }}>
+          style={{ fontSize: 14, fontWeight: 700, letterSpacing: 0.5, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted, background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0, display: 'flex', alignItems: 'center', gap: 6 }}>
           ← Back to search
         </button>
       </div>
@@ -702,7 +702,7 @@ function MapDetailPanel({ stay, onBack }) {
           )}
           {photos.length > 1 && (
             <button type="button" onClick={() => setLightbox({ images: photos, startIndex: 0 })}
-              style={{ position: 'absolute', bottom: 12, right: 12, display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px', background: 'rgba(0,0,0,0.68)', color: '#fff', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 11, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif", backdropFilter: 'blur(4px)' }}>
+              style={{ position: 'absolute', bottom: 12, right: 12, display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px', background: 'rgba(0,0,0,0.68)', color: '#fff', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 13, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif", backdropFilter: 'blur(4px)' }}>
               ⊞ See all {photos.length} photos
             </button>
           )}
@@ -713,8 +713,8 @@ function MapDetailPanel({ stay, onBack }) {
       <div style={{ padding: '20px 20px 0', flex: 1 }}>
         {/* Badges */}
         <div style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
-          {isFeatured && <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.cream, background: C.sunset, padding: '4px 10px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>✦ Staff Pick</span>}
-          {stay.stayType && <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: isFeatured ? C.cream : accent, background: isFeatured ? `${accent}40` : `${accent}15`, padding: '4px 10px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>{stay.stayType}</span>}
+          {isFeatured && <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.cream, background: C.sunset, padding: '4px 10px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>✦ Staff Pick</span>}
+          {stay.stayType && <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: isFeatured ? C.cream : accent, background: isFeatured ? `${accent}40` : `${accent}15`, padding: '4px 10px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>{stay.stayType}</span>}
         </div>
 
         <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, fontWeight: 400, color: isFeatured ? C.cream : C.text, margin: '0 0 10px' }}>{stay.name}</h2>
@@ -723,31 +723,31 @@ function MapDetailPanel({ stay, onBack }) {
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'baseline', marginBottom: 14 }}>
           {stay.pricePerNight && (
             <span style={{ fontSize: 20, fontWeight: 700, color: isFeatured ? C.sunsetLight : C.sunset, fontFamily: "'Libre Franklin', sans-serif" }}>
-              {stay.pricePerNight}<span style={{ fontSize: 12, fontWeight: 400, color: C.textMuted }}>/night</span>
+              {stay.pricePerNight}<span style={{ fontSize: 14, fontWeight: 400, color: C.textMuted }}>/night</span>
             </span>
           )}
-          {stay.beds && <span style={{ fontSize: 13, color: isFeatured ? 'rgba(255,255,255,0.6)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>🛏 {stay.beds} bed{stay.beds !== 1 ? 's' : ''}</span>}
-          {stay.guests && <span style={{ fontSize: 13, color: isFeatured ? 'rgba(255,255,255,0.6)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>👥 Sleeps {stay.guests}</span>}
-          {stay.minStay && <span style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>{stay.minStay}+ nights</span>}
+          {stay.beds && <span style={{ fontSize: 15, color: isFeatured ? 'rgba(255,255,255,0.6)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>🛏 {stay.beds} bed{stay.beds !== 1 ? 's' : ''}</span>}
+          {stay.guests && <span style={{ fontSize: 15, color: isFeatured ? 'rgba(255,255,255,0.6)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>👥 Sleeps {stay.guests}</span>}
+          {stay.minStay && <span style={{ fontSize: 14, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>{stay.minStay}+ nights</span>}
         </div>
 
         {/* Primary CTAs */}
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 18 }}>
           {(stay.bookingUrl || stay.website) && (
             <a href={stay.bookingUrl || stay.website} target="_blank" rel="noopener noreferrer"
-              style={{ padding: '11px 22px', borderRadius: 24, background: isFeatured ? C.sunset : accent, color: '#fff', fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', textDecoration: 'none', display: 'inline-block' }}>
+              style={{ padding: '11px 22px', borderRadius: 24, background: isFeatured ? C.sunset : accent, color: '#fff', fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', textDecoration: 'none', display: 'inline-block' }}>
               {stay.bookingUrl ? 'Book Now →' : 'Visit Website →'}
             </a>
           )}
           {stay.tier !== 'free' && (
             <button type="button" onClick={() => setShowCalendar(v => !v)}
-              style={{ padding: '11px 22px', borderRadius: 24, border: `1.5px solid ${isFeatured ? C.sunset + '60' : accent + '60'}`, background: 'transparent', color: isFeatured ? C.sunsetLight : accent, fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer' }}>
+              style={{ padding: '11px 22px', borderRadius: 24, border: `1.5px solid ${isFeatured ? C.sunset + '60' : accent + '60'}`, background: 'transparent', color: isFeatured ? C.sunsetLight : accent, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer' }}>
               {showCalendar ? 'Close Calendar' : 'Check Availability'}
             </button>
           )}
           {!stay.bookingUrl && !stay.website && (stay.email || stay.phone) && (
             <a href={stay.email ? `mailto:${stay.email}?subject=Inquiry about ${encodeURIComponent(stay.name)}` : `tel:${stay.phone}`}
-              style={{ padding: '11px 22px', borderRadius: 24, background: isFeatured ? C.sunset : accent, color: '#fff', fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', textDecoration: 'none', display: 'inline-block' }}>
+              style={{ padding: '11px 22px', borderRadius: 24, background: isFeatured ? C.sunset : accent, color: '#fff', fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', textDecoration: 'none', display: 'inline-block' }}>
               {stay.email ? 'Send Inquiry →' : 'Call Owner →'}
             </a>
           )}
@@ -755,7 +755,7 @@ function MapDetailPanel({ stay, onBack }) {
 
         {/* Description */}
         {stay.description && (
-          <p style={{ fontSize: 13, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textLight, lineHeight: 1.75, margin: '0 0 16px' }}>
+          <p style={{ fontSize: 15, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textLight, lineHeight: 1.75, margin: '0 0 16px' }}>
             {stay.description}
           </p>
         )}
@@ -764,7 +764,7 @@ function MapDetailPanel({ stay, onBack }) {
         {stay.amenities?.length > 0 && (
           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 16 }}>
             {stay.amenities.map(a => (
-              <span key={a} style={{ fontSize: 11, padding: '4px 10px', borderRadius: 12, background: isFeatured ? 'rgba(255,255,255,0.1)' : `${accent}10`, color: isFeatured ? 'rgba(255,255,255,0.6)' : accent, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, border: `1px solid ${isFeatured ? 'rgba(255,255,255,0.08)' : `${accent}20`}` }}>
+              <span key={a} style={{ fontSize: 13, padding: '4px 10px', borderRadius: 12, background: isFeatured ? 'rgba(255,255,255,0.1)' : `${accent}10`, color: isFeatured ? 'rgba(255,255,255,0.6)' : accent, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, border: `1px solid ${isFeatured ? 'rgba(255,255,255,0.08)' : `${accent}20`}` }}>
                 {AMENITY_ICONS[a] || '·'} {a}
               </span>
             ))}
@@ -774,18 +774,18 @@ function MapDetailPanel({ stay, onBack }) {
         {/* Stay details grid */}
         {(stay.checkIn || stay.checkOut || stay.cancellationPolicy || stay.houseRules) && (
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 16, padding: '14px 16px', background: isFeatured ? 'rgba(255,255,255,0.05)' : '#f9f7f4', borderRadius: 12 }}>
-            {stay.checkIn && <div><div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 2 }}>Check In</div><div style={{ fontSize: 13, color: isFeatured ? C.cream : C.text, fontFamily: "'Libre Franklin', sans-serif" }}>{stay.checkIn}</div></div>}
-            {stay.checkOut && <div><div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 2 }}>Check Out</div><div style={{ fontSize: 13, color: isFeatured ? C.cream : C.text, fontFamily: "'Libre Franklin', sans-serif" }}>{stay.checkOut}</div></div>}
-            {stay.cancellationPolicy && <div style={{ gridColumn: '1/-1' }}><div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 2 }}>Cancellation</div><div style={{ fontSize: 13, color: isFeatured ? C.cream : C.text, fontFamily: "'Libre Franklin', sans-serif" }}>{stay.cancellationPolicy}</div></div>}
-            {stay.houseRules && <div style={{ gridColumn: '1/-1' }}><div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 2 }}>House Rules</div><div style={{ fontSize: 13, color: isFeatured ? C.cream : C.text, fontFamily: "'Libre Franklin', sans-serif" }}>{stay.houseRules}</div></div>}
+            {stay.checkIn && <div><div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 2 }}>Check In</div><div style={{ fontSize: 15, color: isFeatured ? C.cream : C.text, fontFamily: "'Libre Franklin', sans-serif" }}>{stay.checkIn}</div></div>}
+            {stay.checkOut && <div><div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 2 }}>Check Out</div><div style={{ fontSize: 15, color: isFeatured ? C.cream : C.text, fontFamily: "'Libre Franklin', sans-serif" }}>{stay.checkOut}</div></div>}
+            {stay.cancellationPolicy && <div style={{ gridColumn: '1/-1' }}><div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 2 }}>Cancellation</div><div style={{ fontSize: 15, color: isFeatured ? C.cream : C.text, fontFamily: "'Libre Franklin', sans-serif" }}>{stay.cancellationPolicy}</div></div>}
+            {stay.houseRules && <div style={{ gridColumn: '1/-1' }}><div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 2 }}>House Rules</div><div style={{ fontSize: 15, color: isFeatured ? C.cream : C.text, fontFamily: "'Libre Franklin', sans-serif" }}>{stay.houseRules}</div></div>}
           </div>
         )}
 
         {/* Contact */}
         <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', paddingBottom: 20 }}>
-          {stay.address && <span style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted }}>📍 {stay.address}</span>}
-          {stay.phone && <a href={`tel:${stay.phone}`} style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted, textDecoration: 'none' }}>📞 {stay.phone}</a>}
-          {stay.email && <a href={`mailto:${stay.email}?subject=Inquiry about ${encodeURIComponent(stay.name)}`} style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.4)' : C.textMuted, textDecoration: 'none' }}>✉️ {stay.email}</a>}
+          {stay.address && <span style={{ fontSize: 14, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted }}>📍 {stay.address}</span>}
+          {stay.phone && <a href={`tel:${stay.phone}`} style={{ fontSize: 14, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted, textDecoration: 'none' }}>📞 {stay.phone}</a>}
+          {stay.email && <a href={`mailto:${stay.email}?subject=Inquiry about ${encodeURIComponent(stay.name)}`} style={{ fontSize: 14, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted, textDecoration: 'none' }}>✉️ {stay.email}</a>}
         </div>
       </div>
 
@@ -988,7 +988,7 @@ function StaysMapView({ stays, filtered }) {
         ) : (
         <div style={{ overflowY: 'auto', padding: '20px 20px 20px 16px', flex: 1 }}>
         <div style={{
-          fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase',
+          fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase',
           color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif",
           marginBottom: 14, paddingLeft: 4,
         }}>
@@ -1046,12 +1046,12 @@ function StaysMapView({ stays, filtered }) {
                     </h3>
                     <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
                       {isFeatured && (
-                        <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', color: C.cream, background: C.sunset, padding: '2px 7px', borderRadius: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
+                        <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', color: C.cream, background: C.sunset, padding: '2px 7px', borderRadius: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
                           ✦ Staff Pick
                         </span>
                       )}
                       {stay.stayType && (
-                        <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', color: isFeatured ? C.cream : accent, background: isFeatured ? `${accent}40` : `${accent}15`, padding: '2px 7px', borderRadius: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
+                        <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', color: isFeatured ? C.cream : accent, background: isFeatured ? `${accent}40` : `${accent}15`, padding: '2px 7px', borderRadius: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
                           {stay.stayType}
                         </span>
                       )}
@@ -1060,7 +1060,7 @@ function StaysMapView({ stays, filtered }) {
 
                   {/* Beds & guests */}
                   {(stay.beds || stay.guests) && (
-                    <div style={{ fontSize: 11, color: isFeatured ? 'rgba(255,255,255,0.45)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 4 }}>
+                    <div style={{ fontSize: 13, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 4 }}>
                       {stay.beds && <span>🛏 {stay.beds} bed{stay.beds !== 1 ? 's' : ''}</span>}
                       {stay.beds && stay.guests && <span> · </span>}
                       {stay.guests && <span>👥 {stay.guests}</span>}
@@ -1069,7 +1069,7 @@ function StaysMapView({ stays, filtered }) {
 
                   {/* Description snippet */}
                   {stay.description && (
-                    <p style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.55)' : C.textLight, lineHeight: 1.5, margin: '0 0 8px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                    <p style={{ fontSize: 14, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textLight, lineHeight: 1.5, margin: '0 0 8px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
                       {stay.description}
                     </p>
                   )}
@@ -1079,16 +1079,16 @@ function StaysMapView({ stays, filtered }) {
                     <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginBottom: 8 }}>
                       {stay.amenities.slice(0, 3).map(a => (
                         <span key={a} style={{
-                          fontSize: 10, padding: '2px 7px', borderRadius: 8,
+                          fontSize: 13, padding: '2px 7px', borderRadius: 8,
                           background: isFeatured ? 'rgba(255,255,255,0.08)' : `${accent}08`,
-                          color: isFeatured ? 'rgba(255,255,255,0.5)' : accent,
+                          color: isFeatured ? 'rgba(255,255,255,0.75)' : accent,
                           fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600,
                         }}>
                           {AMENITY_ICONS[a] || '·'} {a}
                         </span>
                       ))}
                       {stay.amenities.length > 3 && (
-                        <span style={{ fontSize: 10, color: isFeatured ? 'rgba(255,255,255,0.3)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
+                        <span style={{ fontSize: 13, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
                           +{stay.amenities.length - 3}
                         </span>
                       )}
@@ -1098,7 +1098,7 @@ function StaysMapView({ stays, filtered }) {
                   {/* CTA */}
                   {(() => {
                     const ctaColor = isFeatured ? C.sunset : accent;
-                    const ctaStyle = { fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: ctaColor, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" };
+                    const ctaStyle = { fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: ctaColor, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" };
                     if (stay.bookingUrl) return <a href={stay.bookingUrl} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={ctaStyle}>Book Now →</a>;
                     if (stay.website) return <a href={stay.website} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={ctaStyle}>Website →</a>;
                     if (stay.email) return <a href={`mailto:${stay.email}?subject=Inquiry about ${encodeURIComponent(stay.name)}`} onClick={e => e.stopPropagation()} style={ctaStyle}>Inquire →</a>;
@@ -1113,7 +1113,7 @@ function StaysMapView({ stays, filtered }) {
           {filtered.length === 0 && (
             <div style={{ textAlign: 'center', padding: 40 }}>
               <div style={{ fontSize: 36, marginBottom: 8 }}>🏕</div>
-              <p style={{ color: C.textMuted, fontSize: 13 }}>
+              <p style={{ color: C.textMuted, fontSize: 15 }}>
                 No properties match your filters.
               </p>
             </div>
@@ -1197,25 +1197,25 @@ function FormPhotoUploader({ photos, onChange, maxPhotos, isFeatured, inputStyle
 
   return (
     <div>
-      <label style={{ fontSize: 12, fontWeight: 700, color: textColor, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 10, display: 'block', letterSpacing: 0.8, textTransform: 'uppercase' }}>
+      <label style={{ fontSize: 14, fontWeight: 700, color: textColor, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 10, display: 'block', letterSpacing: 0.8, textTransform: 'uppercase' }}>
         Photos <span style={{ fontWeight: 400, color: mutedColor }}>(up to {maxPhotos})</span>
       </label>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 10 }}>
         {photos.map((url, i) => (
           <div key={i} style={{ position: 'relative', width: 80, height: 80, borderRadius: 10, overflow: 'hidden', border: `1px solid ${isFeatured ? 'rgba(255,255,255,0.15)' : C.sand}`, flexShrink: 0 }}>
             <img src={url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            <button type="button" onClick={() => remove(i)} style={{ position: 'absolute', top: 3, right: 3, width: 20, height: 20, borderRadius: '50%', border: 'none', background: 'rgba(0,0,0,0.6)', color: '#fff', fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>×</button>
+            <button type="button" onClick={() => remove(i)} style={{ position: 'absolute', top: 3, right: 3, width: 20, height: 20, borderRadius: '50%', border: 'none', background: 'rgba(0,0,0,0.6)', color: '#fff', fontSize: 15, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>×</button>
             {i === 0 && <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'rgba(0,0,0,0.5)', color: '#fff', fontSize: 8, textAlign: 'center', padding: '2px 0', fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>MAIN</div>}
           </div>
         ))}
         {photos.length < maxPhotos && (
           <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading} style={{ width: 80, height: 80, borderRadius: 10, border: `2px dashed ${isFeatured ? 'rgba(255,255,255,0.2)' : C.sand}`, background: isFeatured ? 'rgba(255,255,255,0.04)' : C.cream, color: mutedColor, fontSize: 22, cursor: uploading ? 'wait' : 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3 }}>
-            {uploading ? <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif" }}>...</span> : <>+<span style={{ fontSize: 9, fontFamily: "'Libre Franklin', sans-serif" }}>Add</span></>}
+            {uploading ? <span style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif" }}>...</span> : <>+<span style={{ fontSize: 12, fontFamily: "'Libre Franklin', sans-serif" }}>Add</span></>}
           </button>
         )}
       </div>
       <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFile} />
-      <p style={{ fontSize: 11, color: mutedColor, margin: 0, fontFamily: "'Libre Franklin', sans-serif" }}>
+      <p style={{ fontSize: 13, color: mutedColor, margin: 0, fontFamily: "'Libre Franklin', sans-serif" }}>
         {photos.length}/{maxPhotos} added. JPG or PNG, max 2MB each. First photo is your main image.
       </p>
     </div>
@@ -1371,7 +1371,7 @@ function ListYourPropertySection({ stays = [] }) {
 
   const baseInputStyle = {
     width: '100%', padding: '14px 16px', borderRadius: 12,
-    fontFamily: "'Libre Franklin', sans-serif", fontSize: 14,
+    fontFamily: "'Libre Franklin', sans-serif", fontSize: 16,
     outline: 'none', boxSizing: 'border-box',
     transition: 'all 0.2s ease',
   };
@@ -1389,8 +1389,8 @@ function ListYourPropertySection({ stays = [] }) {
   };
 
   const labelStyle = {
-    fontSize: 12, fontWeight: 600,
-    color: isFeatured ? 'rgba(255,255,255,0.5)' : C.textLight,
+    fontSize: 14, fontWeight: 600,
+    color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textLight,
     fontFamily: "'Libre Franklin', sans-serif", marginBottom: 6, display: 'block',
     letterSpacing: 0.3,
   };
@@ -1421,10 +1421,10 @@ function ListYourPropertySection({ stays = [] }) {
       <div style={{ maxWidth: 720, margin: '0 auto' }}>
         <SectionLabel>Get Listed</SectionLabel>
         <SectionTitle>Your booking. Your rules. Your money.</SectionTitle>
-        <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, textAlign: 'center', marginBottom: 10, maxWidth: 580, margin: '0 auto 10px' }}>
+        <p style={{ fontSize: 17, color: C.textLight, lineHeight: 1.8, textAlign: 'center', marginBottom: 10, maxWidth: 580, margin: '0 auto 10px' }}>
           We put your property in front of lake visitors - you handle the booking your own way. No commission on every stay, no platform dictating your cancellation policy, no middleman between you and your guests.
         </p>
-        <p style={{ fontSize: 13, color: C.textMuted, lineHeight: 1.7, textAlign: 'center', marginBottom: 20, maxWidth: 520, margin: '0 auto 20px' }}>
+        <p style={{ fontSize: 15, color: C.textMuted, lineHeight: 1.7, textAlign: 'center', marginBottom: 20, maxWidth: 520, margin: '0 auto 20px' }}>
           Take payment by Zelle, bank transfer, PayPal - whatever works for you. Set your own deposit and cancellation terms. Talk directly with guests before they arrive. Keep every dollar.
         </p>
 
@@ -1432,7 +1432,7 @@ function ListYourPropertySection({ stays = [] }) {
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <div style={{ display: 'inline-block', background: `${C.sunset}10`, border: `1px solid ${C.sunset}25`, borderRadius: 12, padding: '12px 24px' }}>
             <div style={{ fontFamily: "'Caveat', cursive", fontSize: 17, color: C.sunset, marginBottom: 2 }}>Summer Launch - Free through July 4th</div>
-            <div style={{ fontSize: 11, color: C.textMuted }}>Full Listed experience. No credit card. No catch.</div>
+            <div style={{ fontSize: 13, color: C.textMuted }}>Full Listed experience. No credit card. No catch.</div>
           </div>
         </div>
 
@@ -1480,7 +1480,7 @@ function ListYourPropertySection({ stays = [] }) {
                 <div style={{ fontSize: 28, marginBottom: 8, filter: active ? 'none' : 'grayscale(0.3)' }}>{t.icon}</div>
 
                 <div style={{
-                  fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase',
+                  fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase',
                   color: active ? t.accent : C.textMuted,
                   fontFamily: "'Libre Franklin', sans-serif", marginBottom: 6,
                   transition: 'color 0.3s',
@@ -1500,7 +1500,7 @@ function ListYourPropertySection({ stays = [] }) {
                         {t.betaPrice}
                       </span>
                       <span style={{
-                        fontSize: 12, color: active && t.key === 'featured' ? 'rgba(255,255,255,0.4)' : C.textMuted,
+                        fontSize: 14, color: active && t.key === 'featured' ? 'rgba(255,255,255,0.75)' : C.textMuted,
                         fontFamily: "'Libre Franklin', sans-serif",
                       }}>
                         thru July 4
@@ -1516,7 +1516,7 @@ function ListYourPropertySection({ stays = [] }) {
                         then {t.price}
                       </span>
                       <span style={{
-                        fontSize: 13, color: active && t.key === 'featured' ? 'rgba(255,255,255,0.35)' : C.textMuted,
+                        fontSize: 15, color: active && t.key === 'featured' ? 'rgba(255,255,255,0.75)' : C.textMuted,
                         fontFamily: "'Libre Franklin', sans-serif",
                       }}>
                         {t.priceSub}
@@ -1534,7 +1534,7 @@ function ListYourPropertySection({ stays = [] }) {
                       {t.price}
                     </span>
                     <span style={{
-                      fontSize: 13, color: active && t.key === 'featured' ? 'rgba(255,255,255,0.4)' : C.textMuted,
+                      fontSize: 15, color: active && t.key === 'featured' ? 'rgba(255,255,255,0.75)' : C.textMuted,
                       fontFamily: "'Libre Franklin', sans-serif",
                     }}>
                       {t.priceSub}
@@ -1545,13 +1545,13 @@ function ListYourPropertySection({ stays = [] }) {
                 {active && (
                   <div style={{ animation: 'fadeSlideIn 0.3s ease' }}>
                     <div style={{
-                      fontSize: 13, fontWeight: 600, color: t.key === 'featured' ? C.cream : C.text,
+                      fontSize: 15, fontWeight: 600, color: t.key === 'featured' ? C.cream : C.text,
                       fontFamily: "'Libre Franklin', sans-serif", marginBottom: 4,
                     }}>
                       {t.headline}
                     </div>
                     <div style={{
-                      fontSize: 12, color: t.key === 'featured' ? 'rgba(255,255,255,0.5)' : C.textLight,
+                      fontSize: 14, color: t.key === 'featured' ? 'rgba(255,255,255,0.75)' : C.textLight,
                       lineHeight: 1.5, fontFamily: "'Libre Franklin', sans-serif",
                     }}>
                       {t.tagline}
@@ -1573,7 +1573,7 @@ function ListYourPropertySection({ stays = [] }) {
         }}>
           {activeTier.features.map(f => (
             <span key={f} style={{
-              fontSize: 11, padding: '5px 12px', borderRadius: 20,
+              fontSize: 13, padding: '5px 12px', borderRadius: 20,
               background: isFeatured ? `${C.sunset}12` : isPaid ? `${C.lakeBlue}10` : `${C.sand}60`,
               color: isFeatured ? C.sunset : isPaid ? C.lakeBlue : C.textMuted,
               fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600,
@@ -1587,7 +1587,7 @@ function ListYourPropertySection({ stays = [] }) {
         {/* ── Sample Listings - same property, three tiers ── */}
         <div key={tier} style={{ marginBottom: 32, animation: 'sampleFadeIn 0.35s ease' }}>
           <div style={{
-            fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase',
+            fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase',
             color: activeTier.accent, fontFamily: "'Libre Franklin', sans-serif",
             textAlign: 'center', marginBottom: 14,
           }}>
@@ -1608,11 +1608,11 @@ function ListYourPropertySection({ stays = [] }) {
                   <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.text, margin: 0 }}>
                     Yeti's Cozy Cabin
                   </h3>
-                  <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.lakeBlue, background: `${C.lakeBlue}15`, padding: '4px 10px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>
+                  <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.lakeBlue, background: `${C.lakeBlue}15`, padding: '4px 10px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>
                     Cottage
                   </span>
                 </div>
-                <p style={{ fontSize: 12, color: C.textMuted, marginTop: 6, marginBottom: 0, fontStyle: 'italic', lineHeight: 1.6 }}>
+                <p style={{ fontSize: 14, color: C.textMuted, marginTop: 6, marginBottom: 0, fontStyle: 'italic', lineHeight: 1.6 }}>
                   That's it. Name and type only - no photo, no description, no booking link. Guests see you exist, but have nothing to go on.
                 </p>
               </div>
@@ -1632,24 +1632,24 @@ function ListYourPropertySection({ stays = [] }) {
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 8, marginBottom: 6 }}>
                   <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.text, margin: 0 }}>Yeti's Cozy Cabin</h3>
-                  <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.lakeBlue, background: `${C.lakeBlue}15`, padding: '4px 10px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>Cottage</span>
+                  <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.lakeBlue, background: `${C.lakeBlue}15`, padding: '4px 10px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>Cottage</span>
                 </div>
-                <div style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 8 }}>🛏 3 beds · 👥 Sleeps 8</div>
-                <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: '0 0 14px' }}>
+                <div style={{ fontSize: 14, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 8 }}>🛏 3 beds · 👥 Sleeps 8</div>
+                <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.7, margin: '0 0 14px' }}>
                   Lakefront cabin with a fire pit, private dock, and the best sunset view on Devils Lake. The kind of place you never want to leave.
                 </p>
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 14 }}>
                   {['Waterfront', 'Fire Pit', 'Dock', 'WiFi', 'Kitchen'].map(a => (
-                    <span key={a} style={{ fontSize: 11, padding: '4px 10px', borderRadius: 12, background: `${C.lakeBlue}10`, color: C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, border: `1px solid ${C.lakeBlue}20` }}>
+                    <span key={a} style={{ fontSize: 13, padding: '4px 10px', borderRadius: 12, background: `${C.lakeBlue}10`, color: C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, border: `1px solid ${C.lakeBlue}20` }}>
                       {AMENITY_ICONS[a]} {a}
                     </span>
                   ))}
                 </div>
                 <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', marginBottom: 12 }}>
-                  <span style={{ fontSize: 12, color: C.textMuted }}>📍 7832 Devils Lake Hwy</span>
-                  <span style={{ fontSize: 12, color: C.textMuted }}>📞 (517) 555-0199</span>
+                  <span style={{ fontSize: 14, color: C.textMuted }}>📍 7832 Devils Lake Hwy</span>
+                  <span style={{ fontSize: 14, color: C.textMuted }}>📞 (517) 555-0199</span>
                 </div>
-                <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif" }}>Book Now →</span>
+                <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif" }}>Book Now →</span>
               </div>
             </div>
           )}
@@ -1679,26 +1679,26 @@ function ListYourPropertySection({ stays = [] }) {
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 8, marginBottom: 6 }}>
                       <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.cream, margin: 0 }}>Yeti's Cozy Cabin</h3>
                       <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-                        <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.cream, background: C.sunset, padding: '4px 10px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>✦ Staff Pick</span>
-                        <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.cream, background: `${C.lakeBlue}40`, padding: '4px 10px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>Cottage</span>
+                        <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.cream, background: C.sunset, padding: '4px 10px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>✦ Staff Pick</span>
+                        <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.cream, background: `${C.lakeBlue}40`, padding: '4px 10px', borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif" }}>Cottage</span>
                       </div>
                     </div>
-                    <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontFamily: "'Libre Franklin', sans-serif", marginBottom: 8 }}>🛏 3 beds · 👥 Sleeps 8</div>
-                    <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)', lineHeight: 1.7, margin: '0 0 14px' }}>
+                    <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)', fontFamily: "'Libre Franklin', sans-serif", marginBottom: 8 }}>🛏 3 beds · 👥 Sleeps 8</div>
+                    <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.7)', lineHeight: 1.7, margin: '0 0 14px' }}>
                       Lakefront cabin with a hot tub, fire pit, and the best sunset view on Devils Lake. The kind of place you never want to leave.
                     </p>
                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 14 }}>
                       {['Waterfront', 'Fire Pit', 'Dock', 'WiFi', 'Kitchen'].map(a => (
-                        <span key={a} style={{ fontSize: 11, padding: '4px 10px', borderRadius: 12, background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)', fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, border: '1px solid rgba(255,255,255,0.08)' }}>
+                        <span key={a} style={{ fontSize: 13, padding: '4px 10px', borderRadius: 12, background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)', fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, border: '1px solid rgba(255,255,255,0.08)' }}>
                           {AMENITY_ICONS[a]} {a}
                         </span>
                       ))}
                     </div>
                     <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', marginBottom: 12 }}>
-                      <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>📍 7832 Devils Lake Hwy</span>
-                      <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>📞 (517) 555-0199</span>
+                      <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)' }}>📍 7832 Devils Lake Hwy</span>
+                      <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)' }}>📞 (517) 555-0199</span>
                     </div>
-                    <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: C.sunset, fontFamily: "'Libre Franklin', sans-serif" }}>Book Now →</span>
+                    <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: C.sunset, fontFamily: "'Libre Franklin', sans-serif" }}>Book Now →</span>
                   </div>
                 </div>
 
@@ -1748,7 +1748,7 @@ function ListYourPropertySection({ stays = [] }) {
           {isFeatured && (
             <div style={{ textAlign: 'center', marginBottom: 32 }}>
               <div style={{
-                display: 'inline-block', fontSize: 9, fontWeight: 800, letterSpacing: 3, textTransform: 'uppercase',
+                display: 'inline-block', fontSize: 12, fontWeight: 800, letterSpacing: 3, textTransform: 'uppercase',
                 color: C.sunset, background: `${C.sunset}15`, padding: '6px 18px', borderRadius: 20,
                 border: `1px solid ${C.sunset}25`, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 12,
               }}>
@@ -1760,7 +1760,7 @@ function ListYourPropertySection({ stays = [] }) {
               }}>
                 Your property deserves more attention
               </h3>
-              <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', margin: 0, lineHeight: 1.6 }}>
+              <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)', margin: 0, lineHeight: 1.6 }}>
                 The kind of listing guests bookmark, share with friends, and come back to every summer.
               </p>
             </div>
@@ -1775,7 +1775,7 @@ function ListYourPropertySection({ stays = [] }) {
               }}>
                 Build Your Listing
               </h3>
-              <p style={{ fontSize: 13, color: C.textLight, margin: 0 }}>
+              <p style={{ fontSize: 15, color: C.textLight, margin: 0 }}>
                 Photos, details, and a direct booking link - guests get everything they need.
               </p>
             </div>
@@ -1799,24 +1799,24 @@ function ListYourPropertySection({ stays = [] }) {
               <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: C.sunset, marginBottom: 20 }}>
                 You're live for summer - welcome aboard.
               </div>
-              <p style={{ fontSize: 14, color: isFeatured ? 'rgba(255,255,255,0.5)' : C.textLight, lineHeight: 1.8, margin: '0 0 16px', maxWidth: 480, marginLeft: 'auto', marginRight: 'auto' }}>
+              <p style={{ fontSize: 16, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textLight, lineHeight: 1.8, margin: '0 0 16px', maxWidth: 480, marginLeft: 'auto', marginRight: 'auto' }}>
                 Your listing is live on the stays page. Visitors can find you on the map, see your details, and click through to book with you directly. Check your texts for a confirmation.
               </p>
-              <p style={{ fontSize: 13, color: isFeatured ? 'rgba(255,255,255,0.35)' : C.textMuted, lineHeight: 1.7, margin: '0 0 20px', maxWidth: 460, marginLeft: 'auto', marginRight: 'auto' }}>
+              <p style={{ fontSize: 15, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted, lineHeight: 1.7, margin: '0 0 20px', maxWidth: 460, marginLeft: 'auto', marginRight: 'auto' }}>
                 Before July 4th we'll send you details about keeping your listing live after the summer launch period ends - month to month, no contract, cancel anytime.
               </p>
               <div style={{ background: isFeatured ? 'rgba(255,255,255,0.06)' : '#f0f8ff', border: `1px solid ${isFeatured ? 'rgba(255,255,255,0.1)' : C.lakeBlue + '30'}`, borderRadius: 12, padding: '16px 20px', maxWidth: 460, margin: '0 auto 28px', textAlign: 'left' }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: isFeatured ? C.cream : C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5, marginBottom: 6 }}>Next step: set your availability</div>
-                <p style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.5)' : C.textLight, margin: '0 0 10px', lineHeight: 1.6, fontFamily: "'Libre Franklin', sans-serif" }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: isFeatured ? C.cream : C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5, marginBottom: 6 }}>Next step: set your availability</div>
+                <p style={{ fontSize: 14, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textLight, margin: '0 0 10px', lineHeight: 1.6, fontFamily: "'Libre Franklin', sans-serif" }}>
                   Guests can see and select your available dates in real time. Head to your manage page to block out dates or add your Airbnb/VRBO calendar for automatic sync.
                 </p>
-                <a href="/stays/manage" style={{ fontSize: 11, fontWeight: 700, color: isFeatured ? C.sunsetLight : C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1, textTransform: 'uppercase', textDecoration: 'none' }}>
+                <a href="/stays/manage" style={{ fontSize: 13, fontWeight: 700, color: isFeatured ? C.sunsetLight : C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1, textTransform: 'uppercase', textDecoration: 'none' }}>
                   Set Up Calendar →
                 </a>
               </div>
               <a href="/stays" style={{
                 display: 'inline-block', padding: '14px 32px', background: C.lakeBlue, color: C.cream, borderRadius: 28,
-                fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5,
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 700, letterSpacing: 1.5,
                 textTransform: 'uppercase', textDecoration: 'none',
               }}>
                 See Your Listing →
@@ -1839,7 +1839,7 @@ function ListYourPropertySection({ stays = [] }) {
               }}>
                 Check your texts
               </h3>
-              <p style={{ fontSize: 14, color: isFeatured ? 'rgba(255,255,255,0.5)' : C.textLight, lineHeight: 1.8, margin: '0 0 28px' }}>
+              <p style={{ fontSize: 16, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textLight, lineHeight: 1.8, margin: '0 0 28px' }}>
                 We sent a 6-digit code to <strong style={{ color: isFeatured ? C.sunsetLight : C.text }}>{form.phone}</strong>
               </p>
               <div style={{ maxWidth: 240, margin: '0 auto 20px' }}>
@@ -1866,7 +1866,7 @@ function ListYourPropertySection({ stays = [] }) {
                 />
               </div>
               {verifyError && (
-                <div style={{ fontSize: 13, color: '#e07070', fontWeight: 500, marginBottom: 16 }}>{verifyError}</div>
+                <div style={{ fontSize: 15, color: '#e07070', fontWeight: 500, marginBottom: 16 }}>{verifyError}</div>
               )}
               <button
                 onClick={handleVerify}
@@ -1874,7 +1874,7 @@ function ListYourPropertySection({ stays = [] }) {
                 style={{
                   padding: '14px 36px',
                   background: verifyLoading ? C.sand : C.lakeBlue,
-                  color: C.cream, border: 'none', borderRadius: 28, fontSize: 13, fontWeight: 700,
+                  color: C.cream, border: 'none', borderRadius: 28, fontSize: 15, fontWeight: 700,
                   letterSpacing: 1.5, textTransform: 'uppercase', cursor: verifyLoading ? 'default' : 'pointer',
                   fontFamily: "'Libre Franklin', sans-serif", transition: 'background 0.2s',
                   opacity: verifyCode.length !== 6 ? 0.5 : 1,
@@ -1888,7 +1888,7 @@ function ListYourPropertySection({ stays = [] }) {
                   disabled={resending}
                   style={{
                     background: 'none', border: 'none', fontFamily: "'Libre Franklin', sans-serif",
-                    fontSize: 12, color: resending ? C.sage : C.textMuted,
+                    fontSize: 14, color: resending ? C.sage : C.textMuted,
                     cursor: resending ? 'default' : 'pointer', padding: '6px 12px',
                   }}
                 >
@@ -1964,15 +1964,15 @@ function ListYourPropertySection({ stays = [] }) {
 
                   {/* Booking URL */}
                   <div>
-                    <label style={labelStyle}>Booking URL <span style={{ fontWeight: 400, color: isFeatured ? 'rgba(255,255,255,0.3)' : C.textMuted }}>(optional - Airbnb, VRBO, your own site)</span></label>
+                    <label style={labelStyle}>Booking URL <span style={{ fontWeight: 400, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted }}>(optional - Airbnb, VRBO, your own site)</span></label>
                     <input style={inputStyle} value={form.bookingUrl} onChange={e => set('bookingUrl', e.target.value)} placeholder="https://airbnb.com/rooms/..." />
                   </div>
 
                   {/* iCal calendar sync */}
                   <div>
-                    <label style={labelStyle}>Availability calendar link <span style={{ fontWeight: 400, color: isFeatured ? 'rgba(255,255,255,0.3)' : C.textMuted }}>(optional)</span></label>
+                    <label style={labelStyle}>Availability calendar link <span style={{ fontWeight: 400, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted }}>(optional)</span></label>
                     <input style={inputStyle} value={form.icalUrl} onChange={e => set('icalUrl', e.target.value)} placeholder="https://www.airbnb.com/calendar/ical/..." />
-                    <p style={{ fontSize: 11, color: isFeatured ? 'rgba(255,255,255,0.25)' : C.textMuted, margin: '6px 0 0', lineHeight: 1.6 }}>
+                    <p style={{ fontSize: 13, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted, margin: '6px 0 0', lineHeight: 1.6 }}>
                       On Airbnb or VRBO? Paste your calendar export link and we sync your booked dates every day.
                       Not on any platform? <strong style={{ fontWeight: 700 }}>Google Calendar is free</strong> - create events for your bookings, grab the public iCal link from Calendar Settings, and paste it here.
                     </p>
@@ -1980,13 +1980,13 @@ function ListYourPropertySection({ stays = [] }) {
 
                   {/* How you take bookings */}
                   <div>
-                    <label style={labelStyle}>How you take bookings <span style={{ fontWeight: 400, color: isFeatured ? 'rgba(255,255,255,0.3)' : C.textMuted }}>(guests see this before reaching out)</span></label>
+                    <label style={labelStyle}>How you take bookings <span style={{ fontWeight: 400, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted }}>(guests see this before reaching out)</span></label>
                     <div style={{ display: 'grid', gap: 10 }}>
                       <input style={inputStyle} value={form.paymentMethod} onChange={e => set('paymentMethod', e.target.value)} placeholder="Payment method - e.g. Zelle, PayPal, bank transfer" />
                       <input style={inputStyle} value={form.cancellationPolicy} onChange={e => set('cancellationPolicy', e.target.value)} placeholder="Cancellation policy - e.g. 50% deposit, full refund 30+ days out" />
                       <input style={inputStyle} value={form.bookingConfirmation} onChange={e => set('bookingConfirmation', e.target.value)} placeholder="Confirmation - e.g. Written rental agreement sent by email" />
                     </div>
-                    <p style={{ fontSize: 11, color: isFeatured ? 'rgba(255,255,255,0.25)' : C.textMuted, margin: '8px 0 0', lineHeight: 1.6 }}>
+                    <p style={{ fontSize: 13, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted, margin: '8px 0 0', lineHeight: 1.6 }}>
                       Your booking, your rules. We never handle payments or stand between you and your guests.
                     </p>
                   </div>
@@ -2031,7 +2031,7 @@ function ListYourPropertySection({ stays = [] }) {
                         const selected = form.amenities.includes(a);
                         return (
                           <button type="button" key={a} onClick={() => toggleAmenity(a)} style={{
-                            fontSize: 13, padding: '8px 16px', borderRadius: 24, cursor: 'pointer',
+                            fontSize: 15, padding: '8px 16px', borderRadius: 24, cursor: 'pointer',
                             border: `1.5px solid ${selected
                               ? (isFeatured ? C.sunset : C.sage)
                               : (isFeatured ? 'rgba(255,255,255,0.1)' : C.sand)}`,
@@ -2073,7 +2073,7 @@ function ListYourPropertySection({ stays = [] }) {
                     </div>
                   </div>
                   <div>
-                    <label style={labelStyle}>House rules <span style={{ fontWeight: 400, color: isFeatured ? 'rgba(255,255,255,0.3)' : C.textMuted }}>(optional)</span></label>
+                    <label style={labelStyle}>House rules <span style={{ fontWeight: 400, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted }}>(optional)</span></label>
                     <textarea style={{ ...inputStyle, height: 64, resize: 'vertical', lineHeight: 1.6 }} value={form.houseRules} onChange={e => set('houseRules', e.target.value)} placeholder="No smoking, pets by arrangement, quiet after 10pm..." />
                   </div>
                 </>
@@ -2089,24 +2089,24 @@ function ListYourPropertySection({ stays = [] }) {
                     onChange={e => setTermsAgreed(e.target.checked)}
                     style={{ marginTop: 2, flexShrink: 0, accentColor: isFeatured ? C.sunset : C.lakeBlue, width: 16, height: 16 }}
                   />
-                  <span style={{ fontSize: 12, color: isFeatured ? 'rgba(255,255,255,0.55)' : C.textLight, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.6 }}>
+                  <span style={{ fontSize: 14, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textLight, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.6 }}>
                     I understand Manitou Beach is a local discovery platform, not a booking agent. All guest arrangements, payments, and any disputes are my responsibility as the property owner. Manitou Beach and YetiGroove Media LLC accept no liability for transactions, property damage, or guest conduct.
                   </span>
                 </label>
 
                 <div style={{ marginTop: isFeatured ? 12 : 8 }}>
                   {/* Validation hints */}
-                  {status === 'error_name' && <p style={{ fontSize: 13, color: '#c0392b', textAlign: 'center', margin: '0 0 8px' }}>Property name is required.</p>}
-                  {status === 'error_email' && <p style={{ fontSize: 13, color: '#c0392b', textAlign: 'center', margin: '0 0 8px' }}>A valid email address is required.</p>}
-                  {status === 'error_phone' && <p style={{ fontSize: 13, color: '#c0392b', textAlign: 'center', margin: '0 0 8px' }}>A valid phone number is required - we'll text you a verification code.</p>}
-                  {status === 'error_terms' && <p style={{ fontSize: 13, color: '#c0392b', textAlign: 'center', margin: '0 0 8px' }}>Please agree to the terms above before listing.</p>}
+                  {status === 'error_name' && <p style={{ fontSize: 15, color: '#c0392b', textAlign: 'center', margin: '0 0 8px' }}>Property name is required.</p>}
+                  {status === 'error_email' && <p style={{ fontSize: 15, color: '#c0392b', textAlign: 'center', margin: '0 0 8px' }}>A valid email address is required.</p>}
+                  {status === 'error_phone' && <p style={{ fontSize: 15, color: '#c0392b', textAlign: 'center', margin: '0 0 8px' }}>A valid phone number is required - we'll text you a verification code.</p>}
+                  {status === 'error_terms' && <p style={{ fontSize: 15, color: '#c0392b', textAlign: 'center', margin: '0 0 8px' }}>Please agree to the terms above before listing.</p>}
                   <Btn
                     type="submit"
                     variant={isFeatured ? 'primary' : isPaid ? 'primary' : 'outlineDark'}
                     style={{
                       width: '100%',
                       padding: isFeatured ? '18px 24px' : '14px 20px',
-                      fontSize: isFeatured ? 14 : 13,
+                      fontSize: isFeatured ? 16 : 15,
                       borderRadius: isFeatured ? 14 : 12,
                       ...(isFeatured ? {
                         background: `linear-gradient(135deg, ${C.sunset}, ${C.sunsetLight})`,
@@ -2120,13 +2120,13 @@ function ListYourPropertySection({ stays = [] }) {
                   </Btn>
                 </div>
 
-              <p style={{ fontSize: 11, color: isFeatured ? 'rgba(255,255,255,0.25)' : C.textMuted, textAlign: 'center', lineHeight: 1.7, margin: '4px 0 0' }}>
+              <p style={{ fontSize: 13, color: isFeatured ? 'rgba(255,255,255,0.75)' : C.textMuted, textAlign: 'center', lineHeight: 1.7, margin: '4px 0 0' }}>
                 We'll text a verification code to your phone. Once verified, your listing goes live.
               </p>
               {status === 'error' && (
                 <p style={{
                   color: isFeatured ? '#E8A87C' : '#c0392b',
-                  fontSize: 13, textAlign: 'center',
+                  fontSize: 15, textAlign: 'center',
                 }}>
                   {yeti.oops()}
                 </p>
@@ -2233,14 +2233,14 @@ function ManageListingSection() {
 
   const inputStyle = {
     width: '100%', padding: '12px 14px', borderRadius: 12,
-    fontFamily: "'Libre Franklin', sans-serif", fontSize: 14,
+    fontFamily: "'Libre Franklin', sans-serif", fontSize: 16,
     outline: 'none', boxSizing: 'border-box',
     background: C.warmWhite, border: `1px solid ${C.sand}`, color: C.text,
     transition: 'all 0.2s ease',
   };
 
   const labelStyle = {
-    fontSize: 12, fontWeight: 600, color: C.textLight,
+    fontSize: 14, fontWeight: 600, color: C.textLight,
     fontFamily: "'Libre Franklin', sans-serif", marginBottom: 6, display: 'block',
     letterSpacing: 0.3,
   };
@@ -2250,7 +2250,7 @@ function ManageListingSection() {
       <div style={{ maxWidth: 640, margin: '0 auto' }}>
         <SectionLabel>Already Listed?</SectionLabel>
         <SectionTitle>Manage Your Listing</SectionTitle>
-        <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.7, textAlign: 'center', marginBottom: 32 }}>
+        <p style={{ fontSize: 17, color: C.textLight, lineHeight: 1.7, textAlign: 'center', marginBottom: 32 }}>
           Enter the email you used when you listed your property. We'll pull up your listing so you can update it.
         </p>
 
@@ -2275,7 +2275,7 @@ function ManageListingSection() {
         {lookupStatus === 'not-found' && (
           <div style={{ textAlign: 'center', padding: '32px 20px', background: C.warmWhite, borderRadius: 16, border: `1px solid ${C.sand}` }}>
             <div style={{ fontSize: 36, marginBottom: 12 }}>🔍</div>
-            <p style={{ fontSize: 14, color: C.textLight, margin: 0, lineHeight: 1.6 }}>
+            <p style={{ fontSize: 16, color: C.textLight, margin: 0, lineHeight: 1.6 }}>
               No listing found for <strong>{email}</strong>. Double-check the email, or{' '}
               <a href="#list-property" style={{ color: C.lakeBlue, textDecoration: 'none', fontWeight: 600 }}>list your property</a> to get started.
             </p>
@@ -2283,7 +2283,7 @@ function ManageListingSection() {
         )}
 
         {lookupStatus === 'error' && (
-          <p style={{ color: '#c0392b', fontSize: 13, textAlign: 'center' }}>{yeti.oops()}</p>
+          <p style={{ color: '#c0392b', fontSize: 15, textAlign: 'center' }}>{yeti.oops()}</p>
         )}
 
         {/* Listings found */}
@@ -2297,7 +2297,7 @@ function ManageListingSection() {
               /* ── Edit Form ── */
               <form onSubmit={saveEdit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                 <div style={{
-                  fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase',
+                  fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase',
                   color: C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 4,
                 }}>
                   Editing: {listing.name}
@@ -2383,7 +2383,7 @@ function ManageListingSection() {
                       const selected = editForm.amenities.includes(a);
                       return (
                         <button type="button" key={a} onClick={() => toggleAmenity(a)} style={{
-                          fontSize: 12, padding: '6px 12px', borderRadius: 20, cursor: 'pointer',
+                          fontSize: 14, padding: '6px 12px', borderRadius: 20, cursor: 'pointer',
                           border: `1.5px solid ${selected ? C.sage : C.sand}`,
                           background: selected ? `${C.sage}15` : 'transparent',
                           color: selected ? C.sage : C.textMuted,
@@ -2406,7 +2406,7 @@ function ManageListingSection() {
                   </Btn>
                 </div>
                 {saveStatus === 'error' && (
-                  <p style={{ color: '#c0392b', fontSize: 12, textAlign: 'center', margin: 0 }}>{yeti.oops()}</p>
+                  <p style={{ color: '#c0392b', fontSize: 14, textAlign: 'center', margin: 0 }}>{yeti.oops()}</p>
                 )}
               </form>
             ) : (
@@ -2422,17 +2422,17 @@ function ManageListingSection() {
                     </h4>
                     <div style={{ display: 'flex', gap: 6 }}>
                       {listing.tier === 'featured' && (
-                        <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: '#fff', background: C.sunset, padding: '3px 8px', borderRadius: 12, fontFamily: "'Libre Franklin', sans-serif" }}>Featured</span>
+                        <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: '#fff', background: C.sunset, padding: '3px 8px', borderRadius: 12, fontFamily: "'Libre Franklin', sans-serif" }}>Featured</span>
                       )}
                       {listing.stayType && (
-                        <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: TYPE_COLORS[listing.stayType] || C.lakeBlue, background: `${TYPE_COLORS[listing.stayType] || C.lakeBlue}15`, padding: '3px 8px', borderRadius: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
+                        <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: TYPE_COLORS[listing.stayType] || C.lakeBlue, background: `${TYPE_COLORS[listing.stayType] || C.lakeBlue}15`, padding: '3px 8px', borderRadius: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
                           {listing.stayType}
                         </span>
                       )}
                     </div>
                   </div>
                   {listing.description && (
-                    <p style={{ fontSize: 13, color: C.textLight, margin: '4px 0 12px', lineHeight: 1.6 }}>
+                    <p style={{ fontSize: 15, color: C.textLight, margin: '4px 0 12px', lineHeight: 1.6 }}>
                       {listing.description.length > 120 ? listing.description.slice(0, 120) + '...' : listing.description}
                     </p>
                   )}
@@ -2551,7 +2551,7 @@ export default function StaysPage() {
                 key={type}
                 onClick={() => setFilter(type)}
                 style={{
-                  fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600,
+                  fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600,
                   letterSpacing: 1, textTransform: 'uppercase',
                   padding: '7px 14px', borderRadius: 20, cursor: 'pointer',
                   border: `1.5px solid ${filter === type ? C.lakeBlue : C.sand}`,
@@ -2570,7 +2570,7 @@ export default function StaysPage() {
             <button
               onClick={() => setFiltersOpen(p => !p)}
               style={{
-                fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700,
+                fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700,
                 letterSpacing: 1, textTransform: 'uppercase',
                 padding: '7px 14px', borderRadius: 20, cursor: 'pointer',
                 border: `1.5px solid ${hasActiveFilters ? C.sunset : C.sand}`,
@@ -2597,7 +2597,7 @@ export default function StaysPage() {
               <button
                 onClick={() => setView('list')}
                 style={{
-                  fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600,
+                  fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600,
                   padding: '7px 14px', cursor: 'pointer', border: 'none',
                   background: view === 'list' ? C.lakeBlue : 'transparent',
                   color: view === 'list' ? C.cream : C.textMuted,
@@ -2609,7 +2609,7 @@ export default function StaysPage() {
               <button
                 onClick={() => setView('map')}
                 style={{
-                  fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600,
+                  fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600,
                   padding: '7px 14px', cursor: 'pointer', border: 'none',
                   borderLeft: `1px solid ${C.sand}`,
                   background: view === 'map' ? C.lakeBlue : 'transparent',
@@ -2635,7 +2635,7 @@ export default function StaysPage() {
               {/* Beds & Guests */}
               <div style={{ display: 'flex', gap: 12 }}>
                 <div>
-                  <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", display: 'block', marginBottom: 6 }}>
+                  <label style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", display: 'block', marginBottom: 6 }}>
                     Min Beds
                   </label>
                   <input
@@ -2648,14 +2648,14 @@ export default function StaysPage() {
                     style={{
                       width: 72, padding: '8px 10px', borderRadius: 10,
                       border: `1.5px solid ${minBeds ? C.lakeBlue : C.sand}`,
-                      fontFamily: "'Libre Franklin', sans-serif", fontSize: 13,
+                      fontFamily: "'Libre Franklin', sans-serif", fontSize: 15,
                       color: C.text, outline: 'none',
                       transition: 'border-color 0.2s',
                     }}
                   />
                 </div>
                 <div>
-                  <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", display: 'block', marginBottom: 6 }}>
+                  <label style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", display: 'block', marginBottom: 6 }}>
                     Min Guests
                   </label>
                   <input
@@ -2668,7 +2668,7 @@ export default function StaysPage() {
                     style={{
                       width: 72, padding: '8px 10px', borderRadius: 10,
                       border: `1.5px solid ${minGuests ? C.lakeBlue : C.sand}`,
-                      fontFamily: "'Libre Franklin', sans-serif", fontSize: 13,
+                      fontFamily: "'Libre Franklin', sans-serif", fontSize: 15,
                       color: C.text, outline: 'none',
                       transition: 'border-color 0.2s',
                     }}
@@ -2678,7 +2678,7 @@ export default function StaysPage() {
 
               {/* Amenity toggles */}
               <div style={{ flex: 1, minWidth: 200 }}>
-                <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", display: 'block', marginBottom: 6 }}>
+                <label style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", display: 'block', marginBottom: 6 }}>
                   Amenities
                 </label>
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
@@ -2689,7 +2689,7 @@ export default function StaysPage() {
                         key={a}
                         onClick={() => toggleAmenity(a)}
                         style={{
-                          fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600,
+                          fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600,
                           padding: '5px 12px', borderRadius: 16, cursor: 'pointer',
                           border: `1.5px solid ${active ? C.lakeBlue : C.sand}`,
                           background: active ? C.lakeBlue : 'transparent',
@@ -2711,7 +2711,7 @@ export default function StaysPage() {
                 <button
                   onClick={clearFilters}
                   style={{
-                    fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600,
+                    fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600,
                     color: C.sunset, background: 'none', border: 'none',
                     cursor: 'pointer', padding: 0, textDecoration: 'underline',
                   }}
@@ -2731,11 +2731,11 @@ export default function StaysPage() {
         <section style={{ padding: '60px 24px 80px', background: C.cream }}>
           <div style={{ maxWidth: 800, margin: '0 auto' }}>
             {loading ? (
-              <p style={{ textAlign: 'center', color: C.textMuted, fontSize: 14 }}>Loading stays...</p>
+              <p style={{ textAlign: 'center', color: C.textMuted, fontSize: 16 }}>Loading stays...</p>
             ) : filtered.length === 0 ? (
               <div style={{ textAlign: 'center', padding: 60 }}>
                 <div style={{ fontSize: 48, marginBottom: 12 }}>🏕</div>
-                <p style={{ color: C.textMuted, fontSize: 15, marginBottom: hasActiveFilters ? 12 : 0 }}>
+                <p style={{ color: C.textMuted, fontSize: 17, marginBottom: hasActiveFilters ? 12 : 0 }}>
                   {hasActiveFilters
                     ? 'No properties match those filters. Try loosening your search.'
                     : filter === 'All' ? 'No stays listed yet - be the first!' : `No ${filter} listings yet.`
@@ -2745,7 +2745,7 @@ export default function StaysPage() {
                   <button
                     onClick={clearFilters}
                     style={{
-                      fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600,
+                      fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600,
                       color: C.cream, background: C.sunset, border: 'none',
                       padding: '8px 20px', borderRadius: 20, cursor: 'pointer',
                     }}
@@ -2762,10 +2762,10 @@ export default function StaysPage() {
                 {/* Visitor wall teaser */}
                 <a href="/visitor-wall" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, padding: '20px 24px', borderRadius: 16, background: `${C.night}`, border: `1px solid rgba(91,126,149,0.2)`, textDecoration: 'none', transition: 'opacity 0.2s' }} onMouseEnter={e => e.currentTarget.style.opacity = '0.85'} onMouseLeave={e => e.currentTarget.style.opacity = '1'}>
                   <div>
-                    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', fontFamily: "'Libre Franklin', sans-serif", marginBottom: 4 }}>Visitor Wall</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: 'rgba(255,255,255,0.75)', fontFamily: "'Libre Franklin', sans-serif", marginBottom: 4 }}>Visitor Wall</div>
                     <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, color: '#fff', fontWeight: 400 }}>🌍 Visitors find their way here from around the world</div>
                   </div>
-                  <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: C.sunset, fontFamily: "'Libre Franklin', sans-serif" }}>See the map →</span>
+                  <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: C.sunset, fontFamily: "'Libre Franklin', sans-serif" }}>See the map →</span>
                 </a>
               </div>
             )}
@@ -2775,7 +2775,7 @@ export default function StaysPage() {
 
       {/* Seasonal banner */}
       <section style={{ padding: '40px 24px', background: `linear-gradient(135deg, ${C.sunset}15, ${C.lakeBlue}10)`, textAlign: 'center' }}>
-        <p style={{ fontSize: 15, color: C.text, fontFamily: "'Libre Baskerville', serif", margin: 0 }}>
+        <p style={{ fontSize: 17, color: C.text, fontFamily: "'Libre Baskerville', serif", margin: 0 }}>
           Peak season: June - September. <a href="/events" style={{ color: C.sunset, textDecoration: 'none', fontWeight: 600 }}>See what's happening →</a>
         </p>
       </section>
@@ -2829,7 +2829,7 @@ export default function StaysPage() {
                   {faq.q}
                 </h4>
                 <p style={{
-                  fontSize: 14, color: C.textLight, lineHeight: 1.75,
+                  fontSize: 16, color: C.textLight, lineHeight: 1.75,
                   margin: 0,
                 }}>
                   {faq.a}

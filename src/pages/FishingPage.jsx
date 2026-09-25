@@ -151,13 +151,13 @@ function FishingHero() {
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(170deg, rgba(10,18,24,0.75) 0%, rgba(10,18,24,0.45) 50%, rgba(10,18,24,0.88) 100%)" }} />
       <div style={{ maxWidth: 960, margin: "0 auto", position: "relative", zIndex: 1 }}>
         <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? "none" : "translateY(24px)", transition: "all 0.9s ease" }}>
-          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 28 }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.75)", marginBottom: 28 }}>
             Devils Lake · Round Lake · Michigan DNR
           </div>
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(48px, 9vw, 110px)", fontWeight: 400, color: C.cream, lineHeight: 0.95, margin: "0 0 20px 0" }}>
             Fishing<br />Devils Lake
           </h1>
-          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: "clamp(14px, 1.6vw, 17px)", color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 520, margin: "0 0 32px 0" }}>
+          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: "clamp(14px, 1.6vw, 17px)", color: "rgba(255,255,255,0.75)", lineHeight: 1.8, maxWidth: 520, margin: "0 0 32px 0" }}>
             Two lakes. Twelve months of catching. Bass, pike, walleye, perch, and bluegill - plus one of Michigan's longest-running ice fishing festivals.
           </p>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
@@ -193,12 +193,12 @@ function FishingLakesSection() {
                   { label: "Launch", value: "Public ramp" },
                 ].map((s, i) => (
                   <div key={i} style={{ background: "rgba(255,255,255,0.05)", borderRadius: 8, padding: "10px 14px" }}>
-                    <div style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1, textTransform: "uppercase", marginBottom: 4 }}>{s.label}</div>
+                    <div style={{ fontSize: 13, color: "rgba(255,255,255,0.75)", fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1, textTransform: "uppercase", marginBottom: 4 }}>{s.label}</div>
                     <div style={{ fontSize: 16, fontWeight: 600, color: C.cream, fontFamily: "'Libre Baskerville', serif" }}>{s.value}</div>
                   </div>
                 ))}
               </div>
-              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, margin: 0 }}>
+              <p style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", lineHeight: 1.7, margin: 0 }}>
                 A warm-water lake with excellent bass, bluegill, and pike fishing. The boat launch is off Manitou Rd. Dock fishing is accessible year-round.
               </p>
             </div>
@@ -216,12 +216,12 @@ function FishingLakesSection() {
                   { label: "Launch", value: "Public ramp" },
                 ].map((s, i) => (
                   <div key={i} style={{ background: "rgba(255,255,255,0.05)", borderRadius: 8, padding: "10px 14px" }}>
-                    <div style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1, textTransform: "uppercase", marginBottom: 4 }}>{s.label}</div>
+                    <div style={{ fontSize: 13, color: "rgba(255,255,255,0.75)", fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1, textTransform: "uppercase", marginBottom: 4 }}>{s.label}</div>
                     <div style={{ fontSize: 16, fontWeight: 600, color: C.cream, fontFamily: "'Libre Baskerville', serif" }}>{s.value}</div>
                   </div>
                 ))}
               </div>
-              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, margin: 0 }}>
+              <p style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", lineHeight: 1.7, margin: 0 }}>
                 Deep, clear, and cold. DNR-stocked walleye, trophy perch, and excellent crappie. Fish growth rates exceed state averages. The quieter side of lake life.
               </p>
             </div>
@@ -241,10 +241,10 @@ function FishingSpeciesSection() {
         <FadeIn>
           <SectionLabel>Species Guide</SectionLabel>
           <SectionTitle>Fish Found in Devils Lake</SectionTitle>
-          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 600, margin: "0 0 12px 0" }}>
+          <p style={{ fontSize: 17, color: C.textLight, lineHeight: 1.8, maxWidth: 600, margin: "0 0 12px 0" }}>
             Eight warm-water species call Devils Lake home. Click any fish for bait recommendations, best tackle, and seasonal timing.
           </p>
-          <a href="https://www.michigan.gov/dnr/education/michigan-species/fish-species" target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", textDecoration: "none", fontWeight: 600, letterSpacing: 0.5 }}>
+          <a href="https://www.michigan.gov/dnr/education/michigan-species/fish-species" target="_blank" rel="noopener noreferrer" style={{ fontSize: 14, color: C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", textDecoration: "none", fontWeight: 600, letterSpacing: 0.5 }}>
             Michigan DNR Full Species Reference ↗
           </a>
         </FadeIn>
@@ -282,13 +282,13 @@ function FishingSpeciesSection() {
                     {/* Name + summary */}
                     <div style={{ flex: 1, padding: "20px 24px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
                       <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.text, margin: "0 0 4px 0" }}>{fish.name}</h3>
-                      <div style={{ fontFamily: "'Caveat', cursive", fontSize: 14, color: C.textMuted, marginBottom: 10 }}>{fish.latin}</div>
-                      <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: 0, maxWidth: 560 }}>{fish.desc}</p>
+                      <div style={{ fontFamily: "'Caveat', cursive", fontSize: 16, color: C.textMuted, marginBottom: 10 }}>{fish.latin}</div>
+                      <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.6, margin: 0, maxWidth: 560 }}>{fish.desc}</p>
                     </div>
 
                     {/* Best season badge + expand toggle */}
                     <div className="fish-card-meta" style={{ padding: "20px 20px 20px 0", display: "flex", flexDirection: "column", alignItems: "flex-end", justifyContent: "space-between", flexShrink: 0 }}>
-                      <div style={{ background: fish.accentColor + "18", border: `1px solid ${fish.accentColor}30`, borderRadius: 20, padding: "4px 10px", fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: fish.accentColor, whiteSpace: "nowrap" }}>
+                      <div style={{ background: fish.accentColor + "18", border: `1px solid ${fish.accentColor}30`, borderRadius: 20, padding: "4px 10px", fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: fish.accentColor, whiteSpace: "nowrap" }}>
                         {fish.bestSeason.split(".")[0]}
                       </div>
                       <div style={{ fontSize: 18, color: C.textMuted, marginTop: 12, transform: isOpen ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>▾</div>
@@ -302,10 +302,10 @@ function FishingSpeciesSection() {
 
                         {/* Bait & Lures */}
                         <div>
-                          <div style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunset, marginBottom: 12 }}>Bait & Lures</div>
+                          <div style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunset, marginBottom: 12 }}>Bait & Lures</div>
                           <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
                             {fish.bait.map((b, j) => (
-                              <li key={j} style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, paddingLeft: 14, position: "relative", marginBottom: 4 }}>
+                              <li key={j} style={{ fontSize: 15, color: C.textLight, lineHeight: 1.6, paddingLeft: 14, position: "relative", marginBottom: 4 }}>
                                 <span style={{ position: "absolute", left: 0, color: fish.accentColor }}>›</span>
                                 {b}
                               </li>
@@ -315,21 +315,21 @@ function FishingSpeciesSection() {
 
                         {/* Tackle + Timing */}
                         <div>
-                          <div style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.lakeBlue, marginBottom: 12 }}>Tackle Setup</div>
-                          <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: "0 0 20px 0" }}>{fish.tackle}</p>
+                          <div style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.lakeBlue, marginBottom: 12 }}>Tackle Setup</div>
+                          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.6, margin: "0 0 20px 0" }}>{fish.tackle}</p>
 
-                          <div style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sage, marginBottom: 8 }}>Best Time of Day</div>
-                          <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: "0 0 16px 0" }}>{fish.bestTime}</p>
+                          <div style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sage, marginBottom: 8 }}>Best Time of Day</div>
+                          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.6, margin: "0 0 16px 0" }}>{fish.bestTime}</p>
 
-                          <div style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sage, marginBottom: 8 }}>Season</div>
-                          <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: 0 }}>{fish.bestSeason}</p>
+                          <div style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sage, marginBottom: 8 }}>Season</div>
+                          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.6, margin: 0 }}>{fish.bestSeason}</p>
                         </div>
 
                         {/* DNR note */}
                         <div style={{ background: C.warmWhite, borderRadius: 10, padding: "16px 18px", border: `1px solid ${C.sand}` }}>
-                          <div style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.textMuted, marginBottom: 8 }}>Michigan DNR Note</div>
-                          <p style={{ fontSize: 12, color: C.textLight, lineHeight: 1.65, margin: 0, fontStyle: "italic" }}>{fish.dnrNote}</p>
-                          <a href="https://www.michigan.gov/dnr/education/michigan-species/fish-species" target="_blank" rel="noopener noreferrer" style={{ display: "inline-block", marginTop: 10, fontSize: 11, color: C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textDecoration: "none" }}>
+                          <div style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.textMuted, marginBottom: 8 }}>Michigan DNR Note</div>
+                          <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.65, margin: 0, fontStyle: "italic" }}>{fish.dnrNote}</p>
+                          <a href="https://www.michigan.gov/dnr/education/michigan-species/fish-species" target="_blank" rel="noopener noreferrer" style={{ display: "inline-block", marginTop: 10, fontSize: 13, color: C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textDecoration: "none" }}>
                             DNR Species Page ↗
                           </a>
                         </div>
@@ -377,7 +377,7 @@ function FishingCharterSection() {
             <div>
               <SectionLabel light>Local Pros</SectionLabel>
               <SectionTitle light>Charters & Suppliers</SectionTitle>
-              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, maxWidth: 520, marginTop: 12 }}>
+              <p style={{ fontSize: 16, color: "rgba(255,255,255,0.75)", lineHeight: 1.7, maxWidth: 520, marginTop: 12 }}>
                 Know the water before you get in the boat. Local fishing charters and tackle suppliers who've been fishing Devils Lake and Round Lake for years.
               </p>
             </div>
@@ -385,7 +385,7 @@ function FishingCharterSection() {
               display: "inline-flex", alignItems: "center", gap: 8,
               padding: "12px 24px", borderRadius: 8,
               border: `1px solid ${C.sunset}50`, color: C.sunsetLight,
-              fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700,
+              fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700,
               letterSpacing: 1, textTransform: "uppercase", textDecoration: "none",
               transition: "all 0.2s",
             }}
@@ -408,11 +408,11 @@ function FishingCharterSection() {
               }}>
                 {c.placeholder ? (
                   <>
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 48, height: 48, borderRadius: 10, border: "1.5px dashed rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.15)", fontSize: 22 }}>+</div>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 48, height: 48, borderRadius: 10, border: "1.5px dashed rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.75)", fontSize: 22 }}>+</div>
                     <div>
-                      <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: "rgba(255,255,255,0.2)", marginBottom: 6 }}>Advertise Here</div>
-                      <p style={{ fontSize: 12, color: "rgba(255,255,255,0.15)", lineHeight: 1.6, margin: "0 0 14px 0" }}>{c.tagline}</p>
-                      <a href="/#submit" style={{ fontSize: 11, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textDecoration: "none", textTransform: "uppercase" }}>
+                      <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: "rgba(255,255,255,0.75)", marginBottom: 6 }}>Advertise Here</div>
+                      <p style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", lineHeight: 1.6, margin: "0 0 14px 0" }}>{c.tagline}</p>
+                      <a href="/#submit" style={{ fontSize: 13, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textDecoration: "none", textTransform: "uppercase" }}>
                         Contact Holly to List →
                       </a>
                     </div>
@@ -420,8 +420,8 @@ function FishingCharterSection() {
                 ) : (
                   <>
                     <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.cream, margin: 0 }}>{c.name}</h3>
-                    <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, margin: 0 }}>{c.tagline}</p>
-                    {c.contact && <span style={{ fontSize: 12, color: C.sage }}>{c.contact}</span>}
+                    <p style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", lineHeight: 1.7, margin: 0 }}>{c.tagline}</p>
+                    {c.contact && <span style={{ fontSize: 14, color: C.sage }}>{c.contact}</span>}
                   </>
                 )}
               </div>
@@ -447,10 +447,10 @@ function FishingSeasonsSection() {
               <div style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.09)", borderRadius: 14, padding: "32px 28px" }}>
                 <div className="mono-icon" style={{ fontSize: 32, marginBottom: 12 }}>{s.icon}</div>
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.cream, marginBottom: 12 }}>{s.season}</div>
-                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, margin: "0 0 16px 0" }}>{s.desc}</p>
+                <p style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", lineHeight: 1.7, margin: "0 0 16px 0" }}>{s.desc}</p>
                 <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 14 }}>
-                  <div style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1.5, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 6 }}>Pro Tip</div>
-                  <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", lineHeight: 1.6, margin: 0 }}>{s.tip}</p>
+                  <div style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 1.5, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 6 }}>Pro Tip</div>
+                  <p style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", lineHeight: 1.6, margin: 0 }}>{s.tip}</p>
                 </div>
               </div>
             </FadeIn>
@@ -489,7 +489,7 @@ function FishingEventsSection() {
         <FadeIn>
           <SectionLabel>On the Calendar</SectionLabel>
           <SectionTitle>Fishing Events</SectionTitle>
-          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 580, margin: "0 0 48px 0" }}>
+          <p style={{ fontSize: 17, color: C.textLight, lineHeight: 1.8, maxWidth: 580, margin: "0 0 48px 0" }}>
             Devils Lake hosts two signature fishing events each year - one in the heart of winter, one in the heat of summer.
           </p>
         </FadeIn>
@@ -502,13 +502,13 @@ function FishingEventsSection() {
                   <div>
                     <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, fontWeight: 400, color: C.text, margin: "0 0 4px 0" }}>{evt.name}</h3>
                     <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-                      <span style={{ fontSize: 12, color: evt.accent, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 0.5 }}>{evt.when}</span>
-                      <span style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Caveat', cursive" }}>{evt.since}</span>
+                      <span style={{ fontSize: 14, color: evt.accent, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 0.5 }}>{evt.when}</span>
+                      <span style={{ fontSize: 14, color: C.textMuted, fontFamily: "'Caveat', cursive" }}>{evt.since}</span>
                     </div>
                   </div>
                 </div>
-                <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.75, margin: "0 0 20px 0" }}>{evt.desc}</p>
-                <a href={evt.link} style={{ fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: evt.accent, textDecoration: "none" }}>
+                <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.75, margin: "0 0 20px 0" }}>{evt.desc}</p>
+                <a href={evt.link} style={{ fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: evt.accent, textDecoration: "none" }}>
                   {evt.linkLabel}
                 </a>
               </div>
@@ -528,7 +528,7 @@ function FishingTipUpCallout() {
           <div style={{ fontSize: 48, marginBottom: 16 }}>🏆</div>
           <SectionLabel light>Annual Tradition</SectionLabel>
           <SectionTitle light>Tip-Up Festival</SectionTitle>
-          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 560, margin: "0 auto 32px" }}>
+          <p style={{ fontSize: 17, color: "rgba(255,255,255,0.75)", lineHeight: 1.8, maxWidth: 560, margin: "0 auto 32px" }}>
             First weekend of February. 73+ years of ice fishing on frozen Devils Lake - plus snowmobile racing, outhouse races, hovercraft rides, a poker run, and the legendary benefit auction. One of the longest-running winter festivals in Michigan.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>

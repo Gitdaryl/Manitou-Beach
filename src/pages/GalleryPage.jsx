@@ -75,7 +75,7 @@ export default function GalleryPage() {
           {g.subtitle && (
             <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.7, maxWidth: 520, margin: '0 auto' }}>{g.subtitle}</p>
           )}
-          <p style={{ fontSize: 13, color: C.textLight, marginTop: 14, opacity: 0.85 }}>
+          <p style={{ fontSize: 15, color: C.textLight, marginTop: 14, opacity: 0.85 }}>
             Tap any photo to view it larger — then share your favorites.
           </p>
           {g.identify && (

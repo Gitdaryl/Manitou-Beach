@@ -182,7 +182,7 @@ function FireworksHero() {
           display: "inline-flex", alignItems: "center", gap: 14,
           marginBottom: 28,
           fontFamily: "'Libre Franklin', sans-serif",
-          fontSize: 10, fontWeight: 700, letterSpacing: 4.5,
+          fontSize: 13, fontWeight: 700, letterSpacing: 4.5,
           textTransform: "uppercase", color: FW.gold,
         }}>
           <span style={{ width: 36, height: 1, background: `${FW.gold}55`, display: "block" }} />
@@ -266,7 +266,7 @@ function FireworksHero() {
             font-size: clamp(8px, 1.1vw, 11px);
             letter-spacing: 4px;
             text-transform: uppercase;
-            color: rgba(255,255,255,0.45);
+            color: rgba(255,255,255,0.75);
             margin-top: 10px;
             font-weight: 700;
             font-family: 'Libre Franklin', sans-serif;
@@ -318,7 +318,7 @@ function FireworksHero() {
             padding: "14px 32px", borderRadius: 6,
             background: FW.gold, color: FW.navy,
             fontFamily: "'Libre Franklin', sans-serif",
-            fontSize: 12, fontWeight: 700, letterSpacing: 1.5,
+            fontSize: 14, fontWeight: 700, letterSpacing: 1.5,
             textTransform: "uppercase", textDecoration: "none",
           }}>
             {isPast ? "Add your photos →" : "See What's Happening →"}
@@ -345,7 +345,7 @@ function ActivitiesSection() {
           <div style={{ textAlign: "center", marginBottom: 64 }}>
             <SectionLabel>July 3rd &amp; 4th, 2026</SectionLabel>
             <SectionTitle center>The Main Events</SectionTitle>
-            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 520, margin: "0 auto" }}>
+            <p style={{ fontSize: 17, color: C.textLight, lineHeight: 1.85, maxWidth: 520, margin: "0 auto" }}>
               Two days, two lakes, and a weekend the whole town showed up for. Here's how it went down.
             </p>
           </div>
@@ -405,7 +405,7 @@ function ActivitiesSection() {
                       marginBottom: 10,
                     }}>
                       <span style={{
-                        fontSize: 10, fontWeight: 700, letterSpacing: 2.5,
+                        fontSize: 13, fontWeight: 700, letterSpacing: 2.5,
                         textTransform: "uppercase",
                         fontFamily: "'Libre Franklin', sans-serif",
                         color: event.featured ? FW.gold : C.textMuted,
@@ -415,7 +415,7 @@ function ActivitiesSection() {
                         {event.date}
                       </span>
                       <span style={{
-                        fontSize: 13, fontWeight: 700,
+                        fontSize: 15, fontWeight: 700,
                         fontFamily: "'Libre Franklin', sans-serif",
                         color: event.featured ? FW.gold : C.text,
                       }}>
@@ -434,14 +434,14 @@ function ActivitiesSection() {
                     </h3>
 
                     <p style={{
-                      fontSize: 14, color: C.textLight, lineHeight: 1.75, margin: "0 0 12px 0",
+                      fontSize: 16, color: C.textLight, lineHeight: 1.75, margin: "0 0 12px 0",
                     }}>
                       {event.body}
                     </p>
 
                     <div style={{
                       display: "flex", alignItems: "center", gap: 6,
-                      fontSize: 12, color: C.textMuted,
+                      fontSize: 14, color: C.textMuted,
                       fontFamily: "'Libre Franklin', sans-serif",
                     }}>
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -480,7 +480,7 @@ function FilmSection() {
           <div style={{ textAlign: "center", marginBottom: 40 }}>
             <SectionLabel>The Film</SectionLabel>
             <SectionTitle center>America 250: The Movie</SectionTitle>
-            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 560, margin: "0 auto" }}>
+            <p style={{ fontSize: 17, color: C.textLight, lineHeight: 1.85, maxWidth: 560, margin: "0 auto" }}>
               We filmed the whole weekend - the boat parades, the show over both lakes, the Firecracker 7K, and the skydivers dropping in. The full-length film lands right here.
             </p>
           </div>
@@ -537,7 +537,7 @@ function FilmSection() {
                 </div>
                 <div style={{
                   fontFamily: "'Libre Franklin', sans-serif",
-                  fontSize: 10, fontWeight: 700, letterSpacing: 3.5,
+                  fontSize: 13, fontWeight: 700, letterSpacing: 3.5,
                   textTransform: "uppercase", color: FW.gold,
                 }}>
                   In the Edit Bay
@@ -551,7 +551,7 @@ function FilmSection() {
                 </div>
                 <a href="/#newsletter" style={{
                   fontFamily: "'Libre Franklin', sans-serif",
-                  fontSize: 12, fontWeight: 600, letterSpacing: 0.5,
+                  fontSize: 14, fontWeight: 600, letterSpacing: 0.5,
                   color: "rgba(255,255,255,0.65)", textDecoration: "underline",
                   textUnderlineOffset: 3,
                 }}>
@@ -591,7 +591,7 @@ function Fireworks2026Section() {
           <div style={{ textAlign: "center", marginBottom: 64 }}>
             <SectionLabel light>The Fireworks</SectionLabel>
             <SectionTitle center light>The Biggest Show These Lakes Have Ever Seen</SectionTitle>
-            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.85, maxWidth: 600, margin: "0 auto" }}>
+            <p style={{ fontSize: 17, color: "rgba(255,255,255,0.75)", lineHeight: 1.85, maxWidth: 600, margin: "0 auto" }}>
               At dawn on July 3rd, the crew headed out on the water to position 17 launch barges across both lakes - so no matter where you were watching from, you had a front-row view.
             </p>
           </div>
@@ -619,12 +619,12 @@ function Fireworks2026Section() {
                 </div>
                 <div style={{
                   fontFamily: "'Libre Franklin', sans-serif",
-                  fontSize: 11, fontWeight: 700, letterSpacing: 2,
+                  fontSize: 13, fontWeight: 700, letterSpacing: 2,
                   textTransform: "uppercase", color: C.cream, marginBottom: 10,
                 }}>
                   {s.label}
                 </div>
-                <p style={{ fontSize: 12, color: "rgba(255,255,255,0.32)", lineHeight: 1.65, margin: 0 }}>
+                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", lineHeight: 1.65, margin: 0 }}>
                   {s.detail}
                 </p>
               </div>
@@ -650,7 +650,7 @@ function Fireworks2026Section() {
             <p style={{ fontSize: 16, color: "rgba(255,255,255,0.62)", lineHeight: 1.9, margin: "0 0 20px 0", maxWidth: 700 }}>
               2,500 shells went up in waves of color, thunder, and light. Reflections across the water. Cheers from every dock. A finale worthy of 250 years.
             </p>
-            <p style={{ fontSize: 14, color: "rgba(255,255,255,0.38)", lineHeight: 1.85, margin: 0, maxWidth: 680 }}>
+            <p style={{ fontSize: 16, color: "rgba(255,255,255,0.75)", lineHeight: 1.85, margin: 0, maxWidth: 680 }}>
               Behind it all: early mornings loading barges. Volunteers giving their time. Neighbors becoming friends. A community pulling together to create something worth remembering - not just a show, but a night.
             </p>
           </div>
@@ -688,7 +688,7 @@ function GalleryTile({ src, alt }) {
               <path d="m21 15-5-5L5 21"/>
             </svg>
           </div>
-          <span style={{ fontSize: 11, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.4 }}>
+          <span style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.4 }}>
             Photo coming soon
           </span>
         </div>
@@ -727,7 +727,7 @@ function FireworksGallerySection() {
           <div style={{ textAlign: "center", marginBottom: 8 }}>
             <SectionLabel>Memories</SectionLabel>
             <SectionTitle center>The Gallery</SectionTitle>
-            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 560, margin: "0 auto" }}>
+            <p style={{ fontSize: 17, color: C.textLight, lineHeight: 1.85, maxWidth: 560, margin: "0 auto" }}>
               Photos from across the weekend, organised by event - the boat parades, the fireworks, the Firecracker 7K, the skydivers, and the random fun in between. Got shots of your own? Add them right here.
             </p>
           </div>
@@ -764,7 +764,7 @@ function StayInLoop() {
         <FadeIn>
           <SectionLabel>Stay Connected</SectionLabel>
           <SectionTitle center>See You Next Summer</SectionTitle>
-          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, marginBottom: 36 }}>
+          <p style={{ fontSize: 17, color: C.textLight, lineHeight: 1.85, marginBottom: 36 }}>
             America 250 was one for the books, and the fireworks come back every year. Subscribe to The Dispatch and you'll hear about next summer's parades, fireworks, and lake events before anyone else - plus the premiere of the America 250 film.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
@@ -773,7 +773,7 @@ function StayInLoop() {
               padding: "14px 32px", borderRadius: 8,
               background: C.sunset, color: C.cream,
               fontFamily: "'Libre Franklin', sans-serif",
-              fontSize: 14, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+              fontSize: 16, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
             }}>
               Subscribe to The Dispatch
             </a>
@@ -782,7 +782,7 @@ function StayInLoop() {
               padding: "14px 32px", borderRadius: 8,
               background: "transparent", border: `1.5px solid ${C.sand}`, color: C.text,
               fontFamily: "'Libre Franklin', sans-serif",
-              fontSize: 14, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+              fontSize: 16, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
             }}>
               Back to Devils Lake
             </a>

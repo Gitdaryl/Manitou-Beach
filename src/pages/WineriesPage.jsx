@@ -135,12 +135,12 @@ function CorkScrubHero() {
         {/* paddingTop reserves the fixed navbar's height so centered content never tucks under it */}
         <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', paddingTop: 110, paddingBottom: 40, boxSizing: 'border-box' }}>
           <div ref={contentRef} style={{ maxWidth: 960, margin: '0 auto', padding: '0 24px', width: '100%', willChange: 'transform, opacity' }}>
-            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: 'uppercase', color: 'rgba(255,255,255,0.55)', marginBottom: 20 }}>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 5, textTransform: 'uppercase', color: 'rgba(255,255,255,0.75)', marginBottom: 20 }}>
               Wine · Beer · Cider · Irish Hills · Manitou Beach Village
             </div>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 9, background: 'rgba(122,142,114,0.22)', border: `1px solid ${C.sage}`, borderRadius: 24, padding: '7px 16px', marginBottom: 26 }}>
               <span style={{ width: 8, height: 8, borderRadius: '50%', background: C.sage, animation: 'mbPulse 2s ease-out infinite' }} />
-              <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: C.cream }}>
+              <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: C.cream }}>
                 3 Village Tasting Rooms Now Pouring
               </span>
             </div>
@@ -148,7 +148,7 @@ function CorkScrubHero() {
             <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(48px, 9vw, 110px)', fontWeight: 400, color: C.cream, lineHeight: 0.95, margin: '0 0 20px 0' }}>
               Wineries &<br />Breweries Trail
             </h1>
-            <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 'clamp(14px, 1.6vw, 17px)', color: 'rgba(255,255,255,0.55)', lineHeight: 1.8, maxWidth: 520, margin: '0 0 32px 0' }}>
+            <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 'clamp(14px, 1.6vw, 17px)', color: 'rgba(255,255,255,0.75)', lineHeight: 1.8, maxWidth: 520, margin: '0 0 32px 0' }}>
               Michigan wine country meets lake country. Three Village shops are now pouring Northern Michigan wine steps from Devils Lake - and the full Irish Hills trail of wineries, breweries, and cider stops is waiting just beyond.
             </p>
             <Btn href="/" variant="outlineLight" small>← Back to Home</Btn>
@@ -159,7 +159,7 @@ function CorkScrubHero() {
           <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: 'rgba(255,255,255,0.75)', marginBottom: 4 }}>
             Scroll to pop the cork
           </div>
-          <div style={{ fontSize: 18, color: 'rgba(255,255,255,0.55)', animation: 'mbBounce 1.6s ease-in-out infinite' }}>↓</div>
+          <div style={{ fontSize: 18, color: 'rgba(255,255,255,0.75)', animation: 'mbBounce 1.6s ease-in-out infinite' }}>↓</div>
           <style>{`@keyframes mbBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }`}</style>
         </div>
       </div>
@@ -203,12 +203,12 @@ function WineriesHero() {
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(170deg, rgba(10,18,24,0.75) 0%, rgba(10,18,24,0.45) 50%, rgba(10,18,24,0.88) 100%)" }} />
       <div style={{ maxWidth: 960, margin: "0 auto", position: "relative", zIndex: 1 }}>
         <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? "none" : "translateY(24px)", transition: "all 0.9s ease" }}>
-          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "var(--page-eyebrow)", marginBottom: 20 }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 5, textTransform: "uppercase", color: "var(--page-eyebrow)", marginBottom: 20 }}>
             Wine · Beer · Cider · Irish Hills · Manitou Beach Village
           </div>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 9, background: "rgba(122,142,114,0.22)", border: `1px solid ${C.sage}`, borderRadius: 24, padding: "7px 16px", marginBottom: 26 }}>
             <span style={{ width: 8, height: 8, borderRadius: "50%", background: C.sage, boxShadow: `0 0 0 0 ${C.sage}`, animation: "mbPulse 2s ease-out infinite" }} />
-            <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.cream }}>
+            <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.cream }}>
               3 Village Tasting Rooms Now Pouring
             </span>
           </div>
@@ -216,7 +216,7 @@ function WineriesHero() {
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(48px, 9vw, 110px)", fontWeight: 400, color: C.cream, lineHeight: 0.95, margin: "0 0 20px 0" }}>
             Wineries &<br />Breweries Trail
           </h1>
-          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: "clamp(14px, 1.6vw, 17px)", color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 520, margin: "0 0 32px 0" }}>
+          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: "clamp(14px, 1.6vw, 17px)", color: "rgba(255,255,255,0.75)", lineHeight: 1.8, maxWidth: 520, margin: "0 0 32px 0" }}>
             Michigan wine country meets lake country. Three Village shops are now pouring Northern Michigan wine steps from Devils Lake - and the full Irish Hills trail of wineries, breweries, and cider stops is waiting just beyond.
           </p>
           <Btn href="/" variant="outlineLight" small>← Back to Home</Btn>
@@ -257,24 +257,24 @@ function NowPouringCard({ v, i }) {
         <div style={{ padding: "26px 24px 28px", display: "flex", flexDirection: "column", flex: 1 }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 7, marginBottom: 16 }}>
             <span style={{ width: 7, height: 7, borderRadius: "50%", background: C.sage }} />
-            <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1.8, textTransform: "uppercase", color: C.sage }}>Now Pouring</span>
+            <span style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1.8, textTransform: "uppercase", color: C.sage }}>Now Pouring</span>
           </div>
           <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.cream, marginBottom: 4, lineHeight: 1.3 }}>{v.name}</div>
-          <div style={{ fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", color: "rgba(255,255,255,0.4)", marginBottom: 16 }}>
+          <div style={{ fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", color: "rgba(255,255,255,0.75)", marginBottom: 16 }}>
             featuring <span style={{ color: C.sunsetLight, fontWeight: 600 }}>{brand?.name}</span>
           </div>
           {brand?.pours && (
-            <div style={{ alignSelf: "flex-start", fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 0.6, color: C.cream, background: `${v.accent}44`, border: `1px solid ${v.accent}`, borderRadius: 20, padding: "5px 13px", marginBottom: 16 }}>
+            <div style={{ alignSelf: "flex-start", fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 0.6, color: C.cream, background: `${v.accent}44`, border: `1px solid ${v.accent}`, borderRadius: 20, padding: "5px 13px", marginBottom: 16 }}>
               🍷 {brand.pours}
             </div>
           )}
-          <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, margin: "0 0 20px 0", flex: 1 }}>{v.tagline}</p>
+          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", lineHeight: 1.7, margin: "0 0 20px 0", flex: 1 }}>{v.tagline}</p>
           <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-            <a href={`#${slug}`} onClick={scrollToCard} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.cream, textDecoration: "none" }}>
+            <a href={`#${slug}`} onClick={scrollToCard} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.cream, textDecoration: "none" }}>
               Details ↓
             </a>
             {brand?.url && (
-              <a href={brand.url} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: v.accent, textDecoration: "none" }}>
+              <a href={brand.url} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: v.accent, textDecoration: "none" }}>
                 The Winery →
               </a>
             )}
@@ -310,7 +310,7 @@ function WineMarqueeStrip() {
     }}>
       <div className="scoreboard-ticker">
         {[...NOW_POURING_WINES, ...NOW_POURING_WINES].map((w, i) => (
-          <span key={i} style={{ display: "inline-block", padding: "0 30px", whiteSpace: "nowrap", fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 600, letterSpacing: 1.2, textTransform: "uppercase", color: "rgba(250,246,239,0.8)" }}>
+          <span key={i} style={{ display: "inline-block", padding: "0 30px", whiteSpace: "nowrap", fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 600, letterSpacing: 1.2, textTransform: "uppercase", color: "rgba(250,246,239,0.8)" }}>
             <span style={{ color: C.rose, marginRight: 30 }}>🍷</span>{w}
           </span>
         ))}
@@ -337,7 +337,7 @@ function WineParallaxBreak({ image, quote, sub }) {
         <p style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 3.5vw, 40px)", fontWeight: 400, fontStyle: "italic", color: C.cream, margin: 0, lineHeight: 1.35, maxWidth: 680 }}>
           "{quote}"
         </p>
-        <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.55)", marginTop: 18 }}>{sub}</p>
+        <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.75)", marginTop: 18 }}>{sub}</p>
       </div>
     </section>
   );
@@ -351,7 +351,7 @@ function NowPouringSection() {
         <FadeIn>
           <SectionLabel light>Open Now · Summer 2026</SectionLabel>
           <SectionTitle light>The Village Is Pouring</SectionTitle>
-          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 560, margin: "0 0 44px 0" }}>
+          <p style={{ fontSize: 17, color: "rgba(255,255,255,0.75)", lineHeight: 1.8, maxWidth: 560, margin: "0 0 44px 0" }}>
             Three Village shops have opened their doors as satellite tasting rooms for Northern Michigan wineries. Walk the Village, browse the shelves, stay for a glass - all within steps of the lake.
           </p>
         </FadeIn>
@@ -359,7 +359,7 @@ function NowPouringSection() {
           {openVenues.map((v, i) => <NowPouringCard key={v.name} v={v} i={i} />)}
         </div>
         <FadeIn delay={200}>
-          <div style={{ marginTop: 28, textAlign: "center", fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", color: "rgba(255,255,255,0.35)" }}>
+          <div style={{ marginTop: 28, textAlign: "center", fontSize: 15, fontFamily: "'Libre Franklin', sans-serif", color: "rgba(255,255,255,0.75)" }}>
             Room #4 is on the way - Faust House Scrap n Craft opens soon with Cherry Creek Cellars.
           </div>
         </FadeIn>
@@ -375,10 +375,10 @@ function WineriesVillageCallout() {
         <FadeIn>
           <SectionLabel light>Now Open</SectionLabel>
           <SectionTitle light center>The Village Comes Alive</SectionTitle>
-          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 620, margin: "0 auto 20px" }}>
+          <p style={{ fontSize: 17, color: "rgba(255,255,255,0.75)", lineHeight: 1.8, maxWidth: 620, margin: "0 auto 20px" }}>
             Three Manitou Beach Village shops have opened their doors as satellite tasting rooms for Michigan wineries - with a fourth on the way. Walk the Village. Browse the boathouse. Pick up something for the cottage. Stay for a glass.
           </p>
-          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.35)", lineHeight: 1.8, maxWidth: 560, margin: "0 auto 32px", fontStyle: "italic" }}>
+          <p style={{ fontSize: 17, color: "rgba(255,255,255,0.75)", lineHeight: 1.8, maxWidth: 560, margin: "0 auto 32px", fontStyle: "italic" }}>
             Brengman Family Wines · Chateau Fontaine · Amoritas Vineyards - pouring now. Cherry Creek Cellars joins soon at Faust House.
           </p>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
@@ -408,7 +408,7 @@ function WineTrailNotifySection() {
             </div>
             <p style={{
               fontFamily: "'Libre Franklin', sans-serif",
-              fontSize: 15,
+              fontSize: 17,
               color: C.textLight,
               lineHeight: 1.75,
               maxWidth: 460,
@@ -526,13 +526,13 @@ function WinePassportWidget({ stamped, villageVenues, trailVenues }) {
             <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: allComplete ? C.cream : C.text, marginBottom: 4 }}>
               {allComplete ? "Trail Complete - Well Done." : "Your Digital Trail Tracker"}
             </div>
-            <div style={{ fontSize: 13, color: allComplete ? "rgba(255,255,255,0.5)" : C.textLight, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.65, marginBottom: 4 }}>
+            <div style={{ fontSize: 15, color: allComplete ? "rgba(255,255,255,0.75)" : C.textLight, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.65, marginBottom: 4 }}>
               {allComplete
                 ? "You've visited every stop on the Manitou Beach Wine Trail. Show this screen at any participating venue - they'll know what it means."
                 : `Track your stops online as you go. Visit a tasting room, hit '+ Stamp My Visit', rate your pour. ${totalStops} stops open now - Village walkabout + the full trail loop.`}
             </div>
             {!allComplete && (
-              <div style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 16 }}>
+              <div style={{ fontSize: 14, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 16 }}>
                 Pick up a physical passport card at any tasting room counter - staff signs your card square and you earn 10% off a bottle.{" "}
                 <span style={{ fontStyle: "italic" }}>Complete every stop and you've done something worth talking about.</span>
               </div>
@@ -540,16 +540,16 @@ function WinePassportWidget({ stamped, villageVenues, trailVenues }) {
             {allComplete && <div style={{ marginBottom: 16 }} />}
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <div style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: allComplete ? "rgba(255,255,255,0.45)" : C.textMuted, width: 64 }}>Village</div>
+                <div style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: allComplete ? "rgba(255,255,255,0.75)" : C.textMuted, width: 64 }}>Village</div>
                 <DotRow total={villageVenues.length} filled={villageCount} accent={C.sunset} />
-                <div style={{ fontSize: 12, color: allComplete ? "rgba(255,255,255,0.55)" : C.textLight }}>{villageCount}/{villageVenues.length} stops</div>
-                {villageComplete && <div style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, color: C.sunset, background: "rgba(212,132,90,0.12)", padding: "2px 8px", borderRadius: 20 }}>Complete</div>}
+                <div style={{ fontSize: 14, color: allComplete ? "rgba(255,255,255,0.75)" : C.textLight }}>{villageCount}/{villageVenues.length} stops</div>
+                {villageComplete && <div style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, color: C.sunset, background: "rgba(212,132,90,0.12)", padding: "2px 8px", borderRadius: 20 }}>Complete</div>}
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <div style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: allComplete ? "rgba(255,255,255,0.45)" : C.textMuted, width: 64 }}>Trail</div>
+                <div style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: allComplete ? "rgba(255,255,255,0.75)" : C.textMuted, width: 64 }}>Trail</div>
                 <DotRow total={trailVenues.length} filled={trailCount} accent={C.sage} />
-                <div style={{ fontSize: 12, color: allComplete ? "rgba(255,255,255,0.55)" : C.textLight }}>{trailCount}/{trailVenues.length} stops</div>
-                {trailComplete && <div style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, color: C.sage, background: "rgba(122,142,114,0.12)", padding: "2px 8px", borderRadius: 20 }}>Complete</div>}
+                <div style={{ fontSize: 14, color: allComplete ? "rgba(255,255,255,0.75)" : C.textLight }}>{trailCount}/{trailVenues.length} stops</div>
+                {trailComplete && <div style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, color: C.sage, background: "rgba(122,142,114,0.12)", padding: "2px 8px", borderRadius: 20 }}>Complete</div>}
               </div>
             </div>
             {allComplete && (
@@ -558,7 +558,7 @@ function WinePassportWidget({ stamped, villageVenues, trailVenues }) {
                   onClick={handleShare}
                   style={{
                     fontFamily: "'Libre Franklin', sans-serif",
-                    fontSize: 11, fontWeight: 700, letterSpacing: 1.5,
+                    fontSize: 13, fontWeight: 700, letterSpacing: 1.5,
                     textTransform: "uppercase",
                     padding: "9px 20px", borderRadius: 20,
                     background: shared ? C.sage : "transparent",
@@ -576,13 +576,13 @@ function WinePassportWidget({ stamped, villageVenues, trailVenues }) {
           {allComplete && (
             <div style={{ textAlign: "center" }}>
               <img src="/images/icons/trophy-icon.png" alt="" style={{ width: 48, height: 48, objectFit: 'contain', marginBottom: 4 }} />
-              <div style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunset }}>Full Trail Badge</div>
+              <div style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunset }}>Full Trail Badge</div>
             </div>
           )}
           {villageComplete && !allComplete && (
             <div style={{ textAlign: "center" }}>
               <img src="/images/icons/wine-rating.png" alt="" style={{ width: 44, height: 44, objectFit: 'contain', marginBottom: 4 }} />
-              <div style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunset }}>Village Badge</div>
+              <div style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.sunset }}>Village Badge</div>
             </div>
           )}
         </div>
@@ -596,7 +596,7 @@ function StarRow({ label, required, value, onChange }) {
   const isMobile = useIsMobile();
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 8 : 12, marginBottom: isMobile ? 14 : 10 }}>
-      <div style={{ width: isMobile ? 80 : 110, fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 0.6, textTransform: 'uppercase', color: C.textMuted, flexShrink: 0, lineHeight: 1.3 }}>
+      <div style={{ width: isMobile ? 80 : 110, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 0.6, textTransform: 'uppercase', color: C.textMuted, flexShrink: 0, lineHeight: 1.3 }}>
         {label}{required && <span style={{ color: C.sunset }}> *</span>}
       </div>
       <div style={{ display: 'flex', gap: isMobile ? 4 : 2 }}>
@@ -611,7 +611,7 @@ function StarRow({ label, required, value, onChange }) {
           >★</button>
         ))}
       </div>
-      {!required && value === 0 && !isMobile && <span style={{ fontSize: 11, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>optional</span>}
+      {!required && value === 0 && !isMobile && <span style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>optional</span>}
     </div>
   );
 }
@@ -723,11 +723,11 @@ function WineReviewModal({ venue, accent, onSuccess, onClose }) {
         <div style={{ height: 5, background: accent }} />
         <div style={{ padding: isMobile ? '20px 16px 32px' : '28px 32px 32px' }}>
           <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 19, fontWeight: 400, color: C.text, marginBottom: 4 }}>Log Your Visit</div>
-          <div style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 24 }}>{venue}</div>
+          <div style={{ fontSize: 15, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 24 }}>{venue}</div>
 
           {/* Per-wine ratings */}
           <div style={{ marginBottom: 20 }}>
-            <label style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, display: 'block', marginBottom: 8 }}>What did you try? *</label>
+            <label style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, display: 'block', marginBottom: 8 }}>What did you try? *</label>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {wines.map((w, i) => (
                 <div key={i} style={{ background: C.cream, borderRadius: 10, padding: '10px 12px', border: `1px solid ${C.sand}` }}>
@@ -738,7 +738,7 @@ function WineReviewModal({ venue, accent, onSuccess, onClose }) {
                       value={w.name}
                       onChange={e => updateWineName(i, e.target.value)}
                       placeholder={i === 0 ? "e.g. Pinot Gris, IPA, dry rosé..." : "Another pour..."}
-                      style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: `1.5px solid ${C.sand}`, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.text, background: '#fff', outline: 'none', boxSizing: 'border-box', flex: 1 }}
+                      style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: `1.5px solid ${C.sand}`, fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, color: C.text, background: '#fff', outline: 'none', boxSizing: 'border-box', flex: 1 }}
                     />
                     {wines.length > 1 && (
                       <button type="button" onClick={() => removeWine(i)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 18, color: C.textMuted, padding: '0 4px', lineHeight: 1 }}>×</button>
@@ -746,7 +746,7 @@ function WineReviewModal({ venue, accent, onSuccess, onClose }) {
                   </div>
                   {w.name.trim() && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, color: C.textMuted, textTransform: 'uppercase', letterSpacing: 0.5 }}>The pour</span>
+                      <span style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, color: C.textMuted, textTransform: 'uppercase', letterSpacing: 0.5 }}>The pour</span>
                       <InlineStarPicker value={w.rating} onChange={r => updateWineRating(i, r)} />
                     </div>
                   )}
@@ -759,7 +759,7 @@ function WineReviewModal({ venue, accent, onSuccess, onClose }) {
               ))}
             </datalist>
             {wines.length < 6 && (
-              <button type="button" onClick={addWine} style={{ marginTop: 8, background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, color: C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, padding: 0 }}>
+              <button type="button" onClick={addWine} style={{ marginTop: 8, background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, color: C.lakeBlue, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, padding: 0 }}>
                 + Add another pour
               </button>
             )}
@@ -767,14 +767,14 @@ function WineReviewModal({ venue, accent, onSuccess, onClose }) {
 
           {/* Venue-level ratings */}
           <div style={{ marginBottom: 20, padding: '16px 16px 6px', background: C.cream, borderRadius: 12, border: `1px solid ${C.sand}` }}>
-            <div style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 10 }}>About the stop</div>
+            <div style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 10 }}>About the stop</div>
             <StarRow label="The People"  required={false} value={service}     onChange={setService} />
             <StarRow label="The Vibe"    required={false} value={atmosphere}  onChange={setAtmosphere} />
             <StarRow label="The Visit"   required={false} value={experience}  onChange={setExperience} />
           </div>
 
           <div style={{ marginBottom: 16 }}>
-            <label style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, display: 'block', marginBottom: 8 }}>
+            <label style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, display: 'block', marginBottom: 8 }}>
               Leave a comment? <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional - shows on site)</span>
             </label>
             <textarea
@@ -782,12 +782,12 @@ function WineReviewModal({ venue, accent, onSuccess, onClose }) {
               onChange={e => setNote(e.target.value)}
               placeholder="Loved the patio, ask for the reserve, perfect for a rainy afternoon..."
               rows={2}
-              style={{ width: '100%', padding: '10px 14px', borderRadius: 10, border: `1.5px solid ${C.sand}`, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.text, background: C.cream, outline: 'none', resize: 'none', boxSizing: 'border-box' }}
+              style={{ width: '100%', padding: '10px 14px', borderRadius: 10, border: `1.5px solid ${C.sand}`, fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, color: C.text, background: C.cream, outline: 'none', resize: 'none', boxSizing: 'border-box' }}
             />
           </div>
           {note.trim().length > 0 && (
             <div style={{ marginBottom: 24 }}>
-              <label style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, display: 'block', marginBottom: 8 }}>
+              <label style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, display: 'block', marginBottom: 8 }}>
                 First name <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(shows with your comment)</span>
               </label>
               <input
@@ -795,22 +795,22 @@ function WineReviewModal({ venue, accent, onSuccess, onClose }) {
                 value={firstName}
                 onChange={e => setFirstName(e.target.value)}
                 placeholder="e.g. Sarah"
-                style={{ width: '100%', padding: '10px 14px', borderRadius: 10, border: `1.5px solid ${C.sand}`, fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.text, background: C.cream, outline: 'none', boxSizing: 'border-box' }}
+                style={{ width: '100%', padding: '10px 14px', borderRadius: 10, border: `1.5px solid ${C.sand}`, fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, color: C.text, background: C.cream, outline: 'none', boxSizing: 'border-box' }}
               />
             </div>
           )}
 
-          {error && <div style={{ fontSize: 12, color: '#c0392b', marginBottom: 12, fontFamily: "'Libre Franklin', sans-serif" }}>{error}</div>}
+          {error && <div style={{ fontSize: 14, color: '#c0392b', marginBottom: 12, fontFamily: "'Libre Franklin', sans-serif" }}>{error}</div>}
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
             <button
               onClick={handleSubmit}
               disabled={submitting}
-              style={{ flex: 1, padding: '12px 20px', borderRadius: 24, background: C.sage, color: C.cream, border: 'none', fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', cursor: submitting ? 'default' : 'pointer', opacity: submitting ? 0.7 : 1, transition: 'opacity 0.2s' }}
+              style={{ flex: 1, padding: '12px 20px', borderRadius: 24, background: C.sage, color: C.cream, border: 'none', fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', cursor: submitting ? 'default' : 'pointer', opacity: submitting ? 0.7 : 1, transition: 'opacity 0.2s' }}
             >
               {submitting ? 'Saving...' : 'Submit & Earn Your Stamp'}
             </button>
-            <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>Cancel</button>
+            <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 15, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>Cancel</button>
           </div>
         </div>
       </div>
@@ -839,14 +839,14 @@ function WineryCard({ v, i, isStamped, onStamp, venueRating, wineRankings, autoO
         <div id={venueSlug(v.name)} style={{ background: C.warmWhite, border: `1px solid ${C.sand}`, borderRadius: 12, padding: "18px 22px" }}>
           <div style={{ display: "flex", alignItems: "baseline", flexWrap: "wrap", gap: "4px 14px", marginBottom: 6 }}>
             <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.text, margin: 0 }}>{v.name}</h3>
-            <span style={{ fontSize: 10, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase" }}>{v.type}</span>
-            <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.textMuted, background: C.sand, padding: "3px 9px", borderRadius: 20, marginLeft: "auto" }}>{v.distance}</span>
+            <span style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase" }}>{v.type}</span>
+            <span style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.textMuted, background: C.sand, padding: "3px 9px", borderRadius: 20, marginLeft: "auto" }}>{v.distance}</span>
           </div>
           <div style={{ display: "flex", gap: 18, flexWrap: "wrap", alignItems: "center" }}>
-            {v.address && <span style={{ fontSize: 12, color: C.textMuted }}>📍 {v.address}</span>}
-            {v.hours && <span style={{ fontSize: 12, color: C.textMuted }}>🕐 {v.hours}</span>}
+            {v.address && <span style={{ fontSize: 14, color: C.textMuted }}>📍 {v.address}</span>}
+            {v.hours && <span style={{ fontSize: 14, color: C.textMuted }}>🕐 {v.hours}</span>}
             {v.website && (
-              <a href={v.website} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", color: v.accent, textDecoration: "none" }}>
+              <a href={v.website} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", color: v.accent, textDecoration: "none" }}>
                 Website →
               </a>
             )}
@@ -897,57 +897,57 @@ function WineryCard({ v, i, isStamped, onStamp, venueRating, wineRankings, autoO
                   <span style={{ color: C.sunset, fontSize: 16, letterSpacing: 1 }}>
                     {'★'.repeat(Math.round(venueRating.avg))}{'☆'.repeat(5 - Math.round(venueRating.avg))}
                   </span>
-                  <span style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
+                  <span style={{ fontSize: 14, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
                     out of 5 &nbsp;·&nbsp; {venueRating.count.toLocaleString()} {venueRating.count === 1 ? 'rating' : 'ratings'}
                   </span>
                   {wineRankings && wineRankings.find(w => w.venue === v.name) && (
-                    <span style={{ fontSize: 11, padding: '2px 10px', background: `${C.sunset}20`, color: C.sunset, borderRadius: 12, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700 }}>
+                    <span style={{ fontSize: 13, padding: '2px 10px', background: `${C.sunset}20`, color: C.sunset, borderRadius: 12, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700 }}>
                       🏅 {wineRankings.find(w => w.venue === v.name)?.fullName || wineRankings.find(w => w.venue === v.name)?.name}
                     </span>
                   )}
                 </div>
               ) : onStamp ? (
-                <div style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", fontStyle: 'italic' }}>
+                <div style={{ fontSize: 14, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", fontStyle: 'italic' }}>
                   Be the first to rate this stop →
                 </div>
               ) : null}
             </div>
             <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
               {v.partner && (
-                <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.cream, background: `linear-gradient(100deg, ${C.wine}, ${C.sunset})`, padding: "4px 10px", borderRadius: 20 }}>★ Featured Trail Partner</span>
+                <span style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.cream, background: `linear-gradient(100deg, ${C.wine}, ${C.sunset})`, padding: "4px 10px", borderRadius: 20 }}>★ Featured Trail Partner</span>
               )}
               {v.nowOpen && (
-                <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.cream, background: C.sage, padding: "4px 10px", borderRadius: 20 }}>Now Pouring</span>
+                <span style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.cream, background: C.sage, padding: "4px 10px", borderRadius: 20 }}>Now Pouring</span>
               )}
               {!v.nowOpen && v.openingDate && (
-                <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.cream, background: C.sunset, padding: "4px 10px", borderRadius: 20 }}>{v.openingDate}</span>
+                <span style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.cream, background: C.sunset, padding: "4px 10px", borderRadius: 20 }}>{v.openingDate}</span>
               )}
-              <span style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.textMuted, background: C.sand, padding: "4px 10px", borderRadius: 20 }}>{v.distance}</span>
+              <span style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.textMuted, background: C.sand, padding: "4px 10px", borderRadius: 20 }}>{v.distance}</span>
             </div>
           </div>
-          <div style={{ fontSize: 11, color: v.accent, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", marginBottom: 10 }}>{v.type}</div>
-          <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: "0 0 14px 0" }}>{v.tagline}</p>
+          <div style={{ fontSize: 13, color: v.accent, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", marginBottom: 10 }}>{v.type}</div>
+          <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.7, margin: "0 0 14px 0" }}>{v.tagline}</p>
 
           {v.hostedBrands && v.hostedBrands.length > 0 && (
             <div style={{ margin: "16px 0", borderTop: `1px solid ${C.sand}`, paddingTop: 16 }}>
-              <div style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.textMuted, marginBottom: 12 }}>Tasting This Season</div>
+              <div style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: C.textMuted, marginBottom: 12 }}>Tasting This Season</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 {v.hostedBrands.map((brand, bi) => (
                   <div key={bi} style={{ background: C.cream, borderRadius: 10, padding: "12px 14px", borderLeft: `3px solid ${v.accent}` }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 4 }}>
-                      <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, fontWeight: 400, color: C.text }}>{brand.name}</div>
+                      <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.text }}>{brand.name}</div>
                       {brand.pours && (
-                        <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 0.5, color: v.accent, background: `${v.accent}18`, border: `1px solid ${v.accent}50`, borderRadius: 12, padding: "3px 10px" }}>{brand.pours}</span>
+                        <span style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 0.5, color: v.accent, background: `${v.accent}18`, border: `1px solid ${v.accent}50`, borderRadius: 12, padding: "3px 10px" }}>{brand.pours}</span>
                       )}
                     </div>
-                    <div style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6 }}>{brand.description}</div>
+                    <div style={{ fontSize: 15, color: C.textLight, lineHeight: 1.6 }}>{brand.description}</div>
                     {brand.url && (
                       <a
                         href={brand.url}
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={e => e.stopPropagation()}
-                        style={{ display: "inline-block", marginTop: 8, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", color: v.accent, textDecoration: "none" }}
+                        style={{ display: "inline-block", marginTop: 8, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", color: v.accent, textDecoration: "none" }}
                       >
                         Meet the Winery →
                       </a>
@@ -972,12 +972,12 @@ function WineryCard({ v, i, isStamped, onStamp, venueRating, wineRankings, autoO
           )}
 
           <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
-            {v.address && v.address !== "Manitou Beach Village" && <span style={{ fontSize: 12, color: C.textMuted }}>📍 {v.address}</span>}
-            {v.phone && <span style={{ fontSize: 12, color: C.textMuted }}>📞 {formatPhone(v.phone)}</span>}
-            {v.hours && <span style={{ fontSize: 12, color: C.textMuted }}>🕐 {v.hours}</span>}
+            {v.address && v.address !== "Manitou Beach Village" && <span style={{ fontSize: 14, color: C.textMuted }}>📍 {v.address}</span>}
+            {v.phone && <span style={{ fontSize: 14, color: C.textMuted }}>📞 {formatPhone(v.phone)}</span>}
+            {v.hours && <span style={{ fontSize: 14, color: C.textMuted }}>🕐 {v.hours}</span>}
           </div>
           {v.highlight && (
-            <div style={{ marginTop: 12, fontSize: 12, color: v.accent, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600 }}>
+            <div style={{ marginTop: 12, fontSize: 14, color: v.accent, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600 }}>
               ✦ {v.highlight}
             </div>
           )}
@@ -987,10 +987,10 @@ function WineryCard({ v, i, isStamped, onStamp, venueRating, wineRankings, autoO
             <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
               {venueRating.comments.map((c, ci) => (
                 <div key={ci} style={{ background: C.cream, borderRadius: 10, padding: '12px 14px', borderLeft: `3px solid ${v.accent}40`, position: 'relative' }}>
-                  <div style={{ fontSize: 13, color: C.textLight, lineHeight: 1.65, fontStyle: 'italic' }}>
+                  <div style={{ fontSize: 15, color: C.textLight, lineHeight: 1.65, fontStyle: 'italic' }}>
                     "{c.note}"
                   </div>
-                  <div style={{ marginTop: 6, fontSize: 11, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
+                  <div style={{ marginTop: 6, fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
                     {c.firstName ? `- ${c.firstName}` : '- Trail visitor'}
                     {c.wineTried && <span style={{ color: v.accent, marginLeft: 6 }}>· {c.wineTried}</span>}
                   </div>
@@ -1007,7 +1007,7 @@ function WineryCard({ v, i, isStamped, onStamp, venueRating, wineRankings, autoO
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={e => e.stopPropagation()}
-                  style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: v.accent, textDecoration: "none" }}
+                  style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: v.accent, textDecoration: "none" }}
                 >
                   Visit Website →
                 </a>
@@ -1016,7 +1016,7 @@ function WineryCard({ v, i, isStamped, onStamp, venueRating, wineRankings, autoO
                 <a
                   href={v.profilePath}
                   onClick={e => e.stopPropagation()}
-                  style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sage, textDecoration: "none" }}
+                  style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sage, textDecoration: "none" }}
                 >
                   View Profile →
                 </a>
@@ -1028,7 +1028,7 @@ function WineryCard({ v, i, isStamped, onStamp, venueRating, wineRankings, autoO
                   onClick={e => { e.stopPropagation(); if (!isStamped) setShowModal(true); }}
                   style={{
                     fontFamily: "'Libre Franklin', sans-serif",
-                    fontSize: 11, fontWeight: 700, letterSpacing: 1.5,
+                    fontSize: 13, fontWeight: 700, letterSpacing: 1.5,
                     textTransform: "uppercase",
                     padding: "8px 16px", borderRadius: 20,
                     cursor: isStamped ? "default" : "pointer",
@@ -1142,22 +1142,22 @@ function WineriesMapSection() {
         <FadeIn>
           <SectionLabel>Plan Your Visit</SectionLabel>
           <SectionTitle>The Trail Map</SectionTitle>
-          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 560, margin: '0 0 24px 0' }}>
+          <p style={{ fontSize: 17, color: C.textLight, lineHeight: 1.8, maxWidth: 560, margin: '0 0 24px 0' }}>
             Village tasting rooms in the heart of Manitou Beach. Trail wineries within 20 minutes. Tap any pin for hours, directions, and the website.
           </p>
           <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', marginBottom: 28 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, color: C.textLight }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, color: C.textLight }}>
               <span style={{ width: 11, height: 11, borderRadius: '50%', background: C.sunset, display: 'inline-block' }} />
               Village Tasting Rooms
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, color: C.textLight }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, color: C.textLight }}>
               <span style={{ width: 11, height: 11, borderRadius: '50%', background: C.lakeBlue, display: 'inline-block' }} />
               Wineries & Breweries Trail Stops
             </div>
           </div>
         </FadeIn>
         {mapError ? (
-          <div style={{ background: C.sand, borderRadius: 12, padding: 24, fontSize: 13, color: C.textMuted, textAlign: 'center' }}>{mapError}</div>
+          <div style={{ background: C.sand, borderRadius: 12, padding: 24, fontSize: 15, color: C.textMuted, textAlign: 'center' }}>{mapError}</div>
         ) : (
           <div ref={mapDivRef} style={{ width: '100%', height: 460, borderRadius: 16, overflow: 'hidden', border: `1px solid ${C.sand}`, background: C.sand }} />
         )}
@@ -1173,12 +1173,12 @@ function WineriesScorecardSection() {
 
   const rnd = n => n != null ? n.toFixed(1) : null;
   const StarDisplay = ({ value, max = 5 }) => {
-    if (!value) return <span style={{ color: C.textMuted, fontSize: 12 }}>-</span>;
+    if (!value) return <span style={{ color: C.textMuted, fontSize: 14 }}>-</span>;
     const full = Math.round(value);
     return (
-      <span style={{ color: C.sunset, fontSize: 13, letterSpacing: 1 }}>
+      <span style={{ color: C.sunset, fontSize: 15, letterSpacing: 1 }}>
         {'★'.repeat(full)}{'☆'.repeat(max - full)}
-        <span style={{ color: C.textMuted, fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", marginLeft: 4 }}>{rnd(value)}</span>
+        <span style={{ color: C.textMuted, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", marginLeft: 4 }}>{rnd(value)}</span>
       </span>
     );
   };
@@ -1209,13 +1209,13 @@ function WineriesScorecardSection() {
               <FadeIn key={v.name} delay={i * 60}>
                 <div style={{ background: '#fff', borderRadius: 14, padding: '24px 24px 20px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', borderTop: `3px solid ${v.accent || C.sunset}`, height: '100%' }}>
                   <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.dusk, marginBottom: 4 }}>{v.name}</div>
-                  <div style={{ fontSize: 11, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 16 }}>
+                  <div style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 16 }}>
                     {r.count} {r.count === 1 ? 'review' : 'reviews'}
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                     {dims.map(d => (
                       <div key={d.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <div style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, color: C.textMuted, textTransform: 'uppercase', letterSpacing: 0.5 }}>{d.label}</div>
+                        <div style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, color: C.textMuted, textTransform: 'uppercase', letterSpacing: 0.5 }}>{d.label}</div>
                         <StarDisplay value={d.val} />
                       </div>
                     ))}
@@ -1227,7 +1227,7 @@ function WineriesScorecardSection() {
         </div>
 
         <div style={{ marginTop: 32, textAlign: 'center' }}>
-          <p style={{ fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.7 }}>
+          <p style={{ fontSize: 15, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.7 }}>
             Reviews are curated before publishing - every score is real, every reviewer was there.
           </p>
         </div>
@@ -1255,7 +1255,7 @@ function WineriesVenueSection() {
         <FadeIn>
           <SectionLabel>In the Village</SectionLabel>
           <SectionTitle>Village Tasting Rooms</SectionTitle>
-          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 580, margin: "0 0 48px 0" }}>
+          <p style={{ fontSize: 17, color: C.textLight, lineHeight: 1.8, maxWidth: 580, margin: "0 0 48px 0" }}>
             Three Village shops are pouring now, with a fourth on the way. Walk the Village - each stop is a new pour, a new story, all within steps of the lake.
           </p>
         </FadeIn>
@@ -1267,14 +1267,14 @@ function WineriesVenueSection() {
         <FadeIn>
           <SectionLabel>Day Trips</SectionLabel>
           <SectionTitle>The Wineries & Breweries Trail</SectionTitle>
-          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 580, margin: "0 0 48px 0" }}>
+          <p style={{ fontSize: 17, color: C.textLight, lineHeight: 1.8, maxWidth: 580, margin: "0 0 48px 0" }}>
             Pack the cooler, pick a starting point, and make a day of it. Gypsy Blue for the scenery just six minutes away, Cherry Creek for the laid-back pour, Chateau Aeronautique to close it out right.
           </p>
         </FadeIn>
         <div style={{ display: "flex", flexDirection: "column", gap: 24, marginBottom: 16 }}>
           {trailVenues.map((v, i) => <WineryCard key={i} v={v} i={i} isStamped={isStamped(v.name)} onStamp={WINE_PROGRAM_LIVE ? toggleStamp : undefined} venueRating={WINE_PROGRAM_LIVE ? ratings[v.name] : undefined} wineRankings={WINE_PROGRAM_LIVE ? wineRankings : undefined} autoOpen={WINE_PROGRAM_LIVE && stampSlug === venueSlug(v.name)} />)}
         </div>
-        <div style={{ marginBottom: 80, fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.7 }}>
+        <div style={{ marginBottom: 80, fontSize: 14, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", lineHeight: 1.7 }}>
           Featured placement - top billing, photos, and a full profile page - is part of a paid trail partnership.{" "}
           <a href="/featured" style={{ color: C.sage, fontWeight: 700, textDecoration: "none" }}>List your business →</a>
         </div>
@@ -1337,7 +1337,7 @@ function WineriesItinerarySection() {
         <FadeIn>
           <SectionLabel light>How to Do It</SectionLabel>
           <SectionTitle light>Three Ways to Run the Trail</SectionTitle>
-          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 520, margin: "0 0 52px 0" }}>
+          <p style={{ fontSize: 17, color: "rgba(255,255,255,0.75)", lineHeight: 1.8, maxWidth: 520, margin: "0 0 52px 0" }}>
             Pick your pace. Two hours or two days - the trail works either way.
           </p>
         </FadeIn>
@@ -1348,22 +1348,22 @@ function WineriesItinerarySection() {
                 <div style={{ height: 4, background: it.accent }} />
                 <div style={{ padding: "28px 24px 32px" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16, flexWrap: "wrap", gap: 8 }}>
-                    <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: it.accent }}>{it.badge}</span>
-                    <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.3)", background: "rgba(255,255,255,0.06)", padding: "3px 10px", borderRadius: 20 }}>{it.duration}</span>
+                    <span style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: it.accent }}>{it.badge}</span>
+                    <span style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "rgba(255,255,255,0.75)", background: "rgba(255,255,255,0.06)", padding: "3px 10px", borderRadius: 20 }}>{it.duration}</span>
                   </div>
                   <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 21, fontWeight: 400, color: C.cream, margin: "0 0 12px 0" }}>{it.title}</h3>
-                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.75, margin: "0 0 24px 0" }}>{it.intro}</p>
+                  <p style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", lineHeight: 1.75, margin: "0 0 24px 0" }}>{it.intro}</p>
                   <div style={{ display: "flex", flexDirection: "column" }}>
                     {it.stops.map((s, si) => (
                       <div key={si} style={{ display: "flex", gap: 14, paddingBottom: 16, position: "relative" }}>
                         {si < it.stops.length - 1 && (
                           <div style={{ position: "absolute", left: 69.5, top: 18, bottom: 0, width: 1, background: "rgba(255,255,255,0.07)" }} />
                         )}
-                        <div style={{ flexShrink: 0, width: 52, paddingTop: 3, fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 0.3, color: it.accent, textAlign: "right", lineHeight: 1.3 }}>{s.time}</div>
+                        <div style={{ flexShrink: 0, width: 52, paddingTop: 3, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 0.3, color: it.accent, textAlign: "right", lineHeight: 1.3 }}>{s.time}</div>
                         <div style={{ width: 8, height: 8, borderRadius: "50%", background: it.accent, flexShrink: 0, marginTop: 5, opacity: 0.75 }} />
                         <div style={{ flex: 1 }}>
-                          <div style={{ fontSize: 13, fontFamily: "'Libre Baskerville', serif", color: C.cream, marginBottom: 3, lineHeight: 1.4 }}>{s.stop}</div>
-                          <div style={{ fontSize: 11, color: "rgba(255,255,255,0.32)", lineHeight: 1.5 }}>{s.note}</div>
+                          <div style={{ fontSize: 15, fontFamily: "'Libre Baskerville', serif", color: C.cream, marginBottom: 3, lineHeight: 1.4 }}>{s.stop}</div>
+                          <div style={{ fontSize: 13, color: "rgba(255,255,255,0.75)", lineHeight: 1.5 }}>{s.note}</div>
                         </div>
                       </div>
                     ))}
@@ -1385,7 +1385,7 @@ function WineriesCTASection() {
         <FadeIn>
           <SectionLabel light>Plan Your Visit</SectionLabel>
           <SectionTitle light center>Make a Day of It</SectionTitle>
-          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 560, margin: "0 auto 36px" }}>
+          <p style={{ fontSize: 17, color: "rgba(255,255,255,0.75)", lineHeight: 1.8, maxWidth: 560, margin: "0 auto 36px" }}>
             Spend a morning at the lake, a leisurely lunch in the Village, an afternoon tasting at Chateau Aeronautique, and an evening back on the water. That's a Manitou Beach Saturday.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
@@ -1477,7 +1477,7 @@ function WineScoreboardSection() {
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 48, fontWeight: 700, color: '#C9A84C', lineHeight: 1 }}>
                   {displayCount.toLocaleString()}
                 </div>
-                <div style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 1.5, textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)', marginTop: 4 }}>
+                <div style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 1.5, textTransform: 'uppercase', color: 'rgba(255,255,255,0.75)', marginTop: 4 }}>
                   reviews this season
                 </div>
               </div>
@@ -1495,8 +1495,8 @@ function WineScoreboardSection() {
             ].map(step => (
               <div key={step.n} style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 12, padding: '20px 20px 18px', border: '1px solid rgba(255,255,255,0.07)' }}>
                 <div style={{ fontFamily: "'Caveat', cursive", fontSize: 32, color: C.sunset, lineHeight: 1, marginBottom: 8 }}>{step.n}</div>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,0.7)', marginBottom: 6 }}>{step.label}</div>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.38)', lineHeight: 1.65 }}>{step.body}</div>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 600, color: 'rgba(255,255,255,0.7)', marginBottom: 6 }}>{step.label}</div>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: 'rgba(255,255,255,0.75)', lineHeight: 1.65 }}>{step.body}</div>
               </div>
             ))}
           </div>
@@ -1510,14 +1510,14 @@ function WineScoreboardSection() {
                 <span key={i} style={{
                   display: 'inline-block',
                   padding: '0 28px',
-                  fontSize: 12,
+                  fontSize: 14,
                   fontFamily: "'Libre Franklin', sans-serif",
-                  color: 'rgba(255,255,255,0.45)',
+                  color: 'rgba(255,255,255,0.75)',
                   letterSpacing: 0.4,
                   whiteSpace: 'nowrap',
                 }}>
                   {item}
-                  <span style={{ marginLeft: 28, color: 'rgba(255,255,255,0.12)' }}>·</span>
+                  <span style={{ marginLeft: 28, color: 'rgba(255,255,255,0.75)' }}>·</span>
                 </span>
               ))}
             </div>
@@ -1531,9 +1531,9 @@ function WineScoreboardSection() {
               {WINE_CATS.map(cat => (
                 <button key={cat.id} onClick={() => setActiveWineCat(cat.id)} style={{
                   border: 'none', cursor: 'pointer', padding: '8px 16px', borderRadius: 20,
-                  fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 0.3,
+                  fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 0.3,
                   background: activeWineCat === cat.id ? cat.color : 'rgba(255,255,255,0.07)',
-                  color: activeWineCat === cat.id ? '#fff' : 'rgba(255,255,255,0.4)',
+                  color: activeWineCat === cat.id ? '#fff' : 'rgba(255,255,255,0.75)',
                   transition: 'background 200ms, color 200ms',
                 }}>
                   {cat.label}
@@ -1543,15 +1543,15 @@ function WineScoreboardSection() {
 
             {wineRankings.length === 0 ? (
               <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: 14, padding: '36px 24px', border: '1px solid rgba(255,255,255,0.07)', textAlign: 'center' }}>
-                <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.3)', fontFamily: "'Libre Baskerville', serif", marginBottom: 8 }}>
+                <div style={{ fontSize: 16, color: 'rgba(255,255,255,0.75)', fontFamily: "'Libre Baskerville', serif", marginBottom: 8 }}>
                   Rankings - Coming This Season
                 </div>
-                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.18)', fontFamily: "'Libre Franklin', sans-serif" }}>
+                <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)', fontFamily: "'Libre Franklin', sans-serif" }}>
                   Rate what you try as you visit the trail - the leaderboard builds from your reviews.
                 </div>
               </div>
             ) : topWines.length === 0 ? (
-              <div style={{ color: 'rgba(255,255,255,0.2)', fontSize: 13, textAlign: 'center', padding: '32px 0' }}>
+              <div style={{ color: 'rgba(255,255,255,0.75)', fontSize: 15, textAlign: 'center', padding: '32px 0' }}>
                 No wines in this category yet.
               </div>
             ) : (
@@ -1565,24 +1565,24 @@ function WineScoreboardSection() {
                         width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
                         background: i < 3 ? MEDAL[i] : 'rgba(255,255,255,0.07)',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: 11, fontWeight: 700, fontFamily: "'Libre Franklin', sans-serif",
-                        color: i < 3 ? C.night : 'rgba(255,255,255,0.3)',
+                        fontSize: 13, fontWeight: 700, fontFamily: "'Libre Franklin', sans-serif",
+                        color: i < 3 ? C.night : 'rgba(255,255,255,0.75)',
                       }}>
                         {i + 1}
                       </div>
                       <div style={{ width: 200, flexShrink: 0, lineHeight: 1.3 }}>
                         <div className="scoreboard-venue-name" style={{
-                          fontSize: 13, fontFamily: "'Libre Baskerville', serif",
+                          fontSize: 15, fontFamily: "'Libre Baskerville', serif",
                           color: i === 0 ? C.cream : 'rgba(255,255,255,0.6)',
                         }}>
                           {wine.name}
                         </div>
-                        <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', fontFamily: "'Libre Franklin', sans-serif" }}>
+                        <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)', fontFamily: "'Libre Franklin', sans-serif" }}>
                           {wine.venue}
                         </div>
                       </div>
                       <div style={{
-                        flexShrink: 0, fontSize: 10, fontFamily: "'Libre Franklin', sans-serif",
+                        flexShrink: 0, fontSize: 13, fontFamily: "'Libre Franklin', sans-serif",
                         fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase',
                         background: color + '22', color: color, borderRadius: 4, padding: '3px 8px',
                       }}>
@@ -1604,7 +1604,7 @@ function WineScoreboardSection() {
                         {i === 0 && grow && (
                           <div style={{
                             position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)',
-                            fontSize: 9, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700,
+                            fontSize: 12, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700,
                             letterSpacing: 1.5, textTransform: 'uppercase', color: C.cream, pointerEvents: 'none',
                           }}>
                             Leading
@@ -1613,8 +1613,8 @@ function WineScoreboardSection() {
                       </div>
                       <div style={{
                         width: 40, textAlign: 'right', flexShrink: 0,
-                        fontSize: 13, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif",
-                        color: i === 0 ? '#C9A84C' : 'rgba(255,255,255,0.25)',
+                        fontSize: 15, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif",
+                        color: i === 0 ? '#C9A84C' : 'rgba(255,255,255,0.75)',
                       }}>
                         {wine.avg ? wine.avg.toFixed(1) : '-'}
                       </div>
@@ -1624,7 +1624,7 @@ function WineScoreboardSection() {
               </div>
             )}
 
-            <div style={{ marginTop: 10, fontSize: 11, color: 'rgba(255,255,255,0.18)', fontFamily: "'Libre Franklin', sans-serif" }}>
+            <div style={{ marginTop: 10, fontSize: 13, color: 'rgba(255,255,255,0.75)', fontFamily: "'Libre Franklin', sans-serif" }}>
               Ranked by average rating · updated as reviews are published.
             </div>
           </div>
@@ -1634,7 +1634,7 @@ function WineScoreboardSection() {
         {venueData.some(v => v.r?.service_avg || v.r?.atmosphere_avg || v.r?.experience_avg) && (
           <FadeIn>
             <div style={{ marginBottom: 40 }}>
-              <div style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)', marginBottom: 18 }}>
+              <div style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: 'rgba(255,255,255,0.75)', marginBottom: 18 }}>
                 Venue Scores
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -1649,28 +1649,28 @@ function WineScoreboardSection() {
                         background: 'rgba(255,255,255,0.03)', borderRadius: 10, padding: '12px 16px',
                         border: '1px solid rgba(255,255,255,0.06)',
                       }}>
-                        <div style={{ flex: 1, fontFamily: "'Libre Baskerville', serif", fontSize: 13, color: 'rgba(255,255,255,0.55)', minWidth: 130 }}>
+                        <div style={{ flex: 1, fontFamily: "'Libre Baskerville', serif", fontSize: 15, color: 'rgba(255,255,255,0.75)', minWidth: 130 }}>
                           {v.name}
                         </div>
                         {v.r?.service_avg > 0 && (
                           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                            <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 0.8, textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)' }}>The People</span>
-                            <span style={{ color: C.sunset, fontSize: 12 }}>{s(v.r.service_avg)}</span>
-                            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', fontFamily: "'Libre Franklin', sans-serif" }}>{v.r.service_avg.toFixed(1)}</span>
+                            <span style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 0.8, textTransform: 'uppercase', color: 'rgba(255,255,255,0.75)' }}>The People</span>
+                            <span style={{ color: C.sunset, fontSize: 14 }}>{s(v.r.service_avg)}</span>
+                            <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)', fontFamily: "'Libre Franklin', sans-serif" }}>{v.r.service_avg.toFixed(1)}</span>
                           </div>
                         )}
                         {v.r?.atmosphere_avg > 0 && (
                           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                            <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 0.8, textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)' }}>The Vibe</span>
-                            <span style={{ color: C.sunset, fontSize: 12 }}>{s(v.r.atmosphere_avg)}</span>
-                            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', fontFamily: "'Libre Franklin', sans-serif" }}>{v.r.atmosphere_avg.toFixed(1)}</span>
+                            <span style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 0.8, textTransform: 'uppercase', color: 'rgba(255,255,255,0.75)' }}>The Vibe</span>
+                            <span style={{ color: C.sunset, fontSize: 14 }}>{s(v.r.atmosphere_avg)}</span>
+                            <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)', fontFamily: "'Libre Franklin', sans-serif" }}>{v.r.atmosphere_avg.toFixed(1)}</span>
                           </div>
                         )}
                         {v.r?.experience_avg > 0 && (
                           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                            <span style={{ fontSize: 10, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 0.8, textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)' }}>The Visit</span>
-                            <span style={{ color: C.sunset, fontSize: 12 }}>{s(v.r.experience_avg)}</span>
-                            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', fontFamily: "'Libre Franklin', sans-serif" }}>{v.r.experience_avg.toFixed(1)}</span>
+                            <span style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, letterSpacing: 0.8, textTransform: 'uppercase', color: 'rgba(255,255,255,0.75)' }}>The Visit</span>
+                            <span style={{ color: C.sunset, fontSize: 14 }}>{s(v.r.experience_avg)}</span>
+                            <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)', fontFamily: "'Libre Franklin', sans-serif" }}>{v.r.experience_avg.toFixed(1)}</span>
                           </div>
                         )}
                       </div>
@@ -1720,7 +1720,7 @@ function WineriesHowItWorksSection() {
               <div style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 16, padding: '24px 20px', height: '100%', boxSizing: 'border-box' }}>
                 <img src={step.icon} alt="" style={{ width: 52, height: 52, objectFit: 'contain', marginBottom: 12, opacity: 0.92 }} />
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: '#fff', marginBottom: 8 }}>{step.title}</div>
-                <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', lineHeight: 1.6 }}>{step.desc}</div>
+                <div style={{ fontSize: 15, color: 'rgba(255,255,255,0.6)', lineHeight: 1.6 }}>{step.desc}</div>
               </div>
             </FadeIn>
           ))}
@@ -1753,7 +1753,7 @@ function WineAwardCeremonySection() {
               ].map((row, i) => (
                 <div key={i} style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
                   <img src={row.icon} alt="" style={{ width: 40, height: 40, objectFit: 'contain', flexShrink: 0, marginTop: 1, opacity: 0.88 }} />
-                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7 }}>{row.text}</span>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, color: 'rgba(255,255,255,0.75)', lineHeight: 1.7 }}>{row.text}</span>
                 </div>
               ))}
             </div>
@@ -1765,7 +1765,7 @@ function WineAwardCeremonySection() {
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', marginBottom: 44 }}>
             {WINERY_AWARD_CATEGORIES.map((cat, i) => (
-              <span key={i} style={{ fontSize: 13, padding: '7px 16px', borderRadius: 20, border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.65)', fontFamily: "'Libre Franklin', sans-serif", display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              <span key={i} style={{ fontSize: 15, padding: '7px 16px', borderRadius: 20, border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.65)', fontFamily: "'Libre Franklin', sans-serif", display: 'inline-flex', alignItems: 'center', gap: 6 }}>
                 <img src="/images/icons/trophy-icon.png" alt="" style={{ width: 14, height: 14, objectFit: 'contain', opacity: 0.8 }} />
                 {cat}
               </span>
@@ -1778,14 +1778,14 @@ function WineAwardCeremonySection() {
               <img src="/images/yeti/yeti-camera.webp" alt="The Yeti" style={{ width: 52, height: 52, borderRadius: '50%', objectFit: 'cover', flexShrink: 0, border: '2px solid rgba(212,132,90,0.3)' }} />
               <div style={{ fontFamily: "'Caveat', cursive", fontSize: 19, color: C.sunsetLight }}>A note from The Yeti</div>
             </div>
-            <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', lineHeight: 1.85, margin: 0, fontFamily: "'Libre Franklin', sans-serif" }}>
+            <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.75)', lineHeight: 1.85, margin: 0, fontFamily: "'Libre Franklin', sans-serif" }}>
               "100% peoples choice. Voted on by every real person who sat at their counter and tried something. The certificates look great on a wall - and I plan to be at the ceremony, which should tell you something."
             </p>
           </div>
 
           {/* Newsletter - constrained so it doesn't blow out */}
           <div style={{ maxWidth: 540, margin: '0 auto' }}>
-            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)', marginBottom: 16, fontFamily: "'Libre Franklin', sans-serif" }}>
+            <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)', marginBottom: 16, fontFamily: "'Libre Franklin', sans-serif" }}>
               Get notified when awards are announced - join the Dispatch:
             </p>
             <NewsletterInline />

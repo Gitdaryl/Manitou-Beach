@@ -37,7 +37,7 @@ function LadiesClubHero() {
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(32px, 6vw, 64px)", fontWeight: 400, color: C.cream, lineHeight: 1.05, margin: "0 0 20px 0" }}>
             Land & Lake<br />Ladies Club
           </h1>
-          <p style={{ fontSize: "clamp(14px, 1.5vw, 17px)", color: "rgba(255,255,255,0.5)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto 48px" }}>
+          <p style={{ fontSize: "clamp(14px, 1.5vw, 17px)", color: "rgba(255,255,255,0.75)", lineHeight: 1.7, maxWidth: 560, margin: "0 auto 48px" }}>
             A nonprofit civic organization serving Devils Lake, Round Lake, Addison, and Manitou Beach - bringing women together to strengthen our community through events, fundraising, and good old-fashioned neighborly love.
           </p>
 
@@ -47,7 +47,7 @@ function LadiesClubHero() {
               display: "inline-flex", alignItems: "center", gap: 8,
               background: `${C.sunset}22`, border: `1px solid ${C.sunset}50`,
               borderRadius: 6, padding: "6px 14px", marginBottom: 20,
-              fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700,
+              fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700,
               letterSpacing: 2.5, textTransform: "uppercase", color: C.sunsetLight,
             }}>
               Summerfest 2026 · June 20th
@@ -55,7 +55,7 @@ function LadiesClubHero() {
             <div style={{ fontFamily: "'Caveat', cursive", fontSize: "clamp(26px, 4vw, 38px)", color: C.cream, lineHeight: 1.2, maxWidth: 560, margin: "0 auto" }}>
               Thank you for an amazing Summerfest 2026!
             </div>
-            <p style={{ fontSize: "clamp(13px, 1.4vw, 15px)", color: "rgba(255,255,255,0.5)", lineHeight: 1.7, maxWidth: 480, margin: "14px auto 0" }}>
+            <p style={{ fontSize: "clamp(13px, 1.4vw, 15px)", color: "rgba(255,255,255,0.75)", lineHeight: 1.7, maxWidth: 480, margin: "14px auto 0" }}>
               What a day. Thank you to every neighbor, vendor, artist, and sponsor who made it special. Relive the highlights in our festival gallery below.
             </p>
           </div>
@@ -65,7 +65,7 @@ function LadiesClubHero() {
               display: "inline-flex", alignItems: "center", gap: 8,
               padding: "12px 28px", borderRadius: 8,
               background: C.sunset, color: C.cream,
-              fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+              fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
             }}>
               View Festival Gallery
             </a>
@@ -100,18 +100,18 @@ function LadiesClubMissionSection() {
           <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.85, maxWidth: 680, margin: "0 0 12px 0" }}>
             The Land & Lake Ladies Club (LLLC) is a 501(c)(4) nonprofit civic organization open to women in the Devils Lake, Round Lake, Addison, and Manitou Beach communities. Members come together to build friendships, welcome new residents, and make a real difference right where they live.
           </p>
-          <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.85, maxWidth: 680, margin: "0 0 12px 0" }}>
+          <p style={{ fontSize: 17, color: C.textLight, lineHeight: 1.85, maxWidth: 680, margin: "0 0 12px 0" }}>
             Every dollar raised goes back into our community - supporting local schools and teachers, youth programs, student art camps, fireworks, and families and seniors in need. No special skills needed, just a willingness to help.
           </p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 12px", maxWidth: 680, marginBottom: 48 }}>
-            <span style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginRight: 4 }}>Partners:</span>
+            <span style={{ fontSize: 14, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", marginRight: 4 }}>Partners:</span>
             {partners.map(p => (
-              <span key={p} style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", background: C.cream, border: `1px solid ${C.sand}`, borderRadius: 20, padding: "2px 10px" }}>{p}</span>
+              <span key={p} style={{ fontSize: 14, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", background: C.cream, border: `1px solid ${C.sand}`, borderRadius: 20, padding: "2px 10px" }}>{p}</span>
             ))}
           </div>
         </FadeIn>
         <FadeIn delay={100}>
-          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sage, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 20 }}>
+          <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sage, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 20 }}>
             What We Do
           </div>
         </FadeIn>
@@ -119,8 +119,8 @@ function LadiesClubMissionSection() {
           {initiatives.map((item, i) => (
             <FadeIn key={i} delay={i * 40}>
               <div style={{ background: C.cream, borderRadius: 12, padding: "20px 22px", border: `1px solid ${C.sand}` }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>{item.title}</div>
-                <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.65, margin: 0 }}>{item.desc}</p>
+                <div style={{ fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>{item.title}</div>
+                <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.65, margin: 0 }}>{item.desc}</p>
               </div>
             </FadeIn>
           ))}
@@ -271,7 +271,7 @@ function GalleryLightbox({ items, index, setIndex, onClose }) {
           <p style={{ fontSize: 13.5, color: "rgba(255,255,255,0.6)", lineHeight: 1.65, margin: 0 }}>{item.desc}</p>
           {item.link && (
             <a href={item.link.url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}
-              style={{ display: "inline-flex", alignItems: "center", gap: 4, marginTop: 10, fontSize: 12, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textDecoration: "none" }}>
+              style={{ display: "inline-flex", alignItems: "center", gap: 4, marginTop: 10, fontSize: 14, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textDecoration: "none" }}>
               {item.link.label} ↗
             </a>
           )}
@@ -283,7 +283,7 @@ function GalleryLightbox({ items, index, setIndex, onClose }) {
         onClick={onClose}
         style={{ position: "absolute", top: 16, right: 16, background: "rgba(255,255,255,0.12)", border: "none", borderRadius: "50%", width: 36, height: 36, cursor: "pointer", color: "#fff", fontSize: 18, lineHeight: 1 }}
       >×</button>
-      <div style={{ position: "absolute", bottom: 16, left: "50%", transform: "translateX(-50%)", color: "rgba(255,255,255,0.5)", fontSize: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
+      <div style={{ position: "absolute", bottom: 16, left: "50%", transform: "translateX(-50%)", color: "rgba(255,255,255,0.75)", fontSize: 14, fontFamily: "'Libre Franklin', sans-serif" }}>
         {index + 1} / {total}
       </div>
     </div>
@@ -322,7 +322,7 @@ function LadiesClubEventsSection() {
           <div style={{ textAlign: "center", marginBottom: 56 }}>
             <SectionLabel light>Signature Event</SectionLabel>
             <SectionTitle center light>Summerfest 2026 Recap</SectionTitle>
-            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, maxWidth: 520, margin: "0 auto" }}>
+            <p style={{ fontSize: 17, color: "rgba(255,255,255,0.75)", lineHeight: 1.7, maxWidth: 520, margin: "0 auto" }}>
               On June 20th, the Land & Lake Ladies Club filled the heart of Manitou Beach Village with a full day of food, music, crafts, art, and community. Here's a look back at what made it special.
             </p>
           </div>
@@ -356,7 +356,7 @@ function LadiesClubEventsSection() {
                   display: "inline-flex", alignItems: "center", gap: 8,
                   background: `${C.sunset}22`, border: `1px solid ${C.sunset}50`,
                   borderRadius: 6, padding: "6px 14px", marginBottom: 20, width: "fit-content",
-                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700,
+                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700,
                   letterSpacing: 2.5, textTransform: "uppercase", color: C.sunsetLight,
                 }}>
                   June 20th, 2026
@@ -375,8 +375,8 @@ function LadiesClubEventsSection() {
                     { icon: "📧", text: "michele.henson0003@gmail.com" },
                   ].map((item, i) => (
                     <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      <span style={{ fontSize: 14 }}>{item.icon}</span>
-                      <span style={{ fontSize: 13, color: "rgba(255,255,255,0.55)", fontFamily: "'Libre Franklin', sans-serif" }}>{item.text}</span>
+                      <span style={{ fontSize: 16 }}>{item.icon}</span>
+                      <span style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", fontFamily: "'Libre Franklin', sans-serif" }}>{item.text}</span>
                     </div>
                   ))}
                 </div>
@@ -385,7 +385,7 @@ function LadiesClubEventsSection() {
                   display: "inline-flex", alignItems: "center", gap: 8,
                   padding: "12px 24px", borderRadius: 8, width: "fit-content",
                   background: C.sunset, color: C.cream, textDecoration: "none",
-                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5,
+                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 600, letterSpacing: 0.5,
                 }}>
                   Get in Touch →
                 </a>
@@ -397,7 +397,7 @@ function LadiesClubEventsSection() {
         {/* Last Year's Festival Video */}
         <FadeIn delay={120}>
           <div style={{ marginBottom: 32 }}>
-            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.3)", marginBottom: 12 }}>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.75)", marginBottom: 12 }}>
               Last Year's Festival
             </div>
             <div style={{ position: "relative", paddingTop: "56.25%", borderRadius: 16, overflow: "hidden", border: "1px solid rgba(255,255,255,0.08)" }}>
@@ -428,7 +428,7 @@ function LadiesClubEventsSection() {
                 <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, transparent 60%, rgba(8,14,20,0.7) 100%)" }} />
               </div>
               <div style={{ padding: "40px 36px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 12 }}>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 12 }}>
                   Live Music
                 </div>
                 <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(20px, 2.5vw, 28px)", fontWeight: 400, color: C.cream, margin: "0 0 10px 0", lineHeight: 1.2 }}>
@@ -437,7 +437,7 @@ function LadiesClubEventsSection() {
                 <div style={{ fontFamily: "'Caveat', cursive", fontSize: 17, color: C.sunsetLight, marginBottom: 16 }}>
                   10:00 AM - 2:00 PM
                 </div>
-                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.7, margin: 0, fontStyle: "italic" }}>
+                <p style={{ fontSize: 16, color: "rgba(255,255,255,0.75)", lineHeight: 1.7, margin: 0, fontStyle: "italic" }}>
                   "The best damn Southern soul band... period."
                 </p>
               </div>
@@ -447,7 +447,7 @@ function LadiesClubEventsSection() {
 
         {/* Festival Highlights label */}
         <FadeIn delay={150}>
-          <div style={{ marginBottom: 20, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.3)" }}>
+          <div style={{ marginBottom: 20, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.75)" }}>
             Festival Highlights
           </div>
         </FadeIn>
@@ -464,11 +464,11 @@ function LadiesClubEventsSection() {
             </div>
             <div style={{ padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
               <div>
-                <div style={{ fontSize: 15, fontWeight: 600, color: C.cream, marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>Children's Area</div>
-                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", lineHeight: 1.6, margin: 0 }}>Create-a-Boat & Float It, carnival games, face painting, and pony rides</p>
+                <div style={{ fontSize: 17, fontWeight: 600, color: C.cream, marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>Children's Area</div>
+                <p style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", lineHeight: 1.6, margin: 0 }}>Create-a-Boat & Float It, carnival games, face painting, and pony rides</p>
               </div>
               <a href="https://seriouslyfunnybiz.com/" target="_blank" rel="noopener noreferrer"
-                style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 12, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>
+                style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 14, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>
                 Seriously Funny Biz ↗
               </a>
             </div>
@@ -488,11 +488,11 @@ function LadiesClubEventsSection() {
                   />
                 </div>
                 <div style={{ padding: "14px 16px" }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: C.cream, marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>{f.label}</div>
-                  <p style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", lineHeight: 1.6, margin: 0 }}>{f.desc}</p>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: C.cream, marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>{f.label}</div>
+                  <p style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", lineHeight: 1.6, margin: 0 }}>{f.desc}</p>
                   {f.link && (
                     <a href={f.link.url} target="_blank" rel="noopener noreferrer"
-                      style={{ display: "inline-flex", alignItems: "center", gap: 4, marginTop: 8, fontSize: 11, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textDecoration: "none" }}>
+                      style={{ display: "inline-flex", alignItems: "center", gap: 4, marginTop: 8, fontSize: 13, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textDecoration: "none" }}>
                       {f.link.label} ↗
                     </a>
                   )}
@@ -505,7 +505,7 @@ function LadiesClubEventsSection() {
 
         {/* Food Vendors */}
         <FadeIn delay={200}>
-          <div style={{ marginBottom: 16, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.3)" }}>
+          <div style={{ marginBottom: 16, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.75)" }}>
             Food Favorites
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 40 }}>
@@ -529,8 +529,8 @@ function LadiesClubEventsSection() {
               >
                 <img src={v.img} alt={v.name} style={{ width: "100%", height: 180, objectFit: "cover", display: "block" }} />
                 <div style={{ padding: "14px 16px" }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: C.cream, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 4 }}>{v.name}</div>
-                  <div style={{ fontSize: 11, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.3 }}>Visit ↗</div>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: C.cream, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 4 }}>{v.name}</div>
+                  <div style={{ fontSize: 13, color: C.sunsetLight, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.3 }}>Visit ↗</div>
                 </div>
               </a>
             ))}
@@ -539,7 +539,7 @@ function LadiesClubEventsSection() {
 
         {/* Village Stores */}
         <FadeIn delay={225}>
-          <div style={{ marginBottom: 16, fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.3)" }}>
+          <div style={{ marginBottom: 16, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.75)" }}>
             Village Stores Open All Day
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginBottom: 40 }} className="mobile-col-2">
@@ -566,7 +566,7 @@ function LadiesClubEventsSection() {
                     alt={s.name}
                     style={{ width: "100%", maxHeight: 100, objectFit: "contain", display: "block" }}
                   />
-                  <div style={{ fontSize: 11, color: "#3a3228", fontFamily: "'Libre Franklin', sans-serif", textAlign: "center", lineHeight: 1.3 }}>{s.name}</div>
+                  <div style={{ fontSize: 13, color: "#3a3228", fontFamily: "'Libre Franklin', sans-serif", textAlign: "center", lineHeight: 1.3 }}>{s.name}</div>
                 </div>
               </FadeIn>
             ))}
@@ -646,11 +646,11 @@ function LadiesClubSponsorTiersSection() {
       <div style={{ maxWidth: 1000, margin: "0 auto" }}>
         <FadeIn>
           <div style={{ textAlign: "center", marginBottom: 40 }}>
-            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.3)", marginBottom: 16 }}>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: "rgba(255,255,255,0.75)", marginBottom: 16 }}>
               Sponsorship Opportunities
             </div>
             <SectionTitle center light>Become a Sponsor</SectionTitle>
-            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.75, maxWidth: 640, margin: "0 auto" }}>
+            <p style={{ fontSize: 17, color: "rgba(255,255,255,0.75)", lineHeight: 1.75, maxWidth: 640, margin: "0 auto" }}>
               Join us in supporting the Land and Lake Ladies Club (LLLC) Summer Festival 2026! Your sponsorship helps make this community celebration possible while providing your business with valuable recognition.
             </p>
           </div>
@@ -674,21 +674,21 @@ function LadiesClubSponsorTiersSection() {
                   <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
                     {tier.benefits.map((b, j) => (
                       <li key={j} style={{ display: "flex", gap: 10, marginBottom: 8, alignItems: "flex-start" }}>
-                        <span style={{ color: tier.color, fontSize: 14, marginTop: 1, flexShrink: 0 }}>✓</span>
-                        <span style={{ fontSize: 13, color: "rgba(255,255,255,0.55)", lineHeight: 1.5 }}>{b}</span>
+                        <span style={{ color: tier.color, fontSize: 16, marginTop: 1, flexShrink: 0 }}>✓</span>
+                        <span style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", lineHeight: 1.5 }}>{b}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
                 <div>
-                  <div style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: tier.color, marginBottom: 14 }}>
+                  <div style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: tier.color, marginBottom: 14 }}>
                     Option to Sponsor a Specific Area
                   </div>
                   <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
                     {tier.areas.map((a, j) => (
                       <li key={j} style={{ display: "flex", gap: 10, marginBottom: 8, alignItems: "center" }}>
                         <span style={{ width: 6, height: 6, borderRadius: "50%", background: tier.color, flexShrink: 0 }} />
-                        <span style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.5 }}>{a}</span>
+                        <span style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", lineHeight: 1.5 }}>{a}</span>
                       </li>
                     ))}
                   </ul>
@@ -709,13 +709,13 @@ function LadiesClubSponsorTiersSection() {
                 <div style={{ position: "absolute", top: 0, left: 0, width: 4, height: "100%", background: tier.color, borderRadius: "14px 0 0 14px" }} />
                 <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 18 }}>
                   <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: tier.color }}>{tier.level}</span>
-                  <span style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: "rgba(255,255,255,0.5)" }}>{tier.amount}</span>
+                  <span style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: "rgba(255,255,255,0.75)" }}>{tier.amount}</span>
                 </div>
                 <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
                   {tier.benefits.map((b, j) => (
                     <li key={j} style={{ display: "flex", gap: 8, marginBottom: 7, alignItems: "flex-start" }}>
-                      <span style={{ color: tier.color, fontSize: 13, marginTop: 1, flexShrink: 0 }}>✓</span>
-                      <span style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", lineHeight: 1.5 }}>{b}</span>
+                      <span style={{ color: tier.color, fontSize: 15, marginTop: 1, flexShrink: 0 }}>✓</span>
+                      <span style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", lineHeight: 1.5 }}>{b}</span>
                     </li>
                   ))}
                 </ul>
@@ -735,13 +735,13 @@ function LadiesClubSponsorTiersSection() {
                 <div style={{ position: "absolute", top: 0, left: 0, width: 4, height: "100%", background: tier.color, borderRadius: "14px 0 0 14px" }} />
                 <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 16 }}>
                   <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: tier.color }}>{tier.level}</span>
-                  <span style={{ fontFamily: "'Caveat', cursive", fontSize: 16, color: "rgba(255,255,255,0.45)" }}>{tier.amount}</span>
+                  <span style={{ fontFamily: "'Caveat', cursive", fontSize: 16, color: "rgba(255,255,255,0.75)" }}>{tier.amount}</span>
                 </div>
                 <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
                   {tier.benefits.map((b, j) => (
                     <li key={j} style={{ display: "flex", gap: 8, marginBottom: 6, alignItems: "flex-start" }}>
-                      <span style={{ color: tier.color, fontSize: 12, marginTop: 1, flexShrink: 0 }}>✓</span>
-                      <span style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", lineHeight: 1.5 }}>{b}</span>
+                      <span style={{ color: tier.color, fontSize: 14, marginTop: 1, flexShrink: 0 }}>✓</span>
+                      <span style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", lineHeight: 1.5 }}>{b}</span>
                     </li>
                   ))}
                 </ul>
@@ -752,10 +752,10 @@ function LadiesClubSponsorTiersSection() {
 
         <FadeIn delay={340}>
           <div style={{ textAlign: "center", padding: "24px 0 0" }}>
-            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.4)", lineHeight: 1.75, maxWidth: 600, margin: "0 auto 12px" }}>
+            <p style={{ fontSize: 17, color: "rgba(255,255,255,0.75)", lineHeight: 1.75, maxWidth: 600, margin: "0 auto 12px" }}>
               Your support helps LLLC continue funding community projects while creating a fun and memorable festival for all ages.
             </p>
-            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.25)", margin: 0 }}>
+            <p style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", margin: 0 }}>
               Checks payable to: Land and Lake Ladies Club · Sponsorship deadline: March 20th, 2026
             </p>
           </div>
@@ -848,7 +848,7 @@ function LadiesClubGallerySection() {
           <div style={{ textAlign: "center", marginBottom: 48 }}>
             <SectionLabel>Memories</SectionLabel>
             <SectionTitle center>Festival Gallery</SectionTitle>
-            <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, maxWidth: 400, margin: "0 auto" }}>
+            <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.7, maxWidth: 400, margin: "0 auto" }}>
               A look at the community coming together - Summer Festival moments from the lakes.
             </p>
           </div>
@@ -930,7 +930,7 @@ function LadiesClubSponsorsSection() {
   const TierHeader = ({ label, color }) => (
     <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 20, marginTop: 44 }}>
       <div style={{ flex: 1, height: 1, background: C.sand }} />
-      <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 13, color, fontWeight: 400, letterSpacing: 1, textTransform: "uppercase" }}>{label}</span>
+      <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color, fontWeight: 400, letterSpacing: 1, textTransform: "uppercase" }}>{label}</span>
       <div style={{ flex: 1, height: 1, background: C.sand }} />
     </div>
   );
@@ -974,7 +974,7 @@ function LadiesClubSponsorsSection() {
             {!platinum && (
               <span style={{
                 fontFamily: "'Libre Franklin', sans-serif",
-                fontSize: 11,
+                fontSize: 13,
                 color: "#6b5d52",
                 textAlign: "center",
                 lineHeight: 1.3,
@@ -986,7 +986,7 @@ function LadiesClubSponsorsSection() {
         ) : (
           <span style={{
             fontFamily: "'Libre Baskerville', serif",
-            fontSize: platinum ? 14 : 13,
+            fontSize: platinum ? 16 : 15,
             color: "#3a3228",
             textAlign: "center",
             lineHeight: 1.4,
@@ -995,7 +995,7 @@ function LadiesClubSponsorsSection() {
         )}
         {url && platinum && (
           <span style={{
-            fontSize: 10,
+            fontSize: 13,
             color: hovered ? tierColor : "#b0a090",
             fontFamily: "'Libre Franklin', sans-serif",
             letterSpacing: 0.6,
@@ -1025,7 +1025,7 @@ function LadiesClubSponsorsSection() {
       borderRadius: 8,
       padding: "10px 18px",
       fontFamily: "'Libre Franklin', sans-serif",
-      fontSize: 13,
+      fontSize: 15,
       color: "#3a3228",
       textAlign: "center",
       lineHeight: 1.3,
@@ -1039,7 +1039,7 @@ function LadiesClubSponsorsSection() {
           <div style={{ textAlign: "center", marginBottom: 16 }}>
             <SectionLabel>Thank You</SectionLabel>
             <SectionTitle center>Our 2026 Sponsors</SectionTitle>
-            <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, maxWidth: 480, margin: "0 auto" }}>
+            <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.7, maxWidth: 480, margin: "0 auto" }}>
               Projects are made possible by the generous support of our community sponsors.
             </p>
           </div>
@@ -1084,7 +1084,7 @@ function LadiesClubSponsorsSection() {
             {FRIENDS.map(s => (
               <div key={s.name} style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <img src="/images/landlake-club-logo.webp" alt="LLLC" style={{ width: 16, height: 16, objectFit: "contain", opacity: 0.6 }} />
-                <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted }}>{s.name}</span>
+                <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.textMuted }}>{s.name}</span>
               </div>
             ))}
           </div>
@@ -1104,14 +1104,14 @@ function MensClubSponsorsSection() {
       <div style={{ width: 28, height: 28, borderRadius: "50%", background: C.sand, display: "flex", alignItems: "center", justifyContent: "center" }}>
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={C.textMuted} strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
       </div>
-      <span style={{ fontSize: 9, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.8, textTransform: "uppercase" }}>Logo</span>
+      <span style={{ fontSize: 12, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.8, textTransform: "uppercase" }}>Logo</span>
     </div>
   );
 
   const TierHeader = ({ label, color }) => (
     <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16, marginTop: 40 }}>
       <div style={{ flex: 1, height: 1, background: C.sand }} />
-      <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 13, color, fontWeight: 400, letterSpacing: 1, textTransform: "uppercase" }}>{label}</span>
+      <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, color, fontWeight: 400, letterSpacing: 1, textTransform: "uppercase" }}>{label}</span>
       <div style={{ flex: 1, height: 1, background: C.sand }} />
     </div>
   );
@@ -1123,7 +1123,7 @@ function MensClubSponsorsSection() {
           <div style={{ textAlign: "center", marginBottom: 16 }}>
             <SectionLabel>Thank You</SectionLabel>
             <SectionTitle center>Our 2026 Sponsors</SectionTitle>
-            <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, maxWidth: 480, margin: "0 auto" }}>
+            <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.7, maxWidth: 480, margin: "0 auto" }}>
               The Tip-Up Festival and our year-round programs are made possible by the generous support of our community sponsors.
             </p>
           </div>
@@ -1168,14 +1168,14 @@ function MensClubSponsorsSection() {
             {["Friend", "Friend", "Friend", "Friend", "Friend", "Friend", "Friend", "Friend"].map((_, i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <img src="/images/mens_club_logo.webp" alt="DRLMC" style={{ width: 16, height: 16, objectFit: "contain", opacity: 0.7 }} />
-                <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted }}>Friend Name</span>
+                <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.textMuted }}>Friend Name</span>
               </div>
             ))}
           </div>
         </FadeIn>
 
         <FadeIn delay={200}>
-          <p style={{ textAlign: "center", fontSize: 13, color: C.textMuted, marginTop: 40, lineHeight: 1.7 }}>
+          <p style={{ textAlign: "center", fontSize: 15, color: C.textMuted, marginTop: 40, lineHeight: 1.7 }}>
             Interested in sponsoring the Ladies Club?{" "}
             <button onClick={() => document.querySelector('[data-section="ladies-sponsor-form"]')?.scrollIntoView({ behavior: 'smooth' })} style={{ background: "none", border: "none", padding: 0, color: C.sage, cursor: "pointer", fontFamily: "inherit", fontSize: "inherit", textDecoration: "underline" }}>Get in touch</button>{" "}
             and we'll connect you with the club.
@@ -1202,7 +1202,7 @@ function LadiesClubSponsorForm() {
           <div style={{ textAlign: "center", marginBottom: 48 }}>
             <SectionLabel>Support the Festival</SectionLabel>
             <SectionTitle center>Become a Sponsor</SectionTitle>
-            <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.8, maxWidth: 520, margin: "0 auto" }}>
+            <p style={{ fontSize: 17, color: C.textLight, lineHeight: 1.8, maxWidth: 520, margin: "0 auto" }}>
               Join us in supporting the Land and Lake Ladies Club! Your sponsorship helps support the community projects this group sponsors.
             </p>
           </div>
@@ -1257,11 +1257,11 @@ function LadiesClubGetInvolved() {
       <div style={{ maxWidth: 900, margin: "0 auto" }}>
         <FadeIn>
           <div style={{ textAlign: "center", marginBottom: 48 }}>
-            <SectionLabel style={{ color: "rgba(255,255,255,0.45)" }}>Get Involved</SectionLabel>
+            <SectionLabel style={{ color: "rgba(255,255,255,0.75)" }}>Get Involved</SectionLabel>
             <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 36px)", fontWeight: 400, color: C.cream, margin: "8px 0 12px" }}>
               Three Ways to Be Part of It
             </h2>
-            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.5)", lineHeight: 1.7, maxWidth: 440, margin: "0 auto" }}>
+            <p style={{ fontSize: 17, color: "rgba(255,255,255,0.75)", lineHeight: 1.7, maxWidth: 440, margin: "0 auto" }}>
               Whether you're a business, an artist, or just someone who loves this community - there's a place for you.
             </p>
           </div>
@@ -1279,12 +1279,12 @@ function LadiesClubGetInvolved() {
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
                   <span style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, color: C.cream, fontWeight: 400 }}>{card.label}</span>
                   {card.badge && (
-                    <span style={{ background: C.sage, color: "#fff", fontSize: 10, fontWeight: 700, letterSpacing: 0.5, padding: "2px 8px", borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif", textTransform: "uppercase" }}>{card.badge}</span>
+                    <span style={{ background: C.sage, color: "#fff", fontSize: 13, fontWeight: 700, letterSpacing: 0.5, padding: "2px 8px", borderRadius: 20, fontFamily: "'Libre Franklin', sans-serif", textTransform: "uppercase" }}>{card.badge}</span>
                   )}
                 </div>
-                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.55)", lineHeight: 1.65, flex: 1, margin: "0 0 20px" }}>{card.desc}</p>
+                <p style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", lineHeight: 1.65, flex: 1, margin: "0 0 20px" }}>{card.desc}</p>
                 {card.disabled ? (
-                  <span style={{ display: "inline-block", padding: "10px 20px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.15)", fontSize: 13, color: "rgba(255,255,255,0.3)", fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textAlign: "center" }}>
+                  <span style={{ display: "inline-block", padding: "10px 20px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.15)", fontSize: 15, color: "rgba(255,255,255,0.75)", fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, textAlign: "center" }}>
                     {card.action}
                   </span>
                 ) : (
@@ -1294,7 +1294,7 @@ function LadiesClubGetInvolved() {
                     style={{
                       display: "inline-block", padding: "11px 20px", borderRadius: 8,
                       background: card.accent, color: "#fff",
-                      fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700,
+                      fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 700,
                       textDecoration: "none", textAlign: "center", letterSpacing: 0.3,
                       transition: "opacity 0.2s",
                     }}
@@ -1310,11 +1310,11 @@ function LadiesClubGetInvolved() {
         </div>
 
         <FadeIn delay={300}>
-          <p style={{ textAlign: "center", fontSize: 13, color: "rgba(255,255,255,0.35)", marginTop: 40 }}>
+          <p style={{ textAlign: "center", fontSize: 15, color: "rgba(255,255,255,0.75)", marginTop: 40 }}>
             Questions? Email{" "}
-            <a href="mailto:Michele.henson0003@gmail.com" style={{ color: "rgba(255,255,255,0.55)" }}>Michele.henson0003@gmail.com</a>
+            <a href="mailto:Michele.henson0003@gmail.com" style={{ color: "rgba(255,255,255,0.75)" }}>Michele.henson0003@gmail.com</a>
             {" "}or visit our{" "}
-            <a href="https://www.facebook.com/groups/LandAndLakeLadiesClub" target="_blank" rel="noopener noreferrer" style={{ color: "rgba(255,255,255,0.55)" }}>Facebook page</a>.
+            <a href="https://www.facebook.com/groups/LandAndLakeLadiesClub" target="_blank" rel="noopener noreferrer" style={{ color: "rgba(255,255,255,0.75)" }}>Facebook page</a>.
           </p>
         </FadeIn>
       </div>

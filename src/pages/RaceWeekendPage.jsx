@@ -95,7 +95,7 @@ function RaceWeekendHero() {
       }} />
       <div style={{ maxWidth: 960, margin: "0 auto", padding: "140px 24px 100px", position: "relative", zIndex: 1, width: "100%" }}>
         <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? "none" : "translateY(24px)", transition: "all 0.9s ease" }}>
-          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 28 }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.75)", marginBottom: 28 }}>
             Michigan International Speedway · Irish Hills · Michigan
           </div>
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(42px, 8vw, 96px)", fontWeight: 400, color: C.cream, lineHeight: 0.95, margin: "0 0 12px 0" }}>
@@ -104,7 +104,7 @@ function RaceWeekendHero() {
           <div style={{ fontFamily: "'Caveat', cursive", fontSize: "clamp(20px, 2.5vw, 28px)", color: C.sunsetLight, marginBottom: 20 }}>
             The lake is 20 minutes from the track
           </div>
-          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: "clamp(14px, 1.6vw, 17px)", color: "rgba(255,255,255,0.5)", lineHeight: 1.8, maxWidth: 540, margin: "0 0 36px 0" }}>
+          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: "clamp(14px, 1.6vw, 17px)", color: "rgba(255,255,255,0.75)", lineHeight: 1.8, maxWidth: 540, margin: "0 0 36px 0" }}>
             Michigan International Speedway is one of NASCAR's crown jewels. Manitou Beach is the quiet lake town just down the road that race fans have been discovering for years. Skip the highway exit motels. Stay where the locals stay.
           </p>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
@@ -167,7 +167,7 @@ function TipsSection() {
                 <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.text, marginBottom: 10 }}>
                   {tip.title}
                 </h3>
-                <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: 0 }}>
+                <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, color: C.textLight, lineHeight: 1.7, margin: 0 }}>
                   {tip.desc}
                 </p>
               </div>
@@ -211,7 +211,7 @@ function ThingsToDoSection() {
                   <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, color: C.text, marginBottom: 8 }}>
                     {item.title}
                   </h3>
-                  <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textLight, lineHeight: 1.7, margin: 0 }}>
+                  <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.textLight, lineHeight: 1.7, margin: 0 }}>
                     {item.desc}
                   </p>
                 </div>
@@ -241,7 +241,7 @@ function StaysCTA() {
         <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(28px, 5vw, 48px)", color: C.cream, marginBottom: 20, lineHeight: 1.1 }}>
           Find a lakefront stay for race weekend
         </h2>
-        <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, color: "rgba(255,255,255,0.5)", lineHeight: 1.8, marginBottom: 36 }}>
+        <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, color: "rgba(255,255,255,0.75)", lineHeight: 1.8, marginBottom: 36 }}>
           Cabins, cottages, and lakefront rentals on Devils Lake and Round Lake - a short drive from Michigan International Speedway. They book out early, so don't wait.
         </p>
         <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
@@ -283,13 +283,13 @@ function LogisticsSection() {
               padding: "20px 18px",
               border: `1px solid ${C.sand}`,
             }}>
-              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 3, textTransform: "uppercase", color: C.textMuted, marginBottom: 6 }}>
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 3, textTransform: "uppercase", color: C.textMuted, marginBottom: 6 }}>
                 {item.label}
               </div>
               <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.text, marginBottom: 4 }}>
                 {item.value}
               </div>
-              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted }}>
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.textMuted }}>
                 {item.note}
               </div>
             </div>

@@ -74,12 +74,12 @@ const input = {
   width: '100%', boxSizing: 'border-box', padding: '13px 16px',
   border: '1px solid rgba(255,255,255,0.12)', borderRadius: 8,
   background: 'rgba(255,255,255,0.06)', color: C.cream,
-  fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, outline: 'none',
+  fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, outline: 'none',
 };
 
 const label = {
-  display: 'block', fontSize: 11, fontWeight: 700, letterSpacing: 1,
-  textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: 6,
+  display: 'block', fontSize: 13, fontWeight: 700, letterSpacing: 1,
+  textTransform: 'uppercase', color: 'rgba(255,255,255,0.75)', marginBottom: 6,
 };
 
 export default function SubmitEventPage() {
@@ -316,8 +316,8 @@ export default function SubmitEventPage() {
               onMouseEnter={e => e.currentTarget.style.background = 'rgba(122,142,114,0.25)'}
               onMouseLeave={e => e.currentTarget.style.background = 'rgba(122,142,114,0.15)'}
             >
-              <div style={{ fontSize: 14, fontWeight: 700, color: C.cream, marginBottom: 4 }}>See your event on the page</div>
-              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>
+              <div style={{ fontSize: 16, fontWeight: 700, color: C.cream, marginBottom: 4 }}>See your event on the page</div>
+              <div style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)', lineHeight: 1.5 }}>
                 Check out how it looks on the community calendar - make sure everything reads right.
               </div>
             </a>
@@ -331,8 +331,8 @@ export default function SubmitEventPage() {
               onMouseEnter={e => e.currentTarget.style.background = 'rgba(66,103,178,0.18)'}
               onMouseLeave={e => e.currentTarget.style.background = 'rgba(66,103,178,0.1)'}
             >
-              <div style={{ fontSize: 14, fontWeight: 700, color: C.cream, marginBottom: 4 }}>Share it on Facebook - free exposure</div>
-              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>
+              <div style={{ fontSize: 16, fontWeight: 700, color: C.cream, marginBottom: 4 }}>Share it on Facebook - free exposure</div>
+              <div style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)', lineHeight: 1.5 }}>
                 The more people who know, the better the turnout. One tap, and your friends and neighbors see it.
               </div>
             </a>
@@ -344,8 +344,8 @@ export default function SubmitEventPage() {
               onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.07)'}
               onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.04)'}
             >
-              <div style={{ fontSize: 14, fontWeight: 700, color: C.cream, marginBottom: 4 }}>Want even more eyeballs?</div>
-              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>
+              <div style={{ fontSize: 16, fontWeight: 700, color: C.cream, marginBottom: 4 }}>Want even more eyeballs?</div>
+              <div style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)', lineHeight: 1.5 }}>
                 Homepage features, newsletter spots, and social boosts starting at $9. Over 4,000 locals see these every week.
               </div>
             </a>
@@ -354,7 +354,7 @@ export default function SubmitEventPage() {
             <div style={{ textAlign: 'center' }}>
               <button
                 onClick={resetForNextEvent}
-                style={{ padding: '14px 32px', background: '#D4845A', color: '#fff', border: 'none', borderRadius: 28, fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', cursor: 'pointer' }}
+                style={{ padding: '14px 32px', background: '#D4845A', color: '#fff', border: 'none', borderRadius: 28, fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', cursor: 'pointer' }}
               >
                 Submit Another Event →
               </button>
@@ -368,7 +368,7 @@ export default function SubmitEventPage() {
             <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, fontWeight: 400, color: C.cream, margin: '0 0 12px' }}>
               Event verified - setting up payments
             </h2>
-            <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', lineHeight: 1.8 }}>
+            <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.75)', lineHeight: 1.8 }}>
               Redirecting you to Stripe to connect your bank account…
             </p>
           </div>
@@ -380,7 +380,7 @@ export default function SubmitEventPage() {
             <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, fontWeight: 400, color: C.cream, margin: '0 0 8px' }}>
               Check your texts
             </h2>
-            <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', lineHeight: 1.8, margin: '0 0 28px' }}>
+            <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.75)', lineHeight: 1.8, margin: '0 0 28px' }}>
               We sent a 6-digit code to <strong style={{ color: '#D4845A' }}>{form.phone}</strong>
             </p>
             <div style={{ marginBottom: 20 }}>
@@ -395,18 +395,18 @@ export default function SubmitEventPage() {
                 style={{ ...input, fontSize: 28, fontWeight: 700, textAlign: 'center', letterSpacing: 8, maxWidth: 240, border: `2px solid ${verifyError ? '#e07070' : 'rgba(255,255,255,0.2)'}` }}
               />
             </div>
-            {verifyError && <div style={{ fontSize: 13, color: '#e07070', marginBottom: 16 }}>{verifyError}</div>}
+            {verifyError && <div style={{ fontSize: 15, color: '#e07070', marginBottom: 16 }}>{verifyError}</div>}
             <button
               onClick={handleVerify}
               disabled={verifyLoading || verifyCode.length !== 6}
-              style={{ padding: '14px 36px', background: verifyLoading ? '#5C5248' : '#D4845A', color: '#fff', border: 'none', borderRadius: 28, fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', cursor: verifyLoading ? 'default' : 'pointer', fontFamily: "'Libre Franklin', sans-serif", opacity: verifyCode.length !== 6 ? 0.5 : 1 }}
+              style={{ padding: '14px 36px', background: verifyLoading ? '#5C5248' : '#D4845A', color: '#fff', border: 'none', borderRadius: 28, fontSize: 15, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', cursor: verifyLoading ? 'default' : 'pointer', fontFamily: "'Libre Franklin', sans-serif", opacity: verifyCode.length !== 6 ? 0.5 : 1 }}
             >
               {verifyLoading
                 ? (needsStripe ? 'Setting up payments…' : 'Verifying…')
                 : (needsStripe ? 'Verify & Set Up Payments →' : 'Verify & Publish Event →')}
             </button>
             <div style={{ marginTop: 20 }}>
-              <button onClick={handleResend} disabled={resending} style={{ background: 'none', border: 'none', fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: resending ? '#7A8E72' : 'rgba(255,255,255,0.35)', cursor: resending ? 'default' : 'pointer', padding: '6px 12px' }}>
+              <button onClick={handleResend} disabled={resending} style={{ background: 'none', border: 'none', fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: resending ? '#7A8E72' : 'rgba(255,255,255,0.75)', cursor: resending ? 'default' : 'pointer', padding: '6px 12px' }}>
                 {resending ? '✓ Code re-sent' : "Didn't get it? Resend code"}
               </button>
             </div>
@@ -422,18 +422,18 @@ export default function SubmitEventPage() {
                     <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(16px, 3vw, 20px)', color: C.cream, lineHeight: 1.3, marginBottom: 6 }}>
                       This is free. Always.
                     </div>
-                    <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', lineHeight: 1.6 }}>
+                    <div style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)', lineHeight: 1.6 }}>
                       No credit card. No catch. Three quick steps and you're on the community calendar.
                     </div>
                   </div>
                 </div>
                 <img src="/images/yeti/yeti-celebrates.webp" alt="Yeti celebrating" style={{ width: 'clamp(100px, 20vw, 180px)', height: 'auto', flexShrink: 0, filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.3))' }} />
               </div>
-              <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)', margin: '0 0 8px' }}>Manitou Beach · Submit an Event</p>
+              <p style={{ fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: 'rgba(255,255,255,0.75)', margin: '0 0 8px' }}>Manitou Beach · Submit an Event</p>
               <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 400, color: C.cream, margin: '0 0 12px', lineHeight: 1.2 }}>
                 Get your event in front of<br /><em>the whole lake community.</em>
               </h1>
-              <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.45)', lineHeight: 1.8, margin: 0 }}>
+              <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.75)', lineHeight: 1.8, margin: 0 }}>
                 Quick text code, fill in the fun stuff, and you're on the calendar. That's it.
               </p>
             </div>
@@ -443,10 +443,10 @@ export default function SubmitEventPage() {
               <div style={{ background: 'rgba(212,132,90,0.07)', border: '1px solid rgba(212,132,90,0.22)', borderRadius: 12, padding: '18px 20px', marginBottom: 28, position: 'relative' }}>
                 <button
                   onClick={dismissGuide}
-                  style={{ position: 'absolute', top: 12, right: 14, background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', fontSize: 18, cursor: 'pointer', lineHeight: 1, padding: 0 }}
+                  style={{ position: 'absolute', top: 12, right: 14, background: 'none', border: 'none', color: 'rgba(255,255,255,0.75)', fontSize: 18, cursor: 'pointer', lineHeight: 1, padding: 0 }}
                   aria-label="Dismiss guide"
                 >×</button>
-                <p style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: '#D4845A', margin: '0 0 12px' }}>Hey - quick heads up from the Yeti</p>
+                <p style={{ fontSize: 15, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: '#D4845A', margin: '0 0 12px' }}>Hey - quick heads up from the Yeti</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                   {[
                     ['① One text code, you\'re in.', 'First event? We\'ll text you a quick code. After that you\'re good for 8 hours - no more codes, just submit and go.'],
@@ -455,12 +455,12 @@ export default function SubmitEventPage() {
                     ['④ Multi-day?', 'Set a start and end date. We\'ll show the full range on the calendar. Easy.'],
                   ].map(([title, body]) => (
                     <div key={title} style={{ marginBottom: 2 }}>
-                      <span style={{ fontSize: 13, fontWeight: 700, color: C.cream }}>{title}</span>{' '}
-                      <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.7 }}>{body}</span>
+                      <span style={{ fontSize: 15, fontWeight: 700, color: C.cream }}>{title}</span>{' '}
+                      <span style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)', lineHeight: 1.7 }}>{body}</span>
                     </div>
                   ))}
                 </div>
-                <button onClick={dismissGuide} style={{ marginTop: 14, background: 'none', border: '1px solid rgba(212,132,90,0.3)', borderRadius: 20, padding: '6px 16px', color: 'rgba(255,255,255,0.4)', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}>
+                <button onClick={dismissGuide} style={{ marginTop: 14, background: 'none', border: '1px solid rgba(212,132,90,0.3)', borderRadius: 20, padding: '6px 16px', color: 'rgba(255,255,255,0.75)', fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}>
                   Got it - hide this
                 </button>
               </div>
@@ -469,7 +469,7 @@ export default function SubmitEventPage() {
             {!guideOpen && (
               <button
                 onClick={() => setGuideOpen(true)}
-                style={{ alignSelf: 'flex-start', background: 'none', border: 'none', color: 'rgba(212,132,90,0.5)', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0, marginBottom: 4 }}
+                style={{ alignSelf: 'flex-start', background: 'none', border: 'none', color: 'rgba(212,132,90,0.5)', fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0, marginBottom: 4 }}
               >
                 ? Tips for listing multiple events
               </button>
@@ -495,15 +495,15 @@ export default function SubmitEventPage() {
                     >
                       <div style={{
                         width: 32, height: 32, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: 14, fontWeight: 700, fontFamily: "'Libre Franklin', sans-serif",
+                        fontSize: 16, fontWeight: 700, fontFamily: "'Libre Franklin', sans-serif",
                         background: done ? '#7A8E72' : active ? '#D4845A' : 'rgba(255,255,255,0.08)',
-                        color: done || active ? '#fff' : 'rgba(255,255,255,0.3)',
+                        color: done || active ? '#fff' : 'rgba(255,255,255,0.75)',
                         border: active ? '2px solid rgba(212,132,90,0.5)' : done ? '2px solid #7A8E72' : '2px solid rgba(255,255,255,0.1)',
                         transition: 'all 0.3s',
                       }}>
                         {done ? '✓' : s.num}
                       </div>
-                      <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', color: active ? '#D4845A' : done ? '#7A8E72' : 'rgba(255,255,255,0.25)', transition: 'color 0.3s', textAlign: 'center' }}>
+                      <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', color: active ? '#D4845A' : done ? '#7A8E72' : 'rgba(255,255,255,0.75)', transition: 'color 0.3s', textAlign: 'center' }}>
                         {s.title}
                       </span>
                     </div>
@@ -518,10 +518,10 @@ export default function SubmitEventPage() {
             {formStep === 1 && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 4 }}>
-                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#D4845A', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, flexShrink: 0 }}>1</div>
+                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#D4845A', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, fontWeight: 700, flexShrink: 0 }}>1</div>
                   <div>
                     <div style={{ fontSize: 16, fontWeight: 700, color: C.cream, fontFamily: "'Libre Franklin', sans-serif" }}>The Basics</div>
-                    <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>What's happening and when?</div>
+                    <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)' }}>What's happening and when?</div>
                   </div>
                 </div>
 
@@ -531,14 +531,14 @@ export default function SubmitEventPage() {
                     <button
                       type="button"
                       onClick={() => setForm(f => ({ ...f, recurring: 'None' }))}
-                      style={{ flex: 1, padding: '14px 16px', border: 'none', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 0.5, transition: 'all 0.15s', background: form.recurring === 'None' ? '#D4845A' : 'rgba(255,255,255,0.04)', color: form.recurring === 'None' ? '#fff' : 'rgba(255,255,255,0.45)' }}
+                      style={{ flex: 1, padding: '14px 16px', border: 'none', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 700, letterSpacing: 0.5, transition: 'all 0.15s', background: form.recurring === 'None' ? '#D4845A' : 'rgba(255,255,255,0.04)', color: form.recurring === 'None' ? '#fff' : 'rgba(255,255,255,0.75)' }}
                     >
                       One-time event
                     </button>
                     <button
                       type="button"
                       onClick={() => setForm(f => ({ ...f, recurring: f.recurring === 'None' ? 'Weekly' : f.recurring }))}
-                      style={{ flex: 1, padding: '14px 16px', border: 'none', borderLeft: '1px solid rgba(255,255,255,0.15)', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 0.5, transition: 'all 0.15s', background: form.recurring !== 'None' ? '#D4845A' : 'rgba(255,255,255,0.04)', color: form.recurring !== 'None' ? '#fff' : 'rgba(255,255,255,0.45)' }}
+                      style={{ flex: 1, padding: '14px 16px', border: 'none', borderLeft: '1px solid rgba(255,255,255,0.15)', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 700, letterSpacing: 0.5, transition: 'all 0.15s', background: form.recurring !== 'None' ? '#D4845A' : 'rgba(255,255,255,0.04)', color: form.recurring !== 'None' ? '#fff' : 'rgba(255,255,255,0.75)' }}
                     >
                       Recurring event
                     </button>
@@ -596,7 +596,7 @@ export default function SubmitEventPage() {
                         <DateHint iso={form.recurringEndDate} />
                       </div>
                     </div>
-                    <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)', lineHeight: 1.6, margin: 0 }}>
+                    <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)', lineHeight: 1.6, margin: 0 }}>
                       e.g. Farmers market every Saturday, May 24 – Oct 11 → Weekly · Saturday
                     </p>
                   </div>
@@ -618,7 +618,7 @@ export default function SubmitEventPage() {
                 <div>
                   <label style={label}>Location / Venue</label>
                   <input style={input} type="text" value={form.location} onChange={set('location')} placeholder="e.g. Manitou Beach Park, Vineyard Ave" />
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 12, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.6)' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 12, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: 'rgba(255,255,255,0.6)' }}>
                     <input
                       type="checkbox"
                       checked={form.outdoors}
@@ -626,11 +626,11 @@ export default function SubmitEventPage() {
                       style={{ width: 16, height: 16, accentColor: '#D4845A', cursor: 'pointer', flexShrink: 0 }}
                     />
                     This event is held outdoors
-                    <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)' }}>- so we can give you a heads-up if the weather turns</span>
+                    <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)' }}>- so we can give you a heads-up if the weather turns</span>
                   </label>
                 </div>
 
-                {submitError && formStep === 1 && <div style={{ fontSize: 13, color: '#e07070', fontWeight: 500 }}>{submitError}</div>}
+                {submitError && formStep === 1 && <div style={{ fontSize: 15, color: '#e07070', fontWeight: 500 }}>{submitError}</div>}
 
                 {/* Next → */}
                 <button
@@ -642,7 +642,7 @@ export default function SubmitEventPage() {
                     setFormStep(2);
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
-                  style={{ padding: '16px 24px', background: '#D4845A', color: '#fff', border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", transition: 'background 0.2s' }}
+                  style={{ padding: '16px 24px', background: '#D4845A', color: '#fff', border: 'none', borderRadius: 8, fontSize: 16, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", transition: 'background 0.2s' }}
                 >
                   Next - Tell People More →
                 </button>
@@ -655,25 +655,25 @@ export default function SubmitEventPage() {
             {formStep === 2 && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 4 }}>
-                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#D4845A', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, flexShrink: 0 }}>2</div>
+                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#D4845A', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, fontWeight: 700, flexShrink: 0 }}>2</div>
                   <div>
                     <div style={{ fontSize: 16, fontWeight: 700, color: C.cream, fontFamily: "'Libre Franklin', sans-serif" }}>The Fun Stuff</div>
-                    <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>Description, type, image - make it pop.</div>
+                    <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)' }}>Description, type, image - make it pop.</div>
                   </div>
                 </div>
 
                 {/* Quick recap of Step 1 */}
                 <div style={{ background: 'rgba(122,142,114,0.1)', border: '1px solid rgba(122,142,114,0.2)', borderRadius: 10, padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: C.cream }}>{form.eventName}</div>
-                    <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', marginTop: 2 }}>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: C.cream }}>{form.eventName}</div>
+                    <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)', marginTop: 2 }}>
                       {form.date}{form.timeStart ? ` · ${formatTime12h(form.timeStart)}` : ''}{form.location ? ` · ${form.location}` : ''}
                     </div>
                   </div>
                   <button
                     type="button"
                     onClick={() => { setFormStep(1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                    style={{ background: 'none', border: 'none', color: '#D4845A', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: '4px 8px', flexShrink: 0 }}
+                    style={{ background: 'none', border: 'none', color: '#D4845A', fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: '4px 8px', flexShrink: 0 }}
                   >
                     Edit
                   </button>
@@ -699,8 +699,8 @@ export default function SubmitEventPage() {
                       <label key={et.value} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, cursor: 'pointer', padding: '12px 16px', border: `1px solid ${form.eventType === et.value ? 'rgba(212,132,90,0.5)' : 'rgba(255,255,255,0.1)'}`, borderRadius: 8, background: form.eventType === et.value ? 'rgba(212,132,90,0.08)' : 'rgba(255,255,255,0.03)', transition: 'all 0.15s' }}>
                         <input type="radio" name="eventType" value={et.value} checked={form.eventType === et.value} onChange={set('eventType')} style={{ marginTop: 3, accentColor: '#D4845A', flexShrink: 0 }} />
                         <div>
-                          <div style={{ fontSize: 13, fontWeight: 600, color: C.cream, marginBottom: 2 }}>{et.label}</div>
-                          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', lineHeight: 1.5 }}>{et.sub}</div>
+                          <div style={{ fontSize: 15, fontWeight: 600, color: C.cream, marginBottom: 2 }}>{et.label}</div>
+                          <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)', lineHeight: 1.5 }}>{et.sub}</div>
                         </div>
                       </label>
                     ))}
@@ -715,12 +715,12 @@ export default function SubmitEventPage() {
                       <input style={input} type="text" value={form.eventUrl} onChange={set('eventUrl')} placeholder="e.g. eventbrite.com/your-event" />
                     </div>
                     <div style={{ background: 'rgba(122,142,114,0.1)', border: '1px solid rgba(122,142,114,0.25)', borderRadius: 8, padding: '12px 14px' }}>
-                      <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, margin: '0 0 6px' }}>
+                      <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)', lineHeight: 1.7, margin: '0 0 6px' }}>
                         <strong style={{ color: 'rgba(255,255,255,0.75)' }}>Don't have a ticketing system yet?</strong> We can handle it - buyers pay right on this site, money goes straight to your bank, and you skip the Eventbrite fees.
                       </p>
                       <button
                         onClick={() => setTicketInfoOpen(true)}
-                        style={{ fontSize: 12, color: '#7A8E72', fontWeight: 700, background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", textAlign: 'left' }}
+                        style={{ fontSize: 14, color: '#7A8E72', fontWeight: 700, background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", textAlign: 'left' }}
                       >
                         See what you and your attendees get →
                       </button>
@@ -742,15 +742,15 @@ export default function SubmitEventPage() {
                       </div>
                     </div>
                     <div style={{ background: 'rgba(122,142,114,0.1)', border: '1px solid rgba(122,142,114,0.25)', borderRadius: 8, padding: '14px 16px' }}>
-                      <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, margin: '0 0 8px' }}>
+                      <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)', lineHeight: 1.7, margin: '0 0 8px' }}>
                         <strong style={{ color: 'rgba(255,255,255,0.75)' }}>What your 1.25% gets your attendees:</strong> automatic email & text reminders the day before and day of your event, plus instant notifications if anything changes - postponed, moved, cancelled. No extra cost, no extra work.
                       </p>
-                      <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', lineHeight: 1.6, margin: '0 0 8px' }}>
+                      <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)', lineHeight: 1.6, margin: '0 0 8px' }}>
                         Stripe charges their standard processing fee (~2.9% + 30¢) on top - that's the same fee they charge everyone, including Eventbrite.
                       </p>
                       <button
                         onClick={() => setTicketInfoOpen(true)}
-                        style={{ fontSize: 12, color: '#7A8E72', fontWeight: 700, background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", textAlign: 'left' }}
+                        style={{ fontSize: 14, color: '#7A8E72', fontWeight: 700, background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", textAlign: 'left' }}
                       >
                         See how it works for you and your attendees →
                       </button>
@@ -784,10 +784,10 @@ export default function SubmitEventPage() {
                     the common case, and there was nowhere to say so. */}
                 <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 20, display: 'flex', flexDirection: 'column', gap: 14 }}>
                   <div>
-                    <div style={{ fontSize: 15, fontWeight: 700, color: C.cream, marginBottom: 4 }}>
+                    <div style={{ fontSize: 17, fontWeight: 700, color: C.cream, marginBottom: 4 }}>
                       Who else is going to be there?
                     </div>
-                    <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.6 }}>
+                    <div style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)', lineHeight: 1.6 }}>
                       Food trucks, a band, other vendors. They'll show on your event page, and
                       the ones already on our locator get put on the map that day.
                     </div>
@@ -801,7 +801,7 @@ export default function SubmitEventPage() {
                 {/* Stripe info banner for money types */}
                 {needsStripe && (
                   <div style={{ background: 'rgba(212,132,90,0.1)', border: '1px solid rgba(212,132,90,0.25)', borderRadius: 10, padding: '14px 16px' }}>
-                    <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', lineHeight: 1.7, margin: 0 }}>
+                    <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', lineHeight: 1.7, margin: 0 }}>
                       After verifying your phone, we'll walk you through connecting your bank account (takes ~5 minutes). Money goes directly to you - our platform fee is just 1.25%.
                     </p>
                   </div>
@@ -811,7 +811,7 @@ export default function SubmitEventPage() {
                 <div>
                   <label style={label}>Cost {form.eventType === 'free' ? '' : 'description '}<span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>- {form.eventType === 'free' ? 'leave blank if free' : 'shown as a short badge on the event card'}</span></label>
                   <input style={input} type="text" maxLength={40} value={form.cost} onChange={set('cost')} placeholder={form.eventType === 'free' ? 'Price only, like $5 at the door - or leave blank for free' : 'Price only, like $10 advance / $12 door'} />
-                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', marginTop: 6, lineHeight: 1.5 }}>
+                  <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)', marginTop: 6, lineHeight: 1.5 }}>
                     Keep it to the price. Put anything longer - who gets in free, refund rules, group rates - in the description below.
                   </div>
                 </div>
@@ -820,12 +820,12 @@ export default function SubmitEventPage() {
                     Only once they have typed a price, so a genuinely free event is never nagged. */}
                 {form.eventType === 'free' && form.cost.trim() && (
                   <div style={{ background: 'rgba(122,142,114,0.1)', border: '1px solid rgba(122,142,114,0.25)', borderRadius: 8, padding: '12px 14px' }}>
-                    <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, margin: '0 0 6px' }}>
+                    <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)', lineHeight: 1.7, margin: '0 0 6px' }}>
                       <strong style={{ color: 'rgba(255,255,255,0.75)' }}>Taking money at the door?</strong> We can sell advance tickets for you instead. Buyers pay right on this site, the money goes straight to your bank, and you know your numbers before the day. Pick "Ticketed - we'll handle it for you" above.
                     </p>
                     <button
                       onClick={() => setTicketInfoOpen(true)}
-                      style={{ fontSize: 12, color: '#7A8E72', fontWeight: 700, background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", textAlign: 'left' }}
+                      style={{ fontSize: 14, color: '#7A8E72', fontWeight: 700, background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", textAlign: 'left' }}
                     >
                       See what you and your attendees get →
                     </button>
@@ -845,45 +845,45 @@ export default function SubmitEventPage() {
                     onMouseLeave={e => { if (!imageDragOver) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)'; }}
                   >
                     {imageUploading ? (
-                      <span style={{ fontSize: 13, color: '#D4845A', fontFamily: "'Libre Franklin', sans-serif" }}>Uploading…</span>
+                      <span style={{ fontSize: 15, color: '#D4845A', fontFamily: "'Libre Franklin', sans-serif" }}>Uploading…</span>
                     ) : imagePreview || form.imageUrl ? (
                       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
                         <img src={imagePreview || form.imageUrl} alt="preview" style={{ maxHeight: 140, maxWidth: '100%', borderRadius: 8, objectFit: 'cover' }} />
-                        <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', fontFamily: "'Libre Franklin', sans-serif" }}>Click or drop to replace</span>
+                        <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)', fontFamily: "'Libre Franklin', sans-serif" }}>Click or drop to replace</span>
                       </div>
                     ) : (
                       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
                         <span style={{ fontSize: 28, opacity: 0.3 }}>📷</span>
-                        <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)', fontFamily: "'Libre Franklin', sans-serif" }}>Drop an image here or click to upload</span>
-                        <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.2)', fontFamily: "'Libre Franklin', sans-serif" }}>JPG, PNG, or WebP · Max 2 MB</span>
+                        <span style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)', fontFamily: "'Libre Franklin', sans-serif" }}>Drop an image here or click to upload</span>
+                        <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)', fontFamily: "'Libre Franklin', sans-serif" }}>JPG, PNG, or WebP · Max 2 MB</span>
                       </div>
                     )}
                     <input id="event-img-upload" type="file" accept="image/*" style={{ display: 'none' }} onChange={e => { if (e.target.files[0]) handleImageFile(e.target.files[0]); e.target.value = ''; }} />
                   </div>
                   {!imagePreview && !form.imageUrl && (
                     <div style={{ marginTop: 8 }}>
-                      <input style={{ ...input, fontSize: 12 }} type="text" value={form.imageUrl} onChange={set('imageUrl')} placeholder="…or paste an image URL" />
+                      <input style={{ ...input, fontSize: 14 }} type="text" value={form.imageUrl} onChange={set('imageUrl')} placeholder="…or paste an image URL" />
                     </div>
                   )}
                   {(imagePreview || form.imageUrl) && (
                     <button
                       type="button"
                       onClick={(e) => { e.stopPropagation(); setImagePreview(''); setForm(f => ({ ...f, imageUrl: '' })); }}
-                      style={{ marginTop: 8, background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0 }}
+                      style={{ marginTop: 8, background: 'none', border: 'none', color: 'rgba(255,255,255,0.75)', fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0 }}
                     >
                       ✕ Remove image
                     </button>
                   )}
                 </div>
 
-                {submitError && formStep === 2 && <div style={{ fontSize: 13, color: '#e07070', fontWeight: 500 }}>{submitError}</div>}
+                {submitError && formStep === 2 && <div style={{ fontSize: 15, color: '#e07070', fontWeight: 500 }}>{submitError}</div>}
 
                 {/* Navigation */}
                 <div style={{ display: 'flex', gap: 12 }}>
                   <button
                     type="button"
                     onClick={() => { setFormStep(1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                    style={{ flex: 0, padding: '14px 20px', background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}
+                    style={{ flex: 0, padding: '14px 20px', background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.75)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}
                   >
                     ← Back
                   </button>
@@ -894,7 +894,7 @@ export default function SubmitEventPage() {
                       setFormStep(3);
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
-                    style={{ flex: 1, padding: '16px 24px', background: '#D4845A', color: '#fff', border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", transition: 'background 0.2s' }}
+                    style={{ flex: 1, padding: '16px 24px', background: '#D4845A', color: '#fff', border: 'none', borderRadius: 8, fontSize: 16, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", transition: 'background 0.2s' }}
                   >
                     Next - Almost Done! →
                   </button>
@@ -908,27 +908,27 @@ export default function SubmitEventPage() {
             {formStep === 3 && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 4 }}>
-                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#D4845A', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, flexShrink: 0 }}>3</div>
+                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#D4845A', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, fontWeight: 700, flexShrink: 0 }}>3</div>
                   <div>
                     <div style={{ fontSize: 16, fontWeight: 700, color: C.cream, fontFamily: "'Libre Franklin', sans-serif" }}>You & Publish</div>
-                    <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>Who's behind this event? Then you're done.</div>
+                    <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)' }}>Who's behind this event? Then you're done.</div>
                   </div>
                 </div>
 
                 {/* Summary of Steps 1+2 */}
                 <div style={{ background: 'rgba(122,142,114,0.1)', border: '1px solid rgba(122,142,114,0.2)', borderRadius: 10, padding: '14px 16px' }}>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: C.cream, marginBottom: 4 }}>{form.eventName}</div>
-                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', lineHeight: 1.6 }}>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: C.cream, marginBottom: 4 }}>{form.eventName}</div>
+                  <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)', lineHeight: 1.6 }}>
                     {form.date}{form.dateEnd ? ` – ${form.dateEnd}` : ''}{form.timeStart ? ` · ${formatTime12h(form.timeStart)}` : ''}{form.timeEnd ? `–${formatTime12h(form.timeEnd)}` : ''}
                     {form.location ? <><br />{form.location}</> : ''}
-                    {form.description ? <><br /><span style={{ color: 'rgba(255,255,255,0.3)' }}>{form.description.slice(0, 80)}{form.description.length > 80 ? '…' : ''}</span></> : ''}
+                    {form.description ? <><br /><span style={{ color: 'rgba(255,255,255,0.75)' }}>{form.description.slice(0, 80)}{form.description.length > 80 ? '…' : ''}</span></> : ''}
                   </div>
                   <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-                    <button type="button" onClick={() => { setFormStep(1); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={{ background: 'none', border: 'none', color: '#D4845A', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0 }}>
+                    <button type="button" onClick={() => { setFormStep(1); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={{ background: 'none', border: 'none', color: '#D4845A', fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0 }}>
                       Edit basics
                     </button>
-                    <span style={{ color: 'rgba(255,255,255,0.15)' }}>·</span>
-                    <button type="button" onClick={() => { setFormStep(2); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={{ background: 'none', border: 'none', color: '#D4845A', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0 }}>
+                    <span style={{ color: 'rgba(255,255,255,0.75)' }}>·</span>
+                    <button type="button" onClick={() => { setFormStep(2); window.scrollTo({ top: 0, behavior: 'smooth' }); }} style={{ background: 'none', border: 'none', color: '#D4845A', fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", padding: 0 }}>
                       Edit details
                     </button>
                   </div>
@@ -955,12 +955,12 @@ export default function SubmitEventPage() {
                 {/* Hidden honeypot */}
                 <input type="text" name="_hp" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
 
-                {submitError && <div style={{ fontSize: 13, color: '#e07070', fontWeight: 500 }}>{submitError}</div>}
+                {submitError && <div style={{ fontSize: 15, color: '#e07070', fontWeight: 500 }}>{submitError}</div>}
 
                 {session && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', background: 'rgba(122,142,114,0.12)', border: '1px solid rgba(122,142,114,0.3)', borderRadius: 8 }}>
-                    <span style={{ color: '#7A8E72', fontSize: 14 }}>✓</span>
-                    <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)' }}>
+                    <span style={{ color: '#7A8E72', fontSize: 16 }}>✓</span>
+                    <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)' }}>
                       You're verified - just fill it out and hit publish!
                     </span>
                   </div>
@@ -971,21 +971,21 @@ export default function SubmitEventPage() {
                   <button
                     type="button"
                     onClick={() => { setFormStep(2); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                    style={{ flex: 0, padding: '14px 20px', background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}
+                    style={{ flex: 0, padding: '14px 20px', background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.75)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}
                   >
                     ← Back
                   </button>
                   <button
                     onClick={handleSubmit}
                     disabled={loading}
-                    style={{ flex: 1, padding: '16px 24px', background: loading ? '#5C5248' : '#7A8E72', color: '#fff', border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: loading ? 'default' : 'pointer', fontFamily: "'Libre Franklin', sans-serif", transition: 'background 0.2s' }}
+                    style={{ flex: 1, padding: '16px 24px', background: loading ? '#5C5248' : '#7A8E72', color: '#fff', border: 'none', borderRadius: 8, fontSize: 16, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', cursor: loading ? 'default' : 'pointer', fontFamily: "'Libre Franklin', sans-serif", transition: 'background 0.2s' }}
                   >
                     {loading
                       ? (session ? 'Publishing…' : 'Sending code…')
                       : (session ? 'Publish My Event!' : 'Submit & Verify →')}
                   </button>
                 </div>
-                <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', textAlign: 'center', lineHeight: 1.7, margin: '0' }}>
+                <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)', textAlign: 'center', lineHeight: 1.7, margin: '0' }}>
                   {session
                     ? 'You\'re verified - this publishes instantly.'
                     : "We'll text you a quick code to make sure you're real. Takes 30 seconds."}
@@ -1012,14 +1012,14 @@ export default function SubmitEventPage() {
             {/* Close button */}
             <button
               onClick={() => setTicketInfoOpen(false)}
-              style={{ position: 'absolute', top: 14, right: 16, background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', fontSize: 22, cursor: 'pointer', lineHeight: 1, padding: 0 }}
+              style={{ position: 'absolute', top: 14, right: 16, background: 'none', border: 'none', color: 'rgba(255,255,255,0.75)', fontSize: 22, cursor: 'pointer', lineHeight: 1, padding: 0 }}
               aria-label="Close"
             >×</button>
 
             <h3 style={{ fontSize: 18, fontWeight: 700, color: C.cream, margin: '0 0 6px', fontFamily: "'Libre Franklin', sans-serif" }}>
               Here's what happens when you sell tickets through us
             </h3>
-            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', margin: '0 0 28px', lineHeight: 1.6 }}>
+            <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)', margin: '0 0 28px', lineHeight: 1.6 }}>
               You focus on your event - we handle the rest.
             </p>
 
@@ -1034,8 +1034,8 @@ export default function SubmitEventPage() {
                   </svg>
                 </div>
                 <div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: C.cream, marginBottom: 4 }}>Tickets that work for everyone</div>
-                  <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.7 }}>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: C.cream, marginBottom: 4 }}>Tickets that work for everyone</div>
+                  <div style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)', lineHeight: 1.7 }}>
                     Your attendees buy right on this site - no account needed. They can save the ticket to their phone or print it at home. Works either way.
                   </div>
                 </div>
@@ -1050,8 +1050,8 @@ export default function SubmitEventPage() {
                   </svg>
                 </div>
                 <div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: C.cream, marginBottom: 4 }}>Better turnout, automatically</div>
-                  <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.7 }}>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: C.cream, marginBottom: 4 }}>Better turnout, automatically</div>
+                  <div style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)', lineHeight: 1.7 }}>
                     We text your attendees the day before - <em style={{ color: 'rgba(255,255,255,0.65)' }}>"Looking forward to seeing you tomorrow!"</em> - and again the morning of. No-shows drop, you don't lift a finger.
                   </div>
                 </div>
@@ -1066,8 +1066,8 @@ export default function SubmitEventPage() {
                   </svg>
                 </div>
                 <div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: C.cream, marginBottom: 4 }}>Smooth check-in at the door</div>
-                  <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.7 }}>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: C.cream, marginBottom: 4 }}>Smooth check-in at the door</div>
+                  <div style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)', lineHeight: 1.7 }}>
                     Every ticket has a QR code. Any staff member or volunteer opens their phone camera, scans it - valid or not, instant answer. No special app, no equipment.
                   </div>
                 </div>
@@ -1081,8 +1081,8 @@ export default function SubmitEventPage() {
                   </svg>
                 </div>
                 <div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: C.cream, marginBottom: 4 }}>Know your numbers</div>
-                  <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.7 }}>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: C.cream, marginBottom: 4 }}>Know your numbers</div>
+                  <div style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)', lineHeight: 1.7 }}>
                     See how many tickets sold, who showed up, and what you earned - all in one place. We'll text you the link when your event goes live.
                   </div>
                 </div>
@@ -1096,8 +1096,8 @@ export default function SubmitEventPage() {
                   </svg>
                 </div>
                 <div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: C.cream, marginBottom: 4 }}>Plans change? We've got it</div>
-                  <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.7 }}>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: C.cream, marginBottom: 4 }}>Plans change? We've got it</div>
+                  <div style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)', lineHeight: 1.7 }}>
                     If your event gets postponed, moved, or cancelled - we notify every ticket holder by text so they know right away. No frantic phone calls.
                   </div>
                 </div>
@@ -1107,29 +1107,29 @@ export default function SubmitEventPage() {
 
             {/* Fee summary */}
             <div style={{ marginTop: 28, padding: '16px 18px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 10 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: C.cream, marginBottom: 8 }}>What it costs</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: C.cream, marginBottom: 8 }}>What it costs</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: 'rgba(255,255,255,0.5)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 15, color: 'rgba(255,255,255,0.75)' }}>
                   <span>Setup fee</span><span style={{ fontWeight: 600, color: '#7A8E72' }}>None</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: 'rgba(255,255,255,0.5)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 15, color: 'rgba(255,255,255,0.75)' }}>
                   <span>Monthly fee</span><span style={{ fontWeight: 600, color: '#7A8E72' }}>None</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: 'rgba(255,255,255,0.5)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 15, color: 'rgba(255,255,255,0.75)' }}>
                   <span>Platform fee</span><span style={{ fontWeight: 600, color: C.cream }}>1.25% per ticket</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: 'rgba(255,255,255,0.5)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 15, color: 'rgba(255,255,255,0.75)' }}>
                   <span>Card processing</span><span style={{ fontWeight: 600, color: C.cream }}>~2.9% + 30¢</span>
                 </div>
               </div>
-              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', margin: '10px 0 0', lineHeight: 1.5 }}>
+              <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)', margin: '10px 0 0', lineHeight: 1.5 }}>
                 Card processing is Stripe's standard rate - the same fee every platform pays, including Eventbrite. The difference is we don't pile our own fees on top of it.
               </p>
             </div>
 
             <button
               onClick={() => setTicketInfoOpen(false)}
-              style={{ marginTop: 20, width: '100%', padding: '12px 20px', background: 'rgba(122,142,114,0.2)', border: '1px solid rgba(122,142,114,0.35)', borderRadius: 10, color: C.cream, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}
+              style={{ marginTop: 20, width: '100%', padding: '12px 20px', background: 'rgba(122,142,114,0.2)', border: '1px solid rgba(122,142,114,0.35)', borderRadius: 10, color: C.cream, fontSize: 16, fontWeight: 600, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}
             >
               Got it - back to my event
             </button>

@@ -55,15 +55,15 @@ export function AdSlot({ ads, variant }) {
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ fontSize: isLeaderboard ? 22 : 20 }}>📣</div>
               <div>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, fontSize: 14, color: C.lakeBlue }}>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, fontSize: 16, color: C.lakeBlue }}>
                   Want to reach Dispatch readers?
                 </div>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, marginTop: 2 }}>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.textMuted, marginTop: 2 }}>
                   This spot is open. Put your business in front of the community.
                 </div>
               </div>
             </div>
-            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 600, color: C.lakeBlue, whiteSpace: 'nowrap', flexShrink: 0 }}>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 600, color: C.lakeBlue, whiteSpace: 'nowrap', flexShrink: 0 }}>
               See rates →
             </div>
           </div>
@@ -94,10 +94,10 @@ export function AdSlot({ ads, variant }) {
             <img src={ad.imageUrl} alt={ad.altText || ad.name} style={{ height: isLeaderboard ? 52 : 44, width: 'auto', objectFit: 'contain', flexShrink: 0 }} />
           )}
           <div>
-            {ad.name && <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, fontSize: 14, color: C.dusk }}>{ad.name}</div>}
-            {ad.offerText && <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, marginTop: 2 }}>{ad.offerText}</div>}
+            {ad.name && <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600, fontSize: 16, color: C.dusk }}>{ad.name}</div>}
+            {ad.offerText && <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.textMuted, marginTop: 2 }}>{ad.offerText}</div>}
           </div>
-          <div style={{ marginLeft: 'auto', fontSize: 10, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", flexShrink: 0 }}>Sponsored</div>
+          <div style={{ marginLeft: 'auto', fontSize: 13, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif", flexShrink: 0 }}>Sponsored</div>
         </div>
       </a>
     </div>
@@ -142,7 +142,7 @@ export function DispatchArticleContent({ content }) {
           return (
             <figure key={i} style={{ margin: '28px 0', padding: 0 }}>
               <img src={block.url} alt={block.caption || ''} style={{ width: '100%', borderRadius: 10, display: 'block' }} />
-              {block.caption && <figcaption style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, textAlign: 'center', marginTop: 8, fontStyle: 'italic' }}>{block.caption}</figcaption>}
+              {block.caption && <figcaption style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.textMuted, textAlign: 'center', marginTop: 8, fontStyle: 'italic' }}>{block.caption}</figcaption>}
             </figure>
           );
         }
@@ -232,7 +232,7 @@ export function DispatchArticlePage() {
         ) : !article ? (
           <div style={{ textAlign: 'center', padding: '80px 20px' }}>
             <p style={{ marginBottom: 20, color: '#888' }}>Can't find that article - it may have been moved or unpublished.</p>
-            <button onClick={() => navigate('/dispatch')} style={{ background: C.sage, color: '#fff', border: 'none', borderRadius: 8, padding: '10px 24px', cursor: 'pointer', fontSize: 15 }}>← Back to Dispatch</button>
+            <button onClick={() => navigate('/dispatch')} style={{ background: C.sage, color: '#fff', border: 'none', borderRadius: 8, padding: '10px 24px', cursor: 'pointer', fontSize: 17 }}>← Back to Dispatch</button>
           </div>
         ) : (
           <>
@@ -240,7 +240,7 @@ export function DispatchArticlePage() {
               <div style={{ width: '100%', maxHeight: 420, overflow: 'hidden', position: 'relative' }}>
                 <img src={article.coverImage} alt={article.title} style={{ width: '100%', height: 420, objectFit: 'cover', display: 'block' }} />
                 {article.photoCredit && (
-                  <div style={{ position: 'absolute', bottom: 8, right: 12, fontSize: 10, color: 'rgba(255,255,255,0.75)', letterSpacing: '0.02em' }}>
+                  <div style={{ position: 'absolute', bottom: 8, right: 12, fontSize: 13, color: 'rgba(255,255,255,0.75)', letterSpacing: '0.02em' }}>
                     <a href={article.photoCredit.photographerUrl} target="_blank" rel="noreferrer" style={{ color: 'rgba(255,255,255,0.75)', textDecoration: 'none' }}>
                       {article.photoCredit.text}
                     </a>
@@ -255,17 +255,17 @@ export function DispatchArticlePage() {
             <div style={{ maxWidth: 760, margin: '0 auto', padding: '40px 24px 80px' }}>
               <button
                 onClick={() => navigate('/dispatch')}
-                style={{ background: 'transparent', border: `1px solid ${C.sage}`, color: C.sage, borderRadius: 6, padding: '6px 16px', cursor: 'pointer', fontSize: 13, marginBottom: 28, display: 'flex', alignItems: 'center', gap: 6 }}
+                style={{ background: 'transparent', border: `1px solid ${C.sage}`, color: C.sage, borderRadius: 6, padding: '6px 16px', cursor: 'pointer', fontSize: 15, marginBottom: 28, display: 'flex', alignItems: 'center', gap: 6 }}
               >
                 ← The Dispatch
               </button>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16, flexWrap: 'wrap' }}>
-                <span style={{ background: CATEGORY_COLORS[article.category] || C.lakeBlue, color: '#fff', borderRadius: 20, padding: '4px 14px', fontSize: 12, fontWeight: 600, letterSpacing: 0.5, textTransform: 'uppercase' }}>
+                <span style={{ background: CATEGORY_COLORS[article.category] || C.lakeBlue, color: '#fff', borderRadius: 20, padding: '4px 14px', fontSize: 14, fontWeight: 600, letterSpacing: 0.5, textTransform: 'uppercase' }}>
                   {article.category}
                 </span>
                 {article.tags.map(tag => (
-                  <span key={tag} style={{ background: C.warmWhite, color: C.sage, borderRadius: 20, padding: '3px 12px', fontSize: 11, fontWeight: 500 }}>#{tag}</span>
+                  <span key={tag} style={{ background: C.warmWhite, color: C.sage, borderRadius: 20, padding: '3px 12px', fontSize: 13, fontWeight: 500 }}>#{tag}</span>
                 ))}
               </div>
 
@@ -273,7 +273,7 @@ export function DispatchArticlePage() {
                 {article.title}
               </h1>
 
-              <div style={{ display: 'flex', gap: 16, alignItems: 'center', color: '#888', fontSize: 14, marginBottom: 36, flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: 16, alignItems: 'center', color: '#888', fontSize: 16, marginBottom: 36, flexWrap: 'wrap' }}>
                 <span>By <strong style={{ color: C.text }}>{article.author}</strong></span>
                 {article.publishedDate && <span>{formatDate(article.publishedDate)}</span>}
               </div>
@@ -309,18 +309,18 @@ export function DispatchArticlePage() {
                     style={{ width: 72, height: 72, objectFit: 'contain', flexShrink: 0 }}
                   />
                   <div>
-                    <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', color: C.sage, marginBottom: 4 }}>
+                    <div style={{ fontSize: 13, textTransform: 'uppercase', letterSpacing: '0.1em', color: C.sage, marginBottom: 4 }}>
                       {article.aiGenerated ? 'The Yeti Desk' : 'Editor\'s Note · The Yeti Desk'}
                     </div>
-                    <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 13, fontWeight: 700, color: C.dusk, marginBottom: article.editorNote ? 10 : 0 }}>
+                    <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 15, fontWeight: 700, color: C.dusk, marginBottom: article.editorNote ? 10 : 0 }}>
                       {article.aiGenerated ? `Written by The Yeti` : `By ${article.author}`}
                     </div>
                     {article.editorNote && (
-                      <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.65, margin: 0, fontStyle: 'italic' }}>
+                      <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.65, margin: 0, fontStyle: 'italic' }}>
                         {article.editorNote}
                       </p>
                     )}
-                    <div style={{ marginTop: 10, fontSize: 12, color: C.textMuted }}>
+                    <div style={{ marginTop: 10, fontSize: 14, color: C.textMuted }}>
                       Holly &amp; The Yeti · Devils Lake, Michigan
                     </div>
                   </div>
@@ -347,8 +347,8 @@ export function DispatchArticlePage() {
                           </div>
                         )}
                         <div style={{ padding: '10px 14px 10px 0', flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: 10, color: CATEGORY_COLORS[a.category] || C.lakeBlue, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>{a.category}</div>
-                          <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, fontWeight: 700, color: C.dusk, lineHeight: 1.3, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{a.title}</div>
+                          <div style={{ fontSize: 13, color: CATEGORY_COLORS[a.category] || C.lakeBlue, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>{a.category}</div>
+                          <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 700, color: C.dusk, lineHeight: 1.3, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{a.title}</div>
                         </div>
                       </a>
                     ))}
@@ -358,21 +358,21 @@ export function DispatchArticlePage() {
 
               <div style={{ marginTop: 40, padding: '36px 32px', background: C.night, borderRadius: 14, textAlign: 'center' }}>
                 <p style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.warmWhite, marginBottom: 8 }}>Enjoying The Dispatch?</p>
-                <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 14, marginBottom: 20 }}>Get lake life news, local tips, and a little Yeti wisdom delivered to your inbox.</p>
+                <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 16, marginBottom: 20 }}>Get lake life news, local tips, and a little Yeti wisdom delivered to your inbox.</p>
                 <ShareBar title={article.title} />
                 <div style={{ height: 24 }} />
                 {subStatus === 'success' ? (
                   <div>
                     <div style={{ fontSize: 36, marginBottom: 10 }}>📬</div>
                     <p style={{ color: C.warmWhite, fontWeight: 600, marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>Check your inbox!</p>
-                    <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 13, fontFamily: "'Libre Franklin', sans-serif" }}>Click the confirmation link to complete sign-up. Check spam if you don't see it.</p>
-                    <a href="/dispatch" style={{ display: 'inline-block', marginTop: 18, fontSize: 14, color: C.lakeBlue, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'none' }}>← Back to The Dispatch</a>
+                    <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: 15, fontFamily: "'Libre Franklin', sans-serif" }}>Click the confirmation link to complete sign-up. Check spam if you don't see it.</p>
+                    <a href="/dispatch" style={{ display: 'inline-block', marginTop: 18, fontSize: 16, color: C.lakeBlue, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'none' }}>← Back to The Dispatch</a>
                   </div>
                 ) : subStatus === 'exists' ? (
                   <div>
                     <div style={{ fontSize: 36, marginBottom: 10 }}>👋</div>
                     <p style={{ color: C.warmWhite, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif" }}>You're already on the list - next issue incoming!</p>
-                    <a href="/dispatch" style={{ display: 'inline-block', marginTop: 16, fontSize: 14, color: C.lakeBlue, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'none' }}>← Back to The Dispatch</a>
+                    <a href="/dispatch" style={{ display: 'inline-block', marginTop: 16, fontSize: 16, color: C.lakeBlue, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'none' }}>← Back to The Dispatch</a>
                   </div>
                 ) : (
                   <form onSubmit={handleInlineSub} style={{ display: 'flex', gap: 10, maxWidth: 420, margin: '0 auto', flexWrap: 'wrap', justifyContent: 'center' }}>
@@ -387,17 +387,17 @@ export function DispatchArticlePage() {
                         flex: 1, minWidth: 200, padding: '12px 18px', borderRadius: 6,
                         border: '1px solid rgba(255,255,255,0.15)',
                         background: 'rgba(255,255,255,0.08)', color: C.warmWhite,
-                        fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", outline: 'none',
+                        fontSize: 16, fontFamily: "'Libre Franklin', sans-serif", outline: 'none',
                       }}
                     />
                     <button
                       type="submit"
                       disabled={subStatus === 'loading'}
-                      style={{ background: C.sunset, color: '#fff', border: 'none', borderRadius: 6, padding: '12px 24px', cursor: subStatus === 'loading' ? 'not-allowed' : 'pointer', fontSize: 14, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif" }}
+                      style={{ background: C.sunset, color: '#fff', border: 'none', borderRadius: 6, padding: '12px 24px', cursor: subStatus === 'loading' ? 'not-allowed' : 'pointer', fontSize: 16, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif" }}
                     >
                       {subStatus === 'loading' ? 'Joining…' : 'Subscribe Free'}
                     </button>
-                    {subStatus === 'error' && <p style={{ width: '100%', color: '#ff9f9f', fontSize: 13, marginTop: 4 }}>{yeti.subscribe()}</p>}
+                    {subStatus === 'error' && <p style={{ width: '100%', color: '#ff9f9f', fontSize: 15, marginTop: 4 }}>{yeti.subscribe()}</p>}
                   </form>
                 )}
               </div>
@@ -439,7 +439,7 @@ export function DispatchPreviewSection() {
             <SectionLabel>Latest Stories</SectionLabel>
             <SectionTitle>The Manitou Dispatch</SectionTitle>
           </div>
-          <a href="/dispatch" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.lakeBlue, textDecoration: 'none', fontWeight: 600, whiteSpace: 'nowrap' }}>
+          <a href="/dispatch" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, color: C.lakeBlue, textDecoration: 'none', fontWeight: 600, whiteSpace: 'nowrap' }}>
             Read all stories →
           </a>
         </div>
@@ -469,20 +469,20 @@ export function DispatchPreviewSection() {
                     </div>
                   )}
                   <div style={{ padding: '18px 20px 22px' }}>
-                    <span style={{ background: CATEGORY_COLORS[article.category] || C.lakeBlue, color: '#fff', borderRadius: 20, padding: '2px 10px', fontSize: 10, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase' }}>
+                    <span style={{ background: CATEGORY_COLORS[article.category] || C.lakeBlue, color: '#fff', borderRadius: 20, padding: '2px 10px', fontSize: 13, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase' }}>
                       {article.category}
                     </span>
                     <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 700, color: C.dusk, margin: '10px 0 6px', lineHeight: 1.3 }}>
                       {article.title}
                     </h3>
                     {article.excerpt && (
-                      <p style={{ margin: '0 0 12px', fontSize: 13, color: '#666', lineHeight: 1.5 }}>
+                      <p style={{ margin: '0 0 12px', fontSize: 15, color: '#666', lineHeight: 1.5 }}>
                         {article.excerpt.length > 90 ? article.excerpt.slice(0, 90) + '…' : article.excerpt}
                       </p>
                     )}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12, color: '#999', borderTop: `1px solid ${C.sand}`, paddingTop: 10, marginTop: 10 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 14, color: '#999', borderTop: `1px solid ${C.sand}`, paddingTop: 10, marginTop: 10 }}>
                       <span>{article.author}{article.publishedDate && ` · ${formatDate(article.publishedDate)}`}</span>
-                      <span style={{ color: C.lakeBlue, fontWeight: 600, fontSize: 12 }}>Read story →</span>
+                      <span style={{ color: C.lakeBlue, fontWeight: 600, fontSize: 14 }}>Read story →</span>
                     </div>
                   </div>
                   <SponsorStrip index={idx} />
@@ -570,12 +570,12 @@ export default function DispatchPage() {
         ) : fetchError ? (
           <div style={{ textAlign: 'center', padding: '60px 20px' }}>
             <p style={{ fontFamily: "'Caveat', cursive", fontSize: 26, color: C.sunset, marginBottom: 8 }}>Something went sideways.</p>
-            <p style={{ color: '#888', fontSize: 15 }}>Couldn't load the articles right now - try refreshing in a moment.</p>
+            <p style={{ color: '#888', fontSize: 17 }}>Couldn't load the articles right now - try refreshing in a moment.</p>
           </div>
         ) : articles.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '60px 20px' }}>
             <p style={{ fontFamily: "'Caveat', cursive", fontSize: 26, color: C.sage, marginBottom: 8 }}>First issue coming soon.</p>
-            <p style={{ color: '#888', fontSize: 15 }}>Subscribe below to be the first to get it.</p>
+            <p style={{ color: '#888', fontSize: 17 }}>Subscribe below to be the first to get it.</p>
           </div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 32 }}>
@@ -596,18 +596,18 @@ export default function DispatchPage() {
                     </div>
                   )}
                   <div style={{ padding: '20px 22px 24px' }}>
-                    <span style={{ background: CATEGORY_COLORS[article.category] || C.lakeBlue, color: '#fff', borderRadius: 20, padding: '3px 12px', fontSize: 11, fontWeight: 600, letterSpacing: 0.5, textTransform: 'uppercase' }}>
+                    <span style={{ background: CATEGORY_COLORS[article.category] || C.lakeBlue, color: '#fff', borderRadius: 20, padding: '3px 12px', fontSize: 13, fontWeight: 600, letterSpacing: 0.5, textTransform: 'uppercase' }}>
                       {article.category}
                     </span>
                     <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 700, color: C.dusk, margin: '12px 0 8px', lineHeight: 1.3 }}>
                       {article.title}
                     </h3>
                     {article.excerpt && (
-                      <p style={{ fontSize: 14, color: '#666', lineHeight: 1.5, margin: '0 0 14px' }}>
+                      <p style={{ fontSize: 16, color: '#666', lineHeight: 1.5, margin: '0 0 14px' }}>
                         {article.excerpt.length > 120 ? article.excerpt.slice(0, 120) + '…' : article.excerpt}
                       </p>
                     )}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12, color: '#999', borderTop: `1px solid ${C.sand}`, paddingTop: 10, marginTop: 4 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 14, color: '#999', borderTop: `1px solid ${C.sand}`, paddingTop: 10, marginTop: 4 }}>
                       <span>{article.author}{article.publishedDate && ` · ${formatDate(article.publishedDate)}`}</span>
                       <span style={{ color: C.lakeBlue, fontWeight: 600 }}>Read story →</span>
                     </div>

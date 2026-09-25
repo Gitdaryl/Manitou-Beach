@@ -45,7 +45,7 @@ function NightlifeHero() {
         fontFamily: "'Libre Baskerville', serif",
         fontSize: "clamp(140px, 22vw, 320px)",
         fontWeight: 700,
-        color: "rgba(255,255,255,0.04)",
+        color: "rgba(255,255,255,0.75)",
         lineHeight: 1,
         userSelect: "none",
         letterSpacing: -12,
@@ -58,8 +58,8 @@ function NightlifeHero() {
         <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? "none" : "translateY(24px)", transition: "all 0.9s ease" }}>
           <div style={{
             fontFamily: "'Libre Franklin', sans-serif",
-            fontSize: 11, letterSpacing: 5, textTransform: "uppercase",
-            color: "rgba(255,255,255,0.35)", marginBottom: 28,
+            fontSize: 13, letterSpacing: 5, textTransform: "uppercase",
+            color: "rgba(255,255,255,0.75)", marginBottom: 28,
           }}>
             Devils Lake · Manitou Beach · Michigan
           </div>
@@ -163,7 +163,7 @@ function NightlifeEventCard({ event }) {
             background: isFree ? "rgba(122,142,114,0.9)" : "rgba(212,132,90,0.9)",
             color: "#fff",
             fontFamily: "'Libre Franklin', sans-serif",
-            fontSize: 9, fontWeight: 700, letterSpacing: 1.5,
+            fontSize: 12, fontWeight: 700, letterSpacing: 1.5,
             textTransform: "uppercase",
             padding: "4px 10px", borderRadius: 20,
           }}>
@@ -181,7 +181,7 @@ function NightlifeEventCard({ event }) {
           border: `1px solid rgba(${catColor === C.sunset ? '212,132,90' : '139,94,60'},0.4)`,
           color: catColor,
           fontFamily: "'Libre Franklin', sans-serif",
-          fontSize: 9, fontWeight: 700, letterSpacing: 2,
+          fontSize: 12, fontWeight: 700, letterSpacing: 2,
           textTransform: "uppercase",
           padding: "4px 10px", borderRadius: 20,
           alignSelf: "flex-start",
@@ -199,7 +199,7 @@ function NightlifeEventCard({ event }) {
 
         <div style={{
           fontFamily: "'Libre Franklin', sans-serif",
-          fontSize: 12, color: "rgba(255,255,255,0.45)",
+          fontSize: 14, color: "rgba(255,255,255,0.75)",
           display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap",
         }}>
           {event.time && <span>{event.time}{event.timeEnd ? ` – ${event.timeEnd}` : ''}</span>}
@@ -222,7 +222,7 @@ function NightlifeEventCard({ event }) {
               color: "#fff",
               borderRadius: 20,
               fontFamily: "'Libre Franklin', sans-serif",
-              fontSize: 11, fontWeight: 700, letterSpacing: 1,
+              fontSize: 13, fontWeight: 700, letterSpacing: 1,
               textTransform: "uppercase",
               textDecoration: "none",
               alignSelf: "flex-start",
@@ -257,7 +257,7 @@ function ThisWeekendSection({ events }) {
           <SectionLabel light>This Weekend</SectionLabel>
           <SectionTitle light>What's On Tonight</SectionTitle>
           <p style={{
-            fontSize: 15, color: "rgba(255,255,255,0.4)",
+            fontSize: 17, color: "rgba(255,255,255,0.75)",
             lineHeight: 1.8, maxWidth: 480, margin: "0 0 56px 0",
           }}>
             Live music, pop-up dinners, and whatever else is happening on the lake.
@@ -313,7 +313,7 @@ function ThisWeekendSection({ events }) {
                 onClick={e => { e.preventDefault(); document.getElementById('venues')?.scrollIntoView({ behavior: 'smooth' }); }}
                 style={{
                   fontFamily: "'Libre Franklin', sans-serif",
-                  fontSize: 13, color: C.sunsetLight,
+                  fontSize: 15, color: C.sunsetLight,
                   textDecoration: "none",
                   borderBottom: `1px solid rgba(232,168,124,0.4)`,
                   paddingBottom: 2,
@@ -391,9 +391,9 @@ function VenueCard({ venue }) {
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4, flexWrap: "wrap" }}>
           <div style={{
             fontFamily: "'Libre Franklin', sans-serif",
-            fontSize: 9, fontWeight: 700, letterSpacing: 2,
+            fontSize: 12, fontWeight: 700, letterSpacing: 2,
             textTransform: "uppercase",
-            color: "rgba(255,255,255,0.35)",
+            color: "rgba(255,255,255,0.75)",
           }}>
             {displayCategory}
           </div>
@@ -423,7 +423,7 @@ function VenueCard({ venue }) {
         {venue.description && (
           <div style={{
             fontFamily: "'Libre Franklin', sans-serif",
-            fontSize: 13, color: "rgba(255,255,255,0.5)",
+            fontSize: 15, color: "rgba(255,255,255,0.75)",
             lineHeight: 1.65,
             marginBottom: 10,
           }}>
@@ -436,7 +436,7 @@ function VenueCard({ venue }) {
           {venue.address && (
             <div style={{
               fontFamily: "'Libre Franklin', sans-serif",
-              fontSize: 11, color: "rgba(255,255,255,0.35)",
+              fontSize: 13, color: "rgba(255,255,255,0.75)",
               marginBottom: 3,
             }}>
               📍 {venue.address}
@@ -445,7 +445,7 @@ function VenueCard({ venue }) {
           {venue.phone && (
             <div style={{
               fontFamily: "'Libre Franklin', sans-serif",
-              fontSize: 11, color: "rgba(255,255,255,0.35)",
+              fontSize: 13, color: "rgba(255,255,255,0.75)",
             }}>
               📞 <a
                 href={`tel:${venue.phone.replace(/\D/g, '')}`}
@@ -469,7 +469,7 @@ function VenueCard({ venue }) {
                 color: C.sunsetLight,
                 borderRadius: 20,
                 fontFamily: "'Libre Franklin', sans-serif",
-                fontSize: 11, fontWeight: 700, letterSpacing: 0.5,
+                fontSize: 13, fontWeight: 700, letterSpacing: 0.5,
                 cursor: "pointer",
                 transition: "all 0.2s",
                 minHeight: 44,
@@ -487,8 +487,8 @@ function VenueCard({ venue }) {
               rel="noopener noreferrer"
               style={{
                 fontFamily: "'Libre Franklin', sans-serif",
-                fontSize: 11, fontWeight: 600,
-                color: "rgba(255,255,255,0.4)",
+                fontSize: 13, fontWeight: 600,
+                color: "rgba(255,255,255,0.75)",
                 textDecoration: "none",
                 borderBottom: "1px solid rgba(255,255,255,0.15)",
                 paddingBottom: 1,
@@ -551,9 +551,9 @@ function VenuesSection({ venues }) {
                     ? "none"
                     : "1.5px solid rgba(255,255,255,0.15)",
                   background: activeTab === tab ? C.sunset : "transparent",
-                  color: activeTab === tab ? "#fff" : "rgba(255,255,255,0.45)",
+                  color: activeTab === tab ? "#fff" : "rgba(255,255,255,0.75)",
                   fontFamily: "'Libre Franklin', sans-serif",
-                  fontSize: 12, fontWeight: 700, letterSpacing: 0.5,
+                  fontSize: 14, fontWeight: 700, letterSpacing: 0.5,
                   cursor: "pointer",
                   transition: "all 0.2s",
                 }}
@@ -581,7 +581,7 @@ function VenuesSection({ venues }) {
             <div style={{
               textAlign: "center", padding: "40px 0",
               fontFamily: "'Libre Franklin', sans-serif",
-              fontSize: 14, color: "rgba(255,255,255,0.3)",
+              fontSize: 16, color: "rgba(255,255,255,0.75)",
             }}>
               No venues listed yet.{" "}
               <a href="/business" style={{ color: C.sunsetLight, textDecoration: "none" }}>
@@ -612,7 +612,7 @@ function NightlifeCTA() {
           Know a place we're missing?
         </h3>
         <p style={{
-          fontSize: 15, color: "rgba(255,255,255,0.4)",
+          fontSize: 17, color: "rgba(255,255,255,0.75)",
           margin: "0 0 32px 0", lineHeight: 1.75,
         }}>
           The list is a work in progress - add your bar, restaurant, or brewery for free.

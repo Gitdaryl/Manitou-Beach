@@ -8,17 +8,17 @@ export default function PrivacyPage() {
   const subScrollTo = (id) => { window.location.href = '/#' + id; };
   const S = { // shared prose styles
     h2: { fontFamily: "'Libre Baskerville', serif", fontSize: 22, fontWeight: 400, color: C.dusk, margin: '40px 0 12px' },
-    p: { fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.text, lineHeight: 1.8, margin: '0 0 14px' },
-    li: { fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.text, lineHeight: 1.8, marginBottom: 6 },
+    p: { fontFamily: "'Libre Franklin', sans-serif", fontSize: 17, color: C.text, lineHeight: 1.8, margin: '0 0 14px' },
+    li: { fontFamily: "'Libre Franklin', sans-serif", fontSize: 17, color: C.text, lineHeight: 1.8, marginBottom: 6 },
   };
   return (
     <div style={{ background: C.cream, minHeight: '100vh' }}>
       <SEOHead title="Privacy Policy" description="Privacy policy for Manitou Beach Michigan community platform." path="/privacy" />
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
       <div style={{ maxWidth: 760, margin: '0 auto', padding: '120px 28px 80px' }}>
-        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 4, textTransform: 'uppercase', color: C.sage, marginBottom: 12 }}>Legal</div>
+        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 4, textTransform: 'uppercase', color: C.sage, marginBottom: 12 }}>Legal</div>
         <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(30px, 5vw, 46px)', fontWeight: 400, color: C.dusk, margin: '0 0 8px' }}>Privacy Policy</h1>
-        <p style={{ ...S.p, color: C.textMuted, fontSize: 13, marginBottom: 40 }}>Effective date: March 2026 &nbsp;·&nbsp; Updated August 2026 &nbsp;·&nbsp; Yeti Groove Media LLC</p>
+        <p style={{ ...S.p, color: C.textMuted, fontSize: 15, marginBottom: 40 }}>Effective date: March 2026 &nbsp;·&nbsp; Updated August 2026 &nbsp;·&nbsp; Yeti Groove Media LLC</p>
 
         <p style={S.p}>This Privacy Policy explains how Yeti Groove Media LLC ("we", "us", "our") collects, uses, and protects information submitted through the Manitou Beach community platform at manitoubeachmichigan.com ("the Site"). We keep it plain - no legalese.</p>
 
@@ -77,7 +77,7 @@ export default function PrivacyPage() {
 
         <h2 style={S.h2}>Contact</h2>
         <p style={S.p}>Yeti Groove Media LLC<br /><a href="mailto:admin@yetigroove.com" style={{ color: C.sage }}>admin@yetigroove.com</a></p>
-        <p style={{ ...S.p, fontSize: 13, color: C.textMuted }}>This policy may be updated from time to time. Continued use of the Site after changes constitutes acceptance of the revised policy.</p>
+        <p style={{ ...S.p, fontSize: 15, color: C.textMuted }}>This policy may be updated from time to time. Continued use of the Site after changes constitutes acceptance of the revised policy.</p>
       </div>
       <Footer scrollTo={subScrollTo} />
     </div>

@@ -615,11 +615,11 @@ export default function BusinessProfilePage() {
         <div style={{ paddingTop: 100, textAlign: 'center' }}>
           <div style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
             <div style={{ width: 48, height: 48, borderRadius: '50%', border: `3px solid ${C.sand}`, borderTopColor: C.sage, animation: 'spin 0.8s linear infinite' }} />
-            <span style={{ fontSize: 14, color: C.textMuted }}>
+            <span style={{ fontSize: 16, color: C.textMuted }}>
               {setupMode ? 'Setting up your profile...' : 'Loading…'}
             </span>
             {setupMode && (
-              <span style={{ fontSize: 12, color: C.textMuted, maxWidth: 280, lineHeight: 1.6 }}>
+              <span style={{ fontSize: 14, color: C.textMuted, maxWidth: 280, lineHeight: 1.6 }}>
                 This takes a few seconds the first time.
               </span>
             )}
@@ -635,12 +635,12 @@ export default function BusinessProfilePage() {
           <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, color: C.dusk, marginBottom: 10 }}>
             Listing not found
           </h1>
-          <p style={{ color: C.textMuted, fontSize: 15, marginBottom: 32, maxWidth: 360, margin: '0 auto 32px' }}>
+          <p style={{ color: C.textMuted, fontSize: 17, marginBottom: 32, maxWidth: 360, margin: '0 auto 32px' }}>
             This listing may have been removed, or the URL has a typo. Head back to browse all businesses.
           </p>
           <button
             onClick={() => navigate('/business')}
-            style={{ background: C.sage, color: '#fff', border: 'none', borderRadius: 10, padding: '13px 28px', cursor: 'pointer', fontSize: 15, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif" }}
+            style={{ background: C.sage, color: '#fff', border: 'none', borderRadius: 10, padding: '13px 28px', cursor: 'pointer', fontSize: 17, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif" }}
           >
             Browse All Businesses
           </button>
@@ -660,10 +660,10 @@ export default function BusinessProfilePage() {
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <span style={{ fontSize: 18 }}>🎉</span>
                 <div>
-                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700, color: '#fff' }}>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, fontWeight: 700, color: '#fff' }}>
                     Your profile is live!
                   </span>
-                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.8)', marginLeft: 8 }}>
+                  <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: 'rgba(255,255,255,0.8)', marginLeft: 8 }}>
                     Verify your number to start editing it.
                   </span>
                 </div>
@@ -672,7 +672,7 @@ export default function BusinessProfilePage() {
                 onClick={() => { setClaimOpen(true); setClaimStep('phone'); setClaimError(''); }}
                 style={{
                   background: '#fff', color: C.sageDark, border: 'none', borderRadius: 8,
-                  padding: '8px 18px', cursor: 'pointer', fontSize: 13, fontWeight: 700,
+                  padding: '8px 18px', cursor: 'pointer', fontSize: 15, fontWeight: 700,
                   fontFamily: "'Libre Franklin', sans-serif", flexShrink: 0,
                 }}
               >
@@ -686,7 +686,7 @@ export default function BusinessProfilePage() {
               display: 'flex', alignItems: 'center', gap: 10,
             }}>
               <span style={{ fontSize: 16 }}>✓</span>
-              <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, color: '#fff' }}>
+              <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 600, color: '#fff' }}>
                 You're all set. Use the Edit button below to update your profile anytime.
               </span>
             </div>
@@ -698,8 +698,8 @@ export default function BusinessProfilePage() {
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                    <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.sage }}>Your Profile Report Card</span>
-                    <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: C.textMuted }}>{reportCard.score}% complete</span>
+                    <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.sage }}>Your Profile Report Card</span>
+                    <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.textMuted }}>{reportCard.score}% complete</span>
                   </div>
                   {/* Completion bar */}
                   <div style={{ background: C.sand, borderRadius: 4, height: 6, marginBottom: 10, overflow: 'hidden' }}>
@@ -707,7 +707,7 @@ export default function BusinessProfilePage() {
                   </div>
                   {/* Haiku nudge */}
                   {reportCard.nudge && (
-                    <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textLight, margin: '0 0 8px', lineHeight: 1.6 }}>
+                    <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.textLight, margin: '0 0 8px', lineHeight: 1.6 }}>
                       {reportCard.nudge}
                     </p>
                   )}
@@ -715,7 +715,7 @@ export default function BusinessProfilePage() {
                   {reportCard.topGap && (
                     <button
                       onClick={() => setEditOpen(true)}
-                      style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 600, color: C.lakeBlue, background: 'none', border: 'none', padding: 0, cursor: 'pointer', textDecoration: 'underline' }}
+                      style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 600, color: C.lakeBlue, background: 'none', border: 'none', padding: 0, cursor: 'pointer', textDecoration: 'underline' }}
                     >
                       Add {reportCard.topGap.label} now (+{reportCard.topGap.points} pts) →
                     </button>
@@ -777,10 +777,10 @@ export default function BusinessProfilePage() {
                 border: '1px solid rgba(255,255,255,0.15)',
                 borderRadius: 10, padding: '10px 14px', maxWidth: 210,
               }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', marginBottom: 3, fontFamily: "'Libre Franklin', sans-serif" }}>
+                <div style={{ fontSize: 15, fontWeight: 700, color: '#fff', marginBottom: 3, fontFamily: "'Libre Franklin', sans-serif" }}>
                   🎬 Want a video hero like this?
                 </div>
-                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', lineHeight: 1.5, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 8 }}>
+                <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.65)', lineHeight: 1.5, fontFamily: "'Libre Franklin', sans-serif", marginBottom: 8 }}>
                   We film, edit, and host it for you. One-time.
                 </div>
                 <a
@@ -789,7 +789,7 @@ export default function BusinessProfilePage() {
                     display: 'block', textAlign: 'center',
                     background: '#C9A84C', color: '#1A2830',
                     borderRadius: 7, padding: '7px 0',
-                    fontSize: 12, fontWeight: 800, textDecoration: 'none',
+                    fontSize: 14, fontWeight: 800, textDecoration: 'none',
                     fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.2,
                   }}
                 >
@@ -813,7 +813,7 @@ export default function BusinessProfilePage() {
                 background: 'rgba(0,0,0,0.35)', backdropFilter: 'blur(10px)',
                 border: '1px solid rgba(255,255,255,0.18)', color: '#fff',
                 borderRadius: 20, padding: '7px 14px 7px 10px',
-                cursor: 'pointer', fontSize: 13, fontWeight: 600,
+                cursor: 'pointer', fontSize: 15, fontWeight: 600,
                 display: 'flex', alignItems: 'center', gap: 5,
                 fontFamily: "'Libre Franklin', sans-serif",
               }}
@@ -842,7 +842,7 @@ export default function BusinessProfilePage() {
                 <span style={{
                   background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(10px)',
                   color: '#fff', borderRadius: 20, padding: '4px 12px',
-                  fontSize: 11, fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase',
+                  fontSize: 13, fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase',
                   border: '1px solid rgba(255,255,255,0.2)',
                 }}>
                   {business.category || 'Local Business'}
@@ -851,7 +851,7 @@ export default function BusinessProfilePage() {
                   <span style={{
                     background: 'rgba(201,168,76,0.25)', backdropFilter: 'blur(10px)',
                     color: '#F5D98A', borderRadius: 20, padding: '4px 12px',
-                    fontSize: 11, fontWeight: 700, letterSpacing: 0.5,
+                    fontSize: 13, fontWeight: 700, letterSpacing: 0.5,
                     border: '1px solid rgba(245,217,138,0.35)',
                   }}>
                     ⭐ Front and Center
@@ -861,7 +861,7 @@ export default function BusinessProfilePage() {
                   <span style={{
                     background: 'rgba(91,126,149,0.3)', backdropFilter: 'blur(10px)',
                     color: '#A8D4EC', borderRadius: 20, padding: '4px 12px',
-                    fontSize: 11, fontWeight: 700, letterSpacing: 0.5,
+                    fontSize: 13, fontWeight: 700, letterSpacing: 0.5,
                     border: '1px solid rgba(168,212,236,0.3)',
                   }}>
                     ✓ Highlighted
@@ -896,7 +896,7 @@ export default function BusinessProfilePage() {
           {/* ── Credibility strip ── */}
           <div className="bp-cred-strip">
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 5, color: C.textMuted, fontSize: 13 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 5, color: C.textMuted, fontSize: 15 }}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
                 </svg>
@@ -907,8 +907,8 @@ export default function BusinessProfilePage() {
                   "Manitou Beach, MI · Manitou Beach, MI". */}
               {!isServiceArea && business.address && !/manitou beach/i.test(business.address.trim()) && (
                 <>
-                  <span style={{ color: C.sand, fontSize: 11 }}>·</span>
-                  <span style={{ fontSize: 13, color: C.textMuted }}>{business.address}</span>
+                  <span style={{ color: C.sand, fontSize: 13 }}>·</span>
+                  <span style={{ fontSize: 15, color: C.textMuted }}>{business.address}</span>
                 </>
               )}
               {isServiceArea && (
@@ -916,7 +916,7 @@ export default function BusinessProfilePage() {
                   display: 'inline-flex', alignItems: 'center',
                   background: `${C.sage}12`, border: `1px solid ${C.sage}30`,
                   borderRadius: 20, padding: '3px 10px',
-                  fontSize: 11, fontWeight: 700, color: C.sageDark,
+                  fontSize: 13, fontWeight: 700, color: C.sageDark,
                 }}>
                   {business.businessType === 'Mobile & Markets' ? 'Markets & events' : 'We come to you'}
                 </span>
@@ -926,7 +926,7 @@ export default function BusinessProfilePage() {
                   display: 'inline-flex', alignItems: 'center', gap: 5,
                   background: '#FFF3F0', border: '1px solid #F5C6BB',
                   borderRadius: 20, padding: '3px 10px',
-                  fontSize: 11, fontWeight: 700, color: '#C0392B',
+                  fontSize: 13, fontWeight: 700, color: '#C0392B',
                 }}>
                   🔴 24/7 Emergency
                 </span>
@@ -938,9 +938,9 @@ export default function BusinessProfilePage() {
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="#FBBF24">
                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                   </svg>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: C.text }}>{googleData.rating}</span>
+                  <span style={{ fontSize: 15, fontWeight: 700, color: C.text }}>{googleData.rating}</span>
                   {googleData.reviewCount > 0 && (
-                    <span style={{ fontSize: 12, color: C.textMuted }}>({googleData.reviewCount})</span>
+                    <span style={{ fontSize: 14, color: C.textMuted }}>({googleData.reviewCount})</span>
                   )}
                 </div>
               )}
@@ -952,7 +952,7 @@ export default function BusinessProfilePage() {
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={C.sage} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
                 </svg>
-                <span style={{ fontSize: 11, fontWeight: 700, color: C.sageDark, letterSpacing: 0.2 }}>Verified</span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: C.sageDark, letterSpacing: 0.2 }}>Verified</span>
               </div>
             </div>
           </div>
@@ -964,7 +964,7 @@ export default function BusinessProfilePage() {
               padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap',
             }}>
               <span style={{
-                fontSize: 11, fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase',
+                fontSize: 13, fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase',
                 color: C.textMuted, flexShrink: 0, fontFamily: "'Libre Franklin', sans-serif",
               }}>
                 Compare tiers
@@ -980,7 +980,7 @@ export default function BusinessProfilePage() {
                       key={t.id}
                       href={`/business/${toSlug(t.name)}`}
                       style={{
-                        padding: '6px 16px', borderRadius: 50, fontSize: 12, fontWeight: 700,
+                        padding: '6px 16px', borderRadius: 50, fontSize: 14, fontWeight: 700,
                         textDecoration: 'none', transition: 'all 0.15s',
                         fontFamily: "'Libre Franklin', sans-serif",
                         background: isActive ? C.dusk : C.sand,
@@ -1082,10 +1082,10 @@ export default function BusinessProfilePage() {
                           background: isToday ? `${accent}14` : C.warmWhite,
                           border: isToday ? `2px solid ${accent}50` : `1.5px solid ${C.sand}`,
                         }}>
-                          <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: 1.2, textTransform: 'uppercase', color: isToday ? accent : C.textMuted, marginBottom: 4 }}>
+                          <div style={{ fontSize: 13, fontWeight: 800, letterSpacing: 1.2, textTransform: 'uppercase', color: isToday ? accent : C.textMuted, marginBottom: 4 }}>
                             {isToday ? `${day} · Today` : day}
                           </div>
-                          <div style={{ fontSize: 13, fontWeight: isToday ? 700 : 600, color: h ? (isToday ? accent : C.text) : C.textMuted }}>
+                          <div style={{ fontSize: 15, fontWeight: isToday ? 700 : 600, color: h ? (isToday ? accent : C.text) : C.textMuted }}>
                             {h || 'Closed'}
                           </div>
                         </div>
@@ -1102,8 +1102,8 @@ export default function BusinessProfilePage() {
                       </svg>
                     </div>
                     <div>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: C.text, marginBottom: 2 }}>Hours not listed yet</div>
-                      <div style={{ fontSize: 13, color: C.textMuted }}>
+                      <div style={{ fontSize: 16, fontWeight: 600, color: C.text, marginBottom: 2 }}>Hours not listed yet</div>
+                      <div style={{ fontSize: 15, color: C.textMuted }}>
                         Own this business?{' '}
                         <a href="/update-listing" style={{ color: C.lakeBlue, textDecoration: 'none', fontWeight: 600 }}>
                           Add your hours →
@@ -1129,7 +1129,7 @@ export default function BusinessProfilePage() {
                         <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
                         <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
                       </svg>
-                      <span style={{ fontSize: 13, color: C.textMuted }}>Google</span>
+                      <span style={{ fontSize: 15, color: C.textMuted }}>Google</span>
                     </div>
                   </div>
                   {/* Star rating */}
@@ -1146,7 +1146,7 @@ export default function BusinessProfilePage() {
                           </svg>
                         ))}
                       </div>
-                      <div style={{ fontSize: 12, color: C.textMuted }}>
+                      <div style={{ fontSize: 14, color: C.textMuted }}>
                         {googleData.reviewCount ? `${googleData.reviewCount} reviews` : 'on Google'}
                       </div>
                     </div>
@@ -1155,7 +1155,7 @@ export default function BusinessProfilePage() {
                   {googleData.reviews?.slice(0, 2).map((r, i) => (
                     <div key={i} className="bp-review-card" style={{ marginBottom: i < 1 ? 8 : 0 }}>
                       "{r.text}"
-                      <div style={{ marginTop: 6, fontSize: 11, fontStyle: 'normal', color: C.textMuted, fontWeight: 600 }}>
+                      <div style={{ marginTop: 6, fontSize: 13, fontStyle: 'normal', color: C.textMuted, fontWeight: 600 }}>
                         - {r.author}
                       </div>
                     </div>
@@ -1176,16 +1176,16 @@ export default function BusinessProfilePage() {
                       </svg>
                     </div>
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: C.dusk, marginBottom: 4 }}>
+                      <div style={{ fontSize: 16, fontWeight: 700, color: C.dusk, marginBottom: 4 }}>
                         Get found when people search Google
                       </div>
-                      <p style={{ margin: '0 0 12px', fontSize: 13, color: C.textLight, lineHeight: 1.6 }}>
+                      <p style={{ margin: '0 0 12px', fontSize: 15, color: C.textLight, lineHeight: 1.6 }}>
                         When someone nearby Googles "{business.category?.toLowerCase() || 'your service'} near me", your name, phone number, and hours show up right in the results. No website needed. We handle the whole setup for you - your reviews then appear on this page automatically too.
                       </p>
                       <a
                         href={`/gbp-setup?business=${encodeURIComponent(business.name)}&slug=${encodeURIComponent(toSlug(business.name))}`}
                         style={{
-                          fontSize: 12, fontWeight: 700, color: C.sage, background: 'none',
+                          fontSize: 14, fontWeight: 700, color: C.sage, background: 'none',
                           border: 'none', padding: 0, cursor: 'pointer',
                           fontFamily: "'Libre Franklin', sans-serif",
                           display: 'inline-flex', alignItems: 'center', gap: 4,
@@ -1216,14 +1216,14 @@ export default function BusinessProfilePage() {
                       </svg>
                     </div>
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: C.dusk, marginBottom: 4 }}>
+                      <div style={{ fontSize: 16, fontWeight: 700, color: C.dusk, marginBottom: 4 }}>
                         Show up when people search Google
                       </div>
-                      <p style={{ margin: '0 0 12px', fontSize: 13, color: C.textLight, lineHeight: 1.6 }}>
+                      <p style={{ margin: '0 0 12px', fontSize: 15, color: C.textLight, lineHeight: 1.6 }}>
                         Upgrade to Front and Center and we'll put your business on Google Maps - name, phone, hours, the works. When someone nearby searches "{business.category?.toLowerCase() || 'your service'} near me", you come up. Your reviews show here too. We handle everything, you just verify it's yours.
                       </p>
                       <a href="/business" style={{
-                        fontSize: 12, fontWeight: 700, color: C.sage,
+                        fontSize: 14, fontWeight: 700, color: C.sage,
                         textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4,
                       }}>
                         See listing options →
@@ -1251,7 +1251,7 @@ export default function BusinessProfilePage() {
                         style={{ color: C.lakeBlue, textDecoration: 'none', fontWeight: 500 }}
                       >
                         {business.address}
-                        <span style={{ marginLeft: 4, fontSize: 11, opacity: 0.7 }}>↗</span>
+                        <span style={{ marginLeft: 4, fontSize: 13, opacity: 0.7 }}>↗</span>
                       </a>
                     </ContactDetail>
                   )}
@@ -1274,7 +1274,7 @@ export default function BusinessProfilePage() {
                     >
                       <a href={business.website} target="_blank" rel="noopener noreferrer" style={{ color: C.lakeBlue, textDecoration: 'none', fontWeight: 500 }}>
                         {business.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}
-                        <span style={{ marginLeft: 4, fontSize: 11, opacity: 0.7 }}>↗</span>
+                        <span style={{ marginLeft: 4, fontSize: 13, opacity: 0.7 }}>↗</span>
                       </a>
                     </ContactDetail>
                   )}
@@ -1299,7 +1299,7 @@ export default function BusinessProfilePage() {
                             display: 'flex', alignItems: 'center', gap: 7,
                             background: C.warmWhite, borderRadius: 8, padding: '9px 14px',
                             border: `1.5px solid ${C.sand}`, textDecoration: 'none',
-                            fontSize: 13, fontWeight: 600, color: C.text, flex: 1,
+                            fontSize: 15, fontWeight: 600, color: C.text, flex: 1,
                           }}>
                           {/* Instagram icon */}
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C13584" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1317,7 +1317,7 @@ export default function BusinessProfilePage() {
                             display: 'flex', alignItems: 'center', gap: 7,
                             background: C.warmWhite, borderRadius: 8, padding: '9px 14px',
                             border: `1.5px solid ${C.sand}`, textDecoration: 'none',
-                            fontSize: 13, fontWeight: 600, color: C.text, flex: 1,
+                            fontSize: 15, fontWeight: 600, color: C.text, flex: 1,
                           }}>
                           {/* Facebook icon */}
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="#1877F2">
@@ -1344,8 +1344,8 @@ export default function BusinessProfilePage() {
                       onMouseLeave={e => e.currentTarget.style.borderColor = C.sand}
                     >
                       <span style={{ fontSize: 20 }}>🗺️</span>
-                      <span style={{ flex: 1, fontSize: 14, fontWeight: 500 }}>Get Directions</span>
-                      <span style={{ fontSize: 12, color: C.textMuted }}>Google Maps ↗</span>
+                      <span style={{ flex: 1, fontSize: 16, fontWeight: 500 }}>Get Directions</span>
+                      <span style={{ fontSize: 14, color: C.textMuted }}>Google Maps ↗</span>
                     </a>
                   )}
                 </div>
@@ -1400,7 +1400,7 @@ export default function BusinessProfilePage() {
                 <div style={{ position: 'relative' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
                     <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16 }}>🏖️</div>
-                    <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: 2, textTransform: 'uppercase', color: 'rgba(255,255,255,0.45)' }}>
+                    <div style={{ fontSize: 13, fontWeight: 800, letterSpacing: 2, textTransform: 'uppercase', color: 'rgba(255,255,255,0.75)' }}>
                       Manitou Beach, Michigan
                     </div>
                   </div>
@@ -1410,12 +1410,12 @@ export default function BusinessProfilePage() {
                   }}>
                     Featured on the Devils Lake community guide
                   </div>
-                  <p style={{ margin: '0 0 16px', fontSize: 14, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7 }}>
+                  <p style={{ margin: '0 0 16px', fontSize: 16, color: 'rgba(255,255,255,0.75)', lineHeight: 1.7 }}>
                     {business.name} is part of a curated local directory for Devils Lake, the Irish Hills, and everyone who loves this corner of Michigan.
                   </p>
                   <a href="/" style={{
                     display: 'inline-flex', alignItems: 'center', gap: 6,
-                    fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.65)',
+                    fontSize: 15, fontWeight: 700, color: 'rgba(255,255,255,0.65)',
                     textDecoration: 'none', letterSpacing: 0.3,
                     transition: 'color 0.15s',
                   }}
@@ -1446,10 +1446,10 @@ export default function BusinessProfilePage() {
                       </svg>
                     </div>
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: C.dusk, marginBottom: 4 }}>
+                      <div style={{ fontSize: 16, fontWeight: 700, color: C.dusk, marginBottom: 4 }}>
                         Google Business Profile setup - included with your plan
                       </div>
-                      <p style={{ margin: '0 0 14px', fontSize: 13, color: C.textLight, lineHeight: 1.65 }}>
+                      <p style={{ margin: '0 0 14px', fontSize: 15, color: C.textLight, lineHeight: 1.65 }}>
                         We'll set it up for you. Show up on Google Maps, pull in your reviews automatically, and get the verified badge.
                       </p>
                       <a
@@ -1458,7 +1458,7 @@ export default function BusinessProfilePage() {
                           display: 'inline-flex', alignItems: 'center', gap: 6,
                           background: C.lakeBlue, color: '#fff',
                           borderRadius: 50, padding: '10px 20px',
-                          fontSize: 13, fontWeight: 700,
+                          fontSize: 15, fontWeight: 700,
                           fontFamily: "'Libre Franklin', sans-serif",
                           textDecoration: 'none',
                           boxShadow: `0 4px 12px ${C.lakeBlue}40`,
@@ -1479,14 +1479,14 @@ export default function BusinessProfilePage() {
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
                 }}>
                   <div>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: C.sageDark, marginBottom: 2 }}>Your listing</div>
-                    <div style={{ fontSize: 12, color: C.textMuted }}>Changes go live right away</div>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: C.sageDark, marginBottom: 2 }}>Your listing</div>
+                    <div style={{ fontSize: 14, color: C.textMuted }}>Changes go live right away</div>
                   </div>
                   <button
                     onClick={() => setEditOpen(true)}
                     style={{
                       background: C.sage, color: '#fff', border: 'none', borderRadius: 50,
-                      padding: '11px 22px', cursor: 'pointer', fontSize: 14, fontWeight: 700,
+                      padding: '11px 22px', cursor: 'pointer', fontSize: 16, fontWeight: 700,
                       fontFamily: "'Libre Franklin', sans-serif", flexShrink: 0,
                       boxShadow: `0 4px 14px ${C.sage}50`,
                     }}
@@ -1505,17 +1505,17 @@ export default function BusinessProfilePage() {
                   borderRadius: 16, background: `${accent}07`,
                   border: `1.5px dashed ${accent}35`, padding: '20px 22px',
                 }}>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: C.dusk, marginBottom: 5 }}>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: C.dusk, marginBottom: 5 }}>
                     Is this your business?
                   </div>
-                  <p style={{ margin: '0 0 14px', fontSize: 14, color: C.textLight, lineHeight: 1.65 }}>
+                  <p style={{ margin: '0 0 14px', fontSize: 16, color: C.textLight, lineHeight: 1.65 }}>
                     Verify your phone number to update hours, photos, and details yourself.
                   </p>
                   <button
                     onClick={() => { setClaimOpen(true); setClaimStep('phone'); setClaimError(''); }}
                     style={{
                       background: accent, color: '#fff', border: 'none', borderRadius: 50,
-                      padding: '12px 22px', cursor: 'pointer', fontSize: 14, fontWeight: 700,
+                      padding: '12px 22px', cursor: 'pointer', fontSize: 16, fontWeight: 700,
                       fontFamily: "'Libre Franklin', sans-serif",
                       boxShadow: `0 4px 14px ${accent}45`,
                     }}
@@ -1575,7 +1575,7 @@ export default function BusinessProfilePage() {
                     <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 700, color: C.dusk }}>
                       {actionCopy.title}
                     </div>
-                    <div style={{ fontSize: 13, color: C.textMuted, marginTop: 3 }}>from {business.name}</div>
+                    <div style={{ fontSize: 15, color: C.textMuted, marginTop: 3 }}>from {business.name}</div>
                   </div>
                   <button onClick={() => setQuoteOpen(false)}
                     style={{ background: C.warmWhite, border: 'none', borderRadius: '50%', width: 32, height: 32, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, color: C.textMuted }}>
@@ -1584,29 +1584,29 @@ export default function BusinessProfilePage() {
                 </div>
                 <form onSubmit={handleQuote} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                   <div>
-                    <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, display: 'block', marginBottom: 6 }}>Your Name *</label>
+                    <label style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, display: 'block', marginBottom: 6 }}>Your Name *</label>
                     <input className="bp-input" required placeholder="First and last name"
                       value={quoteForm.name} onChange={e => setQuoteForm(f => ({ ...f, name: e.target.value }))} />
                   </div>
                   <div>
-                    <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, display: 'block', marginBottom: 6 }}>Phone Number *</label>
+                    <label style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, display: 'block', marginBottom: 6 }}>Phone Number *</label>
                     <input className="bp-input" type="tel" required placeholder="Best number to reach you"
                       value={quoteForm.phone} onChange={e => setQuoteForm(f => ({ ...f, phone: e.target.value }))} />
                   </div>
                   <div>
-                    <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, display: 'block', marginBottom: 6 }}>What do you need? (optional)</label>
+                    <label style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, display: 'block', marginBottom: 6 }}>What do you need? (optional)</label>
                     <textarea className="bp-input" rows={3} placeholder={actionCopy.placeholder}
                       value={quoteForm.message} onChange={e => setQuoteForm(f => ({ ...f, message: e.target.value }))}
                       style={{ resize: 'vertical', minHeight: 80 }} />
                   </div>
                   <button type="submit" style={{
                     background: accent, color: '#fff', border: 'none', borderRadius: 10,
-                    padding: '14px', fontSize: 15, fontWeight: 700, cursor: 'pointer',
+                    padding: '14px', fontSize: 17, fontWeight: 700, cursor: 'pointer',
                     fontFamily: "'Libre Franklin', sans-serif", marginTop: 4,
                   }}>
                     Send Request
                   </button>
-                  <p style={{ margin: 0, fontSize: 11, color: C.textMuted, textAlign: 'center' }}>
+                  <p style={{ margin: 0, fontSize: 13, color: C.textMuted, textAlign: 'center' }}>
                     Your info goes directly to {business.name}.
                   </p>
                 </form>
@@ -1619,7 +1619,7 @@ export default function BusinessProfilePage() {
             <div style={{
               position: 'fixed', bottom: 80, left: '50%', transform: 'translateX(-50%)',
               background: C.dusk, color: '#fff', borderRadius: 30, padding: '12px 24px',
-              fontSize: 14, fontWeight: 600, zIndex: 400, whiteSpace: 'nowrap',
+              fontSize: 16, fontWeight: 600, zIndex: 400, whiteSpace: 'nowrap',
               boxShadow: '0 4px 24px rgba(0,0,0,0.3)',
               animation: 'fadeInUp 0.3s ease-out',
             }}>
@@ -1632,7 +1632,7 @@ export default function BusinessProfilePage() {
             <div style={{
               position: 'fixed', bottom: 80, left: '50%', transform: 'translateX(-50%)',
               background: C.sageDark, color: '#fff', borderRadius: 30, padding: '12px 24px',
-              fontSize: 14, fontWeight: 600, zIndex: 400, whiteSpace: 'nowrap',
+              fontSize: 16, fontWeight: 600, zIndex: 400, whiteSpace: 'nowrap',
               boxShadow: '0 4px 24px rgba(0,0,0,0.3)',
             }}>
               ✓ Listing updated
@@ -1648,7 +1648,7 @@ export default function BusinessProfilePage() {
                     <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 700, color: C.dusk }}>
                       {claimStep === 'phone' ? 'Claim This Listing' : 'Enter your code'}
                     </div>
-                    <div style={{ fontSize: 13, color: C.textMuted, marginTop: 3 }}>
+                    <div style={{ fontSize: 15, color: C.textMuted, marginTop: 3 }}>
                       {claimStep === 'phone'
                         ? 'Enter the phone number on file for this business'
                         : `We sent a 6-digit code to ${claimPhone}`}
@@ -1670,16 +1670,16 @@ export default function BusinessProfilePage() {
                       className="bp-input"
                     />
                     {claimError && (
-                      <p style={{ margin: 0, fontSize: 13, color: '#C0392B', background: '#FDF0F0', border: '1px solid #F5C6C6', borderRadius: 6, padding: '10px 14px' }}>{claimError}</p>
+                      <p style={{ margin: 0, fontSize: 15, color: '#C0392B', background: '#FDF0F0', border: '1px solid #F5C6C6', borderRadius: 6, padding: '10px 14px' }}>{claimError}</p>
                     )}
                     <button type="submit" disabled={claimLoading} style={{
                       background: accent, color: '#fff', border: 'none', borderRadius: 10,
-                      padding: '14px', fontSize: 15, fontWeight: 700, cursor: 'pointer',
+                      padding: '14px', fontSize: 17, fontWeight: 700, cursor: 'pointer',
                       fontFamily: "'Libre Franklin', sans-serif", opacity: claimLoading ? 0.7 : 1,
                     }}>
                       {claimLoading ? 'Sending code...' : 'Send verification code'}
                     </button>
-                    <p style={{ margin: 0, fontSize: 11, color: C.textMuted, textAlign: 'center' }}>
+                    <p style={{ margin: 0, fontSize: 13, color: C.textMuted, textAlign: 'center' }}>
                       We send a code to the phone number we have on file for this business.
                     </p>
                   </form>
@@ -1697,17 +1697,17 @@ export default function BusinessProfilePage() {
                       style={{ fontSize: 24, letterSpacing: 8, textAlign: 'center' }}
                     />
                     {claimError && (
-                      <p style={{ margin: 0, fontSize: 13, color: '#C0392B', background: '#FDF0F0', border: '1px solid #F5C6C6', borderRadius: 6, padding: '10px 14px' }}>{claimError}</p>
+                      <p style={{ margin: 0, fontSize: 15, color: '#C0392B', background: '#FDF0F0', border: '1px solid #F5C6C6', borderRadius: 6, padding: '10px 14px' }}>{claimError}</p>
                     )}
                     <button type="submit" disabled={claimLoading} style={{
                       background: C.sage, color: '#fff', border: 'none', borderRadius: 10,
-                      padding: '14px', fontSize: 15, fontWeight: 700, cursor: 'pointer',
+                      padding: '14px', fontSize: 17, fontWeight: 700, cursor: 'pointer',
                       fontFamily: "'Libre Franklin', sans-serif", opacity: claimLoading ? 0.7 : 1,
                     }}>
                       {claimLoading ? 'Verifying...' : 'Verify and unlock editing'}
                     </button>
                     <button type="button" onClick={() => { setClaimStep('phone'); setClaimError(''); setClaimCode(''); }}
-                      style={{ background: 'none', border: 'none', fontSize: 13, color: C.textMuted, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}>
+                      style={{ background: 'none', border: 'none', fontSize: 15, color: C.textMuted, cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif" }}>
                       Use a different number
                     </button>
                   </form>
@@ -1725,7 +1725,7 @@ export default function BusinessProfilePage() {
                     <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 700, color: C.dusk }}>
                       Edit Listing
                     </div>
-                    <div style={{ fontSize: 13, color: C.textMuted, marginTop: 3 }}>{business.name}</div>
+                    <div style={{ fontSize: 15, color: C.textMuted, marginTop: 3 }}>{business.name}</div>
                   </div>
                   <button onClick={() => setEditOpen(false)}
                     style={{ background: C.warmWhite, border: 'none', borderRadius: '50%', width: 32, height: 32, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, color: C.textMuted }}>
@@ -1737,7 +1737,7 @@ export default function BusinessProfilePage() {
 
                   {/* Logo */}
                   <div>
-                    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 8 }}>Logo / Profile Picture</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 8 }}>Logo / Profile Picture</div>
                     <div style={{ display: 'flex', gap: 14, alignItems: 'center', flexWrap: 'wrap' }}>
                       {logoPreview && (
                         <div style={{ width: 100, height: 100, borderRadius: 12, border: `1px solid ${C.sand}`, background: '#fff', overflow: 'hidden', flexShrink: 0 }}>
@@ -1747,13 +1747,13 @@ export default function BusinessProfilePage() {
                       <div>
                         <input ref={logoFileRef} type="file" accept="image/*" onChange={handleLogoChange} style={{ display: 'none' }} />
                         <button type="button" onClick={() => logoFileRef.current?.click()} style={{
-                          fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600,
+                          fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 600,
                           padding: '8px 16px', borderRadius: 6, border: `1.5px solid ${C.sage}`,
                           background: 'transparent', color: C.sage, cursor: 'pointer',
                         }}>
                           {logoPreview ? 'Change logo' : 'Upload logo'}
                         </button>
-                        <p style={{ fontSize: 11, color: C.textMuted, margin: '5px 0 0', fontFamily: "'Libre Franklin', sans-serif" }}>
+                        <p style={{ fontSize: 13, color: C.textMuted, margin: '5px 0 0', fontFamily: "'Libre Franklin', sans-serif" }}>
                           Square image, 400x400px or larger. PNG with transparent background works best.
                         </p>
                       </div>
@@ -1762,7 +1762,7 @@ export default function BusinessProfilePage() {
 
                   {/* Hero photo */}
                   <div>
-                    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 8 }}>Cover Photo</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 8 }}>Cover Photo</div>
                     <div style={{ display: 'flex', gap: 14, alignItems: 'center', flexWrap: 'wrap' }}>
                       {heroPreview && (
                         <img src={heroPreview} alt="Cover preview" style={{ width: 80, height: 52, objectFit: 'cover', borderRadius: 8, border: `1px solid ${C.sand}` }} />
@@ -1770,13 +1770,13 @@ export default function BusinessProfilePage() {
                       <div>
                         <input ref={heroFileRef} type="file" accept="image/*" capture="environment" onChange={handleHeroChange} style={{ display: 'none' }} />
                         <button type="button" onClick={() => heroFileRef.current?.click()} style={{
-                          fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600,
+                          fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 600,
                           padding: '8px 16px', borderRadius: 6, border: `1.5px solid ${C.sage}`,
                           background: 'transparent', color: C.sage, cursor: 'pointer',
                         }}>
                           {heroPreview ? 'Change cover photo' : 'Upload cover photo'}
                         </button>
-                        <p style={{ fontSize: 11, color: C.textMuted, margin: '5px 0 0', fontFamily: "'Libre Franklin', sans-serif" }}>
+                        <p style={{ fontSize: 13, color: C.textMuted, margin: '5px 0 0', fontFamily: "'Libre Franklin', sans-serif" }}>
                           Wide landscape photo, 1400x500px or larger. Storefront, interior, or scenery.
                         </p>
                       </div>
@@ -1786,8 +1786,8 @@ export default function BusinessProfilePage() {
                   {/* Photo Gallery - Premium only */}
                   {business.tier === 'premium' && (
                     <div>
-                      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: accent, marginBottom: 10 }}>
-                        Photo Gallery <span style={{ fontWeight: 400, color: C.textMuted, textTransform: 'none', letterSpacing: 0, fontSize: 11 }}>· up to 6 photos</span>
+                      <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: accent, marginBottom: 10 }}>
+                        Photo Gallery <span style={{ fontWeight: 400, color: C.textMuted, textTransform: 'none', letterSpacing: 0, fontSize: 13 }}>· up to 6 photos</span>
                       </div>
                       <div className="bp-gallery-slot">
                         {gallerySlots.map((slot, i) => (
@@ -1804,37 +1804,37 @@ export default function BusinessProfilePage() {
                               <>
                                 <img src={slot.preview} alt={`Gallery ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                                 <button type="button" onClick={e => { e.stopPropagation(); removeGallerySlot(i); }}
-                                  style={{ position: 'absolute', top: 4, right: 4, width: 22, height: 22, borderRadius: '50%', background: 'rgba(0,0,0,0.65)', color: '#fff', border: 'none', cursor: 'pointer', fontSize: 15, lineHeight: '22px', textAlign: 'center', padding: 0 }}>
+                                  style={{ position: 'absolute', top: 4, right: 4, width: 22, height: 22, borderRadius: '50%', background: 'rgba(0,0,0,0.65)', color: '#fff', border: 'none', cursor: 'pointer', fontSize: 17, lineHeight: '22px', textAlign: 'center', padding: 0 }}>
                                   ×
                                 </button>
                                 <button type="button" onClick={e => { e.stopPropagation(); galleryFileRefs.current[i]?.click(); }}
-                                  style={{ position: 'absolute', bottom: 4, left: '50%', transform: 'translateX(-50%)', fontSize: 10, fontWeight: 700, background: 'rgba(0,0,0,0.55)', color: '#fff', border: 'none', borderRadius: 4, padding: '2px 7px', cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                                  style={{ position: 'absolute', bottom: 4, left: '50%', transform: 'translateX(-50%)', fontSize: 13, fontWeight: 700, background: 'rgba(0,0,0,0.55)', color: '#fff', border: 'none', borderRadius: 4, padding: '2px 7px', cursor: 'pointer', whiteSpace: 'nowrap' }}>
                                   Change
                                 </button>
                               </>
                             ) : (
                               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: 2 }}>
                                 <div style={{ fontSize: 20, color: C.textMuted, lineHeight: 1 }}>+</div>
-                                <div style={{ fontSize: 9, color: C.textMuted, fontWeight: 600, letterSpacing: 0.5 }}>Add photo</div>
+                                <div style={{ fontSize: 12, color: C.textMuted, fontWeight: 600, letterSpacing: 0.5 }}>Add photo</div>
                               </div>
                             )}
                           </div>
                         ))}
                       </div>
-                      <p style={{ fontSize: 11, color: C.textMuted, margin: '6px 0 0' }}>Tap any slot to add a photo. Visitors can click to view full size.</p>
+                      <p style={{ fontSize: 13, color: C.textMuted, margin: '6px 0 0' }}>Tap any slot to add a photo. Visitors can click to view full size.</p>
                     </div>
                   )}
 
                   {/* Tagline */}
                   <div>
-                    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>Tagline</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>Tagline</div>
                     <input type="text" className="bp-input"
                       placeholder="One line that captures what makes you special"
                       maxLength={80}
                       value={editForm.tagline || ''}
                       onChange={e => setEditForm(f => ({ ...f, tagline: e.target.value }))}
                     />
-                    <p style={{ fontSize: 11, color: C.textMuted, margin: '5px 0 0' }}>Shows under your business name on your profile</p>
+                    <p style={{ fontSize: 13, color: C.textMuted, margin: '5px 0 0' }}>Shows under your business name on your profile</p>
                   </div>
 
                   {/* Emergency availability - service categories only */}
@@ -1853,15 +1853,15 @@ export default function BusinessProfilePage() {
                         style={{ width: 18, height: 18, accentColor: '#C0392B', cursor: 'pointer', flexShrink: 0 }}
                       />
                       <div>
-                        <div style={{ fontSize: 13, fontWeight: 700, color: C.dusk }}>Available for after-hours emergencies</div>
-                        <div style={{ fontSize: 12, color: C.textMuted, marginTop: 2 }}>Shows a badge on your profile so customers know they can call in a pinch</div>
+                        <div style={{ fontSize: 15, fontWeight: 700, color: C.dusk }}>Available for after-hours emergencies</div>
+                        <div style={{ fontSize: 14, color: C.textMuted, marginTop: 2 }}>Shows a badge on your profile so customers know they can call in a pinch</div>
                       </div>
                     </label>
                   )}
 
                   {/* Accent colour */}
                   <div>
-                    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 10 }}>Profile Colour</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 10 }}>Profile Colour</div>
                     <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
                       {[
                         { hex: '#7A8E72', label: 'Sage' },
@@ -1896,17 +1896,17 @@ export default function BusinessProfilePage() {
                     {editForm.accentColor && (
                       <button type="button"
                         onClick={() => setEditForm(f => ({ ...f, accentColor: '' }))}
-                        style={{ background: 'none', border: 'none', fontSize: 12, color: C.textMuted, cursor: 'pointer', padding: '4px 0', fontFamily: "'Libre Franklin', sans-serif" }}
+                        style={{ background: 'none', border: 'none', fontSize: 14, color: C.textMuted, cursor: 'pointer', padding: '4px 0', fontFamily: "'Libre Franklin', sans-serif" }}
                       >
                         Reset to default
                       </button>
                     )}
-                    <p style={{ fontSize: 11, color: C.textMuted, margin: '6px 0 0' }}>Sets the colour used throughout your profile page</p>
+                    <p style={{ fontSize: 13, color: C.textMuted, margin: '6px 0 0' }}>Sets the colour used throughout your profile page</p>
                   </div>
 
                   {/* Description */}
                   <div>
-                    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>Description</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>Description</div>
                     <textarea
                       className="bp-input" rows={3}
                       placeholder="Brief description of your business (2-3 sentences)"
@@ -1919,12 +1919,12 @@ export default function BusinessProfilePage() {
                   {/* Phone + Website side by side on wide screens */}
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                     <div>
-                      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>Phone</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>Phone</div>
                       <input type="tel" className="bp-input" placeholder="Phone number"
                         value={editForm.phone || ''} onChange={e => setEditForm(f => ({ ...f, phone: e.target.value }))} />
                     </div>
                     <div>
-                      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>Website</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>Website</div>
                       <input type="text" className="bp-input" placeholder="yoursite.com"
                         value={editForm.website || ''} onChange={e => setEditForm(f => ({ ...f, website: e.target.value }))} />
                     </div>
@@ -1932,7 +1932,7 @@ export default function BusinessProfilePage() {
 
                   {/* Address */}
                   <div>
-                    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>Address</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>Address</div>
                     <input type="text" className="bp-input" placeholder="Street address"
                       value={editForm.address || ''} onChange={e => setEditForm(f => ({ ...f, address: e.target.value }))} />
                   </div>
@@ -1940,12 +1940,12 @@ export default function BusinessProfilePage() {
                   {/* Social links */}
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                     <div>
-                      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>Instagram</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>Instagram</div>
                       <input type="text" className="bp-input" placeholder="@handle or full URL"
                         value={editForm.socialInstagram || ''} onChange={e => setEditForm(f => ({ ...f, socialInstagram: e.target.value }))} />
                     </div>
                     <div>
-                      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>Facebook</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>Facebook</div>
                       <input type="text" className="bp-input" placeholder="Page URL or name"
                         value={editForm.socialFacebook || ''} onChange={e => setEditForm(f => ({ ...f, socialFacebook: e.target.value }))} />
                     </div>
@@ -1954,13 +1954,13 @@ export default function BusinessProfilePage() {
                   {/* Google Place ID - featured/premium only */}
                   {['featured', 'premium'].includes(business.tier) && (
                     <div>
-                      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>Google Place ID</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 6 }}>Google Place ID</div>
                       <input type="text" className="bp-input"
                         placeholder="ChIJ..."
                         value={editForm.googlePlaceId || ''}
                         onChange={e => setEditForm(f => ({ ...f, googlePlaceId: e.target.value }))}
                       />
-                      <p style={{ fontSize: 11, color: C.textMuted, margin: '5px 0 0', lineHeight: 1.5 }}>
+                      <p style={{ fontSize: 13, color: C.textMuted, margin: '5px 0 0', lineHeight: 1.5 }}>
                         Find yours at{' '}
                         <a href="https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder" target="_blank" rel="noopener noreferrer" style={{ color: C.lakeBlue }}>
                           Google's Place ID Finder
@@ -1972,32 +1972,32 @@ export default function BusinessProfilePage() {
 
                   {/* Hours */}
                   <div>
-                    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 10 }}>Hours</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 10 }}>Hours</div>
                     <div className="bp-hours-editor">
                       {DAYS.map(day => (
                         <div key={day}>
-                          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase', color: C.textMuted, marginBottom: 4 }}>{day}</div>
+                          <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase', color: C.textMuted, marginBottom: 4 }}>{day}</div>
                           <input
                             type="text"
                             className="bp-input"
                             placeholder="e.g. 9am-5pm"
                             value={editHours[day] || ''}
                             onChange={e => setEditHours(h => ({ ...h, [day]: e.target.value }))}
-                            style={{ fontSize: 12, padding: '8px 10px' }}
+                            style={{ fontSize: 14, padding: '8px 10px' }}
                           />
                         </div>
                       ))}
                     </div>
-                    <p style={{ fontSize: 11, color: C.textMuted, margin: '6px 0 0' }}>Leave blank for Closed</p>
+                    <p style={{ fontSize: 13, color: C.textMuted, margin: '6px 0 0' }}>Leave blank for Closed</p>
                   </div>
 
                   {editError && (
-                    <p style={{ margin: 0, fontSize: 13, color: '#C0392B', background: '#FDF0F0', border: '1px solid #F5C6C6', borderRadius: 6, padding: '10px 14px' }}>{editError}</p>
+                    <p style={{ margin: 0, fontSize: 15, color: '#C0392B', background: '#FDF0F0', border: '1px solid #F5C6C6', borderRadius: 6, padding: '10px 14px' }}>{editError}</p>
                   )}
 
                   <button type="submit" disabled={editLoading} style={{
                     background: C.sage, color: '#fff', border: 'none', borderRadius: 10,
-                    padding: '15px', fontSize: 15, fontWeight: 700, cursor: 'pointer',
+                    padding: '15px', fontSize: 17, fontWeight: 700, cursor: 'pointer',
                     fontFamily: "'Libre Franklin', sans-serif", marginTop: 4,
                     opacity: editLoading ? 0.7 : 1,
                   }}>
@@ -2074,10 +2074,10 @@ function ContactDetail({ icon, label, children, accent }) {
         </svg>
       </div>
       <div>
-        <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 2 }}>
+        <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: C.textMuted, marginBottom: 2 }}>
           {label}
         </div>
-        <div style={{ fontSize: 14, color: C.text }}>
+        <div style={{ fontSize: 16, color: C.text }}>
           {children}
         </div>
       </div>

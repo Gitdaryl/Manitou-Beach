@@ -60,7 +60,7 @@ function RoundLakeHero() {
       <div style={{
         position: "absolute", right: -10, top: "50%", transform: "translateY(-50%)",
         fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(140px, 22vw, 320px)",
-        fontWeight: 700, color: "rgba(255,255,255,0.04)", lineHeight: 1,
+        fontWeight: 700, color: "rgba(255,255,255,0.75)", lineHeight: 1,
         userSelect: "none", letterSpacing: -12, pointerEvents: "none",
       }}>
         515
@@ -68,7 +68,7 @@ function RoundLakeHero() {
 
       <div style={{ maxWidth: 960, margin: "0 auto", position: "relative", zIndex: 1 }}>
         <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? "none" : "translateY(24px)", transition: "all 0.9s ease" }}>
-          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 28 }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.75)", marginBottom: 28 }}>
             Lenawee County · Irish Hills
           </div>
           <h1 style={{
@@ -80,7 +80,7 @@ function RoundLakeHero() {
           </h1>
           <p style={{
             fontFamily: "'Libre Franklin', sans-serif", fontSize: "clamp(14px, 1.6vw, 17px)",
-            color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 480, margin: "0 0 28px 0",
+            color: "rgba(255,255,255,0.75)", lineHeight: 1.8, maxWidth: 480, margin: "0 0 28px 0",
           }}>
             515 acres of clear water, 67 feet deep. The quieter side of lake life - connected to Devils Lake by a shallow channel and to the Manitou Beach community by everything else.
           </p>
@@ -110,7 +110,7 @@ function RoundLakeStatsSection() {
                 <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, color: C.sunsetLight, fontWeight: 400, marginBottom: 8, lineHeight: 1.2 }}>
                   {stat.value}
                 </div>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.65)", fontWeight: 600 }}>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 2, textTransform: "uppercase", color: "rgba(255,255,255,0.65)", fontWeight: 600 }}>
                   {stat.label}
                 </div>
               </div>
@@ -157,7 +157,7 @@ function RoundLakeHistorySection() {
                 <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.sage, marginBottom: 4 }}>
                   {item.year}
                 </div>
-                <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.7, margin: 0, maxWidth: 560 }}>
+                <p style={{ fontSize: 17, color: C.textLight, lineHeight: 1.7, margin: 0, maxWidth: 560 }}>
                   {item.event}
                 </p>
               </div>
@@ -203,7 +203,7 @@ function RoundLakeFishingSection() {
                   <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text, margin: "0 0 6px 0" }}>
                     {fish.name}
                   </h3>
-                  <p style={{ fontSize: 12, color: C.textLight, lineHeight: 1.6, margin: 0 }}>
+                  <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.6, margin: 0 }}>
                     {fish.note}
                   </p>
                 </div>
@@ -224,7 +224,7 @@ function RoundLakeFishingSection() {
               <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 3vw, 32px)", fontWeight: 400, color: C.cream, margin: "0 0 12px 0", lineHeight: 1.2 }}>
                 Devils & Round Lake Tip Up Festival
               </h3>
-              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, margin: "0 0 20px 0", maxWidth: 500 }}>
+              <p style={{ fontSize: 16, color: "rgba(255,255,255,0.75)", lineHeight: 1.7, margin: "0 0 20px 0", maxWidth: 500 }}>
                 Ice fishing contests for pike, walleye, bluegill, crappie, and perch. Plus snowmobile racing, ATV races, outhouse races, and community fundraising. One of the longest-running winter festivals in Michigan.
               </p>
               <Btn href="/events" variant="outlineLight" small>See All Events →</Btn>
@@ -243,7 +243,7 @@ function RoundLakeCommunitySection() {
         <FadeIn>
           <SectionLabel light>The Neighborhood</SectionLabel>
           <SectionTitle light>The Quieter Side of Lake Life</SectionTitle>
-          <p style={{ fontSize: 16, color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 560, margin: "0 0 48px 0" }}>
+          <p style={{ fontSize: 16, color: "rgba(255,255,255,0.75)", lineHeight: 1.8, maxWidth: 560, margin: "0 0 48px 0" }}>
             No bars. No marinas. No tourist attractions. Just homes on the water, families who've been here for generations, and the kind of silence you can't find on the party lake across the road.
           </p>
         </FadeIn>
@@ -262,7 +262,7 @@ function RoundLakeCommunitySection() {
                 <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 19, fontWeight: 400, color: C.cream, margin: "0 0 10px 0", lineHeight: 1.3 }}>
                   {item.title}
                 </h3>
-                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, margin: 0 }}>
+                <p style={{ fontSize: 16, color: "rgba(255,255,255,0.75)", lineHeight: 1.7, margin: 0 }}>
                   {item.desc}
                 </p>
               </div>
@@ -277,7 +277,7 @@ function RoundLakeCommunitySection() {
             <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(18px, 2.5vw, 26px)", fontWeight: 400, color: C.cream, margin: "0 0 12px 0" }}>
               Devils Lake & Round Lake Men's Club
             </h3>
-            <p style={{ fontSize: 14, color: "rgba(255,255,255,0.35)", lineHeight: 1.7, maxWidth: 480, margin: "0 auto" }}>
+            <p style={{ fontSize: 16, color: "rgba(255,255,255,0.75)", lineHeight: 1.7, maxWidth: 480, margin: "0 auto" }}>
               A charitable nonprofit that donates laptops to students, supports Toys for Tots, runs benefit auctions, and sponsors Shop with a Hero. The club that ties both lakes together.
             </p>
           </div>
@@ -314,13 +314,13 @@ export function LakesPreservationBanner() {
             >
               <div style={{ fontSize: 32, lineHeight: 1 }}>🌿</div>
               <div style={{ flex: 1, minWidth: 200 }}>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 2.5, textTransform: "uppercase", color: C.lakeBlue, marginBottom: 6 }}>Community PSA</div>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 2.5, textTransform: "uppercase", color: C.lakeBlue, marginBottom: 6 }}>Community PSA</div>
                 <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.text, margin: "0 0 6px 0" }}>Lakes Preservation League</h3>
-                <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.65, margin: 0, maxWidth: 540 }}>
+                <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.65, margin: 0, maxWidth: 540 }}>
                   A nonprofit dedicated to protecting and preserving the natural health of area lakes through water quality monitoring, invasive species management, and community education. These lakes are worth protecting.
                 </p>
               </div>
-              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.lakeBlue, whiteSpace: "nowrap" }}>
+              <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.lakeBlue, whiteSpace: "nowrap" }}>
                 Learn More →
               </div>
             </div>

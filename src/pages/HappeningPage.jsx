@@ -60,7 +60,7 @@ function HappeningHero() {
         fontFamily: "'Libre Baskerville', serif",
         fontSize: "clamp(140px, 22vw, 320px)",
         fontWeight: 700,
-        color: "rgba(255,255,255,0.06)",
+        color: "rgba(255,255,255,0.75)",
         lineHeight: 1,
         userSelect: "none",
         letterSpacing: -12,
@@ -72,7 +72,7 @@ function HappeningHero() {
 
       <div style={{ maxWidth: 960, margin: "0 auto", position: "relative", zIndex: 2 }}>
         <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? "none" : "translateY(24px)", transition: "all 0.9s ease" }}>
-          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 28 }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 5, textTransform: "uppercase", color: "rgba(255,255,255,0.75)", marginBottom: 28 }}>
             Events & Community Calendar
           </div>
           <h1 style={{
@@ -141,7 +141,7 @@ function WeeklyEventsSection({ events, onEventClick }) {
         </FadeIn>
 
         {events.length === 0 ? (
-          <div style={{ padding: "40px 0", fontSize: 14, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
+          <div style={{ padding: "40px 0", fontSize: 16, color: C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
             Weekly regulars will appear here once added. Add events to Notion with Recurring = Weekly.
           </div>
         ) : (
@@ -196,12 +196,12 @@ function WeeklyEventsSection({ events, onEventClick }) {
                       <LifecycleRibbon event={event} />
                     </div>
                     {event.changeNote && LIFECYCLE_BADGES[event.lifecycle] && (
-                      <div style={{ fontSize: 13, color: LIFECYCLE_BADGES[event.lifecycle].color, fontStyle: "italic", marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>
+                      <div style={{ fontSize: 15, color: LIFECYCLE_BADGES[event.lifecycle].color, fontStyle: "italic", marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>
                         {event.changeNote}
                       </div>
                     )}
                     {event.location && (
-                      <div style={{ fontSize: 13, color: C.textMuted, marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>
+                      <div style={{ fontSize: 15, color: C.textMuted, marginBottom: 6, fontFamily: "'Libre Franklin', sans-serif" }}>
                         {event.location}
                       </div>
                     )}
@@ -213,7 +213,7 @@ function WeeklyEventsSection({ events, onEventClick }) {
                       const displayDesc = isLong && !isExpanded ? desc.slice(0, WEEKLY_DESC_LIMIT).trimEnd() + "…" : desc;
                       return (
                         <div>
-                          <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, margin: 0, maxWidth: 520, whiteSpace: "pre-line" }}>
+                          <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.7, margin: 0, maxWidth: 520, whiteSpace: "pre-line" }}>
                             {displayDesc}
                           </p>
                           {isLong && (
@@ -221,7 +221,7 @@ function WeeklyEventsSection({ events, onEventClick }) {
                               onClick={e => { e.stopPropagation(); setExpanded(prev => ({ ...prev, [event.id]: !isExpanded })); }}
                               style={{
                                 background: "none", border: "none", padding: "4px 0 0", cursor: "pointer",
-                                fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 600,
+                                fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 600,
                                 color: C.textMuted, letterSpacing: 0.5,
                               }}
                             >
@@ -232,7 +232,7 @@ function WeeklyEventsSection({ events, onEventClick }) {
                       );
                     })()}
                     {recurrenceLabel(event) && (
-                      <div style={{ fontSize: 12, color: C.textMuted, fontStyle: "italic", marginTop: 6, fontFamily: "'Libre Franklin', sans-serif" }}>
+                      <div style={{ fontSize: 14, color: C.textMuted, fontStyle: "italic", marginTop: 6, fontFamily: "'Libre Franklin', sans-serif" }}>
                         {recurrenceLabel(event)}
                       </div>
                     )}
@@ -242,7 +242,7 @@ function WeeklyEventsSection({ events, onEventClick }) {
                   <div style={{ paddingTop: 8, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8 }}>
                     <span title={event.cost || undefined} style={{
                       fontFamily: "'Libre Franklin', sans-serif",
-                      fontSize: 11, fontWeight: 600, letterSpacing: 1,
+                      fontSize: 13, fontWeight: 600, letterSpacing: 1,
                       color: event.cost === "Free" || event.cost === "Free to watch" ? C.sage : C.sunset,
                       background: event.cost === "Free" || event.cost === "Free to watch" ? `${C.sage}15` : `${C.sunset}15`,
                       padding: "5px 12px", borderRadius: 20,
@@ -310,7 +310,7 @@ function EventShareBtn({ event, color }) {
     display: "inline-flex", alignItems: "center", gap: 4,
     padding: "4px 10px", borderRadius: 14, border: "none",
     background: `${color || C.sage}12`, color: color || C.sage,
-    fontFamily: "'Libre Franklin', sans-serif", fontSize: 10, fontWeight: 600,
+    fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600,
     letterSpacing: 0.5, cursor: "pointer", transition: "all 0.2s",
     whiteSpace: "nowrap",
   };
@@ -350,7 +350,7 @@ function EventShareBtn({ event, color }) {
                 padding: "8px 14px", border: "none", borderRadius: 6,
                 background: key === "copy" && copied ? `${C.sage}30` : "transparent",
                 color: key === "copy" && copied ? C.sage : C.sand,
-                fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 500,
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 500,
                 cursor: "pointer", transition: "background 0.15s",
               }}
               onMouseEnter={e => { if (!(key === "copy" && copied)) e.currentTarget.style.background = "rgba(255,255,255,0.08)"; }}
@@ -463,7 +463,7 @@ function EventRow({ event, onEventClick, isLast, variant = "default" }) {
           {event._virtual && event.recurringDay && (
             <span style={{
               fontFamily: "'Libre Franklin', sans-serif",
-              fontSize: 9, fontWeight: 700, letterSpacing: 1.5,
+              fontSize: 12, fontWeight: 700, letterSpacing: 1.5,
               textTransform: "uppercase",
               color: C.lakeBlue, background: `${C.lakeBlue}15`,
               padding: "3px 10px", borderRadius: 10,
@@ -475,7 +475,7 @@ function EventRow({ event, onEventClick, isLast, variant = "default" }) {
           {event.promoType && (!event.promoEnd || new Date(event.promoEnd + 'T23:59:59') >= new Date()) && (
             <span style={{
               fontFamily: "'Libre Franklin', sans-serif",
-              fontSize: 9, fontWeight: 700, letterSpacing: 1.5,
+              fontSize: 12, fontWeight: 700, letterSpacing: 1.5,
               textTransform: "uppercase",
               color: C.sage, background: `${C.sage}18`,
               padding: "3px 10px", borderRadius: 10,
@@ -485,13 +485,13 @@ function EventRow({ event, onEventClick, isLast, variant = "default" }) {
             </span>
           )}
         </div>
-        <div style={{ fontSize: 12, color: isHero ? "rgba(255,255,255,0.45)" : C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
+        <div style={{ fontSize: 14, color: isHero ? "rgba(255,255,255,0.75)" : C.textMuted, fontFamily: "'Libre Franklin', sans-serif" }}>
           {event.time && <span>{event.time}{event.timeEnd ? ` – ${event.timeEnd}` : ""}</span>}
           {event.time && event.location && <span style={{ margin: "0 6px", opacity: 0.4 }}>·</span>}
           {event.location && <span>{event.location}</span>}
         </div>
         {event.changeNote && LIFECYCLE_BADGES[event.lifecycle] && (
-          <div style={{ fontSize: 12, color: LIFECYCLE_BADGES[event.lifecycle].color, fontStyle: "italic", marginTop: 4, fontFamily: "'Libre Franklin', sans-serif" }}>
+          <div style={{ fontSize: 14, color: LIFECYCLE_BADGES[event.lifecycle].color, fontStyle: "italic", marginTop: 4, fontFamily: "'Libre Franklin', sans-serif" }}>
             {event.changeNote}
           </div>
         )}
@@ -500,7 +500,7 @@ function EventRow({ event, onEventClick, isLast, variant = "default" }) {
       <div className="calendar-cost-badge" style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
         <span title={event.cost || undefined} style={{
           fontFamily: "'Libre Franklin', sans-serif",
-          fontSize: 11, fontWeight: 600, letterSpacing: 1,
+          fontSize: 13, fontWeight: 600, letterSpacing: 1,
           color: event.cost === "Free" || event.cost === "Free to attend" || event.cost === "Free to watch" ? C.sage : C.sunset,
           background: event.cost === "Free" || event.cost === "Free to attend" || event.cost === "Free to watch" ? `${C.sage}15` : `${C.sunset}15`,
           padding: "5px 12px", borderRadius: 20,
@@ -513,7 +513,7 @@ function EventRow({ event, onEventClick, isLast, variant = "default" }) {
         {event.ticketsEnabled && (
           <span style={{
             fontFamily: "'Libre Franklin', sans-serif",
-            fontSize: 9, fontWeight: 700, letterSpacing: 1.5,
+            fontSize: 12, fontWeight: 700, letterSpacing: 1.5,
             color: event.ticketCapacity > 0 && event.ticketsSold >= event.ticketCapacity ? "#ff6b6b" : C.sage,
             textTransform: "uppercase", whiteSpace: "nowrap",
           }}>
@@ -521,17 +521,17 @@ function EventRow({ event, onEventClick, isLast, variant = "default" }) {
           </span>
         )}
         {event.rsvpEnabled && event.rsvpCapacity > 0 && event.rsvpsCount >= event.rsvpCapacity ? (
-          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1.5, color: "#ff6b6b", textTransform: "uppercase", whiteSpace: "nowrap" }}>
+          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, color: "#ff6b6b", textTransform: "uppercase", whiteSpace: "nowrap" }}>
             Sold Out
           </span>
         ) : event.rsvpEnabled && event.rsvpCapacity > 0 && (event.rsvpCapacity - event.rsvpsCount) <= 5 ? (
-          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1.5, color: C.sunset, textTransform: "uppercase", whiteSpace: "nowrap" }}>
+          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, color: C.sunset, textTransform: "uppercase", whiteSpace: "nowrap" }}>
             {event.rsvpCapacity - event.rsvpsCount} spot{event.rsvpCapacity - event.rsvpsCount === 1 ? "" : "s"} left
           </span>
         ) : event.attendance && !event.ticketsEnabled && (
           <span style={{
             fontFamily: "'Libre Franklin', sans-serif",
-            fontSize: 9, fontWeight: 700, letterSpacing: 1.5,
+            fontSize: 12, fontWeight: 700, letterSpacing: 1.5,
             color: ATTENDANCE_COLORS[event.attendance] || C.sage,
             textTransform: "uppercase", whiteSpace: "nowrap",
           }}>
@@ -539,17 +539,17 @@ function EventRow({ event, onEventClick, isLast, variant = "default" }) {
           </span>
         )}
         {event.updated && (
-          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1.5, color: C.sunsetLight, textTransform: "uppercase", whiteSpace: "nowrap" }}>
+          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, color: C.sunsetLight, textTransform: "uppercase", whiteSpace: "nowrap" }}>
             ↻ Details Updated
           </span>
         )}
         {event.vendorRegEnabled && (
-          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1.5, color: "#8B5E3C", textTransform: "uppercase", whiteSpace: "nowrap" }}>
+          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, color: "#8B5E3C", textTransform: "uppercase", whiteSpace: "nowrap" }}>
             Vendors Welcome
           </span>
         )}
         {event.videoUrl && (
-          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1.5, color: C.sunset, background: `${C.sunset}18`, padding: "3px 10px", borderRadius: 10, textTransform: "uppercase", whiteSpace: "nowrap" }}>
+          <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, color: C.sunset, background: `${C.sunset}18`, padding: "3px 10px", borderRadius: 10, textTransform: "uppercase", whiteSpace: "nowrap" }}>
             ▶ Video
           </span>
         )}
@@ -650,10 +650,10 @@ function CalendarSection({ events, weeklyEvents = [], onEventClick, activeFilter
       <section style={{ background: C.cream, padding: "80px 24px" }}>
         <div style={{ maxWidth: 680, margin: "0 auto", textAlign: "center", background: "#FFF8F0", border: "1px solid #F0E4D0", borderRadius: 16, padding: "44px 28px" }}>
           <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, color: C.text, marginBottom: 10 }}>We can't load events right now</div>
-          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.textMuted, lineHeight: 1.7, margin: "0 0 24px" }}>
+          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, color: C.textMuted, lineHeight: 1.7, margin: "0 0 24px" }}>
             This is a temporary hiccup on our end &mdash; not a quiet week. The calendar is just having trouble loading. Please try again in a moment.
           </p>
-          <button onClick={() => window.location.reload()} className="btn-animated" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", padding: "12px 28px", borderRadius: 24, border: "none", background: C.sunset, color: C.cream, cursor: "pointer" }}>
+          <button onClick={() => window.location.reload()} className="btn-animated" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", padding: "12px 28px", borderRadius: 24, border: "none", background: C.sunset, color: C.cream, cursor: "pointer" }}>
             Refresh
           </button>
         </div>
@@ -684,12 +684,12 @@ function CalendarSection({ events, weeklyEvents = [], onEventClick, activeFilter
                     className="btn-animated"
                     style={{
                       fontFamily: "'Libre Franklin', sans-serif",
-                      fontSize: 12, fontWeight: 600, letterSpacing: 1,
+                      fontSize: 14, fontWeight: 600, letterSpacing: 1,
                       textTransform: "uppercase",
                       padding: "8px 18px", borderRadius: 24,
                       border: isActive ? "none" : "1.5px solid rgba(255,255,255,0.15)",
                       background: isActive ? (cat === "All" ? "rgba(255,255,255,0.12)" : catColor) : "transparent",
-                      color: isActive ? C.cream : "rgba(255,255,255,0.45)",
+                      color: isActive ? C.cream : "rgba(255,255,255,0.75)",
                       cursor: "pointer",
                       transition: "all 0.2s",
                     }}
@@ -712,11 +712,11 @@ function CalendarSection({ events, weeklyEvents = [], onEventClick, activeFilter
           ) : (
             <FadeIn>
               <div style={{ padding: "32px 0 16px", textAlign: "center" }}>
-                <p style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: "rgba(255,255,255,0.35)", margin: "0 0 8px 0" }}>
+                <p style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: "rgba(255,255,255,0.75)", margin: "0 0 8px 0" }}>
                   Quiet week at the lake
                 </p>
                 {nextEvent && (
-                  <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.3)" }}>
+                  <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: "rgba(255,255,255,0.75)" }}>
                     Next up: <strong style={{ color: C.sunsetLight }}>{nextEvent.name}</strong> - {formatEventDate(nextEvent.date)}
                   </p>
                 )}
@@ -761,7 +761,7 @@ function CalendarSection({ events, weeklyEvents = [], onEventClick, activeFilter
                         </span>
                         <span style={{
                           fontFamily: "'Libre Franklin', sans-serif",
-                          fontSize: 12, fontWeight: 600, letterSpacing: 1,
+                          fontSize: 14, fontWeight: 600, letterSpacing: 1,
                           color: C.textMuted, textTransform: "uppercase",
                         }}>
                           {monthEvents.length} event{monthEvents.length !== 1 ? "s" : ""}
@@ -800,7 +800,7 @@ function CalendarSection({ events, weeklyEvents = [], onEventClick, activeFilter
       {/* Empty state - no events at all */}
       {filtered.length === 0 && (
         <section style={{ background: C.cream, padding: "80px 24px" }}>
-          <div style={{ maxWidth: 1100, margin: "0 auto", textAlign: "center", padding: "60px 0", color: C.textMuted, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif" }}>
+          <div style={{ maxWidth: 1100, margin: "0 auto", textAlign: "center", padding: "60px 0", color: C.textMuted, fontSize: 16, fontFamily: "'Libre Franklin', sans-serif" }}>
             No events in this category yet. Check back soon!
           </div>
         </section>
@@ -817,14 +817,14 @@ function VideoMeta({ video }) {
     <div>
       <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 10 }}>
         <CategoryPill>{video.category}</CategoryPill>
-        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, color: "rgba(255,255,255,0.3)", letterSpacing: 1 }}>
+        <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.75)", letterSpacing: 1 }}>
           {video.date}
         </span>
       </div>
       <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.cream, margin: "0 0 8px 0", lineHeight: 1.3 }}>
         {video.title}
       </h3>
-      <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", lineHeight: 1.65, margin: 0 }}>
+      <p style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", lineHeight: 1.65, margin: 0 }}>
         {video.desc}
       </p>
     </div>
@@ -891,7 +891,7 @@ function VideoSection() {
                       position: "absolute", top: 14, right: 14,
                       background: `${C.sunset}DD`, color: C.cream,
                       fontFamily: "'Libre Franklin', sans-serif",
-                      fontSize: 9, fontWeight: 700, letterSpacing: 2.5,
+                      fontSize: 12, fontWeight: 700, letterSpacing: 2.5,
                       textTransform: "uppercase", padding: "5px 12px", borderRadius: 3,
                     }}>
                       Coming Soon
@@ -923,7 +923,7 @@ export function HappeningSubmitCTA({ simple = false }) {
           <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 38px)", fontWeight: 400, color: C.cream, margin: "0 0 12px 0" }}>
             Got something good happening?
           </h3>
-          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.4)", margin: "0 0 32px 0", lineHeight: 1.75 }}>
+          <p style={{ fontSize: 17, color: "rgba(255,255,255,0.75)", margin: "0 0 32px 0", lineHeight: 1.75 }}>
             Quick text code, fill in the fun stuff, and you're on the calendar. It's free - always.
           </p>
           <Btn href="/submit-event" variant="sunset">List Your Event Free →</Btn>
@@ -941,7 +941,7 @@ export function HappeningSubmitCTA({ simple = false }) {
           <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 40px)", fontWeight: 400, color: C.cream, margin: "0 0 16px 0" }}>
             Got something good happening?
           </h3>
-          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", margin: "0 0 44px 0", lineHeight: 1.8 }}>
+          <p style={{ fontSize: 17, color: "rgba(255,255,255,0.75)", margin: "0 0 44px 0", lineHeight: 1.8 }}>
             Tell the whole lake about it. Fill in the details, verify your number,<br />and you're on the calendar. It's free - always.
           </p>
           <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap", marginBottom: 44 }}>
@@ -952,13 +952,13 @@ export function HappeningSubmitCTA({ simple = false }) {
             ].map(({ icon, label, sub }) => (
               <div key={label} style={{ flex: "1 1 160px", maxWidth: 200, padding: "20px 16px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12 }}>
                 <div style={{ fontSize: 26, marginBottom: 8 }}>{icon}</div>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, color: C.cream, marginBottom: 4 }}>{label}</div>
-                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.4)", lineHeight: 1.5 }}>{sub}</div>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 600, color: C.cream, marginBottom: 4 }}>{label}</div>
+                <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: "rgba(255,255,255,0.75)", lineHeight: 1.5 }}>{sub}</div>
               </div>
             ))}
           </div>
           <Btn href="/submit-event" variant="sunset">List Your Event Free →</Btn>
-          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, color: "rgba(255,255,255,0.25)", marginTop: 18, lineHeight: 1.6 }}>
+          <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: "rgba(255,255,255,0.75)", marginTop: 18, lineHeight: 1.6 }}>
             Always free. Always easy. That's how we roll at the lake.
           </p>
         </FadeIn>
@@ -993,21 +993,21 @@ function HeroTakeover({ event, onEventClick }) {
           />
         )}
         <div style={{ flex: 1, minWidth: 240 }}>
-          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 8 }}>
+          <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 8 }}>
             Featured Event
           </div>
           <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(24px, 4vw, 36px)", color: C.cream, lineHeight: 1.2, marginBottom: 8 }}>
             {event.promoHeadline || event.name}
           </div>
           {(event.date || event.location) && (
-            <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: "rgba(255,255,255,0.5)", marginBottom: 4 }}>
+            <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: "rgba(255,255,255,0.75)", marginBottom: 4 }}>
               {event.date && new Date(event.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
               {event.date && event.location && " · "}
               {event.location}
             </div>
           )}
           {event.time && (
-            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.35)", marginBottom: 16 }}>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: "rgba(255,255,255,0.75)", marginBottom: 16 }}>
               {event.time}
             </div>
           )}
@@ -1016,7 +1016,7 @@ function HeroTakeover({ event, onEventClick }) {
               <a href={event.eventUrl} target="_blank" rel="noopener noreferrer" style={{
                 display: "inline-block", padding: "12px 28px",
                 background: C.sage, color: "#fff", borderRadius: 6,
-                fontFamily: "'Libre Franklin', sans-serif", fontSize: 13,
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 15,
                 fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase",
                 textDecoration: "none",
               }}>
@@ -1025,7 +1025,7 @@ function HeroTakeover({ event, onEventClick }) {
             ) : (
               <button onClick={() => onEventClick && onEventClick(event)} style={{
                 padding: "12px 28px", background: C.sage, color: "#fff", border: "none", borderRadius: 6,
-                fontFamily: "'Libre Franklin', sans-serif", fontSize: 13,
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 15,
                 fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: "pointer",
               }}>
                 View Event
@@ -1109,13 +1109,13 @@ export default function HappeningPage() {
       <div style={{ background: C.dusk, padding: "32px 24px" }}>
         <div style={{ maxWidth: 960, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
           <div>
-            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2.5, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 6 }}>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 2.5, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 6 }}>
               Want more exposure?
             </div>
             <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, color: C.cream, fontWeight: 400 }}>
               Homepage · Newsletter · Featured Banners
             </div>
-            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.4)", marginTop: 4 }}>
+            <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: "rgba(255,255,255,0.75)", marginTop: 4 }}>
               Founding sponsor rates available now - limited spots
             </div>
           </div>

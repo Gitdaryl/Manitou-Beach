@@ -30,7 +30,7 @@ function HYHero() {
         <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(38px, 7vw, 60px)', fontWeight: 400, color: C.cream, margin: '0 0 16px', lineHeight: 1.1 }}>
           Holly & The Yeti
         </h1>
-        <p style={{ fontSize: 18, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, maxWidth: 520, margin: '0 auto 28px', fontFamily: "'Libre Franklin', sans-serif" }}>
+        <p style={{ fontSize: 18, color: 'rgba(255,255,255,0.75)', lineHeight: 1.7, maxWidth: 520, margin: '0 auto 28px', fontFamily: "'Libre Franklin', sans-serif" }}>
           A realtor. A cryptid. A podcast.<br />Sometimes he appears as Daryl - most people still call him Yeti.
         </p>
 
@@ -96,11 +96,11 @@ function MeetTheHosts() {
                   border: `3px solid ${h.accent}30`, margin: '0 auto 16px',
                 }} />
                 <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 22, fontWeight: 400, color: C.text, margin: '0 0 4px' }}>{h.name}</h3>
-                <div style={{ fontSize: 11, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: h.accent, marginBottom: 14 }}>{h.role}</div>
-                <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.7, marginBottom: 16 }}>{h.bio}</p>
+                <div style={{ fontSize: 13, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: h.accent, marginBottom: 14 }}>{h.role}</div>
+                <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.7, marginBottom: 16 }}>{h.bio}</p>
                 <div style={{ display: 'flex', gap: 6, justifyContent: 'center', flexWrap: 'wrap' }}>
                   {h.traits.map(t => (
-                    <span key={t} style={{ fontSize: 10, padding: '4px 10px', borderRadius: 20, background: `${h.accent}12`, color: h.accent, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>{t}</span>
+                    <span key={t} style={{ fontSize: 13, padding: '4px 10px', borderRadius: 20, background: `${h.accent}12`, color: h.accent, fontWeight: 600, fontFamily: "'Libre Franklin', sans-serif", letterSpacing: 0.5 }}>{t}</span>
                   ))}
                 </div>
               </div>
@@ -160,8 +160,8 @@ function LatestVideos() {
                   </div>
                 </div>
                 <div style={{ padding: '14px 16px' }}>
-                  <h4 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, fontWeight: 400, color: C.text, margin: 0, lineHeight: 1.4 }}>{v.title}</h4>
-                  {v.publishedAt && <div style={{ fontSize: 11, color: C.textMuted, marginTop: 4, fontFamily: "'Libre Franklin', sans-serif" }}>{v.publishedAt}</div>}
+                  <h4 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text, margin: 0, lineHeight: 1.4 }}>{v.title}</h4>
+                  {v.publishedAt && <div style={{ fontSize: 13, color: C.textMuted, marginTop: 4, fontFamily: "'Libre Franklin', sans-serif" }}>{v.publishedAt}</div>}
                 </div>
               </div>
             </FadeIn>
@@ -197,9 +197,9 @@ function LatestVideos() {
               onClick={() => setLightboxId(null)}
               style={{
                 display: 'block', margin: '16px auto 0', background: 'none',
-                border: '1px solid rgba(255,255,255,0.2)', color: 'rgba(255,255,255,0.5)',
+                border: '1px solid rgba(255,255,255,0.2)', color: 'rgba(255,255,255,0.75)',
                 padding: '8px 24px', borderRadius: 8, cursor: 'pointer',
-                fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, letterSpacing: 1,
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, letterSpacing: 1,
               }}
             >Close</button>
           </div>
@@ -235,7 +235,7 @@ function BookSection() {
       <div style={{ maxWidth: 800, margin: '0 auto', textAlign: 'center' }}>
         <SectionLabel style={{ color: C.sunset }}>Services</SectionLabel>
         <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(28px, 5vw, 40px)', fontWeight: 400, color: C.cream, margin: '0 0 12px' }}>Put Us to Work</h2>
-        <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', marginBottom: 36, maxWidth: 500, margin: '0 auto 36px' }}>
+        <p style={{ fontSize: 17, color: 'rgba(255,255,255,0.75)', marginBottom: 36, maxWidth: 500, margin: '0 auto 36px' }}>
           Want Holly and The Yeti to spotlight your business or event? We'll make you look good.
         </p>
 
@@ -250,9 +250,9 @@ function BookSection() {
                 <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.cream, margin: '0 0 8px' }}>{s.name}</h3>
                 <div style={{ display: 'flex', gap: 8, justifyContent: 'center', alignItems: 'baseline', marginBottom: 12 }}>
                   <span style={{ fontSize: 28, fontWeight: 700, color: C.sunset, fontFamily: "'Libre Franklin', sans-serif" }}>{s.price}</span>
-                  <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', fontFamily: "'Libre Franklin', sans-serif" }}>{s.detail}</span>
+                  <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)', fontFamily: "'Libre Franklin', sans-serif" }}>{s.detail}</span>
                 </div>
-                <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', lineHeight: 1.6, marginBottom: 20 }}>{s.desc}</p>
+                <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.75)', lineHeight: 1.6, marginBottom: 20 }}>{s.desc}</p>
                 <Btn href={s.href} variant="sunset" small>Get Started →</Btn>
               </div>
             </FadeIn>
@@ -294,7 +294,7 @@ function HollysCorner() {
             <div style={{ textAlign: 'center', padding: '48px 24px', background: C.warmWhite, borderRadius: 18, border: `1px solid ${C.sand}` }}>
               <img src="/images/yeti/yeti-painting.webp" alt="" style={{ height: 80, marginBottom: 16, opacity: 0.6 }} />
               <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, color: C.text, margin: '0 0 8px' }}>Coming Soon</h3>
-              <p style={{ fontSize: 14, color: C.textMuted, lineHeight: 1.6 }}>
+              <p style={{ fontSize: 16, color: C.textMuted, lineHeight: 1.6 }}>
                 Holly's first column drops this season. Real estate tips, lake life stories, and the kind of local insight you can't Google.
               </p>
               <Btn href="/dispatch" variant="primary" small style={{ marginTop: 16 }}>Read The Dispatch →</Btn>
@@ -315,8 +315,8 @@ function HollysCorner() {
                   {a.coverImage && <img src={a.coverImage} alt="" style={{ width: 80, height: 80, borderRadius: 10, objectFit: 'cover', flexShrink: 0 }} />}
                   <div>
                     <h4 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text, margin: '0 0 4px' }}>{a.title}</h4>
-                    {a.excerpt && <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.5, margin: 0 }}>{a.excerpt}</p>}
-                    {a.date && <div style={{ fontSize: 11, color: HOLLY_CORNER_COLOR, marginTop: 6, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600 }}>{a.date}</div>}
+                    {a.excerpt && <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.5, margin: 0 }}>{a.excerpt}</p>}
+                    {a.date && <div style={{ fontSize: 13, color: HOLLY_CORNER_COLOR, marginTop: 6, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 600 }}>{a.date}</div>}
                   </div>
                 </a>
               </FadeIn>

@@ -8,17 +8,17 @@ export default function TermsPage() {
   const subScrollTo = (id) => { window.location.href = '/#' + id; };
   const S = {
     h2: { fontFamily: "'Libre Baskerville', serif", fontSize: 22, fontWeight: 400, color: C.dusk, margin: '40px 0 12px' },
-    p: { fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.text, lineHeight: 1.8, margin: '0 0 14px' },
-    li: { fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.text, lineHeight: 1.8, marginBottom: 6 },
+    p: { fontFamily: "'Libre Franklin', sans-serif", fontSize: 17, color: C.text, lineHeight: 1.8, margin: '0 0 14px' },
+    li: { fontFamily: "'Libre Franklin', sans-serif", fontSize: 17, color: C.text, lineHeight: 1.8, marginBottom: 6 },
   };
   return (
     <div style={{ background: C.cream, minHeight: '100vh' }}>
       <SEOHead title="Terms of Service" description="Terms of service for Manitou Beach Michigan community platform." path="/terms" />
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
       <div style={{ maxWidth: 760, margin: '0 auto', padding: '120px 28px 80px' }}>
-        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, letterSpacing: 4, textTransform: 'uppercase', color: C.sage, marginBottom: 12 }}>Legal</div>
+        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 4, textTransform: 'uppercase', color: C.sage, marginBottom: 12 }}>Legal</div>
         <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(30px, 5vw, 46px)', fontWeight: 400, color: C.dusk, margin: '0 0 8px' }}>Terms of Service</h1>
-        <p style={{ ...S.p, color: C.textMuted, fontSize: 13, marginBottom: 40 }}>Effective date: March 2026 &nbsp;·&nbsp; Updated August 2026 &nbsp;·&nbsp; Yeti Groove Media LLC</p>
+        <p style={{ ...S.p, color: C.textMuted, fontSize: 15, marginBottom: 40 }}>Effective date: March 2026 &nbsp;·&nbsp; Updated August 2026 &nbsp;·&nbsp; Yeti Groove Media LLC</p>
 
         <p style={S.p}>By using the Manitou Beach community platform at manitoubeachmichigan.com ("the Site"), you agree to these Terms. If you don't agree, please don't use the Site.</p>
 

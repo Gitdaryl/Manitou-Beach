@@ -783,7 +783,7 @@ export default function FoodTrucksPage() {
                     padding: "4px 10px", borderRadius: 14,
                     background: loved ? `${C.sunset}20` : `${C.sunset}10`,
                     border: `1px solid ${loved ? C.sunset + '60' : C.sunset + '30'}`,
-                    fontSize: 12, color: loved ? C.sunset : C.textLight,
+                    fontSize: 14, color: loved ? C.sunset : C.textLight,
                     fontWeight: loved ? 600 : 400,
                     cursor: loved ? "default" : "pointer",
                     fontFamily: "'Libre Franklin', sans-serif",
@@ -821,14 +821,14 @@ export default function FoodTrucksPage() {
             <button
               type="submit"
               onPointerDown={e => { e.preventDefault(); e.target.closest('form')?.requestSubmit(); }}
-              style={{ padding: "5px 12px", borderRadius: 8, background: C.sunset, color: C.cream, border: "none", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif" }}
+              style={{ padding: "5px 12px", borderRadius: 8, background: C.sunset, color: C.cream, border: "none", fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif" }}
             >
               ❤️
             </button>
             <button
               type="button"
               onClick={() => setLoveInput({ slug: '', text: '' })}
-              style={{ padding: "5px 8px", borderRadius: 8, background: "transparent", color: C.textMuted, border: `1px solid ${C.sand}`, fontSize: 12, cursor: "pointer" }}
+              style={{ padding: "5px 8px", borderRadius: 8, background: "transparent", color: C.textMuted, border: `1px solid ${C.sand}`, fontSize: 14, cursor: "pointer" }}
             >
               ✕
             </button>
@@ -840,7 +840,7 @@ export default function FoodTrucksPage() {
               display: "inline-flex", alignItems: "center", gap: 5,
               padding: "6px 14px", borderRadius: 20,
               background: `${C.sunset}12`, border: `1.5px dashed ${C.sunset}40`,
-              fontSize: 12, color: C.sunset, fontWeight: 600,
+              fontSize: 14, color: C.sunset, fontWeight: 600,
               cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif",
               transition: "all 0.18s",
             }}
@@ -850,7 +850,7 @@ export default function FoodTrucksPage() {
         ) : (
           <button
             onClick={(e) => { const card = e.target.closest('[data-love-wrap]'); setLoveInput({ slug, text: '' }); if (card) setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80); }}
-            style={{ fontSize: 11, color: C.textMuted, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", textDecoration: "underline" }}
+            style={{ fontSize: 13, color: C.textMuted, background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", textDecoration: "underline" }}
           >
             + Love something else
           </button>
@@ -909,7 +909,7 @@ export default function FoodTrucksPage() {
     };
 
     const inputStyle = { width: "100%", boxSizing: "border-box", padding: "13px 14px", border: `1px solid ${C.sand}`, borderRadius: 8, fontSize: 16, fontFamily: "'Libre Franklin', sans-serif", color: C.text, background: C.warmWhite, outline: "none", marginBottom: 16 };
-    const labelStyle = { display: "block", fontSize: 12, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", color: C.textMuted, marginBottom: 8 };
+    const labelStyle = { display: "block", fontSize: 14, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", color: C.textMuted, marginBottom: 8 };
 
     return (
       <div style={{ fontFamily: "'Libre Franklin', sans-serif", background: C.cream, color: C.text, minHeight: "100vh", display: "flex", flexDirection: "column" }}>
@@ -933,7 +933,7 @@ export default function FoodTrucksPage() {
 
           {/* Vendor Header - always visible */}
           <div style={{ textAlign: "center", marginBottom: 32 }}>
-            <p style={{ margin: "0 0 12px", fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: C.sage, fontWeight: 600 }}>
+            <p style={{ margin: "0 0 12px", fontSize: 13, letterSpacing: "0.18em", textTransform: "uppercase", color: C.sage, fontWeight: 600 }}>
               Manitou Beach · Food Truck Check-in
             </p>
             {checkinTruck?.photoUrl ? (
@@ -944,7 +944,7 @@ export default function FoodTrucksPage() {
             <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 24, fontWeight: 400, color: C.text, margin: "0 0 4px" }}>
               {truckName}
             </h1>
-            {checkinTruck?.cuisine && <p style={{ fontSize: 13, color: C.textMuted, margin: 0 }}>{checkinTruck.cuisine}</p>}
+            {checkinTruck?.cuisine && <p style={{ fontSize: 15, color: C.textMuted, margin: 0 }}>{checkinTruck.cuisine}</p>}
           </div>
 
           {/* One tap on the home screen beats remembering a text message. */}
@@ -959,7 +959,7 @@ export default function FoodTrucksPage() {
 
           {/* Loading state */}
           {trucks === null ? (
-            <div style={{ textAlign: "center", padding: "48px 0", color: C.textMuted, fontSize: 14 }}>Loading…</div>
+            <div style={{ textAlign: "center", padding: "48px 0", color: C.textMuted, fontSize: 16 }}>Loading…</div>
 
           /* ─── SUCCESS STATE ─── */
           ) : checkinStatus === "success" ? (
@@ -977,13 +977,13 @@ export default function FoodTrucksPage() {
                 <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 26, fontWeight: 400, color: C.sage, margin: "0 0 8px" }}>
                   You're Live!
                 </h2>
-                <p style={{ fontSize: 14, color: C.textLight, lineHeight: 1.6, maxWidth: 340, margin: "0 auto" }}>
+                <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.6, maxWidth: 340, margin: "0 auto" }}>
                   Customers can find you on the Manitou Beach Food Truck Locator right now.
                 </p>
               </div>
 
               {/* Customer Preview Card */}
-              <p style={{ fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: C.textMuted, fontWeight: 600, marginBottom: 10 }}>
+              <p style={{ fontSize: 13, letterSpacing: "0.12em", textTransform: "uppercase", color: C.textMuted, fontWeight: 600, marginBottom: 10 }}>
                 Your customers see this:
               </p>
               <div style={{
@@ -999,32 +999,32 @@ export default function FoodTrucksPage() {
                     <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.text, margin: 0 }}>{truckName}</h3>
                     <div style={{ display: "flex", alignItems: "center", gap: 5, flexShrink: 0 }}>
                       <div style={{ width: 7, height: 7, borderRadius: "50%", background: C.sage }} />
-                      <span style={{ fontSize: 11, color: C.sage, fontWeight: 600 }}>just now</span>
+                      <span style={{ fontSize: 13, color: C.sage, fontWeight: 600 }}>just now</span>
                     </div>
                   </div>
-                  {checkinTruck?.cuisine && <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 8 }}>{checkinTruck.cuisine}</div>}
+                  {checkinTruck?.cuisine && <div style={{ fontSize: 14, color: C.textMuted, marginBottom: 8 }}>{checkinTruck.cuisine}</div>}
                   {checkinNote && (
-                    <div style={{ fontSize: 13, color: C.text, fontWeight: 500, marginBottom: 8 }}>
+                    <div style={{ fontSize: 15, color: C.text, fontWeight: 500, marginBottom: 8 }}>
                       📍 {checkinNote}
                     </div>
                   )}
                   {checkinSpecial && (
-                    <div style={{ fontSize: 13, background: `${C.sunset}12`, border: `1px solid ${C.sunset}30`, borderRadius: 8, padding: "7px 12px", marginBottom: 8, color: C.sunset, fontWeight: 500 }}>
+                    <div style={{ fontSize: 15, background: `${C.sunset}12`, border: `1px solid ${C.sunset}30`, borderRadius: 8, padding: "7px 12px", marginBottom: 8, color: C.sunset, fontWeight: 500 }}>
                       ⭐ {checkinSpecial}
                     </div>
                   )}
                   {checkinDeparture && (
-                    <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 8 }}>
+                    <div style={{ fontSize: 14, color: C.textMuted, marginBottom: 8 }}>
                       ⏱ Open until {checkinDeparture === 'after-dark' ? 'after dark' : (() => { const d = new Date(); d.setHours(parseInt(checkinDeparture), 0, 0, 0); return isNaN(d.getTime()) ? checkinDeparture : d.toLocaleTimeString('en-US', { hour: 'numeric', hour12: true }); })()}
                     </div>
                   )}
-                  {checkinTruck?.description && <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: 0 }}>{checkinTruck.description}</p>}
+                  {checkinTruck?.description && <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.6, margin: 0 }}>{checkinTruck.description}</p>}
                 </div>
               </div>
 
               {/* Change Pin Color on the fly */}
               <div style={{ marginBottom: 20 }}>
-                <label style={{ fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: C.textMuted, fontWeight: 600, display: "block", marginBottom: 8 }}>
+                <label style={{ fontSize: 13, letterSpacing: "0.12em", textTransform: "uppercase", color: C.textMuted, fontWeight: 600, display: "block", marginBottom: 8 }}>
                   Change your pin color
                 </label>
                 <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
@@ -1091,7 +1091,7 @@ export default function FoodTrucksPage() {
                 <p style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.sunset, margin: "0 0 4px", textAlign: "center" }}>
                   Bring the crowd
                 </p>
-                <p style={{ fontSize: 13, color: C.textLight, textAlign: "center", margin: "0 0 20px", lineHeight: 1.5 }}>
+                <p style={{ fontSize: 15, color: C.textLight, textAlign: "center", margin: "0 0 20px", lineHeight: 1.5 }}>
                   Share your location and let people know you're open.
                 </p>
 
@@ -1099,7 +1099,7 @@ export default function FoodTrucksPage() {
                   onClick={handleVendorShare}
                   style={{
                     width: "100%", padding: "14px", background: C.sage, color: C.cream,
-                    border: "none", borderRadius: 10, fontSize: 15, fontWeight: 700,
+                    border: "none", borderRadius: 10, fontSize: 17, fontWeight: 700,
                     cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif",
                     letterSpacing: 0.5, marginBottom: 10, transition: "background 0.2s",
                   }}
@@ -1112,7 +1112,7 @@ export default function FoodTrucksPage() {
                   style={{
                     width: "100%", padding: "12px", background: "transparent",
                     color: C.textLight, border: `1px solid ${C.sand}`, borderRadius: 10,
-                    fontSize: 13, fontWeight: 500, cursor: "pointer",
+                    fontSize: 15, fontWeight: 500, cursor: "pointer",
                     fontFamily: "'Libre Franklin', sans-serif", transition: "all 0.2s",
                   }}
                 >
@@ -1140,7 +1140,7 @@ export default function FoodTrucksPage() {
                     width: "100%", padding: "13px", marginTop: 8,
                     background: "transparent", color: C.sunset,
                     border: `1.5px solid ${C.sunset}44`, borderRadius: 10,
-                    fontSize: 14, fontWeight: 600, cursor: "pointer",
+                    fontSize: 16, fontWeight: 600, cursor: "pointer",
                     fontFamily: "'Libre Franklin', sans-serif", transition: "all 0.2s",
                   }}
                 >
@@ -1152,7 +1152,7 @@ export default function FoodTrucksPage() {
                 <p style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color: C.dusk, margin: "0 0 4px", textAlign: "center" }}>
                   Your Photos
                 </p>
-                <p style={{ fontSize: 13, color: C.textLight, textAlign: "center", margin: "0 0 16px", lineHeight: 1.5 }}>
+                <p style={{ fontSize: 15, color: C.textLight, textAlign: "center", margin: "0 0 16px", lineHeight: 1.5 }}>
                   Add food photos to your profile - they rotate in auto-posts when you check in.
                 </p>
                 {galleryPhotos.length > 0 && (
@@ -1177,10 +1177,10 @@ export default function FoodTrucksPage() {
                     background: C.warmWhite, transition: "border-color 0.2s",
                   }}>
                     <div style={{ fontSize: 22, marginBottom: 4 }}>📷</div>
-                    <div style={{ fontSize: 13, color: galleryUploading ? C.sage : C.textLight, fontWeight: 500 }}>
+                    <div style={{ fontSize: 15, color: galleryUploading ? C.sage : C.textLight, fontWeight: 500 }}>
                       {galleryUploading ? "Uploading…" : `Add a food photo ${galleryPhotos.length > 0 ? `(${galleryPhotos.length} added)` : ""}`}
                     </div>
-                    <div style={{ fontSize: 11, color: C.textMuted, marginTop: 2 }}>JPG or PNG - tap to pick from your camera roll</div>
+                    <div style={{ fontSize: 13, color: C.textMuted, marginTop: 2 }}>JPG or PNG - tap to pick from your camera roll</div>
                   </div>
                 </label>
               </div>
@@ -1188,13 +1188,13 @@ export default function FoodTrucksPage() {
               <div style={{ display: "flex", justifyContent: "center", gap: 24, marginTop: 24 }}>
                   <button
                     onClick={() => { setCheckinStatus(""); setCheckinMsg(""); setCheckinSpecial(""); setCheckinDeparture(""); setCheckinNote(""); setCheckinLat(null); setCheckinLng(null); setPinStatus(""); }}
-                    style={{ fontSize: 13, color: C.textMuted, background: "none", border: "none", cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", textDecoration: "underline" }}
+                    style={{ fontSize: 15, color: C.textMuted, background: "none", border: "none", cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", textDecoration: "underline" }}
                   >
                     Check in again
                   </button>
                   <a
                     href="/food-trucks"
-                    style={{ fontSize: 13, color: C.lakeBlue, textDecoration: "none", fontWeight: 600 }}
+                    style={{ fontSize: 15, color: C.lakeBlue, textDecoration: "none", fontWeight: 600 }}
                   >
                     View the public page →
                   </a>
@@ -1208,7 +1208,7 @@ export default function FoodTrucksPage() {
               <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.text, margin: "0 0 4px", textAlign: "center" }}>
                 Let your customers know you're here
               </h2>
-              <p style={{ fontSize: 13, color: C.textMuted, textAlign: "center", margin: "0 0 24px", lineHeight: 1.5 }}>
+              <p style={{ fontSize: 15, color: C.textMuted, textAlign: "center", margin: "0 0 24px", lineHeight: 1.5 }}>
                 Three quick steps and you're live on the map.
               </p>
 
@@ -1218,13 +1218,13 @@ export default function FoodTrucksPage() {
                   <div style={{
                     width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
                     background: pinStatus === 'pinned' ? C.sage : C.lakeBlue,
-                    color: '#fff', fontSize: 14, fontWeight: 800,
+                    color: '#fff', fontSize: 16, fontWeight: 800,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontFamily: "'Libre Franklin', sans-serif",
                   }}>{pinStatus === 'pinned' ? '✓' : '1'}</div>
                   <div>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: C.text }}>Drop your pin</div>
-                    <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.4 }}>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: C.text }}>Drop your pin</div>
+                    <div style={{ fontSize: 14, color: C.textMuted, lineHeight: 1.4 }}>
                       {pinStatus === 'pinned' ? 'Got it! Your location is on the map.' : 'Tap the button so customers can find you.'}
                     </div>
                   </div>
@@ -1265,11 +1265,11 @@ export default function FoodTrucksPage() {
                         📍
                       </span>
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: C.sage }}>Your spot is locked in!</div>
+                        <div style={{ fontSize: 16, fontWeight: 700, color: C.sage }}>Your spot is locked in!</div>
                       </div>
                       <button
                         onClick={handleDropPin}
-                        style={{ fontSize: 12, color: C.textMuted, background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'underline', padding: 0, flexShrink: 0 }}
+                        style={{ fontSize: 14, color: C.textMuted, background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif", textDecoration: 'underline', padding: 0, flexShrink: 0 }}
                       >
                         Re-drop
                       </button>
@@ -1292,13 +1292,13 @@ export default function FoodTrucksPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
                   <div style={{
                     width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
-                    background: C.sand, color: C.text, fontSize: 14, fontWeight: 800,
+                    background: C.sand, color: C.text, fontSize: 16, fontWeight: 800,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontFamily: "'Libre Franklin', sans-serif",
                   }}>2</div>
                   <div>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: C.text }}>Add the details</div>
-                    <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.4 }}>All optional - fill in what you want customers to see.</div>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: C.text }}>Add the details</div>
+                    <div style={{ fontSize: 14, color: C.textMuted, lineHeight: 1.4 }}>All optional - fill in what you want customers to see.</div>
                   </div>
                 </div>
 
@@ -1317,7 +1317,7 @@ export default function FoodTrucksPage() {
                           padding: '5px 12px', borderRadius: 20,
                           background: checkinNote === loc ? `${C.sage}20` : C.warmWhite,
                           border: `1px solid ${checkinNote === loc ? C.sage : C.sand}`,
-                          fontSize: 12, color: checkinNote === loc ? C.sage : C.textLight,
+                          fontSize: 14, color: checkinNote === loc ? C.sage : C.textLight,
                           fontWeight: checkinNote === loc ? 600 : 400,
                           cursor: 'pointer', fontFamily: "'Libre Franklin', sans-serif",
                           transition: 'all 0.15s',
@@ -1405,18 +1405,18 @@ export default function FoodTrucksPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
                   <div style={{
                     width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
-                    background: C.sage, color: '#fff', fontSize: 14, fontWeight: 800,
+                    background: C.sage, color: '#fff', fontSize: 16, fontWeight: 800,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontFamily: "'Libre Franklin', sans-serif",
                   }}>3</div>
                   <div>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: C.text }}>Go live!</div>
-                    <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.4 }}>Hit the button and you're on the map. That's it.</div>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: C.text }}>Go live!</div>
+                    <div style={{ fontSize: 14, color: C.textMuted, lineHeight: 1.4 }}>Hit the button and you're on the map. That's it.</div>
                   </div>
                 </div>
 
                 {checkinStatus === "error" && (
-                  <div style={{ marginBottom: 12, fontSize: 13, color: "#c05a5a", fontWeight: 500 }}>{checkinMsg}</div>
+                  <div style={{ marginBottom: 12, fontSize: 15, color: "#c05a5a", fontWeight: 500 }}>{checkinMsg}</div>
                 )}
                 <button
                   onClick={handleCheckin}
@@ -1445,21 +1445,21 @@ export default function FoodTrucksPage() {
                 <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text, margin: "0 0 4px" }}>
                   📅 Coming Runs
                 </h3>
-                <p style={{ fontSize: 12, color: C.textMuted, margin: "0 0 16px", lineHeight: 1.5 }}>
+                <p style={{ fontSize: 14, color: C.textMuted, margin: "0 0 16px", lineHeight: 1.5 }}>
                   Let customers know when you're planning a run before you arrive - they'll see it on the locator.
                 </p>
 
                 {/* Apply to an event */}
                 {vendorEvents.length > 0 && (
                   <div style={{ marginBottom: 16, padding: "14px 16px", background: `${C.sunset}08`, border: `1px solid ${C.sunset}25`, borderRadius: 10 }}>
-                    <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunset, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: C.sunset, marginBottom: 8, fontFamily: "'Libre Franklin', sans-serif" }}>
                       Join an Upcoming Event
                     </div>
                     <div style={{ display: "flex", gap: 8 }}>
                       <select
                         value={selectedEventId}
                         onChange={e => { setSelectedEventId(e.target.value); setApplyStatus(''); }}
-                        style={{ flex: 1, padding: "11px 12px", border: `1px solid ${C.sand}`, borderRadius: 8, fontSize: 14, fontFamily: "'Libre Franklin', sans-serif", color: C.text, background: "#fff", outline: "none", appearance: "none" }}
+                        style={{ flex: 1, padding: "11px 12px", border: `1px solid ${C.sand}`, borderRadius: 8, fontSize: 16, fontFamily: "'Libre Franklin', sans-serif", color: C.text, background: "#fff", outline: "none", appearance: "none" }}
                       >
                         <option value="">Pick your next event…</option>
                         {vendorEvents.map(ev => (
@@ -1474,7 +1474,7 @@ export default function FoodTrucksPage() {
                         style={{
                           padding: "11px 16px", borderRadius: 8, whiteSpace: "nowrap",
                           background: !selectedEventId || applyStatus === 'loading' ? C.sand : C.sunset,
-                          color: C.cream, border: "none", fontSize: 13, fontWeight: 700,
+                          color: C.cream, border: "none", fontSize: 15, fontWeight: 700,
                           cursor: !selectedEventId || applyStatus === 'loading' ? "default" : "pointer",
                           fontFamily: "'Libre Franklin', sans-serif", transition: "background 0.2s",
                         }}
@@ -1482,21 +1482,21 @@ export default function FoodTrucksPage() {
                         {applyStatus === 'loading' ? '…' : 'Apply'}
                       </button>
                     </div>
-                    {applyStatus === 'applied' && <p style={{ fontSize: 12, color: C.sage, fontWeight: 600, margin: "8px 0 0", wordBreak: "break-word" }}>You're on the lineup for {applyEventName}! The organizer will be in touch with details.</p>}
-                    {applyStatus === 'duplicate' && <p style={{ fontSize: 12, color: C.lakeBlue, margin: "8px 0 0", wordBreak: "break-word" }}>You're already on the list for {applyEventName} - you're all set!</p>}
-                    {applyStatus === 'error' && <p style={{ fontSize: 12, color: "#c05a5a", margin: "8px 0 0" }}>{yeti.oops()}</p>}
+                    {applyStatus === 'applied' && <p style={{ fontSize: 14, color: C.sage, fontWeight: 600, margin: "8px 0 0", wordBreak: "break-word" }}>You're on the lineup for {applyEventName}! The organizer will be in touch with details.</p>}
+                    {applyStatus === 'duplicate' && <p style={{ fontSize: 14, color: C.lakeBlue, margin: "8px 0 0", wordBreak: "break-word" }}>You're already on the list for {applyEventName} - you're all set!</p>}
+                    {applyStatus === 'error' && <p style={{ fontSize: 14, color: "#c05a5a", margin: "8px 0 0" }}>{yeti.oops()}</p>}
                   </div>
                 )}
 
                 {comingDateLocal && new Date(comingDateLocal) > new Date() && (
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: `${C.lakeBlue}10`, border: `1px solid ${C.lakeBlue}30`, borderRadius: 8, padding: "10px 14px", marginBottom: 14 }}>
-                    <span style={{ fontSize: 13, color: C.lakeBlue, fontWeight: 600 }}>
+                    <span style={{ fontSize: 15, color: C.lakeBlue, fontWeight: 600 }}>
                       📅 {formatComingDate(comingDateLocal)} - showing on the locator
                     </span>
                     <button
                       onClick={handleClearSchedule}
                       disabled={scheduleStatus === 'loading'}
-                      style={{ fontSize: 12, color: C.textMuted, background: "none", border: "none", cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", padding: 0, textDecoration: "underline" }}
+                      style={{ fontSize: 14, color: C.textMuted, background: "none", border: "none", cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", padding: 0, textDecoration: "underline" }}
                     >
                       Clear
                     </button>
@@ -1517,7 +1517,7 @@ export default function FoodTrucksPage() {
                     style={{
                       padding: "13px 18px", borderRadius: 8, whiteSpace: "nowrap",
                       background: !scheduleDate || scheduleStatus === 'loading' ? C.sand : C.lakeBlue,
-                      color: C.cream, border: "none", fontSize: 13, fontWeight: 700,
+                      color: C.cream, border: "none", fontSize: 15, fontWeight: 700,
                       cursor: !scheduleDate || scheduleStatus === 'loading' ? "default" : "pointer",
                       fontFamily: "'Libre Franklin', sans-serif", transition: "background 0.2s",
                     }}
@@ -1533,9 +1533,9 @@ export default function FoodTrucksPage() {
                   style={{ width: "100%", boxSizing: "border-box", padding: "13px 12px", border: `1px solid ${C.sand}`, borderRadius: 8, fontSize: 16, fontFamily: "'Libre Franklin', sans-serif", color: C.text, background: C.warmWhite, outline: "none" }}
                 />
 
-                {scheduleStatus === 'saved' && <p style={{ fontSize: 12, color: C.sage, fontWeight: 600, margin: "10px 0 0" }}>✓ Saved! Customers will see this on the locator.</p>}
-                {scheduleStatus === 'cleared' && <p style={{ fontSize: 12, color: C.textMuted, margin: "10px 0 0" }}>Coming date cleared.</p>}
-                {scheduleStatus === 'error' && <p style={{ fontSize: 12, color: "#c05a5a", margin: "10px 0 0" }}>{yeti.oops()}</p>}
+                {scheduleStatus === 'saved' && <p style={{ fontSize: 14, color: C.sage, fontWeight: 600, margin: "10px 0 0" }}>✓ Saved! Customers will see this on the locator.</p>}
+                {scheduleStatus === 'cleared' && <p style={{ fontSize: 14, color: C.textMuted, margin: "10px 0 0" }}>Coming date cleared.</p>}
+                {scheduleStatus === 'error' && <p style={{ fontSize: 14, color: "#c05a5a", margin: "10px 0 0" }}>{yeti.oops()}</p>}
               </div>
             </div>
           )}
@@ -1550,13 +1550,13 @@ export default function FoodTrucksPage() {
                 <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text, margin: "0 0 4px" }}>
                   Your settings
                 </h3>
-                <p style={{ fontSize: 12, color: C.textMuted, margin: "0 0 18px", lineHeight: 1.5 }}>
+                <p style={{ fontSize: 14, color: C.textMuted, margin: "0 0 18px", lineHeight: 1.5 }}>
                   You decide how much of this happens on its own. Change it whenever you like.
                 </p>
 
                 {checkinTruck.autoPin && (
                   <div style={{ marginBottom: 20 }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 4 }}>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 4 }}>
                       On your regular days
                     </div>
                     <p style={{ fontSize: 12.5, color: C.textMuted, margin: "0 0 10px", lineHeight: 1.6 }}>
@@ -1585,7 +1585,7 @@ export default function FoodTrucksPage() {
                             <div style={{ fontSize: 13.5, fontWeight: 700, color: on ? C.sageDark : C.text, marginBottom: 2 }}>
                               {on ? '✓ ' : ''}{opt.label}
                             </div>
-                            <div style={{ fontSize: 12, color: C.textMuted, lineHeight: 1.55 }}>{opt.hint}</div>
+                            <div style={{ fontSize: 14, color: C.textMuted, lineHeight: 1.55 }}>{opt.hint}</div>
                           </button>
                         );
                       })}
@@ -1594,7 +1594,7 @@ export default function FoodTrucksPage() {
                 )}
 
                 <div style={{ borderTop: `1px solid ${C.sand}`, paddingTop: 18 }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 4 }}>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 4 }}>
                     Facebook and Instagram
                   </div>
                   <p style={{ fontSize: 12.5, color: C.textMuted, margin: "0 0 10px", lineHeight: 1.6 }}>
@@ -1609,7 +1609,7 @@ export default function FoodTrucksPage() {
                       display: "inline-flex", alignItems: "center", gap: 10, padding: "11px 16px", borderRadius: 24,
                       border: `1.5px solid ${checkinTruck.skipSocial ? C.sand : C.sage}`,
                       background: checkinTruck.skipSocial ? C.warmWhite : `${C.sage}12`,
-                      cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600,
+                      cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 600,
                       color: checkinTruck.skipSocial ? C.textMuted : C.sageDark,
                     }}
                   >
@@ -1627,7 +1627,7 @@ export default function FoodTrucksPage() {
                 </div>
 
                 {settingsMsg && (
-                  <p style={{ fontSize: 12, color: settingsMsg === 'Saved.' ? C.sage : "#c05a5a", fontWeight: 600, margin: "14px 0 0" }}>
+                  <p style={{ fontSize: 14, color: settingsMsg === 'Saved.' ? C.sage : "#c05a5a", fontWeight: 600, margin: "14px 0 0" }}>
                     {settingsMsg}
                   </p>
                 )}
@@ -1638,7 +1638,7 @@ export default function FoodTrucksPage() {
 
         {/* Vendor Footer */}
         <div style={{ textAlign: "center", padding: "24px", borderTop: `1px solid ${C.sand}` }}>
-          <a href="/food-trucks" style={{ fontSize: 12, color: C.textMuted, textDecoration: "none" }}>
+          <a href="/food-trucks" style={{ fontSize: 14, color: C.textMuted, textDecoration: "none" }}>
             Powered by Manitou Beach · Devils Lake, Michigan
           </a>
         </div>
@@ -1696,13 +1696,13 @@ export default function FoodTrucksPage() {
             <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(28px, 5vw, 48px)", fontWeight: 400, color: C.cream, lineHeight: 1.15, margin: "16px 0 20px" }}>
               Find a Food Truck
             </h1>
-            <p style={{ fontSize: 16, color: "rgba(255,255,255,0.55)", lineHeight: 1.75, maxWidth: 480, margin: "0 auto" }}>
+            <p style={{ fontSize: 16, color: "rgba(255,255,255,0.75)", lineHeight: 1.75, maxWidth: 480, margin: "0 auto" }}>
               Local food trucks check in when they're open. See who's out on the lake today.
             </p>
             {liveTrucks.length > 0 && (
               <div style={{ display: "inline-flex", alignItems: "center", gap: 8, marginTop: 24, background: `${C.sage}22`, border: `1px solid ${C.sage}44`, borderRadius: 20, padding: "8px 18px" }}>
                 <div style={{ width: 8, height: 8, borderRadius: "50%", background: C.sage, boxShadow: `0 0 6px ${C.sage}` }} />
-                <span style={{ fontSize: 13, color: C.sage, fontWeight: 600 }}>{liveTrucks.length} truck{liveTrucks.length !== 1 ? "s" : ""} open now</span>
+                <span style={{ fontSize: 15, color: C.sage, fontWeight: 600 }}>{liveTrucks.length} truck{liveTrucks.length !== 1 ? "s" : ""} open now</span>
               </div>
             )}
           </FadeIn>
@@ -1713,10 +1713,10 @@ export default function FoodTrucksPage() {
       <div style={{ background: "rgba(10,18,24,0.85)", borderBottom: `1px solid rgba(255,255,255,0.06)`, padding: "14px 24px", textAlign: "center" }}>
         <div style={{ maxWidth: 520, margin: "0 auto", display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center", gap: 10 }}>
           {smsStatus === 'sent' ? (
-            <p style={{ fontSize: 13, color: C.sage, fontWeight: 600, margin: 0 }}>Check your texts - your check-in link is on its way.</p>
+            <p style={{ fontSize: 15, color: C.sage, fontWeight: 600, margin: 0 }}>Check your texts - your check-in link is on its way.</p>
           ) : (
             <>
-              <span style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", whiteSpace: "nowrap" }}>Already a partner?</span>
+              <span style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", whiteSpace: "nowrap" }}>Already a partner?</span>
               <div style={{ display: "flex", gap: 6 }}>
                 <input
                   type="tel"
@@ -1727,7 +1727,7 @@ export default function FoodTrucksPage() {
                     width: 160, padding: "8px 12px", borderRadius: 6,
                     border: "1px solid rgba(255,255,255,0.12)",
                     background: "rgba(255,255,255,0.06)", color: C.cream,
-                    fontSize: 13, fontFamily: "'Libre Franklin', sans-serif",
+                    fontSize: 15, fontFamily: "'Libre Franklin', sans-serif",
                     outline: "none",
                   }}
                   onKeyDown={e => {
@@ -1761,7 +1761,7 @@ export default function FoodTrucksPage() {
                   style={{
                     padding: "8px 14px", borderRadius: 6,
                     background: smsStatus === 'loading' ? "rgba(255,255,255,0.08)" : C.sage,
-                    color: C.cream, border: "none", fontSize: 12, fontWeight: 700,
+                    color: C.cream, border: "none", fontSize: 14, fontWeight: 700,
                     cursor: smsStatus === 'loading' ? "default" : "pointer",
                     fontFamily: "'Libre Franklin', sans-serif", whiteSpace: "nowrap",
                   }}
@@ -1780,7 +1780,7 @@ export default function FoodTrucksPage() {
       {mapsKey && liveTrucksWithCoords.length > 0 && (
         <section style={{ background: C.dusk, padding: "16px 24px 48px" }}>
           <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-            <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)', marginBottom: 16, textAlign: 'center' }}>Live Locations</p>
+            <p style={{ fontSize: 13, fontWeight: 600, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.75)', marginBottom: 16, textAlign: 'center' }}>Live Locations</p>
             <div style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', border: `1px solid rgba(255,255,255,0.08)`, boxShadow: '0 8px 40px rgba(0,0,0,0.35)' }}>
               {/* Map canvas */}
               <div ref={mapDivRef} style={{ width: '100%', height: 340 }} />
@@ -1803,31 +1803,31 @@ export default function FoodTrucksPage() {
                         <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, fontWeight: 400, color: C.text, margin: 0 }}>{selectedTruck.name}</h3>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
                           <div style={{ width: 6, height: 6, borderRadius: '50%', background: C.sage }} />
-                          <span style={{ fontSize: 11, color: C.sage, fontWeight: 600 }}>open now</span>
+                          <span style={{ fontSize: 13, color: C.sage, fontWeight: 600 }}>open now</span>
                         </div>
                       </div>
-                      {selectedTruck.cuisine && <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 6 }}>{selectedTruck.cuisine}</div>}
+                      {selectedTruck.cuisine && <div style={{ fontSize: 14, color: C.textMuted, marginBottom: 6 }}>{selectedTruck.cuisine}</div>}
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                         {selectedTruck.locationNote && (
-                          <span style={{ fontSize: 12, color: C.text, fontWeight: 500 }}>📍 {selectedTruck.locationNote}</span>
+                          <span style={{ fontSize: 14, color: C.text, fontWeight: 500 }}>📍 {selectedTruck.locationNote}</span>
                         )}
                         {selectedTruck.todaysSpecial && (
-                          <span style={{ fontSize: 12, color: C.sunset, fontWeight: 500 }}>⭐ {selectedTruck.todaysSpecial}</span>
+                          <span style={{ fontSize: 14, color: C.sunset, fontWeight: 500 }}>⭐ {selectedTruck.todaysSpecial}</span>
                         )}
                         {selectedTruck.departureTime && (
-                          <span style={{ fontSize: 12, color: C.textMuted }}>⏱ Until {formatDeparture(selectedTruck.departureTime)}</span>
+                          <span style={{ fontSize: 14, color: C.textMuted }}>⏱ Until {formatDeparture(selectedTruck.departureTime)}</span>
                         )}
                       </div>
                     </div>
                     <button
                       onClick={() => { setSelectedTruck(null); const G = window.google.maps; const pts2 = (trucks || []).filter(t => isLive(t) && typeof t.lat === 'number'); markersRef.current.forEach(m => { const t = pts2.find(p => p.name === m.getTitle()); m.setIcon(makeMapPin(m.getTitle(), false, G, t?.pinColor)); if (t?.photoUrl) upgradeMarkerWithPhoto(m, t.photoUrl, t.name, false, G, t?.pinColor); }); }}
-                      style={{ flexShrink: 0, width: 28, height: 28, borderRadius: '50%', background: C.sand, border: 'none', cursor: 'pointer', fontSize: 14, color: C.textMuted, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'sans-serif' }}
+                      style={{ flexShrink: 0, width: 28, height: 28, borderRadius: '50%', background: C.sand, border: 'none', cursor: 'pointer', fontSize: 16, color: C.textMuted, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'sans-serif' }}
                     >×</button>
                   </div>
                 </div>
               )}
             </div>
-            <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', textAlign: 'center', margin: '10px 0 0', letterSpacing: '0.05em' }}>
+            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)', textAlign: 'center', margin: '10px 0 0', letterSpacing: '0.05em' }}>
               Tap a truck label to see details · {liveTrucksWithCoords.length} location{liveTrucksWithCoords.length !== 1 ? 's' : ''} pinned today
             </p>
           </div>
@@ -1851,11 +1851,11 @@ export default function FoodTrucksPage() {
             </div>
           </FadeIn>
           {trucks === null ? (
-            <div style={{ textAlign: "center", padding: "48px", color: C.textMuted, fontSize: 14 }}>Loading trucks…</div>
+            <div style={{ textAlign: "center", padding: "48px", color: C.textMuted, fontSize: 16 }}>Loading trucks…</div>
           ) : nearbyLiveTrucks.length === 0 && travelingLiveTrucks.length === 0 ? (
             <div style={{ textAlign: "center", padding: "48px 24px", background: C.cream, borderRadius: 14, border: `1px solid ${C.sand}` }}>
               <div style={{ fontSize: 36, marginBottom: 12 }}>🌤️</div>
-              <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.7, maxWidth: 360, margin: "0 auto" }}>
+              <p style={{ fontSize: 17, color: C.textLight, lineHeight: 1.7, maxWidth: 360, margin: "0 auto" }}>
                 No food trucks are checked in right now. Check back later - they update throughout the day.
               </p>
             </div>
@@ -1872,12 +1872,12 @@ export default function FoodTrucksPage() {
                       {/* Live badge - top right */}
                       <div style={{ position: "absolute", top: 14, right: 16, display: "flex", alignItems: "center", gap: 5 }}>
                         <div style={{ width: 8, height: 8, borderRadius: "50%", background: C.sage, boxShadow: `0 0 6px ${C.sage}88` }} />
-                        <span style={{ fontSize: 11, color: C.sage, fontWeight: 700, letterSpacing: 0.3 }}>{timeAgo(truck.lastCheckin)}</span>
+                        <span style={{ fontSize: 13, color: C.sage, fontWeight: 700, letterSpacing: 0.3 }}>{timeAgo(truck.lastCheckin)}</span>
                       </div>
                       {/* Most Loved badge - top left */}
                       {isMostLoved(truck.slug) && (
                         <div style={{ position: "absolute", top: 14, left: 16 }}>
-                          <span style={{ fontSize: 10, fontWeight: 700, color: C.sunset, background: `${C.sunset}15`, border: `1px solid ${C.sunset}30`, padding: "3px 9px", borderRadius: 10, letterSpacing: 0.5 }}>Most Loved ❤️</span>
+                          <span style={{ fontSize: 13, fontWeight: 700, color: C.sunset, background: `${C.sunset}15`, border: `1px solid ${C.sunset}30`, padding: "3px 9px", borderRadius: 10, letterSpacing: 0.5 }}>Most Loved ❤️</span>
                         </div>
                       )}
                       {/* Logo - big and proud, this is their identity */}
@@ -1893,14 +1893,14 @@ export default function FoodTrucksPage() {
                       {/* Name */}
                       <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 20, fontWeight: 400, color: C.text, margin: "0 0 6px", lineHeight: 1.3 }}>{truck.name}</h3>
                       {/* Meta line - cuisine + location on one line */}
-                      <div style={{ fontSize: 13, color: C.textLight, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, flexWrap: "wrap" }}>
+                      <div style={{ fontSize: 15, color: C.textLight, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, flexWrap: "wrap" }}>
                         {truck.cuisine && <span>{truck.cuisine}</span>}
                         {truck.cuisine && truck.locationNote && <span style={{ color: C.driftwood }}>·</span>}
                         {truck.locationNote && <span style={{ fontWeight: 500 }}>📍 {truck.locationNote}</span>}
                       </div>
                       {/* Love count */}
                       {loveCount(truck.slug) > 0 && (
-                        <div style={{ fontSize: 12, color: C.textMuted, marginTop: 6 }}>❤️ {loveCount(truck.slug)} love{loveCount(truck.slug) !== 1 ? 's' : ''}</div>
+                        <div style={{ fontSize: 14, color: C.textMuted, marginTop: 6 }}>❤️ {loveCount(truck.slug)} love{loveCount(truck.slug) !== 1 ? 's' : ''}</div>
                       )}
                     </div>
 
@@ -1910,43 +1910,43 @@ export default function FoodTrucksPage() {
                       {truck.todaysSpecial && (
                         <div style={{ background: `linear-gradient(135deg, ${C.sunset}18 0%, ${C.sunset}08 100%)`, border: `1.5px solid ${C.sunset}30`, borderRadius: 12, padding: "11px 16px", marginBottom: 12, display: "flex", alignItems: "center", gap: 10 }}>
                           <span style={{ fontSize: 18, lineHeight: 1 }}>⭐</span>
-                          <span style={{ fontSize: 14, color: C.sunset, fontWeight: 600, lineHeight: 1.4 }}>{truck.todaysSpecial}</span>
+                          <span style={{ fontSize: 16, color: C.sunset, fontWeight: 600, lineHeight: 1.4 }}>{truck.todaysSpecial}</span>
                         </div>
                       )}
                       {/* Departure time */}
                       {truck.departureTime && (
-                        <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 12, textAlign: "center" }}>
+                        <div style={{ fontSize: 14, color: C.textMuted, marginBottom: 12, textAlign: "center" }}>
                           ⏱ Open until {formatDeparture(truck.departureTime)}
                         </div>
                       )}
-                      {truck.description && <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: "0 0 12px", textAlign: "center" }}>{truck.description}</p>}
+                      {truck.description && <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.6, margin: "0 0 12px", textAlign: "center" }}>{truck.description}</p>}
                       {/* Love Pills */}
                       {truck.slug && LovePills({ slug: truck.slug })}
                       {/* Action toolbar */}
                       <div style={{ display: "flex", justifyContent: "center", gap: 6, flexWrap: "wrap", marginTop: 14, borderTop: `1.5px solid ${C.sand}`, paddingTop: 14 }}>
                         {truck.phone && (
-                          <a href={`tel:${truck.phone}`} style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}15`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1.5px solid ${C.lakeBlue}30` }}>
+                          <a href={`tel:${truck.phone}`} style={{ fontSize: 14, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}15`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1.5px solid ${C.lakeBlue}30` }}>
                             📱 Call
                           </a>
                         )}
                         {truck.lat && truck.lng && (
-                          <a href={`https://www.google.com/maps?q=${truck.lat},${truck.lng}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}15`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1.5px solid ${C.lakeBlue}30` }}>
+                          <a href={`https://www.google.com/maps?q=${truck.lat},${truck.lng}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: 14, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}15`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1.5px solid ${C.lakeBlue}30` }}>
                             🗺️ Directions
                           </a>
                         )}
                         {truck.website && (
-                          <a href={truck.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}15`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1.5px solid ${C.lakeBlue}30` }}>
+                          <a href={truck.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 14, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}15`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1.5px solid ${C.lakeBlue}30` }}>
                             Website →
                           </a>
                         )}
                         <button
                           onClick={() => shareTruck(truck)}
-                          style={{ fontSize: 12, color: sharedId === truck.id ? C.sage : C.sunset, background: sharedId === truck.id ? `${C.sage}10` : `${C.sunset}10`, border: `1px solid ${sharedId === truck.id ? C.sage : C.sunset}20`, padding: "6px 14px", borderRadius: 20, fontWeight: 700, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", display: "inline-flex", alignItems: "center", gap: 5, transition: "all 0.2s" }}
+                          style={{ fontSize: 14, color: sharedId === truck.id ? C.sage : C.sunset, background: sharedId === truck.id ? `${C.sage}10` : `${C.sunset}10`, border: `1px solid ${sharedId === truck.id ? C.sage : C.sunset}20`, padding: "6px 14px", borderRadius: 20, fontWeight: 700, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", display: "inline-flex", alignItems: "center", gap: 5, transition: "all 0.2s" }}
                         >
                           {sharedId === truck.id ? '✓ Copied' : '↗ Tell a friend'}
                         </button>
                         {truck.slug && (
-                          <a href={`/food-trucks/${truck.slug}`} style={{ fontSize: 12, color: C.textMuted, textDecoration: "none", fontWeight: 500, background: `${C.sand}80`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1px solid ${C.sand}` }}>
+                          <a href={`/food-trucks/${truck.slug}`} style={{ fontSize: 14, color: C.textMuted, textDecoration: "none", fontWeight: 500, background: `${C.sand}80`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1px solid ${C.sand}` }}>
                             View Profile →
                           </a>
                         )}
@@ -1967,7 +1967,7 @@ export default function FoodTrucksPage() {
                   <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(16px, 2.5vw, 22px)", fontWeight: 400, color: C.text, margin: 0 }}>
                     Also Serving Today
                   </h3>
-                  <span style={{ fontSize: 12, color: C.textMuted, fontStyle: "italic" }}>farther out</span>
+                  <span style={{ fontSize: 14, color: C.textMuted, fontStyle: "italic" }}>farther out</span>
                 </div>
               </FadeIn>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 20, alignItems: "start" }}>
@@ -1985,7 +1985,7 @@ export default function FoodTrucksPage() {
                         <div style={{ background: `linear-gradient(160deg, ${C.cream} 0%, ${C.sand}44 100%)`, padding: "24px 22px 18px", textAlign: "center", position: "relative" }}>
                           <div style={{ position: "absolute", top: 14, right: 16, display: "flex", alignItems: "center", gap: 5 }}>
                             <div style={{ width: 7, height: 7, borderRadius: "50%", background: C.driftwood }} />
-                            <span style={{ fontSize: 11, color: C.driftwood, fontWeight: 600 }}>{timeAgo(truck.lastCheckin)}</span>
+                            <span style={{ fontSize: 13, color: C.driftwood, fontWeight: 600 }}>{timeAgo(truck.lastCheckin)}</span>
                           </div>
                           {truck.photoUrl ? (
                             <div style={{ width: 140, height: 140, borderRadius: 22, background: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px", overflow: "hidden", boxShadow: `0 3px 14px ${C.driftwood}20`, border: `3px solid #FFFFFF` }}>
@@ -1997,41 +1997,41 @@ export default function FoodTrucksPage() {
                             </div>
                           )}
                           <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 18, fontWeight: 400, color: C.text, margin: "0 0 6px" }}>{truck.name}</h3>
-                          <div style={{ fontSize: 13, color: C.textLight, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, flexWrap: "wrap" }}>
+                          <div style={{ fontSize: 15, color: C.textLight, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, flexWrap: "wrap" }}>
                             {truck.cuisine && <span>{truck.cuisine}</span>}
                             {truck.cuisine && truck.locationNote && <span style={{ color: C.driftwood }}>·</span>}
                             {truck.locationNote && <span style={{ fontWeight: 500 }}>📍 {truck.locationNote}</span>}
                           </div>
-                          {dist && <div style={{ fontSize: 11, color: C.textMuted, marginTop: 4 }}>~{dist} mi away</div>}
+                          {dist && <div style={{ fontSize: 13, color: C.textMuted, marginTop: 4 }}>~{dist} mi away</div>}
                         </div>
                         <div style={{ padding: "14px 22px 18px" }}>
                           {truck.todaysSpecial && (
                             <div style={{ background: `linear-gradient(135deg, ${C.sunset}18 0%, ${C.sunset}08 100%)`, border: `1.5px solid ${C.sunset}30`, borderRadius: 12, padding: "11px 16px", marginBottom: 12, display: "flex", alignItems: "center", gap: 10 }}>
                               <span style={{ fontSize: 18, lineHeight: 1 }}>⭐</span>
-                              <span style={{ fontSize: 14, color: C.sunset, fontWeight: 600 }}>{truck.todaysSpecial}</span>
+                              <span style={{ fontSize: 16, color: C.sunset, fontWeight: 600 }}>{truck.todaysSpecial}</span>
                             </div>
                           )}
-                          {truck.description && <p style={{ fontSize: 13, color: C.textLight, lineHeight: 1.6, margin: "0 0 12px", textAlign: "center" }}>{truck.description}</p>}
+                          {truck.description && <p style={{ fontSize: 15, color: C.textLight, lineHeight: 1.6, margin: "0 0 12px", textAlign: "center" }}>{truck.description}</p>}
                           {truck.slug && LovePills({ slug: truck.slug })}
                           <div style={{ display: "flex", justifyContent: "center", gap: 6, flexWrap: "wrap", marginTop: 14, borderTop: `1.5px solid ${C.sand}`, paddingTop: 14 }}>
                             {truck.lat && truck.lng && (
-                              <a href={`https://www.google.com/maps?q=${truck.lat},${truck.lng}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}15`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1.5px solid ${C.lakeBlue}30` }}>
+                              <a href={`https://www.google.com/maps?q=${truck.lat},${truck.lng}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: 14, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}15`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1.5px solid ${C.lakeBlue}30` }}>
                                 🗺️ Directions
                               </a>
                             )}
                             {truck.phone && (
-                              <a href={`tel:${truck.phone}`} style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}15`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1.5px solid ${C.lakeBlue}30` }}>
+                              <a href={`tel:${truck.phone}`} style={{ fontSize: 14, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}15`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1.5px solid ${C.lakeBlue}30` }}>
                                 📱 Call
                               </a>
                             )}
                             <button
                               onClick={() => shareTruck(truck)}
-                              style={{ fontSize: 12, color: sharedId === truck.id ? C.sage : C.sunset, background: sharedId === truck.id ? `${C.sage}10` : `${C.sunset}10`, border: `1px solid ${sharedId === truck.id ? C.sage : C.sunset}20`, padding: "6px 14px", borderRadius: 20, fontWeight: 700, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", display: "inline-flex", alignItems: "center", gap: 5, transition: "all 0.2s" }}
+                              style={{ fontSize: 14, color: sharedId === truck.id ? C.sage : C.sunset, background: sharedId === truck.id ? `${C.sage}10` : `${C.sunset}10`, border: `1px solid ${sharedId === truck.id ? C.sage : C.sunset}20`, padding: "6px 14px", borderRadius: 20, fontWeight: 700, cursor: "pointer", fontFamily: "'Libre Franklin', sans-serif", display: "inline-flex", alignItems: "center", gap: 5, transition: "all 0.2s" }}
                             >
                               {sharedId === truck.id ? '✓ Copied' : '↗ Tell a friend'}
                             </button>
                             {truck.slug && (
-                              <a href={`/food-trucks/${truck.slug}`} style={{ fontSize: 12, color: C.textMuted, textDecoration: "none", fontWeight: 500, background: `${C.sand}80`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1px solid ${C.sand}` }}>
+                              <a href={`/food-trucks/${truck.slug}`} style={{ fontSize: 14, color: C.textMuted, textDecoration: "none", fontWeight: 500, background: `${C.sand}80`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1px solid ${C.sand}` }}>
                                 View Profile →
                               </a>
                             )}
@@ -2052,10 +2052,10 @@ export default function FoodTrucksPage() {
         <div style={{ background: C.warmWhite, padding: "0 24px 32px" }}>
           <div style={{ maxWidth: 600, margin: "0 auto", background: `linear-gradient(135deg, ${C.sunset}08 0%, ${C.cream} 100%)`, border: `1px solid ${C.sunset}20`, borderRadius: 16, padding: "22px 24px", textAlign: "center" }}>
             <div style={{ fontSize: 28, marginBottom: 6 }}>❤️</div>
-            <p style={{ fontSize: 15, color: C.text, lineHeight: 1.7, margin: "0 0 4px", fontWeight: 500 }}>
+            <p style={{ fontSize: 17, color: C.text, lineHeight: 1.7, margin: "0 0 4px", fontWeight: 500 }}>
               Show some love to your favorites
             </p>
-            <p style={{ fontSize: 13, color: C.textMuted, lineHeight: 1.6, margin: 0 }}>
+            <p style={{ fontSize: 15, color: C.textMuted, lineHeight: 1.6, margin: 0 }}>
               Drop a heart and tell them what you had. The more love a truck gets, the higher they climb on the list.
             </p>
           </div>
@@ -2082,15 +2082,15 @@ export default function FoodTrucksPage() {
                   <div style={{ background: C.warmWhite, borderRadius: 12, border: `1px solid ${C.sand}`, padding: "16px 18px", display: "flex", gap: 12, alignItems: "center" }}>
                     <div style={{ width: 52, height: 52, borderRadius: 10, background: `${C.lakeBlue}15`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><img src="/images/icons/food-truck-icon-dark.webp" alt="" style={{ width: 40, height: 40, objectFit: "contain" }} /></div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 14, color: C.text }}>{truck.name}</div>
-                      {truck.cuisine && <div style={{ fontSize: 11, color: C.textMuted, marginTop: 2 }}>{truck.cuisine}</div>}
-                      <div style={{ fontSize: 12, color: C.lakeBlue, fontWeight: 600, marginTop: 4 }}>{formatComingDate(truck.comingDate)}</div>
+                      <div style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 16, color: C.text }}>{truck.name}</div>
+                      {truck.cuisine && <div style={{ fontSize: 13, color: C.textMuted, marginTop: 2 }}>{truck.cuisine}</div>}
+                      <div style={{ fontSize: 14, color: C.lakeBlue, fontWeight: 600, marginTop: 4 }}>{formatComingDate(truck.comingDate)}</div>
                       {truck.comingEventName && (
-                        <a href="/events" style={{ fontSize: 11, color: C.sunset, fontWeight: 600, marginTop: 2, display: "block", textDecoration: "none", lineHeight: 1.4 }}>
+                        <a href="/events" style={{ fontSize: 13, color: C.sunset, fontWeight: 600, marginTop: 2, display: "block", textDecoration: "none", lineHeight: 1.4 }}>
                           {truck.comingEventName}
                         </a>
                       )}
-                      {truck.scheduleNote && !truck.comingEventName && <div style={{ fontSize: 11, color: C.textMuted, marginTop: 2, lineHeight: 1.4 }}>{truck.scheduleNote}</div>}
+                      {truck.scheduleNote && !truck.comingEventName && <div style={{ fontSize: 13, color: C.textMuted, marginTop: 2, lineHeight: 1.4 }}>{truck.scheduleNote}</div>}
                     </div>
                   </div>
                 </FadeIn>
@@ -2124,12 +2124,12 @@ export default function FoodTrucksPage() {
                         {/* Badges - top corners */}
                         {live && (
                           <div style={{ position: "absolute", top: 12, left: 14 }}>
-                            <span style={{ fontSize: 10, fontWeight: 700, color: C.sage, background: `${C.sage}15`, padding: "3px 9px", borderRadius: 10, letterSpacing: 0.5, textTransform: "uppercase" }}>Open</span>
+                            <span style={{ fontSize: 13, fontWeight: 700, color: C.sage, background: `${C.sage}15`, padding: "3px 9px", borderRadius: 10, letterSpacing: 0.5, textTransform: "uppercase" }}>Open</span>
                           </div>
                         )}
                         {truck.tier === 'featured' && (
                           <div style={{ position: "absolute", top: 12, right: 14 }}>
-                            <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sunset, background: `${C.sunset}12`, border: `1px solid ${C.sunset}25`, borderRadius: 8, padding: "3px 8px" }}>Featured</span>
+                            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.sunset, background: `${C.sunset}12`, border: `1px solid ${C.sunset}25`, borderRadius: 8, padding: "3px 8px" }}>Featured</span>
                           </div>
                         )}
                         {/* Logo */}
@@ -2144,34 +2144,34 @@ export default function FoodTrucksPage() {
                         )}
                         {/* Name + badges */}
                         <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 17, fontWeight: 400, color: C.text, margin: "0 0 4px" }}>{truck.name}</h3>
-                        {truck.cuisine && <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 2 }}>{truck.cuisine}</div>}
+                        {truck.cuisine && <div style={{ fontSize: 14, color: C.textMuted, marginBottom: 2 }}>{truck.cuisine}</div>}
                         {isMostLoved(truck.slug) && (
-                          <span style={{ fontSize: 10, fontWeight: 700, color: C.sunset, background: `${C.sunset}15`, border: `1px solid ${C.sunset}30`, padding: "2px 8px", borderRadius: 10, letterSpacing: 0.5 }}>Most Loved ❤️</span>
+                          <span style={{ fontSize: 13, fontWeight: 700, color: C.sunset, background: `${C.sunset}15`, border: `1px solid ${C.sunset}30`, padding: "2px 8px", borderRadius: 10, letterSpacing: 0.5 }}>Most Loved ❤️</span>
                         )}
                         {loveCount(truck.slug) > 0 && !isMostLoved(truck.slug) && (
-                          <div style={{ fontSize: 11, color: C.textMuted, marginTop: 2 }}>❤️ {loveCount(truck.slug)} love{loveCount(truck.slug) !== 1 ? 's' : ''}</div>
+                          <div style={{ fontSize: 13, color: C.textMuted, marginTop: 2 }}>❤️ {loveCount(truck.slug)} love{loveCount(truck.slug) !== 1 ? 's' : ''}</div>
                         )}
                       </div>
                       {/* Card body */}
                       <div style={{ padding: "14px 20px 18px", textAlign: "center" }}>
                         {truck.scheduleNote && (
-                          <div style={{ fontSize: 12, color: C.textMuted, marginBottom: 8, lineHeight: 1.5 }}>📅 {truck.scheduleNote}</div>
+                          <div style={{ fontSize: 14, color: C.textMuted, marginBottom: 8, lineHeight: 1.5 }}>📅 {truck.scheduleNote}</div>
                         )}
                         {truck.slug && LovePills({ slug: truck.slug })}
                         {/* Actions */}
                         <div style={{ display: "flex", justifyContent: "center", gap: 6, flexWrap: "wrap", marginTop: 12, borderTop: `1px solid ${C.sand}`, paddingTop: 12 }}>
                           {truck.phone && (
-                            <a href={`tel:${truck.phone}`} style={{ fontSize: 12, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}15`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1.5px solid ${C.lakeBlue}30` }}>
+                            <a href={`tel:${truck.phone}`} style={{ fontSize: 14, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}15`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1.5px solid ${C.lakeBlue}30` }}>
                               📱 {formatPhone(truck.phone)}
                             </a>
                           )}
                           {truck.tier === 'featured' && truck.website && (
-                            <a href={truck.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.sunset, textDecoration: "none", fontWeight: 600, background: `${C.sunset}10`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1px solid ${C.sunset}20` }}>
+                            <a href={truck.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 14, color: C.sunset, textDecoration: "none", fontWeight: 600, background: `${C.sunset}10`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1px solid ${C.sunset}20` }}>
                               Menu / Info →
                             </a>
                           )}
                           {truck.slug && (
-                            <a href={`/food-trucks/${truck.slug}`} style={{ fontSize: 12, color: C.textMuted, textDecoration: "none", fontWeight: 500, background: `${C.sand}80`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1px solid ${C.sand}` }}>
+                            <a href={`/food-trucks/${truck.slug}`} style={{ fontSize: 14, color: C.textMuted, textDecoration: "none", fontWeight: 500, background: `${C.sand}80`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1px solid ${C.sand}` }}>
                               View Profile →
                             </a>
                           )}
@@ -2195,12 +2195,12 @@ export default function FoodTrucksPage() {
             <h2 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 3.5vw, 32px)", fontWeight: 400, color: C.cream, margin: "16px 0 16px" }}>
               Get on the Map - $9/month
             </h2>
-            <p style={{ fontSize: 14, color: "rgba(255,255,255,0.55)", lineHeight: 1.75, marginBottom: 16 }}>
+            <p style={{ fontSize: 16, color: "rgba(255,255,255,0.75)", lineHeight: 1.75, marginBottom: 16 }}>
               Live map pin, personal check-in URL, Today's Special badge, and your name in front of hundreds of Manitou Beach followers.
             </p>
             <div style={{ background: "rgba(212,132,90,0.12)", border: "1px solid rgba(212,132,90,0.25)", borderRadius: 14, padding: "16px 20px", marginBottom: 28, textAlign: "center" }}>
               <div style={{ fontFamily: "'Caveat', cursive", fontSize: 18, color: C.sunsetLight, marginBottom: 4 }}>Magic Moment</div>
-              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", lineHeight: 1.7, margin: 0 }}>
+              <p style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", lineHeight: 1.7, margin: 0 }}>
                 A customer walks up and says "I saw you on the map and came straight here." That's the moment your truck becomes a destination.
               </p>
             </div>
@@ -2210,11 +2210,11 @@ export default function FoodTrucksPage() {
 
             {/* Forgot check-in link */}
             <div style={{ marginTop: 36, borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: 28 }}>
-              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", marginBottom: 12 }}>
+              <p style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", marginBottom: 12 }}>
                 Already a member? Text your check-in link to your phone.
               </p>
               {smsStatus === 'sent' ? (
-                <p style={{ fontSize: 14, color: C.sage, fontWeight: 600 }}>✓ Check your texts - link is on its way.</p>
+                <p style={{ fontSize: 16, color: C.sage, fontWeight: 600 }}>✓ Check your texts - link is on its way.</p>
               ) : (
                 <div style={{ display: "flex", gap: 8, maxWidth: 340, margin: "0 auto" }}>
                   <input
@@ -2226,7 +2226,7 @@ export default function FoodTrucksPage() {
                       flex: 1, padding: "11px 14px", borderRadius: 8,
                       border: "1px solid rgba(255,255,255,0.15)",
                       background: "rgba(255,255,255,0.08)", color: C.cream,
-                      fontSize: 14, fontFamily: "'Libre Franklin', sans-serif",
+                      fontSize: 16, fontFamily: "'Libre Franklin', sans-serif",
                       outline: "none",
                     }}
                     onKeyDown={e => { if (e.key === 'Enter') handleSmsRequest(); }}
@@ -2248,7 +2248,7 @@ export default function FoodTrucksPage() {
                     style={{
                       padding: "11px 18px", borderRadius: 8,
                       background: smsStatus === 'loading' ? "rgba(255,255,255,0.1)" : C.sage,
-                      color: C.cream, border: "none", fontSize: 13, fontWeight: 700,
+                      color: C.cream, border: "none", fontSize: 15, fontWeight: 700,
                       cursor: smsStatus === 'loading' ? "default" : "pointer",
                       fontFamily: "'Libre Franklin', sans-serif", whiteSpace: "nowrap",
                     }}

@@ -63,7 +63,7 @@ export default function GalleryHubPage() {
                   <img src={galleryCover(g)} alt={g.title} loading="lazy"
                     style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                   {g.crowd && (
-                    <span style={{ position: 'absolute', top: 10, left: 10, background: C.sunset, color: '#fff', fontSize: 11, fontWeight: 700, letterSpacing: 0.4, padding: '4px 10px', borderRadius: 20, textTransform: 'uppercase' }}>
+                    <span style={{ position: 'absolute', top: 10, left: 10, background: C.sunset, color: '#fff', fontSize: 13, fontWeight: 700, letterSpacing: 0.4, padding: '4px 10px', borderRadius: 20, textTransform: 'uppercase' }}>
                       Add your photos
                     </span>
                   )}
