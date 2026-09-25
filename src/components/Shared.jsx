@@ -210,15 +210,43 @@ export function useCardTilt(maxDeg = 6) {
   return { ref, onMouseEnter, onMouseMove, onMouseLeave };
 }
 
-// SVG wave divider
+// One-shot "has this scrolled into view" flag for CSS-driven micro-motion.
+export function useInView(rootMargin = "0px 0px -10% 0px") {
+  const ref = useRef(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || inView) return;
+    if (typeof IntersectionObserver === "undefined") { setInView(true); return; }
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setInView(true); io.disconnect(); } }, { rootMargin });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [inView, rootMargin]);
+  return [ref, inView];
+}
+
+// Adds `is-in` to its class once visible; the lake motion classes in GlobalStyles key off it.
+export function Reveal({ className = "", style, children }) {
+  const [ref, inView] = useInView();
+  return <div ref={ref} className={`${className}${inView ? " is-in" : ""}`} style={style}>{children}</div>;
+}
+
+const WAVE_A = "M0,40 C360,120 720,0 1080,80 C1260,120 1380,60 1440,40 L1440,120 L0,120 Z";
+const WAVE_B = "M0,60 C300,20 760,100 1080,50 C1280,20 1380,80 1440,55 L1440,120 L0,120 Z";
+
+// SVG wave divider - the surface drifts slowly like the lake (off under reduced motion)
 export function WaveDivider({ topColor, bottomColor, flip = false, height = 80 }) {
+  const still = typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
   return (
     <div style={{ marginTop: -1, marginBottom: -1, lineHeight: 0, overflow: "hidden", transform: flip ? "scaleY(-1)" : "none" }}>
       <svg viewBox="0 0 1440 120" preserveAspectRatio="none" style={{ display: "block", width: "100%", height }}>
-        <path
-          d="M0,40 C360,120 720,0 1080,80 C1260,120 1380,60 1440,40 L1440,120 L0,120 Z"
-          fill={bottomColor}
-        />
+        <path d={WAVE_A} fill={bottomColor}>
+          {!still && (
+            <animate attributeName="d" dur="14s" repeatCount="indefinite" calcMode="spline"
+              keyTimes="0;0.5;1" keySplines="0.45 0 0.55 1;0.45 0 0.55 1"
+              values={`${WAVE_A};${WAVE_B};${WAVE_A}`} />
+          )}
+        </path>
         <rect width="1440" height="120" fill={topColor} style={{ opacity: 0 }} />
       </svg>
     </div>

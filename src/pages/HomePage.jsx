@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { C, SECTIONS, CAT_COLORS, USA250_VIDEO_URL } from '../data/config';
 import { BASE_PRICES } from '../data/pricing';
-import { ShareBar, CategoryPill, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivider, PageSponsorBanner, DiagonalDivider, Btn, useCardTilt } from '../components/Shared';
+import { ShareBar, CategoryPill, SectionLabel, SectionTitle, FadeIn, Reveal, ScrollProgress, WaveDivider, PageSponsorBanner, DiagonalDivider, Btn, useCardTilt } from '../components/Shared';
 import { GlobalStyles, PromoBanner, NewsletterInline, HollyYetiSection, EventLightbox, Footer, Navbar, ContactModal } from '../components/Layout';
 import { DispatchPreviewSection } from './DispatchPage';
 import yeti from '../data/errorMessages';
@@ -85,12 +85,13 @@ function EventTicker() {
 function WeatherWidget() {
   const [weather, setWeather] = useState(null);
   useEffect(() => {
-    fetch("https://api.open-meteo.com/v1/forecast?latitude=41.97&longitude=-84.00&current=temperature_2m,weather_code&temperature_unit=fahrenheit")
+    fetch("https://api.open-meteo.com/v1/forecast?latitude=41.97&longitude=-84.00&current=temperature_2m,weather_code,wind_speed_10m&temperature_unit=fahrenheit&wind_speed_unit=mph")
       .then(r => r.json())
       .then(d => {
         const code = d.current?.weather_code ?? 0;
         const temp = Math.round(d.current?.temperature_2m ?? 0);
-        setWeather({ temp, code });
+        const wind = Math.round(d.current?.wind_speed_10m ?? 0);
+        setWeather({ temp, code, wind });
       })
       .catch(() => {});
   }, []);
@@ -132,7 +133,8 @@ function WeatherWidget() {
       borderRadius: 20, padding: "7px 14px",
       fontFamily: "'Libre Franklin', sans-serif",
     }}>
-      <span style={{ fontSize: 17, lineHeight: 1 }}>{icon}</span>
+      {/* ripple under the icon runs faster the windier the lake is */}
+      <span className="mb-ripple" title={`Wind ${weather.wind ?? 0} mph`} style={{ fontSize: 17, lineHeight: 1, "--ripple-dur": (weather.wind ?? 0) >= 15 ? "1.8s" : (weather.wind ?? 0) >= 8 ? "3s" : "5s" }}>{icon}</span>
       <span style={{ fontSize: 16, fontWeight: 700, color: C.cream }}>{weather.temp}°F</span>
       <span style={{ fontSize: 13, color: "rgba(255,255,255,0.75)", letterSpacing: 0.3 }}>{label}</span>
       <span style={{ fontSize: 13, color: "rgba(255,255,255,0.75)", letterSpacing: 0.5 }}>· Devils Lake right now</span>
@@ -489,9 +491,6 @@ function Hero({ scrollTo }) {
         <source src="/videos/hero-default.mp4" type="video/mp4" />
       </video>
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(170deg, rgba(26,40,48,0.6) 0%, rgba(26,40,48,0.35) 50%, rgba(26,40,48,0.75) 100%)", zIndex: 2 }} />
-      <div style={{ position: "absolute", top: "20%", right: "15%", width: 200, height: 200, borderRadius: "50%", background: `${C.sage}08`, zIndex: 2, animation: "float-slow 8s ease-in-out infinite", pointerEvents: "none" }} />
-      <div style={{ position: "absolute", bottom: "25%", left: "10%", width: 120, height: 120, borderRadius: "50%", background: `${C.sunset}06`, zIndex: 2, animation: "float 6s ease-in-out infinite 2s", pointerEvents: "none" }} />
-      <div style={{ position: "absolute", top: "60%", right: "8%", width: 60, height: 60, borderRadius: "50%", border: `1px solid ${C.sage}15`, zIndex: 2, animation: "float-slow 10s ease-in-out infinite 1s", pointerEvents: "none" }} />
       <div style={{ position: "relative", zIndex: 3, maxWidth: 960, margin: "0 auto", padding: "160px 48px 120px", transform: `translateY(${scrollY * 0.08}px)` }}>
         <div style={{ opacity: loaded ? 1 : 0, transform: loaded ? "none" : "translateY(24px)", transition: "all 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94)" }}>
           <div style={{ marginBottom: 20 }}><WeatherWidget /></div>
@@ -666,16 +665,18 @@ function HappeningSection() {
                     gap: 0,
                     cursor: "pointer",
                   }}>
-                  <div className="home-event-date-col" style={{ paddingRight: 24, paddingTop: 4, textAlign: "right" }}>
-                    <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color, lineHeight: 1.2 }}>
-                      {dateLabel}
-                    </div>
-                    {event.time && (
-                      <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.75)", letterSpacing: 1, marginTop: 3 }}>
-                        {event.time}
+                  <Reveal className="home-event-date-col mb-flip" style={{ paddingRight: 24, paddingTop: 4, textAlign: "right" }}>
+                    <div className="mb-flip-page" style={{ transitionDelay: `${i * 140}ms` }}>
+                      <div style={{ fontFamily: "'Caveat', cursive", fontSize: 20, color, lineHeight: 1.2 }}>
+                        {dateLabel}
                       </div>
-                    )}
-                  </div>
+                      {event.time && (
+                        <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.75)", letterSpacing: 1, marginTop: 3 }}>
+                          {event.time}
+                        </div>
+                      )}
+                    </div>
+                  </Reveal>
                   <div className="home-event-dot-col" style={{ display: "flex", flexDirection: "column", alignItems: "center", paddingTop: 8 }}>
                     <div style={{ width: 11, height: 11, borderRadius: "50%", background: color, flexShrink: 0, boxShadow: `0 0 0 3px ${color}22` }} />
                   </div>
@@ -1222,7 +1223,7 @@ function BusinessDirectory() {
                   <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 3.5, textTransform: "uppercase", color: CAT_COLORS[category] || C.textMuted, whiteSpace: "nowrap" }}>
                     {category}
                   </div>
-                  <div style={{ flex: 1, height: 1, background: C.sand }} />
+                  <Reveal className="mb-wake" style={{ "--wake": CAT_COLORS[category] || C.sage }} />
                   <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted }}>
                     {catAll.length}
                   </div>
@@ -1303,7 +1304,7 @@ function FeaturedBusinessCard({ business }) {
       onMouseMove={tilt.onMouseMove}
       onMouseLeave={tilt.onMouseLeave}
       onClick={() => expandable && setExpanded(e => !e)}
-      className="card-tilt featured-card-glow featured-card-pulse"
+      className="card-tilt featured-card-glow mb-beam"
       style={{
         background: `linear-gradient(145deg, ${C.dusk} 0%, ${C.night} 100%)`,
         borderRadius: 12, padding: "18px 20px",
@@ -1313,12 +1314,6 @@ function FeaturedBusinessCard({ business }) {
         cursor: expandable ? "pointer" : "default",
       }}
     >
-      {/* Shimmer overlay */}
-      <div style={{
-        position: "absolute", inset: 0, borderRadius: 12, pointerEvents: "none",
-        background: `linear-gradient(110deg, transparent 30%, ${C.sunset}08 50%, transparent 70%)`,
-        backgroundSize: "200% 100%", animation: "shimmer 4s ease-in-out infinite",
-      }} />
       {/* Header: logo + name */}
       <div style={{ display: "flex", gap: 12, alignItems: "center", position: "relative", zIndex: 1 }}>
         <div style={{
@@ -1367,7 +1362,7 @@ function FeaturedBusinessCard({ business }) {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 6, position: "relative", zIndex: 1 }}>
         <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
           {business.phone && (
-            <a href={`tel:${business.phone}`} onClick={e => e.stopPropagation()} style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif" }}>{formatPhone(business.phone)}</a>
+            <a className="mb-tel" href={`tel:${business.phone}`} onClick={e => e.stopPropagation()} style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif" }}>{formatPhone(business.phone)}</a>
           )}
           {business.website && (
             <a href={business.website} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color, textDecoration: "none" }}>Visit →</a>
@@ -1390,7 +1385,7 @@ function PremiumBanner({ business }) {
   const isLong = (business.description || '').length > 160;
 
   return (
-    <div className="premium-banner-glow" style={{
+    <div className="mb-beam" style={{ "--beam-delay": `${(business.name || "").length % 6}s`,
       background: `linear-gradient(135deg, ${C.dusk} 0%, ${C.lakeDark} 100%)`,
       borderRadius: 12, padding: "28px 32px",
       display: "flex", gap: 24, alignItems: "flex-start", flexWrap: "wrap",
@@ -1438,7 +1433,7 @@ function PremiumBanner({ business }) {
           </a>
         )}
         {business.phone && (
-          <a href={`tel:${business.phone}`} style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", textDecoration: "none" }}>{formatPhone(business.phone)}</a>
+          <a className="mb-tel" href={`tel:${business.phone}`} style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", textDecoration: "none" }}>{formatPhone(business.phone)}</a>
         )}
         <a href={`/business/${toSlug(business.name)}`} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: "rgba(255,255,255,0.75)", textDecoration: "none" }}>View Profile →</a>
       </div>
@@ -1486,7 +1481,6 @@ function EnhancedBusinessRow({ business, highlighted = false }) {
       >
         {/* Category dot - all enhanced+ tiers get the pulse */}
         <div
-          className="listing-dot-pulse"
           style={{ width: 8, height: 8, borderRadius: "50%", background: dotColor, flexShrink: 0 }}
         />
         {/* Name + phone + address */}
@@ -1499,7 +1493,7 @@ function EnhancedBusinessRow({ business, highlighted = false }) {
               </span>
             )}
             {business.phone && (
-              <a href={`tel:${business.phone}`} onClick={e => e.stopPropagation()} style={{ fontSize: 15, color: C.textLight, fontFamily: "'Libre Franklin', sans-serif", whiteSpace: "nowrap", textDecoration: "none", borderBottom: `1px dotted ${C.driftwood}` }}>{formatPhone(business.phone)}</a>
+              <a className="mb-tel" href={`tel:${business.phone}`} onClick={e => e.stopPropagation()} style={{ fontSize: 15, color: C.textLight, fontFamily: "'Libre Franklin', sans-serif", whiteSpace: "nowrap", textDecoration: "none", borderBottom: `1px dotted ${C.driftwood}` }}>{formatPhone(business.phone)}</a>
             )}
           </div>
           {business.address && (
@@ -1591,7 +1585,7 @@ function BusinessRow({ business }) {
             {business.name}
           </a>
           {business.phone && (
-            <a href={`tel:${business.phone}`} style={{ fontSize: 15, color: C.textLight, fontFamily: "'Libre Franklin', sans-serif", whiteSpace: "nowrap", textDecoration: "none", borderBottom: `1px dotted ${C.driftwood}` }}>
+            <a className="mb-tel" href={`tel:${business.phone}`} style={{ fontSize: 15, color: C.textLight, fontFamily: "'Libre Franklin', sans-serif", whiteSpace: "nowrap", textDecoration: "none", borderBottom: `1px dotted ${C.driftwood}` }}>
               {formatPhone(business.phone)}
             </a>
           )}

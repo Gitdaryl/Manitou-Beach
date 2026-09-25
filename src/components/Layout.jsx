@@ -307,6 +307,52 @@ export function GlobalStyles() {
       .horizontal-scroll::-webkit-scrollbar-thumb:hover {
         background: #7A8E72;
       }
+      /* ── Lake micro-motion: every effect here is tied to the lake, not a generic loop ── */
+      .mb-ripple { position: relative; display: inline-flex; }
+      .mb-ripple::after {
+        content: ""; position: absolute; left: 50%; top: 50%; width: 22px; height: 22px; margin: -11px 0 0 -11px;
+        border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.55); pointer-events: none;
+        animation: mb-ripple var(--ripple-dur, 5s) ease-out infinite;
+      }
+      @keyframes mb-ripple { 0% { transform: scale(0.6); opacity: 0.8; } 70%, 100% { transform: scale(2.2); opacity: 0; } }
+      .mb-flip { perspective: 500px; }
+      .mb-flip > .mb-flip-page {
+        transform-origin: top center; transform: rotateX(-88deg); opacity: 0; backface-visibility: hidden;
+        transition: transform 0.75s cubic-bezier(0.2, 0.9, 0.3, 1.25), opacity 0.35s ease;
+      }
+      .mb-flip.is-in > .mb-flip-page { transform: rotateX(0deg); opacity: 1; }
+      .mb-beam { position: relative; overflow: hidden; }
+      .mb-beam::after {
+        content: ""; position: absolute; top: -20%; bottom: -20%; left: 0; width: 38%; pointer-events: none;
+        background: linear-gradient(100deg, transparent 0%, rgba(255,236,200,0) 20%, rgba(255,236,200,0.22) 50%, rgba(255,236,200,0) 80%, transparent 100%);
+        mix-blend-mode: screen; transform: translateX(-130%) skewX(-18deg);
+        animation: mb-beam 9s ease-in-out infinite; animation-delay: var(--beam-delay, 1.5s);
+      }
+      @keyframes mb-beam { 0% { transform: translateX(-130%) skewX(-18deg); } 22%, 100% { transform: translateX(300%) skewX(-18deg); } }
+      .mb-tel { display: inline-flex; align-items: center; transition: transform 0.2s ease; }
+      .mb-tel::before {
+        content: "\\260E\\FE0E"; display: inline-block; width: 0; opacity: 0; overflow: hidden;
+        transform: translateX(-4px) rotate(-25deg);
+        transition: width 0.22s ease, opacity 0.22s ease, transform 0.35s cubic-bezier(0.3, 1.6, 0.5, 1);
+      }
+      .mb-tel:hover, .mb-tel:focus-visible, .mb-tel:active { transform: translateY(-1px); }
+      .mb-tel:hover::before, .mb-tel:focus-visible::before, .mb-tel:active::before { width: 1.2em; opacity: 1; transform: translateX(0) rotate(0deg); }
+      .mb-wake { position: relative; flex: 1; height: 1px; background: #E8DFD0; }
+      .mb-wake::before {
+        content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, var(--wake, #7A8E72), transparent 90%);
+        transform: scaleX(0); transform-origin: left; opacity: 0.9;
+        transition: transform 1.3s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 1.6s ease 1.3s;
+      }
+      .mb-wake::after { content: ""; position: absolute; left: 0; top: -2px; width: 5px; height: 5px; border-radius: 50%; background: var(--wake, #7A8E72); opacity: 0; }
+      .mb-wake.is-in::before { transform: scaleX(1); opacity: 0.35; }
+      .mb-wake.is-in::after { animation: mb-boat 1.3s cubic-bezier(0.2, 0.7, 0.2, 1) forwards; }
+      @keyframes mb-boat { 0% { left: 0; opacity: 1; } 85% { opacity: 1; } 100% { left: calc(100% - 5px); opacity: 0; } }
+      @media (prefers-reduced-motion: reduce) {
+        .mb-ripple::after, .mb-beam::after, .mb-wake::after { animation: none !important; display: none; }
+        .mb-flip > .mb-flip-page { transform: none !important; opacity: 1 !important; }
+        .mb-wake::before { transform: scaleX(1) !important; opacity: 0.35 !important; }
+        .mb-tel::before { transition: none !important; }
+      }
       @media (prefers-reduced-motion: reduce) {
         .marquee-track { animation: none !important; }
         .card-tilt { transition: none !important; }
