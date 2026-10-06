@@ -29,7 +29,9 @@ const AVATAR_ID = process.env.HEYGEN_AVATAR_ID || '3ff1dbd57555436fb49fd9594a463
 const VOICE_ID  = process.env.HEYGEN_VOICE_ID  || 'a7d9bb2bd0f34fd5a6bcd4b71db2e39f'
 
 const HEYGEN_CREATE = 'https://api.heygen.com/v3/videos'
-const HEYGEN_STATUS = 'https://api.heygen.com/v1/video_status.get'
+// v1/video_status.get is retired on 2026-11-01. v3 returns the same status
+// words (pending, processing, completed, failed) under GET /v3/videos/{id}.
+const HEYGEN_STATUS = 'https://api.heygen.com/v3/videos'
 const FB_API        = 'https://graph.facebook.com/v25.0'
 const FB_VIDEO_API  = 'https://graph-video.facebook.com/v25.0'
 
@@ -134,17 +136,27 @@ async function waitForRender(videoId) {
   let last = ''
   while (Date.now() < deadline) {
     await new Promise(r => setTimeout(r, 15000))
-    const res = await fetch(`${HEYGEN_STATUS}?video_id=${videoId}`, {
+    const res = await fetch(`${HEYGEN_STATUS}/${videoId}`, {
       headers: { 'X-Api-Key': heygenKey },
     })
-    const d = (await res.json()).data || {}
+    const body = await res.json().catch(() => ({}))
+    if (!res.ok) {
+      // A rate limit or a HeyGen hiccup is not a failed render. The video is
+      // still billing and still cooking, so keep polling instead of bailing.
+      if (res.status === 429 || res.status >= 500) {
+        console.warn(`  status check returned ${res.status}, retrying`)
+        continue
+      }
+      throw new Error(`HeyGen status check failed ${res.status}: ${JSON.stringify(body.error || body)}`)
+    }
+    const d = body.data || {}
     if (d.status !== last) { console.log(`  status: ${d.status}`); last = d.status }
     if (d.status === 'completed') {
       if (!d.video_url) throw new Error('HeyGen said completed but returned no video_url')
       return d.video_url
     }
     if (d.status === 'failed') {
-      throw new Error(`HeyGen render failed: ${JSON.stringify(d.error || d)}`)
+      throw new Error(`HeyGen render failed: ${d.failure_code || 'unknown'}: ${d.failure_message || JSON.stringify(d)}`)
     }
   }
   throw new Error(`Render still not done after 20 minutes (video_id ${videoId})`)
