@@ -1008,7 +1008,7 @@ function HeroTakeover({ event, onEventClick }) {
           )}
           {event.time && (
             <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: "rgba(255,255,255,0.75)", marginBottom: 16 }}>
-              {event.time}
+              {event.time}{event.timeEnd ? ` – ${event.timeEnd}` : ""}
             </div>
           )}
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>

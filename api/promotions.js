@@ -59,7 +59,9 @@ export default async function handler(req, res) {
           name: p['Event Name']?.title?.[0]?.text?.content || '',
           promoHeadline: p['Promo Headline']?.rich_text?.[0]?.text?.content || null,
           date: p['Event date']?.date?.start || '',
-          time: p['Time']?.rich_text?.[0]?.text?.content || '',
+          // `Time` is a created_time system field; real times live in `Time End` as "6:00 PM – 8:00 PM"
+          time: (p['Time End']?.rich_text?.[0]?.text?.content || '').split(' – ')[0].trim(),
+          timeEnd: (p['Time End']?.rich_text?.[0]?.text?.content || '').split(' – ')[1]?.trim() || '',
           location: p['Location']?.rich_text?.[0]?.text?.content || '',
           imageUrl: p['Image URL']?.url || null,
           heroImageUrl: p['Hero Image URL']?.url || null,
