@@ -92,7 +92,7 @@ const MENS_CLUB_EVENTS = [
   },
   {
     title: "Halloween Hot Dog Roast",
-    date: "Late October",
+    date: "October 31, 2026 - 6 to 8 PM at Sterling's Market",
     desc: "A fall tradition for the whole family - hot dogs over the fire, costumes, and neighbors gathering one more time before the lake freezes and Tip-Up season begins.",
     image: "/images/mens-club/halloween-hot-dog-roast.webp",
   },
