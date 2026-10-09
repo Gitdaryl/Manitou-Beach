@@ -22,6 +22,18 @@ const GOLF_OUTING = {
   poster: "/images/mens-club/golf.webp",
 };
 
+// --- Halloween Hot Dog Roast 2026 ---
+// Animated-flyer hero replaces the standard hero until the roast has passed, then reverts automatically.
+const HOT_DOG_ROAST = {
+  date: new Date("2026-10-31T18:00:00-04:00"),
+  heroUntil: new Date("2026-11-01T00:00:00-04:00"),
+  venue: "Sterling Market & Pizzeria",
+  address: "860 Manitou Rd, Manitou Beach, MI 49253",
+  video: "/images/mens-club/video/hot-dog-roast-loop.mp4",
+  poster: "/images/mens-club/hot-dog-roast-2026-flyer.webp",
+  eventPath: "/events/3f48c729-eb59-8101-a355-dc89b75d01fd",
+};
+
 const GOLF_SPONSOR_TIERS = [
   {
     tier: "Gold",
@@ -127,8 +139,8 @@ const MENS_CLUB_PROGRAMS = [
   { icon: "🎆", title: "Fireworks Fund", desc: "Funding the annual July 4th fireworks display over Devils Lake for the entire community." },
 ];
 
-function GolfCountdown() {
-  const { days, hours, mins, secs } = useCountdown(GOLF_OUTING.date);
+function Countdown({ target }) {
+  const { days, hours, mins, secs } = useCountdown(target);
   const units = [
     { label: "Days", value: days },
     { label: "Hours", value: hours },
@@ -152,6 +164,61 @@ function GolfCountdown() {
         </div>
       ))}
     </div>
+  );
+}
+
+function HotDogRoastHero() {
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => { setTimeout(() => setLoaded(true), 80); }, []);
+  const eventUrl = `https://manitoubeachmichigan.com${HOT_DOG_ROAST.eventPath}`;
+
+  return (
+    <section style={{ backgroundColor: C.night, padding: "110px 24px 90px", position: "relative", overflow: "hidden", textAlign: "center" }}>
+      <div style={{ position: "absolute", inset: -40, backgroundImage: `url(${HOT_DOG_ROAST.poster})`, backgroundSize: "cover", backgroundPosition: "center", filter: "blur(28px) saturate(1.2)", opacity: 0.55 }} />
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(10,18,24,0.55) 0%, rgba(10,18,24,0.7) 60%, rgba(10,18,24,0.92) 100%)" }} />
+      <div style={{ maxWidth: 900, margin: "0 auto", position: "relative", zIndex: 1, opacity: loaded ? 1 : 0, transform: loaded ? "translateY(0)" : "translateY(20px)", transition: "all 0.8s ease" }}>
+        <div style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.sunsetLight, marginBottom: 14 }}>
+          Devils Lake & Round Lake Men's Club presents
+        </div>
+        <a href={HOT_DOG_ROAST.eventPath} aria-label="Halloween Hot Dog Roast event details" style={{ display: "block", borderRadius: 14, overflow: "hidden", boxShadow: "0 18px 60px rgba(0,0,0,0.55)", border: "1px solid rgba(255,255,255,0.12)", aspectRatio: "16 / 9", background: C.night }}>
+          <video
+            autoPlay muted loop playsInline
+            poster={HOT_DOG_ROAST.poster}
+            aria-label="Annual Hot Dog Roast, October 31, 6 to 8 PM at Sterling's Market"
+            style={{ display: "block", width: "100%", height: "100%", objectFit: "cover" }}
+          >
+            <source src={HOT_DOG_ROAST.video} type="video/mp4" />
+          </video>
+        </a>
+        <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(28px, 4.5vw, 46px)", fontWeight: 400, color: C.cream, lineHeight: 1.1, margin: "32px 0 12px 0" }}>
+          Halloween Hot Dog Roast
+        </h1>
+        <p style={{ fontSize: "clamp(14px, 1.6vw, 18px)", color: "rgba(255,255,255,0.75)", lineHeight: 1.6, maxWidth: 600, margin: "0 auto 28px" }}>
+          Saturday, October 31 · 6 to 8 PM · Free<br />
+          {HOT_DOG_ROAST.venue} · {HOT_DOG_ROAST.address}
+        </p>
+        <Countdown target={HOT_DOG_ROAST.date} />
+        <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+          <a href={HOT_DOG_ROAST.eventPath} className="btn-animated" style={{
+            display: "inline-flex", alignItems: "center", gap: 8,
+            padding: "12px 28px", borderRadius: 8,
+            background: C.sunset, color: C.cream,
+            fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+          }}>
+            Event Details
+          </a>
+          <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${HOT_DOG_ROAST.venue}, ${HOT_DOG_ROAST.address}`)}`} target="_blank" rel="noopener noreferrer" className="btn-animated" style={{
+            display: "inline-flex", alignItems: "center", gap: 8,
+            padding: "12px 28px", borderRadius: 8,
+            background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", color: C.cream,
+            fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+          }}>
+            Get Directions
+          </a>
+          <ShareBar url={eventUrl} title="Men's Club Halloween Hot Dog Roast - Oct 31 at Sterling's Market - Manitou Beach" />
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -193,7 +260,7 @@ function MensClubHero() {
               September 13, 2026 · Shotgun start 8:30 am<br />
               {GOLF_OUTING.venue} · Manitou Beach
             </p>
-            <GolfCountdown />
+            <Countdown target={GOLF_OUTING.date} />
             <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
               <a href="#golf-outing" className="btn-animated" style={{
                 display: "inline-flex", alignItems: "center", gap: 8,
@@ -803,10 +870,14 @@ export default function MensClubPage() {
 <GlobalStyles />
       <ScrollProgress />
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
-      <MensClubHero />
+      {Date.now() < HOT_DOG_ROAST.heroUntil.getTime() ? <HotDogRoastHero /> : <MensClubHero />}
       <MensClubSponsorTicker />
-      <GolfOutingSection />
-      <WaveDivider topColor={C.warmWhite} bottomColor={C.cream} />
+      {Date.now() < GOLF_OUTING.heroUntil.getTime() && (
+        <>
+          <GolfOutingSection />
+          <WaveDivider topColor={C.warmWhite} bottomColor={C.cream} />
+        </>
+      )}
       <MensClubStatsSection />
       <WaveDivider topColor={C.cream} bottomColor={C.warmWhite} />
       <MensClubMissionSection />
