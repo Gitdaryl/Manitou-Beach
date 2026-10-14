@@ -78,7 +78,10 @@ export default async function handler(req, res) {
       .filter(e => e.name && e.promoType);
 
     // Group by type
-    const heroTakeover = promos.filter(e => e.promoType === 'Hero Takeover');
+    // Soonest event first: /events shows heroTakeover[0], so a later event can't bump an earlier one
+    const heroTakeover = promos
+      .filter(e => e.promoType === 'Hero Takeover')
+      .sort((a, b) => (a.date || '').localeCompare(b.date || ''));
 
     const pageBannerPromos = promos.filter(e => e.promoType === 'Page Banner');
     const pageBanners = {};

@@ -61,6 +61,16 @@ function LadiesClubHero() {
           </div>
 
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+            {Date.now() < VETERANS_LUNCH.showUntil.getTime() && (
+              <a href="#veterans-lunch" className="btn-animated" style={{
+                display: "inline-flex", alignItems: "center", gap: 8,
+                padding: "12px 28px", borderRadius: 8,
+                background: C.sunset, color: C.cream,
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
+              }}>
+                Veterans Day Lunch · Nov 11
+              </a>
+            )}
             <a href="#festival-gallery" className="btn-animated" style={{
               display: "inline-flex", alignItems: "center", gap: 8,
               padding: "12px 28px", borderRadius: 8,
@@ -72,6 +82,83 @@ function LadiesClubHero() {
             <ShareBar title="Land & Lake Ladies Club - Manitou Beach" />
           </div>
         </div>
+      </div>
+    </section>
+  );
+}
+
+// --- Veterans Day Lunch 2026 ---
+// Promoted at the top of the page until the day after the lunch, then it disappears on its own.
+const VETERANS_LUNCH = {
+  showUntil: new Date("2026-11-12T00:00:00-05:00"),
+  rsvpEmail: "dgmuck@gmail.com",
+};
+
+function VeteransLunchSection() {
+  if (Date.now() >= VETERANS_LUNCH.showUntil.getTime()) return null;
+  return (
+    <section id="veterans-lunch" style={{ background: C.night, padding: "80px 24px", scrollMarginTop: 80 }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+        <FadeIn>
+          <div style={{ textAlign: "center", marginBottom: 36 }}>
+            <SectionLabel light>Coming Up</SectionLabel>
+            <SectionTitle center light>Veterans Day Lunch</SectionTitle>
+          </div>
+          <div style={{
+            background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.09)",
+            borderRadius: 20, overflow: "hidden",
+          }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 0 }} className="mobile-col-1">
+              <div style={{ background: "#3071c1", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+                <img
+                  src="/images/ladies-club/veterans-day-lunch.webp"
+                  alt="Veterans Day Lunch flyer: Wednesday, November 11 at noon, Boot Jack's Tavern, free to all local veterans"
+                  style={{ width: "100%", maxWidth: 440, height: "auto", borderRadius: 4, boxShadow: "0 8px 32px rgba(0,0,0,0.35)" }}
+                />
+              </div>
+              <div style={{ padding: "44px 40px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                <div style={{
+                  display: "inline-flex", alignItems: "center", gap: 8,
+                  background: `${C.sunset}22`, border: `1px solid ${C.sunset}50`,
+                  borderRadius: 6, padding: "6px 14px", marginBottom: 20, width: "fit-content",
+                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700,
+                  letterSpacing: 2.5, textTransform: "uppercase", color: C.sunsetLight,
+                }}>
+                  Free to all local veterans
+                </div>
+                <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(22px, 3vw, 32px)", fontWeight: 400, color: C.cream, margin: "0 0 8px 0", lineHeight: 1.15 }}>
+                  Wednesday, November 11
+                </h3>
+                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 22, color: C.sunsetLight, marginBottom: 24 }}>
+                  Noon · Boot Jack's Tavern
+                </div>
+                <div style={{ background: "#fff", borderRadius: 12, padding: 12, width: "fit-content", marginBottom: 24 }}>
+                  <img src="/images/bootjack_logo.webp" alt="Boot Jack Tavern, Manitou Beach Michigan" style={{ width: 120, height: 120, objectFit: "contain", display: "block" }} />
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 24 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <span style={{ fontSize: 14 }}>📍</span>
+                    <span style={{ fontSize: 13, color: "rgba(255,255,255,0.65)", fontFamily: "'Libre Franklin', sans-serif" }}>735 Manitou Rd, Manitou Beach, MI 49253</span>
+                  </div>
+                </div>
+                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)", lineHeight: 1.7, margin: "0 0 24px 0" }}>
+                  The Land & Lake Ladies Club is treating our local veterans to lunch. If you haven't already received a phone call with an invitation, please contact Diann Muck to RSVP.
+                </p>
+                <a href={`mailto:${VETERANS_LUNCH.rsvpEmail}?subject=Veterans%20Day%20Lunch%20RSVP`} className="btn-animated" style={{
+                  display: "inline-flex", alignItems: "center", gap: 8,
+                  padding: "12px 24px", borderRadius: 8, width: "fit-content",
+                  background: C.sunset, color: C.cream, textDecoration: "none",
+                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5,
+                }}>
+                  RSVP to Diann →
+                </a>
+                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", marginTop: 10, fontFamily: "'Libre Franklin', sans-serif" }}>
+                  {VETERANS_LUNCH.rsvpEmail}
+                </div>
+              </div>
+            </div>
+          </div>
+        </FadeIn>
       </div>
     </section>
   );
@@ -1376,6 +1463,7 @@ export default function LadiesClubPage() {
       <ScrollProgress />
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
       <LadiesClubHero />
+      <VeteransLunchSection />
       <LadiesClubMissionSection />
       <LadiesClubEventsSection />
       <LadiesClubSponsorsSection />
