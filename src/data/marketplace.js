@@ -75,8 +75,9 @@ export const MARKETPLACE_LISTINGS = [
       'cottage-ext-1', 'cottage-ext-2', 'cottage-2',
       'firepit-1', 'firepit-2',
     ],
-    // Shown letterboxed on a blurred fill, never hard-cropped
-    portraits: ['bathroom-2'],
+    // Shown whole on a blurred fill, never cropped: portraits, and the
+    // aerials whose address/lake labels sit near the edges
+    letterbox: ['bathroom-2', 'property-outline-1', 'property-outline-2'],
     gallerySections: [
       { label: 'Outside', startId: 'house-ext-6' },
       { label: 'Inside', startId: 'living-1' },

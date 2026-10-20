@@ -76,10 +76,10 @@ function MarketplaceStyles() {
       .mkt-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-flow: dense; gap: 12px; }
       .mkt-grid button { display: block; width: 100%; border: 0; padding: 0; background: ${C.sand}; cursor: zoom-in;
         border-radius: 8px; overflow: hidden; scroll-margin-top: 90px; }
-      .mkt-grid button.feature { grid-column: span 2; }
+      .mkt-grid button.feature { grid-column: span 2; grid-row: span 2; }
       .mkt-grid img { display: block; width: 100%; height: 100%; aspect-ratio: 3 / 2; object-fit: cover; transition: transform 0.5s ease; }
       .mkt-grid button:hover img { transform: scale(1.035); }
-      .mkt-ph-fill { position: relative; display: block; aspect-ratio: 3 / 2; overflow: hidden; }
+      .mkt-ph-fill { position: relative; display: block; aspect-ratio: 3 / 2; height: 100%; overflow: hidden; }
       .mkt-ph-fill .blur { position: absolute; inset: 0; aspect-ratio: auto; filter: blur(20px) brightness(0.9); transform: scale(1.2); }
       .mkt-ph-fill .main { position: relative; aspect-ratio: auto; object-fit: contain; }
 
@@ -277,7 +277,7 @@ export function MarketplaceListingPage() {
 
   const fullAddress = `${listing.address}, ${listing.city}, ${listing.state} ${listing.zip}`;
   const photos = listing.gallery.map((id) => fullSrc(listing.slug, id));
-  const portraits = new Set(listing.portraits || []);
+  const letterbox = new Set(listing.letterbox || []);
   const { contact } = listing;
   const smsBody = encodeURIComponent(`Hi ${contact.name}, I saw ${listing.address} on Manitou Beach Michigan and would like to set up a showing.`);
   const smsHref = `sms:${contact.tel}?&body=${smsBody}`;
@@ -412,7 +412,7 @@ export function MarketplaceListingPage() {
           </div>
           <div className="mkt-grid">
             {listing.gallery.map((id, i) => {
-              const portrait = portraits.has(id);
+              const portrait = letterbox.has(id);
               const feature = !portrait && landscapeIdx++ % 7 === 0;
               const alt = `${listing.address} photo ${i + 1}`;
               const loading = i < 6 ? 'eager' : 'lazy';
