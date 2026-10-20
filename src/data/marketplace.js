@@ -66,7 +66,7 @@ export const MARKETPLACE_LISTINGS = [
       'Private showings by appointment only. Out of respect for the family, please do not stop by or knock at the house. Call or text Bryson to set up a time.',
     heroImage: 'house-ext-6',
     gallery: [
-      'house-ext-6', 'house-ext-front-1', 'house-ext-5', 'home-ext-1', 'house-ext-4', 'house-ext-3', 'house-ext-2',
+      'house-ext-6', 'house-ext-front-1', 'house-ext-5', 'house-ext-7', 'house-ext-4', 'house-ext-3', 'house-ext-2',
       'living-1', 'living-2', 'kitchen-1', 'kitchen-3', 'kitchen-4', 'kitchen-2',
       'bed-1', 'bed-1-2', 'main-bath', 'bed-2', 'bed2-2', 'bathroom-2',
       'laundry-1', 'laundry-2', 'garage',
