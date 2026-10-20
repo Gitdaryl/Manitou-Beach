@@ -124,6 +124,16 @@ const OG_MAP = {
     description: 'Vacation rentals, cottages, and lakefront stays on Devils Lake in the Michigan Irish Hills.',
     image: '/images/og/stays-og.jpg',
   },
+  '/marketplace': {
+    title: 'Marketplace: For Sale by Owner - Manitou Beach',
+    description: 'Homes and land for sale by owner around Devils Lake and the Michigan Irish Hills. Contact the owner directly.',
+    image: '/images/og/marketplace-17239-manitou-rd.jpg',
+  },
+  '/marketplace/17239-manitou-rd': {
+    title: '17239 Manitou Rd, Addison MI - For Sale by Owner, $589,900',
+    description: '5 bed, 3 bath on 10.1 acres near Devils Lake. 36x70 finished shop with hoist, finished 24x24 outbuilding, 30x40 pad. Call Bryson (517) 575-3010.',
+    image: '/images/og/marketplace-17239-manitou-rd.jpg',
+  },
   '/promote': {
     title: 'Promote Your Business - Manitou Beach',
     description: 'Get your business in front of the Devils Lake community with featured listings and promotions.',

@@ -37,6 +37,7 @@ lake with what has sold there, days on market, and current listings.
 - Food trucks: /food-trucks
 - Wineries: /wineries
 - Stays: /stays
+- Marketplace (homes and land for sale by owner): /marketplace
 - Devils Lake: /devils-lake
 - Community news: /dispatch
 - Lake real estate: /business/holly-griewahn-foundation-realty
