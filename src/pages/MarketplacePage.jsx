@@ -315,7 +315,7 @@ export function MarketplaceListingPage() {
           name: fullAddress,
           description: listing.summary,
           numberOfRooms: listing.facts.Bedrooms,
-          floorSize: { '@type': 'QuantitativeValue', value: listing.facts['Sq Ft'].replace(/,/g, ''), unitCode: 'FTK' },
+          floorSize: { '@type': 'QuantitativeValue', value: listing.facts['Finished Sq Ft'].replace(/,/g, ''), unitCode: 'FTK' },
           address: {
             '@type': 'PostalAddress',
             streetAddress: listing.address,

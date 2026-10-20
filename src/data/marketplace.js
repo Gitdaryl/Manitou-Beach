@@ -19,11 +19,11 @@ export const MARKETPLACE_LISTINGS = [
     tagline: '10 acres, a finished shop, and room for every toy you own',
     summary: '5 bed, 3 bath country home on 10.1 acres with a 36x70 finished shop, a finished 24x24 outbuilding, and a 30x40 pad ready for your next build.',
     description:
-      "Ten acres of open country just down the road from Devils Lake. The 1996 home gives you 2,560 square feet with five bedrooms, three full baths, central air, and a fully finished basement with its own full bath and two more bedrooms. An indoor wood burner keeps things cozy, with propane as backup, and the water heater and furnace are both less than five years old. A heated breezeway with the laundry connects the house to the two-car garage. Then there is the part the gearheads will love: a fully finished 36x70 shop with a two-post hoist, an office, a bathroom, and a concrete floor. Add a finished 24x24 outbuilding with heat, air, and hot and cold water, plus a 30x40 concrete pad with water and sewer already there, and you have room for just about anything.",
+      "Ten acres of open country just down the road from Devils Lake. The 1996 home gives you 2,560 finished square feet across both levels, with five bedrooms, three full baths, central air, and a fully finished basement with its own full bath and two more bedrooms. An indoor wood burner keeps things cozy, with propane as backup, and the water heater and furnace are both less than five years old. A heated breezeway with the laundry connects the house to the two-car garage. Then there is the part the gearheads will love: a fully finished 36x70 shop with a two-post hoist, an office, a bathroom, and a concrete floor. Add a finished 24x24 outbuilding with heat, air, and hot and cold water, plus a 30x40 concrete pad with water and septic already there, and you have room for just about anything.",
     facts: {
       Bedrooms: '5',
       'Full Baths': '3',
-      'Sq Ft': '2,560',
+      'Finished Sq Ft': '2,560',
       Acres: '10.1',
       'Year Built': '1996',
     },
@@ -31,7 +31,7 @@ export const MARKETPLACE_LISTINGS = [
       {
         title: 'The Home',
         items: [
-          '5 bedrooms, 3 full baths, 2,560 sq ft',
+          '5 bedrooms, 3 full baths, 2,560 finished sq ft (basement included)',
           'Fully finished basement with its own full bath and 2 bedrooms',
           'Central air',
           'Indoor wood burner with propane backup',
@@ -45,7 +45,7 @@ export const MARKETPLACE_LISTINGS = [
         items: [
           '36x70 fully finished shop: 2-post hoist, office, bathroom, concrete floor',
           '24x24 fully finished outbuilding with heat, air conditioning, and hot and cold water',
-          '30x40 concrete pad (former pole barn site) with water and sewer at the pad',
+          '30x40 concrete pad (former pole barn site) with water and septic at the pad',
         ],
       },
       {
