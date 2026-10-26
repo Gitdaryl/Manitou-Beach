@@ -250,6 +250,7 @@ export default function MarketplacePage() {
         <div className="mkt-wrap">
           <SectionTitle center>Selling your own place?</SectionTitle>
           <p>We can put your home or land in front of the folks who already follow the lake. Drop us a note and we will get you set up.</p>
+          <p style={{ fontSize: 15 }}>Selling something smaller, giving it away, or hiring? <a href="/classifieds" style={{ color: C.sunset, fontWeight: 600 }}>Post it free in the Classifieds</a>.</p>
           <Btn href="mailto:hello@manitoubeachmichigan.com?subject=Marketplace%20listing" variant="primary">Get in touch</Btn>
         </div>
       </section>

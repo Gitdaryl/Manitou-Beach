@@ -8,6 +8,7 @@ import { requireCronOrAdmin } from './lib/cronAuth.js';
 
 import Anthropic from '@anthropic-ai/sdk';
 import { Resend } from 'resend';
+import { queryClassifieds, parseClassified, addDays } from './lib/classifieds.js';
 
 const ai = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -204,7 +205,23 @@ Return ONLY a JSON array of strings: ["...", "...", "..."]`,
 
 // ── HTML builders ─────────────────────────────────────────────────────────────
 
-function buildEmailHtml(featureText, subject, bullets, dates, siteUrl, events = []) {
+// Live classifieds posted in the last 7 days, newest first (max 8) for the "New in the Classifieds" block.
+async function fetchNewClassifieds() {
+  if (!process.env.NOTION_DB_CLASSIFIEDS) return [];
+  const pages = await queryClassifieds(
+    { and: [
+      { property: 'Status', select: { equals: 'Live' } },
+      { property: 'Posted', date: { on_or_after: addDays(-7) } },
+    ] },
+    [{ property: 'Posted', direction: 'descending' }],
+  );
+  return pages.map((p) => parseClassified(p)).slice(0, 8);
+}
+
+const escHtml = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const classifiedLine = (c) => `${escHtml(c.title)}${c.price ? ` &middot; ${escHtml(c.price)}` : ''} <span style="color:#A8926E;">(${escHtml(c.category)})</span>`;
+
+function buildEmailHtml(featureText, subject, bullets, dates, siteUrl, events = [], classifieds = []) {
   const happeningUrl = `${siteUrl}/events`;
   const bulletRows = bullets.map((b, i) => {
     const eventUrl = events[i]?.id ? `${siteUrl}/events/${events[i].id}` : happeningUrl;
@@ -260,6 +277,18 @@ function buildEmailHtml(featureText, subject, bullets, dates, siteUrl, events = 
       </p>
     </td></tr>
 
+    ${classifieds.length ? `<!-- Classifieds -->
+    <tr><td style="background:#FFFFFF;padding:0 32px;"><hr style="border:none;border-top:1px solid #E8DFD0;margin:0;"/></td></tr>
+    <tr><td style="background:#FFFFFF;padding:28px 32px 32px;">
+      <p style="margin:0 0 18px;font-family:Arial,sans-serif;font-size:11px;color:#A8926E;letter-spacing:2px;text-transform:uppercase;">New in the Classifieds</p>
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        ${classifieds.map((c) => `<tr><td style="padding:6px 0 6px 20px;border-left:3px solid #7A8E72;">
+      <a href="${siteUrl}/classifieds/${c.id}" style="font-family:Georgia,serif;font-size:16px;line-height:1.6;color:#3B3228;text-decoration:none;display:block;">${classifiedLine(c)}</a>
+    </td></tr>`).join('')}
+      </table>
+      <p style="margin:20px 0 0;font-family:Arial,sans-serif;font-size:13px;color:#6B5F52;">Selling, giving away or hiring? <a href="${siteUrl}/classifieds/post" style="color:#D4845A;font-weight:bold;text-decoration:none;">Post a free listing</a></p>
+    </td></tr>
+` : ''}
     <!-- Footer -->
     <tr><td style="background:#F0EAE0;padding:24px 32px;border-radius:0 0 8px 8px;border-top:1px solid #E8DFD0;">
       <p style="margin:0 0 8px;font-family:Georgia,serif;font-size:14px;color:#6B5F52;">See you at the lake.</p>
@@ -279,7 +308,7 @@ function buildEmailHtml(featureText, subject, bullets, dates, siteUrl, events = 
 }
 
 // Clean web version for beehiiv's web view (not email-client constrained)
-function buildWebHtml(featureText, bullets, dates, siteUrl, events = []) {
+function buildWebHtml(featureText, bullets, dates, siteUrl, events = [], classifieds = []) {
   const happeningUrl = `${siteUrl}/events`;
   const bulletItems = bullets.map((b, i) => {
     const eventUrl = events[i]?.id ? `${siteUrl}/events/${events[i].id}` : happeningUrl;
@@ -293,6 +322,10 @@ function buildWebHtml(featureText, bullets, dates, siteUrl, events = []) {
   <p style="font-size:12px;color:#A8926E;letter-spacing:2px;text-transform:uppercase;margin:0 0 14px;">This Weekend at the Lake</p>
   <ul style="padding-left:24px;margin:0 0 28px;">${bulletItems}</ul>
   <p style="margin:0;"><a href="${siteUrl}/events" style="color:#D4845A;font-weight:bold;text-decoration:none;">Full event calendar at manitoubeachmichigan.com</a></p>
+  ${classifieds.length ? `<hr style="border:none;border-top:2px solid #E8DFD0;margin:28px 0;"/>
+  <p style="font-size:12px;color:#A8926E;letter-spacing:2px;text-transform:uppercase;margin:0 0 14px;">New in the Classifieds</p>
+  <ul style="padding-left:24px;margin:0 0 16px;">${classifieds.map((c) => `<li style="margin-bottom:10px;line-height:1.65;"><a href="${siteUrl}/classifieds/${c.id}" style="color:#3B3228;text-decoration:none;">${classifiedLine(c)}</a></li>`).join('')}</ul>
+  <p style="margin:0;"><a href="${siteUrl}/classifieds/post" style="color:#D4845A;font-weight:bold;text-decoration:none;">Post a free listing</a></p>` : ''}
 </div>`;
 }
 
@@ -445,6 +478,13 @@ export default async function handler(req, res) {
       console.error('cron-newsletter-draft: events fetch failed:', err.message);
     }
 
+    let classifieds = [];
+    try {
+      classifieds = await fetchNewClassifieds();
+    } catch (err) {
+      console.error('cron-newsletter-draft: classifieds fetch failed:', err.message);
+    }
+
     // 2. Generate AI content in parallel
     const [featureText, bulletResult] = await Promise.all([
       generateFeatureArticle(dates, events.length),
@@ -453,12 +493,12 @@ export default async function handler(req, res) {
     const subject = await generateSubjectLine(featureText, events.length, dates);
 
     if (preview) {
-      return res.status(200).json({ subject, featureText, bullets: bulletResult, dates, eventCount: events.length });
+      return res.status(200).json({ subject, featureText, bullets: bulletResult, dates, eventCount: events.length, classifieds: classifieds.map((c) => c.title) });
     }
 
     // 3. Build HTML for email and web
-    const emailHtml = buildEmailHtml(featureText, subject, bulletResult, dates, siteUrl, events);
-    const webHtml = buildWebHtml(featureText, bulletResult, dates, siteUrl, events);
+    const emailHtml = buildEmailHtml(featureText, subject, bulletResult, dates, siteUrl, events, classifieds);
+    const webHtml = buildWebHtml(featureText, bulletResult, dates, siteUrl, events, classifieds);
 
     // 4. Determine send time: Thursday 9am ET for cron, 15 min from now for send_now
     const scheduleFor = sendNow

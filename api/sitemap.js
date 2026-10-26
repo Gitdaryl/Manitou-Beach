@@ -34,6 +34,7 @@ const STATIC_PAGES = [
   { path: '/discover', priority: '0.7', changefreq: 'weekly' },
   { path: '/fishing', priority: '0.7', changefreq: 'monthly' },
   { path: '/marketplace', priority: '0.7', changefreq: 'weekly' },
+  { path: '/classifieds', priority: '0.7', changefreq: 'daily' },
   { path: '/marketplace/17239-manitou-rd', priority: '0.7', changefreq: 'weekly' },
   { path: '/devils-lake', priority: '0.7', changefreq: 'monthly' },
   { path: '/nightlife', priority: '0.7', changefreq: 'monthly' },

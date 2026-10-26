@@ -19,6 +19,7 @@ const ALLOWED_FOLDERS = new Set([
   'business-gallery',
   'sponsors',
   'stays',
+  'classifieds',
   'dispatch',
   'social',
 ]);

@@ -49,6 +49,9 @@ const USA250Page = lazy(() => import('./pages/USA250Page'));
 const StaysPage = lazy(() => import('./pages/StaysPage'));
 const MarketplacePage = lazy(() => import('./pages/MarketplacePage'));
 const MarketplaceListingPage = lazy(() => import('./pages/MarketplacePage').then(m => ({ default: m.MarketplaceListingPage })));
+const ClassifiedsPage = lazy(() => import('./pages/ClassifiedsPage'));
+const ClassifiedListingPage = lazy(() => import('./pages/ClassifiedsPage').then(m => ({ default: m.ClassifiedListingPage })));
+const ClassifiedPostPage = lazy(() => import('./pages/ClassifiedsPage').then(m => ({ default: m.ClassifiedPostPage })));
 const ManageStayPage = lazy(() => import('./pages/ManageStayPage'));
 const HollyYetiPage = lazy(() => import('./pages/HollyYetiPage'));
 const UpdateListingPage = lazy(() => import('./pages/UpdateListingPage'));
@@ -285,6 +288,9 @@ export default function App() {
           <Route path="/stays/manage" element={<ManageStayPage />} />
           <Route path="/marketplace" element={<MarketplacePage />} />
           <Route path="/marketplace/:slug" element={<MarketplaceListingPage />} />
+          <Route path="/classifieds" element={<ClassifiedsPage />} />
+          <Route path="/classifieds/post" element={<ClassifiedPostPage />} />
+          <Route path="/classifieds/:id" element={<ClassifiedListingPage />} />
           <Route path="/holly-yeti" element={<HollyYetiPage />} />
           <Route path="/check-in" element={<CheckInPage />} />
           <Route path="/ticket-services" element={<TicketServicesPage />} />
