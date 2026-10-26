@@ -6,10 +6,16 @@ export default async function handler(req, res) {
   // GET - return live subscriber count for milestone display
   if (req.method === 'GET') {
     try {
-      const response = await fetch(
-        `https://api.beehiiv.com/v2/publications/${process.env.BEEHIIV_PUBLICATION_ID}/subscriptions?limit=1`,
-        { headers: { 'Authorization': `Bearer ${process.env.BEEHIIV_API_KEY}` } }
-      );
+      const base = `https://api.beehiiv.com/v2/publications/${process.env.BEEHIIV_PUBLICATION_ID}`;
+      const headers = { 'Authorization': `Bearer ${process.env.BEEHIIV_API_KEY}` };
+      // beehiiv's list endpoint stopped returning total_results (cursor pagination), which left the
+      // site showing 0. Publication stats carry the real count; the old call stays as a fallback.
+      const statsRes = await fetch(`${base}?expand=stat_active_subscriptions`, { headers });
+      if (statsRes.ok) {
+        const active = (await statsRes.json()).data?.stats?.active_subscriptions;
+        if (Number.isFinite(active)) return res.status(200).json({ count: active });
+      }
+      const response = await fetch(`${base}/subscriptions?limit=1`, { headers });
       if (!response.ok) return res.status(200).json({ count: 0 });
       const data = await response.json();
       return res.status(200).json({ count: data.total_results || 0 });
