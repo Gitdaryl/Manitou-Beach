@@ -27,7 +27,6 @@ const PromotePage = lazy(() => import('./pages/PromotePage'));
 const FeaturedPage = lazy(() => import('./pages/FeaturedPage'));
 const HappeningPage = lazy(() => import('./pages/HappeningPage'));
 const EventDetailPage = lazy(() => import('./pages/EventDetailPage'));
-const ClaimPromoView = lazy(() => import('./pages/ClaimPromoView'));
 const RedeemPromoView = lazy(() => import('./pages/RedeemPromoView'));
 const WineriesPage = lazy(() => import('./pages/WineriesPage'));
 const FishingPage = lazy(() => import('./pages/FishingPage'));
@@ -222,7 +221,6 @@ export default function App() {
       <ChunkErrorBoundary>
         <Suspense fallback={null}>
           <Routes>
-          <Route path="/claim-promo" element={<ClaimPromoView />} />
           <Route path="/redeem-promo" element={<RedeemPromoView />} />
           <Route path="/launch" element={<LaunchPage />} />
           <Route path="/" element={<BetaGate><HomePage /></BetaGate>} />

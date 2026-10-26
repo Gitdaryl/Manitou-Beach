@@ -16,7 +16,7 @@
 export const OFFERS = [
   {
     slug: 'cafe',
-    status: 'active',
+    status: 'ended', // Blackbird free-cookie promo retired Sep 2026; old links show "wrapped up"
     codePrefix: 'BB',
     notionOfferName: 'Blackbird Cookie', // must match 'Offer' select in Promo Claims Notion DB
     merchantName: 'Blackbird Cafe & Baking Company',

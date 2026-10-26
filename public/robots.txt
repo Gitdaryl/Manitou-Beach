@@ -5,7 +5,6 @@ User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /yeti-admin
-Disallow: /claim-promo
 Disallow: /redeem-promo
 Disallow: /build
 Disallow: /quick-events

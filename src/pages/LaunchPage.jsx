@@ -177,7 +177,6 @@ function SitePreviewPeek() {
     { icon: '🚤', label: 'Lake Life' },
     { icon: '🍔', label: 'Food Trucks' },
     { icon: '🗞️', label: 'The Dispatch' },
-    { icon: '🎁', label: 'Free Cookie' },
   ];
   return (
     <div style={{ width: '100%', maxWidth: 400 }}>

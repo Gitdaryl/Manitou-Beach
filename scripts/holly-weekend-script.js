@@ -132,6 +132,27 @@ async function fetchEvents(days) {
       a.date.localeCompare(b.date) || timeToMinutes(a.time) - timeToMinutes(b.time))
 }
 
+// Halloween edition. Added 2026-10-15: that week's AI Holly reel promised the
+// next video would give every Halloween event on the calendar a shout out, but
+// the window above stops at Sunday, so anything on Halloween itself (usually
+// a week or more out) would miss it. When Oct 31 falls after this window and
+// within two weeks of it, the run also pulls every Halloween-themed event from
+// Monday through Oct 31 for a separate segment after the weekend rundown.
+// Themed means the name or description says so; a tribute band that happens
+// to play on the 31st is not a Halloween event.
+const HALLOWEEN_RE = /halloween|trick[\s-]*or[\s-]*treat|trunk[\s-]*or[\s-]*treat|haunted|costume|spook|jack[\s-]*o[\s-]*lantern|pumpkin/i
+
+function halloweenAhead(days) {
+  const halloween = `${days[0].slice(0, 4)}-10-31`
+  const last = days[days.length - 1]
+  if (halloween <= last) return null
+  const gap = Math.round((Date.parse(`${halloween}T12:00:00Z`) - Date.parse(`${last}T12:00:00Z`)) / 86400000)
+  if (gap > 14) return null
+  const range = []
+  for (let d = addDays(last, 1); d <= halloween; d = addDays(d, 1)) range.push(d)
+  return range
+}
+
 // A timeless listing defaults to "in the evening", which is right for a bar band
 // and wrong for a morning market. Until the Events DB carries a daypart field,
 // these are Yeti's call, exactly as the evening default is. Matched on name.
@@ -200,7 +221,7 @@ function buildDigest(events, days) {
 
 // ---------------------------------------------------------------- generate
 
-async function generateScript(digest, days) {
+async function generateScript(digest, days, extra = '') {
   const key = process.env.ANTHROPIC_API_KEY
   if (!key) throw new Error('ANTHROPIC_API_KEY not set')
   const persona = readFileSync(join(__dirname, 'holly-persona.md'), 'utf8')
@@ -223,7 +244,7 @@ async function generateScript(digest, days) {
         `has it. This is your only source. Do not add anything that is not ` +
         `here.\n${digest}\n\n` +
         `Remember: an event showing "start time: NOT GIVEN" must be described ` +
-        `without a time. Do not invent one.`,
+        `without a time. Do not invent one.` + extra,
     }],
   })
 
@@ -327,13 +348,44 @@ async function main() {
   }
 
   const digest = buildDigest(events, days)
+
+  // Halloween edition and October puns. Both ride in the user message, not
+  // holly-persona.md, so they switch themselves off after Halloween.
+  let extra = ''
+  const ahead = halloweenAhead(days)
+  let spooky = []
+  if (ahead) {
+    spooky = (await fetchEvents(ahead))
+      .filter(e => HALLOWEEN_RE.test(`${e.name} ${e.description || ''}`))
+    console.log(`Halloween edition: ${spooky.length} themed event(s) ${ahead[0]} to ${ahead[ahead.length - 1]}` +
+      (spooky.length ? `: ${spooky.map(e => e.name).join(', ')}` : ''))
+    if (spooky.length) {
+      extra +=
+        `\n\nHALLOWEEN EDITION. Last week's video promised that this one gives every ` +
+        `Halloween event on the calendar a shout out. After the weekend rundown, add a ` +
+        `short Halloween segment that looks ahead and names EVERY event below: name, ` +
+        `venue, day, and time and cost only as the data gives them. One line each, ` +
+        `roughly twenty seconds in total. Same hard rules as everything else, alcohol ` +
+        `rule included: an event name is a fact, the drink is never the pitch. These ` +
+        `are outside the weekend window, so say the day and date clearly.\n` +
+        buildDigest(spooky, ahead).split('\n').filter(l => !/nothing listed/.test(l)).join('\n')
+    }
+  }
+  if (days.some(d => d.slice(5, 7) === '10')) {
+    extra +=
+      `\n\nIt's Halloween season, so add some playful Halloween pun humor: witch ` +
+      `way, spook-tacular, no tricks just treats, a full cauldron, fang-tastic, that ` +
+      `kind of thing. Three or four puns in the whole script, in the opener, the ` +
+      `transitions and the sign-off. Never inside a fact: event names, venues, ` +
+      `times and prices stay exactly as the data has them.`
+  }
   const noTime = events.filter(e => !e.time)
   if (noTime.length) {
     console.log(`Heads up, ${noTime.length} event(s) have no start time: ` +
       noTime.map(e => e.name).join(', '))
   }
 
-  let script = await generateScript(digest, days)
+  let script = await generateScript(digest, days, extra)
   let spoken = extractSpoken(script)
   if (spoken) {
     const { out, applied } = applyPronunciation(spoken)
@@ -357,7 +409,8 @@ async function main() {
   const header =
     `# AI Holly Weekend Script: ${days[0]} to ${days[3]}\n\n` +
     `**Window:** ${dayName(days[0])} through ${dayName(days[3])}\n` +
-    `**Source:** ${siteUrl}/api/events, ${events.length} published events\n` +
+    `**Source:** ${siteUrl}/api/events, ${events.length} published events` +
+    (spooky.length ? ` + ${spooky.length} Halloween edition` : '') + `\n` +
     `**Generated:** ${new Date().toISOString()}\n` +
     `**Status:** DRAFT, not yet approved\n\n---\n\n`
   const markdown = header + script + '\n'
