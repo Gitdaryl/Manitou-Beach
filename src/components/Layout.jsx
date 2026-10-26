@@ -4,6 +4,7 @@ import { C, PAGE_SPONSORS, SECTIONS, LISTING_CATEGORIES, VIDEOS, DISPATCH_CARD_S
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, WaveDivider, Btn, CategoryPill, PageSponsorBanner } from './Shared';
 import yeti from '../data/errorMessages';
 import { SERVICE_AREA_NAMES } from '../data/serviceAreas';
+import { signupSource } from '../utils/signupSource';
 
 const TIER_BY_ID = {
   enhanced: { value: 'Enhanced', display: 'Showcased', price: 9,  cents: 900  },
@@ -679,7 +680,7 @@ function SubscribeModal({ alreadySubscribed, onClose }) {
 }
 
 // ============================================================
-export function NewsletterInline() {
+export function NewsletterInline({ form = 'inline' }) {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [wantSMS, setWantSMS] = useState(false);
@@ -702,7 +703,7 @@ export function NewsletterInline() {
       const res = await fetch('/api/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, ...signupSource(form) }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed');
@@ -750,8 +751,8 @@ export function NewsletterInline() {
           The Manitou Beach Dispatch
         </div>
         <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.textMuted, lineHeight: 1.55 }}>
-          <strong style={{ color: C.text }}>Free newsletter delivered to your email inbox.</strong><br />
-          Events, local businesses &amp; community news - every week. No cost, ever.{subCount ? ` Join ${subCount.toLocaleString()}+ neighbors already subscribed.` : ''}
+          <strong style={{ color: C.text }}>What's happening at the lakes this weekend.</strong><br />
+          Free in your inbox every Thursday: events, food trucks &amp; local news.{subCount ? ` Join ${subCount.toLocaleString()}+ neighbors already subscribed.` : ''}
         </div>
       </div>
       <div>
@@ -1781,7 +1782,7 @@ export function FooterNewsletterModal({ onClose }) {
     if (!email || submitting) return;
     setSubmitting(true); setError("");
     try {
-      const res = await fetch("/api/subscribe", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) });
+      const res = await fetch("/api/subscribe", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, ...signupSource('footer') }) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed");
       const smsDigits = phone.replace(/\D/g, '').slice(-10);

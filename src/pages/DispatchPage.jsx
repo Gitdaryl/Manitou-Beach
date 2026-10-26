@@ -6,6 +6,7 @@ import { Footer, Navbar, GlobalStyles, NewsletterInline, CATEGORY_COLORS } from 
 import { useDispatchAds, pickAd } from '../data/discover';
 import SEOHead from '../components/SEOHead';
 import yeti from '../data/errorMessages';
+import { signupSource } from '../utils/signupSource';
 
 // Seasonal fallback covers for stories with no "Cover Image URL" (Higgsfield FLUX.2, Sep 2026).
 // Season follows the publish date; the variant alternates by week so back-to-back weekly guides differ.
@@ -177,7 +178,7 @@ export function DispatchArticlePage() {
       const res = await fetch('/api/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: subEmail }),
+        body: JSON.stringify({ email: subEmail, ...signupSource('dispatch') }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed');

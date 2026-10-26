@@ -7,6 +7,7 @@ import { DispatchPreviewSection } from './DispatchPage';
 import yeti from '../data/errorMessages';
 import formatPhone from '../utils/formatPhone';
 import { toSlug } from '../utils/slugify';
+import { signupSource } from '../utils/signupSource';
 import SEOHead from '../components/SEOHead';
 
 // ============================================================
@@ -538,7 +539,7 @@ function NewsletterBar() {
       const res = await fetch('/api/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, ...signupSource('home-bar') }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed');
@@ -568,7 +569,7 @@ function NewsletterBar() {
           The Manitou Beach Dispatch
         </h3>
         <p style={{ fontSize: 16, color: "rgba(255,255,255,0.75)", margin: "0 0 12px 0", lineHeight: 1.7 }}>
-          {subCount ? `${subCount.toLocaleString()}+ lake neighbors already subscribe.` : 'Your lake neighbors are already here.'} Weekly events, featured businesses, and everything happening on the water.
+          What's happening at the lakes this weekend, in your inbox every Thursday: events, food trucks and everything on the water. {subCount ? `${subCount.toLocaleString()}+ lake neighbors already subscribe.` : ''}
         </p>
         <p style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", margin: "0 0 28px 0", fontFamily: "'Libre Franklin', sans-serif" }}>
           Free. Unsubscribe anytime.

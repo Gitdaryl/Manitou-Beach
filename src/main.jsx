@@ -2,6 +2,9 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { Analytics } from '@vercel/analytics/react'
 import App from './App.jsx'
+import { captureFirstTouch } from './utils/signupSource'
+
+captureFirstTouch()
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

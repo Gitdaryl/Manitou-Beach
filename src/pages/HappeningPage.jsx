@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { FadeIn, SectionTitle, SectionLabel, Btn, ShareBar, WaveDivider, PageSponsorBanner, ScrollProgress, CategoryPill } from '../components/Shared';
 import { C, PAGE_SPONSORS, VIDEOS, EVENT_TICKER_SPONSORS } from '../data/config';
 import { SponsorTicker } from '../components/SponsorTicker';
-import { Footer, GlobalStyles, PromoBanner, EventLightbox, EventTimeline, Navbar, compressImage } from '../components/Layout';
+import { Footer, GlobalStyles, PromoBanner, EventLightbox, EventTimeline, Navbar, NewsletterInline, compressImage } from '../components/Layout';
 import SMSOptInWidget from '../components/SMSOptInWidget';
 import SEOHead, { buildEventSchema } from '../components/SEOHead';
 import { LifecycleRibbon, LIFECYCLE_BADGES } from '../components/LifecycleRibbon';
@@ -725,6 +725,11 @@ function CalendarSection({ events, weeklyEvents = [], onEventClick, activeFilter
           )}
         </div>
       </section>
+
+      {/* Weekend list signup, right after the week's events: the moment the offer makes sense */}
+      <div style={{ background: C.warmWhite, padding: "56px 24px 0" }}>
+        <NewsletterInline form="events" />
+      </div>
 
       {/* ─── COMING UP - month-by-month accordion ─── */}
       {laterByMonth.length > 0 && (

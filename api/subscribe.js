@@ -22,11 +22,16 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { email } = req.body || {};
+  const { email, utm_source, utm_medium, utm_campaign, page, form } = req.body || {};
 
   if (!email || !email.includes('@')) {
     return res.status(400).json({ error: 'Valid email required' });
   }
+
+  // Attribution comes from the visitor's URL, so keep it short and plain before it reaches beehiiv.
+  const clean = (v, max = 60) => (typeof v === 'string' ? v.toLowerCase().replace(/[^a-z0-9/_-]/g, '').slice(0, max) : '');
+  const source = clean(utm_source);
+  const referringSite = [clean(page, 80), clean(form)].filter(Boolean).join(' ');
 
   try {
     const response = await fetch(
@@ -41,8 +46,10 @@ export default async function handler(req, res) {
           email,
           reactivate_existing: false,
           send_welcome_email: false,
-          utm_source: 'website',
-          utm_medium: 'organic',
+          utm_source: source || 'website',
+          utm_medium: clean(utm_medium) || (source ? 'link' : 'organic'),
+          ...(clean(utm_campaign) && { utm_campaign: clean(utm_campaign) }),
+          ...(referringSite && { referring_site: referringSite }),
         }),
       }
     );
