@@ -179,7 +179,7 @@ export default function ClassifiedsPage() {
         <div className="cls-wrap">
           <SectionLabel light>Classifieds</SectionLabel>
           <h1>Neighbors buying, selling and hiring</h1>
-          <p>Free listings for everyone around Devils Lake and the Irish Hills. Every listing is checked by a real person, and new ones go out in our Thursday newsletter.</p>
+          <p>Free listings for everyone around Devils Lake and the Irish Hills. Every listing is screened before it goes live, and new ones go out in our Thursday newsletter.</p>
           <Btn href="/classifieds/post" variant="sunset">Post a free listing</Btn>
         </div>
       </section>
@@ -224,7 +224,7 @@ export default function ClassifiedsPage() {
       <section className="cls-note">
         <div className="cls-wrap">
           <SectionTitle>How it works</SectionTitle>
-          <p>Listings are free and stay up for 30 days. Sellers confirm their phone number, and we look over every listing before it goes live to keep scammers out.</p>
+          <p>Listings are free and stay up for 30 days. Sellers confirm their phone number, and every listing is screened before it goes live to keep scammers out. Anything questionable gets a look from a real person.</p>
           <p>Buyers contact the seller directly. Meet in a public place, bring a friend for big-ticket items, and never pay by gift card or wire. No firearms, please.</p>
           <p>Selling a home or land? See the <a href="/marketplace" style={{ color: C.sunset, fontWeight: 600 }}>Marketplace</a>.</p>
         </div>
@@ -329,6 +329,7 @@ export function ClassifiedPostPage() {
   const [photos, setPhotos] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [step, setStep] = useState('form');
+  const [result, setResult] = useState({});
   const [id, setId] = useState(null);
   const [code, setCode] = useState('');
   const [busy, setBusy] = useState(false);
@@ -403,6 +404,7 @@ export function ClassifiedPostPage() {
       });
       const d = await r.json();
       if (!r.ok) throw new Error(d.error || 'That didn\'t work.');
+      setResult({ status: d.status, id: d.id });
       setStep('done');
       scrollTop();
     } catch (err) {
@@ -437,10 +439,24 @@ export function ClassifiedPostPage() {
 
         {step === 'done' && (
           <>
-            <h1>Thanks, you're in line</h1>
-            <p className="lead">We look over every listing to keep scammers out. You'll get an email the moment yours is live, usually the same day. New listings also go out in our Thursday newsletter.</p>
+            {result.status === 'Live' ? (
+              <>
+                <h1>You're live</h1>
+                <p className="lead">Your listing is up for 30 days and goes out in our Thursday newsletter. We emailed you a link to renew it or mark it sold.</p>
+              </>
+            ) : result.status === 'Rejected' ? (
+              <>
+                <h1>We couldn't post this one</h1>
+                <p className="lead">This listing doesn't fit our classifieds rules. We sent you an email; if you think we got it wrong, just reply to it and a real person will take a look.</p>
+              </>
+            ) : (
+              <>
+                <h1>Thanks, you're in line</h1>
+                <p className="lead">Your listing is getting a quick look from a real person to keep scammers out. You'll get an email the moment it's live, usually the same day.</p>
+              </>
+            )}
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-              <Btn href="/classifieds" variant="primary">See the classifieds</Btn>
+              <Btn href={result.status === 'Live' ? `/classifieds/${result.id}` : '/classifieds'} variant="primary">{result.status === 'Live' ? 'See your listing' : 'See the classifieds'}</Btn>
               <button className="cls-link" onClick={() => { setForm(EMPTY); setPhotos([]); setCode(''); setStep('form'); }}>Post another</button>
             </div>
           </>
@@ -457,7 +473,7 @@ export function ClassifiedPostPage() {
               <input id="cls-code" className="cls-input cls-code" inputMode="numeric" autoComplete="one-time-code" maxLength={6}
                 value={code} onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))} required />
             </div>
-            <button className="cls-submit" disabled={busy || code.length !== 6}>{busy ? 'Checking...' : 'Confirm'}</button>
+            <button className="cls-submit" disabled={busy || code.length !== 6}>{busy ? 'Checking your listing...' : 'Confirm'}</button>
             <p className="cls-fine">No text? <button type="button" className="cls-link" onClick={resend}>Send it again</button></p>
           </form>
         )}

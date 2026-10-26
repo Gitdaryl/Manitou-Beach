@@ -4,9 +4,10 @@
 // GET                              live listings (public fields only)
 // GET  ?action=one&id=             one listing
 // POST { action:'submit', ... }    creates an Unverified record, texts a 6-digit code
-// POST { action:'verify', id, code } code ok -> Pending Review, Daryl gets a review link
+// POST { action:'verify', id, code } code ok -> AI review: clean goes Live, unsure is held for Daryl
+//                                  (texted), clear violations are Rejected (Daryl texted, can override)
 // POST { action:'resend', id }     re-texts the stored code
-// GET  ?action=review&id=&key=     Daryl's review page (approve/reject buttons POST back)
+// GET  ?action=review&id=&key=     Daryl's review page (approve / reject / publish anyway / take down)
 // GET  ?action=manage&id=&token=   seller's page from their email (renew 30 days / mark sold)
 //
 // Links opened from texts and emails only ever SHOW a page; the change happens on a button
@@ -15,6 +16,7 @@
 import crypto from 'crypto';
 import { Resend } from 'resend';
 import { sendSMS, normalizePhone } from './lib/twilio.js';
+import { aiReviewClassified } from './lib/classifiedsReview.js';
 import {
   CLASSIFIED_CATEGORIES, LISTING_DAYS, dbId, siteUrl, notion, queryClassifieds, parseClassified,
   text, addDays, adminSig, safeEqual, esc, formatPhone, htmlPage, BUTTON,
@@ -181,21 +183,66 @@ async function handleVerify(req, res) {
     'Verification Code': { rich_text: [] },
   });
 
+  // AI first pass. Word-rule flags always hold for Daryl; no answer from the AI holds too.
+  const verdict = await aiReviewClassified(l);
+  const outcome = verdict?.decision === 'reject' ? 'Rejected'
+    : verdict?.decision === 'approve' && !l.flags ? 'Live'
+    : 'Pending Review';
+  const aiNote = verdict ? `AI: ${verdict.decision}${verdict.reasons.length ? ` (${verdict.reasons.join('; ')})` : ''}` : 'AI: no answer';
+  l.flags = [l.flags, aiNote].filter(Boolean).join(' | ');
+  await update(l.id, { Flags: { rich_text: text(l.flags) } });
+
   const reviewUrl = `${siteUrl()}/api/classifieds?action=review&id=${l.id}&key=${adminSig(l.id, 'review')}`;
-  const flagNote = l.flags ? `\nFlags: ${l.flags}` : '';
-  await Promise.all([
-    process.env.DARYL_PHONE
-      ? sendSMS(process.env.DARYL_PHONE, `New classified (${l.category}): ${l.title}\nby ${l.sellerName}${flagNote}\nReview: ${reviewUrl}`)
-      : null,
-    sendEmail(process.env.ADMIN_EMAIL || 'daryl@manitoubeachmichigan.com', `Classified to review: ${l.title}`,
-      emailWrap(`<p style="font-size:20px;margin:8px 0 16px;color:#1A2830;">New listing to review</p>
-${l.flags ? `<p style="background:#FBE9DF;border-radius:6px;padding:10px 12px;font-size:14px;margin:0 0 16px;"><strong>Flags:</strong> ${esc(l.flags)}</p>` : ''}
+  const adminEmail = process.env.ADMIN_EMAIL || 'daryl@manitoubeachmichigan.com';
+  const textDaryl = (msg) => (process.env.DARYL_PHONE ? sendSMS(process.env.DARYL_PHONE, msg) : null);
+  const flagBox = `<p style="background:#FBE9DF;border-radius:6px;padding:10px 12px;font-size:14px;margin:0 0 16px;"><strong>Why:</strong> ${esc(l.flags)}</p>`;
+
+  if (outcome === 'Live') {
+    await publish(l);
+    await sendEmail(adminEmail, `Auto-approved: ${l.title}`,
+      emailWrap(`<p style="font-size:20px;margin:8px 0 16px;color:#1A2830;">Published automatically</p>
+<p style="font-size:14px;color:#6B5F52;margin:0 0 16px;">The AI review found nothing wrong, so this one is live. Nothing to do unless it looks off.</p>
+${listingSummaryHtml(l)}<p><a href="${reviewUrl}" style="${BUTTON}background:#1A2830;color:#FAF6EF;">Open (take down if needed)</a></p>`));
+  } else if (outcome === 'Rejected') {
+    await rejectListing(l);
+    await Promise.all([
+      textDaryl(`Classified REJECTED by AI (${l.category}): ${l.title}\nby ${l.sellerName}\nWhy: ${l.flags}\nOverride: ${reviewUrl}`),
+      sendEmail(adminEmail, `AI rejected: ${l.title}`,
+        emailWrap(`<p style="font-size:20px;margin:8px 0 16px;color:#1A2830;">Rejected by the AI review</p>${flagBox}
+${listingSummaryHtml(l)}<p><a href="${reviewUrl}" style="${BUTTON}background:#1A2830;color:#FAF6EF;">Publish anyway</a></p>`)),
+    ]);
+  } else {
+    await Promise.all([
+      textDaryl(`Classified needs your eyes (${l.category}): ${l.title}\nby ${l.sellerName}\nWhy: ${l.flags}\nReview: ${reviewUrl}`),
+      sendEmail(adminEmail, `Classified to review: ${l.title}`,
+        emailWrap(`<p style="font-size:20px;margin:8px 0 16px;color:#1A2830;">New listing to review</p>${flagBox}
 ${listingSummaryHtml(l)}<p><a href="${reviewUrl}" style="${BUTTON}background:#1A2830;color:#FAF6EF;">Review listing</a></p>`)),
-    sendEmail(l.email, 'We got your listing',
-      emailWrap(`<p style="font-size:20px;margin:8px 0 12px;color:#1A2830;">Thanks, ${esc(l.sellerName.split(' ')[0])}.</p>
-<p style="font-size:15px;line-height:1.7;">Your listing <strong>${esc(l.title)}</strong> is with us for a quick look. We check every listing to keep scammers out. You'll get an email the moment it's live.</p>`)),
-  ]);
-  return res.status(200).json({ ok: true });
+      sendEmail(l.email, 'We got your listing',
+        emailWrap(`<p style="font-size:20px;margin:8px 0 12px;color:#1A2830;">Thanks, ${esc(l.sellerName.split(' ')[0])}.</p>
+<p style="font-size:15px;line-height:1.7;">Your listing <strong>${esc(l.title)}</strong> is with us for a quick look. We check listings to keep scammers out. You'll get an email the moment it's live.</p>`)),
+    ]);
+  }
+  return res.status(200).json({ ok: true, status: outcome, id: l.id });
+}
+
+async function publish(l) {
+  await update(l.id, {
+    Status: { select: { name: 'Live' } },
+    Posted: { date: { start: new Date().toISOString().split('T')[0] } },
+    Expires: { date: { start: addDays(LISTING_DAYS) } },
+    'Renewal Sent': { checkbox: false },
+  });
+  await sendEmail(l.email, `Your listing is live: ${l.title}`,
+    emailWrap(`<p style="font-size:20px;margin:8px 0 12px;color:#1A2830;">You're live.</p>
+<p style="font-size:15px;line-height:1.7;"><strong>${esc(l.title)}</strong> is now on Manitou Beach Classifieds for ${LISTING_DAYS} days, and new listings go out in our Thursday newsletter.</p>
+<p><a href="${listingUrl(l)}" style="${BUTTON}background:#1A2830;color:#FAF6EF;">See your listing</a></p>
+<p style="font-size:14px;line-height:1.7;color:#6B5F52;">Sold it, or need more time? Use this link any time: <a href="${manageUrl(l)}" style="color:#D4845A;">manage your listing</a>. Keep this email.</p>`));
+}
+
+async function rejectListing(l) {
+  await update(l.id, { Status: { select: { name: 'Rejected' } } });
+  await sendEmail(l.email, 'About your Manitou Beach listing',
+    emailWrap(`<p style="font-size:15px;line-height:1.7;margin-top:12px;">Thanks for sending <strong>${esc(l.title)}</strong>. We weren't able to publish it on Manitou Beach Classifieds. If you think that's a mistake, just reply to this email.</p>`));
 }
 
 async function handleResend(req, res) {
@@ -224,10 +271,12 @@ async function handleReview(req, res) {
 <input type="hidden" name="action" value="decide"><input type="hidden" name="id" value="${l.id}">
 <input type="hidden" name="key" value="${esc(key)}"><input type="hidden" name="decision" value="${decision}">
 <button type="submit" style="${BUTTON}background:${bg};color:#fff;">${label}</button></form>`;
-  const actions = l.status === 'Pending Review'
-    ? `${form('approve', 'Approve and publish', '#5B7A5A')}${form('reject', 'Reject', '#B5543A')}`
-    : `<p style="font-size:15px;">Status: <strong>${esc(l.status)}</strong>. Nothing to do.</p>`;
-  return sendHtml(res, 200, 'Review listing', `${l.flags ? `<p style="background:#FBE9DF;border-radius:6px;padding:10px 12px;font-size:14px;"><strong>Flags:</strong> ${esc(l.flags)}</p>` : ''}${listingSummaryHtml(l)}${actions}`);
+  const actions = {
+    'Pending Review': `${form('approve', 'Approve and publish', '#5B7A5A')}${form('reject', 'Reject', '#B5543A')}`,
+    Rejected: `<p style="font-size:15px;">This listing was <strong>rejected</strong>.</p>${form('approve', 'Publish anyway', '#5B7A5A')}`,
+    Live: `<p style="font-size:15px;">This listing is <strong>live</strong>.</p>${form('takedown', 'Take it down', '#B5543A')}`,
+  }[l.status] || `<p style="font-size:15px;">Status: <strong>${esc(l.status)}</strong>. Nothing to do.</p>`;
+  return sendHtml(res, 200, 'Review listing', `${l.flags ? `<p style="background:#FBE9DF;border-radius:6px;padding:10px 12px;font-size:14px;"><strong>Why:</strong> ${esc(l.flags)}</p>` : ''}${listingSummaryHtml(l)}${actions}`);
 }
 
 async function handleDecide(req, res) {
@@ -236,30 +285,16 @@ async function handleDecide(req, res) {
   const page = await getPage(id);
   const l = page && parseClassified(page, true);
   if (!l) return sendHtml(res, 404, 'Not found', '<p>That listing no longer exists.</p>');
-  if (l.status !== 'Pending Review') return sendHtml(res, 200, 'Already handled', `<p>This listing is already <strong>${esc(l.status)}</strong>.</p>`);
+  const allowed = { approve: ['Pending Review', 'Rejected'], reject: ['Pending Review'], takedown: ['Live'] }[decision];
+  if (!allowed) return sendHtml(res, 400, 'Unknown choice', '<p>Nothing changed.</p>');
+  if (!allowed.includes(l.status)) return sendHtml(res, 200, 'Already handled', `<p>This listing is already <strong>${esc(l.status)}</strong>.</p>`);
 
   if (decision === 'approve') {
-    const today = new Date().toISOString().split('T')[0];
-    await update(l.id, {
-      Status: { select: { name: 'Live' } },
-      Posted: { date: { start: today } },
-      Expires: { date: { start: addDays(LISTING_DAYS) } },
-      'Renewal Sent': { checkbox: false },
-    });
-    await sendEmail(l.email, `Your listing is live: ${l.title}`,
-      emailWrap(`<p style="font-size:20px;margin:8px 0 12px;color:#1A2830;">You're live.</p>
-<p style="font-size:15px;line-height:1.7;"><strong>${esc(l.title)}</strong> is now on Manitou Beach Classifieds for ${LISTING_DAYS} days, and new listings go out in our Thursday newsletter.</p>
-<p><a href="${listingUrl(l)}" style="${BUTTON}background:#1A2830;color:#FAF6EF;">See your listing</a></p>
-<p style="font-size:14px;line-height:1.7;color:#6B5F52;">Sold it, or need more time? Use this link any time: <a href="${manageUrl(l)}" style="color:#D4845A;">manage your listing</a>. Keep this email.</p>`));
+    await publish(l);
     return sendHtml(res, 200, 'Published', `<p>${esc(l.title)} is live. ${esc(l.sellerName)} has been emailed.</p><p><a href="${listingUrl(l)}" style="color:#D4845A;">View it</a></p>`);
   }
-  if (decision === 'reject') {
-    await update(l.id, { Status: { select: { name: 'Rejected' } } });
-    await sendEmail(l.email, 'About your Manitou Beach listing',
-      emailWrap(`<p style="font-size:15px;line-height:1.7;margin-top:12px;">Thanks for sending <strong>${esc(l.title)}</strong>. We weren't able to publish it on Manitou Beach Classifieds. If you think that's a mistake, just reply to this email.</p>`));
-    return sendHtml(res, 200, 'Rejected', `<p>${esc(l.title)} was rejected and the seller was emailed.</p>`);
-  }
-  return sendHtml(res, 400, 'Unknown choice', '<p>Pick approve or reject.</p>');
+  await rejectListing(l);
+  return sendHtml(res, 200, decision === 'takedown' ? 'Taken down' : 'Rejected', `<p>${esc(l.title)} is off the board and the seller was emailed.</p>`);
 }
 
 async function sellerListing(id, token) {
