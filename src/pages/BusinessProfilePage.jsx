@@ -1733,6 +1733,16 @@ export default function BusinessProfilePage() {
                   </button>
                 </div>
 
+                {import.meta.env.VITE_AD_INTAKE_OPEN === '1' && (
+                  <a href={`/ad-photos?slug=${encodeURIComponent(slug)}`} style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 48, marginBottom: 20,
+                    borderRadius: 12, background: C.sageDark, color: '#fff', textDecoration: 'none',
+                    fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, fontWeight: 700,
+                  }}>
+                    Send photos for your free ads
+                  </a>
+                )}
+
                 <form onSubmit={handleEditSave} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
 
                   {/* Logo */}

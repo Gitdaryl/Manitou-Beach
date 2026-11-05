@@ -10,6 +10,11 @@ const C = {
 };
 
 export default function ListingConfirmedPage() {
+  // confirm-listing adds a signed photo link once the free ads offer is open
+  const params = new URLSearchParams(window.location.search);
+  const adSlug = params.get('slug');
+  const adToken = params.get('t');
+
   return (
     <div style={{ minHeight: '100vh', background: C.night, display: 'flex', flexDirection: 'column' }}>
       <Navbar />
@@ -80,6 +85,18 @@ export default function ListingConfirmedPage() {
 
           {/* CTAs */}
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+            {adSlug && adToken && (
+              <a
+                href={`/ad-photos?slug=${encodeURIComponent(adSlug)}&t=${encodeURIComponent(adToken)}`}
+                style={{
+                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700,
+                  padding: '13px 24px', borderRadius: 8, background: C.cream, color: C.night,
+                  textDecoration: 'none', display: 'inline-block',
+                }}
+              >
+                Send photos for your free ads →
+              </a>
+            )}
             <a
               href="/#businesses"
               style={{
