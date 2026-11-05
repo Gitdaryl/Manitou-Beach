@@ -9,13 +9,15 @@
 import { randomBytes } from 'crypto';
 import { put } from '@vercel/blob';
 import { findListedBusiness, RECORD_PREFIX, uploadPrefix, verifyAdToken } from './lib/ad-intake.js';
-import { sendSMS } from './lib/twilio.js';
+import { normalizePhone, sendSMS } from './lib/twilio.js';
 import {
   CONSENT_OWNERSHIP,
   CONSENT_USE,
   CONSENT_VERSION,
   IMAGE_TYPES,
   MAX_PHOTOS,
+  TEXT_CONSENT,
+  TEXT_CONSENT_VERSION,
   TEXT_LIMITS,
 } from '../src/data/adIntake.js';
 
@@ -95,6 +97,17 @@ function buildRecord(business, body) {
     openAllYear = false;
   }
 
+  // Only kept when they ticked the box: a number with no consent is never stored.
+  let textAlerts = null;
+  if (body.textOk === true) {
+    if (body.textConsentVersion !== TEXT_CONSENT_VERSION) {
+      throw new Invalid('This page is out of date. Please refresh and try again.');
+    }
+    const phone = normalizePhone(cleanText(body.phone, TEXT_LIMITS.phone, 'Your mobile number'));
+    if (phone.length !== 10) throw new Invalid('Please check your mobile number.');
+    textAlerts = { phone, version: TEXT_CONSENT_VERSION, text: TEXT_CONSENT, page: '/ad-photos' };
+  }
+
   return {
     business: business.name,
     slug: business.slug,
@@ -112,6 +125,13 @@ function buildRecord(business, body) {
     noLogo,
     logoUrl,
     photoUrls,
+    social: {
+      facebook: cleanText(body.facebook, TEXT_LIMITS.social, 'Your Facebook page'),
+      instagram: cleanText(body.instagram, TEXT_LIMITS.social, 'Your Instagram'),
+      personal: cleanText(body.personalSocial, TEXT_LIMITS.social, 'Your personal account'),
+      wantsSetupHelp: body.wantsSetupHelp === true,
+    },
+    textAlerts,
     answers: {
       openAllYear,
       closedMonths,
@@ -127,7 +147,8 @@ function textFor(record) {
   const oneLine = (s) => s.replace(/\s+/g, ' ').slice(0, 60);
   const logo = record.logoUrl ? 'logo' : 'no logo';
   const photos = `${record.photoUrls.length} photo${record.photoUrls.length === 1 ? '' : 's'}`;
-  return `MB ad photos: ${oneLine(record.business)} sent ${logo}, ${photos}. From ${oneLine(record.name)}. Run pull-intake.py`;
+  const help = record.social.wantsSetupHelp ? ' Wants help setting up social pages.' : '';
+  return `MB ad photos: ${oneLine(record.business)} sent ${logo}, ${photos}. From ${oneLine(record.name)}.${help} Run pull-intake.py`;
 }
 
 export default async function handler(req, res) {
@@ -156,6 +177,8 @@ export default async function handler(req, res) {
       business: business.name,
       pageId: business.pageId,
       uploadPrefix: uploadPrefix(business.pageId),
+      facebook: business.facebook,
+      instagram: business.instagram,
     });
   }
 

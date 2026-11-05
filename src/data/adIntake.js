@@ -10,6 +10,13 @@ export const CONSENT_OWNERSHIP =
 export const CONSENT_USE =
   'Manitou Beach Life and YetiGroove may use them, along with my listing details, to create and post social media ads for my business, and may clean them up, including with AI tools. Ads are posted without an approval step, and I can ask for a fix or removal at any time.';
 
+// Texts are optional and never a condition of sending the form.
+// Changing this sentence means bumping TEXT_CONSENT_VERSION.
+export const TEXT_CONSENT_VERSION = '2026-11-v1';
+
+export const TEXT_CONSENT =
+  'Manitou Beach can text me when one of my ads goes up, one text per ad. Message and data rates may apply. Reply STOP to opt out, HELP for help.';
+
 export const MAX_PHOTOS = 10;
 export const MAX_FILE_MB = 20;
 export const MAX_FILE_BYTES = MAX_FILE_MB * 1024 * 1024;
@@ -30,6 +37,8 @@ export const TEXT_LIMITS = {
   specialDays: 600,
   knownFor: 300,
   leaveOut: 300,
+  social: 300,
+  phone: 20,
 };
 
 export const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];

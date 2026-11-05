@@ -86,8 +86,15 @@ export async function listedBusinesses() {
       return name && !skip && !/\byeti\s*test\b|\btest\s*business\b|^\s*test[\s-]/i.test(name);
     })
     .map((page) => {
-      const name = page.properties['Name'].title[0].text.content;
-      return { pageId: page.id, name, slug: toSlug(name) };
+      const p = page.properties;
+      const name = p['Name'].title[0].text.content;
+      return {
+        pageId: page.id,
+        name,
+        slug: toSlug(name),
+        facebook: p['Facebook URL']?.url || '',
+        instagram: p['Instagram URL']?.url || '',
+      };
     });
 }
 

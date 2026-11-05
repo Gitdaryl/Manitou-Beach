@@ -12,6 +12,8 @@ import {
   MAX_FILE_MB,
   MAX_PHOTOS,
   MONTHS,
+  TEXT_CONSENT,
+  TEXT_CONSENT_VERSION,
   TEXT_LIMITS,
 } from '../data/adIntake';
 
@@ -181,8 +183,14 @@ export default function AdPhotosPage() {
   const [specialDays, setSpecialDays] = useState('');
   const [knownFor, setKnownFor] = useState('');
   const [leaveOut, setLeaveOut] = useState('');
+  const [facebook, setFacebook] = useState('');
+  const [instagram, setInstagram] = useState('');
+  const [personalSocial, setPersonalSocial] = useState('');
+  const [wantsSetupHelp, setWantsSetupHelp] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [textOk, setTextOk] = useState(false);
+  const [phone, setPhone] = useState('');
   const [consentOwnership, setConsentOwnership] = useState(false);
   const [consentUse, setConsentUse] = useState(false);
 
@@ -206,6 +214,8 @@ export default function AdPhotosPage() {
         const data = await res.json();
         if (!res.ok || !data.ok) { setPhase('down'); return; }
         setLink(data);
+        setFacebook(data.facebook || '');
+        setInstagram(data.instagram || '');
         setPhase('form');
       })
       .catch(() => { if (alive) setPhase('down'); });
@@ -316,8 +326,9 @@ export default function AdPhotosPage() {
     }
     if (!name.trim()) errors.name = 'Please add your name.';
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) errors.email = 'Please check your email address.';
+    if (textOk && phone.replace(/\D/g, '').slice(-10).length !== 10) errors.phone = 'Please check your mobile number.';
     setFieldErrors(errors);
-    const first = ['logo', 'name', 'email'].find((key) => errors[key]);
+    const first = ['logo', 'name', 'email', 'phone'].find((key) => errors[key]);
     if (first) document.getElementById(`adp-${first}`)?.scrollIntoView({ block: 'center' });
     return !first;
   };
@@ -365,6 +376,13 @@ export default function AdPhotosPage() {
           specialDays,
           knownFor,
           leaveOut,
+          facebook,
+          instagram,
+          personalSocial,
+          wantsSetupHelp,
+          textOk,
+          textConsentVersion: TEXT_CONSENT_VERSION,
+          phone: textOk ? phone : '',
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -386,8 +404,12 @@ export default function AdPhotosPage() {
         .adp button:disabled { cursor: not-allowed; }
         .adp button:active:not(:disabled) { opacity: 0.75; }
         .adp :focus-visible { outline: 3px solid ${C.lakeBlue}; outline-offset: 2px; }
+        .adp ::placeholder { color: ${C.textLight}; opacity: 1; }
         .adp-months { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
         .adp-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-bottom: 12px; }
+        @media (max-width: 299px) {
+          .adp-months { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
         @media (min-width: 600px) {
           .adp-months { grid-template-columns: repeat(6, minmax(0, 1fr)); }
           .adp-tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -431,7 +453,7 @@ export default function AdPhotosPage() {
   if (phase === 'done') {
     return notice(
       'Got it, thank you!',
-      <>Everything from {link.business} is safe with us. We'll take it from here. Questions or second thoughts? Email {mailLink}.</>,
+      <>Everything from {link.business} is safe with us. We'll take it from here, and we'll let you know when your ad goes up. Questions or second thoughts? Email {mailLink}.</>,
       <button type="button" onClick={() => window.location.reload()} style={{ ...SECONDARY, maxWidth: 280 }}>Send more photos</button>
     );
   }
@@ -539,6 +561,24 @@ export default function AdPhotosPage() {
       </section>
 
       <section style={CARD}>
+        <h2 style={H2}>Your social pages</h2>
+        <p style={HINT}>When your ad goes up we'll tag you, so your customers see it too. Skip anything you don't have.</p>
+        <label htmlFor="adp-facebook" style={{ ...QUESTION, marginBottom: 8 }}>Business Facebook page</label>
+        <input id="adp-facebook" type="text" autoCapitalize="none" maxLength={TEXT_LIMITS.social} placeholder="Your page name or link" value={facebook} onChange={(e) => setFacebook(e.target.value)} style={FIELD} />
+
+        <label htmlFor="adp-instagram" style={{ ...QUESTION, margin: '20px 0 8px' }}>Business Instagram</label>
+        <input id="adp-instagram" type="text" autoCapitalize="none" maxLength={TEXT_LIMITS.social} placeholder="Your Instagram name or link" value={instagram} onChange={(e) => setInstagram(e.target.value)} style={FIELD} />
+
+        <label htmlFor="adp-personal" style={{ ...QUESTION, margin: '20px 0 4px' }}>No business page yet?</label>
+        <p style={{ ...HINT, marginBottom: 8 }}>Add a personal Facebook or Instagram, only if you're happy for us to tag it.</p>
+        <input id="adp-personal" type="text" autoCapitalize="none" maxLength={TEXT_LIMITS.social} placeholder="Your personal account name or link" value={personalSocial} onChange={(e) => setPersonalSocial(e.target.value)} style={FIELD} />
+
+        <div style={{ marginTop: 12 }}>
+          <CheckRow checked={wantsSetupHelp} disabled={sending} onChange={setWantsSetupHelp}>I'd like help setting up business pages</CheckRow>
+        </div>
+      </section>
+
+      <section style={CARD}>
         <h2 style={{ ...H2, marginBottom: 14 }}>About you</h2>
         <label htmlFor="adp-name" style={{ ...QUESTION, marginBottom: 8 }}>Your name</label>
         <input id="adp-name" type="text" autoComplete="name" maxLength={TEXT_LIMITS.name} placeholder="Your name" value={name} onChange={(e) => { setName(e.target.value); setFieldErrors((f) => ({ ...f, name: '' })); }} style={FIELD} />
@@ -547,6 +587,21 @@ export default function AdPhotosPage() {
         <label htmlFor="adp-email" style={{ ...QUESTION, margin: '20px 0 8px' }}>Your email</label>
         <input id="adp-email" type="email" inputMode="email" autoComplete="email" autoCapitalize="none" maxLength={TEXT_LIMITS.email} placeholder="Your email" value={email} onChange={(e) => { setEmail(e.target.value); setFieldErrors((f) => ({ ...f, email: '' })); }} style={FIELD} />
         {fieldErrors.email && <p role="alert" style={ERROR}>{fieldErrors.email}</p>}
+        <p style={{ ...HINT, margin: '8px 0 0' }}>We'll email you when your ad goes up.</p>
+
+        <div id="adp-text" style={{ marginTop: 12 }}>
+          <CheckRow checked={textOk} disabled={sending} onChange={(on) => { setTextOk(on); setFieldErrors((f) => ({ ...f, phone: '' })); }}>{TEXT_CONSENT}</CheckRow>
+          <p style={{ ...HINT, margin: '4px 0 0' }}>
+            Optional. See our <a href="/privacy" target="_blank" rel="noopener noreferrer" style={{ color: C.lakeDark, display: 'inline-block', padding: '12px 0' }}>Privacy Policy</a> and <a href="/terms" target="_blank" rel="noopener noreferrer" style={{ color: C.lakeDark, display: 'inline-block', padding: '12px 4px' }}>Terms</a>.
+          </p>
+        </div>
+        {textOk && (
+          <>
+            <label htmlFor="adp-phone" style={{ ...QUESTION, margin: '16px 0 8px' }}>Your mobile number</label>
+            <input id="adp-phone" type="tel" inputMode="tel" autoComplete="tel" maxLength={TEXT_LIMITS.phone} placeholder="Your mobile number" value={phone} onChange={(e) => { setPhone(e.target.value); setFieldErrors((f) => ({ ...f, phone: '' })); }} style={FIELD} />
+            {fieldErrors.phone && <p role="alert" style={ERROR}>{fieldErrors.phone}</p>}
+          </>
+        )}
       </section>
 
       <section style={CARD}>
