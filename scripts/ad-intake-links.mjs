@@ -4,8 +4,8 @@
 //
 // node --env-file=../Manitou-Beach/.env.notion.tmp scripts/ad-intake-links.mjs ~/Desktop/ad-links.tsv
 //
-// Needs CLAIM_SIGNING_SECRET, SITE_URL, NOTION_TOKEN_BUSINESS and NOTION_DB_BUSINESS.
-// The secret must match the one in Vercel production or the links will not open.
+// Needs AD_INTAKE_SIGNING_SECRET, SITE_URL, NOTION_TOKEN_BUSINESS and NOTION_DB_BUSINESS.
+// The secret must match the one in Vercel or the links will not open.
 
 import { chmodSync, realpathSync, writeFileSync } from 'fs';
 import { dirname, resolve, sep } from 'path';
@@ -34,7 +34,7 @@ if (outPath === repoRoot || outPath.startsWith(repoRoot + sep)) {
 
 const siteUrl = (process.env.SITE_URL || '').trim().replace(/\/$/, '');
 for (const [key, value] of Object.entries({
-  CLAIM_SIGNING_SECRET: process.env.CLAIM_SIGNING_SECRET,
+  AD_INTAKE_SIGNING_SECRET: process.env.AD_INTAKE_SIGNING_SECRET,
   SITE_URL: siteUrl,
   NOTION_TOKEN_BUSINESS: process.env.NOTION_TOKEN_BUSINESS,
   NOTION_DB_BUSINESS: process.env.NOTION_DB_BUSINESS,

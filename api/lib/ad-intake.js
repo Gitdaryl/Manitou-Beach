@@ -1,9 +1,10 @@
 // Shared by api/ad-intake.js, api/ad-upload.js, api/confirm-listing.js and
 // scripts/ad-intake-links.mjs.
 //
-// Signed ad-photo links use the claim token scheme with their own purpose
-// string, so a link passed around a business can send photos but can never
-// edit the listing. An owner's existing claim token is accepted here as well.
+// Signed ad-photo links have their own secret, so a link passed around a
+// business can send photos but can never edit the listing, and so the links can
+// be made on the Mac: CLAIM_SIGNING_SECRET is hidden in Vercel and can't be read
+// back. An owner's existing claim token is accepted here as well.
 
 import { createHmac, timingSafeEqual } from 'crypto';
 import { verifyClaimToken } from '../verify-claim.js';
@@ -13,8 +14,8 @@ export function toSlug(name) {
 }
 
 function hmac(value) {
-  const secret = process.env.CLAIM_SIGNING_SECRET;
-  if (!secret) throw new Error('CLAIM_SIGNING_SECRET is not set');
+  const secret = process.env.AD_INTAKE_SIGNING_SECRET;
+  if (!secret) throw new Error('AD_INTAKE_SIGNING_SECRET is not set');
   return createHmac('sha256', secret).update(value).digest('hex');
 }
 
@@ -24,7 +25,7 @@ export function makeAdToken(pageId) {
 
 export function verifyAdToken(pageId, token) {
   if (!pageId || !token || typeof token !== 'string') return false;
-  if (!process.env.CLAIM_SIGNING_SECRET) return false; // fail closed
+  if (!process.env.AD_INTAKE_SIGNING_SECRET) return false; // fail closed
   const given = Buffer.from(token);
   const expected = Buffer.from(makeAdToken(pageId));
   if (given.length === expected.length && timingSafeEqual(given, expected)) return true;
