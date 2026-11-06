@@ -3,6 +3,10 @@
 //
 // The claim token is HMAC(pageId, CLAIM_SIGNING_SECRET) - deterministic, no storage needed.
 // Browser stores it in localStorage['mb-claim-{slug}'] and sends it with edits.
+//
+// POST { slug, ownerLink } - swap a texted owner link for the same claim token.
+// The claim token never expires, so it is never put in a text. The link carries an
+// expiry instead, and a forwarded or old link only ever shows the public profile.
 
 import { createHmac, timingSafeEqual } from 'crypto';
 import { normalizePhone } from './lib/twilio.js';
@@ -19,6 +23,28 @@ export function makeClaimToken(pageId) {
   const secret = process.env.CLAIM_SIGNING_SECRET;
   if (!secret) throw new Error('CLAIM_SIGNING_SECRET is not set - refusing to sign claim token');
   return signClaimToken(pageId, secret);
+}
+
+const OWNER_LINK_DAYS = 30;
+
+function signOwnerLink(pageId, exp, secret) {
+  return createHmac('sha256', secret).update(`owner-link:${pageId}:${exp}`).digest('hex').slice(0, 24);
+}
+
+export function makeOwnerLink(pageId) {
+  const secret = process.env.CLAIM_SIGNING_SECRET;
+  if (!secret) throw new Error('CLAIM_SIGNING_SECRET is not set - refusing to sign owner link');
+  const exp = Math.floor(Date.now() / 1000) + OWNER_LINK_DAYS * 86400;
+  return `${exp}.${signOwnerLink(pageId, exp, secret)}`;
+}
+
+export function verifyOwnerLink(pageId, link) {
+  const secret = process.env.CLAIM_SIGNING_SECRET;
+  if (!secret || typeof link !== 'string') return false;
+  const [exp, sig] = link.split('.');
+  if (!/^\d+$/.test(exp || '') || !sig) return false;
+  if (Number(exp) < Date.now() / 1000) return false;
+  return safeEqual(sig, signOwnerLink(pageId, exp, secret));
 }
 
 function safeEqual(a, b) {
@@ -75,7 +101,21 @@ async function findBusinessBySlug(slug) {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { slug, phone, code } = req.body || {};
+  const { slug, phone, code, ownerLink } = req.body || {};
+
+  if (slug && ownerLink) {
+    try {
+      const page = await findBusinessBySlug(slug);
+      if (!page || !verifyOwnerLink(page.id, ownerLink)) {
+        return res.status(403).json({ error: 'This link has expired.' });
+      }
+      return res.status(200).json({ ok: true, claimToken: makeClaimToken(page.id), pageId: page.id });
+    } catch (err) {
+      console.error('verify-claim owner link error:', err.message);
+      return res.status(500).json({ error: 'Something went wrong. Try again.' });
+    }
+  }
+
   if (!slug || !phone || !code) return res.status(400).json({ error: 'slug, phone, and code are required' });
 
   if (!code || code.trim().length !== 6) {

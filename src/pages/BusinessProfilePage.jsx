@@ -93,6 +93,25 @@ export default function BusinessProfilePage() {
 
     // Detect setup mode (fresh signup redirect from Stripe)
     const params = new URLSearchParams(window.location.search);
+
+    // Monthly report card text: swap the signed link for the owner token, and keep it out of the address bar
+    const ownerLink = params.get('owner');
+    if (ownerLink) {
+      window.history.replaceState({}, '', window.location.pathname);
+      fetch('/api/verify-claim', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slug, ownerLink }),
+      })
+        .then(r => r.json())
+        .then(d => {
+          if (!d.ok || !d.claimToken) return;
+          localStorage.setItem(`mb-claim-${slug}`, d.claimToken);
+          setClaimToken(d.claimToken);
+        })
+        .catch(() => {});
+    }
+
     const isSetup = params.get('setup') === 'true';
     if (isSetup) {
       setSetupMode(true);

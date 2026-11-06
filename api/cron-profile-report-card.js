@@ -7,7 +7,7 @@ import { requireCron } from './lib/cronAuth.js';
 import Anthropic from '@anthropic-ai/sdk';
 import { sendSMS, normalizePhone } from './lib/twilio.js';
 import { scoreProfile } from './profile-report-card.js';
-import { makeClaimToken } from './verify-claim.js';
+import { makeOwnerLink } from './verify-claim.js';
 
 const ai = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -105,8 +105,8 @@ export default async function handler(req, res) {
       }
 
       const slug = toSlug(name);
-      const claimToken = makeClaimToken(page.id);
-      const profileUrl = `${SITE_URL}/business/${slug}`;
+      // Signed for the owner, so the link opens their score panel, not just the public profile
+      const profileUrl = `${SITE_URL}/business/${slug}?owner=${makeOwnerLink(page.id)}`;
 
       const nudge = await generateSmsNudge(name, score, gaps);
       if (!nudge) {

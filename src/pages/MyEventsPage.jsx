@@ -32,6 +32,61 @@ function isPast(iso) {
   return (iso || '').slice(0, 10) < today;
 }
 
+// ── Short narrated how-to. Only loads when someone asks for it ──
+function WatchHow() {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const onKey = (e) => { if (e.key === 'Escape') setOpen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open]);
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        style={{
+          minHeight: 44, padding: '0 16px', marginBottom: 24, borderRadius: 10, cursor: 'pointer',
+          background: 'none', border: '1px solid rgba(255,255,255,0.22)', color: C.cream,
+          fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 600,
+        }}
+      >
+        ▶ Watch how it works
+      </button>
+      {open && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="How to fix your event"
+          onClick={() => setOpen(false)}
+          style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(0,0,0,0.88)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}
+        >
+          <button
+            type="button"
+            aria-label="Close"
+            onClick={() => setOpen(false)}
+            style={{ position: 'absolute', top: 10, right: 10, width: 44, height: 44, borderRadius: 22, border: 'none', cursor: 'pointer', background: 'rgba(255,255,255,0.16)', color: '#fff', fontSize: 22 }}
+          >
+            ×
+          </button>
+          <video
+            src="/videos/fix-your-event.mp4"
+            poster="/videos/fix-your-event.webp"
+            controls
+            autoPlay
+            playsInline
+            onClick={e => e.stopPropagation()}
+            style={{ maxWidth: '100%', maxHeight: '100%', borderRadius: 12 }}
+          />
+        </div>
+      )}
+    </>
+  );
+}
+
 // ── Ask for the phone number, then text them a link ──
 function AskForPhone() {
   const [phone, setPhone] = useState('');
@@ -100,6 +155,7 @@ function AskForPhone() {
         No password, no account. Pop in the phone number you used when you added your events and we'll text
         you a link to the whole list.
       </p>
+      <WatchHow />
       <label style={{ display: 'block', fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: 'rgba(255,255,255,0.75)', marginBottom: 8 }}>
         Your phone number
       </label>
@@ -358,6 +414,7 @@ function EventList({ phone, token }) {
         {shared ? ` This list is shared with ${crew.join(' and ') || 'your crew'}, so it has everything you've both posted.` : ''}
         {' '}Bookmark this page and you'll never have to hunt for a link again.
       </p>
+      <WatchHow />
 
       {shared && (
         <PostingAs phone={phone} token={token} value={myName} onSaved={setMyName} />
