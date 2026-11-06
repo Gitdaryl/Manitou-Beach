@@ -76,6 +76,11 @@ function isPast(dateStr) {
   return new Date(dateStr + 'T23:59:59') < new Date();
 }
 
+// A weekly or monthly series keeps its first date in event.date, so only its end date can make it past
+const isSeries = (event) => event?.recurring === 'Weekly' || event?.recurring === 'Monthly';
+const seriesOver = (event) => isSeries(event) ? isPast(event.dateEnd) : isPast(event.date);
+const whenLabel = (event) => isSeries(event) && event.recurringDay ? `Every ${event.recurringDay}` : formatFullDate(event.date);
+
 // ── Add to Calendar (.ics) - generated client-side, no dependencies ──────────
 
 // Escape text per RFC 5545 (commas, semicolons, backslashes, newlines)
@@ -234,7 +239,7 @@ export default function EventDetailPage() {
   };
 
   const scrollTo = (id) => { window.location.href = '/#' + id; };
-  const past = event ? isPast(event.date) : false;
+  const past = event ? seriesOver(event) : false;
   const catColor = event ? (CAT_COLORS[event.category] || C.sage) : C.sage;
   const heroImage = event ? getSmartImage(event) : '/images/happening-hero.webp';
   const hasOrganizerImage = event?.imageUrl;
@@ -395,7 +400,7 @@ export default function EventDetailPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
                   {event.date && (
                     <span style={{ color: 'rgba(255,255,255,0.85)', fontSize: 16, fontFamily: "'Libre Franklin', sans-serif", fontWeight: 500 }}>
-                      📅 {formatFullDate(event.date)}{event.timeStart ? ` · ${event.timeStart}` : ''}
+                      📅 {whenLabel(event)}{event.timeStart ? ` · ${event.timeStart}` : ''}
                     </span>
                   )}
                   <button
@@ -440,7 +445,7 @@ export default function EventDetailPage() {
                 {event.date && (
                   <div style={{ background: '#fff', border: `1px solid ${C.sand}`, borderRadius: 10, padding: '14px 18px' }}>
                     <div style={{ fontSize: 13, color: C.textMuted, textTransform: 'uppercase', letterSpacing: 1.8, marginBottom: 4, fontFamily: "'Libre Franklin', sans-serif" }}>Date</div>
-                    <div style={{ fontSize: 16, fontWeight: 600, color: C.dusk, fontFamily: "'Libre Baskerville', serif" }}>{formatFullDate(event.date)}</div>
+                    <div style={{ fontSize: 16, fontWeight: 600, color: C.dusk, fontFamily: "'Libre Baskerville', serif" }}>{whenLabel(event)}</div>
                     {event.dateEnd && event.dateEnd !== event.date && (
                       <div style={{ fontSize: 15, color: C.textMuted, marginTop: 2 }}>through {formatShortDate(event.dateEnd)}</div>
                     )}
