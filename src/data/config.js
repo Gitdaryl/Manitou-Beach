@@ -55,9 +55,15 @@ export const PAGE_SPONSORS = {
 // Empty array = ticker hidden. First in = first to commit.
 // Each entry: { name, tagline, logo (optional), url (optional) }
 // ============================================================
-export const EVENT_TICKER_SPONSORS = [
-  // { name: "Kelleys Bar & Grill", tagline: "Cold drinks, warm people", url: "https://..." },
-  // { name: "Devils Lake Marina", tagline: "Rent. Launch. Explore.", url: "https://..." },
+export const EVENT_SPONSORS = [
+  // name is always two lines so every card matches. Keep caption to two short lines.
+  { name: ["Gypsy Blue", "Vineyards"], logo: "/images/sponsors/gypsy-blue.webp", logoWidth: 69, href: "/business/gypsy-blue-vineyards" },
+  { name: ["Faust House", "Scrap-n-Craft"], logo: "/images/sponsors/faust-house.webp", logoWidth: 56, href: "/business/faust-house-scrap-n-craft" },
+  // Holly's rule: the Foundation logo with the office address directly under it.
+  { name: ["Holly Griewahn", "Cell 517-403-3413"], photo: "/images/sponsors/holly-griewahn.webp", caption: ["100 Walnut St", "Manitou Beach, MI"], logo: "/images/sponsors/foundation-realty.webp", href: "/business/holly-griewahn-foundation-realty" },
+  { name: ["Manitou Beach", "Wine Tasting"], caption: ["David Gajda and", "Jose Malagon"], logo: "/images/sponsors/wine-village.svg", logoWidth: 44, href: "/wineries" },
+  { name: ["Decker and Sons", "Insurance"], logo: "/images/sponsors/decker.webp", logoWidth: 61, href: "/business/decker-and-sons-insurance" },
+  { name: ["Devil's Lake", "Water Sports"], logo: "/images/sponsors/water-sports.webp", logoWidth: 94, href: "/business/devils-lake-water-sports" },
 ];
 
 // ============================================================

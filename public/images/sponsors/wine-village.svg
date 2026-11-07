@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Lighthouse, village rooftops and a glass of red wine">
+  <defs>
+    <clipPath id="badge"><circle cx="120" cy="120" r="112"/></clipPath>
+    <clipPath id="tower"><path d="M58 180 L66 78 H94 L102 180 Z"/></clipPath>
+    <clipPath id="bowl"><path d="M134 58 H200 C204 96 194 132 167 136 C140 132 130 96 134 58 Z"/></clipPath>
+  </defs>
+  <circle cx="120" cy="120" r="112" fill="#FAF1E2"/>
+  <g clip-path="url(#badge)">
+    <circle cx="120" cy="150" r="66" fill="#F3D9B5"/>
+    <!-- village rooftops -->
+    <path d="M6 180 V150 L30 130 L54 150 V180 Z" fill="#fff" stroke="#27394A" stroke-width="3"/>
+    <path d="M2 152 L30 127 L58 152" fill="none" stroke="#27394A" stroke-width="7" stroke-linejoin="round"/>
+    <path d="M100 180 V148 L122 128 L144 148 V180 Z" fill="#fff" stroke="#27394A" stroke-width="3"/>
+    <path d="M96 150 L122 125 L148 150" fill="none" stroke="#27394A" stroke-width="7" stroke-linejoin="round"/>
+    <rect x="116" y="156" width="12" height="24" fill="#8C2332"/>
+    <!-- lighthouse -->
+    <path d="M58 180 L66 78 H94 L102 180 Z" fill="#fff"/>
+    <g clip-path="url(#tower)" fill="#C22F35">
+      <path d="M40 112 L120 76 V94 L40 130 Z"/>
+      <path d="M40 148 L120 112 V130 L40 166 Z"/>
+      <path d="M40 184 L120 148 V166 L40 202 Z"/>
+    </g>
+    <path d="M58 180 L66 78 H94 L102 180 Z" fill="none" stroke="#27394A" stroke-width="3"/>
+    <rect x="60" y="70" width="40" height="8" rx="1" fill="#27394A"/>
+    <rect x="68" y="50" width="24" height="20" fill="#FFE7A8" stroke="#27394A" stroke-width="3"/>
+    <path d="M80 50 V70" stroke="#27394A" stroke-width="2.5"/>
+    <path d="M64 50 L80 34 L96 50 Z" fill="#27394A"/>
+    <path d="M80 34 V26" stroke="#27394A" stroke-width="3"/>
+    <!-- lake -->
+    <rect x="0" y="178" width="240" height="70" fill="#2F6283"/>
+    <path d="M18 196 q12 -7 24 0 t24 0 t24 0 t24 0 M74 212 q12 -7 24 0 t24 0" fill="none" stroke="#BFD8E6" stroke-width="3.5" stroke-linecap="round"/>
+  </g>
+  <!-- wine glass -->
+  <g clip-path="url(#bowl)">
+    <rect x="124" y="50" width="90" height="94" fill="#FFFFFFB0"/>
+    <path d="M124 90 q11 -5 22 0 t22 0 t22 0 t22 0 V144 H124 Z" fill="#7A1B3D"/>
+  </g>
+  <path d="M134 58 H200 C204 96 194 132 167 136 C140 132 130 96 134 58 Z" fill="none" stroke="#27394A" stroke-width="4.5" stroke-linejoin="round"/>
+  <path d="M167 136 V192" stroke="#27394A" stroke-width="5.5" stroke-linecap="round"/>
+  <path d="M143 196 q24 -9 48 0" fill="none" stroke="#27394A" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M146 76 C145 92 148 106 154 116" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".75"/>
+  <circle cx="120" cy="120" r="112" fill="none" stroke="#7A1B3D" stroke-width="7"/>
+</svg>

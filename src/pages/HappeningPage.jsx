@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { FadeIn, SectionTitle, SectionLabel, Btn, ShareBar, WaveDivider, PageSponsorBanner, ScrollProgress, CategoryPill } from '../components/Shared';
-import { C, PAGE_SPONSORS, VIDEOS, EVENT_TICKER_SPONSORS } from '../data/config';
-import { SponsorTicker } from '../components/SponsorTicker';
+import { C, PAGE_SPONSORS, VIDEOS, EVENT_SPONSORS } from '../data/config';
+import { SponsorStrip } from '../components/SponsorStrip';
 import { Footer, GlobalStyles, PromoBanner, EventLightbox, EventTimeline, Navbar, NewsletterInline, compressImage } from '../components/Layout';
 import SMSOptInWidget from '../components/SMSOptInWidget';
 import SEOHead, { buildEventSchema } from '../components/SEOHead';
@@ -24,13 +24,13 @@ const ATTENDANCE_COLORS = {
 };
 
 // ============================================================
-function HappeningHero() {
+function HappeningHero({ children }) {
   const [loaded, setLoaded] = useState(false);
   useEffect(() => { setTimeout(() => setLoaded(true), 80); }, []);
 
   return (
     <section style={{
-      padding: "180px 24px 140px",
+      padding: "180px 24px 32px",
       position: "relative",
       overflow: "hidden",
     }}>
@@ -51,16 +51,20 @@ function HappeningHero() {
         background: "linear-gradient(170deg, rgba(10,18,24,0.72) 0%, rgba(10,18,24,0.50) 50%, rgba(10,18,24,0.82) 100%)",
       }} />
 
-      {/* Decorative oversized year - pure design element */}
-      <div style={{
+      {/* Decorative oversized year - pure design element. Fades to a watermark on
+          narrow screens, where it sits behind the headline. */}
+      <style>{`
+        .events-hero-year { color: rgba(255,255,255,0.75); }
+        @media (max-width: 760px) { .events-hero-year { color: rgba(255,255,255,0.10); } }
+      `}</style>
+      <div className="events-hero-year" style={{
         position: "absolute",
         right: -10,
-        top: "50%",
+        top: 320,
         transform: "translateY(-50%)",
         fontFamily: "'Libre Baskerville', serif",
         fontSize: "clamp(140px, 22vw, 320px)",
         fontWeight: 700,
-        color: "rgba(255,255,255,0.75)",
         lineHeight: 1,
         userSelect: "none",
         letterSpacing: -12,
@@ -93,6 +97,7 @@ function HappeningHero() {
           <ShareBar title="Events in Manitou Beach" />
         </div>
       </div>
+      {children}
     </section>
   );
 }
@@ -1103,8 +1108,9 @@ export default function HappeningPage() {
 <GlobalStyles />
       <ScrollProgress />
       <Navbar activeSection="happening" scrollTo={subScrollTo} isSubPage={true} />
-      <HappeningHero />
-      <SponsorTicker sponsors={EVENT_TICKER_SPONSORS} />
+      <HappeningHero>
+        <SponsorStrip sponsors={EVENT_SPONSORS} title="Proudly sponsored by your lake neighbors" />
+      </HappeningHero>
       <PromoBanner page="Events" />
       <HeroTakeover event={heroTakeover} onEventClick={setLightboxEvent} />
       <CalendarSection events={upcomingEvents} weeklyEvents={weeklyEvents} onEventClick={setLightboxEvent} activeFilter={activeFilter} onFilterChange={setActiveFilter} loadError={loadError} />
