@@ -616,7 +616,7 @@ export default function BusinessProfilePage() {
 
       {business && (
         <SEOHead
-          title={`${business.name} - ${business.category || 'Local Business'}, Manitou Beach Michigan`}
+          title={`${business.name} - ${business.category || 'Local Business'}, ${localityFromAddress(business.address)} Michigan`}
           description={business.description ? business.description.substring(0, 155) : autoDesc}
           path={`/business/${slug}`}
           ogImage={business.logo || undefined}
