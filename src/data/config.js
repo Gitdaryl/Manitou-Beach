@@ -74,7 +74,7 @@ export const LISTING_CATEGORIES = [
   "Food & Drink", "Food Truck", "Places to Stay", "Rentals & Recreation",
   "Breweries & Wineries", "Boating & Water", "Events & Venues", "Shopping & Gifts",
   "Home Services", "Storage & Property Care", "Health & Wellness", "Health & Beauty",
-  "Real Estate", "Creative Media", "Pet Services", "Arts & Culture", "Activities", "Other",
+  "Real Estate", "Insurance", "Creative Media", "Pet Services", "Arts & Culture", "Activities", "Other",
 ];
 // Drop your drone fireworks video in public/images/ and set the path here:
 export const USA250_VIDEO_URL = "/images/fireworks/devilslake-fireworks-hero.mp4";
@@ -112,6 +112,7 @@ export const CAT_COLORS = {
   "Health & Wellness":  "#c05a5a",
   "Health & Beauty":    "#B5737A",
   "Pet Services":       "#8B7355",
+  "Insurance":          "#4F6D8F",
   "Arts & Culture":     "#7B68B0",
   "Community":          C.sage,
   "Other":              C.textMuted,

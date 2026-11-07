@@ -15,7 +15,7 @@
 import { buildOpeningHoursSpec } from './openingHours.js';
 
 const SCHEMA_TYPES = {
-  'Restaurant': 'Restaurant', 'Bar': 'BarOrPub', 'Real Estate': 'RealEstateAgent',
+  'Restaurant': 'Restaurant', 'Bar': 'BarOrPub', 'Real Estate': 'RealEstateAgent', 'Insurance': 'InsuranceAgency',
   'Marina': 'Marina', 'Retail': 'Store', 'Hotel': 'LodgingBusiness',
   'Vacation Rental': 'LodgingBusiness', 'Food Truck': 'FoodEstablishment',
   'Winery': 'Winery', 'Art Gallery': 'ArtGallery', 'Bakery': 'Bakery',
@@ -40,6 +40,21 @@ export function isServiceAreaBusiness(biz) {
   return biz?.businessType === 'Service Area' || biz?.businessType === 'Mobile & Markets';
 }
 
+// The town in a free-text address. Needs a comma before the town, so write
+// "123 Main St, Hudson, MI". Falls back to Manitou Beach.
+export function localityFromAddress(address) {
+  const parts = String(address || '').split(',').map(s => s.trim()).filter(Boolean);
+  for (let i = parts.length - 1; i >= 1; i--) {
+    const cleaned = parts[i]
+      .replace(/\s*\b\d{5}(-\d{4})?\b\s*$/, '')
+      .replace(/\s*\bUnited States\b\.?\s*$/i, '')
+      .replace(/[,\s]*\b(MI|Michigan)\b\.?\s*$/i, '')
+      .trim();
+    if (cleaned && !/^\d+$/.test(cleaned)) return cleaned;
+  }
+  return 'Manitou Beach';
+}
+
 export function buildBusinessSchema(biz) {
   if (!biz) return null;
   const serviceArea = isServiceAreaBusiness(biz);
@@ -60,7 +75,7 @@ export function buildBusinessSchema(biz) {
       address: {
         '@type': 'PostalAddress',
         streetAddress: biz.address,
-        addressLocality: 'Manitou Beach',
+        addressLocality: localityFromAddress(biz.address),
         addressRegion: 'MI', addressCountry: 'US',
       },
     }),

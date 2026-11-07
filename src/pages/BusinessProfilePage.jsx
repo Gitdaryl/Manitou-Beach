@@ -5,7 +5,7 @@ import { Footer, Navbar, GlobalStyles, compressImage } from '../components/Layou
 import { FadeIn, Btn } from '../components/Shared';
 import SEOHead from '../components/SEOHead';
 import { toSlug } from '../utils/slugify';
-import { buildBusinessSchema } from '../utils/businessSchema';
+import { buildBusinessSchema, localityFromAddress } from '../utils/businessSchema';
 import { formatServiceAreas } from '../data/serviceAreas';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -20,13 +20,16 @@ function formatPhone(phone) {
 
 // ─── Schema type map ────────────────────────────────────────────────────────
 const SCHEMA_TYPES = {
-  'Restaurant': 'Restaurant', 'Bar': 'BarOrPub', 'Real Estate': 'RealEstateAgent',
+  'Restaurant': 'Restaurant', 'Bar': 'BarOrPub', 'Real Estate': 'RealEstateAgent', 'Insurance': 'InsuranceAgency',
   'Marina': 'Marina', 'Retail': 'Store', 'Hotel': 'LodgingBusiness',
   'Vacation Rental': 'LodgingBusiness', 'Food Truck': 'FoodEstablishment',
   'Winery': 'Winery', 'Art Gallery': 'ArtGallery', 'Bakery': 'Bakery',
   'Cafe': 'CafeOrCoffeeShop', 'Auto': 'AutoRepair', 'Beauty': 'BeautySalon',
   'Fitness': 'SportsActivityLocation',
 };
+
+// Maps needs a town. Only add Manitou Beach when the address has none of its own.
+const mapsAddress = (address) => (/\b(MI|Michigan)\b/i.test(address) ? address : `${address}, Manitou Beach, MI`);
 
 // ─── Category → accent colour ───────────────────────────────────────────────
 const CAT_COLORS = {
@@ -413,7 +416,7 @@ export default function BusinessProfilePage() {
     directions: { label: 'Directions' },
   }[actionType];
   const mapsHref = business?.address && !isServiceArea
-    ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(business.address + ' Manitou Beach MI')}`
+    ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(mapsAddress(business.address))}`
     : null;
   // What sits under the business name: a street address for a storefront, or an
   // honest coverage statement for someone who travels.
@@ -919,7 +922,7 @@ export default function BusinessProfilePage() {
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
                 </svg>
-                <span>{isServiceArea ? locationLine : 'Manitou Beach, MI'}</span>
+                <span>{isServiceArea ? locationLine : `${localityFromAddress(business.address)}, MI`}</span>
               </div>
               {/* Storefronts show the street address next to the locality. Skip it when
                   the address already repeats the locality, which read as
@@ -1040,7 +1043,7 @@ export default function BusinessProfilePage() {
                     Directions
                   </a>
                 )}
-                {actionType !== 'directions' && (business.email || business.phone) && (
+                {actionType !== 'directions' && business.email && (
                   <button className="bp-action-btn"
                     onClick={() => setQuoteOpen(true)}
                     style={{ background: accent, color: '#fff' }}>
@@ -1265,7 +1268,7 @@ export default function BusinessProfilePage() {
                       accent={accent}
                     >
                       <a
-                        href={`https://maps.google.com/?q=${encodeURIComponent(business.address + ', Manitou Beach, MI')}`}
+                        href={`https://maps.google.com/?q=${encodeURIComponent(mapsAddress(business.address))}`}
                         target="_blank" rel="noopener noreferrer"
                         style={{ color: C.lakeBlue, textDecoration: 'none', fontWeight: 500 }}
                       >
@@ -1568,7 +1571,7 @@ export default function BusinessProfilePage() {
                   Directions
                 </a>
               )}
-              {actionType !== 'directions' && (business.email || business.phone) && (
+              {actionType !== 'directions' && business.email && (
                 <button className="bp-action-btn"
                   onClick={() => setQuoteOpen(true)}
                   style={{ background: accent, color: '#fff' }}>

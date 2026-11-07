@@ -8,7 +8,7 @@
 // og:title / og:description / og:image before returning it.
 // ============================================================
 
-import { buildBusinessSchemaBlocks } from './src/utils/businessSchema.js';
+import { buildBusinessSchemaBlocks, localityFromAddress } from './src/utils/businessSchema.js';
 
 // ── OG data per route ────────────────────────────────────────
 // image: null  →  keeps the default og-image.jpg (you need to provide one)
@@ -711,19 +711,6 @@ export async function handleBusinessSchema(html, slug, origin) {
 // take the first real word left. Never take segment 0, which is the street.
 // Service-area businesses often have no address, so fall back to the village
 // rather than inventing a town.
-function localityFromAddress(address) {
-  const parts = String(address || '').split(',').map(s => s.trim()).filter(Boolean);
-  for (let i = parts.length - 1; i >= 1; i--) {
-    const cleaned = parts[i]
-      .replace(/\s*\b\d{5}(-\d{4})?\b\s*$/, '')
-      .replace(/\s*\bUnited States\b\.?\s*$/i, '')
-      .replace(/[,\s]*\b(MI|Michigan)\b\.?\s*$/i, '')
-      .trim();
-    if (cleaned && !/^\d+$/.test(cleaned)) return cleaned;
-  }
-  return 'Manitou Beach';
-}
-
 function buildBusinessNoscript(biz, name, locality, category) {
   const facts = [
     ['Category', category],

@@ -57,7 +57,7 @@ const CATEGORIES = [
   'Real Estate', 'Food & Drink', 'Boating & Water', 'Breweries & Wineries',
   'Shopping & Gifts', 'Places to Stay', 'Rentals & Recreation', 'Creative Media',
   'Home Services', 'Storage & Property Care', 'Health & Wellness', 'Health & Beauty',
-  'Pet Services', 'Arts & Culture', 'Food Truck', 'Other',
+  'Pet Services', 'Arts & Culture', 'Food Truck', 'Insurance', 'Other',
 ];
 
 function TierCard({ tier, slots, onSelect }) {
