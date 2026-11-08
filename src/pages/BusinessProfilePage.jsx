@@ -5,7 +5,7 @@ import { Footer, Navbar, GlobalStyles, compressImage } from '../components/Layou
 import { FadeIn, Btn } from '../components/Shared';
 import SEOHead from '../components/SEOHead';
 import { toSlug } from '../utils/slugify';
-import { buildBusinessSchema, localityFromAddress } from '../utils/businessSchema';
+import { buildBusinessSchema, localityFromAddress, regionFromAddress, regionName } from '../utils/businessSchema';
 import { formatServiceAreas } from '../data/serviceAreas';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -616,7 +616,7 @@ export default function BusinessProfilePage() {
 
       {business && (
         <SEOHead
-          title={`${business.name} - ${business.category || 'Local Business'}, ${localityFromAddress(business.address)} Michigan`}
+          title={`${business.name} - ${business.category || 'Local Business'}, ${localityFromAddress(business.address)} ${regionName(regionFromAddress(business.address))}`}
           description={business.description ? business.description.substring(0, 155) : autoDesc}
           path={`/business/${slug}`}
           ogImage={business.logo || undefined}
@@ -922,7 +922,7 @@ export default function BusinessProfilePage() {
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
                 </svg>
-                <span>{isServiceArea ? locationLine : `${localityFromAddress(business.address)}, MI`}</span>
+                <span>{isServiceArea ? locationLine : `${localityFromAddress(business.address)}, ${regionFromAddress(business.address)}`}</span>
               </div>
               {/* Storefronts show the street address next to the locality. Skip it when
                   the address already repeats the locality, which read as
@@ -1295,7 +1295,7 @@ export default function BusinessProfilePage() {
                       accent={accent}
                     >
                       <a href={business.website} target="_blank" rel="noopener noreferrer" style={{ color: C.lakeBlue, textDecoration: 'none', fontWeight: 500 }}>
-                        {business.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+                        {business.website.replace(/^https?:\/\//, '').replace(/[?#].*$/, '').replace(/\/$/, '')}
                         <span style={{ marginLeft: 4, fontSize: 13, opacity: 0.7 }}>↗</span>
                       </a>
                     </ContactDetail>

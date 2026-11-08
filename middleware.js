@@ -8,7 +8,7 @@
 // og:title / og:description / og:image before returning it.
 // ============================================================
 
-import { buildBusinessSchemaBlocks, localityFromAddress } from './src/utils/businessSchema.js';
+import { buildBusinessSchemaBlocks, localityFromAddress, regionFromAddress } from './src/utils/businessSchema.js';
 
 // ── OG data per route ────────────────────────────────────────
 // image: null  →  keeps the default og-image.jpg (you need to provide one)
@@ -667,7 +667,7 @@ export async function handleBusinessSchema(html, slug, origin) {
     const category = biz.category && biz.category !== 'Other' ? biz.category : 'Local business';
     // Names come straight from Notion and some carry stray whitespace.
     const name = String(biz.name).replace(/\s+/g, ' ').trim();
-    const title = `${name} | ${category} in ${locality}, MI`;
+    const title = `${name} | ${category} in ${locality}, ${regionFromAddress(biz.address)}`;
 
     const rawDesc = (biz.description || '').replace(/\s+/g, ' ').trim()
       || `${name} - ${category} serving ${locality} in the Michigan Irish Hills.`;
