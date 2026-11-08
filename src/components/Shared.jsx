@@ -1,3 +1,4 @@
+import { trackedUrl, outboundRel, SPONSORED_REL } from '../utils/outboundLink';
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { C, PAGE_SPONSORS } from "../data/config";
 import yeti from "../data/errorMessages";
@@ -275,7 +276,7 @@ export function PageSponsorBanner({ pageName }) {
             Brought to you by
           </div>
           {sponsor ? (
-            <a href={sponsor.url} target="_blank" rel="noopener noreferrer" style={{ display: "inline-block", textDecoration: "none" }}>
+            <a href={trackedUrl(sponsor.url, 'sponsor')} target="_blank" rel={outboundRel(sponsor, { sponsored: true })} style={{ display: "inline-block", textDecoration: "none" }}>
               <img src={sponsor.logo} alt={sponsor.name} style={{ maxWidth: 460, width: "100%", maxHeight: 140, objectFit: "contain", filter: "brightness(0) invert(1)", opacity: 0.92 }} />
               {sponsor.tagline && (
                 <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, color: "rgba(255,255,255,0.75)", marginTop: 20, lineHeight: 1.6 }}>{sponsor.tagline}</p>

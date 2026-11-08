@@ -1,3 +1,4 @@
+import { trackedUrl, outboundRel, SPONSORED_REL } from '../utils/outboundLink';
 import React, { useState, useEffect } from 'react';
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, WaveDivider, DiagonalDivider, CommunityDonationForm } from '../components/Shared';
 import { Footer, GlobalStyles, Navbar, NewsletterInline } from '../components/Layout';
@@ -424,9 +425,9 @@ function GolfOutingSection() {
                     return (
                     <Tag
                       key={s.name}
-                      href={s.url || undefined}
+                      href={s.url ? trackedUrl(s.url, 'sponsor') : undefined}
                       target={s.url ? "_blank" : undefined}
-                      rel={s.url ? "noopener noreferrer" : undefined}
+                      rel={s.url ? SPONSORED_REL : undefined}
                       style={{ display: "flex", alignItems: "center", gap: 14, flex: "1 1 280px", textDecoration: "none", color: "inherit" }}
                     >
                       {s.logo && (
@@ -728,7 +729,7 @@ function MensClubSponsorWall() {
               <div key={s.name} style={{ display: "flex", gap: 9, alignItems: "flex-start", padding: "5px 0", fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, lineHeight: 1.45 }}>
                 <span style={{ width: 5, height: 5, borderRadius: "50%", background: C.sunset, flexShrink: 0, marginTop: 6 }} />
                 {s.url ? (
-                  <a href={s.url} target="_blank" rel="noopener noreferrer" className="link-hover-underline" style={{ color: C.lakeDark, textDecoration: "none" }}>
+                  <a href={trackedUrl(s.url, 'sponsor')} target="_blank" rel={outboundRel(s, { sponsored: true })} className="link-hover-underline" style={{ color: C.lakeDark, textDecoration: "none" }}>
                     {s.name}
                   </a>
                 ) : (

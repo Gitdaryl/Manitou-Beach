@@ -1,3 +1,4 @@
+import { trackedUrl, outboundRel, SPONSORED_REL } from '../utils/outboundLink';
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { C } from '../data/config';
@@ -1058,7 +1059,7 @@ export default function BusinessProfilePage() {
                   </button>
                 )}
                 {business.website && (
-                  <a href={business.website} target="_blank" rel="noopener noreferrer" className="bp-action-btn"
+                  <a href={trackedUrl(business.website)} target="_blank" rel={outboundRel(business)} className="bp-action-btn"
                     style={{ background: C.warmWhite, color: C.text, border: `1.5px solid ${C.sand}`, boxShadow: 'none' }}>
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
@@ -1294,7 +1295,7 @@ export default function BusinessProfilePage() {
                       label="Website"
                       accent={accent}
                     >
-                      <a href={business.website} target="_blank" rel="noopener noreferrer" style={{ color: C.lakeBlue, textDecoration: 'none', fontWeight: 500 }}>
+                      <a href={trackedUrl(business.website)} target="_blank" rel={outboundRel(business)} style={{ color: C.lakeBlue, textDecoration: 'none', fontWeight: 500 }}>
                         {business.website.replace(/^https?:\/\//, '').replace(/[?#].*$/, '').replace(/\/$/, '')}
                         <span style={{ marginLeft: 4, fontSize: 13, opacity: 0.7 }}>↗</span>
                       </a>

@@ -1,3 +1,4 @@
+import { trackedUrl, outboundRel, SPONSORED_REL } from '../utils/outboundLink';
 import React, { useState, useEffect, useRef } from 'react';
 import { Btn, PageSponsorBanner, WaveDivider } from '../components/Shared';
 import { C } from '../data/config';
@@ -156,7 +157,7 @@ export default function DiscoverPage() {
         ${biz.address ? `<div style="font-size:11px;color:#666;margin-bottom:4px">${biz.address}</div>` : ''}
         ${biz.phone ? `<a href="tel:${biz.phone.replace(/\D/g,'')}" style="display:block;font-size:12px;font-weight:600;color:#7A8E72;margin-bottom:8px;text-decoration:none">${formatPhone(biz.phone)}</a>` : ''}
         <div style="display:flex;gap:10px;flex-wrap:wrap">
-          ${biz.website ? `<a href="${biz.website}" target="_blank" style="font-size:12px;font-weight:700;color:#D4845A;text-decoration:none">Website →</a>` : ''}
+          ${biz.website ? `<a href="${trackedUrl(biz.website)}" target="_blank" rel="${outboundRel(biz)}" style="font-size:12px;font-weight:700;color:#D4845A;text-decoration:none">Website →</a>` : ''}
         </div>
         <div style="margin-top:8px;font-size:10px;color:#aaa">Listed on Manitou Beach</div>
       </div>`;
@@ -377,7 +378,7 @@ export default function DiscoverPage() {
                     {biz.tagline && <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.textMuted, lineHeight: 1.4, marginBottom: 8 }}>{biz.tagline}</div>}
                     <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
                       {biz.phone && <a href={`tel:${biz.phone}`} style={{ fontSize: biz.emergency ? 16 : 14, fontWeight: 700, color: biz.emergency ? '#c05a5a' : C.sage, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>{formatPhone(biz.phone)}</a>}
-                      {biz.website && <a href={biz.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 14, fontWeight: 600, color: C.lakeBlue, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>Visit →</a>}
+                      {biz.website && <a href={trackedUrl(biz.website)} target="_blank" rel={outboundRel(biz)} style={{ fontSize: 14, fontWeight: 600, color: C.lakeBlue, textDecoration: 'none', fontFamily: "'Libre Franklin', sans-serif" }}>Visit →</a>}
                     </div>
                   </div>
                 </div>

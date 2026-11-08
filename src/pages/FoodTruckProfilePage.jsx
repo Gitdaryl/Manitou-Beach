@@ -1,3 +1,4 @@
+import { trackedUrl, outboundRel, SPONSORED_REL } from '../utils/outboundLink';
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { C } from '../data/config';
@@ -446,7 +447,7 @@ export default function FoodTruckProfilePage() {
                 </a>
               )}
               {truck.website && (
-                <a href={truck.website} target="_blank" rel="noopener noreferrer" style={{
+                <a href={trackedUrl(truck.website)} target="_blank" rel={outboundRel(truck)} style={{
                   display: 'inline-flex', alignItems: 'center', gap: 6,
                   background: ACCENT, color: '#fff',
                   borderRadius: 8, padding: '9px 16px',
@@ -634,7 +635,7 @@ export default function FoodTruckProfilePage() {
                         label="Website"
                         accent={ACCENT}
                       >
-                        <a href={truck.website} target="_blank" rel="noopener noreferrer" style={{ color: C.lakeBlue, textDecoration: 'none', fontWeight: 500 }}>
+                        <a href={trackedUrl(truck.website)} target="_blank" rel={outboundRel(truck)} style={{ color: C.lakeBlue, textDecoration: 'none', fontWeight: 500 }}>
                           {truck.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}
                           <span style={{ marginLeft: 4, fontSize: 13, opacity: 0.7 }}>↗</span>
                         </a>
@@ -704,7 +705,7 @@ export default function FoodTruckProfilePage() {
                 </a>
               )}
               {truck.website && (
-                <a href={truck.website} target="_blank" rel="noopener noreferrer" className="ftp-action-btn"
+                <a href={trackedUrl(truck.website)} target="_blank" rel={outboundRel(truck)} className="ftp-action-btn"
                   style={{ background: ACCENT, color: '#fff' }}>
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>

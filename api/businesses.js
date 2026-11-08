@@ -378,7 +378,7 @@ export default async function handler(req, res) {
         else samples.push({ ...business, tier: 'enhanced' });
       } else if (status === 'Listed Premium') premium.push({ ...business, tier: 'premium' });
       else if (status === 'Listed Featured' && !expired) featured.push({ ...business, tier: 'featured' });
-      else if (status === 'Listed Enhanced' || status === 'Listed Comp') enhanced.push({ ...business, tier: 'enhanced' });
+      else if (status === 'Listed Enhanced' || status === 'Listed Comp') enhanced.push({ ...business, tier: 'enhanced', comp: status === 'Listed Comp' });
       else free.push({ ...business, tier: 'free' });
     });
 

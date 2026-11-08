@@ -1,3 +1,4 @@
+import { trackedUrl, outboundRel, SPONSORED_REL } from '../utils/outboundLink';
 import React, { useState, useEffect } from 'react';
 import { FadeIn, SectionTitle, SectionLabel, Btn, ShareBar, WaveDivider, ScrollProgress, PageSponsorBanner } from '../components/Shared';
 import { C } from '../data/config';
@@ -482,9 +483,9 @@ function VenueCard({ venue }) {
           )}
           {venue.website && (
             <a
-              href={venue.website}
+              href={trackedUrl(venue.website)}
               target="_blank"
-              rel="noopener noreferrer"
+              rel={outboundRel(venue)}
               style={{
                 fontFamily: "'Libre Franklin', sans-serif",
                 fontSize: 13, fontWeight: 600,

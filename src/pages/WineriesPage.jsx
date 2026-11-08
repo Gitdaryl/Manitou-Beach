@@ -1,3 +1,4 @@
+import { trackedUrl, outboundRel, SPONSORED_REL } from '../utils/outboundLink';
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import formatPhone from '../utils/formatPhone';
@@ -846,7 +847,7 @@ function WineryCard({ v, i, isStamped, onStamp, venueRating, wineRankings, autoO
             {v.address && <span style={{ fontSize: 14, color: C.textMuted }}>📍 {v.address}</span>}
             {v.hours && <span style={{ fontSize: 14, color: C.textMuted }}>🕐 {v.hours}</span>}
             {v.website && (
-              <a href={v.website} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", color: v.accent, textDecoration: "none" }}>
+              <a href={trackedUrl(v.website)} target="_blank" rel={outboundRel(v)} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", color: v.accent, textDecoration: "none" }}>
                 Website →
               </a>
             )}
@@ -1003,9 +1004,9 @@ function WineryCard({ v, i, isStamped, onStamp, venueRating, wineRankings, autoO
             <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
               {v.website && (
                 <a
-                  href={v.website}
+                  href={trackedUrl(v.website)}
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel={outboundRel(v)}
                   onClick={e => e.stopPropagation()}
                   style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: v.accent, textDecoration: "none" }}
                 >
@@ -1119,7 +1120,7 @@ function WineriesMapSection() {
         ${v.hours ? `<div style="font-size:11px;color:#999;margin-bottom:6px;font-style:italic">${v.hours}</div>` : ''}
         <div style="display:flex;gap:10px;flex-wrap:wrap">
           <a href="${dir}" target="_blank" style="font-size:12px;font-weight:700;color:#5B7E95;text-decoration:none">Directions →</a>
-          ${v.website ? `<a href="${v.website}" target="_blank" style="font-size:12px;font-weight:700;color:#D4845A;text-decoration:none">Website →</a>` : ''}
+          ${v.website ? `<a href="${trackedUrl(v.website)}" target="_blank" rel="${outboundRel(v)}" style="font-size:12px;font-weight:700;color:#D4845A;text-decoration:none">Website →</a>` : ''}
         </div>
       </div>`;
       marker.addListener('click', () => {

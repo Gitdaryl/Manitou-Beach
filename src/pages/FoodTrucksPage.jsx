@@ -1,3 +1,4 @@
+import { trackedUrl, outboundRel, SPONSORED_REL } from '../utils/outboundLink';
 import React, { useState, useEffect, useRef } from 'react';
 import { AddToHomeScreen, useInstallable } from '../components/HomeScreenInstall';
 import { CONTROL_SURFACES } from '../data/controlSurfaces';
@@ -1935,7 +1936,7 @@ export default function FoodTrucksPage() {
                           </a>
                         )}
                         {truck.website && (
-                          <a href={truck.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 14, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}15`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1.5px solid ${C.lakeBlue}30` }}>
+                          <a href={trackedUrl(truck.website)} target="_blank" rel={outboundRel(truck)} style={{ fontSize: 14, color: C.lakeBlue, textDecoration: "none", fontWeight: 600, background: `${C.lakeBlue}15`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1.5px solid ${C.lakeBlue}30` }}>
                             Website →
                           </a>
                         )}
@@ -2166,7 +2167,7 @@ export default function FoodTrucksPage() {
                             </a>
                           )}
                           {truck.tier === 'featured' && truck.website && (
-                            <a href={truck.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 14, color: C.sunset, textDecoration: "none", fontWeight: 600, background: `${C.sunset}10`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1px solid ${C.sunset}20` }}>
+                            <a href={trackedUrl(truck.website)} target="_blank" rel={outboundRel(truck)} style={{ fontSize: 14, color: C.sunset, textDecoration: "none", fontWeight: 600, background: `${C.sunset}10`, padding: "6px 14px", borderRadius: 20, display: "inline-flex", alignItems: "center", gap: 5, border: `1px solid ${C.sunset}20` }}>
                               Menu / Info →
                             </a>
                           )}

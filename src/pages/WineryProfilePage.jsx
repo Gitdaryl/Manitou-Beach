@@ -1,3 +1,4 @@
+import { trackedUrl, outboundRel, SPONSORED_REL } from '../utils/outboundLink';
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { C } from '../data/config';
@@ -274,7 +275,7 @@ export default function WineryProfilePage() {
                   </a>
                 )}
                 {venue.website && (
-                  <a href={venue.website} target="_blank" rel="noopener noreferrer" className="wp-action-btn"
+                  <a href={trackedUrl(venue.website)} target="_blank" rel={outboundRel(venue)} className="wp-action-btn"
                     style={{ background: C.warmWhite, color: C.text, border: `1.5px solid ${C.sand}` }}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
@@ -452,7 +453,7 @@ export default function WineryProfilePage() {
                       </a>
                     )}
                     {venue.website && (
-                      <a href={venue.website} target="_blank" rel="noopener noreferrer" style={{
+                      <a href={trackedUrl(venue.website)} target="_blank" rel={outboundRel(venue)} style={{
                         display: 'flex', alignItems: 'center', gap: 12,
                         background: C.warmWhite, borderRadius: 10,
                         padding: '12px 14px', textDecoration: 'none',
@@ -516,7 +517,7 @@ export default function WineryProfilePage() {
                 </a>
               )}
               {venue.website && (
-                <a href={venue.website} target="_blank" rel="noopener noreferrer" className="wp-action-btn"
+                <a href={trackedUrl(venue.website)} target="_blank" rel={outboundRel(venue)} className="wp-action-btn"
                   style={{ background: accent, color: '#fff' }}>
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>

@@ -1,3 +1,4 @@
+import { trackedUrl, outboundRel, SPONSORED_REL } from '../utils/outboundLink';
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { C, SECTIONS, CAT_COLORS, USA250_VIDEO_URL } from '../data/config';
 import { BASE_PRICES } from '../data/pricing';
@@ -1366,7 +1367,7 @@ function FeaturedBusinessCard({ business }) {
             <a className="mb-tel" href={`tel:${business.phone}`} onClick={e => e.stopPropagation()} style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", textDecoration: "none", fontFamily: "'Libre Franklin', sans-serif" }}>{formatPhone(business.phone)}</a>
           )}
           {business.website && (
-            <a href={business.website} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color, textDecoration: "none" }}>Visit →</a>
+            <a href={trackedUrl(business.website)} target="_blank" rel={outboundRel(business)} onClick={e => e.stopPropagation()} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color, textDecoration: "none" }}>Visit →</a>
           )}
           <a href={`/business/${toSlug(business.name)}`} onClick={e => e.stopPropagation()} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5, color: "rgba(255,255,255,0.75)", textDecoration: "none" }}>Profile →</a>
         </div>
@@ -1429,7 +1430,7 @@ function PremiumBanner({ business }) {
       {/* CTAs */}
       <div style={{ flexShrink: 0, display: "flex", flexDirection: "column", gap: 10, alignItems: "flex-end" }}>
         {business.website && (
-          <a href={business.website} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.cream, background: C.sunset, padding: "10px 22px", borderRadius: 6, textDecoration: "none", whiteSpace: "nowrap" }}>
+          <a href={trackedUrl(business.website)} target="_blank" rel={outboundRel(business)} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: C.cream, background: C.sunset, padding: "10px 22px", borderRadius: 6, textDecoration: "none", whiteSpace: "nowrap" }}>
             Visit Website
           </a>
         )}
@@ -1540,7 +1541,7 @@ function EnhancedBusinessRow({ business, highlighted = false }) {
               )}
               <div style={{ display: "flex", gap: 16, flexWrap: "wrap", alignItems: "center" }}>
                 {business.website && (
-                  <a href={business.website} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: highlighted ? C.lakeBlue : C.sage, textDecoration: "none" }}>Visit Website →</a>
+                  <a href={trackedUrl(business.website)} target="_blank" rel={outboundRel(business)} onClick={e => e.stopPropagation()} style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: highlighted ? C.lakeBlue : C.sage, textDecoration: "none" }}>Visit Website →</a>
                 )}
                 {business.email && (
                   <a href={`mailto:${business.email}`} onClick={e => e.stopPropagation()} style={{ fontSize: 14, color: C.textMuted, textDecoration: "none" }}>{business.email}</a>
