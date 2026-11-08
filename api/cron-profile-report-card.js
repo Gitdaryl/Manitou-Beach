@@ -11,6 +11,14 @@ import { makeOwnerLink } from './verify-claim.js';
 
 const ai = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
+// Notion page ids that never get the monthly text.
+// On Point JD (comp, Nov 2026): its phone is OnPoint's 24/7 customer line, and
+// its Google profile is a hidden-address service-area business the legacy Places
+// API cannot find, so the profile can never reach 95 on the Google points.
+const SKIP_REPORT_CARD = new Set([
+  '4128c729-eb59-817c-bc3d-c3f4d4afb774',
+]);
+
 const NOTION_HEADERS = {
   Authorization: `Bearer ${process.env.NOTION_TOKEN_BUSINESS}`,
   'Content-Type': 'application/json',
@@ -90,6 +98,13 @@ export default async function handler(req, res) {
       const p = page.properties;
       const name = p['Name']?.title?.[0]?.text?.content || '';
       const phone = normalizePhone(p['Phone']?.phone_number || '');
+
+      // Comped and hand-managed listings whose phone is a customer lead line:
+      // a monthly "finish your profile" text there is noise.
+      if (SKIP_REPORT_CARD.has(page.id) || p['Skip Report Card']?.checkbox) {
+        results.skipped.push({ name, reason: 'skip report card' });
+        continue;
+      }
 
       if (!phone || phone.length !== 10) {
         results.skipped.push({ name, reason: 'no phone' });
