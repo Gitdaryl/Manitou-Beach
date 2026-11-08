@@ -12,9 +12,8 @@ import { makeOwnerLink } from './verify-claim.js';
 const ai = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 // Notion page ids that never get the monthly text.
-// On Point JD (comp, Nov 2026): its phone is OnPoint's 24/7 customer line, and
-// its Google profile is a hidden-address service-area business the legacy Places
-// API cannot find, so the profile can never reach 95 on the Google points.
+// On Point JD (comp, Nov 2026): its phone is OnPoint's 24/7 customer line, so it
+// never gets a "finish your profile" nudge even if a field goes missing later.
 const SKIP_REPORT_CARD = new Set([
   '4128c729-eb59-817c-bc3d-c3f4d4afb774',
 ]);
