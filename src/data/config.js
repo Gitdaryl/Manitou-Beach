@@ -62,7 +62,7 @@ export const EVENT_SPONSORS = [
   // Holly's rule: the Foundation logo with the office address directly under it.
   { name: ["Holly Griewahn", "Cell 517-403-3413"], photo: "/images/sponsors/holly-griewahn.webp", caption: ["100 Walnut St", "Manitou Beach, MI"], logo: "/images/sponsors/foundation-realty.webp", href: "/business/holly-griewahn-foundation-realty" },
   { name: ["Manitou Beach", "Wine Tasting"], caption: ["David Gajda and", "Jose Malagon"], logo: "/images/sponsors/wine-village.svg", logoWidth: 44, href: "/wineries" },
-  { name: ["Decker and Sons", "Insurance"], logo: "/images/sponsors/decker.webp", logoWidth: 61, href: "/business/decker-and-sons-insurance" },
+  { name: ["Decker and Sons", "Insurance"], logo: "/images/sponsors/decker-2026.webp", logoWidth: 57, href: "/business/decker-and-sons-insurance" },
   { name: ["Devil's Lake", "Water Sports"], logo: "/images/sponsors/water-sports.webp", logoWidth: 94, href: "/business/devils-lake-water-sports" },
 ];
 

@@ -966,7 +966,7 @@ const DEFAULT_PLATINUM = [
   { name: "Adrian Steel",                      logo: "/images/ladies-club/sponsors/adrian-logo.webp",        url: "https://adriansteel.com" },
 { name: "Dave/Jose",                         logo: null,                                                    url: null },
   { name: "Devils Lake & Round Lake Men's Club", logo: "/images/mens_club_logo.webp",                           url: "/mens-club" },
-  { name: "Decker and Sons Insurance",         logo: "/images/ladies-club/sponsors/decker-logo.webp",        url: "https://deckerandsonsinsurance.com" },
+  { name: "Decker and Sons Insurance",         logo: "/images/ladies-club/sponsors/decker-logo-2026.webp",        url: "https://deckerandsonsinsurance.com" },
   { name: "Devil's Lake Water Sports",         logo: "/images/ladies-club/sponsors/dl_watersports_logo.webp", url: "https://dlwatersports.com/" },
   { name: "Foundation Realty",                 logo: "/images/ladies-club/sponsors/foundation-logo.jpg",    url: "https://foundationlenawee.com" },
   { name: "Kapnick Insurance",                 logo: "/images/ladies-club/sponsors/kapnick-logo.jpg",       url: "https://kapnick.com/" },

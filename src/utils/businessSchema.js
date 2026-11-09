@@ -114,6 +114,20 @@ export function buildBusinessSchema(biz) {
     // actually match against. A custom typed area is appended as its own Place, so
     // it still counts even before anyone gives it a shape for the map.
     areaServed: buildAreaServed(biz),
+    // Extra offices of the same business, each a full place with its own phone.
+    ...(!serviceArea && biz.otherLocations?.length && {
+      department: biz.otherLocations.map(loc => ({
+        '@type': SCHEMA_TYPES[biz.category] || 'LocalBusiness',
+        name: `${biz.name}, ${loc.name || localityFromAddress(loc.address)}`,
+        ...(loc.phone && { telephone: loc.phone }),
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: loc.address,
+          addressLocality: localityFromAddress(loc.address),
+          addressRegion: regionFromAddress(loc.address), addressCountry: 'US',
+        },
+      })),
+    }),
     ...(regionFromAddress(biz.address) === 'MI' && { containedInPlace: {
       '@type': 'Place', name: 'Manitou Beach',
       address: { '@type': 'PostalAddress', addressLocality: 'Manitou Beach', addressRegion: 'MI', addressCountry: 'US' },

@@ -1265,7 +1265,7 @@ export default function BusinessProfilePage() {
                   {business.address && (
                     <ContactDetail
                       icon={<><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></>}
-                      label="Address"
+                      label={business.otherLocations?.length ? 'Main office' : 'Address'}
                       accent={accent}
                     >
                       <a
@@ -1276,9 +1276,42 @@ export default function BusinessProfilePage() {
                         {business.address}
                         <span style={{ marginLeft: 4, fontSize: 13, opacity: 0.7 }}>↗</span>
                       </a>
+                      {/* With several offices, each card carries its own phone. */}
+                      {business.otherLocations?.length > 0 && business.phone && (
+                        <div style={{ marginTop: 4 }}>
+                          <a href={`tel:${business.phone}`} style={{ color: C.lakeBlue, textDecoration: 'none', fontWeight: 500 }}>
+                            {formatPhone(business.phone)}
+                          </a>
+                        </div>
+                      )}
                     </ContactDetail>
                   )}
-                  {business.phone && (
+                  {/* Extra offices from "Other Locations": each with its own map link and phone. */}
+                  {(business.otherLocations || []).map(loc => (
+                    <ContactDetail
+                      key={loc.address}
+                      icon={<><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></>}
+                      label={loc.name || localityFromAddress(loc.address)}
+                      accent={accent}
+                    >
+                      <a
+                        href={`https://maps.google.com/?q=${encodeURIComponent(mapsAddress(loc.address))}`}
+                        target="_blank" rel="noopener noreferrer"
+                        style={{ color: C.lakeBlue, textDecoration: 'none', fontWeight: 500 }}
+                      >
+                        {loc.address}
+                        <span style={{ marginLeft: 4, fontSize: 13, opacity: 0.7 }}>↗</span>
+                      </a>
+                      {loc.phone && (
+                        <div style={{ marginTop: 4 }}>
+                          <a href={`tel:${loc.phone}`} style={{ color: C.lakeBlue, textDecoration: 'none', fontWeight: 500 }}>
+                            {formatPhone(loc.phone)}
+                          </a>
+                        </div>
+                      )}
+                    </ContactDetail>
+                  ))}
+                  {business.phone && !(business.otherLocations?.length > 0 && business.address) && (
                     <ContactDetail
                       icon={<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13 19.79 19.79 0 0 1 1.61 4.4 2 2 0 0 1 3.6 2.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.06 6.06l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 17z"/>}
                       label="Phone"

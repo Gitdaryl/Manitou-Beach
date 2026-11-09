@@ -717,6 +717,7 @@ function buildBusinessNoscript(biz, name, locality, category) {
     ['Location', biz.address || `${locality}, Michigan`],
     ['Phone', biz.phone],
     ['Website', biz.website],
+    ...(biz.otherLocations || []).map(l => [l.name || 'Other office', [l.address, l.phone].filter(Boolean).join(', ')]),
   ].filter(([, v]) => v);
 
   // Only the village itself sits on Devils Lake. Addison, Onsted, Brooklyn and

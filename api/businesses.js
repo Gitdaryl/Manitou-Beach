@@ -365,6 +365,15 @@ export default async function handler(req, res) {
         tagline: p['Tagline']?.rich_text?.[0]?.text?.content || null,
         accentColor: p['Accent Color']?.rich_text?.[0]?.text?.content || null,
         gallery: (() => { try { return JSON.parse(p['Gallery']?.rich_text?.[0]?.text?.content || '[]'); } catch { return []; } })(),
+        // Extra public offices, JSON in "Other Locations". Main office stays in Address.
+        // Rich text splits long values into several runs, so join them before parsing.
+        otherLocations: addressPrivate ? [] : (() => {
+          try {
+            const raw = (p['Other Locations']?.rich_text || []).map(r => r.plain_text ?? r.text?.content ?? '').join('');
+            const list = JSON.parse(raw || '[]');
+            return Array.isArray(list) ? list.filter(l => l && l.address) : [];
+          } catch { return []; }
+        })(),
         geoFaq: (() => { try { return JSON.parse(p['GEO FAQ']?.rich_text?.[0]?.text?.content || 'null'); } catch { return null; } })(),
       };
       if (!business.name) return;
