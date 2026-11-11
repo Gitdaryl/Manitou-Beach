@@ -20,6 +20,7 @@ export const GALLERY_SLUGS = new Set([
 export const GALLERY_EVENTS = {
   'mens-club': new Set(['tip-up-festival', 'firecracker-7k', 'fireworks', 'golf-outing']),
   'america-250': new Set(['boat-parade', 'fireworks', 'firecracker-7k', 'skydivers']),
+  'ladies-club': new Set(['veterans-day-lunch', 'summerfest']),
 };
 
 export function cleanEvent(slug, event) {

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ShareBar, SectionLabel, SectionTitle, FadeIn, ScrollProgress, CommunityDonationForm } from '../components/Shared';
 import { Footer, GlobalStyles, Navbar, NewsletterInline, ContactModal } from '../components/Layout';
 import { Lightbox } from '../components/PhotoGallery';
+import EventPhotoWall from '../components/EventPhotoWall';
 import { C } from '../data/config';
 import SEOHead from '../components/SEOHead';
 import RafflePage from './RafflePage';
@@ -1464,6 +1465,9 @@ export default function LadiesClubPage() {
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
       <LadiesClubHero />
       <VeteransLunchSection />
+      {/* Crowd photo wall (scan-and-submit), same module as /mens-club. Preselects the
+          Veterans Day Lunch tag through November; other months land in the picker default. */}
+      <EventPhotoWall slug="ladies-club" title="Ladies Club" initialEvent={new Date().getMonth() === 10 ? 'veterans-day-lunch' : ''} />
       <LadiesClubMissionSection />
       <LadiesClubEventsSection />
       <LadiesClubSponsorsSection />

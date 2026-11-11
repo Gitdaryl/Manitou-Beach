@@ -84,6 +84,12 @@ export const GALLERIES = {
     crowd: true,
     count: 0,
     cover: '/images/ladies-club/artists.webp',
+    // Event tags - mirror the keys in api/lib/photo-slugs.js GALLERY_EVENTS.
+    events: [
+      { key: 'veterans-day-lunch', title: 'Veterans Day Lunch', date: 'November 11' },
+      { key: 'summerfest', title: 'Summerfest', date: 'Summer' },
+    ],
+    generalTitle: 'Club Life',
     ogDescription:
       'Community photos from Manitou Beach Ladies Club events on Devils Lake, Michigan. Add yours and share.',
   },
