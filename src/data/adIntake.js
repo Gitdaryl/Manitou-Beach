@@ -2,13 +2,13 @@
 // wording a business ticks and the wording the server records can never drift.
 // Changing either consent sentence means bumping CONSENT_VERSION.
 
-export const CONSENT_VERSION = '2026-11-v1';
+export const CONSENT_VERSION = '2026-11-v2'; // v2 Nov 11: each ad is sent to the business before it posts (Yeti's Nov 10 promise to Charles Noe)
 
 export const CONSENT_OWNERSHIP =
   'I own these photos and this logo, or have permission to share them, and anyone clearly shown is OK with being in them.';
 
 export const CONSENT_USE =
-  'Manitou Beach Life and YetiGroove may use them, along with my listing details, to create and post social media ads for my business, and may clean them up, including with AI tools. Ads are posted without an approval step, and I can ask for a fix or removal at any time.';
+  'Manitou Beach Life and YetiGroove may use them, along with my listing details, to create and post social media ads for my business, and may clean them up, including with AI tools. They will send me each ad before it posts, and I can ask for a change, skip it, or have it removed at any time.';
 
 // Texts are optional and never a condition of sending the form.
 // Changing this sentence means bumping TEXT_CONSENT_VERSION.
