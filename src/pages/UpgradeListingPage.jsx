@@ -6,9 +6,9 @@ import yeti from '../data/errorMessages';
 import { celebrate } from '../data/celebrate';
 
 const TIERS = {
-  enhanced: { label: 'Showcased',        price: 9,  annual: 108, description: 'Clickable website link, business description, expandable listing card.' },
-  featured: { label: 'Highlighted',      price: 25, annual: 300, description: 'Spotlight card, logo display, above standard listings.' },
-  premium:  { label: 'Front and Center', price: 49, annual: 588, description: 'Full-width banner, large logo, top-of-directory placement, email contact button.' },
+  enhanced: { label: 'Showcased',        price: 9,  annual: 108, description: 'Clickable website link, business description, expandable listing card. Seasonal reposts of your ads, plus the video files for your own pages.' },
+  featured: { label: 'Highlighted',      price: 25, annual: 300, description: 'Spotlight card, logo display, above standard listings. A new video ad every quarter.' },
+  premium:  { label: 'Front and Center', price: 49, annual: 588, description: 'Full-width banner, large logo, top-of-directory placement, email contact button. A new video ad every other month.' },
 };
 
 const TIER_ORDER = ['enhanced', 'featured', 'premium'];

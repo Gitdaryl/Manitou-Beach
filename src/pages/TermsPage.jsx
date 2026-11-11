@@ -18,7 +18,7 @@ export default function TermsPage() {
       <div style={{ maxWidth: 760, margin: '0 auto', padding: '120px 28px 80px' }}>
         <div style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, letterSpacing: 4, textTransform: 'uppercase', color: C.sage, marginBottom: 12 }}>Legal</div>
         <h1 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(30px, 5vw, 46px)', fontWeight: 400, color: C.dusk, margin: '0 0 8px' }}>Terms of Service</h1>
-        <p style={{ ...S.p, color: C.textMuted, fontSize: 15, marginBottom: 40 }}>Effective date: March 2026 &nbsp;·&nbsp; Updated August 2026 &nbsp;·&nbsp; Yeti Groove Media LLC</p>
+        <p style={{ ...S.p, color: C.textMuted, fontSize: 15, marginBottom: 40 }}>Effective date: March 2026 &nbsp;·&nbsp; Updated November 2026 &nbsp;·&nbsp; Yeti Groove Media LLC</p>
 
         <p style={S.p}>By using the Manitou Beach community platform at manitoubeachmichigan.com ("the Site"), you agree to these Terms. If you don't agree, please don't use the Site.</p>
 
@@ -44,7 +44,7 @@ export default function TermsPage() {
         <h2 style={S.h2}>SMS notifications</h2>
         <p style={S.p}><strong>Program name:</strong> Manitou Beach SMS Alerts, operated by Yeti Groove Media LLC.</p>
         <p style={S.p}><strong>How to opt in:</strong> You must explicitly opt in by submitting your mobile phone number through an opt-in form on this Site and checking the consent checkbox. Opting in is entirely voluntary.</p>
-        <p style={S.p}><strong>Message types:</strong> Community event reminders, food truck check-in alerts, local business flash deals, and welcome messages. These are informational notifications only - not marketing from third parties.</p>
+        <p style={S.p}><strong>Message types:</strong> Community event reminders, food truck check-in alerts, local business flash deals, welcome messages, and a notice when your ad goes up. These are informational notifications only - not marketing from third parties.</p>
         <p style={S.p}><strong>Message frequency:</strong> Varies. You may receive up to a few messages per week depending on community activity and your subscription preferences.</p>
         <p style={S.p}><strong>Message &amp; data rates:</strong> Message and data rates may apply depending on your mobile carrier plan.</p>
         <p style={S.p}><strong>How to opt out:</strong> Reply <strong>STOP</strong> to any message at any time. You will receive one confirmation message and no further texts will be sent.</p>
@@ -82,8 +82,12 @@ export default function TermsPage() {
         <p style={S.p}>You agree not to submit content that is false, defamatory, harassing, illegal, or infringes the rights of others. We may remove content and terminate access for violations without notice.</p>
 
         <h2 style={S.h2}>Intellectual property</h2>
-        <p style={S.p}>Editorial content, design, and original photography on this Site are owned by Yeti Groove Media LLC. By submitting a logo or photo, you grant us a non-exclusive license to display it on the Site in connection with your listing.</p>
+        <p style={S.p}>Editorial content, design, and original photography on this Site are owned by Yeti Groove Media LLC. By submitting a logo, photo or video, you grant us a non-exclusive, royalty-free license to display it on the Site and to use, edit and adapt it to create and publish advertising and promotional content for your business and for the Site, on the Site and on social media. You confirm you have the right to grant this license, including permission from anyone clearly shown. You may ask us to stop using your material at any time. We will stop making new content with it and remove posts we control, but we cannot recall copies others have shared.</p>
         <p style={S.p}>To report a copyright claim, contact <a href="mailto:admin@yetigroove.com" style={{ color: C.sage }}>admin@yetigroove.com</a> with "DMCA" in the subject line.</p>
+
+        <h2 style={S.h2}>Social media ads</h2>
+        <p style={S.p}>Listed businesses may receive video ads on our social media pages, Manitou Beach Life on Facebook and Instagram, at no cost. Ads are written and produced by us from your listing information and the material you submit. We send you each ad before it is published, and you may ask for a change or tell us not to post it. Ads may feature fictional characters, AI-generated scenes and AI-assisted voices, and we may use AI tools to enhance your images. We do not guarantee any number of ads, views, reach or results.</p>
+        <p style={S.p}>If you spot a mistake in a published ad, email <a href="mailto:admin@yetigroove.com" style={{ color: C.sage }}>admin@yetigroove.com</a> and we will correct or remove it promptly, usually within one business day. We may decline to feature a business and may change this program at any time. Ad video files provided under a paid plan may be posted on your own pages, but may not be edited or used in paid advertising, and remain ours. We may tag the business or personal pages you give us when your ad is posted.</p>
 
         <h2 style={S.h2}>Advertising, promotions &amp; third-party offers</h2>
         <p style={S.p}>Businesses and event organizers may purchase advertising placements, promotional features, or sponsored content on the Site. These placements display information, offers, and promotions as provided by the advertiser.</p>

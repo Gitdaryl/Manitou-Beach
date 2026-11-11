@@ -6,6 +6,7 @@ import { PageThemeProvider } from './context/PageThemeContext';
 import HomePage from './pages/HomePage';
 
 // Lazy-loaded pages
+const AdPhotosPage = lazy(() => import('./pages/AdPhotosPage'));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
 const TermsPage = lazy(() => import('./pages/TermsPage'));
 const SMSOptInPage = lazy(() => import('./pages/SMSOptInPage'));
@@ -200,7 +201,7 @@ function RefCapture() {
 // of the instructions the organizer is trying to read (caught it covering the
 // "tap Share at the bottom of Safari" line on /my-events). Nobody visiting
 // their own edit form wants to ask a tourism bot a question anyway.
-const NO_CONCIERGE = ['/my-events', '/events/edit', '/submit-event'];
+const NO_CONCIERGE = ['/my-events', '/events/edit', '/submit-event', '/ad-photos'];
 
 function VoiceWhereItHelps() {
   const { pathname } = useLocation();
@@ -294,6 +295,7 @@ export default function App() {
           <Route path="/ticket-services" element={<TicketServicesPage />} />
           <Route path="/ticket-success" element={<TicketSuccessPage />} />
           <Route path="/partner-intake" element={<PartnerIntakePage />} />
+          <Route path="/ad-photos" element={<AdPhotosPage />} />
           <Route path="/fireworks" element={<USA250Page />} />
           <Route path="/usa250" element={<USA250Page />} />
           <Route path="/america-250" element={<USA250Page />} />

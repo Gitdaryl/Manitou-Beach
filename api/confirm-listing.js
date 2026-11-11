@@ -1,5 +1,6 @@
 import { createHmac, timingSafeEqual } from 'crypto';
 import { Resend } from 'resend';
+import { makeAdToken, toSlug } from './lib/ad-intake.js';
 
 function signConfirmToken(pageId, secret) {
   return createHmac('sha256', secret).update(pageId).digest('hex').slice(0, 40);
@@ -110,5 +111,13 @@ export default async function handler(req, res) {
     // Non-fatal - still redirect
   }
 
-  return res.redirect(302, `${siteUrl}/listing-confirmed`);
+  // Once the free ads offer is open, a new owner goes on to the photo form from here.
+  let confirmedQuery = '';
+  const listedName = page.properties?.['Name']?.title?.[0]?.plain_text || '';
+  const category = page.properties?.['Category']?.select?.name;
+  if (process.env.VITE_AD_INTAKE_OPEN === '1' && listedName && category !== 'Places to Stay') {
+    confirmedQuery = `?slug=${toSlug(listedName)}&t=${makeAdToken(page.id)}`;
+  }
+
+  return res.redirect(302, `${siteUrl}/listing-confirmed${confirmedQuery}`);
 }
