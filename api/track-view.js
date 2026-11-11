@@ -20,6 +20,22 @@ async function writeCurrent(data) {
   if (blobs.length) await del(blobs.map(b => b.url), { token: process.env.BLOB_READ_WRITE_TOKEN });
 }
 
+// A view counts as human only from a US or Canadian IP, a browser user agent that is not a
+// known crawler or headless tool, a client that reports navigator.webdriver false (wd: false),
+// and not the listing's own owner checking their page (owner: true).
+// The raw counters above stay as they were; humanMonthly is the one safe to show an owner.
+const BOT_UA = /bot|crawl|spider|slurp|headless|lighthouse|pagespeed|preview|facebookexternalhit|bingpreview|python|curl|wget|httpclient|axios|node-fetch|go-http|java\/|playwright|puppeteer|phantom|selenium|scrapy|semrush|ahrefs|mj12|dotbot|petal|yandex|baidu/i;
+
+function isHumanView(req, body) {
+  const country = String(req.headers['x-vercel-ip-country'] || '').toUpperCase();
+  if (country !== 'US' && country !== 'CA') return false;
+  const ua = String(req.headers['user-agent'] || '');
+  if (!ua || !/Mozilla\//.test(ua) || BOT_UA.test(ua)) return false;
+  if (body.wd !== false) return false;
+  if (body.owner === true) return false;
+  return true;
+}
+
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
 
@@ -41,6 +57,13 @@ export default async function handler(req, res) {
     // Monthly breakdown
     if (!data.monthly[key]) data.monthly[key] = {};
     data.monthly[key][month] = (data.monthly[key][month] || 0) + 1;
+
+    // Bot-filtered monthly count
+    if (isHumanView(req, req.body || {})) {
+      if (!data.humanMonthly) data.humanMonthly = {};
+      if (!data.humanMonthly[key]) data.humanMonthly[key] = {};
+      data.humanMonthly[key][month] = (data.humanMonthly[key][month] || 0) + 1;
+    }
 
     // Page-level totals
     if (!data.pageViews[page]) data.pageViews[page] = 0;

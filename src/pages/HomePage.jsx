@@ -1107,7 +1107,8 @@ function BusinessDirectory() {
 
   // Premium + Featured go into the card carousel; Enhanced + Free go into the row list
   // Directory is 100% Notion-driven
-  const allBusinesses = [...notionFree, ...notionEnhanced, ...notionFeatured, ...notionPremium];
+  // Highest tier first, so each category lists Front and Center, then Highlighted, Showcased, Free (tier order is part of what people pay for)
+  const allBusinesses = [...notionPremium, ...notionFeatured, ...notionEnhanced, ...notionFree];
   const categories = ["All", ...Array.from(new Set(allBusinesses.map(b => b.category)))];
 
   const matchesSearch = (b) => {

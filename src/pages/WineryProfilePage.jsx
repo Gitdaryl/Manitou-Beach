@@ -23,7 +23,7 @@ export default function WineryProfilePage() {
 
   useEffect(() => {
     if (slug) {
-      fetch('/api/track-view', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ page: 'winery', slug }) }).catch(() => {});
+      fetch('/api/track-view', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ page: 'winery', slug, wd: !!navigator.webdriver }) }).catch(() => {});
     }
   }, [slug]);
 

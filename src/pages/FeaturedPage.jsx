@@ -5,6 +5,7 @@ import { C, LISTING_CATEGORIES, PAGE_SPONSORS, SLOT_CAPS } from '../data/config'
 import { BASE_PRICES } from '../data/pricing';
 import { Footer, GlobalStyles, Navbar, SubmitSection } from '../components/Layout';
 import SEOHead from '../components/SEOHead';
+import TierCompare from '../components/TierCompare';
 import yeti from '../data/errorMessages';
 
 // ============================================================
@@ -184,17 +185,17 @@ export default function FeaturedPage() {
     {
       id: 'enhanced', name: 'Showcased', color: C.lakeBlue, badge: null,
       price: priceFor(9), priceInCents: centsFor(9),
-      features: ['Your own page - a real URL you can share and bookmark', 'Photos, hours, and description all in one place', 'One-tap call button and quote request form', 'Pin on the interactive map so people can find you'],
+      features: ['Shown above free listings in your category', 'A card in the directory with your logo and story'],
     },
     {
       id: 'featured', name: 'Highlighted', color: C.sage, badge: 'Most Popular',
       price: priceFor(25), priceInCents: centsFor(25),
-      features: ['Everything in Showcased', 'Your Google star rating and reviews right on your profile', 'Highlighted badge on your profile header', 'Extra room for photos and story so visitors get the full picture'],
+      features: ['A color highlight so you stand out in the directory', 'Your Google star rating and reviews on your page', 'Highlighted badge on your page'],
     },
     {
       id: 'premium', name: 'Front and Center', color: C.sunsetLight, badge: 'Most Features',
       price: priceFor(49), priceInCents: centsFor(49),
-      features: ['Everything in Highlighted', 'A big showcase photo across the top of your page', 'Full photo gallery, scroll-through style', 'Gold accent and Premium badge on your profile', "Showing up on Google when locals search 'near me'. We build your full Google Business profile from scratch: claim and verify the listing, load your photos, write your description, set your hours and service area. Agencies charge $200-400/mo for this alone - it's included."],
+      features: ['First in your category, with an always-open banner', 'Photo gallery and gold accent on your page', "Showing up on Google when locals search 'near me'. We build your full Google Business profile from scratch: claim and verify the listing, load your photos, write your description, set your hours and service area. Agencies charge $200-400/mo for this alone - it's included."],
     },
   ];
 
@@ -378,11 +379,11 @@ export default function FeaturedPage() {
                   Your own page. Go as deep as you like.
                 </h2>
                 <p style={{ color: "rgba(255,255,255,0.75)", fontSize: 16, maxWidth: 600, margin: "0 auto 32px", lineHeight: 1.65 }}>
-                  Every paid tier includes a profile page with a real URL you can share. Showcased covers the essentials: photos, hours, a call button, a quote form, a map pin. Highlighted pulls your Google reviews in. Front and Center turns it into a full photo showcase with a big feature photo, a gallery, and a gold accent. Pick the depth that fits your story.
+                  Every listing, free included, gets its own page with your logo, photos, hours, a call button and a map pin. The paid tiers put you in front of more people: higher in the directory, your Google reviews on your page, and a gold banner at the top of your category.
                 </p>
                 <div style={{ maxWidth: 460, margin: "0 auto", background: "rgba(255,255,255,0.05)", borderRadius: 14, padding: "20px 24px", border: "1px solid rgba(255,255,255,0.1)" }}>
                   <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: "rgba(255,255,255,0.75)", margin: 0, lineHeight: 1.65, textAlign: "center" }}>
-                    Not sure which one fits? Start with Showcased at $9/mo. You can upgrade whenever you're ready, and your page stays yours either way.
+                    Not sure which one fits? Start free and fill in your page. Move up when you want more people to see it, and your page stays yours either way.
                   </p>
                   <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, margin: "12px 0 0", textAlign: "center" }}>
                     <a href="/listing-finder" style={{ color: "rgba(255,255,255,0.75)", textDecoration: "underline", textUnderlineOffset: 3 }}>
@@ -406,15 +407,9 @@ export default function FeaturedPage() {
                   Always free · no credit card
                 </div>
                 <ul style={{ listStyle: "none", padding: 0, margin: "0 0 16px 0", flexGrow: 1, display: "flex", flexDirection: "column", gap: 9 }}>
-                  {["Name in directory", "Category & phone", "Community visibility"].map(f => (
+                  {["Your own page with a link to share", "Logo, photos, hours and call button", "Update it yourself, anytime"].map(f => (
                     <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 9 }}>
                       <span style={{ color: C.driftwood, fontSize: 15, marginTop: 2, flexShrink: 0, fontWeight: 700 }}>✓</span>
-                      <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 15, lineHeight: 1.45 }}>{f}</span>
-                    </li>
-                  ))}
-                  {["No website link", "No map pin", "No description or logo"].map(f => (
-                    <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: 9 }}>
-                      <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 15, marginTop: 2, flexShrink: 0 }}>-</span>
                       <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 15, lineHeight: 1.45 }}>{f}</span>
                     </li>
                   ))}
@@ -482,6 +477,19 @@ export default function FeaturedPage() {
         </section>
       )}
 
+      {/* Compare every tier: tick table */}
+      {!isFull && (
+        <section id="compare" style={{ background: C.cream, padding: "72px 16px" }}>
+          <FadeIn>
+            <div style={{ textAlign: "center", marginBottom: 32 }}>
+              <SectionLabel>Compare</SectionLabel>
+              <SectionTitle center>See what each tier adds</SectionTitle>
+            </div>
+            <TierCompare onSelect={handleTierSelect} />
+          </FadeIn>
+        </section>
+      )}
+
       {/* Tier Demo - See It In Action */}
       {!isFull && (
         <section style={{ background: C.cream, padding: "80px 24px" }}>
@@ -512,7 +520,7 @@ export default function FeaturedPage() {
                   </div>
                   <span style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, color: C.textMuted, flexShrink: 0 }}>(517) 555-5555</span>
                 </div>
-                <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, margin: "8px 0 0 2px", lineHeight: 1.5 }}>Name, category, and phone. That's it - no profile page, no expand, no description.</p>
+                <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, margin: "8px 0 0 2px", lineHeight: 1.5 }}>In the directory: name, category and phone on one line. Tapping it opens your full page.</p>
               </FadeIn>
 
               {/* $9 Showcased */}
@@ -546,7 +554,7 @@ export default function FeaturedPage() {
                     </div>
                   </div>
                 </div>
-                <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, margin: "8px 0 0 2px", lineHeight: 1.5 }}>Expandable strip with logo, description, and links. Your own profile page at a real URL.</p>
+                <p style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, color: C.textMuted, margin: "8px 0 0 2px", lineHeight: 1.5 }}>Expandable card with your logo, description and links, shown above the free listings.</p>
               </FadeIn>
 
               {/* $25 Highlighted */}
@@ -631,7 +639,7 @@ export default function FeaturedPage() {
             </div>
 
             <p style={{ textAlign: "center", fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.textMuted, marginTop: 40 }}>
-              These previews show how your business appears on the home page directory. Every paid tier also includes a full profile page at your own URL.
+              These previews show how your business appears in the home page directory. Every tier, free included, also gets a full page at its own link.
             </p>
           </div>
         </section>
@@ -646,7 +654,7 @@ export default function FeaturedPage() {
                 <SectionLabel>How It Works</SectionLabel>
                 <SectionTitle center>Start free. Upgrade when it's worth it.</SectionTitle>
                 <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.7, maxWidth: 540, margin: "16px auto 0" }}>
-                  Every local business belongs here. List for free, upgrade when you want a real profile page of your own. Month-to-month, no contracts.
+                  Every local business belongs here. List for free, upgrade when you want more people to see you. Month-to-month, no contracts.
                 </p>
               </div>
             </FadeIn>
@@ -655,12 +663,12 @@ export default function FeaturedPage() {
                 {
                   num: "01",
                   title: "Claim your free spot in 60 seconds",
-                  body: "Your business name, phone, and category go into the directory. That's it - no card, no catch. Visitors can find you when they search. It's a phone-book-level listing, always free, forever.",
+                  body: "Your business goes into the directory with its own page: your logo, photos, hours, a call button and a map pin. No card, no catch, free forever. Fill it in yourself whenever you like.",
                 },
                 {
                   num: "02",
-                  title: "Upgrade when you want a profile page",
-                  body: "The paid tiers get you your own page at manitoubeachmichigan.com/yourbusiness - a real URL you can share on Facebook, print on a card, text to a customer. Photos, hours, a call button, a quote form, the whole deal. Think of it as a website, without the website hassle.",
+                  title: "Upgrade when you want more eyes on it",
+                  body: "The paid tiers put your page in front of more people: shown above free listings in your category, a color highlight, your Google stars, and at Front and Center an always-open banner at the top. Same page, more eyes on it.",
                 },
                 {
                   num: "03",
@@ -1123,12 +1131,13 @@ export default function FeaturedPage() {
           {[
             { q: "Do I have to commit for a whole year?", a: "No. Everything is month-to-month. Showcased is $9/month, Highlighted is $25/month, Front and Center is $49/month - billed monthly, cancel anytime. There is no annual contract. Stay for one month, the whole summer, or as long as you want." },
             { q: "Can I run Highlighted or Front and Center just for the summer?", a: "Yes, that's exactly how it's designed. Sign up when your season starts, cancel when it ends. If you pause instead of canceling, your rate is locked and your page is waiting for you when you come back next year." },
-            { q: "Can I switch tiers later?", a: "Anytime, in either direction. Start with Showcased at $9 and upgrade to Highlighted or Front and Center when you're ready for more depth. Or step back down if your season slows. Your page stays yours - only the features change." },
-            { q: "What's the difference between the tiers?", a: "Showcased ($9) gets you your own page with photos, hours, a call button, a quote form, and a map pin. Highlighted ($25) adds your Google reviews on the page. Front and Center ($49) turns the page into a full photo showcase with a big feature photo, a gallery, and a gold accent - and, most importantly, we build your full Google Business profile from scratch so you show up when locals search 'near me'. That service alone runs $200-400/mo at most agencies." },
-            { q: "I already have a free listing. What changes?", a: "Your free listing stays as-is. Upgrading to any paid tier gives you your own profile page at a real URL you can share - photos, hours, a quote form, the works. The free entry is a phone-book line; the paid page is a real web page." },
-            { q: "What happens if I cancel my listing?", a: "Your listing reverts to the free directory. No lock-in, cancel anytime. If you cancel and later rejoin, you pay whatever the current rate is at that time." },
+            { q: "Can I switch tiers later?", a: "Anytime, in either direction. Start free or at Showcased for $9, and move up to Highlighted or Front and Center when you want more people to see you. Or step back down if your season slows. Your page stays yours - only the features change." },
+            { q: "What's the difference between the tiers?", a: "Every tier, free included, gets its own page with your logo, photos, hours, a call button, a quote form and a map pin. Showcased ($9) shows you above the free listings in your category with a card for your logo and story. Highlighted ($25) adds a color highlight, a badge and your Google reviews on your page. Front and Center ($49) puts you first in your category with an always-open banner, adds a photo gallery and gold accent, and we build your full Google Business profile so you show up when locals search 'near me'. The comparison table above shows it row by row." },
+            ...(import.meta.env.VITE_AD_INTAKE_OPEN === '1' ? [{ q: "Do I get free video ads?", a: "Yes. Every listing, free or paid, gets 3 free video ads a year, posted on Manitou Beach Life on Facebook and Instagram. We send you each ad before it posts, so you can ask for a change or skip it. Extra ads are $80, or $60 on Highlighted and $40 on Front and Center. Video files may be posted on your own pages, but not edited or used as paid ads." }] : []),
+            { q: "I already have a free listing. What changes?", a: "Your page stays exactly as it is, with everything you've added. Upgrading changes how you show up: higher in your category, a card or banner in the directory, and on Highlighted and up, your Google reviews and a badge." },
+            { q: "What happens if I cancel my listing?", a: "Your listing goes back to free, and your page stays up. No lock-in, cancel anytime. If you cancel and later rejoin, you pay whatever the current rate is at that time." },
             { q: "What if I pause my subscription?", a: "Pausing is fine - your rate and page are held while paused. Great for seasonal businesses: pause in the off-months and your page is waiting when you come back." },
-            { q: "Can I change my listing details after I pay?", a: "Yes - and you don't need to email us. Once you've paid, visit your profile page and tap 'Claim This Listing.' Enter the phone number on your account, verify with the code we text you, and you can edit your description, hours, photos, and contact details yourself. Changes go live immediately." },
+            { q: "Can I change my listing details after I pay?", a: "Yes - and you don't need to email us. Open your page from the link we text or email you each month, tap Edit listing, and change your description, hours, photos and contact details yourself. Changes go live right away." },
             { q: "What's the Holly & Yeti podcast mention?", a: "Front and Center businesses get a shoutout on the Holly & Yeti community podcast, reaching the broader Devils Lake and Irish Hills audience." },
           ].map((faq, i) => (
             <FadeIn key={i} delay={i * 60}>

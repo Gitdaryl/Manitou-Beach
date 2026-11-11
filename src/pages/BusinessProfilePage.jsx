@@ -196,9 +196,17 @@ export default function BusinessProfilePage() {
       .catch(() => {});
   }, [claimToken, slug]);
 
+  // Captured on first render, before the ?owner= link is swapped out of the address bar,
+  // so an owner opening their own page is left out of the visit count.
+  const ownerVisitRef = useRef((() => {
+    try {
+      return new URLSearchParams(window.location.search).has('owner') || !!localStorage.getItem(`mb-claim-${slug}`);
+    } catch { return false; }
+  })());
+
   useEffect(() => {
     if (business?.id) {
-      fetch('/api/track-view', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ page: 'business', slug }) }).catch(() => {});
+      fetch('/api/track-view', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ page: 'business', slug, wd: !!navigator.webdriver, owner: ownerVisitRef.current }) }).catch(() => {});
     }
   }, [business?.id]);
 
@@ -734,19 +742,31 @@ export default function BusinessProfilePage() {
                       {reportCard.nudge}
                     </p>
                   )}
-                  {/* Top gap action */}
-                  {reportCard.topGap && (
-                    <button
-                      onClick={() => setEditOpen(true)}
-                      style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 600, color: C.lakeBlue, background: 'none', border: 'none', padding: 0, cursor: 'pointer', textDecoration: 'underline' }}
-                    >
-                      Add {reportCard.topGap.label} now (+{reportCard.topGap.points} pts) →
-                    </button>
-                  )}
+                  {/* Top 3 gaps: open the editor, or watch the how-to video when one is posted */}
+                  {(reportCard.gaps?.length ? reportCard.gaps : reportCard.topGap ? [reportCard.topGap] : []).map(g => (
+                    <div key={g.label} style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', columnGap: 16, borderTop: `1px solid ${C.sand}` }}>
+                      <button
+                        onClick={() => setEditOpen(true)}
+                        style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 600, color: C.lakeBlue, background: 'none', border: 'none', padding: 0, minHeight: 44, cursor: 'pointer', textAlign: 'left', flex: '1 1 auto' }}
+                      >
+                        Add {g.label} <span style={{ fontWeight: 400, color: C.textMuted }}>+{g.points} pts</span> →
+                      </button>
+                      {g.howto?.url && (
+                        <a
+                          href={g.howto.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 600, color: C.sage, display: 'inline-flex', alignItems: 'center', minHeight: 44 }}
+                        >
+                          ▶ Watch how
+                        </a>
+                      )}
+                    </div>
+                  ))}
                 </div>
                 <button
                   onClick={() => { setReportCardDismissed(true); sessionStorage.setItem(`mb-rc-dismissed-${slug}`, '1'); }}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: C.textMuted, fontSize: 18, lineHeight: 1, padding: 0, flexShrink: 0 }}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: C.textMuted, fontSize: 18, lineHeight: 1, padding: 0, flexShrink: 0, width: 44, height: 44, margin: '-12px -12px 0 0' }}
                   aria-label="Dismiss report card"
                 >×</button>
               </div>

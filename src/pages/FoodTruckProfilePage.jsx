@@ -56,7 +56,7 @@ export default function FoodTruckProfilePage() {
 
   useEffect(() => {
     if (slug) {
-      fetch('/api/track-view', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ page: 'food-truck', slug }) }).catch(() => {});
+      fetch('/api/track-view', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ page: 'food-truck', slug, wd: !!navigator.webdriver }) }).catch(() => {});
     }
   }, [slug]);
 

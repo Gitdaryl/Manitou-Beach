@@ -1083,7 +1083,7 @@ export default function HappeningPage() {
   useEffect(() => {
     const qrSrc = new URLSearchParams(window.location.search).get('src');
     if (qrSrc && qrSrc.startsWith('qr-')) {
-      fetch('/api/track-view', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ page: 'qr', slug: qrSrc }) }).catch(() => {});
+      fetch('/api/track-view', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ page: 'qr', slug: qrSrc, wd: !!navigator.webdriver }) }).catch(() => {});
     }
   }, []);
 

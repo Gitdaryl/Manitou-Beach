@@ -60,6 +60,9 @@
     },
     "api/cron-outreach-resolve.js": {
       "maxDuration": 60
+    },
+    "api/cron-profile-report-card.js": {
+      "maxDuration": 300
     }
   },
   "rewrites": [
