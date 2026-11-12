@@ -62,14 +62,14 @@ function LadiesClubHero() {
           </div>
 
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-            {Date.now() < VETERANS_LUNCH.showUntil.getTime() && (
+            {Date.now() < VETERANS_LUNCH.recapUntil.getTime() && (
               <a href="#veterans-lunch" className="btn-animated" style={{
                 display: "inline-flex", alignItems: "center", gap: 8,
                 padding: "12px 28px", borderRadius: 8,
                 background: C.sunset, color: C.cream,
                 fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5, textDecoration: "none",
               }}>
-                Veterans Day Lunch · Nov 11
+                {Date.now() < VETERANS_LUNCH.showUntil.getTime() ? "Veterans Day Lunch · Nov 11" : "Veterans Day Lunch · Thank You"}
               </a>
             )}
             <a href="#festival-gallery" className="btn-animated" style={{
@@ -89,14 +89,98 @@ function LadiesClubHero() {
 }
 
 // --- Veterans Day Lunch 2026 ---
-// Promoted at the top of the page until the day after the lunch, then it disappears on its own.
+// Promoted at the top of the page until the lunch ends (3 pm Nov 11), then flips to the thank-you recap.
 const VETERANS_LUNCH = {
-  showUntil: new Date("2026-11-12T00:00:00-05:00"),
+  showUntil: new Date("2026-11-11T15:00:00-05:00"),
+  recapUntil: new Date("2027-01-01T00:00:00-05:00"),
   rsvpEmail: "dgmuck@gmail.com",
 };
 
+// After the lunch: thank-you note from the club + Angel Tree teaser, until the new year.
+// The photos stay forever in the Festival Gallery below (id veterans-gallery).
+function VeteransLunchRecap() {
+  return (
+    <section id="veterans-lunch" style={{ background: C.night, padding: "80px 24px", scrollMarginTop: 80 }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+        <FadeIn>
+          <div style={{ textAlign: "center", marginBottom: 36 }}>
+            <SectionLabel light>Thank You</SectionLabel>
+            <SectionTitle center light>Veterans Day Lunch</SectionTitle>
+          </div>
+          <div style={{
+            background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.09)",
+            borderRadius: 20, overflow: "hidden",
+          }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 0 }} className="mobile-col-1">
+              <div style={{ background: "rgba(0,0,0,0.25)", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+                <a href="#veterans-gallery" style={{ display: "block", lineHeight: 0, width: "100%" }}>
+                  <img
+                    src="/images/ladies-club/veterans-lunch-2026/veterans-day-lunch-2026-01.webp"
+                    alt="Smiling guests holding American flags at the Land and Lake Ladies Club Veterans Day Lunch at Boot Jack Tavern, Manitou Beach"
+                    style={{ width: "100%", height: "auto", borderRadius: 6, boxShadow: "0 8px 32px rgba(0,0,0,0.35)" }}
+                  />
+                </a>
+              </div>
+              <div style={{ padding: "44px 40px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                <div style={{
+                  display: "inline-flex", alignItems: "center", gap: 8,
+                  background: `${C.sunset}22`, border: `1px solid ${C.sunset}50`,
+                  borderRadius: 6, padding: "6px 14px", marginBottom: 20, width: "fit-content",
+                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700,
+                  letterSpacing: 2.5, textTransform: "uppercase", color: C.sunsetLight,
+                }}>
+                  November 11, 2026 · Boot Jack's Tavern
+                </div>
+                <p style={{ fontSize: 15, color: "rgba(255,255,255,0.8)", lineHeight: 1.75, margin: "0 0 14px 0" }}>
+                  We are so grateful to all our veterans for their service, courage, and sacrifice.
+                </p>
+                <p style={{ fontSize: 15, color: "rgba(255,255,255,0.8)", lineHeight: 1.75, margin: "0 0 14px 0" }}>
+                  It was truly an honor to share today's special luncheon with you. Thank you for allowing us to celebrate and recognize each of you. We hope you enjoyed the afternoon as much as we enjoyed honoring you!
+                </p>
+                <div style={{ fontFamily: "'Caveat', cursive", fontSize: 26, color: C.sunsetLight, marginBottom: 24 }}>
+                  With gratitude, the Land and Lake Ladies Club
+                </div>
+                <a href="#veterans-gallery" className="btn-animated" style={{
+                  display: "inline-flex", alignItems: "center", gap: 8,
+                  padding: "12px 24px", borderRadius: 8, width: "fit-content",
+                  background: C.sunset, color: C.cream, textDecoration: "none",
+                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 0.5,
+                }}>
+                  See the lunch photos →
+                </a>
+              </div>
+            </div>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={120}>
+          <div style={{
+            marginTop: 28, padding: "28px 32px", borderRadius: 16, textAlign: "center",
+            background: `${C.sunset}14`, border: `1px solid ${C.sunset}40`,
+          }}>
+            <div style={{
+              fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700,
+              letterSpacing: 2.5, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 10,
+            }}>
+              Next Up
+            </div>
+            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(20px, 2.6vw, 28px)", fontWeight: 400, color: C.cream, margin: "0 0 12px 0" }}>
+              Angel Tree 2026
+            </h3>
+            <p style={{ fontSize: 14, color: "rgba(255,255,255,0.7)", lineHeight: 1.75, maxWidth: 620, margin: "0 auto" }}>
+              We are close to kicking off the 2026 Land and Lake Ladies Club Angel Tree project. Angels will be at local businesses, and our popular online sign-up shopping option is back too. Watch for more announcements about this very important community event. Details coming soon.
+            </p>
+          </div>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
 function VeteransLunchSection() {
-  if (Date.now() >= VETERANS_LUNCH.showUntil.getTime()) return null;
+  const now = Date.now();
+  if (now >= VETERANS_LUNCH.recapUntil.getTime()) return null;
+  if (now >= VETERANS_LUNCH.showUntil.getTime()) return <VeteransLunchRecap />;
   return (
     <section id="veterans-lunch" style={{ background: C.night, padding: "80px 24px", scrollMarginTop: 80 }}>
       <div style={{ maxWidth: 1000, margin: "0 auto" }}>
@@ -862,6 +946,9 @@ const GALLERY_2026 = Array.from({ length: 59 }, (_, i) =>
 const GALLERY_2025 = Array.from({ length: 22 }, (_, i) =>
   `/images/ladies-club/summerfest/devils-lake-summerfest-2025-${String(i + 1).padStart(2, "0")}.webp`
 );
+const GALLERY_VETERANS = Array.from({ length: 15 }, (_, i) =>
+  `/images/ladies-club/veterans-lunch-2026/veterans-day-lunch-2026-${String(i + 1).padStart(2, "0")}.webp`
+);
 // full path -> thumbnail path: /dir/name.webp -> /dir/thumbs/name.webp
 const thumbSrc = (src) => src.replace(/\/([^/]+)$/, "/thumbs/$1");
 
@@ -869,15 +956,15 @@ function LadiesClubGallerySection() {
   // lightbox = { year, index } | null  — navigates within the active year's set
   const [lightbox, setLightbox] = useState(null);
 
-  const sets = { 2026: GALLERY_2026, 2025: GALLERY_2025 };
+  const sets = { veterans: GALLERY_VETERANS, 2026: GALLERY_2026, 2025: GALLERY_2025 };
   const activePhotos = lightbox ? sets[lightbox.year] : [];
 
   // Deep link: ?photo=YYYY-NN opens the lightbox straight to that photo, so a shared
   // link lands on the exact image instead of the top of the page. Runs once on mount.
   useEffect(() => {
-    const m = new URLSearchParams(window.location.search).get("photo")?.match(/^(\d{4})-(\d+)$/);
+    const m = new URLSearchParams(window.location.search).get("photo")?.match(/^(\d{4}|veterans)-(\d+)$/);
     if (!m) return;
-    const year = Number(m[1]);
+    const year = m[1];
     const idx = Number(m[2]) - 1;
     if (sets[year] && idx >= 0 && idx < sets[year].length) setLightbox({ year, index: idx });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -893,8 +980,8 @@ function LadiesClubGallerySection() {
     }
   }, [lightbox]);
 
-  const YearGallery = ({ year, photos, label }) => (
-    <>
+  const YearGallery = ({ year, photos, label, id, altPrefix }) => (
+    <div id={id} style={{ scrollMarginTop: 80 }}>
       <FadeIn>
         <div style={{ display: "flex", alignItems: "center", gap: 16, margin: "8px 0 24px" }}>
           <div style={{ flex: 1, height: 1, background: C.sand }} />
@@ -916,7 +1003,7 @@ function LadiesClubGallerySection() {
             >
               <img
                 src={thumbSrc(src)}
-                alt={`Devils Lake Summer Festival ${year} in Manitou Beach - photo ${i + 1}`}
+                alt={`${altPrefix || `Devils Lake Summer Festival ${year} in Manitou Beach`} - photo ${i + 1}`}
                 loading="lazy"
                 style={{ width: "100%", height: "auto", display: "block", transition: "transform 0.35s ease" }}
                 onMouseEnter={e => e.currentTarget.style.transform = "scale(1.04)"}
@@ -926,7 +1013,7 @@ function LadiesClubGallerySection() {
           </FadeIn>
         ))}
       </div>
-    </>
+    </div>
   );
 
   return (
@@ -937,11 +1024,12 @@ function LadiesClubGallerySection() {
             <SectionLabel>Memories</SectionLabel>
             <SectionTitle center>Festival Gallery</SectionTitle>
             <p style={{ fontSize: 16, color: C.textLight, lineHeight: 1.7, maxWidth: 400, margin: "0 auto" }}>
-              A look at the community coming together - Summer Festival moments from the lakes.
+              A look at the community coming together - Veterans Day Lunch and Summer Festival moments from the lakes.
             </p>
           </div>
         </FadeIn>
 
+        <YearGallery year="veterans" id="veterans-gallery" photos={GALLERY_VETERANS} label="Veterans Day Lunch 2026" altPrefix="Land and Lake Ladies Club Veterans Day Lunch at Boot Jack Tavern, Manitou Beach, November 11 2026" />
         <YearGallery year={2026} photos={GALLERY_2026} label="Summerfest 2026" />
         <YearGallery year={2025} photos={GALLERY_2025} label="Summerfest 2025" />
 
@@ -952,9 +1040,9 @@ function LadiesClubGallerySection() {
             index={lightbox.index}
             setIndex={(i) => setLightbox(l => l && ({ ...l, index: i }))}
             onClose={() => setLightbox(null)}
-            title={`Summerfest ${lightbox.year}`}
+            title={lightbox.year === "veterans" ? "Veterans Day Lunch 2026" : `Summerfest ${lightbox.year}`}
             shareUrl={`${typeof window !== "undefined" ? window.location.origin : ""}/ladies-club?photo=${lightbox.year}-${String(lightbox.index + 1).padStart(2, "0")}`}
-            shareText={`A moment from Devil's Lake Summerfest ${lightbox.year} in Manitou Beach 🌅 See the whole gallery:`}
+            shareText={lightbox.year === "veterans" ? "Honoring our local veterans at the Land & Lake Ladies Club Veterans Day Lunch in Manitou Beach. See the photos:" : `A moment from Devil's Lake Summerfest ${lightbox.year} in Manitou Beach 🌅 See the whole gallery:`}
           />
         )}
       </div>
