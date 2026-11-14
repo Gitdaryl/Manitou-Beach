@@ -33,6 +33,8 @@ export default function PrivacyPage() {
         <p style={S.p}><strong>SMS opt-ins:</strong> Your mobile phone number, collected when you voluntarily subscribe to SMS notifications through an opt-in form on this Site. We use this to send you text messages about community events, food truck check-ins, and local business alerts. You may opt out at any time by replying STOP to any message. SMS opt-in data and consent are never shared with third parties.</p>
         <p style={S.p}><strong>Community photo galleries:</strong> Photos you upload to our event galleries, along with the event you tag them to. Uploaded photos are displayed publicly on the Site. Before publishing, every upload is automatically screened by an AI service (Anthropic) to block inappropriate content; images are transmitted to Anthropic solely for this screening and are not used to train AI models. We also store a random identifier in your browser's local storage so the site can remember which photos you have hearted or flagged; this identifier is not linked to your name or contact details. Heart counts are displayed publicly. If you flag a photo, the reason you select is stored with the photo for moderation.</p>
 
+        <p style={S.p}><strong>Daily puzzles:</strong> Your puzzle progress and streak are saved only in your own browser. When you start or finish a puzzle, the site records an anonymous count using a random identifier stored in your browser's local storage, so we can see how many people play and come back. It is not linked to your name, contact details or location, and no account is needed.</p>
+
         <h2 style={S.h2}>How we use it</h2>
         <ul style={{ paddingLeft: 20, margin: '0 0 14px' }}>
           {[

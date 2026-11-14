@@ -31,6 +31,7 @@ const EventDetailPage = lazy(() => import('./pages/EventDetailPage'));
 const RedeemPromoView = lazy(() => import('./pages/RedeemPromoView'));
 const WineriesPage = lazy(() => import('./pages/WineriesPage'));
 const FishingPage = lazy(() => import('./pages/FishingPage'));
+const PuzzlesPage = lazy(() => import('./pages/PuzzlesPage'));
 const HistoricalSocietyPage = lazy(() => import('./pages/HistoricalSocietyPage'));
 const MensClubPage = lazy(() => import('./pages/MensClubPage'));
 const LadiesClubPage = lazy(() => import('./pages/LadiesClubPage'));
@@ -255,6 +256,8 @@ export default function App() {
           <Route path="/ladies-club/join" element={<LadiesClubJoinPage />} />
           <Route path="/historical-society" element={<HistoricalSocietyPage />} />
           <Route path="/fishing" element={<FishingPage />} />
+          <Route path="/puzzles" element={<PuzzlesPage />} />
+          <Route path="/puzzles/:game" element={<PuzzlesPage />} />
           <Route path="/wineries" element={<WineriesPage />} />
           <Route path="/wineries/:slug" element={<WineryProfilePage />} />
           <Route path="/devils-lake" element={<DevilsLakePage />} />

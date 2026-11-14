@@ -69,6 +69,11 @@ const OG_MAP = {
     description: 'Preserving the heritage of Manitou Beach and Devils Lake - art shows, restoration, and community history.',
     image: '/images/historic-hero.jpg',
   },
+  '/puzzles': {
+    title: 'Daily Puzzles - Manitou Beach',
+    description: 'Three free daily puzzles from Manitou Beach: a five-letter word, a local word search and a sudoku. New every morning.',
+    image: null,
+  },
   '/fishing': {
     title: 'Fishing Devils Lake - Manitou Beach',
     description: 'Bass, walleye, pike, and panfish - your guide to fishing Devils Lake in the Michigan Irish Hills.',
