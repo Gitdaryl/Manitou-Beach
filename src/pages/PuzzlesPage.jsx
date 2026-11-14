@@ -8,7 +8,7 @@ import { FIVE_ANSWERS, FIVE_VALID, SEARCH_THEMES } from '../data/puzzleWords';
 // ============================================================
 // /puzzles - three daily puzzles, the same for everybody, for fun.
 //   The Daily Five  (/puzzles)              guess the five-letter word
-//   Word Search     (/puzzles/word-search)  eight local words in a grid
+//   Word Search     (/puzzles/word-search)  ten local words in a 12 by 12 grid, any direction
 //   Sudoku          (/puzzles/sudoku)
 // Everything is worked out in the browser from today's date (Michigan time), so there is
 // nothing to publish each day. Progress is kept in the player's own browser. The only
@@ -276,22 +276,39 @@ function FiveGame({ ctx, onDone }) {
 // WORD SEARCH
 // ============================================================
 
-const SEARCH_N = 10;
-const SEARCH_DIRS = [[0, 1], [1, 0], [1, 1], [-1, 1]];   // across, down, and the two diagonals, always read left to right or top to bottom
+const SEARCH_N = 12;
+const SEARCH_COUNT = 10;
+// All eight ways a word can run: forwards, backwards, up, down and the four slants.
+const SEARCH_DIRS = [[0, 1], [1, 0], [1, 1], [-1, 1], [0, -1], [-1, 0], [-1, -1], [1, -1]];
+
+// How many times a word can be read in the grid, in any direction.
+function searchOccurrences(grid, w) {
+  let n = 0;
+  for (let r = 0; r < SEARCH_N; r++) for (let c = 0; c < SEARCH_N; c++) for (const [dr, dc] of SEARCH_DIRS) {
+    const er = r + dr * (w.length - 1), ec = c + dc * (w.length - 1);
+    if (er < 0 || er >= SEARCH_N || ec < 0 || ec >= SEARCH_N) continue;
+    let ok = true;
+    for (let i = 0; i < w.length; i++) if (grid[r + dr * i][c + dc * i] !== w[i]) { ok = false; break; }
+    if (ok) n++;
+  }
+  return n;
+}
 
 function buildSearch(dateStr, day) {
   const n = SEARCH_THEMES.length, theme = SEARCH_THEMES[((day % n) + n) % n];
-  for (let attempt = 0; attempt < 30; attempt++) {
-    const rand = seededRandom(`search:${dateStr}:${attempt}`);
-    const words = shuffled(theme.words, rand).slice(0, 8).sort((a, b) => b.replace(/ /g, '').length - a.replace(/ /g, '').length);
+  for (let attempt = 0; attempt < 60; attempt++) {
+    const rand = seededRandom(`search2:${dateStr}:${attempt}`);
+    const words = shuffled(theme.words, rand).slice(0, SEARCH_COUNT).sort((a, b) => b.replace(/ /g, '').length - a.replace(/ /g, '').length);
     const grid = Array.from({ length: SEARCH_N }, () => Array(SEARCH_N).fill(''));
     const placed = [];
+    // Deal the directions out in turn so no day is mostly left-to-right.
+    const deal = shuffled(SEARCH_DIRS, rand);
     let ok = true;
-    for (const label of words) {
+    for (const [wi, label] of words.entries()) {
       const w = label.replace(/ /g, '');
       let done = false;
-      for (let t = 0; t < 300 && !done; t++) {
-        const [dr, dc] = SEARCH_DIRS[Math.floor(rand() * SEARCH_DIRS.length)];
+      for (let t = 0; t < 400 && !done; t++) {
+        const [dr, dc] = t < 80 ? deal[wi % deal.length] : SEARCH_DIRS[Math.floor(rand() * SEARCH_DIRS.length)];
         const r = Math.floor(rand() * SEARCH_N), c = Math.floor(rand() * SEARCH_N);
         const er = r + dr * (w.length - 1), ec = c + dc * (w.length - 1);
         if (er < 0 || er >= SEARCH_N || ec < 0 || ec >= SEARCH_N) continue;
@@ -305,8 +322,25 @@ function buildSearch(dateStr, day) {
       if (!done) { ok = false; break; }
     }
     if (!ok) continue;
+    // Decoys: the first few letters of each word, planted somewhere else in empty squares.
+    for (const p of placed) {
+      const bit = p.word.slice(0, Math.min(4, p.word.length - 1));
+      for (let t = 0; t < 40; t++) {
+        const [dr, dc] = SEARCH_DIRS[Math.floor(rand() * SEARCH_DIRS.length)];
+        const r = Math.floor(rand() * SEARCH_N), c = Math.floor(rand() * SEARCH_N);
+        const er = r + dr * (bit.length - 1), ec = c + dc * (bit.length - 1);
+        if (er < 0 || er >= SEARCH_N || ec < 0 || ec >= SEARCH_N) continue;
+        let free = true;
+        for (let i = 0; i < bit.length; i++) if (grid[r + dr * i][c + dc * i]) { free = false; break; }
+        if (!free) continue;
+        for (let i = 0; i < bit.length; i++) grid[r + dr * i][c + dc * i] = bit[i];
+        break;
+      }
+    }
     const pool = placed.map(p => p.word).join('');
     for (let r = 0; r < SEARCH_N; r++) for (let c = 0; c < SEARCH_N; c++) if (!grid[r][c]) grid[r][c] = pool[Math.floor(rand() * pool.length)];
+    // Each word must be readable in exactly one place, or the day is dealt again.
+    if (placed.some(p => searchOccurrences(grid, p.word) !== 1)) continue;
     return { title: theme.title, grid, placed: placed.sort((a, b) => a.label.localeCompare(b.label)) };
   }
   return null;
@@ -319,7 +353,7 @@ function Loop({ r, c, er, ec, color, width = 0.075, dashed }) {
 
 function SearchGame({ ctx, onDone }) {
   const puzzle = useMemo(() => buildSearch(ctx.date, ctx.day), [ctx]);
-  const [saved, save] = useSaved(ctx, 'search');
+  const [saved, save] = useSaved(ctx, 'search2');   // 'search' was the first, easier grid
   const [found, setFound] = useState(() => (saved && saved.found) || []);
   const [drag, setDrag] = useState(null);       // { r, c, er, ec } while a finger is down
   const [anchor, setAnchor] = useState(null);   // first tap of a tap-then-tap pick
@@ -371,12 +405,12 @@ function SearchGame({ ctx, onDone }) {
 
   return (
     <div>
-      <p className="pz-deck">Today's theme: <strong style={{ fontStyle: 'normal', color: C.dusk }}>{puzzle.title}</strong>. Eight words are hiding. Drag across a word, or tap its first letter and then its last.</p>
-      <div style={{ position: 'relative', width: 'min(100%, 430px)', margin: '0 auto' }} key={`m${miss}`} className={miss ? 'pz-shake' : ''}>
+      <p className="pz-deck">Today's theme: <strong style={{ fontStyle: 'normal', color: C.dusk }}>{puzzle.title}</strong>. {puzzle.placed.length} words are hiding: forwards, backwards, up, down and on the slant. Drag across a word, or tap its first letter and then its last.</p>
+      <div style={{ position: 'relative', width: 'min(100%, 480px)', margin: '0 auto' }} key={`m${miss}`} className={miss ? 'pz-shake' : ''}>
         <div ref={gridRef} role="img" aria-label={`Word search grid, theme ${puzzle.title}`} onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={() => setDrag(null)}
           style={{ display: 'grid', gridTemplateColumns: `repeat(${SEARCH_N}, 1fr)`, border: `1.5px solid ${C.dusk}`, background: '#FFFDF8', touchAction: 'none', userSelect: 'none', WebkitUserSelect: 'none', cursor: 'pointer' }}>
           {puzzle.grid.map((row, r) => row.map((ch, c) => (
-            <div key={`${r}-${c}`} style={{ aspectRatio: '1', display: 'grid', placeItems: 'center', fontFamily: SERIF, fontWeight: 700, fontSize: 'clamp(15px, 4.6vw, 21px)', color: inFound(r, c) ? RED : C.dusk,
+            <div key={`${r}-${c}`} style={{ aspectRatio: '1', display: 'grid', placeItems: 'center', fontFamily: SERIF, fontWeight: 700, fontSize: 'clamp(14px, 4vw, 20px)', color: inFound(r, c) ? RED : C.dusk,
               background: anchor && anchor.r === r && anchor.c === c ? `${BLUE}26` : 'transparent' }}>{ch}</div>
           )))}
         </div>
@@ -386,14 +420,14 @@ function SearchGame({ ctx, onDone }) {
         </svg>
       </div>
 
-      <ul aria-label="Words to find" style={{ listStyle: 'none', padding: 0, margin: '16px auto 0', maxWidth: 430, display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '6px 16px' }}>
+      <ul aria-label="Words to find" style={{ listStyle: 'none', padding: 0, margin: '16px auto 0', maxWidth: 480, display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '6px 16px' }}>
         {puzzle.placed.map((p, i) => {
           const got = found.includes(i);
           return <li key={p.label} style={{ fontFamily: SANS, fontSize: 17, fontWeight: 600, letterSpacing: 0.5, color: got ? C.warmGray : C.text, textDecoration: got ? 'line-through' : 'none', textDecorationColor: RED, textDecorationThickness: 2 }}>{p.label}{got && <span className="pz-sr"> (found)</span>}</li>;
         })}
       </ul>
       {done
-        ? <><Note sub={TOMORROW}>All eight. Sharp eyes!</Note><div style={{ textAlign: 'center' }}><ShareButton text={`Word Search No. ${ctx.day + 1}: found all 8 in "${puzzle.title}"`} /></div></>
+        ? <><Note sub={TOMORROW}>Every last one. Sharp eyes!</Note><div style={{ textAlign: 'center' }}><ShareButton text={`Word Search No. ${ctx.day + 1}: found all ${puzzle.placed.length} in "${puzzle.title}"`} /></div></>
         : <Note blue>{found.length ? `${found.length} down, ${puzzle.placed.length - found.length} to go.` : ''}</Note>}
     </div>
   );
@@ -582,10 +616,10 @@ export default function PuzzlesPage() {
   const [finished, setFinished] = useState(() => {
     if (ctx.test) return {};
     const s = readStore(), same = (k) => s[k] && s[k].date === ctx.date;
-    return { five: same('five') && !!s.five.done, search: same('search') && !!s.search.done, sudoku: same('sudoku') && !!s.sudoku.done };
+    return { five: same('five') && !!s.five.done, search: same('search2') && !!s.search2.done, sudoku: same('sudoku') && !!s.sudoku.done };
   });
   const onDone = useCallback((id) => {
-    if (!ctx.test) { const cur = readStore()[id]; if (cur && cur.date === ctx.date && !cur.done) writeStore({ [id]: { ...cur, done: true } }); }
+    if (!ctx.test) { const key = id === 'search' ? 'search2' : id; const cur = readStore()[key]; if (cur && cur.date === ctx.date && !cur.done) writeStore({ [key]: { ...cur, done: true } }); }
     setFinished(f => (f[id] ? f : { ...f, [id]: true }));
   }, [ctx]);
   const pick = (g) => navigate(`/puzzles${g.slug ? `/${g.slug}` : ''}${window.location.search}`, { replace: false });
