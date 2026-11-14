@@ -130,10 +130,6 @@
       "schedule": "0 3 * * *"
     },
     {
-      "path": "/api/cron-social-post",
-      "schedule": "0 13 * * 4"
-    },
-    {
       "path": "/api/cron-truck-reminder",
       "schedule": "0 14 * * 6,0"
     },
