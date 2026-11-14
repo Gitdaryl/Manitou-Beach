@@ -1,4 +1,5 @@
 import { put, list } from '@vercel/blob';
+import { detroitDate, addDays, loadPuzzleEvents, playersOn, summarize } from './lib/puzzleStats.js';
 
 // Anonymous play counter for /puzzles. Nothing is shown on the site; it answers one
 // question: do people play, and do they come back the next day.
@@ -10,7 +11,8 @@ import { put, list } from '@vercel/blob';
 // player's browser, so the same person on two days can be matched without a name.
 //
 // POST { game, date, event, tries, vid, wd }   from the page
-// GET  ?days=30  with x-admin-token             daily totals and returning players
+// GET  ?days=30  with x-admin-token             daily totals, give-ups, who came back
+// GET  ?watch=1  (public)                       the last day the daily watch ran, no numbers
 
 const PREFIX = 'puzzles';
 const GAMES = ['five', 'search', 'sudoku'];
@@ -22,11 +24,6 @@ function isHuman(req, body) {
   const ua = String(req.headers['user-agent'] || '');
   if (!ua || !/Mozilla\//.test(ua) || BOT_UA.test(ua)) return false;
   return body.wd === false;
-}
-
-function detroitDate(offsetDays = 0) {
-  const d = new Date(Date.now() + offsetDays * 864e5);
-  return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Detroit', year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
 }
 
 export default async function handler(req, res) {
@@ -57,37 +54,35 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'GET') {
+    // Public, numbers-free: the last morning the daily watch ran (api/cron-puzzle-watch.js).
+    if (req.query.watch === '1') {
+      try {
+        const { blobs } = await list({ prefix: 'puzzle-flags/last-run/', token });
+        const last = blobs.map(b => (b.pathname.split('/').pop() || '').replace('.json', '')).sort().pop() || null;
+        return res.status(200).json({ lastWatchRun: last });
+      } catch (err) {
+        return res.status(500).json({ error: 'Could not read watch status' });
+      }
+    }
+
     const admin = req.headers['x-admin-token'];
     if (!admin || admin !== process.env.ADMIN_SECRET) return res.status(401).json({ error: 'Unauthorized' });
     const days = Math.min(Math.max(parseInt(req.query.days, 10) || 30, 1), 120);
     const since = detroitDate(-days);
     try {
-      const byDay = {};          // date -> game -> { start, solve, fail, tries: {1..6} }
-      const seen = {};           // date -> Set of visitors who started anything
-      let cursor, pages = 0, capped = false;
-      do {
-        const out = await list({ prefix: `${PREFIX}/`, limit: 1000, cursor, token });
-        for (const b of out.blobs) {
-          const [, date, game, label, file] = b.pathname.split('/');
-          if (!date || date < since || !GAMES.includes(game) || !file) continue;
-          const day = (byDay[date] = byDay[date] || {});
-          const g = (day[game] = day[game] || { start: 0, solve: 0, fail: 0, tries: {} });
-          if (label === 'start') { g.start += 1; (seen[date] = seen[date] || new Set()).add(file); }
-          else if (label === 'fail') g.fail += 1;
-          else if (label.startsWith('solve-')) { g.solve += 1; const t = label.slice(6); g.tries[t] = (g.tries[t] || 0) + 1; }
+      const { events, capped } = await loadPuzzleEvents(since);
+      const dates = Object.keys(events).sort();
+      const rows = dates.map((date) => {
+        const players = playersOn(events, date), before = playersOn(events, addDays(date, -1));
+        const games = {};
+        for (const [game, g] of Object.entries(events[date])) {
+          games[game] = { start: g.start.size, solve: g.solve.size, fail: g.fail.size, gaveUp: [...g.start].filter(v => !g.solve.has(v) && !g.fail.has(v)).length, tries: g.tries };
         }
-        cursor = out.hasMore ? out.cursor : undefined;
-        if (++pages >= 40 && cursor) { capped = true; break; }
-      } while (cursor);
-
-      const dates = Object.keys(byDay).sort();
-      const rows = dates.map((date, i) => {
-        const players = seen[date] ? seen[date].size : 0;
-        const prev = i > 0 ? seen[dates[i - 1]] : null;
-        const backFromDayBefore = prev && seen[date] ? [...seen[date]].filter(v => prev.has(v)).length : 0;
-        return { date, players, backFromDayBefore, games: byDay[date] };
+        return { date, players: players.size, backFromDayBefore: [...players].filter(v => before.has(v)).length, games };
       });
-      return res.status(200).json({ since, capped, days: rows });
+      // Finished days only: today is still being played, so it would look like give-ups.
+      const summary = { ...summarize(events, since, detroitDate(-1)), after: undefined };
+      return res.status(200).json({ since, capped, summary, days: rows });
     } catch (err) {
       console.error('puzzle-count read failed:', err.message);
       return res.status(500).json({ error: 'Could not read counts' });
