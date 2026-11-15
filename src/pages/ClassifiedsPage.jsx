@@ -13,13 +13,13 @@ import SEOHead from '../components/SEOHead';
 // ============================================================
 
 const CATEGORIES = [
-  { id: 'Neighbors Swap', slug: 'swap', blurb: 'Kids\' stuff, furniture, tools, household' },
+  { id: 'For Sale', slug: 'for-sale', blurb: 'Kids\' stuff, furniture, tools, household' },
   { id: 'Free to a Good Home', slug: 'free', blurb: 'Giveaways, no money changes hands' },
   { id: 'Wheels & Water', slug: 'wheels-water', blurb: 'Cars, boats, trailers, docks, lifts' },
   { id: 'Help Wanted', slug: 'help-wanted', blurb: 'Local jobs, seasonal and year-round' },
 ];
 const CAT_COLOR = {
-  'Neighbors Swap': C.lakeBlue,
+  'For Sale': C.lakeBlue,
   'Free to a Good Home': C.sage,
   'Wheels & Water': C.dusk,
   'Help Wanted': C.sunset,
@@ -151,7 +151,8 @@ export default function ClassifiedsPage() {
   const [params, setParams] = useSearchParams();
   const [listings, setListings] = useState(null);
   const [failed, setFailed] = useState(false);
-  const active = CATEGORIES.find((c) => c.slug === params.get('c'))?.id || 'All';
+  const slugParam = params.get('c') === 'swap' ? 'for-sale' : params.get('c'); // old link
+  const active = CATEGORIES.find((c) => c.slug === slugParam)?.id || 'All';
 
   useEffect(() => {
     fetch('/api/classifieds')
@@ -170,7 +171,7 @@ export default function ClassifiedsPage() {
     <PageShell
       seo={{
         title: 'Classifieds',
-        description: 'Free local classifieds for Manitou Beach, Devils Lake and the Irish Hills: neighbors swap, free stuff, cars and boats, and help wanted.',
+        description: 'Free local classifieds for Manitou Beach, Devils Lake and the Irish Hills: things for sale, free stuff, cars and boats, and help wanted.',
         path: '/classifieds',
         breadcrumbs: [{ name: 'Home', path: '/' }, { name: 'Classifieds', path: '/classifieds' }],
       }}

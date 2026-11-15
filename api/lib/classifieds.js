@@ -4,13 +4,16 @@
 import crypto from 'crypto';
 
 export const CLASSIFIED_CATEGORIES = [
-  { id: 'Neighbors Swap', slug: 'swap', label: 'Neighbors Swap' },
+  { id: 'For Sale', slug: 'for-sale', label: 'For Sale' },
   { id: 'Free to a Good Home', slug: 'free', label: 'Free to a Good Home' },
   { id: 'Wheels & Water', slug: 'wheels-water', label: 'Wheels & Water' },
   { id: 'Help Wanted', slug: 'help-wanted', label: 'Help Wanted' },
 ];
 
 export const LISTING_DAYS = 30;
+
+// Old Notion values still on early records, shown under their current name.
+const LEGACY_CATEGORY = { 'Neighbors Swap': 'For Sale' };
 
 export function notionHeaders() {
   return {
@@ -61,7 +64,7 @@ export function parseClassified(page, includePrivate = false) {
   const listing = {
     id: page.id.replace(/-/g, ''),
     title: plain(p['Title']),
-    category: p['Category']?.select?.name || '',
+    category: LEGACY_CATEGORY[p['Category']?.select?.name] || p['Category']?.select?.name || '',
     price: plain(p['Price']),
     description: plain(p['Description']),
     town: plain(p['Town']),

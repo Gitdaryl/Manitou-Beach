@@ -1,5 +1,5 @@
 // /api/classifieds.js
-// Free neighbor classifieds: Neighbors Swap, Free to a Good Home, Wheels & Water, Help Wanted.
+// Free neighbor classifieds: For Sale, Free to a Good Home, Wheels & Water, Help Wanted.
 //
 // GET                              live listings (public fields only)
 // GET  ?action=one&id=             one listing
