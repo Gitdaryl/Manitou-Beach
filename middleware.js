@@ -129,6 +129,10 @@ const OG_MAP = {
     description: 'Vacation rentals, cottages, and lakefront stays on Devils Lake in the Michigan Irish Hills.',
     image: '/images/og/stays-og.jpg',
   },
+  '/classifieds': {
+    title: 'Manitou Beach Classifieds: For Sale, Free, Boats and Jobs',
+    description: 'Free local classifieds for Manitou Beach, Devils Lake and the Irish Hills. Things for sale, free stuff, cars and boats, and help wanted.',
+  },
   '/marketplace': {
     title: 'Marketplace: For Sale by Owner - Manitou Beach',
     description: 'Homes and land for sale by owner around Devils Lake and the Michigan Irish Hills. Contact the owner directly.',
@@ -386,8 +390,9 @@ export default async function middleware(request) {
   // ── Dynamic routes: /business/:slug and /events/:id ──────────
   const bizMatch = path.match(/^\/business\/([^/]+)$/);
   const eventMatch = path.match(/^\/events\/([^/]+)$/);
+  const classifiedMatch = path.match(/^\/classifieds\/([0-9a-f]{32})$/i);
 
-  if (bizMatch || eventMatch) {
+  if (bizMatch || eventMatch || classifiedMatch) {
     const htmlUrl = new URL('/index.html', url.origin);
     const htmlRes = await fetch(htmlUrl);
     if (!htmlRes.ok) return undefined;
@@ -397,6 +402,9 @@ export default async function middleware(request) {
     } else if (eventMatch) {
       // Inject event-specific OG tags so shared links show the organizer's photo (crawlers don't run JS)
       html = await handleEventOG(html, eventMatch[1], url.origin);
+    } else if (classifiedMatch) {
+      // Shared listing links preview the item: title, price and first photo
+      html = await handleClassifiedOG(html, classifiedMatch[1], url.origin);
     }
     return new Response(html, {
       status: 200,
@@ -747,6 +755,39 @@ function buildBusinessNoscript(biz, name, locality, category) {
 // ── Dynamic OG + schema handler for event detail pages ────────
 // Crawlers (Facebook, iMessage, X) don't run JS, so the client-side SEOHead
 // tags are invisible to them. Inject event-specific OG tags server-side here.
+// Inject listing OG tags for /classifieds/:id. Sold or missing listings keep the default OG.
+export async function handleClassifiedOG(html, id, origin) {
+  try {
+    const res = await fetch(`${origin}/api/classifieds?action=one&id=${encodeURIComponent(id)}`);
+    if (!res.ok) return html;
+    const l = (await res.json()).listing;
+    if (!l || !l.title || l.status !== 'Live') return html;
+
+    const title = `${l.title}${l.price ? ` - ${l.price}` : ''} | Manitou Beach Classifieds`;
+    const flat = (l.description || '').replace(/\s+/g, ' ').trim();
+    const where = l.town ? ` ${l.town}.` : '';
+    const raw = `${flat}${where}`;
+    const description = raw.length > 200 ? raw.slice(0, 197) + '…' : raw;
+    const image = (l.photos && l.photos[0]) || `${origin}${DEFAULT_OG.image}`;
+    const pageUrl = `${origin}/classifieds/${id}`;
+
+    const t = esc(title);
+    const d = esc(description);
+    const img = esc(image);
+    return html
+      .replace(/<title>[^<]*<\/title>/, `<title>${t}</title>`)
+      .replace(/<meta name="description" content="[^"]*"/, `<meta name="description" content="${d}"`)
+      .replace(/<meta property="og:title" content="[^"]*"/, `<meta property="og:title" content="${t}"`)
+      .replace(/<meta property="og:description" content="[^"]*"/, `<meta property="og:description" content="${d}"`)
+      .replace(/<meta property="og:image" content="[^"]*"/, `<meta property="og:image" content="${img}"`)
+      .replace(/<meta property="og:url" content="[^"]*"/, `<meta property="og:url" content="${esc(pageUrl)}"`)
+      .replace(/<meta property="og:type" content="[^"]*"/, `<meta property="og:type" content="product"`)
+      .replace(/<meta name="twitter:title" content="[^"]*"/, `<meta name="twitter:title" content="${t}"`)
+      .replace(/<meta name="twitter:description" content="[^"]*"/, `<meta name="twitter:description" content="${d}"`)
+      .replace(/<meta name="twitter:image" content="[^"]*"/, `<meta name="twitter:image" content="${img}"`);
+  } catch { return html; }
+}
+
 export async function handleEventOG(html, id, origin) {
   try {
     const res = await fetch(`${origin}/api/event-detail?id=${encodeURIComponent(id)}`);
