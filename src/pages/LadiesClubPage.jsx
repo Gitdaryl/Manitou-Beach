@@ -15,6 +15,7 @@ import RafflePage from './RafflePage';
 function LadiesClubHero() {
   const [loaded, setLoaded] = useState(false);
   useEffect(() => { setTimeout(() => setLoaded(true), 80); }, []);
+  const angelTreeOpen = Date.now() < ANGEL_TREE.showUntil.getTime();
 
   return (
     <section style={{ position: "relative", overflow: "hidden", textAlign: "center", minHeight: "92vh", display: "flex", alignItems: "center" }}>
@@ -42,7 +43,26 @@ function LadiesClubHero() {
             A nonprofit civic organization serving Devils Lake, Round Lake, Addison, and Manitou Beach - bringing women together to strengthen our community through events, fundraising, and good old-fashioned neighborly love.
           </p>
 
-          {/* Summerfest 2026 thank-you */}
+          {/* While the Angel Tree is open it leads the page; afterwards the Summerfest thank-you returns */}
+          {angelTreeOpen ? (
+          <div style={{ marginBottom: 48 }}>
+            <div style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              background: `${C.sunset}22`, border: `1px solid ${C.sunset}50`,
+              borderRadius: 6, padding: "6px 14px", marginBottom: 20,
+              fontFamily: "'Libre Franklin', sans-serif", fontSize: 13, fontWeight: 700,
+              letterSpacing: 2.5, textTransform: "uppercase", color: C.sunsetLight,
+            }}>
+              Angel Tree 2026 · Gifts due Dec 4
+            </div>
+            <div style={{ fontFamily: "'Caveat', cursive", fontSize: "clamp(26px, 4vw, 38px)", color: C.cream, lineHeight: 1.2, maxWidth: 560, margin: "0 auto" }}>
+              Help make a child's Christmas merry!
+            </div>
+            <p style={{ fontSize: "clamp(13px, 1.4vw, 15px)", color: "rgba(255,255,255,0.75)", lineHeight: 1.7, maxWidth: 480, margin: "14px auto 0" }}>
+              Nearly 300 Christmas wishes are waiting to come true. Pick an Angel at a local business or choose one online.
+            </p>
+          </div>
+          ) : (
           <div style={{ marginBottom: 48 }}>
             <div style={{
               display: "inline-flex", alignItems: "center", gap: 8,
@@ -60,8 +80,19 @@ function LadiesClubHero() {
               What a day. Thank you to every neighbor, vendor, artist, and sponsor who made it special. Relive the highlights in our festival gallery below.
             </p>
           </div>
+          )}
 
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+            {angelTreeOpen && (
+              <a href="#angel-tree" className="btn-animated" style={{
+                display: "inline-flex", alignItems: "center", gap: 8,
+                padding: "12px 28px", borderRadius: 8,
+                background: C.cream, color: C.night,
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 15, fontWeight: 700, letterSpacing: 0.5, textDecoration: "none",
+              }}>
+                Pick an Angel
+              </a>
+            )}
             {Date.now() < VETERANS_LUNCH.recapUntil.getTime() && (
               <a href="#veterans-lunch" className="btn-animated" style={{
                 display: "inline-flex", alignItems: "center", gap: 8,
@@ -88,6 +119,139 @@ function LadiesClubHero() {
   );
 }
 
+// --- Angel Tree 2026 ---
+// Michele's ask, Nov 21 2026: put the club's online sign-up on the page. Shows until the
+// gift deadline has passed (end of Friday, December 4), then the section and its hero button go away.
+const ANGEL_TREE = {
+  showUntil: new Date("2026-12-05T00:00:00-05:00"),
+  signupUrl: "https://www.signupgenius.com/go/10C0D45AEAE2BA0FDC43-67793854-2026#/",
+  dropOffs: [
+    "Benny D's on 223",
+    "Blackbird Cafe & Baking Company",
+    "Boot Jack's Tavern",
+    "Decker & Sons Insurance",
+    "Devils Lake Bar & Grill",
+    "Highland Inn",
+    "Pirates Cove",
+    "Sterlings",
+    "Trends Salon and Spa",
+    "Two Lakes Tavern",
+  ],
+};
+
+function AngelTreeSection() {
+  if (Date.now() >= ANGEL_TREE.showUntil.getTime()) return null;
+  const step = { fontSize: 15, color: "rgba(255,255,255,0.8)", lineHeight: 1.7, margin: 0 };
+  const stepNum = {
+    flex: "0 0 auto", width: 30, height: 30, borderRadius: "50%",
+    background: C.sunset, color: C.cream, display: "flex", alignItems: "center", justifyContent: "center",
+    fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, fontWeight: 700,
+  };
+  const cardHead = {
+    fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700,
+    letterSpacing: 2.5, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 16,
+  };
+  const card = {
+    background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.09)",
+    borderRadius: 20, padding: "32px 30px",
+  };
+  return (
+    <section id="angel-tree" style={{ background: C.night, padding: "80px 24px 40px", scrollMarginTop: 80 }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+        <FadeIn>
+          <div style={{ textAlign: "center", marginBottom: 28 }}>
+            <SectionLabel light>Happening Now</SectionLabel>
+            <SectionTitle center light>Angel Tree 2026</SectionTitle>
+          </div>
+          <div style={{ textAlign: "center", maxWidth: 680, margin: "0 auto 36px" }}>
+            <div style={{ fontFamily: "'Caveat', cursive", fontSize: "clamp(28px, 4.4vw, 40px)", color: C.sunsetLight, lineHeight: 1.2, marginBottom: 16 }}>
+              Help make a child's Christmas merry!
+            </div>
+            <p style={{ fontSize: 16, color: "rgba(255,255,255,0.8)", lineHeight: 1.75, margin: "0 0 26px 0" }}>
+              This year we have nearly 300 Christmas wishes waiting to come true. Angels are on trees at local businesses, and wishes are available online too, so there are plenty of ways to spread a little holiday magic.
+            </p>
+            <div style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              background: `${C.sunset}22`, border: `1px solid ${C.sunset}50`,
+              borderRadius: 6, padding: "8px 16px", marginBottom: 24,
+              fontFamily: "'Libre Franklin', sans-serif", fontSize: 12, fontWeight: 700,
+              letterSpacing: 2, textTransform: "uppercase", color: C.sunsetLight,
+            }}>
+              All gifts due Friday, December 4
+            </div>
+            <div>
+              <a href={ANGEL_TREE.signupUrl} target="_blank" rel="noopener noreferrer" className="btn-animated" style={{
+                display: "inline-flex", alignItems: "center", gap: 8,
+                padding: "16px 34px", borderRadius: 8,
+                background: C.sunset, color: C.cream, textDecoration: "none",
+                fontFamily: "'Libre Franklin', sans-serif", fontSize: 16, fontWeight: 700, letterSpacing: 0.5,
+              }}>
+                Pick an Angel online →
+              </a>
+              <div style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", marginTop: 12, fontFamily: "'Libre Franklin', sans-serif" }}>
+                Opens the club's sign-up sheet. Choose a wish and add your name.
+              </div>
+            </div>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={120}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }} className="mobile-col-1">
+            <div style={card}>
+              <div style={cardHead}>Two ways to give</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
+                  <div style={stepNum}>1</div>
+                  <p style={step}>Take an Angel gift tag from the tree at one of the local businesses below.</p>
+                </div>
+                <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
+                  <div style={stepNum}>2</div>
+                  <p style={step}>
+                    Or choose a wish on our{" "}
+                    <a href={ANGEL_TREE.signupUrl} target="_blank" rel="noopener noreferrer" style={{ color: C.sunsetLight, fontWeight: 600 }}>virtual Angel Tree</a>
+                    {" "}from home.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div style={card}>
+              <div style={cardHead}>Dropping off your gift</div>
+              <ul style={{ margin: 0, paddingLeft: 20, display: "flex", flexDirection: "column", gap: 10 }}>
+                <li style={step}>Leave the gift unwrapped.</li>
+                <li style={step}>Label it with the family number and child information, for example: 1A, Girl, Age 12.</li>
+                <li style={step}>Bring it to any business below by Friday, December 4.</li>
+              </ul>
+            </div>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={200}>
+          <div style={{ ...card, marginTop: 20, textAlign: "center" }}>
+            <div style={cardHead}>Find an Angel Tree and drop off gifts here</div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "center" }}>
+              {ANGEL_TREE.dropOffs.map(name => (
+                <span key={name} style={{
+                  padding: "8px 16px", borderRadius: 999,
+                  background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)",
+                  fontFamily: "'Libre Franklin', sans-serif", fontSize: 14, color: C.cream,
+                }}>
+                  {name}
+                </span>
+              ))}
+            </div>
+            <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)", lineHeight: 1.7, margin: "20px auto 0", maxWidth: 560 }}>
+              Thank you to our local business partners for their continued support. Please shop with them all year round!
+            </p>
+            <div style={{ fontFamily: "'Caveat', cursive", fontSize: "clamp(22px, 3.2vw, 28px)", color: C.sunsetLight, marginTop: 18 }}>
+              Together, we can make this Christmas extra special, one Angel at a time!
+            </div>
+          </div>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
 // --- Veterans Day Lunch 2026 ---
 // Promoted at the top of the page until the lunch ends (3 pm Nov 11), then flips to the thank-you recap.
 const VETERANS_LUNCH = {
@@ -96,7 +260,7 @@ const VETERANS_LUNCH = {
   rsvpEmail: "dgmuck@gmail.com",
 };
 
-// After the lunch: thank-you note from the club + Angel Tree teaser, until the new year.
+// After the lunch: thank-you note from the club, until the new year.
 // The photos stay forever in the Festival Gallery below (id veterans-gallery).
 function VeteransLunchRecap() {
   return (
@@ -150,26 +314,6 @@ function VeteransLunchRecap() {
                 </a>
               </div>
             </div>
-          </div>
-        </FadeIn>
-
-        <FadeIn delay={120}>
-          <div style={{
-            marginTop: 28, padding: "28px 32px", borderRadius: 16, textAlign: "center",
-            background: `${C.sunset}14`, border: `1px solid ${C.sunset}40`,
-          }}>
-            <div style={{
-              fontFamily: "'Libre Franklin', sans-serif", fontSize: 11, fontWeight: 700,
-              letterSpacing: 2.5, textTransform: "uppercase", color: C.sunsetLight, marginBottom: 10,
-            }}>
-              Next Up
-            </div>
-            <h3 style={{ fontFamily: "'Libre Baskerville', serif", fontSize: "clamp(20px, 2.6vw, 28px)", fontWeight: 400, color: C.cream, margin: "0 0 12px 0" }}>
-              Angel Tree 2026
-            </h3>
-            <p style={{ fontSize: 14, color: "rgba(255,255,255,0.7)", lineHeight: 1.75, maxWidth: 620, margin: "0 auto" }}>
-              We are close to kicking off the 2026 Land and Lake Ladies Club Angel Tree project. Angels will be at local businesses, and our popular online sign-up shopping option is back too. Watch for more announcements about this very important community event. Details coming soon.
-            </p>
           </div>
         </FadeIn>
       </div>
@@ -1552,6 +1696,7 @@ export default function LadiesClubPage() {
       <ScrollProgress />
       <Navbar activeSection="" scrollTo={subScrollTo} isSubPage={true} />
       <LadiesClubHero />
+      <AngelTreeSection />
       <VeteransLunchSection />
       {/* Crowd photo wall (scan-and-submit), same module as /mens-club. Preselects the
           Veterans Day Lunch tag through November; other months land in the picker default. */}
